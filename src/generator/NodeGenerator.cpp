@@ -6,6 +6,8 @@
 
 #include "render/Batch.h"
 
+#include "engine/UpdateContext.h"
+
 #include "registry/EntityRegistry.h"
 
 void NodeGenerator::updateEntity(
@@ -17,12 +19,17 @@ void NodeGenerator::updateEntity(
 
     int entityIndex = m_reservedFirst;
 
-    for (auto& instance : m_instances) {
-        if (!instance.m_dirtyEntity) continue;
-        if (instance.m_entityIndex == -1) continue;
+    for (auto& transform : m_transforms) {
+        if (!transform.m_dirtyEntity) continue;
+        if (transform.m_entityIndex == -1) continue;
 
-        auto* entity = entityRegistry->updateEntity(instance.m_entityIndex, true);
-        instance.updateEntity(ctx, entity);
+        auto* entity = entityRegistry->modifyEntity(transform.m_entityIndex, true);
+
+        entity->u_objectID = container.m_id;
+        entity->u_flags = container.getEntityFlags();
+        entity->u_highlightIndex = container.getHighlightIndex(ctx.m_assets);
+
+        transform.updateEntity(ctx, entity);
 
         //entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
         //entity->u_highlightIndex = 1;
@@ -47,9 +54,9 @@ const glm::vec4 NodeGenerator::calculateVolume()
 {
     AABB minmax{ true };
 
-    for (auto& instance : m_instances)
+    for (auto& transform : m_transforms)
     {
-        minmax.minmax(instance.getPosition());
+        minmax.minmax(transform.getPosition());
     }
 
     return minmax.getVolume();

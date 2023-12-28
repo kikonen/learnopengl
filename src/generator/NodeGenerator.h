@@ -2,7 +2,7 @@
 
 #include "asset/Assets.h"
 
-#include "model/NodeInstance.h"
+#include "model/NodeTransform.h"
 #include "model/InstancePhysics.h"
 
 #include "kigl/kigl.h"
@@ -44,9 +44,9 @@ public:
         Node& container,
         Batch& batch);
 
-    inline std::vector<NodeInstance>& getInstances() noexcept
+    inline std::vector<NodeTransform>& getTransforms() noexcept
     {
-        return m_instances;
+        return m_transforms;
     }
 
     inline int getActiveFirst() const noexcept {
@@ -83,6 +83,6 @@ protected:
 
     int m_containerMatrixLevel = -1;
 
-    std::vector<NodeInstance> m_instances;
+    std::vector<NodeTransform> m_transforms;
     std::vector<InstancePhysics> m_physics;
 };

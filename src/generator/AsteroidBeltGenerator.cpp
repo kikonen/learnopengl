@@ -59,15 +59,15 @@ void AsteroidBeltGenerator::updateAsteroids(
 {
     auto* registry = ctx.m_registry;
 
-    const auto& parentInstance = container.getParent()->getInstance();
+    const auto& parentTransform = container.getParent()->getTransform();
 
     if (rotate) {
         rotateAsteroids(ctx, container);
     }
 
-    for (auto& instance : m_instances)
+    for (auto& transform : m_transforms)
     {
-        instance.updateModelMatrix(parentInstance);
+        transform.updateModelMatrix(parentTransform);
     }
 
     setActiveRange(m_reservedFirst, m_reservedCount);
@@ -84,7 +84,7 @@ void AsteroidBeltGenerator::createAsteroids(
     const Mesh* mesh = container.m_type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
-    const auto& containerInstance = container.getInstance();
+    const auto& containerTransform = container.getTransform();
 
     m_reservedCount = m_asteroidCount;
     m_reservedFirst = registry->m_entityRegistry->registerEntityRange(m_reservedCount);
@@ -93,17 +93,12 @@ void AsteroidBeltGenerator::createAsteroids(
     {
         m_physics.emplace_back();
 
-        auto& asteroid = m_instances.emplace_back();
+        auto& asteroid = m_transforms.emplace_back();
 
         asteroid.m_entityIndex = static_cast<int>(m_reservedFirst + i);
 
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
-
-        asteroid.setId(containerInstance.getId());
-        asteroid.setFlags(containerInstance.getFlags());
-
-        asteroid.setId(container.m_id);
     }
 
     initAsteroids(assets, registry, container);
@@ -121,7 +116,7 @@ void AsteroidBeltGenerator::initAsteroids(
     );
     srand(static_cast<unsigned int>(ts.count()));
 
-    const size_t count = m_instances.size();
+    const size_t count = m_transforms.size();
 
     const glm::vec3 center{ 0.f };
     const float radius = m_radius;
@@ -129,7 +124,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_instances[i];
+        auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
         {
@@ -172,11 +167,11 @@ void AsteroidBeltGenerator::rotateAsteroids(
     Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = m_instances.size();
+    const size_t count = m_transforms.size();
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_instances[i];
+        auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
         glm::mat4 modelMat{ 1.f };

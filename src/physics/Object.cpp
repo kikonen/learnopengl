@@ -229,6 +229,6 @@ namespace physics
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
         m_node->setPosition(pos);
-        m_node->setQuatRotation(rotBase);
+        m_node->getTransform().setQuatRotation(rotBase);
     }
 }

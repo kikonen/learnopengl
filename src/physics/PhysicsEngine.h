@@ -17,7 +17,7 @@ class UpdateContext;
 class Node;
 class MeshType;
 
-struct NodeInstance;
+struct NodeTransform;
 
 
 namespace physics {
@@ -56,7 +56,7 @@ namespace physics {
             const UpdateContext& ctx,
             const MeshType& type,
             Node& node,
-            NodeInstance& instance);
+            NodeTransform& transform);
 
     public:
         dWorldID m_worldId{ nullptr };

@@ -55,7 +55,7 @@ void TestSceneSetup::setupEffectExplosion()
         type->m_flags.noShadow = true;
 
         auto node = new Node(type);
-        node->setScale(2);
+        node->getTransform().setScale(2);
 
         {
             event::Event evt { event::Type::node_add };

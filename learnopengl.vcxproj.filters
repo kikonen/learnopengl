@@ -342,7 +342,7 @@
     <ClCompile Include="src\asset\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\NodeInstance.cpp">
+    <ClCompile Include="src\model\NodeTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\InstancePhysics.cpp">
@@ -1010,7 +1010,7 @@
     <ClInclude Include="src\asset\TerrainMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\NodeInstance.h">
+    <ClInclude Include="src\model\NodeTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\InstancePhysics.h">

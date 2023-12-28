@@ -70,7 +70,7 @@ namespace loader {
         node->m_visible = false;
 
         //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-        node->setScale(4.f);
+        node->getTransform().setScale(4.f);
 
         // NOTE KI m_radius = 1.73205078
         mesh->prepareVolume();

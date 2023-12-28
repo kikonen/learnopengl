@@ -68,7 +68,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
             }
 
             if (changed) {
-                m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+                m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
     }
@@ -78,7 +78,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
         glm::vec3 pos = m_node->getPosition();
 
         {
-            const auto& viewFront = m_node->getViewFront();
+            const auto& viewFront = m_node->getTransform().getViewFront();
 
             if (input->isKeyDown(Key::FORWARD)) {
                 pos += viewFront * dt * moveSpeed.z;
@@ -91,7 +91,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
         }
 
         {
-            const auto& viewRight = m_node->getViewRight();
+            const auto& viewRight = m_node->getTransform().getViewRight();
 
             if (input->isKeyDown(Key::LEFT)) {
                 pos -= viewRight * dt * moveSpeed.x;
@@ -104,7 +104,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
         }
 
         {
-            const auto& viewUp = m_node->getViewUp();
+            const auto& viewUp = m_node->getTransform().getViewUp();
 
             if (input->isKeyDown(Key::UP)) {
                 pos += viewUp * dt * moveSpeed.y;
@@ -139,6 +139,6 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
     }
 
     if (changed) {
-        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+        m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }

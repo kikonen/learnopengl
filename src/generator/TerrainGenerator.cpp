@@ -96,7 +96,7 @@ void TerrainGenerator::updateTiles(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto& containerInstance = container.getInstance();
+    const auto& containerTransform = container.getTransform();
 
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
@@ -107,12 +107,12 @@ void TerrainGenerator::updateTiles(
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
 
-            auto& instance = m_instances[idx];
+            auto& transform = m_transforms[idx];
 
-            instance.setPosition(pos);
-            instance.setScale(scale);
+            transform.setPosition(pos);
+            transform.setScale(scale);
 
-            instance.updateModelMatrix(containerInstance);
+            transform.updateModelMatrix(containerTransform);
 
             idx++;
         }
@@ -180,7 +180,7 @@ void TerrainGenerator::createTiles(
     m_reservedCount = m_worldTilesU * m_worldTilesV;
     m_reservedFirst = entityRegistry->registerEntityRange(m_reservedCount);
 
-    m_instances.reserve(m_reservedCount);
+    m_transforms.reserve(m_reservedCount);
 
     // Setup initial static values for entity
     int idx = 0;
@@ -192,16 +192,16 @@ void TerrainGenerator::createTiles(
             const int entityIndex = m_reservedFirst + idx;
 
             {
-                auto& instance = m_instances.emplace_back();
+                auto& transform = m_transforms.emplace_back();
 
-                instance.setMaterialIndex(materialIndex);
-                instance.setVolume(tileVolume);
+                transform.setMaterialIndex(materialIndex);
+                transform.setVolume(tileVolume);
 
-                instance.m_entityIndex = entityIndex;
+                transform.m_entityIndex = entityIndex;
             }
 
             {
-                auto* entity = entityRegistry->updateEntity(entityIndex, false);
+                auto* entity = entityRegistry->modifyEntity(entityIndex, false);
                 entity->u_tileX = u;
                 entity->u_tileY = v;
 

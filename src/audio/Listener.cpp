@@ -42,8 +42,8 @@ namespace audio
         m_matrixLevel = level;
 
         m_pos = m_node->getWorldPosition();
-        m_front = m_node->getViewFront();
-        m_up = m_node->getViewUp();
+        m_front = m_node->getTransform().getViewFront();
+        m_up = m_node->getTransform().getViewUp();
 
         updatePos();
     }

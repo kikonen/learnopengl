@@ -54,7 +54,7 @@ const std::string Node::str() const noexcept
 {
     return fmt::format(
         "<NODE: id={}, entity={}, type={}>",
-        m_id, m_instance.m_entityIndex, m_type->str());
+        m_id, m_transform.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
@@ -62,8 +62,8 @@ void Node::prepare(
     Registry* registry)
 {
     if (m_type->getMesh()) {
-        m_instance.m_entityIndex = registry->m_entityRegistry->registerEntity();
-        m_instance.setMaterialIndex(m_type->getMaterialIndex());
+        m_transform.m_entityIndex = registry->m_entityRegistry->registerEntity();
+        m_transform.setMaterialIndex(m_type->getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
@@ -75,7 +75,7 @@ void Node::prepare(
         if (m_type->m_entityType == EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
             auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
-            m_instance.m_shapeIndex = shape.m_registeredIndex;
+            m_transform.m_shapeIndex = shape.m_registeredIndex;
             //m_instance.m_materialIndex = shape.m_materialIndex;
         }
         if (m_type->m_entityType == EntityType::skybox) {
@@ -85,8 +85,7 @@ void Node::prepare(
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
-        m_instance.setFlags(flags);
-        m_instance.setId(m_id);
+        m_entityFlags = flags;
     }
 
     if (m_generator) {
@@ -120,14 +119,16 @@ void Node::updateEntity(
     const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
-    if (m_instance.m_entityIndex != -1)
+    if (m_transform.m_entityIndex != -1)
     {
-        if (m_instance.m_dirtyEntity) {
-            auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
+        if (m_transform.m_dirtyEntity) {
+            auto* entity = entityRegistry->modifyEntity(m_transform.m_entityIndex, true);
 
+            entity->u_objectID = m_id;
+            entity->u_flags = m_entityFlags;
             entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
-            m_instance.updateEntity(ctx, entity);
+            m_transform.updateEntity(ctx, entity);
         }
     }
 
@@ -143,18 +144,18 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
             m_instancer->bindBatch(ctx, *this, batch);
         }
     } else {
-        batch.add(ctx, m_instance.m_entityIndex);
+        batch.add(ctx, m_transform.m_entityIndex);
     }
 }
 
 void Node::updateModelMatrix() noexcept
 {
-    auto oldLevel = m_instance.m_matrixLevel;
+    auto oldLevel = m_transform.m_matrixLevel;
     if (m_parent) {
-        m_instance.updateModelMatrix(m_parent->getInstance());
+        m_transform.updateModelMatrix(m_parent->getTransform());
     }
     else {
-        m_instance.updateRootMatrix();
+        m_transform.updateRootMatrix();
     }
 }
 
@@ -162,7 +163,7 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_instance.m_dirtyEntity = true;
+        m_transform.m_dirtyEntity = true;
     }
 }
 
@@ -170,7 +171,7 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_instance.m_dirtyEntity = true;
+        m_transform.m_dirtyEntity = true;
     }
 }
 

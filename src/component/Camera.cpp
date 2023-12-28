@@ -34,7 +34,7 @@ void Camera::update(const UpdateContext& ctx, Node& node) noexcept
     const bool nodeChanged = m_nodeLevel != node.getMatrixLevel();
     if (!nodeChanged) return;
 
-    m_nodeQuat = node.getParent()->getQuatRotation() * node.getQuatRotation();
+    m_nodeQuat = node.getParent()->getTransform().getQuatRotation() * node.getTransform().getQuatRotation();
     m_worldPosition = node.getWorldPosition();
 
     m_dirty = true;

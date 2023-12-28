@@ -1,4 +1,4 @@
-#include "NodeInstance.h"
+#include "NodeTransform.h"
 
 #include <glm/glm.hpp>
 
@@ -20,7 +20,7 @@ namespace {
     glm::mat4 shared_scaleMatrix{ 1.f };
 }
 
-void NodeInstance::updateRootMatrix() noexcept
+void NodeTransform::updateRootMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirty) return;
@@ -52,7 +52,7 @@ void NodeInstance::updateRootMatrix() noexcept
     m_dirtyEntity = true;
 }
 
-void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
+void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 {
     ASSERT_WT();
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
@@ -91,7 +91,7 @@ void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
     m_dirtyEntity = true;
 }
 
-void NodeInstance::updateModelAxis() noexcept
+void NodeTransform::updateModelAxis() noexcept
 {
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
@@ -102,7 +102,7 @@ void NodeInstance::updateModelAxis() noexcept
     m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
 }
 
-void NodeInstance::updateRotationMatrix() noexcept
+void NodeTransform::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;
@@ -110,7 +110,7 @@ void NodeInstance::updateRotationMatrix() noexcept
     m_dirtyRotation = false;
 }
 
-void NodeInstance::updateDegrees() const noexcept
+void NodeTransform::updateDegrees() const noexcept
 {
     ASSERT_WT();
     if (!m_dirtyDegrees) return;
@@ -118,15 +118,13 @@ void NodeInstance::updateDegrees() const noexcept
     m_dirtyDegrees = false;
 }
 
-void NodeInstance::updateEntity(
+void NodeTransform::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
     ASSERT_WT();
     if (!m_dirtyEntity) return;
 
-    entity->setId(m_id);
-    entity->u_flags = m_flags;
     entity->u_materialIndex = m_materialIndex;
     entity->u_shapeIndex = m_shapeIndex;
 

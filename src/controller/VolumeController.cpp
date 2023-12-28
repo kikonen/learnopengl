@@ -25,7 +25,7 @@ bool VolumeController::update(
     }
 
     const auto& modelMatrix = targetNode->getModelMatrix();
-    const auto& maxScale = targetNode->getInstance().getWorldMaxScale();
+    const auto& maxScale = targetNode->getTransform().getWorldMaxScale();
 
     const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getWorldPosition();
 
@@ -39,7 +39,7 @@ bool VolumeController::update(
     const auto volumeScale = maxScale * volumeRadius;
 
     volumeNode.setPosition(pos);
-    volumeNode.setScale(volumeScale);
+    volumeNode.getTransform().setScale(volumeScale);
 
     volumeNode.m_visible = true;
 

@@ -21,7 +21,7 @@ struct EntitySSBO;
 // NOTE KI purposee of this struct is to separate
 // rendering entity and node instance updated, with aim to use separate threads
 //
-struct NodeInstance {
+struct NodeTransform {
     bool m_dirty = true;
     bool m_dirtyRotation = true;
     mutable bool m_dirtyDegrees = true;
@@ -33,9 +33,7 @@ struct NodeInstance {
 
     ki::level_id m_physicsLevel{ (ki::level_id)-1 };
 
-    ki::node_id m_id{ 0 };
     int m_entityIndex{ -1 };
-    ki::size_t_entity_flags m_flags{ 0 };
 
     int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
@@ -65,29 +63,6 @@ struct NodeInstance {
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
-
-    inline ki::node_id getId() const noexcept
-    {
-        return m_id;
-    }
-
-    inline void setId(ki::node_id id) noexcept
-    {
-        m_id = id;
-    }
-
-    inline ki::size_t_entity_flags getFlags() const noexcept
-    {
-        return m_flags;
-    }
-
-    inline void setFlags(ki::size_t_entity_flags flags) noexcept
-    {
-        if (m_flags != flags) {
-            m_flags = flags;
-            m_dirtyEntity = true;
-        }
-    }
 
     inline int getMaterialIndex() const noexcept
     {
@@ -277,7 +252,7 @@ struct NodeInstance {
 
     void updateRootMatrix() noexcept;
     void updateDegrees() const noexcept;
-    void updateModelMatrix(const NodeInstance& parent) noexcept;
+    void updateModelMatrix(const NodeTransform& parent) noexcept;
     void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;
 

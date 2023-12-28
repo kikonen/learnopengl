@@ -160,7 +160,7 @@ const EntitySSBO* EntityRegistry::getEntity(int index) const
     return &m_entries[index];
 }
 
-EntitySSBO* EntityRegistry::updateEntity(int index, bool dirty)
+EntitySSBO* EntityRegistry::modifyEntity(int index, bool dirty)
 {
     if (dirty) markDirty(index);
     return &m_entries[index];

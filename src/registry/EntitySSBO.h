@@ -105,17 +105,5 @@ struct EntitySSBO {
         c.y += adjust.y;
         c.z += adjust.z;
     }
-
-    inline void setId(ki::node_id id) {
-    //    int r = (id & 0x000000FF) >> 0;
-    //    int g = (id & 0x0000FF00) >> 8;
-    //    int b = (id & 0x00FF0000) >> 16;
-
-    //    u_id.r = r / 255.0f;
-    //    u_id.g = g / 255.0f;
-    //    u_id.b = b / 255.0f;
-    //    u_id.a = 1.0f;
-        u_objectID = id;
-    }
 };
 #pragma pack(pop)

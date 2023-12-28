@@ -128,7 +128,8 @@ entities:
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    rot: [270, 0, 0]
+    front: [0, 1, 0]
+    base_rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true

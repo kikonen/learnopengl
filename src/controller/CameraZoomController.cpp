@@ -98,7 +98,7 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& curr = m_node->getDegreesRotation();
+    const auto& curr = m_node->getTransform().getDegreesRotation();
     float currX = curr.x;
     if (currX == 180.f) {
         currX = 0.f;
@@ -122,7 +122,7 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     }
 
     if (changed) {
-        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+        m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 

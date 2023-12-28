@@ -201,8 +201,8 @@ bool MirrorMapRenderer::render(
         const auto& mirrorSize = volumeRadius;
         const auto& eyePos = parentCamera->getWorldPosition();
 
-        const auto& viewFront = closest->getViewFront();
-        const auto& viewUp = closest->getViewUp();
+        const auto& viewFront = closest->getTransform().getViewFront();
+        const auto& viewUp = closest->getTransform().getViewUp();
 
         const auto eyeV = planePos - eyePos;
         const auto dist = glm::length(eyeV);
@@ -346,7 +346,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& viewFront = node->getViewFront();
+        const auto& viewFront = node->getTransform().getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);
 

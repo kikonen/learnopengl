@@ -37,7 +37,7 @@ public:
     int registerEntityRange(const size_t count);
 
     const EntitySSBO* getEntity(int index) const;
-    EntitySSBO* updateEntity(int index, bool dirty);
+    EntitySSBO* modifyEntity(int index, bool dirty);
 
     void markDirty(int index);
 

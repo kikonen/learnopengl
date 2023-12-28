@@ -6,7 +6,7 @@
 
 #include "util/glm_format.h"
 
-#include "model/NodeInstance.h"
+#include "model/NodeTransform.h"
 
 #include "engine/UpdateContext.h"
 
@@ -178,12 +178,12 @@ namespace physics
             const auto& type = *node->m_type;
 
             if (node->m_instancer) {
-                for (auto& instance : node->m_instancer->getInstances()) {
-                    enforceBounds(ctx, type, *node, instance);
+                for (auto& transform : node->m_instancer->getTransforms()) {
+                    enforceBounds(ctx, type, *node, transform);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->getInstance());
+                enforceBounds(ctx, type, *node, node->getTransform());
             }
         };
 
@@ -272,30 +272,30 @@ namespace physics
         const UpdateContext& ctx,
         const MeshType& type,
         Node& node,
-        NodeInstance& instance)
+        NodeTransform& transform)
     {
-        if (instance.m_matrixLevel == instance.m_physicsLevel) return;
-        instance.m_physicsLevel = instance.m_matrixLevel;
+        if (transform.m_matrixLevel == transform.m_physicsLevel) return;
+        transform.m_physicsLevel = transform.m_matrixLevel;
 
-        const auto& worldPos = instance.getWorldPosition();
-        glm::vec3 pos = instance.getPosition();
+        const auto& worldPos = transform.getWorldPosition();
+        glm::vec3 pos = transform.getPosition();
 
         auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
         auto y = surfaceY - parent->getWorldPosition().y;
-        y += instance.getScale().y;
+        y += transform.getScale().y;
         pos.y = y;
 
         //KI_INFO_OUT(fmt::format(
         //    "({},{}, {}) => {}, {}, {}",
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
-        instance.setPosition(pos);
+        transform.setPosition(pos);
 
-        if (instance.m_dirty) {
-            instance.updateModelMatrix(parent->getInstance());
+        if (transform.m_dirty) {
+            transform.updateModelMatrix(parent->getTransform());
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

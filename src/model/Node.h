@@ -10,7 +10,7 @@
 
 #include "audio/size.h"
 
-#include "model/NodeInstance.h"
+#include "model/NodeTransform.h"
 
 class Camera;
 class Light;
@@ -55,7 +55,7 @@ public:
         m_parent = parent;
     }
 
-    inline const std::vector<Node*>& getChildren()
+    inline const std::vector<Node*>& getChildren() const
     {
         return m_children;
     }
@@ -68,109 +68,61 @@ public:
         // TODO KI
     }
 
-    inline NodeInstance& getInstance() noexcept {
-        return m_instance;
+    inline NodeTransform& getTransform() noexcept {
+        return m_transform;
+    }
+
+    inline ki::size_t_entity_flags getEntityFlags() const noexcept {
+         return m_entityFlags;
     }
 
     inline int getEntityIndex() const noexcept {
-        return m_instance.m_entityIndex;
+        return m_transform.m_entityIndex;
     }
 
     inline const glm::vec3& getWorldPosition() const noexcept {
-        return m_instance.getWorldPosition();
-    }
-
-    inline const glm::vec3& getViewUp() const noexcept {
-        return m_instance.getViewUp();
-    }
-
-    inline const glm::vec3& getViewFront() const noexcept {
-        return m_instance.getViewFront();
-    }
-
-    inline const glm::vec3& getViewRight() const noexcept {
-        return m_instance.getViewRight();
+        return m_transform.getWorldPosition();
     }
 
     inline const glm::vec4 getVolume() const noexcept {
-        return m_instance.getVolume();
+        return m_transform.getVolume();
     }
 
     void setVolume(const glm::vec4& volume) {
-        m_instance.setVolume(volume);
+        m_transform.setVolume(volume);
     }
 
     inline const glm::vec3& getFront() const noexcept {
-        return m_instance.getFront();
+        return m_transform.getFront();
     }
 
     void setFront(const glm::vec3& front) noexcept
     {
-        m_instance.setFront(front);
+        m_transform.setFront(front);
     }
 
     inline void setPosition(const glm::vec3& pos) noexcept {
-        m_instance.setPosition(pos);
+        m_transform.setPosition(pos);
     }
 
     inline void adjustPosition(const glm::vec3& adjust) noexcept {
-        m_instance.adjustPosition(adjust);
+        m_transform.adjustPosition(adjust);
     }
 
     inline const glm::vec3 getPosition() const noexcept {
-        return m_instance.getPosition();
-    }
-
-    inline void setBaseRotation(const glm::quat& rot) noexcept {
-        m_instance.setBaseRotation(rot);
-    }
-
-    inline void setQuatRotation(const glm::quat& rot) noexcept {
-        m_instance.setQuatRotation(rot);
-    }
-
-    inline void adjustQuatRotation(const glm::quat& adjust) noexcept {
-        m_instance.adjustQuatRotation(adjust);
-    }
-
-    inline void setDegreesRotation(const glm::vec3& rot) noexcept {
-        m_instance.setDegreesRotation(rot);
-    }
-
-    inline const glm::vec3& getDegreesRotation() const noexcept {
-        return m_instance.getDegreesRotation();
-    }
-
-    inline const glm::quat& getQuatRotation() const noexcept {
-        return m_instance.getQuatRotation();
-    }
-
-    inline void setScale(float scale) noexcept {
-        m_instance.setScale(scale);
-    }
-
-    inline void setScale(const glm::vec3& scale) noexcept {
-        m_instance.setScale(scale);
-    }
-
-    inline void adjustScale(const glm::vec3& adjust) noexcept {
-        m_instance.adjustScale(adjust);
-    }
-
-    inline const glm::vec3 getScale() const noexcept {
-        return m_instance.getScale();
+        return m_transform.getPosition();
     }
 
     inline ki::level_id getParentMatrixLevel() const noexcept {
-        return m_instance.m_parentMatrixLevel;
+        return m_transform.m_parentMatrixLevel;
     }
 
     inline ki::level_id getMatrixLevel() const noexcept {
-        return m_instance.m_matrixLevel;
+        return m_transform.m_matrixLevel;
     }
 
     inline const glm::mat4& getModelMatrix() const noexcept {
-        return m_instance.m_modelMatrix;
+        return m_transform.m_modelMatrix;
     }
 
     void updateModelMatrix() noexcept;
@@ -242,7 +194,8 @@ private:
     Node* m_parent{ nullptr };
     std::vector<Node*> m_children;
 
-    NodeInstance m_instance;
+    NodeTransform m_transform;
+    ki::size_t_entity_flags m_entityFlags{ 0 };
 
     int m_cloneIndex{ 0 };
 

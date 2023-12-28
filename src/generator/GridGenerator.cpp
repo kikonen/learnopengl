@@ -43,29 +43,27 @@ void GridGenerator::updateInstances(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto& parentInstance = container.getParent()->getInstance();
+    const auto& parentTransform = container.getParent()->getTransform();
 
-    const auto& containerInstance = container.getInstance();
+    const auto& containerTransform = container.getTransform();
     int idx = 0;
 
     for (auto z = 0; z < m_zCount; z++) {
         for (auto y = 0; y < m_yCount; y++) {
             for (auto x = 0; x < m_xCount; x++) {
-                auto& instance = m_instances[idx];
+                auto& transform = m_transforms[idx];
 
                 const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
 
-                instance.setPosition(containerInstance.getPosition() + pos);
+                transform.setPosition(containerTransform.getPosition() + pos);
 
-                instance.setId(containerInstance.getId());
-                instance.setFlags(containerInstance.getFlags());
-                instance.setMaterialIndex(containerInstance.getMaterialIndex());
-                instance.setVolume(containerInstance.getVolume());
+                transform.setMaterialIndex(containerTransform.getMaterialIndex());
+                transform.setVolume(containerTransform.getVolume());
 
-                instance.setDegreesRotation(containerInstance.getDegreesRotation());
-                instance.setScale(containerInstance.getScale());
+                transform.setDegreesRotation(containerTransform.getDegreesRotation());
+                transform.setScale(containerTransform.getScale());
 
-                instance.updateModelMatrix(parentInstance);
+                transform.updateModelMatrix(parentTransform);
 
                 idx++;
             }
@@ -86,10 +84,10 @@ void GridGenerator::prepareInstances(
     m_reservedCount = m_zCount * m_xCount * m_yCount;
     m_reservedFirst = entityRegistry.registerEntityRange(m_reservedCount);
 
-    m_instances.reserve(m_reservedCount);
+    m_transforms.reserve(m_reservedCount);
 
     for (int i = 0; i < m_reservedCount; i++) {
-        auto& instance = m_instances.emplace_back();
-        instance.m_entityIndex = m_reservedFirst + i;
+        auto& transform = m_transforms.emplace_back();
+        transform.m_entityIndex = m_reservedFirst + i;
     }
 }
