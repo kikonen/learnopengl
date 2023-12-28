@@ -1,9 +1,8 @@
 ---
 name: One
-viewports:
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common

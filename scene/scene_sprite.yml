@@ -4,8 +4,9 @@ viewports:
 skybox:
   program: g_skybox
   xmaterial: skybox
-  material: skybox/BluePinkNebular
-  swap_faces: true
+  xmaterial: skybox/BluePinkNebular
+  xswap_faces: true
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 lights: {}
 cube_maps: {}
 script:

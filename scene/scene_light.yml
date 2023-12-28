@@ -1,10 +1,8 @@
 ---
 name: Light
-viewports:
 skybox:
   program: g_skybox
-  material: skybox
-lights: {}
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common

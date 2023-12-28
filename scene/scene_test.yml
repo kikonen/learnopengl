@@ -1,8 +1,8 @@
 ---
 name: Test
 skybox:
-  material: skybox
   program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common

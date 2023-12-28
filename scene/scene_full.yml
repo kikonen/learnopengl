@@ -6,8 +6,8 @@ skybox:
   program: g_skybox
   #material: skybox/BluePinkNebular
   #swap_faces: true
-  material: skybox/Skybox_3
-  faces:
+  xmaterial: skybox/Skybox_3
+  xfaces:
     - Left_Tex.png
     - Right_Tex.png
     - Up_Tex.png
