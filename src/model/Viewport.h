@@ -49,9 +49,9 @@ public:
 
     void setTextureId(GLuint textureId);
 
-    void prepareView(const Assets& assets);
+    void prepareRT(const Assets& assets);
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);

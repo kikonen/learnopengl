@@ -56,7 +56,7 @@ int Engine::setup() {
         m_state.track(key);
     }
 
-    m_registry->prepare();
+    m_registry->prepareShared();
 
     return onSetup();
 }

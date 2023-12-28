@@ -106,7 +106,7 @@ void MeshType::prepare(
         registry->m_spriteRegistry->registerSprite(m_sprite);
     }
 
-    m_vao = m_mesh->prepareView(assets, registry);
+    m_vao = m_mesh->prepareRT(assets, registry);
 
     {
         m_mesh->prepareMaterials(m_materialVBO);
@@ -127,7 +127,7 @@ void MeshType::prepare(
     }
 }
 
-void MeshType::prepareView(
+void MeshType::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -138,18 +138,18 @@ void MeshType::prepareView(
 
     //m_privateVAO.create();
 
-    m_vao = m_mesh->prepareView(assets, registry);
+    m_vao = m_mesh->prepareRT(assets, registry);
 
     if (m_program) {
-        m_program->prepareView(assets);
+        m_program->prepareRT(assets);
     }
 
     if (m_depthProgram) {
-        m_depthProgram->prepareView(assets);
+        m_depthProgram->prepareRT(assets);
     }
 
     if (m_customMaterial) {
-        m_customMaterial->prepareView(assets, registry);
+        m_customMaterial->prepareRT(assets, registry);
     }
 }
 

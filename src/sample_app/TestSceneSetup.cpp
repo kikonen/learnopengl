@@ -87,6 +87,6 @@ void TestSceneSetup::setupViewport1()
         false,
         texture->m_textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
-    viewport->prepareView(m_assets);
+    viewport->prepareRT(m_assets);
     m_registry->m_viewportRegistry->addViewport(viewport);
 }

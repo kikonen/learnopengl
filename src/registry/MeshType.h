@@ -94,7 +94,7 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void prepareView(
+    void prepareRT(
         const Assets& assets,
         Registry* registry);
 

@@ -24,11 +24,11 @@ public:
 
     ~MirrorMapRenderer() = default;
 
-    virtual void prepareView(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 

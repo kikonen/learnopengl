@@ -12,7 +12,7 @@ class HdriTexture {
 public:
     bool valid() { return m_texture.valid(); }
 
-    void prepareView(
+    void prepareRT(
         const Assets& assets,
         Registry* registry);
 

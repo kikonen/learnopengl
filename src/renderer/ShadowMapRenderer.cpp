@@ -24,14 +24,14 @@ ShadowMapRenderer::~ShadowMapRenderer()
     }
 }
 
-void ShadowMapRenderer::prepareView(
+void ShadowMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
@@ -50,7 +50,7 @@ void ShadowMapRenderer::prepareView(
     }
 
     for (auto& cascade : m_cascades) {
-        cascade->prepareView(assets, registry);
+        cascade->prepareRT(assets, registry);
     }
 
     m_activeCascade = 0;
@@ -78,7 +78,7 @@ void ShadowMapRenderer::prepareView(
             });
 
         m_debugViewport->setEffectEnabled(false);
-        m_debugViewport->prepareView(assets);
+        m_debugViewport->prepareRT(assets);
     }
 }
 

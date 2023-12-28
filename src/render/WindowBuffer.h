@@ -13,7 +13,7 @@ public:
 
     virtual ~WindowBuffer() override {};
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
 private:
 };

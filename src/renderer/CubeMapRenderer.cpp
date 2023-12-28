@@ -77,14 +77,14 @@ namespace {
 CubeMapRenderer::~CubeMapRenderer()
 {}
 
-void CubeMapRenderer::prepareView(
+void CubeMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -101,12 +101,12 @@ void CubeMapRenderer::prepareView(
 
     {
         m_curr = std::make_unique<DynamicCubeMap>(size);
-        m_curr->prepareView(
+        m_curr->prepareRT(
             assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(size);
-        m_prev->prepareView(
+        m_prev->prepareRT(
             assets, registry,
             false,
             { 0, 1.f, 0, 1.f });
@@ -123,23 +123,23 @@ void CubeMapRenderer::prepareView(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareView(assets, registry);
+        m_waterMapRenderer->prepareRT(assets, registry);
     }
 
     m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepareView(assets, registry);
+        m_mirrorMapRenderer->prepareRT(assets, registry);
     }
 }
 
-void CubeMapRenderer::updateView(const UpdateViewContext& ctx)
+void CubeMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
-    m_waterMapRenderer->updateView(ctx);
-    m_mirrorMapRenderer->updateView(ctx);
+    m_waterMapRenderer->updateRT(ctx);
+    m_mirrorMapRenderer->updateRT(ctx);
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)

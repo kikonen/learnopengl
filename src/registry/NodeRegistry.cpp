@@ -279,7 +279,7 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.body.meshType;
             auto* type = m_registry->m_typeRegistry->modifyType(data.target);
-            type->prepareView(m_assets, m_registry);
+            type->prepareRT(m_assets, m_registry);
         });
 }
 

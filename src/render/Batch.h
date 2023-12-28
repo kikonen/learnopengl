@@ -51,7 +51,7 @@ public:
 
     void bind() noexcept;
 
-    void prepareView(
+    void prepareRT(
         const Assets& assets,
         Registry* registry,
         int entryCount = -1,

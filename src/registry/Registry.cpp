@@ -70,7 +70,7 @@ Registry::~Registry()
 {
 }
 
-void Registry::prepare()
+void Registry::prepareShared()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -84,31 +84,32 @@ void Registry::prepare()
     m_modelRegistry->prepare();
 
     m_viewportRegistry->prepare();
-    m_controllerRegistry->prepare(this);
 
     m_nodeRegistry->prepare(this);
 }
 
-void Registry::prepareWorker()
+void Registry::prepareWT()
 {
     // NOTE KI does not matter which thread does prepare
     m_physicsEngine->prepare();
     m_audioEngine->prepare();
 
+    m_controllerRegistry->prepare(this);
+
     m_commandEngine->prepare(this);
     m_scriptEngine->prepare(m_commandEngine);
 }
 
-void Registry::update(const UpdateContext& ctx)
+void Registry::updateWT(const UpdateContext& ctx)
 {
-    m_controllerRegistry->update(ctx);
-    m_entityRegistry->update(ctx);
+    m_controllerRegistry->updateWT(ctx);
+    m_entityRegistry->updateWT(ctx);
 }
 
-void Registry::updateView(const UpdateViewContext& ctx)
+void Registry::updateRT(const UpdateViewContext& ctx)
 {
-    m_materialRegistry->updateView(ctx);
-    m_spriteRegistry->updateView(ctx);
-    m_modelRegistry->updateView(ctx);
-    m_entityRegistry->updateView(ctx);
+    m_materialRegistry->updateRT(ctx);
+    m_spriteRegistry->updateRT(ctx);
+    m_modelRegistry->updateRT(ctx);
+    m_entityRegistry->updateRT(ctx);
 }

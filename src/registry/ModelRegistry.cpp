@@ -31,9 +31,9 @@ void ModelRegistry::prepare()
     m_vao.prepare();
 }
 
-void ModelRegistry::updateView(const UpdateViewContext& ctx)
+void ModelRegistry::updateRT(const UpdateViewContext& ctx)
 {
-    m_vao.updateView(ctx);
+    m_vao.updateRT(ctx);
 }
 
 std::shared_future<ModelMesh*> ModelRegistry::getMesh(

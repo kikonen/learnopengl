@@ -64,10 +64,10 @@ public:
 
     void destroy();
 
-    void prepareView();
+    void prepareRT();
 
     void update(const UpdateContext& ctx);
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void handleNodeAdded(Node* node);
 

@@ -87,11 +87,11 @@ namespace render {
         NodeDraw();
         ~NodeDraw();
 
-        void prepareView(
+        void prepareRT(
             const Assets& assets,
             Registry* registry);
 
-        void updateView(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx);
 
         void handleNodeAdded(Node* node);
 

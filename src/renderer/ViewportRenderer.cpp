@@ -10,20 +10,20 @@
 #include "registry/ViewportRegistry.h"
 
 
-void ViewportRenderer::prepareView(
+void ViewportRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 }
 
-void ViewportRenderer::updateView(const UpdateViewContext& ctx)
+void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
     for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
-        viewport->updateView(ctx);
+        viewport->updateRT(ctx);
     }
 }
 

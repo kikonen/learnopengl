@@ -24,7 +24,7 @@ public:
 
     bool valid() { return m_cubeTexture.valid(); }
 
-    void prepareView(
+    void prepareRT(
         const Assets& assets,
         Registry* registry,
         int size);

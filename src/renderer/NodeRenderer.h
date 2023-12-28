@@ -15,11 +15,11 @@ public:
 public:
     NodeRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
-    void prepareView(
+    void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void render(
         const RenderContext& ctx,

@@ -46,7 +46,7 @@ const std::vector<Material>& SpriteMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* SpriteMesh::prepareView(
+GLVertexArray* SpriteMesh::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

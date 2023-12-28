@@ -8,17 +8,17 @@
 #include "registry/ProgramRegistry.h"
 
 
-void ParticleRenderer::prepareView(
+void ParticleRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     particleProgram = m_registry->m_programRegistry->getProgram(SHADER_PARTICLE);
-    particleProgram->prepareView(assets);
+    particleProgram->prepareRT(assets);
 }
 
 void ParticleRenderer::render(

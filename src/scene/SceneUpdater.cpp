@@ -54,7 +54,7 @@ bool SceneUpdater::isRunning() const
 
 void SceneUpdater::prepare()
 {
-    m_registry->prepareWorker();
+    m_registry->prepareWT();
 
     auto* dispatcher = m_registry->m_dispatcher;
 
@@ -184,11 +184,20 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
     {
         KI_TIMER("registry");
-        m_registry->update(ctx);
+        m_registry->updateWT(ctx);
     }
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)
 {
     m_registry->m_physicsEngine->handleNodeAdded(node);
+
+    //    auto& type = node->m_type;
+    //
+    //    if (node->m_particleGenerator) {
+    //        if (m_particleSystem) {
+    //            node->m_particleGenerator->setSystem(m_particleSystem.get());
+    //            m_particleGenerators.push_back(node);
+    //        }
+    //    }
 }

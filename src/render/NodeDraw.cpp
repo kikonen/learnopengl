@@ -46,7 +46,7 @@ namespace render {
         m_invisibleNodes.clear();
     }
 
-    void NodeDraw::prepareView(
+    void NodeDraw::prepareRT(
         const Assets& assets,
         Registry* registry)
     {
@@ -58,37 +58,37 @@ namespace render {
         m_textureQuad.prepare();
 
         m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
-        m_deferredProgram->prepareView(assets);
+        m_deferredProgram->prepareRT(assets);
 
         m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
-        m_oitProgram->prepareView(assets);
+        m_oitProgram->prepareRT(assets);
 
         m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
-        m_blendOitProgram->prepareView(assets);
+        m_blendOitProgram->prepareRT(assets);
 
         m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
-        m_bloomProgram->prepareView(assets);
+        m_bloomProgram->prepareRT(assets);
 
         m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
-        m_blendBloomProgram->prepareView(assets);
+        m_blendBloomProgram->prepareRT(assets);
 
         m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
-        m_emissionProgram->prepareView(assets);
+        m_emissionProgram->prepareRT(assets);
 
         m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
-        m_fogProgram->prepareView(assets);
+        m_fogProgram->prepareRT(assets);
 
         m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
-        m_hdrGammaProgram->prepareView(assets);
+        m_hdrGammaProgram->prepareRT(assets);
 
         m_timeElapsedQuery.create();
     }
 
-    void NodeDraw::updateView(const UpdateViewContext& ctx)
+    void NodeDraw::updateRT(const UpdateViewContext& ctx)
     {
-        m_gBuffer.updateView(ctx);
-        m_oitBuffer.updateView(ctx);
-        m_effectBuffer.updateView(ctx);
+        m_gBuffer.updateRT(ctx);
+        m_oitBuffer.updateRT(ctx);
+        m_effectBuffer.updateRT(ctx);
     }
 
     void NodeDraw::handleNodeAdded(Node* node)

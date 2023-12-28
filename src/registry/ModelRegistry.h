@@ -30,7 +30,7 @@ public:
 
     void prepare();
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);

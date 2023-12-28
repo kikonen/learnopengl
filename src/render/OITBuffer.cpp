@@ -16,7 +16,7 @@ void OITBuffer::prepare(
     m_gBuffer = gBuffer;
 }
 
-void OITBuffer::updateView(const UpdateViewContext& ctx)
+void OITBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

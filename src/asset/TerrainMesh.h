@@ -20,7 +20,7 @@ public:
 
     const std::vector<Material>& getMaterials() const override;
 
-    virtual GLVertexArray* prepareView(
+    virtual GLVertexArray* prepareRT(
         const Assets& assets,
         Registry* registry) override;
 

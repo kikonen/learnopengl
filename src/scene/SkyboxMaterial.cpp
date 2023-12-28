@@ -33,7 +33,7 @@ SkyboxMaterial::SkyboxMaterial(
 {
 }
 
-void SkyboxMaterial::prepareView(
+void SkyboxMaterial::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -82,7 +82,7 @@ void SkyboxMaterial::prepareFaces(
         }
 
     }
-    m_cubeMap.prepareView(assets, registry);
+    m_cubeMap.prepareRT(assets, registry);
 }
 
 void SkyboxMaterial::prepareHdri(
@@ -98,7 +98,7 @@ void SkyboxMaterial::prepareHdri(
     }
 
     m_hdriTexture.m_path = filePath;
-    m_hdriTexture.prepareView(assets, registry);
+    m_hdriTexture.prepareRT(assets, registry);
 }
 
 void SkyboxMaterial::prepareSkybox(
@@ -108,7 +108,7 @@ void SkyboxMaterial::prepareSkybox(
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_skyboxMap.m_hdriTextureID = m_hdriTexture;
-    m_skyboxMap.prepareView(assets, registry, assets.skyboxSize);
+    m_skyboxMap.prepareRT(assets, registry, assets.skyboxSize);
 }
 
 void SkyboxMaterial::prepareEnvironment(
@@ -118,7 +118,7 @@ void SkyboxMaterial::prepareEnvironment(
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_environmentMap.m_hdriTextureID = m_hdriTexture;
-    m_environmentMap.prepareView(assets, registry, assets.environmentMapSize);
+    m_environmentMap.prepareRT(assets, registry, assets.environmentMapSize);
 }
 
 void SkyboxMaterial::prepareIrradiance(
@@ -128,7 +128,7 @@ void SkyboxMaterial::prepareIrradiance(
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_irradianceMap.m_envCubeMapID = m_environmentMap;
-    m_irradianceMap.prepareView(assets, registry);
+    m_irradianceMap.prepareRT(assets, registry);
 }
 
 void SkyboxMaterial::preparePrefilter(
@@ -138,7 +138,7 @@ void SkyboxMaterial::preparePrefilter(
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_prefilterMap.m_envCubeMapID = m_environmentMap;
-    m_prefilterMap.prepareView(assets, registry);
+    m_prefilterMap.prepareRT(assets, registry);
 }
 
 void SkyboxMaterial::prepareBrdfLut(
@@ -147,7 +147,7 @@ void SkyboxMaterial::prepareBrdfLut(
 {
     if (!(assets.environmentMapEnabled)) return;
 
-    m_brdfLutTexture.prepareView(assets, registry);
+    m_brdfLutTexture.prepareRT(assets, registry);
 }
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)

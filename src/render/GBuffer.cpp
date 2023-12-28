@@ -15,7 +15,7 @@ void GBuffer::prepare(const Assets& assets)
 {
 }
 
-void GBuffer::updateView(const UpdateViewContext& ctx)
+void GBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

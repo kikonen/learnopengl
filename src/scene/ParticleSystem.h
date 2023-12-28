@@ -18,7 +18,7 @@ class ParticleSystem final
 public:
     ParticleSystem();
 
-    void prepareView(const Assets& assets, Registry* registry);
+    void prepareRT(const Assets& assets, Registry* registry);
     void update(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
     void render(const RenderContext& ctx);

@@ -23,26 +23,26 @@
 #include "kigl/GLStencilMode.h"
 
 
-void NodeRenderer::prepareView(
+void NodeRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
     m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    m_selectionProgram->prepareView(assets);
+    m_selectionProgram->prepareRT(assets);
 
     //m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramPointSprite->prepare(assets);
 }
 
-void NodeRenderer::updateView(const UpdateViewContext& ctx)
+void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

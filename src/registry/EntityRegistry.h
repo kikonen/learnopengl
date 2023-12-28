@@ -26,8 +26,8 @@ public:
     EntityRegistry(const Assets& assets);
 
     void prepare();
-    void update(const UpdateContext& ctx);
-    void updateView(const UpdateViewContext& ctx);
+    void updateWT(const UpdateContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
     void bind(const RenderContext& ctx);
 
     // index of entity

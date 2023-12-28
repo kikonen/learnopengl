@@ -112,7 +112,7 @@ void Scene::destroy()
     KI_INFO("SCENE: destroy");
 }
 
-void Scene::prepareView()
+void Scene::prepareRT()
 {
     auto* dispatcherView = m_registry->m_dispatcherView;
 
@@ -132,46 +132,46 @@ void Scene::prepareView()
 
     auto* registry = m_registry.get();
 
-    m_batch->prepareView(m_assets, registry);
-    m_nodeDraw->prepareView(m_assets, registry);
+    m_batch->prepareRT(m_assets, registry);
+    m_nodeDraw->prepareRT(m_assets, registry);
 
-    m_mainRenderer->prepareView(m_assets, registry);
+    m_mainRenderer->prepareRT(m_assets, registry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepareView(m_assets, registry);
+        m_rearRenderer->prepareRT(m_assets, registry);
     }
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepareView(m_assets, registry);
+        m_rearRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->prepareView(m_assets, registry);
+        m_viewportRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareView(m_assets, registry);
+        m_waterMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepareView(m_assets, registry);
+        m_mirrorMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->prepareView(m_assets, registry);
+        m_cubeMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->prepareView(m_assets, registry);
+        m_shadowMapRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->prepareView(m_assets, registry);
+        m_objectIdRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_normalRenderer->isEnabled()) {
-        m_normalRenderer->prepareView(m_assets, registry);
+        m_normalRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepareView(m_assets, registry);
+        m_particleSystem->prepareRT(m_assets, registry);
     }
 
     {
@@ -205,7 +205,7 @@ void Scene::prepareView()
         m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
         m_mainViewport->setEffect(m_assets.viewportEffect);
 
-        m_mainViewport->prepareView(m_assets);
+        m_mainViewport->prepareRT(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
     }
 
@@ -228,7 +228,7 @@ void Scene::prepareView()
         m_rearViewport->setGammaCorrect(true);
         m_rearViewport->setHardwareGamma(true);
 
-        m_rearViewport->prepareView(m_assets);
+        m_rearViewport->prepareRT(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_rearViewport);
     }
 
@@ -267,31 +267,31 @@ void Scene::update(const UpdateContext& ctx)
     //}
 }
 
-void Scene::updateView(const UpdateViewContext& ctx)
+void Scene::updateRT(const UpdateViewContext& ctx)
 {
-    m_registry->updateView(ctx);
+    m_registry->updateRT(ctx);
     m_renderData->update();
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->updateView(ctx);
+        m_viewportRenderer->updateRT(ctx);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->updateView(ctx);
+        m_objectIdRenderer->updateRT(ctx);
     }
 
-    m_mainRenderer->updateView(ctx);
+    m_mainRenderer->updateRT(ctx);
 
     if (m_assets.showRearView) {
-        m_rearRenderer->updateView(ctx);
+        m_rearRenderer->updateRT(ctx);
     }
 
-    m_cubeMapRenderer->updateView(ctx);
-    m_mirrorMapRenderer->updateView(ctx);
-    m_waterMapRenderer->updateView(ctx);
+    m_cubeMapRenderer->updateRT(ctx);
+    m_mirrorMapRenderer->updateRT(ctx);
+    m_waterMapRenderer->updateRT(ctx);
 
-    m_nodeDraw->updateView(ctx);
-    m_windowBuffer->updateView(ctx);
+    m_nodeDraw->updateRT(ctx);
+    m_windowBuffer->updateRT(ctx);
 }
 
 void Scene::handleNodeAdded(Node* node)
@@ -300,15 +300,6 @@ void Scene::handleNodeAdded(Node* node)
     m_mirrorMapRenderer->handleNodeAdded(node);
     m_waterMapRenderer->handleNodeAdded(node);
     m_cubeMapRenderer->handleNodeAdded(node);
-
-    //    auto& type = node->m_type;
-    //
-    //    if (node->m_particleGenerator) {
-    //        if (m_particleSystem) {
-    //            node->m_particleGenerator->setSystem(m_particleSystem.get());
-    //            m_particleGenerators.push_back(node);
-    //        }
-    //    }
 }
 
 void Scene::bind(const RenderContext& ctx)

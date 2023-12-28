@@ -14,7 +14,7 @@ void EffectBuffer::prepare(
     m_gBuffer = gBuffer;
 }
 
-void EffectBuffer::updateView(const UpdateViewContext& ctx)
+void EffectBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

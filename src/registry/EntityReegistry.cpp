@@ -34,14 +34,14 @@ void EntityRegistry::prepare()
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }
 
-void EntityRegistry::update(const UpdateContext& ctx)
+void EntityRegistry::updateWT(const UpdateContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
 
     processNodes(ctx);
 }
 
-void EntityRegistry::updateView(const UpdateViewContext& ctx)
+void EntityRegistry::updateRT(const UpdateViewContext& ctx)
 {
     //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);

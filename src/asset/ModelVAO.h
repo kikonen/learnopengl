@@ -26,7 +26,7 @@ public:
     // @return VAO for mesh
     GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
 private:
     void prepareVAO(

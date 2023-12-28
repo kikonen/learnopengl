@@ -36,7 +36,7 @@ public:
     virtual const std::vector<Material>& getMaterials() const = 0;
 
     // @return VAO for mesh
-    virtual GLVertexArray* prepareView(
+    virtual GLVertexArray* prepareRT(
         const Assets& assets,
         Registry* registry) = 0;
 

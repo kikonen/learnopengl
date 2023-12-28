@@ -23,7 +23,7 @@ public:
 
     void prepare(const Assets& assets);
 
-    void updateView(const UpdateViewContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
 

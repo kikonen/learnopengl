@@ -33,7 +33,7 @@ void ControllerRegistry::prepare(Registry* registry)
         });
 }
 
-void ControllerRegistry::update(const UpdateContext& ctx)
+void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
     for (const auto& it : m_controllers) {
         Node* node = m_registry->m_nodeRegistry->getNode(it.first);

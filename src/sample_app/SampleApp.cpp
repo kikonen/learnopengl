@@ -142,7 +142,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             size.x,
             size.y);
 
-        scene->updateView(ctx);
+        scene->updateRT(ctx);
     }
 
     RenderContext ctx(
@@ -430,7 +430,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     //    scene->m_registry
     //);
 
-    scene->prepareView();
+    scene->prepareRT();
 
     return scene;
 }

@@ -41,14 +41,14 @@ namespace {
     static const int ATT_ALBEDO_INDEX = 0;
 }
 
-void MirrorMapRenderer::prepareView(
+void MirrorMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareView(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
@@ -90,14 +90,14 @@ void MirrorMapRenderer::prepareView(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepareView(assets);
+        m_reflectionDebugViewport->prepareRT(assets);
     }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareView(assets, registry);
+        m_waterMapRenderer->prepareRT(assets, registry);
     }
 
     if (m_doubleBuffer) {
@@ -105,18 +105,18 @@ void MirrorMapRenderer::prepareView(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->prepareView(assets, registry);
+            m_mirrorMapRenderer->prepareRT(assets, registry);
         }
     }
 }
 
-void MirrorMapRenderer::updateView(const UpdateViewContext& ctx)
+void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
-    m_waterMapRenderer->updateView(ctx);
+    m_waterMapRenderer->updateRT(ctx);
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->updateView(ctx);
+        m_mirrorMapRenderer->updateRT(ctx);
     }
 
     const auto& res = ctx.m_resolution;

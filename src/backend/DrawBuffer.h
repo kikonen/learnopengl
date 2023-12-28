@@ -30,7 +30,7 @@ namespace backend {
             bool useFence,
             bool useSingleFence);
 
-        void prepareView(
+        void prepareRT(
             const Assets& assets,
             Registry* registry,
             int batchCount,

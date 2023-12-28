@@ -50,7 +50,7 @@ public:
 
     void load();
 
-    int prepareView(const Assets& assets);
+    int prepareRT(const Assets& assets);
 
     void bind(GLState& state) const noexcept;
 

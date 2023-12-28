@@ -17,7 +17,7 @@
 #include "CubeRender.h"
 
 
-void IrradianceMap::prepareView(
+void IrradianceMap::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -43,7 +43,7 @@ void IrradianceMap::prepareView(
         GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
-        program->prepareView(assets);
+        program->prepareRT(assets);
 
         program->bind(state);
         state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);

@@ -50,11 +50,11 @@ public:
 
     ~Registry();
 
-    void prepare();
-    void prepareWorker();
+    void prepareShared();
+    void prepareWT();
 
-    void update(const UpdateContext& ctx);
-    void updateView(const UpdateViewContext& ctx);
+    void updateWT(const UpdateContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
 private:
     const Assets& m_assets;

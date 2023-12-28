@@ -12,11 +12,11 @@ public:
     : CustomMaterial("text", false)
     {}
 
-    virtual void prepareView(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    virtual void updateView(
+    virtual void updateRT(
         const RenderContext& ctx) override;
 
     virtual void bindTextures(const RenderContext& ctx) override;

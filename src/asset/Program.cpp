@@ -120,7 +120,7 @@ void Program::load()
     }
 }
 
-int Program::prepareView(const Assets& assets)
+int Program::prepareRT(const Assets& assets)
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;

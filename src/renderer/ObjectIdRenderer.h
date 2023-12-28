@@ -18,11 +18,11 @@ public:
         float screenPosY,
         Viewport* mainViewport);
 
-    virtual void prepareView(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(
+    void updateRT(
         const UpdateViewContext& ctx);
 
     void render(

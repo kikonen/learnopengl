@@ -40,7 +40,7 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
     //ctx.m_state.bindFrameBuffer(0, false);
 }
 
-void DynamicCubeMap::prepareView(
+void DynamicCubeMap::prepareRT(
     const Assets& assets,
     Registry* registry,
     const bool clear,
@@ -53,7 +53,7 @@ void DynamicCubeMap::prepareView(
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.m_internalFormat = GL_RGB16F;
-    m_cubeMap.prepareView(assets, registry);
+    m_cubeMap.prepareRT(assets, registry);
 
     m_valid = true;
 }
