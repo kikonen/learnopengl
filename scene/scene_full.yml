@@ -793,7 +793,7 @@ entities:
     pos: [0, 0, 0]
     scale: 10
     script_file: scripts/anim_planet
-  - xname: Rock origo
+  - name: Rock origo
     id: rock-origo
     parent_id: planet-origo
     type: origo
@@ -806,15 +806,21 @@ entities:
     program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
+    force_material: true
     material_modifier:
-      xreflection: 0.6
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
   - name: Asteroid belt
     parent_id: planet-origo
     model: [rock, rock]
     instanced: true
     program: g_tex
+    force_material: true
     material_modifier:
-      xreflection: 0.4
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
     pos: [0, 0, 0]
     generator:
       type: asteroid_belt

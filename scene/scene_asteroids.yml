@@ -2,7 +2,7 @@
 name: Asteroids
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 lights: {}
 cube_maps: {}
 script:
@@ -32,7 +32,7 @@ entities:
     id: planet-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    script_file: scripts/anim_asteroids_roll
+    xscript_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
     model: [planet, planet]
@@ -44,8 +44,11 @@ entities:
     model: [rock, rock]
     instanced: true
     program: g_tex
+    force_material: true
     material_modifier:
-      reflection: 0.7
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
     pos: [0, 0, 0]
     generator:
       type: asteroid_belt
@@ -63,4 +66,4 @@ entities:
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
-      intensity: 30000
+      intensity: 50000
