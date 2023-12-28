@@ -249,7 +249,7 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& planePos = closest->getWorldPosition();
+    const auto& planePos = closest->getTransform().getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
@@ -407,7 +407,7 @@ Node* WaterMapRenderer::findClosest(
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const glm::vec3 ray = node->getWorldPosition() - cameraPos;
+        const glm::vec3 ray = node->getTransform().getWorldPosition() - cameraPos;
         const float distance = glm::length(ray);
         //glm::vec3 fromCamera = glm::normalize(ray);
         //float dot = glm::dot(fromCamera, cameraDir);

@@ -52,11 +52,12 @@ void TerrainGenerator::update(
     const UpdateContext& ctx,
     Node& container)
 {
-    if (m_containerMatrixLevel == container.getMatrixLevel()) return;
+    auto& transform = container.getTransform();
+    if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
-    container.getTransform().m_dirtyEntity = true;
-    m_containerMatrixLevel = container.getMatrixLevel();
+    transform.m_dirtyEntity = true;
+    m_containerMatrixLevel = transform.getMatrixLevel();
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -217,7 +218,7 @@ void TerrainGenerator::createTiles(
     {
         const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
-        m_node->setVolume(minmax.getVolume());
+        m_node->getTransform().setVolume(minmax.getVolume());
         m_node->m_instancer = this;
     }
 

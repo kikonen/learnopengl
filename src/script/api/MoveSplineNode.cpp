@@ -25,7 +25,7 @@ namespace script
 
         m_end = m_position;
         if (!m_relative) {
-            const auto& nodePosition = m_node->getPosition();
+            const auto& nodePosition = m_node->getTransform().getPosition();
             m_end -= nodePosition;
 
             //if (m_node->m_id == KI_UUID("65ce67c8-3efe-4b04-aaf9-fe384152c547")) {
@@ -68,7 +68,7 @@ namespace script
         }
 
         auto adjust = position - m_previous;
-        m_node->adjustPosition(adjust);
+        m_node->getTransform().adjustPosition(adjust);
         m_previous = position;
 
         //if (m_finished) {

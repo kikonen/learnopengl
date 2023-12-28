@@ -656,7 +656,7 @@ namespace render {
                 for (const auto& node : map.second) {
                     if (!nodeSelector(node)) continue;
 
-                    const float distance = glm::length(viewPos - node->getWorldPosition());
+                    const float distance = glm::length(viewPos - node->getTransform().getWorldPosition());
                     sorted[distance] = node;
                 }
             }

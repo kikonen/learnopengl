@@ -212,7 +212,7 @@ namespace physics
 
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id];
-            const auto level = obj.m_node->getMatrixLevel();
+            const auto level = obj.m_node->getTransform().getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
 
             obj.prepare(m_worldId, m_spaceId);
@@ -244,7 +244,7 @@ namespace physics
         std::map<Node*, bool> prepared;
 
         for (auto* node : m_pendingNodes) {
-            if (node->getMatrixLevel() < 0) continue;
+            if (node->getTransform().getMatrixLevel() < 0) continue;
 
             if (node->m_type->m_flags.staticPhysics) {
                 m_enforceBoundsStatic.push_back(node);
@@ -284,7 +284,7 @@ namespace physics
 
         auto* parent = node.getParent();
 
-        auto y = surfaceY - parent->getWorldPosition().y;
+        auto y = surfaceY - parent->getTransform().getWorldPosition().y;
         y += transform.getScale().y;
         pos.y = y;
 

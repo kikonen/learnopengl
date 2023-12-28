@@ -118,21 +118,22 @@ namespace physics {
 
     float HeightMap::getLevel(const glm::vec3& pos)
     {
-        const auto& originPos = m_origin->getWorldPosition();
+        const auto& transform = m_origin->getTransform();
+        const auto& originPos = transform.getWorldPosition();
 
-        auto diff = pos - originPos;
+        const auto diff = pos - originPos;
         //diff.x += m_worldTileSize / 2.f;
         //diff.z += m_worldTileSize / 2.f;
 
         const float u = diff.x / (float)m_worldSizeU;
         const float v = 1.f - diff.z / (float)m_worldSizeV;
 
-        float h = getTerrainHeight(u, v);
+        const float h = getTerrainHeight(u, v);
 
-        const auto& modelMat = m_origin->getModelMatrix();
+        const auto& modelMat = transform.getModelMatrix();
         const auto p = glm::vec4{ 0.f, h, 0.f, 1.f };
 
-        auto worldPos = modelMat * p;
+        const auto worldPos = modelMat * p;
         return worldPos.y;
     }
 }

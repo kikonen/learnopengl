@@ -197,6 +197,6 @@ int Node::lua_getCloneIndex() const noexcept
 
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
-    const auto& pos = getPosition();
+    const auto& pos = m_transform.getPosition();
     return { pos.x, pos.y, pos.z };
 }

@@ -250,6 +250,18 @@ struct NodeTransform {
         return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
     }
 
+    inline ki::level_id getParentMatrixLevel() const noexcept {
+        return m_parentMatrixLevel;
+    }
+
+    inline ki::level_id getMatrixLevel() const noexcept {
+        return m_matrixLevel;
+    }
+
+    inline const glm::mat4& getModelMatrix() const noexcept {
+        return m_modelMatrix;
+    }
+
     void updateRootMatrix() noexcept;
     void updateDegrees() const noexcept;
     void updateModelMatrix(const NodeTransform& parent) noexcept;

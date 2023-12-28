@@ -174,10 +174,10 @@ bool CubeMapRenderer::render(
     if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getPosition();
-            const auto& centerPos = centerNode->getWorldPosition();
+            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getTransform().getPosition();
+            const auto& centerPos = centerNode->getTransform().getWorldPosition();
             const auto tagPos = centerPos - rootPos;
-            tagNode->setPosition(tagPos);
+            tagNode->getTransform().setPosition(tagPos);
             tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
         }
@@ -203,7 +203,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& center = centerNode->getWorldPosition();
+        const auto& center = centerNode->getTransform().getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
 
@@ -339,7 +339,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const glm::vec3 ray = node->getWorldPosition() - cameraPos;
+        const glm::vec3 ray = node->getTransform().getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
 
         if (false) {

@@ -80,63 +80,18 @@ public:
         return m_transform.m_entityIndex;
     }
 
-    inline const glm::vec3& getWorldPosition() const noexcept {
-        return m_transform.getWorldPosition();
-    }
-
-    inline const glm::vec4 getVolume() const noexcept {
-        return m_transform.getVolume();
-    }
-
-    void setVolume(const glm::vec4& volume) {
-        m_transform.setVolume(volume);
-    }
-
-    inline const glm::vec3& getFront() const noexcept {
-        return m_transform.getFront();
-    }
-
-    void setFront(const glm::vec3& front) noexcept
-    {
-        m_transform.setFront(front);
-    }
-
-    inline void setPosition(const glm::vec3& pos) noexcept {
-        m_transform.setPosition(pos);
-    }
-
-    inline void adjustPosition(const glm::vec3& adjust) noexcept {
-        m_transform.adjustPosition(adjust);
-    }
-
-    inline const glm::vec3 getPosition() const noexcept {
-        return m_transform.getPosition();
-    }
-
-    inline ki::level_id getParentMatrixLevel() const noexcept {
-        return m_transform.m_parentMatrixLevel;
-    }
-
-    inline ki::level_id getMatrixLevel() const noexcept {
-        return m_transform.m_matrixLevel;
-    }
-
-    inline const glm::mat4& getModelMatrix() const noexcept {
-        return m_transform.m_modelMatrix;
-    }
-
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
 
-    inline int getTagMaterialIndex() const { return m_tagMaterialIndex;  }
-    inline int getSelectionMaterialIndex() const { return m_selectionMaterialIndex;  }
+    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex;  }
+    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex;  }
 
     void setTagMaterialIndex(int index);
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    inline int getHighlightIndex(const Assets& assets) const
+    inline int getHighlightIndex(const Assets& assets) const noexcept
     {
         if (assets.showHighlight) {
             if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
@@ -145,7 +100,7 @@ public:
         return -1;
     }
 
-    inline int getCloneIndex() const {
+    inline int getCloneIndex() const noexcept {
         return m_cloneIndex;
     }
 
@@ -153,13 +108,13 @@ public:
         m_cloneIndex = cloneIndex;
     }
 
-    inline bool isHighlighted(const Assets & assets) const
+    inline bool isHighlighted(const Assets & assets) const noexcept
     {
         return getHighlightIndex(assets) != -1;
     }
 
-    inline bool isSelected() { return m_selectionMaterialIndex > -1; }
-    inline bool isTagged() { return m_tagMaterialIndex > -1; }
+    inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
+    inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
 
 public:
     ki::node_id lua_getId() const noexcept;
@@ -200,6 +155,6 @@ private:
 
     int m_cloneIndex{ 0 };
 
-    int m_tagMaterialIndex = -1;
-    int m_selectionMaterialIndex = -1;
+    int m_tagMaterialIndex{ -1 };
+    int m_selectionMaterialIndex{ -1 };
 };

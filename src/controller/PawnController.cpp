@@ -75,7 +75,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
 
     {
         bool changed = false;
-        glm::vec3 pos = m_node->getPosition();
+        glm::vec3 pos = m_node->getTransform().getPosition();
 
         {
             const auto& viewFront = m_node->getTransform().getViewFront();
@@ -118,7 +118,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
         }
 
         if (changed) {
-            m_node->setPosition(pos);
+            m_node->getTransform().setPosition(pos);
         }
     }
 }

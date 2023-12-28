@@ -31,7 +31,7 @@ void GridGenerator::update(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto parentLevel = container.getParent()->getMatrixLevel();
+    const auto parentLevel = container.getParent()->getTransform().getMatrixLevel();
     if (m_containerMatrixLevel == parentLevel) return;
     updateInstances(
         ctx,

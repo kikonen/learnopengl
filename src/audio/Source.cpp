@@ -80,11 +80,11 @@ namespace audio
 
     void Source::updateFromNode()
     {
-        const auto level = m_node ? m_node->getMatrixLevel() : 0;
+        const auto level = m_node ? m_node->getTransform().getMatrixLevel() : 0;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = m_node->getWorldPosition();
+        m_pos = m_node->getTransform().getWorldPosition();
         m_dir = m_node->getTransform().getViewFront();
 
         updatePos();

@@ -623,17 +623,16 @@ namespace loader {
 
         glm::vec3 pos = data.position + clonePositionOffset + tilePositionOffset;
 
-        node->setPosition(pos);
         auto& transform = node->getTransform();
+        transform.setPosition(pos);
         transform.setBaseRotation(util::degreesToQuat(data.baseRotation));
         transform.setQuatRotation(util::degreesToQuat(data.rotation));
         transform.setScale(data.scale);
-
-        node->setFront(data.front);
+        transform.setFront(data.front);
 
         auto mesh = type->getMesh();
         if (mesh) {
-            node->setVolume(mesh->getAABB().getVolume());
+            transform.setVolume(mesh->getAABB().getVolume());
         }
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);

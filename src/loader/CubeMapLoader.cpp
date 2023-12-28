@@ -69,13 +69,14 @@ namespace loader {
         auto node = new Node(type);
         node->m_visible = false;
 
+        auto& transform = node->getTransform();
+
         //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-        node->getTransform().setScale(4.f);
+        transform.setScale(4.f);
 
         // NOTE KI m_radius = 1.73205078
         mesh->prepareVolume();
-
-        node->setVolume(mesh->getAABB().getVolume());
+        transform.setVolume(mesh->getAABB().getVolume());
 
         {
             event::Event evt { event::Type::node_add };

@@ -184,7 +184,7 @@ bool MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const glm::vec3& planePos = closest->getWorldPosition();
+    const glm::vec3& planePos = closest->getTransform().getWorldPosition();
 
     // https://prideout.net/clip-planes
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
@@ -194,7 +194,7 @@ bool MirrorMapRenderer::render(
 
         const auto* parentCamera = parentCtx.m_camera;
 
-        const auto& volume = closest->getVolume();
+        const auto& volume = closest->getTransform().getVolume();
         const glm::vec3 volumeCenter = glm::vec3(volume);
         const float volumeRadius = volume.a;
 
@@ -346,7 +346,8 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& viewFront = node->getTransform().getViewFront();
+        const auto& transform = node->getTransform();
+        const auto& viewFront = transform.getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);
 
@@ -359,7 +360,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
             //const auto eyeV = node->getWorldPosition() - cameraPos;
             //const auto eyeN = glm::normalize(eyeV);
-            const auto planeDist = glm::dot(viewFront, node->getWorldPosition());
+            const auto planeDist = glm::dot(viewFront, transform.getWorldPosition());
             const auto planeDot = glm::dot(viewFront, cameraPos);
             const auto dist = planeDot - planeDist;
 
@@ -375,7 +376,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         //}
 
         {
-            const auto eyeV = node->getWorldPosition() - cameraPos;
+            const auto eyeV = transform.getWorldPosition() - cameraPos;
             const auto dist = glm::length(eyeV);
 
             sorted[dist] = node;

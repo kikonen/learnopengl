@@ -31,17 +31,18 @@ void Camera::update(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const bool nodeChanged = m_nodeLevel != node.getMatrixLevel();
+    const auto& level = node.getTransform().getMatrixLevel();
+    const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
     m_nodeQuat = node.getParent()->getTransform().getQuatRotation() * node.getTransform().getQuatRotation();
-    m_worldPosition = node.getWorldPosition();
+    m_worldPosition = node.getTransform().getWorldPosition();
 
     m_dirty = true;
     m_dirtyView = true;
     m_dirtyProjected = true;
 
-    m_nodeLevel = node.getMatrixLevel();
+    m_nodeLevel = level;
 }
 
 void Camera::setViewport(
