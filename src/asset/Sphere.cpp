@@ -11,20 +11,18 @@
 #include "Sphere.h"
 
 Sphere::Sphere(const glm::vec3& center, float radius) noexcept
-    : Volume{},
-    m_center{ center },
+    : m_center{ center },
     m_radius{ radius }
 {}
 
 Sphere::Sphere(const glm::vec4& worldVolume) noexcept
-    : Volume{},
-    m_center{ worldVolume },
+    : m_center{ worldVolume },
     m_radius{ worldVolume.a },
     m_worldCenter { worldVolume },
     m_worldRadius{ worldVolume.a }
 {}
 
-std::unique_ptr<Volume> Sphere::clone() const noexcept
+std::unique_ptr<Sphere> Sphere::clone() const noexcept
 {
     auto clone = std::make_unique<Sphere>(m_center, m_radius);
     clone->m_worldCenter = m_worldCenter;

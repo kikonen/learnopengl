@@ -8,15 +8,15 @@
 #include "Volume.h"
 
 
-struct Sphere final : public Volume
+struct Sphere final
 {
     Sphere() noexcept = default;
     Sphere(const glm::vec3& center, float radius) noexcept;
     Sphere(const glm::vec4& worldVolume) noexcept;
 
-    virtual ~Sphere() noexcept = default;
+    ~Sphere() noexcept = default;
 
-    virtual std::unique_ptr<Volume> clone() const noexcept override;
+    std::unique_ptr<Sphere> clone() const noexcept;
 
     const std::string str() const noexcept;
 
@@ -56,17 +56,17 @@ struct Sphere final : public Volume
             isOnOrForwardPlane(frustum.farFace);
     };
 
-    virtual void updateVolume(
+    void updateVolume(
         const ki::level_id matrixLevel,
         const glm::mat4& modelMatrix,
-        float maxScale) const noexcept override;
+        float maxScale) const noexcept;
 
 private:
-    glm::vec3 m_center{ 0.f, 0.f, 0.f };
+    glm::vec3 m_center{ 0.f };
     float m_radius{ 0.f };
 
     mutable ki::level_id m_modelMatrixLevel{ (ki::level_id)-1 };
-    mutable glm::vec3 m_worldCenter{ 0.f, 0.f, 0.f };
+    mutable glm::vec3 m_worldCenter{ 0.f };
     mutable float m_worldRadius{ 0.f };
 };
 
