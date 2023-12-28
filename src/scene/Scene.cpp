@@ -489,14 +489,14 @@ const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
-Node* Scene::getActiveCamera() const
+Node* Scene::getActiveCameraNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCamera2();
+    return m_registry->m_nodeRegistry->getActiveCameraNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
-    auto* node = getActiveCamera();
+    auto* node = getActiveCameraNode();
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 

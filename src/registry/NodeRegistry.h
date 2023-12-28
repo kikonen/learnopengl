@@ -78,11 +78,11 @@ public:
     //}
 
     inline Node* getActiveNode() const noexcept { return m_activeNode; }
-    inline Node* getActiveCamera2() const noexcept { return m_activeCamera; }
+    inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode; }
 
-    Node* getNextCamera(Node* srcNode, int offset) const noexcept;
+    Node* getNextCameraNode(Node* srcNode, int offset) const noexcept;
 
-    Node* findDefaultCamera() const;
+    Node* findDefaultCameraNode() const;
 
     inline const Material& getSelectionMaterial() const noexcept {
         return m_selectionMaterial;
@@ -94,7 +94,7 @@ public:
 
 private:
     void setActiveNode(Node* node);
-    void setActiveCamera(Node* node);
+    void setActiveCameraNode(Node* node);
 
     void attachNode(
         Node* node,
@@ -129,10 +129,10 @@ public:
 
     Node* m_skybox{ nullptr };
 
-    NodeVector m_cameras;
+    NodeVector m_cameraNodes;
 
-    NodeVector m_pointLights;
-    NodeVector m_spotLights;
+    NodeVector m_pointLightNodes;
+    NodeVector m_spotLightNodes;
 
 private:
     const Assets& m_assets;
@@ -151,7 +151,7 @@ private:
     std::vector<NodeComponent<Camera>> m_cameraComponents;
 
     Node* m_activeNode{ nullptr };
-    Node* m_activeCamera{ nullptr };
+    Node* m_activeCameraNode{ nullptr };
 
     Material m_selectionMaterial;
 

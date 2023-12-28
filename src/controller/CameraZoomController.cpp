@@ -67,7 +67,7 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            Node* nextCamera = m_registry->m_nodeRegistry->getNextCamera(m_node, offset);
+            Node* nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_node, offset);
 
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };

@@ -128,7 +128,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
     if (!scene) return 0;
 
-    Node* cameraNode = scene->getActiveCamera();
+    Node* cameraNode = scene->getActiveCameraNode();
     if (!cameraNode) return 0;
 
 

@@ -57,12 +57,12 @@ NodeRegistry::~NodeRegistry()
 
     {
         m_activeNode = nullptr;
-        m_activeCamera = nullptr;
-        m_cameras.clear();
+        m_activeCameraNode = nullptr;
+        m_cameraNodes.clear();
 
         m_dirLight = nullptr;
-        m_pointLights.clear();
-        m_spotLights.clear();
+        m_pointLightNodes.clear();
+        m_spotLightNodes.clear();
 
         m_root = nullptr;
     }
@@ -157,8 +157,8 @@ void NodeRegistry::attachListeners()
         event::Type::camera_activate,
         [this](const event::Event& e) {
             auto* node = e.body.node.target;
-            if (!node) node = findDefaultCamera();
-            setActiveCamera(node);
+            if (!node) node = findDefaultCameraNode();
+            setActiveCameraNode(node);
         });
 
     dispatcher->addListener(
@@ -413,9 +413,9 @@ void NodeRegistry::bindNode(
         }
 
         if (node->m_camera) {
-            m_cameras.push_back(node);
-            if (!m_activeCamera && node->m_camera->isDefault()) {
-                m_activeCamera = node;
+            m_cameraNodes.push_back(node);
+            if (!m_activeCameraNode && node->m_camera->isDefault()) {
+                m_activeCameraNode = node;
             }
         }
 
@@ -426,10 +426,10 @@ void NodeRegistry::bindNode(
                 m_dirLight = node;
             }
             else if (light->m_point) {
-                m_pointLights.push_back(node);
+                m_pointLightNodes.push_back(node);
             }
             else if (light->m_spot) {
-                m_spotLights.push_back(node);
+                m_spotLightNodes.push_back(node);
             }
         }
 
@@ -551,34 +551,34 @@ void NodeRegistry::setActiveNode(Node* node)
     m_activeNode = node;
 }
 
-void NodeRegistry::setActiveCamera(Node* node)
+void NodeRegistry::setActiveCameraNode(Node* node)
 {
     if (!node) return;
     if (!node->m_camera) return;
 
-    m_activeCamera = node;
+    m_activeCameraNode = node;
 }
 
-Node* NodeRegistry::getNextCamera(Node* srcNode, int offset) const noexcept
+Node* NodeRegistry::getNextCameraNode(Node* srcNode, int offset) const noexcept
 {
     int index = 0;
-    int size = static_cast<int>(m_cameras.size());
+    int size = static_cast<int>(m_cameraNodes.size());
     for (int i = 0; i < size; i++) {
-        if (m_cameras[i] == srcNode) {
+        if (m_cameraNodes[i] == srcNode) {
             index = std::max(0, (i + offset) % size);
             break;
         }
     }
-    return m_cameras[index];
+    return m_cameraNodes[index];
 }
 
-Node* NodeRegistry::findDefaultCamera() const
+Node* NodeRegistry::findDefaultCameraNode() const
 {
     const auto& it = std::find_if(
-        m_cameras.begin(),
-        m_cameras.end(),
+        m_cameraNodes.begin(),
+        m_cameraNodes.end(),
         [](Node* node) { return node->m_camera->isDefault(); });
-    return it != m_cameras.end() ? *it : nullptr;
+    return it != m_cameraNodes.end() ? *it : nullptr;
 }
 
 void NodeRegistry::bindSkybox(
