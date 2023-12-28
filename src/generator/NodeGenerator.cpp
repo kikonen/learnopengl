@@ -13,14 +13,15 @@
 void NodeGenerator::updateEntity(
     const UpdateContext& ctx,
     Node& container,
-    EntityRegistry* entityRegistry)
+    EntityRegistry* entityRegistry,
+    bool force)
 {
     if (m_activeCount == 0) return;
 
     int entityIndex = m_reservedFirst;
 
     for (auto& transform : m_transforms) {
-        if (!transform.m_dirtyEntity) continue;
+        if (!force && !transform.m_dirtyEntity) continue;
         if (transform.m_entityIndex == -1) continue;
 
         auto* entity = entityRegistry->modifyEntity(transform.m_entityIndex, true);

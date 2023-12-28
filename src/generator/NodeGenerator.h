@@ -37,7 +37,8 @@ public:
     virtual void updateEntity(
         const UpdateContext& ctx,
         Node& container,
-        EntityRegistry* entityRegistry);
+        EntityRegistry* entityRegistry,
+        bool force);
 
     void bindBatch(
         const RenderContext& ctx,

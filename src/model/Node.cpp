@@ -121,6 +121,7 @@ void Node::updateEntity(
 {
     if (m_transform.m_entityIndex != -1)
     {
+        m_transform.m_dirtyEntity |= m_forceUpdateEntity;
         if (m_transform.m_dirtyEntity) {
             auto* entity = entityRegistry->modifyEntity(m_transform.m_entityIndex, true);
 
@@ -133,8 +134,9 @@ void Node::updateEntity(
     }
 
     if (m_generator) {
-        m_generator->updateEntity(ctx, *this, entityRegistry);
+        m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntity);
     }
+    m_forceUpdateEntity = false;
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
@@ -164,6 +166,7 @@ void Node::setTagMaterialIndex(int index)
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
+        m_forceUpdateEntity = true;
     }
 }
 
@@ -172,6 +175,7 @@ void Node::setSelectionMaterialIndex(int index)
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
+        m_forceUpdateEntity = true;
     }
 }
 

@@ -195,6 +195,7 @@ private:
     std::vector<Node*> m_children;
 
     NodeTransform m_transform;
+    bool m_forceUpdateEntity{ true };
     ki::size_t_entity_flags m_entityFlags{ 0 };
 
     int m_cloneIndex{ 0 };
