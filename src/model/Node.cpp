@@ -119,23 +119,24 @@ void Node::updateEntity(
     const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
+    if (!m_forceUpdateEntity && !m_transform.m_dirtyEntity) return;
+
     if (m_transform.m_entityIndex != -1)
     {
         m_transform.m_dirtyEntity |= m_forceUpdateEntity;
-        if (m_transform.m_dirtyEntity) {
-            auto* entity = entityRegistry->modifyEntity(m_transform.m_entityIndex, true);
+        auto* entity = entityRegistry->modifyEntity(m_transform.m_entityIndex, true);
 
-            entity->u_objectID = m_id;
-            entity->u_flags = m_entityFlags;
-            entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
+        entity->u_objectID = m_id;
+        entity->u_flags = m_entityFlags;
+        entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
-            m_transform.updateEntity(ctx, entity);
-        }
+        m_transform.updateEntity(ctx, entity);
     }
 
     if (m_generator) {
         m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntity);
     }
+
     m_forceUpdateEntity = false;
 }
 

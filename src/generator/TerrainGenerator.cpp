@@ -55,6 +55,7 @@ void TerrainGenerator::update(
     if (m_containerMatrixLevel == container.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
+    container.getTransform().m_dirtyEntity = true;
     m_containerMatrixLevel = container.getMatrixLevel();
 }
 

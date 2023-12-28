@@ -296,6 +296,7 @@ namespace physics
 
         if (transform.m_dirty) {
             transform.updateModelMatrix(parent->getTransform());
+            node.getTransform().m_dirtyEntity = true;
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

@@ -46,6 +46,7 @@ void AsteroidBeltGenerator::update(
 
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
+        container.getTransform().m_dirtyEntity = true;
     }
 
     m_updateIndex++;
