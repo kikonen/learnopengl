@@ -15,14 +15,28 @@
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
+namespace {
+    glm::mat4 shared_translateMatrix{ 1.f };
+    glm::mat4 shared_scaleMatrix{ 1.f };
+}
 
 void NodeInstance::updateRootMatrix() noexcept
 {
+    ASSERT_WT();
     if (!m_dirty) return;
 
     updateRotationMatrix();
-    m_modelMatrix = m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-    m_modelScale = m_scaleMatrix;
+
+    shared_translateMatrix[3].x = m_position.x;
+    shared_translateMatrix[3].y = m_position.y;
+    shared_translateMatrix[3].z = m_position.z;
+
+    shared_scaleMatrix[0].x = m_scale.x;
+    shared_scaleMatrix[1].y = m_scale.y;
+    shared_scaleMatrix[2].z = m_scale.z;
+
+    m_modelMatrix = shared_translateMatrix * m_rotationMatrix * shared_scaleMatrix;
+    m_modelScale = m_scale;
 
     {
         const auto& wp = m_modelMatrix[3];
@@ -40,11 +54,25 @@ void NodeInstance::updateRootMatrix() noexcept
 
 void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
 {
+    ASSERT_WT();
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
 
+    // NOTE KI only *SINGLE* thread is allowed to do model updates
+    // => thus can use globally shared temp vars
+    {
+        shared_translateMatrix[3].x = m_position.x;
+        shared_translateMatrix[3].y = m_position.y;
+        shared_translateMatrix[3].z = m_position.z;
+
+        shared_scaleMatrix[0].x = m_scale.x;
+        shared_scaleMatrix[1].y = m_scale.y;
+        shared_scaleMatrix[2].z = m_scale.z;
+    }
+
+    bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
-    m_modelMatrix = parent.m_modelMatrix * m_translateMatrix * m_rotationMatrix * m_scaleMatrix;
-    m_modelScale = parent.m_modelScale * m_scaleMatrix;
+    m_modelMatrix = parent.m_modelMatrix * shared_translateMatrix * m_rotationMatrix * shared_scaleMatrix;
+    m_modelScale = parent.m_modelScale * m_scale;
 
     {
         const auto& wp = m_modelMatrix[3];
@@ -53,7 +81,9 @@ void NodeInstance::updateModelMatrix(const NodeInstance& parent) noexcept
         m_worldPos.z = wp.z;
     }
 
-    updateModelAxis();
+    if (wasDirtyRotation) {
+        updateModelAxis();
+    }
 
     m_dirty = false;
     m_parentMatrixLevel = parent.m_matrixLevel;
@@ -74,7 +104,7 @@ void NodeInstance::updateModelAxis() noexcept
 
 void NodeInstance::updateRotationMatrix() noexcept
 {
-    ASSERT_WORKER();
+    ASSERT_WT();
     if (!m_dirtyRotation) return;
     m_rotationMatrix = glm::toMat4(m_quatRotation * m_baseRotation);
     m_dirtyRotation = false;
@@ -82,7 +112,7 @@ void NodeInstance::updateRotationMatrix() noexcept
 
 void NodeInstance::updateDegrees() const noexcept
 {
-    ASSERT_WORKER();
+    ASSERT_WT();
     if (!m_dirtyDegrees) return;
     m_degreesRotation = util::quatToDegrees(m_quatRotation);
     m_dirtyDegrees = false;
@@ -92,7 +122,7 @@ void NodeInstance::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
-    ASSERT_WORKER();
+    ASSERT_WT();
     if (!m_dirtyEntity) return;
 
     entity->setId(m_id);

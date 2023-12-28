@@ -42,9 +42,8 @@ struct NodeInstance {
 
     Sphere m_volume;
 
-    glm::vec3 m_position{ 0.f, 0.f, 0.f };
-    glm::mat4 m_translateMatrix{ 1.f };
-    glm::mat4 m_scaleMatrix{ 1.f };
+    glm::vec3 m_position{ 0.f };
+    glm::vec3 m_scale{ 1.f };
 
     glm::vec3 m_worldPos{ 0.f };
 
@@ -65,7 +64,7 @@ struct NodeInstance {
     glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
-    glm::mat4 m_modelScale{ 1.f };
+    glm::vec3 m_modelScale{ 1.f };
 
     inline ki::node_id getId() const noexcept
     {
@@ -126,9 +125,9 @@ struct NodeInstance {
         return m_uniformScale;
     }
 
-    inline const glm::vec3 getScale() const noexcept
+    inline const glm::vec3& getScale() const noexcept
     {
-        return { m_scaleMatrix[0][0], m_scaleMatrix[1][1], m_scaleMatrix[2][2] };
+        return m_scale;
     }
 
     inline const glm::vec3& getDegreesRotation() const noexcept
@@ -144,47 +143,28 @@ struct NodeInstance {
 
     inline void setPosition(const glm::vec3& pos) noexcept
     {
-        auto& vec = m_translateMatrix[3];
-        if (vec[0] != pos.x ||
-            vec[1] != pos.y ||
-            vec[2] != pos.z)
-        {
-            vec[0] = pos.x;
-            vec[1] = pos.y;
-            vec[2] = pos.z;
-
-            m_position[0] = m_translateMatrix[3][0];
-            m_position[1] = m_translateMatrix[3][1];
-            m_position[2] = m_translateMatrix[3][2];
-
+        if (m_position != pos) {
+            m_position = pos;
             m_dirty = true;
         }
     }
 
     inline void adjustPosition(const glm::vec3& adjust) noexcept
     {
-        glm::vec3 pos{ adjust };
-        {
-            auto& vec = m_translateMatrix[3];
-            pos.x += vec[0];
-            pos.y += vec[1];
-            pos.z += vec[2];
-        }
-        setPosition(pos);
+        if (adjust.x == 0 && adjust.y == 0 && adjust.z == 0) return;
+        m_position += adjust;
+        m_dirty = true;
     }
 
     inline void setScale(float scale) noexcept
     {
         assert(scale >= 0);
-        if (m_scaleMatrix[0][0] != scale ||
-            m_scaleMatrix[1][1] != scale ||
-            m_scaleMatrix[2][2] != scale)
-        {
-            m_scaleMatrix[0][0] = scale;
-            m_scaleMatrix[1][1] = scale;
-            m_scaleMatrix[2][2] = scale;
+        if (m_scale.x != scale || m_scale.y != scale || m_scale.z != scale) {
+            m_scale.x = scale;
+            m_scale.y = scale;
+            m_scale.z = scale;
 
-            m_uniformScale = m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
+            m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
         }
     }
@@ -192,34 +172,36 @@ struct NodeInstance {
     inline void setScale(const glm::vec3& scale) noexcept
     {
         assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
-        if (m_scaleMatrix[0][0] != scale.x||
-            m_scaleMatrix[1][1] != scale.y ||
-            m_scaleMatrix[2][2] != scale.z)
-        {
-            m_scaleMatrix[0][0] = scale.x;
-            m_scaleMatrix[1][1] = scale.y;
-            m_scaleMatrix[2][2] = scale.z;
 
-            m_uniformScale = m_scaleMatrix[0][0] == m_scaleMatrix[1][1] && m_scaleMatrix[0][0] == m_scaleMatrix[2][2];
+        if (m_scale != scale)
+        {
+            m_scale.x = scale.x;
+            m_scale.y = scale.y;
+            m_scale.z = scale.z;
+
+            m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
         }
     }
 
     inline void adjustScale(const glm::vec3& adjust) noexcept
     {
-        glm::vec3 scale{ adjust };
-        {
-            scale.x += m_scaleMatrix[0][0];
-            scale.y += m_scaleMatrix[1][1];
-            scale.z += m_scaleMatrix[2][2];
-        }
-        setScale(scale);
+        if (adjust.x == 0 && adjust.y == 0 && adjust.z == 0) return;
+        assert(m_scale.x + adjust.x >= 0 && m_scale.y + adjust.y >= 0 && m_scale.z + adjust.z >= 0);
+
+        m_scale.x += adjust.x;
+        m_scale.y += adjust.y;
+        m_scale.z += adjust.z;
+
+        m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
+        m_dirty = true;
     }
 
     void setBaseRotation(const glm::quat& quat) noexcept
     {
         m_baseRotation = glm::normalize(quat);
         m_dirtyRotation = true;
+        m_dirtyDegrees = true;
         m_dirty = true;
     }
 
@@ -283,14 +265,14 @@ struct NodeInstance {
         return m_worldPos;
     }
 
-    inline const glm::vec3 getWorldScale() const noexcept
+    inline const glm::vec3& getWorldScale() const noexcept
     {
-        return { m_modelScale[0][0], m_modelScale[1][1], m_modelScale[2][2] };
+        return m_modelScale;
     }
 
     inline float getWorldMaxScale() const noexcept
     {
-        return std::max(std::max(m_modelScale[0][0], m_modelScale[1][1]), m_modelScale[2][2]);
+        return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
     }
 
     void updateRootMatrix() noexcept;
