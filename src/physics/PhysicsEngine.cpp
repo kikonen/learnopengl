@@ -106,6 +106,11 @@ namespace physics
         dInitODE2(0);
         m_worldId = dWorldCreate();
         m_spaceId = dHashSpaceCreate(0);
+        if (false) {
+            dVector3 center{ 200, 0, 200 };
+            dVector3 extends{ 1024, 100, 1024 };
+            m_spaceId = dQuadTreeSpaceCreate(0, center, extends, 8);
+        }
         m_contactgroupId = dJointGroupCreate(0);
 
         m_gravity = { 0, -2.01f, 0 };

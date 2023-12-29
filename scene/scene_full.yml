@@ -956,13 +956,13 @@ entities:
       alpha: true
       render_back: true
       enforce_bounds: true
-      physics: true
+      xphysics: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
       z_count: 101
       x_step: -3
-      z_step: 2
+      z_step: 3
     physics:
       update: true
       body:
@@ -971,7 +971,7 @@ entities:
         rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [1, 4, 0]
+        size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
   - name: Giant wooden box
     model: quad
