@@ -168,10 +168,10 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 KI_TIMER("physics ");
                 m_registry->m_physicsEngine->update(ctx);
             }
-            {
-                KI_TIMER("bounds-2");
-                m_registry->m_physicsEngine->updateBounds(ctx);
-            }
+            //{
+            //    KI_TIMER("bounds-2");
+            //    m_registry->m_physicsEngine->updateBounds(ctx);
+            //}
             {
                 KI_TIMER("audio   ");
                 m_registry->m_audioEngine->update(ctx);

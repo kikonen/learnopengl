@@ -3,6 +3,7 @@
 #include "asset/Assets.h"
 
 #include "model/NodeTransform.h"
+#include "model/Snapshot.h"
 #include "model/InstancePhysics.h"
 
 #include "kigl/kigl.h"
@@ -57,6 +58,16 @@ public:
         return m_transforms;
     }
 
+    //inline const std::vector<Snapshot>& getSnapshots() noexcept
+    //{
+    //    return m_snapshots;
+    //}
+
+    //inline std::vector<Snapshot>& modifySnapshots() noexcept
+    //{
+    //    return m_snapshots;
+    //}
+
     inline int getActiveFirst() const noexcept {
         return m_activeFirst;
     }
@@ -92,6 +103,6 @@ protected:
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
-    std::vector<NodeTransform> m_snapshots;
+    std::vector<Snapshot> m_snapshots;
     std::vector<InstancePhysics> m_physics;
 };

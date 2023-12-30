@@ -4,14 +4,17 @@
 
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
-#include "render/RenderContext.h"
-#include "render/Batch.h"
-#include "render/FrameBuffer.h"
+
+#include "script/CommandEngine.h"
+#include "script/api/MoveNode.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
 
@@ -174,13 +177,17 @@ bool CubeMapRenderer::render(
     if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getPosition();
+            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
             const auto& centerPos = centerNode->getSnapshot().getWorldPosition();
             const auto tagPos = centerPos - rootPos;
 
-            auto& transform = tagNode->modifySnapshot();
-            transform.setPosition(tagPos);
-            transform.updateModelMatrix(tagNode->getParent()->getSnapshot());
+            m_registry->m_commandEngine->addCommand(
+                std::make_unique<script::MoveNode>(
+                    0,
+                    tagNode->m_id,
+                    0.f,
+                    false,
+                    tagPos));
 
             tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;

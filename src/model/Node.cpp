@@ -163,7 +163,6 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
 
 void Node::updateModelMatrix() noexcept
 {
-    auto oldLevel = m_transform.m_matrixLevel;
     if (m_parent) {
         m_transform.updateModelMatrix(m_parent->getTransform());
     }

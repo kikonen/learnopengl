@@ -125,7 +125,7 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
             std::make_unique<script::RotateNode>(
                 0,
                 m_node->m_id,
-                0,
+                0.f,
                 true,
                 snapshot.getViewRight(),
                 -adjust.x));

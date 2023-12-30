@@ -270,8 +270,4 @@ struct NodeTransform {
     void updateModelMatrix(const NodeTransform& parent) noexcept;
     void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;
-
-    void updateEntity(
-        const UpdateContext& ctx,
-        EntitySSBO* entity);
 };

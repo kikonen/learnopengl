@@ -11,6 +11,7 @@
 #include "audio/size.h"
 
 #include "model/NodeTransform.h"
+#include "model/Snapshot.h"
 
 class Camera;
 class Light;
@@ -78,13 +79,13 @@ public:
 
     void snapshot() noexcept;
 
-    inline const NodeTransform& getSnapshot() const noexcept {
+    inline const Snapshot& getSnapshot() const noexcept {
         return m_snapshot;
     }
 
-    inline NodeTransform& modifySnapshot() noexcept {
-        return m_snapshot;
-    }
+    //inline Snapshot& modifySnapshot() noexcept {
+    //    return m_snapshot;
+    //}
 
     inline ki::size_t_entity_flags getEntityFlags() const noexcept {
          return m_entityFlags;
@@ -167,7 +168,7 @@ private:
     bool m_forceUpdateEntity{ true };
     ki::size_t_entity_flags m_entityFlags{ 0 };
 
-    NodeTransform m_snapshot;
+    Snapshot m_snapshot;
 
     int m_cloneIndex{ 0 };
 

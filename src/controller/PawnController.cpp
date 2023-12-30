@@ -75,7 +75,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
                     std::make_unique<script::RotateNode>(
                         0,
                         m_node->m_id,
-                        0,
+                        0.f,
                         true,
                         snapshot.getViewUp(),
                         adjust.y));
@@ -133,7 +133,7 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
                 std::make_unique<script::MoveNode>(
                     0,
                     m_node->m_id,
-                    0,
+                    0.f,
                     true,
                     adjust));
 
@@ -165,7 +165,7 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
             std::make_unique<script::RotateNode>(
                 0,
                 m_node->m_id,
-                0,
+                0.f,
                 true,
                 snapshot.getViewUp(),
                 adjust.y));

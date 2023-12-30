@@ -52,9 +52,6 @@ void NodeGenerator::updateEntity(
 
         snapshot.updateEntity(ctx, entity);
 
-        //entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
-        //entity->u_highlightIndex = 1;
-
         entityIndex++;
     }
 }
