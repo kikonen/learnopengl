@@ -47,7 +47,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_modelScale{ o.m_modelScale }
 {
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
-    m_volume = o.m_volume.getWorldVolume();
+    o.m_volume.storeWorldVolume(m_volume);
 }
 
 Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
@@ -61,7 +61,7 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_shapeIndex = o.m_shapeIndex;
 
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
-    m_volume = o.m_volume.getWorldVolume();
+    o.m_volume.storeWorldVolume(m_volume);
 
     m_worldPos = o.m_worldPos;
     m_quatRotation = o.m_quatRotation;

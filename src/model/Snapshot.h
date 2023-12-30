@@ -23,9 +23,9 @@ struct Snapshot {
 
     Snapshot& operator=(const NodeTransform& o) noexcept;
 
-    mutable bool m_dirtyDegrees : 1 {true};
-    bool m_dirtyEntity : 1 {true};
-    bool m_uniformScale : 1 {false};
+    mutable bool m_dirtyDegrees{ true };
+    bool m_dirtyEntity{ true };
+    bool m_uniformScale { false };
 
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 

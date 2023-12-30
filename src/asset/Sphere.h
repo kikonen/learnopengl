@@ -28,6 +28,13 @@ struct Sphere final
         return { m_worldCenter, m_worldRadius };
     }
 
+    inline void storeWorldVolume(glm::vec4& volume) const noexcept {
+        volume.x = m_worldCenter.x;
+        volume.y = m_worldCenter.y;
+        volume.z = m_worldCenter.z;
+        volume.a = m_worldRadius;
+    }
+
     inline const glm::vec3& getCenter() const noexcept {
         return m_center;
     }
