@@ -49,7 +49,7 @@ namespace script
         }
 
         auto adjust = scale - m_previous;
-        m_node->getTransform().adjustScale(adjust);
+        m_node->modifyTransform().adjustScale(adjust);
         m_previous = scale;
     }
 }

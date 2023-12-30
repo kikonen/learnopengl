@@ -107,6 +107,17 @@ void Node::updateWT(
     }
 }
 
+void Node::snapshot() noexcept {
+    if (m_transform.m_dirtyEntity) {
+        m_snapshot = m_transform;
+        m_transform.m_dirtyEntity = false;
+    }
+
+    if (m_generator) {
+        m_generator->snapshot();
+    }
+}
+
 bool Node::isEntity() const noexcept
 {
     return m_type->getMesh() &&

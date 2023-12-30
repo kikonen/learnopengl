@@ -183,12 +183,12 @@ namespace physics
             const auto& type = *node->m_type;
 
             if (node->m_instancer) {
-                for (auto& transform : node->m_instancer->getTransforms()) {
+                for (auto& transform : node->m_instancer->modifyTransforms()) {
                     enforceBounds(ctx, type, *node, transform);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->getTransform());
+                enforceBounds(ctx, type, *node, node->modifyTransform());
             }
         };
 
@@ -301,7 +301,7 @@ namespace physics
 
         if (transform.m_dirty) {
             transform.updateModelMatrix(parent->getTransform());
-            node.getTransform().m_dirtyEntity = true;
+            node.modifyTransform().m_dirtyEntity = true;
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

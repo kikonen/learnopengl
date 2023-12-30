@@ -623,7 +623,7 @@ namespace loader {
 
         glm::vec3 pos = data.position + clonePositionOffset + tilePositionOffset;
 
-        auto& transform = node->getTransform();
+        auto& transform = node->modifyTransform();
         transform.setPosition(pos);
         transform.setBaseRotation(util::degreesToQuat(data.baseRotation));
         transform.setQuatRotation(util::degreesToQuat(data.rotation));

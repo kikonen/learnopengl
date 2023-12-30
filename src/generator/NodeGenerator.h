@@ -34,6 +34,8 @@ public:
         const UpdateContext& ctx,
         Node& container) {}
 
+    void snapshot();
+
     virtual void updateEntity(
         const UpdateContext& ctx,
         Node& container,
@@ -45,7 +47,12 @@ public:
         Node& container,
         Batch& batch);
 
-    inline std::vector<NodeTransform>& getTransforms() noexcept
+    inline const std::vector<NodeTransform>& getTransforms() noexcept
+    {
+        return m_transforms;
+    }
+
+    inline std::vector<NodeTransform>& modifyTransforms() noexcept
     {
         return m_transforms;
     }
@@ -85,5 +92,6 @@ protected:
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
+    std::vector<NodeTransform> m_snapshots;
     std::vector<InstancePhysics> m_physics;
 };

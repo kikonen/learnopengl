@@ -177,7 +177,11 @@ bool CubeMapRenderer::render(
             const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getPosition();
             const auto& centerPos = centerNode->getSnapshot().getWorldPosition();
             const auto tagPos = centerPos - rootPos;
-            tagNode->getTransform().setPosition(tagPos);
+
+            auto& transform = tagNode->modifySnapshot();
+            transform.setPosition(tagPos);
+            transform.updateModelMatrix(tagNode->getParent()->getSnapshot());
+
             tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
         }

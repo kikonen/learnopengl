@@ -52,7 +52,7 @@ void TerrainGenerator::update(
     const UpdateContext& ctx,
     Node& container)
 {
-    auto& transform = container.getTransform();
+    auto& transform = container.modifyTransform();
     if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
@@ -218,10 +218,9 @@ void TerrainGenerator::createTiles(
     {
         const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
-        m_node->getTransform().setVolume(minmax.getVolume());
+        m_node->modifyTransform().setVolume(minmax.getVolume());
         m_node->m_instancer = this;
     }
-
 
     {
         event::Event evt { event::Type::node_add };

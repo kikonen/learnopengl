@@ -107,6 +107,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
+
     for (auto& node : m_allNodes) {
         node->snapshot();
     }
@@ -436,6 +437,8 @@ void NodeRegistry::bindNode(
     node->prepare(m_assets, m_registry);
 
     {
+        std::lock_guard<std::mutex> lock(m_lock);
+
         //KI_INFO_OUT(fmt::format(
         //    "REGISTER: {}-{}",
         //    program ? program->m_key : "<na>", programKey.str()));

@@ -7,6 +7,7 @@
 
 #include "script/CommandEngine.h"
 #include "script/api/RotateNode.h"
+#include "script/api/MoveNode.h"
 
 #include "engine/UpdateContext.h"
 
@@ -92,50 +93,59 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
 
     {
         bool changed = false;
-        glm::vec3 pos = m_node->getTransform().getPosition();
+        glm::vec3 adjust{ 0.f };
 
         {
-            const auto& viewFront = m_node->getTransform().getViewFront();
+            const auto& viewFront = snapshot.getViewFront();
 
             if (input->isKeyDown(Key::FORWARD)) {
-                pos += viewFront * dt * moveSpeed.z;
+                adjust += viewFront * dt * moveSpeed.z;
                 changed = true;
             }
             if (input->isKeyDown(Key::BACKWARD)) {
-                pos -= viewFront * dt * moveSpeed.z;
+                adjust -= viewFront * dt * moveSpeed.z;
                 changed = true;
             }
         }
 
         {
-            const auto& viewRight = m_node->getTransform().getViewRight();
+            const auto& viewRight = snapshot.getViewRight();
 
             if (input->isKeyDown(Key::LEFT)) {
-                pos -= viewRight * dt * moveSpeed.x;
+                adjust -= viewRight * dt * moveSpeed.x;
                 changed = true;
             }
             if (input->isKeyDown(Key::RIGHT)) {
-                pos += viewRight * dt * moveSpeed.x;
+                adjust += viewRight * dt * moveSpeed.x;
                 changed = true;
             }
         }
 
         {
-            const auto& viewUp = m_node->getTransform().getViewUp();
+            const auto& viewUp = snapshot.getViewUp();
 
             if (input->isKeyDown(Key::UP)) {
-                pos += viewUp * dt * moveSpeed.y;
+                adjust += viewUp * dt * moveSpeed.y;
                 changed = true;
             }
             if (input->isKeyDown(Key::DOWN)) {
-                pos -= viewUp * dt * moveSpeed.y;
+                adjust -= viewUp * dt * moveSpeed.y;
                 changed = true;
             }
 
         }
 
         if (changed) {
-            m_node->getTransform().setPosition(pos);
+            m_registry->m_commandEngine->addCommand(
+                std::make_unique<script::MoveNode>(
+                    0,
+                    m_node->m_id,
+                    0,
+                    true,
+                    adjust));
+
+            //glm::vec3 adjust = snapshot.getPosition();
+            //m_node->getTransform().setPosition(pos);
         }
     }
 }

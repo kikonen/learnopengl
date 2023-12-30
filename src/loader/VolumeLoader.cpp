@@ -73,7 +73,9 @@ namespace loader {
         // NOTE KI m_radius = 1.73205078
         mesh->prepareVolume();
 
-        node->getTransform().setVolume(mesh->getAABB().getVolume());
+        auto& transform = node->modifyTransform();
+
+        transform.setVolume(mesh->getAABB().getVolume());
 
         {
             event::Event evt { event::Type::node_add };

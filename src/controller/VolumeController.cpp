@@ -39,8 +39,8 @@ bool VolumeController::update(
 
     const auto volumeScale = maxScale * volumeRadius;
 
-    volumeNode.getTransform().setPosition(pos);
-    volumeNode.getTransform().setScale(volumeScale);
+    volumeNode.modifySnapshot().setPosition(pos);
+    volumeNode.modifySnapshot().setScale(volumeScale);
 
     volumeNode.m_visible = true;
 

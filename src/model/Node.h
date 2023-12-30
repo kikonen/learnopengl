@@ -68,15 +68,21 @@ public:
         // TODO KI
     }
 
-    inline NodeTransform& getTransform() noexcept {
+    inline const NodeTransform& getTransform() const noexcept {
         return m_transform;
     }
 
-    inline void snapshot() noexcept {
-        m_snapshot = m_transform;
+    inline NodeTransform& modifyTransform() noexcept {
+        return m_transform;
     }
 
+    void snapshot() noexcept;
+
     inline const NodeTransform& getSnapshot() const noexcept {
+        return m_snapshot;
+    }
+
+    inline NodeTransform& modifySnapshot() noexcept {
         return m_snapshot;
     }
 

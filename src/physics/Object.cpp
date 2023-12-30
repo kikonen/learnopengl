@@ -229,7 +229,7 @@ namespace physics
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        auto& transform = m_node->getTransform();
+        auto& transform = m_node->modifyTransform();
         transform.setPosition(pos);
         transform.setQuatRotation(rotBase);
     }

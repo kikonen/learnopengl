@@ -46,7 +46,7 @@ void AsteroidBeltGenerator::update(
 
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
-        container.getTransform().m_dirtyEntity = true;
+        container.modifyTransform().m_dirtyEntity = true;
     }
 
     m_updateIndex++;
@@ -85,7 +85,7 @@ void AsteroidBeltGenerator::createAsteroids(
     const Mesh* mesh = container.m_type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
-    const auto& containerTransform = container.getTransform();
+    auto& containerTransform = container.modifyTransform();
 
     m_reservedCount = m_asteroidCount;
     m_reservedFirst = registry->m_entityRegistry->registerEntityRange(m_reservedCount);
@@ -103,7 +103,7 @@ void AsteroidBeltGenerator::createAsteroids(
     }
 
     initAsteroids(assets, registry, container);
-    container.getTransform().setVolume(calculateVolume());
+    containerTransform.setVolume(calculateVolume());
 }
 
 void AsteroidBeltGenerator::initAsteroids(

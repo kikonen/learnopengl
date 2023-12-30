@@ -68,7 +68,7 @@ namespace script
         }
 
         auto adjust = position - m_previous;
-        m_node->getTransform().adjustPosition(adjust);
+        m_node->modifyTransform().adjustPosition(adjust);
         m_previous = position;
 
         //if (m_finished) {

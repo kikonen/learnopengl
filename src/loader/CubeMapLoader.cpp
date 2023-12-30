@@ -69,7 +69,7 @@ namespace loader {
         auto node = new Node(type);
         node->m_visible = false;
 
-        auto& transform = node->getTransform();
+        auto& transform = node->modifyTransform();
 
         //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
         transform.setScale(4.f);

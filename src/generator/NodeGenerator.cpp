@@ -10,6 +10,26 @@
 
 #include "registry/EntityRegistry.h"
 
+void NodeGenerator::snapshot()
+{
+    const auto diff = m_transforms.size() - m_snapshots.size();
+    bool force = false;
+    if (diff != 0) {
+        force = true;
+        m_snapshots.reserve(m_transforms.size());
+        for (int i = 0; i < diff; i++) {
+            m_snapshots.emplace_back();
+        }
+    }
+
+    for (size_t i = 0; i < m_transforms.size(); i++) {
+        auto& transform = m_transforms[i];
+        if (!force && !transform.m_dirtyEntity) continue;
+        m_snapshots[i] = transform;
+        transform.m_dirtyEntity = false;
+    }
+}
+
 void NodeGenerator::updateEntity(
     const UpdateContext& ctx,
     Node& container,
@@ -20,17 +40,17 @@ void NodeGenerator::updateEntity(
 
     int entityIndex = m_reservedFirst;
 
-    for (auto& transform : m_transforms) {
-        if (!force && !transform.m_dirtyEntity) continue;
-        if (transform.m_entityIndex == -1) continue;
+    for (auto& snapshot : m_snapshots) {
+        if (!force && !snapshot.m_dirtyEntity) continue;
+        if (snapshot.m_entityIndex == -1) continue;
 
-        auto* entity = entityRegistry->modifyEntity(transform.m_entityIndex, true);
+        auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = container.m_id;
         entity->u_flags = container.getEntityFlags();
         entity->u_highlightIndex = container.getHighlightIndex(ctx.m_assets);
 
-        transform.updateEntity(ctx, entity);
+        snapshot.updateEntity(ctx, entity);
 
         //entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
         //entity->u_highlightIndex = 1;

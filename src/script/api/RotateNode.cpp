@@ -68,7 +68,7 @@ namespace script
 
             const auto rot = util::axisRadiansToQuat(m_relativeAxis, radians);
 
-            m_node->getTransform().setQuatRotation(rot * m_base);
+            m_node->modifyTransform().setQuatRotation(rot * m_base);
         }
     }
 }
