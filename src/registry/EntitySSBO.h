@@ -1,10 +1,12 @@
 #pragma once
 
-#include "ki/size.h"
-#include "kigl/kigl.h"
+#include <algorithm>
 
 #include <glm/glm.hpp>
-#include <algorithm>
+#include <glm/gtc/matrix_inverse.hpp>
+
+#include "ki/size.h"
+#include "kigl/kigl.h"
 
 constexpr unsigned int ENTITY_DRAW_ELEMENT_BIT = 1;
 constexpr unsigned int ENTITY_DRAW_ARRAY_BIT = 2;
@@ -91,19 +93,35 @@ struct EntitySSBO {
             u_normalMatrix1 = mat[1];
             u_normalMatrix2 = mat[2];
         }
+        else {
+            // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+            // https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
+            // ???
+            // "Then, for each scene object, compute their world space transforms,
+            // and normal matrices. Tangent space (TBN) matrices can be computed
+            // in the first pass shader.
+            //
+            // The normal matrix is the inverse transpose of the world space transform
+            // (not object space to view space, as you would in a simpler forward rendering pipeline)."
+            // ???
+            auto normalMat = glm::inverseTranspose(mat);
+            u_normalMatrix0 = normalMat[0];
+            u_normalMatrix1 = normalMat[1];
+            u_normalMatrix2 = normalMat[2];
+        }
     }
 
-    inline void setNormalMatrix(const glm::mat3& mat) {
-        u_normalMatrix0 = mat[0];
-        u_normalMatrix1 = mat[1];
-        u_normalMatrix2 = mat[2];
-    }
+    //inline void setNormalMatrix(const glm::mat3& mat) {
+    //    u_normalMatrix0 = mat[0];
+    //    u_normalMatrix1 = mat[1];
+    //    u_normalMatrix2 = mat[2];
+    //}
 
-    inline void adjustPosition(const glm::vec3 adjust) {
-        glm::vec4& c = u_modelMatrix[3];
-        c.x += adjust.x;
-        c.y += adjust.y;
-        c.z += adjust.z;
-    }
+    //inline void adjustPosition(const glm::vec3 adjust) {
+    //    glm::vec4& c = u_modelMatrix[3];
+    //    c.x += adjust.x;
+    //    c.y += adjust.y;
+    //    c.z += adjust.z;
+    //}
 };
 #pragma pack(pop)
