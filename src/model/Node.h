@@ -169,6 +169,7 @@ private:
     ki::size_t_entity_flags m_entityFlags{ 0 };
 
     Snapshot m_snapshot;
+    bool m_forceUpdateSnapshot{ true };
 
     int m_cloneIndex{ 0 };
 

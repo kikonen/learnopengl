@@ -10,12 +10,11 @@
 
 #include "registry/EntityRegistry.h"
 
-void NodeGenerator::snapshot()
+void NodeGenerator::snapshot(bool force)
 {
     const auto diff = m_transforms.size() - m_snapshots.size();
-    bool force = false;
     if (diff != 0) {
-        force = true;
+        force |= true;
         m_snapshots.reserve(m_transforms.size());
         for (int i = 0; i < diff; i++) {
             m_snapshots.emplace_back();
@@ -24,6 +23,7 @@ void NodeGenerator::snapshot()
 
     for (size_t i = 0; i < m_transforms.size(); i++) {
         auto& transform = m_transforms[i];
+        assert(!transform.m_dirty);
         if (!force && !transform.m_dirtySnapshot) continue;
         m_snapshots[i] = transform;
         transform.m_dirtySnapshot = false;

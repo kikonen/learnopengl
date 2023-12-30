@@ -227,19 +227,23 @@ struct NodeTransform {
     }
 
     inline const glm::vec3& getViewUp() const noexcept {
+        assert(!m_dirty);
         return m_viewUp;
     }
 
     inline const glm::vec3& getViewFront() const noexcept {
+        assert(!m_dirty);
         return m_viewFront;
     }
 
     inline const glm::vec3& getViewRight() const noexcept {
+        assert(!m_dirty);
         return m_viewRight;
     }
 
     inline const glm::vec3& getWorldPosition() const noexcept
     {
+        assert(!m_dirty);
         return m_worldPos;
     }
 
@@ -250,6 +254,7 @@ struct NodeTransform {
 
     inline float getWorldMaxScale() const noexcept
     {
+        assert(!m_dirty);
         return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
     }
 
@@ -262,6 +267,7 @@ struct NodeTransform {
     }
 
     inline const glm::mat4& getModelMatrix() const noexcept {
+        assert(!m_dirty);
         return m_modelMatrix;
     }
 

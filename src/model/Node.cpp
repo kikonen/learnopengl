@@ -108,14 +108,21 @@ void Node::updateWT(
 }
 
 void Node::snapshot() noexcept {
-    if (m_transform.m_dirtySnapshot) {
-        m_snapshot = m_transform;
-        m_transform.m_dirtySnapshot = false;
+    auto& transform = m_transform;
+    if (!m_forceUpdateSnapshot && !transform.m_dirtySnapshot) return;
+
+    {
+        assert(!transform.m_dirty);
+        transform.m_dirtySnapshot |= m_forceUpdateSnapshot;
+        m_snapshot = transform;
     }
 
     if (m_generator) {
-        m_generator->snapshot();
+        m_generator->snapshot(m_forceUpdateSnapshot);
     }
+
+    m_transform.m_dirtySnapshot = false;
+    m_forceUpdateSnapshot = false;
 }
 
 bool Node::isEntity() const noexcept
@@ -178,6 +185,7 @@ void Node::setTagMaterialIndex(int index)
         m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
         m_forceUpdateEntity = true;
+        m_forceUpdateSnapshot = true;
     }
 }
 
@@ -188,6 +196,7 @@ void Node::setSelectionMaterialIndex(int index)
         m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
         m_forceUpdateEntity = true;
+        m_forceUpdateSnapshot = true;
     }
 }
 

@@ -232,5 +232,6 @@ namespace physics
         auto& transform = m_node->modifyTransform();
         transform.setPosition(pos);
         transform.setQuatRotation(rotBase);
+        //m_node->updateModelMatrix();
     }
 }

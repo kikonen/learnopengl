@@ -35,7 +35,7 @@ public:
         const UpdateContext& ctx,
         Node& container) {}
 
-    void snapshot();
+    void snapshot(bool force);
 
     virtual void updateEntity(
         const UpdateContext& ctx,

@@ -102,15 +102,15 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     if (m_root) {
         m_root->updateWT(ctx);
     }
+
+    for (auto& node : m_allNodes) {
+        node->snapshot();
+    }
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
-
-    for (auto& node : m_allNodes) {
-        node->snapshot();
-    }
 
     for (auto& node : m_cameraNodes) {
         node->m_camera->updateRT(ctx, *node);
