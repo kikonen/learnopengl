@@ -62,11 +62,11 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
             glm::vec3 adjust{ 0.f };
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
-                adjust.y = rotateSpeed.y * dt;
+                adjust.y += rotateSpeed.y * dt;
                 changed = true;
             }
             if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-                adjust.y = -rotateSpeed.y * dt;
+                adjust.y += -rotateSpeed.y * dt;
                 changed = true;
             }
 
