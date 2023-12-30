@@ -285,7 +285,7 @@ namespace physics
         const auto& worldPos = transform.getWorldPosition();
         glm::vec3 pos = transform.getPosition();
 
-        auto surfaceY = getWorldSurfaceLevel(worldPos);
+        const auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
@@ -342,11 +342,11 @@ namespace physics
         float min = 0.f;
         bool hit = false;
 
-        for (auto& surface : m_heightMaps) {
+        for (const auto& surface : m_heightMaps) {
             if (!surface.m_id) continue;
             //if (!surface->withinBounds(pos)) continue;
 
-            float level = surface.getLevel(pos);
+            const float level = surface.getLevel(pos);
             if (!hit || level > min) min = level;
             hit = true;
         }

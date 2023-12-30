@@ -71,7 +71,7 @@ struct EntitySSBO {
     // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
     // Scale AND Rotation is applied!
     inline float getMaxScale() const {
-        return std::max(std::max(u_worldScale[0], u_worldScale[1]), u_worldScale[2]);
+        return std::max(std::max(u_worldScale.x, u_worldScale.y), u_worldScale.z);
     }
 
     inline const glm::vec4& getWorldPosition() const {

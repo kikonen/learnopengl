@@ -3,13 +3,13 @@
 #include <glm/glm.hpp>
 
 #include "size.h"
-#include "Surface.h"
+#include "asset/AABB.h"
 
 class Image;
 class Node;
 
 namespace physics {
-    class HeightMap : public Surface {
+    class HeightMap {
     public:
         HeightMap();
         HeightMap(HeightMap&& o);
@@ -18,13 +18,24 @@ namespace physics {
 
         void prepare(Image* image);
 
-        virtual float getLevel(const glm::vec3& pos) override;
+        const AABB& getAABB() const noexcept { return m_aabb; }
+        void setAABB(const AABB& aabb) { m_aabb = aabb; }
+
+        inline bool withinBounds(const glm::vec3 pos) const noexcept
+        {
+            return pos.x >= m_aabb.m_min.x &&
+                pos.x <= m_aabb.m_max.x &&
+                pos.y >= m_aabb.m_min.y &&
+                pos.y <= m_aabb.m_max.y;
+        }
+
+        float getLevel(const glm::vec3& pos) const noexcept;
 
         // Using texture coordinates
         //
         // @param u [0, 1]
         // @param v [0, 1]
-        float getTerrainHeight(float u, float v);
+        float getTerrainHeight(float u, float v) const noexcept;
 
     public:
         physics::height_map_id m_id{ 0 };
@@ -45,6 +56,8 @@ namespace physics {
         int m_width{ 0 };
 
         float* m_heights{ nullptr };
+
+        AABB m_aabb{};
     };
 
 }

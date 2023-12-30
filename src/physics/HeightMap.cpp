@@ -83,7 +83,7 @@ namespace physics {
         m_height = imageH;
     }
 
-    float HeightMap::getTerrainHeight(float u, float v)
+    float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         u = std::clamp(u, 0.f, 1.f);
         v = std::clamp(v, 0.f, 1.f);
@@ -91,8 +91,8 @@ namespace physics {
         const float baseX = m_width * u;
         const float baseY = m_height * (1.f - v);
 
-        float total = 0.0;
-        float bias = 2.5;
+        float total = 0.f;
+        float bias = 2.5f;
 
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -116,7 +116,7 @@ namespace physics {
         return total / 9.0f;
     }
 
-    float HeightMap::getLevel(const glm::vec3& pos)
+    float HeightMap::getLevel(const glm::vec3& pos) const noexcept
     {
         const auto& transform = m_origin->getTransform();
         const auto& originPos = transform.getWorldPosition();

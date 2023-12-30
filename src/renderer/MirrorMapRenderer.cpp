@@ -184,61 +184,67 @@ bool MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const glm::vec3& planePos = closest->getTransform().getWorldPosition();
-
     // https://prideout.net/clip-planes
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+        auto& camera = m_cameras[0];
+        float nearPlane = 0.f;
+        {
+            const auto& transform = closest->getTransform();
+            const glm::vec3& planePos = transform.getWorldPosition();
 
-        const auto* parentCamera = parentCtx.m_camera;
+            const auto* parentCamera = parentCtx.m_camera;
 
-        const auto& volume = closest->getTransform().getVolume();
-        const glm::vec3 volumeCenter = glm::vec3(volume);
-        const float volumeRadius = volume.a;
+            const auto& volume = transform.getVolume();
+            const glm::vec3 volumeCenter = glm::vec3(volume);
+            const float volumeRadius = volume.a;
 
-        const auto& mirrorSize = volumeRadius;
-        const auto& eyePos = parentCamera->getWorldPosition();
+            const auto& mirrorSize = volumeRadius;
+            const auto& eyePos = parentCamera->getWorldPosition();
 
-        const auto& viewFront = closest->getTransform().getViewFront();
-        const auto& viewUp = closest->getTransform().getViewUp();
+            const auto& viewFront = transform.getViewFront();
+            const auto& viewUp = transform.getViewUp();
 
-        const auto eyeV = planePos - eyePos;
-        const auto dist = glm::length(eyeV);
-        auto eyeN = glm::normalize(eyeV);
+            const auto eyeV = planePos - eyePos;
+            const auto dist = glm::length(eyeV);
+            auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(viewFront, parentCamera->getViewFront());
-        if (dot > 0) {
-            // NOTE KI backside; ignore
-            // => should not happen; finding closest already does this!
-            //return;
-            eyeN = -eyeN;
+            const auto dot = glm::dot(viewFront, parentCamera->getViewFront());
+            if (dot > 0) {
+                // NOTE KI backside; ignore
+                // => should not happen; finding closest already does this!
+                //return;
+                eyeN = -eyeN;
+            }
+
+            const auto reflectFront = glm::reflect(eyeN, viewFront);
+            const auto mirrorEyePos = planePos - (reflectFront * dist);
+
+            // NOTE KI keep mirror up straight up
+            //glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
+            //glm::vec3 reflectUp = -parentCamera->getUp();
+            //glm::vec3 reflectUp = -glm::normalize(glm::cross(parentCamera->getViewRight(), reflectFront));
+            glm::vec3 reflectUp = viewUp;
+
+            //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
+            //const float fovAngle = ctx.m_assets.mirrorFov;
+
+            camera.setWorldPosition(mirrorEyePos);
+            camera.setAxis(reflectFront, reflectUp);
+            //camera.setFov(ctx.m_camera.getFov());
+            //camera.setFov(fovAngle);
+
+            nearPlane = dist + m_nearPlane;
         }
 
-        const auto reflectFront = glm::reflect(eyeN, viewFront);
-        const auto mirrorEyePos = planePos - (reflectFront * dist);
-
-        // NOTE KI keep mirror up straight up
-        //glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
-        //glm::vec3 reflectUp = -parentCamera->getUp();
-        //glm::vec3 reflectUp = -glm::normalize(glm::cross(parentCamera->getViewRight(), reflectFront));
-        glm::vec3 reflectUp = viewUp;
-
-        //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-        //const float fovAngle = ctx.m_assets.mirrorFov;
-
-        auto& camera = m_cameras[0];
-        camera.setWorldPosition(mirrorEyePos);
-        camera.setAxis(reflectFront, reflectUp);
-        //camera.setFov(ctx.m_camera.getFov());
-        //camera.setFov(fovAngle);
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
         // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
         RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
-            dist + m_nearPlane,
+            nearPlane,
             m_farPlane,
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);

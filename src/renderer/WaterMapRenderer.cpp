@@ -258,20 +258,22 @@ bool WaterMapRenderer::render(
 
     // reflection map
     {
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
-
-        glm::vec3 cameraPos = parentCameraPos;
-        cameraPos.y -= sdist * 2;
-
-        // NOTE KI rotate camera
-        glm::vec3 cameraFront = parentCameraFront;
-        cameraFront.y *= -1;
-        glm::vec3 cameraUp = glm::normalize(glm::cross(parentCameraRight, cameraFront));
-
         auto& camera = m_cameras[0];
-        camera.setWorldPosition(cameraPos);
-        camera.setAxis(cameraFront, cameraUp);
-        camera.setFov(parentCameraFov);
+        {
+            glm::vec3 cameraPos = parentCameraPos;
+            cameraPos.y -= sdist * 2;
+
+            // NOTE KI rotate camera
+            glm::vec3 cameraFront = parentCameraFront;
+            cameraFront.y *= -1;
+            glm::vec3 cameraUp = glm::normalize(glm::cross(parentCameraRight, cameraFront));
+
+            camera.setWorldPosition(cameraPos);
+            camera.setAxis(cameraFront, cameraUp);
+            camera.setFov(parentCameraFov);
+        }
+
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
         RenderContext localCtx(
             "WATER_REFLECT",
@@ -303,15 +305,17 @@ bool WaterMapRenderer::render(
 
     // refraction map
     {
-        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
-
-        const auto& cameraPos = parentCameraPos;
-        const auto& cameraFront = parentCameraFront;
-
         auto& camera = m_cameras[1];
-        camera.setWorldPosition(cameraPos);
-        camera.setAxis(cameraFront, parentCameraUp);
-        camera.setFov(parentCameraFov);
+        {
+            const auto& cameraPos = parentCameraPos;
+            const auto& cameraFront = parentCameraFront;
+
+            camera.setWorldPosition(cameraPos);
+            camera.setAxis(cameraFront, parentCameraUp);
+            camera.setFov(parentCameraFov);
+        }
+
+        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
 
         RenderContext localCtx(
             "WATER_REFRACT",
