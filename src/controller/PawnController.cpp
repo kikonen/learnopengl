@@ -35,13 +35,6 @@ void PawnController::prepare(
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
-bool PawnController::update(
-    const UpdateContext& ctx,
-    Node& node) noexcept
-{
-    return false;
-}
-
 void PawnController::onKey(Input* input, const ki::RenderClock& clock)
 {
     if (!m_node) return;

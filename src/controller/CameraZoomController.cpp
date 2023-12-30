@@ -38,13 +38,6 @@ void CameraZoomController::prepare(
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
-bool CameraZoomController::update(
-    const UpdateContext& ctx,
-    Node& node) noexcept
-{
-    return false;
-}
-
 void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
 {
     if (!m_node) return;

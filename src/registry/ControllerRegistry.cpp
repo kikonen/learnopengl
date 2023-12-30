@@ -41,7 +41,7 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
 
         bool changed = false;
         for (auto* controller : it.second) {
-            changed |= controller->update(ctx, *node);
+            changed |= controller->updateWT(ctx, *node);
         }
 
         if (changed) {
