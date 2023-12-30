@@ -36,7 +36,9 @@ void GridGenerator::update(
     updateInstances(
         ctx,
         container);
-    container.modifyTransform().m_dirtyEntity = true;
+    auto& transform = container.modifyTransform();
+    transform.m_dirtyEntity = true;
+    transform.m_dirtySnapshot = true;
     m_containerMatrixLevel = parentLevel;
 }
 

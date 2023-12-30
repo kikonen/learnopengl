@@ -57,6 +57,7 @@ void TerrainGenerator::update(
 
     updateTiles(ctx, container);
     transform.m_dirtyEntity = true;
+    transform.m_dirtySnapshot = true;
     m_containerMatrixLevel = transform.getMatrixLevel();
 }
 

@@ -37,6 +37,7 @@ public:
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
+    void updateEntity(const UpdateContext& ctx);
 
     void attachListeners();
 

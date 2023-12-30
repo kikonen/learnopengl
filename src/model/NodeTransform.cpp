@@ -89,6 +89,7 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
     m_parentMatrixLevel = parent.m_matrixLevel;
     m_matrixLevel++;
     m_dirtyEntity = true;
+    m_dirtySnapshot = true;
 }
 
 void NodeTransform::updateModelAxis() noexcept

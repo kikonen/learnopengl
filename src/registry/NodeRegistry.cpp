@@ -126,6 +126,15 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
     }
 }
 
+void NodeRegistry::updateEntity(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+
+    for (auto* node : m_allNodes) {
+        node->updateEntity(ctx, m_registry->m_entityRegistry);
+    }
+}
+
 void NodeRegistry::attachListeners()
 {
     auto* dispatcher = m_registry->m_dispatcher;

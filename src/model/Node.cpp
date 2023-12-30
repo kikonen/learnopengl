@@ -108,9 +108,9 @@ void Node::updateWT(
 }
 
 void Node::snapshot() noexcept {
-    if (m_transform.m_dirtyEntity) {
+    if (m_transform.m_dirtySnapshot) {
         m_snapshot = m_transform;
-        m_transform.m_dirtyEntity = false;
+        m_transform.m_dirtySnapshot = false;
     }
 
     if (m_generator) {
@@ -177,6 +177,7 @@ void Node::setTagMaterialIndex(int index)
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
+        m_transform.m_dirtySnapshot = true;
         m_forceUpdateEntity = true;
     }
 }
@@ -186,6 +187,7 @@ void Node::setSelectionMaterialIndex(int index)
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
+        m_transform.m_dirtySnapshot = true;
         m_forceUpdateEntity = true;
     }
 }

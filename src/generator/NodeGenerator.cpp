@@ -24,9 +24,9 @@ void NodeGenerator::snapshot()
 
     for (size_t i = 0; i < m_transforms.size(); i++) {
         auto& transform = m_transforms[i];
-        if (!force && !transform.m_dirtyEntity) continue;
+        if (!force && !transform.m_dirtySnapshot) continue;
         m_snapshots[i] = transform;
-        transform.m_dirtyEntity = false;
+        transform.m_dirtySnapshot = false;
     }
 }
 

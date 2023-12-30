@@ -26,6 +26,7 @@ struct NodeTransform {
     bool m_dirtyRotation : 1 {true};
     mutable bool m_dirtyDegrees : 1 {true};
     bool m_dirtyEntity : 1 {true};
+    bool m_dirtySnapshot : 1 {true};
     bool m_uniformScale : 1 {false};
 
     ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
@@ -74,6 +75,7 @@ struct NodeTransform {
         if (m_materialIndex != materialIndex) {
             m_materialIndex = materialIndex;
             m_dirtyEntity = true;
+            m_dirtySnapshot = true;
         }
     }
 
@@ -87,6 +89,7 @@ struct NodeTransform {
         if (m_volume.getVolume() != volume) {
             m_volume = volume;
             m_dirtyEntity = true;
+            m_dirtySnapshot = true;
         }
     }
 
