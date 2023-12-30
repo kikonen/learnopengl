@@ -93,18 +93,16 @@ void Node::prepare(
     }
 }
 
-void Node::update(
+void Node::updateWT(
     const UpdateContext& ctx) noexcept
 {
     updateModelMatrix();
 
-    if (m_camera) m_camera->update(ctx, *this);
-    if (m_light) m_light->update(ctx, *this);
     if (m_generator) m_generator->update(ctx, *this);
 
     if (!m_children.empty()) {
         for (auto& child : m_children) {
-            child->update(ctx);
+            child->updateWT(ctx);
         }
     }
 }
@@ -119,18 +117,19 @@ void Node::updateEntity(
     const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
-    if (!m_forceUpdateEntity && !m_transform.m_dirtyEntity) return;
+    auto& snapshot = m_snapshot;
+    if (!m_forceUpdateEntity && !snapshot.m_dirtyEntity) return;
 
-    if (m_transform.m_entityIndex != -1)
+    if (snapshot.m_entityIndex != -1)
     {
-        m_transform.m_dirtyEntity |= m_forceUpdateEntity;
-        auto* entity = entityRegistry->modifyEntity(m_transform.m_entityIndex, true);
+        snapshot.m_dirtyEntity |= m_forceUpdateEntity;
+        auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = m_id;
         entity->u_flags = m_entityFlags;
         entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
-        m_transform.updateEntity(ctx, entity);
+        snapshot.updateEntity(ctx, entity);
     }
 
     if (m_generator) {

@@ -63,7 +63,7 @@ void SpriteRegistry::registerSprite(Sprite& sprite)
     m_idToSprites[sprite.m_id] = &ref;
 }
 
-void SpriteRegistry::updateRT(const UpdateViewContext& ctx)
+void SpriteRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);

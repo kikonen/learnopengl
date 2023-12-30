@@ -27,16 +27,17 @@ Camera::Camera(
     setAxis(front, up);
 }
 
-void Camera::update(const UpdateContext& ctx, Node& node) noexcept
+void Camera::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const auto& level = node.getTransform().getMatrixLevel();
+    const auto& snapshot = node.getSnapshot();
+    const auto& level = snapshot.getMatrixLevel();
     const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
-    m_nodeQuat = node.getParent()->getTransform().getQuatRotation() * node.getTransform().getQuatRotation();
-    m_worldPosition = node.getTransform().getWorldPosition();
+    m_nodeQuat = node.getParent()->getSnapshot().getQuatRotation() * snapshot.getQuatRotation();
+    m_worldPosition = snapshot.getWorldPosition();
 
     m_dirty = true;
     m_dirtyView = true;

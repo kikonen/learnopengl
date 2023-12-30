@@ -12,7 +12,6 @@
 class MaterialVBO;
 
 class UpdateContext;
-class UpdateViewContext;
 class RenderContext;
 
 struct MaterialSSBO;
@@ -41,7 +40,7 @@ public:
 
     void prepare();
 
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
     void bind(
         const RenderContext& ctx);

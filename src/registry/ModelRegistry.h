@@ -18,7 +18,6 @@ struct Material;
 class ModelMesh;
 class ModelMeshVBO;
 class UpdateContext;
-class UpdateViewContext;
 
 class ModelRegistry {
 public:
@@ -30,7 +29,7 @@ public:
 
     void prepare();
 
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);

@@ -191,20 +191,20 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            const auto& transform = closest->getTransform();
-            const glm::vec3& planePos = transform.getWorldPosition();
+            const auto& snapshot = closest->getSnapshot();
+            const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
 
-            const auto& volume = transform.getVolume();
+            const auto& volume = snapshot.getVolume();
             const glm::vec3 volumeCenter = glm::vec3(volume);
             const float volumeRadius = volume.a;
 
             const auto& mirrorSize = volumeRadius;
             const auto& eyePos = parentCamera->getWorldPosition();
 
-            const auto& viewFront = transform.getViewFront();
-            const auto& viewUp = transform.getViewUp();
+            const auto& viewFront = snapshot.getViewFront();
+            const auto& viewUp = snapshot.getViewUp();
 
             const auto eyeV = planePos - eyePos;
             const auto dist = glm::length(eyeV);
@@ -352,8 +352,8 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& transform = node->getTransform();
-        const auto& viewFront = transform.getViewFront();
+        const auto& snapshot = node->getSnapshot();
+        const auto& viewFront = snapshot.getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);
 
@@ -366,7 +366,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
             //const auto eyeV = node->getWorldPosition() - cameraPos;
             //const auto eyeN = glm::normalize(eyeV);
-            const auto planeDist = glm::dot(viewFront, transform.getWorldPosition());
+            const auto planeDist = glm::dot(viewFront, snapshot.getWorldPosition());
             const auto planeDot = glm::dot(viewFront, cameraPos);
             const auto dist = planeDot - planeDist;
 
@@ -382,7 +382,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         //}
 
         {
-            const auto eyeV = transform.getWorldPosition() - cameraPos;
+            const auto eyeV = snapshot.getWorldPosition() - cameraPos;
             const auto dist = glm::length(eyeV);
 
             sorted[dist] = node;

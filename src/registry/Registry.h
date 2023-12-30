@@ -37,7 +37,6 @@ class ControllerRegistry;
 class ProgramRegistry;
 
 class UpdateContext;
-class UpdateViewContext;
 
 //
 // Container for all registries to simplify passing them around
@@ -54,7 +53,7 @@ public:
     void prepareWT();
 
     void updateWT(const UpdateContext& ctx);
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
 private:
     const Assets& m_assets;

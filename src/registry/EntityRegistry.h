@@ -13,7 +13,6 @@
 #include "EntitySSBO.h"
 
 class UpdateContext;
-class UpdateViewContext;
 class RenderContext;
 
 //
@@ -27,7 +26,7 @@ public:
 
     void prepare();
     void updateWT(const UpdateContext& ctx);
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
 
     // index of entity

@@ -112,7 +112,7 @@ void NodeTransform::updateRotationMatrix() noexcept
 
 void NodeTransform::updateDegrees() const noexcept
 {
-    ASSERT_WT();
+    ASSERT_RT();
     if (!m_dirtyDegrees) return;
     m_degreesRotation = util::quatToDegrees(m_quatRotation);
     m_dirtyDegrees = false;
@@ -122,7 +122,7 @@ void NodeTransform::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
-    ASSERT_WT();
+    ASSERT_RT();
     if (!m_dirtyEntity) return;
 
     entity->u_materialIndex = m_materialIndex;

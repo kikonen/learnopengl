@@ -5,7 +5,12 @@
 
 #include "model/Node.h"
 
+#include "script/CommandEngine.h"
+#include "script/api/RotateNode.h"
+
 #include "engine/UpdateContext.h"
+
+#include "registry/Registry.h"
 
 
 PawnController::PawnController()
@@ -17,6 +22,8 @@ void PawnController::prepare(
     Registry* registry,
     Node& node)
 {
+    NodeController::prepare(assets, registry, node);
+
     m_node = &node;
 
     m_speedMoveNormal = assets.cameraMoveNormal;
@@ -39,6 +46,8 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
     if (!m_node) return;
 
     const float dt = clock.elapsedSecs;
+
+    const auto& snapshot = m_node->getSnapshot();
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ m_speedRotateNormal };
@@ -68,7 +77,15 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
             }
 
             if (changed) {
-                m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+                m_registry->m_commandEngine->addCommand(
+                    std::make_unique<script::RotateNode>(
+                        0,
+                        m_node->m_id,
+                        0,
+                        true,
+                        snapshot.getViewUp(),
+                        adjust.y));
+                //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
     }
@@ -129,6 +146,8 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
 
     bool changed = false;
 
+    const auto& snapshot = m_node->getSnapshot();
+
     glm::vec3 adjust{ 0.f };
 
     if (xoffset != 0) {
@@ -139,6 +158,14 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
     }
 
     if (changed) {
-        m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+        m_registry->m_commandEngine->addCommand(
+            std::make_unique<script::RotateNode>(
+                0,
+                m_node->m_id,
+                0,
+                true,
+                snapshot.getViewUp(),
+                adjust.y));
+        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }

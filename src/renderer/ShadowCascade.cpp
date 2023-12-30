@@ -110,7 +110,7 @@ GLuint ShadowCascade::getTextureID()
 
 void ShadowCascade::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
     if (!node) return;
 
     {

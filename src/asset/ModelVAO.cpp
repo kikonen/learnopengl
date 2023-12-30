@@ -195,7 +195,7 @@ GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
     return m_vao.get();
 }
 
-void ModelVAO::updateRT(const UpdateViewContext& ctx)
+void ModelVAO::updateRT(const UpdateContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
 

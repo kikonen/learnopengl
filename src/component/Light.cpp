@@ -13,14 +13,15 @@
 #include "registry/NodeRegistry.h"
 
 
-void Light::update(const UpdateContext& ctx, Node& node) noexcept
+void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const bool nodeChanged = m_nodeMatrixLevel != node.getTransform().getMatrixLevel();
+    const auto& snapshot = node.getSnapshot();
+    const bool nodeChanged = m_nodeMatrixLevel != snapshot.getMatrixLevel();
 
     if (nodeChanged) {
-        m_worldPosition = node.getTransform().getWorldPosition();
+        m_worldPosition = snapshot.getWorldPosition();
     }
 
     if (m_spot || m_directional) {
@@ -36,20 +37,22 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) return;
 
-        const bool targetChanged = m_targetMatrixLevel != targetNode->getTransform().getMatrixLevel();
+        const auto& targetSnapshot = targetNode->getSnapshot();
+
+        const bool targetChanged = m_targetMatrixLevel != targetSnapshot.getMatrixLevel();
         const bool changed = targetChanged || nodeChanged;
         if (!changed) return;
 
         // worldTarget is relative to *ROOT*
         if (targetChanged) {
-            m_worldTargetPosition = targetNode->getTransform().getWorldPosition();
+            m_worldTargetPosition = targetSnapshot.getWorldPosition();
         }
 
         // TODO KI SHOULD have local vs. world dir logic; or separate logic for "spot" light
         // => for spot light dir should be *NOT* calculated but set by initializer logic
         m_worldDir = glm::normalize(m_worldTargetPosition - m_worldPosition);
 
-        m_targetMatrixLevel = targetNode->getTransform().getMatrixLevel();
+        m_targetMatrixLevel = targetSnapshot.getMatrixLevel();
     }
     else {
         const bool changed = nodeChanged;
@@ -61,7 +64,7 @@ void Light::update(const UpdateContext& ctx, Node& node) noexcept
         radius = (-linear + std::sqrtf(linear * linear - 4.f * quadratic * (constant - (256.f / 5.f) * lightMax))) / (2.f * quadratic);
     }
 
-    m_nodeMatrixLevel = node.getTransform().getMatrixLevel();
+    m_nodeMatrixLevel = snapshot.getMatrixLevel();
 }
 
 DirLightUBO Light::toDirLightUBO() const noexcept

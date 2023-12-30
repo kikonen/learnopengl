@@ -24,12 +24,13 @@ bool VolumeController::update(
         return false;
     }
 
-    const auto& modelMatrix = targetNode->getTransform().getModelMatrix();
-    const auto& maxScale = targetNode->getTransform().getWorldMaxScale();
+    const auto& snapshot = targetNode->getSnapshot();
+    const auto& modelMatrix = snapshot.getModelMatrix();
+    const auto& maxScale = snapshot.getWorldMaxScale();
 
-    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getTransform().getWorldPosition();
+    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
 
-    const auto& volume = targetNode->getTransform().getVolume();
+    const auto& volume = snapshot.getVolume();
     const glm::vec3 volumeCenter = glm::vec3(volume);
     const float volumeRadius = volume.a;
 

@@ -13,7 +13,6 @@
 class Batch;
 class ModelMeshVBO;
 class UpdateContext;
-class UpdateViewContext;
 
 
 class ModelVAO {
@@ -26,7 +25,7 @@ public:
     // @return VAO for mesh
     GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
 private:
     void prepareVAO(

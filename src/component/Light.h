@@ -17,7 +17,7 @@ public:
     Light() {};
     ~Light() = default;
 
-    void update(const UpdateContext& ctx, Node& node) noexcept;
+    void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 
     void markDirty() noexcept
     {

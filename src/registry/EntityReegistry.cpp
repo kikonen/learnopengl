@@ -37,14 +37,14 @@ void EntityRegistry::prepare()
 void EntityRegistry::updateWT(const UpdateContext& ctx)
 {
     std::lock_guard<std::mutex> lock(m_lock);
-
-    processNodes(ctx);
 }
 
-void EntityRegistry::updateRT(const UpdateViewContext& ctx)
+void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);
+
+    processNodes(ctx);
 
     if (m_minDirty < 0) return;
 

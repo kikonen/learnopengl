@@ -29,7 +29,7 @@ public:
         const glm::vec3 up);
     ~Camera() = default;
 
-    void update(const UpdateContext& ctx, Node& node) noexcept;
+    void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 
     bool isOrthagonal() const noexcept {
         return m_orthagonal;

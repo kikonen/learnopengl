@@ -108,12 +108,12 @@ void Registry::updateWT(const UpdateContext& ctx)
 {
     ASSERT_WT();
     m_controllerRegistry->updateWT(ctx);
-    m_entityRegistry->updateWT(ctx);
 }
 
-void Registry::updateRT(const UpdateViewContext& ctx)
+void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
+    m_entityRegistry->updateRT(ctx);
     m_materialRegistry->updateRT(ctx);
     m_spriteRegistry->updateRT(ctx);
     m_modelRegistry->updateRT(ctx);

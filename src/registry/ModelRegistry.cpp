@@ -31,7 +31,7 @@ void ModelRegistry::prepare()
     m_vao.prepare();
 }
 
-void ModelRegistry::updateRT(const UpdateViewContext& ctx)
+void ModelRegistry::updateRT(const UpdateContext& ctx)
 {
     m_vao.updateRT(ctx);
 }

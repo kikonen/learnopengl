@@ -117,7 +117,7 @@ Material* MaterialRegistry::findById(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-void MaterialRegistry::updateRT(const UpdateViewContext& ctx)
+void MaterialRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
     std::lock_guard<std::mutex> lock(m_lock);

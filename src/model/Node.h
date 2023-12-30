@@ -39,7 +39,7 @@ public:
         const Assets& assets,
         Registry* registry);
 
-    void update(const UpdateContext& ctx) noexcept;
+    void updateWT(const UpdateContext& ctx) noexcept;
 
     void updateEntity(
         const UpdateContext& ctx,
@@ -70,6 +70,14 @@ public:
 
     inline NodeTransform& getTransform() noexcept {
         return m_transform;
+    }
+
+    inline void snapshot() noexcept {
+        m_snapshot = m_transform;
+    }
+
+    inline const NodeTransform& getSnapshot() const noexcept {
+        return m_snapshot;
     }
 
     inline ki::size_t_entity_flags getEntityFlags() const noexcept {
@@ -152,6 +160,8 @@ private:
     NodeTransform m_transform;
     bool m_forceUpdateEntity{ true };
     ki::size_t_entity_flags m_entityFlags{ 0 };
+
+    NodeTransform m_snapshot;
 
     int m_cloneIndex{ 0 };
 

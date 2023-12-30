@@ -25,6 +25,8 @@ public:
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        m_registry = registry;
     }
 
     virtual bool update(
@@ -40,4 +42,6 @@ public:
 
 protected:
     bool m_prepared = false;
+
+    Registry* m_registry{ nullptr };
 };

@@ -22,11 +22,11 @@ struct EntitySSBO;
 // rendering entity and node instance updated, with aim to use separate threads
 //
 struct NodeTransform {
-    bool m_dirty = true;
-    bool m_dirtyRotation = true;
-    mutable bool m_dirtyDegrees = true;
-    bool m_dirtyEntity = true;
-    bool m_uniformScale = false;
+    bool m_dirty : 1 {true};
+    bool m_dirtyRotation : 1 {true};
+    mutable bool m_dirtyDegrees : 1 {true};
+    bool m_dirtyEntity : 1 {true};
+    bool m_uniformScale : 1 {false};
 
     ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };

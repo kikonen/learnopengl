@@ -155,24 +155,22 @@ void SceneUpdater::update(const UpdateContext& ctx)
             m_registry->m_commandEngine->update(ctx);
         }
 
-        if (auto root = m_registry->m_nodeRegistry->m_root) {
+        if (m_loaded) {
             {
-                KI_TIMER("model   ");
-                root->update(ctx);
+                KI_TIMER("node    ");
+                m_registry->m_nodeRegistry->updateWT(ctx);
             }
-            if (m_loaded) {
-                {
-                    KI_TIMER("bounds  ");
-                    m_registry->m_physicsEngine->updateBounds(ctx);
-                }
-                {
-                    KI_TIMER("physics ");
-                    m_registry->m_physicsEngine->update(ctx);
-                }
-                {
-                    KI_TIMER("audio   ");
-                    m_registry->m_audioEngine->update(ctx);
-                }
+            {
+                KI_TIMER("bounds  ");
+                m_registry->m_physicsEngine->updateBounds(ctx);
+            }
+            {
+                KI_TIMER("physics ");
+                m_registry->m_physicsEngine->update(ctx);
+            }
+            {
+                KI_TIMER("audio   ");
+                m_registry->m_audioEngine->update(ctx);
             }
         }
     }

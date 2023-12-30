@@ -265,6 +265,11 @@ void Scene::update(const UpdateContext& ctx)
 {
     m_registry->m_dispatcherView->dispatchEvents();
 
+    m_registry->m_nodeRegistry->updateRT(ctx);
+    m_registry->updateRT(ctx);
+
+    m_renderData->update();
+
     //if (m_particleSystem) {
     //    m_particleSystem->update(ctx);
     //}
@@ -272,9 +277,6 @@ void Scene::update(const UpdateContext& ctx)
 
 void Scene::updateRT(const UpdateViewContext& ctx)
 {
-    m_registry->updateRT(ctx);
-    m_renderData->update();
-
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->updateRT(ctx);
     }

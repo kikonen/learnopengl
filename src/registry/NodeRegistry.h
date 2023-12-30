@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+#include <mutex>
 
 #include <fmt/format.h>
 
@@ -33,6 +34,9 @@ public:
 
     void prepare(
         Registry* registry);
+
+    void updateWT(const UpdateContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
     void attachListeners();
 
@@ -84,6 +88,18 @@ public:
 
     Node* findDefaultCameraNode() const;
 
+    const Node* getDirLightNode() const noexcept {
+        return m_dirLightNodes.empty() ? nullptr : m_dirLightNodes[0];
+    }
+
+    const NodeVector& getPointLightNodes() const noexcept {
+        return m_pointLightNodes;
+    }
+
+    const NodeVector& getSpotLightNodes() const noexcept {
+        return m_spotLightNodes;
+    }
+
     inline const Material& getSelectionMaterial() const noexcept {
         return m_selectionMaterial;
     }
@@ -125,14 +141,8 @@ public:
     std::vector<Node*> m_allNodes;
 
     Node* m_root{ nullptr };
-    Node* m_dirLight{ nullptr };
 
     Node* m_skybox{ nullptr };
-
-    NodeVector m_cameraNodes;
-
-    NodeVector m_pointLightNodes;
-    NodeVector m_spotLightNodes;
 
 private:
     const Assets& m_assets;
@@ -140,6 +150,8 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     Registry* m_registry{ nullptr };
+
+    std::mutex m_lock{};
 
     std::unordered_map<ki::node_id, Node*> m_idToNode;
     std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
@@ -149,6 +161,12 @@ private:
     //std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
 
     std::vector<NodeComponent<Camera>> m_cameraComponents;
+
+    NodeVector m_cameraNodes;
+
+    NodeVector m_dirLightNodes;
+    NodeVector m_pointLightNodes;
+    NodeVector m_spotLightNodes;
 
     Node* m_activeNode{ nullptr };
     Node* m_activeCameraNode{ nullptr };

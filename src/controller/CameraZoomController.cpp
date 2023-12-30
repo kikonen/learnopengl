@@ -8,6 +8,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "script/CommandEngine.h"
+#include "script/api/RotateNode.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -21,6 +24,8 @@ void CameraZoomController::prepare(
     Registry* registry,
     Node& node)
 {
+    NodeController::prepare(assets, registry, node);
+
     if (!node.m_camera) return;
 
     m_registry = registry;
@@ -98,7 +103,8 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& curr = m_node->getTransform().getDegreesRotation();
+    const auto& snapshot = m_node->getSnapshot();
+    const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;
     if (currX == 180.f) {
         currX = 0.f;
@@ -122,7 +128,16 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     }
 
     if (changed) {
-        m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+        m_registry->m_commandEngine->addCommand(
+            std::make_unique<script::RotateNode>(
+                0,
+                m_node->m_id,
+                0,
+                true,
+                snapshot.getViewRight(),
+                -adjust.x));
+
+        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 

@@ -47,6 +47,8 @@ NodeRegistry::NodeRegistry(
 
 NodeRegistry::~NodeRegistry()
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     // NOTE KI forbid access into deleted nodes
     {
         m_idToNode.clear();
@@ -60,7 +62,7 @@ NodeRegistry::~NodeRegistry()
         m_activeCameraNode = nullptr;
         m_cameraNodes.clear();
 
-        m_dirLight = nullptr;
+        m_dirLightNodes.clear();
         m_pointLightNodes.clear();
         m_spotLightNodes.clear();
 
@@ -88,11 +90,39 @@ void NodeRegistry::prepare(
     Registry* registry)
 {
     m_registry = registry;
-
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     registry->m_materialRegistry->registerMaterial(m_selectionMaterial);
 
     attachListeners();
+}
+
+void NodeRegistry::updateWT(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    if (m_root) {
+        m_root->updateWT(ctx);
+    }
+}
+
+void NodeRegistry::updateRT(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    for (auto& node : m_allNodes) {
+        node->snapshot();
+    }
+
+    for (auto& node : m_cameraNodes) {
+        node->m_camera->updateRT(ctx, *node);
+    }
+    for (auto& node : m_pointLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
+    for (auto& node : m_spotLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
+    for (auto& node : m_dirLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
 }
 
 void NodeRegistry::attachListeners()
@@ -329,6 +359,8 @@ void NodeRegistry::attachNode(
 
 int NodeRegistry::countTagged() const noexcept
 {
+    //std::lock_guard<std::mutex> lock(m_lock);
+
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
@@ -342,6 +374,8 @@ int NodeRegistry::countTagged() const noexcept
 
 int NodeRegistry::countSelected() const noexcept
 {
+    //std::lock_guard<std::mutex> lock(m_lock);
+
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
@@ -423,7 +457,7 @@ void NodeRegistry::bindNode(
             Light* light = node->m_light.get();
 
             if (light->m_directional) {
-                m_dirLight = node;
+                m_dirLightNodes.push_back(node);
             }
             else if (light->m_point) {
                 m_pointLightNodes.push_back(node);

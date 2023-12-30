@@ -24,7 +24,6 @@ public:
     virtual void onMouseScroll(Input* input, float xoffset, float yoffset) override;
 
 private:
-    Registry* m_registry{ nullptr };
 
     Node* m_node{ nullptr };
 

@@ -107,7 +107,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
     }
 
     if (useLight) {
-        auto* node = registry->m_nodeRegistry->m_dirLight;
+        auto* node = registry->m_nodeRegistry->getDirLightNode();
         if (node && node->m_light->m_enabled) {
             lightsUbo.u_dir[0] = node->m_light->toDirLightUBO();
             lightsUbo.u_dirCount = 1;
@@ -119,7 +119,8 @@ void RenderData::updateLights(Registry* registry, bool useLight)
 
     if (useLight) {
         int count = 0;
-        for (auto* node : registry->m_nodeRegistry->m_pointLightNodes) {
+        const auto& nodes = registry->m_nodeRegistry->getPointLightNodes();
+        for (auto* node : nodes) {
             if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
@@ -128,7 +129,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
         }
         lightsUbo.u_pointCount = count;
 
-        int diff = static_cast<int>(registry->m_nodeRegistry->m_pointLightNodes.size()) - MAX_LIGHT_COUNT;
+        int diff = static_cast<int>(nodes.size()) - MAX_LIGHT_COUNT;
         if (diff > 0) {
             KI_INFO_OUT(fmt::format("SKIPPED POINT_LIGHTS: {}", diff));
         }
@@ -136,7 +137,8 @@ void RenderData::updateLights(Registry* registry, bool useLight)
 
     if (useLight) {
         int count = 0;
-        for (auto* node : registry->m_nodeRegistry->m_spotLightNodes) {
+        const auto& nodes = registry->m_nodeRegistry->getSpotLightNodes();
+        for (auto* node : nodes) {
             if (count >= MAX_LIGHT_COUNT) break;
             if (!node->m_light->m_enabled) continue;
 
@@ -145,7 +147,7 @@ void RenderData::updateLights(Registry* registry, bool useLight)
         }
         lightsUbo.u_spotCount = count;
 
-        int diff = static_cast<int>(registry->m_nodeRegistry->m_spotLightNodes.size()) - MAX_LIGHT_COUNT;
+        int diff = static_cast<int>(registry->m_nodeRegistry->getSpotLightNodes().size()) - MAX_LIGHT_COUNT;
         if (diff > 0) {
             KI_INFO_OUT(fmt::format("SKIPPED SPOT_LIGHTS: {}", diff));
         }
