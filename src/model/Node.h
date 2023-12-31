@@ -91,10 +91,6 @@ public:
          return m_entityFlags;
     }
 
-    inline int getEntityIndex() const noexcept {
-        return m_transform.m_entityIndex;
-    }
-
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;

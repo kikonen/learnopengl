@@ -24,6 +24,7 @@ protected:
 
     int onUpdate(const ki::RenderClock& clock) override;
     int onRender(const ki::RenderClock& clock) override;
+    int onPost(const ki::RenderClock& clock) override;
 
     void onDestroy() override;
 

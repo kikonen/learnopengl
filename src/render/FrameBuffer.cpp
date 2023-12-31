@@ -166,9 +166,7 @@ void FrameBuffer::resetDrawBuffers(int activeCount)
 
 void FrameBuffer::bind(const RenderContext& ctx)
 {
-    if (!ctx.m_batch->isFlushed()) {
-        throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", str()) };
-    }
+    ctx.validateRender("FBO");
 
     bool changed = ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
     if (changed) {

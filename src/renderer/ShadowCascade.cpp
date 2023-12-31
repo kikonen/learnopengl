@@ -217,22 +217,17 @@ void ShadowCascade::render(
         m_mapSize, m_mapSize);
 
     localCtx.m_defaults.m_cullFace = GL_FRONT;
-
-    localCtx.copyShadowFrom(parentCtx);
-
-    localCtx.updateMatricesUBO();
-    localCtx.updateDataUBO();
-
     localCtx.m_shadow = true;
     localCtx.m_allowBlend = false;
+
+    localCtx.copyShadowFrom(parentCtx);
+    localCtx.updateMatricesUBO();
+    localCtx.updateDataUBO();
 
     m_buffer->clearAll();
 
     m_buffer->bind(localCtx);
-    //localCtx.bindDefaults();
     drawNodes(localCtx);
-    //parentCtx.bindDefaults();
-    m_buffer->unbind(localCtx);
 }
 
 void ShadowCascade::drawNodes(

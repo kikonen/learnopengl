@@ -23,7 +23,7 @@ public:
         : m_rangeCount{ rangeCount },
         m_entryCount{ entryCount },
         m_useFence{ useFence },
-            m_useSingleFence{ useSingleFence },
+        m_useSingleFence{ useSingleFence },
         m_entrySize{ sizeof(T) },
         m_buffer{ std::string{ "syncQueue_" } + std::string{ name } }
     {
@@ -83,7 +83,7 @@ public:
             // dynamic
             range.m_usedCount = 0;
 
-            if (m_useFence) {
+            if (m_useFence && (m_fences.empty() || !m_useSingleFence)) {
                 m_fences.emplace_back();
             }
         }
@@ -155,8 +155,6 @@ public:
     }
 
     inline void flush() {
-        setFence(m_current);
-
         const auto& range = m_ranges[m_current];
 
         if (mappedMode) {
@@ -165,6 +163,8 @@ public:
         else {
             m_buffer.update(range.m_baseOffset, range.getUsedLength(), m_data + range.m_baseOffset);
         }
+
+        setFence(m_current);
     }
 
     //
@@ -191,8 +191,10 @@ public:
     // Switch to next range
     // @return next buffer
     //
-    inline GLBufferRange& next() {
-        setFence(m_current);
+    inline GLBufferRange& next(bool fence) {
+        if (fence) {
+            setFence(m_current);
+        }
 
         m_current = (m_current + 1) % m_ranges.size();
 
@@ -228,7 +230,9 @@ private:
     void waitFence(size_t index) {
         if (!m_useFence) return;
 
-        m_fences[index].waitFence(m_debug);
+        if (index == 0 || !m_useSingleFence) {
+            m_fences[index].waitFence(m_debug);
+        }
     }
 
 public:

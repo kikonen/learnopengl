@@ -116,7 +116,23 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_assets,
             m_currentScene->m_registry.get());
 
-        updater->update(ctx);
+        updater->updateRT(ctx);
+    }
+
+    return 0;
+}
+
+int SampleApp::onPost(const ki::RenderClock& clock) {
+    auto* updater = m_currentScene.get();
+    if (!updater) return 0;
+
+    {
+        UpdateContext ctx(
+            clock,
+            m_assets,
+            m_currentScene->m_registry.get());
+
+        updater->postRT(ctx);
     }
 
     return 0;
@@ -142,7 +158,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             size.x,
             size.y);
 
-        scene->updateRT(ctx);
+        scene->updateViewRT(ctx);
     }
 
     RenderContext ctx(

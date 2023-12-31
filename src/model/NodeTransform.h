@@ -255,6 +255,7 @@ struct NodeTransform {
 
     inline const glm::vec3& getWorldScale() const noexcept
     {
+        assert(!m_dirty);
         return m_modelScale;
     }
 

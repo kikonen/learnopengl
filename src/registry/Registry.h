@@ -54,6 +54,7 @@ public:
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
+    void postRT(const UpdateContext& ctx);
 
 private:
     const Assets& m_assets;
