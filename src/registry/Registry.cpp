@@ -113,9 +113,14 @@ void Registry::updateWT(const UpdateContext& ctx)
 void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
-    m_entityRegistry->updateRT(ctx);
     m_materialRegistry->updateRT(ctx);
     m_spriteRegistry->updateRT(ctx);
     m_modelRegistry->updateRT(ctx);
     m_entityRegistry->updateRT(ctx);
+}
+
+void Registry::postRT(const UpdateContext& ctx)
+{
+    ASSERT_RT();
+    m_entityRegistry->postRT(ctx);
 }

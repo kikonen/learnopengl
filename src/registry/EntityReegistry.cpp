@@ -48,6 +48,8 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     if (m_minDirty < 0) return;
 
+    m_fence.waitFence(false);
+
     constexpr size_t sz = sizeof(EntitySSBO);
     const int maxCount = (m_maxDirty + 1) - m_minDirty;
 
@@ -112,6 +114,11 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     m_minDirty = -1;
     m_maxDirty = -1;
+}
+
+void EntityRegistry::postRT(const UpdateContext& ctx)
+{
+    m_fence.setFence();
 }
 
 void EntityRegistry::bind(

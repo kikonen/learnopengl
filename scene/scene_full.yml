@@ -61,13 +61,17 @@ entities:
     particle_generator:
       - "ParticleDefinition pd;"
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
-    camera:
-      default: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
       - type: camera_zoom
   - name: Player cube map 1
     type: origo

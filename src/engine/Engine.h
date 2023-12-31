@@ -36,6 +36,7 @@ protected:
 
     virtual int onUpdate(const ki::RenderClock& clock) = 0;
     virtual int onRender(const ki::RenderClock& clock) = 0;
+    virtual int onPost(const ki::RenderClock& clock) = 0;
 
     virtual void onDestroy();
 

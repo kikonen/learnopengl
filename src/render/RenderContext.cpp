@@ -194,6 +194,8 @@ RenderContext::~RenderContext()
 
 void RenderContext::bindDefaults() const
 {
+    validateRender("bind_defaults");
+
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     m_state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
     m_state.cullFace(m_defaults.m_cullFace);
@@ -214,21 +216,25 @@ void RenderContext::updateUBOs() const
 
 void RenderContext::updateMatricesUBO() const
 {
+    validateRender("update_matrices_ubo");
     m_renderData->updateMatrices(m_matrices);
 }
 
 void RenderContext::updateDataUBO() const
 {
+    validateRender("update_data_ubo");
     m_renderData->updateData(m_data);
 }
 
 void RenderContext::updateClipPlanesUBO() const
 {
+    validateRender("update_clip_planes_ubo");
     m_renderData->updateClipPlanes(m_clipPlanes);
 }
 
 void RenderContext::updateLightsUBO() const
 {
+    validateRender("update_lights_ubo");
     m_renderData->updateLights(m_registry, m_useLight);
 }
 

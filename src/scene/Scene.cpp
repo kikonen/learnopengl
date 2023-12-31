@@ -261,7 +261,7 @@ void Scene::prepareRT()
     }
 }
 
-void Scene::update(const UpdateContext& ctx)
+void Scene::updateRT(const UpdateContext& ctx)
 {
     m_registry->m_dispatcherView->dispatchEvents();
 
@@ -275,7 +275,12 @@ void Scene::update(const UpdateContext& ctx)
     //}
 }
 
-void Scene::updateRT(const UpdateViewContext& ctx)
+void Scene::postRT(const UpdateContext& ctx)
+{
+    m_registry->postRT(ctx);
+}
+
+void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->updateRT(ctx);

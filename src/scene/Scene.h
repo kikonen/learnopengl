@@ -66,8 +66,9 @@ public:
 
     void prepareRT();
 
-    void update(const UpdateContext& ctx);
-    void updateRT(const UpdateViewContext& ctx);
+    void updateRT(const UpdateContext& ctx);
+    void postRT(const UpdateContext& ctx);
+    void updateViewRT(const UpdateViewContext& ctx);
 
     void handleNodeAdded(Node* node);
 
