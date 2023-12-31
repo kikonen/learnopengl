@@ -10,14 +10,19 @@ script:
     - path: lib/common
 entities:
   - name: Plauer
+    id: player
     type: origo
     pos: [0, 200, 100]
     front: [0, 0, -1]
     active: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
     camera:
       default: true
     controllers:
-      - type: pawn
       - type: camera_zoom
   - name: Directional light
     pos: [0, 400, 500]
