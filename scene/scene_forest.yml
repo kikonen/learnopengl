@@ -133,7 +133,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [4000, 4000, 4000]
+    scale: 4000
 materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png

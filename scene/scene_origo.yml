@@ -133,7 +133,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 100]
+    scale: 100
     enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]

@@ -163,7 +163,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 1]
+    scale: 100
   - name: Fence
     model: quad
     material: fence

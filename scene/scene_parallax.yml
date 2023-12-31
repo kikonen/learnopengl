@@ -160,7 +160,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 1]
+    scale: 100
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
