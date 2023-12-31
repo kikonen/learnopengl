@@ -184,6 +184,9 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                     close = onRender(clock);
                 }
                 if (!close) {
+                    close = onPost(clock);
+                }
+                if (!close) {
                     m_registry->m_programRegistry->validate();
                 }
 

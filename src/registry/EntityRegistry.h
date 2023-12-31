@@ -6,6 +6,7 @@
 #include <atomic>
 
 #include "kigl/GLBuffer.h"
+#include "kigl/GLFence.h"
 
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
@@ -27,6 +28,7 @@ public:
     void prepare();
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
+    void postRT(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
 
     // index of entity
@@ -55,4 +57,5 @@ private:
     std::mutex m_lock{};
 
     GLBuffer m_ssbo{ "entitySSBO" };
+    GLFence m_fence;
 };
