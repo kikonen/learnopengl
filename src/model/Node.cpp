@@ -121,7 +121,8 @@ void Node::snapshot() noexcept {
         m_generator->snapshot(m_forceUpdateSnapshot);
     }
 
-    m_transform.m_dirtySnapshot = false;
+    transform.m_dirtySnapshot = false;
+    transform.m_dirtyNormal = false;
     m_forceUpdateSnapshot = false;
 }
 

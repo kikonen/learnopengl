@@ -27,6 +27,7 @@ void NodeGenerator::snapshot(bool force)
         if (!force && !transform.m_dirtySnapshot) continue;
         m_snapshots[i] = transform;
         transform.m_dirtySnapshot = false;
+        transform.m_dirtyNormal = false;
     }
 }
 

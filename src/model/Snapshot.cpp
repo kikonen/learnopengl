@@ -12,6 +12,7 @@ namespace {
 
 Snapshot::Snapshot(const NodeTransform& o)
     : m_dirtyDegrees{ o.m_dirtyDegrees },
+    m_dirtyNormal{ o.m_dirtyNormal },
     m_dirtyEntity{ o.m_dirtyEntity },
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
@@ -31,6 +32,7 @@ Snapshot::Snapshot(const NodeTransform& o)
 
 Snapshot::Snapshot(const NodeTransform&& o)
     : m_dirtyDegrees{ o.m_dirtyDegrees },
+    m_dirtyNormal{ o.m_dirtyNormal },
     m_dirtyEntity{ o.m_dirtyEntity },
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
@@ -53,6 +55,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
 Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 {
     m_dirtyDegrees = o.m_dirtyDegrees;
+    m_dirtyNormal = o.m_dirtyNormal;
     m_dirtyEntity = o.m_dirtyEntity;
     m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
@@ -97,9 +100,10 @@ void Snapshot::updateEntity(
     entity->u_volume = m_volume;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    entity->setModelMatrix(m_modelMatrix, m_uniformScale);
+    entity->setModelMatrix(m_modelMatrix, m_uniformScale, m_dirtyNormal);
 
     entity->u_worldScale = getWorldScale();
 
     m_dirtyEntity = false;
+    m_dirtyNormal = false;
 }

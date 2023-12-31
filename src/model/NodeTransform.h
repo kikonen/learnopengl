@@ -25,9 +25,10 @@ struct NodeTransform {
     bool m_dirty : 1 {true};
     bool m_dirtyRotation : 1 {true};
     mutable bool m_dirtyDegrees : 1 {true};
+    bool m_dirtyNormal : 1 {true};
     bool m_dirtyEntity : 1 {true};
     bool m_dirtySnapshot : 1 {true};
-    bool m_uniformScale : 1 {false};
+    bool m_uniformScale : 1 {true};
 
     ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
@@ -144,6 +145,7 @@ struct NodeTransform {
 
             m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -159,6 +161,7 @@ struct NodeTransform {
 
             m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -173,6 +176,7 @@ struct NodeTransform {
 
         m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setBaseRotation(const glm::quat& quat) noexcept
@@ -181,6 +185,7 @@ struct NodeTransform {
         m_dirtyRotation = true;
         m_dirtyDegrees = true;
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setQuatRotation(const glm::quat& quat) noexcept
@@ -190,6 +195,7 @@ struct NodeTransform {
             m_dirtyRotation = true;
             m_dirtyDegrees = true;
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 

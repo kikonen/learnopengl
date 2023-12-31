@@ -24,6 +24,7 @@ struct Snapshot {
     Snapshot& operator=(const NodeTransform& o) noexcept;
 
     mutable bool m_dirtyDegrees{ true };
+    bool m_dirtyNormal{ true };
     bool m_dirtyEntity{ true };
     bool m_uniformScale { false };
 
