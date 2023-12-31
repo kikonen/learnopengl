@@ -4,14 +4,17 @@
 
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
-#include "render/RenderContext.h"
-#include "render/Batch.h"
-#include "render/FrameBuffer.h"
+
+#include "script/CommandEngine.h"
+#include "script/api/MoveNode.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 
+#include "render/RenderContext.h"
+#include "render/Batch.h"
+#include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
 
@@ -77,14 +80,14 @@ namespace {
 CubeMapRenderer::~CubeMapRenderer()
 {}
 
-void CubeMapRenderer::prepare(
+void CubeMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -95,18 +98,18 @@ void CubeMapRenderer::prepare(
     m_tagID = assets.cubeMapUUID;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     int size = assets.cubeMapSize;
 
     {
         m_curr = std::make_unique<DynamicCubeMap>(size);
-        m_curr->prepare(
+        m_curr->prepareRT(
             assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(size);
-        m_prev->prepare(
+        m_prev->prepareRT(
             assets, registry,
             false,
             { 0, 1.f, 0, 1.f });
@@ -123,23 +126,23 @@ void CubeMapRenderer::prepare(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepare(assets, registry);
+        m_waterMapRenderer->prepareRT(assets, registry);
     }
 
     m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepare(assets, registry);
+        m_mirrorMapRenderer->prepareRT(assets, registry);
     }
 }
 
-void CubeMapRenderer::updateView(const RenderContext& ctx)
+void CubeMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
-    m_waterMapRenderer->updateView(ctx);
-    m_mirrorMapRenderer->updateView(ctx);
+    m_waterMapRenderer->updateRT(ctx);
+    m_mirrorMapRenderer->updateRT(ctx);
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
@@ -162,7 +165,7 @@ bool CubeMapRenderer::render(
 
     if (!needRender(parentCtx)) return false;
 
-    Node* centerNode = findCenter(parentCtx);
+    Node* centerNode = findClosest(parentCtx);
     if (m_lastClosest && setClosest(centerNode, -1)) {
         m_curr->m_updateFace = -1;
         m_prev->m_updateFace = -1;
@@ -174,11 +177,19 @@ bool CubeMapRenderer::render(
     if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getPosition();
-            const auto& centerPos = centerNode->getWorldPosition();
+            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
+            const auto& centerPos = centerNode->getSnapshot().getWorldPosition();
             const auto tagPos = centerPos - rootPos;
-            tagNode->setPosition(tagPos);
-            tagNode->m_type->m_flags.noDisplay = false;
+
+            m_registry->m_commandEngine->addCommand(
+                std::make_unique<script::MoveNode>(
+                    0,
+                    tagNode->m_id,
+                    0.f,
+                    false,
+                    tagPos));
+
+            tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
         }
     }
@@ -203,7 +214,8 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& center = centerNode->getWorldPosition();
+        const auto& snapshot = centerNode->getSnapshot();
+        const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
 
@@ -240,6 +252,20 @@ bool CubeMapRenderer::render(
 
     m_rendered = true;
     return true;
+}
+
+void CubeMapRenderer::handleNodeAdded(Node* node)
+{
+    if (!node->m_type->m_flags.cubeMap) return;
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->handleNodeAdded(node);
+    }
+    if (m_mirrorMapRenderer->isEnabled()) {
+        m_mirrorMapRenderer->handleNodeAdded(node);
+    }
+
+    m_nodes.push_back(node);
 }
 
 void CubeMapRenderer::clearCubeMap(
@@ -309,38 +335,33 @@ void CubeMapRenderer::drawNodes(
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },
-        NodeDraw::KIND_ALL,
+        render::NodeDraw::KIND_ALL,
         GL_COLOR_BUFFER_BIT);
 
     targetBuffer->unbind(ctx);
 }
 
-Node* CubeMapRenderer::findCenter(const RenderContext& ctx)
+Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
+    if (m_nodes.empty()) return nullptr;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& [key, nodes] : all.second) {
-            auto& type = key.type;
+    for (const auto& node : m_nodes) {
+        const auto& snapshot = node->getSnapshot();
+        const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
+        const float distance = std::abs(glm::length(ray));
 
-            if (!type->m_flags.cubeMap) continue;
-
-            for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
-                const float distance = std::abs(glm::length(ray));
-
-                if (false) {
-                    const glm::vec3 fromCamera = glm::normalize(ray);
-                    const float dot = glm::dot(fromCamera, cameraDir);
-                    if (dot < 0) continue;
-                }
-
-                sorted[distance] = node;
-            }
+        if (false) {
+            const glm::vec3 fromCamera = glm::normalize(ray);
+            const float dot = glm::dot(fromCamera, cameraDir);
+            if (dot < 0) continue;
         }
+
+        sorted[distance] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

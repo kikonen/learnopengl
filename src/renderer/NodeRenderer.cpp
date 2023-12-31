@@ -2,6 +2,7 @@
 #include "NodeRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -12,6 +13,8 @@
 
 #include "component/Camera.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
@@ -20,26 +23,26 @@
 #include "kigl/GLStencilMode.h"
 
 
-void NodeRenderer::prepare(
+void NodeRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
     m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    m_selectionProgram->prepare(assets);
+    m_selectionProgram->prepareRT(assets);
 
     //m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramPointSprite->prepare(assets);
 }
 
-void NodeRenderer::updateView(const RenderContext& ctx)
+void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -95,7 +98,7 @@ void NodeRenderer::render(
                 targetBuffer,
                 [](const MeshType* type) { return true; },
                 [](const Node* node) { return true; },
-                NodeDraw::KIND_ALL,
+                render::NodeDraw::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT);
         }
@@ -121,14 +124,14 @@ void NodeRenderer::fillHighlightMask(
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
         m_selectionProgram->bind(ctx.m_state);
-        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_MASK);
+        m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 }
@@ -152,7 +155,7 @@ void NodeRenderer::renderHighlight(
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
         m_selectionProgram->bind(ctx.m_state);
-        m_selectionProgram->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
+        m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
 
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
@@ -160,7 +163,7 @@ void NodeRenderer::renderHighlight(
             [this](const MeshType* type) { return m_selectionProgram; },
             [](const MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
-            NodeDraw::KIND_ALL);
+            render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 

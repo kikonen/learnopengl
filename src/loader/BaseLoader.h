@@ -40,6 +40,8 @@ namespace loader
         BaseLoader(
             Context ctx);
 
+        void setRegistry(std::shared_ptr<Registry> registry);
+
         void loadRepeat(
             const YAML::Node& node,
             Repeat& data) const;

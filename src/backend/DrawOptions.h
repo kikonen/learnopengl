@@ -5,7 +5,7 @@
 namespace backend {
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawElementsInstanced.xhtml
     struct DrawOptions {
-        enum class Type {
+        enum class Type : std::underlying_type_t<std::byte> {
             none,
             elements,
             arrays,
@@ -18,16 +18,16 @@ namespace backend {
         // - GL_POINTS
         GLenum mode = GL_POINTS;
 
-        bool renderBack = false;
-        bool wireframe = false;
-        bool blend = false;
-        bool blendOIT = false;
+        bool renderBack : 1 {false};
+        bool wireframe : 1 {false};
+        bool blend : 1 {false};
+        bool blendOIT : 1 {false};
 
         // NOTE KI STRONG assumption; instanced nodes are in same sequence
         // and first entry drawn is first one on that sequence
-        bool instanced = false;
+        bool instanced : 1 {false};
 
-        bool tessellation = false;
+        bool tessellation : 1 {false};
         int patchVertices = 3;
 
         // cont of indeces for indexed drawing

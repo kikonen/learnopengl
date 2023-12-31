@@ -4,7 +4,7 @@
 #include "asset/Image.h"
 #include "registry/Registry.h"
 
-void HdriTexture::prepare(
+void HdriTexture::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

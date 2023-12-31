@@ -1,8 +1,9 @@
 #include "EffectBuffer.h"
 
-#include "render/GBuffer.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
+#include "render/GBuffer.h"
 #include "render/FrameBuffer.h"
 
 
@@ -13,7 +14,7 @@ void EffectBuffer::prepare(
     m_gBuffer = gBuffer;
 }
 
-void EffectBuffer::updateView(const RenderContext& ctx)
+void EffectBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 

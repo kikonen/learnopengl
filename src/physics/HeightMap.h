@@ -2,37 +2,45 @@
 
 #include <glm/glm.hpp>
 
-#include "Surface.h"
+#include "size.h"
+#include "asset/AABB.h"
 
 class Image;
 class Node;
 
 namespace physics {
-    class HeightMap : public Surface {
+    class HeightMap {
     public:
-        HeightMap(
-            std::unique_ptr<Image> image)
-            : m_image(std::move(image))
+        HeightMap();
+        HeightMap(HeightMap&& o);
+
+        ~HeightMap();
+
+        void prepare(Image* image);
+
+        const AABB& getAABB() const noexcept { return m_aabb; }
+        void setAABB(const AABB& aabb) { m_aabb = aabb; }
+
+        inline bool withinBounds(const glm::vec3 pos) const noexcept
         {
+            return pos.x >= m_aabb.m_min.x &&
+                pos.x <= m_aabb.m_max.x &&
+                pos.y >= m_aabb.m_min.y &&
+                pos.y <= m_aabb.m_max.y;
         }
 
-        ~HeightMap()
-        {
-            delete[] m_heights;
-        }
-
-        void prepare();
-
-        virtual float getLevel(const glm::vec3& pos) override;
+        float getLevel(const glm::vec3& pos) const noexcept;
 
         // Using texture coordinates
         //
         // @param u [0, 1]
         // @param v [0, 1]
-        float getTerrainHeight(float u, float v);
+        float getTerrainHeight(float u, float v) const noexcept;
 
     public:
-        const std::unique_ptr<Image> m_image;
+        physics::height_map_id m_id{ 0 };
+
+        //const std::unique_ptr<Image> m_image;
 
         Node* m_origin{ nullptr };
 
@@ -48,6 +56,8 @@ namespace physics {
         int m_width{ 0 };
 
         float* m_heights{ nullptr };
+
+        AABB m_aabb{};
     };
 
 }

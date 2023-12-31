@@ -1,10 +1,7 @@
 #pragma once
 
-#include <string>
-
-#include <glm/glm.hpp>
-
-#include "physics/Object.h"
+#include "physics/Body.h"
+#include "physics/Geom.h"
 
 namespace loader {
     struct PhysicsData {

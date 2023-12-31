@@ -95,7 +95,6 @@ namespace loader {
     };
 
     struct EntityData {
-        bool isRoot{ false };
         EntityCloneData base;
         std::vector<EntityCloneData> clones;
     };

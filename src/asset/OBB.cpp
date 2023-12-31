@@ -12,9 +12,9 @@ inline bool OBB::within(float a, float x, float b) {
 }
 
 bool OBB::inFrustum(
-    int projectedLevel,
+    ki::level_id projectedLevel,
     const glm::mat4& projectedMatrix,
-    int modelLevel,
+    ki::level_id modelLevel,
     const glm::mat4& modelMatrix)
 {
     bool inside = false;
@@ -36,9 +36,9 @@ bool OBB::inFrustum(
 
 
 void OBB::prepareProjected(
-    int projectedLevel,
+    ki::level_id projectedLevel,
     const glm::mat4& projectedMatrix,
-    int modelLevel,
+    ki::level_id modelLevel,
     const glm::mat4& modelMatrix)
 {
     if (m_projectedLevel == projectedLevel && m_modelLevel == modelLevel)

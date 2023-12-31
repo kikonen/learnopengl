@@ -4,9 +4,12 @@
 
 #include "AL/al.h"
 
+#include "ki/size.h"
+
 #include "size.h"
 #include "limits.h"
 
+class Node;
 
 namespace audio
 {
@@ -17,7 +20,11 @@ namespace audio
         Source(Source&&) noexcept;
         ~Source();
 
+        inline bool isReady() const { return m_matrixLevel > -1; }
+
         void prepare(const Sound* sound);
+
+        void updateFromNode();
 
         void update();
         void updatePos();
@@ -34,6 +41,8 @@ namespace audio
         ALuint m_sourceId{ 0 };
 
         audio::sound_id m_soundId{ 0 };
+
+        bool m_autoPlay{ false };
 
         float m_referenceDistance{ audio::REFERENCE_DISTANCE };
         float m_maxDistance{ audio::MAX_DISTANCE };
@@ -61,5 +70,8 @@ namespace audio
         glm::vec3 m_pos{ 0.f };
         glm::vec3 m_vel{ 0.f };
         glm::vec3 m_dir{ 0.f };
+
+        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
+        Node* m_node{ nullptr };
     };
 }

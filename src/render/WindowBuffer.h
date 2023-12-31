@@ -2,6 +2,8 @@
 
 #include "FrameBuffer.h"
 
+class UpdateViewContext;
+
 class WindowBuffer final : public FrameBuffer
 {
 public:
@@ -11,7 +13,7 @@ public:
 
     virtual ~WindowBuffer() override {};
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
 private:
 };

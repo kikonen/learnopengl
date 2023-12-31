@@ -25,9 +25,11 @@ public:
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        m_registry = registry;
     }
 
-    virtual bool update(
+    virtual bool updateWT(
         const UpdateContext& ctx,
         Node& node)
     {
@@ -39,5 +41,7 @@ public:
     virtual void onMouseScroll(Input* input, float xoffset, float yoffset) {};
 
 protected:
-    bool m_prepared = false;
+    bool m_prepared{ false };
+
+    Registry* m_registry{ nullptr };
 };

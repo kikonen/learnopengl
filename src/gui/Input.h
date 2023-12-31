@@ -4,8 +4,9 @@
 
 class Window;
 
-enum class Key {
+enum class Key : std::underlying_type_t<std::byte> {
     EXIT,
+    FULL_SCREEN_TOGGLE,
     UP,
     DOWN,
     LEFT,
@@ -18,7 +19,7 @@ enum class Key {
     ZOOM_OUT,
 };
 
-enum class Modifier {
+enum class Modifier : std::underlying_type_t<std::byte> {
     SHIFT,
     CONTROL,
     ALT,

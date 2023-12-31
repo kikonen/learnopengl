@@ -30,7 +30,7 @@ namespace backend {
             bool useFence,
             bool useSingleFence);
 
-        void prepare(
+        void prepareRT(
             const Assets& assets,
             Registry* registry,
             int batchCount,
@@ -50,7 +50,7 @@ namespace backend {
 
         void drawPending(bool drawCurrent);
 
-        gl::PerformanceCounters getCounters(bool clear);
+        gl::PerformanceCounters getCounters(bool clear) const;
 
     private:
         void bindDrawRange(

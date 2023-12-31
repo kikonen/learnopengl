@@ -6,7 +6,7 @@
 
 class RenderContext;
 
-enum class FrameBufferAttachmentType {
+enum class FrameBufferAttachmentType : std::underlying_type_t<std::byte> {
     shared,
     draw_buffer,
     texture,
@@ -16,7 +16,7 @@ enum class FrameBufferAttachmentType {
     shadow,
 };
 
-enum class ClearType {
+enum class ClearType : std::underlying_type_t<std::byte> {
     NONE,
     FLOAT,
     INT,

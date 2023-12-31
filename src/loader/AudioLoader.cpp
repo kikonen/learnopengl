@@ -161,8 +161,8 @@ namespace loader
 
         {
             event::Event evt { event::Type::audio_source_add };
-            auto& body = evt.body.nodeAudioSource = {
-                .target = nodeId,
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.audioSource = {
                 .soundId = soundId,
                 .index = index,
                 .isAutoPlay = data.isAutoPlay,
@@ -174,6 +174,9 @@ namespace loader
                 .looping = data.looping,
                 .pitch = data.pitch,
                 .gain = data.gain,
+            };
+            auto& body = evt.body.audioInit = {
+                .target = nodeId,
             };
             m_dispatcher->send(evt);
         }
@@ -187,10 +190,13 @@ namespace loader
 
         {
             event::Event evt { event::Type::audio_listener_add };
-            auto& body = evt.body.nodeAudioListener = {
-                .target = nodeId,
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.audioListener = {
                 .isDefault = data.isDefault,
                 .gain = data.gain,
+            };
+            auto& body = evt.body.audioInit = {
+                .target = nodeId,
             };
             m_dispatcher->send(evt);
         }

@@ -3,6 +3,7 @@
 #include "util/glm_format.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -73,15 +74,15 @@ ShadowCascade::~ShadowCascade()
     delete m_buffer;
 }
 
-void ShadowCascade::prepare(
+void ShadowCascade::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    m_solidShadowProgram->prepare(assets);
-    m_alphaShadowProgram->prepare(assets);
+    m_solidShadowProgram->prepareRT(assets);
+    m_alphaShadowProgram->prepareRT(assets);
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
@@ -109,7 +110,7 @@ GLuint ShadowCascade::getTextureID()
 
 void ShadowCascade::bind(const RenderContext& ctx)
 {
-    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
     if (!node) return;
 
     {
@@ -252,26 +253,26 @@ void ShadowCascade::drawNodes(
 
     {
         m_solidShadowProgram->bind(ctx.m_state);
-        m_solidShadowProgram->u_shadowIndex->set(m_index);
+        m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const MeshType* type) { return m_solidShadowProgram; },
             typeFilter,
             nodeFilter,
-            NodeDraw::KIND_SOLID);
+            render::NodeDraw::KIND_SOLID);
     }
 
     {
         m_alphaShadowProgram->bind(ctx.m_state);
-        m_alphaShadowProgram->u_shadowIndex->set(m_index);
+        m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const MeshType* type) { return m_alphaShadowProgram; },
             typeFilter,
             nodeFilter,
-            NodeDraw::KIND_SPRITE | NodeDraw::KIND_ALPHA | NodeDraw::KIND_BLEND);
+            render::NodeDraw::KIND_SPRITE | render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);
     }
 
     ctx.m_batch->flush(ctx);

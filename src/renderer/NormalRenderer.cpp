@@ -14,17 +14,17 @@
 
 
 
-void NormalRenderer::prepare(
+void NormalRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
-    m_normalProgram->prepare(assets);
+    m_normalProgram->prepareRT(assets);
 }
 
 void NormalRenderer::render(
@@ -39,13 +39,13 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const MeshType* type) { return m_normalProgram; },
-            [](const MeshType* type) { return !type->m_flags.tessellation && type->m_entityType != EntityType::point_sprite; },
-            [&ctx](const Node* node) {
-                return node->m_uuid != ctx.m_assets.volumeUUID &&
-                    node->m_uuid != ctx.m_assets.cubeMapUUID &&
-                    node->m_uuid != ctx.m_assets.skyboxUUID;
+            [](const MeshType* type) {
+                return type->m_flags.noNormals &&
+                    !type->m_flags.tessellation &&
+                    type->m_entityType != EntityType::point_sprite;
             },
-            NodeDraw::KIND_ALL);
+            [](const Node* node) { return true; },
+            render::NodeDraw::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

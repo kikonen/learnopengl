@@ -5,6 +5,7 @@
 #include <map>
 #include <unordered_map>
 #include <mutex>
+#include <atomic>
 
 #include "ki/uuid.h"
 
@@ -51,6 +52,10 @@ namespace loader {
 
         ~SceneLoader();
 
+        void destroy();
+
+        bool isRunning();
+
         void prepare(
             std::shared_ptr<Registry> registry);
 
@@ -66,16 +71,16 @@ namespace loader {
             const uuids::uuid& rootId,
             const EntityData& data);
 
-        MeshType* attachEntityClone(
-            MeshType* type,
+        const MeshType* attachEntityClone(
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
 
-        MeshType* attachEntityCloneRepeat(
-            MeshType* type,
+        const MeshType* attachEntityCloneRepeat(
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
@@ -88,8 +93,7 @@ namespace loader {
             const EntityCloneData& data,
             MeshType* type);
 
-        MeshType* createType(
-            bool isRoot,
+        const MeshType* createType(
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
@@ -115,15 +119,14 @@ namespace loader {
             const glm::uvec3& tile);
 
         Node* createNode(
-            MeshType* type,
+            const MeshType* type,
             const uuids::uuid& rootId,
             const EntityCloneData& data,
             const bool cloned,
             const int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& clonePositionOffset,
-            const glm::vec3& tilePositionOffset,
-            const bool isRoot);
+            const glm::vec3& tilePositionOffset);
 
         void loadMeta(
             const YAML::Node& node,
@@ -138,6 +141,8 @@ namespace loader {
     private:
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
+
+        std::atomic<size_t> m_runningCount;
 
         MetaData m_meta;
         SkyboxData m_skybox;

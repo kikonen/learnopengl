@@ -7,7 +7,7 @@
 class Light;
 
 namespace loader {
-    enum class LightType {
+    enum class LightType : std::underlying_type_t<std::byte> {
         none,
         directional,
         point,

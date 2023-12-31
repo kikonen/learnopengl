@@ -70,6 +70,10 @@ namespace audio
         audio::sound_id registerSound(std::string_view fullPath);
 
     private:
+        void preparePendingListeners(const UpdateContext& ctx);
+        void preparePendingSources(const UpdateContext& ctx);
+
+    private:
         const Assets& m_assets;
 
         bool m_prepared{ false };
@@ -82,6 +86,9 @@ namespace audio
 
         std::vector<Listener>  m_listeners;
         std::vector<Source> m_sources;
+
+        std::vector<audio::listener_id> m_pendingListeners;
+        std::vector<audio::source_id> m_pendingSources;
 
         std::unique_ptr<SoundRegistry> m_soundRegistry;
     };

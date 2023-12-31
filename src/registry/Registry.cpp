@@ -4,6 +4,8 @@
 
 #include "asset/MaterialSSBO.h"
 
+#include "util/thread.h"
+
 #include "event/Dispatcher.h"
 
 #include "audio/AudioEngine.h"
@@ -33,6 +35,7 @@ Registry::Registry(
     m_alive(alive),
     // registries
     m_dispatcherImpl(std::make_unique<event::Dispatcher>(assets)),
+    m_dispatcherViewImpl(std::make_unique<event::Dispatcher>(assets)),
     m_programRegistryImpl(std::make_unique<ProgramRegistry>(assets, m_alive)),
     m_audioEngineImpl(std::make_unique<audio::AudioEngine>(assets)),
     m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets)),
@@ -48,6 +51,7 @@ Registry::Registry(
     m_controllerRegistryImpl(std::make_unique<ControllerRegistry>(assets)),
     // pointers
     m_dispatcher(m_dispatcherImpl.get()),
+    m_dispatcherView(m_dispatcherViewImpl.get()),
     m_programRegistry(m_programRegistryImpl.get()),
     m_audioEngine(m_audioEngineImpl.get()),
     m_physicsEngine(m_physicsEngineImpl.get()),
@@ -68,12 +72,13 @@ Registry::~Registry()
 {
 }
 
-void Registry::prepare()
+void Registry::prepareShared()
 {
     if (m_prepared) return;
     m_prepared = true;
 
     m_dispatcher->prepare();
+    m_dispatcherView->prepare();
 
     m_materialRegistry->prepare();
     m_spriteRegistry->prepare();
@@ -81,22 +86,36 @@ void Registry::prepare()
     m_modelRegistry->prepare();
 
     m_viewportRegistry->prepare();
-    m_controllerRegistry->prepare(this);
 
     m_nodeRegistry->prepare(this);
+}
 
+void Registry::prepareWT()
+{
+    ASSERT_WT();
+
+    // NOTE KI does not matter which thread does prepare
     m_physicsEngine->prepare();
     m_audioEngine->prepare();
+
+    m_controllerRegistry->prepare(this);
 
     m_commandEngine->prepare(this);
     m_scriptEngine->prepare(m_commandEngine);
 }
 
-void Registry::update(const UpdateContext& ctx)
+void Registry::updateWT(const UpdateContext& ctx)
 {
-    m_controllerRegistry->update(ctx);
-    m_materialRegistry->update(ctx);
-    m_spriteRegistry->update(ctx);
-    m_modelRegistry->update(ctx);
-    m_entityRegistry->update(ctx);
+    ASSERT_WT();
+    m_controllerRegistry->updateWT(ctx);
+}
+
+void Registry::updateRT(const UpdateContext& ctx)
+{
+    ASSERT_RT();
+    m_entityRegistry->updateRT(ctx);
+    m_materialRegistry->updateRT(ctx);
+    m_spriteRegistry->updateRT(ctx);
+    m_modelRegistry->updateRT(ctx);
+    m_entityRegistry->updateRT(ctx);
 }

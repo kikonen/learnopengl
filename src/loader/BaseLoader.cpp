@@ -14,6 +14,8 @@
 
 #include "engine/AsyncLoader.h"
 
+#include "registry/Registry.h"
+
 namespace {
     std::mutex uuid_lock{};
 
@@ -38,6 +40,12 @@ namespace loader
         : m_assets(ctx.m_assets),
         m_ctx(ctx)
     {
+    }
+
+    void BaseLoader::setRegistry(std::shared_ptr<Registry> registry)
+    {
+        m_registry = registry;
+        m_dispatcher = m_registry->m_dispatcher;
     }
 
     void BaseLoader::loadTiling(

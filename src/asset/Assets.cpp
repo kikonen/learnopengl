@@ -26,6 +26,7 @@ Assets::Assets()
     glUseFence = true;
     glUseSingleFence = true;
     glUseInvalidate = false;
+    glUseFinish = false;
 
     prepassDepthEnabled = false;
 
@@ -36,6 +37,7 @@ Assets::Assets()
 
     windowSize = { 800, 600 };
     windowMaximized = false;
+    windowFullScreen = false;
 
     cameraMoveNormal = { 4.5, 4.5, 4.5 };
     cameraMoveRun = { 8, 8, 8 };

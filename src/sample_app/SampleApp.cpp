@@ -27,10 +27,14 @@
 #include "engine/AssetsFile.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 
 #include "loader/SceneLoader.h"
+
 #include "scene/Scene.h"
+#include "scene/SceneUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -61,6 +65,12 @@ int SampleApp::onInit()
 
 int SampleApp::onSetup() {
     m_currentScene = loadScene();
+    m_sceneUpdater = std::make_shared<SceneUpdater>(
+        m_assets,
+        m_registry,
+        m_alive);
+
+    m_sceneUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -97,8 +107,8 @@ int SampleApp::onSetup() {
 }
 
 int SampleApp::onUpdate(const ki::RenderClock& clock) {
-    auto* scene = m_currentScene.get();
-    if (!scene) return 0;
+    auto* updater = m_currentScene.get();
+    if (!updater) return 0;
 
     {
         UpdateContext ctx(
@@ -106,9 +116,7 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_assets,
             m_currentScene->m_registry.get());
 
-        scene->processEvents(ctx);
-
-        scene->update(ctx);
+        updater->update(ctx);
     }
 
     return 0;
@@ -120,11 +128,22 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
     if (!scene) return 0;
 
-    Node* cameraNode = scene->getActiveCamera();
+    Node* cameraNode = scene->getActiveCameraNode();
     if (!cameraNode) return 0;
 
 
     const glm::uvec2& size = window->getSize();
+
+    {
+        UpdateViewContext ctx(
+            clock,
+            m_assets,
+            m_currentScene->m_registry.get(),
+            size.x,
+            size.y);
+
+        scene->updateRT(ctx);
+    }
 
     RenderContext ctx(
         "TOP",
@@ -165,7 +184,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         }
         m_state.clear();
 
-        scene->updateView(ctx);
         scene->bind(ctx);
         scene->draw(ctx);
         scene->unbind(ctx);
@@ -249,6 +267,40 @@ void SampleApp::frustumDebug(
 
 void SampleApp::onDestroy()
 {
+    KI_INFO_OUT("APP: destroy");
+
+    *m_alive = false;
+
+    if (!m_loaders.empty()) {
+        KI_INFO_OUT("APP: stopping loaders...");
+        for (auto& loader : m_loaders) {
+            loader->destroy();
+        }
+        for (auto& loader : m_loaders) {
+            // NOTE KI wait for worker threads to shutdown
+            while (loader->isRunning()) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        }
+        KI_INFO_OUT("APP: loaders stopped!");
+    }
+
+    if (m_sceneUpdater) {
+        KI_INFO_OUT("APP: stopping worker...");
+        m_sceneUpdater->destroy();
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_sceneUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: worker stopped!");
+    }
+
+    if (m_currentScene) {
+        m_currentScene->destroy();
+    }
+
+    KI_INFO_OUT("APP: stopped all!");
 }
 
 void SampleApp::selectNode(
@@ -347,15 +399,13 @@ Assets SampleApp::loadAssets()
 
 std::shared_ptr<Scene> SampleApp::loadScene()
 {
-    auto scene = std::make_shared<Scene>(m_assets, m_registry);
-
-    auto& alive = scene->m_alive;
+    auto scene = std::make_shared<Scene>(m_assets, m_registry, m_alive);
 
     {
         if (!m_assets.sceneFile.empty()) {
             loader::Context ctx{
                 m_assets,
-                alive,
+                m_alive,
                 m_asyncLoader,
                 m_assets.sceneDir,
                 m_assets.sceneFile,
@@ -371,16 +421,16 @@ std::shared_ptr<Scene> SampleApp::loadScene()
         loader->load();
     }
 
-    m_testSetup = std::make_unique<TestSceneSetup>(
-        m_assets,
-        alive,
-        m_asyncLoader);
+    //m_testSetup = std::make_unique<TestSceneSetup>(
+    //    m_assets,
+    //    m_alive,
+    //    m_asyncLoader);
 
-    m_testSetup->setup(
-        scene->m_registry
-    );
+    //m_testSetup->setup(
+    //    scene->m_registry
+    //);
 
-    scene->prepare();
+    scene->prepareRT();
 
     return scene;
 }

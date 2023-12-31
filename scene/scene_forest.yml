@@ -2,7 +2,7 @@
 name: Forest
 skybox:
   program: g_skybox
-  material: skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common
@@ -128,15 +128,16 @@ entities:
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    rot: [270, 0, 0]
+    front: [0, 1, 0]
+    base_rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [2000, 2000, 2000]
+    scale: 4000
 materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png
     map_bump: sprites/linden_tree_512_normal.png
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
-    tiling: 60
+    tiling: 500

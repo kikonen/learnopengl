@@ -4,8 +4,8 @@
 #include "util/Util.h"
 #include "util/glm_util.h"
 
-#include "physics/Object.h"
-#include "physics/PhysicsEngine.h"
+#include "event/Dispatcher.h"
+
 
 namespace loader {
     PhysicsLoader::PhysicsLoader(
@@ -164,15 +164,24 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<physics::Object> PhysicsLoader::createObject(
+    void PhysicsLoader::createObject(
         const PhysicsData& data,
-        Node* node)
+        const ki::node_id nodeId)
     {
-        if (!data.enabled) return nullptr;
+        if (!data.enabled) return;
 
-        return std::make_unique<physics::Object>(
-            data.update,
-            data.body,
-            data.geom);
+        {
+            event::Event evt { event::Type::physics_add };
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.physics = {
+                .update = data.update,
+                .body = data.body,
+                .geom = data.geom,
+            };
+            auto& body = evt.body.physics = {
+                .target = nodeId,
+            };
+            m_dispatcher->send(evt);
+        }
     }
 }

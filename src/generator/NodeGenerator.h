@@ -2,7 +2,8 @@
 
 #include "asset/Assets.h"
 
-#include "model/NodeInstance.h"
+#include "model/NodeTransform.h"
+#include "model/Snapshot.h"
 #include "model/InstancePhysics.h"
 
 #include "kigl/kigl.h"
@@ -34,20 +35,38 @@ public:
         const UpdateContext& ctx,
         Node& container) {}
 
+    void snapshot(bool force);
+
     virtual void updateEntity(
         const UpdateContext& ctx,
         Node& container,
-        EntityRegistry* entityRegistry);
+        EntityRegistry* entityRegistry,
+        bool force);
 
     void bindBatch(
         const RenderContext& ctx,
         Node& container,
         Batch& batch);
 
-    inline std::vector<NodeInstance>& getInstances() noexcept
+    inline const std::vector<NodeTransform>& getTransforms() noexcept
     {
-        return m_instances;
+        return m_transforms;
     }
+
+    inline std::vector<NodeTransform>& modifyTransforms() noexcept
+    {
+        return m_transforms;
+    }
+
+    //inline const std::vector<Snapshot>& getSnapshots() noexcept
+    //{
+    //    return m_snapshots;
+    //}
+
+    //inline std::vector<Snapshot>& modifySnapshots() noexcept
+    //{
+    //    return m_snapshots;
+    //}
 
     inline int getActiveFirst() const noexcept {
         return m_activeFirst;
@@ -83,6 +102,7 @@ protected:
 
     int m_containerMatrixLevel = -1;
 
-    std::vector<NodeInstance> m_instances;
+    std::vector<NodeTransform> m_transforms;
+    std::vector<Snapshot> m_snapshots;
     std::vector<InstancePhysics> m_physics;
 };

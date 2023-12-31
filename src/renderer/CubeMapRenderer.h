@@ -1,11 +1,14 @@
 #pragma once
 
+#include <vector>
+
 #include "Renderer.h"
 
 #include "asset/Material.h"
 
 #include "component/Camera.h"
 
+class Node;
 class FrameBuffer;
 class CubeMapBuffer;
 class DynamicCubeMap;
@@ -18,16 +21,18 @@ public:
     CubeMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     ~CubeMapRenderer();
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
     bool render(
         const RenderContext& ctx);
+
+    void handleNodeAdded(Node* node);
 
 private:
     void clearCubeMap(
@@ -40,7 +45,7 @@ private:
         const Node* centerNode,
         const glm::vec4& debugColor);
 
-    Node* findCenter(
+    Node* findClosest(
         const RenderContext& ctx);
 
     Node* getTagNode();
@@ -67,4 +72,6 @@ private:
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
+
+    std::vector<Node*> m_nodes;
 };

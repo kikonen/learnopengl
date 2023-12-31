@@ -29,9 +29,6 @@
 
 #include "model/Node.h"
 
-#include "physics/Object.h"
-#include "physics/PhysicsEngine.h"
-
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
@@ -79,31 +76,29 @@ namespace loader {
         KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
     }
 
+    void SceneLoader::destroy()
+    {}
+
+    bool SceneLoader::isRunning()
+    {
+        return m_runningCount > 0;
+    }
+
     void SceneLoader::prepare(
         std::shared_ptr<Registry> registry)
     {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
-        m_materialLoader.m_registry = m_registry;
-
-        m_rootLoader.m_registry = m_registry;
-        m_rootLoader.m_dispatcher = m_dispatcher;
-
-        m_scriptLoader.m_registry = m_registry;
-        m_scriptLoader.m_dispatcher = m_dispatcher;
-
-        m_skyboxLoader.m_registry = m_registry;
-        m_skyboxLoader.m_dispatcher = m_dispatcher;
-
-        m_volumeLoader.m_registry = m_registry;
-        m_volumeLoader.m_dispatcher = m_dispatcher;
-
-        m_cubeMapLoader.m_registry = m_registry;
-        m_cubeMapLoader.m_dispatcher = m_dispatcher;
-
-        m_audioLoader.m_registry = m_registry;
-        m_audioLoader.m_dispatcher = m_dispatcher;
+        m_materialLoader.setRegistry(registry);
+        m_rootLoader.setRegistry(registry);
+        m_scriptLoader.setRegistry(registry);
+        m_skyboxLoader.setRegistry(registry);
+        m_volumeLoader.setRegistry(registry);
+        m_cubeMapLoader.setRegistry(registry);
+        m_audioLoader.setRegistry(registry);
+        m_physicsLoader.setRegistry(registry);
+        m_entityLoader.setRegistry(registry);
     }
 
     void SceneLoader::load()
@@ -111,6 +106,8 @@ namespace loader {
         if (!util::fileExists(m_ctx.m_fullPath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
+
+        m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
             std::ifstream fin(this->m_ctx.m_fullPath);
@@ -140,6 +137,8 @@ namespace loader {
                 m_scriptLoader);
 
             attach(m_root);
+
+            m_runningCount--;
         });
     }
 
@@ -152,8 +151,11 @@ namespace loader {
 
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
-        event::Event evt { event::Type::scene_loaded };
-        m_dispatcher->send(evt);
+        // => worker will trigger event into UI thread after processing all updates
+        {
+            event::Event evt { event::Type::scene_loaded };
+            m_dispatcher->send(evt);
+        }
     }
 
     void SceneLoader::attach(
@@ -186,11 +188,11 @@ namespace loader {
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
             if (data.clones.empty()) {
-                MeshType* type{ nullptr };
+                const MeshType* type{ nullptr };
                 attachEntityClone(type, rootId, data, data.base, false, 0);
             }
             else {
-                MeshType* type{ nullptr };
+                const MeshType* type{ nullptr };
 
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
@@ -206,8 +208,8 @@ namespace loader {
         });
     }
 
-    MeshType* SceneLoader::attachEntityClone(
-        MeshType* type,
+    const MeshType* SceneLoader::attachEntityClone(
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -252,8 +254,8 @@ namespace loader {
         return type;
     }
 
-    MeshType* SceneLoader::attachEntityCloneRepeat(
-        MeshType* type,
+    const MeshType* SceneLoader::attachEntityCloneRepeat(
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -271,7 +273,6 @@ namespace loader {
         // NOTE KI overriding material in clones is *NOT* supported"
         if (!type) {
             type = createType(
-                entity.isRoot,
                 data,
                 tile);
             if (!type) return type;
@@ -283,28 +284,28 @@ namespace loader {
             type, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
-            tilePositionOffset,
-            entity.isRoot);
+            tilePositionOffset);
 
         {
+            // NOTE KI no id for clones; would duplicate base id => conflicts
+            // => except if clone defines own ID
+            const auto uuid = resolveUUID(data.idBase, cloneIndex, tile);
+
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
-            if (!entity.isRoot) {
+            evt.body.node.uuid = uuid;
+            {
                 if (data.parentIdBase.empty()) {
-                    evt.body.node.parentId = rootId;
+                    evt.body.node.parentUUID = rootId;
                 }
                 else {
-                    evt.body.node.parentId = resolveUUID(
+                    evt.body.node.parentUUID = resolveUUID(
                         data.parentIdBase,
                         cloneIndex,
                         tile);
                 }
             }
             m_dispatcher->send(evt);
-        }
-
-        {
-            m_audioLoader.createAudio(data.audio, node->m_id);
         }
 
         if (data.active) {
@@ -352,23 +353,22 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
+        {
+            m_audioLoader.createAudio(data.audio, node->m_id);
+            m_physicsLoader.createObject(data.physics, node->m_id);
+        }
+
         return type;
     }
 
-    MeshType* SceneLoader::createType(
-        bool isRoot,
+    const MeshType* SceneLoader::createType(
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
-        auto type = m_registry->m_typeRegistry->getType(data.name);
+        auto* type = m_registry->m_typeRegistry->registerType(data.name);
         assignFlags(data, type);
 
         type->m_priority = data.priority;
-
-        if (isRoot) {
-            type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
-        }
 
         if (data.instanced) {
             type->m_flags.instanced = true;
@@ -520,9 +520,7 @@ namespace loader {
 
         auto& materialVBO = type->m_materialVBO;
 
-        materialVBO.m_defaultMaterial = *material;
-        materialVBO.m_useDefaultMaterial = true;
-        materialVBO.m_forceDefaultMaterial = data.forceMaterial;
+        materialVBO.setDefaultMaterial(*material, true, data.forceMaterial);
     }
 
     void SceneLoader::modifyMaterials(
@@ -609,15 +607,14 @@ namespace loader {
     }
 
     Node* SceneLoader::createNode(
-        MeshType* type,
+        const MeshType* type,
         const uuids::uuid& rootId,
         const EntityCloneData& data,
         const bool cloned,
         const int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& clonePositionOffset,
-        const glm::vec3& tilePositionOffset,
-        const bool isRoot)
+        const glm::vec3& tilePositionOffset)
     {
         Node* node = new Node(type);
 
@@ -626,38 +623,38 @@ namespace loader {
 
         glm::vec3 pos = data.position + clonePositionOffset + tilePositionOffset;
 
-        // NOTE KI no id for clones; would duplicate base id => conflicts
-        // => except if clone defines own ID
-        if (isRoot) {
-            node->m_uuid = rootId;
-        } else if (!cloned) {
-            node->m_uuid = resolveUUID(data.idBase, cloneIndex, tile);
-        }
-
-        node->setPosition(pos);
-        node->setBaseRotation(util::degreesToQuat(data.baseRotation));
-        node->setQuatRotation(util::degreesToQuat(data.rotation));
-        node->setScale(data.scale);
-
-        node->setFront(data.front);
+        auto& transform = node->modifyTransform();
+        transform.setPosition(pos);
+        transform.setBaseRotation(util::degreesToQuat(data.baseRotation));
+        transform.setQuatRotation(util::degreesToQuat(data.rotation));
+        transform.setScale(data.scale);
+        transform.setFront(data.front);
 
         auto mesh = type->getMesh();
         if (mesh) {
-            node->setVolume(mesh->getAABB().getVolume());
+            transform.setVolume(mesh->getAABB().getVolume());
         }
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
-        node->m_physics = m_physicsLoader.createObject(data.physics, node);
 
         m_scriptLoader.createScript(
             rootId,
             node->m_id,
             data.script);
 
-        type->setCustomMaterial(
-            m_customMaterialLoader.createCustomMaterial(data.customMaterial, cloneIndex, tile));
+        {
+            auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
+            t->setCustomMaterial(
+                m_customMaterialLoader.createCustomMaterial(
+                    data.customMaterial,
+                    cloneIndex,
+                    tile));
+            m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+            type = t;
+            node->m_type = type;
+        }
 
         return node;
     }
@@ -792,12 +789,6 @@ namespace loader {
             const auto& e = data.renderFlags.find("static_physics");
             if (e != data.renderFlags.end()) {
                 flags.staticPhysics = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("physics");
-            if (e != data.renderFlags.end()) {
-                flags.physics = e->second;
             }
         }
         {

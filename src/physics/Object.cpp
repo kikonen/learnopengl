@@ -16,6 +16,25 @@ namespace {
 
 namespace physics
 {
+    Object::Object()
+    {
+    }
+
+    Object::Object(Object&& o) noexcept
+        : m_id{ o.m_id },
+        m_update { o.m_update },
+        m_body{ o.m_body },
+        m_geom{ o.m_geom },
+        m_mass{ o.m_mass },
+        m_bodyId{ o.m_bodyId },
+        m_geomId{ o.m_geomId },
+        m_node{ o.m_node }
+    {
+        // NOTE KI o is moved now
+        o.m_geomId = 0;
+        o.m_bodyId = 0;
+    }
+
     Object::~Object()
     {
         if (m_geomId) {
@@ -27,8 +46,8 @@ namespace physics
     }
 
     void Object::prepare(
-        PhysicsEngine* engine,
-        Node* node)
+        dWorldID worldId,
+        dSpaceID spaceId)
     {
         if (ready()) return;
 
@@ -37,7 +56,7 @@ namespace physics
         const float length = sz.y;
 
         if (m_body.type != BodyType::none) {
-            m_bodyId = dBodyCreate(engine->m_worldId);
+            m_bodyId = dBodyCreate(worldId);
 
             switch (m_body.type) {
             case BodyType::box: {
@@ -68,23 +87,23 @@ namespace physics
             //auto plane = glm::vec4(0, 0, 1, 0) * q;
             const auto rotM = glm::toMat4(q);
             auto plane = rotM * glm::vec4(0, 1, 0, 1);
-            m_geomId = dCreatePlane(engine->m_spaceId, plane.x, plane.y, plane.z, 0);
+            m_geomId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, 0);
             break;
         }
         case GeomType::box: {
-            m_geomId = dCreateBox(engine->m_spaceId, sz.x, sz.y, sz.z);
+            m_geomId = dCreateBox(spaceId, sz.x, sz.y, sz.z);
             break;
         }
         case GeomType::sphere: {
-            m_geomId = dCreateSphere(engine->m_spaceId, radius);
+            m_geomId = dCreateSphere(spaceId, radius);
             break;
         }
         case GeomType::capsule: {
-            m_geomId = dCreateCapsule(engine->m_spaceId, radius, length);
+            m_geomId = dCreateCapsule(spaceId, radius, length);
             break;
         }
         case GeomType::cylinder: {
-            m_geomId = dCreateCylinder(engine->m_spaceId, radius, length);
+            m_geomId = dCreateCylinder(spaceId, radius, length);
             break;
         }
         }
@@ -126,20 +145,17 @@ namespace physics
                 int x = 0;
             }
         }
-
-        m_node = node;
-        engine->registerObject(this);
-
-        updateToPhysics(true);
     }
 
     void Object::updateToPhysics(bool force)
     {
-        if (!(force || m_update)) return;
+        const auto& transform = m_node->getTransform();
+        const auto level = transform.getMatrixLevel();
+        if (!force && m_matrixLevel == level) return;
+        m_matrixLevel = level;
 
-        const glm::vec3& pos = m_node->getWorldPosition();
+        const glm::vec3& pos = transform.getWorldPosition();
         {
-
             if (m_bodyId) {
                 dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
                 if (m_body.kinematic) {
@@ -185,7 +201,7 @@ namespace physics
         }
     }
 
-    void Object::updateFromPhysics()
+    void Object::updateFromPhysics() const
     {
         if (!m_bodyId) return;
         if (m_body.kinematic) return;
@@ -208,12 +224,14 @@ namespace physics
             pos.y = 400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
-        pos -= m_node->getParent()->getWorldPosition();
+        pos -= m_node->getParent()->getTransform().getWorldPosition();
 
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        m_node->setPosition(pos);
-        m_node->setQuatRotation(rotBase);
+        auto& transform = m_node->modifyTransform();
+        transform.setPosition(pos);
+        transform.setQuatRotation(rotBase);
+        //m_node->updateModelMatrix();
     }
 }

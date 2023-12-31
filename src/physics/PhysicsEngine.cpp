@@ -6,7 +6,7 @@
 
 #include "util/glm_format.h"
 
-#include "model/NodeInstance.h"
+#include "model/NodeTransform.h"
 
 #include "engine/UpdateContext.h"
 
@@ -57,8 +57,8 @@ namespace physics
         if (int numc = dCollide(o1, o2, MAX_CONTACTS, &contact[0].geom, sizeof(dContact)))
         {
             PhysicsEngine* engine = (PhysicsEngine*)data;
-            auto* obj1 = engine->m_objects[o1];
-            auto* obj2 = engine->m_objects[o2];
+            auto* obj1 = engine->m_geomToObject[o1];
+            auto* obj2 = engine->m_geomToObject[o2];
 
             dMatrix3 RI;
             dRSetIdentity(RI);
@@ -77,10 +77,15 @@ namespace physics
     PhysicsEngine::PhysicsEngine(const Assets& assets)
         : m_assets(assets)
     {
+        // NOTE KI null entries to avoid need for "- 1" math
+        m_objects.emplace_back<Object>({});
+        m_heightMaps.emplace_back<HeightMap>({});
     }
 
     PhysicsEngine::~PhysicsEngine()
     {
+        m_objects.clear();
+
         if (m_spaceId) {
             dSpaceDestroy(m_spaceId);
         }
@@ -101,6 +106,11 @@ namespace physics
         dInitODE2(0);
         m_worldId = dWorldCreate();
         m_spaceId = dHashSpaceCreate(0);
+        if (false) {
+            dVector3 center{ 200, 0, 200 };
+            dVector3 extends{ 1024, 100, 1024 };
+            m_spaceId = dQuadTreeSpaceCreate(0, center, extends, 8);
+        }
         m_contactgroupId = dJointGroupCreate(0);
 
         m_gravity = { 0, -2.01f, 0 };
@@ -110,11 +120,17 @@ namespace physics
 
     void PhysicsEngine::update(const UpdateContext& ctx)
     {
-        if (!m_enabled)  return;
+        if (!m_enabled) return;
 
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
         if (m_initialDelay > 10) {
+            preparePending(ctx);
+
+            for (auto* obj : m_updateObjects) {
+                obj->updateToPhysics(false);
+            }
+
             const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
             const int n = static_cast<int>(dtTotal / STEP_SIZE);
             m_remainder = dtTotal - n * STEP_SIZE;
@@ -122,6 +138,8 @@ namespace physics
             if (n > 0) {
                 m_invokeCount++;
                 m_stepCount += n;
+
+                //std::cout << "n=" << n << '\n';
 
                 //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
 
@@ -149,45 +167,109 @@ namespace physics
                 //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
                 //}
 
-                for (const auto& it : m_objects) {
-                    Object* obj = it.second;
-                    if (!(obj->m_bodyId || obj->m_node)) continue;
-
-                    obj->updateFromPhysics();
+                for (const auto& obj : m_objects) {
+                    obj.updateFromPhysics();
                 }
             }
         }
+    }
 
-        for (const auto& all : ctx.m_registry->m_nodeRegistry->physicsNodes) {
-            for (const auto& it : all.second) {
-                const MeshType& type = *it.first.type;
+    void PhysicsEngine::updateBounds(const UpdateContext& ctx)
+    {
+        if (!m_enabled) return;
+        preparePendingNodes(ctx);
 
-                if (type.m_flags.physics) {
-                    for (auto& node : it.second) {
-                        if (node->m_instancer) {
-                            for (auto& instance : node->m_instancer->getInstances()) {
-                                updateNode(ctx, type, *node, instance);
-                            }
-                        }
-                        else {
-                            updateNode(ctx, type, *node, node->getInstance());
-                        }
-                    }
-                }
+        auto enforce = [&ctx, this](Node* node) {
+            const auto& type = *node->m_type;
 
-                if (type.m_flags.enforceBounds) {
-                    for (auto& node : it.second) {
-                        if (node->m_instancer) {
-                            for (auto& instance : node->m_instancer->getInstances()) {
-                                enforceBounds(ctx, type, *node, instance);
-                            }
-                        }
-                        else {
-                            enforceBounds(ctx, type, *node, node->getInstance());
-                        }
-                    }
+            if (node->m_instancer) {
+                for (auto& transform : node->m_instancer->modifyTransforms()) {
+                    enforceBounds(ctx, type, *node, transform);
                 }
             }
+            else {
+                enforceBounds(ctx, type, *node, node->modifyTransform());
+            }
+        };
+
+        if (!m_enforceBoundsStatic.empty()) {
+            std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
+            for (auto* node : m_enforceBoundsStatic) {
+                enforce(node);
+            }
+            // NOTE KI static is enforced only once (after initial model setup)
+            m_enforceBoundsStatic.clear();
+        }
+
+        if (!m_enforceBoundsDynamic.empty()) {
+            //std::cout << "dynamic: " << m_enforceBoundsDynamic.size() << '\n';
+            for (auto* node : m_enforceBoundsDynamic) {
+                enforce(node);
+            }
+        }
+    }
+
+    void PhysicsEngine::preparePending(const UpdateContext& ctx)
+    {
+        if (m_pending.empty()) return;
+
+        std::map<physics::physics_id, bool> prepared;
+
+        for (const auto& id : m_pending) {
+            auto& obj = m_objects[id];
+            const auto level = obj.m_node->getTransform().getMatrixLevel();
+            if (obj.m_matrixLevel == level) continue;
+
+            obj.prepare(m_worldId, m_spaceId);
+            obj.updateToPhysics(false);
+
+            if (obj.m_update) {
+                m_updateObjects.push_back(&obj);
+            }
+
+            prepared.insert({ id, true });
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pending.begin(),
+                m_pending.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pending.erase(it, m_pending.end());
+        }
+    }
+
+    void PhysicsEngine::preparePendingNodes(const UpdateContext& ctx)
+    {
+        if (m_pendingNodes.empty()) return;
+
+        std::map<Node*, bool> prepared;
+
+        for (auto* node : m_pendingNodes) {
+            if (node->getTransform().getMatrixLevel() < 0) continue;
+
+            if (node->m_type->m_flags.staticPhysics) {
+                m_enforceBoundsStatic.push_back(node);
+            }
+            else {
+                m_enforceBoundsDynamic.push_back(node);
+            }
+
+            prepared.insert({ node, true });
+        }
+
+        if (!prepared.empty()) {
+            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+            const auto& it = std::remove_if(
+                m_pendingNodes.begin(),
+                m_pendingNodes.end(),
+                [&prepared](auto& id) {
+                    return prepared.find(id) != prepared.end();
+                });
+            m_pendingNodes.erase(it, m_pendingNodes.end());
         }
     }
 
@@ -195,58 +277,66 @@ namespace physics
         const UpdateContext& ctx,
         const MeshType& type,
         Node& node,
-        NodeInstance& instance)
+        NodeTransform& transform)
     {
-        int physicsLevel = type.m_flags.staticPhysics ? m_staticPhysicsLevel : m_physicsLevel;
-        if (instance.m_physicsLevel == m_staticPhysicsLevel &&
-            instance.m_matrixLevel == instance.m_physicsMatrixLevel) return;
+        if (transform.m_matrixLevel == transform.m_physicsLevel) return;
+        transform.m_physicsLevel = transform.m_matrixLevel;
 
-        const auto& worldPos = instance.getWorldPosition();
-        glm::vec3 pos = instance.getPosition();
+        const auto& worldPos = transform.getWorldPosition();
+        glm::vec3 pos = transform.getPosition();
 
-        auto surfaceY = getWorldSurfaceLevel(worldPos);
+        const auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
-        auto y = surfaceY - parent->getWorldPosition().y;
-        y += instance.getScale().y;
+        auto y = surfaceY - parent->getTransform().getWorldPosition().y;
+        y += transform.getScale().y;
         pos.y = y;
 
         //KI_INFO_OUT(fmt::format(
         //    "({},{}, {}) => {}, {}, {}",
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
-        instance.setPosition(pos);
+        transform.setPosition(pos);
 
-        if (instance.m_dirty) {
-            instance.updateModelMatrix(parent->getInstance());
+        if (transform.m_dirty) {
+            transform.updateModelMatrix(parent->getTransform());
+            auto& nodeTransform = node.modifyTransform();
+            nodeTransform.m_dirtySnapshot = true;
+            nodeTransform.m_dirtyEntity = true;
         }
-
-        instance.m_physicsMatrixLevel = instance.m_matrixLevel;
-        instance.m_physicsLevel = physicsLevel;
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
     }
 
-    void PhysicsEngine::updateNode(
-        const UpdateContext& ctx,
-        const MeshType& type,
-        Node& node,
-        NodeInstance& instance)
+    physics::physics_id PhysicsEngine::registerObject()
     {
+        auto& obj = m_objects.emplace_back<Object>({});
+        obj.m_id = static_cast<physics::physics_id>(m_objects.size() - 1);
+
+        m_pending.push_back(obj.m_id);
+
+        return obj.m_id;
     }
 
-    void PhysicsEngine::registerObject(Object* obj)
+    Object* PhysicsEngine::getObject(physics::physics_id id)
     {
-        m_objects.insert({ obj->m_geomId, obj });
+        if (id < 1 || id >= m_objects.size()) return nullptr;
+        return &m_objects[id];
     }
 
-    Surface* PhysicsEngine::registerSurface(std::unique_ptr<Surface> surface)
+    physics::height_map_id PhysicsEngine::registerHeightMap()
     {
-        m_surfaces.push_back(std::move(surface));
-        m_physicsLevel++;
-        m_staticPhysicsLevel++;
-        return m_surfaces.back().get();
+        auto& map = m_heightMaps.emplace_back<HeightMap>({});
+        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size() - 1);
+
+        return map.m_id;
+    }
+
+    HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id)
+    {
+        if (id < 1 || id >= m_heightMaps.size()) return nullptr;
+        return &m_heightMaps[id];
     }
 
     float PhysicsEngine::getWorldSurfaceLevel(const glm::vec3& pos)
@@ -254,14 +344,21 @@ namespace physics
         float min = 0.f;
         bool hit = false;
 
-        for (auto& surface : m_surfaces) {
+        for (const auto& surface : m_heightMaps) {
+            if (!surface.m_id) continue;
             //if (!surface->withinBounds(pos)) continue;
 
-            float level = surface->getLevel(pos);
+            const float level = surface.getLevel(pos);
             if (!hit || level > min) min = level;
             hit = true;
         }
 
         return hit ? min : 0.f;
+    }
+
+    void PhysicsEngine::handleNodeAdded(Node* node)
+    {
+        if (!node->m_type->m_flags.enforceBounds) return;
+        m_pendingNodes.push_back(node);
     }
 }

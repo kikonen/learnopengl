@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/size.h"
+
 #include "AABB.h"
 
 // https://bruop.github.io/frustum_culling/
@@ -15,15 +17,15 @@ struct OBB {
     inline bool within(float a, float x, float b);
 
     bool inFrustum(
-        int projectedLevel,
+        ki::level_id projectedLevel,
         const glm::mat4& projectedMatrix,
-        int modelLevel,
+        ki::level_id modelLevel,
         const glm::mat4& modelMatrix);
 
     void prepareProjected(
-        int projectedLevel,
+        ki::level_id projectedLevel,
         const glm::mat4& projectedMatrix,
-        int modelLevel,
+        ki::level_id modelLevel,
         const glm::mat4& modelMatrix);
 
     void prepareCorners();
@@ -32,6 +34,6 @@ struct OBB {
     glm::vec4 m_corners[8];
     glm::vec4 m_projected[8];
 
-    int m_projectedLevel = -1;
-    int m_modelLevel = -1;
+    ki::level_id m_projectedLevel{ (ki::level_id)-1 };
+    ki::level_id m_modelLevel{ (ki::level_id)-1 };
 };

@@ -29,10 +29,16 @@ public:
 
     const glm::uvec2& getSize();
 
+    bool isFullScreen() const {
+        return m_fullScreen;
+    }
+
     void close();
-    bool isClosed();
+    bool isClosed() const;
 
     void setTitle(std::string_view title);
+
+    void toggleFullScreen();
 
     void processInput(const ki::RenderClock& clock);
 
@@ -55,12 +61,21 @@ public:
 
     std::unique_ptr<Input> m_input{ nullptr };
 
+    bool m_was_EXIT{ false };
+    bool m_was_FULL_SCREEN_TOGGLE{ false };
+
 protected:
     Engine& m_engine;
 
     bool m_sizeValid{ false };
-    glm::uvec2 m_size{ 0 } ;
+    glm::uvec2 m_size{ 0 };
     glm::uvec2 m_safeSize{ 1 };
+
+    glm::uvec2 m_windowedPos{ 0 };
+    glm::uvec2 m_windowedSize{ 0 };
+    bool m_windowedWasMaximized{ false };
+
+    bool m_fullScreen{ false };
 
     std::string m_title;
 };

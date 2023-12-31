@@ -1,6 +1,7 @@
 #include "ShadowMapRenderer.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
@@ -23,14 +24,14 @@ ShadowMapRenderer::~ShadowMapRenderer()
     }
 }
 
-void ShadowMapRenderer::prepare(
+void ShadowMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
@@ -49,7 +50,7 @@ void ShadowMapRenderer::prepare(
     }
 
     for (auto& cascade : m_cascades) {
-        cascade->prepare(assets, registry);
+        cascade->prepareRT(assets, registry);
     }
 
     m_activeCascade = 0;
@@ -72,12 +73,12 @@ void ShadowMapRenderer::prepare(
 
         m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
-            vp.getProgram()->u_nearPlane->set(active->getNearPlane());
-            vp.getProgram()->u_farPlane->set(active->getFarPlane());
+            vp.getProgram()->m_uniforms->u_nearPlane.set(active->getNearPlane());
+            vp.getProgram()->m_uniforms->u_farPlane.set(active->getFarPlane());
             });
 
         m_debugViewport->setEffectEnabled(false);
-        m_debugViewport->prepare(assets);
+        m_debugViewport->prepareRT(assets);
     }
 }
 
@@ -86,7 +87,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return;
 
-    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -118,7 +119,7 @@ bool ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
-    auto& node = ctx.m_registry->m_nodeRegistry->m_dirLight;
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
     if (!node) return false;
 
     {

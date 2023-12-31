@@ -21,7 +21,7 @@ public:
 
     void prepare(Registry* registry);
 
-    void update(const UpdateContext& ctx);
+    void updateWT(const UpdateContext& ctx);
 
     template<typename T>
     inline T* get(Node* node) const noexcept

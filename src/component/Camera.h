@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "ki/size.h"
+
 #include "kigl/kigl.h"
 
 #include "asset/Frustum.h"
@@ -27,13 +29,13 @@ public:
         const glm::vec3 up);
     ~Camera() = default;
 
-    void update(const UpdateContext& ctx, Node& node) noexcept;
+    void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 
     bool isOrthagonal() const noexcept {
         return m_orthagonal;
     }
 
-    const std::array<float, 4>&  getViewport() const noexcept {
+    const std::array<float, 4>& getViewport() const noexcept {
         return m_viewport;
     }
 
@@ -61,9 +63,9 @@ public:
     const glm::mat4& getProjected() noexcept;
     const glm::mat4& getView() noexcept;
 
-    inline const int getProjectionLevel() const noexcept { return m_projectionLevel; }
-    inline const int getProjectedLevel() const noexcept { return m_projectedLevel; }
-    inline const int getViewLevel() const noexcept { return m_viewLevel; }
+    inline const ki::level_id getProjectionLevel() const noexcept { return m_projectionLevel; }
+    inline const ki::level_id getProjectedLevel() const noexcept { return m_projectedLevel; }
+    inline const ki::level_id getViewLevel() const noexcept { return m_viewLevel; }
 
     inline const glm::vec3& getWorldPosition() const noexcept {
         if (m_dirty) updateCamera();
@@ -149,7 +151,7 @@ private:
 
     // NOTE KI *identity* matrix for standalone camera
     glm::quat m_nodeQuat{ 1.f, 0.f, 0.f, 0.f };
-    int m_nodeLevel = -1;
+    ki::level_id m_nodeLevel{ (ki::level_id)-1 };
 
     float m_fov{ 45.f };
     float m_fovProjection = -1.0f;
@@ -173,9 +175,9 @@ private:
 
     mutable glm::mat4 m_viewMatrix{ 1.f };
 
-    int m_projectionLevel = -1;
-    int m_projectedLevel = -1;
-    int m_viewLevel = -1;
+    ki::level_id m_projectionLevel{ (ki::level_id)-1 };
+    ki::level_id m_projectedLevel{ (ki::level_id)-1 };
+    ki::level_id m_viewLevel{ (ki::level_id)-1 };
 
     glm::vec3 m_worldPosition{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };

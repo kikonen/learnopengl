@@ -24,16 +24,18 @@ public:
 
     ~MirrorMapRenderer() = default;
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
     bool render(
         const RenderContext& ctx);
+
+    void handleNodeAdded(Node* node);
 
 private:
     void drawNodes(
@@ -70,4 +72,6 @@ private:
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
 
     Material m_tagMaterial;
+
+    std::vector<Node*> m_nodes;
 };

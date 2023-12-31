@@ -5,7 +5,7 @@
 #include "asset/CustomMaterial.h"
 
 namespace loader {
-    enum class CustomMaterialType {
+    enum class CustomMaterialType : std::underlying_type_t<std::byte> {
         none,
         text,
         skybox,

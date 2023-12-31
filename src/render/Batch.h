@@ -51,7 +51,7 @@ public:
 
     void bind() noexcept;
 
-    void prepare(
+    void prepareRT(
         const Assets& assets,
         Registry* registry,
         int entryCount = -1,
@@ -70,13 +70,13 @@ public:
     void flush(
         const RenderContext& ctx);
 
-    backend::gl::PerformanceCounters getCounters(bool clear);
-    backend::gl::PerformanceCounters getCountersLocal(bool clear);
+    backend::gl::PerformanceCounters getCounters(bool clear) const;
+    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
 private:
     void addCommand(
         const RenderContext& ctx,
-        MeshType* type,
+        const MeshType* type,
         Program* program) noexcept;
 
     bool inFrustum(

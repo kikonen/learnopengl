@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Renderer.h"
 
 #include "asset/Material.h"
@@ -24,20 +26,22 @@ public:
 
     virtual ~WaterMapRenderer() = default;
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 
     bool render(
         const RenderContext& ctx);
 
+    void handleNodeAdded(Node* node);
+
 private:
-    void updateReflectionView(const RenderContext& ctx);
-    void updateRefractionView(const RenderContext& ctx);
+    void updateReflectionView(const UpdateViewContext& ctx);
+    void updateRefractionView(const UpdateViewContext& ctx);
 
     void drawNodes(
         const RenderContext& ctx,
@@ -79,4 +83,6 @@ private:
     unsigned int m_noiseTextureID{ 0 };
 
     Material m_tagMaterial;
+
+    std::vector<Node*> m_nodes;
 };

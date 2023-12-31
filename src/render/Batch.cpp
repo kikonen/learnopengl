@@ -150,7 +150,7 @@ void Batch::bind() noexcept
     m_draw->bind();
 }
 
-void Batch::prepare(
+void Batch::prepareRT(
     const Assets& assets,
     Registry* registry,
     int entryCount,
@@ -179,7 +179,7 @@ void Batch::prepare(
         assets.glUseFence,
         assets.glUseSingleFence);
 
-    m_draw->prepare(assets, registry, entryCount, bufferCount);
+    m_draw->prepareRT(assets, registry, entryCount, bufferCount);
 
     m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
     m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
@@ -189,7 +189,7 @@ void Batch::prepare(
 
 void Batch::addCommand(
     const RenderContext& ctx,
-    MeshType* type,
+    const MeshType* type,
     Program* program) noexcept
 {
     auto& cmd = m_batches.emplace_back();
@@ -207,7 +207,7 @@ void Batch::draw(
 {
     const auto type = node.m_type;
 
-    if (type->m_flags.invisible || type->m_flags.noDisplay) return;
+    if (type->m_flags.invisible || !node.m_visible) return;
 
     {
         const bool allowBlend = ctx.m_allowBlend;
@@ -227,7 +227,7 @@ void Batch::draw(
         }
 
         auto& top = m_batches.back();
-        top.m_materialVBO = &type->m_materialVBO;
+        //top.m_materialVBO = &type->m_materialVBO;
     }
 
     node.bindBatch(ctx, *this);
@@ -327,12 +327,12 @@ void Batch::flush(
     m_entityIndeces.clear();
 }
 
-backend::gl::PerformanceCounters Batch::getCounters(bool clear)
+backend::gl::PerformanceCounters Batch::getCounters(bool clear) const
 {
     return m_draw->getCounters(clear);
 }
 
-backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear)
+backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear) const
 {
     backend::gl::PerformanceCounters counters{ m_drawCount, m_skipCount };
     if (clear) {

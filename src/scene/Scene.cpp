@@ -1,7 +1,8 @@
 #include "Scene.h"
 
-#include <thread>
-#include <mutex>
+#include <iostream>
+
+#include "util/thread.h"
 
 #include "ki/Timer.h"
 #include "kigl/kigl.h"
@@ -12,19 +13,11 @@
 
 #include "backend/DrawBuffer.h"
 
-#include "component/ParticleGenerator.h"
-
 #include "model/Viewport.h"
 
 #include "event/Dispatcher.h"
 
-#include "script/ScriptEngine.h"
-#include "script/CommandEngine.h"
-#include "script/api/InvokeLuaFunction.h"
-
 #include "controller/NodeController.h"
-
-#include "physics/PhysicsEngine.h"
 
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
@@ -61,11 +54,15 @@
 
 #include "scene/ParticleSystem.h"
 
+namespace {
+}
+
 Scene::Scene(
     const Assets& assets,
-    std::shared_ptr<Registry> registry)
+    std::shared_ptr<Registry> registry,
+    std::shared_ptr<std::atomic<bool>> alive)
     : m_assets(assets),
-    m_alive(std::make_shared<std::atomic<bool>>(true)),
+    m_alive(alive),
     m_registry(registry)
 {
     {
@@ -99,7 +96,7 @@ Scene::Scene(
     m_particleSystem = std::make_unique<ParticleSystem>();
 
     m_batch = std::make_unique<Batch>();
-    m_nodeDraw = std::make_unique<NodeDraw>();
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
     m_renderData = std::make_unique<RenderData>();
 }
 
@@ -111,65 +108,73 @@ Scene::~Scene()
     KI_INFO("SCENE: deleted");
 }
 
-void Scene::prepare()
+void Scene::destroy()
 {
-    m_registry->m_dispatcher->addListener(
-        event::Type::node_added,
-        [this](const event::Event& e) {
-            this->bindComponents(e.body.node.target);
-        });
+    KI_INFO("SCENE: destroy");
+}
 
-    m_registry->m_dispatcher->addListener(
+void Scene::prepareRT()
+{
+    std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
+
+    auto* dispatcherView = m_registry->m_dispatcherView;
+
+    dispatcherView->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
-            this->m_registry->m_physicsEngine->setEnabled(true);
+        });
+
+    dispatcherView->addListener(
+        event::Type::node_added,
+        [this](const event::Event& e) {
+            this->handleNodeAdded(e.body.node.target);
         });
 
     m_renderData->prepare();
 
     auto* registry = m_registry.get();
 
-    m_batch->prepare(m_assets, registry);
-    m_nodeDraw->prepare(m_assets, registry);
+    m_batch->prepareRT(m_assets, registry);
+    m_nodeDraw->prepareRT(m_assets, registry);
 
-    m_mainRenderer->prepare(m_assets, registry);
+    m_mainRenderer->prepareRT(m_assets, registry);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepare(m_assets, registry);
+        m_rearRenderer->prepareRT(m_assets, registry);
     }
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepare(m_assets, registry);
+        m_rearRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->prepare(m_assets, registry);
+        m_viewportRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepare(m_assets, registry);
+        m_waterMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepare(m_assets, registry);
+        m_mirrorMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->prepare(m_assets, registry);
+        m_cubeMapRenderer->prepareRT(m_assets, registry);
     }
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->prepare(m_assets, registry);
+        m_shadowMapRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->prepare(m_assets, registry);
+        m_objectIdRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_normalRenderer->isEnabled()) {
-        m_normalRenderer->prepare(m_assets, registry);
+        m_normalRenderer->prepareRT(m_assets, registry);
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepare(m_assets, registry);
+        m_particleSystem->prepareRT(m_assets, registry);
     }
 
     {
@@ -188,7 +193,7 @@ void Scene::prepare()
             0,
             m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-        m_mainViewport->setUpdate([](Viewport& vp, const UpdateContext& ctx) {
+        m_mainViewport->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
         });
 
         m_mainViewport->setBindBefore([this](Viewport& vp) {
@@ -203,7 +208,7 @@ void Scene::prepare()
         m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
         m_mainViewport->setEffect(m_assets.viewportEffect);
 
-        m_mainViewport->prepare(m_assets);
+        m_mainViewport->prepareRT(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_mainViewport);
     }
 
@@ -226,7 +231,7 @@ void Scene::prepare()
         m_rearViewport->setGammaCorrect(true);
         m_rearViewport->setHardwareGamma(true);
 
-        m_rearViewport->prepare(m_assets);
+        m_rearViewport->prepareRT(m_assets);
         m_registry->m_viewportRegistry->addViewport(m_rearViewport);
     }
 
@@ -256,58 +261,50 @@ void Scene::prepare()
     }
 }
 
-void Scene::processEvents(const UpdateContext& ctx)
-{
-    m_registry->m_dispatcher->dispatchEvents(ctx);
-}
-
 void Scene::update(const UpdateContext& ctx)
 {
-    //if (ctx.clock.frameCount > 120) {
-    if (m_loaded) {
-        m_registry->m_commandEngine->update(ctx);
-    }
+    m_registry->m_dispatcherView->dispatchEvents();
 
-    if (auto root = m_registry->m_nodeRegistry->m_root) {
-        root->update(ctx);
-        m_registry->m_physicsEngine->update(ctx);
-    }
-
-    for (auto& generator : m_particleGenerators) {
-        generator->update(ctx);
-    }
-
-    if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->update(ctx);
-    }
-
-    if (m_particleSystem) {
-        m_particleSystem->update(ctx);
-    }
-
-    m_registry->update(ctx);
+    m_registry->m_nodeRegistry->updateRT(ctx);
+    m_registry->updateRT(ctx);
 
     m_renderData->update();
+
+    //if (m_particleSystem) {
+    //    m_particleSystem->update(ctx);
+    //}
 }
 
-void Scene::updateView(const RenderContext& ctx)
+void Scene::updateRT(const UpdateViewContext& ctx)
 {
-    if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->updateView(ctx);
+    if (m_viewportRenderer->isEnabled()) {
+        m_viewportRenderer->updateRT(ctx);
     }
 
-    m_mainRenderer->updateView(ctx);
+    if (m_objectIdRenderer->isEnabled()) {
+        m_objectIdRenderer->updateRT(ctx);
+    }
+
+    m_mainRenderer->updateRT(ctx);
 
     if (m_assets.showRearView) {
-        m_rearRenderer->updateView(ctx);
+        m_rearRenderer->updateRT(ctx);
     }
 
-    m_cubeMapRenderer->updateView(ctx);
-    m_mirrorMapRenderer->updateView(ctx);
-    m_waterMapRenderer->updateView(ctx);
+    m_cubeMapRenderer->updateRT(ctx);
+    m_mirrorMapRenderer->updateRT(ctx);
+    m_waterMapRenderer->updateRT(ctx);
 
-    m_nodeDraw->updateView(ctx);
-    m_windowBuffer->updateView(ctx);
+    m_nodeDraw->updateRT(ctx);
+    m_windowBuffer->updateRT(ctx);
+}
+
+void Scene::handleNodeAdded(Node* node)
+{
+    m_nodeDraw->handleNodeAdded(node);
+    m_mirrorMapRenderer->handleNodeAdded(node);
+    m_waterMapRenderer->handleNodeAdded(node);
+    m_cubeMapRenderer->handleNodeAdded(node);
 }
 
 void Scene::bind(const RenderContext& ctx)
@@ -333,12 +330,12 @@ void Scene::unbind(const RenderContext& ctx)
 {
 }
 
-backend::gl::PerformanceCounters Scene::getCounters(bool clear)
+backend::gl::PerformanceCounters Scene::getCounters(bool clear) const
 {
     return m_batch->getCounters(clear);
 }
 
-backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear)
+backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 {
     return m_batch->getCountersLocal(clear);
 }
@@ -350,21 +347,21 @@ void Scene::draw(const RenderContext& ctx)
     bool wasCubeMap = false;
     int renderCount = 0;
 
-    if (m_shadowMapRenderer->isEnabled() && m_shadowMapRenderer->render(ctx)) {
+    if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
     ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
-    if (m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->render(ctx)) {
+    if (m_cubeMapRenderer->render(ctx)) {
         wasCubeMap = ctx.m_assets.cubeMapSkipOthers;
     }
 
-    if (!wasCubeMap && m_waterMapRenderer->isEnabled() && m_waterMapRenderer->render(ctx))
+    if (!wasCubeMap && m_waterMapRenderer->render(ctx))
         renderCount++;
 
-    if (!wasCubeMap && m_mirrorMapRenderer->isEnabled() && m_mirrorMapRenderer->render(ctx))
+    if (!wasCubeMap && m_mirrorMapRenderer->render(ctx))
         renderCount++;
 
     // NOTE KI skip main render if special update cycle
@@ -494,44 +491,15 @@ const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
 }
 
-Node* Scene::getActiveCamera() const
+Node* Scene::getActiveCameraNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCamera2();
+    return m_registry->m_nodeRegistry->getActiveCameraNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
-    auto* node = getActiveCamera();
+    auto* node = getActiveCameraNode();
     return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
-}
-
-void Scene::bindComponents(Node* node)
-{
-    auto& type = node->m_type;
-
-    if (node->m_particleGenerator) {
-        if (m_particleSystem) {
-            node->m_particleGenerator->setSystem(m_particleSystem.get());
-            m_particleGenerators.push_back(node);
-        }
-    }
-
-    if (m_assets.useScript) {
-        auto* se = m_registry->m_scriptEngine;
-
-        const auto& scripts = se->getNodeScripts(node->m_id);
-
-        for (const auto& scriptId : scripts) {
-            {
-                event::Event evt { event::Type::script_run };
-                auto& body = evt.body.script = {
-                    .target = node->m_id,
-                    .id = scriptId,
-                };
-                m_registry->m_dispatcher->send(evt);
-            }
-        }
-    }
 }
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)

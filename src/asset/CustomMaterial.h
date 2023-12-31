@@ -22,11 +22,11 @@ public:
 
     virtual ~CustomMaterial() = default;
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) {}
 
-    virtual void updateView(
+    virtual void updateRT(
         const RenderContext& ctx)
     {
         if (!m_dirty) return;

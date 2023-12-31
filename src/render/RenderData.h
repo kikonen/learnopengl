@@ -31,8 +31,8 @@ public:
     void updateLights(Registry* registry, bool useLight);
 
 private:
-    void updateImageTextures();
-    void updateChannelTextures();
+    //void updateImageTextures();
+    //void updateChannelTextures();
 
 public:
 
@@ -45,7 +45,7 @@ private:
     GLSyncQueue<ClipPlanesUBO, false> m_clipPlanes{ "cliplanesUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
     GLSyncQueue<LightsUBO, false> m_lights{ "lightsUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
 
-    GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
-    int m_imageTextureLevel = -1;
-    int m_channelTextureLevel = -1;
+    //GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
+    //int m_imageTextureLevel = -1;
+    //int m_channelTextureLevel = -1;
 };

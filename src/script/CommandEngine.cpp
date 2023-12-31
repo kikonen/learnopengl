@@ -89,6 +89,8 @@ namespace script
 
     script::command_id CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
     {
+        std::lock_guard<std::mutex> lock { m_lock };
+
         auto& cmd = m_pending.emplace_back(std::move(pcmd));
         return cmd->m_id;
     }
@@ -134,9 +136,12 @@ namespace script
         // NOTE KI can cancel only *EXISTING* commands not future commands
         if (m_canceled.empty()) return;
 
-        for (auto& cmd : m_pending) {
-            if (!isCanceled(cmd->m_id)) continue;
-            cmd->m_canceled = true;
+        {
+            std::lock_guard<std::mutex> lock{ m_lock };
+            for (auto& cmd : m_pending) {
+                if (!isCanceled(cmd->m_id)) continue;
+                cmd->m_canceled = true;
+            }
         }
 
         for (auto& cmd : m_blocked) {
@@ -154,6 +159,8 @@ namespace script
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
     {
+        std::lock_guard<std::mutex> lock{ m_lock };
+
         // NOTE KI scripts cannot exist before node is in registry
         // => thus it MUST exist
         if (m_pending.empty()) return;

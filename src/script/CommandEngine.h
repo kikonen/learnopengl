@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <mutex>
 
 #include "asset/Assets.h"
 
@@ -47,6 +48,8 @@ namespace script
 
     private:
         const Assets& m_assets;
+
+        std::mutex m_lock{};
 
         std::vector<std::unique_ptr<Command>> m_pending;
         std::vector<std::unique_ptr<Command>> m_blocked;

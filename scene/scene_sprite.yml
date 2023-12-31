@@ -4,8 +4,9 @@ viewports:
 skybox:
   program: g_skybox
   xmaterial: skybox
-  material: skybox/BluePinkNebular
-  swap_faces: true
+  xmaterial: skybox/BluePinkNebular
+  xswap_faces: true
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 lights: {}
 cube_maps: {}
 script:
@@ -114,7 +115,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 100]
+    scale: 100
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

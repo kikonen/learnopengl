@@ -1,11 +1,8 @@
 ---
 name: Audio
-viewports:
 skybox:
   program: g_skybox
-  material: skybox
-lights: {}
-cube_maps: {}
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common
@@ -96,7 +93,7 @@ entities:
     front: [0, 1, 0]
     render_flags:
       no_shadow: true
-    scale: [100, 100, 1]
+    scale: 100
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

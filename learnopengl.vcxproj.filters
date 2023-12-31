@@ -342,7 +342,7 @@
     <ClCompile Include="src\asset\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\NodeInstance.cpp">
+    <ClCompile Include="src\model\NodeTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\InstancePhysics.cpp">
@@ -553,6 +553,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\Script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\ProgramUniforms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\UpdateViewContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\Snapshot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -998,7 +1013,7 @@
     <ClInclude Include="src\asset\TerrainMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\NodeInstance.h">
+    <ClInclude Include="src\model\NodeTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\InstancePhysics.h">
@@ -1284,6 +1299,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Body.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\ProgramUniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\UpdateViewContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\NodeComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\Snapshot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,7 +33,7 @@ void ControllerRegistry::prepare(Registry* registry)
         });
 }
 
-void ControllerRegistry::update(const UpdateContext& ctx)
+void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
     for (const auto& it : m_controllers) {
         Node* node = m_registry->m_nodeRegistry->getNode(it.first);
@@ -41,7 +41,7 @@ void ControllerRegistry::update(const UpdateContext& ctx)
 
         bool changed = false;
         for (auto* controller : it.second) {
-            changed |= controller->update(ctx, *node);
+            changed |= controller->updateWT(ctx, *node);
         }
 
         if (changed) {

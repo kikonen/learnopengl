@@ -11,39 +11,37 @@
 
 
 struct NodeRenderFlags {
-    bool alpha = false;
-    bool blend = false;
-    bool renderBack = false;
-    bool wireframe = false;
+    bool alpha : 1 {false};
+    bool blend : 1 {false};
+    bool renderBack : 1 {false};
+    bool wireframe : 1 {false};
 
-    bool gbuffer = false;
-    bool blendOIT = false;
-    bool depth = false;
+    bool gbuffer : 1 {false};
+    bool blendOIT : 1 {false};
+    bool depth : 1 {false};
 
-    bool instanced = false;
+    bool instanced : 1 {false};
 
-    bool mirror = false;
-    bool water = false;
-    bool terrain = false;
-    bool cubeMap = false;
-    bool effect = false;
-    bool skybox = false;
+    bool mirror : 1 {false};
+    bool water : 1 {false};
+    bool terrain : 1 {false};
+    bool cubeMap : 1 {false};
+    bool effect : 1 {false};
+    bool skybox : 1 {false};
 
-    bool noShadow = false;
-    bool noSelect = false;
-    bool noReflect = false;
-    bool noRefract = false;
+    bool noShadow : 1 {false};
+    bool noSelect : 1 {false};
+    bool noReflect : 1 {false};
+    bool noRefract : 1 {false};
     // invisible == permanently invisible
-    bool invisible = false;
-    // noDisplay == temporarily hidden
-    bool noDisplay = false;
-    bool noFrustum = false;
+    bool invisible : 1 {false};
+    bool noFrustum : 1 {false};
+    bool noNormals : 1 {false};
 
-    bool tessellation = false;
+    bool tessellation : 1 {false};
 
-    bool staticPhysics = false;
-    bool enforceBounds = false;
-    bool physics = false;
+    bool staticPhysics : 1 {false};
+    bool enforceBounds : 1 {false};
 };
 
 class CustomMaterial;
@@ -60,11 +58,14 @@ class MeshType final
 
 public:
     MeshType(std::string_view name);
+    MeshType(MeshType&& o) noexcept;
     ~MeshType();
+
+    inline bool isReady() const { return m_preparedView; }
 
     const std::string str() const noexcept;
 
-    void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
+    //void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
     void setMesh(Mesh* mesh);
 
     inline const Mesh* getMesh() const noexcept {
@@ -85,7 +86,6 @@ public:
         return m_materialVBO.m_materials.size();
     }
 
-
     CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
 
     void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
@@ -94,16 +94,20 @@ public:
         const Assets& assets,
         Registry* registry);
 
+    void prepareRT(
+        const Assets& assets,
+        Registry* registry);
+
     void bind(const RenderContext& ctx);
 
 public:
-    const ki::type_id typeID;
+    ki::type_id m_id{ 0 };
     const std::string m_name;
 
     EntityType m_entityType{ EntityType::origo };
     NodeRenderFlags m_flags;
 
-    int m_priority = { 0 };
+    ki::size_t8 m_priority{ 0 };
 
     Program* m_program{ nullptr };
     Program* m_depthProgram{ nullptr };
@@ -118,11 +122,11 @@ public:
     GLVertexArray* m_vao{ nullptr };
 
 private:
-    bool m_prepared = false;
-    bool m_preparedBatch = false;
+    bool m_prepared : 1 {false};
+    bool m_preparedView : 1 {false};
 
     Mesh* m_mesh{ nullptr };
-    std::unique_ptr<Mesh> m_deleter;
+    //std::unique_ptr<Mesh> m_deleter;
 
     std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
@@ -134,6 +138,6 @@ struct MeshTypeComparator {
     bool operator()(const MeshType* a, const MeshType* b) const {
         if (a->m_drawOptions < b->m_drawOptions) return true;
         else if (b->m_drawOptions < a->m_drawOptions) return false;
-        return a->typeID < b->typeID;
+        return a->m_id < b->m_id;
     }
 };

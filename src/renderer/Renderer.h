@@ -7,6 +7,7 @@ class Program;
 class Registry;
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
 
 class Node;
@@ -20,7 +21,7 @@ public:
 
     virtual ~Renderer();
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry);
 

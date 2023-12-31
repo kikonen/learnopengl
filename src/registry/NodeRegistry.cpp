@@ -21,9 +21,12 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
+#include "physics/PhysicsEngine.h"
+
 #include "script/ScriptEngine.h"
 
 #include "Registry.h"
+#include "MeshTypeRegistry.h"
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
@@ -33,21 +36,6 @@ namespace {
 
     const ki::program_id NULL_PROGRAM_ID = 0;
 }
-
-
-// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-MeshTypeKey::MeshTypeKey(MeshType* type)
-    : type(type)
-{}
-
-bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
-    const auto& a = type;
-    const auto& b = o.type;
-    if (a->m_drawOptions < b->m_drawOptions) return true;
-    else if (b->m_drawOptions < a->m_drawOptions) return false;
-    return a->typeID < b->typeID;
-}
-
 
 NodeRegistry::NodeRegistry(
     const Assets& assets,
@@ -59,43 +47,35 @@ NodeRegistry::NodeRegistry(
 
 NodeRegistry::~NodeRegistry()
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     // NOTE KI forbid access into deleted nodes
     {
         m_idToNode.clear();
         m_uuidToNode.clear();
 
-        m_parentToChildren.clear();
+        //m_parentToChildren.clear();
     }
 
     {
-        solidNodes.clear();
-        blendedNodes.clear();
-        invisibleNodes.clear();
-
         m_activeNode = nullptr;
-        m_activeCamera = nullptr;
-        m_cameras.clear();
+        m_activeCameraNode = nullptr;
+        m_cameraNodes.clear();
 
-        m_dirLight = nullptr;
-        m_pointLights.clear();
-        m_spotLights.clear();
+        m_dirLightNodes.clear();
+        m_pointLightNodes.clear();
+        m_spotLightNodes.clear();
 
         m_root = nullptr;
     }
 
-    KI_INFO("NODE_REGISTRY: delete");
-    for (auto& all : allNodes) {
-        for (auto& [key, nodes] : all.second) {
-            KI_INFO(fmt::format("NODE_REGISTRY: delete {}", key.type->str()));
-            for (auto& node : nodes) {
-                delete node;
-            }
-        }
+    for (auto* node : m_allNodes) {
+        delete node;
     }
-    allNodes.clear();
+    m_allNodes.clear();
 
     for (auto& [parentId, nodes] : m_pendingChildren) {
-        for (auto& node : nodes) {
+        for (auto& [uuid, node] : nodes) {
             delete node;
         }
     }
@@ -110,30 +90,94 @@ void NodeRegistry::prepare(
     Registry* registry)
 {
     m_registry = registry;
-
     m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->add(m_selectionMaterial);
+    registry->m_materialRegistry->registerMaterial(m_selectionMaterial);
 
     attachListeners();
+}
+
+void NodeRegistry::updateWT(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    if (m_root) {
+        m_root->updateWT(ctx);
+    }
+
+    for (auto& node : m_allNodes) {
+        node->snapshot();
+    }
+}
+
+void NodeRegistry::updateRT(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+
+    for (auto& node : m_cameraNodes) {
+        node->m_camera->updateRT(ctx, *node);
+    }
+    for (auto& node : m_pointLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
+    for (auto& node : m_spotLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
+    for (auto& node : m_dirLightNodes) {
+        node->m_light->updateRT(ctx, *node);
+    }
+}
+
+void NodeRegistry::updateEntity(const UpdateContext& ctx)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+
+    for (auto* node : m_allNodes) {
+        node->updateEntity(ctx, m_registry->m_entityRegistry);
+    }
 }
 
 void NodeRegistry::attachListeners()
 {
     auto* dispatcher = m_registry->m_dispatcher;
+    auto* dispatcherView = m_registry->m_dispatcherView;
 
     dispatcher->addListener(
         event::Type::node_add,
         [this](const event::Event& e) {
             attachNode(
                 e.body.node.target,
+                e.body.node.uuid,
+                e.body.node.parentUUID,
                 e.body.node.parentId);
         });
 
-    dispatcher->addListener(
-        event::Type::node_change_parent,
-        [this](const event::Event& e) {
-            changeParent(e.body.node.target, e.body.node.parentId);
-        });
+    if (m_assets.useScript) {
+        dispatcher->addListener(
+            event::Type::node_added,
+            [this](const event::Event& e) {
+                auto& data = e.body.node;
+                auto* node = data.target;
+
+                auto* se = m_registry->m_scriptEngine;
+                const auto& scripts = se->getNodeScripts(node->m_id);
+
+                for (const auto& scriptId : scripts) {
+                    {
+                        event::Event evt { event::Type::script_run };
+                        auto& body = evt.body.script = {
+                            .target = node->m_id,
+                            .id = scriptId,
+                        };
+                        m_registry->m_dispatcher->send(evt);
+                    }
+                }
+            });
+    }
+
+    //dispatcher->addListener(
+    //    event::Type::node_change_parent,
+    //    [this](const event::Event& e) {
+    //        changeParent(e.body.node.target, e.body.node.parentId);
+    //    });
 
     dispatcher->addListener(
         event::Type::node_select,
@@ -153,43 +197,42 @@ void NodeRegistry::attachListeners()
         event::Type::camera_activate,
         [this](const event::Event& e) {
             auto* node = e.body.node.target;
-            if (!node) node = findDefaultCamera();
-            setActiveCamera(node);
+            if (!node) node = findDefaultCameraNode();
+            setActiveCameraNode(node);
         });
 
     dispatcher->addListener(
         event::Type::audio_listener_add,
         [this](const event::Event& e) {
-            auto& data = e.body.nodeAudioListener;
-            auto* node = getNode(data.target);
+            auto& data = e.blob->body.audioListener;
+            auto* node = getNode(e.body.audioInit.target);
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerListener();
             if (id) {
-                node->m_audioListenerId = id;
                 auto* listener = ae->getListener(id);
-                listener->m_gain = data.gain;
-                listener->update();
 
-                if (data.isDefault) {
-                    ae->setActiveListener(id);
-                }
+                listener->m_default = data.isDefault;
+                listener->m_gain = data.gain;
+                listener->m_node = node;
             }
         });
 
     dispatcher->addListener(
         event::Type::audio_source_add,
         [this](const event::Event& e) {
-            auto& data = e.body.nodeAudioSource;
+            auto& data = e.blob->body.audioSource;
             if (data.index < 0 || data.index >= ki::MAX_NODE_AUDIO_SOURCE) {
                 return;
             }
-            auto* node = getNode(data.target);
+            auto* node = getNode(e.body.audioInit.target);
             auto* ae = m_registry->m_audioEngine;
             auto id = ae->registerSource(data.soundId);
             if (id) {
-                node->m_audioSourceCount = std::max((ki::size_t8)(data.index + 1), node->m_audioSourceCount);
                 node->m_audioSourceIds[data.index] = id;
+
                 auto* source = ae->getSource(id);
+
+                source->m_autoPlay = data.isAutoPlay;
                 source->m_referenceDistance = data.referenceDistance;
                 source->m_maxDistance = data.maxDistance;
                 source->m_rolloffFactor = data.rolloffFactor;
@@ -198,11 +241,7 @@ void NodeRegistry::attachListeners()
                 source->m_looping = data.looping;
                 source->m_gain = data.gain;
                 source->m_pitch = data.pitch;
-                source->update();
-
-                if (data.isAutoPlay) {
-                    ae->playSource(id);
-                }
+                source->m_node = node;
             }
         });
 
@@ -234,6 +273,24 @@ void NodeRegistry::attachListeners()
             m_registry->m_audioEngine->pauseSource(data.id);
         });
 
+    dispatcher->addListener(
+        event::Type::physics_add,
+        [this](const event::Event& e) {
+            auto& data = e.blob->body.physics;
+            auto* pe = m_registry->m_physicsEngine;
+            auto* node = getNode(e.body.physics.target);
+
+            auto id = pe->registerObject();
+
+            if (id) {
+                auto* obj = pe->getObject(id);
+                obj->m_update = data.update;
+                obj->m_body = data.body;
+                obj->m_geom = data.geom;
+                obj->m_node = node;
+            }
+        });
+
     if (m_assets.useScript) {
         dispatcher->addListener(
             event::Type::script_bind,
@@ -256,6 +313,14 @@ void NodeRegistry::attachListeners()
                 }
             });
     }
+
+    dispatcherView->addListener(
+        event::Type::type_prepare_view,
+        [this](const event::Event& e) {
+            auto& data = e.body.meshType;
+            auto* type = m_registry->m_typeRegistry->modifyType(data.target);
+            type->prepareRT(m_assets, m_registry);
+        });
 }
 
 void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
@@ -283,7 +348,9 @@ void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 
 void NodeRegistry::attachNode(
     Node* node,
-    const uuids::uuid& parentId) noexcept
+    const uuids::uuid& uuid,
+    const uuids::uuid& parentUUID,
+    ki::node_id parentId) noexcept
 {
     m_idToNode.insert(std::make_pair(node->m_id, node));
 
@@ -292,25 +359,23 @@ void NodeRegistry::attachNode(
     }
 
     // NOTE KI ignore children without parent; until parent is found
-    if (!bindParent(node, parentId)) return;
+    if (!bindParent(node, uuid, parentUUID, parentId)) return;
 
-    bindNode(node);
-    bindChildren(node);
+    bindNode(uuid, node);
+    bindChildren(uuid);
 
     bindPendingChildren();
 }
 
 int NodeRegistry::countTagged() const noexcept
 {
+    //std::lock_guard<std::mutex> lock(m_lock);
+
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
-        for (const auto& all : allNodes) {
-            for (const auto& x : all.second) {
-                for (auto& node : x.second) {
-                    if (node->isTagged()) count++;
-                }
-            }
+        for (auto* node : m_allNodes) {
+            if (node->isTagged()) count++;
         }
         m_taggedCount = count;
     }
@@ -319,15 +384,13 @@ int NodeRegistry::countTagged() const noexcept
 
 int NodeRegistry::countSelected() const noexcept
 {
+    //std::lock_guard<std::mutex> lock(m_lock);
+
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
-        for (const auto& all : allNodes) {
-            for (const auto& x : all.second) {
-                for (auto& node : x.second) {
-                    if (node->isSelected()) count++;
-                }
-            }
+        for (auto* node : m_allNodes) {
+            if (node->isSelected()) count++;
         }
         m_selectedCount = count;
     }
@@ -345,86 +408,60 @@ void NodeRegistry::changeParent(
         Node* oldParent = node->getParent();
         if (oldParent == parent) return;
 
-        auto& oldChildren = m_parentToChildren[oldParent->m_id];
-        const auto& it = std::remove_if(
-            oldChildren.begin(),
-            oldChildren.end(),
-            [&node](auto& n) {
-                return n->m_id == node->m_id;
-            });
-        oldChildren.erase(it, oldChildren.end());
+        if (oldParent) {
+            oldParent->removeChild(node);
+        }
+
+        //auto& oldChildren = m_parentToChildren[oldParent->m_id];
+        //const auto& it = std::remove_if(
+        //    oldChildren.begin(),
+        //    oldChildren.end(),
+        //    [&node](auto& n) {
+        //        return n->m_id == node->m_id;
+        //    });
+        //oldChildren.erase(it, oldChildren.end());
     }
 
     node->setParent(parent);
+    parent->addChild(node);
 
-    auto& children = m_parentToChildren[parent->m_id];
-    children.push_back(node);
+    //auto& children = m_parentToChildren[parent->m_id];
+    //children.push_back(node);
 }
 
 void NodeRegistry::bindNode(
+    const uuids::uuid& uuid,
     Node* node)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const auto& type = node->m_type;
-    auto* program = type->m_program;
+    const MeshType* type;
+    {
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        t->prepare(m_assets, m_registry);
 
-    if (type->m_entityType != EntityType::origo) {
-        assert(program);
-        if (!program) return;
+        type = t;
+        node->m_type = type;
     }
-
-    type->prepare(m_assets, m_registry);
     node->prepare(m_assets, m_registry);
 
     {
-        // NOTE KI more optimal to not switch between culling mode (=> group by it)
-        const ProgramKey programKey(
-            program ? program->m_id : NULL_PROGRAM_ID,
-            -type->m_priority,
-            type->m_drawOptions);
+        std::lock_guard<std::mutex> lock(m_lock);
 
         //KI_INFO_OUT(fmt::format(
         //    "REGISTER: {}-{}",
         //    program ? program->m_key : "<na>", programKey.str()));
 
-        const MeshTypeKey typeKey(type);
-
-        if (!node->m_uuid.is_nil()) m_uuidToNode[node->m_uuid] = node;
+        if (!uuid.is_nil()) m_uuidToNode[uuid] = node;
 
         {
-            auto& vAll = allNodes[programKey][typeKey];
-            insertNode(vAll, node);
-        }
-
-        {
-            auto* map = &solidNodes;
-
-            if (type->m_flags.alpha)
-                map = &alphaNodes;
-
-            if (type->m_flags.blend)
-                map = &blendedNodes;
-
-            if (type->m_entityType == EntityType::sprite)
-                map = &spriteNodes;
-
-            if (type->m_flags.invisible)
-                map = &invisibleNodes;
-
-            auto& vTyped = (*map)[programKey][typeKey];
-            insertNode(vTyped, node);
-        }
-
-        if (type->m_flags.enforceBounds || type->m_flags.physics) {
-            auto& vPhysics = physicsNodes[programKey][typeKey];
-            insertNode(vPhysics, node);
+            m_allNodes.push_back(node);
         }
 
         if (node->m_camera) {
-            m_cameras.push_back(node);
-            if (!m_activeCamera && node->m_camera->isDefault()) {
-                m_activeCamera = node;
+            m_cameraNodes.push_back(node);
+            if (!m_activeCameraNode && node->m_camera->isDefault()) {
+                m_activeCameraNode = node;
             }
         }
 
@@ -432,34 +469,42 @@ void NodeRegistry::bindNode(
             Light* light = node->m_light.get();
 
             if (light->m_directional) {
-                m_dirLight = node;
+                m_dirLightNodes.push_back(node);
             }
             else if (light->m_point) {
-                m_pointLights.push_back(node);
+                m_pointLightNodes.push_back(node);
             }
             else if (light->m_spot) {
-                m_spotLights.push_back(node);
+                m_spotLightNodes.push_back(node);
             }
         }
 
-        if (node->m_uuid == m_assets.rootUUID) {
+        if (uuid == m_assets.rootUUID) {
             m_root = node;
         }
     }
 
     clearSelectedCount();
 
-    event::Event evt { event::Type::node_added };
-    evt.body.node.target = node;
-    m_registry->m_dispatcher->send(evt);
+    {
+        event::Event evt { event::Type::node_added };
+        evt.body.node.target = node;
+        m_registry->m_dispatcher->send(evt);
+    }
+
+    {
+        event::Event evt { event::Type::node_added };
+        evt.body.node.target = node;
+        m_registry->m_dispatcherView->send(evt);
+    }
+
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_type->m_id;
+        m_registry->m_dispatcherView->send(evt);
+    }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
-}
-
-void NodeRegistry::insertNode(NodeVector& list, Node* node)
-{
-    list.reserve(100);
-    list.push_back(node);
 }
 
 void NodeRegistry::bindPendingChildren()
@@ -475,12 +520,13 @@ void NodeRegistry::bindPendingChildren()
         boundIds.push_back(parentId);
 
         auto& parent = parentIt->second;
-        for (auto& child : children) {
+        for (auto& [uuid, child] : children) {
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-            bindNode(child);
+            bindNode(uuid, child);
 
             child->setParent(parent);
-            m_parentToChildren[parent->m_id].push_back(child);
+            parent->addChild(child);
+            //m_parentToChildren[parent->m_id].push_back(child);
         }
     }
 
@@ -492,15 +538,25 @@ void NodeRegistry::bindPendingChildren()
 
 bool NodeRegistry::bindParent(
     Node* child,
-    const uuids::uuid& parentId)
+    const uuids::uuid& childUUID,
+    const uuids::uuid& parentUUID,
+    ki::node_id parentId)
 {
-    if (parentId.is_nil()) return true;
+    if (parentId) {
+        auto* parent = m_idToNode.find(parentId)->second;
+        child->setParent(parent);
+        parent->addChild(child);
+        //m_parentToChildren[parent->m_id].push_back(child);
+        return true;
+    }
 
-    const auto& parentIt = m_uuidToNode.find(parentId);
+    if (parentUUID.is_nil()) return true;
+
+    const auto& parentIt = m_uuidToNode.find(parentUUID);
     if (parentIt == m_uuidToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
-        m_pendingChildren[parentId].push_back(child);
+        m_pendingChildren[parentUUID].push_back({ childUUID, child });
         return false;
     }
 
@@ -508,26 +564,30 @@ bool NodeRegistry::bindParent(
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parent->str(), child->str()));
 
     child->setParent(parent);
-    m_parentToChildren[parent->m_id].push_back(child);
+    parent->addChild(child);
+    //m_parentToChildren[parent->m_id].push_back(child);
 
     return true;
 }
 
 void NodeRegistry::bindChildren(
-    Node* parent)
+    const uuids::uuid& parentUUID)
 {
-    const auto& it = m_pendingChildren.find(parent->m_uuid);
+    const auto& it = m_pendingChildren.find(parentUUID);
     if (it == m_pendingChildren.end()) return;
 
-    for (auto& child : it->second) {
+    Node* parent = m_uuidToNode.find(parentUUID)->second;
+
+    for (auto& [uuid, child] : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-        bindNode(child);
+        bindNode(uuid, child);
 
         child->setParent(parent);
-        m_parentToChildren[parent->m_id].push_back(child);
+        parent->addChild(child);
+        //m_parentToChildren[parent->m_id].push_back(child);
     }
 
-    m_pendingChildren.erase(parent->m_uuid);
+    m_pendingChildren.erase(parentUUID);
 }
 
 void NodeRegistry::setActiveNode(Node* node)
@@ -537,43 +597,54 @@ void NodeRegistry::setActiveNode(Node* node)
     m_activeNode = node;
 }
 
-void NodeRegistry::setActiveCamera(Node* node)
+void NodeRegistry::setActiveCameraNode(Node* node)
 {
     if (!node) return;
     if (!node->m_camera) return;
 
-    m_activeCamera = node;
+    m_activeCameraNode = node;
 }
 
-Node* NodeRegistry::getNextCamera(Node* srcNode, int offset) const noexcept
+Node* NodeRegistry::getNextCameraNode(Node* srcNode, int offset) const noexcept
 {
     int index = 0;
-    int size = static_cast<int>(m_cameras.size());
+    int size = static_cast<int>(m_cameraNodes.size());
     for (int i = 0; i < size; i++) {
-        if (m_cameras[i] == srcNode) {
+        if (m_cameraNodes[i] == srcNode) {
             index = std::max(0, (i + offset) % size);
             break;
         }
     }
-    return m_cameras[index];
+    return m_cameraNodes[index];
 }
 
-Node* NodeRegistry::findDefaultCamera() const
+Node* NodeRegistry::findDefaultCameraNode() const
 {
     const auto& it = std::find_if(
-        m_cameras.begin(),
-        m_cameras.end(),
+        m_cameraNodes.begin(),
+        m_cameraNodes.end(),
         [](Node* node) { return node->m_camera->isDefault(); });
-    return it != m_cameras.end() ? *it : nullptr;
+    return it != m_cameraNodes.end() ? *it : nullptr;
 }
 
 void NodeRegistry::bindSkybox(
     Node* node) noexcept
 {
-    const auto& type = node->m_type;
+    const MeshType* type;
+    {
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        t->prepare(m_assets, m_registry);
 
-    type->prepare(m_assets, m_registry);
+        type = t;
+        node->m_type = type;
+    }
     node->prepare(m_assets, m_registry);
 
     m_skybox = node;
+
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_type->m_id;
+        m_registry->m_dispatcherView->send(evt);
+    }
 }

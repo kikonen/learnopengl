@@ -5,7 +5,13 @@
 
 #include "model/Node.h"
 
+#include "script/CommandEngine.h"
+#include "script/api/RotateNode.h"
+#include "script/api/MoveNode.h"
+
 #include "engine/UpdateContext.h"
+
+#include "registry/Registry.h"
 
 
 PawnController::PawnController()
@@ -17,6 +23,8 @@ void PawnController::prepare(
     Registry* registry,
     Node& node)
 {
+    NodeController::prepare(assets, registry, node);
+
     m_node = &node;
 
     m_speedMoveNormal = assets.cameraMoveNormal;
@@ -27,18 +35,13 @@ void PawnController::prepare(
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
-bool PawnController::update(
-    const UpdateContext& ctx,
-    Node& node) noexcept
-{
-    return false;
-}
-
 void PawnController::onKey(Input* input, const ki::RenderClock& clock)
 {
     if (!m_node) return;
 
     const float dt = clock.elapsedSecs;
+
+    const auto& snapshot = m_node->getSnapshot();
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ m_speedRotateNormal };
@@ -59,66 +62,83 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
             glm::vec3 adjust{ 0.f };
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
-                adjust.y = rotateSpeed.y * dt;
+                adjust.y += rotateSpeed.y * dt;
                 changed = true;
             }
             if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-                adjust.y = -rotateSpeed.y * dt;
+                adjust.y += -rotateSpeed.y * dt;
                 changed = true;
             }
 
             if (changed) {
-                m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+                m_registry->m_commandEngine->addCommand(
+                    std::make_unique<script::RotateNode>(
+                        0,
+                        m_node->m_id,
+                        0.f,
+                        true,
+                        snapshot.getViewUp(),
+                        adjust.y));
+                //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
     }
 
     {
         bool changed = false;
-        glm::vec3 pos = m_node->getPosition();
+        glm::vec3 adjust{ 0.f };
 
         {
-            const auto& viewFront = m_node->getViewFront();
+            const auto& viewFront = snapshot.getViewFront();
 
             if (input->isKeyDown(Key::FORWARD)) {
-                pos += viewFront * dt * moveSpeed.z;
+                adjust += viewFront * dt * moveSpeed.z;
                 changed = true;
             }
             if (input->isKeyDown(Key::BACKWARD)) {
-                pos -= viewFront * dt * moveSpeed.z;
+                adjust -= viewFront * dt * moveSpeed.z;
                 changed = true;
             }
         }
 
         {
-            const auto& viewRight = m_node->getViewRight();
+            const auto& viewRight = snapshot.getViewRight();
 
             if (input->isKeyDown(Key::LEFT)) {
-                pos -= viewRight * dt * moveSpeed.x;
+                adjust -= viewRight * dt * moveSpeed.x;
                 changed = true;
             }
             if (input->isKeyDown(Key::RIGHT)) {
-                pos += viewRight * dt * moveSpeed.x;
+                adjust += viewRight * dt * moveSpeed.x;
                 changed = true;
             }
         }
 
         {
-            const auto& viewUp = m_node->getViewUp();
+            const auto& viewUp = snapshot.getViewUp();
 
             if (input->isKeyDown(Key::UP)) {
-                pos += viewUp * dt * moveSpeed.y;
+                adjust += viewUp * dt * moveSpeed.y;
                 changed = true;
             }
             if (input->isKeyDown(Key::DOWN)) {
-                pos -= viewUp * dt * moveSpeed.y;
+                adjust -= viewUp * dt * moveSpeed.y;
                 changed = true;
             }
 
         }
 
         if (changed) {
-            m_node->setPosition(pos);
+            m_registry->m_commandEngine->addCommand(
+                std::make_unique<script::MoveNode>(
+                    0,
+                    m_node->m_id,
+                    0.f,
+                    true,
+                    adjust));
+
+            //glm::vec3 adjust = snapshot.getPosition();
+            //m_node->getTransform().setPosition(pos);
         }
     }
 }
@@ -129,16 +149,26 @@ void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
 
     bool changed = false;
 
+    const auto& snapshot = m_node->getSnapshot();
+
     glm::vec3 adjust{ 0.f };
 
     if (xoffset != 0) {
-        auto yaw = -m_speedMouseSensitivity.y * xoffset;
+        auto yaw = -m_speedMouseSensitivity.x * xoffset;
 
         adjust.y = static_cast<float>(yaw);
         changed = true;
     }
 
     if (changed) {
-        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+        m_registry->m_commandEngine->addCommand(
+            std::make_unique<script::RotateNode>(
+                0,
+                m_node->m_id,
+                0.f,
+                true,
+                snapshot.getViewUp(),
+                adjust.y));
+        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }

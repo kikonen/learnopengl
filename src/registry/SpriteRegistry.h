@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
+#include <atomic>
 
 #include "asset/Assets.h"
 #include "asset/Sprite.h"
@@ -24,11 +26,11 @@ public:
 
     ~SpriteRegistry() = default;
 
-    void add(Sprite& sprite);
+    void registerSprite(Sprite& sprite);
 
     void prepare();
 
-    void update(const UpdateContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
     void bind(
         const RenderContext& ctx);
@@ -40,6 +42,9 @@ private:
     const Assets& m_assets;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
+
+    std::atomic<bool> m_dirtyFlag;
+    std::mutex m_lock{};
 
     std::vector<Sprite> m_sprites;
     std::map<ki::sprite_id, Sprite*> m_idToSprites;

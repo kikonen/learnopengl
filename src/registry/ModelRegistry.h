@@ -29,7 +29,7 @@ public:
 
     void prepare();
 
-    void update(const UpdateContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
     GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);

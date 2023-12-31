@@ -40,7 +40,7 @@ namespace script
     {
         NodeCommand::bind(ctx, node);
 
-        m_base = node->getQuatRotation();
+        m_base = node->getTransform().getQuatRotation();
 
         // NOTE KI relative means now "relative to axis of node"
         if (m_relative) {
@@ -68,7 +68,7 @@ namespace script
 
             const auto rot = util::axisRadiansToQuat(m_relativeAxis, radians);
 
-            m_node->setQuatRotation(rot * m_base);
+            m_node->modifyTransform().setQuatRotation(rot * m_base);
         }
     }
 }

@@ -1,5 +1,7 @@
 #include "HeightMap.h"
 
+#include <memory>
+
 #include "util/Log.h"
 #include <fmt/format.h>
 
@@ -8,9 +10,34 @@
 #include "model/Node.h"
 
 namespace physics {
-    void HeightMap::prepare()
+    HeightMap::HeightMap()
+    {}
+
+    HeightMap::HeightMap(HeightMap&& o)
+        : m_id{ o.m_id },
+        //m_image{ std::move(o.m_image) },
+        m_origin{ o.m_origin },
+        m_worldTileSize{ o.m_worldTileSize },
+        m_worldSizeU{ o.m_worldSizeU },
+        m_worldSizeV{ o.m_worldSizeV },
+        m_verticalRange{ o.m_verticalRange },
+        m_horizontalScale{ o.m_horizontalScale },
+        m_height{ o.m_height },
+        m_width{ o.m_width },
+        m_heights{ o.m_heights }
     {
-        const auto& image = *m_image;
+        // NOTE KI o is moved now
+        o.m_heights = nullptr;
+    }
+
+    HeightMap::~HeightMap()
+    {
+        delete[] m_heights;
+    }
+
+    void HeightMap::prepare(Image* _image)
+    {
+        const auto& image = *_image;
 
         const int imageH = image.m_height;
         const int imageW = image.m_width;
@@ -56,7 +83,7 @@ namespace physics {
         m_height = imageH;
     }
 
-    float HeightMap::getTerrainHeight(float u, float v)
+    float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         u = std::clamp(u, 0.f, 1.f);
         v = std::clamp(v, 0.f, 1.f);
@@ -64,8 +91,8 @@ namespace physics {
         const float baseX = m_width * u;
         const float baseY = m_height * (1.f - v);
 
-        float total = 0.0;
-        float bias = 2.5;
+        float total = 0.f;
+        float bias = 2.5f;
 
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -89,23 +116,24 @@ namespace physics {
         return total / 9.0f;
     }
 
-    float HeightMap::getLevel(const glm::vec3& pos)
+    float HeightMap::getLevel(const glm::vec3& pos) const noexcept
     {
-        const auto& originPos = m_origin->getWorldPosition();
+        const auto& transform = m_origin->getTransform();
+        const auto& originPos = transform.getWorldPosition();
 
-        auto diff = pos - originPos;
+        const auto diff = pos - originPos;
         //diff.x += m_worldTileSize / 2.f;
         //diff.z += m_worldTileSize / 2.f;
 
         const float u = diff.x / (float)m_worldSizeU;
         const float v = 1.f - diff.z / (float)m_worldSizeV;
 
-        float h = getTerrainHeight(u, v);
+        const float h = getTerrainHeight(u, v);
 
-        const auto& modelMat = m_origin->getModelMatrix();
+        const auto& modelMat = transform.getModelMatrix();
         const auto p = glm::vec4{ 0.f, h, 0.f, 1.f };
 
-        auto worldPos = modelMat * p;
+        const auto worldPos = modelMat * p;
         return worldPos.y;
     }
 }

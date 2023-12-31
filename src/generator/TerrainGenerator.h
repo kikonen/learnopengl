@@ -5,7 +5,6 @@
 #include "asset/Material.h"
 #include "asset/Image.h"
 
-#include "physics/HeightMap.h"
 
 class ModelMesh;
 class MeshType;
@@ -46,9 +45,9 @@ private:
         Registry* registry,
         Node& container);
 
-    MeshType* createType(
+    ki::type_id createType(
         Registry* registry,
-        MeshType* containerType);
+        const MeshType* containerType);
 
 public:
     int m_worldTileSize{ 100 };
@@ -69,6 +68,4 @@ private:
     size_t m_poolSizeV{ 0 };
 
     Node* m_node{ nullptr };
-
-    physics::HeightMap* m_heightMap{ nullptr };
 };

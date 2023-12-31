@@ -26,20 +26,23 @@ MaterialRegistry::MaterialRegistry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_materials.reserve(MATERIAL_BLOCK_SIZE);
-    m_materialsSSBO.reserve(MATERIAL_BLOCK_SIZE);
-    m_indeces.reserve(INDEX_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_materials.reserve(MAX_MATERIAL_COUNT);
+    m_materialsSSBO.reserve(MAX_MATERIAL_COUNT);
+    m_indeces.reserve(MAX_INDEX_COUNT);
 
     // NOTE KI *reserve* index 0
     // => multi-material needs to do "-index" trick, does not work for zero
     m_zero = Material::createMaterial(BasicMaterial::basic);
-    add(m_zero);
+    registerMaterial(m_zero);
     m_indeces.emplace_back(m_zero.m_registeredIndex);
 }
 
-void MaterialRegistry::add(Material& material)
+void MaterialRegistry::registerMaterial(Material& material)
 {
     if (material.m_registeredIndex >= 0) return;
+
+    std::lock_guard<std::mutex> lock(m_lock);
 
     const size_t count = 1;
 
@@ -50,8 +53,10 @@ void MaterialRegistry::add(Material& material)
         size_t size = m_materials.size() + std::max(MATERIAL_BLOCK_SIZE, count) + MATERIAL_BLOCK_SIZE;
         size += MATERIAL_BLOCK_SIZE - size % MATERIAL_BLOCK_SIZE;
         size = std::min(size, MAX_MATERIAL_COUNT);
-        m_materials.reserve(size);
-        m_materialsSSBO.reserve(size);
+        if (size > m_materials.capacity()) {
+            m_materials.reserve(size);
+            m_materialsSSBO.reserve(size);
+        }
     }
 
     material.m_registeredIndex = (int)m_materials.size();
@@ -62,6 +67,8 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 {
     // NOTE KI *NO* indeces if single material
     if (materialVBO.isSingle()) return;
+
+    std::lock_guard<std::mutex> lock(m_lock);
 
     const size_t count = materialVBO.m_indeces.size();
     const size_t index = m_indeces.size();
@@ -89,6 +96,8 @@ void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
 Material* MaterialRegistry::find(
     std::string_view name)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     const auto& it = std::find_if(
         m_materials.begin(),
         m_materials.end(),
@@ -96,9 +105,11 @@ Material* MaterialRegistry::find(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-Material* MaterialRegistry::findID(
+Material* MaterialRegistry::findById(
     const int id)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     const auto& it = std::find_if(
         m_materials.begin(),
         m_materials.end(),
@@ -106,8 +117,11 @@ Material* MaterialRegistry::findID(
     return it != m_materials.end() ? &(*it) : nullptr;
 }
 
-void MaterialRegistry::update(const UpdateContext& ctx)
+void MaterialRegistry::updateRT(const UpdateContext& ctx)
 {
+    //if (!m_dirty) return;
+    std::lock_guard<std::mutex> lock(m_lock);
+
     updateMaterialBuffer();
     updateIndexBuffer();
 }

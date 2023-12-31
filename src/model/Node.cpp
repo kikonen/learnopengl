@@ -14,10 +14,6 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "physics/Object.h"
-
-#include "audio/AudioEngine.h"
-
 #include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -43,7 +39,7 @@ namespace {
     }
 }
 
-Node::Node(MeshType* type)
+Node::Node(const MeshType* type)
     : m_type(type),
     m_id(nextID())
 {
@@ -57,24 +53,21 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: id={}, id={}, entity={}, type={}>",
-        m_id, KI_UUID_STR(m_uuid), m_instance.m_entityIndex, m_type->str());
+        "<NODE: id={}, entity={}, type={}>",
+        m_id, m_transform.m_entityIndex, m_type->str());
 }
 
 void Node::prepare(
     const Assets& assets,
     Registry* registry)
 {
-    if (m_prepared) return;
-    m_prepared = true;
-
     if (m_type->getMesh()) {
-        m_instance.m_entityIndex = registry->m_entityRegistry->addEntity();
-        m_instance.setMaterialIndex(m_type->getMaterialIndex());
+        m_transform.m_entityIndex = registry->m_entityRegistry->registerEntity();
+        m_transform.setMaterialIndex(m_type->getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        int flags = 0;
+        ki::size_t_entity_flags flags = 0;
 
         if (m_type->m_entityType == EntityType::billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
@@ -82,7 +75,7 @@ void Node::prepare(
         if (m_type->m_entityType == EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
             auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
-            m_instance.m_shapeIndex = shape.m_registeredIndex;
+            m_transform.m_shapeIndex = shape.m_registeredIndex;
             //m_instance.m_materialIndex = shape.m_materialIndex;
         }
         if (m_type->m_entityType == EntityType::skybox) {
@@ -92,8 +85,7 @@ void Node::prepare(
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
-        m_instance.setFlags(flags);
-        m_instance.setId(m_id);
+        m_entityFlags = flags;
     }
 
     if (m_generator) {
@@ -101,45 +93,37 @@ void Node::prepare(
     }
 }
 
-void Node::update(
+void Node::updateWT(
     const UpdateContext& ctx) noexcept
 {
     updateModelMatrix();
 
-    if (m_camera) m_camera->update(ctx, *this);
-    if (m_light) m_light->update(ctx, *this);
     if (m_generator) m_generator->update(ctx, *this);
 
-    const auto* children = ctx.m_registry->m_nodeRegistry->getChildren(*this);
-    if (children) {
-        for (auto& child : *children) {
-            child->update(ctx);
+    if (!m_children.empty()) {
+        for (auto& child : m_children) {
+            child->updateWT(ctx);
         }
     }
+}
 
-    if (m_physics) {
-        m_physics->prepare(ctx.m_registry->m_physicsEngine, this);
-        m_physics->updateToPhysics(false);
+void Node::snapshot() noexcept {
+    auto& transform = m_transform;
+    if (!m_forceUpdateSnapshot && !transform.m_dirtySnapshot) return;
+
+    {
+        assert(!transform.m_dirty);
+        transform.m_dirtySnapshot |= m_forceUpdateSnapshot;
+        m_snapshot = transform;
     }
 
-    if (m_audioSourceCount > 0) {
-        auto* ae = ctx.m_registry->m_audioEngine;
-        for (ki::size_t8 i = 0; i < m_audioSourceCount; i++) {
-            ae->setSourcePos(
-                m_audioSourceIds[i],
-                getWorldPosition(),
-                getViewFront());
-        }
+    if (m_generator) {
+        m_generator->snapshot(m_forceUpdateSnapshot);
     }
 
-    if (m_audioListenerId > 0) {
-        auto* ae = ctx.m_registry->m_audioEngine;
-        ae->setListenerPos(
-            m_audioListenerId,
-            getWorldPosition(),
-            getViewFront(),
-            getViewUp());
-    }
+    transform.m_dirtySnapshot = false;
+    transform.m_dirtyNormal = false;
+    m_forceUpdateSnapshot = false;
 }
 
 bool Node::isEntity() const noexcept
@@ -152,20 +136,26 @@ void Node::updateEntity(
     const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
-    if (m_instance.m_entityIndex != -1)
+    auto& snapshot = m_snapshot;
+    if (!m_forceUpdateEntity && !snapshot.m_dirtyEntity) return;
+
+    if (snapshot.m_entityIndex != -1)
     {
-        if (m_instance.m_dirtyEntity) {
-            auto* entity = entityRegistry->updateEntity(m_instance.m_entityIndex, true);
+        snapshot.m_dirtyEntity |= m_forceUpdateEntity;
+        auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
-            entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
+        entity->u_objectID = m_id;
+        entity->u_flags = m_entityFlags;
+        entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
-            m_instance.updateEntity(ctx, entity);
-        }
+        snapshot.updateEntity(ctx, entity);
     }
 
     if (m_generator) {
-        m_generator->updateEntity(ctx, *this, entityRegistry);
+        m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntity);
     }
+
+    m_forceUpdateEntity = false;
 }
 
 void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
@@ -175,18 +165,17 @@ void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
             m_instancer->bindBatch(ctx, *this, batch);
         }
     } else {
-        batch.add(ctx, m_instance.m_entityIndex);
+        batch.add(ctx, m_transform.m_entityIndex);
     }
 }
 
 void Node::updateModelMatrix() noexcept
 {
-    int oldLevel = m_instance.m_matrixLevel;
     if (m_parent) {
-        m_instance.updateModelMatrix(m_parent->getInstance());
+        m_transform.updateModelMatrix(m_parent->getTransform());
     }
     else {
-        m_instance.updateRootMatrix();
+        m_transform.updateRootMatrix();
     }
 }
 
@@ -194,7 +183,10 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_instance.m_dirtyEntity = true;
+        m_transform.m_dirtyEntity = true;
+        m_transform.m_dirtySnapshot = true;
+        m_forceUpdateEntity = true;
+        m_forceUpdateSnapshot = true;
     }
 }
 
@@ -202,7 +194,10 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_instance.m_dirtyEntity = true;
+        m_transform.m_dirtyEntity = true;
+        m_transform.m_dirtySnapshot = true;
+        m_forceUpdateEntity = true;
+        m_forceUpdateSnapshot = true;
     }
 }
 
@@ -223,6 +218,6 @@ int Node::lua_getCloneIndex() const noexcept
 
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
-    const auto& pos = getPosition();
+    const auto& pos = m_transform.getPosition();
     return { pos.x, pos.y, pos.z };
 }

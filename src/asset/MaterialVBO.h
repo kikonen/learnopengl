@@ -15,6 +15,8 @@ class MaterialVBO {
 
 public:
     MaterialVBO() = default;
+    MaterialVBO(MaterialVBO&& o);
+
     virtual ~MaterialVBO() = default;
 
     void setMaterials(const std::vector<Material>& materials);
@@ -24,13 +26,18 @@ public:
 
     bool isSingle() const noexcept { return m_indeces.empty(); }
 
-public:
-    Material m_defaultMaterial;
-    bool m_useDefaultMaterial = false;
-    bool m_forceDefaultMaterial = false;
+    void setDefaultMaterial(
+        const Material& material,
+        bool useDefaultMaterial,
+        bool forceDefaultMaterial
+    );
 
-    //GLBuffer* m_buffer{ nullptr };
-    size_t m_bufferIndex = 0;
+    Material* getDefaultMaterial() const;
+    bool isUseDefaultMaterial() const { return m_useDefaultMaterial; };
+    bool isForceDefaultMaterial() const { return m_forceDefaultMaterial; };
+
+public:
+    size_t m_bufferIndex{ 0 };
 
     std::vector<Material> m_materials;
     std::vector<GLuint> m_indeces;
@@ -38,4 +45,7 @@ public:
 private:
     bool m_prepared = false;
 
+    std::unique_ptr<Material> m_defaultMaterial;
+    bool m_useDefaultMaterial{ false };
+    bool m_forceDefaultMaterial{ false };
 };

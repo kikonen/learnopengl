@@ -9,14 +9,13 @@ class ViewportRenderer final : public Renderer
 public:
     ViewportRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 
-    void update(const UpdateContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void render(
         const RenderContext& ctx,
         FrameBuffer* destinationBuffer);
 };
-

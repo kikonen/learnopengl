@@ -17,7 +17,7 @@ public:
     Light() {};
     ~Light() = default;
 
-    void update(const UpdateContext& ctx, Node& node) noexcept;
+    void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 
     void markDirty() noexcept
     {
@@ -80,6 +80,8 @@ private:
 
     uuids::uuid m_targetId;
 
-    int m_nodeMatrixLevel = -1;
-    int m_targetMatrixLevel = -1;
+    Node* m_targetNode{ nullptr };
+
+    ki::level_id m_nodeMatrixLevel{ (ki::level_id)-1 };
+    ki::level_id m_targetMatrixLevel{ (ki::level_id)-1 };
 };
