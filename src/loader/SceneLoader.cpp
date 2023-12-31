@@ -464,15 +464,15 @@ namespace loader {
             if (useTBN) {
                 definitions[DEF_USE_TBN] = "1";
             }
-            if (useDudvTex) {
-                definitions[DEF_USE_DUDV_TEX] = "1";
-            }
+            //if (useDudvTex) {
+            //    definitions[DEF_USE_DUDV_TEX] = "1";
+            //}
             if (useHeightTex) {
                 definitions[DEF_USE_HEIGHT_TEX] = "1";
             }
-            if (useDisplacementTex) {
-                definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
-            }
+            //if (useDisplacementTex) {
+            //    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
+            //}
             if (useNormalTex) {
                 definitions[DEF_USE_NORMAL_TEX] = "1";
             }
