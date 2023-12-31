@@ -36,7 +36,7 @@ entities:
     id: planet-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    xscript_file: scripts/anim_asteroids_roll
+    script_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
     model: [planet, planet]
