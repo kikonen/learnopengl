@@ -11,6 +11,8 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -34,17 +36,17 @@ namespace {
 }
 
 
-void WaterMapRenderer::prepare(
+void WaterMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
@@ -79,7 +81,7 @@ void WaterMapRenderer::prepare(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->prepareRT(assets);
     }
 
     {
@@ -101,7 +103,7 @@ void WaterMapRenderer::prepare(
         m_refractionDebugViewport->setGammaCorrect(true);
         m_refractionDebugViewport->setHardwareGamma(true);
 
-        m_refractionDebugViewport->prepare(assets);
+        m_refractionDebugViewport->prepareRT(assets);
     }
 
     glm::vec3 origo(0);
@@ -111,7 +113,7 @@ void WaterMapRenderer::prepare(
     }
 }
 
-void WaterMapRenderer::updateView(const RenderContext& ctx)
+void WaterMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
@@ -119,7 +121,7 @@ void WaterMapRenderer::updateView(const RenderContext& ctx)
     updateRefractionView(ctx);
 }
 
-void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
+void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -165,7 +167,7 @@ void WaterMapRenderer::updateReflectionView(const RenderContext& ctx)
     m_reflectionheight = h;
 }
 
-void WaterMapRenderer::updateRefractionView(const RenderContext& ctx)
+void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -247,7 +249,7 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& planePos = closest->getWorldPosition();
+    const auto& planePos = closest->getSnapshot().getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
@@ -256,20 +258,22 @@ bool WaterMapRenderer::render(
 
     // reflection map
     {
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
-
-        glm::vec3 cameraPos = parentCameraPos;
-        cameraPos.y -= sdist * 2;
-
-        // NOTE KI rotate camera
-        glm::vec3 cameraFront = parentCameraFront;
-        cameraFront.y *= -1;
-        glm::vec3 cameraUp = glm::normalize(glm::cross(parentCameraRight, cameraFront));
-
         auto& camera = m_cameras[0];
-        camera.setWorldPosition(cameraPos);
-        camera.setAxis(cameraFront, cameraUp);
-        camera.setFov(parentCameraFov);
+        {
+            glm::vec3 cameraPos = parentCameraPos;
+            cameraPos.y -= sdist * 2;
+
+            // NOTE KI rotate camera
+            glm::vec3 cameraFront = parentCameraFront;
+            cameraFront.y *= -1;
+            glm::vec3 cameraUp = glm::normalize(glm::cross(parentCameraRight, cameraFront));
+
+            camera.setWorldPosition(cameraPos);
+            camera.setAxis(cameraFront, cameraUp);
+            camera.setFov(parentCameraFov);
+        }
+
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
         RenderContext localCtx(
             "WATER_REFLECT",
@@ -301,15 +305,17 @@ bool WaterMapRenderer::render(
 
     // refraction map
     {
-        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
-
-        const auto& cameraPos = parentCameraPos;
-        const auto& cameraFront = parentCameraFront;
-
         auto& camera = m_cameras[1];
-        camera.setWorldPosition(cameraPos);
-        camera.setAxis(cameraFront, parentCameraUp);
-        camera.setFov(parentCameraFov);
+        {
+            const auto& cameraPos = parentCameraPos;
+            const auto& cameraFront = parentCameraFront;
+
+            camera.setWorldPosition(cameraPos);
+            camera.setAxis(cameraFront, parentCameraUp);
+            camera.setFov(parentCameraFov);
+        }
+
+        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
 
         RenderContext localCtx(
             "WATER_REFRACT",
@@ -354,6 +360,13 @@ bool WaterMapRenderer::render(
     return true;
 }
 
+void WaterMapRenderer::handleNodeAdded(Node* node)
+{
+    if (!node->m_type->m_flags.water) return;
+
+    m_nodes.push_back(node);
+}
+
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
     FrameBuffer* targetBuffer,
@@ -382,7 +395,7 @@ void WaterMapRenderer::drawNodes(
                 return node != current &&
                     node != sourceNode;
             },
-            NodeDraw::KIND_ALL,
+            render::NodeDraw::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
 }
@@ -390,26 +403,20 @@ void WaterMapRenderer::drawNodes(
 Node* WaterMapRenderer::findClosest(
     const RenderContext& ctx)
 {
+    if (m_nodes.empty()) return nullptr;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& [key, nodes] : all.second) {
-            auto& type = key.type;
-
-            if (!type->m_flags.water) continue;
-
-            for (const auto& node : nodes) {
-                const glm::vec3 ray = node->getWorldPosition() - cameraPos;
-                const float distance = glm::length(ray);
-                //glm::vec3 fromCamera = glm::normalize(ray);
-                //float dot = glm::dot(fromCamera, cameraDir);
-                //if (dot < 0) continue;
-                sorted[distance] = node;
-            }
-        }
+    for (const auto& node : m_nodes) {
+        const glm::vec3 ray = node->getSnapshot().getWorldPosition() - cameraPos;
+        const float distance = glm::length(ray);
+        //glm::vec3 fromCamera = glm::normalize(ray);
+        //float dot = glm::dot(fromCamera, cameraDir);
+        //if (dot < 0) continue;
+        sorted[distance] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

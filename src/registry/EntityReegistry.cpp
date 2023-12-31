@@ -24,7 +24,8 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
-    m_entries.reserve(ENTITY_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_entries.reserve(MAX_ENTITY_COUNT);
 }
 
 void EntityRegistry::prepare()
@@ -33,8 +34,16 @@ void EntityRegistry::prepare()
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }
 
-void EntityRegistry::update(const UpdateContext& ctx)
+void EntityRegistry::updateWT(const UpdateContext& ctx)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+}
+
+void EntityRegistry::updateRT(const UpdateContext& ctx)
+{
+    //if (!m_dirty) return;
+    std::lock_guard<std::mutex> lock(m_lock);
+
     processNodes(ctx);
 
     if (m_minDirty < 0) return;
@@ -112,14 +121,16 @@ void EntityRegistry::bind(
 }
 
 // index of entity
-int EntityRegistry::addEntity()
+int EntityRegistry::registerEntity()
 {
-    return addEntityRange(1);
+    return registerEntityRange(1);
 }
 
 // @return first index of range
-int EntityRegistry::addEntityRange(const size_t count)
+int EntityRegistry::registerEntityRange(const size_t count)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };
 
@@ -144,12 +155,12 @@ int EntityRegistry::addEntityRange(const size_t count)
     return static_cast<int>(firstIndex);
 }
 
-EntitySSBO* EntityRegistry::getEntity(int index)
+const EntitySSBO* EntityRegistry::getEntity(int index) const
 {
     return &m_entries[index];
 }
 
-EntitySSBO* EntityRegistry::updateEntity(int index, bool dirty)
+EntitySSBO* EntityRegistry::modifyEntity(int index, bool dirty)
 {
     if (dirty) markDirty(index);
     return &m_entries[index];
@@ -169,11 +180,7 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& it : all.second) {
-            for (auto& node : it.second) {
-                node->updateEntity(ctx, this);
-            }
-        }
+    for (auto* node : ctx.m_registry->m_nodeRegistry->m_allNodes) {
+        node->updateEntity(ctx, this);
     }
 }

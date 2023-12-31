@@ -14,21 +14,21 @@ namespace {
 
 namespace audio
 {
-    Sound::Sound(Sound&& b) noexcept
-        : m_id{ b.m_id },
-        m_bufferId{ b.m_bufferId },
-        m_sampleRate{ b.m_sampleRate },
-        m_bitDepth{ b.m_bitDepth },
-        m_sampleCount{ b.m_sampleCount },
-        m_lengthInSeconds{ b.m_lengthInSeconds },
-        m_channelCount{ b.m_channelCount },
-        m_isMono{ b.m_isMono },
-        m_isStereo{ b.m_isStereo },
-        m_format{ b.m_format },
-        m_data{ std::move(b.m_data) }
+    Sound::Sound(Sound&& o) noexcept
+        : m_id{ o.m_id },
+        m_bufferId{ o.m_bufferId },
+        m_sampleRate{ o.m_sampleRate },
+        m_bitDepth{ o.m_bitDepth },
+        m_sampleCount{ o.m_sampleCount },
+        m_lengthInSeconds{ o.m_lengthInSeconds },
+        m_channelCount{ o.m_channelCount },
+        m_isMono{ o.m_isMono },
+        m_isStereo{ o.m_isStereo },
+        m_format{ o.m_format },
+        m_data{ std::move(o.m_data) }
     {
-        // b is moved now
-        b.m_bufferId = 0;
+        // NOTE KI o is moved now
+        o.m_bufferId = 0;
     }
 
     Sound::~Sound()

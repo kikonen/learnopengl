@@ -10,10 +10,11 @@
 #include "util/Util.h"
 
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
-#include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/FrameBuffer.h"
 
@@ -53,7 +54,7 @@ Viewport::Viewport(
     const glm::vec3 origPosition{ m_position };
     const glm::vec3 origDegrees{ m_degreesRotation };
 
-    setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateContext& ctx) {
+    setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateViewContext& ctx) {
         glm::vec3 rot{ origDegrees};
         rot.y = 5.f * sinf(static_cast<float>(ctx.m_clock.ts));
 
@@ -85,7 +86,7 @@ void Viewport::setTextureId(GLuint textureId)
     m_textureId = textureId;
 }
 
-void Viewport::prepare(const Assets& assets)
+void Viewport::prepareRT(const Assets& assets)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -93,10 +94,10 @@ void Viewport::prepare(const Assets& assets)
     // NOTE KI no program VAO/VBO with framebuffer blit
     if (m_useDirectBlit) return;
 
-    m_program->prepare(assets);
+    m_program->prepareRT(assets);
 }
 
-void Viewport::updateTransform(const UpdateContext& ctx)
+void Viewport::updateTransform(const UpdateViewContext& ctx)
 {
     if (!m_dirty) return;
     m_dirty = false;
@@ -148,7 +149,7 @@ void Viewport::updateTransform(const UpdateContext& ctx)
     }
 }
 
-void Viewport::update(const UpdateContext& ctx)
+void Viewport::updateRT(const UpdateViewContext& ctx)
 {
     m_update(*this, ctx);
     updateTransform(ctx);
@@ -165,15 +166,17 @@ void Viewport::bind(const RenderContext& ctx)
 
     ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
-    m_program->u_toneHdri->set(true);
-    m_program->u_gammaCorrect->set(m_hardwareGamma ? false : m_gammaCorrect);
+    auto* uniforms = m_program->m_uniforms.get();
+
+    uniforms->u_toneHdri.set(true);
+    uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
 
     glm::mat4 transformed = m_projected * m_transformMatrix;
 
-    m_program->u_viewportTransform->set(transformed);
+    uniforms->u_viewportTransform.set(transformed);
 
     if (m_effectEnabled) {
-        m_program->u_effect->set(util::as_integer(m_effect));
+        uniforms->u_effect.set(util::as_integer(m_effect));
     }
 
     m_bindAfter(*this);

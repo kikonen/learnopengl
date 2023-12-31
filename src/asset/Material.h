@@ -11,7 +11,7 @@
 
 struct MaterialSSBO;
 
-enum class BasicMaterial {
+enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
     gold,
     silver,
@@ -20,7 +20,7 @@ enum class BasicMaterial {
     selection
 };
 
-enum class MaterialType {
+enum class MaterialType : std::underlying_type_t<std::byte> {
     asset,
     model,
     texture,
@@ -65,12 +65,12 @@ struct Material final
 public:
     struct BoundTexture {
         Texture* m_texture{ nullptr };
-        int m_texIndex{ -1 };
+        //int m_texIndex{ -1 };
         GLuint64 m_handle{ 0 };
-        bool m_channelPart{ false };
-        bool m_channelTexture{ false };
+        bool m_channelPart : 1 { false };
+        bool m_channelTexture : 1 { false };
 
-        bool valid() {
+        inline bool valid() const {
             return m_texture;
         }
     };
@@ -140,8 +140,8 @@ public:
 
     MaterialType m_type{ MaterialType::asset };
 
-    bool m_default = false;
-    bool m_used = false;
+    bool m_default : 1 {false};
+    bool m_used : 1 {false};
     mutable int m_registeredIndex = -1;
 
     TextureSpec textureSpec;
@@ -224,8 +224,8 @@ public:
     std::string map_noise;
 
     static const ki::material_id DEFAULT_ID = 0;
-private:
-    bool m_prepared = false;
 
-    bool m_loaded = false;
+private:
+    bool m_prepared : 1 {false};
+    bool m_loaded : 1 {false};
 };

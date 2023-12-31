@@ -2,6 +2,8 @@
 
 #include "asset/Shader.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/FrameBufferAttachment.h"
@@ -13,7 +15,7 @@ void GBuffer::prepare(const Assets& assets)
 {
 }
 
-void GBuffer::updateView(const RenderContext& ctx)
+void GBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
 
@@ -50,7 +52,7 @@ void GBuffer::updateView(const RenderContext& ctx)
         m_buffer.reset(buffer);
         m_buffer->prepare();
 
-        unbindTexture(ctx);
+        //unbindTexture(ctx);
     }
 
     {

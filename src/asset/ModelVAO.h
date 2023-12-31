@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mutex>
+#include <atomic>
+
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
@@ -22,7 +25,7 @@ public:
     // @return VAO for mesh
     GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
-    void update(const UpdateContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
 private:
     void prepareVAO(
@@ -37,6 +40,9 @@ private:
 
 private:
     bool m_prepared = false;
+
+    std::atomic<bool> m_dirty;
+    std::mutex m_lock{};
 
     std::unique_ptr<GLVertexArray> m_vao;
 

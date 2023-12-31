@@ -15,6 +15,10 @@ namespace event {
     class Dispatcher;
 }
 
+namespace render {
+    class NodeDraw;
+}
+
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -26,12 +30,13 @@ class NodeController;
 
 class RenderData;
 class Batch;
-class NodeDraw;
 
 class Registry;
 
 class UpdateContext;
+class UpdateViewContext;
 class RenderContext;
+
 class FrameBuffer;
 class WindowBuffer;
 
@@ -53,20 +58,24 @@ class Scene final
 public:
     Scene(
         const Assets& assets,
-        std::shared_ptr<Registry> registry);
+        std::shared_ptr<Registry> registry,
+        std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
 
-    void prepare();
+    void destroy();
 
-    void processEvents(const UpdateContext& ctx);
+    void prepareRT();
+
     void update(const UpdateContext& ctx);
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
+
+    void handleNodeAdded(Node* node);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
-    backend::gl::PerformanceCounters getCounters(bool clear);
-    backend::gl::PerformanceCounters getCountersLocal(bool clear);
+    backend::gl::PerformanceCounters getCounters(bool clear) const;
+    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
     void draw(const RenderContext& ctx);
 
@@ -81,33 +90,31 @@ public:
     Node* getActiveNode() const;
     const std::vector<NodeController*>* getActiveNodeControllers() const;
 
-    Node* getActiveCamera() const;
+    Node* getActiveCameraNode() const;
     const std::vector<NodeController*>* getActiveCameraControllers() const;
 
-    void bindComponents(Node* node);
     ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
 
+public:
     std::shared_ptr<Viewport> m_mainViewport{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };
 
-    //void bindPendingChildren();
-
 public:
     const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<RenderData> m_renderData;
 
     std::shared_ptr<Registry> m_registry;
 
     std::unique_ptr<Batch> m_batch;
-    std::unique_ptr<NodeDraw> m_nodeDraw;
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
 protected:
 
 private:
     bool m_loaded{ false };
+
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<NodeRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<NodeRenderer> m_rearRenderer{ nullptr };

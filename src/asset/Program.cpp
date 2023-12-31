@@ -24,6 +24,7 @@
 
 #include "kigl/GLState.h"
 
+#include "ProgramUniforms.h"
 
 
 namespace {
@@ -93,6 +94,11 @@ Program::Program(
     }
 }
 
+//Program::Program(Program&& o)
+//    :
+//{
+//}
+
 Program::~Program()
 {
     KI_INFO(fmt::format("DELETE: program={}", m_key));
@@ -103,7 +109,7 @@ Program::~Program()
 
 void Program::bind(GLState& state) const noexcept
 {
-    assert(m_prepared);
+    assert(isReady());
     state.useProgram(m_programId);
 }
 
@@ -114,7 +120,7 @@ void Program::load()
     }
 }
 
-int Program::prepare(const Assets& assets)
+int Program::prepareRT(const Assets& assets)
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;
@@ -124,23 +130,7 @@ int Program::prepare(const Assets& assets)
         return -1;
     }
 
-    u_shadowIndex = std::make_unique< uniform::UInt>("u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX);
-    u_effect = std::make_unique< uniform::Subroutine>("u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT);
-
-    u_nearPlane = std::make_unique< uniform::Float>("u_nearPlane", UNIFORM_NEAR_PLANE);
-    u_farPlane = std::make_unique< uniform::Float>("u_farPlane", UNIFORM_FAR_PLANE);
-
-    u_drawParametersIndex = std::make_unique< uniform::UInt>("u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX);
-
-    u_toneHdri = std::make_unique< uniform::Bool>("u_toneHdri", UNIFORM_TONE_HDRI);
-    u_gammaCorrect = std::make_unique< uniform::Bool>("u_gammaCorrect", UNIFORM_GAMMA_CORRECT);
-    u_viewportTransform = std::make_unique< uniform::Mat4>("u_viewportTransform", UNIFORM_VIEWPORT_TRANSFORM);
-
-    u_stencilMode = std::make_unique< uniform::Int>("u_stencilMode", UNIFORM_STENCIL_MODE);
-
-    u_effectBloomIteration = std::make_unique< uniform::UInt>("u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION);
-
-    u_effect->init(this);
+    m_uniforms = std::make_unique<ProgramUniforms>(*this);
 
     m_prepareResult = 0;
     return m_prepareResult;
@@ -295,6 +285,11 @@ int Program::createProgram() {
     }
 
     if (m_programId == -1) return -1;
+
+    m_defines.clear();
+    m_paths.clear();
+    m_required.clear();
+    m_sources.clear();
 
     initProgram();
     return 0;

@@ -49,9 +49,11 @@ public:
 
     ~Registry();
 
-    void prepare();
+    void prepareShared();
+    void prepareWT();
 
-    void update(const UpdateContext& ctx);
+    void updateWT(const UpdateContext& ctx);
+    void updateRT(const UpdateContext& ctx);
 
 private:
     const Assets& m_assets;
@@ -61,6 +63,7 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<event::Dispatcher> m_dispatcherImpl;
+    std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
 
     std::unique_ptr<ProgramRegistry> m_programRegistryImpl;
 
@@ -82,6 +85,7 @@ private:
 public:
     // NOTE KI initialization order!
     event::Dispatcher* const m_dispatcher;
+    event::Dispatcher* const m_dispatcherView;
 
     ProgramRegistry* const m_programRegistry;
 

@@ -7,7 +7,7 @@ class VolumeController final : public NodeController
 public:
     VolumeController();
 
-    bool update(
+    virtual bool updateWT(
         const UpdateContext& ctx,
         Node& node) noexcept override;
 

@@ -52,10 +52,13 @@ void TerrainGenerator::update(
     const UpdateContext& ctx,
     Node& container)
 {
-    if (m_containerMatrixLevel == container.getMatrixLevel()) return;
+    auto& transform = container.modifyTransform();
+    if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
-    m_containerMatrixLevel = container.getMatrixLevel();
+    transform.m_dirtyEntity = true;
+    transform.m_dirtySnapshot = true;
+    m_containerMatrixLevel = transform.getMatrixLevel();
 }
 
 void TerrainGenerator::prepareHeightMap(
@@ -70,7 +73,10 @@ void TerrainGenerator::prepareHeightMap(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = image->load();
 
-    auto heightMap = std::make_unique<physics::HeightMap>(std::move(image));
+    auto* pe = registry->m_physicsEngine;
+    auto id = pe->registerHeightMap();
+    auto* heightMap = pe->getHeightMap(id);
+
     {
         heightMap->m_origin = &container;
         heightMap->m_verticalRange = m_verticalRange;
@@ -86,15 +92,14 @@ void TerrainGenerator::prepareHeightMap(
 
         heightMap->setAABB(aabb);
     }
-    m_heightMap = static_cast<physics::HeightMap*>(registry->m_physicsEngine->registerSurface(std::move(heightMap)));
-    m_heightMap->prepare();
+    heightMap->prepare(image.get());
 }
 
 void TerrainGenerator::updateTiles(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto& containerInstance = container.getInstance();
+    const auto& containerTransform = container.getTransform();
 
     // NOTE scale.y == makes *FLAT* plane
     const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
@@ -105,12 +110,12 @@ void TerrainGenerator::updateTiles(
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
 
-            auto& instance = m_instances[idx];
+            auto& transform = m_transforms[idx];
 
-            instance.setPosition(pos);
-            instance.setScale(scale);
+            transform.setPosition(pos);
+            transform.setScale(scale);
 
-            instance.updateModelMatrix(containerInstance);
+            transform.updateModelMatrix(containerTransform);
 
             idx++;
         }
@@ -140,38 +145,45 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto type = createType(registry, container.m_type);
+    auto typeId = createType(registry, container.m_type);
     {
         auto future = registry->m_modelRegistry->getMesh(
             TERRAIN_QUAD_MESH_NAME,
             m_modelsDir);
         auto* mesh = future.get();
         mesh->setAABB(aabb);
-        type->setMesh(mesh);
-        type->m_drawOptions.patchVertices = 3;
+
+        {
+            auto type = registry->m_typeRegistry->modifyType(typeId);
+            type->setMesh(mesh);
+            type->m_drawOptions.patchVertices = 3;
+        }
     }
 
     // NOTE KI must laod textures in the context of *THIS* material
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
-    type->modifyMaterials([this, &materialIndex , &materialRegistry, &assets](Material& m) {
-        m.tilingX = (float)m_worldTilesU;
-        m.tilingY = (float)m_worldTilesV;
+    {
+        auto type = registry->m_typeRegistry->modifyType(typeId);
+        type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
+            m.tilingX = (float)m_worldTilesU;
+            m.tilingY = (float)m_worldTilesV;
 
-        m.loadTextures(assets);
+            m.loadTextures(assets);
 
-        materialRegistry->add(m);
-        materialIndex = m.m_registeredIndex;
-    });
+            materialRegistry->registerMaterial(m);
+            materialIndex = m.m_registeredIndex;
+            });
+    }
 
     const glm::vec4 tileVolume = aabb.getVolume();
     const int step = m_worldTileSize;
     AABB minmax{ true };
 
     m_reservedCount = m_worldTilesU * m_worldTilesV;
-    m_reservedFirst = entityRegistry->addEntityRange(m_reservedCount);
+    m_reservedFirst = entityRegistry->registerEntityRange(m_reservedCount);
 
-    m_instances.reserve(m_reservedCount);
+    m_transforms.reserve(m_reservedCount);
 
     // Setup initial static values for entity
     int idx = 0;
@@ -183,16 +195,16 @@ void TerrainGenerator::createTiles(
             const int entityIndex = m_reservedFirst + idx;
 
             {
-                auto& instance = m_instances.emplace_back();
+                auto& transform = m_transforms.emplace_back();
 
-                instance.setMaterialIndex(materialIndex);
-                instance.setVolume(tileVolume);
+                transform.setMaterialIndex(materialIndex);
+                transform.setVolume(tileVolume);
 
-                instance.m_entityIndex = entityIndex;
+                transform.m_entityIndex = entityIndex;
             }
 
             {
-                auto* entity = entityRegistry->updateEntity(entityIndex, false);
+                auto* entity = entityRegistry->modifyEntity(entityIndex, false);
                 entity->u_tileX = u;
                 entity->u_tileY = v;
 
@@ -205,29 +217,33 @@ void TerrainGenerator::createTiles(
     }
 
     {
+        const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
-        m_node->setVolume(minmax.getVolume());
+        m_node->modifyTransform().setVolume(minmax.getVolume());
         m_node->m_instancer = this;
     }
 
     {
         event::Event evt { event::Type::node_add };
-        evt.body.node.target = m_node;
-        evt.body.node.parentId = container.m_uuid;
+        evt.body.node = {
+            .target = m_node,
+            .uuid = {},
+            .parentUUID = {},
+            .parentId = container.m_id,
+        };
         registry->m_dispatcher->send(evt);
     }
 }
 
-MeshType* TerrainGenerator::createType(
+ki::type_id TerrainGenerator::createType(
     Registry* registry,
-    MeshType* containerType)
+    const MeshType* containerType)
 {
-    auto type = registry->m_typeRegistry->getType(containerType->m_name);
+    auto type = registry->m_typeRegistry->registerType(containerType->m_name);
     type->m_entityType = EntityType::terrain;
 
     auto& flags = type->m_flags;
     flags = containerType->m_flags;
-    flags.noDisplay = false;
     flags.invisible = false;
     flags.terrain = true;
 
@@ -239,13 +255,14 @@ MeshType* TerrainGenerator::createType(
     auto& materialVBO = type->m_materialVBO;
 
     // NOTE MUST copy *all* data from materials
-    materialVBO.m_defaultMaterial = containerMaterials.m_defaultMaterial;
-    materialVBO.m_useDefaultMaterial = true;
-    materialVBO.m_forceDefaultMaterial = true;
+    auto* material = containerMaterials.getDefaultMaterial();
+    if (material) {
+        materialVBO.setDefaultMaterial(*material, true, true);
+    }
     materialVBO.setMaterials(containerMaterials.getMaterials());
 
     type->m_program = containerType->m_program;
     type->m_depthProgram = containerType->m_depthProgram;
 
-    return type;
+    return type->m_id;
 }

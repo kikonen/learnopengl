@@ -1,11 +1,8 @@
 ---
 name: Origo
-viewports:
 skybox:
   program: g_skybox
-  material: skybox
-lights: {}
-cube_maps: {}
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 root:
   type: origo
 script:
@@ -60,7 +57,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 100]
+    scale: 100
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]

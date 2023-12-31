@@ -14,7 +14,7 @@ public:
     ShadowMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
     virtual ~ShadowMapRenderer();
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 

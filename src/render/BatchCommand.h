@@ -18,7 +18,7 @@ struct BatchCommand {
     const GLVertexArray* m_vao{ nullptr };
     const backend::DrawOptions* m_drawOptions{ nullptr };
 
-    const MaterialVBO* m_materialVBO{ nullptr };
+    //const MaterialVBO* m_materialVBO{ nullptr };
 
     int m_index = 0;
     int m_drawCount = 0;

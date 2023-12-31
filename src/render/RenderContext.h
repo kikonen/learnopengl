@@ -13,11 +13,13 @@
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
+namespace render {
+    class NodeDraw;
+}
 
 class Camera;
 class Registry;
 class Batch;
-class NodeDraw;
 class RenderData;
 
 struct RenderContextDefaults {
@@ -55,7 +57,7 @@ public:
         const Assets& assets,
         Registry* registry,
         RenderData* renderData,
-        NodeDraw* nodeDraw,
+        render::NodeDraw* nodeDraw,
         Batch* batch,
         GLState& state,
         Camera* camera,
@@ -99,7 +101,7 @@ public:
     const ki::RenderClock& m_clock;
 
     RenderData* const m_renderData;
-    NodeDraw* const m_nodeDraw;
+    render::NodeDraw* const m_nodeDraw;
     Batch* const m_batch;
 
     GLenum m_depthFunc{ GL_LESS };

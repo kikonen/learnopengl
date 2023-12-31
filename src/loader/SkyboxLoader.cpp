@@ -99,7 +99,7 @@ namespace loader {
     {
         if (!data.valid()) return;
 
-        auto type = m_registry->m_typeRegistry->getType("<skybox>");
+        auto* type = m_registry->m_typeRegistry->registerType("<skybox>");
         type->m_priority = data.priority;
 
         auto future = m_registry->m_modelRegistry->getMesh(
@@ -118,8 +118,8 @@ namespace loader {
         flags.noFrustum = true;
         //flags.noReflect = true;
         //flags.noRefract = true;
-        flags.noDisplay = false;
         flags.noSelect = true;
+        flags.noNormals = true;
         flags.gbuffer = false;// data.programName.starts_with("g_");
 
         type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
@@ -139,13 +139,17 @@ namespace loader {
         }
         type->setCustomMaterial(std::move(material));
 
+        m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+
         auto node = new Node(type);
-        node->m_uuid = m_assets.skyboxUUID;
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = rootId;
+            evt.body.node = {
+                .target = node,
+                .uuid = m_assets.skyboxUUID,
+                .parentUUID = rootId,
+            };
             m_dispatcher->send(evt);
         }
     }

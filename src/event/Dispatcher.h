@@ -9,7 +9,6 @@
 
 #include "Event.h"
 
-class UpdateContexxt;
 
 namespace event {
     class Dispatcher final {
@@ -18,13 +17,11 @@ namespace event {
 
         void prepare();
 
-        void dispatchEvents(const UpdateContext& ctx);
+        void dispatchEvents();
 
-        inline event::event_id send(Event& evt)
+        inline void send(Event& evt)
         {
-            evt.id = nextID();
             m_queue.enqueue(evt);
-            return evt.id;
         }
 
         template <typename ...Params>
@@ -34,14 +31,9 @@ namespace event {
         }
 
     private:
-        inline event::event_id nextID() {
-            return m_baseId++;
-        }
 
     private:
         const Assets& m_assets;
-
-        std::atomic<event::event_id> m_baseId{ 1 };
 
         eventpp::EventQueue<
             Type,

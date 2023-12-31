@@ -37,18 +37,20 @@ namespace loader
     void RootLoader::attachRoot(
         const RootData& data)
     {
-        auto type = m_registry->m_typeRegistry->getType("<root>");
+        auto* type = m_registry->m_typeRegistry->registerType("<root>");
         type->m_entityType = EntityType::origo;
 
         auto& flags = type->m_flags;
         flags.invisible = true;
 
         auto node = new Node(type);
-        node->m_uuid = data.rootId;
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
+            evt.body.node = {
+                .target = node,
+                .uuid = data.rootId,
+            };
             m_dispatcher->send(evt);
         }
     }

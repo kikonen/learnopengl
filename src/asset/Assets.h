@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include <stduuid/uuid.h>
 
-enum class ViewportEffect {
+enum class ViewportEffect : std::underlying_type_t<std::byte> {
     none = 0,
     invert = 1,
     grayScale = 2,
@@ -40,6 +40,7 @@ public:
     bool glUseFence;
     bool glUseSingleFence;
     bool glUseInvalidate;
+    bool glUseFinish;
 
     bool prepassDepthEnabled;
 
@@ -50,6 +51,7 @@ public:
 
     glm::uvec2 windowSize;
     bool windowMaximized;
+    bool windowFullScreen;
 
     glm::vec3 cameraMoveNormal;
     glm::vec3 cameraMoveRun;

@@ -8,6 +8,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "script/CommandEngine.h"
+#include "script/api/RotateNode.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -21,6 +24,8 @@ void CameraZoomController::prepare(
     Registry* registry,
     Node& node)
 {
+    NodeController::prepare(assets, registry, node);
+
     if (!node.m_camera) return;
 
     m_registry = registry;
@@ -31,13 +36,6 @@ void CameraZoomController::prepare(
     m_speedZoomRun = assets.cameraZoomRun;
 
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
-}
-
-bool CameraZoomController::update(
-    const UpdateContext& ctx,
-    Node& node) noexcept
-{
-    return false;
 }
 
 void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
@@ -67,7 +65,7 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            Node* nextCamera = m_registry->m_nodeRegistry->getNextCamera(m_node, offset);
+            Node* nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_node, offset);
 
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
@@ -98,10 +96,15 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& curr = m_node->getDegreesRotation();
+    const auto& snapshot = m_node->getSnapshot();
+    const auto& curr = snapshot.getDegreesRotation();
+    float currX = curr.x;
+    if (currX == 180.f) {
+        currX = 0.f;
+    }
 
-    const auto maxUp = MAX_ANGLE - curr.x;
-    const auto maxDown = -MAX_ANGLE - curr.x;
+    const auto maxUp = MAX_ANGLE - currX;
+    const auto maxDown = -MAX_ANGLE - currX;
 
     if (yoffset != 0) {
         auto pitch = m_speedMouseSensitivity.y * yoffset;
@@ -118,7 +121,16 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     }
 
     if (changed) {
-        m_node->adjustQuatRotation(util::degreesToQuat(adjust));
+        m_registry->m_commandEngine->addCommand(
+            std::make_unique<script::RotateNode>(
+                0,
+                m_node->m_id,
+                0.f,
+                true,
+                snapshot.getViewRight(),
+                -adjust.x));
+
+        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 

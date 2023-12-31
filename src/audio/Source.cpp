@@ -5,6 +5,8 @@
 
 #include "util/Log.h"
 
+#include "model/Node.h"
+
 #include "Sound.h"
 
 namespace {
@@ -16,24 +18,26 @@ namespace audio
     {
     }
 
-    Source::Source(Source&& b) noexcept
-        : m_id{ b.m_id },
-        m_sourceId{ b.m_sourceId },
-        m_soundId{ b.m_soundId },
-        m_referenceDistance{ b.m_referenceDistance },
-        m_maxDistance{ b.m_maxDistance },
-        m_rolloffFactor{ b.m_rolloffFactor },
-        m_minGain{ b.m_minGain  },
-        m_maxGain{ b.m_maxGain },
-        m_looping{ b.m_looping },
-        m_pitch{ b.m_pitch },
-        m_gain{ b.m_gain },
-        m_pos{ b.m_pos },
-        m_vel{ b.m_vel },
-        m_dir{ b.m_dir }
+    Source::Source(Source&& o) noexcept
+        : m_id{ o.m_id },
+        m_sourceId{ o.m_sourceId },
+        m_soundId{ o.m_soundId },
+        m_referenceDistance{ o.m_referenceDistance },
+        m_maxDistance{ o.m_maxDistance },
+        m_rolloffFactor{ o.m_rolloffFactor },
+        m_minGain{ o.m_minGain  },
+        m_maxGain{ o.m_maxGain },
+        m_looping{ o.m_looping },
+        m_pitch{ o.m_pitch },
+        m_gain{ o.m_gain },
+        m_pos{ o.m_pos },
+        m_vel{ o.m_vel },
+        m_dir{ o.m_dir },
+        m_matrixLevel{ o.m_matrixLevel},
+        m_node{ o.m_node }
     {
-        // NOTE KI b is moved now
-        b.m_sourceId = 0;
+        // NOTE KI o is moved now
+            o.m_sourceId = 0;
     }
 
     Source::~Source()
@@ -72,6 +76,18 @@ namespace audio
 
         //// NOTE KI ensure defaults are in place
         //update();
+    }
+
+    void Source::updateFromNode()
+    {
+        const auto level = m_node ? m_node->getTransform().getMatrixLevel() : 0;
+        if (m_matrixLevel == level) return;
+        m_matrixLevel = level;
+
+        m_pos = m_node->getTransform().getWorldPosition();
+        m_dir = m_node->getTransform().getViewFront();
+
+        updatePos();
     }
 
     void Source::update() {

@@ -15,6 +15,7 @@
 
 class Window;
 class Scene;
+class SceneUpdater;
 class AsyncLoader;
 
 /**
@@ -50,6 +51,7 @@ public:
     std::shared_ptr<Registry> m_registry;
 
     std::shared_ptr<Scene> m_currentScene;
+    std::shared_ptr<SceneUpdater> m_sceneUpdater;
 
     std::unique_ptr<Window> m_window;
 protected:

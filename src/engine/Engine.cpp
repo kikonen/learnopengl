@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #include "imgui.h"
 
@@ -55,7 +56,7 @@ int Engine::setup() {
         m_state.track(key);
     }
 
-    m_registry->prepare();
+    m_registry->prepareShared();
 
     return onSetup();
 }
@@ -132,7 +133,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     char titleSB[256];
 
     // NOTE KI moving avg of render time and fps
-    constexpr int FPS_FRAMES = 3;
+    constexpr int FPS_FRAMES = 10;
     int avgIndex = 0;
     std::array<float, FPS_FRAMES> fpsSecs{ 0.f };
     std::array<float, FPS_FRAMES> renderSecs{ 0.f };
@@ -148,7 +149,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         int close = 0;
 
         {
-            //ki::Timer t("loop");
+            //KI_TIMER("loop");
 
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;
@@ -171,7 +172,10 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 //   draw loop and update of UBOs & mapped buffers in next frame
                 // => INEFFICIENT, need to improve this
                 // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
-                glFinish();
+                if (m_assets.glUseFinish) {
+                    //std::cout << ".";
+                    glFinish();
+                }
 
                 if (!close) {
                     close = onUpdate(clock);
@@ -199,7 +203,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(m_window->m_glfwWindow);
             glfwPollEvents();
-            //glFinish();
         }
 
         if (!close) {
@@ -238,12 +241,16 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 sprintf_s(
                     titleSB,
                     256,
-                    "%s - FPS: %-5.2f - RENDER: %-5.2fms",
+                    "%s - FPS: %-5.0f - RENDER: %-5.1fms",
                     m_title.c_str(),
-                    fpsAvg,
+                    round(fpsAvg),
                     renderAvg);
 
                 m_window->setTitle(titleSB);
+
+                if (m_window->isFullScreen()) {
+                    std::cout << titleSB << '\n';
+                }
             }
         }
 
@@ -255,4 +262,5 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
 void Engine::onDestroy()
 {
+    *m_alive = false;
 }

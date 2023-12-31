@@ -6,7 +6,7 @@ class Node;
 class NodeGenerator;
 
 namespace loader {
-    enum class GeneratorType {
+    enum class GeneratorType : std::underlying_type_t<std::byte> {
         none,
         grid,
         terrain,

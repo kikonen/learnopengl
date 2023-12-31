@@ -21,8 +21,14 @@ public:
 
     ~MeshTypeRegistry();
 
-    MeshType* getType(
+    const MeshType* getType(ki::type_id);
+    MeshType* modifyType(ki::type_id);
+
+    MeshType* registerType(
         const std::string& name);
+
+    void registerCustomMaterial(
+        ki::type_id typeId);
 
     void bind(const RenderContext& ctx);
 
@@ -32,5 +38,8 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_lock{};
-    std::vector<MeshType*> m_types;
+
+    std::vector<MeshType> m_types;
+
+    std::vector<ki::type_id> m_customMaterialTypes;
 };

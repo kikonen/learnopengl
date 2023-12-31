@@ -20,7 +20,7 @@ namespace {
     constexpr unsigned int MAX_MIP_LEVELS = 5;
 }
 
-void PrefilterMap::prepare(
+void PrefilterMap::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -42,7 +42,7 @@ void PrefilterMap::prepare(
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        // be sure to set minification filter to mip_linear 
+        // be sure to set minification filter to mip_linear
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -54,7 +54,7 @@ void PrefilterMap::prepare(
         GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_PREFILTER_CUBE_MAP);
-        program->prepare(assets);
+        program->prepareRT(assets);
 
         program->bind(state);
         state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);

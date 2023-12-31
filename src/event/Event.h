@@ -13,6 +13,9 @@
 #include "audio/size.h"
 #include "audio/limits.h"
 
+#include "physics/Geom.h"
+#include "physics/Body.h"
+
 #include "script/size.h"
 
 #include "size.h"
@@ -22,14 +25,16 @@ class Node;
 class NodeController;
 
 namespace event {
-    enum class Type {
+    enum class Type : std::underlying_type_t<std::byte> {
         none = 0,
 
         node_add,
         node_added,
-        node_change_parent,
+        //node_change_parent,
         node_select,
         node_activate,
+
+        type_prepare_view,
 
         // NOTE KI allow camera to vary independent of active node
         camera_activate,
@@ -46,6 +51,8 @@ namespace event {
         audio_source_stop,
         audio_source_pause,
 
+        physics_add,
+
         animate_wait,
         animate_move,
         animate_rotate,
@@ -54,21 +61,17 @@ namespace event {
 
         script_bind,
         script_run,
+
+        app_shutdown,
     };
 
-    struct NodeAction {
-        Node* target{ nullptr };
-        uuids::uuid parentId;
+    struct PhysicsData {
+        bool update{ false };
+        physics::Body body;
+        physics::Geom geom;
     };
 
-    struct ControlAction {
-		ki::node_id target{ 0 };
-        NodeController* controller{ nullptr };
-    };
-
-    struct NodeAudioSourceAction {
-        ki::node_id target{ 0 };
-
+    struct AudioSourceData {
         audio::sound_id soundId{ 0 };
         ki::size_t8 index{ 0 };
         bool isAutoPlay{ false };
@@ -85,11 +88,52 @@ namespace event {
         float gain{ 1.f };
     };
 
-    struct NodeAudioListenerAction {
-        ki::node_id target{ 0 };
-
+    struct AudioListenerData {
         bool isDefault{ false };
         float gain{ 1.f };
+    };
+
+    // Blobdata is for doing passing abnormally large event blobs
+    // for initalization, which are not needed in normal event logic
+    // => To reduce bloating of Event struct size
+    struct BlobData {
+        BlobData() {};
+        ~BlobData() {};
+
+        union Body {
+            Body() {};
+            ~Body() {};
+
+            PhysicsData physics;
+            AudioSourceData audioSource;
+            AudioListenerData audioListener;
+        } body;
+    };
+
+    struct NodeAction {
+        Node* target{ nullptr };
+        // UUID of node for persistency
+        // => *CAN* be empty for auto generated nodes
+        uuids::uuid uuid{};
+        uuids::uuid parentUUID{};
+        ki::node_id parentId{ 0 };
+    };
+
+    struct MeshTypeAction {
+        ki::type_id target{ 0 };
+    };
+
+    struct ControlAction {
+		ki::node_id target{ 0 };
+        NodeController* controller{ nullptr };
+    };
+
+    struct AudioInitAction {
+        ki::node_id target{ 0 };
+    };
+
+    struct PhysicsAction {
+        ki::node_id target{ 0 };
     };
 
     struct AudioSourceAction {
@@ -116,16 +160,34 @@ namespace event {
     };
 
     struct Event {
-        Type type;
-        event::event_id id;
+        Event(Type a_type)
+            : type{ a_type },
+              body{}
+        {}
 
-        union {
+        Event(Event& o) noexcept
+            : type{ o.type },
+            blob{ std::move(o.blob) },
+            body{ o.body }
+        {}
+
+        Event(Event&& o) noexcept
+            : type{ o.type },
+            blob{ std::move(o.blob) },
+            body{o.body}
+        {}
+
+        Type type;
+
+        std::unique_ptr<BlobData> blob;
+        union Body {
             NodeAction node;
+            MeshTypeAction meshType;
             ControlAction control;
-            NodeAudioSourceAction nodeAudioSource;
-            NodeAudioListenerAction nodeAudioListener;
+            AudioInitAction audioInit;
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
+            PhysicsAction physics;
             AnimateAction animate;
             ScriptAction script;
         } body;

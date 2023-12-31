@@ -17,7 +17,7 @@
 #include "CubeRender.h"
 
 
-void IrradianceMap::prepare(
+void IrradianceMap::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -34,7 +34,7 @@ void IrradianceMap::prepare(
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        // be sure to set minification filter to mip_linear 
+        // be sure to set minification filter to mip_linear
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
@@ -43,7 +43,7 @@ void IrradianceMap::prepare(
         GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
-        program->prepare(assets);
+        program->prepareRT(assets);
 
         program->bind(state);
         state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);

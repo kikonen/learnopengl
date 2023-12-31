@@ -11,18 +11,13 @@
 #include "kigl/kigl.h"
 #include "Assets.h"
 
-
-class GLState;
-
 namespace uniform {
     class Uniform;
     class Subroutine;
-    class Float;
-    class Int;
-    class UInt;
-    class Bool;
-    class Mat4;
 }
+
+class GLState;
+struct ProgramUniforms;
 
 class Program final
 {
@@ -30,9 +25,32 @@ class Program final
     friend uniform::Subroutine;
 
 public:
+    // public due to shared_ptr
+    Program(
+        const Assets& assets,
+        std::string_view key,
+        std::string_view name,
+        const bool compute,
+        std::string_view geometryType,
+        const std::map<std::string, std::string, std::less<>>& defines);
+
+    Program(Program&& o) noexcept;
+
+    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
+    Program(const Program&) = delete;
+    Program& operator=(const Program&) = delete;
+
+    // public due to shared_ptr
+    ~Program();
+
+    void validateProgram() const;
+
+public:
+    inline bool isReady() const { return m_prepareResult == 0; }
+
     void load();
 
-    int prepare(const Assets& assets);
+    int prepareRT(const Assets& assets);
 
     void bind(GLState& state) const noexcept;
 
@@ -48,25 +66,6 @@ public:
         unsigned int expectedSize);
 
     operator int() const { return m_programId; }
-
-public:
-    // public due to shared_ptr
-    Program(
-        const Assets& assets,
-        std::string_view key,
-        std::string_view name,
-        const bool compute,
-        std::string_view geometryType,
-        const std::map<std::string, std::string, std::less<>>& defines);
-
-    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
-    Program(const Program&) = delete;
-    Program& operator=(const Program&) = delete;
-
-    // public due to shared_ptr
-    ~Program();
-
-    void validateProgram() const;
 
 private:
     // @return shaderId
@@ -103,21 +102,7 @@ public:
 
     int m_programId = -1;
 
-    std::unique_ptr<uniform::UInt> u_shadowIndex;
-    std::unique_ptr<uniform::Subroutine> u_effect;
-
-    std::unique_ptr<uniform::Float> u_nearPlane;
-    std::unique_ptr<uniform::Float> u_farPlane;
-
-    std::unique_ptr<uniform::UInt> u_drawParametersIndex;
-
-    std::unique_ptr<uniform::UInt> u_effectBloomIteration;
-
-    std::unique_ptr<uniform::Bool> u_toneHdri;
-    std::unique_ptr<uniform::Bool> u_gammaCorrect;
-    std::unique_ptr<uniform::Mat4> u_viewportTransform;
-
-    std::unique_ptr<uniform::Int> u_stencilMode;
+    std::unique_ptr<ProgramUniforms> m_uniforms;
 
 private:
     const Assets& m_assets;
@@ -125,7 +110,7 @@ private:
     int m_prepareResult = -1;
     bool m_prepared = false;
 
-    mutable std::map<std::string, std::string, std::less<> > m_defines;
+    std::map<std::string, std::string, std::less<> > m_defines;
 
     std::unordered_map<GLenum, std::string> m_paths;
     std::unordered_map<GLenum, bool> m_required;

@@ -134,6 +134,10 @@ void AssetsFile::loadAssets(
                 data.windowMaximized = readBool(v);
                 continue;
             }
+            if (k == "window_full_screen") {
+                data.windowFullScreen = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "gl_debug") {
@@ -154,6 +158,10 @@ void AssetsFile::loadAssets(
             }
             if (k == "gl_use_invalidate") {
                 data.glUseInvalidate = readBool(v);
+                continue;
+            }
+            if (k == "gl_use_finish") {
+                data.glUseFinish = readBool(v);
                 continue;
             }
             if (k == "prepass_depth_enabled") {

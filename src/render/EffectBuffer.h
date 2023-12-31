@@ -3,8 +3,10 @@
 #include "asset/Assets.h"
 
 
-class FrameBuffer;
+class UpdateViewContext;
 class RenderContext;
+
+class FrameBuffer;
 class GBuffer;
 
 //
@@ -27,7 +29,7 @@ public:
         const Assets& assets,
         GBuffer* gBuffer);
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void clearAll();
     void invalidateAll();

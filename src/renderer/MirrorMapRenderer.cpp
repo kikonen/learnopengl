@@ -5,6 +5,8 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
@@ -39,18 +41,18 @@ namespace {
     static const int ATT_ALBEDO_INDEX = 0;
 }
 
-void MirrorMapRenderer::prepare(
+void MirrorMapRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-    m_registry->m_materialRegistry->add(m_tagMaterial);
+    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
@@ -88,14 +90,14 @@ void MirrorMapRenderer::prepare(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepare(assets);
+        m_reflectionDebugViewport->prepareRT(assets);
     }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepare(assets, registry);
+        m_waterMapRenderer->prepareRT(assets, registry);
     }
 
     if (m_doubleBuffer) {
@@ -103,18 +105,18 @@ void MirrorMapRenderer::prepare(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->prepare(assets, registry);
+            m_mirrorMapRenderer->prepareRT(assets, registry);
         }
     }
 }
 
-void MirrorMapRenderer::updateView(const RenderContext& ctx)
+void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
-    m_waterMapRenderer->updateView(ctx);
+    m_waterMapRenderer->updateRT(ctx);
     if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->updateView(ctx);
+        m_mirrorMapRenderer->updateRT(ctx);
     }
 
     const auto& res = ctx.m_resolution;
@@ -182,61 +184,67 @@ bool MirrorMapRenderer::render(
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
-    const glm::vec3& planePos = closest->getWorldPosition();
-
     // https://prideout.net/clip-planes
     // https://stackoverflow.com/questions/48613493/reflecting-scene-by-plane-mirror-in-opengl
     // reflection map
     {
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+        auto& camera = m_cameras[0];
+        float nearPlane = 0.f;
+        {
+            const auto& snapshot = closest->getSnapshot();
+            const glm::vec3& planePos = snapshot.getWorldPosition();
 
-        const auto* parentCamera = parentCtx.m_camera;
+            const auto* parentCamera = parentCtx.m_camera;
 
-        const auto& volume = closest->getVolume();
-        const glm::vec3 volumeCenter = glm::vec3(volume);
-        const float volumeRadius = volume.a;
+            const auto& volume = snapshot.getVolume();
+            const glm::vec3 volumeCenter = glm::vec3(volume);
+            const float volumeRadius = volume.a;
 
-        const auto& mirrorSize = volumeRadius;
-        const auto& eyePos = parentCamera->getWorldPosition();
+            const auto& mirrorSize = volumeRadius;
+            const auto& eyePos = parentCamera->getWorldPosition();
 
-        const auto& viewFront = closest->getViewFront();
-        const auto& viewUp = closest->getViewUp();
+            const auto& viewFront = snapshot.getViewFront();
+            const auto& viewUp = snapshot.getViewUp();
 
-        const auto eyeV = planePos - eyePos;
-        const auto dist = glm::length(eyeV);
-        auto eyeN = glm::normalize(eyeV);
+            const auto eyeV = planePos - eyePos;
+            const auto dist = glm::length(eyeV);
+            auto eyeN = glm::normalize(eyeV);
 
-        const auto dot = glm::dot(viewFront, parentCamera->getViewFront());
-        if (dot > 0) {
-            // NOTE KI backside; ignore
-            // => should not happen; finding closest already does this!
-            //return;
-            eyeN = -eyeN;
+            const auto dot = glm::dot(viewFront, parentCamera->getViewFront());
+            if (dot > 0) {
+                // NOTE KI backside; ignore
+                // => should not happen; finding closest already does this!
+                //return;
+                eyeN = -eyeN;
+            }
+
+            const auto reflectFront = glm::reflect(eyeN, viewFront);
+            const auto mirrorEyePos = planePos - (reflectFront * dist);
+
+            // NOTE KI keep mirror up straight up
+            //glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
+            //glm::vec3 reflectUp = -parentCamera->getUp();
+            //glm::vec3 reflectUp = -glm::normalize(glm::cross(parentCamera->getViewRight(), reflectFront));
+            glm::vec3 reflectUp = viewUp;
+
+            //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
+            //const float fovAngle = ctx.m_assets.mirrorFov;
+
+            camera.setWorldPosition(mirrorEyePos);
+            camera.setAxis(reflectFront, reflectUp);
+            //camera.setFov(ctx.m_camera.getFov());
+            //camera.setFov(fovAngle);
+
+            nearPlane = dist + m_nearPlane;
         }
 
-        const auto reflectFront = glm::reflect(eyeN, viewFront);
-        const auto mirrorEyePos = planePos - (reflectFront * dist);
-
-        // NOTE KI keep mirror up straight up
-        //glm::vec3 reflectUp{ 0.f, 1.f, 0.f };
-        //glm::vec3 reflectUp = -parentCamera->getUp();
-        //glm::vec3 reflectUp = -glm::normalize(glm::cross(parentCamera->getViewRight(), reflectFront));
-        glm::vec3 reflectUp = viewUp;
-
-        //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-        //const float fovAngle = ctx.m_assets.mirrorFov;
-
-        auto& camera = m_cameras[0];
-        camera.setWorldPosition(mirrorEyePos);
-        camera.setAxis(reflectFront, reflectUp);
-        //camera.setFov(ctx.m_camera.getFov());
-        //camera.setFov(fovAngle);
+        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
         // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
         RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
-            dist + m_nearPlane,
+            nearPlane,
             m_farPlane,
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);
@@ -264,6 +272,17 @@ bool MirrorMapRenderer::render(
 
     m_rendered = true;
     return true;
+}
+
+void MirrorMapRenderer::handleNodeAdded(Node* node)
+{
+    if (!node->m_type->m_flags.mirror) return;
+
+    if (m_waterMapRenderer->isEnabled()) {
+        m_waterMapRenderer->handleNodeAdded(node);
+    }
+
+    m_nodes.push_back(node);
 }
 
 void MirrorMapRenderer::drawNodes(
@@ -317,7 +336,7 @@ void MirrorMapRenderer::drawNodes(
                 return node != current &&
                     node != sourceNode;
             },
-            NodeDraw::KIND_ALL,
+            render::NodeDraw::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
@@ -325,53 +344,48 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
+    if (m_nodes.empty()) return nullptr;
+
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& all : ctx.m_registry->m_nodeRegistry->allNodes) {
-        for (const auto& [key, nodes] : all.second) {
-            const auto& type = key.type;
+    for (const auto& node : m_nodes) {
+        const auto& snapshot = node->getSnapshot();
+        const auto& viewFront = snapshot.getViewFront();
 
-            if (!type->m_flags.mirror) continue;
+        const auto dot = glm::dot(viewFront, cameraFront);
 
-            for (const auto& node : nodes) {
-                const auto& viewFront = node->getViewFront();
+        if (dot >= 0) {
+            // NOTE KI not facing mirror; ignore
+            continue;
+        }
 
-                const auto dot = glm::dot(viewFront, cameraFront);
+        {
+            // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
+            //const auto eyeV = node->getWorldPosition() - cameraPos;
+            //const auto eyeN = glm::normalize(eyeV);
+            const auto planeDist = glm::dot(viewFront, snapshot.getWorldPosition());
+            const auto planeDot = glm::dot(viewFront, cameraPos);
+            const auto dist = planeDot - planeDist;
 
-                if (dot >= 0) {
-                    // NOTE KI not facing mirror; ignore
-                    continue;
-                }
-
-                {
-                    // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
-                    //const auto eyeV = node->getWorldPosition() - cameraPos;
-                    //const auto eyeN = glm::normalize(eyeV);
-                    const auto planeDist = glm::dot(viewFront, node->getWorldPosition());
-                    const auto planeDot = glm::dot(viewFront, cameraPos);
-                    const auto dist = planeDot - planeDist;
-
-                    if (dist <= 0) {
-                        // NOTE KI behind mirror; ignore
-                        continue;
-                    }
-                }
-
-                //if (!node->inFrustum(ctx, 1.1f)) {
-                //    // NOTE KI not in frustum; ignore
-                //    continue;
-                //}
-
-                {
-                    const auto eyeV = node->getWorldPosition() - cameraPos;
-                    const auto dist = glm::length(eyeV);
-
-                    sorted[dist] = node;
-                }
+            if (dist <= 0) {
+                // NOTE KI behind mirror; ignore
+                continue;
             }
+        }
+
+        //if (!node->inFrustum(ctx, 1.1f)) {
+        //    // NOTE KI not in frustum; ignore
+        //    continue;
+        //}
+
+        {
+            const auto eyeV = snapshot.getWorldPosition() - cameraPos;
+            const auto dist = glm::length(eyeV);
+
+            sorted[dist] = node;
         }
     }
 

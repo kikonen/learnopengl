@@ -30,7 +30,7 @@ public:
 
     ~ShadowCascade();
 
-    void prepare(
+    void prepareRT(
         const Assets& assets,
         Registry* registry);
 
@@ -67,4 +67,3 @@ private:
     Program* m_solidShadowProgram{ nullptr };
     Program* m_alphaShadowProgram{ nullptr };
 };
-

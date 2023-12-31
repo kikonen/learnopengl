@@ -49,18 +49,23 @@ void TestSceneSetup::setupEffectExplosion()
     m_asyncLoader->addLoader(m_alive, [this]() {
         Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
 
-        auto type = m_registry->m_typeRegistry->getType("<effect>");
+        auto type = m_registry->m_typeRegistry->registerType("<effect>");
         type->m_program = program;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
 
         auto node = new Node(type);
-        node->setScale(2);
+        auto& transform = node->modifyTransform();
+
+        transform.setScale(2);
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.parentId = m_assets.rootUUID;
+            evt.body.node = {
+                .target = node,
+                .uuid = {},
+                .parentUUID = m_assets.rootUUID,
+            };
             m_registry->m_dispatcher->send(evt);
         }
     });
@@ -84,6 +89,6 @@ void TestSceneSetup::setupViewport1()
         false,
         texture->m_textureID,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
-    viewport->prepare(m_assets);
+    viewport->prepareRT(m_assets);
     m_registry->m_viewportRegistry->addViewport(viewport);
 }

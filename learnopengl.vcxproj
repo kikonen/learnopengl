@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
+    <ClCompile Include="src\asset\ProgramUniforms.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\asset\TextMaterial.cpp" />
@@ -194,6 +195,9 @@
     <ClCompile Include="src\audio\Source.cpp" />
     <ClCompile Include="src\audio\AudoEngine.cpp" />
     <ClCompile Include="src\audio\Sound.cpp" />
+    <ClCompile Include="src\engine\UpdateViewContext.cpp" />
+    <ClCompile Include="src\model\Snapshot.cpp" />
+    <ClCompile Include="src\scene\SceneUpdater.cpp" />
     <ClCompile Include="src\script\api\AudioPause.cpp" />
     <ClCompile Include="src\script\api\AudioPlay.cpp" />
     <ClCompile Include="src\script\api\AudioStop.cpp" />
@@ -250,7 +254,7 @@
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
     <ClCompile Include="src\generator\TerrainGenerator.cpp" />
     <ClCompile Include="src\model\InstancePhysics.cpp" />
-    <ClCompile Include="src\model\NodeInstance.cpp" />
+    <ClCompile Include="src\model\NodeTransform.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
@@ -351,6 +355,7 @@
     <ClCompile Include="src\sample_app\main.cpp" />
     <ClCompile Include="src\asset\Material.cpp" />
     <ClCompile Include="src\asset\Program.cpp" />
+    <ClCompile Include="src\util\thread.cpp" />
     <ClCompile Include="src\util\Util.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
@@ -371,6 +376,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\asset\ProgramUniforms.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\limits.h" />
@@ -380,7 +386,13 @@
     <ClInclude Include="src\audio\Source.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\audio\Sound.h" />
+    <ClInclude Include="src\model\Snapshot.h" />
+    <ClInclude Include="src\scene\SceneUpdater.h" />
+    <ClInclude Include="src\engine\UpdateViewContext.h" />
+    <ClInclude Include="src\component\NodeComponent.h" />
     <ClInclude Include="src\event\size.h" />
+    <ClInclude Include="src\physics\Body.h" />
+    <ClInclude Include="src\physics\size.h" />
     <ClInclude Include="src\script\api\AudioPause.h" />
     <ClInclude Include="src\script\api\AudioPlay.h" />
     <ClInclude Include="src\script\api\AudioStop.h" />
@@ -479,7 +491,7 @@
     <ClInclude Include="src\kigl\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\model\InstancePhysics.h" />
-    <ClInclude Include="src\model\NodeInstance.h" />
+    <ClInclude Include="src\model\NodeTransform.h" />
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
@@ -588,6 +600,7 @@
     <ClInclude Include="src\model\Node.h" />
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\component\Camera.h" />
+    <ClInclude Include="src\util\thread.h" />
     <ClInclude Include="src\util\Util.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />

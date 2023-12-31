@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 
 
@@ -22,7 +24,7 @@ WindowBuffer::WindowBuffer(
     //}
 }
 
-void WindowBuffer::updateView(const RenderContext& ctx)
+void WindowBuffer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& res = ctx.m_resolution;
     int w = res.x;

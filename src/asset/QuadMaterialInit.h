@@ -14,8 +14,4 @@ public:
     virtual void prepare(
         QuadMesh& mesh,
         MaterialVBO& materialVBO);
-
-private:
-    void prepareVertices(
-        MaterialVBO& materialVBO);
 };

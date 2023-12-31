@@ -1,11 +1,8 @@
 ---
 name: Terrain lake
-viewports:
 skybox:
   program: g_skybox
-  material: skybox
-lights: {}
-cube_maps: {}
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:
     - path: lib/common

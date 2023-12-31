@@ -28,7 +28,7 @@ public:
 
     ~SkyboxMaterial() = default;
 
-    virtual void prepare(
+    virtual void prepareRT(
         const Assets& assets,
         Registry* registry) override;
 

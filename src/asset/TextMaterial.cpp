@@ -7,7 +7,7 @@
 
 //#include "render/FrameBuffer.h"
 
-void TextMaterial::prepare(
+void TextMaterial::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
@@ -54,7 +54,7 @@ void TextMaterial::prepare(
 
 }
 
-void TextMaterial::updateView(const RenderContext& ctx)
+void TextMaterial::updateRT(const RenderContext& ctx)
 {
     if (!m_dirty) return;
 

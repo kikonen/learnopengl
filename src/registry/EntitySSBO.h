@@ -1,10 +1,12 @@
 #pragma once
 
-#include "ki/size.h"
-#include "kigl/kigl.h"
+#include <algorithm>
 
 #include <glm/glm.hpp>
-#include <algorithm>
+#include <glm/gtc/matrix_inverse.hpp>
+
+#include "ki/size.h"
+#include "kigl/kigl.h"
 
 constexpr unsigned int ENTITY_DRAW_ELEMENT_BIT = 1;
 constexpr unsigned int ENTITY_DRAW_ARRAY_BIT = 2;
@@ -71,7 +73,7 @@ struct EntitySSBO {
     // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
     // Scale AND Rotation is applied!
     inline float getMaxScale() const {
-        return std::max(std::max(u_worldScale[0], u_worldScale[1]), u_worldScale[2]);
+        return std::max(std::max(u_worldScale.x, u_worldScale.y), u_worldScale.z);
     }
 
     inline const glm::vec4& getWorldPosition() const {
@@ -83,39 +85,45 @@ struct EntitySSBO {
     }
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    inline void setModelMatrix(const glm::mat4& mat, bool uniformScale) {
+    inline void setModelMatrix(const glm::mat4& mat, bool uniformScale, bool updateNormal) {
         u_modelMatrix = mat;
 
-        if (uniformScale) {
-            u_normalMatrix0 = mat[0];
-            u_normalMatrix1 = mat[1];
-            u_normalMatrix2 = mat[2];
+        if (updateNormal) {
+            if (uniformScale) {
+                u_normalMatrix0 = mat[0];
+                u_normalMatrix1 = mat[1];
+                u_normalMatrix2 = mat[2];
+            }
+            else {
+                // https://stackoverflow.com/questions/27600045/the-correct-way-to-calculate-normal-matrix
+                // https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
+                // ???
+                // "Then, for each scene object, compute their world space transforms,
+                // and normal matrices. Tangent space (TBN) matrices can be computed
+                // in the first pass shader.
+                //
+                // The normal matrix is the inverse transpose of the world space transform
+                // (not object space to view space, as you would in a simpler forward rendering pipeline)."
+                // ???
+                auto normalMat = glm::inverseTranspose(mat);
+                u_normalMatrix0 = normalMat[0];
+                u_normalMatrix1 = normalMat[1];
+                u_normalMatrix2 = normalMat[2];
+            }
         }
     }
 
-    inline void setNormalMatrix(const glm::mat3& mat) {
-        u_normalMatrix0 = mat[0];
-        u_normalMatrix1 = mat[1];
-        u_normalMatrix2 = mat[2];
-    }
+    //inline void setNormalMatrix(const glm::mat3& mat) {
+    //    u_normalMatrix0 = mat[0];
+    //    u_normalMatrix1 = mat[1];
+    //    u_normalMatrix2 = mat[2];
+    //}
 
-    inline void adjustPosition(const glm::vec3 adjust) {
-        glm::vec4& c = u_modelMatrix[3];
-        c.x += adjust.x;
-        c.y += adjust.y;
-        c.z += adjust.z;
-    }
-
-    inline void setId(ki::node_id id) {
-    //    int r = (id & 0x000000FF) >> 0;
-    //    int g = (id & 0x0000FF00) >> 8;
-    //    int b = (id & 0x00FF0000) >> 16;
-
-    //    u_id.r = r / 255.0f;
-    //    u_id.g = g / 255.0f;
-    //    u_id.b = b / 255.0f;
-    //    u_id.a = 1.0f;
-        u_objectID = id;
-    }
+    //inline void adjustPosition(const glm::vec3 adjust) {
+    //    glm::vec4& c = u_modelMatrix[3];
+    //    c.x += adjust.x;
+    //    c.y += adjust.y;
+    //    c.z += adjust.z;
+    //}
 };
 #pragma pack(pop)

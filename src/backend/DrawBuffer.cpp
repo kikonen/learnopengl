@@ -4,7 +4,9 @@
 
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
+
 #include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/uniform.h"
 
@@ -29,7 +31,7 @@ namespace backend {
     {
     }
 
-    void DrawBuffer::prepare(
+    void DrawBuffer::prepareRT(
         const Assets& assets,
         Registry* registry,
         int batchCount,
@@ -60,7 +62,7 @@ namespace backend {
                 { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
             });
 
-        m_cullingCompute->prepare(assets);
+        m_cullingCompute->prepareRT(assets);
 
         {
             constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
@@ -153,7 +155,7 @@ namespace backend {
         if (m_frustumGPU) {
             m_cullingCompute->bind(*drawRange.m_state);
 
-            m_cullingCompute->u_drawParametersIndex->set(static_cast<GLuint>(cmdRange.m_index));
+            m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
 
             const int maxX = m_computeGroups[0];
             int groupX = drawCount;
@@ -259,7 +261,7 @@ namespace backend {
         m_commands->processPending(handler, drawCurrent, true);
     }
 
-    gl::PerformanceCounters DrawBuffer::getCounters(bool clear)
+    gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const
     {
         gl::PerformanceCounters counters;
 

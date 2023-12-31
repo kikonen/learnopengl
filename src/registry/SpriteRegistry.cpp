@@ -21,14 +21,17 @@ SpriteRegistry::SpriteRegistry(
     : m_assets(assets),
     m_alive(alive)
 {
-    m_shapesSSBO.reserve(SHAPE_BLOCK_SIZE);
+    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
+    m_shapesSSBO.reserve(MAX_SHAPE_COUNT);
     Shape shape;
     m_shapesSSBO.emplace_back(shape.toSSBO());
     m_shapeIndex++;
 }
 
-void SpriteRegistry::add(Sprite& sprite)
+void SpriteRegistry::registerSprite(Sprite& sprite)
 {
+    std::lock_guard<std::mutex> lock(m_lock);
+
     if (const auto& it = m_idToSprites.find(sprite.m_id);
         it != m_idToSprites.end())
     {
@@ -60,8 +63,11 @@ void SpriteRegistry::add(Sprite& sprite)
     m_idToSprites[sprite.m_id] = &ref;
 }
 
-void SpriteRegistry::update(const UpdateContext& ctx)
+void SpriteRegistry::updateRT(const UpdateContext& ctx)
 {
+    //if (!m_dirty) return;
+    std::lock_guard<std::mutex> lock(m_lock);
+
     updateShapeBuffer();
 }
 

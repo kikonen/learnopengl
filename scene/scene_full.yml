@@ -6,8 +6,8 @@ skybox:
   program: g_skybox
   #material: skybox/BluePinkNebular
   #swap_faces: true
-  material: skybox/Skybox_3
-  faces:
+  xmaterial: skybox/Skybox_3
+  xfaces:
     - Left_Tex.png
     - Right_Tex.png
     - Up_Tex.png
@@ -57,6 +57,7 @@ entities:
     active: true
     render_flags:
       allow_normals: false
+      xenforce_bounds: true
     particle_generator:
       - "ParticleDefinition pd;"
       - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
@@ -792,7 +793,7 @@ entities:
     pos: [0, 0, 0]
     scale: 10
     script_file: scripts/anim_planet
-  - xname: Rock origo
+  - name: Rock origo
     id: rock-origo
     parent_id: planet-origo
     type: origo
@@ -805,15 +806,21 @@ entities:
     program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
+    force_material: true
     material_modifier:
-      xreflection: 0.6
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
   - name: Asteroid belt
     parent_id: planet-origo
     model: [rock, rock]
     instanced: true
     program: g_tex
+    force_material: true
     material_modifier:
-      xreflection: 0.4
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
     pos: [0, 0, 0]
     generator:
       type: asteroid_belt
@@ -949,13 +956,13 @@ entities:
       alpha: true
       render_back: true
       enforce_bounds: true
-      physics: true
+      xphysics: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
       z_count: 101
       x_step: -3
-      z_step: 2
+      z_step: 3
     physics:
       update: true
       body:
@@ -964,7 +971,7 @@ entities:
         rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [1, 4, 0]
+        size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
   - name: Giant wooden box
     model: quad
@@ -975,7 +982,7 @@ entities:
     render_flags:
       render_back: true
       no_shadow: true
-    scale: [100, 100, 100]
+    scale: 100
     enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]

@@ -81,7 +81,7 @@ RenderContext::RenderContext(
     const Assets& assets,
     Registry* registry,
     RenderData* renderData,
-    NodeDraw* nodeDraw,
+    render::NodeDraw* nodeDraw,
     Batch* batch,
     GLState& state,
     Camera* camera,

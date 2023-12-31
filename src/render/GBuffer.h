@@ -5,6 +5,7 @@
 
 class FrameBuffer;
 struct FrameBufferAttachment;
+class UpdateViewContext;
 class RenderContext;
 
 class GBuffer {
@@ -22,7 +23,7 @@ public:
 
     void prepare(const Assets& assets);
 
-    void updateView(const RenderContext& ctx);
+    void updateRT(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
 

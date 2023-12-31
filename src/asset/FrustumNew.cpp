@@ -2,7 +2,7 @@
 
 namespace {
 
-    enum class Halfspace
+    enum class Halfspace : std::underlying_type_t<std::byte>
     {
         NEGATIVE,
         ON_PLANE,

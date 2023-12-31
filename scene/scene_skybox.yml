@@ -2,7 +2,7 @@
 name: Skybox
 skybox:
   program: g_skybox
-  material: skybox
+  xmaterial: skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
 script:
   scripts:

@@ -35,8 +35,8 @@ void ModelMaterialInit::prepareVertices(
             auto* mat = Material::findID(vertex.materialID, materialVBO.m_materials);
 
             bool forcedDefault = false;
-            if (materialVBO.m_useDefaultMaterial) {
-                if (materialVBO.m_forceDefaultMaterial) {
+            if (materialVBO.isUseDefaultMaterial()) {
+                if (materialVBO.isForceDefaultMaterial()) {
                     mat = &materialVBO.m_materials[0];
                     forcedDefault = true;
                 }

@@ -72,7 +72,7 @@ entities:
     controller:
       type: pawn
     physics:
-      update: true
+      update: false
       body:
         type: capsule
         density: 0.4

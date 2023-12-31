@@ -1,6 +1,7 @@
 #include "ViewportRenderer.h"
 
-#include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 
 #include "render/FrameBuffer.h"
@@ -9,20 +10,20 @@
 #include "registry/ViewportRegistry.h"
 
 
-void ViewportRenderer::prepare(
+void ViewportRenderer::prepareRT(
     const Assets& assets,
     Registry* registry)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepare(assets, registry);
+    Renderer::prepareRT(assets, registry);
 }
 
-void ViewportRenderer::update(const UpdateContext& ctx)
+void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
     for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
-        viewport->update(ctx);
+        viewport->updateRT(ctx);
     }
 }
 

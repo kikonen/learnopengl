@@ -29,7 +29,7 @@ CubeMap::~CubeMap()
     // TODO KI delete texture
 }
 
-void CubeMap::prepare(
+void CubeMap::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

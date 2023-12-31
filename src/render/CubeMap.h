@@ -23,7 +23,7 @@ public:
 
     bool valid() { return m_cubeTexture > 0; }
 
-    void prepare(
+    void prepareRT(
         const Assets& assets,
         Registry* registry);
 
