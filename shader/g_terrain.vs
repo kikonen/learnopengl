@@ -86,7 +86,6 @@ void main() {
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;
 
-#ifdef USE_TBN
 #ifdef USE_NORMAL_TEX
   if (material.normalMapTex.x > 0) {
     const vec3 N = normalize(vs_out.normal);
@@ -99,9 +98,8 @@ void main() {
     //const vec3 B = cross(N, T);
 
     vs_out.tangent = T;
-  }
-#else
+  } else {
     vs_out.tangent = a_tangent;
-#endif
+  }
 #endif
 }
