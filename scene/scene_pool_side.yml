@@ -11,10 +11,14 @@ entities:
     type: origo
     pos: [0, 8, 30]
     active: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
     camera:
       default: true
     controllers:
-      - type: pawn
       - type: camera_zoom
   - name: Pool side
     model: pool_brick

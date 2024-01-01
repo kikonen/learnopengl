@@ -19,13 +19,17 @@ entities:
     pos: [0, 1, 15]
     front: [0, 0, -1]
     active: true
-    camera:
-      default: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
       - type: camera_zoom
   - xname: Object
     type: sprite
