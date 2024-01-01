@@ -32,6 +32,7 @@
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
+#include "ControllerRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -106,7 +107,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     }
 
     ctx.m_registry->m_physicsEngine->updateBounds(ctx);
-
+    ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
     for (auto& node : m_allNodes) {
         node->snapshot();

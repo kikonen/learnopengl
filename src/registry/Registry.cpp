@@ -107,7 +107,7 @@ void Registry::prepareWT()
 void Registry::updateWT(const UpdateContext& ctx)
 {
     ASSERT_WT();
-    m_controllerRegistry->updateWT(ctx);
+    //m_controllerRegistry->updateWT(ctx);
 }
 
 void Registry::updateRT(const UpdateContext& ctx)

@@ -155,6 +155,11 @@ void SceneUpdater::update(const UpdateContext& ctx)
             m_registry->m_commandEngine->update(ctx);
         }
 
+        {
+            KI_TIMER("registry");
+            m_registry->updateWT(ctx);
+        }
+
         if (m_loaded) {
             {
                 KI_TIMER("node    ");
@@ -182,11 +187,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //if (m_particleSystem) {
     //    m_particleSystem->update(ctx);
     //}
-
-    {
-        KI_TIMER("registry");
-        m_registry->updateWT(ctx);
-    }
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)
