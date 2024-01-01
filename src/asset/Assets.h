@@ -24,6 +24,9 @@ public:
     int glsl_version[3];
     std::string glsl_version_str;
 
+    bool glVendorNvidia;
+    bool glVendorIntel;
+
     int glPreferredTextureFormatRGB;
     int glPreferredTextureFormatRGBA;
 
