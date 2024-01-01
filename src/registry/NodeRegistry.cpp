@@ -15,6 +15,8 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "engine/UpdateContext.h"
+
 #include "event/Dispatcher.h"
 
 #include "audio/Listener.h"
@@ -102,6 +104,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     if (m_root) {
         m_root->updateWT(ctx);
     }
+
+    ctx.m_registry->m_physicsEngine->updateBounds(ctx);
+
 
     for (auto& node : m_allNodes) {
         node->snapshot();
