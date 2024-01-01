@@ -197,7 +197,7 @@ namespace loader {
             }
             else if (k == "program_definitions" || k == "shader_definitions") {
                 for (const auto& defNode : v) {
-                    auto defName = defNode.first.as<std::string>();
+                    const auto& defName = defNode.first.as<std::string>();
                     const auto& defValue = defNode.second.as<std::string>();
                     data.programDefinitions[util::toUpper(defName)] = defValue;
                 }

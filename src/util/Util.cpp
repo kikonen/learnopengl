@@ -32,16 +32,18 @@ namespace util {
         return ec == std::errc() && p == s.data() + s.size();
     }
 
-    std::string& toUpper(std::string& str)
+    std::string toUpper(std::string_view str)
     {
-        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-        return str;
+        std::string s{ str };
+        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+        return s;
     }
 
-    std::string& toLower(std::string& str)
+    std::string toLower(std::string_view str)
     {
-        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-        return str;
+        std::string s{ str };
+        std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+        return s;
     }
 
     void splitString(

@@ -416,8 +416,7 @@ namespace loader
             return {};
         }
 
-        std::string key = parts[0];
-        key = util::toUpper(key);
+        const auto key = util::toUpper(parts[0]);
 
         if (key.empty()) return {};
 

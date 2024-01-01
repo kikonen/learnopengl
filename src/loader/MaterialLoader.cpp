@@ -115,9 +115,9 @@ namespace loader {
         MaterialField& fields = data.fields;
 
         for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-            const std::string k = util::toLower(key);
+            const auto& key = pair.first.as<std::string>();
+            const auto& v = pair.second;
+            const auto k = util::toLower(key);
 
             if (k == "name") {
                 material.m_name = readString(v);
