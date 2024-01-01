@@ -166,9 +166,20 @@ struct GLBuffer {
     }
 
     void flushRange(size_t offset, size_t length) {
-        if (!m_mapped) return;
-        if (length <= 0) return;
+        assert(m_mapped);
+        assert(offset >= 0);
+        assert(length > 0 && length <= m_size);
         glFlushMappedNamedBufferRange(m_id, offset, length);
+    }
+
+    void invalidate() {
+        glInvalidateBufferData(m_id);
+    }
+
+    void invalidateRange(size_t offset, size_t length) {
+        assert(offset >= 0);
+        assert(length > 0 && length <= m_size);
+        glInvalidateBufferSubData(m_id, offset, length);
     }
 
     void unmap() {

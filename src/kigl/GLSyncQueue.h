@@ -55,6 +55,7 @@ public:
 
             // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
             // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
+            // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
             m_data = m_buffer.map(
                 GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
         }
