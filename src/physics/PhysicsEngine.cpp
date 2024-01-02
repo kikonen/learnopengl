@@ -77,14 +77,12 @@ namespace physics
     PhysicsEngine::PhysicsEngine(const Assets& assets)
         : m_assets(assets)
     {
-        // NOTE KI null entries to avoid need for "- 1" math
-        m_objects.emplace_back<Object>({});
-        m_heightMaps.emplace_back<HeightMap>({});
     }
 
     PhysicsEngine::~PhysicsEngine()
     {
         m_objects.clear();
+        m_heightMaps.clear();
 
         if (m_spaceId) {
             dSpaceDestroy(m_spaceId);
@@ -216,7 +214,7 @@ namespace physics
         std::map<physics::physics_id, bool> prepared;
 
         for (const auto& id : m_pending) {
-            auto& obj = m_objects[id];
+            auto& obj = m_objects[id - 1];
             const auto level = obj.m_node->getTransform().getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
 
@@ -312,7 +310,7 @@ namespace physics
     physics::physics_id PhysicsEngine::registerObject()
     {
         auto& obj = m_objects.emplace_back<Object>({});
-        obj.m_id = static_cast<physics::physics_id>(m_objects.size() - 1);
+        obj.m_id = static_cast<physics::physics_id>(m_objects.size());
 
         m_pending.push_back(obj.m_id);
 
@@ -321,22 +319,22 @@ namespace physics
 
     Object* PhysicsEngine::getObject(physics::physics_id id)
     {
-        if (id < 1 || id >= m_objects.size()) return nullptr;
-        return &m_objects[id];
+        if (id < 1 || id > m_objects.size()) return nullptr;
+        return &m_objects[id - 1];
     }
 
     physics::height_map_id PhysicsEngine::registerHeightMap()
     {
         auto& map = m_heightMaps.emplace_back<HeightMap>({});
-        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size() - 1);
+        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size());
 
         return map.m_id;
     }
 
     HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id)
     {
-        if (id < 1 || id >= m_heightMaps.size()) return nullptr;
-        return &m_heightMaps[id];
+        if (id < 1 || id > m_heightMaps.size()) return nullptr;
+        return &m_heightMaps[id - 1];
     }
 
     float PhysicsEngine::getWorldSurfaceLevel(const glm::vec3& pos)
