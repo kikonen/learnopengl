@@ -57,8 +57,8 @@ namespace loader {
         switch (data.type) {
         case CustomMaterialType::text: {
             auto material{ std::make_unique<TextMaterial>() };
-            material->m_fontName = data.fontName;
-            material->m_fontSize = data.fontSize;
+            material->m_atlas.m_fontName = data.fontName;
+            material->m_atlas.m_fontSize = data.fontSize;
 
             return material;
         }

@@ -36,7 +36,7 @@ void main() {
   vs_out.materialIndex = materialIndex;
 
   vs_out.texCoord.x = a_texCoord.x;
-  vs_out.texCoord.y = a_texCoord.y;
+  vs_out.texCoord.y = 1.0 - a_texCoord.y;
 
   gl_Position = u_projectedMatrix * modelMatrix * vec4(a_pos, 1.0);
 }

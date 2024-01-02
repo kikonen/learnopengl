@@ -34,7 +34,9 @@ entities:
     program: font_atlas_demo
     pos: [0.0, 0.0, -5.0]
     render_flags:
-      xblend: true
+      alpha: true
+      blend: true
+      effect: true
       render_back: true
   - name: Directional light
     pos: [0, 25, 40]

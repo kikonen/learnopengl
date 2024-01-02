@@ -63,7 +63,8 @@ void FontAtlas::prepareRT(
     const Assets& assets)
 {
     AtlastHandle atlasHandle;
-    atlasHandle.create(m_atlasSize.x, m_atlasSize.y, 1);
+    const size_t depth = 1;
+    atlasHandle.create(m_atlasSize.x, m_atlasSize.y, depth);
 
     {
         FontHandle fontHandle{ atlasHandle };
@@ -79,14 +80,28 @@ void FontAtlas::prepareRT(
     atlasHandle.m_atlas->id = m_texture.m_textureID;
     const auto texId = m_texture.m_textureID;
 
+    GLenum internalFormat;
+    GLenum format;
+
+    switch (depth) {
+    case 1:
+        internalFormat = GL_R8;
+        format = GL_RED;
+        break;
+    case 3:
+        internalFormat = GL_RGB8;
+        format = GL_RGB;
+        break;
+    }
+
     glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     const int mipMapLevels = static_cast<int>(log2(std::max(w, h)));
-    glTextureStorage2D(texId, mipMapLevels, GL_R8, w, h);
-    glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RED, GL_UNSIGNED_BYTE, atlasHandle.m_atlas->data);
+    glTextureStorage2D(texId, mipMapLevels, internalFormat, w, h);
+    glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, atlasHandle.m_atlas->data);
     glGenerateTextureMipmap(texId);
 }
 
