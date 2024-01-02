@@ -188,7 +188,8 @@
     <ClCompile Include="src\asset\ProgramUniforms.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
-    <ClCompile Include="src\asset\FontAtlas.cpp" />
+    <ClCompile Include="src\text\AtlasHandle.cpp" />
+    <ClCompile Include="src\text\FontAtlas.cpp" />
     <ClCompile Include="src\asset\TextMaterial.cpp" />
     <ClCompile Include="src\audio\al_call.cpp" />
     <ClCompile Include="src\audio\Listener.cpp" />
@@ -310,6 +311,7 @@
     <ClCompile Include="src\render\RenderData.cpp" />
     <ClCompile Include="src\engine\UpdateContext.cpp" />
     <ClCompile Include="src\render\WindowBuffer.cpp" />
+    <ClCompile Include="src\text\FontHandle.cpp" />
     <ClCompile Include="src\util\glm_util.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\asset\ImageTexture.cpp" />
@@ -378,7 +380,8 @@
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
-    <ClInclude Include="src\asset\FontAtlas.h" />
+    <ClInclude Include="src\text\AtlasHandle.h" />
+    <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\asset\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\limits.h" />
@@ -560,6 +563,7 @@
     <ClInclude Include="src\engine\UpdateContext.h" />
     <ClInclude Include="src\render\WindowBuffer.h" />
     <ClInclude Include="src\script\size.h" />
+    <ClInclude Include="src\text\FontHandle.h" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\util\Log.h" />

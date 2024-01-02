@@ -1,10 +1,5 @@
 #include "TextMaterial.h"
 
-#include <freetype-gl/texture-atlas.h>
-#include <freetype-gl/texture-font.h>
-
-#include "asset/Shader.h"
-
 #include "render/RenderContext.h"
 
 
