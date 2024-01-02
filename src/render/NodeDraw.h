@@ -154,7 +154,7 @@ namespace render {
         Program* m_fogProgram{ nullptr };
         Program* m_hdrGammaProgram{ nullptr };
 
-        TimeElapsedQuery m_timeElapsedQuery;
+        query::TimeElapsedQuery m_timeElapsedQuery;
 
         // NodeDraw
         ProgramTypeMap m_solidNodes;
