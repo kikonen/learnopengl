@@ -31,9 +31,10 @@ entities:
       type: text
       font: fonts/Vera.ttf
       font_size: 64
-    program: g_tex
+    program: font_atlas_demo
     pos: [0.0, 0.0, -5.0]
     render_flags:
+      xblend: true
       render_back: true
   - name: Directional light
     pos: [0, 25, 40]

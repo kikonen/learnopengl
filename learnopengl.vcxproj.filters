@@ -453,7 +453,7 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\TextMaterial.cpp">
+    <ClCompile Include="src\asset\FontAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\InvokeLuaFunction.cpp">
@@ -568,6 +568,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\Snapshot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\asset\TextMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1136,7 +1139,7 @@
     <ClInclude Include="src\ki\ki.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\TextMaterial.h">
+    <ClInclude Include="src\asset\FontAtlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\InvokeLuaFunction.h">
@@ -1323,6 +1326,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\Snapshot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\TextMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

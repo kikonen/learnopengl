@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
 class GLTextureHandle {
 public:
@@ -49,6 +50,16 @@ public:
         m_height = height;
 
         kigl::setLabel(GL_TEXTURE, m_textureID, name);
+    }
+
+    void bindTexture(GLState& state, int unitIndex)
+    {
+        state.bindTexture(unitIndex, m_textureID, false);
+    }
+
+    void unbindTexture(GLState& state, int unitIndex)
+    {
+        state.bindTexture(unitIndex, 0, true);
     }
 
     operator int() const { return m_textureID; }

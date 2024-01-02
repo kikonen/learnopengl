@@ -2,6 +2,8 @@
 
 #include "CustomMaterial.h"
 
+#include "FontAtlas.h"
+
 //
 // Prepare freetext-gl material
 //
@@ -23,9 +25,7 @@ public:
     virtual void unbindTextures(const RenderContext& ctx) override;
 
 public:
-    std::string m_fontName{ "fonts/Vera.ttf" };
-    float m_fontSize{ 10.f };
-    glm::uvec2 m_atlasSize{ 512, 512 };
+    FontAtlas m_atlas;
 
     std::string m_text{ "" };
 };
