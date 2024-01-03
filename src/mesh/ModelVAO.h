@@ -6,6 +6,7 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "mesh/PositionEntry.h"
 #include "mesh/VertexEntry.h"
 #include "mesh/IndexEntry.h"
 

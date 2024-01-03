@@ -35,7 +35,7 @@ public:
     void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
-    kigl::GLVertexArray* registerMeshVBO(mesh::ModelVBO& meshVBO);
+    kigl::GLVertexArray* registerModelVBO(mesh::ModelVBO& modelVBO);
 
     std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,

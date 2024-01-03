@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "PositionEntry.h"
 #include "VertexEntry.h"
 #include "IndexEntry.h"
 

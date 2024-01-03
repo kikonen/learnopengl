@@ -86,11 +86,11 @@ namespace mesh {
 
         // NOTE KI no need for thexe any longer (they are in buffers now)
         // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
-        m_triCount = static_cast<ki::uint>(m_tris.size());
-        m_tris.clear();
+        m_indexCount = static_cast<ki::uint>(m_indeces.size());
+        m_indeces.clear();
         //m_vertices.clear();
 
-        m_vao = registry->m_modelRegistry->registerMeshVBO(m_vertexVBO);
+        m_vao = registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 
@@ -106,7 +106,7 @@ namespace mesh {
     {
         drawOptions.type = backend::DrawOptions::Type::elements;
         drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
-        drawOptions.indexCount = m_triCount * 3;
+        drawOptions.indexCount = m_indexCount * 3;
         drawOptions.vertexOffset = static_cast<ki::uint>(m_vertexVBO.m_vertexOffset);
         drawOptions.indexOffset = static_cast<ki::uint>(m_vertexVBO.m_indexOffset);
     }

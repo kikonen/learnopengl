@@ -54,7 +54,7 @@ namespace mesh {
         if (!mesh.m_loaded) {
             loadData(mesh);
             mesh.m_loaded = true;
-            mesh.m_valid = !mesh.m_tris.empty();
+            mesh.m_valid = !mesh.m_indeces.empty();
         }
 
         return mesh.m_valid ? &mesh : nullptr;
@@ -67,7 +67,7 @@ namespace mesh {
 
         KI_TIMER("loadData: mesh=" + mesh.str());
 
-        auto& tris = mesh.m_tris;
+        auto& indeces = mesh.m_indeces;
         auto& vertices = mesh.m_vertices;
         auto& materials = mesh.m_materials;
 
@@ -165,7 +165,7 @@ namespace mesh {
                 }
                 else if (k == "f") {
                     vertices.reserve(positions.size() * 2);
-                    tris.reserve(positions.size() * 2);
+                    indeces.reserve(positions.size() * 2);
 
                     std::vector<std::string> vv1;
                     std::vector<std::string> vv2;
@@ -198,9 +198,9 @@ namespace mesh {
                         createTangents(positions, textures, normals, tangents, pi, ti, ni, tangenti);
                     }
 
-                    glm::uvec3 v{ 0, 0, 0 };
+                    Index index{ 0, 0, 0 };
                     for (int i = 0; i < 3; i++) {
-                        v[i] = resolveVertexIndex(
+                        index[i] = resolveVertexIndex(
                             vertexMapping,
                             vertices,
                             positions,
@@ -214,8 +214,7 @@ namespace mesh {
                             tangenti[i]);
                     }
 
-                    //Tri* tri = new Tri(v);
-                    tris.push_back(std::move(v));
+                    indeces.push_back(std::move(index));
                 }
             }
 
@@ -248,8 +247,8 @@ namespace mesh {
         }
 
         KI_INFO(fmt::format(
-            "== {} ===\ntris={}, positions={}, textures={}, normals={}, vertices={}\n--------\n",
-            mesh.str(), tris.size(), positions.size(), textures.size(), normals.size(), vertices.size()));
+            "== {} ===\nindeces={}, positions={}, textures={}, normals={}, vertices={}\n--------\n",
+            mesh.str(), indeces.size(), positions.size(), textures.size(), normals.size(), vertices.size()));
     }
 
     // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g

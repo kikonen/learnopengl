@@ -8,6 +8,7 @@
 #include "asset/Assets.h"
 #include "asset/Material.h"
 
+#include "mesh/Index.h"
 #include "mesh/Vertex.h"
 #include "mesh/Mesh.h"
 #include "mesh/ModelVBO.h"
@@ -35,7 +36,7 @@ namespace mesh {
         virtual const std::string str() const noexcept override;
         virtual bool isValid() const noexcept override
         {
-            return !m_vertices.empty() && !m_tris.empty();
+            return !m_vertices.empty() && !m_indeces.empty();
         }
 
         virtual const AABB calculateAABB() const override;
@@ -58,8 +59,8 @@ namespace mesh {
         const std::string m_meshPath;
 
     protected:
-        ki::uint m_triCount = 0;
-        std::vector<glm::uvec3> m_tris;
+        ki::uint m_indexCount{ 0 };
+        std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
         std::vector<Material> m_materials;
 

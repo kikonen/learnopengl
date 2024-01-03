@@ -3,7 +3,6 @@
 #include "glm/glm.hpp"
 #include <fmt/format.h>
 
-#include "asset/Program.h"
 #include "asset/Shader.h"
 
 #include "mesh/ModelVBO.h"

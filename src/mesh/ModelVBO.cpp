@@ -22,7 +22,7 @@ namespace mesh {
 
         preparePosition(mesh.m_vertices);
         prepareVertex(mesh.m_vertices);
-        prepareIndex(mesh.m_tris);
+        prepareIndex(mesh.m_indeces);
     }
 
     void ModelVBO::preparePosition(

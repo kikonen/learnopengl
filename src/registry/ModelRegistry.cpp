@@ -22,14 +22,14 @@ ModelRegistry::ModelRegistry(
 ModelRegistry::~ModelRegistry() {
 }
 
-kigl::GLVertexArray* ModelRegistry::registerMeshVBO(mesh::ModelVBO& meshVBO)
-{
-    return m_vao.registerModel(meshVBO);
-}
-
 void ModelRegistry::prepare()
 {
     m_vao.prepare();
+}
+
+kigl::GLVertexArray* ModelRegistry::registerModelVBO(mesh::ModelVBO& modelVBO)
+{
+    return m_vao.registerModel(modelVBO);
 }
 
 void ModelRegistry::updateRT(const UpdateContext& ctx)

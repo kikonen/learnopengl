@@ -380,7 +380,9 @@
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
+    <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
+    <ClInclude Include="src\mesh\PositionEntry.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\TextMaterial.h" />
