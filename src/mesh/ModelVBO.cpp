@@ -2,8 +2,6 @@
 
 #include "glm/glm.hpp"
 
-#include "asset/Program.h"
-
 #include "mesh/ModelMesh.h"
 
 
@@ -22,45 +20,46 @@ namespace mesh {
         if (m_prepared) return;
         m_prepared = true;
 
-        prepareBuffers(mesh);
+        preparePosition(mesh.m_vertices);
+        prepareVertex(mesh.m_vertices);
+        prepareIndex(mesh.m_tris);
     }
 
-    void ModelVBO::prepareBuffers(
-        ModelMesh& mesh)
-    {
-        prepareVertex(mesh);
-        prepareIndex(mesh);
-    }
-
-    void ModelVBO::prepareVertex(
-        ModelMesh& mesh)
+    void ModelVBO::preparePosition(
+        const std::vector<Vertex>& positions)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
 
-        m_vertexEntries.reserve(mesh.m_vertices.size());
+        m_positionEntries.reserve(positions.size());
 
-        for (const auto& vertex : mesh.m_vertices) {
+        for (const auto& vertex : positions) {
             const auto& p = vertex.pos;
+            m_positionEntries.emplace_back(p);
+        }
+    }
+
+    void ModelVBO::prepareVertex(
+        const std::vector<Vertex>& vertices)
+    {
+        // https://paroj.github.io/gltut/Basic%20Optimization.html
+
+        m_vertexEntries.reserve(vertices.size());
+
+        for (const auto& vertex : vertices) {
             const auto& n = vertex.normal;
             const auto& tan = vertex.tangent;
             const auto& t = vertex.texture;
 
-            auto& posEntry = m_positionEntries.emplace_back(p);
             auto& entry = m_vertexEntries.emplace_back(n, tan, t);
-
-            //posEntry.pos = p;
-            //entry.normal = n;
-            //entry.tangent = tan;
-            //entry.texCoord = t;
         }
     }
 
     void ModelVBO::prepareIndex(
-        ModelMesh& mesh)
+        std::vector<glm::uvec3> indeces)
     {
-        m_indexEntries.reserve(mesh.m_tris.size());
+        m_indexEntries.reserve(indeces.size());
 
-        for (const auto& vi : mesh.m_tris) {
+        for (const auto& vi : indeces) {
             m_indexEntries.push_back(vi);
         }
     }

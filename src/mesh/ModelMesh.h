@@ -57,9 +57,6 @@ namespace mesh {
         const std::string m_rootDir;
         const std::string m_meshPath;
 
-        bool m_loaded = false;
-        bool m_valid = false;
-
     protected:
         ki::uint m_triCount = 0;
         std::vector<glm::uvec3> m_tris;
@@ -67,6 +64,9 @@ namespace mesh {
         std::vector<Material> m_materials;
 
     private:
+        bool m_loaded{ false };
+        bool m_valid{ false };
+
         ModelVBO m_vertexVBO;
     };
 }
