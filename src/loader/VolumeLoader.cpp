@@ -51,8 +51,8 @@ namespace loader {
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
             auto& materialVBO = type->m_materialVBO;
-            materialVBO.setDefaultMaterial(material, true, true);
-            materialVBO.setMaterials({ material });
+            materialVBO->setDefaultMaterial(material, true, true);
+            materialVBO->setMaterials({ material });
         }
 
         auto& flags = type->m_flags;

@@ -255,11 +255,11 @@ ki::type_id TerrainGenerator::createType(
     auto& materialVBO = type->m_materialVBO;
 
     // NOTE MUST copy *all* data from materials
-    auto* material = containerMaterials.getDefaultMaterial();
+    auto* material = containerMaterials->getDefaultMaterial();
     if (material) {
-        materialVBO.setDefaultMaterial(*material, true, true);
+        materialVBO->setDefaultMaterial(*material, true, true);
     }
-    materialVBO.setMaterials(containerMaterials.getMaterials());
+    materialVBO->setMaterials(containerMaterials->getMaterials());
 
     type->m_program = containerType->m_program;
     type->m_depthProgram = containerType->m_depthProgram;

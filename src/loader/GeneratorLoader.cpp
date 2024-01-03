@@ -6,6 +6,7 @@
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
+#include "mesh/MaterialVBO.h"
 
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
@@ -97,7 +98,7 @@ namespace loader {
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
 
-            auto* material = materialVBO.getDefaultMaterial();
+            auto* material = materialVBO->getDefaultMaterial();
             if (material) {
                 generator->m_material = *material;
             }

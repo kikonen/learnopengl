@@ -5,6 +5,8 @@
 #include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
+#include "asset/Material.h"
+#include "asset/Sprite.h"
 
 #include "backend/DrawOptions.h"
 
@@ -21,7 +23,8 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType(std::string_view name)
-        : m_name{ name }
+        : m_name{ name },
+        m_materialVBO{ std::make_unique<MaterialVBO>()}
     {
     }
 
@@ -34,7 +37,7 @@ namespace mesh {
         m_program{ o.m_program },
         m_depthProgram{ o.m_depthProgram },
         m_materialVBO{ std::move(o.m_materialVBO) },
-        m_sprite{ o.m_sprite },
+        m_sprite{ std::move(o.m_sprite) },
         m_materialIndex{ o.m_materialIndex },
         m_drawOptions{ o.m_drawOptions },
         m_vao{ o.m_vao },
@@ -57,7 +60,7 @@ namespace mesh {
             "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",
             m_id, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1,
             m_materialIndex,
-            m_materialVBO.getMaterialCount());
+            m_materialVBO->getMaterialCount());
     }
 
     //void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -71,12 +74,12 @@ namespace mesh {
         m_mesh = mesh;
         if (!m_mesh) return;
 
-        m_materialVBO.setMaterials(m_mesh->getMaterials());
+        m_materialVBO->setMaterials(m_mesh->getMaterials());
     }
 
     void MeshType::modifyMaterials(std::function<void(Material&)> fn)
     {
-        for (auto& material : m_materialVBO.modifyMaterials()) {
+        for (auto& material : m_materialVBO->modifyMaterials()) {
             fn(material);
         }
     }
@@ -90,21 +93,21 @@ namespace mesh {
         if (m_prepared) return;
         m_prepared = true;
 
-        for (auto& material : m_materialVBO.modifyMaterials()) {
+        for (auto& material : m_materialVBO->modifyMaterials()) {
             registry->m_materialRegistry->registerMaterial(material);
         }
 
-        if (m_entityType == EntityType::sprite) {
-            registry->m_spriteRegistry->registerSprite(m_sprite);
+        if (m_entityType == EntityType::sprite && m_sprite) {
+            registry->m_spriteRegistry->registerSprite(*m_sprite);
         }
 
         m_vao = m_mesh->prepareRT(assets, registry);
 
         {
-            m_mesh->prepareMaterials(m_materialVBO);
+            m_mesh->prepareMaterials(*m_materialVBO);
 
-            registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
-            m_materialIndex = m_materialVBO.resolveMaterialIndex();
+            registry->m_materialRegistry->registerMaterialVBO(*m_materialVBO);
+            m_materialIndex = m_materialVBO->resolveMaterialIndex();
         }
 
         {

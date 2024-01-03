@@ -522,8 +522,7 @@ namespace loader {
         }
 
         auto& materialVBO = type->m_materialVBO;
-
-        materialVBO.setDefaultMaterial(*material, true, data.forceMaterial);
+        materialVBO->setDefaultMaterial(*material, true, data.forceMaterial);
     }
 
     void SceneLoader::modifyMaterials(
@@ -547,7 +546,7 @@ namespace loader {
         }
 
         if (sprite) {
-            type->m_sprite = *sprite;
+            type->m_sprite = std::make_unique<Sprite>(*sprite);
         }
     }
 

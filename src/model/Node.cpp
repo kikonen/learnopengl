@@ -8,6 +8,8 @@
 
 #include "kigl/kigl.h"
 
+#include "asset/Sprite.h"
+
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
@@ -75,7 +77,7 @@ void Node::prepare(
         }
         if (m_type->m_entityType == mesh::EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
-            auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
+            auto& shape = m_type->m_sprite->m_shapes[m_type->m_sprite->m_shapes.size() - 1];
             m_transform.m_shapeIndex = shape.m_registeredIndex;
             //m_instance.m_materialIndex = shape.m_materialIndex;
         }

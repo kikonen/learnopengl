@@ -1,16 +1,16 @@
 #pragma once
 
-#include "asset/Sprite.h"
-
-#include "mesh/MaterialVBO.h"
-
 #include "backend/DrawOptions.h"
+
+#include "asset/Material.h"
 
 #include "kigl/GLVertexArray.h"
 
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
+
+class Sprite;
 
 class CustomMaterial;
 class Program;
@@ -21,6 +21,7 @@ class MeshTypeRegistry;
 
 namespace mesh {
     class Mesh;
+    class MaterialVBO;
 
     class MeshType final
     {
@@ -31,7 +32,7 @@ namespace mesh {
         MeshType(MeshType&& o) noexcept;
         ~MeshType();
 
-        inline bool isReady() const { return m_preparedView; }
+        inline bool isReady() const noexcept { return m_preparedView; }
 
         const std::string str() const noexcept;
 
@@ -49,7 +50,7 @@ namespace mesh {
             return m_materialIndex;
         }
 
-        CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
+        const CustomMaterial* getCustomMaterial() const noexcept { return m_customMaterial.get(); }
 
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
@@ -75,8 +76,8 @@ namespace mesh {
         Program* m_program{ nullptr };
         Program* m_depthProgram{ nullptr };
 
-        MaterialVBO m_materialVBO;
-        Sprite m_sprite;
+        std::unique_ptr<MaterialVBO> m_materialVBO{ nullptr };
+        std::unique_ptr<Sprite> m_sprite{ nullptr };
 
         int m_materialIndex{ 0 };
 
