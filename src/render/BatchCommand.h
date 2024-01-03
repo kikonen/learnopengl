@@ -8,7 +8,6 @@
 
 
 class Program;
-class MaterialVBO;
 
 
 struct BatchCommand {

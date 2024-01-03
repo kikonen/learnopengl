@@ -6,7 +6,6 @@
 
 #include "asset/Sphere.h"
 
-#include "mesh/TerrainMaterialInit.h"
 #include "mesh/TerrainVAO.h"
 
 

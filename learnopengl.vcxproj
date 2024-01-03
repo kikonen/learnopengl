@@ -241,10 +241,8 @@
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
     <ClCompile Include="src\mesh\ModelVBO.cpp" />
     <ClCompile Include="src\mesh\ModelVAO.cpp" />
-    <ClCompile Include="src\mesh\QuadMaterialInit.cpp" />
     <ClCompile Include="src\mesh\QuadVAO.cpp" />
     <ClCompile Include="src\mesh\SpriteVAO.cpp" />
-    <ClCompile Include="src\mesh\TerrainMaterialInit.cpp" />
     <ClCompile Include="src\mesh\TerrainMesh.cpp" />
     <ClCompile Include="src\mesh\TerrainVAO.cpp" />
     <ClCompile Include="src\asset\Uniform.cpp" />
@@ -461,7 +459,6 @@
     <ClInclude Include="src\asset\Sprite.h" />
     <ClInclude Include="src\asset\ShapeSSBO.h" />
     <ClInclude Include="src\mesh\SpriteVAO.h" />
-    <ClInclude Include="src\mesh\TerrainMaterialInit.h" />
     <ClInclude Include="src\mesh\TerrainMesh.h" />
     <ClInclude Include="src\mesh\TerrainVAO.h" />
     <ClInclude Include="src\asset\TextureSpec.h" />
@@ -471,7 +468,6 @@
     <ClInclude Include="src\mesh\MaterialVBO.h" />
     <ClInclude Include="src\mesh\ModelMaterialInit.h" />
     <ClInclude Include="src\mesh\ModelVBO.h" />
-    <ClInclude Include="src\mesh\QuadMaterialInit.h" />
     <ClInclude Include="src\mesh\QuadVAO.h" />
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />

@@ -7,7 +7,6 @@
 #include "asset/Sphere.h"
 
 #include "mesh/MeshType.h"
-#include "mesh/QuadMaterialInit.h"
 #include "mesh/QuadVAO.h"
 
 

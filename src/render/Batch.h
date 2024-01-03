@@ -12,7 +12,6 @@ namespace backend {
 
 namespace mesh {
     class MeshType;
-    class MaterialVBO;
 }
 
 class Program;
