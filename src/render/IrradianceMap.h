@@ -35,7 +35,7 @@ public:
 public:
     int m_size{ 0 };
 
-    GLTextureHandle m_cubeTexture;
+    kigl::GLTextureHandle m_cubeTexture;
 
     int m_envCubeMapID{ 0 };
 };

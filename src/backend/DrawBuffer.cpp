@@ -226,7 +226,7 @@ namespace backend {
         }
 
         size_t count = 0;
-        auto handler = [this, &count](GLBufferRange& cmdRange) {
+        auto handler = [this, &count](kigl::GLBufferRange& cmdRange) {
             auto& drawRange = m_drawRanges[cmdRange.m_index];
             auto drawOptions = *drawRange.m_drawOptions;
             const GLsizei drawCount = (GLsizei)cmdRange.m_usedCount;

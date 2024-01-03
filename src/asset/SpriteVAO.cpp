@@ -13,12 +13,12 @@ namespace {
 #pragma pack(pop)
 }
 
-GLVertexArray* SpriteVAO::prepare()
+kigl::GLVertexArray* SpriteVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
 
-    m_vao = std::make_unique<GLVertexArray>();
+    m_vao = std::make_unique<kigl::GLVertexArray>();
     m_vao->create("sprite");
     m_vbo.create();
 
@@ -29,13 +29,13 @@ GLVertexArray* SpriteVAO::prepare()
 }
 
 void SpriteVAO::prepareVAO(
-    GLVertexArray& vao,
-    GLBuffer& vbo)
+    kigl::GLVertexArray& vao,
+    kigl::GLBuffer& vbo)
 {
     // NOTE KI nothing currently
 }
 
-void SpriteVAO::prepareVBO(GLBuffer& vbo)
+void SpriteVAO::prepareVBO(kigl::GLBuffer& vbo)
 {
     // NOTE KI nothing currently
 }

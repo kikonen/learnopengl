@@ -21,7 +21,7 @@ ModelRegistry::ModelRegistry(
 ModelRegistry::~ModelRegistry() {
 }
 
-GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
+kigl::GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
 {
     return m_vao.registerModel(meshVBO);
 }

@@ -183,7 +183,7 @@ namespace render {
             }
 
             {
-                ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
                 if (ctx.m_assets.prepassDepthEnabled) {
                     ctx.m_state.setDepthFunc(GL_LEQUAL);
                 }
@@ -221,7 +221,7 @@ namespace render {
         // pass 3 - light
         //if (false)
         {
-            ctx.m_state.setStencil(GLStencilMode::only_non_zero());
+            ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero());
             ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
             primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
@@ -241,7 +241,7 @@ namespace render {
         {
             ctx.validateRender("non_gbuffer");
 
-            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
             bool rendered = drawNodesImpl(
                 ctx,
@@ -264,7 +264,7 @@ namespace render {
         {
             if (ctx.m_assets.effectOitEnabled)
             {
-                ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
+                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
                 // NOTE KI do NOT modify depth with blend
                 ctx.m_state.setDepthMask(GL_FALSE);
 
@@ -306,7 +306,7 @@ namespace render {
 
         // pass 6 - skybox (*before* blend)
         {
-            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
+            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
             drawSkybox(ctx);
         }
 
@@ -341,13 +341,13 @@ namespace render {
                 ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
                 if (ctx.m_assets.effectFogEnabled) {
-                    ctx.m_state.setStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                    ctx.m_state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
                     m_fogProgram->bind(ctx.m_state);
                     m_textureQuad.draw(ctx.m_state);
                 }
 
                 if (ctx.m_assets.effectOitEnabled) {
-                    ctx.m_state.setStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
+                    ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
 
                     m_blendOitProgram->bind(ctx.m_state);
                     m_oitBuffer.bindTexture(ctx);

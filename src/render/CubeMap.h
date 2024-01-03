@@ -12,7 +12,10 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
+
+namespace {
+    class GLState;
+}
 
 class CubeMap
 {
@@ -44,5 +47,5 @@ public:
 
     GLenum m_internalFormat = GL_RGB8;
 
-    GLTextureHandle m_cubeTexture;
+    kigl::GLTextureHandle m_cubeTexture;
 };

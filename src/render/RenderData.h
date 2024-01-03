@@ -39,13 +39,13 @@ public:
 private:
     std::unique_ptr<LightsUBO> m_lightsUbo;
 
-    GLSyncQueue<MatricesUBO, false> m_matrices{ "matrices", 1, RENDER_DATA_BUFFER_COUNT, false, false };
-    GLSyncQueue<DataUBO, false> m_data{ "dataUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
-    GLSyncQueue<BufferInfoUBO, false> m_bufferInfo{ "bufferInfoUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
-    GLSyncQueue<ClipPlanesUBO, false> m_clipPlanes{ "cliplanesUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
-    GLSyncQueue<LightsUBO, false> m_lights{ "lightsUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
+    kigl::GLSyncQueue<MatricesUBO, false> m_matrices{ "matrices", 1, RENDER_DATA_BUFFER_COUNT, false, false };
+    kigl::GLSyncQueue<DataUBO, false> m_data{ "dataUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
+    kigl::GLSyncQueue<BufferInfoUBO, false> m_bufferInfo{ "bufferInfoUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
+    kigl::GLSyncQueue<ClipPlanesUBO, false> m_clipPlanes{ "cliplanesUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
+    kigl::GLSyncQueue<LightsUBO, false> m_lights{ "lightsUBO", 1, RENDER_DATA_BUFFER_COUNT, false, false };
 
-    //GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
+    //kigl::GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
     //int m_imageTextureLevel = -1;
     //int m_channelTextureLevel = -1;
 };

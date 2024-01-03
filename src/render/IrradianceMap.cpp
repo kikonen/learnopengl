@@ -40,7 +40,7 @@ void IrradianceMap::prepareRT(
     }
 
     {
-        GLState state;
+        kigl::GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
         program->prepareRT(assets);

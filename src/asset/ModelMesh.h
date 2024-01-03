@@ -43,7 +43,7 @@ public:
 
     virtual const std::vector<Material>& getMaterials() const override;
 
-    virtual GLVertexArray* prepareRT(
+    virtual kigl::GLVertexArray* prepareRT(
         const Assets& assets,
         Registry* registry) override;
 

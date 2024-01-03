@@ -74,7 +74,7 @@ const std::vector<Material>& ModelMesh::getMaterials() const
     return m_materials;
 }
 
-GLVertexArray* ModelMesh::prepareRT(
+kigl::GLVertexArray* ModelMesh::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

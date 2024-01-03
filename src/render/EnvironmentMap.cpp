@@ -38,7 +38,7 @@ void EnvironmentMap::prepareRT(
     }
 
     {
-        GLState state;
+        kigl::GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
         program->prepareRT(assets);

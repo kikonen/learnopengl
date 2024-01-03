@@ -48,7 +48,7 @@ const std::vector<Material>& QuadMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* QuadMesh::prepareRT(
+kigl::GLVertexArray* QuadMesh::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

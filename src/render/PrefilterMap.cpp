@@ -51,7 +51,7 @@ void PrefilterMap::prepareRT(
     }
 
     {
-        GLState state;
+        kigl::GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_PREFILTER_CUBE_MAP);
         program->prepareRT(assets);
@@ -69,7 +69,7 @@ void PrefilterMap::bindTexture(const RenderContext& ctx, int unitIndex)
 }
 
 void PrefilterMap::render(
-    GLState& state,
+    kigl::GLState& state,
     Program* program,
     int cubeTextureID,
     int baseSize)
@@ -91,8 +91,8 @@ void PrefilterMap::render(
     TextureCube cube;
     cube.prepare();
 
-    GLFrameBufferHandle captureFBO;
-    GLRenderBufferHandle rbo;
+    kigl::GLFrameBufferHandle captureFBO;
+    kigl::GLRenderBufferHandle rbo;
     {
         captureFBO.create("capture_fbo");
         rbo.create("capture_rbo");

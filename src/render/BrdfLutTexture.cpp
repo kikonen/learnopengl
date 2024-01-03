@@ -39,7 +39,7 @@ void BrdfLutTexture::prepareRT(
     }
 
     {
-        GLState state;
+        kigl::GLState state;
 
         auto program = registry->m_programRegistry->getProgram(SHADER_BRDF_LUT);
         program->prepareRT(assets);
@@ -56,7 +56,7 @@ void BrdfLutTexture::bindTexture(const RenderContext& ctx, int unitIndex)
 }
 
 void BrdfLutTexture::render(
-    GLState& state,
+    kigl::GLState& state,
     Program* program,
     int textureID,
     int size)

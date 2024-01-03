@@ -14,14 +14,17 @@
 
 class Input;
 class Engine;
-class GLState;
+
+namespace kigl {
+    class GLState;
+}
 
 class Window final
 {
 public:
     Window(
         Engine& engine,
-        GLState& state,
+        kigl::GLState& state,
         const Assets& assets);
     ~Window();
 
@@ -55,7 +58,7 @@ private:
 public:
     const Assets& m_assets;
 
-    GLState& m_state;
+    kigl::GLState& m_state;
 
     GLFWwindow* m_glfwWindow{ nullptr };
 

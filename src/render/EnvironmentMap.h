@@ -36,7 +36,7 @@ public:
 public:
     int m_size{ 0 };
 
-    GLTextureHandle m_cubeTexture;
+    kigl::GLTextureHandle m_cubeTexture;
 
     GLuint m_hdriTextureID{ 0 };
 };

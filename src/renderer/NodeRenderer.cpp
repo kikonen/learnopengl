@@ -116,7 +116,7 @@ void NodeRenderer::fillHighlightMask(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
@@ -147,7 +147,7 @@ void NodeRenderer::renderHighlight(
     targetBuffer->bind(ctx);
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.setStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {

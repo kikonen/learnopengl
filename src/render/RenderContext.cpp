@@ -83,7 +83,7 @@ RenderContext::RenderContext(
     RenderData* renderData,
     render::NodeDraw* nodeDraw,
     Batch* batch,
-    GLState& state,
+    kigl::GLState& state,
     Camera* camera,
     float nearPlane,
     float farPlane,

@@ -30,12 +30,12 @@ namespace {
 #pragma pack(pop)
 }
 
-GLVertexArray* QuadVAO::prepare()
+kigl::GLVertexArray* QuadVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
 
-    m_vao = std::make_unique<GLVertexArray>();
+    m_vao = std::make_unique<kigl::GLVertexArray>();
     m_vao->create("quad");
     m_vbo.create();
 
@@ -46,8 +46,8 @@ GLVertexArray* QuadVAO::prepare()
 }
 
 void QuadVAO::prepareVAO(
-    GLVertexArray& vao,
-    GLBuffer& vbo)
+    kigl::GLVertexArray& vao,
+    kigl::GLBuffer& vbo)
 {
     glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vbo, 0, sizeof(VertexEntry));
     {
@@ -75,7 +75,7 @@ void QuadVAO::prepareVAO(
     }
 }
 
-void QuadVAO::prepareVBO(GLBuffer& vbo)
+void QuadVAO::prepareVBO(kigl::GLBuffer& vbo)
 {
     // https://paroj.github.io/gltut/Basic%20Optimization.html
     constexpr int stride_size = sizeof(VertexEntry);

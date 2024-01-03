@@ -5,7 +5,9 @@
 class FrameBuffer;
 class Program;
 
-struct GLVertexArray;
+namespace kigl {
+    struct GLVertexArray;
+}
 
 namespace backend {
     struct DrawOptions;
@@ -19,7 +21,7 @@ namespace backend {
 
     struct DrawEntity {
         Program* program;
-        GLVertexArray* vao;
+        kigl::GLVertexArray* vao;
         DrawOptions* drawOptions;
         bool allowBlend;
     };

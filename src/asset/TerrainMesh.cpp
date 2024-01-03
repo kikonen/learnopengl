@@ -41,7 +41,7 @@ const std::vector<Material>& TerrainMesh::getMaterials() const
     return m_material;
 }
 
-GLVertexArray* TerrainMesh::prepareRT(
+kigl::GLVertexArray* TerrainMesh::prepareRT(
     const Assets& assets,
     Registry* registry)
 {

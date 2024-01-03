@@ -119,7 +119,7 @@ public:
 
     backend::DrawOptions m_drawOptions;
 
-    GLVertexArray* m_vao{ nullptr };
+    kigl::GLVertexArray* m_vao{ nullptr };
 
 private:
     bool m_prepared : 1 {false};
@@ -130,7 +130,7 @@ private:
 
     std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
-    GLVertexArray m_privateVAO;
+    kigl::GLVertexArray m_privateVAO;
 };
 
 // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map

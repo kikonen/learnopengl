@@ -5,19 +5,19 @@
 
 class TerrainVAO {
 public:
-    GLVertexArray* prepare();
+    kigl::GLVertexArray* prepare();
 
 private:
     void prepareVAO(
-        GLVertexArray& vao,
-        GLBuffer& vbo);
+        kigl::GLVertexArray& vao,
+        kigl::GLBuffer& vbo);
 
     void prepareVBO(
-        GLBuffer& vbo);
+        kigl::GLBuffer& vbo);
 
 private:
     bool m_prepared = false;
 
-    std::unique_ptr<GLVertexArray> m_vao;
-    GLBuffer m_vbo{ "terrainVBO" };
+    std::unique_ptr<kigl::GLVertexArray> m_vao;
+    kigl::GLBuffer m_vbo{ "terrainVBO" };
 };

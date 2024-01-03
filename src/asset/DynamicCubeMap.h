@@ -41,7 +41,7 @@ public:
     bool m_rendered{ false };
     int m_updateFace{ -1 };
 
-    GLFrameBufferHandle m_fbo;
+    kigl::GLFrameBufferHandle m_fbo;
 
 private:
     bool m_prepared{ false };

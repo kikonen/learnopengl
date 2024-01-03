@@ -36,7 +36,7 @@ public:
     virtual const std::vector<Material>& getMaterials() const = 0;
 
     // @return VAO for mesh
-    virtual GLVertexArray* prepareRT(
+    virtual kigl::GLVertexArray* prepareRT(
         const Assets& assets,
         Registry* registry) = 0;
 
@@ -60,7 +60,7 @@ public:
 protected:
     bool m_prepared = false;
 
-    GLVertexArray* m_vao{ nullptr };
+    kigl::GLVertexArray* m_vao{ nullptr };
 
 private:
     AABB m_aabb{};

@@ -20,19 +20,19 @@ public:
     ModelVAO() {};
     ~ModelVAO() = default;
 
-    GLVertexArray* prepare();
+    kigl::GLVertexArray* prepare();
 
     // @return VAO for mesh
-    GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
+    kigl::GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
     void updateRT(const UpdateContext& ctx);
 
 private:
     void prepareVAO(
-        GLVertexArray& vao,
-        GLBuffer& positionVbo,
-        GLBuffer& vertexVbo,
-        GLBuffer& ebo);
+        kigl::GLVertexArray& vao,
+        kigl::GLBuffer& positionVbo,
+        kigl::GLBuffer& vertexVbo,
+        kigl::GLBuffer& ebo);
 
     void updatePositionBuffer();
     void updateVertexBuffer();
@@ -44,12 +44,12 @@ private:
     std::atomic<bool> m_dirty;
     std::mutex m_lock{};
 
-    std::unique_ptr<GLVertexArray> m_vao;
+    std::unique_ptr<kigl::GLVertexArray> m_vao;
 
-    GLBuffer m_positionVbo{ "positionVBO" };
-    GLBuffer m_vertexVbo{ "vertexVBO" };
+    kigl::GLBuffer m_positionVbo{ "positionVBO" };
+    kigl::GLBuffer m_vertexVbo{ "vertexVBO" };
 
-    GLBuffer m_ebo{ "modelEBO" };
+    kigl::GLBuffer m_ebo{ "modelEBO" };
 
     std::vector<PositionEntry> m_positionEntries;
     std::vector<VertexEntry> m_vertexEntries;

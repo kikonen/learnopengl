@@ -16,7 +16,7 @@
 
 Window::Window(
     Engine& engine,
-    GLState& state,
+    kigl::GLState& state,
     const Assets& assets)
     : m_engine(engine), m_state(state), m_assets(assets)
 {

@@ -9,7 +9,10 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
+
+namespace kigl {
+    class GLState;
+}
 
 // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
 // - hdri is *linear*
@@ -31,7 +34,7 @@ public:
 
 private:
     void render(
-        GLState& state,
+        kigl::GLState& state,
         Program* program,
         int cubeTextureID,
         int baseSize);
@@ -39,7 +42,7 @@ private:
 public:
     int m_size{ 0 };
 
-    GLTextureHandle m_cubeTexture;
+    kigl::GLTextureHandle m_cubeTexture;
 
     int m_envCubeMapID{ 0 };
 };

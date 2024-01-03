@@ -65,12 +65,12 @@ namespace text
         }
     }
 
-    void FontAtlas::bindTextures(GLState& state)
+    void FontAtlas::bindTextures(kigl::GLState& state)
     {
         m_texture.bindTexture(state, UNIT_FONT_ATLAS);
     }
 
-    void FontAtlas::unbindTextures(GLState& state)
+    void FontAtlas::unbindTextures(kigl::GLState& state)
     {
         m_texture.unbindTexture(state, UNIT_FONT_ATLAS);
     }

@@ -20,13 +20,13 @@ namespace {
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
-GLVertexArray* ModelVAO::prepare()
+kigl::GLVertexArray* ModelVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
 
     {
-        m_vao = std::make_unique<GLVertexArray>();
+        m_vao = std::make_unique<kigl::GLVertexArray>();
         m_vao->create("model");
     }
     {
@@ -52,10 +52,10 @@ GLVertexArray* ModelVAO::prepare()
 }
 
 void ModelVAO::prepareVAO(
-    GLVertexArray& vao,
-    GLBuffer& positionVbo,
-    GLBuffer& vertexVbo,
-    GLBuffer& ebo)
+    kigl::GLVertexArray& vao,
+    kigl::GLBuffer& positionVbo,
+    kigl::GLBuffer& vertexVbo,
+    kigl::GLBuffer& ebo)
 {
     // "Tile" based GPU can benefit from having separate position stream VBO for improved caching
     // https://solidpixel.github.io/2022/07/21/vertexpacking.html
@@ -115,7 +115,7 @@ void ModelVAO::prepareVAO(
     }
 }
 
-GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
+kigl::GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
 {
     std::lock_guard<std::mutex> lock(m_lock);
 

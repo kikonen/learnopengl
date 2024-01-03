@@ -91,7 +91,7 @@ void TextureCube::prepare()
     glVertexArrayBindingDivisor(m_vao, VBO_VERTEX_BINDING, 0);
 }
 
-void TextureCube::draw(GLState& state)
+void TextureCube::draw(kigl::GLState& state)
 {
     state.bindVAO(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);

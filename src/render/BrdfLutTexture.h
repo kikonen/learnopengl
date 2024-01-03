@@ -8,7 +8,10 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
+
+namespace kigl {
+    class GLState;
+}
 
 // https://learnopengl.com/PBR/IBL/Specular-IBL
 class BrdfLutTexture
@@ -29,7 +32,7 @@ public:
 
 private:
     void render(
-        GLState& state,
+        kigl::GLState& state,
         Program* program,
         int cubeTextureID,
         int baseSize);
@@ -37,5 +40,5 @@ private:
 public:
     int m_size{ 0 };
 
-    GLTextureHandle m_texture;
+    kigl::GLTextureHandle m_texture;
 };

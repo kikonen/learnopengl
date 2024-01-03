@@ -13,12 +13,12 @@ namespace {
 #pragma pack(pop)
 }
 
-GLVertexArray* TerrainVAO::prepare()
+kigl::GLVertexArray* TerrainVAO::prepare()
 {
     if (m_prepared) return m_vao.get();
     m_prepared = true;
 
-    m_vao = std::make_unique<GLVertexArray>();
+    m_vao = std::make_unique<kigl::GLVertexArray>();
     m_vao->create("terrain");
     m_vbo.create();
 
@@ -29,13 +29,13 @@ GLVertexArray* TerrainVAO::prepare()
 }
 
 void TerrainVAO::prepareVAO(
-    GLVertexArray& vao,
-    GLBuffer& vbo)
+    kigl::GLVertexArray& vao,
+    kigl::GLBuffer& vbo)
 {
     // NOTE KI nothing currently
 }
 
-void TerrainVAO::prepareVBO(GLBuffer& vbo)
+void TerrainVAO::prepareVBO(kigl::GLBuffer& vbo)
 {
     // NOTE KI nothing currently
 }

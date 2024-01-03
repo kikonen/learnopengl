@@ -56,5 +56,5 @@ private:
     size_t m_lastSpriteSize{ 0 };
     size_t m_lastShapeSize{ 0 };
 
-    GLBuffer m_ssbo{ "shapesSSBO" };
+    kigl::GLBuffer m_ssbo{ "shapesSSBO" };
 };

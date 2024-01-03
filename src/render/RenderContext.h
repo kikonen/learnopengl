@@ -59,7 +59,7 @@ public:
         RenderData* renderData,
         render::NodeDraw* nodeDraw,
         Batch* batch,
-        GLState& state,
+        kigl::GLState& state,
         Camera* camera,
         float nearPlane,
         float farPlane,
@@ -106,7 +106,7 @@ public:
 
     GLenum m_depthFunc{ GL_LESS };
 
-    GLState& m_state;
+    kigl::GLState& m_state;
 
     RenderContextDefaults m_defaults;
 

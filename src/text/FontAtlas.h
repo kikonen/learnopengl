@@ -25,8 +25,8 @@ namespace text
         void prepareRT(
             const Assets& assets);
 
-        void bindTextures(GLState& state);
-        void unbindTextures(GLState& state);
+        void bindTextures(kigl::GLState& state);
+        void unbindTextures(kigl::GLState& state);
 
     public:
         std::string m_fontName{ "fonts/Vera.ttf" };
@@ -34,7 +34,7 @@ namespace text
         glm::uvec2 m_atlasSize{ 512, 512 };
 
     private:
-        GLTextureHandle m_texture;
+        kigl::GLTextureHandle m_texture;
 
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };

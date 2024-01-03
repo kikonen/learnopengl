@@ -107,7 +107,7 @@ Program::~Program()
     }
 }
 
-void Program::bind(GLState& state) const noexcept
+void Program::bind(kigl::GLState& state) const noexcept
 {
     assert(isReady());
     state.useProgram(m_programId);

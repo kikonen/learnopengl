@@ -10,7 +10,7 @@
 #include "render/FrameBuffer.h"
 
 void CubeRender::render(
-    GLState& state,
+    kigl::GLState& state,
     Program* program,
     int cubeTextureID,
     int size)
