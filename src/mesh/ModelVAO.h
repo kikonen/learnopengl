@@ -14,17 +14,17 @@ class Batch;
 class UpdateContext;
 
 namespace mesh {
-    class ModelMeshVBO;
+    class ModelVBO;
 
     class ModelVAO {
     public:
         ModelVAO() {};
         ~ModelVAO() = default;
 
-        kigl::GLVertexArray* prepare();
+        void prepare();
 
         // @return VAO for mesh
-        kigl::GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
+        kigl::GLVertexArray* registerModel(ModelVBO& meshVBO);
 
         void updateRT(const UpdateContext& ctx);
 

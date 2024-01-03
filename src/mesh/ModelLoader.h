@@ -17,7 +17,7 @@ namespace mesh {
     class ModelMesh;
     struct Vertex;
 
-    class MeshLoader final
+    class ModelLoader final
     {
         struct Vec3MapCompare {
             bool operator()(const glm::vec3& a, const glm::vec3& b) const {
@@ -31,11 +31,11 @@ namespace mesh {
         };
 
     public:
-        MeshLoader(
+        ModelLoader(
             const Assets& assets,
             std::shared_ptr<std::atomic<bool>> alive);
 
-        ~MeshLoader();
+        ~ModelLoader();
 
         // @return pointer to mesh if load was success
         ModelMesh* load(

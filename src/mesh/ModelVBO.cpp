@@ -1,4 +1,4 @@
-#include "ModelMeshVBO.h"
+#include "ModelVBO.h"
 
 #include "glm/glm.hpp"
 
@@ -8,16 +8,16 @@
 
 
 namespace mesh {
-    ModelMeshVBO::ModelMeshVBO()
+    ModelVBO::ModelVBO()
     {
 
     }
 
-    ModelMeshVBO::~ModelMeshVBO()
+    ModelVBO::~ModelVBO()
     {
     }
 
-    void ModelMeshVBO::prepare(ModelMesh& mesh)
+    void ModelVBO::prepare(ModelMesh& mesh)
     {
         if (m_prepared) return;
         m_prepared = true;
@@ -25,14 +25,14 @@ namespace mesh {
         prepareBuffers(mesh);
     }
 
-    void ModelMeshVBO::prepareBuffers(
+    void ModelVBO::prepareBuffers(
         ModelMesh& mesh)
     {
         prepareVertex(mesh);
         prepareIndex(mesh);
     }
 
-    void ModelMeshVBO::prepareVertex(
+    void ModelVBO::prepareVertex(
         ModelMesh& mesh)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
@@ -55,7 +55,7 @@ namespace mesh {
         }
     }
 
-    void ModelMeshVBO::prepareIndex(
+    void ModelVBO::prepareIndex(
         ModelMesh& mesh)
     {
         m_indexEntries.reserve(mesh.m_tris.size());

@@ -239,7 +239,7 @@
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\mesh\MaterialVBO.cpp" />
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
-    <ClCompile Include="src\mesh\ModelMeshVBO.cpp" />
+    <ClCompile Include="src\mesh\ModelVBO.cpp" />
     <ClCompile Include="src\mesh\ModelVAO.cpp" />
     <ClCompile Include="src\mesh\QuadMaterialInit.cpp" />
     <ClCompile Include="src\mesh\QuadVAO.cpp" />
@@ -338,7 +338,6 @@
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
     <ClCompile Include="src\render\FrameBuffer.cpp" />
-    <ClCompile Include="src\mesh\MeshBuffers.cpp" />
     <ClCompile Include="src\renderer\NodeRenderer.cpp" />
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
@@ -350,7 +349,7 @@
     <ClCompile Include="src\asset\Image.cpp" />
     <ClCompile Include="src\render\RenderContext.cpp" />
     <ClCompile Include="src\gui\Input.cpp" />
-    <ClCompile Include="src\mesh\MeshLoader.cpp" />
+    <ClCompile Include="src\mesh\ModelLoader.cpp" />
     <ClCompile Include="src\model\Node.cpp" />
     <ClCompile Include="src\component\Light.cpp" />
     <ClCompile Include="src\component\Camera.cpp" />
@@ -469,7 +468,7 @@
     <ClInclude Include="src\mesh\VertexEntry.h" />
     <ClInclude Include="src\mesh\MaterialVBO.h" />
     <ClInclude Include="src\mesh\ModelMaterialInit.h" />
-    <ClInclude Include="src\mesh\ModelMeshVBO.h" />
+    <ClInclude Include="src\mesh\ModelVBO.h" />
     <ClInclude Include="src\mesh\QuadMaterialInit.h" />
     <ClInclude Include="src\mesh\QuadVAO.h" />
     <ClInclude Include="src\asset\SSBO.h" />
@@ -593,7 +592,6 @@
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />
     <ClInclude Include="src\render\FrameBuffer.h" />
-    <ClInclude Include="src\mesh\MeshBuffers.h" />
     <ClInclude Include="src\renderer\NodeRenderer.h" />
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
@@ -605,7 +603,7 @@
     <ClInclude Include="src\asset\Image.h" />
     <ClInclude Include="src\render\RenderContext.h" />
     <ClInclude Include="src\gui\Input.h" />
-    <ClInclude Include="src\mesh\MeshLoader.h" />
+    <ClInclude Include="src\mesh\ModelLoader.h" />
     <ClInclude Include="src\model\Node.h" />
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\component\Camera.h" />

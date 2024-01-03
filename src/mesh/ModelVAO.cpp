@@ -6,7 +6,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "mesh/ModelMeshVBO.h"
+#include "mesh/ModelVBO.h"
 
 namespace {
     constexpr size_t VERTEX_BLOCK_SIZE = 1000;
@@ -21,9 +21,9 @@ namespace {
 }
 
 namespace mesh {
-    kigl::GLVertexArray* ModelVAO::prepare()
+    void ModelVAO::prepare()
     {
-        if (m_prepared) return m_vao.get();
+        if (m_prepared) return;
         m_prepared = true;
 
         {
@@ -49,7 +49,6 @@ namespace mesh {
         // NOTE KI VBO & EBO are just empty buffers here
 
         prepareVAO(*m_vao, m_positionVbo, m_vertexVbo, m_ebo);
-        return m_vao.get();
     }
 
     void ModelVAO::prepareVAO(
@@ -116,7 +115,7 @@ namespace mesh {
         }
     }
 
-    kigl::GLVertexArray* ModelVAO::registerModel(ModelMeshVBO& meshVBO)
+    kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& meshVBO)
     {
         std::lock_guard<std::mutex> lock(m_lock);
 

@@ -4,7 +4,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "mesh/MeshLoader.h"
+#include "mesh/ModelLoader.h"
 #include "mesh/MeshType.h"
 
 #include "event/Dispatcher.h"

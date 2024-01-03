@@ -1,4 +1,4 @@
-#include "MeshLoader.h"
+#include "ModelLoader.h"
 
 #include <fstream>
 #include <istream>
@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace mesh {
-    MeshLoader::MeshLoader(
+    ModelLoader::ModelLoader(
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive)
         : assets(assets),
@@ -33,11 +33,11 @@ namespace mesh {
     {
     }
 
-    MeshLoader::~MeshLoader()
+    ModelLoader::~ModelLoader()
     {
     }
 
-    ModelMesh* MeshLoader::load(
+    ModelMesh* ModelLoader::load(
         ModelMesh& mesh,
         Material* defaultMaterial,
         bool forceDefaultMaterial)
@@ -60,7 +60,7 @@ namespace mesh {
         return mesh.m_valid ? &mesh : nullptr;
     }
 
-    void MeshLoader::loadData(
+    void ModelLoader::loadData(
         ModelMesh& mesh)
     {
         if (!*m_alive) return;
@@ -253,11 +253,11 @@ namespace mesh {
     }
 
     // https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
-    void MeshLoader::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
+    void ModelLoader::splitFragmentValue(const std::string& v, std::vector<std::string>& vv) {
         util::splitString(v, vv, '/');
     }
 
-    unsigned int MeshLoader::resolveVertexIndex(
+    unsigned int ModelLoader::resolveVertexIndex(
         std::unordered_map<glm::vec3, std::vector<int>, Vec3MapCompare>& vertexMapping,
         std::vector<Vertex>& vertices,
         std::vector<glm::vec3>& positions,
@@ -317,7 +317,7 @@ namespace mesh {
         return index;
     }
 
-    glm::vec3 MeshLoader::createNormal(
+    glm::vec3 ModelLoader::createNormal(
         std::vector<glm::vec3>& positions,
         std::vector<glm::vec3>& normals,
         glm::uvec3 pi)
@@ -341,7 +341,7 @@ namespace mesh {
         return glm::vec3(idx, idx, idx);
     }
 
-    void MeshLoader::createTangents(
+    void ModelLoader::createTangents(
         std::vector<glm::vec3>& positions,
         std::vector<glm::vec2>& textures,
         std::vector<glm::vec3>& normals,
@@ -410,7 +410,7 @@ namespace mesh {
     }
 
 
-    void MeshLoader::loadMaterials(
+    void ModelLoader::loadMaterials(
         const ModelMesh& mesh,
         std::vector<Material>& materials,
         std::string_view libraryName)
@@ -523,7 +523,7 @@ namespace mesh {
             materials.size()));
     }
 
-    std::string MeshLoader::resolveTexturePath(std::string_view line, int skipCount)
+    std::string ModelLoader::resolveTexturePath(std::string_view line, int skipCount)
     {
         std::string k;
         std::stringstream is2(std::string{ line });

@@ -9,10 +9,10 @@ namespace mesh {
     //
     // https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions#storing-index-and-vertex-data-under-single-buffer
     //
-    class ModelMeshVBO {
+    class ModelVBO {
     public:
-        ModelMeshVBO();
-        ~ModelMeshVBO();
+        ModelVBO();
+        ~ModelVBO();
 
         void prepare(
             ModelMesh& mesh);

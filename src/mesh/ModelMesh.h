@@ -10,14 +10,14 @@
 
 #include "mesh/Vertex.h"
 #include "mesh/Mesh.h"
-#include "mesh/ModelMeshVBO.h"
+#include "mesh/ModelVBO.h"
 
 namespace mesh {
     class ModelMesh final : public Mesh {
-        friend class MeshLoader;
+        friend class ModelLoader;
         friend class TerrainGenerator;
         friend class LegacyTerrainGenerator;
-        friend class ModelMeshVBO;
+        friend class ModelVBO;
         friend class ModelMaterialInit;
 
     public:
@@ -67,6 +67,6 @@ namespace mesh {
         std::vector<Material> m_materials;
 
     private:
-        ModelMeshVBO m_vertexVBO;
+        ModelVBO m_vertexVBO;
     };
 }

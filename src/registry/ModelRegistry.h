@@ -19,7 +19,7 @@ class UpdateContext;
 
 namespace mesh {
     class ModelMesh;
-    class ModelMeshVBO;
+    class ModelVBO;
 }
 
 class ModelRegistry {
@@ -35,7 +35,7 @@ public:
     void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
-    kigl::GLVertexArray* registerMeshVBO(mesh::ModelMeshVBO& meshVBO);
+    kigl::GLVertexArray* registerMeshVBO(mesh::ModelVBO& meshVBO);
 
     std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,

@@ -3,8 +3,8 @@
 #include <fmt/format.h>
 
 #include "mesh/ModelMesh.h"
-#include "mesh/ModelMeshVBO.h"
-#include "mesh/MeshLoader.h"
+#include "mesh/ModelVBO.h"
+#include "mesh/ModelLoader.h"
 
 #include "render/RenderContext.h"
 
@@ -22,7 +22,7 @@ ModelRegistry::ModelRegistry(
 ModelRegistry::~ModelRegistry() {
 }
 
-kigl::GLVertexArray* ModelRegistry::registerMeshVBO(mesh::ModelMeshVBO& meshVBO)
+kigl::GLVertexArray* ModelRegistry::registerMeshVBO(mesh::ModelVBO& meshVBO)
 {
     return m_vao.registerModel(meshVBO);
 }
@@ -90,7 +90,7 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                mesh::MeshLoader loader(m_assets, m_alive);
+                mesh::ModelLoader loader(m_assets, m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {
