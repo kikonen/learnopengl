@@ -20,8 +20,6 @@ void ModelMeshVBO::prepare(ModelMesh& mesh)
     if (m_prepared) return;
     m_prepared = true;
 
-    m_single = mesh.getMaterials().size() == 1;
-
     prepareBuffers(mesh);
 }
 
@@ -48,11 +46,10 @@ void ModelMeshVBO::prepareVertex(
         auto& posEntry = m_positionEntries.emplace_back(p);
         auto& entry = m_vertexEntries.emplace_back(n, tan, t);
 
-
-        posEntry.pos = p;
-        entry.normal = n;
-        entry.tangent = tan;
-        entry.texCoord = t;
+        //posEntry.pos = p;
+        //entry.normal = n;
+        //entry.tangent = tan;
+        //entry.texCoord = t;
     }
 }
 

@@ -40,8 +40,6 @@ public:
     std::vector<VertexEntry> m_vertexEntries;
     std::vector<IndexEntry> m_indexEntries;
 
-    bool m_single = false;
-
 private:
     bool m_prepared = false;
 };
