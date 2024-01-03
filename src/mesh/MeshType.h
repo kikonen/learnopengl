@@ -49,13 +49,6 @@ namespace mesh {
             return m_materialIndex;
         }
 
-        int resolveMaterialIndex() const;
-
-        inline size_t getMaterialCount() const noexcept
-        {
-            return m_materialVBO.m_materials.size();
-        }
-
         CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
 
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;

@@ -114,23 +114,23 @@ namespace mesh {
         }
     }
 
-    kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& meshVBO)
+    kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
     {
         std::lock_guard<std::mutex> lock(m_lock);
 
-        assert(!meshVBO.m_positionEntries.empty());
-        assert(!meshVBO.m_vertexEntries.empty());
-        assert(!meshVBO.m_indexEntries.empty());
+        assert(!modelVBO.m_positionEntries.empty());
+        assert(!modelVBO.m_vertexEntries.empty());
+        assert(!modelVBO.m_indexEntries.empty());
 
         {
-            const size_t count = meshVBO.m_positionEntries.size();
+            const size_t count = modelVBO.m_positionEntries.size();
             const size_t baseIndex = m_positionEntries.size();
             const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
             if (m_positionEntries.size() + count >= MAX_VERTEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
 
-            meshVBO.m_positionOffset = baseOffset;
+            modelVBO.m_positionOffset = baseOffset;
 
             {
                 size_t size = m_positionEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
@@ -141,19 +141,19 @@ namespace mesh {
 
             m_positionEntries.insert(
                 m_positionEntries.end(),
-                meshVBO.m_positionEntries.begin(),
-                meshVBO.m_positionEntries.end());
+                modelVBO.m_positionEntries.begin(),
+                modelVBO.m_positionEntries.end());
         }
 
         {
-            const size_t count = meshVBO.m_vertexEntries.size();
+            const size_t count = modelVBO.m_vertexEntries.size();
             const size_t baseIndex = m_vertexEntries.size();
             const size_t baseOffset = baseIndex * sizeof(VertexEntry);
 
             if (m_vertexEntries.size() + count >= MAX_VERTEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
 
-            meshVBO.m_vertexOffset = baseOffset;
+            modelVBO.m_vertexOffset = baseOffset;
 
             {
                 size_t size = m_vertexEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
@@ -164,19 +164,19 @@ namespace mesh {
 
             m_vertexEntries.insert(
                 m_vertexEntries.end(),
-                meshVBO.m_vertexEntries.begin(),
-                meshVBO.m_vertexEntries.end());
+                modelVBO.m_vertexEntries.begin(),
+                modelVBO.m_vertexEntries.end());
         }
 
         {
-            const size_t count = meshVBO.m_indexEntries.size();
+            const size_t count = modelVBO.m_indexEntries.size();
             const size_t baseIndex = m_indexEntries.size();
             const size_t baseOffset = baseIndex * sizeof(IndexEntry);
 
             if (m_indexEntries.size() + count >= MAX_INDEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
 
-            meshVBO.m_indexOffset = baseOffset;
+            modelVBO.m_indexOffset = baseOffset;
 
             {
                 size_t size = m_indexEntries.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
@@ -187,8 +187,8 @@ namespace mesh {
 
             m_indexEntries.insert(
                 m_indexEntries.end(),
-                meshVBO.m_indexEntries.begin(),
-                meshVBO.m_indexEntries.end());
+                modelVBO.m_indexEntries.begin(),
+                modelVBO.m_indexEntries.end());
         }
 
         return m_vao.get();

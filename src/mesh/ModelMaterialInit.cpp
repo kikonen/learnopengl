@@ -10,7 +10,7 @@ namespace mesh {
         ModelMesh& mesh,
         MaterialVBO& materialVBO)
     {
-        KI_INFO(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.m_materials.size()));
+        KI_INFO(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.getMaterialCount()));
         prepareVertices(mesh.m_vertices, materialVBO);
     }
 
@@ -20,25 +20,27 @@ namespace mesh {
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
         {
-            const bool single = materialVBO.m_materials.size() == 1;
+            const bool single = materialVBO.getMaterialCount() == 1;
 
             // NOTE KI *NO* indeces if single material
             if (single) {
                 return;
             }
 
-            const size_t count = vertices.size();
-            auto& indeces = materialVBO.m_indeces;
-            indeces.reserve(count);
+            const size_t vertexCount = vertices.size();
+            auto& indeces = materialVBO.modifyIndeces();
+            indeces.reserve(vertexCount);
 
-            for (int i = 0; i < count; i++) {
+            const auto& materials = materialVBO.getMaterials();
+
+            for (size_t i = 0; i < vertexCount; i++) {
                 const auto& vertex = vertices[i];
-                auto* mat = Material::findID(vertex.materialID, materialVBO.m_materials);
+                auto* mat = Material::findID(vertex.materialID, materials);
 
                 bool forcedDefault = false;
                 if (materialVBO.isUseDefaultMaterial()) {
                     if (materialVBO.isForceDefaultMaterial()) {
-                        mat = &materialVBO.m_materials[0];
+                        mat = &materials[0];
                         forcedDefault = true;
                     }
                 }

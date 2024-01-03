@@ -71,7 +71,7 @@ void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
 
     std::lock_guard<std::mutex> lock(m_lock);
 
-    const size_t count = materialVBO.m_indeces.size();
+    const size_t count = materialVBO.getIndeces().size();
     const size_t index = m_indeces.size();
     const size_t offset = index * sizeof(GLuint);
 
@@ -90,8 +90,8 @@ void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
 
     m_indeces.insert(
         m_indeces.end(),
-        materialVBO.m_indeces.begin(),
-        materialVBO.m_indeces.end());
+        materialVBO.getIndeces().begin(),
+        materialVBO.getIndeces().end());
 }
 
 Material* MaterialRegistry::find(

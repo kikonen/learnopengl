@@ -20,7 +20,31 @@ namespace mesh {
         virtual ~MaterialVBO() = default;
 
         void setMaterials(const std::vector<Material>& materials);
-        const std::vector<Material>& getMaterials() const noexcept;
+
+        const std::vector<Material>& getMaterials() const noexcept
+        {
+            return m_materials;
+        }
+
+        std::vector<Material>& modifyMaterials() noexcept
+        {
+            return m_materials;
+        }
+
+        const std::vector<GLuint>& getIndeces() const noexcept
+        {
+            return m_indeces;
+        }
+
+        std::vector<GLuint>& modifyIndeces() noexcept
+        {
+            return m_indeces;
+        }
+
+        inline size_t getMaterialCount() const noexcept
+        {
+            return m_materials.size();
+        }
 
         const Material& getFirst() const noexcept;
 
@@ -36,14 +60,16 @@ namespace mesh {
         bool isUseDefaultMaterial() const { return m_useDefaultMaterial; };
         bool isForceDefaultMaterial() const { return m_forceDefaultMaterial; };
 
+        int resolveMaterialIndex() const;
+
     public:
         size_t m_bufferIndex{ 0 };
 
-        std::vector<Material> m_materials;
-        std::vector<GLuint> m_indeces;
-
     private:
         bool m_prepared = false;
+
+        std::vector<Material> m_materials;
+        std::vector<GLuint> m_indeces;
 
         std::unique_ptr<Material> m_defaultMaterial;
         bool m_useDefaultMaterial{ false };

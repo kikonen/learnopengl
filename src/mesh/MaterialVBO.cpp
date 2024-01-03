@@ -57,11 +57,6 @@ namespace mesh {
         }
     }
 
-    const std::vector<Material>& MaterialVBO::getMaterials() const noexcept
-    {
-        return m_materials;
-    }
-
     const Material& MaterialVBO::getFirst() const noexcept
     {
         if (m_materials.empty()) return *NULL_MATERIAL;
@@ -82,5 +77,15 @@ namespace mesh {
     Material* MaterialVBO::getDefaultMaterial() const
     {
         return m_defaultMaterial.get();
+    }
+
+    int MaterialVBO::resolveMaterialIndex() const
+    {
+        if (isSingle()) {
+            // NOTE KI *NO* indeces if single material
+            return getFirst().m_registeredIndex;
+        }
+        // NOTE KI special trick; -1 to indicate "multi material" index
+        return -static_cast<int>(m_bufferIndex);
     }
 }

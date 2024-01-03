@@ -24,8 +24,8 @@ namespace mesh {
 
         void prepare();
 
-        // @return VAO for mesh
-        kigl::GLVertexArray* registerModel(ModelVBO& meshVBO);
+        // @return VBO for model mesh
+        kigl::GLVertexArray* registerModel(ModelVBO& modelVBO);
 
         void updateRT(const UpdateContext& ctx);
 

@@ -55,7 +55,9 @@ namespace mesh {
     {
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",
-            m_id, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1, m_materialIndex, getMaterialCount());
+            m_id, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1,
+            m_materialIndex,
+            m_materialVBO.getMaterialCount());
     }
 
     //void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
@@ -74,20 +76,9 @@ namespace mesh {
 
     void MeshType::modifyMaterials(std::function<void(Material&)> fn)
     {
-        for (auto& material : m_materialVBO.m_materials) {
+        for (auto& material : m_materialVBO.modifyMaterials()) {
             fn(material);
         }
-    }
-
-    int MeshType::resolveMaterialIndex() const
-    {
-        auto& materialVBO = m_materialVBO;
-        if (materialVBO.isSingle()) {
-            // NOTE KI *NO* indeces if single material
-            return materialVBO.getFirst().m_registeredIndex;
-        }
-        // NOTE KI special trick; -1 to indicate "multi material" index
-        return -static_cast<int>(materialVBO.m_bufferIndex);
     }
 
     void MeshType::prepare(
@@ -99,7 +90,7 @@ namespace mesh {
         if (m_prepared) return;
         m_prepared = true;
 
-        for (auto& material : m_materialVBO.m_materials) {
+        for (auto& material : m_materialVBO.modifyMaterials()) {
             registry->m_materialRegistry->registerMaterial(material);
         }
 
@@ -113,7 +104,7 @@ namespace mesh {
             m_mesh->prepareMaterials(m_materialVBO);
 
             registry->m_materialRegistry->registerMaterialVBO(m_materialVBO);
-            m_materialIndex = resolveMaterialIndex();
+            m_materialIndex = m_materialVBO.resolveMaterialIndex();
         }
 
         {
