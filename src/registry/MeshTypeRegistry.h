@@ -6,7 +6,7 @@
 
 #include "asset/Assets.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
 
 class RenderContext;
 

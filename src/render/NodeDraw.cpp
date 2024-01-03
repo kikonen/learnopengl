@@ -7,7 +7,8 @@
 
 #include "component/Camera.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"

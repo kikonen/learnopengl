@@ -5,10 +5,10 @@
 #include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
-#include "asset/QuadMaterialInit.h"
-#include "asset/QuadVAO.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+#include "mesh/QuadMaterialInit.h"
+#include "mesh/QuadVAO.h"
 
 
 namespace {

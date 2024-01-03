@@ -3,7 +3,7 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
-#include "asset/TextMaterial.h"
+#include "text/TextMaterial.h"
 
 namespace loader {
     CustomMaterialLoader::CustomMaterialLoader(

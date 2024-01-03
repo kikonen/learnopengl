@@ -5,10 +5,10 @@
 #include "asset/Shader.h"
 
 #include "mesh/MeshLoader.h"
+#include "mesh/MeshType.h"
 
 #include "event/Dispatcher.h"
 
-#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"

@@ -5,6 +5,8 @@
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
+#include "mesh/MeshType.h"
+
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
 
@@ -21,7 +23,6 @@
 #include "renderer/WaterMapRenderer.h"
 #include "renderer/MirrorMapRenderer.h"
 
-#include "registry/MeshType.h"
 
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl

@@ -2,9 +2,10 @@
 
 #include <string>
 
-#include "Assets.h"
-#include "Material.h"
-#include "Mesh.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
+
+#include "mesh/Mesh.h"
 
 class QuadMesh final : public Mesh
 {

@@ -14,14 +14,16 @@
 #include "ki/yaml.h"
 
 #include "asset/Material.h"
-#include "asset/ModelMesh.h"
-#include "asset/QuadMesh.h"
-#include "asset/SpriteMesh.h"
 #include "asset/Sprite.h"
 #include "asset/Shape.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
-#include "asset/TextMaterial.h"
+
+#include "mesh/ModelMesh.h"
+#include "mesh/QuadMesh.h"
+#include "mesh/SpriteMesh.h"
+
+#include "text/TextMaterial.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -35,8 +37,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"

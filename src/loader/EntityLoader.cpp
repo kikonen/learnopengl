@@ -14,8 +14,9 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 

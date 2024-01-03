@@ -83,7 +83,7 @@ namespace physics {
         m_height = imageH;
     }
 
-    float HeightMap::getTerrainHeight(float u, float v) const noexcept
+    float HeightMap::getTerrainHeight(float u, float v) const
     {
         u = std::clamp(u, 0.f, 1.f);
         v = std::clamp(v, 0.f, 1.f);

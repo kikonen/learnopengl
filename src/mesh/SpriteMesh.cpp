@@ -5,9 +5,9 @@
 #include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
-#include "asset/SpriteVAO.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+#include "mesh/SpriteVAO.h"
 
 
 namespace {

@@ -12,8 +12,8 @@
 #include "asset/Sphere.h"
 
 #include "mesh/ModelMaterialInit.h"
+#include "mesh/MeshType.h"
 
-#include "registry/MeshType.h"
 #include "registry/ModelRegistry.h"
 
 

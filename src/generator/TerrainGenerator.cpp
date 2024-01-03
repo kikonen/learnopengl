@@ -3,10 +3,11 @@
 #include "util/Perlin.h"
 
 #include "asset/Image.h"
-
 #include "asset/AABB.h"
-#include "asset/ModelMesh.h"
-#include "asset/TerrainMesh.h"
+
+#include "mesh/ModelMesh.h"
+#include "mesh/TerrainMesh.h"
+#include "mesh/MeshType.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -15,7 +16,6 @@
 
 #include "event/Dispatcher.h"
 
-#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"

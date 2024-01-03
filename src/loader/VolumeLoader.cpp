@@ -5,7 +5,9 @@
 
 #include "asset/Material.h"
 #include "asset/Shader.h"
-#include "asset/ModelMesh.h"
+
+#include "mesh/MeshType.h"
+#include "mesh/ModelMesh.h"
 
 #include "controller/VolumeController.h"
 
@@ -13,8 +15,8 @@
 
 #include "model/Node.h"
 
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"

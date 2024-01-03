@@ -2,8 +2,9 @@
 
 #include "glm/glm.hpp"
 
-#include "Program.h"
-#include "ModelMesh.h"
+#include "asset/Program.h"
+
+#include "mesh/ModelMesh.h"
 
 
 ModelMeshVBO::ModelMeshVBO()

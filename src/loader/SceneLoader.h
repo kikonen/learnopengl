@@ -11,7 +11,7 @@
 
 #include "asset/Shader.h"
 
-#include "registry/EntityType.h"
+#include "mesh/EntityType.h"
 
 #include "BaseLoader.h"
 #include "RootLoader.h"

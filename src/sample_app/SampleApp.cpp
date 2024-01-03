@@ -20,7 +20,8 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 

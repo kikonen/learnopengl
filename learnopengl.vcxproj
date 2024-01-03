@@ -333,7 +333,7 @@
     <ClCompile Include="src\mesh\QuadMesh.cpp" />
     <ClCompile Include="src\render\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\registry\MeshType.cpp" />
+    <ClCompile Include="src\mesh\MeshType.cpp" />
     <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
@@ -504,7 +504,7 @@
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
-    <ClInclude Include="src\registry\EntityType.h" />
+    <ClInclude Include="src\mesh\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
@@ -587,7 +587,7 @@
     <ClInclude Include="src\mesh\QuadMesh.h" />
     <ClInclude Include="src\render\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\registry\MeshType.h" />
+    <ClInclude Include="src\mesh\MeshType.h" />
     <ClInclude Include="src\generator\AsteroidBeltGenerator.h" />
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />

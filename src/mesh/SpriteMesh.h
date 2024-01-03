@@ -4,8 +4,9 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
-#include "asset/Mesh.h"
 #include "asset/Sprite.h"
+
+#include "mesh/Mesh.h"
 
 
 class SpriteMesh final : public Mesh

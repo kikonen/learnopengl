@@ -6,8 +6,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 
 namespace loader

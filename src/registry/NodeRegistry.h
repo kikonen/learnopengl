@@ -15,7 +15,7 @@
 
 #include "model/Node.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
 
 #include "component/NodeComponent.h"
 

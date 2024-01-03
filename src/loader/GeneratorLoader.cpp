@@ -5,7 +5,7 @@
 
 #include "model/Node.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
 
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"

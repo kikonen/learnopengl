@@ -1,4 +1,4 @@
-#include "registry/MeshType.h"
+#include "MeshType.h"
 
 #include <fmt/format.h>
 
@@ -10,10 +10,10 @@
 
 #include "mesh/Mesh.h"
 
-#include "NodeRegistry.h"
-#include "MaterialRegistry.h"
-#include "ModelRegistry.h"
-#include "SpriteRegistry.h"
+#include "registry/NodeRegistry.h"
+#include "registry/MaterialRegistry.h"
+#include "registry/ModelRegistry.h"
+#include "registry/SpriteRegistry.h"
 
 
 namespace {

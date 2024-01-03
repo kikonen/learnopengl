@@ -9,22 +9,21 @@
 #include "ki/uuid.h"
 #include "util/glm_format.h"
 
-#include "asset/VertexEntry.h"
 #include "asset/Program.h"
-
-#include "backend/gl/DrawIndirectCommand.h"
-
-#include "backend/DrawRange.h"
-#include "backend/DrawBuffer.h"
-
-#include "model/Node.h"
-
 #include "asset/Sphere.h"
 #include "asset/Frustum.h"
 
+#include "backend/gl/DrawIndirectCommand.h"
+#include "backend/DrawRange.h"
+#include "backend/DrawBuffer.h"
+
+#include "mesh/VertexEntry.h"
+#include "mesh/MeshType.h"
+
+#include "model/Node.h"
+
 #include "component/Camera.h"
 
-#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 

@@ -13,8 +13,7 @@
 
 #include "mesh/ModelMesh.h"
 #include "mesh/Vertex.h"
-
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
 
 
 namespace {
