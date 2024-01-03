@@ -5,7 +5,26 @@
 #include <freetype-gl/texture-font.h>
 //#include <freetype-gl/vertex-buffer.h>
 
+#include "asset/Program.h"
+#include "asset/ProgramUniforms.h"
+#include "asset/Shader.h"
+
+#include "kigl/GLState.h"
+
+#include "mesh/ModelVBO.h"
+#include "mesh/ModelVAO.h"
+
+#include "model/Node.h"
+#include "model/Snapshot.h"
+#include "mesh/MeshType.h"
+
+#include "render/RenderContext.h"
+
 #include "FontAtlas.h"
+#include "FontHandle.h"
+
+#include "registry/Registry.h"
+#include "registry/ProgramRegistry.h"
 
 namespace
 {
@@ -18,46 +37,69 @@ namespace
     //
     // Generate verteces for glyphs into buffer
     //
-    //void addText(
-    //    ftgl::vertex_buffer_t* m_pBuffer,
-    //    ftgl::texture_font_t* pFont,
-    //    char* text,
-    //    glm::vec2 pen,
-    //    glm::vec4 fg_color_1,
-    //    glm::vec4 fg_color_2)
-    //{
-    //    for (size_t i = 0; i < strlen(text); ++i)
-    //    {
-    //        ftgl::texture_glyph_t* glyph = texture_font_get_glyph(pFont, text + i);
-    //        float kerning = 0.0f;
-    //        if (i > 0)
-    //        {
-    //            kerning = ftgl::texture_glyph_get_kerning(glyph, text + i - 1);
-    //        }
-    //        pen.x += kerning;
+    void addText(
+        mesh::ModelVBO& vbo,
+        text::FontAtlas* font,
+        std::string_view text,
+        glm::vec2 pen)
+    {
+        const glm::vec3 normal{ 0.f, 0.f, 0.f };
+        const glm::vec3 tangent{ 0.f, 0.f, 0.f };
+        char prev = '\0';
 
-    //        /* Actual glyph */
-    //        float x0 = (pen.x + glyph->offset_x);
-    //        float y0 = (float)((int)(pen.y + glyph->offset_y));
-    //        float x1 = (x0 + glyph->width);
-    //        float y1 = (float)((int)(y0 - glyph->height));
-    //        float s0 = glyph->s0;
-    //        float t0 = glyph->t0;
-    //        float s1 = glyph->s1;
-    //        float t1 = glyph->t1;
-    //        GLuint index = (GLuint)m_pBuffer->vertices->size;
-    //        GLuint indices[] = { index, index + 1, index + 2,
-    //                            index, index + 2, index + 3 };
-    //        vertex_t vertices[] = {
-    //            { (float)((int)x0),y0,0,  s0,t0,  fg_color_1 },
-    //            { (float)((int)x0),y1,0,  s0,t1,  fg_color_2 },
-    //            { (float)((int)x1),y1,0,  s1,t1,  fg_color_2 },
-    //            { (float)((int)x1),y0,0,  s1,t0,  fg_color_1 } };
-    //        ftgl::vertex_buffer_push_back_indices(m_pBuffer, indices, 6);
-    //        ftgl::vertex_buffer_push_back_vertices(m_pBuffer, vertices, 4);
-    //        pen.x += glyph->advance_x;
-    //    }
-    //}
+        for (const char ch : text) {
+            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font->getFont()->m_font, &ch);
+
+            float kerning = 0.0f;
+            if (prev)
+            {
+                kerning = ftgl::texture_glyph_get_kerning(glyph, &prev);
+            }
+            pen.x += kerning;
+
+            // Actual glyph
+            const float x0 = (pen.x + glyph->offset_x);
+            const float y0 = (float)((int)(pen.y + glyph->offset_y));
+            const float x1 = (x0 + glyph->width);
+            const float y1 = (float)((int)(y0 - glyph->height));
+            const float s0 = glyph->s0;
+            const float t0 = glyph->t0;
+            const float s1 = glyph->s1;
+            const float t1 = glyph->t1;
+
+            const GLuint index = (GLuint)vbo.m_vertexEntries.size();
+
+            const mesh::IndexEntry indeces[2] {
+                {index, index + 1, index + 2},
+                {index, index + 2, index + 3},
+            };
+            const mesh::PositionEntry positions[4] {
+                { { x0, y0, 0.f } },
+                { { x0, y1, 0.f } },
+                { { x1, y1, 0.f } },
+                { { x1, y0, 0.f } },
+            };
+            const mesh::VertexEntry verteces[4] {
+                { normal, tangent, {s0, t0} },
+                { normal, tangent, {s0, t1} },
+                { normal, tangent, {s1, t1} },
+                { normal, tangent, {s1, t0} },
+            };
+
+            for (const auto& v : indeces) {
+                vbo.m_indexEntries.push_back(v);
+            }
+            for (const auto& v : verteces) {
+                vbo.m_vertexEntries.push_back(v);
+            }
+            for (const auto& v : positions) {
+                vbo.m_positionEntries.push_back(v);
+            }
+
+            pen.x += glyph->advance_x;
+            prev = ch;
+        }
+    }
 }
 
 namespace text
@@ -68,11 +110,41 @@ namespace text
     TextDraw::~TextDraw()
     {}
 
+
+    void TextDraw::prepareRT(
+        const Assets& assets,
+        Registry* registry)
+    {
+        m_program = registry->m_programRegistry->getProgram(SHADER_FONT_RENDER);
+    }
+
     void TextDraw::draw(
         const RenderContext& ctx,
         std::string_view text,
-        FontAtlas* font)
+        FontAtlas* font,
+        Node* node)
     {
+        mesh::ModelVAO vao;
+        vao.prepare("text");
+        mesh::ModelVBO vbo;
 
+        glm::vec2 pen{ 0.f };
+        addText(vbo, font, text, pen);
+
+        vao.bind(ctx.m_state);
+        m_program->bind(ctx.m_state);
+        font->bindTextures(ctx.m_state);
+
+        const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
+        int materialIndex = node->m_type->m_materialIndex;
+
+        m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
+        m_program->m_uniforms->u_materialIndex.set(materialIndex);
+
+        // TODO KI actual render
+        glDrawElements(GL_TRIANGLES, vbo.m_indexEntries.size(), GL_UNSIGNED_INT, vbo.m_indexEntries.data());
+
+        font->unbindTextures(ctx.m_state);
+        vao.unbind(ctx.m_state);
     }
 }

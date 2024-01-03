@@ -31,6 +31,9 @@ struct ProgramUniforms {
     uniform::Bool u_gammaCorrect;
     uniform::Mat4 u_viewportTransform;
 
+    uniform::Mat4 u_modelMatrix;
+    uniform::UInt u_materialIndex;
+
     uniform::Int u_stencilMode;
 };
 

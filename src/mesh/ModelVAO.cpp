@@ -5,6 +5,8 @@
 
 #include "asset/Shader.h"
 
+#include "kigl/GLState.h"
+
 #include "mesh/ModelVBO.h"
 
 namespace {
@@ -20,14 +22,17 @@ namespace {
 }
 
 namespace mesh {
-    void ModelVAO::prepare()
+    ModelVAO::ModelVAO()
+    {}
+
+    void ModelVAO::prepare(std::string_view name)
     {
         if (m_prepared) return;
         m_prepared = true;
 
         {
             m_vao = std::make_unique<kigl::GLVertexArray>();
-            m_vao->create("model");
+            m_vao->create(name);
         }
         {
             m_positionVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(PositionEntry), GL_DYNAMIC_STORAGE_BIT);
@@ -48,6 +53,16 @@ namespace mesh {
         // NOTE KI VBO & EBO are just empty buffers here
 
         prepareVAO(*m_vao, m_positionVbo, m_vertexVbo, m_ebo);
+    }
+
+    void ModelVAO::bind(kigl::GLState& state)
+    {
+        state.bindVAO(*m_vao);
+    }
+
+    void ModelVAO::unbind(kigl::GLState& state)
+    {
+        state.bindVAO(0);
     }
 
     void ModelVAO::prepareVAO(

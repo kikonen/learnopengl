@@ -2,7 +2,12 @@
 
 #include <string_view>
 
+#include "asset/Assets.h"
+
 class RenderContext;
+class Program;
+class Registry;
+class Node;
 
 namespace text
 {
@@ -14,11 +19,17 @@ namespace text
         TextDraw();
         ~TextDraw();
 
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
+
         void draw(
             const RenderContext& ctx,
             std::string_view text,
-            FontAtlas* font);
+            FontAtlas* font,
+            Node* node);
 
     private:
+        Program* m_program{ nullptr };
     };
 }

@@ -24,7 +24,7 @@ ModelRegistry::~ModelRegistry() {
 
 void ModelRegistry::prepare()
 {
-    m_vao.prepare();
+    m_vao.prepare("model");
 }
 
 kigl::GLVertexArray* ModelRegistry::registerModelVBO(mesh::ModelVBO& modelVBO)

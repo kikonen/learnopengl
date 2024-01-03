@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <atomic>
+#include <string>
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
@@ -10,6 +11,9 @@
 #include "mesh/VertexEntry.h"
 #include "mesh/IndexEntry.h"
 
+namespace kigl {
+    class GLState;
+}
 
 class Batch;
 class UpdateContext;
@@ -19,10 +23,13 @@ namespace mesh {
 
     class ModelVAO {
     public:
-        ModelVAO() {};
+        ModelVAO();
         ~ModelVAO() = default;
 
-        void prepare();
+        void prepare(std::string_view name);
+
+        void bind(kigl::GLState& state);
+        void unbind(kigl::GLState& state);
 
         // @return VBO for model mesh
         kigl::GLVertexArray* registerModel(ModelVBO& modelVBO);

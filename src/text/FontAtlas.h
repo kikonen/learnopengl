@@ -28,6 +28,10 @@ namespace text
         void bindTextures(kigl::GLState& state);
         void unbindTextures(kigl::GLState& state);
 
+        FontHandle* getFont() {
+            return m_fontHandle.get();
+        }
+
     public:
         std::string m_fontName{ "fonts/Vera.ttf" };
         float m_fontSize{ 10.f };

@@ -19,6 +19,7 @@ const std::string SHADER_EFFECT{ "effect" };
 const std::string SHADER_VIEWPORT{ "viewport" };
 const std::string SHADER_VOLUME{ "volume" };
 const std::string SHADER_SKYBOX{ "skybox" };
+const std::string SHADER_FONT_RENDER{ "font_render" };
 
 const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
 const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
