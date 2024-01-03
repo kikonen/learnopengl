@@ -107,7 +107,7 @@ namespace loader {
             m_assets.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
-        type->m_entityType = EntityType::skybox;
+        type->m_entityType = mesh::EntityType::skybox;
 
         auto& flags = type->m_flags;
 

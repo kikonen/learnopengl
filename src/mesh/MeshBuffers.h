@@ -3,22 +3,24 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-class MeshBuffers final
-{
-public:
-    MeshBuffers();
-    ~MeshBuffers();
+namespace mesh {
+    class MeshBuffers final
+    {
+    public:
+        MeshBuffers();
+        ~MeshBuffers();
 
-    const std::string str() const;
+        const std::string str() const;
 
-    void prepare(bool useVertex, bool useMaterial, bool useIndeces);
+        void prepare(bool useVertex, bool useMaterial, bool useIndeces);
 
-public:
-    kigl::GLVertexArray VAO;
-    kigl::GLBuffer VBO{ "meshVBO" };
-    kigl::GLBuffer VBO_MATERIAL{ "meshMaterialVBO" };
-    kigl::GLBuffer EBO{ "meshEBO" };
+    public:
+        kigl::GLVertexArray VAO;
+        kigl::GLBuffer VBO{ "meshVBO" };
+        kigl::GLBuffer VBO_MATERIAL{ "meshMaterialVBO" };
+        kigl::GLBuffer EBO{ "meshEBO" };
 
-private:
-    bool m_prepared = false;
-};
+    private:
+        bool m_prepared = false;
+    };
+}

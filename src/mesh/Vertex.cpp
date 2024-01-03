@@ -25,32 +25,34 @@ namespace {
     constexpr float DOT_TANGENT_SAME = 0.5f;
 }
 
-bool Vertex::operator==(const Vertex& b) const noexcept
-{
-    // NOTE KI pos, texture, material MUST BE strictly same
-    // => for normal & tangent can bind together "similar" ones
-    //    to reduce verteces
-    return pos == b.pos &&
-        texture == b.texture &&
-        materialID == b.materialID &&
-        //normal == b.normal &&
-        //tangent == b.tangent &&
-        glm::dot(normal, b.normal) >= DOT_NORMAL_SAME &&
-        glm::dot(tangent, b.tangent) >= DOT_TANGENT_SAME;
-}
+namespace mesh {
+    bool Vertex::operator==(const Vertex& b) const noexcept
+    {
+        // NOTE KI pos, texture, material MUST BE strictly same
+        // => for normal & tangent can bind together "similar" ones
+        //    to reduce verteces
+        return pos == b.pos &&
+            texture == b.texture &&
+            materialID == b.materialID &&
+            //normal == b.normal &&
+            //tangent == b.tangent &&
+            glm::dot(normal, b.normal) >= DOT_NORMAL_SAME &&
+            glm::dot(tangent, b.tangent) >= DOT_TANGENT_SAME;
+    }
 
-bool Vertex::operator!=(const Vertex& b) const noexcept
-{
-    return !(*this == b);
-}
+    bool Vertex::operator!=(const Vertex& b) const noexcept
+    {
+        return !(*this == b);
+    }
 
-const std::string Vertex::str() const noexcept
-{
-    return fmt::format(
-        "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {}), material={}>",
-        pos.x, pos.y, pos.z,
-        texture.x, texture.y,
-        normal.x, normal.y, normal.z,
-        tangent.x, tangent.y, tangent.z,
-        materialID);
+    const std::string Vertex::str() const noexcept
+    {
+        return fmt::format(
+            "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {}), material={}>",
+            pos.x, pos.y, pos.z,
+            texture.x, texture.y,
+            normal.x, normal.y, normal.z,
+            tangent.x, tangent.y, tangent.z,
+            materialID);
+    }
 }

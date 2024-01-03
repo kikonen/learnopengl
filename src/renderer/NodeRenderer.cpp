@@ -96,7 +96,7 @@ void NodeRenderer::render(
             ctx.m_nodeDraw->drawNodes(
                 ctx,
                 targetBuffer,
-                [](const MeshType* type) { return true; },
+                [](const mesh::MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 render::NodeDraw::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
@@ -128,8 +128,8 @@ void NodeRenderer::fillHighlightMask(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_selectionProgram; },
-            [](const MeshType* type) { return true; },
+            [this](const mesh::MeshType* type) { return m_selectionProgram; },
+            [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             render::NodeDraw::KIND_ALL);
     }
@@ -160,8 +160,8 @@ void NodeRenderer::renderHighlight(
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_selectionProgram; },
-            [](const MeshType* type) { return true; },
+            [this](const mesh::MeshType* type) { return m_selectionProgram; },
+            [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             render::NodeDraw::KIND_ALL);
     }

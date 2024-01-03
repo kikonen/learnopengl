@@ -11,51 +11,53 @@
 
 
 class Batch;
-class ModelMeshVBO;
 class UpdateContext;
 
+namespace mesh {
+    class ModelMeshVBO;
 
-class ModelVAO {
-public:
-    ModelVAO() {};
-    ~ModelVAO() = default;
+    class ModelVAO {
+    public:
+        ModelVAO() {};
+        ~ModelVAO() = default;
 
-    kigl::GLVertexArray* prepare();
+        kigl::GLVertexArray* prepare();
 
-    // @return VAO for mesh
-    kigl::GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
+        // @return VAO for mesh
+        kigl::GLVertexArray* registerModel(ModelMeshVBO& meshVBO);
 
-    void updateRT(const UpdateContext& ctx);
+        void updateRT(const UpdateContext& ctx);
 
-private:
-    void prepareVAO(
-        kigl::GLVertexArray& vao,
-        kigl::GLBuffer& positionVbo,
-        kigl::GLBuffer& vertexVbo,
-        kigl::GLBuffer& ebo);
+    private:
+        void prepareVAO(
+            kigl::GLVertexArray& vao,
+            kigl::GLBuffer& positionVbo,
+            kigl::GLBuffer& vertexVbo,
+            kigl::GLBuffer& ebo);
 
-    void updatePositionBuffer();
-    void updateVertexBuffer();
-    void updateIndexBuffer();
+        void updatePositionBuffer();
+        void updateVertexBuffer();
+        void updateIndexBuffer();
 
-private:
-    bool m_prepared = false;
+    private:
+        bool m_prepared = false;
 
-    std::atomic<bool> m_dirty;
-    std::mutex m_lock{};
+        std::atomic<bool> m_dirty;
+        std::mutex m_lock{};
 
-    std::unique_ptr<kigl::GLVertexArray> m_vao;
+        std::unique_ptr<kigl::GLVertexArray> m_vao;
 
-    kigl::GLBuffer m_positionVbo{ "positionVBO" };
-    kigl::GLBuffer m_vertexVbo{ "vertexVBO" };
+        kigl::GLBuffer m_positionVbo{ "positionVBO" };
+        kigl::GLBuffer m_vertexVbo{ "vertexVBO" };
 
-    kigl::GLBuffer m_ebo{ "modelEBO" };
+        kigl::GLBuffer m_ebo{ "modelEBO" };
 
-    std::vector<PositionEntry> m_positionEntries;
-    std::vector<VertexEntry> m_vertexEntries;
-    std::vector<IndexEntry> m_indexEntries;
+        std::vector<PositionEntry> m_positionEntries;
+        std::vector<VertexEntry> m_vertexEntries;
+        std::vector<IndexEntry> m_indexEntries;
 
-    size_t m_lastPositionSize = 0;
-    size_t m_lastVertexSize = 0;
-    size_t m_lastIndexSize = 0;
-};
+        size_t m_lastPositionSize = 0;
+        size_t m_lastVertexSize = 0;
+        size_t m_lastIndexSize = 0;
+    };
+}

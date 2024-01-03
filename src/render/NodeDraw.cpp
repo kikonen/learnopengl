@@ -25,7 +25,7 @@ namespace {
 
 namespace render {
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    MeshTypeKey::MeshTypeKey(const MeshType* type)
+    MeshTypeKey::MeshTypeKey(const mesh::MeshType* type)
         : type(type)
     {}
 
@@ -97,7 +97,7 @@ namespace render {
         const auto* type = node->m_type;
         auto* program = type->m_program;
 
-        if (type->m_entityType != EntityType::origo) {
+        if (type->m_entityType != mesh::EntityType::origo) {
             assert(program);
             if (!program) return;
         }
@@ -111,7 +111,7 @@ namespace render {
             if (type->m_flags.blend)
                 map = &m_blendedNodes;
 
-            if (type->m_entityType == EntityType::sprite)
+            if (type->m_entityType == mesh::EntityType::sprite)
                 map = &m_spriteNodes;
 
             if (type->m_flags.invisible)
@@ -135,7 +135,7 @@ namespace render {
     void NodeDraw::drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits,
         GLbitfield copyMask)
@@ -169,8 +169,8 @@ namespace render {
                 {
                     ctx.m_nodeDraw->drawProgram(
                         ctx,
-                        [this](const MeshType* type) { return type->m_depthProgram; },
-                        [&typeSelector](const MeshType* type) {
+                        [this](const mesh::MeshType* type) { return type->m_depthProgram; },
+                        [&typeSelector](const mesh::MeshType* type) {
                             return type->m_flags.gbuffer &&
                                 type->m_flags.depth &&
                                 typeSelector(type);
@@ -191,7 +191,7 @@ namespace render {
 
                 drawNodesImpl(
                     ctx,
-                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
                     nodeSelector,
                     kindBits);
 
@@ -246,7 +246,7 @@ namespace render {
 
             bool rendered = drawNodesImpl(
                 ctx,
-                [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+                [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
                 kindBits);
 
@@ -282,8 +282,8 @@ namespace render {
                 // only "blend OIT" nodes
                 drawProgram(
                     ctx,
-                    [this](const MeshType* type) { return m_oitProgram; },
-                    [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+                    [this](const mesh::MeshType* type) { return m_oitProgram; },
+                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
                     nodeSelector,
                     NodeDraw::KIND_ALL);
 
@@ -320,7 +320,7 @@ namespace render {
 
             drawBlendedImpl(
                 ctx,
-                [&typeSelector](const MeshType* type) {
+                [&typeSelector](const mesh::MeshType* type) {
                     return !type->m_flags.blendOIT &&
                         type->m_flags.blend &&
                         type->m_flags.effect &&
@@ -578,7 +578,7 @@ namespace render {
     void NodeDraw::drawBlended(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
         targetBuffer->bind(ctx);
@@ -588,7 +588,7 @@ namespace render {
 
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits)
     {
@@ -638,7 +638,7 @@ namespace render {
 
     void NodeDraw::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
         if (m_blendedNodes.empty()) return;
@@ -678,8 +678,8 @@ namespace render {
 
     void NodeDraw::drawProgram(
         const RenderContext& ctx,
-        const std::function<Program* (const MeshType*)>& programSelector,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<Program* (const mesh::MeshType*)>& programSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits)
     {

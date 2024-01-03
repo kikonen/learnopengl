@@ -6,9 +6,11 @@
 namespace {
 }
 
-void QuadMaterialInit::prepare(
-    QuadMesh& mesh,
-    MaterialVBO& materialVBO)
-{
-    // NOTE KI *NO* indeces if single material
+namespace mesh {
+    void QuadMaterialInit::prepare(
+        QuadMesh& mesh,
+        MaterialVBO& materialVBO)
+    {
+        // NOTE KI *NO* indeces if single material
+    }
 }

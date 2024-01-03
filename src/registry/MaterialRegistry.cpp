@@ -64,7 +64,7 @@ void MaterialRegistry::registerMaterial(Material& material)
     m_materials.emplace_back(material);
 }
 
-void MaterialRegistry::registerMaterialVBO(MaterialVBO& materialVBO)
+void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
 {
     // NOTE KI *NO* indeces if single material
     if (materialVBO.isSingle()) return;

@@ -5,13 +5,15 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-struct Vertex;
-class QuadMesh;
-class MaterialVBO;
+namespace mesh {
+    struct Vertex;
+    class QuadMesh;
+    class MaterialVBO;
 
-class QuadMaterialInit {
-public:
-    virtual void prepare(
-        QuadMesh& mesh,
-        MaterialVBO& materialVBO);
-};
+    class QuadMaterialInit {
+    public:
+        virtual void prepare(
+            QuadMesh& mesh,
+            MaterialVBO& materialVBO);
+    };
+}

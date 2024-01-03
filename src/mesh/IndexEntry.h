@@ -2,4 +2,6 @@
 
 #include "glm/glm.hpp"
 
-using IndexEntry = glm::uvec3;
+namespace mesh {
+    using IndexEntry = glm::uvec3;
+}

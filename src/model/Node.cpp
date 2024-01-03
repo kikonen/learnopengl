@@ -40,7 +40,7 @@ namespace {
     }
 }
 
-Node::Node(const MeshType* type)
+Node::Node(const mesh::MeshType* type)
     : m_type(type),
     m_id(nextID())
 {
@@ -70,16 +70,16 @@ void Node::prepare(
 
         ki::size_t_entity_flags flags = 0;
 
-        if (m_type->m_entityType == EntityType::billboard) {
+        if (m_type->m_entityType == mesh::EntityType::billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
         }
-        if (m_type->m_entityType == EntityType::sprite) {
+        if (m_type->m_entityType == mesh::EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
             auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
             m_transform.m_shapeIndex = shape.m_registeredIndex;
             //m_instance.m_materialIndex = shape.m_materialIndex;
         }
-        if (m_type->m_entityType == EntityType::skybox) {
+        if (m_type->m_entityType == mesh::EntityType::skybox) {
             flags |= ENTITY_SKYBOX_BIT;
         }
         if (m_type->m_flags.noFrustum) {

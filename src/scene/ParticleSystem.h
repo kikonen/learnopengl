@@ -10,8 +10,11 @@ class UpdateContext;
 class RenderContext;
 
 class Registry;
-class MeshType;
 class Program;
+
+namespace mesh {
+    class MeshType;
+}
 
 class ParticleSystem final
 {
@@ -32,5 +35,5 @@ private:
 
     Program* particleProgram{ nullptr };
 
-    MeshType* type{ nullptr };
+    mesh::MeshType* type{ nullptr };
 };

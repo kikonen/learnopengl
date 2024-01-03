@@ -21,7 +21,10 @@ class NodeGenerator;
 class UpdateContext;
 class RenderContext;
 
-class MeshType;
+namespace mesh {
+    class MeshType;
+}
+
 class Registry;
 class EntityRegistry;
 class ParticleGenrator;
@@ -31,7 +34,7 @@ class Batch;
 class Node final
 {
 public:
-    Node(const MeshType* type);
+    Node(const mesh::MeshType* type);
     ~Node();
 
     const std::string str() const noexcept;
@@ -146,7 +149,7 @@ public:
 
     bool m_visible{ true };
     // NOTE KI type needed with node for practicality reasons
-    const MeshType* m_type{ nullptr };
+    const mesh::MeshType* m_type{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };

@@ -5,22 +5,24 @@
 
 class Batch;
 
-class QuadVAO {
-public:
-    kigl::GLVertexArray* prepare();
+namespace mesh {
+    class QuadVAO {
+    public:
+        kigl::GLVertexArray* prepare();
 
-private:
-    void prepareVAO(
-        kigl::GLVertexArray& vao,
-        kigl::GLBuffer& vbo);
+    private:
+        void prepareVAO(
+            kigl::GLVertexArray& vao,
+            kigl::GLBuffer& vbo);
 
-    void prepareVBO(
-        kigl::GLBuffer& vbo);
+        void prepareVBO(
+            kigl::GLBuffer& vbo);
 
-private:
-    bool m_prepared = false;
+    private:
+        bool m_prepared = false;
 
-    std::unique_ptr<kigl::GLVertexArray> m_vao;
-    kigl::GLBuffer m_vbo{ "quadVBO" };
+        std::unique_ptr<kigl::GLVertexArray> m_vao;
+        kigl::GLBuffer m_vbo{ "quadVBO" };
 
-};
+    };
+}

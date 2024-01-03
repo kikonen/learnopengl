@@ -441,7 +441,7 @@ void NodeRegistry::bindNode(
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const MeshType* type;
+    const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
         t->prepare(m_assets, m_registry);
@@ -636,7 +636,7 @@ Node* NodeRegistry::findDefaultCameraNode() const
 void NodeRegistry::bindSkybox(
     Node* node) noexcept
 {
-    const MeshType* type;
+    const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
         t->prepare(m_assets, m_registry);

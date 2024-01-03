@@ -21,10 +21,10 @@ public:
 
     ~MeshTypeRegistry();
 
-    const MeshType* getType(ki::type_id);
-    MeshType* modifyType(ki::type_id);
+    const mesh::MeshType* getType(ki::type_id);
+    mesh::MeshType* modifyType(ki::type_id);
 
-    MeshType* registerType(
+    mesh::MeshType* registerType(
         const std::string& name);
 
     void registerCustomMaterial(
@@ -39,7 +39,7 @@ private:
 
     std::mutex m_lock{};
 
-    std::vector<MeshType> m_types;
+    std::vector<mesh::MeshType> m_types;
 
     std::vector<ki::type_id> m_customMaterialTypes;
 };

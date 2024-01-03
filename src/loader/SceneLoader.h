@@ -32,9 +32,11 @@
 
 class Registry;
 
-class MeshType;
-class Node;
+namespace mesh {
+    class MeshType;
+}
 
+class Node;
 
 namespace loader {
     struct MetaData {
@@ -71,16 +73,16 @@ namespace loader {
             const uuids::uuid& rootId,
             const EntityData& data);
 
-        const MeshType* attachEntityClone(
-            const MeshType* type,
+        const mesh::MeshType* attachEntityClone(
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
 
-        const MeshType* attachEntityCloneRepeat(
-            const MeshType* type,
+        const mesh::MeshType* attachEntityCloneRepeat(
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
@@ -91,35 +93,35 @@ namespace loader {
 
         void assignFlags(
             const EntityCloneData& data,
-            MeshType* type);
+            mesh::MeshType* type);
 
-        const MeshType* createType(
+        const mesh::MeshType* createType(
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         void resolveProgram(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void resolveMaterial(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void modifyMaterials(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void resolveSprite(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void resolveMesh(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         Node* createNode(
-            const MeshType* type,
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityCloneData& data,
             const bool cloned,

@@ -15,97 +15,100 @@
 class CustomMaterial;
 class Program;
 class Registry;
-class Mesh;
 class Batch;
 class RenderContext;
+class MeshTypeRegistry;
 
+namespace mesh {
+    class Mesh;
 
-class MeshType final
-{
-    friend class MeshTypeRegistry;
-
-public:
-    MeshType(std::string_view name);
-    MeshType(MeshType&& o) noexcept;
-    ~MeshType();
-
-    inline bool isReady() const { return m_preparedView; }
-
-    const std::string str() const noexcept;
-
-    //void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
-    void setMesh(Mesh* mesh);
-
-    inline const Mesh* getMesh() const noexcept {
-        return m_mesh;
-    }
-
-    void modifyMaterials(std::function<void(Material&)> fn);
-
-    inline int getMaterialIndex() const noexcept
+    class MeshType final
     {
-        return m_materialIndex;
-    }
+        friend class MeshTypeRegistry;
 
-    int resolveMaterialIndex() const;
+    public:
+        MeshType(std::string_view name);
+        MeshType(MeshType&& o) noexcept;
+        ~MeshType();
 
-    inline size_t getMaterialCount() const noexcept
-    {
-        return m_materialVBO.m_materials.size();
-    }
+        inline bool isReady() const { return m_preparedView; }
 
-    CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
+        const std::string str() const noexcept;
 
-    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
+        //void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
+        void setMesh(Mesh* mesh);
 
-    void prepare(
-        const Assets& assets,
-        Registry* registry);
+        inline const Mesh* getMesh() const noexcept {
+            return m_mesh;
+        }
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        void modifyMaterials(std::function<void(Material&)> fn);
 
-    void bind(const RenderContext& ctx);
+        inline int getMaterialIndex() const noexcept
+        {
+            return m_materialIndex;
+        }
 
-public:
-    ki::type_id m_id{ 0 };
-    const std::string m_name;
+        int resolveMaterialIndex() const;
 
-    EntityType m_entityType{ EntityType::origo };
-    NodeRenderFlags m_flags;
+        inline size_t getMaterialCount() const noexcept
+        {
+            return m_materialVBO.m_materials.size();
+        }
 
-    ki::size_t8 m_priority{ 0 };
+        CustomMaterial* getCustomMaterial() { return m_customMaterial.get(); }
 
-    Program* m_program{ nullptr };
-    Program* m_depthProgram{ nullptr };
+        void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
-    MaterialVBO m_materialVBO;
-    Sprite m_sprite;
+        void prepare(
+            const Assets& assets,
+            Registry* registry);
 
-    int m_materialIndex{ 0 };
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    backend::DrawOptions m_drawOptions;
+        void bind(const RenderContext& ctx);
 
-    kigl::GLVertexArray* m_vao{ nullptr };
+    public:
+        ki::type_id m_id{ 0 };
+        const std::string m_name;
 
-private:
-    bool m_prepared : 1 {false};
-    bool m_preparedView : 1 {false};
+        EntityType m_entityType{ EntityType::origo };
+        NodeRenderFlags m_flags;
 
-    Mesh* m_mesh{ nullptr };
-    //std::unique_ptr<Mesh> m_deleter;
+        ki::size_t8 m_priority{ 0 };
 
-    std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
+        Program* m_program{ nullptr };
+        Program* m_depthProgram{ nullptr };
 
-    kigl::GLVertexArray m_privateVAO;
-};
+        MaterialVBO m_materialVBO;
+        Sprite m_sprite;
 
-// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-struct MeshTypeComparator {
-    bool operator()(const MeshType* a, const MeshType* b) const {
-        if (a->m_drawOptions < b->m_drawOptions) return true;
-        else if (b->m_drawOptions < a->m_drawOptions) return false;
-        return a->m_id < b->m_id;
-    }
-};
+        int m_materialIndex{ 0 };
+
+        backend::DrawOptions m_drawOptions;
+
+        kigl::GLVertexArray* m_vao{ nullptr };
+
+    private:
+        bool m_prepared : 1 {false};
+        bool m_preparedView : 1 {false};
+
+        Mesh* m_mesh{ nullptr };
+        //std::unique_ptr<Mesh> m_deleter;
+
+        std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
+
+        kigl::GLVertexArray m_privateVAO;
+    };
+
+    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    struct MeshTypeComparator {
+        bool operator()(const MeshType* a, const MeshType* b) const {
+            if (a->m_drawOptions < b->m_drawOptions) return true;
+            else if (b->m_drawOptions < a->m_drawOptions) return false;
+            return a->m_id < b->m_id;
+        }
+    };
+}

@@ -387,7 +387,7 @@ void WaterMapRenderer::drawNodes(
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
-            [reflect](const MeshType* type) {
+            [reflect](const mesh::MeshType* type) {
                 return !type->m_flags.water &&
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
             },

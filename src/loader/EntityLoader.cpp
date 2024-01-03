@@ -128,25 +128,25 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
-                    data.type = EntityType::origo;
+                    data.type = mesh::EntityType::origo;
                 }
                 else if (type == "container") {
-                    data.type = EntityType::container;
+                    data.type = mesh::EntityType::container;
                 }
                 else if (type == "model") {
-                    data.type = EntityType::model;
+                    data.type = mesh::EntityType::model;
                 }
                 else if (type == "quad") {
-                    data.type = EntityType::quad;
+                    data.type = mesh::EntityType::quad;
                 }
                 else if (type == "billboard") {
-                    data.type = EntityType::billboard;
+                    data.type = mesh::EntityType::billboard;
                 }
                 else if (type == "sprite") {
-                    data.type = EntityType::sprite;
+                    data.type = mesh::EntityType::sprite;
                 }
                 else if (type == "terrain") {
-                    data.type = EntityType::terrain;
+                    data.type = mesh::EntityType::terrain;
                 }
                 else {
                     reportUnknown("entity_type", k, v);

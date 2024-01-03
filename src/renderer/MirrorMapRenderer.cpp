@@ -331,7 +331,7 @@ void MirrorMapRenderer::drawNodes(
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
-            [](const MeshType* type) { return !type->m_flags.noReflect; },
+            [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
             [current, sourceNode](const Node* node) {
                 return node != current &&
                     node != sourceNode;

@@ -332,7 +332,7 @@ void CubeMapRenderer::drawNodes(
     ctx.m_nodeDraw->drawNodes(
         ctx,
         targetBuffer,
-        [](const MeshType* type) { return !type->m_flags.noReflect; },
+        [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },

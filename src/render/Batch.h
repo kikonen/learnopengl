@@ -10,11 +10,14 @@ namespace backend {
     class DrawBuffer;
 }
 
+namespace mesh {
+    class MeshType;
+    class MaterialVBO;
+}
+
 class Program;
 class RenderContext;
-class MeshType;
 class Node;
-class MaterialVBO;
 class Registry;
 class EntityRegistry;
 
@@ -76,7 +79,7 @@ public:
 private:
     void addCommand(
         const RenderContext& ctx,
-        const MeshType* type,
+        const mesh::MeshType* type,
         Program* program) noexcept;
 
     bool inFrustum(

@@ -30,7 +30,7 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
-        EntityType type{ EntityType::model };
+        mesh::EntityType type{ mesh::EntityType::model };
 
         std::string name;
         std::string desc;

@@ -20,50 +20,51 @@ namespace {
         glm::vec3{ 1.f, 1.f, 0.f },
         true };
 
-    QuadVAO quadVAO;
+    mesh::QuadVAO quadVAO;
 }
 
+namespace mesh {
+    QuadMesh::QuadMesh()
+        : Mesh()
+    {
+    }
 
-QuadMesh::QuadMesh()
-    : Mesh()
-{
-}
+    QuadMesh::~QuadMesh()
+    {
+    }
 
-QuadMesh::~QuadMesh()
-{
-}
+    const std::string QuadMesh::str() const noexcept
+    {
+        return fmt::format("<QUAD: id={}>", m_id);
+    }
 
-const std::string QuadMesh::str() const noexcept
-{
-    return fmt::format("<QUAD: id={}>", m_id);
-}
+    const AABB QuadMesh::calculateAABB() const
+    {
+        return QUAD_AABB;
+    }
 
-const AABB QuadMesh::calculateAABB() const
-{
-    return QUAD_AABB;
-}
+    const std::vector<Material>& QuadMesh::getMaterials() const
+    {
+        return m_material;
+    }
 
-const std::vector<Material>& QuadMesh::getMaterials() const
-{
-    return m_material;
-}
+    kigl::GLVertexArray* QuadMesh::prepareRT(
+        const Assets& assets,
+        Registry* registry)
+    {
+        if (m_prepared) return m_vao;
+        m_prepared = true;
 
-kigl::GLVertexArray* QuadMesh::prepareRT(
-    const Assets& assets,
-    Registry* registry)
-{
-    if (m_prepared) return m_vao;
-    m_prepared = true;
+        m_vao = quadVAO.prepare();
+        return m_vao;
+    }
 
-    m_vao = quadVAO.prepare();
-    return m_vao;
-}
-
-void QuadMesh::prepareDrawOptions(
-    backend::DrawOptions& drawOptions)
-{
-    drawOptions.type = backend::DrawOptions::Type::arrays;
-    drawOptions.mode = GL_TRIANGLE_STRIP;
-    drawOptions.indexFirst = 0;
-    drawOptions.indexCount = INDEX_COUNT;
+    void QuadMesh::prepareDrawOptions(
+        backend::DrawOptions& drawOptions)
+    {
+        drawOptions.type = backend::DrawOptions::Type::arrays;
+        drawOptions.mode = GL_TRIANGLE_STRIP;
+        drawOptions.indexFirst = 0;
+        drawOptions.indexCount = INDEX_COUNT;
+    }
 }

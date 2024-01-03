@@ -191,11 +191,11 @@ namespace loader {
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
             if (data.clones.empty()) {
-                const MeshType* type{ nullptr };
+                const mesh::MeshType* type{ nullptr };
                 attachEntityClone(type, rootId, data, data.base, false, 0);
             }
             else {
-                const MeshType* type{ nullptr };
+                const mesh::MeshType* type{ nullptr };
 
                 int cloneIndex = 0;
                 for (auto& cloneData : data.clones) {
@@ -211,8 +211,8 @@ namespace loader {
         });
     }
 
-    const MeshType* SceneLoader::attachEntityClone(
-        const MeshType* type,
+    const mesh::MeshType* SceneLoader::attachEntityClone(
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -257,8 +257,8 @@ namespace loader {
         return type;
     }
 
-    const MeshType* SceneLoader::attachEntityCloneRepeat(
-        const MeshType* type,
+    const mesh::MeshType* SceneLoader::attachEntityCloneRepeat(
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -364,7 +364,7 @@ namespace loader {
         return type;
     }
 
-    const MeshType* SceneLoader::createType(
+    const mesh::MeshType* SceneLoader::createType(
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
@@ -377,9 +377,9 @@ namespace loader {
             type->m_flags.instanced = true;
         }
 
-        if (data.type == EntityType::origo) {
+        if (data.type == mesh::EntityType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
+            type->m_entityType = mesh::EntityType::origo;
         } else
         {
             resolveMaterial(type, data);
@@ -388,7 +388,7 @@ namespace loader {
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (data.type != EntityType::container) {
+            if (data.type != mesh::EntityType::container) {
                 if (!type->getMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -405,7 +405,7 @@ namespace loader {
     }
 
     void SceneLoader::resolveProgram(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         bool useTBN = false;
@@ -506,7 +506,7 @@ namespace loader {
     }
 
     void SceneLoader::resolveMaterial(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         // NOTE KI need to create copy *IF* modifiers
@@ -527,7 +527,7 @@ namespace loader {
     }
 
     void SceneLoader::modifyMaterials(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         type->modifyMaterials([this, &data](Material& m) {
@@ -537,7 +537,7 @@ namespace loader {
     }
 
     void SceneLoader::resolveSprite(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         Sprite* sprite{ nullptr };
@@ -552,65 +552,65 @@ namespace loader {
     }
 
     void SceneLoader::resolveMesh(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
         // NOTE KI materials MUST be resolved before loading mesh
-        if (data.type == EntityType::model) {
+        if (data.type == mesh::EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 data.meshName,
                 m_assets.modelsDir,
                 data.meshPath);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::model;
+            type->m_entityType = mesh::EntityType::model;
 
             KI_INFO(fmt::format(
                 "SCENE_FILE ATTACH: id={}, type={}",
                 data.idBase, type->str()));
         }
-        else if (data.type == EntityType::quad) {
+        else if (data.type == mesh::EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::quad;
+            type->m_entityType = mesh::EntityType::quad;
         }
-        else if (data.type == EntityType::billboard) {
+        else if (data.type == mesh::EntityType::billboard) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::billboard;
+            type->m_entityType = mesh::EntityType::billboard;
         }
-        else if (data.type == EntityType::sprite) {
+        else if (data.type == mesh::EntityType::sprite) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::sprite;
+            type->m_entityType = mesh::EntityType::sprite;
         }
-        else if (data.type == EntityType::terrain) {
-            type->m_entityType = EntityType::terrain;
+        else if (data.type == mesh::EntityType::terrain) {
+            type->m_entityType = mesh::EntityType::terrain;
         }
-        else if (data.type == EntityType::container) {
+        else if (data.type == mesh::EntityType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = EntityType::container;
+            type->m_entityType = mesh::EntityType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = EntityType::origo;
+            type->m_entityType = mesh::EntityType::origo;
             type->m_flags.invisible = true;
         }
     }
 
     Node* SceneLoader::createNode(
-        const MeshType* type,
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityCloneData& data,
         const bool cloned,
@@ -664,9 +664,9 @@ namespace loader {
 
     void SceneLoader::assignFlags(
         const EntityCloneData& data,
-        MeshType* type)
+        mesh::MeshType* type)
     {
-        NodeRenderFlags& flags = type->m_flags;
+        mesh::NodeRenderFlags& flags = type->m_flags;
 
         flags.gbuffer = data.programName.starts_with("g_");
 

@@ -22,7 +22,7 @@ ModelRegistry::ModelRegistry(
 ModelRegistry::~ModelRegistry() {
 }
 
-kigl::GLVertexArray* ModelRegistry::registerMeshVBO(ModelMeshVBO& meshVBO)
+kigl::GLVertexArray* ModelRegistry::registerMeshVBO(mesh::ModelMeshVBO& meshVBO)
 {
     return m_vao.registerModel(meshVBO);
 }
@@ -37,14 +37,14 @@ void ModelRegistry::updateRT(const UpdateContext& ctx)
     m_vao.updateRT(ctx);
 }
 
-std::shared_future<ModelMesh*> ModelRegistry::getMesh(
+std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     std::string_view meshName,
     std::string_view rootDir)
 {
     return getMesh(meshName, rootDir, "");
 }
 
-std::shared_future<ModelMesh*> ModelRegistry::getMesh(
+std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     std::string_view meshName,
     std::string_view rootDir,
     std::string_view meshPath)
@@ -65,7 +65,7 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
             return e->second;
     }
 
-    auto mesh = new ModelMesh(
+    auto mesh = new mesh::ModelMesh(
         meshName,
         rootDir,
         meshPath);
@@ -76,9 +76,9 @@ std::shared_future<ModelMesh*> ModelRegistry::getMesh(
     return future;
 }
 
-std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
+std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* mesh)
 {
-    std::promise<ModelMesh*> promise;
+    std::promise<mesh::ModelMesh*> promise;
     auto future = promise.get_future().share();
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
@@ -90,7 +90,7 @@ std::shared_future<ModelMesh*> ModelRegistry::startLoad(ModelMesh* mesh)
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                MeshLoader loader(m_assets, m_alive);
+                mesh::MeshLoader loader(m_assets, m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {

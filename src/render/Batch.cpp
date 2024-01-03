@@ -188,7 +188,7 @@ void Batch::prepareRT(
 
 void Batch::addCommand(
     const RenderContext& ctx,
-    const MeshType* type,
+    const mesh::MeshType* type,
     Program* program) noexcept
 {
     auto& cmd = m_batches.emplace_back();
@@ -272,7 +272,7 @@ void Batch::flush(
             cmd.count = drawOptions.indexCount;
             cmd.instanceCount = m_frustumGPU ? 0 : 1;
             cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-            cmd.baseVertex = drawOptions.vertexOffset / sizeof(VertexEntry);
+            cmd.baseVertex = drawOptions.vertexOffset / sizeof(mesh::VertexEntry);
 
             //if (!m_frustumGPU && drawOptions.instanced) {
             if (drawOptions.instanced) {

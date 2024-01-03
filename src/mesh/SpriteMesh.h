@@ -8,27 +8,28 @@
 
 #include "mesh/Mesh.h"
 
+namespace mesh {
+    class SpriteMesh final : public Mesh
+    {
+    public:
+        SpriteMesh();
+        virtual ~SpriteMesh();
 
-class SpriteMesh final : public Mesh
-{
-public:
-    SpriteMesh();
-    virtual ~SpriteMesh();
+        virtual const std::string str() const noexcept override;
 
-    virtual const std::string str() const noexcept override;
+        virtual const AABB calculateAABB() const override;
 
-    virtual const AABB calculateAABB() const override;
+        const std::vector<Material>& getMaterials() const override;
 
-    const std::vector<Material>& getMaterials() const override;
+        virtual kigl::GLVertexArray* prepareRT(
+            const Assets& assets,
+            Registry* registry) override;
 
-    virtual kigl::GLVertexArray* prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        virtual void prepareDrawOptions(
+            backend::DrawOptions& drawOptions) override;
 
-    virtual void prepareDrawOptions(
-        backend::DrawOptions& drawOptions) override;
+    protected:
+        std::vector<Material> m_material;
 
-protected:
-    std::vector<Material> m_material;
-
-};
+    };
+}

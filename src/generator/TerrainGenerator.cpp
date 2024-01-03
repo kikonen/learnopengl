@@ -237,10 +237,10 @@ void TerrainGenerator::createTiles(
 
 ki::type_id TerrainGenerator::createType(
     Registry* registry,
-    const MeshType* containerType)
+    const mesh::MeshType* containerType)
 {
     auto type = registry->m_typeRegistry->registerType(containerType->m_name);
-    type->m_entityType = EntityType::terrain;
+    type->m_entityType = mesh::EntityType::terrain;
 
     auto& flags = type->m_flags;
     flags = containerType->m_flags;

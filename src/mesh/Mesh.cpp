@@ -16,22 +16,23 @@ namespace {
     }
 }
 
-Mesh::Mesh()
-    : m_id(nextID())
-{
-}
+namespace mesh {
+    Mesh::Mesh()
+        : m_id(nextID())
+    {
+    }
 
-Mesh::~Mesh()
-{
-    KI_INFO(fmt::format("MESH: delete {}", str()));
-}
+    Mesh::~Mesh()
+    {
+        KI_INFO(fmt::format("MESH: delete {}", str()));
+    }
 
-const std::string Mesh::str() const noexcept
-{
-    return fmt::format("<MESH: id={}>", m_id);
-}
+    const std::string Mesh::str() const noexcept
+    {
+        return fmt::format("<MESH: id={}>", m_id);
+    }
 
-void Mesh::prepareVolume() {
-    setAABB(calculateAABB());
+    void Mesh::prepareVolume() {
+        setAABB(calculateAABB());
+    }
 }
-

@@ -273,7 +273,7 @@ namespace physics
 
     void PhysicsEngine::enforceBounds(
         const UpdateContext& ctx,
-        const MeshType& type,
+        const mesh::MeshType& type,
         Node& node,
         NodeTransform& transform)
     {
