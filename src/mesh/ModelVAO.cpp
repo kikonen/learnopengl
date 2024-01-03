@@ -6,7 +6,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "asset/ModelMeshVBO.h"
+#include "mesh/ModelMeshVBO.h"
 
 namespace {
     constexpr size_t VERTEX_BLOCK_SIZE = 1000;

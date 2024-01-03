@@ -10,9 +10,9 @@
 #include "ki/Timer.h"
 
 #include "asset/Sphere.h"
-#include "asset/ModelMesh.h"
 
-#include "asset/Vertex.h"
+#include "mesh/ModelMesh.h"
+#include "mesh/Vertex.h"
 
 #include "registry/MeshType.h"
 

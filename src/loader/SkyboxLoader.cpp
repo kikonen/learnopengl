@@ -3,7 +3,7 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
-#include "asset/ModelMesh.h"
+#include "mesh/ModelMesh.h"
 
 #include "event/Dispatcher.h"
 

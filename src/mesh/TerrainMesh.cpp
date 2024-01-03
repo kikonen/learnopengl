@@ -5,8 +5,9 @@
 #include "kigl/kigl.h"
 
 #include "asset/Sphere.h"
-#include "asset/TerrainMaterialInit.h"
-#include "asset/TerrainVAO.h"
+
+#include "mesh/TerrainMaterialInit.h"
+#include "mesh/TerrainVAO.h"
 
 
 namespace {

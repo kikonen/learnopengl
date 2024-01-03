@@ -6,8 +6,8 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-#include "asset/VertexEntry.h"
-#include "asset/IndexEntry.h"
+#include "mesh/VertexEntry.h"
+#include "mesh/IndexEntry.h"
 
 
 class Batch;

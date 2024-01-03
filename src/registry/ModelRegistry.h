@@ -12,7 +12,7 @@
 #include "kigl/GLVertexArray.h"
 
 #include "asset/Assets.h"
-#include "asset/ModelVAO.h"
+#include "mesh/ModelVAO.h"
 
 struct Material;
 class ModelMesh;

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "asset/MaterialVBO.h"
 #include "asset/Sprite.h"
+
+#include "mesh/MaterialVBO.h"
 
 #include "backend/DrawOptions.h"
 

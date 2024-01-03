@@ -5,7 +5,7 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-#include "Material.h"
+#include "asset/Material.h"
 
 
 class Mesh;

@@ -3,11 +3,12 @@
 #include <fmt/format.h>
 
 #include "asset/Assets.h"
-#include "asset/Mesh.h"
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 
 #include "backend/DrawOptions.h"
+
+#include "mesh/Mesh.h"
 
 #include "NodeRegistry.h"
 #include "MaterialRegistry.h"

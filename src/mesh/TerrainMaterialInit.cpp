@@ -1,7 +1,7 @@
 #include "TerrainMaterialInit.h"
 
-#include "MaterialVBO.h"
-#include "TerrainMesh.h"
+#include "mesh/MaterialVBO.h"
+#include "mesh/TerrainMesh.h"
 
 
 void TerrainMaterialInit::prepare(

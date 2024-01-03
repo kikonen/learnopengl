@@ -9,12 +9,12 @@
 
 #include "backend/DrawOptions.h"
 
-#include "Assets.h"
-#include "Material.h"
-#include "Volume.h"
-#include "AABB.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
+#include "asset/Volume.h"
+#include "asset/AABB.h"
 
-#include "MaterialVBO.h"
+#include "mesh/MaterialVBO.h"
 
 #include "registry/Registry.h"
 

@@ -2,8 +2,9 @@
 
 #include <fmt/format.h>
 
-#include "Program.h"
-#include "ModelMesh.h"
+#include "asset/Program.h"
+
+#include "mesh/ModelMesh.h"
 
 namespace {
     int instancedCount = 0;

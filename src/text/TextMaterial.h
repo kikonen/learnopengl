@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CustomMaterial.h"
+#include "asset/CustomMaterial.h"
 
 #include "text/FontAtlas.h"
 

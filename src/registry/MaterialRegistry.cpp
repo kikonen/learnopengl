@@ -3,8 +3,9 @@
 #include "fmt/format.h"
 
 #include "asset/SSBO.h"
-#include "asset/MaterialVBO.h"
 #include "asset/MaterialSSBO.h"
+
+#include "mesh/MaterialVBO.h"
 
 
 namespace {

@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Material.h"
+#include "asset/Material.h"
 
 struct Vertex final
 {

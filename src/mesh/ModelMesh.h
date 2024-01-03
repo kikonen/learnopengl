@@ -5,14 +5,12 @@
 #include <vector>
 #include <map>
 
-#include "Assets.h"
+#include "asset/Assets.h"
+#include "asset/Material.h"
 
-#include "Material.h"
-#include "Vertex.h"
-#include "Assets.h"
-#include "Mesh.h"
-
-#include "ModelMeshVBO.h"
+#include "mesh/Vertex.h"
+#include "mesh/Mesh.h"
+#include "mesh/ModelMeshVBO.h"
 
 class ModelMesh final : public Mesh {
     friend class MeshLoader;

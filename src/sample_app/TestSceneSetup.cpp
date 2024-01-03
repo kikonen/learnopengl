@@ -1,9 +1,10 @@
 #include "TestSceneSetup.h"
 
-#include "asset/MeshLoader.h"
 #include "asset/PlainTexture.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
+
+#include "mesh/MeshLoader.h"
 
 #include "event/Dispatcher.h"
 

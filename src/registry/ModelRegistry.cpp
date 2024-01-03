@@ -2,10 +2,11 @@
 
 #include <fmt/format.h>
 
+#include "mesh/ModelMesh.h"
+#include "mesh/ModelMeshVBO.h"
+#include "mesh/MeshLoader.h"
+
 #include "render/RenderContext.h"
-#include "asset/ModelMesh.h"
-#include "asset/ModelMeshVBO.h"
-#include "asset/MeshLoader.h"
 
 namespace {
 }
