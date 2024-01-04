@@ -65,12 +65,14 @@ namespace loader {
         void load();
 
     private:
-        void loadedEntity(const EntityData& data);
+        void loadedEntity(
+            const EntityData& data,
+            bool success);
 
         void attach(
             const RootData& root);
 
-        void attachEntity(
+        bool attachEntity(
             const uuids::uuid& rootId,
             const EntityData& data);
 

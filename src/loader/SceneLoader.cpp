@@ -85,6 +85,7 @@ namespace loader {
 
     bool SceneLoader::isRunning()
     {
+        std::lock_guard<std::mutex> lock(m_ready_lock);
         return m_runningCount > 0 || m_pendingCount > 0;
     }
 
@@ -112,6 +113,7 @@ namespace loader {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
 
+        std::lock_guard<std::mutex> lock(m_ready_lock);
         m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
@@ -145,16 +147,24 @@ namespace loader {
 
             attach(m_root);
 
+            std::lock_guard<std::mutex> lock(m_ready_lock);
             m_runningCount--;
         });
     }
 
-    void SceneLoader::loadedEntity(const EntityData& data)
+    void SceneLoader::loadedEntity(
+        const EntityData& data,
+        bool success)
     {
         std::lock_guard<std::mutex> lock(m_ready_lock);
 
-        KI_INFO_OUT(fmt::format("pending={}", m_pendingCount));
-        if (--m_pendingCount > 0) return;
+        m_pendingCount--;
+
+        KI_INFO_OUT(fmt::format(
+            "LOADED: entity={}, success={}, pending={}",
+            data.base.name, success, m_pendingCount));
+
+        if (m_pendingCount > 0) return;
 
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
@@ -177,44 +187,56 @@ namespace loader {
 
         m_fontLoader.createFonts(m_fonts);
 
-        m_pendingCount = 0;
-        for (const auto& entity : m_entities) {
-            if (!entity.base.enabled) continue;
-            m_pendingCount++;
-        }
-        for (const auto& entity : m_entities) {
-            attachEntity(root.rootId, entity);
+        {
+            std::lock_guard<std::mutex> lock(m_ready_lock);
+
+            m_pendingCount = 0;
+            for (const auto& entity : m_entities) {
+                if (attachEntity(root.rootId, entity)) {
+                    m_pendingCount++;
+                    KI_INFO_OUT(fmt::format("START: entity={}, pending={}", entity.base.name, m_pendingCount));
+                }
+            }
+
+            KI_INFO_OUT(fmt::format("TOTAL: pending={}", m_pendingCount));
         }
     }
 
-    void SceneLoader::attachEntity(
+    bool SceneLoader::attachEntity(
         const uuids::uuid& rootId,
         const EntityData& data)
     {
         if (!data.base.enabled) {
-            return;
+            return false;
         }
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
-            if (data.clones.empty()) {
-                const mesh::MeshType* type{ nullptr };
-                attachEntityClone(type, rootId, data, data.base, false, 0);
-            }
-            else {
-                const mesh::MeshType* type{ nullptr };
-
-                int cloneIndex = 0;
-                for (auto& cloneData : data.clones) {
-                    if (!*m_ctx.m_alive) return;
-                    type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
-                    if (!data.base.cloneMesh)
-                        type = nullptr;
-                    cloneIndex++;
+            try {
+                if (data.clones.empty()) {
+                    const mesh::MeshType* type{ nullptr };
+                    attachEntityClone(type, rootId, data, data.base, false, 0);
                 }
-            }
+                else {
+                    const mesh::MeshType* type{ nullptr };
 
-            loadedEntity(data);
+                    int cloneIndex = 0;
+                    for (auto& cloneData : data.clones) {
+                        if (!*m_ctx.m_alive) return;
+                        type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
+                        if (!data.base.cloneMesh)
+                            type = nullptr;
+                        cloneIndex++;
+                    }
+                }
+                loadedEntity(data, true);
+            }
+            catch (const std::runtime_error& ex) {
+                loadedEntity(data, false);
+                throw ex;
+            }
         });
+
+        return true;
     }
 
     const mesh::MeshType* SceneLoader::attachEntityClone(
