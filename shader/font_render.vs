@@ -1,6 +1,6 @@
 #version 460 core
 
-#include uniform_data.glsl
+#include uniform_matrices.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
 //layout (location = ATTR_NORMAL) in vec3 a_normal;

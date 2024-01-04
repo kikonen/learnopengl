@@ -21,6 +21,8 @@ namespace mesh {
         void prepare(
             ModelMesh& mesh);
 
+        void clear();
+
     private:
         void preparePosition(
             const std::vector<Vertex>& positions);

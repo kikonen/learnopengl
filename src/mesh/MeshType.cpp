@@ -63,11 +63,11 @@ namespace mesh {
             m_materialVBO->getMaterialCount());
     }
 
-    //void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
-    //{
-    //    setMesh(mesh.get());
-    //    m_deleter = std::move(mesh);
-    //}
+    void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
+    {
+        setMesh(mesh.get());
+        m_deleter = std::move(mesh);
+    }
 
     void MeshType::setMesh(Mesh* mesh)
     {

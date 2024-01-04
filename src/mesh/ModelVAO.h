@@ -27,6 +27,7 @@ namespace mesh {
         ~ModelVAO() = default;
 
         void prepare(std::string_view name);
+        void clear();
 
         void bind(kigl::GLState& state);
         void unbind(kigl::GLState& state);

@@ -207,6 +207,8 @@ void Batch::draw(
     const auto type = node.m_type;
 
     if (type->m_flags.invisible || !node.m_visible) return;
+    if (!type->m_vao)
+        return;
 
     {
         const bool allowBlend = ctx.m_allowBlend;

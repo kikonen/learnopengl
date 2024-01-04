@@ -579,6 +579,9 @@
     <ClCompile Include="src\registry\FontRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\TextMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1356,6 +1359,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\FontRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TextMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

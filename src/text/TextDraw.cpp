@@ -127,16 +127,16 @@ namespace text
         std::string_view text,
         Node* node)
     {
-        mesh::ModelVBO vbo;
-
-        auto* material = node->m_type->getCustomMaterial<TextMaterial>();
-        if (!material) return;
-
-        auto* font = ctx.m_registry->m_fontRegistry->getFont(material->m_fontId);
+        auto* font = ctx.m_registry->m_fontRegistry->getFont(node->m_type->m_fontId);
         if (!font) return;
 
         glm::vec2 pen{ 0.f };
-        addText(vbo, font, text, pen);
+
+        m_vbo.clear();
+        addText(m_vbo, font, text, pen);
+
+        m_vao.clear();
+        m_vao.registerModel(m_vbo);
 
         m_vao.bind(ctx.m_state);
         m_program->bind(ctx.m_state);
@@ -149,7 +149,11 @@ namespace text
             m_program->m_uniforms->u_materialIndex.set(materialIndex);
 
             // TODO KI actual render
-            glDrawElements(GL_TRIANGLES, vbo.m_indexEntries.size(), GL_UNSIGNED_INT, vbo.m_indexEntries.data());
+            glDrawElements(
+                GL_TRIANGLES,
+                m_vbo.m_indexEntries.size(),
+                GL_UNSIGNED_INT,
+                nullptr);
         }
         font->unbindTextures(ctx.m_state);
 

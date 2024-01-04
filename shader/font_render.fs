@@ -27,7 +27,8 @@ void main()
 {
   material = u_materials[fs_in.materialIndex];
 
-#include var_tex_material.glsl
+  #include var_tex_coord.glsl
+  #include var_tex_material.glsl
 
   float a = texture(u_fontAtlas, fs_in.texCoord).r;
 

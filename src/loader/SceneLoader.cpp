@@ -22,6 +22,7 @@
 #include "mesh/ModelMesh.h"
 #include "mesh/QuadMesh.h"
 #include "mesh/SpriteMesh.h"
+#include "mesh/TextMesh.h"
 
 #include "text/TextMaterial.h"
 
@@ -634,7 +635,9 @@ namespace loader {
             type->m_entityType = mesh::EntityType::sprite;
         }
         else if (data.type == mesh::EntityType::text) {
-            int x = 0;
+            type->m_entityType = mesh::EntityType::text;
+            auto mesh = std::make_unique<mesh::TextMesh>();
+            type->setMesh(std::move(mesh), true);
         }
         else if (data.type == mesh::EntityType::terrain) {
             type->m_entityType = mesh::EntityType::terrain;

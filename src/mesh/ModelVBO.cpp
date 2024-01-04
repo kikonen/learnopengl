@@ -25,6 +25,13 @@ namespace mesh {
         prepareIndex(mesh.m_indeces);
     }
 
+    void ModelVBO::clear()
+    {
+        m_positionEntries.clear();
+        m_vertexEntries.clear();
+        m_indexEntries.clear();
+    }
+
     void ModelVBO::preparePosition(
         const std::vector<Vertex>& positions)
     {

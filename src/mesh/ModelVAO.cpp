@@ -129,6 +129,18 @@ namespace mesh {
         }
     }
 
+    void ModelVAO::clear()
+    {
+        m_positionEntries.clear();
+        m_vertexEntries.clear();
+        m_indexEntries.clear();
+
+        m_dirty = true;
+        m_lastPositionSize = 0;
+        m_lastVertexSize = 0;
+        m_lastIndexSize = 0;
+    }
+
     kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
     {
         std::lock_guard<std::mutex> lock(m_lock);

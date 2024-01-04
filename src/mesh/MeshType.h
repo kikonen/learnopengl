@@ -41,7 +41,7 @@ namespace mesh {
 
         const std::string str() const noexcept;
 
-        //void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
+        void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
         void setMesh(Mesh* mesh);
 
         inline const Mesh* getMesh() const noexcept {
@@ -100,7 +100,7 @@ namespace mesh {
         bool m_preparedView : 1 {false};
 
         Mesh* m_mesh{ nullptr };
-        //std::unique_ptr<Mesh> m_deleter;
+        std::unique_ptr<Mesh> m_deleter;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
