@@ -28,7 +28,7 @@ namespace text
         FontAtlas(FontAtlas&& o) noexcept;
         ~FontAtlas();
 
-        void prepareRT(
+        void prepare(
             const Assets& assets);
 
         void bindTextures(kigl::GLState& state);

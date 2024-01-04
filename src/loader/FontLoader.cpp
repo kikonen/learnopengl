@@ -68,6 +68,9 @@ namespace loader {
         font->m_fontSize = data.size;
         font->m_atlasSize = data.atlasSize;
 
+        // TODO KI race condition with RT
+        //font->prepare(m_assets);
+
         return id;
     }
 }

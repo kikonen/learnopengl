@@ -21,7 +21,7 @@ void FontRegistry::updateRT(const UpdateContext& ctx)
     std::lock_guard<std::mutex> lock(m_lock);
 
     for (auto& font : m_fonts) {
-        font.prepareRT(ctx.m_assets);
+        font.prepare(ctx.m_assets);
     }
 }
 

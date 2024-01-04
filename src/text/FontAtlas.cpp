@@ -43,7 +43,7 @@ namespace text
     {
     }
 
-    void FontAtlas::prepareRT(
+    void FontAtlas::prepare(
         const Assets& assets)
     {
         if (m_prepared) return;
