@@ -35,6 +35,7 @@ class EntityRegistry;
 class ViewportRegistry;
 class ControllerRegistry;
 class ProgramRegistry;
+class FontRegistry;
 
 class UpdateContext;
 
@@ -74,6 +75,7 @@ private:
     std::unique_ptr<script::CommandEngine> m_commandEngineImpl;
     std::unique_ptr<script::ScriptEngine> m_scriptEngineImpl;
 
+    std::unique_ptr<FontRegistry> m_fontRegistryImpl;
     std::unique_ptr<MaterialRegistry> m_materialRegistryImpl;
     std::unique_ptr<SpriteRegistry> m_spriteRegistryImpl;
     std::unique_ptr<MeshTypeRegistry> m_typeRegistryImpl;
@@ -96,6 +98,7 @@ public:
     script::CommandEngine* const m_commandEngine;
     script::ScriptEngine* const m_scriptEngine;
 
+    FontRegistry* const m_fontRegistry;
     MaterialRegistry* const m_materialRegistry;
     SpriteRegistry* const m_spriteRegistry;
     MeshTypeRegistry* const m_typeRegistry;

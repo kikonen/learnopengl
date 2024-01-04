@@ -9,6 +9,7 @@ namespace mesh {
         billboard,
         sprite,
         point_sprite,
+        text,
         terrain,
         skybox,
     };

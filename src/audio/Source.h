@@ -17,6 +17,9 @@ namespace audio
 
     struct Source {
         Source();
+        Source(Source& o) = delete;
+        Source& operator=(Source& o) = delete;
+        Source& operator=(Source&& o) noexcept;
         Source(Source&&) noexcept;
         ~Source();
 

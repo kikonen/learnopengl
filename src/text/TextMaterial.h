@@ -2,7 +2,7 @@
 
 #include "asset/CustomMaterial.h"
 
-#include "text/FontAtlas.h"
+#include "text/size.h"
 
 //
 // Prepare freetext-gl material
@@ -25,7 +25,7 @@ public:
     virtual void unbindTextures(const RenderContext& ctx) override;
 
 public:
-    text::FontAtlas m_atlas;
+    text::font_id m_fontId{ 0 };
 
     std::string m_text{ "" };
 };

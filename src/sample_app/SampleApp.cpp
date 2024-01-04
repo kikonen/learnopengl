@@ -451,6 +451,3 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     return scene;
 }
-
-void save() {
-}

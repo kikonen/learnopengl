@@ -22,7 +22,7 @@ namespace {
     std::mutex load_lock{};
 }
 
-Image::Image(Image&& o)
+Image::Image(Image&& o) noexcept
     : m_path{ o.m_path },
     m_flipped{ o.m_flipped },
     m_hdri{ o.m_hdri },

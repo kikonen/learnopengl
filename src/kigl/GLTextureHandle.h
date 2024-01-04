@@ -13,19 +13,19 @@ namespace kigl {
             : m_textureID(textureID) {
         }
 
-        GLTextureHandle(GLTextureHandle& handle) = delete;
-        GLTextureHandle& operator=(GLTextureHandle& handle) = delete;
+        GLTextureHandle(GLTextureHandle& o) = delete;
+        GLTextureHandle& operator=(GLTextureHandle& o) = delete;
 
-        GLTextureHandle(GLTextureHandle&& handle) noexcept
-            : m_textureID(handle.m_textureID)
+        GLTextureHandle(GLTextureHandle&& o) noexcept
+            : m_textureID{ o.m_textureID }
         {
-            handle.m_textureID = 0;
+            o.m_textureID = 0;
         }
 
-        GLTextureHandle& operator=(GLTextureHandle&& handle) noexcept
+        GLTextureHandle& operator=(GLTextureHandle&& o) noexcept
         {
-            m_textureID = handle.m_textureID;
-            handle.m_textureID = 0;
+            m_textureID = o.m_textureID;
+            o.m_textureID = 0;
             return *this;
         }
 

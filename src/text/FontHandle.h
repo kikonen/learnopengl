@@ -10,6 +10,10 @@ namespace text
 
     struct FontHandle {
         FontHandle(AtlasHandle* atlasHandle);
+        FontHandle(FontHandle& o) = delete;
+        FontHandle& operator=(FontHandle& o) = delete;
+        FontHandle& operator=(FontHandle&& o) noexcept;
+        FontHandle(FontHandle&& o) noexcept;
         ~FontHandle();
 
         void create(

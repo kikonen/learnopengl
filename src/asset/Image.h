@@ -5,8 +5,6 @@
 class Image final
 {
 public:
-    Image(Image&& o);
-
     Image(
         std::string_view path,
         bool flipped);
@@ -15,6 +13,11 @@ public:
         std::string_view path,
         bool flipped,
         bool hdri);
+
+    Image(Image& o) = delete;
+    Image& operator=(Image& o) = delete;
+    Image& operator=(Image&& o) = delete;
+    Image(Image&& o) noexcept;
 
     ~Image();
 

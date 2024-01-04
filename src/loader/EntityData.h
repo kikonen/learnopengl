@@ -22,6 +22,7 @@
 #include "GeneratorData.h"
 #include "PhysicsData.h"
 #include "ScriptData.h"
+#include "FontData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -90,6 +91,7 @@ namespace loader {
         CameraData camera;
         LightData light;
         AudioData audio;
+        FontData font;
 
         GeneratorData generator;
     };

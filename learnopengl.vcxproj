@@ -188,6 +188,8 @@
     <ClCompile Include="src\asset\ProgramUniforms.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
+    <ClCompile Include="src\loader\FontLoader.cpp" />
+    <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
     <ClCompile Include="src\text\TextMaterial.cpp" />
@@ -378,11 +380,15 @@
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
+    <ClInclude Include="src\loader\FontData.h" />
+    <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />
+    <ClInclude Include="src\registry\FontRegistry.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
+    <ClInclude Include="src\text\size.h" />
     <ClInclude Include="src\text\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\limits.h" />

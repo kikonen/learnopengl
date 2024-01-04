@@ -14,9 +14,41 @@ namespace {
 
 namespace text
 {
+    FontAtlas& FontAtlas::operator=(FontAtlas&& o) noexcept
+    {
+        m_id = o.m_id;
+        m_name = o.m_name;
+        m_fontPath = o.m_fontPath;
+        m_fontSize = o.m_fontSize;
+        m_atlasSize = o.m_atlasSize;
+        m_texture = std::move(o.m_texture);
+        m_atlasHandle = std::move(o.m_atlasHandle);
+        m_fontHandle = std::move(o.m_fontHandle);
+
+        return *this;
+    }
+
+    FontAtlas::FontAtlas(FontAtlas&& o) noexcept
+        : m_id{ o.m_id },
+        m_name{ o.m_name },
+        m_fontPath{ o.m_fontPath },
+        m_fontSize{ o.m_fontSize},
+        m_atlasSize{ o.m_atlasSize },
+        m_texture{ std::move(o.m_texture) },
+        m_atlasHandle{ std::move(o.m_atlasHandle) },
+        m_fontHandle{ std::move(o.m_fontHandle) }
+    {}
+
+    FontAtlas::~FontAtlas()
+    {
+    }
+
     void FontAtlas::prepareRT(
         const Assets& assets)
     {
+        if (m_prepared) return;
+        m_prepared = true;
+
         const size_t depth = 1;
         {
             m_atlasHandle = std::make_unique<AtlasHandle>();
@@ -26,11 +58,12 @@ namespace text
         {
             m_fontHandle = std::make_unique<FontHandle>(m_atlasHandle.get());
             m_fontHandle->create(
-                util::joinPath(assets.assetsDir, m_fontName),
+                util::joinPath(assets.assetsDir, m_fontPath),
                 m_fontSize);
         }
 
 
+        if (true)
         {
             const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
             const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);

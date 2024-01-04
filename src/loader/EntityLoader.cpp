@@ -145,6 +145,9 @@ namespace loader {
                 else if (type == "sprite") {
                     data.type = mesh::EntityType::sprite;
                 }
+                else if (type == "text") {
+                    data.type = mesh::EntityType::text;
+                }
                 else if (type == "terrain") {
                     data.type = mesh::EntityType::terrain;
                 }
@@ -212,6 +215,9 @@ namespace loader {
             }
             else if (k == "front") {
                 data.front = readVec3(v);
+            }
+            else if (k == "font") {
+                data.font.name = readString(v);
             }
             else if (k == "material") {
                 data.materialName = readString(v);

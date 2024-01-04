@@ -2,6 +2,19 @@
 
 namespace text
 {
+    AtlasHandle& AtlasHandle::operator=(AtlasHandle&& o) noexcept
+    {
+        m_atlas = o.m_atlas;
+        o.m_atlas = nullptr;
+        return *this;
+    }
+
+    AtlasHandle::AtlasHandle(AtlasHandle&& o) noexcept
+        : m_atlas{o.m_atlas}
+    {
+        o.m_atlas = nullptr;
+    }
+
     AtlasHandle::~AtlasHandle()
     {
         if (!m_atlas) return;

@@ -99,7 +99,7 @@ namespace loader {
 
     void MaterialLoader::loadMaterials(
         const YAML::Node& node,
-        std::vector<MaterialData>& materials)
+        std::vector<MaterialData>& materials) const
     {
         for (const auto& entry : node) {
             MaterialData& data = materials.emplace_back();

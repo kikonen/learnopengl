@@ -14,7 +14,6 @@ namespace loader {
     struct CustomMaterialData {
         CustomMaterialType type{ CustomMaterialType::none };
 
-        std::string fontName;
-        float fontSize;
+        std::string font;
     };
 }

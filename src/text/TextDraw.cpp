@@ -20,11 +20,13 @@
 
 #include "render/RenderContext.h"
 
+#include "TextMaterial.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
 
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/FontRegistry.h"
 
 namespace
 {
@@ -115,36 +117,42 @@ namespace text
         const Assets& assets,
         Registry* registry)
     {
+        m_vao.prepare("text");
+
         m_program = registry->m_programRegistry->getProgram(SHADER_FONT_RENDER);
     }
 
     void TextDraw::draw(
         const RenderContext& ctx,
         std::string_view text,
-        FontAtlas* font,
         Node* node)
     {
-        mesh::ModelVAO vao;
-        vao.prepare("text");
         mesh::ModelVBO vbo;
+
+        auto* material = node->m_type->getCustomMaterial<TextMaterial>();
+        if (!material) return;
+
+        auto* font = ctx.m_registry->m_fontRegistry->getFont(material->m_fontId);
+        if (!font) return;
 
         glm::vec2 pen{ 0.f };
         addText(vbo, font, text, pen);
 
-        vao.bind(ctx.m_state);
+        m_vao.bind(ctx.m_state);
         m_program->bind(ctx.m_state);
         font->bindTextures(ctx.m_state);
+        {
+            const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
+            int materialIndex = node->m_type->m_materialIndex;
 
-        const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
-        int materialIndex = node->m_type->m_materialIndex;
+            m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
+            m_program->m_uniforms->u_materialIndex.set(materialIndex);
 
-        m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
-        m_program->m_uniforms->u_materialIndex.set(materialIndex);
-
-        // TODO KI actual render
-        glDrawElements(GL_TRIANGLES, vbo.m_indexEntries.size(), GL_UNSIGNED_INT, vbo.m_indexEntries.data());
-
+            // TODO KI actual render
+            glDrawElements(GL_TRIANGLES, vbo.m_indexEntries.size(), GL_UNSIGNED_INT, vbo.m_indexEntries.data());
+        }
         font->unbindTextures(ctx.m_state);
-        vao.unbind(ctx.m_state);
+
+        m_vao.unbind(ctx.m_state);
     }
 }

@@ -16,6 +16,22 @@ namespace text
         : m_atlasHandle(atlasHandle)
     {}
 
+    FontHandle& FontHandle::operator=(FontHandle&& o) noexcept
+    {
+        m_atlasHandle = o.m_atlasHandle;
+        m_font = o.m_font;
+        o.m_font = nullptr;
+
+        return *this;
+    }
+
+    FontHandle::FontHandle(FontHandle&& o) noexcept
+        : m_atlasHandle{ o.m_atlasHandle },
+        m_font{ o.m_font }
+    {
+        o.m_font = nullptr;
+    }
+
     FontHandle::~FontHandle()
     {
         if (!m_font) return;

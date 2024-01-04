@@ -21,7 +21,7 @@ public:
 
     ~MeshTypeRegistry();
 
-    const mesh::MeshType* getType(ki::type_id);
+    const mesh::MeshType* getType(ki::type_id) const noexcept;
     mesh::MeshType* modifyType(ki::type_id);
 
     mesh::MeshType* registerType(
@@ -37,7 +37,7 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::mutex m_lock{};
+    mutable std::mutex m_lock{};
 
     std::vector<mesh::MeshType> m_types;
 

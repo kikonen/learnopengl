@@ -36,10 +36,7 @@ namespace loader {
                 }
             }
             else if (k == "font") {
-                data.fontName = readString(v);
-            }
-            else if (k == "font_size") {
-                data.fontSize = readFloat(v);
+                data.font = readString(v);
             }
             else {
                 reportUnknown("custom_material_entry", k, v);
@@ -54,15 +51,15 @@ namespace loader {
     {
         if (data.type == CustomMaterialType::none) return nullptr;
 
-        switch (data.type) {
-        case CustomMaterialType::text: {
-            auto material{ std::make_unique<TextMaterial>() };
-            material->m_atlas.m_fontName = data.fontName;
-            material->m_atlas.m_fontSize = data.fontSize;
+        //switch (data.type) {
+        //case CustomMaterialType::text: {
+        //    auto material{ std::make_unique<TextMaterial>() };
+        //    material->m_atlas.m_fontName = data.fontName;
+        //    material->m_atlas.m_fontSize = data.fontSize;
 
-            return material;
-        }
-        }
+        //    return material;
+        //}
+        //}
 
         return nullptr;
     }

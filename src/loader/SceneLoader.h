@@ -19,6 +19,7 @@
 #include "SkyboxLoader.h"
 #include "VolumeLoader.h"
 #include "CubeMapLoader.h"
+#include "FontLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
 #include "SpriteLoader.h"
@@ -103,6 +104,10 @@ namespace loader {
             mesh::MeshType* type,
             const EntityCloneData& data);
 
+        void resolveFont(
+            mesh::MeshType* type,
+            const EntityCloneData& data);
+
         void resolveMaterial(
             mesh::MeshType* type,
             const EntityCloneData& data);
@@ -140,6 +145,9 @@ namespace loader {
         Sprite* findSprite(
             std::string_view name);
 
+        FontData* findFont(
+            std::string_view name);
+
     private:
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
@@ -153,6 +161,8 @@ namespace loader {
         ScriptEngineData m_scriptEngineData;
 
         std::vector<EntityData> m_entities;
+
+        std::vector<FontData> m_fonts;
 
         Material m_defaultMaterial;
         std::vector<MaterialData> m_materials;
@@ -169,6 +179,7 @@ namespace loader {
 
         EntityLoader m_entityLoader;
 
+        FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;
         SpriteLoader m_spriteLoader;

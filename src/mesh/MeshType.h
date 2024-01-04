@@ -6,6 +6,8 @@
 
 #include "kigl/GLVertexArray.h"
 
+#include "text/size.h"
+
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
@@ -29,6 +31,9 @@ namespace mesh {
 
     public:
         MeshType(std::string_view name);
+        MeshType(MeshType& o) = delete;
+        MeshType& operator=(MeshType& o) = delete;
+        MeshType& operator=(MeshType&& o) noexcept;
         MeshType(MeshType&& o) noexcept;
         ~MeshType();
 
@@ -50,7 +55,10 @@ namespace mesh {
             return m_materialIndex;
         }
 
-        const CustomMaterial* getCustomMaterial() const noexcept { return m_customMaterial.get(); }
+        template<typename T>
+        inline T* getCustomMaterial() const noexcept {
+            return dynamic_cast<T*>(m_customMaterial.get());
+        }
 
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
@@ -80,6 +88,8 @@ namespace mesh {
         std::unique_ptr<Sprite> m_sprite{ nullptr };
 
         int m_materialIndex{ 0 };
+
+        text::font_id m_fontId{ 0 };
 
         backend::DrawOptions m_drawOptions;
 

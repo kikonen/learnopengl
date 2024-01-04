@@ -20,7 +20,7 @@ MeshTypeRegistry::~MeshTypeRegistry()
     m_types.clear();
 }
 
-const mesh::MeshType* MeshTypeRegistry::getType(ki::type_id id)
+const mesh::MeshType* MeshTypeRegistry::getType(ki::type_id id) const noexcept
 {
     std::lock_guard<std::mutex> lock(m_lock);
     return &m_types[id];

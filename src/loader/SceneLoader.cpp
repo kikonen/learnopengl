@@ -60,6 +60,7 @@ namespace loader {
         m_skyboxLoader(ctx),
         m_volumeLoader(ctx),
         m_cubeMapLoader(ctx),
+        m_fontLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
         m_spriteLoader(ctx),
@@ -84,7 +85,7 @@ namespace loader {
 
     bool SceneLoader::isRunning()
     {
-        return m_runningCount > 0;
+        return m_runningCount > 0 || m_pendingCount > 0;
     }
 
     void SceneLoader::prepare(
@@ -93,6 +94,7 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
+        m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
         m_rootLoader.setRegistry(registry);
         m_scriptLoader.setRegistry(registry);
@@ -119,6 +121,8 @@ namespace loader {
             loadMeta(doc["meta"], m_meta);
 
             m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+
+            m_fontLoader.loadFonts(doc["fonts"], m_fonts);
             m_materialLoader.loadMaterials(doc["materials"], m_materials);
             m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
@@ -170,6 +174,8 @@ namespace loader {
         m_skyboxLoader.attachSkybox(root.rootId, m_skybox);
         m_volumeLoader.attachVolume(root.rootId);
         m_cubeMapLoader.attachCubeMap(root.rootId);
+
+        m_fontLoader.createFonts(m_fonts);
 
         m_pendingCount = 0;
         for (const auto& entity : m_entities) {
@@ -382,6 +388,7 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
+            resolveFont(type, data);
             resolveMaterial(type, data);
             resolveSprite(type, data);
             resolveMesh(type, data, tile);
@@ -505,6 +512,17 @@ namespace loader {
         }
     }
 
+    void SceneLoader::resolveFont(
+        mesh::MeshType* type,
+        const EntityCloneData& data)
+    {
+        if (data.font.name.empty()) return;
+        auto* font = findFont(data.font.name);;
+        if (font) {
+            type->m_fontId = font->id;
+        }
+    }
+
     void SceneLoader::resolveMaterial(
         mesh::MeshType* type,
         const EntityCloneData& data)
@@ -592,6 +610,9 @@ namespace loader {
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = mesh::EntityType::sprite;
+        }
+        else if (data.type == mesh::EntityType::text) {
+            int x = 0;
         }
         else if (data.type == mesh::EntityType::terrain) {
             type->m_entityType = mesh::EntityType::terrain;
@@ -846,4 +867,15 @@ namespace loader {
             [&name](SpriteData& m) { return m.sprite.m_name == name; });
         return it != m_sprites.end() ? &(it->sprite) : nullptr;
     }
+
+    FontData* SceneLoader::findFont(
+        std::string_view name)
+    {
+        const auto& it = std::find_if(
+            m_fonts.begin(),
+            m_fonts.end(),
+            [&name](FontData& m) { return m.name == name; });
+        return it != m_fonts.end() ? &(*it) : nullptr;
+    }
+
 }

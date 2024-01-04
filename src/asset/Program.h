@@ -37,11 +37,13 @@ public:
         std::string_view geometryType,
         const std::map<std::string, std::string, std::less<>>& defines);
 
-    Program(Program&& o) noexcept;
+    // TODO KI implement move
+    Program(Program&& o) = delete;
 
     // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
     Program(const Program&) = delete;
     Program& operator=(const Program&) = delete;
+    Program& operator=(Program&& o) = delete;
 
     // public due to shared_ptr
     ~Program();

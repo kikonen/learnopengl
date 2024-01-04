@@ -78,8 +78,8 @@ public:
 public:
     Material();
 
-    Material(const Material&) = default;
-    Material(Material&&) = default;
+    Material(const Material& o) = default;
+    Material(Material&& o) = default;
     Material& operator=(const Material&) = default;
     Material& operator=(Material&&) = default;
 

@@ -6,6 +6,8 @@
 
 #include "kigl/GLTextureHandle.h"
 
+#include "text/size.h"
+
 #include "text/FontHandle.h"
 #include "text/AtlasHandle.h"
 
@@ -19,8 +21,12 @@ namespace text
     class FontAtlas
     {
     public:
-        FontAtlas()
-        {}
+        FontAtlas() {}
+        FontAtlas(FontAtlas& o) = delete;
+        FontAtlas& operator=(FontAtlas& o) = delete;
+        FontAtlas& operator=(FontAtlas&& o) noexcept;
+        FontAtlas(FontAtlas&& o) noexcept;
+        ~FontAtlas();
 
         void prepareRT(
             const Assets& assets);
@@ -33,11 +39,16 @@ namespace text
         }
 
     public:
-        std::string m_fontName{ "fonts/Vera.ttf" };
+        text::font_id m_id{ 0 };
+        std::string m_name;
+
+        std::string m_fontPath{ "fonts/Vera.ttf" };
         float m_fontSize{ 10.f };
         glm::uvec2 m_atlasSize{ 512, 512 };
 
     private:
+        bool m_prepared{ false };
+
         kigl::GLTextureHandle m_texture;
 
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };

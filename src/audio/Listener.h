@@ -14,7 +14,10 @@ namespace audio
 {
     struct Listener {
         Listener();
-        Listener(Listener&&) noexcept;
+        Listener(Listener& o) = delete;
+        Listener& operator=(Listener& o) = delete;
+        Listener& operator=(Listener&& o) noexcept;
+        Listener(Listener&& o) noexcept;
         ~Listener();
 
         inline bool isReady() const { return m_matrixLevel > -1; }
