@@ -2,7 +2,9 @@
 
 #include "Renderer.h"
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
 
 class ViewportRenderer final : public Renderer
 {
@@ -17,5 +19,5 @@ public:
 
     void render(
         const RenderContext& ctx,
-        FrameBuffer* destinationBuffer);
+        render::FrameBuffer* destinationBuffer);
 };

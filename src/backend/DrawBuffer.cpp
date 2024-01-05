@@ -139,7 +139,7 @@ namespace backend {
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
                 static_cast<GLuint>(cmdRange.m_baseIndex),
-                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions->type)),
+                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.type)),
                 static_cast<GLuint>(drawCount)
             };
 
@@ -189,8 +189,8 @@ namespace backend {
         if (!cmdRange.empty()) {
             sameDraw = curr.m_program == sendRange.m_program &&
                 curr.m_vao == sendRange.m_vao &&
-                curr.m_drawOptions->isSameMultiDraw(
-                    *sendRange.m_drawOptions,
+                curr.m_drawOptions.isSameMultiDraw(
+                    sendRange.m_drawOptions,
                     curr.m_forceWireframe,
                     curr.m_allowBlend);
         }
@@ -228,7 +228,7 @@ namespace backend {
         size_t count = 0;
         auto handler = [this, &count](kigl::GLBufferRange& cmdRange) {
             auto& drawRange = m_drawRanges[cmdRange.m_index];
-            auto drawOptions = *drawRange.m_drawOptions;
+            const auto& drawOptions = drawRange.m_drawOptions;
             const GLsizei drawCount = (GLsizei)cmdRange.m_usedCount;
 
             bindDrawRange(drawRange);
@@ -278,7 +278,7 @@ namespace backend {
     void DrawBuffer::bindDrawRange(
         const backend::DrawRange& drawRange) const
     {
-        auto& drawOptions = *drawRange.m_drawOptions;
+        const auto& drawOptions = drawRange.m_drawOptions;
         auto& state = *drawRange.m_state;
 
         drawRange.m_program->bind(state);

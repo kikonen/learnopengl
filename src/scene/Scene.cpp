@@ -95,9 +95,9 @@ Scene::Scene(
 
     m_particleSystem = std::make_unique<ParticleSystem>();
 
-    m_batch = std::make_unique<Batch>();
+    m_batch = std::make_unique<render::Batch>();
     m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_renderData = std::make_unique<RenderData>();
+    m_renderData = std::make_unique<render::RenderData>();
 }
 
 Scene::~Scene()
@@ -178,7 +178,7 @@ void Scene::prepareRT()
     }
 
     {
-        m_windowBuffer = std::make_unique<WindowBuffer>(true);
+        m_windowBuffer = std::make_unique<render::WindowBuffer>(true);
     }
 
     {

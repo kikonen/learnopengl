@@ -140,7 +140,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
     m_reflectionBuffers.clear();
 
-    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;
@@ -148,14 +148,14 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
     for (int i = 0; i < m_bufferCount; i++) {
         {
-            FrameBufferSpecification spec = {
+            render::FrameBufferSpecification spec = {
                 w, h,
                 {
                     albedo,
                 }
             };
 
-            m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("water_reflect", spec));
+            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>("water_reflect", spec));
         }
     }
 
@@ -186,7 +186,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 
     m_refractionBuffers.clear();
 
-    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;
@@ -194,14 +194,14 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 
     for (int i = 0; i < m_bufferCount; i++) {
         {
-            FrameBufferSpecification spec = {
+            render::FrameBufferSpecification spec = {
                 w, h,
                 {
                     albedo,
                 }
             };
 
-            m_refractionBuffers.push_back(std::make_unique<FrameBuffer>("water_refract", spec));
+            m_refractionBuffers.push_back(std::make_unique<render::FrameBuffer>("water_refract", spec));
         }
     }
 
@@ -369,7 +369,7 @@ void WaterMapRenderer::handleNodeAdded(Node* node)
 
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer,
+    render::FrameBuffer* targetBuffer,
     Node* current,
     bool reflect)
 {

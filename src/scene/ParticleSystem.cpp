@@ -49,7 +49,7 @@ void ParticleSystem::render(const RenderContext& ctx)
         //if (!program) continue;
         //program->shadowMap.set(assets.shadowMapUnitIndex);
 
-        //Batch& batch = t->batch;
+        //auto& batch = t->batch;
         //batch.bind(ctx, program);
 
         //batch.draw(ctx, e, program);

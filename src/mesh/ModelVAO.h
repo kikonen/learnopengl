@@ -15,7 +15,6 @@ namespace kigl {
     class GLState;
 }
 
-class Batch;
 class UpdateContext;
 
 namespace mesh {

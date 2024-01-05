@@ -43,7 +43,7 @@ namespace mesh {
         m_vao{ o.m_vao },
         m_prepared{ o.m_prepared },
         m_mesh{ o.m_mesh },
-        //m_deleter{ std::move(o.m_deleter) },
+        m_deleter{ std::move(o.m_deleter) },
         m_customMaterial{ std::move(o.m_customMaterial) },
         m_privateVAO{ o.m_privateVAO }
     {

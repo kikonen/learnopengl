@@ -295,7 +295,7 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    CubeMapBuffer* targetBuffer,
+    render::CubeMapBuffer* targetBuffer,
     const Node* current,
     const glm::vec4& debugColor)
 {

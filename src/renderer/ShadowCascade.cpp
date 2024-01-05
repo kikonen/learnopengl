@@ -86,11 +86,11 @@ void ShadowCascade::prepareRT(
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
-    m_buffer = new FrameBuffer(
+    m_buffer = new render::FrameBuffer(
         "shadow_cascade",
         {
             m_mapSize, m_mapSize,
-            { FrameBufferAttachment::getShadow() }
+            { render::FrameBufferAttachment::getShadow() }
         });
 
     m_buffer->prepare();

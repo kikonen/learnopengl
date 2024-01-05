@@ -6,7 +6,6 @@
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
-#include "render/FrameBufferAttachment.h"
 
 
 DynamicCubeMap::DynamicCubeMap(int size)
@@ -58,7 +57,7 @@ void DynamicCubeMap::prepareRT(
     m_valid = true;
 }
 
-CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
+render::CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
 {
     return {
         static_cast<GLuint>(m_fbo),

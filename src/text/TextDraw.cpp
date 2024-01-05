@@ -151,7 +151,7 @@ namespace text
             // TODO KI actual render
             glDrawElements(
                 GL_TRIANGLES,
-                m_vbo.m_indexEntries.size(),
+                static_cast<GLsizei>(m_vbo.m_indexEntries.size()),
                 GL_UNSIGNED_INT,
                 nullptr);
         }

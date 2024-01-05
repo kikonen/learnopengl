@@ -9,16 +9,18 @@ namespace kigl {
     class GLState;
 }
 
-class TextureQuad {
-public:
-    TextureQuad() = default;
-    ~TextureQuad() = default;
+namespace render {
+    class TextureQuad {
+    public:
+        TextureQuad() = default;
+        ~TextureQuad() = default;
 
-    void prepare();
+        void prepare();
 
-    void draw(kigl::GLState& state);
+        void draw(kigl::GLState& state);
 
-private:
-    kigl::GLVertexArray m_vao;
-    kigl::GLBuffer m_vbo{ "texture_quad" };
-};
+    private:
+        kigl::GLVertexArray m_vao;
+        kigl::GLBuffer m_vbo{ "texture_quad" };
+    };
+}

@@ -134,7 +134,7 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
     bool changed = w != m_reflectionWidth || h != m_reflectionheight;
     if (!changed) return;
 
-    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;
@@ -144,14 +144,14 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 
     for (int i = 0; i < m_bufferCount; i++) {
         {
-            FrameBufferSpecification spec = {
+            render::FrameBufferSpecification spec = {
                 w, h,
                 {
                     albedo,
                 }
             };
 
-            m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("mirror_reflect", spec));
+            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>("mirror_reflect", spec));
         }
     }
 
@@ -287,7 +287,7 @@ void MirrorMapRenderer::handleNodeAdded(Node* node)
 
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer,
+    render::FrameBuffer* targetBuffer,
     Node* current)
 {
     bool renderedWater{ false };

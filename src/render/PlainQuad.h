@@ -9,16 +9,18 @@ namespace kigl {
     class GLState;
 }
 
-class PlainQuad {
-public:
-    PlainQuad() = default;
-    ~PlainQuad() = default;
+namespace render {
+    class PlainQuad {
+    public:
+        PlainQuad() = default;
+        ~PlainQuad() = default;
 
-    void prepare();
+        void prepare();
 
-    void draw(kigl::GLState& state);
+        void draw(kigl::GLState& state);
 
-private:
-    kigl::GLVertexArray m_vao;
-    kigl::GLBuffer m_vbo{ "plain_quad" };
-};
+    private:
+        kigl::GLVertexArray m_vao;
+        kigl::GLBuffer m_vbo{ "plain_quad" };
+    };
+}

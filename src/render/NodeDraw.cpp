@@ -25,6 +25,15 @@ namespace {
 
 namespace render {
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    struct MeshTypeComparator {
+        bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
+            if (a->m_drawOptions < b->m_drawOptions) return true;
+            else if (b->m_drawOptions < a->m_drawOptions) return false;
+            return a->m_id < b->m_id;
+        }
+    };
+
+    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     MeshTypeKey::MeshTypeKey(const mesh::MeshType* type)
         : type(type)
     {}
@@ -122,7 +131,7 @@ namespace render {
                 const ProgramKey programKey(
                     program ? program->m_id : NULL_PROGRAM_ID,
                     -type->m_priority,
-                    type->m_drawOptions);
+                    type->getDrawOptions());
 
                 const MeshTypeKey typeKey(type);
 

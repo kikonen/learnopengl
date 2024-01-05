@@ -2,41 +2,43 @@
 
 #include "asset/Assets.h"
 
-
-class FrameBuffer;
-class GBuffer;
 class UpdateViewContext;
 class RenderContext;
 
-class OITBuffer {
-public:
-    static const int ATT_ACCUMULATOR_INDEX = 0;
-    static const int ATT_REVEAL_INDEX = 1;
+namespace render {
+    class FrameBuffer;
+    class GBuffer;
 
-public:
-    OITBuffer() {}
-    ~OITBuffer() {}
+    class OITBuffer {
+    public:
+        static const int ATT_ACCUMULATOR_INDEX = 0;
+        static const int ATT_REVEAL_INDEX = 1;
 
-    void prepare(
-        const Assets& assets,
-        GBuffer* gBuffer);
+    public:
+        OITBuffer() {}
+        ~OITBuffer() {}
 
-    void updateRT(const UpdateViewContext& ctx);
+        void prepare(
+            const Assets& assets,
+            GBuffer* gBuffer);
 
-    void bind(const RenderContext& ctx);
+        void updateRT(const UpdateViewContext& ctx);
 
-    void bindTexture(const RenderContext& ctx);
-    void unbindTexture(const RenderContext& ctx);
+        void bind(const RenderContext& ctx);
 
-    void clearAll();
-    void invalidateAll();
+        void bindTexture(const RenderContext& ctx);
+        void unbindTexture(const RenderContext& ctx);
 
-public:
-    std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+        void clearAll();
+        void invalidateAll();
 
-private:
-    GBuffer* m_gBuffer{ nullptr };
+    public:
+        std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 
-    int m_width{ -1 };
-    int m_height{ -1 };
-};
+    private:
+        GBuffer* m_gBuffer{ nullptr };
+
+        int m_width{ -1 };
+        int m_height{ -1 };
+    };
+}

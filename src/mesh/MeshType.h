@@ -12,12 +12,17 @@
 
 #include "NodeRenderFlags.h"
 
+namespace render {
+    struct MeshTypeKey;
+    struct MeshTypeComparator;
+    class Batch;
+}
+
 class Sprite;
 
 class CustomMaterial;
 class Program;
 class Registry;
-class Batch;
 class RenderContext;
 class MeshTypeRegistry;
 
@@ -28,12 +33,14 @@ namespace mesh {
     class MeshType final
     {
         friend class MeshTypeRegistry;
+        friend struct render::MeshTypeComparator;
+        friend struct render::MeshTypeKey;
 
     public:
         MeshType(std::string_view name);
         MeshType(MeshType& o) = delete;
         MeshType& operator=(MeshType& o) = delete;
-        MeshType& operator=(MeshType&& o) noexcept;
+        MeshType& operator=(MeshType&& o) = delete;
         MeshType(MeshType&& o) noexcept;
         ~MeshType();
 
@@ -72,6 +79,18 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
+        inline const kigl::GLVertexArray* getVAO() const noexcept {
+            return m_vao;
+        }
+
+        inline const backend::DrawOptions& getDrawOptions() const noexcept {
+            return m_drawOptions;
+        }
+
+        inline backend::DrawOptions& modifyDrawOptions() noexcept {
+            return m_drawOptions;
+        }
+
     public:
         ki::type_id m_id{ 0 };
         const std::string m_name;
@@ -91,13 +110,12 @@ namespace mesh {
 
         text::font_id m_fontId{ 0 };
 
-        backend::DrawOptions m_drawOptions;
-
-        kigl::GLVertexArray* m_vao{ nullptr };
-
     private:
         bool m_prepared : 1 {false};
         bool m_preparedView : 1 {false};
+
+        kigl::GLVertexArray* m_vao{ nullptr };
+        backend::DrawOptions m_drawOptions;
 
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
@@ -105,14 +123,5 @@ namespace mesh {
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
         kigl::GLVertexArray m_privateVAO;
-    };
-
-    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    struct MeshTypeComparator {
-        bool operator()(const MeshType* a, const MeshType* b) const {
-            if (a->m_drawOptions < b->m_drawOptions) return true;
-            else if (b->m_drawOptions < a->m_drawOptions) return false;
-            return a->m_id < b->m_id;
-        }
     };
 }

@@ -4,9 +4,12 @@
 
 #include "Renderer.h"
 
+namespace render {
+    class FrameBuffer;
+}
+
 class ShadowCascade;
 class Viewport;
-class FrameBuffer;
 
 class ShadowMapRenderer final : public Renderer
 {

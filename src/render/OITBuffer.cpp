@@ -8,76 +8,77 @@
 #include "render/GBuffer.h"
 #include "render/FrameBuffer.h"
 
-
-void OITBuffer::prepare(
-    const Assets& assets,
-    GBuffer* gBuffer)
-{
-    m_gBuffer = gBuffer;
-}
-
-void OITBuffer::updateRT(const UpdateViewContext& ctx)
-{
-    const auto& res = ctx.m_resolution;
-
-    int w = (int)(ctx.m_assets.gBufferScale * res.x);
-    int h = (int)(ctx.m_assets.gBufferScale * res.y);
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = w != m_width || h != m_height;
-    if (!changed) return;
-
-    //if (m_mainBuffer) return;
-    KI_INFO(fmt::format("OIT_BUFFER: update - w={}, h={}", w, h));
-
+namespace render {
+    void OITBuffer::prepare(
+        const Assets& assets,
+        GBuffer* gBuffer)
     {
-        // NOTE KI alpha NOT needed
-        auto buffer = new FrameBuffer(
-            "oit_buffer",
-            {
-                w, h,
-                {
-                    FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
-                    FrameBufferAttachment::getOITRevealTexture(GL_COLOR_ATTACHMENT1),
-                    // NOTE KI *SHARE* depth with gbuffer
-                    FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
-                }
-            });
-
-        m_buffer.reset(buffer);
-        m_buffer->prepare();
-
-        //unbindTexture(ctx);
+        m_gBuffer = gBuffer;
     }
 
-    m_width = w;
-    m_height = h;
-}
+    void OITBuffer::updateRT(const UpdateViewContext& ctx)
+    {
+        const auto& res = ctx.m_resolution;
 
-void OITBuffer::bind(const RenderContext& ctx)
-{
-    m_buffer->bind(ctx);
-}
+        int w = (int)(ctx.m_assets.gBufferScale * res.x);
+        int h = (int)(ctx.m_assets.gBufferScale * res.y);
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
 
-void OITBuffer::bindTexture(const RenderContext& ctx)
-{
-    m_buffer->bindTexture(ctx, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
-    m_buffer->bindTexture(ctx, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
-}
+        bool changed = w != m_width || h != m_height;
+        if (!changed) return;
 
-void OITBuffer::unbindTexture(const RenderContext& ctx)
-{
-    m_buffer->unbindTexture(ctx, UNIT_OIT_ACCUMULATOR);
-    m_buffer->unbindTexture(ctx, UNIT_OIT_REVEAL);
-}
+        //if (m_mainBuffer) return;
+        KI_INFO(fmt::format("OIT_BUFFER: update - w={}, h={}", w, h));
 
-void OITBuffer::clearAll()
-{
-    m_buffer->clearAll();
-}
+        {
+            // NOTE KI alpha NOT needed
+            auto buffer = new FrameBuffer(
+                "oit_buffer",
+                {
+                    w, h,
+                    {
+                        FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
+                        FrameBufferAttachment::getOITRevealTexture(GL_COLOR_ATTACHMENT1),
+                        // NOTE KI *SHARE* depth with gbuffer
+                        FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
+                    }
+                });
 
-void OITBuffer::invalidateAll()
-{
-    m_buffer->invalidateAll();
+            m_buffer.reset(buffer);
+            m_buffer->prepare();
+
+            //unbindTexture(ctx);
+        }
+
+        m_width = w;
+        m_height = h;
+    }
+
+    void OITBuffer::bind(const RenderContext& ctx)
+    {
+        m_buffer->bind(ctx);
+    }
+
+    void OITBuffer::bindTexture(const RenderContext& ctx)
+    {
+        m_buffer->bindTexture(ctx, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
+        m_buffer->bindTexture(ctx, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
+    }
+
+    void OITBuffer::unbindTexture(const RenderContext& ctx)
+    {
+        m_buffer->unbindTexture(ctx, UNIT_OIT_ACCUMULATOR);
+        m_buffer->unbindTexture(ctx, UNIT_OIT_REVEAL);
+    }
+
+    void OITBuffer::clearAll()
+    {
+        m_buffer->clearAll();
+    }
+
+    void OITBuffer::invalidateAll()
+    {
+        m_buffer->invalidateAll();
+    }
 }

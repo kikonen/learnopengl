@@ -13,6 +13,22 @@
 #include "model/NodeTransform.h"
 #include "model/Snapshot.h"
 
+namespace backend {
+    struct DrawOptions;
+}
+
+namespace kigl {
+    struct GLVertexArray;
+}
+
+namespace render {
+    class Batch;
+}
+
+namespace mesh {
+    class MeshType;
+}
+
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -21,14 +37,9 @@ class NodeGenerator;
 class UpdateContext;
 class RenderContext;
 
-namespace mesh {
-    class MeshType;
-}
-
 class Registry;
 class EntityRegistry;
 class ParticleGenrator;
-class Batch;
 
 
 class Node final
@@ -49,7 +60,7 @@ public:
         const UpdateContext& ctx,
         EntityRegistry* entityRegistry);
 
-    void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
+    void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
 
     inline Node* getParent() {
         return m_parent;
@@ -129,6 +140,9 @@ public:
 
     inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
+
+    const kigl::GLVertexArray* getVAO() const noexcept;
+    const backend::DrawOptions& getDrawOptions() const noexcept;
 
 public:
     ki::node_id lua_getId() const noexcept;

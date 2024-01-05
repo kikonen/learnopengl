@@ -3,8 +3,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-class Batch;
-
 namespace mesh {
     class QuadVAO {
     public:

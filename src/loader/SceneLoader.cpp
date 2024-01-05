@@ -552,7 +552,7 @@ namespace loader {
     {
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
-        Material* material = nullptr;
+        const Material* material = nullptr;
 
         if (!data.materialName.empty()) {
             material = findMaterial(data.materialName);
@@ -580,7 +580,7 @@ namespace loader {
         mesh::MeshType* type,
         const EntityCloneData& data)
     {
-        Sprite* sprite{ nullptr };
+        const Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
             sprite = findSprite(data.spriteName);
@@ -873,33 +873,33 @@ namespace loader {
         }
     }
 
-    Material* SceneLoader::findMaterial(
-        std::string_view name)
+    const Material* SceneLoader::findMaterial(
+        std::string_view name) const
     {
         const auto& it = std::find_if(
-            m_materials.begin(),
-            m_materials.end(),
-            [&name](MaterialData& m) { return m.material.m_name == name && !m.material.m_default; });
+            m_materials.cbegin(),
+            m_materials.cend(),
+            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
         return it != m_materials.end() ? &(it->material) : nullptr;
     }
 
-    Sprite* SceneLoader::findSprite(
-        std::string_view name)
+    const Sprite* SceneLoader::findSprite(
+        std::string_view name) const
     {
         const auto& it = std::find_if(
-            m_sprites.begin(),
-            m_sprites.end(),
-            [&name](SpriteData& m) { return m.sprite.m_name == name; });
+            m_sprites.cbegin(),
+            m_sprites.cend(),
+            [&name](const auto& m) { return m.sprite.m_name == name; });
         return it != m_sprites.end() ? &(it->sprite) : nullptr;
     }
 
-    FontData* SceneLoader::findFont(
-        std::string_view name)
+    const FontData* SceneLoader::findFont(
+        std::string_view name) const
     {
         const auto& it = std::find_if(
-            m_fonts.begin(),
-            m_fonts.end(),
-            [&name](FontData& m) { return m.name == name; });
+            m_fonts.cbegin(),
+            m_fonts.cend(),
+            [&name](const auto& m) { return m.name == name; });
         return it != m_fonts.end() ? &(*it) : nullptr;
     }
 

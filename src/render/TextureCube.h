@@ -9,16 +9,18 @@ namespace kigl {
     class GLState;
 }
 
-class TextureCube {
-public:
-    TextureCube() = default;
-    ~TextureCube() = default;
+namespace render {
+    class TextureCube {
+    public:
+        TextureCube() = default;
+        ~TextureCube() = default;
 
-    void prepare();
+        void prepare();
 
-    void draw(kigl::GLState& state);
+        void draw(kigl::GLState& state);
 
-private:
-    kigl::GLVertexArray m_vao;
-    kigl::GLBuffer m_vbo{ "texture_cube" };
-};
+    private:
+        kigl::GLVertexArray m_vao;
+        kigl::GLBuffer m_vbo{ "texture_cube" };
+    };
+}

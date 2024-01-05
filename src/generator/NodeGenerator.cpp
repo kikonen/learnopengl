@@ -60,7 +60,7 @@ void NodeGenerator::updateEntity(
 void NodeGenerator::bindBatch(
     const RenderContext& ctx,
     Node& container,
-    Batch& batch)
+    render::Batch& batch)
 {
     if (m_activeCount == 0) return;
 

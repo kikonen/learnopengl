@@ -7,6 +7,7 @@ namespace ki
 
     typedef unsigned int size_t32;
     typedef unsigned char size_t8;
+    typedef unsigned short size_t16;
 
     typedef unsigned int node_id;
     typedef unsigned short mesh_id;

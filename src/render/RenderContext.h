@@ -15,12 +15,12 @@
 
 namespace render {
     class NodeDraw;
+    class Batch;
+    class RenderData;
 }
 
 class Camera;
 class Registry;
-class Batch;
-class RenderData;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -56,9 +56,9 @@ public:
         const ki::RenderClock& clock,
         const Assets& assets,
         Registry* registry,
-        RenderData* renderData,
+        render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
-        Batch* batch,
+        render::Batch* batch,
         kigl::GLState& state,
         Camera* camera,
         float nearPlane,
@@ -100,9 +100,9 @@ public:
     const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
-    RenderData* const m_renderData;
+    render::RenderData* const m_renderData;
     render::NodeDraw* const m_nodeDraw;
-    Batch* const m_batch;
+    render::Batch* const m_batch;
 
     GLenum m_depthFunc{ GL_LESS };
 

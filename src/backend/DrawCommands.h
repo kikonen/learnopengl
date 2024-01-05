@@ -2,7 +2,10 @@
 
 #include <glm/glm.hpp>
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
+
 class Program;
 
 namespace kigl {
@@ -16,7 +19,7 @@ namespace backend {
     };
 
     struct ChangeBuffer {
-        FrameBuffer* buffer;
+        render::FrameBuffer* buffer;
     };
 
     struct DrawEntity {

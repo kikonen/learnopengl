@@ -29,12 +29,12 @@ public:
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
-    CubeMapBuffer asFrameBuffer(int side);
+    render::CubeMapBuffer asFrameBuffer(int side);
 
 public:
     const int m_size;
 
-    CubeMap m_cubeMap{ true };
+    render::CubeMap m_cubeMap{ true };
 
     bool m_valid{ false };
 

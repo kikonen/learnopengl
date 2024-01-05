@@ -8,13 +8,16 @@
 
 #include "kigl/kigl.h"
 
+namespace render {
+    class Batch;
+}
+
 class Node;
 class Registry;
 
 class UpdateContext;
 class RenderContext;
 
-class Batch;
 class EntityRegistry;
 
 //
@@ -46,7 +49,7 @@ public:
     void bindBatch(
         const RenderContext& ctx,
         Node& container,
-        Batch& batch);
+        render::Batch& batch);
 
     inline const std::vector<NodeTransform>& getTransforms() noexcept
     {

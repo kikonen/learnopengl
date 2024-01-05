@@ -141,14 +141,14 @@ namespace loader {
             const YAML::Node& node,
             MetaData& data) const;
 
-        Material* findMaterial(
-            std::string_view name);
+        const Material* findMaterial(
+            std::string_view name) const;
 
-        Sprite* findSprite(
-            std::string_view name);
+        const Sprite* findSprite(
+            std::string_view name) const;
 
-        FontData* findFont(
-            std::string_view name);
+        const FontData* findFont(
+            std::string_view name) const;
 
     private:
         size_t m_pendingCount{ 0 };

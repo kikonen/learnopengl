@@ -15,8 +15,8 @@ namespace backend {
         kigl::GLState* m_state{ nullptr };
         const Program* m_program{ nullptr };
         const kigl::GLVertexArray* m_vao{ nullptr };
-        const DrawOptions* m_drawOptions{ nullptr };
-        bool m_allowBlend = false;
-        bool m_forceWireframe = false;
+        DrawOptions m_drawOptions;
+        bool m_allowBlend : 1 {false};
+        bool m_forceWireframe : 1 {false};
     };
 }

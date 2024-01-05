@@ -23,10 +23,10 @@
 
 
 namespace {
-    TextureQuad g_sharedQuad;
+    render::TextureQuad g_sharedQuad;
 
     bool g_sharedQuadPrepared{ false };
-    TextureQuad& getSharedQuad() {
+    render::TextureQuad& getSharedQuad() {
         if (!g_sharedQuadPrepared) {
             g_sharedQuadPrepared = true;
             g_sharedQuad.prepare();
@@ -71,12 +71,12 @@ Viewport::~Viewport()
     KI_INFO(fmt::format("VIEW_PORT: delete, name={}", m_name));
 }
 
-void Viewport::setSourceFrameBuffer(FrameBuffer* frameBuffer)
+void Viewport::setSourceFrameBuffer(render::FrameBuffer* frameBuffer)
 {
     m_sourceBuffer = frameBuffer;
 }
 
-void Viewport::setDestinationFrameBuffer(FrameBuffer * frameBuffer)
+void Viewport::setDestinationFrameBuffer(render::FrameBuffer * frameBuffer)
 {
     m_destinationBuffer = frameBuffer;
 }

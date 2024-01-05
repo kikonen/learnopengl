@@ -59,15 +59,15 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
     KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
 
     {
-        auto buffer = new FrameBuffer(
+        auto buffer = new render::FrameBuffer(
             "node",
             {
                 w, h,
                 {
                     // NOTE KI alpha NOT needed
-                    FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
+                    render::FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
-                    FrameBufferAttachment::getDepthStencilRbo(),
+                    render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
 
@@ -81,7 +81,7 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 
 void NodeRenderer::render(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     ctx.validateRender("node_map");
 
@@ -109,7 +109,7 @@ void NodeRenderer::render(
 // Render selected nodes into stencil mask
 void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
@@ -139,7 +139,7 @@ void NodeRenderer::fillHighlightMask(
 // Render highlight over stencil masked nodes
 void NodeRenderer::renderHighlight(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;

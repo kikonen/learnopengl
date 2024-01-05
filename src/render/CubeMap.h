@@ -17,35 +17,37 @@ namespace {
     class GLState;
 }
 
-class CubeMap
-{
-public:
-    CubeMap(bool empty);
+namespace render {
+    class CubeMap
+    {
+    public:
+        CubeMap(bool empty);
 
-    ~CubeMap();
+        ~CubeMap();
 
-    bool valid() { return m_cubeTexture > 0; }
+        bool valid() { return m_cubeTexture > 0; }
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+        void bindTexture(const RenderContext& ctx, int unitIndex);
 
-    operator int() const { return m_cubeTexture; }
+        operator int() const { return m_cubeTexture; }
 
-private:
-    void createEmpty();
+    private:
+        void createEmpty();
 
-    void createFaces();
+        void createFaces();
 
-public:
-    const bool m_empty;
+    public:
+        const bool m_empty;
 
-    std::vector<std::string> m_faces;
-    int m_size = 0;
+        std::vector<std::string> m_faces;
+        int m_size = 0;
 
-    GLenum m_internalFormat = GL_RGB8;
+        GLenum m_internalFormat = GL_RGB8;
 
-    kigl::GLTextureHandle m_cubeTexture;
-};
+        kigl::GLTextureHandle m_cubeTexture;
+    };
+}

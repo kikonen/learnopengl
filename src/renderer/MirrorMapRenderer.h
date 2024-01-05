@@ -6,8 +6,11 @@
 
 #include "component/Camera.h"
 
+namespace render {
+    class FrameBuffer;
+}
+
 class Node;
-class FrameBuffer;
 class Viewport;
 class WaterMapRenderer;
 
@@ -40,7 +43,7 @@ public:
 private:
     void drawNodes(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer,
+        render::FrameBuffer* targetBuffer,
         Node* current);
 
     Node* findClosest(const RenderContext& ctx);
@@ -66,7 +69,7 @@ private:
     int m_prevIndex{ 0 };
 
     int m_bufferCount{ 1 };
-    std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;
+    std::vector<std::unique_ptr<render::FrameBuffer>> m_reflectionBuffers;
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };

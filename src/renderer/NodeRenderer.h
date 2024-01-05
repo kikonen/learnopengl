@@ -4,7 +4,9 @@
 
 #include "Renderer.h"
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
 
 class NodeRenderer final : public Renderer
 {
@@ -23,19 +25,19 @@ public:
 
     void render(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
 private:
     void fillHighlightMask(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
     void renderHighlight(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
 public:
-    std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
 
 private:
     Program* m_selectionProgram{ nullptr };

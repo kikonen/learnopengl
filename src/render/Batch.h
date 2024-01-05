@@ -20,85 +20,88 @@ class Node;
 class Registry;
 class EntityRegistry;
 
-
-// NOTE KI use single shared UBO buffer for rendering
-// => less resources needed
-//
-// https://stackoverflow.com/questions/15438605/can-a-vbo-be-bound-to-multiple-vaos
-// https://www.khronos.org/opengl/wiki/Vertex_Specification#Index_buffers
-//
-class Batch final
-{
-public:
-    Batch();
-    ~Batch() = default;
-
-    // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
-    Batch(const Batch&) = delete;
-    Batch& operator=(const Batch&) = delete;
-
-    void add(
-        const RenderContext& ctx,
-        const int entityIndex) noexcept;
-
-    void addAll(
-        const RenderContext& ctx,
-        const std::vector<int> entityIndeces) noexcept;
-
-    void addInstanced(
-        const RenderContext& ctx,
-        int instancedEntityIndex,
-        int firstEntityIndex,
-        int count) noexcept;
-
-    void bind() noexcept;
-
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry,
-        int entryCount = -1,
-        int bufferCount = -1);
-
-    void draw(
-        const RenderContext& ctx,
-        Node& node,
-        Program* program);
-
-    bool isFlushed() const noexcept
+namespace render {
+    // NOTE KI use single shared UBO buffer for rendering
+    // => less resources needed
+    //
+    // https://stackoverflow.com/questions/15438605/can-a-vbo-be-bound-to-multiple-vaos
+    // https://www.khronos.org/opengl/wiki/Vertex_Specification#Index_buffers
+    //
+    class Batch final
     {
-        return m_entityIndeces.size() == 0;
-    }
+    public:
+        Batch();
+        ~Batch() = default;
 
-    void flush(
-        const RenderContext& ctx);
+        // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
+        Batch(const Batch&) = delete;
+        Batch& operator=(const Batch&) = delete;
 
-    backend::gl::PerformanceCounters getCounters(bool clear) const;
-    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
+        void add(
+            const RenderContext& ctx,
+            const int entityIndex) noexcept;
 
-private:
-    void addCommand(
-        const RenderContext& ctx,
-        const mesh::MeshType* type,
-        Program* program) noexcept;
+        void addAll(
+            const RenderContext& ctx,
+            const std::vector<int> entityIndeces) noexcept;
 
-    bool inFrustum(
-        const RenderContext& ctx,
-        const int entityIndex) const noexcept;
+        void addInstanced(
+            const RenderContext& ctx,
+            int instancedEntityIndex,
+            int firstEntityIndex,
+            int count) noexcept;
 
-private:
-    bool m_prepared = false;
+        void bind() noexcept;
 
-    bool m_frustumCPU = false;
-    bool m_frustumGPU = false;
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry,
+            int entryCount = -1,
+            int bufferCount = -1);
 
-    std::vector<BatchCommand> m_batches;
+        void draw(
+            const RenderContext& ctx,
+            Node& node,
+            Program* program);
 
-    EntityRegistry* m_entityRegistry{ nullptr };
+        bool isFlushed() const noexcept
+        {
+            return m_entityIndeces.size() == 0;
+        }
 
-    std::vector<int> m_entityIndeces;
+        void flush(
+            const RenderContext& ctx);
 
-    std::unique_ptr<backend::DrawBuffer> m_draw;
+        backend::gl::PerformanceCounters getCounters(bool clear) const;
+        backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
-    mutable unsigned long m_drawCount = 0;
-    mutable unsigned long m_skipCount = 0;
-};
+    private:
+        void addCommand(
+            const RenderContext& ctx,
+            const mesh::MeshType* type,
+            const kigl::GLVertexArray* vao,
+            const backend::DrawOptions& drawOptions,
+            Program* program) noexcept;
+
+        bool inFrustum(
+            const RenderContext& ctx,
+            const int entityIndex) const noexcept;
+
+    private:
+        bool m_prepared = false;
+
+        bool m_frustumCPU = false;
+        bool m_frustumGPU = false;
+
+        std::vector<BatchCommand> m_batches;
+
+        EntityRegistry* m_entityRegistry{ nullptr };
+
+        std::vector<int> m_entityIndeces;
+
+        std::unique_ptr<backend::DrawBuffer> m_draw;
+
+        mutable unsigned long m_drawCount = 0;
+        mutable unsigned long m_skipCount = 0;
+    };
+}
