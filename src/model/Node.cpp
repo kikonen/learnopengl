@@ -163,10 +163,8 @@ void Node::updateEntity(
 
 void Node::bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept
 {
-    if (m_type->m_flags.instanced) {
-        if (m_instancer) {
-            m_instancer->bindBatch(ctx, *this, batch);
-        }
+    if (m_instancer) {
+        m_instancer->bindBatch(ctx, *this, batch);
     } else {
         batch.add(ctx, m_transform.m_entityIndex);
     }
