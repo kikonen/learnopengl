@@ -209,11 +209,12 @@ namespace render {
     {
         const auto type = node.m_type;
 
-        const auto& vao = node.getVAO();
-
         if (type->m_flags.invisible || !node.m_visible) return;
-        if (!vao)
-            return;
+
+        node.updateVAO(ctx);
+
+        const auto& vao = node.getVAO();
+        if (!vao) return;
 
         {
             const auto& drawOptions = node.getDrawOptions();

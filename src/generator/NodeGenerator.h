@@ -8,6 +8,14 @@
 
 #include "kigl/kigl.h"
 
+namespace kigl {
+    struct GLVertexArray;
+}
+
+namespace backend {
+    struct DrawOptions;
+}
+
 namespace render {
     class Batch;
 }
@@ -50,6 +58,16 @@ public:
         const RenderContext& ctx,
         Node& container,
         render::Batch& batch);
+
+    virtual void updateVAO(
+        const RenderContext& ctx,
+        const Node& container) {}
+
+    virtual const kigl::GLVertexArray* getVAO(
+        const Node& container) const noexcept;
+
+    virtual const backend::DrawOptions& getDrawOptions(
+        const Node& container) const noexcept;
 
     inline const std::vector<NodeTransform>& getTransforms() noexcept
     {

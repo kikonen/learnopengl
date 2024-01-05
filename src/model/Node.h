@@ -60,6 +60,9 @@ public:
         const UpdateContext& ctx,
         EntityRegistry* entityRegistry);
 
+    void updateVAO(const RenderContext& ctx) noexcept;
+    const kigl::GLVertexArray* getVAO() const noexcept;
+    const backend::DrawOptions& getDrawOptions() const noexcept;
     void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
 
     inline Node* getParent() {
@@ -140,9 +143,6 @@ public:
 
     inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
-
-    const kigl::GLVertexArray* getVAO() const noexcept;
-    const backend::DrawOptions& getDrawOptions() const noexcept;
 
 public:
     ki::node_id lua_getId() const noexcept;

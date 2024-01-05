@@ -161,6 +161,33 @@ void Node::updateEntity(
     m_forceUpdateEntity = false;
 }
 
+void Node::updateVAO(const RenderContext& ctx) noexcept
+{
+    if (m_instancer) {
+        m_instancer->updateVAO(ctx, *this);
+    }
+}
+
+const kigl::GLVertexArray* Node::getVAO() const noexcept
+{
+    if (m_instancer) {
+        return m_instancer->getVAO(*this);
+    }
+    else {
+        return m_type->getVAO();
+    }
+}
+
+const backend::DrawOptions& Node::getDrawOptions() const noexcept
+{
+    if (m_instancer) {
+        return m_instancer->getDrawOptions(*this);
+    }
+    else {
+        return m_type->getDrawOptions();
+    }
+}
+
 void Node::bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept
 {
     if (m_instancer) {
@@ -200,14 +227,6 @@ void Node::setSelectionMaterialIndex(int index)
         m_forceUpdateEntity = true;
         m_forceUpdateSnapshot = true;
     }
-}
-
-const kigl::GLVertexArray* Node::getVAO() const noexcept {
-    return m_type->getVAO();
-}
-
-const backend::DrawOptions& Node::getDrawOptions() const noexcept {
-    return m_type->getDrawOptions();
 }
 
 ki::node_id Node::lua_getId() const noexcept

@@ -4,6 +4,8 @@
 
 #include "model/Node.h"
 
+#include "mesh/MeshType.h"
+
 #include "render/Batch.h"
 
 #include "engine/UpdateContext.h"
@@ -67,6 +69,18 @@ void NodeGenerator::bindBatch(
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     //batch.addInstanced(ctx, container.getEntityIndex(), m_activeFirst, m_activeCount);
     batch.addInstanced(ctx, -1, m_activeFirst, m_activeCount);
+}
+
+const kigl::GLVertexArray* NodeGenerator::getVAO(
+    const Node& container) const noexcept
+{
+    return container.m_type->getVAO();
+}
+
+const backend::DrawOptions& NodeGenerator::getDrawOptions(
+    const Node& container) const noexcept
+{
+    return container.m_type->getDrawOptions();
 }
 
 const glm::vec4 NodeGenerator::calculateVolume()
