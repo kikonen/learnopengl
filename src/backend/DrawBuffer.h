@@ -75,8 +75,8 @@ namespace backend {
 
         std::vector<backend::DrawRange> m_drawRanges;
 
-        kigl::GLBuffer m_drawParameters{ "drawParameters" };
-        kigl::GLBuffer m_performanceCounters{ "performanceCounters" };
+        kigl::GLBuffer m_drawParameters{ "draw_parameters" };
+        kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };
 
         size_t m_drawCounter = 0;
     };

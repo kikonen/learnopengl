@@ -22,7 +22,11 @@ namespace {
 }
 
 namespace mesh {
-    ModelVAO::ModelVAO()
+    ModelVAO::ModelVAO(std::string_view name)
+        : m_name(name),
+        m_positionVbo{ m_name + "_position_vbo" },
+        m_vertexVbo{ m_name + "_vertex_vbo" },
+        m_ebo{ m_name + "_ebo" }
     {}
 
     void ModelVAO::prepare(std::string_view name)

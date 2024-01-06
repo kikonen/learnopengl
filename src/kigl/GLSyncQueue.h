@@ -26,7 +26,7 @@ namespace kigl {
             m_useFence{ useFence },
             m_useSingleFence{ useSingleFence },
             m_entrySize{ sizeof(T) },
-            m_buffer{ std::string{ "syncQueue_" } + std::string{ name } }
+            m_buffer{ std::string{ name } + std::string{ "_sync_queue" } }
         {
         }
 

@@ -60,5 +60,5 @@ private:
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
-    mesh::ModelVAO m_vao{};
+    mesh::ModelVAO m_vao{ "model" };
 };

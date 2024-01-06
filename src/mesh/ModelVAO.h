@@ -22,7 +22,7 @@ namespace mesh {
 
     class ModelVAO {
     public:
-        ModelVAO();
+        ModelVAO(std::string_view name);
         ~ModelVAO() = default;
 
         void prepare(std::string_view name);
@@ -54,16 +54,17 @@ namespace mesh {
 
     private:
         bool m_prepared = false;
+        std::string m_name;
 
         std::atomic<bool> m_dirty;
         std::mutex m_lock{};
 
         std::unique_ptr<kigl::GLVertexArray> m_vao;
 
-        kigl::GLBuffer m_positionVbo{ "positionVBO" };
-        kigl::GLBuffer m_vertexVbo{ "vertexVBO" };
+        kigl::GLBuffer m_positionVbo;
+        kigl::GLBuffer m_vertexVbo;
 
-        kigl::GLBuffer m_ebo{ "modelEBO" };
+        kigl::GLBuffer m_ebo;
 
         std::vector<PositionEntry> m_positionEntries;
         std::vector<VertexEntry> m_vertexEntries;

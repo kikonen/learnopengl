@@ -56,6 +56,6 @@ private:
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 
-    kigl::GLBuffer m_ssbo{ "entitySSBO" };
+    kigl::GLBuffer m_ssbo{ "entity_ssbo" };
     kigl::GLFence m_fence;
 };

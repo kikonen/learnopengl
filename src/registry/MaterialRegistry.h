@@ -75,7 +75,7 @@ private:
     size_t m_lastIndexSize = 0;
 
     //GLBuffer m_ubo{ "materialsUBO" };
-    kigl::GLBuffer m_ssbo{ "materialsSSBO" };
+    kigl::GLBuffer m_ssbo{ "materials_ssbo" };
 
-    kigl::GLBuffer m_indexBuffer{ "materialIndex" };
+    kigl::GLBuffer m_indexBuffer{ "material_index" };
 };

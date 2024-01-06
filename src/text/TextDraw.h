@@ -51,7 +51,7 @@ namespace text
     private:
         Program* m_program{ nullptr };
 
-        mesh::ModelVAO m_vao;
+        mesh::ModelVAO m_vao{ "text" };
         mesh::ModelVBO m_vbo;
     };
 }

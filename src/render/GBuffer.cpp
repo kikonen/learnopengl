@@ -59,7 +59,7 @@ namespace render {
         {
             m_depthTexture = std::make_unique< FrameBufferAttachment>();
             *m_depthTexture = FrameBufferAttachment::getDepthStencilTexture();
-            m_depthTexture->create("gbuffer-ref-tex", w, h);
+            m_depthTexture->create("gbuffer_ref_tex", w, h);
         }
 
         m_width = w;

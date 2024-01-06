@@ -104,12 +104,12 @@ void CubeMapRenderer::prepareRT(
     int size = assets.cubeMapSize;
 
     {
-        m_curr = std::make_unique<DynamicCubeMap>(size);
+        m_curr = std::make_unique<DynamicCubeMap>(fmt::format("{}_next", m_name), size);
         m_curr->prepareRT(
             assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
-        m_prev = std::make_unique<DynamicCubeMap>(size);
+        m_prev = std::make_unique<DynamicCubeMap>(fmt::format("{}_prev", m_name), size);
         m_prev->prepareRT(
             assets, registry,
             false,

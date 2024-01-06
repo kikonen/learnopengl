@@ -84,7 +84,7 @@ namespace backend {
         }
 
         m_commands = std::make_unique<GLCommandQueue>(
-            "drawCommand",
+            "draw_command",
             commandBatchCount,
             commandRangeCount,
             m_useFence,

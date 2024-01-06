@@ -34,7 +34,7 @@ namespace render {
         auto& att = *this;
 
         {
-            std::string attName = fmt::format("{}-att-{}", name, att.index);
+            std::string attName = fmt::format("{}_att_{}", name, att.index);
 
             if (att.type == FrameBufferAttachmentType::shared) {
                 // NOTE KI nothing
