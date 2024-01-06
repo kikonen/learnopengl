@@ -24,14 +24,14 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - xname: Text plane
+  - name: Text plane
     model: quad
     material: metal
     custom_material:
       type: text
       font: hello_font
     program: font_atlas_demo
-    pos: [0.0, 2.0, -5.0]
+    pos: [2.0, 2.0, -5.0]
     render_flags:
       alpha: true
       blend: true
@@ -98,8 +98,8 @@ entities:
 fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
-    size: 64
-    atlas_size: 1024
+    size: 100
+    atlas_size: 512
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

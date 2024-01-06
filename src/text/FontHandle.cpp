@@ -5,7 +5,7 @@
 namespace
 {
     const char* CACHE =
-        " !\"#$%&'()*+,-./0123456789:;<=>?"
+        "\uffed !\"#$%&'()*+,-./0123456789:;<=>?"
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
         "`abcdefghijklmnopqrstuvwxyz{|}~";
 }

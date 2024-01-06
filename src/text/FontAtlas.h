@@ -31,6 +31,8 @@ namespace text
         void prepare(
             const Assets& assets);
 
+        void update();
+
         void bindTextures(kigl::GLState& state);
         void unbindTextures(kigl::GLState& state);
 
@@ -53,5 +55,7 @@ namespace text
 
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };
+
+        size_t m_usedAtlasSize{ 0 };
     };
 }

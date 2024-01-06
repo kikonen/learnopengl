@@ -32,11 +32,7 @@
 
 namespace
 {
-    typedef struct {
-        float x, y, z;
-        float u, v;
-        glm::vec4 color;
-    } vertex_t;
+    const char* MISSING_CH = "\uffed";
 
     //
     // Generate verteces for glyphs into buffer
@@ -55,6 +51,11 @@ namespace
 
         for (const char ch : text) {
             const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
+            if (!glyph) {
+                glyph = texture_font_get_glyph(font, MISSING_CH);
+            }
+
+            if (!glyph) continue;
 
             float kerning = 0.0f;
             if (prev)
@@ -144,8 +145,7 @@ namespace text
         m_vao.clear();
         m_vao.registerModel(m_vbo);
         m_vao.updateRT(ctx.toUpdateContext());
-
-        drawOptions.indexCount = m_vbo.m_indexEntries.size() * 3;
+        drawOptions.indexCount = static_cast<GLsizei>(m_vbo.m_indexEntries.size() * 3);
 
         font->bindTextures(ctx.m_state);
 

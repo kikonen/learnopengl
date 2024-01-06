@@ -95,7 +95,27 @@ namespace text
             glTextureStorage2D(texId, 1, internalFormat, w, h);
             glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
             //glGenerateTextureMipmap(texId);
+
+            m_usedAtlasSize = m_atlasHandle->m_atlas->used;
         }
+    }
+
+    void FontAtlas::update()
+    {
+        size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
+        if (m_usedAtlasSize == currentAtlasSize) return;
+
+        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
+        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
+
+        glTextureSubImage2D(
+            m_texture.m_textureID,
+            0,
+            0, 0, w, h,
+            GL_RED,
+            GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
+
+        m_usedAtlasSize = currentAtlasSize;
     }
 
     void FontAtlas::bindTextures(kigl::GLState& state)

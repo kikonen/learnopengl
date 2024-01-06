@@ -22,6 +22,7 @@ void FontRegistry::updateRT(const UpdateContext& ctx)
 
     for (auto& font : m_fonts) {
         font.prepare(ctx.m_assets);
+        font.update();
     }
 }
 
