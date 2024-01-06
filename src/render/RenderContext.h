@@ -10,6 +10,8 @@
 
 #include "asset/Assets.h"
 
+#include "engine/UpdateContext.h"
+
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
@@ -92,6 +94,8 @@ public:
         m_allowDrawDebug = flag;
         return old;
     }
+
+    UpdateContext toUpdateContext() const;
 
 public:
     const std::string m_name;

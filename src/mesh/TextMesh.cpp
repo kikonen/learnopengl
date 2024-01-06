@@ -14,8 +14,6 @@ namespace {
         glm::vec3{ -1.f, -1.f, 0.f },
         glm::vec3{ 1.f, 1.f, 0.f },
         true };
-
-    text::TextDraw draw;
 }
 
 namespace mesh {
@@ -49,8 +47,6 @@ namespace mesh {
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
-
-        draw.prepareRT(assets, registry);
 
         return m_vao;
     }

@@ -216,8 +216,8 @@ namespace loader {
             else if (k == "front") {
                 data.front = readVec3(v);
             }
-            else if (k == "font") {
-                data.font.name = readString(v);
+            else if (k == "text") {
+                loadText(v, data.text);
             }
             else if (k == "material") {
                 data.materialName = readString(v);
@@ -345,6 +345,26 @@ namespace loader {
                         clones.push_back(clone);
                     }
                 }
+            }
+        }
+    }
+
+    void EntityLoader::loadText(
+        const YAML::Node& node,
+        TextData& data) const
+    {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "text") {
+                data.text = readString(v);
+            }
+            else if (k == "font") {
+                data.font = readString(v);
+            }
+            else {
+                reportUnknown("text_entry", k, v);
             }
         }
     }

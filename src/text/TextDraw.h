@@ -4,8 +4,18 @@
 
 #include "asset/Assets.h"
 
+#include "text/size.h"
+
 #include "mesh/ModelVAO.h"
 #include "mesh/ModelVBO.h"
+
+namespace backend {
+    struct DrawOptions;
+}
+
+namespace kigl {
+    struct GLVertexArray;
+}
 
 class RenderContext;
 class Program;
@@ -28,8 +38,15 @@ namespace text
 
         void draw(
             const RenderContext& ctx,
+            text::font_id fontId,
             std::string_view text,
-            Node* node);
+            backend::DrawOptions& drawOptions,
+            const Node* node);
+
+        const kigl::GLVertexArray* getVAO() const noexcept
+        {
+            return m_vao.getVAO();
+        }
 
     private:
         Program* m_program{ nullptr };

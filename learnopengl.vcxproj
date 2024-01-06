@@ -385,6 +385,7 @@
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
+    <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />

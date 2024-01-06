@@ -25,6 +25,7 @@
 #include "mesh/TextMesh.h"
 
 #include "text/TextMaterial.h"
+#include "text/TextDraw.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -35,6 +36,7 @@
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
+#include "generator/TextGenerator.h"
 
 #include "event/Dispatcher.h"
 
@@ -411,7 +413,6 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveFont(type, data);
             resolveMaterial(type, data);
             resolveSprite(type, data);
             resolveMesh(type, data, tile);
@@ -535,15 +536,12 @@ namespace loader {
         }
     }
 
-    void SceneLoader::resolveFont(
-        mesh::MeshType* type,
-        const EntityCloneData& data)
-    {
-        if (data.font.name.empty()) return;
-        auto* font = findFont(data.font.name);;
-        if (font) {
-            type->m_fontId = font->id;
-        }
+    text::font_id SceneLoader::resolveFont(
+        const mesh::MeshType* type,
+        const TextData& data) const
+     {
+        auto* font = findFont(data.font);
+        return font ? font->id : 0;
     }
 
     void SceneLoader::resolveMaterial(
@@ -686,6 +684,14 @@ namespace loader {
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
+
+        if (type->m_entityType == mesh::EntityType::text) {
+            auto fontId = resolveFont(type, data.text);
+            auto generator = std::make_unique<TextGenerator>();
+            generator->setFontId(fontId);
+            generator->setText(data.text.text);
+            node->m_generator = std::move(generator);
+        }
 
         m_scriptLoader.createScript(
             rootId,

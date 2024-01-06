@@ -106,9 +106,9 @@ namespace loader {
             mesh::MeshType* type,
             const EntityCloneData& data);
 
-        void resolveFont(
-            mesh::MeshType* type,
-            const EntityCloneData& data);
+        text::font_id resolveFont(
+            const mesh::MeshType* type,
+            const TextData& data) const;
 
         void resolveMaterial(
             mesh::MeshType* type,

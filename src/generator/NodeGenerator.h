@@ -54,7 +54,7 @@ public:
         EntityRegistry* entityRegistry,
         bool force);
 
-    void bindBatch(
+    virtual void bindBatch(
         const RenderContext& ctx,
         Node& container,
         render::Batch& batch);

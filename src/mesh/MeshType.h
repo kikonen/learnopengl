@@ -6,8 +6,6 @@
 
 #include "kigl/GLVertexArray.h"
 
-#include "text/size.h"
-
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
@@ -107,8 +105,6 @@ namespace mesh {
         std::unique_ptr<Sprite> m_sprite{ nullptr };
 
         int m_materialIndex{ 0 };
-
-        text::font_id m_fontId{ 0 };
 
     private:
         bool m_prepared : 1 {false};

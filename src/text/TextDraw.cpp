@@ -20,6 +20,8 @@
 
 #include "render/RenderContext.h"
 
+#include "engine/UpdateContext.h"
+
 #include "TextMaterial.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
@@ -124,39 +126,48 @@ namespace text
 
     void TextDraw::draw(
         const RenderContext& ctx,
+        text::font_id fontId,
         std::string_view text,
-        Node* node)
+        backend::DrawOptions& drawOptions,
+        const Node* node)
     {
-        auto* font = ctx.m_registry->m_fontRegistry->getFont(node->m_type->m_fontId);
+        auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
         if (!font) return;
 
-        glm::vec2 pen{ 0.f };
+        glm::vec2 pen{ 1.f, 1.f };
 
         m_vbo.clear();
         addText(m_vbo, font, text, pen);
 
         m_vao.clear();
         m_vao.registerModel(m_vbo);
+        m_vao.updateRT(ctx.toUpdateContext());
 
-        m_vao.bind(ctx.m_state);
-        m_program->bind(ctx.m_state);
+        drawOptions.indexCount = m_vbo.m_indexEntries.size() * 3;
+
         font->bindTextures(ctx.m_state);
-        {
-            const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
-            int materialIndex = node->m_type->m_materialIndex;
 
-            m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
-            m_program->m_uniforms->u_materialIndex.set(materialIndex);
+        if (false) {
+            m_vao.bind(ctx.m_state);
+            m_program->bind(ctx.m_state);
+            font->bindTextures(ctx.m_state);
+            {
+                const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
+                int materialIndex = node->m_type->m_materialIndex;
 
-            // TODO KI actual render
-            glDrawElements(
-                GL_TRIANGLES,
-                static_cast<GLsizei>(m_vbo.m_indexEntries.size()),
-                GL_UNSIGNED_INT,
-                nullptr);
+                m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
+                m_program->m_uniforms->u_materialIndex.set(materialIndex);
+
+                // TODO KI actual render
+                glDrawElements(
+                    GL_TRIANGLES,
+                    static_cast<GLsizei>(m_vbo.m_indexEntries.size()),
+                    GL_UNSIGNED_INT,
+                    nullptr);
+            }
+            font->unbindTextures(ctx.m_state);
+
+            m_vao.unbind(ctx.m_state);
         }
-        font->unbindTextures(ctx.m_state);
-
-        m_vao.unbind(ctx.m_state);
     }
 }

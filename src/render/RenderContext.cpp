@@ -262,3 +262,12 @@ void RenderContext::copyShadowFrom(const RenderContext& b)
     //    std::end(b.m_matrices.u_shadowProjected),
     //    std::begin(m_matrices.u_shadowProjected));
 }
+
+UpdateContext RenderContext::toUpdateContext() const
+{
+    return {
+        m_clock,
+        m_assets,
+        m_registry,
+    };
+}
