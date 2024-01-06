@@ -10,6 +10,18 @@
 
 #include "render/RenderContext.h"
 
+namespace {
+    std::string texts[5] {
+        "This the story",
+        "And it will continue",
+        "So be prepared",
+        "until the end",
+        "Viva la vida!",
+    };
+
+    float elapsed = 0.f;
+    int index = 0;
+}
 
 TextGenerator::TextGenerator()
 {}
@@ -35,6 +47,17 @@ void TextGenerator::updateVAO(
     const RenderContext& ctx,
     const Node& container)
 {
+    elapsed += ctx.m_clock.elapsedSecs;
+
+    bool hit = elapsed >= 20.f;
+
+    if (hit) {
+        elapsed -= 20.f;
+        setText(texts[index++]);
+        index = index % 4;
+        m_dirty = true;
+    }
+
     if (!m_dirty) return;
     m_dirty = false;
 
