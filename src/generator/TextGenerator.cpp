@@ -22,7 +22,8 @@ namespace {
         "So be prepared",
         "until the end",
         "Viva la vida!",
-        "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
+//        "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
+        "Terveisiä täältä! - ÄÅÖ - äåö",
     };
 
     float elapsed = 0.f;

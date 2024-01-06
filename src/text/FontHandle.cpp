@@ -1,4 +1,3 @@
-
 #include "FontHandle.h"
 
 #include "AtlasHandle.h"
@@ -13,7 +12,7 @@ namespace
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
         "`abcdefghijklmnopqrstuvwxyz{|}~";
 
-    // "? ƒ≈÷‰Âˆ"
+    // "? √Ñ√Ö√ñ√§√•√∂"
     const char* CACHE_MIN =
         "? \u00c4\u00c5\u00d6\u00e4\u00e5\u00f6";
 }
