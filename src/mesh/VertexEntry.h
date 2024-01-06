@@ -10,7 +10,7 @@ namespace mesh {
         VertexEntry()
             : normal{ {0.f, 0.f, 0.f} },
             tangent{ {0.f, 0.f, 0.f} },
-            texCoord{ {0.f, 0.f} }
+            texCoord{ 0.f, 0.f }
         {}
 
         VertexEntry(
@@ -24,7 +24,8 @@ namespace mesh {
 
         kigl::VEC10 normal;
         kigl::VEC10 tangent;
-        kigl::UV16 texCoord;
+        //kigl::UV16 texCoord;
+        glm::vec2 texCoord;
     };
 #pragma pack(pop)
 }

@@ -112,7 +112,8 @@ namespace mesh {
                 glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
 
                 // texture attr
-                glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
+                //glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
+                glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, texCoord));
 
                 glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
                 glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
