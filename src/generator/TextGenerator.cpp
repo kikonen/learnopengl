@@ -21,8 +21,7 @@ void TextGenerator::prepare(
 {
     m_draw = std::make_unique<text::TextDraw>();
 
-    m_drawOptions.type = backend::DrawOptions::Type::elements;
-    m_drawOptions.mode = GL_TRIANGLES;
+    m_drawOptions = container.m_type->getDrawOptions();
 
     container.m_instancer = this;
 }

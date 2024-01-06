@@ -32,9 +32,11 @@ void main()
 
   float a = texture(u_fontAtlas, fs_in.texCoord).r;
 
-  if (a < 0.0001) {
+  if (a < 0.001) {
     discard;
   }
+
+  a = 0.6;
 
   vec4 texColor = vec4(material.diffuse.xyz, a);
 
