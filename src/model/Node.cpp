@@ -8,13 +8,16 @@
 
 #include "kigl/kigl.h"
 
+#include "asset/Sprite.h"
+
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
 #include "generator/NodeGenerator.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -39,7 +42,7 @@ namespace {
     }
 }
 
-Node::Node(const MeshType* type)
+Node::Node(const mesh::MeshType* type)
     : m_type(type),
     m_id(nextID())
 {
@@ -69,16 +72,16 @@ void Node::prepare(
 
         ki::size_t_entity_flags flags = 0;
 
-        if (m_type->m_entityType == EntityType::billboard) {
+        if (m_type->m_entityType == mesh::EntityType::billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
         }
-        if (m_type->m_entityType == EntityType::sprite) {
+        if (m_type->m_entityType == mesh::EntityType::sprite) {
             flags |= ENTITY_SPRITE_BIT;
-            auto& shape = m_type->m_sprite.m_shapes[m_type->m_sprite.m_shapes.size() - 1];
+            auto& shape = m_type->m_sprite->m_shapes[m_type->m_sprite->m_shapes.size() - 1];
             m_transform.m_shapeIndex = shape.m_registeredIndex;
             //m_instance.m_materialIndex = shape.m_materialIndex;
         }
-        if (m_type->m_entityType == EntityType::skybox) {
+        if (m_type->m_entityType == mesh::EntityType::skybox) {
             flags |= ENTITY_SKYBOX_BIT;
         }
         if (m_type->m_flags.noFrustum) {
@@ -158,12 +161,37 @@ void Node::updateEntity(
     m_forceUpdateEntity = false;
 }
 
-void Node::bindBatch(const RenderContext& ctx, Batch& batch) noexcept
+void Node::updateVAO(const RenderContext& ctx) noexcept
 {
-    if (m_type->m_flags.instanced) {
-        if (m_instancer) {
-            m_instancer->bindBatch(ctx, *this, batch);
-        }
+    if (m_instancer) {
+        m_instancer->updateVAO(ctx, *this);
+    }
+}
+
+const kigl::GLVertexArray* Node::getVAO() const noexcept
+{
+    if (m_instancer) {
+        return m_instancer->getVAO(*this);
+    }
+    else {
+        return m_type->getVAO();
+    }
+}
+
+const backend::DrawOptions& Node::getDrawOptions() const noexcept
+{
+    if (m_instancer) {
+        return m_instancer->getDrawOptions(*this);
+    }
+    else {
+        return m_type->getDrawOptions();
+    }
+}
+
+void Node::bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept
+{
+    if (m_instancer) {
+        m_instancer->bindBatch(ctx, *this, batch);
     } else {
         batch.add(ctx, m_transform.m_entityIndex);
     }

@@ -3,8 +3,11 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <regex>
 
 #include "imgui.h"
+
+#include "util/Util.h"
 
 #include "ki/Timer.h"
 
@@ -90,6 +93,10 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         info.formatMaxComputeWorkGroupCount(),
         info.preferredFormatRGBA8,
         info.preferredFormatRGB8));
+
+    const auto vendor = util::toLower(info.vendor);
+    m_assets.glVendorNvidia = std::regex_match(vendor, std::regex(".*nvidia.*"));
+    m_assets.glVendorIntel = std::regex_match(vendor, std::regex(".*intel.*"));
 
     KI_INFO("[EXTENSIONS]");
     for (const auto& ext : extensions) {
@@ -251,7 +258,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 m_window->setTitle(titleSB);
 
-                if (m_window->isFullScreen()) {
+                if (m_window->isFullScreen() && !m_assets.glVendorNvidia) {
                     std::cout << titleSB << '\n';
                 }
             }

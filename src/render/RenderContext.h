@@ -10,17 +10,19 @@
 
 #include "asset/Assets.h"
 
+#include "engine/UpdateContext.h"
+
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
 
 namespace render {
     class NodeDraw;
+    class Batch;
+    class RenderData;
 }
 
 class Camera;
 class Registry;
-class Batch;
-class RenderData;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -56,10 +58,10 @@ public:
         const ki::RenderClock& clock,
         const Assets& assets,
         Registry* registry,
-        RenderData* renderData,
+        render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
-        Batch* batch,
-        GLState& state,
+        render::Batch* batch,
+        kigl::GLState& state,
         Camera* camera,
         float nearPlane,
         float farPlane,
@@ -93,6 +95,8 @@ public:
         return old;
     }
 
+    UpdateContext toUpdateContext() const;
+
 public:
     const std::string m_name;
     const RenderContext* const m_parent;
@@ -100,13 +104,13 @@ public:
     const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
-    RenderData* const m_renderData;
+    render::RenderData* const m_renderData;
     render::NodeDraw* const m_nodeDraw;
-    Batch* const m_batch;
+    render::Batch* const m_batch;
 
     GLenum m_depthFunc{ GL_LESS };
 
-    GLState& m_state;
+    kigl::GLState& m_state;
 
     RenderContextDefaults m_defaults;
 

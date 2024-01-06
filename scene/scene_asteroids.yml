@@ -15,13 +15,17 @@ entities:
     pos: [0, 0, 10]
     front: [0, 0, -1]
     active: true
-    camera:
-      default: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
       - type: camera_zoom
   - name: Cube map 1
     type: origo
@@ -32,7 +36,7 @@ entities:
     id: planet-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    xscript_file: scripts/anim_asteroids_roll
+    script_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
     model: [planet, planet]

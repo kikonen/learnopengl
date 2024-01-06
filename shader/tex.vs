@@ -67,7 +67,9 @@ void main() {
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
   vec3 normal;
+#ifdef USE_TBN
   vec3 tangent;
+#endif
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
@@ -81,7 +83,9 @@ void main() {
                     1.0);
 
     normal = -u_viewFront;
+#ifdef USE_TBN
     tangent = u_viewRight;
+#endif
   } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
     vec4 pos = vec4(u_viewRight * a_pos.x
 		    + UP * a_pos.y,
@@ -90,12 +94,16 @@ void main() {
     worldPos = modelMatrix * pos;
 
     normal = -u_viewFront;
+#ifdef USE_TBN
     tangent = u_viewRight;
+#endif
   } else {
     worldPos = modelMatrix * pos;
 
     normal = normalize(normalMatrix * a_normal);
+#ifdef USE_TBN
     tangent = normalize(normalMatrix * a_tangent);
+#endif
   }
 
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
@@ -134,6 +142,8 @@ void main() {
     //const vec3 B = cross(N, T);
 
     vs_out.tangent = T;
+  } else {
+    vs_out.tangent = tangent;
   }
 #endif
 }

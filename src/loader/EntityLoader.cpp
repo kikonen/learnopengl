@@ -14,8 +14,9 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 
@@ -127,25 +128,28 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
-                    data.type = EntityType::origo;
+                    data.type = mesh::EntityType::origo;
                 }
                 else if (type == "container") {
-                    data.type = EntityType::container;
+                    data.type = mesh::EntityType::container;
                 }
                 else if (type == "model") {
-                    data.type = EntityType::model;
+                    data.type = mesh::EntityType::model;
                 }
                 else if (type == "quad") {
-                    data.type = EntityType::quad;
+                    data.type = mesh::EntityType::quad;
                 }
                 else if (type == "billboard") {
-                    data.type = EntityType::billboard;
+                    data.type = mesh::EntityType::billboard;
                 }
                 else if (type == "sprite") {
-                    data.type = EntityType::sprite;
+                    data.type = mesh::EntityType::sprite;
+                }
+                else if (type == "text") {
+                    data.type = mesh::EntityType::text;
                 }
                 else if (type == "terrain") {
-                    data.type = EntityType::terrain;
+                    data.type = mesh::EntityType::terrain;
                 }
                 else {
                     reportUnknown("entity_type", k, v);
@@ -189,15 +193,18 @@ namespace loader {
                     data.programName = SHADER_TEXTURE;
                 }
             }
-            else if (k == "depth_program") {
-                data.depthProgramName = readString(v);
+            else if (k == "shadow_program") {
+                data.shadowProgramName = readString(v);
+            }
+            else if (k == "pre_depth_program") {
+                data.preDepthProgramName = readString(v);
             }
             else if (k == "geometry_type") {
                 data.geometryType = readString(v);
             }
             else if (k == "program_definitions" || k == "shader_definitions") {
                 for (const auto& defNode : v) {
-                    auto defName = defNode.first.as<std::string>();
+                    const auto& defName = defNode.first.as<std::string>();
                     const auto& defValue = defNode.second.as<std::string>();
                     data.programDefinitions[util::toUpper(defName)] = defValue;
                 }
@@ -211,6 +218,9 @@ namespace loader {
             }
             else if (k == "front") {
                 data.front = readVec3(v);
+            }
+            else if (k == "text") {
+                loadText(v, data.text);
             }
             else if (k == "material") {
                 data.materialName = readString(v);
@@ -338,6 +348,26 @@ namespace loader {
                         clones.push_back(clone);
                     }
                 }
+            }
+        }
+    }
+
+    void EntityLoader::loadText(
+        const YAML::Node& node,
+        TextData& data) const
+    {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "text") {
+                data.text = readString(v);
+            }
+            else if (k == "font") {
+                data.font = readString(v);
+            }
+            else {
+                reportUnknown("text_entry", k, v);
             }
         }
     }

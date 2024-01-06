@@ -59,15 +59,15 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
     KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
 
     {
-        auto buffer = new FrameBuffer(
-            "node",
+        auto buffer = new render::FrameBuffer(
+            m_name + "_node",
             {
                 w, h,
                 {
                     // NOTE KI alpha NOT needed
-                    FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
+                    render::FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
-                    FrameBufferAttachment::getDepthStencilRbo(),
+                    render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
 
@@ -81,7 +81,7 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 
 void NodeRenderer::render(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     ctx.validateRender("node_map");
 
@@ -96,7 +96,7 @@ void NodeRenderer::render(
             ctx.m_nodeDraw->drawNodes(
                 ctx,
                 targetBuffer,
-                [](const MeshType* type) { return true; },
+                [](const mesh::MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 render::NodeDraw::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
@@ -109,14 +109,14 @@ void NodeRenderer::render(
 // Render selected nodes into stencil mask
 void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
@@ -128,8 +128,8 @@ void NodeRenderer::fillHighlightMask(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_selectionProgram; },
-            [](const MeshType* type) { return true; },
+            [this](const mesh::MeshType* type) { return m_selectionProgram; },
+            [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             render::NodeDraw::KIND_ALL);
     }
@@ -139,7 +139,7 @@ void NodeRenderer::fillHighlightMask(
 // Render highlight over stencil masked nodes
 void NodeRenderer::renderHighlight(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer)
+    render::FrameBuffer* targetBuffer)
 {
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
@@ -147,7 +147,7 @@ void NodeRenderer::renderHighlight(
     targetBuffer->bind(ctx);
 
     ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.setStencil(GLStencilMode::except(STENCIL_HIGHLIGHT));
+    ctx.m_state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {
@@ -160,8 +160,8 @@ void NodeRenderer::renderHighlight(
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_selectionProgram; },
-            [](const MeshType* type) { return true; },
+            [this](const mesh::MeshType* type) { return m_selectionProgram; },
+            [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
             render::NodeDraw::KIND_ALL);
     }

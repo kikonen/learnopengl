@@ -20,7 +20,8 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 
@@ -197,8 +198,8 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
+            m_state.clear();
         }
-        m_state.clear();
 
         scene->bind(ctx);
         scene->draw(ctx);
@@ -449,7 +450,4 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     scene->prepareRT();
 
     return scene;
-}
-
-void save() {
 }

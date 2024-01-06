@@ -7,13 +7,15 @@
 
 #include "kigl/GLBuffer.h"
 
+namespace render {
+    class FrameBuffer;
+}
+
+class RenderContext;
 
 class Program;
 
 class UpdateViewContext;
-class RenderContext;
-
-class FrameBuffer;
 
 class Viewport final
 {
@@ -44,8 +46,8 @@ public:
         m_bindAfter = binder;
     }
 
-    void setSourceFrameBuffer(FrameBuffer* frameBuffer);
-    void setDestinationFrameBuffer(FrameBuffer* frameBuffer);
+    void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
+    void setDestinationFrameBuffer(render::FrameBuffer* frameBuffer);
 
     void setTextureId(GLuint textureId);
 
@@ -153,8 +155,8 @@ private:
 
     glm::mat4 m_transformMatrix{ 1.f };
 
-    FrameBuffer* m_sourceBuffer{ nullptr };
-    FrameBuffer* m_destinationBuffer{ nullptr };
+    render::FrameBuffer* m_sourceBuffer{ nullptr };
+    render::FrameBuffer* m_destinationBuffer{ nullptr };
 
     GLuint m_textureId;
 

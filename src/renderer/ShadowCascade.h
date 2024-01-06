@@ -9,10 +9,12 @@
 
 #include "kigl/kigl.h"
 
-
-class FrameBuffer;
-class Registry;
+namespace render {
+    class FrameBuffer;
+}
 class RenderContext;
+
+class Registry;
 class Program;
 
 class ShadowCascade final {
@@ -58,7 +60,7 @@ public:
 
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop
-    FrameBuffer* m_buffer{ nullptr };
+    render::FrameBuffer* m_buffer{ nullptr };
 
     size_t m_cascadeCount{ 0 };
 

@@ -86,11 +86,11 @@ void ShadowCascade::prepareRT(
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
-    m_buffer = new FrameBuffer(
-        "shadow_cascade",
+    m_buffer = new render::FrameBuffer(
+        fmt::format("shadow_cascade_{}", m_index),
         {
             m_mapSize, m_mapSize,
-            { FrameBufferAttachment::getShadow() }
+            { render::FrameBufferAttachment::getShadow() }
         });
 
     m_buffer->prepare();
@@ -234,12 +234,12 @@ void ShadowCascade::drawNodes(
     const RenderContext& ctx)
 {
     // NOTE KI *NO* G-buffer in shadow
-    const auto typeFilter = [](const MeshType* type) {
+    const auto typeFilter = [](const mesh::MeshType* type) {
         // NOTE KI tessellation not suppported
         // NOTE KI point sprite currently not supported
         return !type->m_flags.noShadow &&
             !type->m_flags.tessellation &&
-            type->m_entityType != EntityType::point_sprite;
+            type->m_entityType != mesh::EntityType::point_sprite;
     };
 
     const auto nodeFilter = [](const Node* node) {
@@ -252,7 +252,7 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_solidShadowProgram; },
+            [this](const mesh::MeshType* type) { return m_solidShadowProgram; },
             typeFilter,
             nodeFilter,
             render::NodeDraw::KIND_SOLID);
@@ -264,7 +264,9 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_alphaShadowProgram; },
+            [this](const mesh::MeshType* type) {
+                return type->m_shadowProgram ? type->m_shadowProgram : m_alphaShadowProgram;
+            },
             typeFilter,
             nodeFilter,
             render::NodeDraw::KIND_SPRITE | render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);

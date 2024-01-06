@@ -13,6 +13,22 @@
 #include "model/NodeTransform.h"
 #include "model/Snapshot.h"
 
+namespace backend {
+    struct DrawOptions;
+}
+
+namespace kigl {
+    struct GLVertexArray;
+}
+
+namespace render {
+    class Batch;
+}
+
+namespace mesh {
+    class MeshType;
+}
+
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -21,17 +37,15 @@ class NodeGenerator;
 class UpdateContext;
 class RenderContext;
 
-class MeshType;
 class Registry;
 class EntityRegistry;
 class ParticleGenrator;
-class Batch;
 
 
 class Node final
 {
 public:
-    Node(const MeshType* type);
+    Node(const mesh::MeshType* type);
     ~Node();
 
     const std::string str() const noexcept;
@@ -46,7 +60,10 @@ public:
         const UpdateContext& ctx,
         EntityRegistry* entityRegistry);
 
-    void bindBatch(const RenderContext& ctx, Batch& batch) noexcept;
+    void updateVAO(const RenderContext& ctx) noexcept;
+    const kigl::GLVertexArray* getVAO() const noexcept;
+    const backend::DrawOptions& getDrawOptions() const noexcept;
+    void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
 
     inline Node* getParent() {
         return m_parent;
@@ -146,7 +163,7 @@ public:
 
     bool m_visible{ true };
     // NOTE KI type needed with node for practicality reasons
-    const MeshType* m_type{ nullptr };
+    const mesh::MeshType* m_type{ nullptr };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };

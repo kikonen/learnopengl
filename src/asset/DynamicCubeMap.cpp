@@ -6,11 +6,14 @@
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
-#include "render/FrameBufferAttachment.h"
 
 
-DynamicCubeMap::DynamicCubeMap(int size)
-    : m_size(size)
+DynamicCubeMap::DynamicCubeMap(
+    std::string_view name,
+    int size)
+    : m_name(name),
+    m_size(size),
+    m_cubeMap{ m_name + "_dyn_cubemap_cube", true }
 {
 }
 
@@ -49,7 +52,7 @@ void DynamicCubeMap::prepareRT(
     if (m_prepared) return;
     m_prepared = true;
 
-    m_fbo.create("dynamic_cube_map");
+    m_fbo.create(m_name + "_dyn_cubemap_fbo");
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.m_internalFormat = GL_RGB16F;
@@ -58,9 +61,10 @@ void DynamicCubeMap::prepareRT(
     m_valid = true;
 }
 
-CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
+render::CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
 {
     return {
+        "<dyn_cube_map_fbo>",
         static_cast<GLuint>(m_fbo),
         m_size,
         face,

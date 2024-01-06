@@ -39,9 +39,11 @@ bool VolumeController::updateWT(
     const auto volumeScale = maxScale * volumeRadius;
 
     {
-        auto& transform = volumeNode.modifyTransform();
-        transform.setPosition(pos);
-        transform.setScale(volumeScale);
+        auto& volumeTransform = volumeNode.modifyTransform();
+        volumeTransform.setFront(transform.getFront());
+        volumeTransform.setQuatRotation(transform.getQuatRotation());
+        volumeTransform.setPosition(pos);
+        volumeTransform.setScale(volumeScale);
 
         volumeNode.m_visible = true;
     }

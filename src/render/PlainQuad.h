@@ -5,18 +5,22 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-class GLState;
+namespace kigl {
+    class GLState;
+}
 
-class PlainQuad {
-public:
-    PlainQuad() = default;
-    ~PlainQuad() = default;
+namespace render {
+    class PlainQuad {
+    public:
+        PlainQuad() = default;
+        ~PlainQuad() = default;
 
-    void prepare();
+        void prepare();
 
-    void draw(GLState& state);
+        void draw(kigl::GLState& state);
 
-private:
-    GLVertexArray m_vao;
-    GLBuffer m_vbo{ "plain_quad" };
-};
+    private:
+        kigl::GLVertexArray m_vao;
+        kigl::GLBuffer m_vbo{ "plain_quad" };
+    };
+}

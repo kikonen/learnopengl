@@ -8,34 +8,39 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
 
-// https://learnopengl.com/PBR/IBL/Specular-IBL
-class BrdfLutTexture
-{
-public:
-    BrdfLutTexture() = default;
-    ~BrdfLutTexture() = default;
+namespace kigl {
+    class GLState;
+}
 
-    bool valid() { return m_texture.valid(); }
+namespace render {
+    // https://learnopengl.com/PBR/IBL/Specular-IBL
+    class BrdfLutTexture
+    {
+    public:
+        BrdfLutTexture() = default;
+        ~BrdfLutTexture() = default;
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        bool valid() { return m_texture.valid(); }
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    operator int() const { return m_texture; }
+        void bindTexture(const RenderContext& ctx, int unitIndex);
 
-private:
-    void render(
-        GLState& state,
-        Program* program,
-        int cubeTextureID,
-        int baseSize);
+        operator int() const { return m_texture; }
 
-public:
-    int m_size{ 0 };
+    private:
+        void render(
+            kigl::GLState& state,
+            Program* program,
+            int cubeTextureID,
+            int baseSize);
 
-    GLTextureHandle m_texture;
-};
+    public:
+        int m_size{ 0 };
+
+        kigl::GLTextureHandle m_texture;
+    };
+}

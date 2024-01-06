@@ -2,22 +2,25 @@
 
 #include "FrameBuffer.h"
 
-class CubeMapBuffer  final : public FrameBuffer
-{
-public:
-    CubeMapBuffer(
-        GLuint fbo,
-        int size,
-        int face,
-        GLuint textureID);
+namespace render {
+    class CubeMapBuffer  final : public FrameBuffer
+    {
+    public:
+        CubeMapBuffer(
+            std::string_view name,
+            GLuint fbo,
+            int size,
+            int face,
+            GLuint textureID);
 
-    virtual ~CubeMapBuffer() override = default;
+        virtual ~CubeMapBuffer() override = default;
 
-    void bindFace();
+        void bindFace();
 
-    virtual void bind(const RenderContext& ctx) override;
+        virtual void bind(const RenderContext& ctx) override;
 
-private:
-    const int m_face;
-    const GLuint m_textureID;
-};
+    private:
+        const int m_face;
+        const GLuint m_textureID;
+    };
+}

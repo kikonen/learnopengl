@@ -155,23 +155,24 @@ void SceneUpdater::update(const UpdateContext& ctx)
             m_registry->m_commandEngine->update(ctx);
         }
 
+        {
+            KI_TIMER("registry");
+            m_registry->updateWT(ctx);
+        }
+
         if (m_loaded) {
             {
                 KI_TIMER("node    ");
                 m_registry->m_nodeRegistry->updateWT(ctx);
             }
-            {
-                KI_TIMER("bounds-1");
-                m_registry->m_physicsEngine->updateBounds(ctx);
-            }
+            //{
+            //    KI_TIMER("bounds-1");
+            //    m_registry->m_physicsEngine->updateBounds(ctx);
+            //}
             {
                 KI_TIMER("physics ");
                 m_registry->m_physicsEngine->update(ctx);
             }
-            //{
-            //    KI_TIMER("bounds-2");
-            //    m_registry->m_physicsEngine->updateBounds(ctx);
-            //}
             {
                 KI_TIMER("audio   ");
                 m_registry->m_audioEngine->update(ctx);
@@ -186,11 +187,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //if (m_particleSystem) {
     //    m_particleSystem->update(ctx);
     //}
-
-    {
-        KI_TIMER("registry");
-        m_registry->updateWT(ctx);
-    }
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)

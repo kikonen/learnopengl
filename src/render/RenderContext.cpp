@@ -80,10 +80,10 @@ RenderContext::RenderContext(
     const ki::RenderClock& clock,
     const Assets& assets,
     Registry* registry,
-    RenderData* renderData,
+    render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
-    Batch* batch,
-    GLState& state,
+    render::Batch* batch,
+    kigl::GLState& state,
     Camera* camera,
     float nearPlane,
     float farPlane,
@@ -261,4 +261,13 @@ void RenderContext::copyShadowFrom(const RenderContext& b)
     //    std::begin(b.m_matrices.u_shadowProjected),
     //    std::end(b.m_matrices.u_shadowProjected),
     //    std::begin(m_matrices.u_shadowProjected));
+}
+
+UpdateContext RenderContext::toUpdateContext() const
+{
+    return {
+        m_clock,
+        m_assets,
+        m_registry,
+    };
 }

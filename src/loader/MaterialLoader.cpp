@@ -99,7 +99,7 @@ namespace loader {
 
     void MaterialLoader::loadMaterials(
         const YAML::Node& node,
-        std::vector<MaterialData>& materials)
+        std::vector<MaterialData>& materials) const
     {
         for (const auto& entry : node) {
             MaterialData& data = materials.emplace_back();
@@ -115,9 +115,9 @@ namespace loader {
         MaterialField& fields = data.fields;
 
         for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-            const std::string k = util::toLower(key);
+            const auto& key = pair.first.as<std::string>();
+            const auto& v = pair.second;
+            const auto k = util::toLower(key);
 
             if (k == "name") {
                 material.m_name = readString(v);

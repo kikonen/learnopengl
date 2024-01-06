@@ -8,13 +8,24 @@
 
 #include "kigl/kigl.h"
 
+namespace kigl {
+    struct GLVertexArray;
+}
+
+namespace backend {
+    struct DrawOptions;
+}
+
+namespace render {
+    class Batch;
+}
+
 class Node;
 class Registry;
 
 class UpdateContext;
 class RenderContext;
 
-class Batch;
 class EntityRegistry;
 
 //
@@ -43,10 +54,20 @@ public:
         EntityRegistry* entityRegistry,
         bool force);
 
-    void bindBatch(
+    virtual void bindBatch(
         const RenderContext& ctx,
         Node& container,
-        Batch& batch);
+        render::Batch& batch);
+
+    virtual void updateVAO(
+        const RenderContext& ctx,
+        const Node& container) {}
+
+    virtual const kigl::GLVertexArray* getVAO(
+        const Node& container) const noexcept;
+
+    virtual const backend::DrawOptions& getDrawOptions(
+        const Node& container) const noexcept;
 
     inline const std::vector<NodeTransform>& getTransforms() noexcept
     {

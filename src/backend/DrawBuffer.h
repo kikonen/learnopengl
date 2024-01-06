@@ -22,7 +22,7 @@ class Registry;
 
 namespace backend {
     // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
-    using GLCommandQueue = GLSyncQueue<backend::gl::DrawIndirectCommand, true>;
+    using GLCommandQueue = kigl::GLSyncQueue<backend::gl::DrawIndirectCommand, true>;
 
     class DrawBuffer {
     public:
@@ -75,8 +75,8 @@ namespace backend {
 
         std::vector<backend::DrawRange> m_drawRanges;
 
-        GLBuffer m_drawParameters{ "drawParameters" };
-        GLBuffer m_performanceCounters{ "performanceCounters" };
+        kigl::GLBuffer m_drawParameters{ "draw_parameters" };
+        kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };
 
         size_t m_drawCounter = 0;
     };

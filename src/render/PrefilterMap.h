@@ -9,37 +9,42 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
 
-// NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
-// - hdri is *linear*
-class PrefilterMap
-{
-public:
-    PrefilterMap() = default;
-    ~PrefilterMap() = default;
+namespace kigl {
+    class GLState;
+}
 
-    bool valid() { return m_cubeTexture.valid(); }
+namespace render {
+    // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
+    // - hdri is *linear*
+    class PrefilterMap
+    {
+    public:
+        PrefilterMap() = default;
+        ~PrefilterMap() = default;
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        bool valid() { return m_cubeTexture.valid(); }
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    operator int() const { return m_cubeTexture; }
+        void bindTexture(const RenderContext& ctx, int unitIndex);
 
-private:
-    void render(
-        GLState& state,
-        Program* program,
-        int cubeTextureID,
-        int baseSize);
+        operator int() const { return m_cubeTexture; }
 
-public:
-    int m_size{ 0 };
+    private:
+        void render(
+            kigl::GLState& state,
+            Program* program,
+            int cubeTextureID,
+            int baseSize);
 
-    GLTextureHandle m_cubeTexture;
+    public:
+        int m_size{ 0 };
 
-    int m_envCubeMapID{ 0 };
-};
+        kigl::GLTextureHandle m_cubeTexture;
+
+        int m_envCubeMapID{ 0 };
+    };
+}

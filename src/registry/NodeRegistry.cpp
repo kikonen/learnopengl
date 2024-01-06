@@ -15,6 +15,8 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "engine/UpdateContext.h"
+
 #include "event/Dispatcher.h"
 
 #include "audio/Listener.h"
@@ -30,6 +32,7 @@
 #include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
+#include "ControllerRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -102,6 +105,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     if (m_root) {
         m_root->updateWT(ctx);
     }
+
+    ctx.m_registry->m_physicsEngine->updateBounds(ctx);
+    ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
     for (auto& node : m_allNodes) {
         node->snapshot();
@@ -435,7 +441,7 @@ void NodeRegistry::bindNode(
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const MeshType* type;
+    const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
         t->prepare(m_assets, m_registry);
@@ -630,7 +636,7 @@ Node* NodeRegistry::findDefaultCameraNode() const
 void NodeRegistry::bindSkybox(
     Node* node) noexcept
 {
-    const MeshType* type;
+    const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
         t->prepare(m_assets, m_registry);

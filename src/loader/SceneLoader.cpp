@@ -14,14 +14,18 @@
 #include "ki/yaml.h"
 
 #include "asset/Material.h"
-#include "asset/ModelMesh.h"
-#include "asset/QuadMesh.h"
-#include "asset/SpriteMesh.h"
 #include "asset/Sprite.h"
 #include "asset/Shape.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
-#include "asset/TextMaterial.h"
+
+#include "mesh/ModelMesh.h"
+#include "mesh/QuadMesh.h"
+#include "mesh/SpriteMesh.h"
+#include "mesh/TextMesh.h"
+
+#include "text/TextMaterial.h"
+#include "text/TextDraw.h"
 
 #include "component/Light.h"
 #include "component/Camera.h"
@@ -32,11 +36,13 @@
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
+#include "generator/TextGenerator.h"
 
 #include "event/Dispatcher.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -57,6 +63,7 @@ namespace loader {
         m_skyboxLoader(ctx),
         m_volumeLoader(ctx),
         m_cubeMapLoader(ctx),
+        m_fontLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
         m_spriteLoader(ctx),
@@ -81,7 +88,8 @@ namespace loader {
 
     bool SceneLoader::isRunning()
     {
-        return m_runningCount > 0;
+        std::lock_guard<std::mutex> lock(m_ready_lock);
+        return m_runningCount > 0 || m_pendingCount > 0;
     }
 
     void SceneLoader::prepare(
@@ -90,6 +98,7 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcher;
 
+        m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
         m_rootLoader.setRegistry(registry);
         m_scriptLoader.setRegistry(registry);
@@ -107,6 +116,7 @@ namespace loader {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
 
+        std::lock_guard<std::mutex> lock(m_ready_lock);
         m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
@@ -116,6 +126,8 @@ namespace loader {
             loadMeta(doc["meta"], m_meta);
 
             m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+
+            m_fontLoader.loadFonts(doc["fonts"], m_fonts);
             m_materialLoader.loadMaterials(doc["materials"], m_materials);
             m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
@@ -138,16 +150,24 @@ namespace loader {
 
             attach(m_root);
 
+            std::lock_guard<std::mutex> lock(m_ready_lock);
             m_runningCount--;
         });
     }
 
-    void SceneLoader::loadedEntity(const EntityData& data)
+    void SceneLoader::loadedEntity(
+        const EntityData& data,
+        bool success)
     {
         std::lock_guard<std::mutex> lock(m_ready_lock);
 
-        KI_INFO_OUT(fmt::format("pending={}", m_pendingCount));
-        if (--m_pendingCount > 0) return;
+        m_pendingCount--;
+
+        KI_INFO_OUT(fmt::format(
+            "LOADED: entity={}, success={}, pending={}",
+            data.base.name, success, m_pendingCount));
+
+        if (m_pendingCount > 0) return;
 
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
@@ -168,48 +188,62 @@ namespace loader {
         m_volumeLoader.attachVolume(root.rootId);
         m_cubeMapLoader.attachCubeMap(root.rootId);
 
-        m_pendingCount = 0;
-        for (const auto& entity : m_entities) {
-            if (!entity.base.enabled) continue;
-            m_pendingCount++;
-        }
-        for (const auto& entity : m_entities) {
-            attachEntity(root.rootId, entity);
+        m_fontLoader.createFonts(m_fonts);
+
+        {
+            std::lock_guard<std::mutex> lock(m_ready_lock);
+
+            m_pendingCount = 0;
+            for (const auto& entity : m_entities) {
+                if (attachEntity(root.rootId, entity)) {
+                    m_pendingCount++;
+                    KI_INFO_OUT(fmt::format("START: entity={}, pending={}", entity.base.name, m_pendingCount));
+                }
+            }
+
+            KI_INFO_OUT(fmt::format("TOTAL: pending={}", m_pendingCount));
         }
     }
 
-    void SceneLoader::attachEntity(
+    bool SceneLoader::attachEntity(
         const uuids::uuid& rootId,
         const EntityData& data)
     {
         if (!data.base.enabled) {
-            return;
+            return false;
         }
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
-            if (data.clones.empty()) {
-                const MeshType* type{ nullptr };
-                attachEntityClone(type, rootId, data, data.base, false, 0);
-            }
-            else {
-                const MeshType* type{ nullptr };
-
-                int cloneIndex = 0;
-                for (auto& cloneData : data.clones) {
-                    if (!*m_ctx.m_alive) return;
-                    type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
-                    if (!data.base.cloneMesh)
-                        type = nullptr;
-                    cloneIndex++;
+            try {
+                if (data.clones.empty()) {
+                    const mesh::MeshType* type{ nullptr };
+                    attachEntityClone(type, rootId, data, data.base, false, 0);
                 }
-            }
+                else {
+                    const mesh::MeshType* type{ nullptr };
 
-            loadedEntity(data);
+                    int cloneIndex = 0;
+                    for (auto& cloneData : data.clones) {
+                        if (!*m_ctx.m_alive) return;
+                        type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
+                        if (!data.base.cloneMesh)
+                            type = nullptr;
+                        cloneIndex++;
+                    }
+                }
+                loadedEntity(data, true);
+            }
+            catch (const std::runtime_error& ex) {
+                loadedEntity(data, false);
+                throw ex;
+            }
         });
+
+        return true;
     }
 
-    const MeshType* SceneLoader::attachEntityClone(
-        const MeshType* type,
+    const mesh::MeshType* SceneLoader::attachEntityClone(
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -254,8 +288,8 @@ namespace loader {
         return type;
     }
 
-    const MeshType* SceneLoader::attachEntityCloneRepeat(
-        const MeshType* type,
+    const mesh::MeshType* SceneLoader::attachEntityCloneRepeat(
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -361,7 +395,7 @@ namespace loader {
         return type;
     }
 
-    const MeshType* SceneLoader::createType(
+    const mesh::MeshType* SceneLoader::createType(
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
@@ -374,9 +408,9 @@ namespace loader {
             type->m_flags.instanced = true;
         }
 
-        if (data.type == EntityType::origo) {
+        if (data.type == mesh::EntityType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
+            type->m_entityType = mesh::EntityType::origo;
         } else
         {
             resolveMaterial(type, data);
@@ -385,7 +419,7 @@ namespace loader {
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (data.type != EntityType::container) {
+            if (data.type != mesh::EntityType::container) {
                 if (!type->getMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -402,7 +436,7 @@ namespace loader {
     }
 
     void SceneLoader::resolveProgram(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         bool useTBN = false;
@@ -438,20 +472,20 @@ namespace loader {
                 definitions[k] = v;
             }
 
-            std::map<std::string, std::string, std::less<>> depthDefinitions;
-            bool useDepth = type->m_flags.depth;
+            std::map<std::string, std::string, std::less<>> preDepthDefinitions;
+            bool usePreDepth = type->m_flags.preDepth;
 
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
             if (type->m_flags.blend) {
                 definitions[DEF_USE_BLEND] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
 
             //if (type->m_entityType == EntityType::billboard) {
@@ -492,23 +526,39 @@ namespace loader {
                 data.geometryType,
                 definitions);
 
-            if (useDepth) {
-                type->m_depthProgram = m_registry->m_programRegistry->getProgram(
-                    data.depthProgramName,
+            if (!data.shadowProgramName.empty()) {
+                type->m_shadowProgram = m_registry->m_programRegistry->getProgram(
+                    data.shadowProgramName,
                     false,
                     "",
-                    depthDefinitions);
+                    {});
+            }
+
+            if (usePreDepth) {
+                type->m_preDepthProgram = m_registry->m_programRegistry->getProgram(
+                    data.preDepthProgramName,
+                    false,
+                    "",
+                    preDepthDefinitions);
             }
         }
     }
 
+    text::font_id SceneLoader::resolveFont(
+        const mesh::MeshType* type,
+        const TextData& data) const
+     {
+        auto* font = findFont(data.font);
+        return font ? font->id : 0;
+    }
+
     void SceneLoader::resolveMaterial(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
-        Material* material = nullptr;
+        const Material* material = nullptr;
 
         if (!data.materialName.empty()) {
             material = findMaterial(data.materialName);
@@ -519,12 +569,11 @@ namespace loader {
         }
 
         auto& materialVBO = type->m_materialVBO;
-
-        materialVBO.setDefaultMaterial(*material, true, data.forceMaterial);
+        materialVBO->setDefaultMaterial(*material, true, data.forceMaterial);
     }
 
     void SceneLoader::modifyMaterials(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
         type->modifyMaterials([this, &data](Material& m) {
@@ -534,80 +583,85 @@ namespace loader {
     }
 
     void SceneLoader::resolveSprite(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data)
     {
-        Sprite* sprite{ nullptr };
+        const Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
             sprite = findSprite(data.spriteName);
         }
 
         if (sprite) {
-            type->m_sprite = *sprite;
+            type->m_sprite = std::make_unique<Sprite>(*sprite);
         }
     }
 
     void SceneLoader::resolveMesh(
-        MeshType* type,
+        mesh::MeshType* type,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
         // NOTE KI materials MUST be resolved before loading mesh
-        if (data.type == EntityType::model) {
+        if (data.type == mesh::EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 data.meshName,
                 m_assets.modelsDir,
                 data.meshPath);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::model;
+            type->m_entityType = mesh::EntityType::model;
 
             KI_INFO(fmt::format(
                 "SCENE_FILE ATTACH: id={}, type={}",
                 data.idBase, type->str()));
         }
-        else if (data.type == EntityType::quad) {
+        else if (data.type == mesh::EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::quad;
+            type->m_entityType = mesh::EntityType::quad;
         }
-        else if (data.type == EntityType::billboard) {
+        else if (data.type == mesh::EntityType::billboard) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::billboard;
+            type->m_entityType = mesh::EntityType::billboard;
         }
-        else if (data.type == EntityType::sprite) {
+        else if (data.type == mesh::EntityType::sprite) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
                 m_assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
-            type->m_entityType = EntityType::sprite;
+            type->m_entityType = mesh::EntityType::sprite;
         }
-        else if (data.type == EntityType::terrain) {
-            type->m_entityType = EntityType::terrain;
+        else if (data.type == mesh::EntityType::text) {
+            type->m_entityType = mesh::EntityType::text;
+            auto mesh = std::make_unique<mesh::TextMesh>();
+            type->setMesh(std::move(mesh), true);
         }
-        else if (data.type == EntityType::container) {
+        else if (data.type == mesh::EntityType::terrain) {
+            type->m_entityType = mesh::EntityType::terrain;
+        }
+        else if (data.type == mesh::EntityType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = EntityType::container;
+            type->m_entityType = mesh::EntityType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = EntityType::origo;
+            type->m_entityType = mesh::EntityType::origo;
             type->m_flags.invisible = true;
         }
     }
 
     Node* SceneLoader::createNode(
-        const MeshType* type,
+        const mesh::MeshType* type,
         const uuids::uuid& rootId,
         const EntityCloneData& data,
         const bool cloned,
@@ -639,6 +693,14 @@ namespace loader {
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
 
+        if (type->m_entityType == mesh::EntityType::text) {
+            auto fontId = resolveFont(type, data.text);
+            auto generator = std::make_unique<TextGenerator>();
+            generator->setFontId(fontId);
+            generator->setText(data.text.text);
+            node->m_generator = std::move(generator);
+        }
+
         m_scriptLoader.createScript(
             rootId,
             node->m_id,
@@ -661,16 +723,16 @@ namespace loader {
 
     void SceneLoader::assignFlags(
         const EntityCloneData& data,
-        MeshType* type)
+        mesh::MeshType* type)
     {
-        NodeRenderFlags& flags = type->m_flags;
+        mesh::NodeRenderFlags& flags = type->m_flags;
 
         flags.gbuffer = data.programName.starts_with("g_");
 
         {
-            const auto& e = data.renderFlags.find("depth");
+            const auto& e = data.renderFlags.find("pre_depth");
             if (e != data.renderFlags.end()) {
-                flags.depth = e->second;
+                flags.preDepth = e->second;
             }
         }
         {
@@ -825,23 +887,34 @@ namespace loader {
         }
     }
 
-    Material* SceneLoader::findMaterial(
-        std::string_view name)
+    const Material* SceneLoader::findMaterial(
+        std::string_view name) const
     {
         const auto& it = std::find_if(
-            m_materials.begin(),
-            m_materials.end(),
-            [&name](MaterialData& m) { return m.material.m_name == name && !m.material.m_default; });
+            m_materials.cbegin(),
+            m_materials.cend(),
+            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
         return it != m_materials.end() ? &(it->material) : nullptr;
     }
 
-    Sprite* SceneLoader::findSprite(
-        std::string_view name)
+    const Sprite* SceneLoader::findSprite(
+        std::string_view name) const
     {
         const auto& it = std::find_if(
-            m_sprites.begin(),
-            m_sprites.end(),
-            [&name](SpriteData& m) { return m.sprite.m_name == name; });
+            m_sprites.cbegin(),
+            m_sprites.cend(),
+            [&name](const auto& m) { return m.sprite.m_name == name; });
         return it != m_sprites.end() ? &(it->sprite) : nullptr;
     }
+
+    const FontData* SceneLoader::findFont(
+        std::string_view name) const
+    {
+        const auto& it = std::find_if(
+            m_fonts.cbegin(),
+            m_fonts.cend(),
+            [&name](const auto& m) { return m.name == name; });
+        return it != m_fonts.end() ? &(*it) : nullptr;
+    }
+
 }

@@ -13,13 +13,17 @@ entities:
     pos: [0, 100, 50]
     front: [0, 0, -1]
     active: true
-    camera:
-      default: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
       - type: camera_zoom
   - name: Directional light
     pos: [-300, 200, -400]
@@ -47,7 +51,7 @@ entities:
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
-      depth: true
+      pre_depth: true
       xxwireframe: true
       xxno_shadow: true
       tessellation: true

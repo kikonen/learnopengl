@@ -30,9 +30,9 @@ namespace loader {
         Sprite& sprite = data.sprite;
 
         for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const std::string k = util::toLower(key);
-            const YAML::Node& v = pair.second;
+            const auto key = pair.first.as<std::string>();
+            const auto k = util::toLower(key);
+            const auto& v = pair.second;
 
             if (k == "name") {
                 sprite.m_name = readString(v);
@@ -58,9 +58,9 @@ namespace loader {
         Shape& shape)
     {
         for (const auto& pair : node) {
-            auto key = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
-            const std::string k = util::toLower(key);
+            const auto key = pair.first.as<std::string>();
+            const auto& v = pair.second;
+            const auto k = util::toLower(key);
 
             if (k == "rot" || k == "rotation") {
                 shape.m_rotation = readFloat(v);

@@ -5,7 +5,8 @@
 class NormalRenderer final : public Renderer
 {
 public:
-    NormalRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    NormalRenderer(bool useFrameStep)
+        : Renderer("main", useFrameStep) {}
 
     virtual void prepareRT(
         const Assets& assets,

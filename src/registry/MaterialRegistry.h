@@ -9,7 +9,9 @@
 
 #include "kigl/GLBuffer.h"
 
-class MaterialVBO;
+namespace mesh {
+    class MaterialVBO;
+}
 
 class UpdateContext;
 class RenderContext;
@@ -28,7 +30,7 @@ public:
     // Updates m_registeredIndex of Material
     void registerMaterial(Material& material);
 
-    void registerMaterialVBO(MaterialVBO& materialVBO);
+    void registerMaterialVBO(mesh::MaterialVBO& materialVBO);
 
     size_t getBaseIndex() { return m_materials.size(); }
 
@@ -73,7 +75,7 @@ private:
     size_t m_lastIndexSize = 0;
 
     //GLBuffer m_ubo{ "materialsUBO" };
-    GLBuffer m_ssbo{ "materialsSSBO" };
+    kigl::GLBuffer m_ssbo{ "materials_ssbo" };
 
-    GLBuffer m_indexBuffer{ "materialIndex" };
+    kigl::GLBuffer m_indexBuffer{ "material_index" };
 };

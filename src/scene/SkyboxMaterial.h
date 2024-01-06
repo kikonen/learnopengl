@@ -76,14 +76,14 @@ public:
     bool m_hdri{ false };
 
 private:
-    CubeMap m_cubeMap{ false };
+    render::CubeMap m_cubeMap{ "skybox", false };
 
     HdriTexture m_hdriTexture;
 
-    EnvironmentMap m_skyboxMap;
-    EnvironmentMap m_environmentMap;
-    IrradianceMap m_irradianceMap;
-    PrefilterMap m_prefilterMap;
+    render::EnvironmentMap m_skyboxMap{ "skybox" };
+    render::EnvironmentMap m_environmentMap{ "env" };
+    render::IrradianceMap m_irradianceMap;
+    render::PrefilterMap m_prefilterMap;
 
-    BrdfLutTexture m_brdfLutTexture;
+    render::BrdfLutTexture m_brdfLutTexture;
 };

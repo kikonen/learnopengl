@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ki/size.h"
 #include "kigl/kigl.h"
 
 namespace backend {
@@ -16,7 +17,7 @@ namespace backend {
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
-        GLenum mode = GL_POINTS;
+        ki::size_t8 mode = GL_POINTS;
 
         bool renderBack : 1 {false};
         bool wireframe : 1 {false};
@@ -28,15 +29,15 @@ namespace backend {
         bool instanced : 1 {false};
 
         bool tessellation : 1 {false};
-        int patchVertices = 3;
+        ki::size_t8 patchVertices{ 3 };
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
-        GLsizei indexCount = 0;
-        GLsizei indexFirst = 0;
+        GLsizei indexCount{ 0 };
+        GLsizei indexFirst{ 0 };
 
-        ki::uint vertexOffset = 0;
-        ki::uint indexOffset = 0;
+        ki::uint vertexOffset{ 0 };
+        ki::uint indexOffset{ 0 };
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,

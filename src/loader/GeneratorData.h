@@ -11,6 +11,7 @@ namespace loader {
         grid,
         terrain,
         asteroid_belt,
+        text,
     };
 
     struct GeneratorData {

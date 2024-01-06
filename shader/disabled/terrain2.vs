@@ -110,6 +110,8 @@ void main() {
     //const vec3 B = cross(N, T);
 
     vs_out.tangent = T;
+  } else {
+    vs_out.tangent = a_tangent;
   }
 #endif
 }

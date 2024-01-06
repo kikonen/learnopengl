@@ -2,12 +2,12 @@
 
 #include "EntitySSBO.h"
 
-
 #include "engine/UpdateContext.h"
 
 #include "render/RenderContext.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -30,6 +30,7 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
+    // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
     m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 }

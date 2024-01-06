@@ -8,9 +8,12 @@
 
 #include "component/Camera.h"
 
+namespace render {
+    class CubeMapBuffer;
+    class FrameBuffer;
+}
+
 class Node;
-class FrameBuffer;
-class CubeMapBuffer;
 class DynamicCubeMap;
 class WaterMapRenderer;
 class MirrorMapRenderer;
@@ -18,7 +21,8 @@ class MirrorMapRenderer;
 class CubeMapRenderer final : public Renderer
 {
 public:
-    CubeMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    CubeMapRenderer(bool useFrameStep)
+        : Renderer("main", useFrameStep) {}
     ~CubeMapRenderer();
 
     virtual void prepareRT(
@@ -41,7 +45,7 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        CubeMapBuffer* targetBuffer,
+        render::CubeMapBuffer* targetBuffer,
         const Node* centerNode,
         const glm::vec4& debugColor);
 

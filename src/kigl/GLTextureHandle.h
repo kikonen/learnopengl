@@ -1,61 +1,74 @@
 #pragma once
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
-class GLTextureHandle {
-public:
-    GLTextureHandle()
-    {}
+namespace kigl {
+    class GLTextureHandle {
+    public:
+        GLTextureHandle()
+        {}
 
-    GLTextureHandle(int textureID)
-        : m_textureID(textureID) {
-    }
-
-    GLTextureHandle(GLTextureHandle& handle) = delete;
-    GLTextureHandle& operator=(GLTextureHandle& handle) = delete;
-
-    GLTextureHandle(GLTextureHandle&& handle) noexcept
-        : m_textureID(handle.m_textureID)
-    {
-        handle.m_textureID = 0;
-    }
-
-    GLTextureHandle& operator=(GLTextureHandle&& handle) noexcept
-    {
-        m_textureID = handle.m_textureID;
-        handle.m_textureID = 0;
-        return *this;
-    }
-
-    ~GLTextureHandle() {
-        if (m_textureID > 0) {
-            glDeleteTextures(1, &m_textureID);
+        GLTextureHandle(int textureID)
+            : m_textureID(textureID) {
         }
-    }
 
-    bool valid() { return m_textureID > 0;  }
+        GLTextureHandle(GLTextureHandle& o) = delete;
+        GLTextureHandle& operator=(GLTextureHandle& o) = delete;
 
-    void create(
+        GLTextureHandle(GLTextureHandle&& o) noexcept
+            : m_textureID{ o.m_textureID }
+        {
+            o.m_textureID = 0;
+        }
+
+        GLTextureHandle& operator=(GLTextureHandle&& o) noexcept
+        {
+            m_textureID = o.m_textureID;
+            o.m_textureID = 0;
+            return *this;
+        }
+
+        ~GLTextureHandle() {
+            if (m_textureID > 0) {
+                glDeleteTextures(1, &m_textureID);
+            }
+        }
+
+        bool valid() { return m_textureID > 0; }
+
+        void create(
             std::string_view name,
             GLenum target,
             int width,
             int height
         )
-    {
-        if (m_textureID > 0) return;
-        glCreateTextures(target, 1, &m_textureID);
+        {
+            if (m_textureID > 0) return;
+            glCreateTextures(target, 1, &m_textureID);
 
-        m_width = width;
-        m_height = height;
+            m_width = width;
+            m_height = height;
 
-        kigl::setLabel(GL_TEXTURE, m_textureID, name);
-    }
+            kigl::setLabel(GL_TEXTURE, m_textureID, name);
+        }
 
-    operator int() const { return m_textureID; }
+        void bindTexture(kigl::GLState& state, int unitIndex)
+        {
+            state.bindTexture(unitIndex, m_textureID, false);
+        }
 
-public:
-    int m_width{ 0 };
-    int m_height{ 0 };
+        void unbindTexture(kigl::GLState& state, int unitIndex)
+        {
+            state.unbindTexture(unitIndex, false);
+        }
 
-    GLuint m_textureID{ 0 };
-};
+        operator int() const { return m_textureID; }
+
+    public:
+        int m_width{ 0 };
+        int m_height{ 0 };
+
+        GLuint m_textureID{ 0 };
+    };
+}

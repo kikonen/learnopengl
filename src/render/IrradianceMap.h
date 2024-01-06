@@ -14,28 +14,30 @@ class Registry;
 class Program;
 class GLState;
 
-// NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
-// - hdri is *linear*
-class IrradianceMap
-{
-public:
-    IrradianceMap() = default;
-    ~IrradianceMap() = default;
+namespace render {
+    // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
+    // - hdri is *linear*
+    class IrradianceMap
+    {
+    public:
+        IrradianceMap() = default;
+        ~IrradianceMap() = default;
 
-    bool valid() { return m_cubeTexture.valid(); }
+        bool valid() { return m_cubeTexture.valid(); }
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+        void bindTexture(const RenderContext& ctx, int unitIndex);
 
-    operator int() const { return m_cubeTexture; }
+        operator int() const { return m_cubeTexture; }
 
-public:
-    int m_size{ 0 };
+    public:
+        int m_size{ 0 };
 
-    GLTextureHandle m_cubeTexture;
+        kigl::GLTextureHandle m_cubeTexture;
 
-    int m_envCubeMapID{ 0 };
-};
+        int m_envCubeMapID{ 0 };
+    };
+}

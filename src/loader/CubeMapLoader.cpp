@@ -5,14 +5,15 @@
 
 #include "asset/Material.h"
 #include "asset/Shader.h"
-#include "asset/ModelMesh.h"
 
 #include "event/Dispatcher.h"
+
+#include "mesh/MeshType.h"
+#include "mesh/ModelMesh.h"
 
 #include "model/Node.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -48,8 +49,8 @@ namespace loader {
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
             auto& materialVBO = type->m_materialVBO;
-            materialVBO.setDefaultMaterial(material, true, true);
-            materialVBO.setMaterials({ material });
+            materialVBO->setDefaultMaterial(material, true, true);
+            materialVBO->setMaterials({ material });
         }
 
         auto& flags = type->m_flags;

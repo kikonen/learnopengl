@@ -7,7 +7,7 @@
 class ProgramBind final
 {
 public:
-    ProgramBind(Program* program, GLState& state) noexcept
+    ProgramBind(Program* program, kigl::GLState& state) noexcept
         : program(program)
     {
         if (program) program->bind(state);

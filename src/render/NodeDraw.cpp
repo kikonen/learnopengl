@@ -7,7 +7,8 @@
 
 #include "component/Camera.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -24,7 +25,16 @@ namespace {
 
 namespace render {
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    MeshTypeKey::MeshTypeKey(const MeshType* type)
+    struct MeshTypeComparator {
+        bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
+            if (a->m_drawOptions < b->m_drawOptions) return true;
+            else if (b->m_drawOptions < a->m_drawOptions) return false;
+            return a->m_id < b->m_id;
+        }
+    };
+
+    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    MeshTypeKey::MeshTypeKey(const mesh::MeshType* type)
         : type(type)
     {}
 
@@ -96,7 +106,7 @@ namespace render {
         const auto* type = node->m_type;
         auto* program = type->m_program;
 
-        if (type->m_entityType != EntityType::origo) {
+        if (type->m_entityType != mesh::EntityType::origo) {
             assert(program);
             if (!program) return;
         }
@@ -110,7 +120,7 @@ namespace render {
             if (type->m_flags.blend)
                 map = &m_blendedNodes;
 
-            if (type->m_entityType == EntityType::sprite)
+            if (type->m_entityType == mesh::EntityType::sprite)
                 map = &m_spriteNodes;
 
             if (type->m_flags.invisible)
@@ -121,7 +131,7 @@ namespace render {
                 const ProgramKey programKey(
                     program ? program->m_id : NULL_PROGRAM_ID,
                     -type->m_priority,
-                    type->m_drawOptions);
+                    type->getDrawOptions());
 
                 const MeshTypeKey typeKey(type);
 
@@ -134,7 +144,7 @@ namespace render {
     void NodeDraw::drawNodes(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits,
         GLbitfield copyMask)
@@ -168,10 +178,10 @@ namespace render {
                 {
                     ctx.m_nodeDraw->drawProgram(
                         ctx,
-                        [this](const MeshType* type) { return type->m_depthProgram; },
-                        [&typeSelector](const MeshType* type) {
+                        [this](const mesh::MeshType* type) { return type->m_preDepthProgram; },
+                        [&typeSelector](const mesh::MeshType* type) {
                             return type->m_flags.gbuffer &&
-                                type->m_flags.depth &&
+                                type->m_flags.preDepth &&
                                 typeSelector(type);
                         },
                         nodeSelector,
@@ -183,14 +193,14 @@ namespace render {
             }
 
             {
-                ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
                 if (ctx.m_assets.prepassDepthEnabled) {
                     ctx.m_state.setDepthFunc(GL_LEQUAL);
                 }
 
                 drawNodesImpl(
                     ctx,
-                    [&typeSelector](const MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
                     nodeSelector,
                     kindBits);
 
@@ -221,7 +231,7 @@ namespace render {
         // pass 3 - light
         //if (false)
         {
-            ctx.m_state.setStencil(GLStencilMode::only_non_zero());
+            ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero());
             ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
             primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
@@ -241,11 +251,11 @@ namespace render {
         {
             ctx.validateRender("non_gbuffer");
 
-            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
             bool rendered = drawNodesImpl(
                 ctx,
-                [&typeSelector](const MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+                [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
                 kindBits);
 
@@ -264,7 +274,7 @@ namespace render {
         {
             if (ctx.m_assets.effectOitEnabled)
             {
-                ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
+                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
                 // NOTE KI do NOT modify depth with blend
                 ctx.m_state.setDepthMask(GL_FALSE);
 
@@ -281,8 +291,8 @@ namespace render {
                 // only "blend OIT" nodes
                 drawProgram(
                     ctx,
-                    [this](const MeshType* type) { return m_oitProgram; },
-                    [&typeSelector](const MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+                    [this](const mesh::MeshType* type) { return m_oitProgram; },
+                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
                     nodeSelector,
                     NodeDraw::KIND_ALL);
 
@@ -306,7 +316,7 @@ namespace render {
 
         // pass 6 - skybox (*before* blend)
         {
-            ctx.m_state.setStencil(GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
+            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
             drawSkybox(ctx);
         }
 
@@ -319,7 +329,7 @@ namespace render {
 
             drawBlendedImpl(
                 ctx,
-                [&typeSelector](const MeshType* type) {
+                [&typeSelector](const mesh::MeshType* type) {
                     return !type->m_flags.blendOIT &&
                         type->m_flags.blend &&
                         type->m_flags.effect &&
@@ -341,13 +351,13 @@ namespace render {
                 ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
                 if (ctx.m_assets.effectFogEnabled) {
-                    ctx.m_state.setStencil(GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                    ctx.m_state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
                     m_fogProgram->bind(ctx.m_state);
                     m_textureQuad.draw(ctx.m_state);
                 }
 
                 if (ctx.m_assets.effectOitEnabled) {
-                    ctx.m_state.setStencil(GLStencilMode::only_non_zero(STENCIL_OIT));
+                    ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
 
                     m_blendOitProgram->bind(ctx.m_state);
                     m_oitBuffer.bindTexture(ctx);
@@ -577,7 +587,7 @@ namespace render {
     void NodeDraw::drawBlended(
         const RenderContext& ctx,
         FrameBuffer* targetBuffer,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
         targetBuffer->bind(ctx);
@@ -587,7 +597,7 @@ namespace render {
 
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits)
     {
@@ -637,7 +647,7 @@ namespace render {
 
     void NodeDraw::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
         if (m_blendedNodes.empty()) return;
@@ -677,8 +687,8 @@ namespace render {
 
     void NodeDraw::drawProgram(
         const RenderContext& ctx,
-        const std::function<Program* (const MeshType*)>& programSelector,
-        const std::function<bool(const MeshType*)>& typeSelector,
+        const std::function<Program* (const mesh::MeshType*)>& programSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits)
     {

@@ -165,7 +165,7 @@ void Material::loadTextures(const Assets& assets)
     loadChannelTexture(
         assets,
         MATERIAL_METAL_CHANNEL_MAP_IDX,
-        "metal",
+        fmt::format("material_{}_metal", m_registeredIndex),
         {
             MATERIAL_METALNESS_MAP_IDX,
             MATERIAL_ROUGHNESS_MAP_IDX,

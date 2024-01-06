@@ -3,10 +3,11 @@
 #include "util/Perlin.h"
 
 #include "asset/Image.h"
-
 #include "asset/AABB.h"
-#include "asset/ModelMesh.h"
-#include "asset/TerrainMesh.h"
+
+#include "mesh/ModelMesh.h"
+#include "mesh/TerrainMesh.h"
+#include "mesh/MeshType.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -15,7 +16,6 @@
 
 #include "event/Dispatcher.h"
 
-#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -156,7 +156,9 @@ void TerrainGenerator::createTiles(
         {
             auto type = registry->m_typeRegistry->modifyType(typeId);
             type->setMesh(mesh);
-            type->m_drawOptions.patchVertices = 3;
+
+            auto& drawOptions = type->modifyDrawOptions();
+            drawOptions.patchVertices = 3;
         }
     }
 
@@ -216,6 +218,7 @@ void TerrainGenerator::createTiles(
         }
     }
 
+    // NOTE KI dummy node needed to trigger instancing in container context
     {
         const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
@@ -237,32 +240,34 @@ void TerrainGenerator::createTiles(
 
 ki::type_id TerrainGenerator::createType(
     Registry* registry,
-    const MeshType* containerType)
+    const mesh::MeshType* containerType)
 {
     auto type = registry->m_typeRegistry->registerType(containerType->m_name);
-    type->m_entityType = EntityType::terrain;
+    type->m_entityType = mesh::EntityType::terrain;
 
     auto& flags = type->m_flags;
     flags = containerType->m_flags;
     flags.invisible = false;
     flags.terrain = true;
+    flags.contained = true;
 
     type->m_priority = containerType->m_priority;
-    //type->m_script = containerType->m_script;
+    type->m_program = containerType->m_program;
+    type->m_shadowProgram = containerType->m_shadowProgram;
+    type->m_preDepthProgram = containerType->m_preDepthProgram;
 
     // TODO KI *redundant* copy of material
-    auto& containerMaterials = containerType->m_materialVBO;
-    auto& materialVBO = type->m_materialVBO;
+    {
+        auto& containerMaterials = containerType->m_materialVBO;
+        auto& materialVBO = type->m_materialVBO;
 
-    // NOTE MUST copy *all* data from materials
-    auto* material = containerMaterials.getDefaultMaterial();
-    if (material) {
-        materialVBO.setDefaultMaterial(*material, true, true);
+        // NOTE MUST copy *all* data from materials
+        auto* material = containerMaterials->getDefaultMaterial();
+        if (material) {
+            materialVBO->setDefaultMaterial(*material, true, true);
+        }
+        materialVBO->setMaterials(containerMaterials->getMaterials());
     }
-    materialVBO.setMaterials(containerMaterials.getMaterials());
-
-    type->m_program = containerType->m_program;
-    type->m_depthProgram = containerType->m_depthProgram;
 
     return type->m_id;
 }

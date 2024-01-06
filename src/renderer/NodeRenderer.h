@@ -4,7 +4,9 @@
 
 #include "Renderer.h"
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
 
 class NodeRenderer final : public Renderer
 {
@@ -13,7 +15,10 @@ public:
     static const int ATT_DEPTH_INDEX = 1;
 
 public:
-    NodeRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    NodeRenderer(
+        std::string_view name,
+        bool useFrameStep)
+        : Renderer(name, useFrameStep) {}
 
     void prepareRT(
         const Assets& assets,
@@ -23,19 +28,19 @@ public:
 
     void render(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
 private:
     void fillHighlightMask(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
     void renderHighlight(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer);
+        render::FrameBuffer* targetBuffer);
 
 public:
-    std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
 
 private:
     Program* m_selectionProgram{ nullptr };

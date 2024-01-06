@@ -5,9 +5,10 @@
 #include "asset/Material.h"
 #include "asset/Image.h"
 
-
-class ModelMesh;
-class MeshType;
+namespace mesh {
+    class ModelMesh;
+    class MeshType;
+}
 
 //
 // Tessellated terrain generator
@@ -47,7 +48,7 @@ private:
 
     ki::type_id createType(
         Registry* registry,
-        const MeshType* containerType);
+        const mesh::MeshType* containerType);
 
 public:
     int m_worldTileSize{ 100 };

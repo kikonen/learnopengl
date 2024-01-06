@@ -17,6 +17,9 @@ Assets::Assets()
         "#version {}{}{}",
         glsl_version[0], glsl_version[1], glsl_version[2]);
 
+    glVendorNvidia = false;
+    glVendorIntel = false;
+
     glPreferredTextureFormatRGBA = GL_RGBA8;
     glPreferredTextureFormatRGB = GL_RGB8;
 

@@ -21,5 +21,5 @@ public:
 public:
     std::string m_path;
 
-    GLTextureHandle m_texture;
+    kigl::GLTextureHandle m_texture;
 };

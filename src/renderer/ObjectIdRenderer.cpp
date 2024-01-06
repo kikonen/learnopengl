@@ -125,13 +125,13 @@ void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
-    auto buffer = new FrameBuffer(
+    auto buffer = new render::FrameBuffer(
         "object_id",
         {
             w, h,
             {
-                FrameBufferAttachment::getObjectId(),
-                FrameBufferAttachment::getDepthRbo(),
+                render::FrameBufferAttachment::getObjectId(),
+                render::FrameBufferAttachment::getDepthRbo(),
             }
         });
 
@@ -165,8 +165,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const MeshType* type) { return m_idProgram; },
-            [](const MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
+            [this](const mesh::MeshType* type) { return m_idProgram; },
+            [](const mesh::MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
             render::NodeDraw::KIND_ALL);
     }

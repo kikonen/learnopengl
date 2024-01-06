@@ -1,13 +1,18 @@
 #pragma once
 
 class Program;
-class GLState;
 
-class CubeRender {
-public:
-    void render(
-        GLState& state,
-        Program* program,
-        int cubeTextureID,
-        int size);
-};
+namespace kigl {
+    class GLState;
+}
+
+namespace render {
+    class CubeRender {
+    public:
+        void render(
+            kigl::GLState& state,
+            Program* program,
+            int cubeTextureID,
+            int size);
+    };
+}

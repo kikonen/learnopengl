@@ -8,19 +8,17 @@
 
 
 class Program;
-class MaterialVBO;
 
 
-struct BatchCommand {
-    const Program* m_program{ nullptr };
-    //MeshType* m_type{ nullptr };
+namespace render {
+    struct BatchCommand {
+        const Program* m_program{ nullptr };
 
-    const GLVertexArray* m_vao{ nullptr };
-    const backend::DrawOptions* m_drawOptions{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
+        backend::DrawOptions m_drawOptions;
 
-    //const MaterialVBO* m_materialVBO{ nullptr };
-
-    int m_index = 0;
-    int m_drawCount = 0;
-    int m_instancedCount = 1;
-};
+        int m_index{ 0 };
+        int m_drawCount{ 0 };
+        int m_instancedCount{ 1 };
+    };
+}

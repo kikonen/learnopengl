@@ -6,8 +6,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "mesh/MeshType.h"
+
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 
 namespace loader
@@ -38,7 +39,7 @@ namespace loader
         const RootData& data)
     {
         auto* type = m_registry->m_typeRegistry->registerType("<root>");
-        type->m_entityType = EntityType::origo;
+        type->m_entityType = mesh::EntityType::origo;
 
         auto& flags = type->m_flags;
         flags.invisible = true;

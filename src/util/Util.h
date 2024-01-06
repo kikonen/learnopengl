@@ -17,13 +17,13 @@ namespace util
     // modify str param to upper case
     //
     // @return reference of str param
-    std::string& toUpper(std::string& str);
+    std::string toUpper(std::string_view str);
 
     //
     // modify str param to lower case
     //
     // @return reference of str param
-    std::string& toLower(std::string& str);
+    std::string toLower(std::string_view str);
 
     std::string replace(
         const std::string& str,

@@ -35,7 +35,7 @@ namespace physics {
         //
         // @param u [0, 1]
         // @param v [0, 1]
-        float getTerrainHeight(float u, float v) const noexcept;
+        float getTerrainHeight(float u, float v) const;
 
     public:
         physics::height_map_id m_id{ 0 };

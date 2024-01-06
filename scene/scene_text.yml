@@ -9,28 +9,51 @@ entities:
   - name: Player
     id: player
     type: origo
-    pos: [0, 0, 0]
+    pos: [2.5, 2, 3]
     front: [0, 0, -1]
     active: true
-    camera:
-      default: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
       - type: camera_zoom
   - name: Text plane
     model: quad
     material: metal
     custom_material:
       type: text
-      font: fonts/Vera.ttf
-      font_size: 64
-    program: g_tex
-    pos: [0.0, 0.0, -5.0]
+      font: hello_font
+    program: font_atlas_demo
+    shadow_program: font_atlas_demo
+    pos: [2.0, 2.0, -5.0]
     render_flags:
+      alpha: true
+      blend: true
+      effect: true
       render_back: true
+  - name: Hello world
+    type: text
+    material: metal
+    text:
+      font: hello_font
+      text: ÄÅÖ äåö - Hello world
+    program: font_render
+    shadow_program: shadow_font_render
+    pos: [-2.0, 2.0, -3.0]
+    scale: 0.01
+    render_flags:
+      alpha: true
+      blend: true
+      effect: true
+      render_back: true
+    xscript_file: scripts/anim_rotate_object
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -45,9 +68,45 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
+  - name: wooden wall
+    model: quad
+    material: wood_floor
+    program: g_tex
+    render_flags:
+      render_back: true
+      no_shadow: true
+    pos: [-1, 2.5, -3.001]
+    scale: 0.5
+  - name: wooden floor
+    model: plane
+    material: wood_floor
+    program: g_tex
+    render_flags:
+      no_shadow: true
+    scale: 100
+  - name: Cube map - mirror_ball
+    type: origo
+    pos: [0, 2, -7]
+    render_flags:
+      cube_map: true
+  - name: Mirror ball
+    model: glass_ball
+    program: g_tex
+    pos: [0, 2, -7]
+    scale: 1
+    material_modifier:
+      reflection: 0.8
+fonts:
+  - name: hello_font
+    path: fonts/LuckiestGuy.ttf
+    size: 72
+    xatlas_size: 512
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
   - name: metal
     kd: [0.8, 0.8, 0.0, 1.0]
     metal: [1.0, 0.0, 0, 1]
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    tiling: 20

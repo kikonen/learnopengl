@@ -12,12 +12,15 @@
 #include "kigl/GLVertexArray.h"
 
 #include "asset/Assets.h"
-#include "asset/ModelVAO.h"
+#include "mesh/ModelVAO.h"
 
 struct Material;
-class ModelMesh;
-class ModelMeshVBO;
 class UpdateContext;
+
+namespace mesh {
+    class ModelMesh;
+    class ModelVBO;
+}
 
 class ModelRegistry {
 public:
@@ -32,19 +35,19 @@ public:
     void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
-    GLVertexArray* registerMeshVBO(ModelMeshVBO& meshVBO);
+    kigl::GLVertexArray* registerModelVBO(mesh::ModelVBO& modelVBO);
 
-    std::shared_future<ModelMesh*> getMesh(
+    std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,
         std::string_view rootDir);
 
-    std::shared_future<ModelMesh*> getMesh(
+    std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,
         std::string_view rootDir,
         std::string_view meshPath);
 
 private:
-    std::shared_future<ModelMesh*> startLoad(ModelMesh* mesh);
+    std::shared_future<mesh::ModelMesh*> startLoad(mesh::ModelMesh* mesh);
 
 private:
     const Assets& m_assets;
@@ -52,10 +55,10 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_meshes_lock{};
-    std::unordered_map<const std::string, std::shared_future<ModelMesh*>, util::constant_string_hash> m_meshes;
+    std::unordered_map<const std::string, std::shared_future<mesh::ModelMesh*>, util::constant_string_hash> m_meshes;
 
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
-    ModelVAO m_vao{};
+    mesh::ModelVAO m_vao{ "model" };
 };

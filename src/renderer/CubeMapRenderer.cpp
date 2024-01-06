@@ -5,6 +5,8 @@
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
+#include "mesh/MeshType.h"
+
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
 
@@ -21,7 +23,6 @@
 #include "renderer/WaterMapRenderer.h"
 #include "renderer/MirrorMapRenderer.h"
 
-#include "registry/MeshType.h"
 
 
 // https://stackoverflow.com/questions/28845375/rendering-a-dynamic-cubemap-opengl
@@ -103,12 +104,12 @@ void CubeMapRenderer::prepareRT(
     int size = assets.cubeMapSize;
 
     {
-        m_curr = std::make_unique<DynamicCubeMap>(size);
+        m_curr = std::make_unique<DynamicCubeMap>(fmt::format("{}_next", m_name), size);
         m_curr->prepareRT(
             assets, registry,
             false, { 0, 0, 1.f, 1.f });
 
-        m_prev = std::make_unique<DynamicCubeMap>(size);
+        m_prev = std::make_unique<DynamicCubeMap>(fmt::format("{}_prev", m_name), size);
         m_prev->prepareRT(
             assets, registry,
             false,
@@ -122,14 +123,14 @@ void CubeMapRenderer::prepareRT(
         camera.setFov(90.f);
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->prepareRT(assets, registry);
     }
 
-    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, true);
+    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {
@@ -294,7 +295,7 @@ void CubeMapRenderer::clearCubeMap(
 
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
-    CubeMapBuffer* targetBuffer,
+    render::CubeMapBuffer* targetBuffer,
     const Node* current,
     const glm::vec4& debugColor)
 {
@@ -331,7 +332,7 @@ void CubeMapRenderer::drawNodes(
     ctx.m_nodeDraw->drawNodes(
         ctx,
         targetBuffer,
-        [](const MeshType* type) { return !type->m_flags.noReflect; },
+        [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) { return node != current; },

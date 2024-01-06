@@ -62,7 +62,7 @@ protected:
 
     std::string m_title;
 
-    GLState m_state;
+    kigl::GLState m_state;
 
     InputState m_lastInputState;
 

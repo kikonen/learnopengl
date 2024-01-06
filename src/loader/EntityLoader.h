@@ -66,5 +66,9 @@ namespace loader {
             GeneratorLoader& generatorLoader,
             PhysicsLoader& physicsLoader,
             ScriptLoader& scriptLoader) const;
+
+        void loadText(
+            const YAML::Node& node,
+            TextData& data) const;
     };
 }

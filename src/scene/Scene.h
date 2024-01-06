@@ -17,6 +17,10 @@ namespace event {
 
 namespace render {
     class NodeDraw;
+    class Batch;
+    class RenderData;
+    class FrameBuffer;
+    class WindowBuffer;
 }
 
 class Camera;
@@ -28,17 +32,11 @@ class Viewport;
 
 class NodeController;
 
-class RenderData;
-class Batch;
-
 class Registry;
 
 class UpdateContext;
 class UpdateViewContext;
 class RenderContext;
-
-class FrameBuffer;
-class WindowBuffer;
 
 class NodeRenderer;
 class ViewportRenderer;
@@ -103,11 +101,11 @@ public:
 public:
     const Assets& m_assets;
 
-    std::unique_ptr<RenderData> m_renderData;
+    std::unique_ptr<render::RenderData> m_renderData;
 
     std::shared_ptr<Registry> m_registry;
 
-    std::unique_ptr<Batch> m_batch;
+    std::unique_ptr<render::Batch> m_batch;
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
 protected:
@@ -134,7 +132,7 @@ private:
 
     std::vector<Node*> m_particleGenerators;
 
-    std::unique_ptr<WindowBuffer> m_windowBuffer{ nullptr };
+    std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 
     unsigned int m_pbo = 0;
 };

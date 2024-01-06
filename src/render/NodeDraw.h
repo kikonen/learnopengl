@@ -14,16 +14,20 @@
 #include "backend/DrawOptions.h"
 #include "query/TimeElapsedQuery.h"
 
+class Program;
+
 class UpdateViewContext;
 class RenderContext;
-class Program;
-class MeshType;
+
 class Node;
-class Program;
 class Registry;
 
+namespace mesh {
+    class MeshType;
+}
+
 namespace render {
-    //const auto ANY_TYPE = [](const MeshType* type) { return true; };
+    //const auto ANY_TYPE = [](const mesh::MeshType* type) { return true; };
     //const auto ANY_NODE = [](const Node* node) { return true; };
 
     //
@@ -64,11 +68,11 @@ namespace render {
 
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeKey {
-        MeshTypeKey(const MeshType* type);
+        MeshTypeKey(const mesh::MeshType* type);
 
         bool operator<(const MeshTypeKey& o) const;
 
-        const MeshType* type;
+        const mesh::MeshType* type;
     };
 
     using NodeVector = std::vector<Node*>;
@@ -98,7 +102,7 @@ namespace render {
         void drawNodes(
             const RenderContext& ctx,
             FrameBuffer* targetBuffer,
-            const std::function<bool(const MeshType*)>& typeSelector,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             unsigned int kindBits,
             GLbitfield copyMask);
@@ -110,26 +114,26 @@ namespace render {
         void drawBlended(
             const RenderContext& ctx,
             FrameBuffer* targetBuffer,
-            const std::function<bool(const MeshType*)>& typeSelector,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector);
 
         void drawProgram(
             const RenderContext& ctx,
-            const std::function<Program* (const MeshType*)>& programSelector,
-            const std::function<bool(const MeshType*)>& typeSelector,
+            const std::function<Program* (const mesh::MeshType*)>& programSelector,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             unsigned int kindBits);
 
     private:
         bool drawNodesImpl(
             const RenderContext& ctx,
-            const std::function<bool(const MeshType*)>& typeSelector,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             unsigned int kindBits);
 
         void drawBlendedImpl(
             const RenderContext& ctx,
-            const std::function<bool(const MeshType*)>& typeSelector,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector);
 
         void drawSkybox(
@@ -154,7 +158,7 @@ namespace render {
         Program* m_fogProgram{ nullptr };
         Program* m_hdrGammaProgram{ nullptr };
 
-        TimeElapsedQuery m_timeElapsedQuery;
+        query::TimeElapsedQuery m_timeElapsedQuery;
 
         // NodeDraw
         ProgramTypeMap m_solidNodes;

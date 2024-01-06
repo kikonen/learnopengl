@@ -2,12 +2,15 @@
 
 #include "Renderer.h"
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
 
 class ViewportRenderer final : public Renderer
 {
 public:
-    ViewportRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    ViewportRenderer(bool useFrameStep) :
+        Renderer("main", useFrameStep) {}
 
     virtual void prepareRT(
         const Assets& assets,
@@ -17,5 +20,5 @@ public:
 
     void render(
         const RenderContext& ctx,
-        FrameBuffer* destinationBuffer);
+        render::FrameBuffer* destinationBuffer);
 };

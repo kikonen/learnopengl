@@ -18,6 +18,8 @@
 #include "physics/PhysicsEngine.h"
 
 #include "registry/ProgramRegistry.h"
+
+#include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/SpriteRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -41,6 +43,7 @@ Registry::Registry(
     m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets)),
     m_commandEngineImpl(std::make_unique<script::CommandEngine>(assets)),
     m_scriptEngineImpl(std::make_unique<script::ScriptEngine>(assets)),
+    m_fontRegistryImpl(std::make_unique<FontRegistry>(assets)),
     m_materialRegistryImpl(std::make_unique<MaterialRegistry>(assets, m_alive)),
     m_spriteRegistryImpl(std::make_unique<SpriteRegistry>(assets, m_alive)),
     m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>(assets, m_alive)),
@@ -57,6 +60,7 @@ Registry::Registry(
     m_physicsEngine(m_physicsEngineImpl.get()),
     m_commandEngine(m_commandEngineImpl.get()),
     m_scriptEngine(m_scriptEngineImpl.get()),
+    m_fontRegistry(m_fontRegistryImpl.get()),
     m_materialRegistry(m_materialRegistryImpl.get()),
     m_spriteRegistry(m_spriteRegistryImpl.get()),
     m_typeRegistry(m_typeRegistryImpl.get()),
@@ -107,12 +111,13 @@ void Registry::prepareWT()
 void Registry::updateWT(const UpdateContext& ctx)
 {
     ASSERT_WT();
-    m_controllerRegistry->updateWT(ctx);
+    //m_controllerRegistry->updateWT(ctx);
 }
 
 void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
+    m_fontRegistry->updateRT(ctx);
     m_materialRegistry->updateRT(ctx);
     m_spriteRegistry->updateRT(ctx);
     m_modelRegistry->updateRT(ctx);

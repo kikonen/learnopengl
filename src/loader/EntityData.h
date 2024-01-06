@@ -9,7 +9,7 @@
 
 #include "asset/Shader.h"
 
-#include "registry/EntityType.h"
+#include "mesh/EntityType.h"
 
 #include "BaseUUID.h"
 #include "BaseData.h"
@@ -22,6 +22,7 @@
 #include "GeneratorData.h"
 #include "PhysicsData.h"
 #include "ScriptData.h"
+#include "TextData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -30,7 +31,7 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
-        EntityType type{ EntityType::model };
+        mesh::EntityType type{ mesh::EntityType::model };
 
         std::string name;
         std::string desc;
@@ -46,7 +47,8 @@ namespace loader {
         std::string programName{};
         std::string geometryType;
 
-        std::string depthProgramName{ SHADER_DEPTH_PASS };
+        std::string shadowProgramName;
+        std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};
@@ -90,6 +92,7 @@ namespace loader {
         CameraData camera;
         LightData light;
         AudioData audio;
+        TextData text;
 
         GeneratorData generator;
     };

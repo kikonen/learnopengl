@@ -93,7 +93,7 @@ void MirrorMapRenderer::prepareRT(
         m_reflectionDebugViewport->prepareRT(assets);
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
@@ -101,7 +101,7 @@ void MirrorMapRenderer::prepareRT(
     }
 
     if (m_doubleBuffer) {
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, m_squareAspectRatio);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
@@ -134,7 +134,7 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
     bool changed = w != m_reflectionWidth || h != m_reflectionheight;
     if (!changed) return;
 
-    auto albedo = FrameBufferAttachment::getTextureRGBHdr();
+    auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
     albedo.magFilter = GL_LINEAR;
     albedo.textureWrapS = GL_REPEAT;
@@ -144,14 +144,16 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 
     for (int i = 0; i < m_bufferCount; i++) {
         {
-            FrameBufferSpecification spec = {
+            render::FrameBufferSpecification spec = {
                 w, h,
                 {
                     albedo,
                 }
             };
 
-            m_reflectionBuffers.push_back(std::make_unique<FrameBuffer>("mirror_reflect", spec));
+            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
+                fmt::format("{}_mirror_reflect_{}", m_name, i),
+                spec));
         }
     }
 
@@ -287,7 +289,7 @@ void MirrorMapRenderer::handleNodeAdded(Node* node)
 
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
-    FrameBuffer* targetBuffer,
+    render::FrameBuffer* targetBuffer,
     Node* current)
 {
     bool renderedWater{ false };
@@ -331,7 +333,7 @@ void MirrorMapRenderer::drawNodes(
         ctx.m_nodeDraw->drawNodes(
             ctx,
             targetBuffer,
-            [](const MeshType* type) { return !type->m_flags.noReflect; },
+            [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
             [current, sourceNode](const Node* node) {
                 return node != current &&
                     node != sourceNode;

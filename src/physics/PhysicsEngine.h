@@ -15,7 +15,9 @@
 class UpdateContext;
 
 class Node;
-class MeshType;
+namespace mesh {
+    class MeshType;
+}
 
 struct NodeTransform;
 
@@ -54,7 +56,7 @@ namespace physics {
 
         void enforceBounds(
             const UpdateContext& ctx,
-            const MeshType& type,
+            const mesh::MeshType& type,
             Node& node,
             NodeTransform& transform);
 

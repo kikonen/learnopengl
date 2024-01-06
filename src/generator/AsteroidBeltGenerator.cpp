@@ -6,14 +6,14 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "asset/Mesh.h"
+#include "mesh/Mesh.h"
+#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 
 #include "engine/UpdateContext.h"
 #include "render/Batch.h"
 
-#include "registry/MeshType.h"
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/EntitySSBO.h"
@@ -84,7 +84,7 @@ void AsteroidBeltGenerator::createAsteroids(
 {
     auto& type = container.m_type;
 
-    const Mesh* mesh = container.m_type->getMesh();
+    const auto* mesh = container.m_type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();

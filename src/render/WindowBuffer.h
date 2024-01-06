@@ -4,16 +4,18 @@
 
 class UpdateViewContext;
 
-class WindowBuffer final : public FrameBuffer
-{
-public:
-    WindowBuffer(bool forceBind) : WindowBuffer(0, forceBind) {}
+namespace render {
+    class WindowBuffer final : public FrameBuffer
+    {
+    public:
+        WindowBuffer(bool forceBind) : WindowBuffer(0, forceBind) {}
 
-    WindowBuffer(GLuint fbo, bool forceBind);
+        WindowBuffer(GLuint fbo, bool forceBind);
 
-    virtual ~WindowBuffer() override {};
+        virtual ~WindowBuffer() override {};
 
-    void updateRT(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx);
 
-private:
-};
+    private:
+    };
+}

@@ -12,37 +12,45 @@ class RenderContext;
 class Assets;
 class Registry;
 class Program;
-class GLState;
 
-class CubeMap
-{
-public:
-    CubeMap(bool empty);
+namespace {
+    class GLState;
+}
 
-    ~CubeMap();
+namespace render {
+    class CubeMap
+    {
+    public:
+        CubeMap(
+            std::string_view name,
+            bool empty);
 
-    bool valid() { return m_cubeTexture > 0; }
+        ~CubeMap();
 
-    void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        bool valid() { return m_cubeTexture > 0; }
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+        void prepareRT(
+            const Assets& assets,
+            Registry* registry);
 
-    operator int() const { return m_cubeTexture; }
+        void bindTexture(const RenderContext& ctx, int unitIndex);
 
-private:
-    void createEmpty();
+        operator int() const { return m_cubeTexture; }
 
-    void createFaces();
+    private:
+        void createEmpty();
 
-public:
-    const bool m_empty;
+        void createFaces();
 
-    std::vector<std::string> m_faces;
-    int m_size = 0;
+    public:
+        const bool m_empty;
+        std::string m_name;
 
-    GLenum m_internalFormat = GL_RGB8;
+        std::vector<std::string> m_faces;
+        int m_size = 0;
 
-    GLTextureHandle m_cubeTexture;
-};
+        GLenum m_internalFormat = GL_RGB8;
+
+        kigl::GLTextureHandle m_cubeTexture;
+    };
+}

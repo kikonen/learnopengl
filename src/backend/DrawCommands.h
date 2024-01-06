@@ -2,10 +2,15 @@
 
 #include <glm/glm.hpp>
 
-class FrameBuffer;
+namespace render {
+    class FrameBuffer;
+}
+
 class Program;
 
-struct GLVertexArray;
+namespace kigl {
+    struct GLVertexArray;
+}
 
 namespace backend {
     struct DrawOptions;
@@ -14,12 +19,12 @@ namespace backend {
     };
 
     struct ChangeBuffer {
-        FrameBuffer* buffer;
+        render::FrameBuffer* buffer;
     };
 
     struct DrawEntity {
         Program* program;
-        GLVertexArray* vao;
+        kigl::GLVertexArray* vao;
         DrawOptions* drawOptions;
         bool allowBlend;
     };

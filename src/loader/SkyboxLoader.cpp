@@ -3,14 +3,14 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
-#include "asset/ModelMesh.h"
+#include "mesh/ModelMesh.h"
+#include "mesh/MeshType.h"
 
 #include "event/Dispatcher.h"
 
 #include "model/Node.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshType.h"
 #include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -107,7 +107,7 @@ namespace loader {
             m_assets.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
-        type->m_entityType = EntityType::skybox;
+        type->m_entityType = mesh::EntityType::skybox;
 
         auto& flags = type->m_flags;
 

@@ -13,12 +13,17 @@ entities:
     id: player
     type: origo
     pos: [0, 1, 15]
+    front: [0, 0, -1]
     active: true
+    controllers:
+     - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
     camera:
       default: true
     controllers:
-     - type: pawn
-     - type: camera_zoom
+      - type: camera_zoom
   - name: Other
     model: texture_cube
     program: g_tex

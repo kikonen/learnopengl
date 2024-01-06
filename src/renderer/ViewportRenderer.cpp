@@ -29,7 +29,7 @@ void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 
 void ViewportRenderer::render(
     const RenderContext& ctx,
-    FrameBuffer* destinationBuffer)
+    render::FrameBuffer* destinationBuffer)
 {
     auto& viewports = ctx.m_registry->m_viewportRegistry->getViewports();
 

@@ -11,6 +11,9 @@ namespace audio
 {
     struct Sound {
         Sound() = default;
+        Sound(Sound& o) = delete;
+        Sound& operator=(Sound& o) = delete;
+        Sound& operator=(Sound&& o) noexcept;
         Sound(Sound&&) noexcept;
         ~Sound();
 

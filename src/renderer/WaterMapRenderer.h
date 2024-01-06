@@ -8,19 +8,22 @@
 
 #include "component/Camera.h"
 
+namespace render {
+    class FrameBuffer;
+}
+
 class Node;
-class FrameBuffer;
 class Viewport;
-class FrameBuffer;
 
 class WaterMapRenderer final : public Renderer
 {
 public:
     WaterMapRenderer(
+        std::string_view name,
         bool useFrameStep,
         bool doubleBuffer,
         bool squareAspectRatio)
-        : Renderer(useFrameStep),
+        : Renderer(name, useFrameStep),
         m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 
@@ -45,7 +48,7 @@ private:
 
     void drawNodes(
         const RenderContext& ctx,
-        FrameBuffer* targetBuffer,
+        render::FrameBuffer* targetBuffer,
         Node* current,
         bool reflect);
 
@@ -77,8 +80,8 @@ private:
     int m_prevIndex{ 0 };
 
     int m_bufferCount{ 1 };
-    std::vector<std::unique_ptr<FrameBuffer>> m_reflectionBuffers;
-    std::vector<std::unique_ptr<FrameBuffer>> m_refractionBuffers;
+    std::vector<std::unique_ptr<render::FrameBuffer>> m_reflectionBuffers;
+    std::vector<std::unique_ptr<render::FrameBuffer>> m_refractionBuffers;
 
     unsigned int m_noiseTextureID{ 0 };
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <glm/glm.hpp>
 
 #include "kigl/kigl.h"
@@ -15,7 +17,10 @@ struct FrameBufferAttachment;
 class DynamicCubeMap
 {
 public:
-    DynamicCubeMap(int size);
+    DynamicCubeMap(
+        std::string_view name,
+        int size);
+
     ~DynamicCubeMap();
 
     void prepareRT(
@@ -29,19 +34,20 @@ public:
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 
-    CubeMapBuffer asFrameBuffer(int side);
+    render::CubeMapBuffer asFrameBuffer(int side);
 
 public:
     const int m_size;
+    std::string m_name;
 
-    CubeMap m_cubeMap{ true };
+    render::CubeMap m_cubeMap;
 
     bool m_valid{ false };
 
     bool m_rendered{ false };
     int m_updateFace{ -1 };
 
-    GLFrameBufferHandle m_fbo;
+    kigl::GLFrameBufferHandle m_fbo;
 
 private:
     bool m_prepared{ false };

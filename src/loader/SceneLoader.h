@@ -11,7 +11,7 @@
 
 #include "asset/Shader.h"
 
-#include "registry/EntityType.h"
+#include "mesh/EntityType.h"
 
 #include "BaseLoader.h"
 #include "RootLoader.h"
@@ -19,6 +19,7 @@
 #include "SkyboxLoader.h"
 #include "VolumeLoader.h"
 #include "CubeMapLoader.h"
+#include "FontLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
 #include "SpriteLoader.h"
@@ -32,9 +33,11 @@
 
 class Registry;
 
-class MeshType;
-class Node;
+namespace mesh {
+    class MeshType;
+}
 
+class Node;
 
 namespace loader {
     struct MetaData {
@@ -62,25 +65,27 @@ namespace loader {
         void load();
 
     private:
-        void loadedEntity(const EntityData& data);
+        void loadedEntity(
+            const EntityData& data,
+            bool success);
 
         void attach(
             const RootData& root);
 
-        void attachEntity(
+        bool attachEntity(
             const uuids::uuid& rootId,
             const EntityData& data);
 
-        const MeshType* attachEntityClone(
-            const MeshType* type,
+        const mesh::MeshType* attachEntityClone(
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
 
-        const MeshType* attachEntityCloneRepeat(
-            const MeshType* type,
+        const mesh::MeshType* attachEntityCloneRepeat(
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityData& entity,
             const EntityCloneData& data,
@@ -91,35 +96,39 @@ namespace loader {
 
         void assignFlags(
             const EntityCloneData& data,
-            MeshType* type);
+            mesh::MeshType* type);
 
-        const MeshType* createType(
+        const mesh::MeshType* createType(
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         void resolveProgram(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
+        text::font_id resolveFont(
+            const mesh::MeshType* type,
+            const TextData& data) const;
+
         void resolveMaterial(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void modifyMaterials(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void resolveSprite(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data);
 
         void resolveMesh(
-            MeshType* type,
+            mesh::MeshType* type,
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         Node* createNode(
-            const MeshType* type,
+            const mesh::MeshType* type,
             const uuids::uuid& rootId,
             const EntityCloneData& data,
             const bool cloned,
@@ -132,11 +141,14 @@ namespace loader {
             const YAML::Node& node,
             MetaData& data) const;
 
-        Material* findMaterial(
-            std::string_view name);
+        const Material* findMaterial(
+            std::string_view name) const;
 
-        Sprite* findSprite(
-            std::string_view name);
+        const Sprite* findSprite(
+            std::string_view name) const;
+
+        const FontData* findFont(
+            std::string_view name) const;
 
     private:
         size_t m_pendingCount{ 0 };
@@ -151,6 +163,8 @@ namespace loader {
         ScriptEngineData m_scriptEngineData;
 
         std::vector<EntityData> m_entities;
+
+        std::vector<FontData> m_fonts;
 
         Material m_defaultMaterial;
         std::vector<MaterialData> m_materials;
@@ -167,6 +181,7 @@ namespace loader {
 
         EntityLoader m_entityLoader;
 
+        FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;
         SpriteLoader m_spriteLoader;

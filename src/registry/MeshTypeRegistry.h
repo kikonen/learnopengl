@@ -6,7 +6,7 @@
 
 #include "asset/Assets.h"
 
-#include "registry/MeshType.h"
+#include "mesh/MeshType.h"
 
 class RenderContext;
 
@@ -21,10 +21,10 @@ public:
 
     ~MeshTypeRegistry();
 
-    const MeshType* getType(ki::type_id);
-    MeshType* modifyType(ki::type_id);
+    const mesh::MeshType* getType(ki::type_id) const noexcept;
+    mesh::MeshType* modifyType(ki::type_id);
 
-    MeshType* registerType(
+    mesh::MeshType* registerType(
         const std::string& name);
 
     void registerCustomMaterial(
@@ -37,9 +37,9 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::mutex m_lock{};
+    mutable std::mutex m_lock{};
 
-    std::vector<MeshType> m_types;
+    std::vector<mesh::MeshType> m_types;
 
     std::vector<ki::type_id> m_customMaterialTypes;
 };

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "asset/Mesh.h"
+#include "mesh/Mesh.h"
 
 #include "model/Node.h"
 
