@@ -193,8 +193,11 @@ namespace loader {
                     data.programName = SHADER_TEXTURE;
                 }
             }
-            else if (k == "depth_program") {
-                data.depthProgramName = readString(v);
+            else if (k == "shadow_program") {
+                data.shadowProgramName = readString(v);
+            }
+            else if (k == "pre_depth_program") {
+                data.preDepthProgramName = readString(v);
             }
             else if (k == "geometry_type") {
                 data.geometryType = readString(v);

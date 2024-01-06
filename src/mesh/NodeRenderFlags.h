@@ -9,7 +9,7 @@ namespace mesh {
 
         bool gbuffer : 1 {false};
         bool blendOIT : 1 {false};
-        bool depth : 1 {false};
+        bool preDepth : 1 {false};
 
         // NOTE KI contained node is in the context of container, managing
         // instanced list of transforms rooted into container

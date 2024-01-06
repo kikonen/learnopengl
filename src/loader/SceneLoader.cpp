@@ -472,20 +472,20 @@ namespace loader {
                 definitions[k] = v;
             }
 
-            std::map<std::string, std::string, std::less<>> depthDefinitions;
-            bool useDepth = type->m_flags.depth;
+            std::map<std::string, std::string, std::less<>> preDepthDefinitions;
+            bool usePreDepth = type->m_flags.preDepth;
 
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
             if (type->m_flags.blend) {
                 definitions[DEF_USE_BLEND] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
             if (type->m_flags.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
-                useDepth = false;
+                usePreDepth = false;
             }
 
             //if (type->m_entityType == EntityType::billboard) {
@@ -526,12 +526,20 @@ namespace loader {
                 data.geometryType,
                 definitions);
 
-            if (useDepth) {
-                type->m_depthProgram = m_registry->m_programRegistry->getProgram(
-                    data.depthProgramName,
+            if (!data.shadowProgramName.empty()) {
+                type->m_shadowProgram = m_registry->m_programRegistry->getProgram(
+                    data.shadowProgramName,
                     false,
                     "",
-                    depthDefinitions);
+                    {});
+            }
+
+            if (usePreDepth) {
+                type->m_preDepthProgram = m_registry->m_programRegistry->getProgram(
+                    data.preDepthProgramName,
+                    false,
+                    "",
+                    preDepthDefinitions);
             }
         }
     }
@@ -722,9 +730,9 @@ namespace loader {
         flags.gbuffer = data.programName.starts_with("g_");
 
         {
-            const auto& e = data.renderFlags.find("depth");
+            const auto& e = data.renderFlags.find("pre_depth");
             if (e != data.renderFlags.end()) {
-                flags.depth = e->second;
+                flags.preDepth = e->second;
             }
         }
         {

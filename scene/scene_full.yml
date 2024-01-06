@@ -712,7 +712,7 @@ entities:
     xxpos: [-1024, -5.5, -1024]
     front: [0, 1, 0]
     render_flags:
-      depth: true
+      pre_depth: true
       xxwireframe: true
       tessellation: true
     generator:

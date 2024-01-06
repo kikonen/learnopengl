@@ -26,7 +26,7 @@ const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
 const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
 const std::string SHADER_BRDF_LUT{ "brdf_lut" };
 
-const std::string SHADER_DEPTH_PASS{ "g_depth" };
+const std::string SHADER_PRE_DEPTH_PASS{ "g_pre_depth" };
 const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
 const std::string SHADER_BLOOM_PASS{ "g_bloom_pass" };

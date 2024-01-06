@@ -44,6 +44,7 @@ entities:
       font: hello_font
       text: Hello world
     program: font_render
+    shadow_program: shadow_font_render
     pos: [0.0, 2.0, -3.0]
     scale: 0.01
     render_flags:
@@ -51,6 +52,7 @@ entities:
       blend: true
       effect: true
       render_back: true
+    xscript_file: scripts/anim_rotate_object
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -74,7 +76,7 @@ entities:
     scale: 100
 fonts:
   - name: hello_font
-    xpath: fonts/Lobster-Regular.ttf
+    path: fonts/LuckiestGuy.ttf
     size: 64
 materials:
   - name: default

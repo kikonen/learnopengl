@@ -178,10 +178,10 @@ namespace render {
                 {
                     ctx.m_nodeDraw->drawProgram(
                         ctx,
-                        [this](const mesh::MeshType* type) { return type->m_depthProgram; },
+                        [this](const mesh::MeshType* type) { return type->m_preDepthProgram; },
                         [&typeSelector](const mesh::MeshType* type) {
                             return type->m_flags.gbuffer &&
-                                type->m_flags.depth &&
+                                type->m_flags.preDepth &&
                                 typeSelector(type);
                         },
                         nodeSelector,

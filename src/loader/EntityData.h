@@ -47,7 +47,8 @@ namespace loader {
         std::string programName{};
         std::string geometryType;
 
-        std::string depthProgramName{ SHADER_DEPTH_PASS };
+        std::string shadowProgramName;
+        std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};

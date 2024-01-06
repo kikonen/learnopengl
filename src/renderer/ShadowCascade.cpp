@@ -264,7 +264,9 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) { return m_alphaShadowProgram; },
+            [this](const mesh::MeshType* type) {
+                return type->m_shadowProgram ? type->m_shadowProgram : m_alphaShadowProgram;
+            },
             typeFilter,
             nodeFilter,
             render::NodeDraw::KIND_SPRITE | render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);

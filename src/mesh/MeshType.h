@@ -99,7 +99,8 @@ namespace mesh {
         ki::size_t8 m_priority{ 0 };
 
         Program* m_program{ nullptr };
-        Program* m_depthProgram{ nullptr };
+        Program* m_shadowProgram{ nullptr };
+        Program* m_preDepthProgram{ nullptr };
 
         std::unique_ptr<MaterialVBO> m_materialVBO{ nullptr };
         std::unique_ptr<Sprite> m_sprite{ nullptr };

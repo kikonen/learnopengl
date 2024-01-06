@@ -35,7 +35,8 @@ namespace mesh {
         m_flags{ o.m_flags },
         m_priority{ o.m_priority },
         m_program{ o.m_program },
-        m_depthProgram{ o.m_depthProgram },
+        m_shadowProgram{ o.m_shadowProgram },
+        m_preDepthProgram{ o.m_preDepthProgram },
         m_materialVBO{ std::move(o.m_materialVBO) },
         m_sprite{ std::move(o.m_sprite) },
         m_materialIndex{ o.m_materialIndex },
@@ -139,8 +140,12 @@ namespace mesh {
             m_program->prepareRT(assets);
         }
 
-        if (m_depthProgram) {
-            m_depthProgram->prepareRT(assets);
+        if (m_shadowProgram) {
+            m_shadowProgram->prepareRT(assets);
+        }
+
+        if (m_preDepthProgram) {
+            m_preDepthProgram->prepareRT(assets);
         }
 
         if (m_customMaterial) {

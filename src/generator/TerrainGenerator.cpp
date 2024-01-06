@@ -253,7 +253,8 @@ ki::type_id TerrainGenerator::createType(
 
     type->m_priority = containerType->m_priority;
     type->m_program = containerType->m_program;
-    type->m_depthProgram = containerType->m_depthProgram;
+    type->m_shadowProgram = containerType->m_shadowProgram;
+    type->m_preDepthProgram = containerType->m_preDepthProgram;
 
     // TODO KI *redundant* copy of material
     {

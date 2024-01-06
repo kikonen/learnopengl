@@ -91,10 +91,10 @@ namespace text
             glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-            const int mipMapLevels = static_cast<int>(log2(std::max(w, h)));
-            glTextureStorage2D(texId, mipMapLevels, internalFormat, w, h);
+            //const int mipMapLevels = static_cast<int>(log2(std::max(w, h)));
+            glTextureStorage2D(texId, 1, internalFormat, w, h);
             glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
-            glGenerateTextureMipmap(texId);
+            //glGenerateTextureMipmap(texId);
         }
     }
 
