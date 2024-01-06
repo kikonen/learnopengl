@@ -124,8 +124,8 @@ namespace kigl {
     {
         //force = true;
 
-        const auto& it = m_enabled.find(unitIndex);
-        const bool changed = force || it == m_enabled.end() || it->second != textureID;
+        const auto& it = m_textureUnits.find(unitIndex);
+        const bool changed = force || it == m_textureUnits.end() || it->second != textureID;
         if (!changed) return;
 
         // NOTE KI logic failing when new texture generated, but its' ID does not change
