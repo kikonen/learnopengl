@@ -30,7 +30,7 @@ namespace render {
         m_size = assets.prefilterMapSize;
 
         {
-            m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+            m_cubeTexture.create("prefilter_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
             // https://www.khronos.org/opengl/wiki/Common_Mistakes#Creating_a_complete_texture
             glTextureStorage2D(m_cubeTexture, MAX_MIP_LEVELS, GL_RGB16F, m_size, m_size);
@@ -61,6 +61,8 @@ namespace render {
             state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);
 
             render(state, program, m_cubeTexture, m_size);
+
+            state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
         }
     }
 

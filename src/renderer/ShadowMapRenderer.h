@@ -14,7 +14,10 @@ class Viewport;
 class ShadowMapRenderer final : public Renderer
 {
 public:
-    ShadowMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    ShadowMapRenderer(bool useFrameStep)
+        : Renderer("main", useFrameStep)
+    {}
+
     virtual ~ShadowMapRenderer();
 
     virtual void prepareRT(

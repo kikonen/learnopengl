@@ -68,7 +68,7 @@ namespace text
             const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
             const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
 
-            m_texture.create("FONT_ATLAS", GL_TEXTURE_2D, w, h);
+            m_texture.create(fmt::format("{}_font_atlas", m_name), GL_TEXTURE_2D, w, h);
             m_atlasHandle->m_atlas->id = m_texture.m_textureID;
             const auto texId = m_texture.m_textureID;
 

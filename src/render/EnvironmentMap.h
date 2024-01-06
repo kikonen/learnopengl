@@ -20,7 +20,10 @@ namespace render {
     class EnvironmentMap
     {
     public:
-        EnvironmentMap() = default;
+        EnvironmentMap(std::string_view name)
+            : m_name(name)
+        {}
+
         ~EnvironmentMap() = default;
 
         bool valid() { return m_cubeTexture.valid(); }
@@ -36,6 +39,7 @@ namespace render {
 
     public:
         int m_size{ 0 };
+        std::string m_name;
 
         kigl::GLTextureHandle m_cubeTexture;
 

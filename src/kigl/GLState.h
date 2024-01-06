@@ -39,6 +39,10 @@ namespace kigl {
             const GLuint textureID,
             bool force) noexcept;
 
+        void unbindTexture(
+            const GLuint unitIndex,
+            bool force) noexcept;
+
         int getFrameBuffer();
 
         // @return true if bind was done

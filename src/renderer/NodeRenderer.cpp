@@ -60,7 +60,7 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 
     {
         auto buffer = new render::FrameBuffer(
-            "node",
+            m_name + "_node",
             {
                 w, h,
                 {

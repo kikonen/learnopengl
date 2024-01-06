@@ -25,7 +25,7 @@ namespace render {
         m_size = size;
 
         {
-            m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+            m_cubeTexture.create(fmt::format("{}_env_map", m_name), GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
             glTextureStorage2D(m_cubeTexture, 1, GL_RGB16F, m_size, m_size);
 
@@ -48,6 +48,8 @@ namespace render {
 
             CubeRender renderer;
             renderer.render(state, program, m_cubeTexture, m_size);
+
+            state.unbindTexture(UNIT_HDR_TEXTURE, false);
         }
     }
 

@@ -21,8 +21,11 @@
 
 
 namespace render {
-    CubeMap::CubeMap(bool empty)
-        : m_empty(empty)
+    CubeMap::CubeMap(
+        std::string_view name,
+        bool empty)
+        : m_name(name),
+        m_empty(empty)
     {}
 
     CubeMap::~CubeMap()
@@ -60,7 +63,7 @@ namespace render {
     // -------------------------------------------------------
     void CubeMap::createEmpty()
     {
-        m_cubeTexture.create("empty_cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+        m_cubeTexture.create(fmt::format("{}_empty_cube_map", m_name), GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
         glTextureStorage2D(m_cubeTexture, 1, m_internalFormat, m_size, m_size);
 
@@ -136,7 +139,7 @@ namespace render {
         }
 
         {
-            m_cubeTexture.create("face_cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+            m_cubeTexture.create(fmt::format("{}_face_cube_map", m_name), GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
             glTextureStorage2D(m_cubeTexture, 1, m_internalFormat, m_size, m_size);
 

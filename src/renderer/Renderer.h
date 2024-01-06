@@ -15,8 +15,11 @@ class Node;
 class Renderer
 {
 public:
-    Renderer(bool useFrameStep)
-    : m_useFrameStep(useFrameStep)
+    Renderer(
+        std::string_view name,
+        bool useFrameStep)
+        : m_name(name),
+        m_useFrameStep(useFrameStep)
     {}
 
     virtual ~Renderer();
@@ -45,6 +48,8 @@ protected:
 
 protected:
     bool m_prepared = false;
+
+    std::string m_name;
 
     bool m_enabled{ false };
 

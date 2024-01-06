@@ -60,6 +60,7 @@ void DynamicCubeMap::prepareRT(
 render::CubeMapBuffer DynamicCubeMap::asFrameBuffer(int face)
 {
     return {
+        "dynamic_cube_map",
         static_cast<GLuint>(m_fbo),
         m_size,
         face,

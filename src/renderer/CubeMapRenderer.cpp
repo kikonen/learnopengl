@@ -123,14 +123,14 @@ void CubeMapRenderer::prepareRT(
         camera.setFov(90.f);
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, true);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->prepareRT(assets, registry);
     }
 
-    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, true);
+    m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {

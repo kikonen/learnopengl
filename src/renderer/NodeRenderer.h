@@ -15,7 +15,10 @@ public:
     static const int ATT_DEPTH_INDEX = 1;
 
 public:
-    NodeRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    NodeRenderer(
+        std::string_view name,
+        bool useFrameStep)
+        : Renderer(name, useFrameStep) {}
 
     void prepareRT(
         const Assets& assets,

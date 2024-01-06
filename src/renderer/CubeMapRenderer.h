@@ -21,7 +21,8 @@ class MirrorMapRenderer;
 class CubeMapRenderer final : public Renderer
 {
 public:
-    CubeMapRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    CubeMapRenderer(bool useFrameStep)
+        : Renderer("main", useFrameStep) {}
     ~CubeMapRenderer();
 
     virtual void prepareRT(

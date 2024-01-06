@@ -60,7 +60,7 @@ namespace kigl {
 
         void unbindTexture(kigl::GLState& state, int unitIndex)
         {
-            state.bindTexture(unitIndex, 0, true);
+            state.unbindTexture(unitIndex, false);
         }
 
         operator int() const { return m_textureID; }

@@ -18,10 +18,11 @@ class MirrorMapRenderer final : public Renderer
 {
 public:
     MirrorMapRenderer(
+        std::string_view name,
         bool useFrameStep,
         bool doubleBuffer,
         bool squareAspectRatio)
-        : Renderer(useFrameStep),
+        : Renderer(name, useFrameStep),
         m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 

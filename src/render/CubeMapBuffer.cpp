@@ -2,12 +2,13 @@
 
 namespace render {
     CubeMapBuffer::CubeMapBuffer(
+        std::string_view name,
         GLuint fbo,
         int size,
         int face,
         GLuint textureID)
         : FrameBuffer(
-            "cube_map",
+            name,
             {
                 size, size,
                 {}

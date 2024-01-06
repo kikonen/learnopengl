@@ -34,7 +34,7 @@ public:
 public:
     const int m_size;
 
-    render::CubeMap m_cubeMap{ true };
+    render::CubeMap m_cubeMap{ "dynamic", true};
 
     bool m_valid{ false };
 

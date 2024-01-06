@@ -9,7 +9,8 @@ namespace render {
 class ViewportRenderer final : public Renderer
 {
 public:
-    ViewportRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    ViewportRenderer(bool useFrameStep) :
+        Renderer("main", useFrameStep) {}
 
     virtual void prepareRT(
         const Assets& assets,

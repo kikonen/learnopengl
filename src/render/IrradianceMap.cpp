@@ -27,7 +27,7 @@ namespace render {
         m_size = assets.irradianceMapSize;
 
         {
-            m_cubeTexture.create("cube_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+            m_cubeTexture.create("irradiance_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
             glTextureStorage2D(m_cubeTexture, 1, GL_RGB16F, m_size, m_size);
 
@@ -51,6 +51,8 @@ namespace render {
 
             CubeRender renderer;
             renderer.render(state, program, m_cubeTexture, m_size);
+
+            state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
         }
 
         {

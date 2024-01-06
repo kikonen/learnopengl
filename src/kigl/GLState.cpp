@@ -140,6 +140,13 @@ namespace kigl {
         }
     }
 
+    void GLState::unbindTexture(
+        const GLuint unitIndex,
+        bool force) noexcept
+    {
+        bindTexture(unitIndex, 0, force);
+    }
+
     int GLState::getFrameBuffer()
     {
         // https://stackoverflow.com/questions/27459859/how-to-check-which-frame-buffer-object-is-currently-bound-in-opengl

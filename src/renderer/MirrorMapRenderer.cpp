@@ -93,7 +93,7 @@ void MirrorMapRenderer::prepareRT(
         m_reflectionDebugViewport->prepareRT(assets);
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(false, false, m_squareAspectRatio);
+    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
@@ -101,7 +101,7 @@ void MirrorMapRenderer::prepareRT(
     }
 
     if (m_doubleBuffer) {
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(false, false, m_squareAspectRatio);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
@@ -151,7 +151,9 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
                 }
             };
 
-            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>("mirror_reflect", spec));
+            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
+                fmt::format("{}_mirror_reflect_{}", m_name, i),
+                spec));
         }
     }
 

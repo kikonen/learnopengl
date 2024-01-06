@@ -7,6 +7,7 @@ namespace render {
     {
     public:
         CubeMapBuffer(
+            std::string_view name,
             GLuint fbo,
             int size,
             int face,

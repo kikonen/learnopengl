@@ -82,7 +82,7 @@ namespace render {
             for (int i = 0; i < 2; i++) {
                 // NOTE KI alpha NOT needed
                 auto buffer = new FrameBuffer(
-                    "effect_work",
+                    fmt::format("effect_worker_{}", i),
                     {
                         w, h,
                         {

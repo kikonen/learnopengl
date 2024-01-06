@@ -21,7 +21,9 @@ namespace render {
     class CubeMap
     {
     public:
-        CubeMap(bool empty);
+        CubeMap(
+            std::string_view name,
+            bool empty);
 
         ~CubeMap();
 
@@ -42,6 +44,7 @@ namespace render {
 
     public:
         const bool m_empty;
+        std::string m_name;
 
         std::vector<std::string> m_faces;
         int m_size = 0;

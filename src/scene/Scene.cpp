@@ -66,13 +66,13 @@ Scene::Scene(
     m_registry(registry)
 {
     {
-        m_mainRenderer = std::make_unique<NodeRenderer>(true);
-        m_rearRenderer = std::make_unique<NodeRenderer>(true);
+        m_mainRenderer = std::make_unique<NodeRenderer>("main", true);
+        m_rearRenderer = std::make_unique<NodeRenderer>("rear", true);
 
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
-        m_waterMapRenderer = std::make_unique<WaterMapRenderer>(true, true, false);
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(true, true, false);
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>("main", true, true, false);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("main", true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 

@@ -9,7 +9,8 @@ class FrameBuffer;
 class ObjectIdRenderer final : public Renderer
 {
 public:
-    ObjectIdRenderer(bool useFrameStep) : Renderer(useFrameStep) {}
+    ObjectIdRenderer(bool useFrameStep) :
+        Renderer("main", useFrameStep) {}
     virtual ~ObjectIdRenderer() {};
 
     ki::node_id getObjectId(
