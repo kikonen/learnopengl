@@ -45,7 +45,7 @@ entities:
       text: Hello world
     program: font_render
     shadow_program: shadow_font_render
-    pos: [0.0, 2.0, -3.0]
+    pos: [-2.0, 2.0, -3.0]
     scale: 0.01
     render_flags:
       alpha: true
@@ -67,6 +67,15 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
+  - name: wooden wall
+    model: quad
+    material: wood_floor
+    program: g_tex
+    render_flags:
+      render_back: true
+      no_shadow: true
+    pos: [-1, 2.5, -3.001]
+    scale: 0.5
   - name: wooden floor
     model: plane
     material: wood_floor
@@ -74,10 +83,23 @@ entities:
     render_flags:
       no_shadow: true
     scale: 100
+  - name: Cube map - mirror_ball
+    type: origo
+    pos: [0, 2, -7]
+    render_flags:
+      cube_map: true
+  - name: Mirror ball
+    model: glass_ball
+    program: g_tex
+    pos: [0, 2, -7]
+    scale: 1
+    material_modifier:
+      reflection: 0.8
 fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
     size: 64
+    atlas_size: 1000
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

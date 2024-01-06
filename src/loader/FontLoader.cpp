@@ -43,6 +43,9 @@ namespace loader {
             else if (k == "size") {
                 data.size = readFloat(v);
             }
+            else if (k == "atlas_size") {
+                data.atlasSize = readVec2(v);
+            }
             else {
                 reportUnknown("font_entry", k, v);
             }

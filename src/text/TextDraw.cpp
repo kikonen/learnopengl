@@ -43,7 +43,7 @@ namespace
     //
     void addText(
         mesh::ModelVBO& vbo,
-        text::FontAtlas* font,
+        text::FontAtlas* fontAtlas,
         std::string_view text,
         glm::vec2 pen)
     {
@@ -51,8 +51,10 @@ namespace
         const glm::vec3 tangent{ 0.f, 0.f, 0.f };
         char prev = '\0';
 
+        auto* font = fontAtlas->getFont()->m_font;
+
         for (const char ch : text) {
-            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font->getFont()->m_font, &ch);
+            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
 
             float kerning = 0.0f;
             if (prev)
