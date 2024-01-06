@@ -32,7 +32,7 @@
 
 namespace
 {
-    const char* MISSING_CH = "\uffed";
+    const char* MISSING_CH = "?";
 
     //
     // Generate verteces for glyphs into buffer
@@ -45,11 +45,12 @@ namespace
     {
         const glm::vec3 normal{ 0.f, 0.f, 0.f };
         const glm::vec3 tangent{ 0.f, 0.f, 0.f };
-        char prev = '\0';
+        const char* prev = { nullptr };
 
         auto* font = fontAtlas->getFont()->m_font;
 
-        for (const char ch : text) {
+        // https://stackoverflow.com/questions/9438209/for-every-character-in-string
+        for (const char& ch : text) {
             const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
             if (!glyph) {
                 glyph = texture_font_get_glyph(font, MISSING_CH);
@@ -60,7 +61,7 @@ namespace
             float kerning = 0.0f;
             if (prev)
             {
-                kerning = ftgl::texture_glyph_get_kerning(glyph, &prev);
+                kerning = ftgl::texture_glyph_get_kerning(glyph, prev);
             }
             pen.x += kerning;
 
@@ -104,7 +105,7 @@ namespace
             }
 
             pen.x += glyph->advance_x;
-            prev = ch;
+            prev = &ch;
         }
     }
 }
@@ -127,7 +128,7 @@ namespace text
         m_program = registry->m_programRegistry->getProgram(SHADER_FONT_RENDER);
     }
 
-    void TextDraw::draw(
+    void TextDraw::render(
         const RenderContext& ctx,
         text::font_id fontId,
         std::string_view text,
@@ -148,28 +149,5 @@ namespace text
         drawOptions.indexCount = static_cast<GLsizei>(m_vbo.m_indexEntries.size() * 3);
 
         font->bindTextures(ctx.m_state);
-
-        if (false) {
-            m_vao.bind(ctx.m_state);
-            m_program->bind(ctx.m_state);
-            font->bindTextures(ctx.m_state);
-            {
-                const glm::mat4& modelMatrix = node->getSnapshot().getModelMatrix();
-                int materialIndex = node->m_type->m_materialIndex;
-
-                m_program->m_uniforms->u_modelMatrix.set(modelMatrix);
-                m_program->m_uniforms->u_materialIndex.set(materialIndex);
-
-                // TODO KI actual render
-                glDrawElements(
-                    GL_TRIANGLES,
-                    static_cast<GLsizei>(m_vbo.m_indexEntries.size()),
-                    GL_UNSIGNED_INT,
-                    nullptr);
-            }
-            font->unbindTextures(ctx.m_state);
-
-            m_vao.unbind(ctx.m_state);
-        }
     }
 }

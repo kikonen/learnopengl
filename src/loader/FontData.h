@@ -13,9 +13,9 @@ namespace loader {
         std::string name;
 
         std::string path{ "fonts/Vera.ttf" };
-        float size{ 12.f };
+        float size{ 36.f };
 
-        glm::uvec2 atlasSize{ 512 };
+        glm::uvec2 atlasSize{ 1024 };
     };
 
 }

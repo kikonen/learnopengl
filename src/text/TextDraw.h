@@ -36,7 +36,7 @@ namespace text
             const Assets& assets,
             Registry* registry);
 
-        void draw(
+        void render(
             const RenderContext& ctx,
             text::font_id fontId,
             std::string_view text,

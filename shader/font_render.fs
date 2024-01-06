@@ -53,7 +53,7 @@ void main()
   rgb = mix(outline_color, color.rgb, beta);
 
   float a = max(color.a, beta);
-  if (a < 0.0001) {
+  if (a < 0.7) {
     discard;
   }
 

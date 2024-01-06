@@ -1,13 +1,21 @@
+
 #include "FontHandle.h"
 
 #include "AtlasHandle.h"
 
 namespace
 {
+    // https://stackoverflow.com/questions/50403342/how-do-i-properly-use-stdstring-on-utf-8-in-c
+    // https://en.wikipedia.org/wiki/Specials_(Unicode_block)
+    // https://stackoverflow.com/questions/47375068/storing-unicode-in-c-charcaters
     const char* CACHE =
-        "\uffed !\"#$%&'()*+,-./0123456789:;<=>?"
+        "? !\"#$%&'()*+,-./0123456789:;<=>?"
         "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
         "`abcdefghijklmnopqrstuvwxyz{|}~";
+
+    // "? ƒ≈÷‰Âˆ"
+    const char* CACHE_MIN =
+        "? \u00c4\u00c5\u00d6\u00e4\u00e5\u00f6";
 }
 
 namespace text
@@ -35,7 +43,8 @@ namespace text
     FontHandle::~FontHandle()
     {
         if (!m_font) return;
-        ftgl::texture_font_delete(m_font);
+        // TODO KI triggers internal error on delete
+        //ftgl::texture_font_delete(m_font);
     }
 
     void FontHandle::create(

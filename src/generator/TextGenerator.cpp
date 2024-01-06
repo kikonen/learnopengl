@@ -1,5 +1,7 @@
 #include "TextGenerator.h"
 
+#include <array>
+
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
@@ -11,12 +13,13 @@
 #include "render/RenderContext.h"
 
 namespace {
-    std::string texts[5] {
+    std::array<std::string,6> texts{
         "This the story",
         "And it will continue",
         "So be prepared",
         "until the end",
         "Viva la vida!",
+        "Terveisiä Täältä. ÄÅÖ äåö",
     };
 
     float elapsed = 0.f;
@@ -54,7 +57,7 @@ void TextGenerator::updateVAO(
     if (hit) {
         elapsed -= 20.f;
         setText(texts[index++]);
-        index = index % 4;
+        index = index % texts.size();
         m_dirty = true;
     }
 
@@ -63,7 +66,7 @@ void TextGenerator::updateVAO(
 
     m_draw->prepareRT(ctx.m_assets, ctx.m_registry);
 
-    m_draw->draw(
+    m_draw->render(
         ctx,
         m_fontId,
         m_text,

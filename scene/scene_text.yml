@@ -31,6 +31,7 @@ entities:
       type: text
       font: hello_font
     program: font_atlas_demo
+    shadow_program: font_atlas_demo
     pos: [2.0, 2.0, -5.0]
     render_flags:
       alpha: true
@@ -42,7 +43,7 @@ entities:
     material: metal
     text:
       font: hello_font
-      text: Hello world
+      text: ÄÅÖ äåö - Hello world
     program: font_render
     shadow_program: shadow_font_render
     pos: [-2.0, 2.0, -3.0]
@@ -98,8 +99,8 @@ entities:
 fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
-    size: 100
-    atlas_size: 512
+    size: 72
+    xatlas_size: 512
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

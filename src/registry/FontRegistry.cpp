@@ -10,7 +10,9 @@ FontRegistry::FontRegistry(
 {}
 
 FontRegistry::~FontRegistry()
-{}
+{
+    m_fonts.clear();
+}
 
 void FontRegistry::prepareRT()
 {

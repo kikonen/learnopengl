@@ -45,17 +45,17 @@ namespace text
         std::string m_name;
 
         std::string m_fontPath{ "fonts/Vera.ttf" };
-        float m_fontSize{ 10.f };
-        glm::uvec2 m_atlasSize{ 512, 512 };
+        float m_fontSize{ 36.f };
+        glm::uvec2 m_atlasSize{ 1024 };
 
     private:
         bool m_prepared{ false };
 
-        kigl::GLTextureHandle m_texture;
-
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
+        size_t m_usedAtlasSize{ 0 };
+
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };
 
-        size_t m_usedAtlasSize{ 0 };
+        kigl::GLTextureHandle m_texture;
     };
 }
