@@ -1,6 +1,9 @@
 #include "TextGenerator.h"
 
+#include <iostream>
 #include <array>
+
+#include <fmt/format.h>
 
 #include "model/Node.h"
 
@@ -19,7 +22,7 @@ namespace {
         "So be prepared",
         "until the end",
         "Viva la vida!",
-        "Terveisi‰ T‰‰lt‰. ƒ≈÷ ‰Âˆ",
+        "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
     };
 
     float elapsed = 0.f;
@@ -50,12 +53,15 @@ void TextGenerator::updateVAO(
     const RenderContext& ctx,
     const Node& container)
 {
+    //std::cout << fmt::format("total={}, elapsed={}\n", elapsed, ctx.m_clock.elapsedSecs);
+
     elapsed += ctx.m_clock.elapsedSecs;
 
-    bool hit = elapsed >= 20.f;
+    constexpr float step = 20.f;
+    bool hit = elapsed >= step;
 
     if (hit) {
-        elapsed -= 20.f;
+        elapsed -= step;
         setText(texts[index++]);
         index = index % texts.size();
         m_dirty = true;
