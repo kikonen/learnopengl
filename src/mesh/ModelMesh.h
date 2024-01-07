@@ -5,7 +5,6 @@
 #include <vector>
 #include <map>
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "mesh/Index.h"
@@ -44,8 +43,7 @@ namespace mesh {
         virtual const std::vector<Material>& getMaterials() const override;
 
         virtual kigl::GLVertexArray* prepareRT(
-            const Assets& assets,
-            Registry* registry) override;
+            const PrepareContext& ctx) override;
 
         virtual void prepareMaterials(
             MaterialVBO& materialVBO) override;

@@ -271,3 +271,11 @@ UpdateContext RenderContext::toUpdateContext() const
         m_registry,
     };
 }
+
+PrepareContext RenderContext::toPrepareContext() const
+{
+    return {
+        m_assets,
+        m_registry,
+    };
+}

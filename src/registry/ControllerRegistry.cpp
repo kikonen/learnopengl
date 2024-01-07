@@ -4,6 +4,8 @@
 
 #include "event/Dispatcher.h"
 
+#include "engine/PrepareContext.h"
+
 #include "controller/NodeController.h"
 
 #include "registry/Registry.h"
@@ -64,7 +66,8 @@ void ControllerRegistry::addController(
         return;
     }
 
-    controller->prepare(m_assets, m_registry, *node);
+    PrepareContext ctx{ m_assets, m_registry };
+    controller->prepare(ctx, * node);
 
     {
         if (const auto& it = m_controllers.find(targetId);

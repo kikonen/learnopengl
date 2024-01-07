@@ -5,10 +5,12 @@
 
 #include "model/Node.h"
 
+
 #include "script/CommandEngine.h"
 #include "script/api/RotateNode.h"
 #include "script/api/MoveNode.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
@@ -19,11 +21,12 @@ PawnController::PawnController()
 }
 
 void PawnController::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& node)
 {
-    NodeController::prepare(assets, registry, node);
+    NodeController::prepare(ctx, node);
+
+    auto& assets = ctx.m_assets;
 
     m_node = &node;
 

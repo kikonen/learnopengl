@@ -16,9 +16,8 @@
 #include "DrawRange.h"
 #include "DrawOptions.h"
 
-class Assets;
 class Program;
-class Registry;
+struct PrepareContext;
 
 namespace backend {
     // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
@@ -31,8 +30,7 @@ namespace backend {
             bool useSingleFence);
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry,
+            const PrepareContext& ctx,
             int batchCount,
             int rangeCount);
 

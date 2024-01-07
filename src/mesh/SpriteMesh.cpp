@@ -47,8 +47,7 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* SpriteMesh::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;

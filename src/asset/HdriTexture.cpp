@@ -5,8 +5,7 @@
 #include "registry/Registry.h"
 
 void HdriTexture::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     Image image{ m_path, true, true };
 

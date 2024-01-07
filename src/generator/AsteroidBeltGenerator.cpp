@@ -11,6 +11,7 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "render/Batch.h"
 
@@ -28,13 +29,12 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
 }
 
 void AsteroidBeltGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
-    NodeGenerator::prepare(assets, registry, container);
+    NodeGenerator::prepare(ctx, container);
 
-    createAsteroids(assets, registry, container);
+    createAsteroids(ctx, container);
 }
 
 void AsteroidBeltGenerator::update(
@@ -78,10 +78,11 @@ void AsteroidBeltGenerator::updateAsteroids(
 }
 
 void AsteroidBeltGenerator::createAsteroids(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
+    auto& registry = ctx.m_registry;
+
     auto& type = container.m_type;
 
     const auto* mesh = container.m_type->getMesh();
@@ -104,13 +105,12 @@ void AsteroidBeltGenerator::createAsteroids(
         asteroid.setVolume(volume);
     }
 
-    initAsteroids(assets, registry, container);
+    initAsteroids(ctx, container);
     containerTransform.setVolume(calculateVolume());
 }
 
 void AsteroidBeltGenerator::initAsteroids(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     // initialize random seed

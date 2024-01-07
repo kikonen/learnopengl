@@ -34,7 +34,7 @@ kigl::GLVertexArray* ModelRegistry::registerModelVBO(mesh::ModelVBO& modelVBO)
 
 void ModelRegistry::updateRT(const UpdateContext& ctx)
 {
-    m_vao.updateRT(ctx);
+    m_vao.updateRT();
 }
 
 std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(

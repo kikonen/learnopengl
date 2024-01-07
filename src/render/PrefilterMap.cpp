@@ -9,6 +9,8 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/TextureCube.h"
 #include "render/RenderContext.h"
 
@@ -22,9 +24,11 @@ namespace {
 
 namespace render {
     void PrefilterMap::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+
         if (m_envCubeMapID <= 0) return;
 
         m_size = assets.prefilterMapSize;

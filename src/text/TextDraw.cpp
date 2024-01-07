@@ -120,12 +120,18 @@ namespace text
 
 
     void TextDraw::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         m_vao.prepare("text");
+    }
 
-        m_program = registry->m_programRegistry->getProgram(SHADER_FONT_RENDER);
+    void TextDraw::updateRT(
+        kigl::GLState& state)
+    {
+        m_vao.updateRT();
+        if (m_lastFont) {
+            m_lastFont->bindTextures(state);
+        }
     }
 
     void TextDraw::render(
@@ -133,7 +139,7 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         backend::DrawOptions& drawOptions,
-        const Node* node)
+        bool append)
     {
         auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
         if (!font) return;
@@ -143,11 +149,24 @@ namespace text
         m_vbo.clear();
         addText(m_vbo, font, text, pen);
 
-        m_vao.clear();
-        m_vao.registerModel(m_vbo);
-        m_vao.updateRT(ctx.toUpdateContext());
-        drawOptions.indexCount = static_cast<GLsizei>(m_vbo.m_indexEntries.size() * 3);
+        if (!append) {
+            m_vao.clear();
+        }
 
-        font->bindTextures(ctx.m_state);
+        m_vao.registerModel(m_vbo);
+
+        drawOptions.indexOffset = m_vbo.m_indexOffset;
+        drawOptions.vertexOffset = m_vbo.m_vertexOffset;
+        drawOptions.indexCount = m_vbo.getIndexCount();
+
+        // HACK KI need to encode font somehow int drawOptions and/or VBO
+        // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry
+        m_lastFont = font;
+    }
+
+    void TextDraw::clear()
+    {
+        m_vao.clear();
+        m_vbo.clear();
     }
 }

@@ -34,8 +34,7 @@ namespace render {
     }
 
     void CubeMap::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_empty) {
             createEmpty();

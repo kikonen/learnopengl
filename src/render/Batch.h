@@ -15,9 +15,11 @@ namespace mesh {
 }
 
 class Program;
+
+struct PrepareContext;
 class RenderContext;
+
 class Node;
-class Registry;
 class EntityRegistry;
 
 namespace render {
@@ -54,8 +56,7 @@ namespace render {
         void bind() noexcept;
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry,
+            const PrepareContext& ctx,
             int entryCount = -1,
             int bufferCount = -1);
 

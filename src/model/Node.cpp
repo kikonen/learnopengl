@@ -61,9 +61,10 @@ const std::string Node::str() const noexcept
 }
 
 void Node::prepare(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
+    auto& registry = ctx.m_registry;
+
     if (m_type->getMesh()) {
         m_transform.m_entityIndex = registry->m_entityRegistry->registerEntity();
         m_transform.setMaterialIndex(m_type->getMaterialIndex());
@@ -92,7 +93,7 @@ void Node::prepare(
     }
 
     if (m_generator) {
-        m_generator->prepare(assets, registry, *this);
+        m_generator->prepare(ctx, *this);
     }
 }
 
@@ -227,6 +228,15 @@ void Node::setSelectionMaterialIndex(int index)
         m_forceUpdateEntity = true;
         m_forceUpdateSnapshot = true;
     }
+}
+
+int Node::getHighlightIndex(const Assets& assets) const noexcept
+{
+    if (assets.showHighlight) {
+        if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
+        if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
+    }
+    return -1;
 }
 
 ki::node_id Node::lua_getId() const noexcept

@@ -15,8 +15,7 @@ public:
     {}
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     virtual void updateRT(
         const RenderContext& ctx) override;

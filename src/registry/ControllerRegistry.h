@@ -6,9 +6,10 @@
 
 #include "model/Node.h"
 
+struct UpdateContext;
 class Registry;
+
 class NodeController;
-class UpdateContext;
 
 class ControllerRegistry {
 public:

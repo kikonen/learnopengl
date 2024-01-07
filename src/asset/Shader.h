@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 const std::string SHADER_TEXTURE{ "tex" };
 const std::string SHADER_POINT_SPRITE{ "point_sprite" };
 

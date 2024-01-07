@@ -3,8 +3,6 @@
 #include <vector>
 #include <memory>
 
-#include "asset/Assets.h"
-
 #include "component/Camera.h"
 
 #include "kigl/kigl.h"
@@ -12,6 +10,8 @@
 namespace render {
     class FrameBuffer;
 }
+
+struct PrepareContext;
 class RenderContext;
 
 class Registry;
@@ -33,8 +33,7 @@ public:
     ~ShadowCascade();
 
     void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void bindTexture(const RenderContext& ctx);
 

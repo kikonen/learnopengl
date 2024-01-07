@@ -5,6 +5,7 @@
 #include "model/Node.h"
 #include "model/Viewport.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -42,13 +43,14 @@ namespace {
 }
 
 void MirrorMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
@@ -97,7 +99,7 @@ void MirrorMapRenderer::prepareRT(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(assets, registry);
+        m_waterMapRenderer->prepareRT(ctx);
     }
 
     if (m_doubleBuffer) {
@@ -105,7 +107,7 @@ void MirrorMapRenderer::prepareRT(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->prepareRT(assets, registry);
+            m_mirrorMapRenderer->prepareRT(ctx);
         }
     }
 }

@@ -2,8 +2,6 @@
 
 #include <string_view>
 
-#include "asset/Assets.h"
-
 #include "text/size.h"
 
 #include "mesh/ModelVAO.h"
@@ -17,10 +15,8 @@ namespace kigl {
     struct GLVertexArray;
 }
 
+struct PrepareContext;
 class RenderContext;
-class Program;
-class Registry;
-class Node;
 
 namespace text
 {
@@ -33,15 +29,19 @@ namespace text
         ~TextDraw();
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
+
+        void updateRT(
+            kigl::GLState& state);
 
         void render(
             const RenderContext& ctx,
             text::font_id fontId,
             std::string_view text,
             backend::DrawOptions& drawOptions,
-            const Node* node);
+            bool append);
+
+        void clear();
 
         const kigl::GLVertexArray* getVAO() const noexcept
         {
@@ -49,9 +49,9 @@ namespace text
         }
 
     private:
-        Program* m_program{ nullptr };
-
         mesh::ModelVAO m_vao{ "text" };
         mesh::ModelVBO m_vbo;
+
+        text::FontAtlas* m_lastFont{ nullptr };
     };
 }

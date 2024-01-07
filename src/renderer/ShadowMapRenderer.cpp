@@ -7,6 +7,8 @@
 
 #include "model/Viewport.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 
@@ -25,13 +27,15 @@ ShadowMapRenderer::~ShadowMapRenderer()
 }
 
 void ShadowMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
@@ -50,7 +54,7 @@ void ShadowMapRenderer::prepareRT(
     }
 
     for (auto& cascade : m_cascades) {
-        cascade->prepareRT(assets, registry);
+        cascade->prepareRT(ctx);
     }
 
     m_activeCascade = 0;

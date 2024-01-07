@@ -13,6 +13,7 @@
 
 #include "component/Camera.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -24,13 +25,14 @@
 
 
 void NodeRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;

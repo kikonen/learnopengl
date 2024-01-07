@@ -9,7 +9,7 @@
 
 #include "asset/Frustum.h"
 
-class UpdateContext;
+struct UpdateContext;
 class Node;
 
 struct CameraProjection {

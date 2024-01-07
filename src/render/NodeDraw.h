@@ -3,8 +3,6 @@
 #include <functional>
 #include <map>
 
-#include "asset/Assets.h"
-
 #include "GBuffer.h"
 #include "OITBuffer.h"
 #include "EffectBuffer.h"
@@ -16,11 +14,11 @@
 
 class Program;
 
-class UpdateViewContext;
+struct UpdateViewContext;
+struct PrepareContext;
 class RenderContext;
 
 class Node;
-class Registry;
 
 namespace mesh {
     class MeshType;
@@ -92,8 +90,7 @@ namespace render {
         ~NodeDraw();
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void updateRT(const UpdateViewContext& ctx);
 

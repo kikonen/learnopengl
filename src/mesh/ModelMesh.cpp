@@ -14,6 +14,7 @@
 #include "mesh/ModelMaterialInit.h"
 #include "mesh/MeshType.h"
 
+#include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
 
@@ -76,8 +77,7 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* ModelMesh::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
@@ -90,7 +90,7 @@ namespace mesh {
         m_indeces.clear();
         //m_vertices.clear();
 
-        m_vao = registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
+        m_vao = ctx.m_registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 

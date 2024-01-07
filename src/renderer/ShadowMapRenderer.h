@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "Renderer.h"
 
@@ -21,8 +22,7 @@ public:
     virtual ~ShadowMapRenderer();
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     void bindTexture(const RenderContext& ctx);
 

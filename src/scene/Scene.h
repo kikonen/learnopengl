@@ -34,8 +34,8 @@ class NodeController;
 
 class Registry;
 
-class UpdateContext;
-class UpdateViewContext;
+struct UpdateContext;
+struct UpdateViewContext;
 class RenderContext;
 
 class NodeRenderer;

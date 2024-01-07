@@ -1,6 +1,5 @@
 #pragma once
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "scene/ParticleSystem.h"
@@ -16,7 +15,7 @@ struct ParticleDefinition {
     Material material;
 };
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
 
 class ParticleGenerator final

@@ -2,6 +2,7 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "component/Camera.h"
@@ -20,15 +21,13 @@ CameraZoomController::CameraZoomController()
 }
 
 void CameraZoomController::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& node)
 {
-    NodeController::prepare(assets, registry, node);
+    NodeController::prepare(ctx, node);
+    auto& assets = ctx.m_assets;
 
     if (!node.m_camera) return;
-
-    m_registry = registry;
 
     m_node = &node;
 

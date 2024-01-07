@@ -10,7 +10,7 @@
 #include "util/glm_util.h"
 
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
 
 struct EntitySSBO;

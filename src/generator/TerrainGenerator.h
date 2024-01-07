@@ -10,6 +10,8 @@ namespace mesh {
     class MeshType;
 }
 
+class Registry;
+
 //
 // Tessellated terrain generator
 //
@@ -23,8 +25,7 @@ public:
     TerrainGenerator();
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container) override;
 
     virtual void update(
@@ -37,13 +38,11 @@ private:
         Node& container);
 
     void prepareHeightMap(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container);
 
     void createTiles(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container);
 
     ki::type_id createType(

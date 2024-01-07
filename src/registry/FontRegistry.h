@@ -11,7 +11,7 @@ namespace kigl {
     class GLState;
 }
 
-class UpdateContext;
+struct UpdateContext;
 
 class FontRegistry {
 public:

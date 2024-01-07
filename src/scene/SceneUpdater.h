@@ -4,7 +4,7 @@
 
 #include "asset/Assets.h"
 
-class UpdateContext;
+struct UpdateContext;
 class Registry;
 class Node;
 

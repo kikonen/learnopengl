@@ -9,7 +9,7 @@ class Registry;
 //
 // Context for doing updates, without rendering
 //
-class UpdateViewContext {
+struct UpdateViewContext final {
 public:
     UpdateViewContext(
         const ki::RenderClock& clock,

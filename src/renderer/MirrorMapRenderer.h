@@ -29,8 +29,7 @@ public:
     ~MirrorMapRenderer() = default;
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     void updateRT(const UpdateViewContext& ctx);
 

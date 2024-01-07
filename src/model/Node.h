@@ -1,12 +1,11 @@
 #pragma once
 
+#include <vector>
 #include <array>
 
 #include <glm/glm.hpp>
 
 #include "ki/limits.h"
-
-#include "asset/Assets.h"
 
 #include "audio/size.h"
 
@@ -29,15 +28,17 @@ namespace mesh {
     class MeshType;
 }
 
+class Assets;
+
 class Camera;
 class Light;
 class ParticleGenerator;
 class NodeGenerator;
 
-class UpdateContext;
+struct PrepareContext;
+struct UpdateContext;
 class RenderContext;
 
-class Registry;
 class EntityRegistry;
 class ParticleGenrator;
 
@@ -51,8 +52,7 @@ public:
     const std::string str() const noexcept;
 
     void prepare(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void updateWT(const UpdateContext& ctx) noexcept;
 
@@ -119,14 +119,7 @@ public:
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    inline int getHighlightIndex(const Assets& assets) const noexcept
-    {
-        if (assets.showHighlight) {
-            if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
-            if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
-        }
-        return -1;
-    }
+    int getHighlightIndex(const Assets& assets) const noexcept;
 
     inline int getCloneIndex() const noexcept {
         return m_cloneIndex;

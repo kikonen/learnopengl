@@ -18,6 +18,8 @@ namespace render {
 
 class Sprite;
 
+struct PrepareContext;
+
 class CustomMaterial;
 class Program;
 class Registry;
@@ -68,12 +70,10 @@ namespace mesh {
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
         void prepare(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void bind(const RenderContext& ctx);
 

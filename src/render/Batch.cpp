@@ -27,6 +27,7 @@
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 
@@ -151,13 +152,14 @@ namespace render {
     }
 
     void Batch::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int entryCount,
         int bufferCount)
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        auto& assets = ctx.m_assets;
 
         if (entryCount <= 0) {
             entryCount = assets.batchSize;
@@ -179,12 +181,12 @@ namespace render {
             assets.glUseFence,
             assets.glUseSingleFence);
 
-        m_draw->prepareRT(assets, registry, entryCount, bufferCount);
+        m_draw->prepareRT(ctx, entryCount, bufferCount);
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
-        m_entityRegistry = registry->m_entityRegistry;
+        m_entityRegistry = ctx.m_registry->m_entityRegistry;
     }
 
     void Batch::addCommand(

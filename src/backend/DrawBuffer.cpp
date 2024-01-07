@@ -12,6 +12,8 @@
 
 #include "util/Util.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -32,12 +34,14 @@ namespace backend {
     }
 
     void DrawBuffer::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int batchCount,
         int rangeCount)
     {
         const auto info = kigl::GL::getInfo();
+
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 

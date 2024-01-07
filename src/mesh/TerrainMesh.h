@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "mesh/Mesh.h"
@@ -23,8 +22,7 @@ namespace mesh {
         const std::vector<Material>& getMaterials() const override;
 
         virtual kigl::GLVertexArray* prepareRT(
-            const Assets& assets,
-            Registry* registry) override;
+            const PrepareContext& ctx) override;
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;

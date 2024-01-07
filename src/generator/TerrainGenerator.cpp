@@ -12,6 +12,7 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
@@ -34,18 +35,17 @@ TerrainGenerator::TerrainGenerator()
 }
 
 void TerrainGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
-    m_gridSize = assets.terrainGridSize;
+    m_gridSize = ctx.m_assets.terrainGridSize;
 
     m_poolSizeU = 4;
     m_poolSizeV = 4;
 
-    prepareHeightMap(assets, registry, container);
+    prepareHeightMap(ctx, container);
 
-    createTiles(assets, registry, container);
+    createTiles(ctx, container);
 }
 
 void TerrainGenerator::update(
@@ -62,10 +62,12 @@ void TerrainGenerator::update(
 }
 
 void TerrainGenerator::prepareHeightMap(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
+    auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
+
     const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
@@ -126,10 +128,12 @@ void TerrainGenerator::updateTiles(
 }
 
 void TerrainGenerator::createTiles(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
+    auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
+
     auto* entityRegistry = registry->m_entityRegistry;
     auto* materialRegistry = registry->m_materialRegistry;
 

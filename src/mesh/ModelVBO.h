@@ -23,6 +23,10 @@ namespace mesh {
 
         void clear();
 
+        GLsizei getIndexCount() const noexcept {
+            return static_cast<GLsizei>(m_indexEntries.size() * 3);
+        }
+
     private:
         void preparePosition(
             const std::vector<Vertex>& positions);
@@ -35,6 +39,7 @@ namespace mesh {
 
     public:
         // NOTE KI absolute offset into vbo
+        // =< same as vertexOffset (cannot be really different)
         size_t m_positionOffset{ 0 };
 
         // NOTE KI absolute offset into vbo

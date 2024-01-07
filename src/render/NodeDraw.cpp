@@ -9,6 +9,8 @@
 
 #include "mesh/MeshType.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -57,9 +59,11 @@ namespace render {
     }
 
     void NodeDraw::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& registry = ctx.m_registry;
+        auto& assets = ctx.m_assets;
+
         m_gBuffer.prepare(assets);
         m_oitBuffer.prepare(assets, &m_gBuffer);
         m_effectBuffer.prepare(assets, &m_gBuffer);

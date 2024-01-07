@@ -585,6 +585,9 @@
     <ClCompile Include="src\generator\TextGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\PrepareContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1371,6 +1374,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\TextData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\PrepareContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

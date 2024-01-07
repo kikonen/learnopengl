@@ -6,7 +6,8 @@
 
 class Assets;
 
-class UpdateContext;
+struct PrepareContext;
+struct UpdateContext;
 class RenderContext;
 
 class Registry;
@@ -21,7 +22,7 @@ class ParticleSystem final
 public:
     ParticleSystem();
 
-    void prepareRT(const Assets& assets, Registry* registry);
+    void prepareRT(const PrepareContext& ctx);
     void update(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
     void render(const RenderContext& ctx);

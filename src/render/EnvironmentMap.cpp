@@ -7,6 +7,7 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -16,10 +17,12 @@
 
 namespace render {
     void EnvironmentMap::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int size)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+
         if (m_hdriTextureID <= 0) return;
 
         m_size = size;

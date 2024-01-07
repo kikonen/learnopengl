@@ -3,6 +3,8 @@
 #include "asset/Shader.h"
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
@@ -15,16 +17,15 @@
 
 
 void NormalRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
 
     m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
-    m_normalProgram->prepareRT(assets);
+    m_normalProgram->prepareRT(ctx.m_assets);
 }
 
 void NormalRenderer::render(

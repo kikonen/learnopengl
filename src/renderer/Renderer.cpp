@@ -4,6 +4,8 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -12,10 +14,11 @@ Renderer::~Renderer()
 {}
 
 void Renderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    m_registry = registry;
+    auto& assets = ctx.m_assets;
+
+    m_registry = ctx.m_registry;
 
     m_renderFrameStart = assets.renderFrameStart;
     m_renderFrameStep = assets.renderFrameStep;

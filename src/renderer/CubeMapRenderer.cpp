@@ -10,6 +10,8 @@
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -82,13 +84,14 @@ CubeMapRenderer::~CubeMapRenderer()
 {}
 
 void CubeMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -106,12 +109,12 @@ void CubeMapRenderer::prepareRT(
     {
         m_curr = std::make_unique<DynamicCubeMap>(fmt::format("{}_next", m_name), size);
         m_curr->prepareRT(
-            assets, registry,
+            ctx,
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(fmt::format("{}_prev", m_name), size);
         m_prev->prepareRT(
-            assets, registry,
+            ctx,
             false,
             { 0, 1.f, 0, 1.f });
     }
@@ -127,14 +130,14 @@ void CubeMapRenderer::prepareRT(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(assets, registry);
+        m_waterMapRenderer->prepareRT(ctx);
     }
 
     m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepareRT(assets, registry);
+        m_mirrorMapRenderer->prepareRT(ctx);
     }
 }
 

@@ -2,12 +2,8 @@
 
 #include <string>
 
-#include "asset/Assets.h"
-
-
-class Registry;
+struct PrepareContext;
 class RenderContext;
-
 
 // Special material, like skybox
 class CustomMaterial {
@@ -23,8 +19,7 @@ public:
     virtual ~CustomMaterial() = default;
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) {}
+        const PrepareContext& ctx) {}
 
     virtual void updateRT(
         const RenderContext& ctx)

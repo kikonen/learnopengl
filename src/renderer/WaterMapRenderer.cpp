@@ -11,6 +11,7 @@
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/FrameBuffer.h"
@@ -37,13 +38,14 @@ namespace {
 
 
 void WaterMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);

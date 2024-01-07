@@ -15,6 +15,7 @@
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
@@ -325,7 +326,7 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.body.meshType;
             auto* type = m_registry->m_typeRegistry->modifyType(data.target);
-            type->prepareRT(m_assets, m_registry);
+            type->prepareRT({ m_assets, m_registry });
         });
 }
 
@@ -444,12 +445,12 @@ void NodeRegistry::bindNode(
     const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
-        t->prepare(m_assets, m_registry);
+        t->prepare({ m_assets, m_registry });
 
         type = t;
         node->m_type = type;
     }
-    node->prepare(m_assets, m_registry);
+    node->prepare({ m_assets, m_registry });
 
     {
         std::lock_guard<std::mutex> lock(m_lock);
@@ -639,12 +640,12 @@ void NodeRegistry::bindSkybox(
     const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
-        t->prepare(m_assets, m_registry);
+        t->prepare({ m_assets, m_registry });
 
         type = t;
         node->m_type = type;
     }
-    node->prepare(m_assets, m_registry);
+    node->prepare({ m_assets, m_registry });
 
     m_skybox = node;
 

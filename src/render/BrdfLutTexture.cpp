@@ -10,6 +10,8 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/TextureQuad.h"
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -22,9 +24,11 @@ namespace {
 
 namespace render {
     void BrdfLutTexture::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+
         m_size = assets.brdfLutSize;
 
         {

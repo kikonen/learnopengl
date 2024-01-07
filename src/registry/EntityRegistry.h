@@ -13,7 +13,7 @@
 
 #include "EntitySSBO.h"
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
 
 //

@@ -9,6 +9,7 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -19,9 +20,11 @@
 
 namespace render {
     void IrradianceMap::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+
         if (m_envCubeMapID <= 0) return;
 
         m_size = assets.irradianceMapSize;

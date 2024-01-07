@@ -6,6 +6,7 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
@@ -17,13 +18,11 @@ GridGenerator::GridGenerator()
 }
 
 void GridGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     prepareInstances(
-        assets,
-        registry,
+        ctx,
         container);
 }
 
@@ -78,11 +77,10 @@ void GridGenerator::updateInstances(
 }
 
 void GridGenerator::prepareInstances(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& node)
 {
-    auto& entityRegistry = *registry->m_entityRegistry;
+    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
 
     m_reservedCount = m_zCount * m_xCount * m_yCount;
     m_reservedFirst = entityRegistry.registerEntityRange(m_reservedCount);

@@ -8,7 +8,7 @@
 
 #include "size.h"
 
-class UpdateContext;
+struct UpdateContext;
 
 namespace audio
 {

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "asset/Assets.h"
-
 #include "ki/RenderClock.h"
 
 #include "kigl/kigl.h"
 
 #include "gui/Input.h"
 
-class Node;
+struct PrepareContext;
+struct UpdateContext;
 class Registry;
-class UpdateContext;
+
+class Node;
 
 class NodeController
 {
@@ -19,15 +19,8 @@ public:
     virtual ~NodeController() = default;
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
-        Node& node)
-    {
-        if (m_prepared) return;
-        m_prepared = true;
-
-        m_registry = registry;
-    }
+        const PrepareContext& ctx,
+        Node& node);
 
     virtual bool updateWT(
         const UpdateContext& ctx,

@@ -25,6 +25,8 @@ namespace physics
     class PhysicsEngine;
 }
 
+struct UpdateContext;
+
 class ProgramRegistry;
 class MaterialRegistry;
 class SpriteRegistry;
@@ -37,7 +39,6 @@ class ControllerRegistry;
 class ProgramRegistry;
 class FontRegistry;
 
-class UpdateContext;
 
 //
 // Container for all registries to simplify passing them around

@@ -10,7 +10,7 @@
 #include "ki/size.h"
 #include "size.h"
 
-class UpdateContext;
+struct UpdateContext;
 class Registry;
 
 namespace script

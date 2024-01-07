@@ -1,6 +1,7 @@
 #include "HeightMap.h"
 
 #include <memory>
+#include <algorithm>
 
 #include "util/Log.h"
 #include <fmt/format.h>

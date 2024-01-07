@@ -11,11 +11,11 @@ namespace render {
     class FrameBuffer;
 }
 
+struct UpdateViewContext;
 class RenderContext;
 
 class Program;
 
-class UpdateViewContext;
 
 class Viewport final
 {

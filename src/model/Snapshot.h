@@ -8,13 +8,13 @@
 #include "util/glm_util.h"
 
 
-class UpdateContext;
+struct UpdateContext;
 
 struct NodeTransform;
 struct EntitySSBO;
 
 //
-// Snapshot of transform for RT 
+// Snapshot of transform for RT
 //
 struct Snapshot {
     Snapshot() = default;

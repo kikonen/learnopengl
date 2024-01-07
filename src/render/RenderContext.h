@@ -11,6 +11,7 @@
 #include "asset/Assets.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/PrepareContext.h"
 
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
@@ -96,6 +97,7 @@ public:
     }
 
     UpdateContext toUpdateContext() const;
+    PrepareContext toPrepareContext() const;
 
 public:
     const std::string m_name;

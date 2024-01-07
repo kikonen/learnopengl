@@ -20,7 +20,7 @@
 
 #include "size.h"
 
-class UpdateContext;
+struct UpdateContext;
 class Node;
 class NodeController;
 

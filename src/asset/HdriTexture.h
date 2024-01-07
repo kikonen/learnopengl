@@ -4,17 +4,14 @@
 
 #include "kigl/GLTextureHandle.h"
 
-class Assets;
-class Registry;
-
+struct PrepareContext;
 
 class HdriTexture {
 public:
     bool valid() { return m_texture.valid(); }
 
     void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     operator int() const { return m_texture; }
 

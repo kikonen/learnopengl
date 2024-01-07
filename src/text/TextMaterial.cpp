@@ -8,8 +8,7 @@
 #include "registry/FontRegistry.h"
 
 void TextMaterial::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
 }
 

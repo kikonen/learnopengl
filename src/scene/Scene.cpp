@@ -29,6 +29,7 @@
 #include "registry/ProgramRegistry.h"
 #include "registry/MeshTypeRegistry.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "render/NodeDraw.h"
@@ -133,48 +134,48 @@ void Scene::prepareRT()
 
     m_renderData->prepare();
 
-    auto* registry = m_registry.get();
+    PrepareContext ctx{ m_assets, m_registry.get() };
 
-    m_batch->prepareRT(m_assets, registry);
-    m_nodeDraw->prepareRT(m_assets, registry);
+    m_batch->prepareRT(ctx);
+    m_nodeDraw->prepareRT(ctx);
 
-    m_mainRenderer->prepareRT(m_assets, registry);
+    m_mainRenderer->prepareRT(ctx);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepareRT(m_assets, registry);
+        m_rearRenderer->prepareRT(ctx);
     }
     if (m_rearRenderer->isEnabled()) {
-        m_rearRenderer->prepareRT(m_assets, registry);
+        m_rearRenderer->prepareRT(ctx);
     }
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->prepareRT(m_assets, registry);
+        m_viewportRenderer->prepareRT(ctx);
     }
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(m_assets, registry);
+        m_waterMapRenderer->prepareRT(ctx);
     }
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepareRT(m_assets, registry);
+        m_mirrorMapRenderer->prepareRT(ctx);
     }
     if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->prepareRT(m_assets, registry);
+        m_cubeMapRenderer->prepareRT(ctx);
     }
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->prepareRT(m_assets, registry);
+        m_shadowMapRenderer->prepareRT(ctx);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->prepareRT(m_assets, registry);
+        m_objectIdRenderer->prepareRT(ctx);
     }
 
     if (m_normalRenderer->isEnabled()) {
-        m_normalRenderer->prepareRT(m_assets, registry);
+        m_normalRenderer->prepareRT(ctx);
     }
 
     if (m_particleSystem) {
-        m_particleSystem->prepareRT(m_assets, registry);
+        m_particleSystem->prepareRT(ctx);
     }
 
     {

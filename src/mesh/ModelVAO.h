@@ -15,7 +15,7 @@ namespace kigl {
     class GLState;
 }
 
-class UpdateContext;
+struct UpdateContext;
 
 namespace mesh {
     class ModelVBO;
@@ -39,7 +39,7 @@ namespace mesh {
             return m_vao.get();
         }
 
-        void updateRT(const UpdateContext& ctx);
+        void updateRT();
 
     private:
         void prepareVAO(

@@ -13,7 +13,7 @@ namespace mesh {
     class MaterialVBO;
 }
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
 
 struct MaterialSSBO;

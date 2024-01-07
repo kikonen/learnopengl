@@ -34,8 +34,7 @@ TextGenerator::TextGenerator()
 {}
 
 void TextGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     m_draw = std::make_unique<text::TextDraw>();
@@ -71,7 +70,7 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    m_draw->prepareRT(ctx.m_assets, ctx.m_registry);
+    m_draw->prepareRT(ctx.toPrepareContext());
 
     m_draw->render(
         ctx,
@@ -98,5 +97,6 @@ void TextGenerator::bindBatch(
     Node& container,
     render::Batch& batch)
 {
+    m_draw->updateRT(ctx.m_state);
     batch.add(ctx, container.getSnapshot().m_entityIndex);
 }

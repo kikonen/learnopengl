@@ -15,7 +15,7 @@
 #include "mesh/ModelVAO.h"
 
 struct Material;
-class UpdateContext;
+struct UpdateContext;
 
 namespace mesh {
     class ModelMesh;

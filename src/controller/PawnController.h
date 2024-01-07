@@ -9,8 +9,7 @@ public:
     PawnController();
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& node) override;
 
     virtual void onKey(Input* input, const ki::RenderClock& clock) override;

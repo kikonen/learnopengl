@@ -1,7 +1,5 @@
 #pragma once
 
-#include "asset/Assets.h"
-
 #include "model/NodeTransform.h"
 #include "model/Snapshot.h"
 #include "model/InstancePhysics.h"
@@ -21,9 +19,9 @@ namespace render {
 }
 
 class Node;
-class Registry;
 
-class UpdateContext;
+struct PrepareContext;
+struct UpdateContext;
 class RenderContext;
 
 class EntityRegistry;
@@ -38,8 +36,7 @@ public:
     virtual ~NodeGenerator() = default;
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container) {}
 
     virtual void update(
