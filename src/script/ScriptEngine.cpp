@@ -8,6 +8,8 @@
 
 #include "util/Util.h"
 
+#include "engine/PrepareContext.h"
+
 #include "script/CommandEngine.h"
 #include "script/CommandAPI.h"
 
@@ -21,14 +23,16 @@ namespace {
 namespace script
 {
 
-    ScriptEngine::ScriptEngine(const Assets& assets)
-        : m_assets(assets)
+    ScriptEngine::ScriptEngine()
     {
     }
 
     void ScriptEngine::prepare(
+        const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
+        auto& assets = ctx.m_assets;
+
         m_commandEngine = commandEngine;
 
         m_lua.open_libraries(
@@ -44,8 +48,8 @@ namespace script
         {
             const std::vector<std::string> paths{
                 m_lua["package"]["path"],
-                util::joinPath({ m_assets.rootDir, m_assets.sceneDir, "scripts", "?.lua" }),
-                util::joinPath({ m_assets.rootDir, m_assets.sceneDir, "lib", "?.lua" }),
+                util::joinPath({ assets.rootDir, assets.sceneDir, "scripts", "?.lua" }),
+                util::joinPath({ assets.rootDir, assets.sceneDir, "lib", "?.lua" }),
             };
 
             const auto notEmpty = [](const std::string& s){ return !s.empty(); };

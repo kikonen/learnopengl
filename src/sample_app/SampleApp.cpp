@@ -25,7 +25,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 
-#include "engine/AssetsFile.h"
+#include "engine/AssetsLoader.h"
 
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
@@ -410,8 +410,8 @@ void SampleApp::selectNode(
 
 Assets SampleApp::loadAssets()
 {
-    AssetsFile file{ "scene/assets.yml" };
-    return file.load();
+    AssetsLoader loader{ "scene/assets.yml" };
+    return loader.load();
 }
 
 std::shared_ptr<Scene> SampleApp::loadScene()

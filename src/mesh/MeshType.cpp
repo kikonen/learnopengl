@@ -2,7 +2,6 @@
 
 #include <fmt/format.h>
 
-#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 #include "asset/Material.h"
@@ -19,6 +18,8 @@
 #include "registry/ModelRegistry.h"
 #include "registry/SpriteRegistry.h"
 
+
+class Assets;
 
 namespace {
 }

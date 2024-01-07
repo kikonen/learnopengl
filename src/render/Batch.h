@@ -1,7 +1,5 @@
 #pragma once
 
-#include "asset/Assets.h"
-
 #include "backend/gl/PerformanceCounters.h"
 
 #include "BatchCommand.h"

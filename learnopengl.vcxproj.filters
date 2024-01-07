@@ -165,7 +165,7 @@
     <ClCompile Include="src\loader\SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\AssetsFile.cpp">
+    <ClCompile Include="src\engine\AssetsLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Volume.cpp">
@@ -746,7 +746,7 @@
     <ClInclude Include="src\loader\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\AssetsFile.h">
+    <ClInclude Include="src\engine\AssetsLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ProgramBind.h">
@@ -1377,6 +1377,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\PrepareContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\ViewportEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

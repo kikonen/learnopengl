@@ -7,12 +7,12 @@
 
 #include <sol/sol.hpp>
 
-#include "asset/Assets.h"
-
 #include "ki/size.h"
 
 #include "size.h"
 #include "Script.h"
+
+struct PrepareContext;
 
 class Node;
 
@@ -24,10 +24,11 @@ namespace script
     class ScriptEngine final
     {
     public:
-        ScriptEngine(const Assets& assets);
+        ScriptEngine();
         ~ScriptEngine() = default;
 
         void prepare(
+            const PrepareContext& ctx,
             CommandEngine* commandEngine);
 
         script::script_id registerScript(std::string_view source);
@@ -65,8 +66,6 @@ namespace script
         void registerTypes();
 
     private:
-        const Assets& m_assets;
-
         CommandEngine* m_commandEngine{ nullptr };
 
         sol::state m_lua;

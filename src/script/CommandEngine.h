@@ -5,8 +5,6 @@
 #include <memory>
 #include <mutex>
 
-#include "asset/Assets.h"
-
 #include "ki/size.h"
 #include "size.h"
 
@@ -20,7 +18,7 @@ namespace script
     class CommandEngine final
     {
     public:
-        CommandEngine(const Assets& assets);
+        CommandEngine();
         ~CommandEngine() = default;
 
         void prepare(Registry* registry);
@@ -47,8 +45,6 @@ namespace script
         //void updateOldest() noexcept;
 
     private:
-        const Assets& m_assets;
-
         std::mutex m_lock{};
 
         std::vector<std::unique_ptr<Command>> m_pending;

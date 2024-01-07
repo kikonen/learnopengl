@@ -10,6 +10,8 @@
 
 #include "audio/AudioEngine.h"
 
+#include "engine/PrepareContext.h"
+
 #include "script/api/Command.h"
 #include "script/CommandEngine.h"
 #include "script/CommandAPI.h"
@@ -36,13 +38,13 @@ Registry::Registry(
     : m_assets(assets),
     m_alive(alive),
     // registries
-    m_dispatcherImpl(std::make_unique<event::Dispatcher>(assets)),
-    m_dispatcherViewImpl(std::make_unique<event::Dispatcher>(assets)),
+    m_dispatcherImpl(std::make_unique<event::Dispatcher>()),
+    m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
     m_programRegistryImpl(std::make_unique<ProgramRegistry>(assets, m_alive)),
-    m_audioEngineImpl(std::make_unique<audio::AudioEngine>(assets)),
+    m_audioEngineImpl(std::make_unique<audio::AudioEngine>()),
     m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets)),
-    m_commandEngineImpl(std::make_unique<script::CommandEngine>(assets)),
-    m_scriptEngineImpl(std::make_unique<script::ScriptEngine>(assets)),
+    m_commandEngineImpl(std::make_unique<script::CommandEngine>()),
+    m_scriptEngineImpl(std::make_unique<script::ScriptEngine>()),
     m_fontRegistryImpl(std::make_unique<FontRegistry>(assets)),
     m_materialRegistryImpl(std::make_unique<MaterialRegistry>(assets, m_alive)),
     m_spriteRegistryImpl(std::make_unique<SpriteRegistry>(assets, m_alive)),
@@ -98,6 +100,8 @@ void Registry::prepareWT()
 {
     ASSERT_WT();
 
+    PrepareContext ctx{ m_assets, this };
+
     // NOTE KI does not matter which thread does prepare
     m_physicsEngine->prepare();
     m_audioEngine->prepare();
@@ -105,7 +109,7 @@ void Registry::prepareWT()
     m_controllerRegistry->prepare(this);
 
     m_commandEngine->prepare(this);
-    m_scriptEngine->prepare(m_commandEngine);
+    m_scriptEngine->prepare(ctx, m_commandEngine);
 }
 
 void Registry::updateWT(const UpdateContext& ctx)

@@ -1,8 +1,7 @@
 #include "Dispatcher.h"
 
 namespace event {
-    Dispatcher::Dispatcher(const Assets& assets)
-        : m_assets(assets)
+    Dispatcher::Dispatcher()
     {
     }
 

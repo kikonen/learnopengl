@@ -29,9 +29,8 @@
 
 namespace script
 {
-    CommandEngine::CommandEngine(const Assets& assets)
-        : m_assets(assets),
-        m_cleanupStep(5)
+    CommandEngine::CommandEngine()
+        : m_cleanupStep(5)
     {}
 
     void CommandEngine::prepare(Registry* registry)

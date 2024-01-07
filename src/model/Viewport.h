@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Assets.h"
+#include "asset/ViewportEffect.h"
 
 #include "kigl/GLBuffer.h"
 
@@ -11,10 +11,11 @@ namespace render {
     class FrameBuffer;
 }
 
+class Assets;
+class Program;
+
 struct UpdateViewContext;
 class RenderContext;
-
-class Program;
 
 
 class Viewport final

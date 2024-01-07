@@ -240,7 +240,7 @@
     <ClCompile Include="src\asset\Plane.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\event\Dispatcher.cpp" />
-    <ClCompile Include="src\engine\AssetsFile.cpp" />
+    <ClCompile Include="src\engine\AssetsLoader.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\mesh\MaterialVBO.cpp" />
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
@@ -383,6 +383,7 @@
     <ClInclude Include="src\asset\CustomMaterial.h" />
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
+    <ClInclude Include="src\asset\ViewportEffect.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\loader\FontData.h" />
@@ -525,7 +526,7 @@
     <ClInclude Include="src\mesh\SpriteMesh.h" />
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ProgramBind.h" />
-    <ClInclude Include="src\engine\AssetsFile.h" />
+    <ClInclude Include="src\engine\AssetsLoader.h" />
     <ClInclude Include="src\registry\EntitySSBO.h" />
     <ClInclude Include="src\registry\EntityRegistry.h" />
     <ClInclude Include="src\registry\ModelRegistry.h" />
