@@ -84,57 +84,56 @@ namespace physics {
         m_height = imageH;
     }
 
-    float HeightMap::getTerrainHeight(float u, float v) const
+    float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
-        u = std::clamp(u, 0.f, 1.f);
-        v = std::clamp(v, 0.f, 1.f);
+        // NOTE KI use bilinear interpolation
 
-        const float baseX = m_width * u;
-        const float baseY = m_height * (1.f - v);
+        const float mapX = std::clamp(
+            ((float)(m_width)) * u,
+            0.f,
+            m_width - 1.f);
 
-        float total = 0.f;
-        float bias = 2.5f;
+        const float mapY = std::clamp(
+            ((float)(m_height)) * (1.f - v),
+            0.f,
+            m_height - 1.f);
 
-        for (int x = -1; x < 2; x++) {
-            for (int y = -1; y < 2; y++) {
-                int mapX = (int)(baseX + x * bias);
-                int mapY = (int)(baseY + y * bias);
+        // floor
+        const int x = mapX;
+        const int y = mapY;
 
-                // TODO KI off by one bug
-                // HACK KI -1 to workaround "out of bounds"
-                mapX = std::clamp(mapX, 0, m_width - 1);
-                mapY = std::clamp(mapY, 0, m_height - 1);
+        const float fractX = mapX - x;
+        const float fractY = mapY - y;
 
-                const int offset = m_width * mapY + mapX;
-#ifdef _DEBUG
-                if (offset > m_height * m_width)
-                    throw std::runtime_error{ "out-of-bounds" };
-#endif
-                total += m_heights[offset];
-            }
-        }
+        const float h00 = m_heights[m_width * y       + x];
+        const float h10 = m_heights[m_width * (y + 1) + x];
+        const float h01 = m_heights[m_width * y       + x + 1];
+        const float h11 = m_heights[m_width * (y + 1) + x + 1];
 
-        return total / 9.0f;
+        const float bottomH = (h01 - h00) * fractX + h00;
+        const float topH    = (h11 - h10) * fractX + h10;
+
+        const float finalH = (topH - bottomH) * fractY + bottomH;
+
+        return finalH;
     }
 
-    float HeightMap::getLevel(const glm::vec3& pos) const noexcept
+    float HeightMap::getLevel(const glm::vec3& worldPos) const noexcept
     {
         const auto& transform = m_origin->getTransform();
         const auto& originPos = transform.getWorldPosition();
+        const auto& modelMat = transform.getModelMatrix();
 
-        const auto diff = pos - originPos;
-        //diff.x += m_worldTileSize / 2.f;
-        //diff.z += m_worldTileSize / 2.f;
+        const auto diff = worldPos - originPos;
 
         const float u = diff.x / (float)m_worldSizeU;
         const float v = 1.f - diff.z / (float)m_worldSizeV;
 
         const float h = getTerrainHeight(u, v);
 
-        const auto& modelMat = transform.getModelMatrix();
         const auto p = glm::vec4{ 0.f, h, 0.f, 1.f };
 
-        const auto worldPos = modelMat * p;
-        return worldPos.y;
+        const auto newWorldPos = modelMat * p;
+        return newWorldPos.y;
     }
 }

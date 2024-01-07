@@ -153,7 +153,7 @@ namespace mesh {
         assert(!modelVBO.m_positionEntries.empty());
         assert(!modelVBO.m_vertexEntries.empty());
         assert(!modelVBO.m_indexEntries.empty());
-        assert(!modelVBO.m_positionEntries.size() == modelVBO.m_vertexEntries.size());
+        assert(modelVBO.m_positionEntries.size() == modelVBO.m_vertexEntries.size());
 
         {
             const size_t count = modelVBO.m_positionEntries.size();
