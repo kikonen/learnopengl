@@ -87,28 +87,28 @@ namespace physics {
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         // NOTE KI use bilinear interpolation
+        // use "clamp to edge"
 
-        const float mapX = std::clamp(
-            ((float)(m_width)) * u,
-            0.f,
-            m_width - 1.f);
-
-        const float mapY = std::clamp(
-            ((float)(m_height)) * (1.f - v),
-            0.f,
-            m_height - 1.f);
+        const float mapX = ((float)(m_width)) * u;
+        const float mapY = ((float)(m_height)) * (1.f - v);
 
         // floor
-        const int x = mapX;
-        const int y = mapY;
+        int x = mapX;
+        int y = mapY;
 
         const float fractX = mapX - x;
         const float fractY = mapY - y;
 
+        x = std::clamp(x, 0, m_width - 1);
+        y = std::clamp(y, 0, m_height - 1);
+
+        int nextX = std::clamp(x + 1, 0, m_width - 1);
+        int nextY = std::clamp(y + 1, 0, m_height - 1);
+
         const float h00 = m_heights[m_width * y       + x];
-        const float h10 = m_heights[m_width * (y + 1) + x];
-        const float h01 = m_heights[m_width * y       + x + 1];
-        const float h11 = m_heights[m_width * (y + 1) + x + 1];
+        const float h10 = m_heights[m_width * nextY   + x];
+        const float h01 = m_heights[m_width * y       + nextX];
+        const float h11 = m_heights[m_width * nextY   + nextX];
 
         const float bottomH = (h01 - h00) * fractX + h00;
         const float topH    = (h11 - h10) * fractX + h10;
