@@ -51,7 +51,7 @@ NodeRegistry::NodeRegistry(
 
 NodeRegistry::~NodeRegistry()
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     // NOTE KI forbid access into deleted nodes
     {
@@ -102,7 +102,6 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
     if (m_root) {
         m_root->updateWT(ctx);
     }
@@ -110,14 +109,17 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ctx.m_registry->m_physicsEngine->updateBounds(ctx);
     ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
-    for (auto& node : m_allNodes) {
-        node->snapshot();
+    {
+        std::lock_guard<std::mutex> lock(m_snapshotLock);
+        for (auto& node : m_allNodes) {
+            node->snapshot();
+        }
     }
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     for (auto& node : m_cameraNodes) {
         node->m_camera->updateRT(ctx, *node);
@@ -135,7 +137,7 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     for (auto* node : m_allNodes) {
         node->updateEntity(ctx, m_registry->m_entityRegistry);
@@ -453,7 +455,7 @@ void NodeRegistry::bindNode(
     node->prepare({ m_assets, m_registry });
 
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        //std::lock_guard<std::mutex> lock(m_lock);
 
         //KI_INFO_OUT(fmt::format(
         //    "REGISTER: {}-{}",

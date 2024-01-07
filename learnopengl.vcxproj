@@ -190,6 +190,7 @@
     <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
+    <ClCompile Include="src\kigl\GLFence.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />

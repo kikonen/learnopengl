@@ -96,7 +96,7 @@ assets:
 
   batch_size: 100
   batch_buffers: 1000
-  batch_debug: true
+  batch_debug: false
 
   draw_debug: false
 

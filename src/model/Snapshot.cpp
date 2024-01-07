@@ -28,7 +28,10 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
-{}
+{
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.storeWorldVolume(m_volume);
+}
 
 Snapshot::Snapshot(const NodeTransform&& o)
     : m_dirtyDegrees{ o.m_dirtyDegrees },

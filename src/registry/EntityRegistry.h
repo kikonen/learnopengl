@@ -57,5 +57,5 @@ private:
     std::mutex m_lock{};
 
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
-    kigl::GLFence m_fence;
+    kigl::GLFence m_fence{ "fence_entity" };
 };

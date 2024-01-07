@@ -266,7 +266,6 @@ void Scene::updateRT(const UpdateContext& ctx)
 {
     m_registry->m_dispatcherView->dispatchEvents();
 
-    m_registry->m_nodeRegistry->updateRT(ctx);
     m_registry->updateRT(ctx);
 
     m_renderData->update();

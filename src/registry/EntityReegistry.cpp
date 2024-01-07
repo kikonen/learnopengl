@@ -37,7 +37,7 @@ void EntityRegistry::prepare()
 
 void EntityRegistry::updateWT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    //std::lock_guard<std::mutex> lock(m_lock);
 }
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
@@ -119,7 +119,10 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
 void EntityRegistry::postRT(const UpdateContext& ctx)
 {
-    m_fence.setFence();
+    // NOTE KI if there was no changes old fence is stil valid
+    if (!m_fence.isSet()) {
+        m_fence.setFence(true);
+    }
 }
 
 void EntityRegistry::bind(

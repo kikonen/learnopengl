@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 
+#include <fmt/format.h>
+
 #include "GLBuffer.h"
 #include "GLBufferRange.h"
 #include "GLFence.h"
@@ -26,7 +28,8 @@ namespace kigl {
             m_useFence{ useFence },
             m_useSingleFence{ useSingleFence },
             m_entrySize{ sizeof(T) },
-            m_buffer{ std::string{ name } + std::string{ "_sync_queue" } }
+            m_name{ fmt::format("{}_sync_queue", name) },
+            m_buffer{ m_name }
         {
         }
 
@@ -86,7 +89,7 @@ namespace kigl {
                 range.m_usedCount = 0;
 
                 if (m_useFence && (m_fences.empty() || !m_useSingleFence)) {
-                    m_fences.emplace_back();
+                    m_fences.emplace_back(fmt::format("fence_{}_{}", m_name, i));
                 }
             }
         }
@@ -221,11 +224,11 @@ namespace kigl {
 
             if (m_useSingleFence) {
                 if (index == m_ranges.size() - 1) {
-                    m_fences[0].setFence();
+                    m_fences[0].setFence(m_debug);
                 }
             }
             else {
-                m_fences[index].setFence();
+                m_fences[index].setFence(m_debug);
             }
         }
 
@@ -238,6 +241,7 @@ namespace kigl {
         }
 
     public:
+        std::string m_name;
         GLBuffer m_buffer;
 
     private:

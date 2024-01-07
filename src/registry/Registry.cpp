@@ -125,6 +125,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     m_materialRegistry->updateRT(ctx);
     m_spriteRegistry->updateRT(ctx);
     m_modelRegistry->updateRT(ctx);
+    m_nodeRegistry->updateRT(ctx);
     m_entityRegistry->updateRT(ctx);
 }
 
