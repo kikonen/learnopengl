@@ -8,7 +8,8 @@
 #include "kigl/GLVertexArray.h"
 
 #include "mesh/PositionEntry.h"
-#include "mesh/VertexEntry.h"
+#include "mesh/NormalEntry.h"
+#include "mesh/TextureEntry.h"
 #include "mesh/IndexEntry.h"
 
 namespace kigl {
@@ -45,33 +46,35 @@ namespace mesh {
         void prepareVAO(
             kigl::GLVertexArray& vao,
             kigl::GLBuffer& positionVbo,
-            kigl::GLBuffer& vertexVbo,
+            kigl::GLBuffer& normalVbo,
+            kigl::GLBuffer& textureVbo,
             kigl::GLBuffer& ebo);
 
         void updatePositionBuffer();
-        void updateVertexBuffer();
+        void updateNormalBuffer();
+        void updateTextureBuffer();
         void updateIndexBuffer();
 
     private:
         bool m_prepared = false;
         std::string m_name;
 
-        std::atomic<bool> m_dirty;
-        std::mutex m_lock{};
-
         std::unique_ptr<kigl::GLVertexArray> m_vao;
 
         kigl::GLBuffer m_positionVbo;
-        kigl::GLBuffer m_vertexVbo;
+        kigl::GLBuffer m_normalVbo;
+        kigl::GLBuffer m_textureVbo;
 
         kigl::GLBuffer m_ebo;
 
         std::vector<PositionEntry> m_positionEntries;
-        std::vector<VertexEntry> m_vertexEntries;
+        std::vector<NormalEntry> m_normalEntries;
+        std::vector<TextureEntry> m_textureEntries;
         std::vector<IndexEntry> m_indexEntries;
 
         size_t m_lastPositionSize = 0;
-        size_t m_lastVertexSize = 0;
+        size_t m_lastNormalSize = 0;
+        size_t m_lastTextureSize = 0;
         size_t m_lastIndexSize = 0;
     };
 }

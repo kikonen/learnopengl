@@ -192,6 +192,7 @@
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
+    <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
@@ -393,7 +394,9 @@
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />
+    <ClInclude Include="src\mesh\PositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
+    <ClInclude Include="src\mesh\TextureEntry.h" />
     <ClInclude Include="src\registry\FontRegistry.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
@@ -479,7 +482,7 @@
     <ClInclude Include="src\asset\TextureSpec.h" />
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\Uniform.h" />
-    <ClInclude Include="src\mesh\VertexEntry.h" />
+    <ClInclude Include="src\mesh\NormalEntry.h" />
     <ClInclude Include="src\mesh\MaterialVBO.h" />
     <ClInclude Include="src\mesh\ModelMaterialInit.h" />
     <ClInclude Include="src\mesh\ModelVBO.h" />

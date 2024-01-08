@@ -21,14 +21,16 @@ namespace mesh {
         m_prepared = true;
 
         preparePosition(mesh.m_vertices);
-        prepareVertex(mesh.m_vertices);
+        prepareNormal(mesh.m_vertices);
+        prepareTexture(mesh.m_vertices);
         prepareIndex(mesh.m_indeces);
     }
 
     void ModelVBO::clear()
     {
         m_positionEntries.clear();
-        m_vertexEntries.clear();
+        m_normalEntries.clear();
+        m_textureEntries.clear();
         m_indexEntries.clear();
     }
 
@@ -36,28 +38,32 @@ namespace mesh {
         const std::vector<Vertex>& positions)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
-
         m_positionEntries.reserve(positions.size());
 
         for (const auto& vertex : positions) {
-            const auto& p = vertex.pos;
-            m_positionEntries.emplace_back(p);
+            m_positionEntries.emplace_back(vertex.pos);
         }
     }
 
-    void ModelVBO::prepareVertex(
+    void ModelVBO::prepareNormal(
         const std::vector<Vertex>& vertices)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
-
-        m_vertexEntries.reserve(vertices.size());
+        m_normalEntries.reserve(vertices.size());
 
         for (const auto& vertex : vertices) {
-            const auto& n = vertex.normal;
-            const auto& tan = vertex.tangent;
-            const auto& t = vertex.texture;
+            m_normalEntries.emplace_back(vertex.normal, vertex.tangent);
+        }
+    }
 
-            auto& entry = m_vertexEntries.emplace_back(n, tan, t);
+    void ModelVBO::prepareTexture(
+        const std::vector<Vertex>& vertices)
+    {
+        // https://paroj.github.io/gltut/Basic%20Optimization.html
+        m_textureEntries.reserve(vertices.size());
+
+        for (const auto& vertex : vertices) {
+            m_textureEntries.emplace_back(vertex.texture);
         }
     }
 

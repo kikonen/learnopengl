@@ -591,6 +591,9 @@
     <ClCompile Include="src\kigl\GLFence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\PositionVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1322,7 +1325,7 @@
     <ClInclude Include="src\mesh\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexEntry.h">
+    <ClInclude Include="src\mesh\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MaterialVBO.h">
@@ -1383,6 +1386,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ViewportEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\PositionVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TextureEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

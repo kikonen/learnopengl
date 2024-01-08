@@ -17,8 +17,8 @@
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
 
-#include "mesh/VertexEntry.h"
 #include "mesh/MeshType.h"
+#include "mesh/PositionEntry.h"
 
 #include "model/Node.h"
 
@@ -281,22 +281,22 @@ namespace render {
             if (drawOptions.type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-                cmd.count = drawOptions.indexCount;
-                cmd.instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-                cmd.baseVertex = drawOptions.vertexOffset / sizeof(mesh::VertexEntry);
+                cmd.u_count = drawOptions.indexCount;
+                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                cmd.u_firstIndex = drawOptions.indexOffset / sizeof(GLuint);
+                cmd.u_baseVertex = drawOptions.vertexOffset / sizeof(mesh::PositionEntry);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.instanced) {
-                    cmd.instanceCount = curr.m_instancedCount;
-                    cmd.baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_instanceCount = curr.m_instancedCount;
+                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
                             int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.baseInstance = entityIndex;
+                            cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
                     }
@@ -306,21 +306,21 @@ namespace render {
             {
                 backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
-                cmd.vertexCount = drawOptions.indexCount;
-                cmd.instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
+                cmd.u_vertexCount = drawOptions.indexCount;
+                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                cmd.u_firstVertex = drawOptions.indexOffset / sizeof(GLuint);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.instanced) {
-                    cmd.instanceCount = curr.m_instancedCount;
-                    cmd.baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_instanceCount = curr.m_instancedCount;
+                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
                             int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.baseInstance = entityIndex;
+                            cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
                     }
