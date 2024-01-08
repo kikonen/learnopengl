@@ -11,7 +11,9 @@ namespace kigl {
             it.second = -1;
         }
 
-        m_textureUnits.clear();
+        for (int i = 0; i < m_textureUnits.size(); i++) {
+            m_textureUnits[i] = 0;
+        }
 
         m_cullFace = -1;
         m_frontFace = -1;
@@ -124,14 +126,14 @@ namespace kigl {
     {
         //force = true;
 
-        const auto& it = m_textureUnits.find(unitIndex);
-        const bool changed = force || it == m_textureUnits.end() || it->second != textureID;
+        const auto curr = m_textureUnits[unitIndex];
+        const bool changed = force || curr != textureID;
         if (!changed) return;
 
         // NOTE KI logic failing when new texture generated, but its' ID does not change
         // (i.e. IDs are apparently reused after texture delete)
         // => caused viewport diappear after resising main viewport
-        if (changed) {
+        {
             // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
             //KI_GL_CALL(glBindTextures(unitIndex, 1, &textureID));
             //KI_DEBUG(fmt::format("BIND_TEXTURE: unitIndex={}, textureID={}", unitIndex, textureID));
