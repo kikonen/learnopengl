@@ -40,7 +40,7 @@ namespace kigl {
         //
         // NOTE KI with "set" it's upto caller to manage buffer full
         //
-        void set(int idx, T& entry);
+        void set(int idx, const T& entry);
 
         inline GLBufferRange& current() {
             return m_ranges[m_current];

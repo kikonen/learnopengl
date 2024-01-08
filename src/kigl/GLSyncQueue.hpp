@@ -107,7 +107,7 @@ namespace kigl {
     }
 
     template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::set(int idx, T& entry)
+    void GLSyncQueue<T, mappedMode>::set(int idx, const T& entry)
     {
         waitFence(m_current);
 

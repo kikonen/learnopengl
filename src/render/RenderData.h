@@ -25,10 +25,10 @@ namespace render {
         void bind();
         void update();
 
-        void updateMatrices(MatricesUBO& data);
-        void updateData(DataUBO& data);
-        void updateBufferInfo(BufferInfoUBO& data);
-        void updateClipPlanes(ClipPlanesUBO& data);
+        void updateMatrices(const MatricesUBO& data);
+        void updateData(const DataUBO& data);
+        void updateBufferInfo(const BufferInfoUBO& data);
+        void updateClipPlanes(const ClipPlanesUBO& data);
         void updateLights(Registry* registry, bool useLight);
 
     private:

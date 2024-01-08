@@ -67,7 +67,7 @@ namespace render {
         //updateChannelTextures();
     }
 
-    void RenderData::updateMatrices(MatricesUBO& data)
+    void RenderData::updateMatrices(const MatricesUBO& data)
     {
         m_matrices.set(0, data);
         m_matrices.flush();
@@ -75,7 +75,7 @@ namespace render {
         m_matrices.next(false);
     }
 
-    void RenderData::updateData(DataUBO& data)
+    void RenderData::updateData(const DataUBO& data)
     {
         m_data.set(0, data);
         m_data.flush();
@@ -83,7 +83,7 @@ namespace render {
         m_data.next(false);
     }
 
-    void RenderData::updateBufferInfo(BufferInfoUBO& data)
+    void RenderData::updateBufferInfo(const BufferInfoUBO& data)
     {
         m_bufferInfo.set(0, data);
         m_bufferInfo.flush();
@@ -91,7 +91,7 @@ namespace render {
         m_bufferInfo.next(false);
     }
 
-    void RenderData::updateClipPlanes(ClipPlanesUBO& data)
+    void RenderData::updateClipPlanes(const ClipPlanesUBO& data)
     {
         m_clipPlanes.set(0, data);
         m_clipPlanes.flush();
@@ -132,7 +132,7 @@ namespace render {
             }
             lightsUbo.u_pointCount = count;
 
-            int diff = static_cast<int>(nodes.size()) - MAX_LIGHT_COUNT;
+            const int diff = static_cast<int>(nodes.size()) - MAX_LIGHT_COUNT;
             if (diff > 0) {
                 KI_INFO_OUT(fmt::format("SKIPPED POINT_LIGHTS: {}", diff));
             }
@@ -150,7 +150,7 @@ namespace render {
             }
             lightsUbo.u_spotCount = count;
 
-            int diff = static_cast<int>(registry->m_nodeRegistry->getSpotLightNodes().size()) - MAX_LIGHT_COUNT;
+            const int diff = static_cast<int>(registry->m_nodeRegistry->getSpotLightNodes().size()) - MAX_LIGHT_COUNT;
             if (diff > 0) {
                 KI_INFO_OUT(fmt::format("SKIPPED SPOT_LIGHTS: {}", diff));
             }
