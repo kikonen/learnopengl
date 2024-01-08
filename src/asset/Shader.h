@@ -141,7 +141,7 @@ constexpr int UNIT_BDRF_LUT = 73;
 
 constexpr int UNIT_VIEWPORT = 74;
 
-constexpr int MAX_SHADOW_MAP_COUNT = 3;
+constexpr int MAX_SHADOW_MAP_COUNT = 4;
 constexpr int UNIT_SHADOW_MAP_FIRST = 75;
 constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;
 
