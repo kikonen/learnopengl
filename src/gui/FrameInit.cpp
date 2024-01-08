@@ -9,13 +9,15 @@
 FrameInit::FrameInit(Window& window)
     : window(window)
 {
+    auto& assets = window.getEngine().getAssets();
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window.m_glfwWindow, true);
-    ImGui_ImplOpenGL3_Init(window.m_assets.glsl_version_str.c_str());
+    ImGui_ImplOpenGL3_Init(assets.glsl_version_str.c_str());
     // Setup Dear ImGui style
     ImGui::StyleColorsLight();
 }

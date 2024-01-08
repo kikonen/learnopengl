@@ -24,6 +24,7 @@ namespace render {
     {
         auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
+        auto& state = registry->m_state;
 
         if (m_envCubeMapID <= 0) return;
 
@@ -44,8 +45,6 @@ namespace render {
         }
 
         {
-            kigl::GLState state;
-
             auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
             program->prepareRT(assets);
 

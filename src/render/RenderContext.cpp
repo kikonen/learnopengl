@@ -17,6 +17,7 @@
 
 #include "backend/RenderSystem.h"
 
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 
@@ -41,7 +42,6 @@ RenderContext::RenderContext(
         parent->m_renderData,
         parent->m_nodeDraw,
         parent->m_batch,
-        parent->m_state,
         camera,
         parent->m_nearPlane,
         parent->m_farPlane,
@@ -66,7 +66,6 @@ RenderContext::RenderContext(
         parent->m_renderData,
         parent->m_nodeDraw,
         parent->m_batch,
-        parent->m_state,
         camera,
         nearPlane,
         farPlane,
@@ -83,7 +82,6 @@ RenderContext::RenderContext(
     render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
     render::Batch* batch,
-    kigl::GLState& state,
     Camera* camera,
     float nearPlane,
     float farPlane,
@@ -93,7 +91,7 @@ RenderContext::RenderContext(
     m_parent{ parent },
     m_assets{ assets },
     m_clock{ clock },
-    m_state{ state },
+    m_state{ registry->m_state },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
     m_batch{ batch },

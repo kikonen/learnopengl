@@ -30,6 +30,14 @@ public:
     int setup();
     void run();
 
+    inline const Assets& getAssets() const noexcept {
+        return m_assets;
+    }
+
+    inline Registry* getRegistry() const noexcept {
+        return m_registry.get();
+    }
+
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
@@ -61,8 +69,6 @@ protected:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::string m_title;
-
-    kigl::GLState m_state;
 
     InputState m_lastInputState;
 

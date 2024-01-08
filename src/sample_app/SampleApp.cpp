@@ -149,6 +149,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     if (!cameraNode) return 0;
 
 
+    auto& state = m_registry->m_state;
     const glm::uvec2& size = window->getSize();
 
     {
@@ -171,7 +172,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
-        m_state,
         cameraNode->m_camera.get(),
         m_assets.nearPlane,
         m_assets.farPlane,
@@ -189,7 +189,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         //m_state.useProgram(0);
         //m_state.bindVAO(0);
 
-        m_state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
+        state.setEnabled(GL_PROGRAM_POINT_SIZE, true);
         glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
 
         // make clear color by default black
@@ -198,7 +198,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);
-            m_state.clear();
+            state.clear();
         }
 
         scene->bind(ctx);

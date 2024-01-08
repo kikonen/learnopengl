@@ -62,7 +62,6 @@ public:
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
         render::Batch* batch,
-        kigl::GLState& state,
         Camera* camera,
         float nearPlane,
         float farPlane,

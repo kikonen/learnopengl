@@ -39,7 +39,7 @@ int Engine::init() {
     m_registry = std::make_shared<Registry>(m_assets, m_alive);
     m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
 
-    m_window = std::make_unique<Window>(*this, m_state, m_assets);
+    m_window = std::make_unique<Window>(*this);
     return m_window->create() ? 0 : -1;
 }
 
@@ -56,7 +56,7 @@ int Engine::setup() {
         GL_TEXTURE_CUBE_MAP_SEAMLESS,
     };
     for (auto& key : keys) {
-        m_state.track(key);
+        m_registry->m_state.track(key);
     }
 
     m_registry->prepareShared();

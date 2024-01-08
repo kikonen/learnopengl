@@ -12,7 +12,7 @@
 #include "render/RenderContext.h"
 
 namespace {
-    std::array<std::string, 6> DEFAULT_FACES = {
+    const std::array<std::string, 6> DEFAULT_FACES = {
         "right.jpg",
         "left.jpg",
         "top.jpg",

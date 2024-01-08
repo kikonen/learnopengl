@@ -9,24 +9,19 @@
 
 #include "imgui.h"
 
-#include "asset/Assets.h"
-
-
 class Input;
 class Engine;
-
-namespace kigl {
-    class GLState;
-}
 
 class Window final
 {
 public:
     Window(
-        Engine& engine,
-        kigl::GLState& state,
-        const Assets& assets);
+        Engine& engine);
     ~Window();
+
+    Engine& getEngine() const noexcept {
+        return m_engine;
+    }
 
     bool create();
 
@@ -56,10 +51,6 @@ private:
     void bindGLFWCallbacks();
 
 public:
-    const Assets& m_assets;
-
-    kigl::GLState& m_state;
-
     GLFWwindow* m_glfwWindow{ nullptr };
 
     std::unique_ptr<Input> m_input{ nullptr };
