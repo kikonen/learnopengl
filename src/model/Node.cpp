@@ -111,23 +111,35 @@ void Node::updateWT(
     }
 }
 
-void Node::snapshot() noexcept {
+void Node::snapshotWT() noexcept {
     auto& transform = m_transform;
     if (!m_forceUpdateSnapshot && !transform.m_dirtySnapshot) return;
 
     {
         assert(!transform.m_dirty);
         transform.m_dirtySnapshot |= m_forceUpdateSnapshot;
-        m_snapshot = transform;
+        m_snapshotWT = transform;
+        m_snapshotWT.m_dirty = true;
     }
 
     if (m_generator) {
-        m_generator->snapshot(m_forceUpdateSnapshot);
+        m_generator->snapshotWT(m_forceUpdateSnapshot);
     }
 
     transform.m_dirtySnapshot = false;
     transform.m_dirtyNormal = false;
     m_forceUpdateSnapshot = false;
+}
+
+void Node::snapshotRT() noexcept {
+    if (m_snapshotWT.m_dirty) {
+        m_snapshotRT = m_snapshotWT;
+        m_snapshotWT.m_dirty = false;
+    }
+
+    if (m_generator) {
+        m_generator->snapshotRT(false);
+    }
 }
 
 bool Node::isEntity() const noexcept
@@ -140,7 +152,7 @@ void Node::updateEntity(
     const UpdateContext& ctx,
     EntityRegistry* entityRegistry)
 {
-    auto& snapshot = m_snapshot;
+    auto& snapshot = m_snapshotRT;
     if (!m_forceUpdateEntity && !snapshot.m_dirtyEntity) return;
 
     if (snapshot.m_entityIndex != -1)

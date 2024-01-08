@@ -43,7 +43,8 @@ public:
         const UpdateContext& ctx,
         Node& container) {}
 
-    void snapshot(bool force);
+    void snapshotWT(bool force);
+    void snapshotRT(bool force);
 
     virtual void updateEntity(
         const UpdateContext& ctx,
@@ -121,6 +122,7 @@ protected:
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
-    std::vector<Snapshot> m_snapshots;
+    std::vector<Snapshot> m_snapshotsWT;
+    std::vector<Snapshot> m_snapshotsRT;
     std::vector<InstancePhysics> m_physics;
 };

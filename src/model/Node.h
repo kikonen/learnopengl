@@ -94,10 +94,11 @@ public:
         return m_transform;
     }
 
-    void snapshot() noexcept;
+    void snapshotWT() noexcept;
+    void snapshotRT() noexcept;
 
     inline const Snapshot& getSnapshot() const noexcept {
-        return m_snapshot;
+        return m_snapshotRT;
     }
 
     //inline Snapshot& modifySnapshot() noexcept {
@@ -174,7 +175,8 @@ private:
     bool m_forceUpdateEntity{ true };
     ki::size_t_entity_flags m_entityFlags{ 0 };
 
-    Snapshot m_snapshot;
+    Snapshot m_snapshotWT;
+    Snapshot m_snapshotRT;
     bool m_forceUpdateSnapshot{ true };
 
     int m_cloneIndex{ 0 };

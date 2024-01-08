@@ -12,14 +12,14 @@
 
 #include "registry/EntityRegistry.h"
 
-void NodeGenerator::snapshot(bool force)
+void NodeGenerator::snapshotWT(bool force)
 {
-    const auto diff = m_transforms.size() - m_snapshots.size();
+    const auto diff = m_transforms.size() - m_snapshotsWT.size();
     if (diff != 0) {
         force |= true;
-        m_snapshots.reserve(m_transforms.size());
+        m_snapshotsWT.reserve(m_transforms.size());
         for (int i = 0; i < diff; i++) {
-            m_snapshots.emplace_back();
+            m_snapshotsWT.emplace_back();
         }
     }
 
@@ -27,9 +27,28 @@ void NodeGenerator::snapshot(bool force)
         auto& transform = m_transforms[i];
         assert(!transform.m_dirty);
         if (!force && !transform.m_dirtySnapshot) continue;
-        m_snapshots[i] = transform;
+        m_snapshotsWT[i] = transform;
+        m_snapshotsWT[i].m_dirty = true;
         transform.m_dirtySnapshot = false;
         transform.m_dirtyNormal = false;
+    }
+}
+
+void NodeGenerator::snapshotRT(bool force)
+{
+    const auto diff = m_snapshotsWT.size() - m_snapshotsRT.size();
+    if (diff != 0) {
+        force |= true;
+        m_snapshotsRT.reserve(m_snapshotsWT.size());
+        for (int i = 0; i < diff; i++) {
+            m_snapshotsRT.emplace_back();
+        }
+    }
+
+    for (size_t i = 0; i < m_snapshotsWT.size(); i++) {
+        if (!force && !m_snapshotsWT[i].m_dirty) continue;
+        m_snapshotsRT[i] = m_snapshotsWT[i];
+        m_snapshotsWT[i].m_dirty = false;
     }
 }
 
@@ -43,7 +62,7 @@ void NodeGenerator::updateEntity(
 
     int entityIndex = m_reservedFirst;
 
-    for (auto& snapshot : m_snapshots) {
+    for (auto& snapshot : m_snapshotsRT) {
         if (!force && !snapshot.m_dirtyEntity) continue;
         if (snapshot.m_entityIndex == -1) continue;
 
