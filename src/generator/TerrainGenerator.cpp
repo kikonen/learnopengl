@@ -162,7 +162,7 @@ void TerrainGenerator::createTiles(
             type->setMesh(mesh);
 
             auto& drawOptions = type->modifyDrawOptions();
-            drawOptions.patchVertices = 3;
+            drawOptions.m_patchVertices = 3;
         }
     }
 

@@ -40,8 +40,8 @@ namespace render {
             const backend::DrawOptions& drawOptions) noexcept
             : programID(programID),
             typePriority(typePriority),
-            renderBack(drawOptions.renderBack),
-            wireframe(drawOptions.wireframe)
+            renderBack(drawOptions.m_renderBack),
+            wireframe(drawOptions.m_wireframe)
         {};
 
         const std::string str() const noexcept

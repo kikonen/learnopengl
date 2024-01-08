@@ -114,12 +114,12 @@ namespace mesh {
         }
 
         {
-            m_drawOptions.renderBack = m_flags.renderBack;
-            m_drawOptions.wireframe = m_flags.wireframe;
-            m_drawOptions.blend = m_flags.blend;
-            m_drawOptions.blendOIT = m_flags.blendOIT;
-            m_drawOptions.instanced = m_flags.instanced;
-            m_drawOptions.tessellation = m_flags.tessellation;
+            m_drawOptions.m_renderBack = m_flags.renderBack;
+            m_drawOptions.m_wireframe = m_flags.wireframe;
+            m_drawOptions.m_blend = m_flags.blend;
+            m_drawOptions.m_blendOIT = m_flags.blendOIT;
+            m_drawOptions.m_instanced = m_flags.instanced;
+            m_drawOptions.m_tessellation = m_flags.tessellation;
 
             m_mesh->prepareDrawOptions(m_drawOptions);
         }

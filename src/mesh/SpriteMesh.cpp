@@ -59,9 +59,9 @@ namespace mesh {
     void SpriteMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
-        drawOptions.type = backend::DrawOptions::Type::arrays;
-        drawOptions.mode = GL_POINTS;
-        drawOptions.indexFirst = 0;
-        drawOptions.indexCount = 1;
+        drawOptions.m_type = backend::DrawOptions::Type::arrays;
+        drawOptions.m_mode = GL_POINTS;
+        drawOptions.m_indexFirst = 0;
+        drawOptions.m_indexCount = 1;
     }
 }

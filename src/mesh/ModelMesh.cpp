@@ -104,10 +104,10 @@ namespace mesh {
     void ModelMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
-        drawOptions.type = backend::DrawOptions::Type::elements;
-        drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
-        drawOptions.indexCount = m_indexCount * 3;
-        drawOptions.vertexOffset = static_cast<ki::uint>(m_vertexVBO.m_vertexOffset);
-        drawOptions.indexOffset = static_cast<ki::uint>(m_vertexVBO.m_indexOffset);
+        drawOptions.m_type = backend::DrawOptions::Type::elements;
+        drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
+        drawOptions.m_indexCount = m_indexCount * 3;
+        drawOptions.m_vertexOffset = static_cast<ki::uint>(m_vertexVBO.m_vertexOffset);
+        drawOptions.m_indexOffset = static_cast<ki::uint>(m_vertexVBO.m_indexOffset);
     }
 }

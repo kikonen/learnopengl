@@ -145,7 +145,7 @@ namespace backend {
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
                 static_cast<GLuint>(cmdRange.m_baseIndex),
-                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.type)),
+                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type)),
                 static_cast<GLuint>(drawCount)
             };
 
@@ -239,18 +239,18 @@ namespace backend {
 
             bindDrawRange(drawRange);
 
-            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 glMultiDrawElementsIndirect(
-                    drawOptions.mode,
+                    drawOptions.m_mode,
                     GL_UNSIGNED_INT,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
             }
-            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 glMultiDrawArraysIndirect(
-                    drawOptions.mode,
+                    drawOptions.m_mode,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
@@ -290,9 +290,9 @@ namespace backend {
         drawRange.m_program->bind(state);
         state.bindVAO(*drawRange.m_vao);
 
-        state.setEnabled(GL_CULL_FACE, !drawOptions.renderBack);
+        state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
-        const bool wireframe = drawOptions.wireframe || drawRange.m_forceWireframe;
+        const bool wireframe = drawOptions.m_wireframe || drawRange.m_forceWireframe;
 
         if (wireframe) {
             state.polygonFrontAndBack(GL_LINE);
@@ -301,14 +301,14 @@ namespace backend {
             state.polygonFrontAndBack(GL_FILL);
         }
 
-        if (drawOptions.tessellation) {
-            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
+        if (drawOptions.m_tessellation) {
+            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && (drawOptions.blend || drawOptions.blendOIT) && drawRange.m_allowBlend;
+        const bool blend = !wireframe && (drawOptions.m_blend || drawOptions.m_blendOIT) && drawRange.m_allowBlend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            if (!drawOptions.blendOIT) {
+            if (!drawOptions.m_blendOIT) {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

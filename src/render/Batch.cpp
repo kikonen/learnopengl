@@ -278,16 +278,16 @@ namespace render {
 
             const auto& drawOptions = curr.m_drawOptions;
 
-            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-                cmd.u_count = drawOptions.indexCount;
+                cmd.u_count = drawOptions.m_indexCount;
                 cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-                cmd.u_baseVertex = drawOptions.vertexOffset / sizeof(mesh::PositionEntry);
+                cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
+                cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
-                if (drawOptions.instanced) {
+                if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
                     cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
@@ -302,16 +302,16 @@ namespace render {
                     }
                 }
             }
-            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
-                cmd.u_vertexCount = drawOptions.indexCount;
+                cmd.u_vertexCount = drawOptions.m_indexCount;
                 cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_firstVertex = drawOptions.indexOffset / sizeof(GLuint);
+                cmd.u_firstVertex = drawOptions.m_indexOffset / sizeof(GLuint);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
-                if (drawOptions.instanced) {
+                if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
                     cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
