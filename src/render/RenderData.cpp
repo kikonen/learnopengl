@@ -10,6 +10,8 @@
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
 
+#include "kigl/GLSyncQueue.hpp"
+
 #include "model/Node.h"
 #include "component/Light.h"
 

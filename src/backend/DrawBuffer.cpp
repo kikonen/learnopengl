@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "util/Util.h"
+
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
 
@@ -10,7 +12,7 @@
 #include "asset/Shader.h"
 #include "asset/uniform.h"
 
-#include "util/Util.h"
+#include "kigl/GLSyncQueue.hpp"
 
 #include "engine/PrepareContext.h"
 

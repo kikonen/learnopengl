@@ -388,9 +388,11 @@
     <ClInclude Include="src\asset\ViewportEffect.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
+    <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\loader\TextData.h" />
+    <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />

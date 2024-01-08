@@ -18,23 +18,23 @@ namespace kigl {
             return m_baseOffset + (m_entrySize * m_usedCount++);
         }
 
-        inline size_t offset(size_t idx) const {
+        inline size_t offset(size_t idx) const noexcept {
             return m_baseOffset + (m_entrySize * idx);
         }
 
-        inline bool full() const {
+        inline bool full() const noexcept {
             return m_usedCount == m_maxCount;
         }
 
-        inline bool empty() const {
+        inline bool empty() const noexcept {
             return m_usedCount == 0;
         }
 
-        inline size_t getUsedLength() const {
+        inline size_t getUsedLength() const noexcept {
             return m_entrySize * m_usedCount;
         }
 
-        inline size_t getLengthFor(size_t count) const {
+        inline size_t getLengthFor(size_t count) const noexcept {
             return m_entrySize * count;
         }
 
