@@ -66,6 +66,7 @@ namespace render {
             render(state, program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+            state.clear();
         }
     }
 

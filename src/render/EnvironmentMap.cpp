@@ -52,6 +52,7 @@ namespace render {
             renderer.render(state, program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_HDR_TEXTURE, false);
+            state.clear();
         }
     }
 

@@ -51,6 +51,8 @@ namespace render {
             program->bind(state);
 
             render(state, program, m_texture, m_size);
+
+            state.clear();
         }
     }
 
