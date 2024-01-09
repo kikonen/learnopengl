@@ -28,11 +28,13 @@ namespace script
         script::command_id addCommand(std::unique_ptr<Command> cmd) noexcept;
         void cancel(script::command_id commandId) noexcept;
 
-        bool isAlive(script::command_id commandId) noexcept;
+        bool isAlive(script::command_id commandId) const noexcept;
+
+        bool hasPending() const noexcept;
 
     private:
-        bool isCanceled(script::command_id commandId) noexcept;
-        bool isValid(const UpdateContext& ctx, Command* cmd) noexcept;
+        bool isCanceled(script::command_id commandId) const noexcept;
+        bool isValid(const UpdateContext& ctx, Command* cmd) const noexcept;
 
         void activateNext(const Command* cmd) noexcept;
 
@@ -45,7 +47,7 @@ namespace script
         //void updateOldest() noexcept;
 
     private:
-        std::mutex m_lock{};
+        mutable std::mutex m_pendingLock{};
 
         std::vector<std::unique_ptr<Command>> m_pending;
         std::vector<std::unique_ptr<Command>> m_blocked;

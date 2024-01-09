@@ -159,12 +159,8 @@ namespace kigl {
     }
 
     template <class T, bool mappedMode>
-    GLBufferRange& GLSyncQueue<T, mappedMode>::next(bool fence)
+    GLBufferRange& GLSyncQueue<T, mappedMode>::next()
     {
-        if (fence) {
-            setFence(m_current);
-        }
-
         m_current = (m_current + 1) % m_ranges.size();
 
         return m_ranges[m_current];

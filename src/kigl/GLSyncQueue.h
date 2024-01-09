@@ -80,7 +80,7 @@ namespace kigl {
         // Switch to next range
         // @return next buffer
         //
-        GLBufferRange& next(bool fence);
+        GLBufferRange& next();
 
         void bind(GLuint ubo, bool used, size_t count);
         void bindSSBO(GLuint ssbo, bool used, size_t count);

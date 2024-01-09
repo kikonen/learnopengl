@@ -117,7 +117,6 @@ void Node::snapshotWT() noexcept {
 
     {
         assert(!transform.m_dirty);
-        transform.m_dirtySnapshot |= m_forceUpdateSnapshot;
         m_snapshotWT = transform;
         m_snapshotWT.m_dirty = true;
     }
@@ -129,6 +128,9 @@ void Node::snapshotWT() noexcept {
     transform.m_dirtySnapshot = false;
     transform.m_dirtyNormal = false;
     m_forceUpdateSnapshot = false;
+
+    m_forceUpdateEntityRT |= m_forceUpdateEntityWT;
+    m_forceUpdateEntityWT = false;
 }
 
 void Node::snapshotRT() noexcept {
@@ -153,11 +155,11 @@ void Node::updateEntity(
     EntityRegistry* entityRegistry)
 {
     auto& snapshot = m_snapshotRT;
-    if (!m_forceUpdateEntity && !snapshot.m_dirtyEntity) return;
+    if (!m_forceUpdateEntityRT && !snapshot.m_dirtyEntity) return;
 
     if (snapshot.m_entityIndex != -1)
     {
-        snapshot.m_dirtyEntity |= m_forceUpdateEntity;
+        snapshot.m_dirtyEntity |= m_forceUpdateEntityRT;
         auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = m_id;
@@ -168,10 +170,10 @@ void Node::updateEntity(
     }
 
     if (m_generator) {
-        m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntity);
+        m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntityRT);
     }
 
-    m_forceUpdateEntity = false;
+    m_forceUpdateEntityRT = false;
 }
 
 void Node::updateVAO(const RenderContext& ctx) noexcept
@@ -226,7 +228,7 @@ void Node::setTagMaterialIndex(int index)
         m_tagMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateEntity = true;
+        m_forceUpdateEntityWT = true;
         m_forceUpdateSnapshot = true;
     }
 }
@@ -237,7 +239,7 @@ void Node::setSelectionMaterialIndex(int index)
         m_selectionMaterialIndex = index;
         m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateEntity = true;
+        m_forceUpdateEntityWT = true;
         m_forceUpdateSnapshot = true;
     }
 }

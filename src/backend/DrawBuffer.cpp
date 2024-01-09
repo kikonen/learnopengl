@@ -178,7 +178,7 @@ namespace backend {
 
         m_drawCounter += drawCount;
 
-        const auto& next = m_commands->next(false);
+        const auto& next = m_commands->next();
         if (!next.empty()) {
             // NOTE KI trigger draw pending if out of buffers
             drawPending(true);

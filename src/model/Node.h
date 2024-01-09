@@ -172,12 +172,14 @@ private:
     std::vector<Node*> m_children;
 
     NodeTransform m_transform;
-    bool m_forceUpdateEntity{ true };
     ki::size_t_entity_flags m_entityFlags{ 0 };
+
+    bool m_forceUpdateEntityWT : 1 { true };
+    bool m_forceUpdateEntityRT : 1 { true };
 
     Snapshot m_snapshotWT;
     Snapshot m_snapshotRT;
-    bool m_forceUpdateSnapshot{ true };
+    bool m_forceUpdateSnapshot : 1 { true };
 
     int m_cloneIndex{ 0 };
 

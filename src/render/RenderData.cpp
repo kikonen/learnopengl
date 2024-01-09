@@ -10,6 +10,8 @@
 #include "asset/LightUBO.h"
 #include "asset/TextureUBO.h"
 
+#include "asset/UBO.h"
+
 #include "kigl/GLSyncQueue.hpp"
 
 #include "model/Node.h"
@@ -19,6 +21,7 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
+    constexpr int RENDER_DATA_BUFFER_COUNT = 16;
 }
 
 namespace render {
@@ -27,16 +30,22 @@ namespace render {
         m_lightsUbo = std::make_unique<LightsUBO>();
     }
 
-    void RenderData::prepare()
+    void RenderData::prepare(bool useFence, bool debug)
     {
         int bufferAlignment;
         glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
-        m_matrices.prepare(bufferAlignment, false);
-        m_data.prepare(bufferAlignment, false);
-        m_bufferInfo.prepare(bufferAlignment, false);
-        m_clipPlanes.prepare(bufferAlignment, false);
-        m_lights.prepare(bufferAlignment, false);
+        m_matrices = std::make_unique<kigl::GLSyncQueue<MatricesUBO, false>>("matrices_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+        m_data = std::make_unique<kigl::GLSyncQueue<DataUBO, false>>("data_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+        m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO, false>>("buffer_info_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+        m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO, false>>("cliplanes_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+        m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO, false>>("lights_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+
+        m_matrices->prepare(bufferAlignment, debug);
+        m_data->prepare(bufferAlignment, debug);
+        m_bufferInfo->prepare(bufferAlignment, debug);
+        m_clipPlanes->prepare(bufferAlignment, debug);
+        m_lights->prepare(bufferAlignment, debug);
 
         // NOTE KI m_textures *NOT* needede any longer
         // => 64bit index stored directly in material
@@ -69,34 +78,34 @@ namespace render {
 
     void RenderData::updateMatrices(const MatricesUBO& data)
     {
-        m_matrices.set(0, data);
-        m_matrices.flush();
-        m_matrices.bind(UBO_MATRICES, false, 1);
-        m_matrices.next(false);
+        m_matrices->set(0, data);
+        m_matrices->flush();
+        m_matrices->bind(UBO_MATRICES, false, 1);
+        m_matrices->next();
     }
 
     void RenderData::updateData(const DataUBO& data)
     {
-        m_data.set(0, data);
-        m_data.flush();
-        m_data.bind(UBO_DATA, false, 1);
-        m_data.next(false);
+        m_data->set(0, data);
+        m_data->flush();
+        m_data->bind(UBO_DATA, false, 1);
+        m_data->next();
     }
 
     void RenderData::updateBufferInfo(const BufferInfoUBO& data)
     {
-        m_bufferInfo.set(0, data);
-        m_bufferInfo.flush();
-        m_bufferInfo.bind(UBO_BUFFER_INFO, false, 1);
-        m_bufferInfo.next(false);
+        m_bufferInfo->set(0, data);
+        m_bufferInfo->flush();
+        m_bufferInfo->bind(UBO_BUFFER_INFO, false, 1);
+        m_bufferInfo->next();
     }
 
     void RenderData::updateClipPlanes(const ClipPlanesUBO& data)
     {
-        m_clipPlanes.set(0, data);
-        m_clipPlanes.flush();
-        m_clipPlanes.bind(UBO_CLIP_PLANES, false, 1);
-        m_clipPlanes.next(false);
+        m_clipPlanes->set(0, data);
+        m_clipPlanes->flush();
+        m_clipPlanes->bind(UBO_CLIP_PLANES, false, 1);
+        m_clipPlanes->next();
     }
 
     void RenderData::updateLights(Registry* registry, bool useLight)
@@ -156,10 +165,10 @@ namespace render {
             }
         }
 
-        m_lights.set(0, lightsUbo);
-        m_lights.flush();
-        m_lights.bind(UBO_LIGHTS, false, 1);
-        m_lights.next(false);
+        m_lights->set(0, lightsUbo);
+        m_lights->flush();
+        m_lights->bind(UBO_LIGHTS, false, 1);
+        m_lights->next();
     }
 
     //void RenderData::updateImageTextures()

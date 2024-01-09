@@ -67,7 +67,7 @@ void ControllerRegistry::addController(
     }
 
     PrepareContext ctx{ m_assets, m_registry };
-    controller->prepare(ctx, * node);
+    controller->prepare(ctx, *node);
 
     {
         if (const auto& it = m_controllers.find(targetId);

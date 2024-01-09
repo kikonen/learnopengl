@@ -132,7 +132,7 @@ void Scene::prepareRT()
             this->handleNodeAdded(e.body.node.target);
         });
 
-    m_renderData->prepare();
+    m_renderData->prepare(m_assets.glUseFence, m_assets.batchDebug);
 
     PrepareContext ctx{ m_assets, m_registry.get() };
 

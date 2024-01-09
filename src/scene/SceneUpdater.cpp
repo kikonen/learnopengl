@@ -134,7 +134,9 @@ void SceneUpdater::run()
 
         update(ctx);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        if (!m_registry->m_commandEngine->hasPending()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        }
     }
 }
 
