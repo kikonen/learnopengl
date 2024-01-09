@@ -15,7 +15,11 @@ namespace render {
     public:
         RenderData();
 
-        void prepare(bool useFence, bool debug);
+        void prepare(
+            bool useFence,
+            bool singleFence,
+            bool debug);
+
         void bind();
         void update();
 

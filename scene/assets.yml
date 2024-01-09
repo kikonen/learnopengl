@@ -7,7 +7,7 @@ assets:
   gl_debug: true
   gl_no_error: false
   gl_use_fence: true
-  gl_use_single_fence: false
+  gl_use_single_fence: true
   gl_use_invalidate: false
   gl_use_finish: false
 

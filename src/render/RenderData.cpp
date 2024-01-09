@@ -30,16 +30,19 @@ namespace render {
         m_lightsUbo = std::make_unique<LightsUBO>();
     }
 
-    void RenderData::prepare(bool useFence, bool debug)
+    void RenderData::prepare(
+        bool useFence,
+        bool singleFence,
+        bool debug)
     {
         int bufferAlignment;
         glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
-        m_matrices = std::make_unique<kigl::GLSyncQueue<MatricesUBO, false>>("matrices_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
-        m_data = std::make_unique<kigl::GLSyncQueue<DataUBO, false>>("data_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
-        m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO, false>>("buffer_info_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
-        m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO, false>>("cliplanes_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
-        m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO, false>>("lights_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, false);
+        m_matrices = std::make_unique<kigl::GLSyncQueue<MatricesUBO, false>>("matrices_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, singleFence);
+        m_data = std::make_unique<kigl::GLSyncQueue<DataUBO, false>>("data_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, singleFence);
+        m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO, false>>("buffer_info_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, singleFence);
+        m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO, false>>("cliplanes_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, singleFence);
+        m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO, false>>("lights_ubo", 1, RENDER_DATA_BUFFER_COUNT, useFence, singleFence);
 
         m_matrices->prepare(bufferAlignment, debug);
         m_data->prepare(bufferAlignment, debug);
