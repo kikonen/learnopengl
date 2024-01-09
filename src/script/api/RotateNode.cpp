@@ -49,8 +49,6 @@ namespace script
         else {
             m_relativeAxis = m_axis;
         }
-
-        m_start = util::axisRadiansToQuat(m_relativeAxis, 0);
     }
 
     void RotateNode::execute(
@@ -59,16 +57,21 @@ namespace script
         m_elapsedTime += ctx.m_clock.elapsedSecs;
         m_finished = m_elapsedTime >= m_duration;
 
-        // NOTE KI keep steps relative to previous
-        // => in case there is N concurrent commands
-        // TODO KI needd to fix "relative" logic for quat
+        // NOTE KI trying to keep things relative to current context
+        // i.e. allow multiple concurrent rotations
         {
+            auto& transform = m_node->modifyTransform();
+            const auto& base = transform.getQuatRotation();
+            const auto relativeAxis = m_relative ? glm::mat3(base) * m_axis : m_axis;
+
             const auto t = m_finished ? 1.f : (m_elapsedTime / m_duration);
             const auto radians = t * m_radians;
 
-            const auto rot = util::axisRadiansToQuat(m_relativeAxis, radians);
+            const auto rot = util::axisRadiansToQuat(relativeAxis, radians - m_previousRadians);
 
-            m_node->modifyTransform().setQuatRotation(rot * m_base);
+            transform.setQuatRotation(rot * base);
+
+            m_previousRadians = radians;
         }
     }
 }
