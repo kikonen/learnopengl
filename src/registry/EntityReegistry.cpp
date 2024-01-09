@@ -30,6 +30,8 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
+    m_debugFence = m_assets.batchDebug;
+
     // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
     m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
@@ -49,7 +51,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     if (m_minDirty < 0) return;
 
-    m_fence.waitFence(false);
+    if (m_assets.glUseFence) {
+        m_fence.waitFence(m_debugFence);
+    }
 
     constexpr size_t sz = sizeof(EntitySSBO);
     const int maxCount = (m_maxDirty + 1) - m_minDirty;
@@ -120,8 +124,10 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 void EntityRegistry::postRT(const UpdateContext& ctx)
 {
     // NOTE KI if there was no changes old fence is stil valid
-    if (!m_fence.isSet()) {
-        m_fence.setFence(true);
+    if (m_assets.glUseFence) {
+        if (!m_fence.isSet()) {
+            m_fence.setFence(m_debugFence);
+        }
     }
 }
 

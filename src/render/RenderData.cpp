@@ -21,7 +21,7 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    constexpr int RENDER_DATA_BUFFER_COUNT = 16;
+    constexpr int RENDER_DATA_BUFFER_COUNT = 32;
 }
 
 namespace render {
