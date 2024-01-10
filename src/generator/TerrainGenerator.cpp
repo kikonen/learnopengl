@@ -1,5 +1,7 @@
 #include "TerrainGenerator.h"
 
+#include <iostream>
+
 #include <fmt/format.h>
 
 #include "util/Log.h"
@@ -47,9 +49,9 @@ void TerrainGenerator::prepare(
     m_poolSizeU = 4;
     m_poolSizeV = 4;
 
-    prepareHeightMap(ctx, container);
+    auto* heightMap = prepareHeightMap(ctx, container);
 
-    createTiles(ctx, container);
+    createTiles(ctx, container, heightMap);
 }
 
 void TerrainGenerator::update(
@@ -65,7 +67,7 @@ void TerrainGenerator::update(
     m_containerMatrixLevel = transform.getMatrixLevel();
 }
 
-void TerrainGenerator::prepareHeightMap(
+physics::HeightMap* TerrainGenerator::prepareHeightMap(
     const PrepareContext& ctx,
     Node& container)
 {
@@ -99,6 +101,8 @@ void TerrainGenerator::prepareHeightMap(
         heightMap->setAABB(aabb);
     }
     heightMap->prepare(image.get());
+
+    return heightMap;
 }
 
 void TerrainGenerator::updateTiles(
@@ -133,7 +137,8 @@ void TerrainGenerator::updateTiles(
 
 void TerrainGenerator::createTiles(
     const PrepareContext& ctx,
-    Node& container)
+    Node& container,
+    physics::HeightMap* heightMap)
 {
     auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
@@ -201,11 +206,21 @@ void TerrainGenerator::createTiles(
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
-            minmax.minmax(pos);
 
-            KI_INFO_OUT(fmt::format(
-                "v={}, u={}, pos={}, offsetU={}, offsetV={}",
-                v, u, pos, -1200 + v, -900 + u));
+            // TODO KI get height
+            {
+                glm::vec3 uvPos{
+                    pos.x / heightMap->m_worldSizeU,
+                    0.f,
+                    1.f - pos.z / heightMap->m_worldSizeU };
+                const auto height = heightMap->getTerrainHeight(uvPos.x, uvPos.z);
+                minmax.minmax({ pos.x, height, pos.z });
+
+                KI_INFO_OUT(fmt::format(
+                    "v={}, u={}, pos={}, uvPos={}, height={}, offsetU={}, offsetV={}, min={}, max={}",
+                    v, u, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
+            }
+
 
             const int entityIndex = m_reservedFirst + idx;
 
@@ -233,6 +248,9 @@ void TerrainGenerator::createTiles(
 
     // NOTE KI dummy node needed to trigger instancing in container context
     {
+        minmax.updateVolume();
+        KI_INFO_OUT(fmt::format("TERRAIN: minmax={}", minmax.getVolume()));
+
         const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
         m_node->modifyTransform().setVolume(minmax.getVolume());

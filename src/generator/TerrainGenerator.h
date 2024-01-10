@@ -10,6 +10,10 @@ namespace mesh {
     class MeshType;
 }
 
+namespace physics {
+    class HeightMap;
+}
+
 class Registry;
 
 //
@@ -37,13 +41,14 @@ private:
         const UpdateContext& ctx,
         Node& container);
 
-    void prepareHeightMap(
+    physics::HeightMap* prepareHeightMap(
         const PrepareContext& ctx,
         Node& container);
 
     void createTiles(
         const PrepareContext& ctx,
-        Node& container);
+        Node& container,
+        physics::HeightMap* heightMap);
 
     ki::type_id createType(
         Registry* registry,

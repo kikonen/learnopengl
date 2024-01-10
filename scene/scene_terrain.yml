@@ -77,22 +77,20 @@ entities:
       y_step: 0
       z_step: 256
   - name: Sea surface
-    type: quad
+    model: plane
     material: sea_surface
     program: g_water
-    pos: [0, 0.0, 0]
-    rotation: [270.0, 0.0, 0.0]
+    pos: [0, 30.0, 0]
     scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
       water: true
   - name: Sea floor
-    model: quad
+    model: plane
     material: sea_floor
     program: g_tex
     pos: [0, -70, 0]
-    rotation: [270.0, 0.0, 0.0]
     scale: 1024
     render_flags:
       no_shadow: true

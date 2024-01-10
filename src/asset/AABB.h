@@ -49,8 +49,8 @@ struct AABB final
     void minmax(const glm::vec3& pos);
 
 public:
-    glm::vec4 m_volume;
-    glm::vec3 m_min;
-    glm::vec3 m_max;
-    bool m_quad;
+    glm::vec4 m_volume{ 0.f };
+    glm::vec3 m_min{ 0.f };
+    glm::vec3 m_max{ 0.f };
+    bool m_quad{ false };
 };
