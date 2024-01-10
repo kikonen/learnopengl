@@ -1,5 +1,9 @@
 #include "TerrainGenerator.h"
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+#include "util/glm_format.h"
 #include "util/Perlin.h"
 
 #include "asset/Image.h"
@@ -193,10 +197,15 @@ void TerrainGenerator::createTiles(
 
     // Setup initial static values for entity
     int idx = 0;
+    KI_INFO_OUT(fmt::format("TERRAIN: tilesV={}, tilesU={}", m_worldTilesV, m_worldTilesU));
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
             minmax.minmax(pos);
+
+            KI_INFO_OUT(fmt::format(
+                "v={}, u={}, pos={}, offsetU={}, offsetV={}",
+                v, u, pos, -1200 + v, -900 + u));
 
             const int entityIndex = m_reservedFirst + idx;
 

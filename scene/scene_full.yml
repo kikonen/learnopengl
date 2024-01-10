@@ -745,13 +745,13 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - xname: Sea surface
+  - name: Sea surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
     type: quad
     material: sea_surface
     program: g_water
-    pos: [-1024, 0.0, -1024]
+    pos: [-1072, 0.0, -772]
     base_rot: [270.0, 0.0, 0.0]
     front: [0, 1, 0]
     scale: 128
@@ -771,7 +771,7 @@ entities:
     model: quad
     material: sea_floor
     program: g_tex
-    pos: [-1024, -70.0, -1024]
+    pos: [-1072, -70.0, -772]
     rotation: [270.0, 0.0, 0.0]
     scale: 128
     render_flags:

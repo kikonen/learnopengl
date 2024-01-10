@@ -80,9 +80,9 @@ entities:
     type: quad
     material: sea_surface
     program: g_water
-    pos: [0, 30.0, 0]
+    pos: [0, 0.0, 0]
     rotation: [270.0, 0.0, 0.0]
-    scale: 1500
+    scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
@@ -93,7 +93,7 @@ entities:
     program: g_tex
     pos: [0, -70, 0]
     rotation: [270.0, 0.0, 0.0]
-    scale: 2000
+    scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
