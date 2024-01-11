@@ -745,7 +745,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - name: Sea surface
+  - xname: Sea surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
     type: quad

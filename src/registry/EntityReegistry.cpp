@@ -35,10 +35,16 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 void EntityRegistry::prepare()
 {
     m_debugFence = m_assets.batchDebug;
+    m_mappedMode = false;
 
-    // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-    m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+    if (m_mappedMode) {
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+    }
+    else {
+        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
+    }
 }
 
 void EntityRegistry::updateWT(const UpdateContext& ctx)
@@ -50,6 +56,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
     //std::lock_guard<std::mutex> lock(m_lock);
+
     processNodes(ctx);
 
     if (m_minDirty < 0) return;
@@ -74,7 +81,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
             m_ssbo.resizeBuffer(m_entries.capacity() * sz);
-            m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            if (m_mappedMode) {
+                m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            }
             refreshAll = true;
         }
     }
@@ -82,8 +91,13 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     int updatedCount = 0;
 
     if (refreshAll) {
-        memcpy(m_ssbo.m_data, &m_entries[0], totalCount * sz);
-        m_ssbo.flushRange(0, totalCount * sz);
+        if (m_mappedMode) {
+            memcpy(m_ssbo.m_data, m_entries.data(), totalCount * sz);
+            m_ssbo.flushRange(0, totalCount * sz);
+        }
+        else {
+            m_ssbo.update(0, totalCount * sz, m_entries.data());
+        }
         for (int i = 0; i < totalCount; i++) {
             m_dirty[i] = false;
         }
@@ -102,9 +116,13 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                 const int count = to + 1 - from;
 
                 //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
-                memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
-
-                m_ssbo.flushRange(from * sz, count * sz);
+                if (m_mappedMode) {
+                    memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
+                    m_ssbo.flushRange(from * sz, count * sz);
+                }
+                else {
+                    m_ssbo.update(from * sz, count * sz, &m_entries[from]);
+                }
 
                 for (int i = 0; i < count; i++) {
                     m_dirty[from + i] = false;

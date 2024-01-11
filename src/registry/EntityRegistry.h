@@ -58,5 +58,6 @@ private:
 
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
     kigl::GLFence m_fence{ "fence_entity" };
+    bool m_mappedMode{ false };
     bool m_debugFence{ false };
 };
