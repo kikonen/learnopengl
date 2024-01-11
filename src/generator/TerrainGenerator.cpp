@@ -56,6 +56,23 @@ void TerrainGenerator::prepare(
     createTiles(ctx, container, heightMap);
 }
 
+void TerrainGenerator::prepareEntity(
+    const PrepareContext& ctx,
+    Snapshot& snapshot,
+    int snapshotIndex)
+{
+    // TODO KI WT vs RT conflict
+    auto* entity = ctx.m_registry->m_entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
+    const auto& info = m_tileInfos[snapshotIndex];
+
+    entity->u_tileX = info.m_tileX;
+    entity->u_tileY = info.m_tileY;
+
+    entity->u_rangeYmin = m_verticalRange[0];
+    entity->u_rangeYmax = m_verticalRange[1];
+}
+
+
 void TerrainGenerator::update(
     const UpdateContext& ctx,
     Node& container)
@@ -133,8 +150,8 @@ void TerrainGenerator::updateTiles(
         }
     }
 
-    // Make tiles visible
-    setActiveRange(m_reservedFirst, m_reservedCount);
+    m_reservedCount = m_transforms.size();
+    setActiveRange(0, m_reservedCount);
 }
 
 void TerrainGenerator::createTiles(
@@ -199,10 +216,10 @@ void TerrainGenerator::createTiles(
     const int step = m_worldTileSize;
     AABB minmax{ true };
 
-    m_reservedCount = m_worldTilesU * m_worldTilesV;
-    m_reservedFirst = entityRegistry->registerEntityRange(m_reservedCount);
+    const int tileCount = m_worldTilesU * m_worldTilesV;
 
-    m_transforms.reserve(m_reservedCount);
+    m_transforms.reserve(tileCount);
+    m_tileInfos.reserve(tileCount);
 
     // Setup initial static values for entity
     int idx = 0;
@@ -225,26 +242,15 @@ void TerrainGenerator::createTiles(
                     v, u, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
             }
 
-
-            const int entityIndex = m_reservedFirst + idx;
-
             {
                 auto& transform = m_transforms.emplace_back();
 
                 transform.setMaterialIndex(materialIndex);
                 transform.setVolume(tileVolume);
-
-                transform.m_entityIndex = entityIndex;
             }
 
             {
-                // TODO KI WT vs RT conflict
-                auto* entity = entityRegistry->modifyEntity(entityIndex, false);
-                entity->u_tileX = u;
-                entity->u_tileY = v;
-
-                entity->u_rangeYmin = m_verticalRange[0];
-                entity->u_rangeYmax = m_verticalRange[1];
+                m_tileInfos.emplace_back(u, v);
             }
 
             idx++;

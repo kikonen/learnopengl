@@ -72,7 +72,9 @@ void GridGenerator::updateInstances(
         }
     }
 
-    setActiveRange(m_reservedFirst, m_reservedCount);
+    m_reservedCount = m_transforms.size();
+    setActiveRange(0, m_reservedCount);
+
     container.m_instancer = this;
 }
 
@@ -82,13 +84,11 @@ void GridGenerator::prepareInstances(
 {
     auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
 
-    m_reservedCount = m_zCount * m_xCount * m_yCount;
-    m_reservedFirst = entityRegistry.registerEntityRange(m_reservedCount);
+    const auto count = m_zCount * m_xCount * m_yCount;
 
-    m_transforms.reserve(m_reservedCount);
+    m_transforms.reserve(count);
 
-    for (int i = 0; i < m_reservedCount; i++) {
+    for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
-        transform.m_entityIndex = m_reservedFirst + i;
     }
 }

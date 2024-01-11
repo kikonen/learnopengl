@@ -16,6 +16,11 @@ namespace physics {
 
 class Registry;
 
+struct TerrainTileInfo {
+    int m_tileX;
+    int m_tileY;
+};
+
 //
 // Tessellated terrain generator
 //
@@ -31,6 +36,11 @@ public:
     virtual void prepare(
         const PrepareContext& ctx,
         Node& container) override;
+
+    virtual void prepareEntity(
+        const PrepareContext& ctx,
+        Snapshot& snapshot,
+        int snapshotIndex) override;
 
     virtual void update(
         const UpdateContext& ctx,
@@ -73,4 +83,6 @@ private:
     size_t m_poolSizeV{ 0 };
 
     Node* m_node{ nullptr };
+
+    std::vector<TerrainTileInfo> m_tileInfos;
 };

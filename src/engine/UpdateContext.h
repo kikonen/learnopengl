@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "engine/PrepareContext.h"
+
 class Registry;
 
 //
@@ -15,6 +17,8 @@ public:
         const ki::RenderClock& clock,
         const Assets& assets,
         Registry* registry);
+
+    PrepareContext toPrepareContext() const;
 
 public:
     const ki::RenderClock& m_clock;

@@ -8,8 +8,10 @@
 
 #include "render/Batch.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
+#include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 
 void NodeGenerator::snapshotWT(bool force)
@@ -52,6 +54,22 @@ void NodeGenerator::snapshotRT(bool force)
     }
 }
 
+void NodeGenerator::prepareEntities(
+    const PrepareContext& ctx)
+{
+    if (m_reservedFirst >= 0) return;
+    if (m_reservedCount == 0) return;
+
+    m_reservedFirst = ctx.m_registry->m_entityRegistry->registerEntityRange(m_reservedCount);
+
+    int snapshotIndex = 0;
+    for (auto& snapshot : m_snapshotsRT) {
+        snapshot.m_entityIndex = static_cast<int>(m_reservedFirst + snapshotIndex);
+        prepareEntity(ctx, snapshot, snapshotIndex);
+        snapshotIndex++;
+    }
+}
+
 void NodeGenerator::updateEntity(
     const UpdateContext& ctx,
     Node& container,
@@ -59,6 +77,10 @@ void NodeGenerator::updateEntity(
     bool force)
 {
     if (m_activeCount == 0) return;
+
+    if (m_reservedFirst == -1) {
+        prepareEntities(ctx.toPrepareContext());
+    }
 
     int entityIndex = m_reservedFirst;
 

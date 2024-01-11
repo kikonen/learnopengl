@@ -16,7 +16,6 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_dirtyEntity{ o.m_dirtyEntity },
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
-    m_entityIndex{ o.m_entityIndex },
     m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
@@ -40,7 +39,6 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_dirtyEntity{ o.m_dirtyEntity },
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
-    m_entityIndex{ o.m_entityIndex },
     m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
@@ -65,7 +63,6 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
 
-    m_entityIndex = o.m_entityIndex;
     m_flags = o.m_flags;
 
     m_materialIndex = o.m_materialIndex;
@@ -94,7 +91,9 @@ Snapshot& Snapshot::operator=(Snapshot& o) noexcept
     m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
 
-    m_entityIndex = o.m_entityIndex;
+    if (o.m_entityIndex >= 0) {
+        m_entityIndex = o.m_entityIndex;
+    }
     m_flags = o.m_flags;
 
     m_materialIndex = o.m_materialIndex;

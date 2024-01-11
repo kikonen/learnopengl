@@ -46,6 +46,14 @@ public:
     void snapshotWT(bool force);
     void snapshotRT(bool force);
 
+    void prepareEntities(
+        const PrepareContext& ctx);
+
+    virtual void prepareEntity(
+        const PrepareContext& ctx,
+        Snapshot& snapshot,
+        int snapshotIndex) {}
+
     virtual void updateEntity(
         const UpdateContext& ctx,
         Node& container,

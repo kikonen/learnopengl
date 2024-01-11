@@ -54,6 +54,9 @@ public:
     void prepare(
         const PrepareContext& ctx);
 
+    void prepareRT(
+        const PrepareContext& ctx);
+
     void updateWT(const UpdateContext& ctx) noexcept;
 
     void updateEntity(

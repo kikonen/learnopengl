@@ -1,5 +1,7 @@
 #include "EntityRegistry.h"
 
+#include "util/thread.h"
+
 #include "EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -47,8 +49,7 @@ void EntityRegistry::updateWT(const UpdateContext& ctx)
 void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
-    std::lock_guard<std::mutex> lock(m_lock);
-
+    //std::lock_guard<std::mutex> lock(m_lock);
     processNodes(ctx);
 
     if (m_minDirty < 0) return;
@@ -148,7 +149,9 @@ int EntityRegistry::registerEntity()
 // @return first index of range
 int EntityRegistry::registerEntityRange(const size_t count)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    ASSERT_RT();
+
+    //std::lock_guard<std::mutex> lock(m_lock);
 
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };

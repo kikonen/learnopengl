@@ -57,8 +57,8 @@ Node::~Node()
 const std::string Node::str() const noexcept
 {
     return fmt::format(
-        "<NODE: id={}, entity={}, type={}>",
-        m_id, m_transform.m_entityIndex, m_type->str());
+        "<NODE: id={}, type={}>",
+        m_id, m_type->str());
 }
 
 void Node::prepare(
@@ -67,7 +67,6 @@ void Node::prepare(
     auto& registry = ctx.m_registry;
 
     if (m_type->getMesh()) {
-        m_transform.m_entityIndex = registry->m_entityRegistry->registerEntity();
         m_transform.setMaterialIndex(m_type->getMaterialIndex());
 
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
@@ -96,6 +95,11 @@ void Node::prepare(
     if (m_generator) {
         m_generator->prepare(ctx, *this);
     }
+}
+
+void Node::prepareRT(
+    const PrepareContext& ctx)
+{
 }
 
 void Node::updateWT(
@@ -157,6 +161,10 @@ void Node::updateEntity(
 {
     auto& snapshot = m_snapshotRT;
     if (!m_forceUpdateEntityRT && !snapshot.m_dirtyEntity) return;
+
+    if (snapshot.m_entityIndex == -1 && m_type->getMesh()) {
+        snapshot.m_entityIndex = entityRegistry->registerEntity();
+    }
 
     if (snapshot.m_entityIndex != -1)
     {

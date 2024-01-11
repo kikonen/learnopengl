@@ -72,7 +72,6 @@ void AsteroidBeltGenerator::updateAsteroids(
         transform.updateModelMatrix(parentTransform);
     }
 
-    setActiveRange(m_reservedFirst, m_reservedCount);
     container.m_instancer = this;
 }
 
@@ -89,16 +88,11 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto& containerTransform = container.modifyTransform();
 
-    m_reservedCount = m_asteroidCount;
-    m_reservedFirst = registry->m_entityRegistry->registerEntityRange(m_reservedCount);
-
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
-
-        asteroid.m_entityIndex = static_cast<int>(m_reservedFirst + i);
 
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
@@ -106,6 +100,9 @@ void AsteroidBeltGenerator::createAsteroids(
 
     initAsteroids(ctx, container);
     containerTransform.setVolume(calculateVolume());
+
+    m_reservedCount = m_transforms.size();
+    setActiveRange(0, m_reservedCount);
 }
 
 void AsteroidBeltGenerator::initAsteroids(
