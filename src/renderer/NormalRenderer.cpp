@@ -5,6 +5,8 @@
 
 #include "engine/PrepareContext.h"
 
+#include "mesh/MeshType.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"

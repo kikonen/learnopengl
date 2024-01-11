@@ -9,6 +9,8 @@
 
 #include "mesh/MeshType.h"
 
+#include "model/Node.h"
+
 #include "engine/PrepareContext.h"
 
 #include "registry/Registry.h"

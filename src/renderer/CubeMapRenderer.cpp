@@ -7,6 +7,8 @@
 
 #include "mesh/MeshType.h"
 
+#include "model/Node.h"
+
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
 

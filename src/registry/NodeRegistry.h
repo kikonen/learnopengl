@@ -11,17 +11,19 @@
 #include "ki/size.h"
 #include "ki/uuid.h"
 
-#include "backend/DrawOptions.h"
-
-#include "model/Node.h"
-
-#include "mesh/MeshType.h"
-
+#include "component/Camera.h"
 #include "component/NodeComponent.h"
+
+class Assets;
+struct Material;
+
+struct UpdateContext;
 
 class Registry;
 
+class Node;
 using NodeVector = std::vector<Node*>;
+
 
 class NodeRegistry final
 {
@@ -101,13 +103,8 @@ public:
         return m_spotLightNodes;
     }
 
-    inline const Material& getSelectionMaterial() const noexcept {
-        return m_selectionMaterial;
-    }
-
-    void setSelectionMaterial(const Material& material) {
-        m_selectionMaterial = material;
-    }
+    const Material& getSelectionMaterial() const noexcept;
+    void setSelectionMaterial(const Material& material);
 
 private:
     void setActiveNode(Node* node);
@@ -172,7 +169,7 @@ private:
     Node* m_activeNode{ nullptr };
     Node* m_activeCameraNode{ nullptr };
 
-    Material m_selectionMaterial;
+    std::unique_ptr<Material> m_selectionMaterial;
 
     mutable int m_taggedCount{ -1 };
     mutable int m_selectedCount{ -1 };

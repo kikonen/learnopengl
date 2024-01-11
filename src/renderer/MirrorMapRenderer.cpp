@@ -2,6 +2,8 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/MeshType.h"
+
 #include "model/Node.h"
 #include "model/Viewport.h"
 

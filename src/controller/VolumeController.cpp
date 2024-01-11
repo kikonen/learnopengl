@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "model/Node.h"
+
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"

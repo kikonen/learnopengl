@@ -11,6 +11,8 @@
 #include "asset/Image.h"
 #include "asset/AABB.h"
 
+#include "model/Node.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/TerrainMesh.h"
 #include "mesh/MeshType.h"

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <exception>
 #include <thread>
+#include <tuple>
 
 #include "asset/AABB.h"
 

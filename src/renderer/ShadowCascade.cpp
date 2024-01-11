@@ -10,6 +10,9 @@
 #include "component/Light.h"
 #include "component/Camera.h"
 
+#include "mesh/MeshType.h"
+
+#include "model/Node.h"
 #include "model/Viewport.h"
 
 #include "engine/PrepareContext.h"

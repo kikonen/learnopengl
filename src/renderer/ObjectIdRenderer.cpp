@@ -8,6 +8,8 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "mesh/MeshType.h"
+
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"

@@ -6,7 +6,10 @@
 
 #include "util/glm_format.h"
 
+#include "model/Node.h"
 #include "model/NodeTransform.h"
+
+#include "mesh/MeshType.h"
 
 #include "engine/UpdateContext.h"
 

@@ -11,6 +11,10 @@
 
 #include "asset/Program.h"
 
+#include "model/Node.h"
+
+#include "mesh/MeshType.h"
+
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
@@ -94,8 +98,9 @@ void NodeRegistry::prepare(
     Registry* registry)
 {
     m_registry = registry;
-    m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->registerMaterial(m_selectionMaterial);
+    m_selectionMaterial = std::make_unique<Material>();
+    *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
+    registry->m_materialRegistry->registerMaterial(*m_selectionMaterial);
 
     attachListeners();
 }
@@ -356,7 +361,7 @@ void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
     }
     else {
         KI_INFO(fmt::format("SELECT: id={}", id));
-        node->setSelectionMaterialIndex(m_selectionMaterial.m_registeredIndex);
+        node->setSelectionMaterialIndex(m_selectionMaterial->m_registeredIndex);
     }
 }
 
@@ -602,6 +607,16 @@ void NodeRegistry::bindChildren(
     }
 
     m_pendingChildren.erase(parentUUID);
+}
+
+const Material& NodeRegistry::getSelectionMaterial() const noexcept
+{
+    return *m_selectionMaterial;
+}
+
+void NodeRegistry::setSelectionMaterial(const Material& material)
+{
+    *m_selectionMaterial = material;
 }
 
 void NodeRegistry::setActiveNode(Node* node)

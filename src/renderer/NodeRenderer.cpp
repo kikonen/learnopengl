@@ -6,12 +6,16 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "mesh/MeshType.h"
+
+#include "component/Camera.h"
+
+#include "model/Node.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
-
-#include "component/Camera.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"

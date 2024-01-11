@@ -6,6 +6,8 @@
 
 #include "render/RenderContext.h"
 
+#include "model/Node.h"
+
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
