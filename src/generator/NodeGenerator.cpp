@@ -69,7 +69,7 @@ void NodeGenerator::updateEntity(
         auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = container.m_id;
-        entity->u_flags = container.getEntityFlags();
+        entity->u_flags = container.getSnapshot().m_flags;
         entity->u_highlightIndex = container.getHighlightIndex(ctx.m_assets);
 
         snapshot.updateEntity(ctx, entity);
@@ -87,7 +87,7 @@ void NodeGenerator::bindBatch(
 
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     //batch.addInstanced(ctx, container.getEntityIndex(), m_activeFirst, m_activeCount);
-    batch.addInstanced(ctx, -1, m_activeFirst, m_activeCount);
+    batch.addSnapshotsInstanced(ctx, m_snapshotsRT);
 }
 
 const kigl::GLVertexArray* NodeGenerator::getVAO(

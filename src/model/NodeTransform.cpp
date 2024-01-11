@@ -10,8 +10,6 @@
 
 #include "util/thread.h"
 
-#include "registry/EntitySSBO.h"
-
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
@@ -118,28 +116,3 @@ void NodeTransform::updateDegrees() const noexcept
     m_degreesRotation = util::quatToDegrees(m_quatRotation);
     m_dirtyDegrees = false;
 }
-
-//void NodeTransform::updateEntity(
-//    const UpdateContext& ctx,
-//    EntitySSBO* entity)
-//{
-//    ASSERT_RT();
-//    if (!m_dirtyEntity) return;
-//
-//    entity->u_materialIndex = m_materialIndex;
-//    entity->u_shapeIndex = m_shapeIndex;
-//
-//    //entity->u_highlightIndex = getHighlightIndex(assets);
-//
-//    if (ctx.m_assets.frustumAny) {
-//        m_volume.updateVolume(m_matrixLevel, m_modelMatrix, getWorldMaxScale());
-//        entity->u_volume = m_volume.getWorldVolume();
-//    }
-//
-//    // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-//    entity->setModelMatrix(m_modelMatrix, m_uniformScale);
-//
-//    entity->u_worldScale = getWorldScale();
-//
-//    m_dirtyEntity = false;
-//}

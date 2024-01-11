@@ -21,11 +21,12 @@
 #include "mesh/PositionEntry.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
+#include "model/EntityFlags.h"
 
 #include "component/Camera.h"
 
 #include "registry/Registry.h"
-#include "registry/EntityRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
@@ -35,16 +36,6 @@ namespace {
     constexpr int BATCH_COUNT = 100;
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
-
-    //int idBase = 0;
-
-    //std::mutex type_id_lock{};
-
-    //int nextID()
-    //{
-    //    std::lock_guard<std::mutex> lock(type_id_lock);
-    //    return ++idBase;
-    //}
 }
 
 namespace render {
@@ -54,17 +45,15 @@ namespace render {
 
     bool Batch::inFrustum(
         const RenderContext& ctx,
-        const int entityIndex) const noexcept
+        const Snapshot& snapshot) const noexcept
     {
-        const auto* entity = m_entityRegistry->getEntity(entityIndex);
-
-        if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
             return true;
 
         bool visible;
         {
             const auto& frustum = ctx.m_camera->getFrustum();
-            const Sphere volume{ entity->u_volume };
+            const Sphere& volume{ snapshot.m_volume };
 
             visible = volume.isOnFrustum(frustum);
         }
@@ -79,71 +68,66 @@ namespace render {
         return visible;
     }
 
-    void Batch::add(
+    void Batch::addSnapshot(
         const RenderContext& ctx,
-        const int entityIndex) noexcept
+        const Snapshot& snapshot) noexcept
     {
         //if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
-        if (entityIndex < 0) return;
+        if (snapshot.m_entityIndex < 0) return;
 
-        if (m_frustumCPU && !inFrustum(ctx, entityIndex))
+        if (m_frustumCPU && !inFrustum(ctx, snapshot))
             return;
 
         auto& top = m_batches.back();
         top.m_drawCount++;
 
-        m_entityIndeces.emplace_back(entityIndex);
+        m_entityIndeces.emplace_back(snapshot.m_entityIndex);
     }
 
-    void Batch::addAll(
+    void Batch::addSnapshots(
         const RenderContext& ctx,
-        const std::vector<int> entityIndeces) noexcept
+        const std::span<Snapshot>& snapshots) noexcept
     {
-        for (const auto& entityIndex : entityIndeces) {
-            add(ctx, entityIndex);
+        for (const auto& snapshot : snapshots) {
+            addSnapshot(ctx, snapshot);
         }
     }
 
-    void Batch::addInstanced(
+    void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        int instancedEntityIndex,
-        const int firstEntityIndex,
-        const int count) noexcept
+        const std::span<Snapshot>& snapshots) noexcept
     {
-        if (firstEntityIndex < 0 || count <= 0) return;
+        const size_t count = snapshots.size();
 
-        int actualIndex = firstEntityIndex;
-        int actualCount = count;
+        if (count <= 0) return;
+
+        size_t startIndex = 0;
+        size_t instanceCount = count;
 
         if (m_frustumCPU) {
-            if (instancedEntityIndex != -1 && !inFrustum(ctx, instancedEntityIndex)) {
-                m_skipCount += count - 1;
-                return;
+            while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
+                startIndex++;
+                instanceCount--;
             }
 
-            while (actualCount > 0 && !inFrustum(ctx, actualIndex)) {
-                actualIndex++;
-                actualCount--;
-            }
-
-            if (actualCount > 0) {
-                int endIndex = actualIndex + actualCount - 1;
-                while (actualCount > 0 && !inFrustum(ctx, endIndex)) {
+            if (instanceCount > 0) {
+                size_t endIndex = snapshots.size() - 1;
+                while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
                     endIndex--;
-                    actualCount--;
+                    instanceCount--;
                 }
             }
 
-            if (actualCount == 0)
+            if (instanceCount == 0)
                 return;
         }
 
         auto& top = m_batches.back();
 
         top.m_drawCount = 1;
-        top.m_instancedCount = actualCount;
+        top.m_instancedCount = static_cast<int>(instanceCount);
 
-        m_entityIndeces.emplace_back(actualIndex);
+        m_entityIndeces.emplace_back(snapshots[startIndex].m_entityIndex);
     }
 
     void Batch::bind() noexcept

@@ -18,10 +18,11 @@
 
 #include "mesh/MeshType.h"
 
+#include "model/EntityFlags.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
@@ -89,7 +90,7 @@ void Node::prepare(
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }
 
-        m_entityFlags = flags;
+        m_transform.m_flags = flags;
     }
 
     if (m_generator) {
@@ -163,7 +164,6 @@ void Node::updateEntity(
         auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = m_id;
-        entity->u_flags = m_entityFlags;
         entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
 
         snapshot.updateEntity(ctx, entity);
@@ -208,7 +208,7 @@ void Node::bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept
     if (m_instancer) {
         m_instancer->bindBatch(ctx, *this, batch);
     } else {
-        batch.add(ctx, m_transform.m_entityIndex);
+        batch.addSnapshot(ctx, m_snapshotRT);
     }
 }
 

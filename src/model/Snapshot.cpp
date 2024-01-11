@@ -17,6 +17,7 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
     m_entityIndex{ o.m_entityIndex },
+    m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_volume{ o.m_volume.getVolume() },
@@ -40,6 +41,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_uniformScale{ o.m_uniformScale },
     m_matrixLevel{ o.m_matrixLevel },
     m_entityIndex{ o.m_entityIndex },
+    m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_worldPos{ o.m_worldPos },
@@ -62,7 +64,10 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_dirtyEntity = o.m_dirtyEntity;
     m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
+
     m_entityIndex = o.m_entityIndex;
+    m_flags = o.m_flags;
+
     m_materialIndex = o.m_materialIndex;
     m_shapeIndex = o.m_shapeIndex;
 
@@ -88,7 +93,10 @@ Snapshot& Snapshot::operator=(Snapshot& o) noexcept
     m_dirtyEntity = o.m_dirtyEntity;
     m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
+
     m_entityIndex = o.m_entityIndex;
+    m_flags = o.m_flags;
+
     m_materialIndex = o.m_materialIndex;
     m_shapeIndex = o.m_shapeIndex;
 
@@ -122,6 +130,8 @@ void Snapshot::updateEntity(
     ASSERT_RT();
     if (!m_dirtyEntity) return;
 
+    entity->u_flags = m_flags;
+
     entity->u_materialIndex = m_materialIndex;
     entity->u_shapeIndex = m_shapeIndex;
 
@@ -130,7 +140,7 @@ void Snapshot::updateEntity(
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     entity->setModelMatrix(m_modelMatrix, m_uniformScale, m_dirtyNormal);
 
-    entity->u_worldScale = getWorldScale();
+    entity->u_worldScale = m_modelScale;
 
     m_dirtyEntity = false;
     m_dirtyNormal = false;

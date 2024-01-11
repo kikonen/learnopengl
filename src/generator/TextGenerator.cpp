@@ -98,5 +98,5 @@ void TextGenerator::bindBatch(
     render::Batch& batch)
 {
     m_draw->updateRT(ctx.m_state);
-    batch.add(ctx, container.getSnapshot().m_entityIndex);
+    batch.addSnapshot(ctx, container.getSnapshot());
 }

@@ -140,15 +140,16 @@ void TerrainGenerator::createTiles(
     Node& container,
     physics::HeightMap* heightMap)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     auto* entityRegistry = registry->m_entityRegistry;
     auto* materialRegistry = registry->m_materialRegistry;
 
-    float scale = m_worldTileSize / 2.f;
-    float vertMinAABB = 3.f * m_verticalRange[0] / scale;
-    float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
+    const float scale = m_worldTileSize / 2.f;
+
+    const float vertMinAABB = 3.f * m_verticalRange[0] / scale;
+    const float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
 
     const AABB aabb{
         glm::vec3{ -1.f, vertMinAABB, -1.f },
@@ -158,7 +159,7 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto typeId = createType(registry, container.m_type);
+    const auto typeId = createType(registry, container.m_type);
     {
         auto future = registry->m_modelRegistry->getMesh(
             TERRAIN_QUAD_MESH_NAME,
@@ -167,11 +168,8 @@ void TerrainGenerator::createTiles(
         mesh->setAABB(aabb);
 
         {
-            auto type = registry->m_typeRegistry->modifyType(typeId);
+            auto* type = registry->m_typeRegistry->modifyType(typeId);
             type->setMesh(mesh);
-
-            auto& drawOptions = type->modifyDrawOptions();
-            drawOptions.m_patchVertices = 3;
         }
     }
 
@@ -179,7 +177,11 @@ void TerrainGenerator::createTiles(
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
     {
-        auto type = registry->m_typeRegistry->modifyType(typeId);
+        auto* type = registry->m_typeRegistry->modifyType(typeId);
+
+        auto& drawOptions = type->modifyDrawOptions();
+        drawOptions.m_patchVertices = 3;
+
         type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
             m.tilingX = (float)m_worldTilesU;
             m.tilingY = (float)m_worldTilesV;
@@ -188,7 +190,7 @@ void TerrainGenerator::createTiles(
 
             materialRegistry->registerMaterial(m);
             materialIndex = m.m_registeredIndex;
-            });
+        });
     }
 
     const glm::vec4 tileVolume = aabb.getVolume();
@@ -234,6 +236,7 @@ void TerrainGenerator::createTiles(
             }
 
             {
+                // TODO KI WT vs RT conflict
                 auto* entity = entityRegistry->modifyEntity(entityIndex, false);
                 entity->u_tileX = u;
                 entity->u_tileY = v;

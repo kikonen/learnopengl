@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include "backend/gl/PerformanceCounters.h"
 
 #include "BatchCommand.h"
@@ -13,6 +15,8 @@ namespace mesh {
 }
 
 class Program;
+
+struct Snapshot;
 
 struct PrepareContext;
 class RenderContext;
@@ -37,19 +41,17 @@ namespace render {
         Batch(const Batch&) = delete;
         Batch& operator=(const Batch&) = delete;
 
-        void add(
+        void addSnapshot(
             const RenderContext& ctx,
-            const int entityIndex) noexcept;
+            const Snapshot& snapshot) noexcept;
 
-        void addAll(
+        void addSnapshots(
             const RenderContext& ctx,
-            const std::vector<int> entityIndeces) noexcept;
+            const std::span<Snapshot>& snapshots) noexcept;
 
-        void addInstanced(
+        void addSnapshotsInstanced(
             const RenderContext& ctx,
-            int instancedEntityIndex,
-            int firstEntityIndex,
-            int count) noexcept;
+            const std::span<Snapshot>& snapshots) noexcept;
 
         void bind() noexcept;
 
@@ -84,7 +86,7 @@ namespace render {
 
         bool inFrustum(
             const RenderContext& ctx,
-            const int entityIndex) const noexcept;
+            const Snapshot& snapshot) const noexcept;
 
     private:
         bool m_prepared = false;

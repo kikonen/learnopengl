@@ -101,14 +101,6 @@ public:
         return m_snapshotRT;
     }
 
-    //inline Snapshot& modifySnapshot() noexcept {
-    //    return m_snapshot;
-    //}
-
-    inline ki::size_t_entity_flags getEntityFlags() const noexcept {
-         return m_entityFlags;
-    }
-
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
@@ -172,7 +164,6 @@ private:
     std::vector<Node*> m_children;
 
     NodeTransform m_transform;
-    ki::size_t_entity_flags m_entityFlags{ 0 };
 
     bool m_forceUpdateEntityWT : 1 { true };
     bool m_forceUpdateEntityRT : 1 { true };

@@ -399,6 +399,7 @@
     <ClInclude Include="src\mesh\PositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
     <ClInclude Include="src\mesh\TextureEntry.h" />
+    <ClInclude Include="src\model\EntityFlags.h" />
     <ClInclude Include="src\registry\FontRegistry.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />

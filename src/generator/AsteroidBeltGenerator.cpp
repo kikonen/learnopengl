@@ -17,7 +17,6 @@
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/EntitySSBO.h"
 
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)

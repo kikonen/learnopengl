@@ -58,19 +58,21 @@ namespace backend {
         int commandBatchCount = batchCount * batchMultiplier;
         int commandRangeCount = rangeCount;
 
-        m_computeGroups = assets.computeGroups;
-        m_cullingCompute = registry->m_programRegistry->getComputeProgram(
-            CS_FRUSTUM_CULLING,
-            {
-                { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
-                { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
-                { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
-                { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
-            });
+        if (m_frustumGPU) {
+            m_computeGroups = assets.computeGroups;
+            m_cullingCompute = registry->m_programRegistry->getComputeProgram(
+                CS_FRUSTUM_CULLING,
+                {
+                    { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
+                    { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
+                    { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
+                    { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
+                });
 
-        m_cullingCompute->prepareRT(assets);
+            m_cullingCompute->prepareRT(assets);
+        }
 
-        {
+        if (m_frustumGPU) {
             constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
             constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
 
@@ -78,7 +80,7 @@ namespace backend {
             m_drawParameters.map(mapFlags);
         }
 
-        {
+        if (m_frustumGPU) {
             constexpr int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
             constexpr int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
@@ -108,13 +110,19 @@ namespace backend {
         if (m_bound) return;
         m_bound = true;
 
-        m_drawParameters.bindParameter();
-        m_commands->m_buffer.bindDrawIndirect();
+        if (m_frustumGPU) {
+            m_drawParameters.bindParameter();
+            m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
+        }
 
-        m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
-        m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
+        if (m_frustumGPU) {
+            m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
+        }
 
-        m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
+        {
+            m_commands->m_buffer.bindDrawIndirect();
+            m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
+        }
     }
 
     void DrawBuffer::flushIfNeeded()
@@ -271,11 +279,13 @@ namespace backend {
     {
         gl::PerformanceCounters counters;
 
-        auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-        counters = *data;
+        if (m_frustumGPU) {
+            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+            counters = *data;
 
-        if (clear) {
-            *data = { 0, 0 };
+            if (clear) {
+                *data = { 0, 0 };
+            }
         }
 
         return counters;
