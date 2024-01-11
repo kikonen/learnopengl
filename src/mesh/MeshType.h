@@ -96,6 +96,7 @@ namespace mesh {
         EntityType m_entityType{ EntityType::origo };
         NodeRenderFlags m_flags;
 
+        // NOTE KI *BIGGER* values rendered first (can be negative)
         ki::size_t8 m_priority{ 0 };
 
         Program* m_program{ nullptr };

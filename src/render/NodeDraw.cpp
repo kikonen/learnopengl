@@ -134,6 +134,7 @@ namespace render {
                 // NOTE KI more optimal to not switch between culling mode (=> group by it)
                 const ProgramKey programKey(
                     program ? program->m_id : NULL_PROGRAM_ID,
+                    // NOTE KI *NEGATE* for std::tie
                     -type->m_priority,
                     type->getDrawOptions());
 
