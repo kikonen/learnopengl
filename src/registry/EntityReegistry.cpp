@@ -28,14 +28,14 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
-    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
-    m_entries.reserve(MAX_ENTITY_COUNT);
 }
 
 void EntityRegistry::prepare()
 {
     m_debugFence = m_assets.batchDebug;
     m_mappedMode = false;
+
+    m_entries.reserve(ENTITY_BLOCK_SIZE);
 
     if (m_mappedMode) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
@@ -197,17 +197,20 @@ int EntityRegistry::registerEntityRange(const size_t count)
 
 const EntitySSBO* EntityRegistry::getEntity(int index) const
 {
+    ASSERT_RT();
     return &m_entries[index];
 }
 
 EntitySSBO* EntityRegistry::modifyEntity(int index, bool dirty)
 {
+    ASSERT_RT();
     if (dirty) markDirty(index);
     return &m_entries[index];
 }
 
 void EntityRegistry::markDirty(int index)
 {
+    ASSERT_RT();
     if (index < m_minDirty || m_minDirty == -1) {
         m_minDirty = index;
     }
@@ -220,7 +223,5 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    for (auto* node : ctx.m_registry->m_nodeRegistry->m_allNodes) {
-        node->updateEntity(ctx, this);
-    }
+    ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
 }

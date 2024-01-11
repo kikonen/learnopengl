@@ -124,8 +124,10 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
+    // NOTE KI sync needed also for components currently
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
+
     {
-        std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto& node : m_allNodes) {
             node->snapshotRT();
         }
@@ -393,6 +395,7 @@ int NodeRegistry::countTagged() const noexcept
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
+        std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto* node : m_allNodes) {
             if (node->isTagged()) count++;
         }
@@ -408,6 +411,7 @@ int NodeRegistry::countSelected() const noexcept
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
+        std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto* node : m_allNodes) {
             if (node->isSelected()) count++;
         }
@@ -453,6 +457,8 @@ void NodeRegistry::bindNode(
     Node* node)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
+
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     const mesh::MeshType* type;
     {

@@ -149,7 +149,7 @@ private:
 
     Registry* m_registry{ nullptr };
 
-    std::mutex m_snapshotLock{};
+    mutable std::mutex m_snapshotLock{};
 
     std::unordered_map<ki::node_id, Node*> m_idToNode;
     std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
