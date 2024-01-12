@@ -37,16 +37,16 @@ public:
         const PrepareContext& ctx,
         Node& container) override;
 
-    virtual void prepareEntity(
-        const PrepareContext& ctx,
-        Snapshot& snapshot,
-        int snapshotIndex) override;
-
     virtual void update(
         const UpdateContext& ctx,
         Node& container) override;
 
 private:
+    virtual void prepareEntity(
+        const PrepareContext& ctx,
+        Snapshot& snapshot,
+        uint32_t snapshotIndex) override;
+
     void updateTiles(
         const UpdateContext& ctx,
         Node& container);

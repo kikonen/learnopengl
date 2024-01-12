@@ -93,8 +93,8 @@ namespace physics {
         const float mapY = ((float)(m_height)) * (1.f - v);
 
         // floor
-        int x = mapX;
-        int y = mapY;
+        int x = static_cast<int>(mapX);
+        int y = static_cast<int>(mapY);
 
         const float fractX = mapX - x;
         const float fractY = mapY - y;

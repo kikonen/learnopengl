@@ -59,7 +59,7 @@ void TerrainGenerator::prepare(
 void TerrainGenerator::prepareEntity(
     const PrepareContext& ctx,
     Snapshot& snapshot,
-    int snapshotIndex)
+    uint32_t snapshotIndex)
 {
     // TODO KI WT vs RT conflict
     auto* entity = ctx.m_registry->m_entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
@@ -81,7 +81,6 @@ void TerrainGenerator::update(
     if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
-    transform.m_dirtyEntity = true;
     transform.m_dirtySnapshot = true;
     m_containerMatrixLevel = transform.getMatrixLevel();
 }
@@ -150,7 +149,7 @@ void TerrainGenerator::updateTiles(
         }
     }
 
-    m_reservedCount = m_transforms.size();
+    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
     setActiveRange(0, m_reservedCount);
 }
 

@@ -46,14 +46,6 @@ public:
     void snapshotWT(bool force);
     void snapshotRT(bool force);
 
-    void prepareEntities(
-        const PrepareContext& ctx);
-
-    virtual void prepareEntity(
-        const PrepareContext& ctx,
-        Snapshot& snapshot,
-        int snapshotIndex) {}
-
     virtual void updateEntity(
         const UpdateContext& ctx,
         Node& container,
@@ -85,6 +77,15 @@ public:
         return m_transforms;
     }
 
+protected:
+    void prepareEntities(
+        const PrepareContext& ctx);
+
+    virtual void prepareEntity(
+        const PrepareContext& ctx,
+        Snapshot& snapshot,
+        uint32_t snapshotIndex) {}
+
     //inline const std::vector<Snapshot>& getSnapshots() noexcept
     //{
     //    return m_snapshots;
@@ -95,23 +96,23 @@ public:
     //    return m_snapshots;
     //}
 
-    inline int getActiveFirst() const noexcept {
-        return m_activeFirst;
-    }
+    //inline int getActiveFirst() const noexcept {
+    //    return m_activeFirst;
+    //}
 
-    inline int getActiveCount() const noexcept {
-        return m_activeCount;
-    }
+    //inline int getActiveCount() const noexcept {
+    //    return m_activeCount;
+    //}
 
-    inline int getReservedFirst() const noexcept {
-        return m_reservedFirst;
-    }
+    //inline int getReservedFirst() const noexcept {
+    //    return m_reservedFirst;
+    //}
 
-    inline int getReservedCount() const noexcept {
-        return m_reservedCount;
-    }
+    //inline int getReservedCount() const noexcept {
+    //    return m_reservedCount;
+    //}
 
-    inline void setActiveRange(int index, int count) noexcept {
+    inline void setActiveRange(uint32_t index, uint32_t count) noexcept {
         m_activeFirst  = index;
         m_activeCount = count;
     }
@@ -119,13 +120,13 @@ public:
     const glm::vec4 calculateVolume();
 
 protected:
-    size_t m_poolSize = 0;
+    uint32_t m_poolSize = 0;
 
-    int m_activeFirst = 0;
-    int m_activeCount = 0;
+    uint32_t m_activeFirst = 0;
+    uint32_t m_activeCount = 0;
 
     int m_reservedFirst = -1;
-    int m_reservedCount = 0;
+    uint32_t m_reservedCount{ 0 };
 
     int m_containerMatrixLevel = -1;
 

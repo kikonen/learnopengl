@@ -1,22 +1,17 @@
 #pragma once
 
+#include <stdint.h>
 
 namespace ki
 {
-    typedef unsigned int uint;
+    typedef uint32_t node_id;
+    typedef uint16_t mesh_id;
+    typedef uint16_t type_id;
+    typedef uint32_t material_id;
+    typedef uint32_t sprite_id;
+    typedef uint16_t program_id;
 
-    typedef unsigned int size_t32;
-    typedef unsigned char size_t8;
-    typedef unsigned short size_t16;
+    typedef uint32_t size_t_entity_flags;
 
-    typedef unsigned int node_id;
-    typedef unsigned short mesh_id;
-    typedef unsigned short type_id;
-    typedef unsigned int material_id;
-    typedef unsigned int sprite_id;
-    typedef unsigned short program_id;
-
-    typedef unsigned int size_t_entity_flags;
-
-    typedef unsigned short level_id;
+    typedef uint16_t level_id;
 }

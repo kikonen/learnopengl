@@ -131,11 +131,7 @@ void Node::snapshotWT() noexcept {
     }
 
     transform.m_dirtySnapshot = false;
-    transform.m_dirtyNormal = false;
     m_forceUpdateSnapshot = false;
-
-    m_forceUpdateEntityRT |= m_forceUpdateEntityWT;
-    m_forceUpdateEntityWT = false;
 }
 
 void Node::snapshotRT() noexcept {
@@ -160,15 +156,13 @@ void Node::updateEntity(
     EntityRegistry* entityRegistry)
 {
     auto& snapshot = m_snapshotRT;
-    if (!m_forceUpdateEntityRT && !snapshot.m_dirtyEntity) return;
 
     if (snapshot.m_entityIndex == -1 && m_type->getMesh()) {
         snapshot.m_entityIndex = entityRegistry->registerEntity();
     }
 
-    if (snapshot.m_entityIndex != -1)
+    if (snapshot.m_dirty && snapshot.m_entityIndex != -1)
     {
-        snapshot.m_dirtyEntity |= m_forceUpdateEntityRT;
         auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = m_id;
@@ -178,10 +172,8 @@ void Node::updateEntity(
     }
 
     if (m_generator) {
-        m_generator->updateEntity(ctx, *this, entityRegistry, m_forceUpdateEntityRT);
+        m_generator->updateEntity(ctx, *this, entityRegistry, false);
     }
-
-    m_forceUpdateEntityRT = false;
 }
 
 void Node::updateVAO(const RenderContext& ctx) noexcept
@@ -234,9 +226,7 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateEntityWT = true;
         m_forceUpdateSnapshot = true;
     }
 }
@@ -245,9 +235,7 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_transform.m_dirtyEntity = true;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateEntityWT = true;
         m_forceUpdateSnapshot = true;
     }
 }

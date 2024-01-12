@@ -97,7 +97,7 @@ namespace mesh {
         NodeRenderFlags m_flags;
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
-        ki::size_t8 m_priority{ 0 };
+        uint8_t m_priority{ 0 };
 
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };

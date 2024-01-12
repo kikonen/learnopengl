@@ -17,7 +17,7 @@ namespace backend {
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
-        ki::size_t8 m_mode = GL_POINTS;
+        uint8_t m_mode = GL_POINTS;
 
         bool m_renderBack : 1 {false};
         bool m_wireframe : 1 {false};
@@ -29,15 +29,15 @@ namespace backend {
         bool m_instanced : 1 {false};
 
         bool m_tessellation : 1 {false};
-        ki::size_t8 m_patchVertices{ 3 };
+        uint8_t m_patchVertices{ 3 };
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
         GLsizei m_indexCount{ 0 };
         GLsizei m_indexFirst{ 0 };
 
-        ki::uint m_vertexOffset{ 0 };
-        ki::uint m_indexOffset{ 0 };
+        uint32_t m_vertexOffset{ 0 };
+        uint32_t m_indexOffset{ 0 };
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,

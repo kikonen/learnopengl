@@ -304,7 +304,6 @@ namespace physics
             transform.updateModelMatrix(parent->getTransform());
             auto& nodeTransform = node.modifyTransform();
             nodeTransform.m_dirtySnapshot = true;
-            nodeTransform.m_dirtyEntity = true;
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

@@ -11,18 +11,13 @@ namespace {
 }
 
 Snapshot::Snapshot(const NodeTransform& o)
-    : m_dirtyDegrees{ o.m_dirtyDegrees },
-    m_dirtyNormal{ o.m_dirtyNormal },
-    m_dirtyEntity{ o.m_dirtyEntity },
-    m_uniformScale{ o.m_uniformScale },
-    m_matrixLevel{ o.m_matrixLevel },
+    : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_volume{ o.m_volume.getVolume() },
     m_worldPos{ o.m_worldPos },
     m_quatRotation{ o.m_quatRotation },
-    m_degreesRotation{ o.m_degreesRotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
     m_viewRight{ o.m_viewRight },
@@ -34,17 +29,12 @@ Snapshot::Snapshot(const NodeTransform& o)
 }
 
 Snapshot::Snapshot(const NodeTransform&& o)
-    : m_dirtyDegrees{ o.m_dirtyDegrees },
-    m_dirtyNormal{ o.m_dirtyNormal },
-    m_dirtyEntity{ o.m_dirtyEntity },
-    m_uniformScale{ o.m_uniformScale },
-    m_matrixLevel{ o.m_matrixLevel },
+    : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
     m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_worldPos{ o.m_worldPos },
     m_quatRotation{ o.m_quatRotation },
-    m_degreesRotation{ o.m_degreesRotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
     m_viewRight{ o.m_viewRight },
@@ -57,10 +47,6 @@ Snapshot::Snapshot(const NodeTransform&& o)
 
 Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 {
-    m_dirtyDegrees = o.m_dirtyDegrees;
-    m_dirtyNormal = o.m_dirtyNormal;
-    m_dirtyEntity = o.m_dirtyEntity;
-    m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
 
     m_flags = o.m_flags;
@@ -73,7 +59,6 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 
     m_worldPos = o.m_worldPos;
     m_quatRotation = o.m_quatRotation;
-    m_degreesRotation = o.m_degreesRotation;
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
@@ -85,10 +70,6 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 
 Snapshot& Snapshot::operator=(Snapshot& o) noexcept
 {
-    m_dirtyDegrees = o.m_dirtyDegrees;
-    m_dirtyNormal = o.m_dirtyNormal;
-    m_dirtyEntity = o.m_dirtyEntity;
-    m_uniformScale = o.m_uniformScale;
     m_matrixLevel = o.m_matrixLevel;
 
     if (o.m_entityIndex >= 0) {
@@ -103,7 +84,6 @@ Snapshot& Snapshot::operator=(Snapshot& o) noexcept
 
     m_worldPos = o.m_worldPos;
     m_quatRotation = o.m_quatRotation;
-    m_degreesRotation = o.m_degreesRotation;
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
@@ -113,21 +93,16 @@ Snapshot& Snapshot::operator=(Snapshot& o) noexcept
     return *this;
 }
 
-void Snapshot::updateDegrees() const noexcept
+const glm::vec3& Snapshot::getDegreesRotation() const noexcept
 {
-    ASSERT_RT();
-    if (!m_dirtyDegrees) return;
-    m_degreesRotation = util::quatToDegrees(m_quatRotation);
-    m_dirtyDegrees = false;
+    return util::quatToDegrees(m_quatRotation);
 }
-
 
 void Snapshot::updateEntity(
     const UpdateContext& ctx,
     EntitySSBO* entity)
 {
     ASSERT_RT();
-    if (!m_dirtyEntity) return;
 
     entity->u_flags = m_flags;
 
@@ -137,10 +112,9 @@ void Snapshot::updateEntity(
     entity->u_volume = m_volume;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    entity->setModelMatrix(m_modelMatrix, m_uniformScale, m_dirtyNormal);
+    const auto uniformScale  = m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z;
+
+    entity->setModelMatrix(m_modelMatrix, uniformScale, true);
 
     entity->u_worldScale = m_modelScale;
-
-    m_dirtyEntity = false;
-    m_dirtyNormal = false;
 }

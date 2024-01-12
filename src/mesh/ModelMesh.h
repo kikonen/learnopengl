@@ -57,7 +57,7 @@ namespace mesh {
         const std::string m_meshPath;
 
     protected:
-        ki::uint m_indexCount{ 0 };
+        uint32_t m_indexCount{ 0 };
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
         std::vector<Material> m_materials;

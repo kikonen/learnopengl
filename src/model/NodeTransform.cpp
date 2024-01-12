@@ -45,9 +45,10 @@ void NodeTransform::updateRootMatrix() noexcept
 
     updateModelAxis();
 
-    m_dirty = false;
     m_matrixLevel++;
-    m_dirtyEntity = true;
+
+    m_dirty = false;
+    m_dirtySnapshot = true;
 }
 
 void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
@@ -85,8 +86,8 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 
     m_parentMatrixLevel = parent.m_matrixLevel;
     m_matrixLevel++;
+
     m_dirty = false;
-    m_dirtyEntity = true;
     m_dirtySnapshot = true;
 }
 
@@ -107,12 +108,4 @@ void NodeTransform::updateRotationMatrix() noexcept
     if (!m_dirtyRotation) return;
     m_rotationMatrix = glm::toMat4(m_quatRotation * m_baseRotation);
     m_dirtyRotation = false;
-}
-
-void NodeTransform::updateDegrees() const noexcept
-{
-    ASSERT_RT();
-    if (!m_dirtyDegrees) return;
-    m_degreesRotation = util::quatToDegrees(m_quatRotation);
-    m_dirtyDegrees = false;
 }

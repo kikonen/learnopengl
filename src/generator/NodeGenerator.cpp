@@ -27,12 +27,15 @@ void NodeGenerator::snapshotWT(bool force)
 
     for (size_t i = 0; i < m_transforms.size(); i++) {
         auto& transform = m_transforms[i];
+
         assert(!transform.m_dirty);
         if (!force && !transform.m_dirtySnapshot) continue;
-        m_snapshotsWT[i] = transform;
-        m_snapshotsWT[i].m_dirty = true;
+
+        auto& snapshot = m_snapshotsWT[i];
+        snapshot = transform;
+        snapshot.m_dirty = true;
+
         transform.m_dirtySnapshot = false;
-        transform.m_dirtyNormal = false;
     }
 }
 
@@ -48,9 +51,15 @@ void NodeGenerator::snapshotRT(bool force)
     }
 
     for (size_t i = 0; i < m_snapshotsWT.size(); i++) {
-        if (!force && !m_snapshotsWT[i].m_dirty) continue;
-        m_snapshotsRT[i] = m_snapshotsWT[i];
-        m_snapshotsWT[i].m_dirty = false;
+        auto& snapshotWT = m_snapshotsWT[i];
+
+        if (!force && !snapshotWT.m_dirty) continue;
+
+        auto& snapshotRT = m_snapshotsRT[i];
+        snapshotRT = snapshotWT;
+        snapshotRT.m_dirty = true;
+
+        snapshotWT.m_dirty = false;
     }
 }
 
@@ -62,7 +71,7 @@ void NodeGenerator::prepareEntities(
 
     m_reservedFirst = ctx.m_registry->m_entityRegistry->registerEntityRange(m_reservedCount);
 
-    int snapshotIndex = 0;
+    uint32_t snapshotIndex = 0;
     for (auto& snapshot : m_snapshotsRT) {
         snapshot.m_entityIndex = static_cast<int>(m_reservedFirst + snapshotIndex);
         prepareEntity(ctx, snapshot, snapshotIndex);
@@ -82,21 +91,22 @@ void NodeGenerator::updateEntity(
         prepareEntities(ctx.toPrepareContext());
     }
 
-    int entityIndex = m_reservedFirst;
+    const auto flags = container.getSnapshot().m_flags;
+    const auto highlightIndex = container.getHighlightIndex(ctx.m_assets);
 
     for (auto& snapshot : m_snapshotsRT) {
-        if (!force && !snapshot.m_dirtyEntity) continue;
+        if (!force && !snapshot.m_dirty) continue;
         if (snapshot.m_entityIndex == -1) continue;
 
         auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
 
         entity->u_objectID = container.m_id;
-        entity->u_flags = container.getSnapshot().m_flags;
-        entity->u_highlightIndex = container.getHighlightIndex(ctx.m_assets);
+        entity->u_flags = flags;
+        entity->u_highlightIndex = highlightIndex;
 
         snapshot.updateEntity(ctx, entity);
 
-        entityIndex++;
+        snapshot.m_dirty = false;
     }
 }
 

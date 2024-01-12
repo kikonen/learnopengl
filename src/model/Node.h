@@ -168,9 +168,6 @@ private:
 
     NodeTransform m_transform;
 
-    bool m_forceUpdateEntityWT : 1 { true };
-    bool m_forceUpdateEntityRT : 1 { true };
-
     Snapshot m_snapshotWT;
     Snapshot m_snapshotRT;
     bool m_forceUpdateSnapshot : 1 { true };

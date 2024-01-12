@@ -165,9 +165,9 @@ namespace text
 
         m_vao.registerModel(m_vbo);
 
-        drawOptions.m_vertexOffset = static_cast<ki::uint>(m_vbo.m_vertexOffset);
-        drawOptions.m_indexOffset = static_cast<ki::uint>(m_vbo.m_indexOffset);
-        drawOptions.m_indexCount = static_cast<ki::uint>(m_vbo.getIndexCount());
+        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vbo.m_vertexOffset);
+        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vbo.m_indexOffset);
+        drawOptions.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

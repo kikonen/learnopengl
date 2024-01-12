@@ -46,7 +46,6 @@ void AsteroidBeltGenerator::update(
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
         auto& transform = container.modifyTransform();
-        transform.m_dirtyEntity = true;
         transform.m_dirtySnapshot = true;
     }
 
@@ -101,7 +100,7 @@ void AsteroidBeltGenerator::createAsteroids(
     initAsteroids(ctx, container);
     containerTransform.setVolume(calculateVolume());
 
-    m_reservedCount = m_transforms.size();
+    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
     setActiveRange(0, m_reservedCount);
 }
 
