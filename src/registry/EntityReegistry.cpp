@@ -33,9 +33,9 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 void EntityRegistry::prepare()
 {
     m_debugFence = m_assets.batchDebug;
-    m_mappedMode = false;
+    m_mappedMode = true;
 
-    m_entries.reserve(ENTITY_BLOCK_SIZE);
+    m_entries.reserve(MAX_ENTITY_COUNT);
 
     if (m_mappedMode) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
@@ -45,11 +45,6 @@ void EntityRegistry::prepare()
     else {
         m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
     }
-}
-
-void EntityRegistry::updateWT(const UpdateContext& ctx)
-{
-    //std::lock_guard<std::mutex> lock(m_lock);
 }
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)

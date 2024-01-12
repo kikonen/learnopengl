@@ -26,7 +26,6 @@ public:
     EntityRegistry(const Assets& assets);
 
     void prepare();
-    void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
     void postRT(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);

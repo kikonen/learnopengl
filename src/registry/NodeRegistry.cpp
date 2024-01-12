@@ -107,6 +107,7 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
     if (m_root) {
         m_root->updateWT(ctx);
     }
@@ -115,7 +116,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
     {
-        std::lock_guard<std::mutex> lock(m_snapshotLock);
+        //std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto& node : m_allNodes) {
             node->snapshotWT();
         }
