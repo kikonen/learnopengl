@@ -192,7 +192,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //}
 
     // NOTE KI sync to RT
-    m_registry->m_snapshotRegistry->swap();
+    m_registry->m_snapshotRegistry->copyToPending(0);
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)

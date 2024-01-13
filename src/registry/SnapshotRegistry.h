@@ -60,14 +60,23 @@ public:
     uint32_t registerSnapshot() noexcept;
     uint32_t registerSnapshotRange(size_t count) noexcept;
 
-    // NOTE KI swap only if pending is NOT empty
-    void swap();
+    //// NOTE KI swap only if pending is NOT empty
+    //void swap();
 
-    // NOTE KI swap only if active is empty
-    void lock();
+    //// NOTE KI swap only if active is empty
+    //void lock();
 
-    // NOTE KI swap only if pending is empty
-    void unlock();
+    //// NOTE KI swap only if pending is empty
+    //void unlock();
+
+    void copyToPending(uint32_t startIndex);
+    void copyFromPending(uint32_t startIndex);
+
+private:
+    void copy(
+        util::DirtyVector<Snapshot>& src,
+        util::DirtyVector<Snapshot>& dst,
+        uint32_t startIndex);
 
 private:
     std::mutex m_lock{};

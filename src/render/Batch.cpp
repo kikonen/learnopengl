@@ -70,10 +70,11 @@ namespace render {
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
-        const Snapshot& snapshot) noexcept
+        const Snapshot& snapshot,
+        uint32_t entityIndex) noexcept
     {
         //if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
-        if (snapshot.m_entityIndex < 0) return;
+        if (entityIndex < 0) return;
 
         if (m_frustumCPU && !inFrustum(ctx, snapshot))
             return;
@@ -81,21 +82,24 @@ namespace render {
         auto& top = m_batches.back();
         top.m_drawCount++;
 
-        m_entityIndeces.emplace_back(snapshot.m_entityIndex);
+        m_entityIndeces.emplace_back(entityIndex);
     }
 
     void Batch::addSnapshots(
         const RenderContext& ctx,
-        const std::span<Snapshot>& snapshots) noexcept
+        const std::span<Snapshot>& snapshots,
+        const std::span<uint32_t>& entityIndeces) noexcept
     {
+        uint32_t i = 0;
         for (const auto& snapshot : snapshots) {
-            addSnapshot(ctx, snapshot);
+            addSnapshot(ctx, snapshot, entityIndeces[i++]);
         }
     }
 
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        const std::span<Snapshot>& snapshots) noexcept
+        const std::span<Snapshot>& snapshots,
+        uint32_t entityBase) noexcept
     {
         const size_t count = snapshots.size();
 
@@ -127,7 +131,7 @@ namespace render {
         top.m_drawCount = 1;
         top.m_instancedCount = static_cast<int>(instanceCount);
 
-        m_entityIndeces.emplace_back(snapshots[startIndex].m_entityIndex);
+        m_entityIndeces.emplace_back(entityBase + startIndex);
     }
 
     void Batch::bind() noexcept

@@ -184,6 +184,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
                 entity->u_objectID = node->m_id;
                 entity->u_highlightIndex = node->getHighlightIndex(ctx.m_assets);
                 snapshot.updateEntity(*entity);
+                snapshot.m_dirty = false;
             }
         }
 
@@ -387,6 +388,14 @@ void NodeRegistry::attachListeners()
 
 void NodeRegistry::handleNodeAdded(Node* node)
 {
+    m_registry->m_snapshotRegistry->copyFromPending(0);
+
+    node->m_preparedRT = true;
+
+    if (node->m_type->getMesh()) {
+        node->m_entityIndex = m_registry->m_entityRegistry->registerEntity();
+    }
+
     if (node->m_camera) {
         m_cameraNodes.push_back(node);
         if (!m_activeCameraNode && node->m_camera->isDefault()) {
@@ -551,6 +560,10 @@ void NodeRegistry::bindNode(
     }
 
     clearSelectedCount();
+
+    // NOTE KI ensure related snapshots are visible in RT
+    // => otherwise IOOBE will trigger
+    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex);
 
     {
         event::Event evt { event::Type::node_added };

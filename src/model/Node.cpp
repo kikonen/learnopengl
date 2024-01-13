@@ -166,7 +166,11 @@ void Node::bindBatch(
     if (m_instancer) {
         m_instancer->bindBatch(ctx, *this, batch);
     } else {
-        batch.addSnapshot(ctx, ctx.m_registry->m_snapshotRegistry->getSnapshot(m_snapshotIndex));
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+        batch.addSnapshot(
+            ctx,
+            snapshot,
+            m_entityIndex);
     }
 }
 

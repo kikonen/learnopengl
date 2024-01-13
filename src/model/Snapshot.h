@@ -28,7 +28,6 @@ struct Snapshot {
 
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
-    int m_entityIndex{ -1 };
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     int m_materialIndex{ 0 };

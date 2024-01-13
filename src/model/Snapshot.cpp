@@ -72,9 +72,6 @@ Snapshot& Snapshot::operator=(Snapshot& o) noexcept
 {
     m_matrixLevel = o.m_matrixLevel;
 
-    if (o.m_entityIndex >= 0) {
-        m_entityIndex = o.m_entityIndex;
-    }
     m_flags = o.m_flags;
 
     m_materialIndex = o.m_materialIndex;

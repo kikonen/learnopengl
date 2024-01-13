@@ -173,7 +173,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_snapshotRegistry->lock();
+            m_registry->m_snapshotRegistry->copyFromPending(0);
 
             // input
             // -----
@@ -214,7 +214,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 renderSecs[avgIndex] = renderDuration.count();
             }
 
-            m_registry->m_snapshotRegistry->unlock();
+            //m_registry->m_snapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();

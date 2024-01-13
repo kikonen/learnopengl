@@ -5,11 +5,13 @@
 
 SnapshotRegistry::SnapshotRegistry()
     : m_snapshots{ std::make_unique<util::DirtyVector<Snapshot>>() },
-    m_pendingSnapshots{ std::make_unique<util::DirtyVector<Snapshot>>() }
+    m_pendingSnapshots{ std::make_unique<util::DirtyVector<Snapshot>>() },
+    m_activeSnapshots{ std::make_unique<util::DirtyVector<Snapshot>>() }
 {
     // null entry
     registerSnapshot();
-    swap();
+    copyToPending(0);
+    copyFromPending(0);
 }
 
 uint32_t SnapshotRegistry::registerSnapshot() noexcept {
@@ -39,44 +41,87 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
     dirtyFlags[index] = false;
 }
 
-void SnapshotRegistry::swap() {
-    std::lock_guard<std::mutex> lock(m_lock);
-    // NOTE KI swap only if pending is not locked by RT
-    if (!m_pendingSnapshots) return;
+//void SnapshotRegistry::swap() {
+//    std::lock_guard<std::mutex> lock(m_lock);
+//    // NOTE KI swap only if pending is not locked by RT
+//    if (!m_pendingSnapshots) return;
+//
+//    {
+//        auto& src = m_snapshots->m_entries;
+//        auto& dst = m_pendingSnapshots->m_entries;
+//        const auto size = src.size();
+//
+//        m_pendingSnapshots->reserve(size);
+//        memcpy(dst.data(), src.data(), size * sizeof(Snapshot));
+//    }
+//    {
+//        auto& src = m_snapshots->m_dirtyFlags;
+//        auto& dst = m_pendingSnapshots->m_dirtyFlags;
+//        const auto size = src.size();
+//
+//        m_pendingSnapshots->reserve(size);
+//
+//        for (size_t i = 0; i < size; i++) {
+//            dst[i] = src[i];
+//        }
+//    }
+//
+//    m_pendingSnapshots.swap(m_snapshots);
+//}
+//
+//void SnapshotRegistry::lock() {
+//    std::lock_guard<std::mutex> lock(m_lock);
+//    if (m_pendingSnapshots) {
+//        m_activeSnapshots.swap(m_pendingSnapshots);
+//    }
+//}
+//
+//void SnapshotRegistry::unlock() {
+//    std::lock_guard<std::mutex> lock(m_lock);
+//    if (m_activeSnapshots) {
+//        m_activeSnapshots.swap(m_pendingSnapshots);
+//    }
+//}
 
+void SnapshotRegistry::copyToPending(uint32_t startIndex)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    copy(*m_snapshots.get(), *m_pendingSnapshots.get(), startIndex);
+}
+
+void SnapshotRegistry::copyFromPending(uint32_t startIndex)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    copy(*m_pendingSnapshots.get(), *m_activeSnapshots.get(), startIndex);
+}
+
+void SnapshotRegistry::copy(
+    util::DirtyVector<Snapshot>& srcVector,
+    util::DirtyVector<Snapshot>& dstVector,
+    uint32_t startIndex)
+{
     {
-        auto& src = m_snapshots->m_entries;
-        auto& dst = m_pendingSnapshots->m_entries;
+        auto& src = srcVector.m_entries;
+        auto& dst = dstVector.m_entries;
         const auto size = src.size();
 
-        m_pendingSnapshots->reserve(size);
-        memcpy(dst.data(), src.data(), size * sizeof(Snapshot));
+        dstVector.reserve(size);
+
+        memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
+
+        //for (auto& snapshot : dst) {
+        //    snapshot.m_dirty = true;
+        //}
     }
     {
-        auto& src = m_snapshots->m_dirtyFlags;
-        auto& dst = m_pendingSnapshots->m_dirtyFlags;
+        auto& src = srcVector.m_dirtyFlags;
+        auto& dst = dstVector.m_dirtyFlags;
         const auto size = src.size();
 
-        m_pendingSnapshots->reserve(size);
+        dstVector.reserve(size);
 
-        for (size_t i = 0; i < size; i++) {
+        for (size_t i = startIndex; i < size; i++) {
             dst[i] = src[i];
         }
-    }
-
-    m_pendingSnapshots.swap(m_snapshots);
-}
-
-void SnapshotRegistry::lock() {
-    std::lock_guard<std::mutex> lock(m_lock);
-    if (m_pendingSnapshots) {
-        m_activeSnapshots.swap(m_pendingSnapshots);
-    }
-}
-
-void SnapshotRegistry::unlock() {
-    std::lock_guard<std::mutex> lock(m_lock);
-    if (m_activeSnapshots) {
-        m_activeSnapshots.swap(m_pendingSnapshots);
     }
 }

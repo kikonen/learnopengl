@@ -94,32 +94,6 @@ protected:
         EntitySSBO& entity,
         uint32_t index) {}
 
-    //inline const std::vector<Snapshot>& getSnapshots() noexcept
-    //{
-    //    return m_snapshots;
-    //}
-
-    //inline std::vector<Snapshot>& modifySnapshots() noexcept
-    //{
-    //    return m_snapshots;
-    //}
-
-    //inline int getActiveFirst() const noexcept {
-    //    return m_activeFirst;
-    //}
-
-    //inline int getActiveCount() const noexcept {
-    //    return m_activeCount;
-    //}
-
-    //inline int getReservedFirst() const noexcept {
-    //    return m_reservedFirst;
-    //}
-
-    //inline int getReservedCount() const noexcept {
-    //    return m_reservedCount;
-    //}
-
     inline void setActiveRange(uint32_t index, uint32_t count) noexcept {
         m_activeFirst  = index;
         m_activeCount = count;

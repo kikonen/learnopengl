@@ -79,19 +79,23 @@ void NodeGenerator::updateEntity(
         prepareEntities(snapshotRegistry, entityRegistry);
     }
 
-    auto snapshots = snapshotRegistry.getActiveSnapshotRange(
+    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
     const auto& containerSnapshot = snapshotRegistry.getActiveSnapshot(container.m_snapshotIndex);
 
+    auto entities = entityRegistry.modifyEntityRange(
+        m_entityBase,
+        m_reservedCount);
+
     const auto flags = containerSnapshot.m_flags;
     const auto highlightIndex = container.getHighlightIndex(assets);
 
-    for (auto& snapshot : snapshots) {
+    for (uint32_t i = 0; i < m_reservedCount; i++) {
+        auto& snapshot = snapshots[i];
         if (!snapshot.m_dirty) continue;
-        if (snapshot.m_entityIndex == -1) continue;
 
-        auto& entity = *entityRegistry.modifyEntity(snapshot.m_entityIndex, true);
+        auto& entity = entities[i];
 
         entity.u_objectID = container.m_id;
         entity.u_flags = flags;
@@ -99,6 +103,7 @@ void NodeGenerator::updateEntity(
 
         snapshot.updateEntity(entity);
 
+        entityRegistry.markDirty(m_entityBase + i);
         snapshot.m_dirty = false;
     }
 }
@@ -116,7 +121,7 @@ void NodeGenerator::bindBatch(
 
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     //batch.addInstanced(ctx, container.getEntityIndex(), m_activeFirst, m_activeCount);
-    batch.addSnapshotsInstanced(ctx, snapshots);
+    batch.addSnapshotsInstanced(ctx, snapshots, m_entityBase);
 }
 
 const kigl::GLVertexArray* NodeGenerator::getVAO(
