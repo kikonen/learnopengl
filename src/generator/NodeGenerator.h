@@ -1,7 +1,6 @@
 #pragma once
 
 #include "model/NodeTransform.h"
-#include "model/Snapshot.h"
 #include "model/InstancePhysics.h"
 
 #include "kigl/kigl.h"
@@ -20,10 +19,15 @@ namespace render {
 
 class Node;
 
+class Assets;
+struct Snapshot;
+struct EntitySSBO;
+
 struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
 
+class SnapshotRegistry;
 class EntityRegistry;
 
 //
@@ -43,14 +47,14 @@ public:
         const UpdateContext& ctx,
         Node& container) {}
 
-    void snapshotWT(bool force);
-    void snapshotRT(bool force);
+    void snapshotWT(
+        SnapshotRegistry& snapshotRegistry);
 
     virtual void updateEntity(
-        const UpdateContext& ctx,
-        Node& container,
-        EntityRegistry* entityRegistry,
-        bool force);
+        const Assets& assets,
+        SnapshotRegistry& snapshotRegistry,
+        EntityRegistry& entityRegistry,
+        Node& container);
 
     virtual void bindBatch(
         const RenderContext& ctx,
@@ -78,13 +82,17 @@ public:
     }
 
 protected:
+    void prepareSnapshots(
+        SnapshotRegistry& snapshotRegistry);
+
     void prepareEntities(
-        const PrepareContext& ctx);
+        SnapshotRegistry& snapshotRegistry,
+        EntityRegistry& entityRegistry);
 
     virtual void prepareEntity(
-        const PrepareContext& ctx,
         Snapshot& snapshot,
-        uint32_t snapshotIndex) {}
+        EntitySSBO& entity,
+        uint32_t index) {}
 
     //inline const std::vector<Snapshot>& getSnapshots() noexcept
     //{
@@ -125,13 +133,13 @@ protected:
     uint32_t m_activeFirst = 0;
     uint32_t m_activeCount = 0;
 
-    int m_reservedFirst = -1;
+    uint32_t m_snapshotBase{ 0 };
+    uint32_t m_entityBase{ 0 };
+
     uint32_t m_reservedCount{ 0 };
 
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
-    std::vector<Snapshot> m_snapshotsWT;
-    std::vector<Snapshot> m_snapshotsRT;
     std::vector<InstancePhysics> m_physics;
 };

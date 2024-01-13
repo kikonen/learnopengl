@@ -30,7 +30,7 @@
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-
+#include "registry/SnapshotRegistry.h"
 
 Registry::Registry(
     const Assets& assets,
@@ -51,6 +51,7 @@ Registry::Registry(
     m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>(assets, m_alive)),
     m_modelRegistryImpl(std::make_unique<ModelRegistry>(assets, m_alive)),
     m_nodeRegistryImpl(std::make_unique<NodeRegistry>(assets, m_alive)),
+    m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},
     m_entityRegistryImpl(std::make_unique<EntityRegistry>(assets)),
     m_viewportRegistryImpl(std::make_unique<ViewportRegistry>(assets)),
     m_controllerRegistryImpl(std::make_unique<ControllerRegistry>(assets)),
@@ -68,6 +69,7 @@ Registry::Registry(
     m_typeRegistry(m_typeRegistryImpl.get()),
     m_modelRegistry(m_modelRegistryImpl.get()),
     m_nodeRegistry(m_nodeRegistryImpl.get()),
+    m_snapshotRegistry{ m_snapshotRegistryImpl.get() },
     m_entityRegistry(m_entityRegistryImpl.get()),
     m_viewportRegistry(m_viewportRegistryImpl.get()),
     m_controllerRegistry(m_controllerRegistryImpl.get())
@@ -133,4 +135,10 @@ void Registry::postRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
     m_entityRegistry->postRT(ctx);
+}
+
+void Registry::withLock(const std::function<void(Registry&)>& fn)
+{
+    std::lock_guard<std::mutex> lock(m_lock);
+    fn(*this);
 }

@@ -54,22 +54,22 @@ void TerrainGenerator::prepare(
     auto* heightMap = prepareHeightMap(ctx, container);
 
     createTiles(ctx, container, heightMap);
+    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
 void TerrainGenerator::prepareEntity(
-    const PrepareContext& ctx,
     Snapshot& snapshot,
-    uint32_t snapshotIndex)
+    EntitySSBO& entity,
+    uint32_t index)
 {
     // TODO KI WT vs RT conflict
-    auto* entity = ctx.m_registry->m_entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
-    const auto& info = m_tileInfos[snapshotIndex];
+    const auto& info = m_tileInfos[index];
 
-    entity->u_tileX = info.m_tileX;
-    entity->u_tileY = info.m_tileY;
+    entity.u_tileX = info.m_tileX;
+    entity.u_tileY = info.m_tileY;
 
-    entity->u_rangeYmin = m_verticalRange[0];
-    entity->u_rangeYmax = m_verticalRange[1];
+    entity.u_rangeYmin = m_verticalRange[0];
+    entity.u_rangeYmax = m_verticalRange[1];
 }
 
 

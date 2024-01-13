@@ -15,6 +15,9 @@
 
 #include "render/RenderContext.h"
 
+#include "registry/Registry.h"
+#include "registry/SnapshotRegistry.h"
+
 namespace {
     std::array<std::string,6> texts{
         "This the story",
@@ -98,5 +101,7 @@ void TextGenerator::bindBatch(
     render::Batch& batch)
 {
     m_draw->updateRT(ctx.m_state);
-    batch.addSnapshot(ctx, container.getSnapshot());
+
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
+    batch.addSnapshot(ctx, snapshot);
 }

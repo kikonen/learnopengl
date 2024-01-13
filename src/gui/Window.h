@@ -3,13 +3,16 @@
 #include <functional>
 #include <string>
 
+#include "gui/Input.h"
+
 #include "ki/RenderClock.h"
 
 #include "kigl/kigl.h"
 
 #include "imgui.h"
 
-class Input;
+struct InputContext;
+
 class Engine;
 
 class Window final
@@ -38,7 +41,7 @@ public:
 
     void toggleFullScreen();
 
-    void processInput(const ki::RenderClock& clock);
+    void processInput(const InputContext& ctx);
 
     void onWindowResize(int width, int height);
     void onMouseMove(float xpos, float ypos);

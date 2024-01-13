@@ -71,36 +71,39 @@ void Input::updateKeyStates()
     }
 }
 
-bool Input::isKeyDown(Key key)
+bool Input::isKeyDown(Key key) const noexcept
 {
-    int* code = m_keyMappings[key];
-    if (code) {
-        while (*code) {
-            if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
-                return true;
-            }
-            code++;
+    const auto& it = m_keyMappings.find(key);
+    if (it == m_keyMappings.end()) return false;
+
+    int* code = it->second;
+    while (*code) {
+        if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
+            return true;
         }
+        code++;
     }
     return false;
 }
 
-bool Input::isModifierDown(Modifier modifier) {
-    int* code = m_modifierMappings[modifier];
-    if (code) {
-        while (*code) {
-            if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
-                return true;
-            }
-            code++;
+bool Input::isModifierDown(Modifier modifier) const noexcept {
+    const auto& it = m_modifierMappings.find(modifier);
+    if (it == m_modifierMappings.end()) return false;
+
+    int* code = it->second;
+    while (*code) {
+        if (glfwGetKey(window->m_glfwWindow, *code) == GLFW_PRESS) {
+            return true;
         }
+        code++;
     }
     return false;
 }
 
-bool Input::isModifierPressed(Modifier modifier)
+bool Input::isModifierPressed(Modifier modifier) const noexcept
 {
-    return m_modifierPressed[modifier];
+    const auto& it = m_modifierPressed.find(modifier);
+    return it != m_modifierPressed.end() ? it->second : false;
 }
 
 void Input::onMouseMove(float xpos, float ypos)

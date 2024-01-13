@@ -4,6 +4,8 @@
 
 #include "kigl/GLState.h"
 
+#include "ki/RenderClock.h"
+
 #include "asset/Assets.h"
 #include "registry/Registry.h"
 
@@ -38,6 +40,10 @@ public:
         return m_registry.get();
     }
 
+    inline const ki::RenderClock& getClock() const noexcept {
+        return m_clock;
+    }
+
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
@@ -65,6 +71,8 @@ public:
     std::unique_ptr<Window> m_window;
 protected:
     Assets m_assets;
+
+    ki::RenderClock m_clock;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 

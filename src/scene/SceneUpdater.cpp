@@ -22,6 +22,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "component/ParticleGenerator.h"
 
@@ -189,6 +190,9 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //if (m_particleSystem) {
     //    m_particleSystem->update(ctx);
     //}
+
+    // NOTE KI sync to RT
+    m_registry->m_snapshotRegistry->swap();
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)

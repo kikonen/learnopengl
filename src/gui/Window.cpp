@@ -5,6 +5,7 @@
 #include "asset/Assets.h"
 
 #include "engine/Engine.h"
+#include "engine/InputContext.h"
 
 #include "controller/NodeController.h"
 #include "controller/VolumeController.h"
@@ -226,7 +227,7 @@ void Window::bindGLFWCallbacks()
         });
 }
 
-void Window::processInput(const ki::RenderClock& clock)
+void Window::processInput(const InputContext& ctx)
 {
     m_input->updateKeyStates();
 
@@ -260,14 +261,14 @@ void Window::processInput(const ki::RenderClock& clock)
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onKey(m_input.get(), clock);
+                controller->onKey(ctx);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onKey(m_input.get(), clock);
+                controller->onKey(ctx);
             }
         }
     }
@@ -286,6 +287,11 @@ void Window::onWindowResize(int width, int height)
 void Window::onMouseMove(float xpos, float ypos)
 {
     const auto& assets = m_engine.getAssets();
+    const InputContext ctx{
+        m_engine.getClock(),
+        assets,
+        m_engine.getRegistry(),
+        m_input.get() };
 
     m_input->onMouseMove(xpos, ypos);
 
@@ -301,14 +307,14 @@ void Window::onMouseMove(float xpos, float ypos)
         {
             if (nodeControllers) {
                 for (auto* controller : *nodeControllers) {
-                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
                 }
             }
         }
         {
             if (cameraControllers && cameraControllers != nodeControllers) {
                 for (auto* controller : *cameraControllers) {
-                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
                 }
             }
         }
@@ -325,20 +331,26 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
+    const InputContext ctx{
+        m_engine.getClock(),
+        m_engine.getAssets(),
+        m_engine.getRegistry(),
+        m_input.get() };
+
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
     auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
 
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+                controller->onMouseScroll(ctx, xoffset, yoffset);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+                controller->onMouseScroll(ctx, xoffset, yoffset);
             }
         }
     }

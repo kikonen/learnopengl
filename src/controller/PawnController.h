@@ -12,8 +12,13 @@ public:
         const PrepareContext& ctx,
         Node& node) override;
 
-    virtual void onKey(Input* input, const ki::RenderClock& clock) override;
-    virtual void onMouseMove(Input* input, float xoffset, float yoffset) override;
+    virtual void onKey(
+        const InputContext& ctx) override;
+
+    virtual void onMouseMove(
+        const InputContext& ctx,
+        float xoffset,
+        float yoffset) override;
 
 private:
     Node* m_node{ nullptr };

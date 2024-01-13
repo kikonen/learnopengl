@@ -97,6 +97,5 @@ struct Snapshot {
     }
 
     void updateEntity(
-        const UpdateContext& ctx,
-        EntitySSBO* entity);
+        EntitySSBO& entity);
 };

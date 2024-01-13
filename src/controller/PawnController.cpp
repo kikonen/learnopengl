@@ -3,6 +3,8 @@
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 
+#include "gui/Input.h"
+
 #include "model/Node.h"
 
 
@@ -11,9 +13,10 @@
 #include "script/api/MoveNode.h"
 
 #include "engine/PrepareContext.h"
-#include "engine/UpdateContext.h"
+#include "engine/InputContext.h"
 
 #include "registry/Registry.h"
+#include "registry/SnapshotRegistry.h"
 
 
 PawnController::PawnController()
@@ -38,13 +41,17 @@ void PawnController::prepare(
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
-void PawnController::onKey(Input* input, const ki::RenderClock& clock)
+void PawnController::onKey(
+    const InputContext& ctx)
 {
     if (!m_node) return;
 
-    const float dt = clock.elapsedSecs;
+    const auto* input = ctx.m_input;
 
-    const auto& snapshot = m_node->getSnapshot();
+    const float dt = ctx.m_clock.elapsedSecs;
+
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
+    const auto& viewUp = snapshot.getViewUp();
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ m_speedRotateNormal };
@@ -118,8 +125,6 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
         }
 
         {
-            const auto& viewUp = snapshot.getViewUp();
-
             if (input->isKeyDown(Key::UP)) {
                 adjust += viewUp * dt * moveSpeed.y;
                 changed = true;
@@ -146,13 +151,16 @@ void PawnController::onKey(Input* input, const ki::RenderClock& clock)
     }
 }
 
-void PawnController::onMouseMove(Input* input, float xoffset, float yoffset)
+void PawnController::onMouseMove(
+    const InputContext& ctx,
+    float xoffset,
+    float yoffset)
 {
     if (!m_node) return;
 
     bool changed = false;
 
-    const auto& snapshot = m_node->getSnapshot();
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
 
     glm::vec3 adjust{ 0.f };
 

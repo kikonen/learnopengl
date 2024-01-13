@@ -1,12 +1,9 @@
 #pragma once
 
-#include "ki/RenderClock.h"
-
 #include "kigl/kigl.h"
 
-#include "gui/Input.h"
-
 struct PrepareContext;
+struct InputContext;
 struct UpdateContext;
 class Registry;
 
@@ -29,9 +26,18 @@ public:
         return false;
     }
 
-    virtual void onKey(Input* input, const ki::RenderClock& clock) {};
-    virtual void onMouseMove(Input* input, float xoffset, float yoffset) {};
-    virtual void onMouseScroll(Input* input, float xoffset, float yoffset) {};
+    virtual void onKey(
+        const InputContext& ctx) {};
+
+    virtual void onMouseMove(
+        const InputContext& ctx,
+        float xoffset,
+        float yoffset) {};
+
+    virtual void onMouseScroll(
+        const InputContext& ctx,
+        float xoffset,
+        float yoffset) {};
 
 protected:
     bool m_prepared{ false };

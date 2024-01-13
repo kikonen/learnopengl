@@ -59,10 +59,6 @@ public:
 
     void updateWT(const UpdateContext& ctx) noexcept;
 
-    void updateEntity(
-        const UpdateContext& ctx,
-        EntityRegistry* entityRegistry);
-
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
     const backend::DrawOptions& getDrawOptions() const noexcept;
@@ -95,13 +91,6 @@ public:
 
     inline NodeTransform& modifyTransform() noexcept {
         return m_transform;
-    }
-
-    void snapshotWT() noexcept;
-    void snapshotRT() noexcept;
-
-    inline const Snapshot& getSnapshot() const noexcept {
-        return m_snapshotRT;
     }
 
     void updateModelMatrix() noexcept;
@@ -162,15 +151,16 @@ public:
 
     NodeGenerator* m_instancer{ nullptr };
 
+    uint32_t m_snapshotIndex{ 0 };
+    uint32_t m_entityIndex{ 0 };
+
+    bool m_preparedRT{ false };
+
 private:
     Node* m_parent{ nullptr };
     std::vector<Node*> m_children;
 
     NodeTransform m_transform;
-
-    Snapshot m_snapshotWT;
-    Snapshot m_snapshotRT;
-    bool m_forceUpdateSnapshot : 1 { true };
 
     int m_cloneIndex{ 0 };
 

@@ -306,6 +306,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
 void Scene::handleNodeAdded(Node* node)
 {
+    m_registry->m_nodeRegistry->handleNodeAdded(node);
     m_nodeDraw->handleNodeAdded(node);
     m_mirrorMapRenderer->handleNodeAdded(node);
     m_waterMapRenderer->handleNodeAdded(node);

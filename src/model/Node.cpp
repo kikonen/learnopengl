@@ -22,6 +22,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 
 #include "engine/UpdateContext.h"
@@ -67,30 +68,34 @@ void Node::prepare(
     auto& registry = ctx.m_registry;
 
     if (m_type->getMesh()) {
-        m_transform.setMaterialIndex(m_type->getMaterialIndex());
-
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        ki::size_t_entity_flags flags = 0;
+        {
+            m_transform.setMaterialIndex(m_type->getMaterialIndex());
 
-        if (m_type->m_entityType == mesh::EntityType::billboard) {
-            flags |= ENTITY_BILLBOARD_BIT;
-        }
-        if (m_type->m_entityType == mesh::EntityType::sprite) {
-            flags |= ENTITY_SPRITE_BIT;
-            auto& shape = m_type->m_sprite->m_shapes[m_type->m_sprite->m_shapes.size() - 1];
-            m_transform.m_shapeIndex = shape.m_registeredIndex;
-            //m_instance.m_materialIndex = shape.m_materialIndex;
-        }
-        if (m_type->m_entityType == mesh::EntityType::skybox) {
-            flags |= ENTITY_SKYBOX_BIT;
-        }
-        if (m_type->m_flags.noFrustum) {
-            flags |= ENTITY_NO_FRUSTUM_BIT;
+            ki::size_t_entity_flags flags = 0;
+
+            if (m_type->m_entityType == mesh::EntityType::billboard) {
+                flags |= ENTITY_BILLBOARD_BIT;
+            }
+            if (m_type->m_entityType == mesh::EntityType::sprite) {
+                flags |= ENTITY_SPRITE_BIT;
+                auto& shape = m_type->m_sprite->m_shapes[m_type->m_sprite->m_shapes.size() - 1];
+                m_transform.m_shapeIndex = shape.m_registeredIndex;
+                //m_instance.m_materialIndex = shape.m_materialIndex;
+            }
+            if (m_type->m_entityType == mesh::EntityType::skybox) {
+                flags |= ENTITY_SKYBOX_BIT;
+            }
+            if (m_type->m_flags.noFrustum) {
+                flags |= ENTITY_NO_FRUSTUM_BIT;
+            }
+
+            m_transform.m_flags = flags;
         }
 
-        m_transform.m_flags = flags;
     }
+    m_snapshotIndex = ctx.m_registry->m_snapshotRegistry->registerSnapshot();
 
     if (m_generator) {
         m_generator->prepare(ctx, *this);
@@ -100,6 +105,11 @@ void Node::prepare(
 void Node::prepareRT(
     const PrepareContext& ctx)
 {
+    if (m_type->getMesh()) {
+        m_entityIndex = ctx.m_registry->m_entityRegistry->registerEntity();
+    }
+
+    m_preparedRT = true;
 }
 
 void Node::updateWT(
@@ -116,64 +126,10 @@ void Node::updateWT(
     }
 }
 
-void Node::snapshotWT() noexcept {
-    auto& transform = m_transform;
-    if (!m_forceUpdateSnapshot && !transform.m_dirtySnapshot) return;
-
-    {
-        assert(!transform.m_dirty);
-        m_snapshotWT = transform;
-        m_snapshotWT.m_dirty = true;
-    }
-
-    if (m_generator) {
-        m_generator->snapshotWT(m_forceUpdateSnapshot);
-    }
-
-    transform.m_dirtySnapshot = false;
-    m_forceUpdateSnapshot = false;
-}
-
-void Node::snapshotRT() noexcept {
-    if (m_snapshotWT.m_dirty) {
-        m_snapshotRT = m_snapshotWT;
-        m_snapshotWT.m_dirty = false;
-    }
-
-    if (m_generator) {
-        m_generator->snapshotRT(false);
-    }
-}
-
 bool Node::isEntity() const noexcept
 {
     return m_type->getMesh() &&
         !m_type->m_flags.invisible;
-}
-
-void Node::updateEntity(
-    const UpdateContext& ctx,
-    EntityRegistry* entityRegistry)
-{
-    auto& snapshot = m_snapshotRT;
-
-    if (snapshot.m_entityIndex == -1 && m_type->getMesh()) {
-        snapshot.m_entityIndex = entityRegistry->registerEntity();
-    }
-
-    if (snapshot.m_dirty && snapshot.m_entityIndex != -1)
-    {
-        auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
-
-        entity->u_objectID = m_id;
-        entity->u_highlightIndex = getHighlightIndex(ctx.m_assets);
-
-        snapshot.updateEntity(ctx, entity);
-    }
-
-    if (m_generator) {
-        m_generator->updateEntity(ctx, *this, entityRegistry, false);
-    }
 }
 
 void Node::updateVAO(const RenderContext& ctx) noexcept
@@ -203,12 +159,14 @@ const backend::DrawOptions& Node::getDrawOptions() const noexcept
     }
 }
 
-void Node::bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept
+void Node::bindBatch(
+    const RenderContext& ctx,
+    render::Batch& batch) noexcept
 {
     if (m_instancer) {
         m_instancer->bindBatch(ctx, *this, batch);
     } else {
-        batch.addSnapshot(ctx, m_snapshotRT);
+        batch.addSnapshot(ctx, ctx.m_registry->m_snapshotRegistry->getSnapshot(m_snapshotIndex));
     }
 }
 
@@ -227,7 +185,11 @@ void Node::setTagMaterialIndex(int index)
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateSnapshot = true;
+        if (m_generator) {
+            for (auto& transform : m_generator->modifyTransforms()) {
+                transform.m_dirtySnapshot = true;
+            }
+        }
     }
 }
 
@@ -236,7 +198,11 @@ void Node::setSelectionMaterialIndex(int index)
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
         m_transform.m_dirtySnapshot = true;
-        m_forceUpdateSnapshot = true;
+        if (m_generator) {
+            for (auto& transform : m_generator->modifyTransforms()) {
+                transform.m_dirtySnapshot = true;
+            }
+        }
     }
 }
 

@@ -1,9 +1,11 @@
 #include "CameraZoomController.h"
 
+#include "gui/Input.h"
+
 #include "model/Node.h"
 
 #include "engine/PrepareContext.h"
-#include "engine/UpdateContext.h"
+#include "engine/InputContext.h"
 
 #include "component/Camera.h"
 
@@ -14,6 +16,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 
 CameraZoomController::CameraZoomController()
@@ -37,11 +40,15 @@ void CameraZoomController::prepare(
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
 }
 
-void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
+void CameraZoomController::onKey(
+    const InputContext& ctx)
 {
     if (!m_node) return;
+
+    const auto* input = ctx.m_input;
+
     auto* camera = m_node->m_camera.get();
-    const float dt = clock.elapsedSecs;
+    const float dt = ctx.m_clock.elapsedSecs;
 
     glm::vec3 zoomSpeed{ m_speedZoomNormal };
 
@@ -86,7 +93,10 @@ void CameraZoomController::onKey(Input* input, const ki::RenderClock& clock)
     }
 }
 
-void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffset)
+void CameraZoomController::onMouseMove(
+    const InputContext& ctx,
+    float xoffset,
+    float yoffset)
 {
     if (!m_node) return;
 
@@ -95,7 +105,8 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& snapshot = m_node->getSnapshot();
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
+
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;
     if (currX == 180.f) {
@@ -133,7 +144,10 @@ void CameraZoomController::onMouseMove(Input* input, float xoffset, float yoffse
     }
 }
 
-void CameraZoomController::onMouseScroll(Input* input, float xoffset, float yoffset)
+void CameraZoomController::onMouseScroll(
+    const InputContext& ctx,
+    float xoffset,
+    float yoffset)
 {
     if (!m_node) return;
     auto* camera = m_node->m_camera.get();

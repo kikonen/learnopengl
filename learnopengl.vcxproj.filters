@@ -594,6 +594,12 @@
     <ClCompile Include="src\mesh\PositionVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\registry\SnapshotRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\InputContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1400,7 +1406,22 @@
     <ClInclude Include="src\kigl\GLSyncQueue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\registry\TerrainTileSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\model\EntityFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\SnapshotRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\InputContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DirtyVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DirtyVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

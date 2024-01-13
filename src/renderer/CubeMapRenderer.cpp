@@ -17,6 +17,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -183,8 +184,12 @@ bool CubeMapRenderer::render(
     if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
-            const auto& centerPos = centerNode->getSnapshot().getWorldPosition();
+            const auto* rootNode = parentCtx.m_registry->m_nodeRegistry->getRootRT();
+            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
+            const auto& rootSnapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(rootNode->m_snapshotIndex);
+
+            const auto& rootPos = rootSnapshot.getWorldPosition();
+            const auto& centerPos = snapshot.getWorldPosition();
             const auto tagPos = centerPos - rootPos;
 
             m_registry->m_commandEngine->addCommand(
@@ -220,7 +225,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = centerNode->getSnapshot();
+        const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
         const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
@@ -357,7 +362,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& snapshot = node->getSnapshot();
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
 

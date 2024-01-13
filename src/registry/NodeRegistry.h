@@ -20,6 +20,7 @@ struct Material;
 struct UpdateContext;
 
 class Registry;
+class SnapshotRegistry;
 
 class Node;
 using NodeVector = std::vector<Node*>;
@@ -41,13 +42,28 @@ public:
     void updateRT(const UpdateContext& ctx);
     void updateEntity(const UpdateContext& ctx);
 
+    void snapshotWT(SnapshotRegistry& snapshotRegistry);
+    void snapshotRT(SnapshotRegistry& snapshotRegistry);
+
     void attachListeners();
+
+    void handleNodeAdded(Node* node);
 
     //inline bool containsNode(const int id) const noexcept
     //{
     //    const auto& it = m_idToNode.find(id);
     //    return it != m_idToNode.end();
     //}
+
+    // @return root if root is prepared for RT
+    Node* getRootRT() const noexcept {
+        return m_rootPreparedRT ? m_root : nullptr;
+    }
+
+    // @return root if root is prepared for WT
+    Node* getRootWT() const noexcept {
+        return m_root;
+    }
 
     // @return node null if not found
     inline Node* getNode(const ki::node_id id) const noexcept
@@ -135,15 +151,16 @@ private:
         Node* node) noexcept;
 
 public:
-    // EntityRegistry
-    std::vector<Node*> m_allNodes;
-
-    Node* m_root{ nullptr };
-
     Node* m_skybox{ nullptr };
 
 private:
     const Assets& m_assets;
+
+    Node* m_root{ nullptr };
+    bool m_rootPreparedRT{ false };
+
+    // EntityRegistry
+    std::vector<Node*> m_allNodes;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 

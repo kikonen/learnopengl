@@ -24,6 +24,8 @@ void GridGenerator::prepare(
     prepareInstances(
         ctx,
         container);
+
+    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
 void GridGenerator::update(

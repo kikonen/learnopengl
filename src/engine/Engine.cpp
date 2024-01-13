@@ -17,8 +17,10 @@
 #include "asset/MaterialSSBO.h"
 
 #include "engine/AsyncLoader.h"
+#include "engine/InputContext.h"
 
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "gui/Window.h"
 
@@ -133,7 +135,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     std::chrono::duration<float> renderDuration;
     std::chrono::duration<float> frameDuration;
 
-    ki::RenderClock clock;
+    ki::RenderClock& clock = m_clock;
 
     float frameSecs = 0;
 
@@ -148,6 +150,12 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         fpsSecs[i] = 0.f;
         renderSecs[i] = 0.f;
     }
+
+    InputContext inputCtx{
+        clock,
+        m_assets,
+        m_registry.get(),
+        m_window->m_input.get() };
 
     // render loop
     // -----------
@@ -165,9 +173,13 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
+            m_registry->m_snapshotRegistry->lock();
+
             // input
             // -----
-            m_window->processInput(clock);
+            {
+                m_window->processInput(inputCtx);
+            }
 
             // render
             // ------
@@ -201,6 +213,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 renderDuration = renderEnd - renderStart;
                 renderSecs[avgIndex] = renderDuration.count();
             }
+
+            m_registry->m_snapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();

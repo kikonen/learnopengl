@@ -24,6 +24,7 @@
 
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "engine/AssetsLoader.h"
 

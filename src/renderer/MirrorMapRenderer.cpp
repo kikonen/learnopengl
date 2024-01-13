@@ -19,6 +19,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 
@@ -197,7 +198,7 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            const auto& snapshot = closest->getSnapshot();
+            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
             const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
@@ -358,7 +359,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& snapshot = node->getSnapshot();
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const auto& viewFront = snapshot.getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);

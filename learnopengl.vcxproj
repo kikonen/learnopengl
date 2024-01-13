@@ -188,6 +188,7 @@
     <ClCompile Include="src\asset\ProgramUniforms.cpp" />
     <ClCompile Include="src\asset\Shape.cpp" />
     <ClCompile Include="src\asset\Sprite.cpp" />
+    <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
+    <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
     <ClCompile Include="src\text\TextMaterial.cpp" />
@@ -386,6 +388,7 @@
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
     <ClInclude Include="src\asset\ViewportEffect.h" />
+    <ClInclude Include="src\engine\InputContext.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
@@ -401,6 +404,8 @@
     <ClInclude Include="src\mesh\TextureEntry.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
     <ClInclude Include="src\registry\FontRegistry.h" />
+    <ClInclude Include="src\registry\SnapshotRegistry.h" />
+    <ClInclude Include="src\registry\TerrainTileSSBO.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\size.h" />
@@ -585,6 +590,8 @@
     <ClInclude Include="src\script\size.h" />
     <ClInclude Include="src\text\FontHandle.h" />
     <ClInclude Include="src\text\TextDraw.h" />
+    <ClInclude Include="src\util\DirtyVector.h" />
+    <ClInclude Include="src\util\DirtyVector.hpp" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\util\Log.h" />

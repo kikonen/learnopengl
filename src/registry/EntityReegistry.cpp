@@ -28,6 +28,8 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
+    // null entry
+    registerEntity();
 }
 
 void EntityRegistry::prepare()
@@ -154,13 +156,13 @@ void EntityRegistry::bind(
 }
 
 // index of entity
-int EntityRegistry::registerEntity()
+uint32_t EntityRegistry::registerEntity()
 {
     return registerEntityRange(1);
 }
 
 // @return first index of range
-int EntityRegistry::registerEntityRange(const size_t count)
+uint32_t EntityRegistry::registerEntityRange(const size_t count)
 {
     ASSERT_RT();
 
@@ -187,20 +189,7 @@ int EntityRegistry::registerEntityRange(const size_t count)
 
     KI_INFO(fmt::format("Entity: ADDED_RANGE: firstIndex={}, count={}, newSize={}", firstIndex, count, m_entries.size()));
 
-    return static_cast<int>(firstIndex);
-}
-
-const EntitySSBO* EntityRegistry::getEntity(int index) const
-{
-    ASSERT_RT();
-    return &m_entries[index];
-}
-
-EntitySSBO* EntityRegistry::modifyEntity(int index, bool dirty)
-{
-    ASSERT_RT();
-    if (dirty) markDirty(index);
-    return &m_entries[index];
+    return static_cast<uint32_t>(firstIndex);
 }
 
 void EntityRegistry::markDirty(int index)

@@ -30,7 +30,8 @@ bool VolumeController::updateWT(
     const auto& modelMatrix = transform.getModelMatrix();
     const auto& maxScale = transform.getWorldMaxScale();
 
-    const auto& rootPos = ctx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
+    const auto* rootNode = ctx.m_registry->m_nodeRegistry->getRootWT();
+    const auto& rootPos = rootNode->getTransform().getWorldPosition();
 
     const auto& volume = transform.getVolume();
     const glm::vec3 volumeCenter = glm::vec3(volume);

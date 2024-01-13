@@ -8,6 +8,10 @@
 #include "model/Node.h"
 #include "render/RenderContext.h"
 
+#include "registry/Registry.h"
+#include "registry/SnapshotRegistry.h"
+
+
 const float MIN_FOV = 10.0f;
 // NOTE KI 90 to allow cubemap & shadowmap wide angle
 const float MAX_FOV = 90.0f;
@@ -31,12 +35,15 @@ void Camera::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const auto& snapshot = node.getSnapshot();
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node.m_snapshotIndex);
+
     const auto& level = snapshot.getMatrixLevel();
     const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
-    m_nodeQuat = node.getParent()->getSnapshot().getQuatRotation() * snapshot.getQuatRotation();
+    const auto& parentSnapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node.getParent()->m_snapshotIndex);
+
+    m_nodeQuat = parentSnapshot.getQuatRotation() * snapshot.getQuatRotation();
     m_worldPosition = snapshot.getWorldPosition();
 
     m_dirty = true;

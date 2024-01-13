@@ -43,8 +43,8 @@ public:
 
 private:
     virtual void prepareEntity(
-        const PrepareContext& ctx,
         Snapshot& snapshot,
+        EntitySSBO& entity,
         uint32_t snapshotIndex) override;
 
     void updateTiles(

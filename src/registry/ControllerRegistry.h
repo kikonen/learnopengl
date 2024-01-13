@@ -27,6 +27,9 @@ public:
     template<typename T>
     inline T* get(Node* node) const noexcept
     {
+        if (!node) return nullptr;
+        if (!node->m_preparedRT) return nullptr;
+
         const auto& it = m_controllers.find(node->m_id);
         if (it == m_controllers.end()) return nullptr;
 
@@ -40,6 +43,7 @@ public:
     inline bool hasController(Node* node) const noexcept
     {
         if (!node) return false;
+        if (!node->m_preparedRT) return false;
 
         const auto& it = m_controllers.find(node->m_id);
         return it != m_controllers.end() && !it->second.empty();
@@ -48,6 +52,7 @@ public:
     inline NodeController* getFirst(Node* node) const noexcept
     {
         if (!node) return nullptr;
+        if (!node->m_preparedRT) return nullptr;
 
         const auto& it = m_controllers.find(node->m_id);
         return it != m_controllers.end() ? it->second[0] : nullptr;
@@ -56,6 +61,7 @@ public:
 	inline const std::vector<NodeController*>* getControllers(Node* node) const noexcept
 	{
         if (!node) return nullptr;
+        if (!node->m_preparedRT) return nullptr;
 
         const auto& it = m_controllers.find(node->m_id);
 		return it != m_controllers.end() ? &it->second : nullptr;

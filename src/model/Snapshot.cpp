@@ -99,22 +99,21 @@ const glm::vec3& Snapshot::getDegreesRotation() const noexcept
 }
 
 void Snapshot::updateEntity(
-    const UpdateContext& ctx,
-    EntitySSBO* entity)
+    EntitySSBO& entity)
 {
     ASSERT_RT();
 
-    entity->u_flags = m_flags;
+    entity.u_flags = m_flags;
 
-    entity->u_materialIndex = m_materialIndex;
-    entity->u_shapeIndex = m_shapeIndex;
+    entity.u_materialIndex = m_materialIndex;
+    entity.u_shapeIndex = m_shapeIndex;
 
-    entity->u_volume = m_volume;
+    entity.u_volume = m_volume;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     const auto uniformScale  = m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z;
 
-    entity->setModelMatrix(m_modelMatrix, uniformScale, true);
+    entity.setModelMatrix(m_modelMatrix, uniformScale, true);
 
-    entity->u_worldScale = m_modelScale;
+    entity.u_worldScale = m_modelScale;
 }

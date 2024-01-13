@@ -4,6 +4,7 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
+#include <span>
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
@@ -31,13 +32,29 @@ public:
     void bind(const RenderContext& ctx);
 
     // index of entity
-    int registerEntity();
+    uint32_t registerEntity();
 
     // @return first index of range
-    int registerEntityRange(const size_t count);
+    uint32_t registerEntityRange(const size_t count);
 
-    const EntitySSBO* getEntity(int index) const;
-    EntitySSBO* modifyEntity(int index, bool dirty);
+    const EntitySSBO* getEntity(int index) const noexcept
+    {
+        return &m_entries[index];
+    }
+
+    inline const std::span<EntitySSBO> getEntityRange(uint32_t start, uint32_t count) noexcept {
+        return std::span{ m_entries }.subspan(start, count);
+    }
+
+    EntitySSBO* modifyEntity(int index, bool dirty)
+    {
+        if (dirty) markDirty(index);
+        return &m_entries[index];
+    }
+
+    inline std::span<EntitySSBO> modifyEntityRange(uint32_t start, uint32_t count) noexcept {
+        return std::span{ m_entries }.subspan(start, count);
+    }
 
     void markDirty(int index);
 
