@@ -1,6 +1,6 @@
 #include "SnapshotRegistry.h"
 
-#include "util/DirtyVector.h"
+#include "util/DirtyVector.hpp"
 
 
 SnapshotRegistry::SnapshotRegistry()
