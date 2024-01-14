@@ -26,7 +26,10 @@ struct AABB final
         return *this;
     }
 
-    AABB(const glm::vec3& min, const glm::vec3& max, bool quad) noexcept
+    AABB(
+        const glm::vec3& min,
+        const glm::vec3& max,
+        bool quad) noexcept
         : m_min{ min },
         m_max{ max },
         m_quad{ quad }

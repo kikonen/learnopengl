@@ -2,9 +2,14 @@
 
 #include <string>
 
+#include "asset/AABB.h"
+
 #include "NodeGenerator.h"
 
 #include "backend/DrawOptions.h"
+
+#include "mesh/ModelVBO.h"
+#include "mesh/ModelVAO.h"
 
 #include "text/size.h"
 
@@ -20,8 +25,18 @@ public:
         const PrepareContext& ctx,
         Node& container) override;
 
+    virtual void prepareRT(
+        const PrepareContext& ctx,
+        Node& container) override;
+
     virtual void update(
         const UpdateContext& ctx,
+        Node& container) override;
+
+    virtual void updateEntity(
+        const Assets& assets,
+        SnapshotRegistry& snapshotRegistry,
+        EntityRegistry& entityRegistry,
         Node& container) override;
 
     virtual void updateVAO(
@@ -53,8 +68,15 @@ public:
         m_dirty = true;
     }
 
+    void clear();
+
 private:
     bool m_dirty{ true };
+
+    AABB m_aabb;
+
+    mesh::ModelVAO m_vao{ "text" };
+    mesh::ModelVBO m_vbo;
 
     backend::DrawOptions m_drawOptions;
     std::unique_ptr<text::TextDraw> m_draw;

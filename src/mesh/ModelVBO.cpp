@@ -1,5 +1,7 @@
 #include "ModelVBO.h"
 
+#include <algorithm>
+
 #include "glm/glm.hpp"
 
 #include "mesh/ModelMesh.h"
@@ -32,6 +34,25 @@ namespace mesh {
         m_normalEntries.clear();
         m_textureEntries.clear();
         m_indexEntries.clear();
+    }
+
+    AABB ModelVBO::calculateAABB() const noexcept
+    {
+        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+        for (auto&& vertex : m_positionEntries)
+        {
+            minAABB.x = std::min(minAABB.x, vertex.pos.x);
+            minAABB.y = std::min(minAABB.y, vertex.pos.y);
+            minAABB.z = std::min(minAABB.z, vertex.pos.z);
+
+            maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
+            maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
+            maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+        }
+
+        return { minAABB, maxAABB, false };
     }
 
     void ModelVBO::preparePosition(

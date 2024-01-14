@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/AABB.h"
+
 #include "mesh/PositionEntry.h"
 #include "mesh/NormalEntry.h"
 #include "mesh/TextureEntry.h"
@@ -22,11 +24,14 @@ namespace mesh {
         void prepare(
             ModelMesh& mesh);
 
+        AABB calculateAABB() const noexcept;
+
         void clear();
 
         GLsizei getIndexCount() const noexcept {
             return static_cast<GLsizei>(m_indexEntries.size() * 3);
         }
+
 
     private:
         void preparePosition(
@@ -47,6 +52,8 @@ namespace mesh {
 
         // NOTE KI absolute offset into EBO
         size_t m_indexOffset{ 0 };
+
+        glm::vec3 m_positionOffset{ 0.f };
 
         std::vector<PositionEntry> m_positionEntries;
         std::vector<NormalEntry> m_normalEntries;

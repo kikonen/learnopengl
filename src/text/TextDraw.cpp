@@ -41,7 +41,7 @@ namespace
         mesh::ModelVBO& vbo,
         text::FontAtlas* fontAtlas,
         std::string_view text,
-        glm::vec2 pen)
+        glm::vec2& pen)
     {
         const glm::vec3 normal{ 0.f, 0.f, 0.f };
         const glm::vec3 tangent{ 0.f, 0.f, 0.f };
@@ -128,17 +128,14 @@ namespace text
     TextDraw::~TextDraw()
     {}
 
-
     void TextDraw::prepareRT(
         const PrepareContext& ctx)
     {
-        m_vao.prepare("text");
     }
 
     void TextDraw::updateRT(
         kigl::GLState& state)
     {
-        m_vao.updateRT();
         if (m_lastFont) {
             m_lastFont->bindTextures(state);
         }
@@ -148,26 +145,13 @@ namespace text
         const RenderContext& ctx,
         text::font_id fontId,
         std::string_view text,
-        backend::DrawOptions& drawOptions,
-        bool append)
+        glm::vec2& pen,
+        mesh::ModelVBO& vbo)
     {
         auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
         if (!font) return;
 
-        glm::vec2 pen{ 1.f, 1.f };
-
-        m_vbo.clear();
-        addText(m_vbo, font, text, pen);
-
-        if (!append) {
-            m_vao.clear();
-        }
-
-        m_vao.registerModel(m_vbo);
-
-        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vbo.m_vertexOffset);
-        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vbo.m_indexOffset);
-        drawOptions.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
+        addText(vbo, font, text, pen);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry
@@ -176,7 +160,5 @@ namespace text
 
     void TextDraw::clear()
     {
-        m_vao.clear();
-        m_vbo.clear();
     }
 }

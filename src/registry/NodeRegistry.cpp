@@ -387,7 +387,10 @@ void NodeRegistry::attachListeners()
 void NodeRegistry::handleNodeAdded(Node* node)
 {
     m_registry->m_snapshotRegistry->copyFromPending(0);
-
+    if (node->m_generator) {
+        const PrepareContext ctx{ m_assets, m_registry };
+        node->m_generator->prepareRT(ctx, *node);
+    }
     node->m_preparedRT = true;
 
     if (node->m_type->getMesh()) {

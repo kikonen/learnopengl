@@ -198,10 +198,15 @@ namespace mesh {
                 m_positionEntries.reserve(size);
             }
 
+            auto base = m_positionEntries.size();
             m_positionEntries.insert(
                 m_positionEntries.end(),
                 modelVBO.m_positionEntries.begin(),
                 modelVBO.m_positionEntries.end());
+
+            for (size_t i = 0; i < count; i++) {
+                m_positionEntries[base + i].pos += modelVBO.m_positionOffset;
+            }
         }
 
         {
@@ -297,6 +302,10 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
+            m_positionVbo.invalidateRange(
+                updateIndex * sz,
+                updateCount * sz);
+
             m_positionVbo.update(
                 updateIndex * sz,
                 updateCount * sz,
@@ -326,6 +335,10 @@ namespace mesh {
             }
 
             const size_t updateCount = totalCount - updateIndex;
+
+            m_normalVbo.invalidateRange(
+                updateIndex * sz,
+                updateCount * sz);
 
             m_normalVbo.update(
                 updateIndex * sz,
@@ -357,6 +370,10 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
+            m_textureVbo.invalidateRange(
+                updateIndex * sz,
+                updateCount * sz);
+
             m_textureVbo.update(
                 updateIndex * sz,
                 updateCount * sz,
@@ -386,6 +403,10 @@ namespace mesh {
             }
 
             const size_t updateCount = totalCount - updateIndex;
+
+            m_ebo.invalidateRange(
+                updateIndex * sz,
+                updateCount * sz);
 
             m_ebo.update(
                 updateIndex * sz,

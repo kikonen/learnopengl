@@ -43,6 +43,10 @@ public:
         const PrepareContext& ctx,
         Node& container) {}
 
+    virtual void prepareRT(
+        const PrepareContext& ctx,
+        Node& container) {}
+
     virtual void update(
         const UpdateContext& ctx,
         Node& container) {}
