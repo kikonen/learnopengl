@@ -252,7 +252,7 @@
     <ClCompile Include="src\render\WindowBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\EntityReegistry.cpp">
+    <ClCompile Include="src\registry\EntityRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\RenderData.cpp">

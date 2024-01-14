@@ -271,7 +271,7 @@
     <ClCompile Include="src\registry\ImageRegistry.cpp" />
     <ClCompile Include="src\registry\MaterialRegistry.cpp" />
     <ClCompile Include="src\asset\OBB.cpp" />
-    <ClCompile Include="src\registry\EntityReegistry.cpp" />
+    <ClCompile Include="src\registry\EntityRegistry.cpp" />
     <ClCompile Include="src\registry\ModelRegistry.cpp" />
     <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
     <ClCompile Include="src\registry\Registry.cpp" />

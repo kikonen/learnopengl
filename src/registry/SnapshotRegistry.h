@@ -39,7 +39,7 @@ public:
     }
 
     inline bool hasActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
-        return start + count < m_activeSnapshots->size();
+        return start + count <= m_activeSnapshots->size();
     }
 
     inline const std::span<const Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
