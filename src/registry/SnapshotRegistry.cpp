@@ -139,8 +139,8 @@ void SnapshotRegistry::copy(
 
         for (size_t i = startIndex; i < size; i++) {
             if (src[i].m_dirty) {
-                //dst[i] = src[i];
-                memcpy(&dst[i], &src[i], sizeof(Snapshot));
+                dst[i] = src[i];
+                //memcpy(&dst[i], &src[i], sizeof(Snapshot));
                 src[i].m_dirty = false;
             }
         }

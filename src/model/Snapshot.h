@@ -22,7 +22,8 @@ struct Snapshot {
     Snapshot(const NodeTransform&& o);
 
     Snapshot& operator=(const NodeTransform& o) noexcept;
-    Snapshot& operator=(Snapshot& o) noexcept;
+    Snapshot& operator=(Snapshot& o) = default;
+    Snapshot& operator=(const Snapshot& o) = default;
 
     bool m_dirty : 1 {true};
 

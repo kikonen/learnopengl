@@ -18,13 +18,16 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node.m_snapshotIndex);
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
+    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
     const bool nodeChanged = m_nodeMatrixLevel != snapshot.getMatrixLevel();
 
     if (nodeChanged) {
         m_worldPosition = snapshot.getWorldPosition();
     }
 
+    // NOTE KI for "directional" lights also target may change
     if (m_spot || m_directional) {
         if (!m_targetNode) {
             m_targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
@@ -38,7 +41,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) return;
 
-        const auto& targetSnapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(targetNode->m_snapshotIndex);
+        const auto& targetSnapshot = snapshotRegistry.getActiveSnapshot(targetNode->m_snapshotIndex);
 
         const bool targetChanged = m_targetMatrixLevel != targetSnapshot.getMatrixLevel();
         const bool changed = targetChanged || nodeChanged;

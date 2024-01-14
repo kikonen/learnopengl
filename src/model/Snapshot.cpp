@@ -68,28 +68,28 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     return *this;
 }
 
-Snapshot& Snapshot::operator=(Snapshot& o) noexcept
-{
-    m_dirty = o.m_dirty;
-    m_matrixLevel = o.m_matrixLevel;
-
-    m_flags = o.m_flags;
-
-    m_materialIndex = o.m_materialIndex;
-    m_shapeIndex = o.m_shapeIndex;
-
-    m_volume = o.m_volume;
-
-    m_worldPos = o.m_worldPos;
-    m_quatRotation = o.m_quatRotation;
-    m_viewUp = o.m_viewUp;
-    m_viewFront = o.m_viewFront;
-    m_viewRight = o.m_viewRight;
-    m_modelMatrix = o.m_modelMatrix;
-    m_modelScale = o.m_modelScale;
-
-    return *this;
-}
+//Snapshot& Snapshot::operator=(Snapshot& o) noexcept
+//{
+//    m_dirty = o.m_dirty;
+//    m_matrixLevel = o.m_matrixLevel;
+//
+//    m_flags = o.m_flags;
+//
+//    m_materialIndex = o.m_materialIndex;
+//    m_shapeIndex = o.m_shapeIndex;
+//
+//    m_volume = o.m_volume;
+//
+//    m_worldPos = o.m_worldPos;
+//    m_quatRotation = o.m_quatRotation;
+//    m_viewUp = o.m_viewUp;
+//    m_viewFront = o.m_viewFront;
+//    m_viewRight = o.m_viewRight;
+//    m_modelMatrix = o.m_modelMatrix;
+//    m_modelScale = o.m_modelScale;
+//
+//    return *this;
+//}
 
 const glm::vec3& Snapshot::getDegreesRotation() const noexcept
 {
