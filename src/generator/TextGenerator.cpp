@@ -20,14 +20,14 @@
 #include "registry/EntityRegistry.h"
 
 namespace {
-    std::array<std::string,6> texts{
-        "This the story",
-        "And it will continue",
-        "So be prepared",
-        "until the end",
-        "Viva la vida!",
-//        "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
-        "Terveisiä täältä! - ÄÅÖ - äåö",
+    std::array<std::string,3> texts{
+R"(This the story
+And it will continue
+So be prepared
+until the end)",
+"Viva la vida!",
+// "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
+"Terveisiä täältä! - ÄÅÖ - äåö",
     };
 
     float elapsed = 0.f;

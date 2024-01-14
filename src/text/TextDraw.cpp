@@ -33,6 +33,7 @@
 namespace
 {
     const char* MISSING_CH = "?";
+    const char* M_CH = "M";
 
     //
     // Generate verteces for glyphs into buffer
@@ -43,6 +44,7 @@ namespace
         std::string_view text,
         glm::vec2& pen)
     {
+        const auto penOrigin = pen;
         const glm::vec3 normal{ 0.f, 0.f, 0.f };
         const glm::vec3 tangent{ 0.f, 0.f, 0.f };
         const char* prev = { nullptr };
@@ -56,8 +58,23 @@ namespace
 
         auto* font = fontAtlas->getFont()->m_font;
 
+        // @see freetype-gl/text-buffer.c
+        const auto line_ascender = font->ascender;
+        const auto line_descender = font->descender;
+        const auto line_height = line_ascender - line_descender;
+
+        //pen.y += line_ascender;
+
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
         for (const char& ch : text) {
+            float line_top = pen.y + line_ascender;
+
+            if (ch == '\n') {
+                pen.x = penOrigin.x;
+                pen.y -= line_height;
+                //pen.y += line_descender;
+                continue;
+            }
             const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
             if (!glyph) {
                 glyph = texture_font_get_glyph(font, MISSING_CH);
