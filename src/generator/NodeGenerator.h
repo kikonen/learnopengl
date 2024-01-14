@@ -47,7 +47,7 @@ public:
         const PrepareContext& ctx,
         Node& container) {}
 
-    virtual void update(
+    virtual void updateWT(
         const UpdateContext& ctx,
         Node& container) {}
 

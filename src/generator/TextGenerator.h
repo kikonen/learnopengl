@@ -29,7 +29,7 @@ public:
         const PrepareContext& ctx,
         Node& container) override;
 
-    virtual void update(
+    virtual void updateWT(
         const UpdateContext& ctx,
         Node& container) override;
 

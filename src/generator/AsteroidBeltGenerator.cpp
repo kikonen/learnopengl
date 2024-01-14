@@ -37,7 +37,7 @@ void AsteroidBeltGenerator::prepare(
     prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
-void AsteroidBeltGenerator::update(
+void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {

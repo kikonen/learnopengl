@@ -72,7 +72,7 @@ void TerrainGenerator::prepareEntity(
 }
 
 
-void TerrainGenerator::update(
+void TerrainGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {

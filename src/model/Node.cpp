@@ -107,7 +107,7 @@ void Node::updateWT(
 {
     updateModelMatrix();
 
-    if (m_generator) m_generator->update(ctx, *this);
+    if (m_generator) m_generator->updateWT(ctx, *this);
 
     if (!m_children.empty()) {
         for (auto& child : m_children) {

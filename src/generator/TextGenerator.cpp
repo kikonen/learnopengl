@@ -41,7 +41,6 @@ void TextGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    m_draw = std::make_unique<text::TextDraw>();
     m_drawOptions = container.m_type->getDrawOptions();
 
     container.m_instancer = this;
@@ -51,11 +50,12 @@ void TextGenerator::prepareRT(
     const PrepareContext& ctx,
     Node& container)
 {
+    m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
     m_vao.prepare("text");
 }
 
-void TextGenerator::update(
+void TextGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {
