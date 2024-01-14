@@ -1,14 +1,15 @@
 #pragma once
 
-#include "asset/Assets.h"
-
+#include <string>
 
 class Program;
-class Registry;
 
-class UpdateContext;
-class UpdateViewContext;
+struct PrepareContext;
+struct UpdateContext;
+struct UpdateViewContext;
 class RenderContext;
+
+class Registry;
 
 class Node;
 
@@ -25,8 +26,7 @@ public:
     virtual ~Renderer();
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     bool needRender(const RenderContext& ctx);
 

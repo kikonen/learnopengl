@@ -28,10 +28,9 @@ namespace script
     private:
         const glm::vec3 m_axis;
         const float m_radians;
+        float m_previousRadians{ 0.f };
 
         glm::quat m_base{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 m_relativeAxis{ 0.f };
-
-        glm::quat m_start{ 1.f, 0.f, 0.f, 0.f };
     };
 }

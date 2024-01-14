@@ -4,17 +4,21 @@
 
 #include "asset/Assets.h"
 
+#include "engine/PrepareContext.h"
+
 class Registry;
 
 //
 // Context for doing updates, without rendering
 //
-class UpdateContext {
+struct UpdateContext final {
 public:
     UpdateContext(
         const ki::RenderClock& clock,
         const Assets& assets,
         Registry* registry);
+
+    PrepareContext toPrepareContext() const;
 
 public:
     const ki::RenderClock& m_clock;

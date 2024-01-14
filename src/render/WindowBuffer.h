@@ -2,7 +2,7 @@
 
 #include "FrameBuffer.h"
 
-class UpdateViewContext;
+struct UpdateViewContext;
 
 namespace render {
     class WindowBuffer final : public FrameBuffer

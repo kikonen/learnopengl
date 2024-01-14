@@ -1,14 +1,16 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include <memory>
+
+#include <glm/glm.hpp>
 
 #include "AL/alc.h"
 
-#include "asset/Assets.h"
-
 #include "size.h"
 
-class UpdateContext;
+struct UpdateContext;
 
 namespace audio
 {
@@ -22,7 +24,7 @@ namespace audio
     //
     class AudioEngine {
     public:
-        AudioEngine(const Assets& assets);
+        AudioEngine();
         ~AudioEngine();
 
         void prepare();
@@ -74,8 +76,6 @@ namespace audio
         void preparePendingSources(const UpdateContext& ctx);
 
     private:
-        const Assets& m_assets;
-
         bool m_prepared{ false };
         bool m_enabled{ false };
 

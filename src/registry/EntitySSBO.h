@@ -8,12 +8,6 @@
 #include "ki/size.h"
 #include "kigl/kigl.h"
 
-constexpr unsigned int ENTITY_DRAW_ELEMENT_BIT = 1;
-constexpr unsigned int ENTITY_DRAW_ARRAY_BIT = 2;
-constexpr unsigned int ENTITY_BILLBOARD_BIT = 4;
-constexpr unsigned int ENTITY_NO_FRUSTUM_BIT = 8;
-constexpr unsigned int ENTITY_SKYBOX_BIT = 16;
-constexpr unsigned int ENTITY_SPRITE_BIT = 32;
 
 // SSBO entry
 //
@@ -85,7 +79,11 @@ struct EntitySSBO {
     }
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    inline void setModelMatrix(const glm::mat4& mat, bool uniformScale, bool updateNormal) {
+    inline void setModelMatrix(
+        const glm::mat4& mat,
+        bool uniformScale,
+        bool updateNormal)
+    {
         u_modelMatrix = mat;
 
         if (updateNormal) {
@@ -105,7 +103,7 @@ struct EntitySSBO {
                 // The normal matrix is the inverse transpose of the world space transform
                 // (not object space to view space, as you would in a simpler forward rendering pipeline)."
                 // ???
-                auto normalMat = glm::inverseTranspose(mat);
+                const auto& normalMat = glm::inverseTranspose(mat);
                 u_normalMatrix0 = normalMat[0];
                 u_normalMatrix1 = normalMat[1];
                 u_normalMatrix2 = normalMat[2];

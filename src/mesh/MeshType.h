@@ -18,6 +18,8 @@ namespace render {
 
 class Sprite;
 
+struct PrepareContext;
+
 class CustomMaterial;
 class Program;
 class Registry;
@@ -68,12 +70,10 @@ namespace mesh {
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
         void prepare(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void bind(const RenderContext& ctx);
 
@@ -96,7 +96,8 @@ namespace mesh {
         EntityType m_entityType{ EntityType::origo };
         NodeRenderFlags m_flags;
 
-        ki::size_t8 m_priority{ 0 };
+        // NOTE KI *BIGGER* values rendered first (can be negative)
+        uint8_t m_priority{ 0 };
 
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };

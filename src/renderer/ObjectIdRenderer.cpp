@@ -5,7 +5,10 @@
 
 #include "component/Camera.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
+
+#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -84,13 +87,14 @@ ki::node_id ObjectIdRenderer::getObjectId(
 }
 
 void ObjectIdRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepareRT(assets);

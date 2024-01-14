@@ -1,6 +1,6 @@
 #pragma once
 
-#include "asset/Assets.h"
+#include <span>
 
 #include "backend/gl/PerformanceCounters.h"
 
@@ -15,9 +15,13 @@ namespace mesh {
 }
 
 class Program;
+
+struct Snapshot;
+
+struct PrepareContext;
 class RenderContext;
+
 class Node;
-class Registry;
 class EntityRegistry;
 
 namespace render {
@@ -37,25 +41,25 @@ namespace render {
         Batch(const Batch&) = delete;
         Batch& operator=(const Batch&) = delete;
 
-        void add(
+        void addSnapshot(
             const RenderContext& ctx,
-            const int entityIndex) noexcept;
+            const Snapshot& snapshot,
+            uint32_t entityIndex) noexcept;
 
-        void addAll(
+        void addSnapshots(
             const RenderContext& ctx,
-            const std::vector<int> entityIndeces) noexcept;
+            const std::span<const Snapshot>& snapshots,
+            const std::span<uint32_t>& entityIndeces) noexcept;
 
-        void addInstanced(
+        void addSnapshotsInstanced(
             const RenderContext& ctx,
-            int instancedEntityIndex,
-            int firstEntityIndex,
-            int count) noexcept;
+            const std::span<const Snapshot>& snapshots,
+            uint32_t entityBase) noexcept;
 
         void bind() noexcept;
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry,
+            const PrepareContext& ctx,
             int entryCount = -1,
             int bufferCount = -1);
 
@@ -85,7 +89,7 @@ namespace render {
 
         bool inFrustum(
             const RenderContext& ctx,
-            const int entityIndex) const noexcept;
+            const Snapshot& snapshot) const noexcept;
 
     private:
         bool m_prepared = false;

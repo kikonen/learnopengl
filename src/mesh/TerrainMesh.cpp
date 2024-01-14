@@ -43,8 +43,7 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* TerrainMesh::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
@@ -56,9 +55,9 @@ namespace mesh {
     void TerrainMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
-        drawOptions.type = backend::DrawOptions::Type::arrays;
-        drawOptions.mode = GL_PATCHES;
-        drawOptions.indexFirst = 0;
-        drawOptions.indexCount = 1;
+        drawOptions.m_type = backend::DrawOptions::Type::arrays;
+        drawOptions.m_mode = GL_PATCHES;
+        drawOptions.m_indexFirst = 0;
+        drawOptions.m_indexCount = 1;
     }
 }

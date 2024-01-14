@@ -4,9 +4,9 @@
 
 #include "kigl/GLTextureHandle.h"
 
+struct PrepareContext;
 class RenderContext;
-class Assets;
-class Registry;
+
 class Program;
 
 namespace kigl {
@@ -24,8 +24,7 @@ namespace render {
         bool valid() { return m_texture.valid(); }
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void bindTexture(const RenderContext& ctx, int unitIndex);
 

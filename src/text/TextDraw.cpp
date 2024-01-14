@@ -47,6 +47,13 @@ namespace
         const glm::vec3 tangent{ 0.f, 0.f, 0.f };
         const char* prev = { nullptr };
 
+        const mesh::NormalEntry normals[4]{
+            { normal, tangent },
+            { normal, tangent },
+            { normal, tangent },
+            { normal, tangent },
+        };
+
         auto* font = fontAtlas->getFont()->m_font;
 
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
@@ -75,7 +82,7 @@ namespace
             const float s1 = glyph->s1;
             const float t1 = glyph->t1;
 
-            const GLuint index = (GLuint)vbo.m_vertexEntries.size();
+            const GLuint index = (GLuint)vbo.m_normalEntries.size();
 
             const mesh::IndexEntry indeces[2] {
                 {index, index + 1, index + 2},
@@ -87,21 +94,24 @@ namespace
                 { { x1, y1, 0.f } },
                 { { x1, y0, 0.f } },
             };
-            const mesh::VertexEntry verteces[4] {
-                { normal, tangent, {s0, t0} },
-                { normal, tangent, {s0, t1} },
-                { normal, tangent, {s1, t1} },
-                { normal, tangent, {s1, t0} },
+            const mesh::TextureEntry textures[4] {
+                { {s0, t0} },
+                { {s0, t1} },
+                { {s1, t1} },
+                { {s1, t0} },
             };
 
-            for (const auto& v : indeces) {
-                vbo.m_indexEntries.push_back(v);
-            }
-            for (const auto& v : verteces) {
-                vbo.m_vertexEntries.push_back(v);
-            }
             for (const auto& v : positions) {
                 vbo.m_positionEntries.push_back(v);
+            }
+            for (const auto& v : normals) {
+                vbo.m_normalEntries.push_back(v);
+            }
+            for (const auto& v : textures) {
+                vbo.m_textureEntries.push_back(v);
+            }
+            for (const auto& v : indeces) {
+                vbo.m_indexEntries.push_back(v);
             }
 
             pen.x += glyph->advance_x;
@@ -120,12 +130,18 @@ namespace text
 
 
     void TextDraw::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         m_vao.prepare("text");
+    }
 
-        m_program = registry->m_programRegistry->getProgram(SHADER_FONT_RENDER);
+    void TextDraw::updateRT(
+        kigl::GLState& state)
+    {
+        m_vao.updateRT();
+        if (m_lastFont) {
+            m_lastFont->bindTextures(state);
+        }
     }
 
     void TextDraw::render(
@@ -133,7 +149,7 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         backend::DrawOptions& drawOptions,
-        const Node* node)
+        bool append)
     {
         auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
         if (!font) return;
@@ -143,11 +159,24 @@ namespace text
         m_vbo.clear();
         addText(m_vbo, font, text, pen);
 
-        m_vao.clear();
-        m_vao.registerModel(m_vbo);
-        m_vao.updateRT(ctx.toUpdateContext());
-        drawOptions.indexCount = static_cast<GLsizei>(m_vbo.m_indexEntries.size() * 3);
+        if (!append) {
+            m_vao.clear();
+        }
 
-        font->bindTextures(ctx.m_state);
+        m_vao.registerModel(m_vbo);
+
+        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vbo.m_vertexOffset);
+        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vbo.m_indexOffset);
+        drawOptions.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
+
+        // HACK KI need to encode font somehow int drawOptions and/or VBO
+        // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry
+        m_lastFont = font;
+    }
+
+    void TextDraw::clear()
+    {
+        m_vao.clear();
+        m_vbo.clear();
     }
 }

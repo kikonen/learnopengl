@@ -10,6 +10,8 @@
 
 #include "render/Batch.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -21,14 +23,13 @@ ParticleSystem::ParticleSystem()
 }
 
 void ParticleSystem::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    particleProgram = registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
-    particleProgram->prepareRT(assets);
+    particleProgram = ctx.m_registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
+    particleProgram->prepareRT(ctx.m_assets);
 }
 
 void ParticleSystem::update(const UpdateContext& ctx)

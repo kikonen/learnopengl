@@ -20,7 +20,7 @@
 
 #include "size.h"
 
-class UpdateContext;
+struct UpdateContext;
 class Node;
 class NodeController;
 
@@ -73,7 +73,7 @@ namespace event {
 
     struct AudioSourceData {
         audio::sound_id soundId{ 0 };
-        ki::size_t8 index{ 0 };
+        uint8_t index{ 0 };
         bool isAutoPlay{ false };
 
         float referenceDistance{ audio::REFERENCE_DISTANCE };

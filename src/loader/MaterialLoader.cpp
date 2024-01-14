@@ -421,7 +421,8 @@ namespace loader {
             wrapMode = GL_CLAMP_TO_EDGE;
         }
         else {
-            wrapMode = GL_CLAMP_TO_EDGE;
+            // NOTE KI GL_REPEAT is GL default
+            wrapMode = GL_REPEAT;
             reportUnknown("wrap_mode", k, v);
         }
     }

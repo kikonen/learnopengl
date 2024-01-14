@@ -1,7 +1,5 @@
 #include "ParticleGenerator.h"
 
-#include "asset/Assets.h"
-
 #include "model/Particle.h"
 
 #include "engine/UpdateContext.h"

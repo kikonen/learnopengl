@@ -1,6 +1,7 @@
 #include "NodeRegistry.h"
 
 #include <algorithm>
+
 #include <glm/gtx/quaternion.hpp>
 
 #include <fmt/format.h>
@@ -11,13 +12,20 @@
 
 #include "asset/Program.h"
 
+#include "model/Node.h"
+
+#include "mesh/MeshType.h"
+
 #include "component/Light.h"
 #include "component/Camera.h"
 #include "component/ParticleGenerator.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
+
+#include "generator/NodeGenerator.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -33,6 +41,7 @@
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
 #include "ControllerRegistry.h"
+#include "SnapshotRegistry.h"
 
 namespace {
     const NodeVector EMPTY_NODE_LIST;
@@ -50,7 +59,7 @@ NodeRegistry::NodeRegistry(
 
 NodeRegistry::~NodeRegistry()
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     // NOTE KI forbid access into deleted nodes
     {
@@ -93,15 +102,17 @@ void NodeRegistry::prepare(
     Registry* registry)
 {
     m_registry = registry;
-    m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->registerMaterial(m_selectionMaterial);
+    m_selectionMaterial = std::make_unique<Material>();
+    *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
+    registry->m_materialRegistry->registerMaterial(*m_selectionMaterial);
 
     attachListeners();
 }
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    //std::lock_guard<std::mutex> lock(m_snapshotLock);
+
     if (m_root) {
         m_root->updateWT(ctx);
     }
@@ -109,14 +120,37 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ctx.m_registry->m_physicsEngine->updateBounds(ctx);
     ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
-    for (auto& node : m_allNodes) {
-        node->snapshot();
+    {
+        snapshotWT(*m_registry->m_snapshotRegistry);
     }
 }
 
+void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
+{
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
+
+    for (auto* node : m_allNodes) {
+        auto& transform = node->modifyTransform();
+
+        if (transform.m_dirtySnapshot) {
+            auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
+            snapshot = transform;
+            snapshot.m_dirty = true;
+            transform.m_dirtySnapshot = false;
+        }
+
+        if (node->m_generator) {
+            node->m_generator->snapshotWT(snapshotRegistry);
+        }
+    }
+}
+
+void NodeRegistry::snapshotRT(SnapshotRegistry& snapshotRegistry)
+{}
+
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    m_rootPreparedRT = m_root && m_root->m_preparedRT;
 
     for (auto& node : m_cameraNodes) {
         node->m_camera->updateRT(ctx, *node);
@@ -134,10 +168,31 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
+
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     for (auto* node : m_allNodes) {
-        node->updateEntity(ctx, m_registry->m_entityRegistry);
+        if (node->m_entityIndex) {
+            auto& snapshot = snapshotRegistry.modifyActiveSnapshot(node->m_snapshotIndex);
+            if (snapshot.m_dirty) {
+                auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
+
+                entity->u_objectID = node->m_id;
+                entity->u_highlightIndex = node->getHighlightIndex(ctx.m_assets);
+                snapshot.updateEntity(*entity);
+                snapshot.m_dirty = false;
+            }
+        }
+
+        if (node->m_generator) {
+            node->m_generator->updateEntity(
+                ctx.m_assets,
+                snapshotRegistry,
+                entityRegistry,
+                *node);
+        }
     }
 }
 
@@ -325,8 +380,40 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.body.meshType;
             auto* type = m_registry->m_typeRegistry->modifyType(data.target);
-            type->prepareRT(m_assets, m_registry);
+            type->prepareRT({ m_assets, m_registry });
         });
+}
+
+void NodeRegistry::handleNodeAdded(Node* node)
+{
+    m_registry->m_snapshotRegistry->copyFromPending(0);
+
+    node->m_preparedRT = true;
+
+    if (node->m_type->getMesh()) {
+        node->m_entityIndex = m_registry->m_entityRegistry->registerEntity();
+    }
+
+    if (node->m_camera) {
+        m_cameraNodes.push_back(node);
+        if (!m_activeCameraNode && node->m_camera->isDefault()) {
+            m_activeCameraNode = node;
+        }
+    }
+
+    if (node->m_light) {
+        Light* light = node->m_light.get();
+
+        if (light->m_directional) {
+            m_dirLightNodes.push_back(node);
+        }
+        else if (light->m_point) {
+            m_pointLightNodes.push_back(node);
+        }
+        else if (light->m_spot) {
+            m_spotLightNodes.push_back(node);
+        }
+    }
 }
 
 void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
@@ -348,7 +435,7 @@ void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
     }
     else {
         KI_INFO(fmt::format("SELECT: id={}", id));
-        node->setSelectionMaterialIndex(m_selectionMaterial.m_registeredIndex);
+        node->setSelectionMaterialIndex(m_selectionMaterial->m_registeredIndex);
     }
 }
 
@@ -380,6 +467,7 @@ int NodeRegistry::countTagged() const noexcept
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
+        std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto* node : m_allNodes) {
             if (node->isTagged()) count++;
         }
@@ -395,6 +483,7 @@ int NodeRegistry::countSelected() const noexcept
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
+        std::lock_guard<std::mutex> lock(m_snapshotLock);
         for (auto* node : m_allNodes) {
             if (node->isSelected()) count++;
         }
@@ -444,16 +533,14 @@ void NodeRegistry::bindNode(
     const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
-        t->prepare(m_assets, m_registry);
+        t->prepare({ m_assets, m_registry });
 
         type = t;
         node->m_type = type;
     }
-    node->prepare(m_assets, m_registry);
+    node->prepare({ m_assets, m_registry });
 
     {
-        std::lock_guard<std::mutex> lock(m_lock);
-
         //KI_INFO_OUT(fmt::format(
         //    "REGISTER: {}-{}",
         //    program ? program->m_key : "<na>", programKey.str()));
@@ -461,28 +548,8 @@ void NodeRegistry::bindNode(
         if (!uuid.is_nil()) m_uuidToNode[uuid] = node;
 
         {
+            std::lock_guard<std::mutex> lock(m_snapshotLock);
             m_allNodes.push_back(node);
-        }
-
-        if (node->m_camera) {
-            m_cameraNodes.push_back(node);
-            if (!m_activeCameraNode && node->m_camera->isDefault()) {
-                m_activeCameraNode = node;
-            }
-        }
-
-        if (node->m_light) {
-            Light* light = node->m_light.get();
-
-            if (light->m_directional) {
-                m_dirLightNodes.push_back(node);
-            }
-            else if (light->m_point) {
-                m_pointLightNodes.push_back(node);
-            }
-            else if (light->m_spot) {
-                m_spotLightNodes.push_back(node);
-            }
         }
 
         if (uuid == m_assets.rootUUID) {
@@ -491,6 +558,10 @@ void NodeRegistry::bindNode(
     }
 
     clearSelectedCount();
+
+    // NOTE KI ensure related snapshots are visible in RT
+    // => otherwise IOOBE will trigger
+    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex);
 
     {
         event::Event evt { event::Type::node_added };
@@ -596,6 +667,16 @@ void NodeRegistry::bindChildren(
     m_pendingChildren.erase(parentUUID);
 }
 
+const Material& NodeRegistry::getSelectionMaterial() const noexcept
+{
+    return *m_selectionMaterial;
+}
+
+void NodeRegistry::setSelectionMaterial(const Material& material)
+{
+    *m_selectionMaterial = material;
+}
+
 void NodeRegistry::setActiveNode(Node* node)
 {
     if (!node) return;
@@ -639,12 +720,12 @@ void NodeRegistry::bindSkybox(
     const mesh::MeshType* type;
     {
         auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
-        t->prepare(m_assets, m_registry);
+        t->prepare({ m_assets, m_registry });
 
         type = t;
         node->m_type = type;
     }
-    node->prepare(m_assets, m_registry);
+    node->prepare({ m_assets, m_registry });
 
     m_skybox = node;
 

@@ -3,6 +3,7 @@
 #include <freetype-gl/texture-atlas.h>
 #include <freetype-gl/texture-font.h>
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "util/Util.h"
 

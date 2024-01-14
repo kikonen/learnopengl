@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 const std::string SHADER_TEXTURE{ "tex" };
 const std::string SHADER_POINT_SPRITE{ "point_sprite" };
 
@@ -83,8 +85,10 @@ constexpr int ATTR_TEX = 4;
 
 // https://www.reddit.com/r/opengl/comments/lz72tk/understanding_dsa_functions_and_buffer_binding/
 // https://www.khronos.org/opengl/wiki/Vertex_Specification
-constexpr int VBO_POSITION_BINDING = 0;
-constexpr int VBO_VERTEX_BINDING = 1;
+constexpr int VBO_VERTEX_BINDING = 0;
+constexpr int VBO_POSITION_BINDING = 1;
+constexpr int VBO_NORMAL_BINDING = 2;
+constexpr int VBO_TEXTURE_BINDING = 3;
 //constexpr int VBO_MODEL_MATRIX_BINDING = 1;
 //constexpr int VBO_NORMAL_MATRIX_BINDING = 2;
 //constexpr int VBO_OBJECT_ID_BINDING = 3;
@@ -139,7 +143,7 @@ constexpr int UNIT_BDRF_LUT = 73;
 
 constexpr int UNIT_VIEWPORT = 74;
 
-constexpr int MAX_SHADOW_MAP_COUNT = 3;
+constexpr int MAX_SHADOW_MAP_COUNT = 4;
 constexpr int UNIT_SHADOW_MAP_FIRST = 75;
 constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;
 

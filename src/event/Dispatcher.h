@@ -5,15 +5,13 @@
 
 #include "eventpp/eventqueue.h"
 
-#include "asset/Assets.h"
-
 #include "Event.h"
 
 
 namespace event {
     class Dispatcher final {
     public:
-        Dispatcher(const Assets& assets);
+        Dispatcher();
 
         void prepare();
 
@@ -31,10 +29,6 @@ namespace event {
         }
 
     private:
-
-    private:
-        const Assets& m_assets;
-
         eventpp::EventQueue<
             Type,
             void(const event::Event&),

@@ -2,12 +2,17 @@
 
 #include "kigl/GLState.h"
 
+#include "asset/Assets.h"
+
 #include "engine/Engine.h"
+#include "engine/InputContext.h"
 
 #include "controller/NodeController.h"
 #include "controller/VolumeController.h"
 
 #include "asset/DynamicCubeMap.h"
+
+#include "registry/Registry.h"
 
 #include "scene/Scene.h"
 
@@ -15,12 +20,10 @@
 
 
 Window::Window(
-    Engine& engine,
-    kigl::GLState& state,
-    const Assets& assets)
-    : m_engine(engine), m_state(state), m_assets(assets)
+    Engine& engine)
+    : m_engine(engine)
 {
-    m_size = assets.windowSize;
+    m_size = engine.getAssets().windowSize;
     m_title = "GL test";
 
     m_input = std::make_unique<Input>(this);
@@ -65,6 +68,7 @@ void Window::setTitle(std::string_view title)
 
 void Window::toggleFullScreen()
 {
+    const auto& assets = m_engine.getAssets();
     bool fullScreen = glfwGetWindowMonitor(m_glfwWindow) == nullptr;
 
     if (fullScreen) {
@@ -113,7 +117,7 @@ void Window::toggleFullScreen()
     }
 
     // https://community.khronos.org/t/glfw-fullscreen-problem/51536
-    glfwSwapInterval(m_assets.glfwSwapInterval);
+    glfwSwapInterval(assets.glfwSwapInterval);
 }
 
 void Window::close()
@@ -128,28 +132,30 @@ bool Window::isClosed() const
 
 void Window::createGLFWWindow()
 {
+    const auto& assets = m_engine.getAssets();
+
     // glfw: initialize and configure
     // ------------------------------
     KI_INFO("START: GLFW INIT");
     glfwInit();
     KI_INFO("DONE: GLFW INIT");
 
-    if (m_assets.glDebug) {
+    if (assets.glDebug) {
         // NOTE KI MUST be after glfwInit BUT before glfwWindow creat4e
         // https://learnopengl.com/in-practice/debugging
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     }
 
-    if (m_assets.glNoError) {
+    if (assets.glNoError) {
         // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
         glfwWindowHint(GLFW_CONTEXT_NO_ERROR, GLFW_TRUE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_assets.glsl_version[0]);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_assets.glsl_version[1]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    if (m_assets.windowMaximized) {
+    if (assets.windowMaximized) {
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
     }
 
@@ -162,7 +168,7 @@ void Window::createGLFWWindow()
         return;
     }
 
-    if (m_assets.windowFullScreen) {
+    if (assets.windowFullScreen) {
         toggleFullScreen();
     }
 
@@ -221,7 +227,7 @@ void Window::bindGLFWCallbacks()
         });
 }
 
-void Window::processInput(const ki::RenderClock& clock)
+void Window::processInput(const InputContext& ctx)
 {
     m_input->updateKeyStates();
 
@@ -255,14 +261,14 @@ void Window::processInput(const ki::RenderClock& clock)
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onKey(m_input.get(), clock);
+                controller->onKey(ctx);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onKey(m_input.get(), clock);
+                controller->onKey(ctx);
             }
         }
     }
@@ -275,17 +281,24 @@ void Window::onWindowResize(int width, int height)
     m_size = { width, height };
     m_sizeValid = false;
 
-    m_state.clear();
+    m_engine.getRegistry()->m_state.clear();
 }
 
 void Window::onMouseMove(float xpos, float ypos)
 {
+    const auto& assets = m_engine.getAssets();
+    const InputContext ctx{
+        m_engine.getClock(),
+        assets,
+        m_engine.getRegistry(),
+        m_input.get() };
+
     m_input->onMouseMove(xpos, ypos);
 
     bool isAlt = m_input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
@@ -294,14 +307,14 @@ void Window::onMouseMove(float xpos, float ypos)
         {
             if (nodeControllers) {
                 for (auto* controller : *nodeControllers) {
-                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
                 }
             }
         }
         {
             if (cameraControllers && cameraControllers != nodeControllers) {
                 for (auto* controller : *cameraControllers) {
-                    controller->onMouseMove(m_input.get(), m_input->mouseXoffset, m_input->mouseYoffset);
+                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
                 }
             }
         }
@@ -318,20 +331,26 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
+    const InputContext ctx{
+        m_engine.getClock(),
+        m_engine.getAssets(),
+        m_engine.getRegistry(),
+        m_input.get() };
+
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
     auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
 
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+                controller->onMouseScroll(ctx, xoffset, yoffset);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onMouseScroll(m_input.get(), xoffset, yoffset);
+                controller->onMouseScroll(ctx, xoffset, yoffset);
             }
         }
     }

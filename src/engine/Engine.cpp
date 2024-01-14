@@ -17,8 +17,10 @@
 #include "asset/MaterialSSBO.h"
 
 #include "engine/AsyncLoader.h"
+#include "engine/InputContext.h"
 
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "gui/Window.h"
 
@@ -39,7 +41,7 @@ int Engine::init() {
     m_registry = std::make_shared<Registry>(m_assets, m_alive);
     m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
 
-    m_window = std::make_unique<Window>(*this, m_state, m_assets);
+    m_window = std::make_unique<Window>(*this);
     return m_window->create() ? 0 : -1;
 }
 
@@ -56,7 +58,7 @@ int Engine::setup() {
         GL_TEXTURE_CUBE_MAP_SEAMLESS,
     };
     for (auto& key : keys) {
-        m_state.track(key);
+        m_registry->m_state.track(key);
     }
 
     m_registry->prepareShared();
@@ -133,7 +135,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     std::chrono::duration<float> renderDuration;
     std::chrono::duration<float> frameDuration;
 
-    ki::RenderClock clock;
+    ki::RenderClock& clock = m_clock;
 
     float frameSecs = 0;
 
@@ -148,6 +150,12 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         fpsSecs[i] = 0.f;
         renderSecs[i] = 0.f;
     }
+
+    InputContext inputCtx{
+        clock,
+        m_assets,
+        m_registry.get(),
+        m_window->m_input.get() };
 
     // render loop
     // -----------
@@ -165,9 +173,13 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
+            m_registry->m_snapshotRegistry->copyFromPending(0);
+
             // input
             // -----
-            m_window->processInput(clock);
+            {
+                m_window->processInput(inputCtx);
+            }
 
             // render
             // ------
@@ -201,6 +213,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 renderDuration = renderEnd - renderStart;
                 renderSecs[avgIndex] = renderDuration.count();
             }
+
+            //m_registry->m_snapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();

@@ -5,9 +5,9 @@
 namespace backend::gl {
     struct DrawArraysIndirectCommand
     {
-        GLuint vertexCount;
-        GLuint instanceCount;
-        GLuint firstVertex;
-        GLuint baseInstance;
+        GLuint u_vertexCount;
+        GLuint u_instanceCount;
+        GLuint u_firstVertex;
+        GLuint u_baseInstance;
     };
 }

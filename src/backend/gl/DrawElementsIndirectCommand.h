@@ -5,10 +5,10 @@
 namespace backend::gl {
     struct DrawElementsIndirectCommand
     {
-        GLuint count;
-        GLuint instanceCount;
-        GLuint firstIndex;
-        GLuint baseVertex;
-        GLuint baseInstance;
+        GLuint u_count;
+        GLuint u_instanceCount;
+        GLuint u_firstIndex;
+        GLuint u_baseVertex;
+        GLuint u_baseInstance;
     };
 }

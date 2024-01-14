@@ -4,6 +4,8 @@
 
 #include "kigl/GLState.h"
 
+#include "ki/RenderClock.h"
+
 #include "asset/Assets.h"
 #include "registry/Registry.h"
 
@@ -29,6 +31,18 @@ public:
     int init();
     int setup();
     void run();
+
+    inline const Assets& getAssets() const noexcept {
+        return m_assets;
+    }
+
+    inline Registry* getRegistry() const noexcept {
+        return m_registry.get();
+    }
+
+    inline const ki::RenderClock& getClock() const noexcept {
+        return m_clock;
+    }
 
 protected:
     virtual int onInit() = 0;
@@ -58,11 +72,11 @@ public:
 protected:
     Assets m_assets;
 
+    ki::RenderClock m_clock;
+
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::string m_title;
-
-    kigl::GLState m_state;
 
     InputState m_lastInputState;
 

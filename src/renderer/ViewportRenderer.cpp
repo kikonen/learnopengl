@@ -11,13 +11,12 @@
 
 
 void ViewportRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
 }
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)

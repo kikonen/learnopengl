@@ -4,8 +4,7 @@
 
 #include "NodeGenerator.h"
 
-
-class Registry;
+struct PrepareContext;
 
 class AsteroidBeltGenerator final : public NodeGenerator
 {
@@ -13,8 +12,7 @@ public:
     AsteroidBeltGenerator(int asteroidCount);
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container) override;
 
     virtual void update(
@@ -28,13 +26,11 @@ private:
         bool rotate);
 
     void createAsteroids(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container);
 
     void initAsteroids(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container);
 
     void rotateAsteroids(

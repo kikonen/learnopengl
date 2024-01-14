@@ -8,9 +8,15 @@ script:
 entities:
   - name: Player
     id: player
-    type: origo
+    model: water_ball
+    program: g_tex
     pos: [2.5, 2, 3]
     front: [0, 0, -1]
+    scale: 0.1
+    material_modifier:
+      tiling: 5
+    render_flags:
+      allow_normals: false
     active: true
     audio:
       listener:
@@ -20,10 +26,12 @@ entities:
   - name: Player Camera
     parent_id: player
     type: origo
+    pos: [0, 4, 5]
+    rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
     camera:
       default: true
-    controllers:
-      - type: camera_zoom
   - name: Text plane
     model: quad
     material: metal

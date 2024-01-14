@@ -10,7 +10,12 @@
 #include "component/Light.h"
 #include "component/Camera.h"
 
+#include "mesh/MeshType.h"
+
+#include "model/Node.h"
 #include "model/Viewport.h"
+
+#include "engine/PrepareContext.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -75,9 +80,11 @@ ShadowCascade::~ShadowCascade()
 }
 
 void ShadowCascade::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
+    auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
+
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 

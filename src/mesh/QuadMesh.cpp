@@ -48,8 +48,7 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* QuadMesh::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
@@ -61,9 +60,9 @@ namespace mesh {
     void QuadMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
-        drawOptions.type = backend::DrawOptions::Type::arrays;
-        drawOptions.mode = GL_TRIANGLE_STRIP;
-        drawOptions.indexFirst = 0;
-        drawOptions.indexCount = INDEX_COUNT;
+        drawOptions.m_type = backend::DrawOptions::Type::arrays;
+        drawOptions.m_mode = GL_TRIANGLE_STRIP;
+        drawOptions.m_indexFirst = 0;
+        drawOptions.m_indexCount = INDEX_COUNT;
     }
 }

@@ -8,13 +8,13 @@
 #include "util/glm_util.h"
 
 
-class UpdateContext;
+struct UpdateContext;
 
 struct NodeTransform;
 struct EntitySSBO;
 
 //
-// Snapshot of transform for RT 
+// Snapshot of transform for RT
 //
 struct Snapshot {
     Snapshot() = default;
@@ -22,15 +22,14 @@ struct Snapshot {
     Snapshot(const NodeTransform&& o);
 
     Snapshot& operator=(const NodeTransform& o) noexcept;
+    Snapshot& operator=(Snapshot& o) = default;
+    Snapshot& operator=(const Snapshot& o) = default;
 
-    mutable bool m_dirtyDegrees{ true };
-    bool m_dirtyNormal{ true };
-    bool m_dirtyEntity{ true };
-    bool m_uniformScale { false };
+    bool m_dirty : 1 {true};
 
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
-    int m_entityIndex{ -1 };
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
@@ -41,7 +40,6 @@ struct Snapshot {
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
-    mutable glm::vec3 m_degreesRotation{ 0.f };
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
@@ -56,16 +54,7 @@ struct Snapshot {
         return m_volume;
     }
 
-    inline const bool isUniformScale() const noexcept
-    {
-        return m_uniformScale;
-    }
-
-    inline const glm::vec3& getDegreesRotation() const noexcept
-    {
-        updateDegrees();
-        return m_degreesRotation;
-    }
+    const glm::vec3& getDegreesRotation() const noexcept;
 
     inline const glm::quat& getQuatRotation() const noexcept
     {
@@ -107,9 +96,6 @@ struct Snapshot {
         return m_modelMatrix;
     }
 
-    void updateDegrees() const noexcept;
-
     void updateEntity(
-        const UpdateContext& ctx,
-        EntitySSBO* entity);
+        EntitySSBO& entity);
 };

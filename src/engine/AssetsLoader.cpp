@@ -1,4 +1,4 @@
-#include "AssetsFile.h"
+#include "AssetsLoader.h"
 
 #include <string>
 #include <vector>
@@ -18,17 +18,17 @@ namespace {
     const inline std::string ASSETS_DIR{ "{{assets_dir}}" };
 }
 
-AssetsFile::AssetsFile(
+AssetsLoader::AssetsLoader(
     std::string_view filename)
     : m_filename{ filename }
 {
 }
 
-AssetsFile::~AssetsFile()
+AssetsLoader::~AssetsLoader()
 {
 }
 
-Assets AssetsFile::load()
+Assets AssetsLoader::load()
 {
     std::ifstream fin(m_filename);
     YAML::Node doc = YAML::Load(fin);
@@ -41,7 +41,7 @@ Assets AssetsFile::load()
     return assets;
 }
 
-void AssetsFile::resolveDirs(
+void AssetsLoader::resolveDirs(
     Assets& data)
 {
     {
@@ -81,7 +81,7 @@ void AssetsFile::resolveDirs(
     }
 }
 
-void AssetsFile::loadAssets(
+void AssetsLoader::loadAssets(
     const YAML::Node& node,
     Assets& data)
 {
@@ -148,6 +148,14 @@ void AssetsFile::loadAssets(
                 data.glNoError = readBool(v);
                 continue;
             }
+            if (k == "gl_use_mapped") {
+                data.glUseMapped = readBool(v);
+                continue;
+            }
+            if (k == "gl_use_invalidate") {
+                data.glUseInvalidate = readBool(v);
+                continue;
+            }
             if (k == "gl_use_fence") {
                 data.glUseFence = readBool(v);
                 continue;
@@ -156,8 +164,8 @@ void AssetsFile::loadAssets(
                 data.glUseSingleFence = readBool(v);
                 continue;
             }
-            if (k == "gl_use_invalidate") {
-                data.glUseInvalidate = readBool(v);
+            if (k == "gl_use_debug_fence") {
+                data.glUseDebugFence = readBool(v);
                 continue;
             }
             if (k == "gl_use_finish") {
@@ -659,7 +667,7 @@ void AssetsFile::loadAssets(
     data.frustumAny = data.frustumEnabled && (data.frustumCPU || data.frustumGPU);
 }
 
-bool AssetsFile::readBool(const YAML::Node& node) const
+bool AssetsLoader::readBool(const YAML::Node& node) const
 {
     if (!util::isBool(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
@@ -669,7 +677,7 @@ bool AssetsFile::readBool(const YAML::Node& node) const
     return node.as<bool>();
 }
 
-int AssetsFile::readInt(const YAML::Node& node) const
+int AssetsLoader::readInt(const YAML::Node& node) const
 {
     if (!util::isInt(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid int={}", renderNode(node)));
@@ -679,7 +687,7 @@ int AssetsFile::readInt(const YAML::Node& node) const
     return node.as<int>();
 }
 
-float AssetsFile::readFloat(const YAML::Node& node) const
+float AssetsLoader::readFloat(const YAML::Node& node) const
 {
     if (!util::isFloat(node.as<std::string>())) {
         KI_WARN(fmt::format("invalid float={}", renderNode(node)));
@@ -689,7 +697,7 @@ float AssetsFile::readFloat(const YAML::Node& node) const
     return node.as<float>();
 }
 
-std::vector<int> AssetsFile::readIntVector(const YAML::Node& node, int reserve) const
+std::vector<int> AssetsLoader::readIntVector(const YAML::Node& node, int reserve) const
 {
     std::vector<int> a;
     a.reserve(reserve);
@@ -701,7 +709,7 @@ std::vector<int> AssetsFile::readIntVector(const YAML::Node& node, int reserve) 
     return a;
 }
 
-std::vector<float> AssetsFile::readFloatVector(const YAML::Node& node, int reserve) const
+std::vector<float> AssetsLoader::readFloatVector(const YAML::Node& node, int reserve) const
 {
     std::vector<float> a;
     a.reserve(reserve);
@@ -713,37 +721,37 @@ std::vector<float> AssetsFile::readFloatVector(const YAML::Node& node, int reser
     return a;
 }
 
-glm::uvec2 AssetsFile::readUVec2(const YAML::Node& node) const
+glm::uvec2 AssetsLoader::readUVec2(const YAML::Node& node) const
 {
     const auto& a = readIntVector(node, 2);
     return glm::uvec2{ a[0], a[1] };
 }
 
-glm::uvec3 AssetsFile::readUVec3(const YAML::Node& node) const
+glm::uvec3 AssetsLoader::readUVec3(const YAML::Node& node) const
 {
     const auto& a = readIntVector(node, 3);
     return glm::uvec3{ a[0], a[1], a[2] };
 }
 
-glm::vec2 AssetsFile::readVec2(const YAML::Node& node) const
+glm::vec2 AssetsLoader::readVec2(const YAML::Node& node) const
 {
     const auto& a = readFloatVector(node, 2);
     return glm::vec2{ a[0], a[1] };
 }
 
-glm::vec3 AssetsFile::readVec3(const YAML::Node& node) const
+glm::vec3 AssetsLoader::readVec3(const YAML::Node& node) const
 {
     const auto& a = readFloatVector(node, 3);
     return glm::vec3{ a[0], a[1], a[2] };
 }
 
-glm::vec4 AssetsFile::readVec4(const YAML::Node& node) const
+glm::vec4 AssetsLoader::readVec4(const YAML::Node& node) const
 {
     const auto& a = readFloatVector(node, 4);
     return glm::vec4{ a[0], a[1], a[2], a[3] };
 }
 
-glm::vec2 AssetsFile::readScale2(const YAML::Node& node) const
+glm::vec2 AssetsLoader::readScale2(const YAML::Node& node) const
 {
     std::vector<float> a;
 
@@ -760,7 +768,7 @@ glm::vec2 AssetsFile::readScale2(const YAML::Node& node) const
     return glm::vec3{ scale };
 }
 
-void AssetsFile::reportUnknown(
+void AssetsLoader::reportUnknown(
     std::string_view scope,
     std::string_view k,
     const YAML::Node& v) const
@@ -769,7 +777,7 @@ void AssetsFile::reportUnknown(
     KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
 }
 
-std::string AssetsFile::renderNode(
+std::string AssetsLoader::renderNode(
     const YAML::Node& v) const
 {
     std::stringstream ss;

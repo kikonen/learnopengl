@@ -1,5 +1,6 @@
 #include "UpdateContext.h"
 
+#include "engine/PrepareContext.h"
 
 UpdateContext::UpdateContext(
     const ki::RenderClock& clock,
@@ -9,4 +10,12 @@ UpdateContext::UpdateContext(
     m_assets(assets),
     m_registry(registry)
 {
+}
+
+PrepareContext UpdateContext::toPrepareContext() const
+{
+    return {
+        m_assets,
+        m_registry,
+    };
 }

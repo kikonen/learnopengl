@@ -21,7 +21,7 @@
 
 #define MAX_SHADOW_MAP_COUNT_ABS 5
 #ifndef MAX_SHADOW_MAP_COUNT
-  #define MAX_SHADOW_MAP_COUNT 3
+  #define MAX_SHADOW_MAP_COUNT 4
 #endif
 
 #ifndef CS_GROUP_X

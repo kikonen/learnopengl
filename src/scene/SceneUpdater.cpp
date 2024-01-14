@@ -22,6 +22,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "component/ParticleGenerator.h"
 
@@ -134,7 +135,9 @@ void SceneUpdater::run()
 
         update(ctx);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        if (!m_registry->m_commandEngine->hasPending()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        }
     }
 }
 
@@ -187,6 +190,9 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //if (m_particleSystem) {
     //    m_particleSystem->update(ctx);
     //}
+
+    // NOTE KI sync to RT
+    m_registry->m_snapshotRegistry->copyToPending(0);
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)

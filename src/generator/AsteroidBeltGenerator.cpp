@@ -11,12 +11,12 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "render/Batch.h"
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/EntitySSBO.h"
 
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
@@ -28,13 +28,13 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
 }
 
 void AsteroidBeltGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
-    NodeGenerator::prepare(assets, registry, container);
+    NodeGenerator::prepare(ctx, container);
 
-    createAsteroids(assets, registry, container);
+    createAsteroids(ctx, container);
+    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
 void AsteroidBeltGenerator::update(
@@ -47,7 +47,6 @@ void AsteroidBeltGenerator::update(
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
         auto& transform = container.modifyTransform();
-        transform.m_dirtyEntity = true;
         transform.m_dirtySnapshot = true;
     }
 
@@ -73,15 +72,15 @@ void AsteroidBeltGenerator::updateAsteroids(
         transform.updateModelMatrix(parentTransform);
     }
 
-    setActiveRange(m_reservedFirst, m_reservedCount);
     container.m_instancer = this;
 }
 
 void AsteroidBeltGenerator::createAsteroids(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
+    auto& registry = ctx.m_registry;
+
     auto& type = container.m_type;
 
     const auto* mesh = container.m_type->getMesh();
@@ -89,28 +88,25 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto& containerTransform = container.modifyTransform();
 
-    m_reservedCount = m_asteroidCount;
-    m_reservedFirst = registry->m_entityRegistry->registerEntityRange(m_reservedCount);
-
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
 
-        asteroid.m_entityIndex = static_cast<int>(m_reservedFirst + i);
-
         asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
         asteroid.setVolume(volume);
     }
 
-    initAsteroids(assets, registry, container);
+    initAsteroids(ctx, container);
     containerTransform.setVolume(calculateVolume());
+
+    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+    setActiveRange(0, m_reservedCount);
 }
 
 void AsteroidBeltGenerator::initAsteroids(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     // initialize random seed

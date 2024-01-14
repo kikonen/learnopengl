@@ -1,10 +1,14 @@
 #include "EntityRegistry.h"
 
+#include "util/thread.h"
+
 #include "EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
 
 #include "render/RenderContext.h"
+
+#include "model/Node.h"
 
 #include "mesh/MeshType.h"
 
@@ -24,32 +28,46 @@ namespace {
 EntityRegistry::EntityRegistry(const Assets& assets)
     : m_assets(assets)
 {
-    // HACK KI reserve nax to avoid memory alloc issue main vs. worker
-    m_entries.reserve(MAX_ENTITY_COUNT);
+    // null entry
+    registerEntity();
 }
 
 void EntityRegistry::prepare()
 {
-    // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-    m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
-}
+    m_useMapped = m_assets.glUseMapped;
+    m_useInvalidate = m_assets.glUseInvalidate;
+    m_useFence = m_assets.glUseFence;
+    m_useDebugFence = m_assets.glUseDebugFence;
 
-void EntityRegistry::updateWT(const UpdateContext& ctx)
-{
-    std::lock_guard<std::mutex> lock(m_lock);
+    m_useMapped = false;
+    m_useInvalidate = true;
+    m_useFence = false;
+    m_useDebugFence = false;
+
+    m_entries.reserve(MAX_ENTITY_COUNT);
+
+    if (m_useMapped) {
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+    }
+    else {
+        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
+    }
 }
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
-    std::lock_guard<std::mutex> lock(m_lock);
+    //std::lock_guard<std::mutex> lock(m_lock);
 
     processNodes(ctx);
 
     if (m_minDirty < 0) return;
 
-    m_fence.waitFence(false);
+    if (m_useFence) {
+        m_fence.waitFence(m_useDebugFence);
+    }
 
     constexpr size_t sz = sizeof(EntitySSBO);
     const int maxCount = (m_maxDirty + 1) - m_minDirty;
@@ -67,7 +85,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
             m_ssbo.resizeBuffer(m_entries.capacity() * sz);
-            m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            if (m_useMapped) {
+                m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            }
             refreshAll = true;
         }
     }
@@ -75,8 +95,16 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     int updatedCount = 0;
 
     if (refreshAll) {
-        memcpy(m_ssbo.m_data, &m_entries[0], totalCount * sz);
-        m_ssbo.flushRange(0, totalCount * sz);
+        if (m_useMapped) {
+            memcpy(m_ssbo.m_data, m_entries.data(), totalCount * sz);
+            m_ssbo.flushRange(0, totalCount * sz);
+        }
+        else {
+            if (m_useInvalidate) {
+                m_ssbo.invalidateRange(0, totalCount * sz);
+            }
+            m_ssbo.update(0, totalCount * sz, m_entries.data());
+        }
         for (int i = 0; i < totalCount; i++) {
             m_dirty[i] = false;
         }
@@ -95,9 +123,16 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                 const int count = to + 1 - from;
 
                 //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
-                memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
-
-                m_ssbo.flushRange(from * sz, count * sz);
+                if (m_useMapped) {
+                    memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
+                    m_ssbo.flushRange(from * sz, count * sz);
+                }
+                else {
+                    if (m_useInvalidate) {
+                        m_ssbo.invalidateRange(from * sz, count * sz);
+                    }
+                    m_ssbo.update(from * sz, count * sz, &m_entries[from]);
+                }
 
                 for (int i = 0; i < count; i++) {
                     m_dirty[from + i] = false;
@@ -119,7 +154,12 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
 void EntityRegistry::postRT(const UpdateContext& ctx)
 {
-    m_fence.setFence();
+    // NOTE KI if there was no changes old fence is stil valid
+    if (m_useFence) {
+        if (!m_fence.isSet()) {
+            m_fence.setFence(m_useDebugFence);
+        }
+    }
 }
 
 void EntityRegistry::bind(
@@ -129,15 +169,17 @@ void EntityRegistry::bind(
 }
 
 // index of entity
-int EntityRegistry::registerEntity()
+uint32_t EntityRegistry::registerEntity()
 {
     return registerEntityRange(1);
 }
 
 // @return first index of range
-int EntityRegistry::registerEntityRange(const size_t count)
+uint32_t EntityRegistry::registerEntityRange(const size_t count)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    ASSERT_RT();
+
+    //std::lock_guard<std::mutex> lock(m_lock);
 
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };
@@ -160,22 +202,12 @@ int EntityRegistry::registerEntityRange(const size_t count)
 
     KI_INFO(fmt::format("Entity: ADDED_RANGE: firstIndex={}, count={}, newSize={}", firstIndex, count, m_entries.size()));
 
-    return static_cast<int>(firstIndex);
-}
-
-const EntitySSBO* EntityRegistry::getEntity(int index) const
-{
-    return &m_entries[index];
-}
-
-EntitySSBO* EntityRegistry::modifyEntity(int index, bool dirty)
-{
-    if (dirty) markDirty(index);
-    return &m_entries[index];
+    return static_cast<uint32_t>(firstIndex);
 }
 
 void EntityRegistry::markDirty(int index)
 {
+    ASSERT_RT();
     if (index < m_minDirty || m_minDirty == -1) {
         m_minDirty = index;
     }
@@ -188,7 +220,5 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    for (auto* node : ctx.m_registry->m_nodeRegistry->m_allNodes) {
-        node->updateEntity(ctx, this);
-    }
+    ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
 }

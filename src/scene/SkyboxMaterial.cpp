@@ -8,10 +8,11 @@
 
 #include "render/CubeMap.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 namespace {
-    std::array<std::string, 6> DEFAULT_FACES = {
+    const std::array<std::string, 6> DEFAULT_FACES = {
         "right.jpg",
         "left.jpg",
         "top.jpg",
@@ -34,33 +35,31 @@ SkyboxMaterial::SkyboxMaterial(
 }
 
 void SkyboxMaterial::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_hdri) {
-        prepareHdri(assets, registry);
-        prepareEnvironment(assets, registry);
-        prepareSkybox(assets, registry);
+        prepareHdri(ctx);
+        prepareEnvironment(ctx);
+        prepareSkybox(ctx);
     }
     else {
-        prepareFaces(assets, registry);
+        prepareFaces(ctx);
     }
 
-    prepareIrradiance(assets, registry);
-    preparePrefilter(assets, registry);
-    prepareBrdfLut(assets, registry);
+    prepareIrradiance(ctx);
+    preparePrefilter(ctx);
+    prepareBrdfLut(ctx);
 }
 
 void SkyboxMaterial::prepareFaces(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         std::string basePath;
         {
             basePath = util::joinPath(
-                assets.assetsDir,
+                ctx.m_assets.assetsDir,
                 m_materialName);
         }
 
@@ -82,72 +81,66 @@ void SkyboxMaterial::prepareFaces(
         }
 
     }
-    m_cubeMap.prepareRT(assets, registry);
+    m_cubeMap.prepareRT(ctx);
 }
 
 void SkyboxMaterial::prepareHdri(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
     std::string filePath;
     {
         filePath = util::joinPath(
-            assets.assetsDir,
+            ctx.m_assets.assetsDir,
             m_materialName);
     }
 
     m_hdriTexture.m_path = filePath;
-    m_hdriTexture.prepareRT(assets, registry);
+    m_hdriTexture.prepareRT(ctx);
 }
 
 void SkyboxMaterial::prepareSkybox(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+    if (!(ctx.m_assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_skyboxMap.m_hdriTextureID = m_hdriTexture;
-    m_skyboxMap.prepareRT(assets, registry, assets.skyboxSize);
+    m_skyboxMap.prepareRT(ctx, ctx.m_assets.skyboxSize);
 }
 
 void SkyboxMaterial::prepareEnvironment(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+    if (!(ctx.m_assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_environmentMap.m_hdriTextureID = m_hdriTexture;
-    m_environmentMap.prepareRT(assets, registry, assets.environmentMapSize);
+    m_environmentMap.prepareRT(ctx, ctx.m_assets.environmentMapSize);
 }
 
 void SkyboxMaterial::prepareIrradiance(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+    if (!(ctx.m_assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_irradianceMap.m_envCubeMapID = m_environmentMap;
-    m_irradianceMap.prepareRT(assets, registry);
+    m_irradianceMap.prepareRT(ctx);
 }
 
 void SkyboxMaterial::preparePrefilter(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+    if (!(ctx.m_assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_prefilterMap.m_envCubeMapID = m_environmentMap;
-    m_prefilterMap.prepareRT(assets, registry);
+    m_prefilterMap.prepareRT(ctx);
 }
 
 void SkyboxMaterial::prepareBrdfLut(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
-    if (!(assets.environmentMapEnabled)) return;
+    if (!(ctx.m_assets.environmentMapEnabled)) return;
 
-    m_brdfLutTexture.prepareRT(assets, registry);
+    m_brdfLutTexture.prepareRT(ctx);
 }
 
 void SkyboxMaterial::bindTextures(const RenderContext& ctx)

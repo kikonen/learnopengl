@@ -11,6 +11,7 @@
 #include "asset/Assets.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/PrepareContext.h"
 
 #include "ki/RenderClock.h"
 #include "kigl/GLState.h"
@@ -61,7 +62,6 @@ public:
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
         render::Batch* batch,
-        kigl::GLState& state,
         Camera* camera,
         float nearPlane,
         float farPlane,
@@ -96,6 +96,7 @@ public:
     }
 
     UpdateContext toUpdateContext() const;
+    PrepareContext toPrepareContext() const;
 
 public:
     const std::string m_name;

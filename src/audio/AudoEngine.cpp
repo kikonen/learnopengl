@@ -21,9 +21,8 @@ namespace audio
 {
     struct Sound;
 
-    AudioEngine::AudioEngine(const Assets& assets)
-        : m_assets(assets),
-        m_soundRegistry(std::make_unique<SoundRegistry>())
+    AudioEngine::AudioEngine()
+        : m_soundRegistry(std::make_unique<SoundRegistry>())
     {
         // NOTE KI null entries to avoid need for "- 1" math
         auto& nullListener = m_listeners.emplace_back<Listener>({});

@@ -7,55 +7,108 @@
 #include "mesh/MeshType.h"
 
 #include "render/Batch.h"
+#include "render/RenderContext.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
+#include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
-void NodeGenerator::snapshot(bool force)
+
+void NodeGenerator::prepareSnapshots(
+    SnapshotRegistry& snapshotRegistry)
 {
-    const auto diff = m_transforms.size() - m_snapshots.size();
-    if (diff != 0) {
-        force |= true;
-        m_snapshots.reserve(m_transforms.size());
-        for (int i = 0; i < diff; i++) {
-            m_snapshots.emplace_back();
-        }
-    }
+    const auto count = m_transforms.size();
+    m_snapshotBase = snapshotRegistry.registerSnapshotRange(count);
+}
 
-    for (size_t i = 0; i < m_transforms.size(); i++) {
+void NodeGenerator::snapshotWT(
+    SnapshotRegistry& snapshotRegistry)
+{
+    const auto count = static_cast<uint32_t>(m_transforms.size());
+
+    auto snapshots = snapshotRegistry.modifySnapshotRange(m_snapshotBase, count);
+
+    for (size_t i = 0; i < count; i++) {
         auto& transform = m_transforms[i];
+
         assert(!transform.m_dirty);
-        if (!force && !transform.m_dirtySnapshot) continue;
-        m_snapshots[i] = transform;
+        if (!transform.m_dirtySnapshot) continue;
+
+        auto& snapshot = snapshots[i];
+        snapshot = transform;
+        snapshot.m_dirty = true;
+
         transform.m_dirtySnapshot = false;
-        transform.m_dirtyNormal = false;
+    }
+}
+
+void NodeGenerator::prepareEntities(
+    EntityRegistry& entityRegistry)
+{
+    if (m_entityBase) return;
+    if (m_reservedCount == 0) return;
+
+    m_entityBase = entityRegistry.registerEntityRange(m_reservedCount);
+
+    auto entities = entityRegistry.getEntityRange(
+        m_entityBase,
+        m_reservedCount);
+
+    for (uint32_t i = 0; i < m_reservedCount; i++) {
+        prepareEntity(entities[i], i);
     }
 }
 
 void NodeGenerator::updateEntity(
-    const UpdateContext& ctx,
-    Node& container,
-    EntityRegistry* entityRegistry,
-    bool force)
+    const Assets& assets,
+    SnapshotRegistry& snapshotRegistry,
+    EntityRegistry& entityRegistry,
+    Node& container)
 {
     if (m_activeCount == 0) return;
 
-    int entityIndex = m_reservedFirst;
+    if (!m_entityBase) {
+        prepareEntities(entityRegistry);
+    }
 
-    for (auto& snapshot : m_snapshots) {
-        if (!force && !snapshot.m_dirtyEntity) continue;
-        if (snapshot.m_entityIndex == -1) continue;
+    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
 
-        auto* entity = entityRegistry->modifyEntity(snapshot.m_entityIndex, true);
+    if (!ready) {
+        KI_INFO(fmt::format("GENERATOR: snapshot not_ready - container={}", container.str()));
+        return;
+    }
 
-        entity->u_objectID = container.m_id;
-        entity->u_flags = container.getEntityFlags();
-        entity->u_highlightIndex = container.getHighlightIndex(ctx.m_assets);
+    auto snapshots = snapshotRegistry.modifyActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
+    const auto& containerSnapshot = snapshotRegistry.getActiveSnapshot(container.m_snapshotIndex);
 
-        snapshot.updateEntity(ctx, entity);
+    auto entities = entityRegistry.modifyEntityRange(
+        m_entityBase,
+        m_reservedCount);
 
-        entityIndex++;
+    const auto flags = containerSnapshot.m_flags;
+    const auto highlightIndex = container.getHighlightIndex(assets);
+
+    for (uint32_t i = 0; i < m_reservedCount; i++) {
+        auto& snapshot = snapshots[i];
+        if (!snapshot.m_dirty) continue;
+
+        auto& entity = entities[i];
+
+        entity.u_objectID = container.m_id;
+        entity.u_flags = flags;
+        entity.u_highlightIndex = highlightIndex;
+
+        snapshot.updateEntity(entity);
+
+        entityRegistry.markDirty(m_entityBase + i);
+        snapshot.m_dirty = false;
     }
 }
 
@@ -66,9 +119,21 @@ void NodeGenerator::bindBatch(
 {
     if (m_activeCount == 0) return;
 
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
+    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
+
+    if (!ready) return;
+
+    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
+
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     //batch.addInstanced(ctx, container.getEntityIndex(), m_activeFirst, m_activeCount);
-    batch.addInstanced(ctx, -1, m_activeFirst, m_activeCount);
+    batch.addSnapshotsInstanced(ctx, snapshots, m_entityBase);
 }
 
 const kigl::GLVertexArray* NodeGenerator::getVAO(

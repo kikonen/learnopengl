@@ -9,9 +9,14 @@
 
 #include "mesh/MeshType.h"
 
+#include "model/Node.h"
+
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -57,9 +62,11 @@ namespace render {
     }
 
     void NodeDraw::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& registry = ctx.m_registry;
+        auto& assets = ctx.m_assets;
+
         m_gBuffer.prepare(assets);
         m_oitBuffer.prepare(assets, &m_gBuffer);
         m_effectBuffer.prepare(assets, &m_gBuffer);
@@ -130,6 +137,7 @@ namespace render {
                 // NOTE KI more optimal to not switch between culling mode (=> group by it)
                 const ProgramKey programKey(
                     program ? program->m_id : NULL_PROGRAM_ID,
+                    // NOTE KI *NEGATE* for std::tie
                     -type->m_priority,
                     type->getDrawOptions());
 
@@ -652,6 +660,8 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
+        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
         const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
 
         // TODO KI discards nodes if *same* distance
@@ -666,7 +676,8 @@ namespace render {
                 for (const auto& node : map.second) {
                     if (!nodeSelector(node)) continue;
 
-                    const float distance = glm::length(viewPos - node->getSnapshot().getWorldPosition());
+                    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+                    const float distance = glm::length(viewPos - snapshot.getWorldPosition());
                     sorted[distance] = node;
                 }
             }

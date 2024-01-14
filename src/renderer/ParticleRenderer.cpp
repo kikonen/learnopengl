@@ -3,22 +3,23 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
 
 
 void ParticleRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
 
     particleProgram = m_registry->m_programRegistry->getProgram(SHADER_PARTICLE);
-    particleProgram->prepareRT(assets);
+    particleProgram->prepareRT(ctx.m_assets);
 }
 
 void ParticleRenderer::render(

@@ -10,8 +10,7 @@ public:
     {}
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     void render(
         const RenderContext& ctx);

@@ -11,7 +11,7 @@
 
 #include "kigl/GLBuffer.h"
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
 
 class Sprite;

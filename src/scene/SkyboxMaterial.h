@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
-#include "asset/Assets.h"
 #include "asset/CustomMaterial.h"
 #include "asset/HdriTexture.h"
 
@@ -12,9 +12,6 @@
 #include "render/IrradianceMap.h"
 #include "render/PrefilterMap.h"
 #include "render/BrdfLutTexture.h"
-
-class Assets;
-class Registry;
 
 class SkyboxMaterial : public CustomMaterial
 {
@@ -29,39 +26,31 @@ public:
     ~SkyboxMaterial() = default;
 
     virtual void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     virtual void bindTextures(const RenderContext& ctx) override;
 
 private:
     void prepareFaces(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void prepareHdri(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void prepareSkybox(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void prepareEnvironment(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void prepareIrradiance(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void preparePrefilter(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void prepareBrdfLut(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
 public:
     // ORDER

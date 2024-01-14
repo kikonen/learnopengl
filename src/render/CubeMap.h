@@ -8,9 +8,9 @@
 #include "kigl/GLTextureHandle.h"
 
 
+struct PrepareContext;
 class RenderContext;
-class Assets;
-class Registry;
+
 class Program;
 
 namespace {
@@ -30,8 +30,7 @@ namespace render {
         bool valid() { return m_cubeTexture > 0; }
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry);
+            const PrepareContext& ctx);
 
         void bindTexture(const RenderContext& ctx, int unitIndex);
 

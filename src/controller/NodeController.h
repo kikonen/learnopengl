@@ -1,16 +1,13 @@
 #pragma once
 
-#include "asset/Assets.h"
-
-#include "ki/RenderClock.h"
-
 #include "kigl/kigl.h"
 
-#include "gui/Input.h"
+struct PrepareContext;
+struct InputContext;
+struct UpdateContext;
+class Registry;
 
 class Node;
-class Registry;
-class UpdateContext;
 
 class NodeController
 {
@@ -19,15 +16,8 @@ public:
     virtual ~NodeController() = default;
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
-        Node& node)
-    {
-        if (m_prepared) return;
-        m_prepared = true;
-
-        m_registry = registry;
-    }
+        const PrepareContext& ctx,
+        Node& node);
 
     virtual bool updateWT(
         const UpdateContext& ctx,
@@ -36,9 +26,18 @@ public:
         return false;
     }
 
-    virtual void onKey(Input* input, const ki::RenderClock& clock) {};
-    virtual void onMouseMove(Input* input, float xoffset, float yoffset) {};
-    virtual void onMouseScroll(Input* input, float xoffset, float yoffset) {};
+    virtual void onKey(
+        const InputContext& ctx) {};
+
+    virtual void onMouseMove(
+        const InputContext& ctx,
+        float xoffset,
+        float yoffset) {};
+
+    virtual void onMouseScroll(
+        const InputContext& ctx,
+        float xoffset,
+        float yoffset) {};
 
 protected:
     bool m_prepared{ false };

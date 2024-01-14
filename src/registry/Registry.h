@@ -1,8 +1,11 @@
 #pragma once
 
 #include <atomic>
+#include <mutex>
 
 #include "asset/Assets.h"
+
+#include "kigl/GLState.h"
 
 namespace event
 {
@@ -25,6 +28,8 @@ namespace physics
     class PhysicsEngine;
 }
 
+struct UpdateContext;
+
 class ProgramRegistry;
 class MaterialRegistry;
 class SpriteRegistry;
@@ -36,8 +41,7 @@ class ViewportRegistry;
 class ControllerRegistry;
 class ProgramRegistry;
 class FontRegistry;
-
-class UpdateContext;
+class SnapshotRegistry;
 
 //
 // Container for all registries to simplify passing them around
@@ -57,12 +61,15 @@ public:
     void updateRT(const UpdateContext& ctx);
     void postRT(const UpdateContext& ctx);
 
+    void withLock(const std::function<void(Registry&)>& fn);
+
 private:
     const Assets& m_assets;
 
     bool m_prepared = false;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
+    std::mutex m_lock{};
 
     std::unique_ptr<event::Dispatcher> m_dispatcherImpl;
     std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
@@ -81,11 +88,16 @@ private:
     std::unique_ptr<MeshTypeRegistry> m_typeRegistryImpl;
     std::unique_ptr<ModelRegistry> m_modelRegistryImpl;
     std::unique_ptr<NodeRegistry> m_nodeRegistryImpl;
+
+    std::unique_ptr<SnapshotRegistry> m_snapshotRegistryImpl;
     std::unique_ptr<EntityRegistry> m_entityRegistryImpl;
+
     std::unique_ptr<ViewportRegistry> m_viewportRegistryImpl;
     std::unique_ptr<ControllerRegistry> m_controllerRegistryImpl;
 
 public:
+    kigl::GLState m_state;
+
     // NOTE KI initialization order!
     event::Dispatcher* const m_dispatcher;
     event::Dispatcher* const m_dispatcherView;
@@ -104,7 +116,11 @@ public:
     MeshTypeRegistry* const m_typeRegistry;
     ModelRegistry* const m_modelRegistry;
     NodeRegistry* const m_nodeRegistry;
+
+    SnapshotRegistry* const m_snapshotRegistry;
     EntityRegistry* const m_entityRegistry;
+
     ViewportRegistry* const m_viewportRegistry;
     ControllerRegistry* const m_controllerRegistry;
+
 };

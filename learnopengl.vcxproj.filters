@@ -165,7 +165,7 @@
     <ClCompile Include="src\loader\SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\AssetsFile.cpp">
+    <ClCompile Include="src\engine\AssetsLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Volume.cpp">
@@ -252,7 +252,7 @@
     <ClCompile Include="src\render\WindowBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\EntityReegistry.cpp">
+    <ClCompile Include="src\registry\EntityRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\RenderData.cpp">
@@ -585,6 +585,21 @@
     <ClCompile Include="src\generator\TextGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\PrepareContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kigl\GLFence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\PositionVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry\SnapshotRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\InputContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -743,7 +758,7 @@
     <ClInclude Include="src\loader\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\AssetsFile.h">
+    <ClInclude Include="src\engine\AssetsLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ProgramBind.h">
@@ -1316,7 +1331,7 @@
     <ClInclude Include="src\mesh\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexEntry.h">
+    <ClInclude Include="src\mesh\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MaterialVBO.h">
@@ -1371,6 +1386,42 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\TextData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\PrepareContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\ViewportEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\PositionVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TextureEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\BaseBVO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\GLSyncQueue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\TerrainTileSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\EntityFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\SnapshotRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\InputContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DirtyVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DirtyVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

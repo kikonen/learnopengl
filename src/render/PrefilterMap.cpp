@@ -9,6 +9,8 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/TextureCube.h"
 #include "render/RenderContext.h"
 
@@ -22,9 +24,12 @@ namespace {
 
 namespace render {
     void PrefilterMap::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+        auto& state = registry->m_state;
+
         if (m_envCubeMapID <= 0) return;
 
         m_size = assets.prefilterMapSize;
@@ -52,8 +57,6 @@ namespace render {
         }
 
         {
-            kigl::GLState state;
-
             auto program = registry->m_programRegistry->getProgram(SHADER_PREFILTER_CUBE_MAP);
             program->prepareRT(assets);
 
@@ -63,6 +66,7 @@ namespace render {
             render(state, program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+            state.clear();
         }
     }
 

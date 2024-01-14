@@ -16,23 +16,24 @@
 #include "DrawRange.h"
 #include "DrawOptions.h"
 
-class Assets;
 class Program;
-class Registry;
+struct PrepareContext;
 
 namespace backend {
     // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
-    using GLCommandQueue = kigl::GLSyncQueue<backend::gl::DrawIndirectCommand, true>;
+    using GLCommandQueue = kigl::GLSyncQueue<backend::gl::DrawIndirectCommand>;
 
     class DrawBuffer {
     public:
         DrawBuffer(
+            bool useMapped,
+            bool useInvalidate,
             bool useFence,
-            bool useSingleFence);
+            bool useSingleFence,
+            bool useDebugFence);
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry,
+            const PrepareContext& ctx,
             int batchCount,
             int rangeCount);
 
@@ -57,8 +58,11 @@ namespace backend {
             const backend::DrawRange& drawRange) const;
 
     private:
+        const bool m_useMapped;
+        const bool m_useInvalidate;
         const bool m_useFence;
         const bool m_useSingleFence;
+        const bool m_useDebugFence;
 
         int m_batchCount = 0;
         int m_rangeCount = 0;

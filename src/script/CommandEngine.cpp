@@ -29,9 +29,8 @@
 
 namespace script
 {
-    CommandEngine::CommandEngine(const Assets& assets)
-        : m_assets(assets),
-        m_cleanupStep(5)
+    CommandEngine::CommandEngine()
+        : m_cleanupStep(5)
     {}
 
     void CommandEngine::prepare(Registry* registry)
@@ -89,18 +88,18 @@ namespace script
 
     script::command_id CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
     {
-        std::lock_guard<std::mutex> lock { m_lock };
+        std::lock_guard<std::mutex> lock{ m_pendingLock };
 
         auto& cmd = m_pending.emplace_back(std::move(pcmd));
         return cmd->m_id;
     }
 
-    bool CommandEngine::isCanceled(script::command_id commandId) noexcept
+    bool CommandEngine::isCanceled(script::command_id commandId) const noexcept
     {
         return std::find(m_canceled.begin(), m_canceled.end(), commandId) != m_canceled.end();
     }
 
-    bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) noexcept
+    bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) const noexcept
     {
         if (!cmd->isNode()) return true;
 
@@ -113,9 +112,15 @@ namespace script
         m_canceled.push_back(commandId);
     }
 
-    bool CommandEngine::isAlive(script::command_id commandId) noexcept
+    bool CommandEngine::isAlive(script::command_id commandId) const noexcept
     {
         return m_commands.find(commandId) != m_commands.end();
+    }
+
+    bool CommandEngine::hasPending() const noexcept
+    {
+        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        return !m_pending.empty();
     }
 
     void CommandEngine::activateNext(const Command* cmd) noexcept
@@ -137,7 +142,7 @@ namespace script
         if (m_canceled.empty()) return;
 
         {
-            std::lock_guard<std::mutex> lock{ m_lock };
+            std::lock_guard<std::mutex> lock{ m_pendingLock };
             for (auto& cmd : m_pending) {
                 if (!isCanceled(cmd->m_id)) continue;
                 cmd->m_canceled = true;
@@ -159,7 +164,7 @@ namespace script
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_lock };
+        std::lock_guard<std::mutex> lock{ m_pendingLock };
 
         // NOTE KI scripts cannot exist before node is in registry
         // => thus it MUST exist

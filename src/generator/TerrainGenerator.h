@@ -10,6 +10,17 @@ namespace mesh {
     class MeshType;
 }
 
+namespace physics {
+    class HeightMap;
+}
+
+class Registry;
+
+struct TerrainTileInfo {
+    int m_tileX;
+    int m_tileY;
+};
+
 //
 // Tessellated terrain generator
 //
@@ -23,8 +34,7 @@ public:
     TerrainGenerator();
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container) override;
 
     virtual void update(
@@ -32,19 +42,22 @@ public:
         Node& container) override;
 
 private:
+    virtual void prepareEntity(
+        EntitySSBO& entity,
+        uint32_t snapshotIndex) override;
+
     void updateTiles(
         const UpdateContext& ctx,
         Node& container);
 
-    void prepareHeightMap(
-        const Assets& assets,
-        Registry* registry,
+    physics::HeightMap* prepareHeightMap(
+        const PrepareContext& ctx,
         Node& container);
 
     void createTiles(
-        const Assets& assets,
-        Registry* registry,
-        Node& container);
+        const PrepareContext& ctx,
+        Node& container,
+        physics::HeightMap* heightMap);
 
     ki::type_id createType(
         Registry* registry,
@@ -69,4 +82,6 @@ private:
     size_t m_poolSizeV{ 0 };
 
     Node* m_node{ nullptr };
+
+    std::vector<TerrainTileInfo> m_tileInfos;
 };

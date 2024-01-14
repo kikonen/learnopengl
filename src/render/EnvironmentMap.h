@@ -7,9 +7,9 @@
 
 #include "kigl/GLTextureHandle.h"
 
+struct PrepareContext;
 class RenderContext;
-class Assets;
-class Registry;
+
 class Program;
 
 namespace render {
@@ -29,8 +29,7 @@ namespace render {
         bool valid() { return m_cubeTexture.valid(); }
 
         void prepareRT(
-            const Assets& assets,
-            Registry* registry,
+            const PrepareContext& ctx,
             int size);
 
         void bindTexture(const RenderContext& ctx, int unitIndex);

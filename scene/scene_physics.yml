@@ -449,8 +449,12 @@ materials:
     tiling: 4
   - name: skeleton_front
     map_kd: sprites/skeleton/skeleton_front.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_back
     map_kd: sprites/skeleton/skeleton_back.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: pool_floor
     kd: [0.8, 0.8, 0.8, 1.0]
     map_kd: textures/tiles_1024.png

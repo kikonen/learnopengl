@@ -10,6 +10,8 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
+
 #include "render/TextureQuad.h"
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -22,9 +24,12 @@ namespace {
 
 namespace render {
     void BrdfLutTexture::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+        auto& state = registry->m_state;
+
         m_size = assets.brdfLutSize;
 
         {
@@ -40,14 +45,14 @@ namespace render {
         }
 
         {
-            kigl::GLState state;
-
             auto program = registry->m_programRegistry->getProgram(SHADER_BRDF_LUT);
             program->prepareRT(assets);
 
             program->bind(state);
 
             render(state, program, m_texture, m_size);
+
+            state.clear();
         }
     }
 

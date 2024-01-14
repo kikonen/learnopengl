@@ -7,8 +7,8 @@
 #include "asset/LightUBO.h"
 
 
+struct UpdateContext;
 class Node;
-class UpdateContext;
 
 
 class Light final

@@ -10,8 +10,6 @@
 
 #include "util/thread.h"
 
-#include "registry/EntitySSBO.h"
-
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
@@ -47,9 +45,10 @@ void NodeTransform::updateRootMatrix() noexcept
 
     updateModelAxis();
 
-    m_dirty = false;
     m_matrixLevel++;
-    m_dirtyEntity = true;
+
+    m_dirty = false;
+    m_dirtySnapshot = true;
 }
 
 void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
@@ -87,8 +86,8 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 
     m_parentMatrixLevel = parent.m_matrixLevel;
     m_matrixLevel++;
+
     m_dirty = false;
-    m_dirtyEntity = true;
     m_dirtySnapshot = true;
 }
 
@@ -110,36 +109,3 @@ void NodeTransform::updateRotationMatrix() noexcept
     m_rotationMatrix = glm::toMat4(m_quatRotation * m_baseRotation);
     m_dirtyRotation = false;
 }
-
-void NodeTransform::updateDegrees() const noexcept
-{
-    ASSERT_RT();
-    if (!m_dirtyDegrees) return;
-    m_degreesRotation = util::quatToDegrees(m_quatRotation);
-    m_dirtyDegrees = false;
-}
-
-//void NodeTransform::updateEntity(
-//    const UpdateContext& ctx,
-//    EntitySSBO* entity)
-//{
-//    ASSERT_RT();
-//    if (!m_dirtyEntity) return;
-//
-//    entity->u_materialIndex = m_materialIndex;
-//    entity->u_shapeIndex = m_shapeIndex;
-//
-//    //entity->u_highlightIndex = getHighlightIndex(assets);
-//
-//    if (ctx.m_assets.frustumAny) {
-//        m_volume.updateVolume(m_matrixLevel, m_modelMatrix, getWorldMaxScale());
-//        entity->u_volume = m_volume.getWorldVolume();
-//    }
-//
-//    // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-//    entity->setModelMatrix(m_modelMatrix, m_uniformScale);
-//
-//    entity->u_worldScale = getWorldScale();
-//
-//    m_dirtyEntity = false;
-//}

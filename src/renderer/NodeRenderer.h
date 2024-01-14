@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "Renderer.h"
 
@@ -21,8 +22,7 @@ public:
         : Renderer(name, useFrameStep) {}
 
     void prepareRT(
-        const Assets& assets,
-        Registry* registry) override;
+        const PrepareContext& ctx) override;
 
     void updateRT(const UpdateViewContext& ctx);
 

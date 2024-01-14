@@ -1,9 +1,17 @@
 #include "TerrainGenerator.h"
 
+#include <iostream>
+
+#include <fmt/format.h>
+
+#include "util/Log.h"
+#include "util/glm_format.h"
 #include "util/Perlin.h"
 
 #include "asset/Image.h"
 #include "asset/AABB.h"
+
+#include "model/Node.h"
 
 #include "mesh/ModelMesh.h"
 #include "mesh/TerrainMesh.h"
@@ -12,6 +20,7 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
@@ -34,19 +43,34 @@ TerrainGenerator::TerrainGenerator()
 }
 
 void TerrainGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
-    m_gridSize = assets.terrainGridSize;
+    m_gridSize = ctx.m_assets.terrainGridSize;
 
     m_poolSizeU = 4;
     m_poolSizeV = 4;
 
-    prepareHeightMap(assets, registry, container);
+    auto* heightMap = prepareHeightMap(ctx, container);
 
-    createTiles(assets, registry, container);
+    createTiles(ctx, container, heightMap);
+    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
+
+void TerrainGenerator::prepareEntity(
+    EntitySSBO& entity,
+    uint32_t index)
+{
+    // TODO KI WT vs RT conflict
+    const auto& info = m_tileInfos[index];
+
+    entity.u_tileX = info.m_tileX;
+    entity.u_tileY = info.m_tileY;
+
+    entity.u_rangeYmin = m_verticalRange[0];
+    entity.u_rangeYmax = m_verticalRange[1];
+}
+
 
 void TerrainGenerator::update(
     const UpdateContext& ctx,
@@ -56,16 +80,17 @@ void TerrainGenerator::update(
     if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
 
     updateTiles(ctx, container);
-    transform.m_dirtyEntity = true;
     transform.m_dirtySnapshot = true;
     m_containerMatrixLevel = transform.getMatrixLevel();
 }
 
-void TerrainGenerator::prepareHeightMap(
-    const Assets& assets,
-    Registry* registry,
+physics::HeightMap* TerrainGenerator::prepareHeightMap(
+    const PrepareContext& ctx,
     Node& container)
 {
+    auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
+
     const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
@@ -93,6 +118,8 @@ void TerrainGenerator::prepareHeightMap(
         heightMap->setAABB(aabb);
     }
     heightMap->prepare(image.get());
+
+    return heightMap;
 }
 
 void TerrainGenerator::updateTiles(
@@ -121,21 +148,25 @@ void TerrainGenerator::updateTiles(
         }
     }
 
-    // Make tiles visible
-    setActiveRange(m_reservedFirst, m_reservedCount);
+    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+    setActiveRange(0, m_reservedCount);
 }
 
 void TerrainGenerator::createTiles(
-    const Assets& assets,
-    Registry* registry,
-    Node& container)
+    const PrepareContext& ctx,
+    Node& container,
+    physics::HeightMap* heightMap)
 {
+    const auto& assets = ctx.m_assets;
+    auto& registry = ctx.m_registry;
+
     auto* entityRegistry = registry->m_entityRegistry;
     auto* materialRegistry = registry->m_materialRegistry;
 
-    float scale = m_worldTileSize / 2.f;
-    float vertMinAABB = 3.f * m_verticalRange[0] / scale;
-    float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
+    const float scale = m_worldTileSize / 2.f;
+
+    const float vertMinAABB = 3.f * m_verticalRange[0] / scale;
+    const float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
 
     const AABB aabb{
         glm::vec3{ -1.f, vertMinAABB, -1.f },
@@ -145,7 +176,7 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto typeId = createType(registry, container.m_type);
+    const auto typeId = createType(registry, container.m_type);
     {
         auto future = registry->m_modelRegistry->getMesh(
             TERRAIN_QUAD_MESH_NAME,
@@ -154,11 +185,8 @@ void TerrainGenerator::createTiles(
         mesh->setAABB(aabb);
 
         {
-            auto type = registry->m_typeRegistry->modifyType(typeId);
+            auto* type = registry->m_typeRegistry->modifyType(typeId);
             type->setMesh(mesh);
-
-            auto& drawOptions = type->modifyDrawOptions();
-            drawOptions.patchVertices = 3;
         }
     }
 
@@ -166,7 +194,11 @@ void TerrainGenerator::createTiles(
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
     {
-        auto type = registry->m_typeRegistry->modifyType(typeId);
+        auto* type = registry->m_typeRegistry->modifyType(typeId);
+
+        auto& drawOptions = type->modifyDrawOptions();
+        drawOptions.m_patchVertices = 3;
+
         type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
             m.tilingX = (float)m_worldTilesU;
             m.tilingY = (float)m_worldTilesV;
@@ -175,43 +207,48 @@ void TerrainGenerator::createTiles(
 
             materialRegistry->registerMaterial(m);
             materialIndex = m.m_registeredIndex;
-            });
+        });
     }
 
     const glm::vec4 tileVolume = aabb.getVolume();
     const int step = m_worldTileSize;
     AABB minmax{ true };
 
-    m_reservedCount = m_worldTilesU * m_worldTilesV;
-    m_reservedFirst = entityRegistry->registerEntityRange(m_reservedCount);
+    const int tileCount = m_worldTilesU * m_worldTilesV;
 
-    m_transforms.reserve(m_reservedCount);
+    m_transforms.reserve(tileCount);
+    m_tileInfos.reserve(tileCount);
 
     // Setup initial static values for entity
     int idx = 0;
+    KI_INFO_OUT(fmt::format("TERRAIN: tilesV={}, tilesU={}", m_worldTilesV, m_worldTilesU));
     for (int v = 0; v < m_worldTilesV; v++) {
         for (int u = 0; u < m_worldTilesU; u++) {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
-            minmax.minmax(pos);
 
-            const int entityIndex = m_reservedFirst + idx;
+            // TODO KI get height
+            {
+                glm::vec3 uvPos{
+                    pos.x / heightMap->m_worldSizeU,
+                    0.f,
+                    1.f - pos.z / heightMap->m_worldSizeU };
+                const auto height = heightMap->getTerrainHeight(uvPos.x, uvPos.z);
+                minmax.minmax({ pos.x, height, pos.z });
+
+                KI_INFO_OUT(fmt::format(
+                    "v={}, u={}, pos={}, uvPos={}, height={}, offsetU={}, offsetV={}, min={}, max={}",
+                    v, u, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
+            }
 
             {
                 auto& transform = m_transforms.emplace_back();
 
                 transform.setMaterialIndex(materialIndex);
                 transform.setVolume(tileVolume);
-
-                transform.m_entityIndex = entityIndex;
             }
 
             {
-                auto* entity = entityRegistry->modifyEntity(entityIndex, false);
-                entity->u_tileX = u;
-                entity->u_tileY = v;
-
-                entity->u_rangeYmin = m_verticalRange[0];
-                entity->u_rangeYmax = m_verticalRange[1];
+                m_tileInfos.emplace_back(u, v);
             }
 
             idx++;
@@ -220,6 +257,9 @@ void TerrainGenerator::createTiles(
 
     // NOTE KI dummy node needed to trigger instancing in container context
     {
+        minmax.updateVolume();
+        KI_INFO_OUT(fmt::format("TERRAIN: minmax={}", minmax.getVolume()));
+
         const auto type = registry->m_typeRegistry->getType(typeId);
         m_node = new Node(type);
         m_node->modifyTransform().setVolume(minmax.getVolume());

@@ -44,8 +44,7 @@ void DynamicCubeMap::unbind(const RenderContext& ctx)
 }
 
 void DynamicCubeMap::prepareRT(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     const bool clear,
     const glm::vec4& clearColor)
 {
@@ -56,7 +55,7 @@ void DynamicCubeMap::prepareRT(
 
     m_cubeMap.m_size = m_size;
     m_cubeMap.m_internalFormat = GL_RGB16F;
-    m_cubeMap.prepareRT(assets, registry);
+    m_cubeMap.prepareRT(ctx);
 
     m_valid = true;
 }

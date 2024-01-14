@@ -17,16 +17,18 @@
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
 
-#include "mesh/VertexEntry.h"
 #include "mesh/MeshType.h"
+#include "mesh/PositionEntry.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
+#include "model/EntityFlags.h"
 
 #include "component/Camera.h"
 
 #include "registry/Registry.h"
-#include "registry/EntityRegistry.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 
@@ -34,16 +36,6 @@ namespace {
     constexpr int BATCH_COUNT = 100;
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
-
-    //int idBase = 0;
-
-    //std::mutex type_id_lock{};
-
-    //int nextID()
-    //{
-    //    std::lock_guard<std::mutex> lock(type_id_lock);
-    //    return ++idBase;
-    //}
 }
 
 namespace render {
@@ -53,17 +45,15 @@ namespace render {
 
     bool Batch::inFrustum(
         const RenderContext& ctx,
-        const int entityIndex) const noexcept
+        const Snapshot& snapshot) const noexcept
     {
-        const auto* entity = m_entityRegistry->getEntity(entityIndex);
-
-        if ((entity->u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
             return true;
 
         bool visible;
         {
             const auto& frustum = ctx.m_camera->getFrustum();
-            const Sphere volume{ entity->u_volume };
+            const Sphere& volume{ snapshot.m_volume };
 
             visible = volume.isOnFrustum(frustum);
         }
@@ -78,14 +68,15 @@ namespace render {
         return visible;
     }
 
-    void Batch::add(
+    void Batch::addSnapshot(
         const RenderContext& ctx,
-        const int entityIndex) noexcept
+        const Snapshot& snapshot,
+        uint32_t entityIndex) noexcept
     {
         //if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
         if (entityIndex < 0) return;
 
-        if (m_frustumCPU && !inFrustum(ctx, entityIndex))
+        if (m_frustumCPU && !inFrustum(ctx, snapshot))
             return;
 
         auto& top = m_batches.back();
@@ -94,55 +85,53 @@ namespace render {
         m_entityIndeces.emplace_back(entityIndex);
     }
 
-    void Batch::addAll(
+    void Batch::addSnapshots(
         const RenderContext& ctx,
-        const std::vector<int> entityIndeces) noexcept
+        const std::span<const Snapshot>& snapshots,
+        const std::span<uint32_t>& entityIndeces) noexcept
     {
-        for (const auto& entityIndex : entityIndeces) {
-            add(ctx, entityIndex);
+        uint32_t i = 0;
+        for (const auto& snapshot : snapshots) {
+            addSnapshot(ctx, snapshot, entityIndeces[i++]);
         }
     }
 
-    void Batch::addInstanced(
+    void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        int instancedEntityIndex,
-        const int firstEntityIndex,
-        const int count) noexcept
+        const std::span<const Snapshot>& snapshots,
+        uint32_t entityBase) noexcept
     {
-        if (firstEntityIndex < 0 || count <= 0) return;
+        const size_t count = snapshots.size();
 
-        int actualIndex = firstEntityIndex;
-        int actualCount = count;
+        if (count <= 0) return;
+
+        size_t startIndex = 0;
+        size_t instanceCount = count;
 
         if (m_frustumCPU) {
-            if (instancedEntityIndex != -1 && !inFrustum(ctx, instancedEntityIndex)) {
-                m_skipCount += count - 1;
-                return;
+            while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
+                startIndex++;
+                instanceCount--;
             }
 
-            while (actualCount > 0 && !inFrustum(ctx, actualIndex)) {
-                actualIndex++;
-                actualCount--;
-            }
-
-            if (actualCount > 0) {
-                int endIndex = actualIndex + actualCount - 1;
-                while (actualCount > 0 && !inFrustum(ctx, endIndex)) {
+            if (instanceCount > 0) {
+                size_t endIndex = snapshots.size() - 1;
+                while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
                     endIndex--;
-                    actualCount--;
+                    instanceCount--;
                 }
             }
 
-            if (actualCount == 0)
+            if (instanceCount == 0)
                 return;
         }
 
         auto& top = m_batches.back();
 
         top.m_drawCount = 1;
-        top.m_instancedCount = actualCount;
+        top.m_instancedCount = static_cast<int>(instanceCount);
 
-        m_entityIndeces.emplace_back(actualIndex);
+        m_entityIndeces.emplace_back(entityBase + startIndex);
     }
 
     void Batch::bind() noexcept
@@ -151,13 +140,14 @@ namespace render {
     }
 
     void Batch::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int entryCount,
         int bufferCount)
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        auto& assets = ctx.m_assets;
 
         if (entryCount <= 0) {
             entryCount = assets.batchSize;
@@ -176,15 +166,18 @@ namespace render {
         m_entityIndeces.reserve(ENTITY_COUNT);
 
         m_draw = std::make_unique<backend::DrawBuffer>(
+            assets.glUseMapped,
+            assets.glUseInvalidate,
             assets.glUseFence,
-            assets.glUseSingleFence);
+            assets.glUseSingleFence,
+            assets.glUseDebugFence);
 
-        m_draw->prepareRT(assets, registry, entryCount, bufferCount);
+        m_draw->prepareRT(ctx, entryCount, bufferCount);
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
-        m_entityRegistry = registry->m_entityRegistry;
+        m_entityRegistry = ctx.m_registry->m_entityRegistry;
     }
 
     void Batch::addCommand(
@@ -276,49 +269,49 @@ namespace render {
 
             const auto& drawOptions = curr.m_drawOptions;
 
-            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-                cmd.count = drawOptions.indexCount;
-                cmd.instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.firstIndex = drawOptions.indexOffset / sizeof(GLuint);
-                cmd.baseVertex = drawOptions.vertexOffset / sizeof(mesh::VertexEntry);
+                cmd.u_count = drawOptions.m_indexCount;
+                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
+                cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
-                if (drawOptions.instanced) {
-                    cmd.instanceCount = curr.m_instancedCount;
-                    cmd.baseInstance = m_entityIndeces[curr.m_index];
+                if (drawOptions.m_instanced) {
+                    cmd.u_instanceCount = curr.m_instancedCount;
+                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
                             int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.baseInstance = entityIndex;
+                            cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
                     }
                 }
             }
-            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
-                cmd.vertexCount = drawOptions.indexCount;
-                cmd.instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.firstVertex = drawOptions.indexOffset / sizeof(GLuint);
+                cmd.u_vertexCount = drawOptions.m_indexCount;
+                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                cmd.u_firstVertex = drawOptions.m_indexOffset / sizeof(GLuint);
 
                 //if (!m_frustumGPU && drawOptions.instanced) {
-                if (drawOptions.instanced) {
-                    cmd.instanceCount = curr.m_instancedCount;
-                    cmd.baseInstance = m_entityIndeces[curr.m_index];
+                if (drawOptions.m_instanced) {
+                    cmd.u_instanceCount = curr.m_instancedCount;
+                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
                             int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.baseInstance = entityIndex;
+                            cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
                     }

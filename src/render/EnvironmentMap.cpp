@@ -7,6 +7,7 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -16,10 +17,13 @@
 
 namespace render {
     void EnvironmentMap::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int size)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+        auto& state = registry->m_state;
+
         if (m_hdriTextureID <= 0) return;
 
         m_size = size;
@@ -38,8 +42,6 @@ namespace render {
         }
 
         {
-            kigl::GLState state;
-
             auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
             program->prepareRT(assets);
 
@@ -50,6 +52,7 @@ namespace render {
             renderer.render(state, program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_HDR_TEXTURE, false);
+            state.clear();
         }
     }
 

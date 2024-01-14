@@ -6,13 +6,18 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "mesh/MeshType.h"
+
+#include "component/Camera.h"
+
+#include "model/Node.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
-#include "component/Camera.h"
-
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -24,13 +29,14 @@
 
 
 void NodeRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;

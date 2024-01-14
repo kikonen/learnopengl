@@ -5,23 +5,16 @@
 
 #include <ki/uuid.h>
 
-#pragma warning(push)
-#pragma warning(disable : 4251)
-#pragma warning(disable : 4275)
-
-#include <yaml-cpp/yaml.h>
-
-#pragma warning(pop)
-
+#include "ki/yaml.h"
 
 #include "asset/Assets.h"
 
-class AssetsFile final
+class AssetsLoader final
 {
 public:
-    AssetsFile(
+    AssetsLoader(
         std::string_view filename);
-    ~AssetsFile();
+    ~AssetsLoader();
 
     Assets load();
 

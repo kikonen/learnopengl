@@ -14,6 +14,7 @@
 #include "mesh/ModelMaterialInit.h"
 #include "mesh/MeshType.h"
 
+#include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
 
@@ -76,8 +77,7 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* ModelMesh::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
@@ -86,11 +86,11 @@ namespace mesh {
 
         // NOTE KI no need for thexe any longer (they are in buffers now)
         // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
-        m_indexCount = static_cast<ki::uint>(m_indeces.size());
+        m_indexCount = static_cast<uint32_t>(m_indeces.size());
         m_indeces.clear();
         //m_vertices.clear();
 
-        m_vao = registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
+        m_vao = ctx.m_registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 
@@ -104,10 +104,10 @@ namespace mesh {
     void ModelMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
-        drawOptions.type = backend::DrawOptions::Type::elements;
-        drawOptions.mode = drawOptions.tessellation ? GL_PATCHES : GL_TRIANGLES;
-        drawOptions.indexCount = m_indexCount * 3;
-        drawOptions.vertexOffset = static_cast<ki::uint>(m_vertexVBO.m_vertexOffset);
-        drawOptions.indexOffset = static_cast<ki::uint>(m_vertexVBO.m_indexOffset);
+        drawOptions.m_type = backend::DrawOptions::Type::elements;
+        drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
+        drawOptions.m_indexCount = m_indexCount * 3;
+        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vertexVBO.m_vertexOffset);
+        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vertexVBO.m_indexOffset);
     }
 }

@@ -10,10 +10,8 @@
 #include "util/glm_util.h"
 
 
-class UpdateContext;
+struct UpdateContext;
 class RenderContext;
-
-struct EntitySSBO;
 
 //
 // Relative to *Node*
@@ -24,18 +22,14 @@ struct EntitySSBO;
 struct NodeTransform {
     bool m_dirty : 1 {true};
     bool m_dirtyRotation : 1 {true};
-    mutable bool m_dirtyDegrees : 1 {true};
-    bool m_dirtyNormal : 1 {true};
-    bool m_dirtyEntity : 1 {true};
     bool m_dirtySnapshot : 1 {true};
-    bool m_uniformScale : 1 {true};
 
     ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
     ki::level_id m_physicsLevel{ (ki::level_id)-1 };
 
-    int m_entityIndex{ -1 };
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
@@ -53,7 +47,6 @@ struct NodeTransform {
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
-    mutable glm::vec3 m_degreesRotation{ 0.f };
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
@@ -75,7 +68,6 @@ struct NodeTransform {
     {
         if (m_materialIndex != materialIndex) {
             m_materialIndex = materialIndex;
-            m_dirtyEntity = true;
             m_dirtySnapshot = true;
         }
     }
@@ -89,7 +81,6 @@ struct NodeTransform {
     {
         if (m_volume.getVolume() != volume) {
             m_volume = volume;
-            m_dirtyEntity = true;
             m_dirtySnapshot = true;
         }
     }
@@ -99,20 +90,9 @@ struct NodeTransform {
         return m_position;;
     }
 
-    inline const bool isUniformScale() const noexcept
-    {
-        return m_uniformScale;
-    }
-
     inline const glm::vec3& getScale() const noexcept
     {
         return m_scale;
-    }
-
-    inline const glm::vec3& getDegreesRotation() const noexcept
-    {
-        updateDegrees();
-        return m_degreesRotation;
     }
 
     inline const glm::quat& getQuatRotation() const noexcept
@@ -143,9 +123,7 @@ struct NodeTransform {
             m_scale.y = scale;
             m_scale.z = scale;
 
-            m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
-            m_dirtyNormal = true;
         }
     }
 
@@ -159,9 +137,7 @@ struct NodeTransform {
             m_scale.y = scale.y;
             m_scale.z = scale.z;
 
-            m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
             m_dirty = true;
-            m_dirtyNormal = true;
         }
     }
 
@@ -174,18 +150,14 @@ struct NodeTransform {
         m_scale.y += adjust.y;
         m_scale.z += adjust.z;
 
-        m_uniformScale = m_scale.x == m_scale.y && m_scale.x == m_scale.z;
         m_dirty = true;
-        m_dirtyNormal = true;
     }
 
     void setBaseRotation(const glm::quat& quat) noexcept
     {
         m_baseRotation = glm::normalize(quat);
         m_dirtyRotation = true;
-        m_dirtyDegrees = true;
         m_dirty = true;
-        m_dirtyNormal = true;
     }
 
     void setQuatRotation(const glm::quat& quat) noexcept
@@ -193,9 +165,7 @@ struct NodeTransform {
         if (m_quatRotation != quat) {
             m_quatRotation = quat;
             m_dirtyRotation = true;
-            m_dirtyDegrees = true;
             m_dirty = true;
-            m_dirtyNormal = true;
         }
     }
 
@@ -207,17 +177,6 @@ struct NodeTransform {
     void setDegreesRotation(const glm::vec3& rot) noexcept
     {
         setQuatRotation(glm::quat(glm::radians(rot)));
-    }
-
-    inline void adjustDegreesRotation(const glm::vec3& adjust) noexcept
-    {
-        glm::vec3 rot{ adjust };
-        {
-            rot.x += m_degreesRotation.x;
-            rot.y += m_degreesRotation.y;
-            rot.z += m_degreesRotation.z;
-        }
-        setDegreesRotation(rot);
     }
 
     inline const glm::vec3& getFront() const noexcept {
@@ -279,7 +238,6 @@ struct NodeTransform {
     }
 
     void updateRootMatrix() noexcept;
-    void updateDegrees() const noexcept;
     void updateModelMatrix(const NodeTransform& parent) noexcept;
     void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;

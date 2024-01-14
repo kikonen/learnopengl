@@ -7,12 +7,17 @@
 
 #include "mesh/MeshType.h"
 
+#include "model/Node.h"
+
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
+
+#include "engine/PrepareContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -82,13 +87,14 @@ CubeMapRenderer::~CubeMapRenderer()
 {}
 
 void CubeMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -106,12 +112,12 @@ void CubeMapRenderer::prepareRT(
     {
         m_curr = std::make_unique<DynamicCubeMap>(fmt::format("{}_next", m_name), size);
         m_curr->prepareRT(
-            assets, registry,
+            ctx,
             false, { 0, 0, 1.f, 1.f });
 
         m_prev = std::make_unique<DynamicCubeMap>(fmt::format("{}_prev", m_name), size);
         m_prev->prepareRT(
-            assets, registry,
+            ctx,
             false,
             { 0, 1.f, 0, 1.f });
     }
@@ -127,14 +133,14 @@ void CubeMapRenderer::prepareRT(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(assets, registry);
+        m_waterMapRenderer->prepareRT(ctx);
     }
 
     m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>(fmt::format("{}_cube", m_name), false, false, true);
     m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->prepareRT(assets, registry);
+        m_mirrorMapRenderer->prepareRT(ctx);
     }
 }
 
@@ -178,8 +184,12 @@ bool CubeMapRenderer::render(
     if (parentCtx.m_assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto& rootPos = parentCtx.m_registry->m_nodeRegistry->m_root->getSnapshot().getWorldPosition();
-            const auto& centerPos = centerNode->getSnapshot().getWorldPosition();
+            const auto* rootNode = parentCtx.m_registry->m_nodeRegistry->getRootRT();
+            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
+            const auto& rootSnapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(rootNode->m_snapshotIndex);
+
+            const auto& rootPos = rootSnapshot.getWorldPosition();
+            const auto& centerPos = snapshot.getWorldPosition();
             const auto tagPos = centerPos - rootPos;
 
             m_registry->m_commandEngine->addCommand(
@@ -215,7 +225,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = centerNode->getSnapshot();
+        const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
         const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
@@ -352,7 +362,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& snapshot = node->getSnapshot();
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
 

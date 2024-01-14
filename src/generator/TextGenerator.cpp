@@ -15,6 +15,9 @@
 
 #include "render/RenderContext.h"
 
+#include "registry/Registry.h"
+#include "registry/SnapshotRegistry.h"
+
 namespace {
     std::array<std::string,6> texts{
         "This the story",
@@ -34,8 +37,7 @@ TextGenerator::TextGenerator()
 {}
 
 void TextGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     m_draw = std::make_unique<text::TextDraw>();
@@ -71,7 +73,7 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    m_draw->prepareRT(ctx.m_assets, ctx.m_registry);
+    m_draw->prepareRT(ctx.toPrepareContext());
 
     m_draw->render(
         ctx,
@@ -98,5 +100,8 @@ void TextGenerator::bindBatch(
     Node& container,
     render::Batch& batch)
 {
-    batch.add(ctx, container.getSnapshot().m_entityIndex);
+    m_draw->updateRT(ctx.m_state);
+
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
+    batch.addSnapshot(ctx, snapshot, container.m_entityIndex);
 }

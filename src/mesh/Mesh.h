@@ -9,7 +9,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 #include "asset/Volume.h"
 #include "asset/AABB.h"
@@ -18,7 +17,7 @@
 
 #include "registry/Registry.h"
 
-class Registry;
+struct PrepareContext;
 
 namespace mesh {
     class Mesh
@@ -37,8 +36,7 @@ namespace mesh {
 
         // @return VAO for mesh
         virtual kigl::GLVertexArray* prepareRT(
-            const Assets& assets,
-            Registry* registry) = 0;
+            const PrepareContext& ctx) = 0;
 
         virtual void prepareMaterials(
             MaterialVBO& materialVBO) {};

@@ -4,13 +4,18 @@
 
 #include "component/Camera.h"
 
+#include "mesh/MeshType.h"
+
+#include "model/Node.h"
 #include "model/Viewport.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/FrameBuffer.h"
@@ -37,13 +42,14 @@ namespace {
 
 
 void WaterMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
@@ -253,7 +259,8 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& planePos = closest->getSnapshot().getWorldPosition();
+    const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
+    const auto& planePos = snapshot.getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
@@ -415,7 +422,8 @@ Node* WaterMapRenderer::findClosest(
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const glm::vec3 ray = node->getSnapshot().getWorldPosition() - cameraPos;
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+        const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = glm::length(ray);
         //glm::vec3 fromCamera = glm::normalize(ray);
         //float dot = glm::dot(fromCamera, cameraDir);

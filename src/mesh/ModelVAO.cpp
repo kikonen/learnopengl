@@ -25,7 +25,8 @@ namespace mesh {
     ModelVAO::ModelVAO(std::string_view name)
         : m_name(name),
         m_positionVbo{ m_name + "_position_vbo" },
-        m_vertexVbo{ m_name + "_vertex_vbo" },
+        m_normalVbo{ m_name + "_normal_vbo" },
+        m_textureVbo{ m_name + "_texture_vbo" },
         m_ebo{ m_name + "_ebo" }
     {}
 
@@ -44,9 +45,14 @@ namespace mesh {
             m_positionEntries.reserve(VERTEX_BLOCK_SIZE);
         }
         {
-            m_vertexVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(VertexEntry), GL_DYNAMIC_STORAGE_BIT);
+            m_normalVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(NormalEntry), GL_DYNAMIC_STORAGE_BIT);
 
-            m_vertexEntries.reserve(VERTEX_BLOCK_SIZE);
+            m_normalEntries.reserve(VERTEX_BLOCK_SIZE);
+        }
+        {
+            m_textureVbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(TextureEntry), GL_DYNAMIC_STORAGE_BIT);
+
+            m_textureEntries.reserve(VERTEX_BLOCK_SIZE);
         }
         {
             m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
@@ -56,7 +62,7 @@ namespace mesh {
 
         // NOTE KI VBO & EBO are just empty buffers here
 
-        prepareVAO(*m_vao, m_positionVbo, m_vertexVbo, m_ebo);
+        prepareVAO(*m_vao, m_positionVbo, m_normalVbo, m_textureVbo, m_ebo);
     }
 
     void ModelVAO::bind(kigl::GLState& state)
@@ -72,7 +78,8 @@ namespace mesh {
     void ModelVAO::prepareVAO(
         kigl::GLVertexArray& vao,
         kigl::GLBuffer& positionVbo,
-        kigl::GLBuffer& vertexVbo,
+        kigl::GLBuffer& normalVbo,
+        kigl::GLBuffer& textureVbo,
         kigl::GLBuffer& ebo)
     {
         // "Tile" based GPU can benefit from having separate position stream VBO for improved caching
@@ -99,33 +106,48 @@ namespace mesh {
         }
 
         {
-            glVertexArrayVertexBuffer(vao, VBO_VERTEX_BINDING, vertexVbo, 0, sizeof(VertexEntry));
+            glVertexArrayVertexBuffer(vao, VBO_NORMAL_BINDING, normalVbo, 0, sizeof(NormalEntry));
             {
                 glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
                 glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
-                glEnableVertexArrayAttrib(vao, ATTR_TEX);
 
                 // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
 
                 // normal attr
-                glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
+                glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(NormalEntry, normal));
 
                 // tangent attr
-                glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, tangent));
+                glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(NormalEntry, tangent));
 
-                // texture attr
-                //glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
-                glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, texCoord));
-
-                glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_VERTEX_BINDING);
-                glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_VERTEX_BINDING);
-                glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_VERTEX_BINDING);
+                glVertexArrayAttribBinding(vao, ATTR_NORMAL, VBO_NORMAL_BINDING);
+                glVertexArrayAttribBinding(vao, ATTR_TANGENT, VBO_NORMAL_BINDING);
 
                 // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
-                glVertexArrayBindingDivisor(vao, VBO_VERTEX_BINDING, 0);
+                glVertexArrayBindingDivisor(vao, VBO_NORMAL_BINDING, 0);
+            }
+        }
+
+        {
+            glVertexArrayVertexBuffer(vao, VBO_TEXTURE_BINDING, textureVbo, 0, sizeof(TextureEntry));
+            {
+                glEnableVertexArrayAttrib(vao, ATTR_TEX);
+
+                // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
+                // https://www.khronos.org/opengl/wiki/Vertex_Specification
+                //
+
+                // texture attr
+                //glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
+                glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(TextureEntry, texCoord));
+
+                glVertexArrayAttribBinding(vao, ATTR_TEX, VBO_TEXTURE_BINDING);
+
+                // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
+                // https://www.khronos.org/opengl/wiki/Vertex_Specification
+                glVertexArrayBindingDivisor(vao, VBO_TEXTURE_BINDING, 0);
             }
         }
 
@@ -137,32 +159,37 @@ namespace mesh {
     void ModelVAO::clear()
     {
         m_positionEntries.clear();
-        m_vertexEntries.clear();
+        m_normalEntries.clear();
+        m_textureEntries.clear();
         m_indexEntries.clear();
 
-        m_dirty = true;
         m_lastPositionSize = 0;
-        m_lastVertexSize = 0;
+        m_lastNormalSize = 0;
+        m_lastTextureSize = 0;
         m_lastIndexSize = 0;
     }
 
     kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
     {
-        std::lock_guard<std::mutex> lock(m_lock);
-
         assert(!modelVBO.m_positionEntries.empty());
-        assert(!modelVBO.m_vertexEntries.empty());
+        assert(!modelVBO.m_normalEntries.empty());
+        assert(!modelVBO.m_textureEntries.empty());
         assert(!modelVBO.m_indexEntries.empty());
+        assert(modelVBO.m_positionEntries.size() == modelVBO.m_normalEntries.size());
+        assert(modelVBO.m_positionEntries.size() == modelVBO.m_textureEntries.size());
 
         {
-            const size_t count = modelVBO.m_positionEntries.size();
             const size_t baseIndex = m_positionEntries.size();
             const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
+            modelVBO.m_vertexOffset = baseOffset;
+        }
+
+        {
+            const size_t count = modelVBO.m_positionEntries.size();
+
             if (m_positionEntries.size() + count >= MAX_VERTEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
-
-            modelVBO.m_positionOffset = baseOffset;
 
             {
                 size_t size = m_positionEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
@@ -178,26 +205,41 @@ namespace mesh {
         }
 
         {
-            const size_t count = modelVBO.m_vertexEntries.size();
-            const size_t baseIndex = m_vertexEntries.size();
-            const size_t baseOffset = baseIndex * sizeof(VertexEntry);
+            const size_t count = modelVBO.m_normalEntries.size();
 
-            if (m_vertexEntries.size() + count >= MAX_VERTEX_COUNT)
+            if (m_normalEntries.size() + count >= MAX_VERTEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
 
-            modelVBO.m_vertexOffset = baseOffset;
-
             {
-                size_t size = m_vertexEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
+                size_t size = m_normalEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
                 size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
                 size = std::min(size, MAX_VERTEX_COUNT);
-                m_vertexEntries.reserve(size);
+                m_normalEntries.reserve(size);
             }
 
-            m_vertexEntries.insert(
-                m_vertexEntries.end(),
-                modelVBO.m_vertexEntries.begin(),
-                modelVBO.m_vertexEntries.end());
+            m_normalEntries.insert(
+                m_normalEntries.end(),
+                modelVBO.m_normalEntries.begin(),
+                modelVBO.m_normalEntries.end());
+        }
+
+        {
+            const size_t count = modelVBO.m_textureEntries.size();
+
+            if (m_textureEntries.size() + count >= MAX_VERTEX_COUNT)
+                throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
+
+            {
+                size_t size = m_textureEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
+                size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
+                size = std::min(size, MAX_VERTEX_COUNT);
+                m_textureEntries.reserve(size);
+            }
+
+            m_textureEntries.insert(
+                m_textureEntries.end(),
+                modelVBO.m_textureEntries.begin(),
+                modelVBO.m_textureEntries.end());
         }
 
         {
@@ -226,12 +268,11 @@ namespace mesh {
         return m_vao.get();
     }
 
-    void ModelVAO::updateRT(const UpdateContext& ctx)
+    void ModelVAO::updateRT()
     {
-        std::lock_guard<std::mutex> lock(m_lock);
-
         updatePositionBuffer();
-        updateVertexBuffer();
+        updateNormalBuffer();
+        updateTextureBuffer();
         updateIndexBuffer();
     }
 
@@ -265,34 +306,64 @@ namespace mesh {
         m_lastPositionSize = totalCount;
     }
 
-    void ModelVAO::updateVertexBuffer()
+    void ModelVAO::updateNormalBuffer()
     {
-        const size_t index = m_lastVertexSize;
-        const size_t totalCount = m_vertexEntries.size();
+        const size_t index = m_lastNormalSize;
+        const size_t totalCount = m_normalEntries.size();
 
         if (index == totalCount) return;
         if (totalCount == 0) return;
 
         {
-            constexpr size_t sz = sizeof(VertexEntry);
+            constexpr size_t sz = sizeof(NormalEntry);
             size_t updateIndex = index;
 
             // NOTE KI *reallocate* SSBO if needed
-            if (m_vertexVbo.m_size < totalCount * sz) {
-                m_vertexVbo.resizeBuffer(m_vertexEntries.capacity() * sz);
-                glVertexArrayVertexBuffer(*m_vao, VBO_VERTEX_BINDING, m_vertexVbo, 0, sizeof(VertexEntry));
+            if (m_normalVbo.m_size < totalCount * sz) {
+                m_normalVbo.resizeBuffer(m_normalEntries.capacity() * sz);
+                glVertexArrayVertexBuffer(*m_vao, VBO_NORMAL_BINDING, m_normalVbo, 0, sizeof(NormalEntry));
                 updateIndex = 0;
             }
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_vertexVbo.update(
+            m_normalVbo.update(
                 updateIndex * sz,
                 updateCount * sz,
-                &m_vertexEntries[updateIndex]);
+                &m_normalEntries[updateIndex]);
         }
 
-        m_lastVertexSize = totalCount;
+        m_lastNormalSize = totalCount;
+    }
+
+    void ModelVAO::updateTextureBuffer()
+    {
+        const size_t index = m_lastTextureSize;
+        const size_t totalCount = m_textureEntries.size();
+
+        if (index == totalCount) return;
+        if (totalCount == 0) return;
+
+        {
+            constexpr size_t sz = sizeof(TextureEntry);
+            size_t updateIndex = index;
+
+            // NOTE KI *reallocate* SSBO if needed
+            if (m_textureVbo.m_size < totalCount * sz) {
+                m_textureVbo.resizeBuffer(m_textureEntries.capacity() * sz);
+                glVertexArrayVertexBuffer(*m_vao, VBO_TEXTURE_BINDING, m_textureVbo, 0, sizeof(TextureEntry));
+                updateIndex = 0;
+            }
+
+            const size_t updateCount = totalCount - updateIndex;
+
+            m_textureVbo.update(
+                updateIndex * sz,
+                updateCount * sz,
+                &m_textureEntries[updateIndex]);
+        }
+
+        m_lastTextureSize = totalCount;
     }
 
     void ModelVAO::updateIndexBuffer()
@@ -323,5 +394,6 @@ namespace mesh {
         }
 
         m_lastIndexSize = totalCount;
+
     }
 }

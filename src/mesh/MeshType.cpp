@@ -2,7 +2,6 @@
 
 #include <fmt/format.h>
 
-#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 #include "asset/Material.h"
@@ -12,11 +11,15 @@
 
 #include "mesh/Mesh.h"
 
+#include "engine/PrepareContext.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/SpriteRegistry.h"
 
+
+class Assets;
 
 namespace {
 }
@@ -86,8 +89,7 @@ namespace mesh {
     }
 
     void MeshType::prepare(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (!m_mesh) return;
 
@@ -95,37 +97,36 @@ namespace mesh {
         m_prepared = true;
 
         for (auto& material : m_materialVBO->modifyMaterials()) {
-            registry->m_materialRegistry->registerMaterial(material);
+            ctx.m_registry->m_materialRegistry->registerMaterial(material);
         }
 
         if (m_entityType == EntityType::sprite && m_sprite) {
-            registry->m_spriteRegistry->registerSprite(*m_sprite);
+            ctx.m_registry->m_spriteRegistry->registerSprite(*m_sprite);
         }
 
-        m_vao = m_mesh->prepareRT(assets, registry);
+        m_vao = m_mesh->prepareRT(ctx);
 
         {
             m_mesh->prepareMaterials(*m_materialVBO);
 
-            registry->m_materialRegistry->registerMaterialVBO(*m_materialVBO);
+            ctx.m_registry->m_materialRegistry->registerMaterialVBO(*m_materialVBO);
             m_materialIndex = m_materialVBO->resolveMaterialIndex();
         }
 
         {
-            m_drawOptions.renderBack = m_flags.renderBack;
-            m_drawOptions.wireframe = m_flags.wireframe;
-            m_drawOptions.blend = m_flags.blend;
-            m_drawOptions.blendOIT = m_flags.blendOIT;
-            m_drawOptions.instanced = m_flags.instanced;
-            m_drawOptions.tessellation = m_flags.tessellation;
+            m_drawOptions.m_renderBack = m_flags.renderBack;
+            m_drawOptions.m_wireframe = m_flags.wireframe;
+            m_drawOptions.m_blend = m_flags.blend;
+            m_drawOptions.m_blendOIT = m_flags.blendOIT;
+            m_drawOptions.m_instanced = m_flags.instanced;
+            m_drawOptions.m_tessellation = m_flags.tessellation;
 
             m_mesh->prepareDrawOptions(m_drawOptions);
         }
     }
 
     void MeshType::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
         if (!m_mesh) return;
 
@@ -134,22 +135,22 @@ namespace mesh {
 
         //m_privateVAO.create();
 
-        m_vao = m_mesh->prepareRT(assets, registry);
+        m_vao = m_mesh->prepareRT(ctx);
 
         if (m_program) {
-            m_program->prepareRT(assets);
+            m_program->prepareRT(ctx.m_assets);
         }
 
         if (m_shadowProgram) {
-            m_shadowProgram->prepareRT(assets);
+            m_shadowProgram->prepareRT(ctx.m_assets);
         }
 
         if (m_preDepthProgram) {
-            m_preDepthProgram->prepareRT(assets);
+            m_preDepthProgram->prepareRT(ctx.m_assets);
         }
 
         if (m_customMaterial) {
-            m_customMaterial->prepareRT(assets, registry);
+            m_customMaterial->prepareRT(ctx);
         }
     }
 

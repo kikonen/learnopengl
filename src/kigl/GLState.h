@@ -3,6 +3,7 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include <array>
 #include <glm/glm.hpp>
 
 #include "kigl/kigl.h"
@@ -75,7 +76,7 @@ namespace kigl {
     private:
         std::unordered_map<GLenum, int> m_enabled;
 
-        std::unordered_map<GLuint, GLuint> m_textureUnits;
+        std::array<GLuint, 128> m_textureUnits;
 
         int m_cullFace = -1;
         int m_frontFace = -1;

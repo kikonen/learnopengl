@@ -11,17 +11,20 @@
 #include "ki/size.h"
 #include "ki/uuid.h"
 
-#include "backend/DrawOptions.h"
-
-#include "model/Node.h"
-
-#include "mesh/MeshType.h"
-
+#include "component/Camera.h"
 #include "component/NodeComponent.h"
 
-class Registry;
+class Assets;
+struct Material;
 
+struct UpdateContext;
+
+class Registry;
+class SnapshotRegistry;
+
+class Node;
 using NodeVector = std::vector<Node*>;
+
 
 class NodeRegistry final
 {
@@ -39,13 +42,28 @@ public:
     void updateRT(const UpdateContext& ctx);
     void updateEntity(const UpdateContext& ctx);
 
+    void snapshotWT(SnapshotRegistry& snapshotRegistry);
+    void snapshotRT(SnapshotRegistry& snapshotRegistry);
+
     void attachListeners();
+
+    void handleNodeAdded(Node* node);
 
     //inline bool containsNode(const int id) const noexcept
     //{
     //    const auto& it = m_idToNode.find(id);
     //    return it != m_idToNode.end();
     //}
+
+    // @return root if root is prepared for RT
+    Node* getRootRT() const noexcept {
+        return m_rootPreparedRT ? m_root : nullptr;
+    }
+
+    // @return root if root is prepared for WT
+    Node* getRootWT() const noexcept {
+        return m_root;
+    }
 
     // @return node null if not found
     inline Node* getNode(const ki::node_id id) const noexcept
@@ -101,13 +119,8 @@ public:
         return m_spotLightNodes;
     }
 
-    inline const Material& getSelectionMaterial() const noexcept {
-        return m_selectionMaterial;
-    }
-
-    void setSelectionMaterial(const Material& material) {
-        m_selectionMaterial = material;
-    }
+    const Material& getSelectionMaterial() const noexcept;
+    void setSelectionMaterial(const Material& material);
 
 private:
     void setActiveNode(Node* node);
@@ -138,21 +151,22 @@ private:
         Node* node) noexcept;
 
 public:
-    // EntityRegistry
-    std::vector<Node*> m_allNodes;
-
-    Node* m_root{ nullptr };
-
     Node* m_skybox{ nullptr };
 
 private:
     const Assets& m_assets;
 
+    Node* m_root{ nullptr };
+    bool m_rootPreparedRT{ false };
+
+    // EntityRegistry
+    std::vector<Node*> m_allNodes;
+
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     Registry* m_registry{ nullptr };
 
-    std::mutex m_lock{};
+    mutable std::mutex m_snapshotLock{};
 
     std::unordered_map<ki::node_id, Node*> m_idToNode;
     std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
@@ -172,7 +186,7 @@ private:
     Node* m_activeNode{ nullptr };
     Node* m_activeCameraNode{ nullptr };
 
-    Material m_selectionMaterial;
+    std::unique_ptr<Material> m_selectionMaterial;
 
     mutable int m_taggedCount{ -1 };
     mutable int m_selectedCount{ -1 };

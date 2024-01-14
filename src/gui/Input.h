@@ -46,10 +46,10 @@ public:
 
     void updateKeyStates();
 
-    bool isKeyDown(Key key);
-    bool isModifierDown(Modifier modifier);
+    bool isKeyDown(Key key) const noexcept;
+    bool isModifierDown(Modifier modifier) const noexcept;
 
-    bool isModifierPressed(Modifier modifier);
+    bool isModifierPressed(Modifier modifier) const noexcept;
 
     void onMouseMove(float xpos, float ypos);
     void onMouseButton(int button, int action, int modifiers);

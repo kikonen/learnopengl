@@ -12,7 +12,7 @@
 #include "Object.h"
 #include "HeightMap.h"
 
-class UpdateContext;
+struct UpdateContext;
 
 class Node;
 namespace mesh {

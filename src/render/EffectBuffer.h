@@ -2,8 +2,8 @@
 
 #include "asset/Assets.h"
 
+struct UpdateViewContext;
 class RenderContext;
-class UpdateViewContext;
 
 namespace render {
     class FrameBuffer;

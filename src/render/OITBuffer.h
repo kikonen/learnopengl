@@ -1,8 +1,10 @@
 #pragma once
 
-#include "asset/Assets.h"
+#include <memory>
 
-class UpdateViewContext;
+class Assets;
+
+struct UpdateViewContext;
 class RenderContext;
 
 namespace render {

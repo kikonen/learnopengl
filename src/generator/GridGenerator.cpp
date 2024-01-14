@@ -6,6 +6,7 @@
 
 #include "model/Node.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
@@ -17,14 +18,14 @@ GridGenerator::GridGenerator()
 }
 
 void GridGenerator::prepare(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& container)
 {
     prepareInstances(
-        assets,
-        registry,
+        ctx,
         container);
+
+    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
 void GridGenerator::update(
@@ -37,7 +38,6 @@ void GridGenerator::update(
         ctx,
         container);
     auto& transform = container.modifyTransform();
-    transform.m_dirtyEntity = true;
     transform.m_dirtySnapshot = true;
     m_containerMatrixLevel = parentLevel;
 }
@@ -73,24 +73,23 @@ void GridGenerator::updateInstances(
         }
     }
 
-    setActiveRange(m_reservedFirst, m_reservedCount);
+    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+    setActiveRange(0, m_reservedCount);
+
     container.m_instancer = this;
 }
 
 void GridGenerator::prepareInstances(
-    const Assets& assets,
-    Registry* registry,
+    const PrepareContext& ctx,
     Node& node)
 {
-    auto& entityRegistry = *registry->m_entityRegistry;
+    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
 
-    m_reservedCount = m_zCount * m_xCount * m_yCount;
-    m_reservedFirst = entityRegistry.registerEntityRange(m_reservedCount);
+    const auto count = m_zCount * m_xCount * m_yCount;
 
-    m_transforms.reserve(m_reservedCount);
+    m_transforms.reserve(count);
 
-    for (int i = 0; i < m_reservedCount; i++) {
+    for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
-        transform.m_entityIndex = m_reservedFirst + i;
     }
 }

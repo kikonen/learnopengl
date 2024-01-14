@@ -7,6 +7,8 @@
 #include "mesh/ModelLoader.h"
 #include "mesh/MeshType.h"
 
+#include "model/Node.h"
+
 #include "event/Dispatcher.h"
 
 #include "registry/Registry.h"

@@ -17,8 +17,7 @@ public:
     TextGenerator();
 
     virtual void prepare(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         Node& container) override;
 
     virtual void update(

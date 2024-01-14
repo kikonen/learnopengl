@@ -3,30 +3,28 @@
 #include <functional>
 #include <string>
 
+#include "gui/Input.h"
+
 #include "ki/RenderClock.h"
 
 #include "kigl/kigl.h"
 
 #include "imgui.h"
 
-#include "asset/Assets.h"
+struct InputContext;
 
-
-class Input;
 class Engine;
-
-namespace kigl {
-    class GLState;
-}
 
 class Window final
 {
 public:
     Window(
-        Engine& engine,
-        kigl::GLState& state,
-        const Assets& assets);
+        Engine& engine);
     ~Window();
+
+    Engine& getEngine() const noexcept {
+        return m_engine;
+    }
 
     bool create();
 
@@ -43,7 +41,7 @@ public:
 
     void toggleFullScreen();
 
-    void processInput(const ki::RenderClock& clock);
+    void processInput(const InputContext& ctx);
 
     void onWindowResize(int width, int height);
     void onMouseMove(float xpos, float ypos);
@@ -56,10 +54,6 @@ private:
     void bindGLFWCallbacks();
 
 public:
-    const Assets& m_assets;
-
-    kigl::GLState& m_state;
-
     GLFWwindow* m_glfwWindow{ nullptr };
 
     std::unique_ptr<Input> m_input{ nullptr };

@@ -126,14 +126,24 @@ materials:
     tiling: 60
   - name: skeleton
     map_kd: sprites/skeleton/skeleton_front.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_front
     map_kd: sprites/skeleton/skeleton_front.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_back
     map_kd: sprites/skeleton/skeleton_back.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_left
     map_kd: sprites/skeleton/skeleton_left.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_right
     map_kd: sprites/skeleton/skeleton_right.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
 sprites:
   - name: skeleton
     shapes:

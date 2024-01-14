@@ -1,6 +1,5 @@
 #pragma once
 
-#include "asset/Assets.h"
 #include "asset/AABB.h"
 
 namespace physics {

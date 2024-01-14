@@ -1,12 +1,11 @@
 #pragma once
 
+#include <vector>
 #include <array>
 
 #include <glm/glm.hpp>
 
 #include "ki/limits.h"
-
-#include "asset/Assets.h"
 
 #include "audio/size.h"
 
@@ -29,15 +28,17 @@ namespace mesh {
     class MeshType;
 }
 
+class Assets;
+
 class Camera;
 class Light;
 class ParticleGenerator;
 class NodeGenerator;
 
-class UpdateContext;
+struct PrepareContext;
+struct UpdateContext;
 class RenderContext;
 
-class Registry;
 class EntityRegistry;
 class ParticleGenrator;
 
@@ -51,14 +52,9 @@ public:
     const std::string str() const noexcept;
 
     void prepare(
-        const Assets& assets,
-        Registry* registry);
+        const PrepareContext& ctx);
 
     void updateWT(const UpdateContext& ctx) noexcept;
-
-    void updateEntity(
-        const UpdateContext& ctx,
-        EntityRegistry* entityRegistry);
 
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
@@ -94,20 +90,6 @@ public:
         return m_transform;
     }
 
-    void snapshot() noexcept;
-
-    inline const Snapshot& getSnapshot() const noexcept {
-        return m_snapshot;
-    }
-
-    //inline Snapshot& modifySnapshot() noexcept {
-    //    return m_snapshot;
-    //}
-
-    inline ki::size_t_entity_flags getEntityFlags() const noexcept {
-         return m_entityFlags;
-    }
-
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
@@ -119,14 +101,7 @@ public:
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    inline int getHighlightIndex(const Assets& assets) const noexcept
-    {
-        if (assets.showHighlight) {
-            if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
-            if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
-        }
-        return -1;
-    }
+    int getHighlightIndex(const Assets& assets) const noexcept;
 
     inline int getCloneIndex() const noexcept {
         return m_cloneIndex;
@@ -173,16 +148,16 @@ public:
 
     NodeGenerator* m_instancer{ nullptr };
 
+    uint32_t m_snapshotIndex{ 0 };
+    uint32_t m_entityIndex{ 0 };
+
+    bool m_preparedRT{ false };
+
 private:
     Node* m_parent{ nullptr };
     std::vector<Node*> m_children;
 
     NodeTransform m_transform;
-    bool m_forceUpdateEntity{ true };
-    ki::size_t_entity_flags m_entityFlags{ 0 };
-
-    Snapshot m_snapshot;
-    bool m_forceUpdateSnapshot{ true };
 
     int m_cloneIndex{ 0 };
 

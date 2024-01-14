@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "util/Util.h"
+
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
 
@@ -10,7 +12,9 @@
 #include "asset/Shader.h"
 #include "asset/uniform.h"
 
-#include "util/Util.h"
+#include "kigl/GLSyncQueue.hpp"
+
+#include "engine/PrepareContext.h"
 
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
@@ -24,20 +28,28 @@ namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
 
     DrawBuffer::DrawBuffer(
+        bool useMapped,
+        bool useInvalidate,
         bool useFence,
-        bool useSingleFence)
-        : m_useFence(useFence),
-        m_useSingleFence(useSingleFence)
+        bool useSingleFence,
+        bool useDebugFence)
+        : m_useMapped{ useMapped },
+        m_useInvalidate{ useInvalidate },
+        m_useFence(useFence),
+        m_useSingleFence(useSingleFence),
+        m_useDebugFence{ useDebugFence }
     {
     }
 
     void DrawBuffer::prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         int batchCount,
         int rangeCount)
     {
         const auto info = kigl::GL::getInfo();
+
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
@@ -52,19 +64,21 @@ namespace backend {
         int commandBatchCount = batchCount * batchMultiplier;
         int commandRangeCount = rangeCount;
 
-        m_computeGroups = assets.computeGroups;
-        m_cullingCompute = registry->m_programRegistry->getComputeProgram(
-            CS_FRUSTUM_CULLING,
-            {
-                { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
-                { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
-                { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
-                { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
-            });
+        if (m_frustumGPU) {
+            m_computeGroups = assets.computeGroups;
+            m_cullingCompute = registry->m_programRegistry->getComputeProgram(
+                CS_FRUSTUM_CULLING,
+                {
+                    { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
+                    { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
+                    { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
+                    { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
+                });
 
-        m_cullingCompute->prepareRT(assets);
+            m_cullingCompute->prepareRT(assets);
+        }
 
-        {
+        if (m_frustumGPU) {
             constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
             constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
 
@@ -72,7 +86,7 @@ namespace backend {
             m_drawParameters.map(mapFlags);
         }
 
-        {
+        if (m_frustumGPU) {
             constexpr int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
             constexpr int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
@@ -87,8 +101,11 @@ namespace backend {
             "draw_command",
             commandBatchCount,
             commandRangeCount,
+            m_useMapped,
+            m_useInvalidate,
             m_useFence,
-            m_useSingleFence);
+            m_useSingleFence,
+            m_useDebugFence);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.reserve(rangeCount);
@@ -102,13 +119,19 @@ namespace backend {
         if (m_bound) return;
         m_bound = true;
 
-        m_drawParameters.bindParameter();
-        m_commands->m_buffer.bindDrawIndirect();
+        if (m_frustumGPU) {
+            m_drawParameters.bindParameter();
+            m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
+        }
 
-        m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
-        m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
+        if (m_frustumGPU) {
+            m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
+        }
 
-        m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
+        {
+            m_commands->m_buffer.bindDrawIndirect();
+            m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
+        }
     }
 
     void DrawBuffer::flushIfNeeded()
@@ -139,7 +162,7 @@ namespace backend {
         if (m_frustumGPU) {
             gl::DrawIndirectParameters params{
                 static_cast<GLuint>(cmdRange.m_baseIndex),
-                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.type)),
+                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type)),
                 static_cast<GLuint>(drawCount)
             };
 
@@ -172,7 +195,7 @@ namespace backend {
 
         m_drawCounter += drawCount;
 
-        const auto& next = m_commands->next(false);
+        const auto& next = m_commands->next();
         if (!next.empty()) {
             // NOTE KI trigger draw pending if out of buffers
             drawPending(true);
@@ -233,18 +256,18 @@ namespace backend {
 
             bindDrawRange(drawRange);
 
-            if (drawOptions.type == backend::DrawOptions::Type::elements) {
+            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 glMultiDrawElementsIndirect(
-                    drawOptions.mode,
+                    drawOptions.m_mode,
                     GL_UNSIGNED_INT,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
             }
-            else if (drawOptions.type == backend::DrawOptions::Type::arrays)
+            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 glMultiDrawArraysIndirect(
-                    drawOptions.mode,
+                    drawOptions.m_mode,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
@@ -265,11 +288,13 @@ namespace backend {
     {
         gl::PerformanceCounters counters;
 
-        auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-        counters = *data;
+        if (m_frustumGPU) {
+            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
+            counters = *data;
 
-        if (clear) {
-            *data = { 0, 0 };
+            if (clear) {
+                *data = { 0, 0 };
+            }
         }
 
         return counters;
@@ -284,9 +309,9 @@ namespace backend {
         drawRange.m_program->bind(state);
         state.bindVAO(*drawRange.m_vao);
 
-        state.setEnabled(GL_CULL_FACE, !drawOptions.renderBack);
+        state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
-        const bool wireframe = drawOptions.wireframe || drawRange.m_forceWireframe;
+        const bool wireframe = drawOptions.m_wireframe || drawRange.m_forceWireframe;
 
         if (wireframe) {
             state.polygonFrontAndBack(GL_LINE);
@@ -295,14 +320,14 @@ namespace backend {
             state.polygonFrontAndBack(GL_FILL);
         }
 
-        if (drawOptions.tessellation) {
-            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.patchVertices);
+        if (drawOptions.m_tessellation) {
+            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && (drawOptions.blend || drawOptions.blendOIT) && drawRange.m_allowBlend;
+        const bool blend = !wireframe && (drawOptions.m_blend || drawOptions.m_blendOIT) && drawRange.m_allowBlend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            if (!drawOptions.blendOIT) {
+            if (!drawOptions.m_blendOIT) {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

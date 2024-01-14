@@ -12,32 +12,32 @@ namespace backend {
             arrays,
         };
 
-        Type type = Type::none;
+        Type m_type = Type::none;
 
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
-        ki::size_t8 mode = GL_POINTS;
+        uint8_t m_mode = GL_POINTS;
 
-        bool renderBack : 1 {false};
-        bool wireframe : 1 {false};
-        bool blend : 1 {false};
-        bool blendOIT : 1 {false};
+        bool m_renderBack : 1 {false};
+        bool m_wireframe : 1 {false};
+        bool m_blend : 1 {false};
+        bool m_blendOIT : 1 {false};
 
         // NOTE KI STRONG assumption; instanced nodes are in same sequence
         // and first entry drawn is first one on that sequence
-        bool instanced : 1 {false};
+        bool m_instanced : 1 {false};
 
-        bool tessellation : 1 {false};
-        ki::size_t8 patchVertices{ 3 };
+        bool m_tessellation : 1 {false};
+        uint8_t m_patchVertices{ 3 };
 
         // cont of indeces for indexed drawing
         // 0 for non indexed draw
-        GLsizei indexCount{ 0 };
-        GLsizei indexFirst{ 0 };
+        GLsizei m_indexCount{ 0 };
+        GLsizei m_indexFirst{ 0 };
 
-        ki::uint vertexOffset{ 0 };
-        ki::uint indexOffset{ 0 };
+        uint32_t m_vertexOffset{ 0 };
+        uint32_t m_indexOffset{ 0 };
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,
@@ -47,9 +47,9 @@ namespace backend {
             // NOTE KI multi/single material *CAN* go in same indirect draw
             // NOTE KI multiple "instanced" at once does not work
             return isSameMultiDraw(b, allowBlend, forceWireframe) &&
-                vertexOffset == b.vertexOffset &&
-                indexOffset == b.indexOffset &&
-                (instanced == b.instanced ? !b.instanced : false);
+                m_vertexOffset == b.m_vertexOffset &&
+                m_indexOffset == b.m_indexOffset &&
+                (m_instanced == b.m_instanced ? !b.m_instanced : false);
         }
 
         inline bool isSameMultiDraw(
@@ -57,16 +57,16 @@ namespace backend {
             bool forceWireframe,
             bool allowBlend) const noexcept
         {
-            return renderBack == b.renderBack &&
-                (forceWireframe ? true : wireframe == b.wireframe) &&
-                (allowBlend ? blend == b.blend : true) &&
-                mode == b.mode &&
-                type == b.type;
+            return m_renderBack == b.m_renderBack &&
+                (forceWireframe ? true : m_wireframe == b.m_wireframe) &&
+                (allowBlend ? m_blend == b.m_blend : true) &&
+                m_mode == b.m_mode &&
+                m_type == b.m_type;
         }
 
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(instanced, blend, renderBack, wireframe, type, mode, vertexOffset, indexOffset) <
-                std::tie(instanced, o.blend, o.renderBack, o.wireframe, o.type, o.mode, o.vertexOffset, o.indexOffset);
+            return std::tie(m_instanced, m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_vertexOffset, m_indexOffset) <
+                std::tie(o.m_instanced, o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_vertexOffset, o.m_indexOffset);
         }
     };
 }

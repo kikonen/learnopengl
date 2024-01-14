@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "asset/Assets.h"
 
 #include "kigl/GLTextureHandle.h"
 
@@ -11,6 +10,7 @@
 #include "text/FontHandle.h"
 #include "text/AtlasHandle.h"
 
+class Assets;
 class RenderContext;
 
 namespace text

@@ -77,23 +77,23 @@ entities:
       y_step: 0
       z_step: 256
   - name: Sea surface
-    type: quad
+    model: plane
+    priority: -20
     material: sea_surface
     program: g_water
     pos: [0, 30.0, 0]
-    rotation: [270.0, 0.0, 0.0]
-    scale: 1500
+    scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
       water: true
   - name: Sea floor
-    model: quad
+    model: plane
+    priority: -225
     material: sea_floor
     program: g_tex
     pos: [0, -70, 0]
-    rotation: [270.0, 0.0, 0.0]
-    scale: 2000
+    scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
@@ -165,6 +165,8 @@ materials:
     map_ks: textures/terrain_2/terrain_2_SpecLM.png
     map_bump: textures/terrain_2/terrain_2_TN.png
     map_height: textures/terrain_2/terrain_2_height.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: sea_surface
     kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: textures/water_surface_512_normal.png
@@ -176,5 +178,9 @@ materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png
     map_bump: sprites/linden_tree_512_normal.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton
     map_kd: sprites/Skeleton.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

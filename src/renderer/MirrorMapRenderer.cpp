@@ -2,9 +2,12 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/MeshType.h"
+
 #include "model/Node.h"
 #include "model/Viewport.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -16,6 +19,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/SnapshotRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 
@@ -42,13 +46,14 @@ namespace {
 }
 
 void MirrorMapRenderer::prepareRT(
-    const Assets& assets,
-    Registry* registry)
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    Renderer::prepareRT(assets, registry);
+    Renderer::prepareRT(ctx);
+
+    auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
@@ -97,7 +102,7 @@ void MirrorMapRenderer::prepareRT(
     m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(assets, registry);
+        m_waterMapRenderer->prepareRT(ctx);
     }
 
     if (m_doubleBuffer) {
@@ -105,7 +110,7 @@ void MirrorMapRenderer::prepareRT(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
 
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->prepareRT(assets, registry);
+            m_mirrorMapRenderer->prepareRT(ctx);
         }
     }
 }
@@ -193,7 +198,7 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            const auto& snapshot = closest->getSnapshot();
+            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
             const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
@@ -354,7 +359,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     std::map<float, Node*> sorted;
 
     for (const auto& node : m_nodes) {
-        const auto& snapshot = node->getSnapshot();
+        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const auto& viewFront = snapshot.getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);

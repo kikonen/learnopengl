@@ -11,6 +11,7 @@
 #include "render/CubeMap.h"
 #include "render/CubeMapBuffer.h"
 
+struct PrepareContext;
 class RenderContext;
 struct FrameBufferAttachment;
 
@@ -24,8 +25,7 @@ public:
     ~DynamicCubeMap();
 
     void prepareRT(
-        const Assets& assets,
-        Registry* registry,
+        const PrepareContext& ctx,
         const bool clear,
         const glm::vec4& clearColor);
 

@@ -9,6 +9,7 @@
 
 #include "asset/Program.h"
 
+#include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -19,9 +20,12 @@
 
 namespace render {
     void IrradianceMap::prepareRT(
-        const Assets& assets,
-        Registry* registry)
+        const PrepareContext& ctx)
     {
+        auto& assets = ctx.m_assets;
+        auto& registry = ctx.m_registry;
+        auto& state = registry->m_state;
+
         if (m_envCubeMapID <= 0) return;
 
         m_size = assets.irradianceMapSize;
@@ -41,8 +45,6 @@ namespace render {
         }
 
         {
-            kigl::GLState state;
-
             auto program = registry->m_programRegistry->getProgram(SHADER_IRRADIANCE_CUBE_MAP);
             program->prepareRT(assets);
 
@@ -53,6 +55,7 @@ namespace render {
             renderer.render(state, program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+            state.clear();
         }
 
         {

@@ -171,6 +171,8 @@ materials:
     kd: [0.5075, 0.5075, 0.5075, 1.0]
   - name: skeleton
     map_kd: sprites/skeleton.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: brickwall
     map_kd: textures/brickwall_1024.png
     map_bump: textures/brickwall_1024_normal.png

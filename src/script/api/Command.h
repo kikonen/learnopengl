@@ -8,7 +8,7 @@
 
 #include "script/size.h"
 
-class UpdateContext;
+struct UpdateContext;
 
 namespace script
 {
