@@ -43,7 +43,6 @@ public:
 
 private:
     virtual void prepareEntity(
-        Snapshot& snapshot,
         EntitySSBO& entity,
         uint32_t snapshotIndex) override;
 

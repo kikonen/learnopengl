@@ -42,8 +42,8 @@ public:
         return snapshots[index];
     }
 
-    inline const std::span<Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
-        auto& snapshots = m_activeSnapshots->m_entries;
+    inline const std::span<const Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
+        const auto& snapshots = m_activeSnapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }
 

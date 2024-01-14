@@ -48,12 +48,12 @@ namespace render {
 
         void addSnapshots(
             const RenderContext& ctx,
-            const std::span<Snapshot>& snapshots,
+            const std::span<const Snapshot>& snapshots,
             const std::span<uint32_t>& entityIndeces) noexcept;
 
         void addSnapshotsInstanced(
             const RenderContext& ctx,
-            const std::span<Snapshot>& snapshots,
+            const std::span<const Snapshot>& snapshots,
             uint32_t entityBase) noexcept;
 
         void bind() noexcept;

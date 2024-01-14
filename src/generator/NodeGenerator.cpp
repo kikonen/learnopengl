@@ -46,15 +46,10 @@ void NodeGenerator::snapshotWT(
 }
 
 void NodeGenerator::prepareEntities(
-    SnapshotRegistry& snapshotRegistry,
     EntityRegistry& entityRegistry)
 {
     if (m_entityBase) return;
     if (m_reservedCount == 0) return;
-
-    auto snapshots = snapshotRegistry.getActiveSnapshotRange(
-        m_snapshotBase,
-        m_reservedCount);
 
     m_entityBase = entityRegistry.registerEntityRange(m_reservedCount);
 
@@ -63,7 +58,7 @@ void NodeGenerator::prepareEntities(
         m_reservedCount);
 
     for (uint32_t i = 0; i < m_reservedCount; i++) {
-        prepareEntity(snapshots[i], entities[i], i);
+        prepareEntity(entities[i], i);
     }
 }
 
@@ -76,7 +71,7 @@ void NodeGenerator::updateEntity(
     if (m_activeCount == 0) return;
 
     if (!m_entityBase) {
-        prepareEntities(snapshotRegistry, entityRegistry);
+        prepareEntities(entityRegistry);
     }
 
     auto snapshots = snapshotRegistry.modifyActiveSnapshotRange(
@@ -115,7 +110,7 @@ void NodeGenerator::bindBatch(
 {
     if (m_activeCount == 0) return;
 
-    const auto snapshots = ctx.m_registry->m_snapshotRegistry->getActiveSnapshotRange(
+    const auto& snapshots = ctx.m_registry->m_snapshotRegistry->getActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 

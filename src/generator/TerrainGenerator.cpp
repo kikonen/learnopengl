@@ -58,7 +58,6 @@ void TerrainGenerator::prepare(
 }
 
 void TerrainGenerator::prepareEntity(
-    Snapshot& snapshot,
     EntitySSBO& entity,
     uint32_t index)
 {

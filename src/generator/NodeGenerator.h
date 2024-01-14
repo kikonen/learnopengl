@@ -86,11 +86,9 @@ protected:
         SnapshotRegistry& snapshotRegistry);
 
     void prepareEntities(
-        SnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry);
 
     virtual void prepareEntity(
-        Snapshot& snapshot,
         EntitySSBO& entity,
         uint32_t index) {}
 

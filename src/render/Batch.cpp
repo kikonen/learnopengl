@@ -87,7 +87,7 @@ namespace render {
 
     void Batch::addSnapshots(
         const RenderContext& ctx,
-        const std::span<Snapshot>& snapshots,
+        const std::span<const Snapshot>& snapshots,
         const std::span<uint32_t>& entityIndeces) noexcept
     {
         uint32_t i = 0;
@@ -98,7 +98,7 @@ namespace render {
 
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        const std::span<Snapshot>& snapshots,
+        const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
         const size_t count = snapshots.size();
