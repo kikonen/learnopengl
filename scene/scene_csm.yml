@@ -195,6 +195,10 @@ materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png
     map_bump: sprites/linden_tree_512_normal.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton
     map_kd: sprites/skeleton.png
     metal: [0.7, 0.2, 0, 1]
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

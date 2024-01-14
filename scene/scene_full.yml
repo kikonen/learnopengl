@@ -1147,8 +1147,12 @@ materials:
   - name: linden_tree
     map_kd: sprites/linden_tree_512.png
     map_bump: sprites/linden_tree_512_normal.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: skeleton
     map_kd: sprites/skeleton.png
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
   - name: pool_surface
     kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: textures/water_surface_512_normal.png
