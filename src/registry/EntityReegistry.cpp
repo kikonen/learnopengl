@@ -34,12 +34,19 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
-    m_debugFence = m_assets.batchDebug;
-    m_mappedMode = true;
+    m_useMapped = m_assets.glUseMapped;
+    m_useInvalidate = m_assets.glUseInvalidate;
+    m_useFence = m_assets.glUseFence;
+    m_useDebugFence = m_assets.glUseDebugFence;
+
+    m_useMapped = false;
+    m_useInvalidate = true;
+    m_useFence = false;
+    m_useDebugFence = false;
 
     m_entries.reserve(MAX_ENTITY_COUNT);
 
-    if (m_mappedMode) {
+    if (m_useMapped) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
         m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
@@ -58,8 +65,8 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     if (m_minDirty < 0) return;
 
-    if (m_assets.glUseFence) {
-        m_fence.waitFence(m_debugFence);
+    if (m_useFence) {
+        m_fence.waitFence(m_useDebugFence);
     }
 
     constexpr size_t sz = sizeof(EntitySSBO);
@@ -78,7 +85,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
             m_ssbo.resizeBuffer(m_entries.capacity() * sz);
-            if (m_mappedMode) {
+            if (m_useMapped) {
                 m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
             }
             refreshAll = true;
@@ -88,11 +95,14 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     int updatedCount = 0;
 
     if (refreshAll) {
-        if (m_mappedMode) {
+        if (m_useMapped) {
             memcpy(m_ssbo.m_data, m_entries.data(), totalCount * sz);
             m_ssbo.flushRange(0, totalCount * sz);
         }
         else {
+            if (m_useInvalidate) {
+                m_ssbo.invalidateRange(0, totalCount * sz);
+            }
             m_ssbo.update(0, totalCount * sz, m_entries.data());
         }
         for (int i = 0; i < totalCount; i++) {
@@ -113,11 +123,14 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                 const int count = to + 1 - from;
 
                 //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
-                if (m_mappedMode) {
+                if (m_useMapped) {
                     memcpy(m_ssbo.m_data + from * sz, &m_entries[from], count * sz);
                     m_ssbo.flushRange(from * sz, count * sz);
                 }
                 else {
+                    if (m_useInvalidate) {
+                        m_ssbo.invalidateRange(from * sz, count * sz);
+                    }
                     m_ssbo.update(from * sz, count * sz, &m_entries[from]);
                 }
 
@@ -142,9 +155,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 void EntityRegistry::postRT(const UpdateContext& ctx)
 {
     // NOTE KI if there was no changes old fence is stil valid
-    if (m_assets.glUseFence) {
+    if (m_useFence) {
         if (!m_fence.isSet()) {
-            m_fence.setFence(m_debugFence);
+            m_fence.setFence(m_useDebugFence);
         }
     }
 }

@@ -166,8 +166,11 @@ namespace render {
         m_entityIndeces.reserve(ENTITY_COUNT);
 
         m_draw = std::make_unique<backend::DrawBuffer>(
+            assets.glUseMapped,
+            assets.glUseInvalidate,
             assets.glUseFence,
-            assets.glUseSingleFence);
+            assets.glUseSingleFence,
+            assets.glUseDebugFence);
 
         m_draw->prepareRT(ctx, entryCount, bufferCount);
 

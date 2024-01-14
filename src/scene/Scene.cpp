@@ -132,7 +132,13 @@ void Scene::prepareRT()
             this->handleNodeAdded(e.body.node.target);
         });
 
-    m_renderData->prepare(m_assets.glUseFence, m_assets.glUseSingleFence, m_assets.batchDebug);
+    m_renderData->prepare(
+        false,
+        m_assets.glUseInvalidate,
+        m_assets.glUseFence,
+        m_assets.glUseSingleFence,
+        m_assets.glUseDebugFence,
+        m_assets.batchDebug);
 
     PrepareContext ctx{ m_assets, m_registry.get() };
 

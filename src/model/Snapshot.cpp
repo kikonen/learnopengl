@@ -2,12 +2,14 @@
 
 #include "util/thread.h"
 
+#include "model/EntityFlags.h"
 #include "registry/EntitySSBO.h"
 
 #include "model/NodeTransform.h"
 
 
 namespace {
+    constexpr ki::size_t_entity_flags PLANE_BITS = ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT;
 }
 
 Snapshot::Snapshot(const NodeTransform& o)
@@ -109,7 +111,10 @@ void Snapshot::updateEntity(
     entity.u_volume = m_volume;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    const auto uniformScale  = m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z;
+    // NOTE KI flat planes are *always* uniform, since problem with normal scaling does
+    // not truly affect them
+    const auto uniformScale = (m_flags & PLANE_BITS) != 0
+        || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
     entity.setModelMatrix(m_modelMatrix, uniformScale, true);
 

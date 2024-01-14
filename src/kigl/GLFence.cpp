@@ -2,6 +2,10 @@
 
 #include <fmt/format.h>
 
+namespace {
+    constexpr long WAIT_DELAY = 5 * 1000 *1000;
+}
+
 namespace kigl {
     GLFence::GLFence(std::string_view name)
         : m_name(name)
@@ -22,7 +26,7 @@ namespace kigl {
         while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
             // 1 million == 1 ms
-            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 2000000);
+            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, WAIT_DELAY);
             //res = glClientWaitSync(m_sync, 0, 2000000);
             count++;
         }

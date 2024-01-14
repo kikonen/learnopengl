@@ -121,9 +121,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ctx.m_registry->m_controllerRegistry->updateWT(ctx);
 
     {
-        m_registry->withLock([this](auto& registry) {
-            snapshotWT(*registry.m_snapshotRegistry);
-        });
+        snapshotWT(*m_registry->m_snapshotRegistry);
     }
 }
 

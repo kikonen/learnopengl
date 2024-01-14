@@ -33,9 +33,12 @@ public:
     // https://www.khronos.org/opengl/wiki/OpenGL_Error#No_error_contexts
     bool glNoError;
 
+    // https://www.khronos.org/opengl/wiki/Synchronization
+    bool glUseMapped;
+    bool glUseInvalidate;
     bool glUseFence;
     bool glUseSingleFence;
-    bool glUseInvalidate;
+    bool glUseDebugFence;
     bool glUseFinish;
 
     bool prepassDepthEnabled;

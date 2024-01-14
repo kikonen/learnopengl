@@ -148,6 +148,14 @@ void AssetsLoader::loadAssets(
                 data.glNoError = readBool(v);
                 continue;
             }
+            if (k == "gl_use_mapped") {
+                data.glUseMapped = readBool(v);
+                continue;
+            }
+            if (k == "gl_use_invalidate") {
+                data.glUseInvalidate = readBool(v);
+                continue;
+            }
             if (k == "gl_use_fence") {
                 data.glUseFence = readBool(v);
                 continue;
@@ -156,8 +164,8 @@ void AssetsLoader::loadAssets(
                 data.glUseSingleFence = readBool(v);
                 continue;
             }
-            if (k == "gl_use_invalidate") {
-                data.glUseInvalidate = readBool(v);
+            if (k == "gl_use_debug_fence") {
+                data.glUseDebugFence = readBool(v);
                 continue;
             }
             if (k == "gl_use_finish") {

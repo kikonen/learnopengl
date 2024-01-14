@@ -79,7 +79,11 @@ struct EntitySSBO {
     }
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    inline void setModelMatrix(const glm::mat4& mat, bool uniformScale, bool updateNormal) {
+    inline void setModelMatrix(
+        const glm::mat4& mat,
+        bool uniformScale,
+        bool updateNormal)
+    {
         u_modelMatrix = mat;
 
         if (updateNormal) {
@@ -99,7 +103,7 @@ struct EntitySSBO {
                 // The normal matrix is the inverse transpose of the world space transform
                 // (not object space to view space, as you would in a simpler forward rendering pipeline)."
                 // ???
-                auto normalMat = glm::inverseTranspose(mat);
+                const auto& normalMat = glm::inverseTranspose(mat);
                 u_normalMatrix0 = normalMat[0];
                 u_normalMatrix1 = normalMat[1];
                 u_normalMatrix2 = normalMat[2];

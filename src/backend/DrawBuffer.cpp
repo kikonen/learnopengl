@@ -28,10 +28,16 @@ namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
 
     DrawBuffer::DrawBuffer(
+        bool useMapped,
+        bool useInvalidate,
         bool useFence,
-        bool useSingleFence)
-        : m_useFence(useFence),
-        m_useSingleFence(useSingleFence)
+        bool useSingleFence,
+        bool useDebugFence)
+        : m_useMapped{ useMapped },
+        m_useInvalidate{ useInvalidate },
+        m_useFence(useFence),
+        m_useSingleFence(useSingleFence),
+        m_useDebugFence{ useDebugFence }
     {
     }
 
@@ -95,8 +101,11 @@ namespace backend {
             "draw_command",
             commandBatchCount,
             commandRangeCount,
+            m_useMapped,
+            m_useInvalidate,
             m_useFence,
-            m_useSingleFence);
+            m_useSingleFence,
+            m_useDebugFence);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.reserve(rangeCount);

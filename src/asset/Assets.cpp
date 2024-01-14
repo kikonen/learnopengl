@@ -26,9 +26,12 @@ Assets::Assets()
     glfwSwapInterval = 3;
     glDebug = false;
     glNoError = false;
-    glUseFence = true;
-    glUseSingleFence = true;
-    glUseInvalidate = false;
+
+    glUseMapped = false;
+    glUseInvalidate = true;
+    glUseFence = false;
+    glUseSingleFence = false;
+    glUseDebugFence = false;
     glUseFinish = false;
 
     prepassDepthEnabled = false;

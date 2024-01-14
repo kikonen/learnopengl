@@ -8,33 +8,39 @@ namespace kigl {
     // - include in xxx.cpp
     //
 
-    template <class T, bool mappedMode>
-    GLSyncQueue<T, mappedMode>::GLSyncQueue(
+    template <class T>
+    GLSyncQueue<T>::GLSyncQueue(
         std::string_view name,
         size_t entryCount,
         size_t rangeCount,
+        bool useMapped,
+        bool useInvalidate,
         bool useFence,
-        bool useSingleFence)
+        bool useSingleFence,
+        bool useDebugFence)
         : m_rangeCount{ rangeCount },
         m_entryCount{ entryCount },
+        m_useMapped{ useMapped },
+        m_useInvalidate{ useInvalidate },
         m_useFence{ useFence },
         m_useSingleFence{ useSingleFence },
+        m_useDebugFence{ useDebugFence },
         m_entrySize{ sizeof(T) },
         m_name{ fmt::format("{}_sync_queue", name) },
         m_buffer{ m_name }
     {
     }
 
-    template <class T, bool mappedMode>
-    GLSyncQueue<T, mappedMode>::~GLSyncQueue()
+    template <class T>
+    GLSyncQueue<T>::~GLSyncQueue()
     {
-        if constexpr (!mappedMode) {
+        if (!m_useMapped) {
             free(m_data);
         }
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::prepare(int bindAlignment, bool debug)
+    template <class T>
+    void GLSyncQueue<T>::prepare(int bindAlignment, bool debug)
     {
         m_debug = debug;
         m_bindAlignment = bindAlignment;
@@ -46,7 +52,7 @@ namespace kigl {
             m_paddedRangeLength += (m_bindAlignment - pad);
         }
 
-        if constexpr (mappedMode) {
+        if (m_useMapped) {
             // https://cpp-rendering.io/indirect-rendering/
             // - based into slides, use GL_DYNAMIC_STORAGE_BIT for create of mapped buffer
             m_buffer.createEmpty(
@@ -90,8 +96,8 @@ namespace kigl {
         }
     }
 
-    template <class T, bool mappedMode>
-    bool GLSyncQueue<T, mappedMode>::send(const T& entry)
+    template <class T>
+    bool GLSyncQueue<T>::send(const T& entry)
     {
         waitFence(m_current);
 
@@ -106,8 +112,8 @@ namespace kigl {
         return range.full();
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::set(int idx, const T& entry)
+    template <class T>
+    void GLSyncQueue<T>::set(int idx, const T& entry)
     {
         waitFence(m_current);
 
@@ -125,23 +131,26 @@ namespace kigl {
         }
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::flush()
+    template <class T>
+    void GLSyncQueue<T>::flush()
     {
         const auto& range = m_ranges[m_current];
 
-        if (mappedMode) {
+        if (m_useMapped) {
             m_buffer.flushRange(range.m_baseOffset, range.getUsedLength());
         }
         else {
+            if (m_useInvalidate) {
+                m_buffer.invalidateRange(range.m_baseOffset, range.getUsedLength());
+            }
             m_buffer.update(range.m_baseOffset, range.getUsedLength(), m_data + range.m_baseOffset);
         }
 
         setFence(m_current);
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::processPending(
+    template <class T>
+    void GLSyncQueue<T>::processPending(
         std::function<void(GLBufferRange&)> handle,
         bool processCurrent,
         bool clear)
@@ -158,52 +167,52 @@ namespace kigl {
         }
     }
 
-    template <class T, bool mappedMode>
-    GLBufferRange& GLSyncQueue<T, mappedMode>::next()
+    template <class T>
+    GLBufferRange& GLSyncQueue<T>::next()
     {
         m_current = (m_current + 1) % m_ranges.size();
 
         return m_ranges[m_current];
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::bind(GLuint ubo, bool used, size_t count)
+    template <class T>
+    void GLSyncQueue<T>::bind(GLuint ubo, bool used, size_t count)
     {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindRange(ubo, range.m_baseOffset, range.getLengthFor(count));
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::bindSSBO(GLuint ssbo, bool used, size_t count)
+    template <class T>
+    void GLSyncQueue<T>::bindSSBO(GLuint ssbo, bool used, size_t count)
     {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
         m_buffer.bindSSBORange(ssbo, range.m_baseOffset, range.getLengthFor(count));
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::setFence(size_t index)
+    template <class T>
+    void GLSyncQueue<T>::setFence(size_t index)
     {
         if (!m_useFence) return;
 
         if (m_useSingleFence) {
             if (index == m_ranges.size() - 1) {
-                m_fences[0].setFence(m_debug);
+                m_fences[0].setFence(m_useDebugFence);
             }
         }
         else {
-            m_fences[index].setFence(m_debug);
+            m_fences[index].setFence(m_useDebugFence);
         }
     }
 
-    template <class T, bool mappedMode>
-    void GLSyncQueue<T, mappedMode>::waitFence(size_t index)
+    template <class T>
+    void GLSyncQueue<T>::waitFence(size_t index)
     {
         if (!m_useFence) return;
 
         if (index == 0 || !m_useSingleFence) {
-            m_fences[index].waitFence(m_debug);
+            m_fences[index].waitFence(m_useDebugFence);
         }
     }
 }

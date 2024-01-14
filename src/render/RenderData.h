@@ -16,8 +16,11 @@ namespace render {
         RenderData();
 
         void prepare(
+            bool useMapped,
+            bool useInvalidate,
             bool useFence,
-            bool singleFence,
+            bool useSingleFence,
+            bool useDebugFence,
             bool debug);
 
         void bind();
@@ -38,11 +41,11 @@ namespace render {
     private:
         std::unique_ptr<LightsUBO> m_lightsUbo;
 
-        std::unique_ptr<kigl::GLSyncQueue<MatricesUBO, false>> m_matrices;
-        std::unique_ptr<kigl::GLSyncQueue<DataUBO, false>> m_data;
-        std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO, false>> m_bufferInfo;
-        std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO, false>> m_clipPlanes;
-        std::unique_ptr<kigl::GLSyncQueue<LightsUBO, false>> m_lights;
+        std::unique_ptr<kigl::GLSyncQueue<MatricesUBO>> m_matrices;
+        std::unique_ptr<kigl::GLSyncQueue<DataUBO>> m_data;
+        std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO>> m_bufferInfo;
+        std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO>> m_clipPlanes;
+        std::unique_ptr<kigl::GLSyncQueue<LightsUBO>> m_lights;
 
         //kigl::GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
         //int m_imageTextureLevel = -1;

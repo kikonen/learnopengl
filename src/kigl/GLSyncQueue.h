@@ -14,15 +14,18 @@ namespace kigl {
     //
     // SyncQueue, which is split into multiple ranges, which can be fence synced
     //
-    template <class T, bool mappedMode>
+    template <class T>
     class GLSyncQueue {
     public:
         GLSyncQueue(
             std::string_view name,
             size_t entryCount,
             size_t rangeCount,
+            bool useMapped,
+            bool useInvalidate,
             bool useFence,
-            bool useSingleFence);
+            bool useSingleFence,
+            bool useDebugFence);
 
         ~GLSyncQueue();
 
@@ -96,8 +99,13 @@ namespace kigl {
     private:
         const size_t m_entryCount;
         const size_t m_rangeCount;
+
+        const bool m_useMapped;
+        const bool m_useInvalidate;
         const bool m_useFence;
         const bool m_useSingleFence;
+        const bool m_useDebugFence;
+
         bool m_debug{ false };
 
         const size_t m_entrySize;

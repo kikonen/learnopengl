@@ -27,7 +27,7 @@ void NodeGenerator::prepareSnapshots(
 void NodeGenerator::snapshotWT(
     SnapshotRegistry& snapshotRegistry)
 {
-    const auto count = m_transforms.size();
+    const auto count = static_cast<uint32_t>(m_transforms.size());
 
     auto snapshots = snapshotRegistry.modifySnapshotRange(m_snapshotBase, count);
 
