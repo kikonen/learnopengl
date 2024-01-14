@@ -9,23 +9,15 @@
 
 #include "model/Snapshot.h"
 
-
+// Maintain separate snapshot copies for WT & RT
+// - intermediate "pending" copy required to allow both threads
+//   to do processing without constant locking of data
+// - i.e. neither RT or WT can directly touch other side snapshots since
+//   that would be immediate race condition
 class SnapshotRegistry final {
-
 public:
     SnapshotRegistry();
-
     ~SnapshotRegistry() = default;
-
-    //inline const Snapshot& getSnapshot(uint32_t index) const noexcept {
-    //    auto& snapshots = m_snapshots->m_entries;
-    //    return snapshots[index];
-    //}
-
-    //inline const std::span<Snapshot> getSnapshotRange(uint32_t start, uint32_t count) noexcept {
-    //    auto& snapshots = m_snapshots->m_entries;
-    //    return std::span{ snapshots }.subspan(start, count);
-    //}
 
     inline Snapshot& modifySnapshot(uint32_t index) noexcept {
         auto& snapshots = m_snapshots->m_entries;
