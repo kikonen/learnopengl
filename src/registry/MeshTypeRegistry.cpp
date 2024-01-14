@@ -49,7 +49,9 @@ void MeshTypeRegistry::registerCustomMaterial(
     std::lock_guard<std::mutex> lock(m_lock);
 
     auto& type = m_types[typeId];
-    if (!type.m_customMaterial.get()) return;
+
+    assert(!type.m_customMaterial);
+    //if (!type.m_customMaterial.get()) return;
 
     m_customMaterialTypes.push_back(typeId);
 }

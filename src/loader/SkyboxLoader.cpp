@@ -137,9 +137,10 @@ namespace loader {
         if (data.loadedFaces) {
             material->m_faces = data.faces;
         }
-        type->setCustomMaterial(std::move(material));
 
         m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+
+        type->setCustomMaterial(std::move(material));
 
         auto node = new Node(type);
 
