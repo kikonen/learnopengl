@@ -37,12 +37,20 @@ public:
         return std::span{ snapshots }.subspan(start, count);
     }
 
+    inline bool hasActiveSnapshot(uint32_t index) const noexcept {
+        return index < m_activeSnapshots->size();
+    }
+
     inline const Snapshot& getActiveSnapshot(uint32_t index) const noexcept {
         auto& snapshots = m_activeSnapshots->m_entries;
         return snapshots[index];
     }
 
-    inline const std::span<const Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
+    inline bool hasActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
+        return start + count < m_activeSnapshots->size();
+    }
+
+    inline const std::span<const Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
         const auto& snapshots = m_activeSnapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }

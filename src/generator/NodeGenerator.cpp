@@ -74,6 +74,15 @@ void NodeGenerator::updateEntity(
         prepareEntities(entityRegistry);
     }
 
+    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
+
+    if (!ready) {
+        KI_INFO(fmt::format("GENERATOR: snapshot not_ready - container={}", container.str()));
+        return;
+    }
+
     auto snapshots = snapshotRegistry.modifyActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
@@ -110,7 +119,15 @@ void NodeGenerator::bindBatch(
 {
     if (m_activeCount == 0) return;
 
-    const auto& snapshots = ctx.m_registry->m_snapshotRegistry->getActiveSnapshotRange(
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
+    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+        m_snapshotBase,
+        m_reservedCount);
+
+    if (!ready) return;
+
+    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 

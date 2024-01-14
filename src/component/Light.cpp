@@ -41,6 +41,12 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) return;
 
+        bool ready = snapshotRegistry.hasActiveSnapshot(targetNode->m_snapshotIndex);
+        if (!ready) {
+            KI_INFO(fmt::format("LIGHT: snapshot not_ready: target={}", targetNode->str()));
+            return;
+        }
+
         const auto& targetSnapshot = snapshotRegistry.getActiveSnapshot(targetNode->m_snapshotIndex);
 
         const bool targetChanged = m_targetMatrixLevel != targetSnapshot.getMatrixLevel();
