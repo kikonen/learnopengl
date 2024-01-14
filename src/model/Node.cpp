@@ -102,16 +102,6 @@ void Node::prepare(
     }
 }
 
-void Node::prepareRT(
-    const PrepareContext& ctx)
-{
-    if (m_type->getMesh()) {
-        m_entityIndex = ctx.m_registry->m_entityRegistry->registerEntity();
-    }
-
-    m_preparedRT = true;
-}
-
 void Node::updateWT(
     const UpdateContext& ctx) noexcept
 {
