@@ -70,6 +70,7 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 
 Snapshot& Snapshot::operator=(Snapshot& o) noexcept
 {
+    m_dirty = o.m_dirty;
     m_matrixLevel = o.m_matrixLevel;
 
     m_flags = o.m_flags;

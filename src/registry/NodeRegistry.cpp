@@ -176,8 +176,8 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
     std::lock_guard<std::mutex> lock(m_snapshotLock);
 
     for (auto* node : m_allNodes) {
-        if (node->m_snapshotIndex) {
-            auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
+        if (node->m_entityIndex) {
+            auto& snapshot = snapshotRegistry.modifyActiveSnapshot(node->m_snapshotIndex);
             if (snapshot.m_dirty) {
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 

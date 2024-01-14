@@ -79,7 +79,7 @@ void NodeGenerator::updateEntity(
         prepareEntities(snapshotRegistry, entityRegistry);
     }
 
-    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
+    auto snapshots = snapshotRegistry.modifyActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
     const auto& containerSnapshot = snapshotRegistry.getActiveSnapshot(container.m_snapshotIndex);

@@ -100,28 +100,50 @@ void SnapshotRegistry::copy(
     util::DirtyVector<Snapshot>& dstVector,
     uint32_t startIndex)
 {
+    //{
+    //    auto& src = srcVector.m_entries;
+    //    auto& dst = dstVector.m_entries;
+    //    const auto size = src.size();
+
+    //    dstVector.reserve(size);
+
+    //    memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
+
+    //    //for (auto& snapshot : dst) {
+    //    //    snapshot.m_dirty = true;
+    //    //}
+    //}
+    //{
+    //    auto& src = srcVector.m_dirtyFlags;
+    //    auto& dst = dstVector.m_dirtyFlags;
+    //    const auto size = src.size();
+
+    //    dstVector.reserve(size);
+
+    //    for (size_t i = startIndex; i < size; i++) {
+    //        dst[i] = src[i];
+    //    }
+    //}
+
+
     {
+        const auto size = srcVector.size();
+        dstVector.reserve(size);
+
         auto& src = srcVector.m_entries;
         auto& dst = dstVector.m_entries;
-        const auto size = src.size();
 
-        dstVector.reserve(size);
-
-        memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
-
-        //for (auto& snapshot : dst) {
-        //    snapshot.m_dirty = true;
-        //}
-    }
-    {
-        auto& src = srcVector.m_dirtyFlags;
-        auto& dst = dstVector.m_dirtyFlags;
-        const auto size = src.size();
-
-        dstVector.reserve(size);
+        // NOTE KI *CANNOT* do full memcpy since other side may not
+        // have processed dirty entries, and writing those down as clean would break logic
+        //memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
 
         for (size_t i = startIndex; i < size; i++) {
-            dst[i] = src[i];
+            if (src[i].m_dirty) {
+                //dst[i] = src[i];
+                memcpy(&dst[i], &src[i], sizeof(Snapshot));
+                src[i].m_dirty = false;
+            }
         }
     }
 }
+

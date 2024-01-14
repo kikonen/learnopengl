@@ -17,21 +17,6 @@ public:
 
     ~SnapshotRegistry() = default;
 
-    //inline const Snapshot& operator[](uint32_t index) const noexcept {
-    //    auto& snapshots = m_activeSnapshots->m_entries;
-    //    return snapshots[index];
-    //}
-
-    inline const Snapshot& getActiveSnapshot(uint32_t index) const noexcept {
-        auto& snapshots = m_activeSnapshots->m_entries;
-        return snapshots[index];
-    }
-
-    inline const std::span<Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
-        auto& snapshots = m_activeSnapshots->m_entries;
-        return std::span{ snapshots }.subspan(start, count);
-    }
-
     inline const Snapshot& getSnapshot(uint32_t index) const noexcept {
         auto& snapshots = m_snapshots->m_entries;
         return snapshots[index];
@@ -51,6 +36,27 @@ public:
         auto& snapshots = m_snapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }
+
+    inline const Snapshot& getActiveSnapshot(uint32_t index) const noexcept {
+        auto& snapshots = m_activeSnapshots->m_entries;
+        return snapshots[index];
+    }
+
+    inline const std::span<Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
+        auto& snapshots = m_activeSnapshots->m_entries;
+        return std::span{ snapshots }.subspan(start, count);
+    }
+
+    inline Snapshot& modifyActiveSnapshot(uint32_t index) noexcept {
+        auto& snapshots = m_activeSnapshots->m_entries;
+        return snapshots[index];
+    }
+
+    inline std::span<Snapshot> modifyActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
+        auto& snapshots = m_activeSnapshots->m_entries;
+        return std::span{ snapshots }.subspan(start, count);
+    }
+
 
     void clearActiveDirty(uint32_t index) noexcept;
 
