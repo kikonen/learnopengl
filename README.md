@@ -177,6 +177,7 @@ https://glad.dav1d.de
   + https://preshing.com/20110807/the-cost-of-buffer-security-checks-in-visual-c/
   + https://nfrechette.github.io/2020/06/26/buffer_security_checks/
   + https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/security-init-cookie
+  + https://learn.microsoft.com/en-us/cpp/build/reference/sdl-enable-additional-security-checks?view=msvc-170
 
 ## Libraries
 - https://github.com/nothings/stb
