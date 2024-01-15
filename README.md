@@ -171,6 +171,13 @@ https://glad.dav1d.de
 ## C++
 - https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 
+## Visual C++
+- https://preshing.com/20110711/visual-c-performance-pitfalls/
+- __security_check_cookie
+  + https://preshing.com/20110807/the-cost-of-buffer-security-checks-in-visual-c/
+  + https://nfrechette.github.io/2020/06/26/buffer_security_checks/
+  + https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/security-init-cookie
+
 ## Libraries
 - https://github.com/nothings/stb
 - https://github.com/wqking/eventpp
