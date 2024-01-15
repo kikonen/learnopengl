@@ -26,7 +26,7 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -43,7 +43,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -56,7 +56,7 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_materialIndex = o.m_materialIndex;
     m_shapeIndex = o.m_shapeIndex;
 
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 
     m_worldPos = o.m_worldPos;

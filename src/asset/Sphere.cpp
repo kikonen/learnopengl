@@ -10,6 +10,10 @@
 
 #include "Sphere.h"
 
+namespace {
+    const glm::vec3 ZERO{ 0.f };
+}
+
 Sphere::Sphere(const glm::vec3& center, float radius) noexcept
     : m_center{ center },
     m_radius{ radius }
@@ -79,13 +83,19 @@ const std::string Sphere::str() const noexcept
 void Sphere::updateVolume(
     const ki::level_id matrixLevel,
     const glm::mat4& modelMatrix,
+    const glm::vec3& worldPos,
     float maxScale) const noexcept
 {
     if (m_modelMatrixLevel == matrixLevel) {
         return;
     }
 
-    m_worldCenter = modelMatrix * glm::vec4(m_center, 1.f);
+    if (m_center == ZERO) {
+        m_worldCenter = worldPos;
+    }
+    else {
+        m_worldCenter = modelMatrix * glm::vec4(m_center, 1.f);
+    }
     m_worldRadius = m_radius * maxScale;
 
     m_modelMatrixLevel = matrixLevel;

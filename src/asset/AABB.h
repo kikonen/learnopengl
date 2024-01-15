@@ -43,11 +43,7 @@ struct AABB final
         return m_volume;
     }
 
-    inline void updateVolume() {
-        const glm::vec3 center = (m_max + m_min) * 0.5f;
-        const float radius = glm::length(m_min - m_max) * 0.5f;
-        m_volume = glm::vec4(center, radius);
-    }
+    void updateVolume();
 
     void minmax(const glm::vec3& pos);
 
