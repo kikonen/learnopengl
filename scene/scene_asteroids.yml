@@ -45,7 +45,7 @@ entities:
     scale: 1
   - name: Asteroid belt
     parent_id: planet-origo
-    model: [rock, rock]
+    model: [rock2, rock]
     instanced: true
     program: g_tex
     force_material: true
@@ -56,7 +56,7 @@ entities:
     pos: [0, 0, 0]
     generator:
       type: asteroid_belt
-      count: 1000
+      count: 10000
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
