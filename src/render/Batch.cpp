@@ -101,12 +101,12 @@ namespace render {
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
-        const size_t count = snapshots.size();
+        const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
         if (count <= 0) return;
 
-        size_t startIndex = 0;
-        size_t instanceCount = count;
+        uint32_t startIndex = 0;
+        uint32_t instanceCount = count;
 
         if (m_frustumCPU) {
             while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
@@ -115,7 +115,7 @@ namespace render {
             }
 
             if (instanceCount > 0) {
-                size_t endIndex = snapshots.size() - 1;
+                uint32_t endIndex = static_cast<uint32_t>(snapshots.size() - 1);
                 while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
                     endIndex--;
                     instanceCount--;
