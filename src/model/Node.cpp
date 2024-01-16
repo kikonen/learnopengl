@@ -1,12 +1,13 @@
 #include "Node.h"
 
-#include <mutex>
 #include <fmt/format.h>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "kigl/kigl.h"
+
+#include "pool/IdGenerator.h"
 
 #include "asset/Sprite.h"
 
@@ -31,22 +32,14 @@
 #include "render/Batch.h"
 
 namespace {
-    ki::node_id idBase = 100;
-
-    std::mutex object_id_lock{};
+    IdGenerator<ki::node_id> ID_GENERATOR;
 
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
-
-    ki::node_id nextID() noexcept
-    {
-        std::lock_guard<std::mutex> lock(object_id_lock);
-        return ++idBase;
-    }
 }
 
 Node::Node(const mesh::MeshType* type)
     : m_type(type),
-    m_id(nextID())
+    m_id(ID_GENERATOR.nextId())
 {
 }
 

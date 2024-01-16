@@ -1,26 +1,17 @@
 #include "Sprite.h"
 
-#include <mutex>
-
 #include <fmt/format.h>
 
 #include "Shape.h"
 
+#include "pool/IdGenerator.h"
 
 namespace {
-    ki::sprite_id idBase = 0;
-
-    std::mutex type_id_lock{};
-
-    ki::sprite_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++idBase;
-    }
+    IdGenerator<ki::sprite_id> ID_GENERATOR;
 }
 
 Sprite::Sprite()
-    : m_id(nextID())
+    : m_id(ID_GENERATOR.nextId())
 {
 }
 
