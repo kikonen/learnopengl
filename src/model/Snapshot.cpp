@@ -93,7 +93,7 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 //    return *this;
 //}
 
-const glm::vec3& Snapshot::getDegreesRotation() const noexcept
+glm::vec3 Snapshot::getDegreesRotation() const noexcept
 {
     return util::quatToDegrees(m_quatRotation);
 }

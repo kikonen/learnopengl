@@ -198,7 +198,7 @@ end)", nodeFnName, "{}", script.m_source);
         Node* node,
         script::script_id scriptId)
     {
-        const auto nodeId = node->m_id;
+        const auto nodeId = node->getId();
         const auto& it = m_nodeFunctions.find(nodeId);
 
         if (it == m_nodeFunctions.end()) return;
@@ -217,7 +217,7 @@ end)", nodeFnName, "{}", script.m_source);
         Node* node,
         std::string_view name)
     {
-        sol::table luaNode = m_luaNodes[node->m_id];
+        sol::table luaNode = m_luaNodes[node->getId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
         return fnPtr != sol::nullopt;
@@ -227,9 +227,9 @@ end)", nodeFnName, "{}", script.m_source);
         Node* node,
         std::string_view name)
     {
-        const auto nodeId = node->m_id;
+        const auto nodeId = node->getId();
 
-        //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->m_id, name));
+        //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->getId(), name));
         sol::table luaNode = m_luaNodes[nodeId];
 
         sol::optional<sol::function> fnPtr = luaNode[name];

@@ -367,7 +367,7 @@ namespace loader {
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->m_id,
+                .target = node->getId(),
                 .controller = controller
             };
             m_dispatcher->send(evt);
@@ -379,7 +379,7 @@ namespace loader {
         {
             event::Event evt { event::Type::animate_rotate };
             evt.body.animate = {
-                .target = node->m_id,
+                .target = node->getId(),
                 .duration = 20,
                 .data = { 0, 1.f, 0 },
                 .data2 = { 360.f, 0.f, 0.f },
@@ -388,8 +388,8 @@ namespace loader {
         }
 
         {
-            m_audioLoader.createAudio(data.audio, node->m_id);
-            m_physicsLoader.createObject(data.physics, node->m_id);
+            m_audioLoader.createAudio(data.audio, node->getId());
+            m_physicsLoader.createObject(data.physics, node->getId());
         }
 
         return type;
@@ -703,17 +703,17 @@ namespace loader {
 
         m_scriptLoader.createScript(
             rootId,
-            node->m_id,
+            node->getId(),
             data.script);
 
         {
-            auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
+            auto* t = m_registry->m_typeRegistry->modifyType(type->getId());
             t->setCustomMaterial(
                 m_customMaterialLoader.createCustomMaterial(
                     data.customMaterial,
                     cloneIndex,
                     tile));
-            m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+            m_registry->m_typeRegistry->registerCustomMaterial(type->getId());
             type = t;
             node->m_type = type;
         }

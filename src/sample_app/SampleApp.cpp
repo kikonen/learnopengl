@@ -364,7 +364,7 @@ void SampleApp::selectNode(
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
             if (controller) {
-                controller->setTarget(node ? node->m_id : -1);
+                controller->setTarget(node ? node->getId() : -1);
             }
         }
         KI_INFO(fmt::format("selected: {}", nodeId));
@@ -373,7 +373,7 @@ void SampleApp::selectNode(
             {
                 event::Event evt { event::Type::animate_rotate };
                 evt.body.animate = {
-                    .target = node->m_id,
+                    .target = node->getId(),
                     .duration = 5,
                     .relative = true,
                     .data = { 0.f, 1.f, 0.f },

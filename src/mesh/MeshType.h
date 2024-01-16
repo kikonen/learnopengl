@@ -39,10 +39,16 @@ namespace mesh {
     public:
         MeshType(std::string_view name);
         MeshType(MeshType& o) = delete;
-        MeshType& operator=(MeshType& o) = delete;
-        MeshType& operator=(MeshType&& o) = delete;
+        MeshType(const MeshType& o) = delete;
         MeshType(MeshType&& o) noexcept;
         ~MeshType();
+
+        MeshType& operator=(const MeshType& o) = delete;
+        MeshType& operator=(MeshType&& o) = delete;
+
+        inline ki::type_id getId() const noexcept { return m_id; }
+
+        const std::string& getName() const noexcept { return m_name; }
 
         inline bool isReady() const noexcept { return m_preparedView; }
 
@@ -90,9 +96,6 @@ namespace mesh {
         }
 
     public:
-        ki::type_id m_id{ 0 };
-        const std::string m_name;
-
         EntityType m_entityType{ EntityType::origo };
         NodeRenderFlags m_flags;
 
@@ -109,6 +112,10 @@ namespace mesh {
         int m_materialIndex{ 0 };
 
     private:
+        ki::type_id m_id{ 0 };
+
+        std::string m_name;
+
         bool m_prepared : 1 {false};
         bool m_preparedView : 1 {false};
 

@@ -13,12 +13,14 @@ class Node;
 namespace audio
 {
     struct Listener {
-        Listener();
+        Listener() {}
         Listener(Listener& o) = delete;
-        Listener& operator=(Listener& o) = delete;
-        Listener& operator=(Listener&& o) noexcept;
+        Listener(const Listener& o) = delete;
         Listener(Listener&& o) noexcept;
         ~Listener();
+
+        Listener& operator=(Listener& o) = delete;
+        Listener& operator=(Listener&& o) noexcept;
 
         inline bool isReady() const { return m_matrixLevel > -1; }
 

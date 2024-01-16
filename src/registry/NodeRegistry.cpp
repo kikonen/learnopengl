@@ -179,7 +179,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
             if (snapshot.m_dirty) {
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 
-                entity->u_objectID = node->m_id;
+                entity->u_objectID = node->getId();
                 entity->u_highlightIndex = node->getHighlightIndex(ctx.m_assets);
                 snapshot.updateEntity(*entity);
                 snapshot.m_dirty = false;
@@ -219,13 +219,13 @@ void NodeRegistry::attachListeners()
                 auto* node = data.target;
 
                 auto* se = m_registry->m_scriptEngine;
-                const auto& scripts = se->getNodeScripts(node->m_id);
+                const auto& scripts = se->getNodeScripts(node->getId());
 
                 for (const auto& scriptId : scripts) {
                     {
                         event::Event evt { event::Type::script_run };
                         auto& body = evt.body.script = {
-                            .target = node->m_id,
+                            .target = node->getId(),
                             .id = scriptId,
                         };
                         m_registry->m_dispatcher->send(evt);
@@ -448,7 +448,7 @@ void NodeRegistry::attachNode(
     const uuids::uuid& parentUUID,
     ki::node_id parentId) noexcept
 {
-    m_idToNode.insert(std::make_pair(node->m_id, node));
+    m_idToNode.insert(std::make_pair(node->getId(), node));
 
     if (node->m_type->m_flags.skybox) {
         return bindSkybox(node);
@@ -510,12 +510,12 @@ void NodeRegistry::changeParent(
             oldParent->removeChild(node);
         }
 
-        //auto& oldChildren = m_parentToChildren[oldParent->m_id];
+        //auto& oldChildren = m_parentToChildren[oldParent->getId()];
         //const auto& it = std::remove_if(
         //    oldChildren.begin(),
         //    oldChildren.end(),
         //    [&node](auto& n) {
-        //        return n->m_id == node->m_id;
+        //        return n->getId() == node->getId();
         //    });
         //oldChildren.erase(it, oldChildren.end());
     }
@@ -523,7 +523,7 @@ void NodeRegistry::changeParent(
     node->setParent(parent);
     parent->addChild(node);
 
-    //auto& children = m_parentToChildren[parent->m_id];
+    //auto& children = m_parentToChildren[parent->getId()];
     //children.push_back(node);
 }
 
@@ -535,7 +535,7 @@ void NodeRegistry::bindNode(
 
     const mesh::MeshType* type;
     {
-        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->getId());
         t->prepare({ m_assets, m_registry });
 
         type = t;
@@ -580,7 +580,7 @@ void NodeRegistry::bindNode(
 
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_type->m_id;
+        evt.body.meshType.target = node->m_type->getId();
         m_registry->m_dispatcherView->send(evt);
     }
 
@@ -606,7 +606,7 @@ void NodeRegistry::bindPendingChildren()
 
             child->setParent(parent);
             parent->addChild(child);
-            //m_parentToChildren[parent->m_id].push_back(child);
+            //m_parentToChildren[parent->getId()].push_back(child);
         }
     }
 
@@ -626,7 +626,7 @@ bool NodeRegistry::bindParent(
         auto* parent = m_idToNode.find(parentId)->second;
         child->setParent(parent);
         parent->addChild(child);
-        //m_parentToChildren[parent->m_id].push_back(child);
+        //m_parentToChildren[parent->getId()].push_back(child);
         return true;
     }
 
@@ -645,7 +645,7 @@ bool NodeRegistry::bindParent(
 
     child->setParent(parent);
     parent->addChild(child);
-    //m_parentToChildren[parent->m_id].push_back(child);
+    //m_parentToChildren[parent->getId()].push_back(child);
 
     return true;
 }
@@ -664,7 +664,7 @@ void NodeRegistry::bindChildren(
 
         child->setParent(parent);
         parent->addChild(child);
-        //m_parentToChildren[parent->m_id].push_back(child);
+        //m_parentToChildren[parent->getId()].push_back(child);
     }
 
     m_pendingChildren.erase(parentUUID);
@@ -722,7 +722,7 @@ void NodeRegistry::bindSkybox(
 {
     const mesh::MeshType* type;
     {
-        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->m_id);
+        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->getId());
         t->prepare({ m_assets, m_registry });
 
         type = t;
@@ -734,7 +734,7 @@ void NodeRegistry::bindSkybox(
 
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_type->m_id;
+        evt.body.meshType.target = node->m_type->getId();
         m_registry->m_dispatcherView->send(evt);
     }
 }

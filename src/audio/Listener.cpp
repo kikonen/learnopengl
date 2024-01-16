@@ -11,24 +11,6 @@ namespace {
 
 namespace audio
 {
-    Listener::Listener()
-    {}
-
-    Listener& Listener::operator=(Listener&& o) noexcept
-    {
-        m_id = o.m_id;
-        m_default = o.m_default;
-        m_gain = o.m_gain;
-        m_pos = o.m_pos;
-        m_vel = o.m_vel;
-        m_front = o.m_front;
-        m_up = o.m_up;
-        m_matrixLevel = o.m_matrixLevel;
-        m_node = o.m_node;
-
-        return *this;
-    }
-
     Listener::Listener(Listener&& o) noexcept
         : m_id{ o.m_id },
         m_default( o.m_default ),
@@ -43,6 +25,23 @@ namespace audio
 
     Listener::~Listener()
     {}
+
+    Listener& Listener::operator=(Listener&& o) noexcept
+    {
+        if (&o == this) return *this;
+
+        m_id = o.m_id;
+        m_default = o.m_default;
+        m_gain = o.m_gain;
+        m_pos = o.m_pos;
+        m_vel = o.m_vel;
+        m_front = o.m_front;
+        m_up = o.m_up;
+        m_matrixLevel = o.m_matrixLevel;
+        m_node = o.m_node;
+
+        return *this;
+    }
 
     void Listener::prepare()
     {

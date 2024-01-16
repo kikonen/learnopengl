@@ -14,34 +14,6 @@ namespace {
 
 namespace audio
 {
-    Source::Source()
-    {
-    }
-
-    Source& Source::operator=(Source&& o) noexcept
-    {
-        m_id = o.m_id;
-        m_sourceId = o.m_sourceId;
-        m_soundId = o.m_soundId;
-        m_referenceDistance = o.m_referenceDistance;
-        m_maxDistance = o.m_maxDistance;
-        m_rolloffFactor = o.m_rolloffFactor;
-        m_minGain = o.m_minGain;
-        m_maxGain = o.m_maxGain;
-        m_looping = o.m_looping;
-        m_pitch = o.m_pitch;
-        m_gain = o.m_gain;
-        m_pos = o.m_pos;
-        m_vel = o.m_vel;
-        m_dir = o.m_dir;
-        m_matrixLevel = o.m_matrixLevel;
-        m_node = o.m_node;
-
-        o.m_sourceId = 0;
-
-        return *this;
-    }
-
     Source::Source(Source&& o) noexcept
         : m_id{ o.m_id },
         m_sourceId{ o.m_sourceId },
@@ -69,6 +41,32 @@ namespace audio
         if (m_sourceId) {
             alDeleteSources(1, &m_sourceId);
         }
+    }
+
+    Source& Source::operator=(Source&& o) noexcept
+    {
+        if (&o == this) return *this;
+
+        m_id = o.m_id;
+        m_sourceId = o.m_sourceId;
+        m_soundId = o.m_soundId;
+        m_referenceDistance = o.m_referenceDistance;
+        m_maxDistance = o.m_maxDistance;
+        m_rolloffFactor = o.m_rolloffFactor;
+        m_minGain = o.m_minGain;
+        m_maxGain = o.m_maxGain;
+        m_looping = o.m_looping;
+        m_pitch = o.m_pitch;
+        m_gain = o.m_gain;
+        m_pos = o.m_pos;
+        m_vel = o.m_vel;
+        m_dir = o.m_dir;
+        m_matrixLevel = o.m_matrixLevel;
+        m_node = o.m_node;
+
+        o.m_sourceId = 0;
+
+        return *this;
     }
 
     void Source::prepare(const Sound* sound) {

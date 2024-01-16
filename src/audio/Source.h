@@ -16,12 +16,14 @@ namespace audio
     struct Sound;
 
     struct Source {
-        Source();
+        Source() {}
         Source(Source& o) = delete;
-        Source& operator=(Source& o) = delete;
-        Source& operator=(Source&& o) noexcept;
+        Source(const Source& o) = delete;
         Source(Source&&) noexcept;
         ~Source();
+
+        Source& operator=(Source& o) = delete;
+        Source& operator=(Source&& o) noexcept;
 
         inline bool isReady() const { return m_matrixLevel > -1; }
 

@@ -101,7 +101,7 @@ void NodeGenerator::updateEntity(
 
         auto& entity = entities[i];
 
-        entity.u_objectID = container.m_id;
+        entity.u_objectID = container.getId();
         entity.u_flags = flags;
         entity.u_highlightIndex = highlightIndex;
 

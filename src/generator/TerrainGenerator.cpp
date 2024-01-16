@@ -272,7 +272,7 @@ void TerrainGenerator::createTiles(
             .target = m_node,
             .uuid = {},
             .parentUUID = {},
-            .parentId = container.m_id,
+            .parentId = container.getId(),
         };
         registry->m_dispatcher->send(evt);
     }
@@ -282,7 +282,7 @@ ki::type_id TerrainGenerator::createType(
     Registry* registry,
     const mesh::MeshType* containerType)
 {
-    auto type = registry->m_typeRegistry->registerType(containerType->m_name);
+    auto type = registry->m_typeRegistry->registerType(containerType->getName());
     type->m_entityType = mesh::EntityType::terrain;
 
     auto& flags = type->m_flags;
@@ -309,5 +309,5 @@ ki::type_id TerrainGenerator::createType(
         materialVBO->setMaterials(containerMaterials->getMaterials());
     }
 
-    return type->m_id;
+    return type->getId();
 }

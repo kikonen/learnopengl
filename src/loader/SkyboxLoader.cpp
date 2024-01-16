@@ -138,7 +138,7 @@ namespace loader {
             material->m_faces = data.faces;
         }
 
-        m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
+        m_registry->m_typeRegistry->registerCustomMaterial(type->getId());
 
         type->setCustomMaterial(std::move(material));
 

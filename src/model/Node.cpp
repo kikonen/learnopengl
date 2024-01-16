@@ -209,7 +209,7 @@ ki::node_id Node::lua_getId() const noexcept
 
 const std::string& Node::lua_getName() const noexcept
 {
-    return m_type->m_name;
+    return m_type->getName();
 }
 
 int Node::lua_getCloneIndex() const noexcept

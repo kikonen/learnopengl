@@ -51,6 +51,8 @@ public:
 
     const std::string str() const noexcept;
 
+    inline ki::node_id getId() const noexcept { return m_id; }
+
     void prepare(
         const PrepareContext& ctx);
 
@@ -127,13 +129,7 @@ public:
 
     const std::array<float, 3> lua_getPos() const noexcept;
 
-protected:
-
 public:
-    // *INTERNAL* LUID in scene
-    // used for object identity in shader
-    const ki::node_id m_id;
-
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
     bool m_visible{ true };
@@ -154,6 +150,10 @@ public:
     bool m_preparedRT{ false };
 
 private:
+    // *INTERNAL* LUID in scene
+    // used for object identity in shader
+    ki::node_id m_id;
+
     Node* m_parent{ nullptr };
     std::vector<Node*> m_children;
 

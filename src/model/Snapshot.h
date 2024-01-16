@@ -54,7 +54,7 @@ struct Snapshot {
         return m_volume;
     }
 
-    const glm::vec3& getDegreesRotation() const noexcept;
+    glm::vec3 getDegreesRotation() const noexcept;
 
     inline const glm::quat& getQuatRotation() const noexcept
     {

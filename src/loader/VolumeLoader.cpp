@@ -93,7 +93,7 @@ namespace loader {
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->m_id,
+                .target = node->getId(),
                 .controller = controller
             };
             m_dispatcher->send(evt);

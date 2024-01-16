@@ -134,7 +134,7 @@ void CameraZoomController::onMouseMove(
         m_registry->m_commandEngine->addCommand(
             std::make_unique<script::RotateNode>(
                 0,
-                m_node->m_id,
+                m_node->getId(),
                 0.f,
                 true,
                 snapshot.getViewRight(),

@@ -195,7 +195,7 @@ bool CubeMapRenderer::render(
             m_registry->m_commandEngine->addCommand(
                 std::make_unique<script::MoveNode>(
                     0,
-                    tagNode->m_id,
+                    tagNode->getId(),
                     0.f,
                     false,
                     tagPos));

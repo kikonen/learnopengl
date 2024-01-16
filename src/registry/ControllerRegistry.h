@@ -30,7 +30,7 @@ public:
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->m_id);
+        const auto& it = m_controllers.find(node->getId());
         if (it == m_controllers.end()) return nullptr;
 
         for (auto* controller : it->second) {
@@ -45,7 +45,7 @@ public:
         if (!node) return false;
         if (!node->m_preparedRT) return false;
 
-        const auto& it = m_controllers.find(node->m_id);
+        const auto& it = m_controllers.find(node->getId());
         return it != m_controllers.end() && !it->second.empty();
     }
 
@@ -54,7 +54,7 @@ public:
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->m_id);
+        const auto& it = m_controllers.find(node->getId());
         return it != m_controllers.end() ? it->second[0] : nullptr;
     }
 
@@ -63,7 +63,7 @@ public:
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->m_id);
+        const auto& it = m_controllers.find(node->getId());
 		return it != m_controllers.end() ? &it->second : nullptr;
 	}
 

@@ -12,10 +12,12 @@ namespace audio
     struct Sound {
         Sound() = default;
         Sound(Sound& o) = delete;
-        Sound& operator=(Sound& o) = delete;
-        Sound& operator=(Sound&& o) noexcept;
+        Sound(const Sound& o) = delete;
         Sound(Sound&&) noexcept;
         ~Sound();
+
+        Sound& operator=(Sound& o) = delete;
+        Sound& operator=(Sound&& o) noexcept;
 
         // main thread
         void prepare();
