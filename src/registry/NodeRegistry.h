@@ -9,7 +9,6 @@
 #include <fmt/format.h>
 
 #include "ki/size.h"
-#include "ki/uuid.h"
 
 #include "component/Camera.h"
 #include "component/NodeComponent.h"
@@ -72,13 +71,6 @@ public:
         return it != m_idToNode.end() ? it->second : nullptr;
     }
 
-    // @return node null if not found
-    inline Node* getNode(const uuids::uuid& id) const noexcept
-    {
-        const auto& it = m_uuidToNode.find(id);
-        return it != m_uuidToNode.end() ? it->second : nullptr;
-    }
-
     void selectNodeById(ki::node_id id, bool append) const noexcept;
 
     int countTagged() const noexcept;
@@ -93,7 +85,7 @@ public:
 
     void changeParent(
         Node* node,
-        const uuids::uuid& parentId) noexcept;
+        const ki::node_id parentId) noexcept;
 
     //inline const NodeVector* getChildren(const Node& parent) const noexcept {
     //    const auto& it = m_parentToChildren.find(parent.m_id);
@@ -128,24 +120,22 @@ private:
 
     void attachNode(
         Node* node,
-        const uuids::uuid& uuid,
-        const uuids::uuid& parentUUID,
-        ki::node_id parentId) noexcept;
+        const ki::node_id nodeId,
+        const ki::node_id parentId) noexcept;
 
     void bindPendingChildren();
 
     void bindNode(
-        const uuids::uuid& uuid,
+        const ki::node_id nodeId,
         Node* node);
 
     bool bindParent(
         Node* node,
-        const uuids::uuid& uuid,
-        const uuids::uuid& parentUUID,
-        ki::node_id parentId);
+        const ki::node_id nodeId,
+        const ki::node_id parentId);
 
     void bindChildren(
-        const uuids::uuid& parentUUID);
+        const ki::node_id parentId);
 
     void bindSkybox(
         Node* node) noexcept;
@@ -169,9 +159,8 @@ private:
     mutable std::mutex m_snapshotLock{};
 
     std::unordered_map<ki::node_id, Node*> m_idToNode;
-    std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
 
-    std::unordered_map<uuids::uuid, std::vector<std::tuple<const uuids::uuid, Node*>>> m_pendingChildren;
+    std::unordered_map<ki::node_id, std::vector<std::tuple<const ki::node_id, Node*>>> m_pendingChildren;
 
     //std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
 

@@ -179,6 +179,12 @@ https://glad.dav1d.de
   + https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/security-init-cookie
   + https://learn.microsoft.com/en-us/cpp/build/reference/sdl-enable-additional-security-checks?view=msvc-170
 
+## UUID
+- https://github.com/mariusbancila/stduuid
+- https://stackoverflow.com/questions/2351087/what-is-the-best-32bit-hash-function-for-short-strings-tag-names
+- http://www.orthogonal.com.au/computers/hashstrings/
+- https://github.com/google/crc32c
+
 ## Libraries
 - https://github.com/nothings/stb
 - https://github.com/wqking/eventpp

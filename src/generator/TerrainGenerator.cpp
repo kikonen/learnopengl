@@ -4,6 +4,8 @@
 
 #include <fmt/format.h>
 
+#include "ki/sid.h"
+
 #include "util/Log.h"
 #include "util/glm_format.h"
 #include "util/Perlin.h"
@@ -261,7 +263,11 @@ void TerrainGenerator::createTiles(
         KI_INFO_OUT(fmt::format("TERRAIN: minmax={}", minmax.getVolume()));
 
         const auto type = registry->m_typeRegistry->getType(typeId);
+
+        auto nodeId = SID("<terrain_tiles>");
         m_node = new Node(type);
+        m_node->m_type = type;
+
         m_node->modifyTransform().setVolume(minmax.getVolume());
         m_node->m_instancer = this;
     }
@@ -270,8 +276,7 @@ void TerrainGenerator::createTiles(
         event::Event evt { event::Type::node_add };
         evt.body.node = {
             .target = m_node,
-            .uuid = {},
-            .parentUUID = {},
+            .id = m_node->getId(),
             .parentId = container.getId(),
         };
         registry->m_dispatcher->send(evt);

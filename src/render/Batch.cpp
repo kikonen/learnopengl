@@ -6,7 +6,6 @@
 
 #include "glm/glm.hpp"
 
-#include "ki/uuid.h"
 #include "util/glm_format.h"
 
 #include "asset/Program.h"

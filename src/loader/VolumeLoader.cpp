@@ -32,7 +32,7 @@ namespace loader {
     }
 
     void VolumeLoader::attachVolume(
-        const uuids::uuid& rootId)
+        const ki::node_id rootId)
     {
         if (!m_assets.showVolume) return;
 
@@ -69,7 +69,9 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto node = new Node(type);
+        auto node = new Node(m_ctx.m_assets.volumeId);
+        node->m_type = type;
+
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
@@ -83,8 +85,8 @@ namespace loader {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
                 .target = node,
-                .uuid = m_assets.volumeUUID,
-                .parentUUID = rootId,
+                .id = m_assets.volumeId,
+                .parentId = rootId,
             };
             m_dispatcher->send(evt);
         }

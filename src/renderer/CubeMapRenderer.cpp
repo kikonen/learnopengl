@@ -102,7 +102,7 @@ void CubeMapRenderer::prepareRT(
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
 
-    m_tagID = assets.cubeMapUUID;
+    m_tagId = assets.cubeMapId;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
@@ -384,6 +384,6 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 Node* CubeMapRenderer::getTagNode()
 {
     if (m_tagNode) return m_tagNode;
-    m_tagNode = m_registry->m_nodeRegistry->getNode(m_tagID);
+    m_tagNode = m_registry->m_nodeRegistry->getNode(m_tagId);
     return m_tagNode;
 }

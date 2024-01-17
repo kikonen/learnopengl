@@ -336,16 +336,16 @@ void SampleApp::selectNode(
     auto* node = nodeRegistry.getNode(nodeId);
 
     if (selectMode) {
-        auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
+        auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeId);
 
         // deselect
         if (node && node->isSelected()) {
-            nodeRegistry.selectNodeById(-1, false);
+            nodeRegistry.selectNodeById(0, false);
 
             if (volumeNode) {
                 auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
                 if (controller) {
-                    controller->setTarget(-1);
+                    controller->setTargetId(0);
                 }
             }
 
@@ -364,7 +364,7 @@ void SampleApp::selectNode(
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
             if (controller) {
-                controller->setTarget(node ? node->getId() : -1);
+                controller->setTargetId(node ? node->getId() : 0);
             }
         }
         KI_INFO(fmt::format("selected: {}", nodeId));

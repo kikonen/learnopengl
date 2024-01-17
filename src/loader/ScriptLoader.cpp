@@ -93,7 +93,7 @@ namespace loader {
     }
 
     void ScriptLoader::createScriptEngine(
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const ScriptEngineData& data)
     {
         if (!data.enabled) return;
@@ -101,7 +101,7 @@ namespace loader {
     }
 
     void ScriptLoader::createScripts(
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         ki::node_id nodeId,
         const std::vector<ScriptData>& scripts) const
     {
@@ -111,7 +111,7 @@ namespace loader {
     }
 
     void ScriptLoader::createScript(
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         ki::node_id nodeId,
         const ScriptData& data) const
     {

@@ -18,10 +18,6 @@ public:
         std::shared_ptr<std::atomic<bool>> sceneAlive,
         std::function<void()> loader);
 
-    // wait for loading of node
-    // @return node null if not found
-    //Node* waitNode(const uuids::uuid& id, bool async);
-
     void waitForReady();
 
 private:

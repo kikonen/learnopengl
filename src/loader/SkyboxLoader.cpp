@@ -94,7 +94,7 @@ namespace loader {
     }
 
     void SkyboxLoader::attachSkybox(
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const SkyboxData& data)
     {
         if (!data.valid()) return;
@@ -142,14 +142,15 @@ namespace loader {
 
         type->setCustomMaterial(std::move(material));
 
-        auto node = new Node(type);
+        auto node = new Node(m_ctx.m_assets.skyboxId);
+        node->m_type = type;
 
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
                 .target = node,
-                .uuid = m_assets.skyboxUUID,
-                .parentUUID = rootId,
+                .id = m_assets.skyboxId,
+                .parentId = rootId,
             };
             m_dispatcher->send(evt);
         }

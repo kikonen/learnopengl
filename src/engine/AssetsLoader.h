@@ -3,8 +3,6 @@
 #include <string>
 #include <map>
 
-#include <ki/uuid.h>
-
 #include "ki/yaml.h"
 
 #include "asset/Assets.h"

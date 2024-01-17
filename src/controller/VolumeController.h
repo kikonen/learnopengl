@@ -11,9 +11,9 @@ public:
         const UpdateContext& ctx,
         Node& node) noexcept override;
 
-    int getTarget();
-    void setTarget(int targetID);
+    ki::node_id getTargetId();
+    void setTargetId(int targetId);
 
 private:
-    int m_targetID{ 0 };
+    ki::node_id m_targetId{ 0 };
 };

@@ -193,10 +193,15 @@
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
+    <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
+    <ClCompile Include="src\pool\IdHash.cpp" />
+    <ClCompile Include="src\pool\Pool.hpp" />
+    <ClCompile Include="src\pool\TypeHandle.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
+    <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
@@ -219,7 +224,7 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
     <ClCompile Include="src\loader\AudioLoader.cpp" />
     <ClCompile Include="src\loader\BaseLoader.cpp" />
-    <ClCompile Include="src\loader\BaseUUID.h" />
+    <ClCompile Include="src\loader\BaseId.h" />
     <ClCompile Include="src\loader\CameraLoader.cpp" />
     <ClCompile Include="src\loader\Contet.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
@@ -393,6 +398,7 @@
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
+    <ClInclude Include="src\ki\sid.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\loader\TextData.h" />
@@ -404,7 +410,12 @@
     <ClInclude Include="src\mesh\TextMesh.h" />
     <ClInclude Include="src\mesh\TextureEntry.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
+    <ClInclude Include="src\pool\Entry.h" />
+    <ClInclude Include="src\pool\IdHash.h" />
+    <ClInclude Include="src\pool\TypeHandle.h" />
     <ClInclude Include="src\registry\FontRegistry.h" />
+    <ClInclude Include="src\pool\NodeHandle.h" />
+    <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />

@@ -70,7 +70,7 @@ private:
 
     Material m_tagMaterial;
 
-    uuids::uuid m_tagID;
+    ki::node_id m_tagId;
     Node* m_tagNode{ nullptr };
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };

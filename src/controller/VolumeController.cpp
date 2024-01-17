@@ -17,9 +17,7 @@ bool VolumeController::updateWT(
     const UpdateContext& ctx,
     Node& volumeNode) noexcept
 {
-    if (!m_targetID) return false;
-
-    Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
+    Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
 
     if (!targetNode) {
         volumeNode.m_visible = false;
@@ -54,12 +52,12 @@ bool VolumeController::updateWT(
     return true;
 }
 
-int VolumeController::getTarget()
+ki::node_id VolumeController::getTargetId()
 {
-    return m_targetID;
+    return m_targetId;
 }
 
-void VolumeController::setTarget(int targetID)
+void VolumeController::setTargetId(int targetId)
 {
-    m_targetID = targetID;
+    m_targetId = targetId;
 }

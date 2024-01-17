@@ -29,7 +29,7 @@ namespace loader {
     }
 
     void CubeMapLoader::attachCubeMap(
-        const uuids::uuid& rootId)
+        const ki::node_id rootId)
     {
         if (!m_assets.showCubeMapCenter) return;
 
@@ -67,7 +67,9 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto node = new Node(type);
+        auto node = new Node(m_ctx.m_assets.cubeMapId);
+        node->m_type = type;
+
         node->m_visible = false;
 
         auto& transform = node->modifyTransform();
@@ -83,8 +85,8 @@ namespace loader {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
                 .target = node,
-                .uuid = m_assets.cubeMapUUID,
-                .parentUUID = rootId,
+                .id = m_assets.cubeMapId,
+                .parentId = rootId,
             };
             m_dispatcher->send(evt);
         }

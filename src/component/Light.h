@@ -2,10 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/uuid.h"
-
 #include "asset/LightUBO.h"
 
+#include "ki/size.h"
 
 struct UpdateContext;
 class Node;
@@ -25,13 +24,13 @@ public:
         m_targetMatrixLevel = -1;
     }
 
-    void setTargetId(const uuids::uuid& targetId) noexcept
+    void setTargetId(ki::node_id targetId) noexcept
     {
         m_targetId = targetId;
         m_targetMatrixLevel = -1;
     }
 
-    const uuids::uuid& getTargetId() const noexcept {
+    ki::node_id getTargetId() const noexcept {
         return m_targetId;
     }
 
@@ -78,7 +77,7 @@ private:
     glm::vec3 m_worldPosition{ 0.0f };
     glm::vec3 m_worldTargetPosition{ 0.0f };
 
-    uuids::uuid m_targetId;
+    ki::node_id m_targetId;
 
     Node* m_targetNode{ nullptr };
 

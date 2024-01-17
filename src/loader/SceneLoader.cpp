@@ -12,6 +12,7 @@
 #include "util/glm_util.h"
 
 #include "ki/yaml.h"
+#include "ki/sid.h"
 
 #include "asset/Material.h"
 #include "asset/Sprite.h"
@@ -206,14 +207,14 @@ namespace loader {
     }
 
     bool SceneLoader::attachEntity(
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const EntityData& data)
     {
         if (!data.base.enabled) {
             return false;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
             try {
                 if (data.clones.empty()) {
                     const mesh::MeshType* type{ nullptr };
@@ -244,7 +245,7 @@ namespace loader {
 
     const mesh::MeshType* SceneLoader::attachEntityClone(
         const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -290,7 +291,7 @@ namespace loader {
 
     const mesh::MeshType* SceneLoader::attachEntityCloneRepeat(
         const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -321,23 +322,24 @@ namespace loader {
             tilePositionOffset);
 
         {
-            // NOTE KI no id for clones; would duplicate base id => conflicts
-            // => except if clone defines own ID
-            const auto uuid = resolveUUID(data.idBase, cloneIndex, tile);
+            const auto nodeId = node->getId();
 
             event::Event evt { event::Type::node_add };
             evt.body.node.target = node;
-            evt.body.node.uuid = uuid;
+            evt.body.node.id = nodeId;
             {
-                if (data.parentIdBase.empty()) {
-                    evt.body.node.parentUUID = rootId;
+                if (data.parentBaseId.empty()) {
+                    evt.body.node.parentId = rootId;
                 }
                 else {
-                    evt.body.node.parentUUID = resolveUUID(
-                        data.parentIdBase,
+                    evt.body.node.parentId = resolveId(
+                        data.parentBaseId,
                         cloneIndex,
-                        tile);
+                        tile,
+                        false);
                 }
+
+                assert(node->getId() == nodeId);
             }
             m_dispatcher->send(evt);
         }
@@ -375,7 +377,7 @@ namespace loader {
 
         // try anim event
         //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
-        if (data.name == "Cow")
+        if (data.desc == "Cow")
         {
             event::Event evt { event::Type::animate_rotate };
             evt.body.animate = {
@@ -399,7 +401,7 @@ namespace loader {
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
-        auto* type = m_registry->m_typeRegistry->registerType(data.name);
+        auto* type = m_registry->m_typeRegistry->registerType(data.baseId.m_path);
         assignFlags(data, type);
 
         type->m_priority = data.priority;
@@ -423,7 +425,7 @@ namespace loader {
                 if (!type->getMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                        data.idBase, data.name));
+                        data.baseId, data.desc));
                     return nullptr;
                 }
             }
@@ -613,8 +615,8 @@ namespace loader {
             type->m_entityType = mesh::EntityType::model;
 
             KI_INFO(fmt::format(
-                "SCENE_FILE ATTACH: id={}, type={}",
-                data.idBase, type->str()));
+                "SCENE_FILE ATTACH: id={}, desc={}, type={}",
+                data.baseId, data.desc, type->str()));
         }
         else if (data.type == mesh::EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
@@ -662,7 +664,7 @@ namespace loader {
 
     Node* SceneLoader::createNode(
         const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+        const ki::node_id rootId,
         const EntityCloneData& data,
         const bool cloned,
         const int cloneIndex,
@@ -670,7 +672,16 @@ namespace loader {
         const glm::vec3& clonePositionOffset,
         const glm::vec3& tilePositionOffset)
     {
-        Node* node = new Node(type);
+        ki::node_id nodeId;
+        {
+            nodeId = resolveId(data.baseId, cloneIndex, tile, false);
+            if (!nodeId) {
+                nodeId = resolveId({ data.name }, cloneIndex, tile, false);
+            }
+        }
+
+        Node* node = new Node(nodeId);
+        node->m_type = type;
 
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
@@ -753,12 +764,12 @@ namespace loader {
                 flags.blend = e->second;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blend) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", data.baseId, data.desc));
                     flags.alpha = true;
                 }
                 // NOTE KI blend CANNOT be gbuffer
                 if (flags.blend && flags.gbuffer) {
-                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): {}", data.name));
+                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): id={}, desc={}", data.baseId, data.desc));
                     // NOTE KI turning off blend; shader is designed for gbuffer
                     flags.blend = false;
                 }
@@ -770,7 +781,7 @@ namespace loader {
                 flags.blendOIT = e->second;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blendOIT) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", data.baseId, data.desc));
                     flags.alpha = true;
                 }
             }

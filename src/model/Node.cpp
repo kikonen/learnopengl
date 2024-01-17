@@ -8,6 +8,7 @@
 #include "kigl/kigl.h"
 
 #include "pool/IdGenerator.h"
+#include "pool/NodeHandle.h"
 
 #include "asset/Sprite.h"
 
@@ -37,11 +38,31 @@ namespace {
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 }
 
-Node::Node(const mesh::MeshType* type)
-    : m_type(type),
-    m_id(ID_GENERATOR.nextId())
+Node::Node()
+    :  m_id(ID_GENERATOR.nextId())
 {
 }
+
+Node::Node(ki::node_id id)
+    : m_id{ id }
+{
+}
+
+Node::Node(const mesh::MeshType* type)
+    : m_id(ID_GENERATOR.nextId()),
+    m_type{ type }
+{}
+
+Node::Node(Node&& o) noexcept
+    : m_id{ o.m_id }
+{}
+
+Node& Node::operator=(Node&& o) noexcept
+{
+    if (&o == this) return *this;
+    return *this;
+}
+
 
 Node::~Node()
 {
@@ -53,6 +74,11 @@ const std::string Node::str() const noexcept
     return fmt::format(
         "<NODE: id={}, type={}>",
         m_id, m_type->str());
+}
+
+pool::NodeHandle Node::toHandle() const noexcept
+{
+    return { m_handleIndex, m_id };
 }
 
 void Node::prepare(

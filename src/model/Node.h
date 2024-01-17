@@ -20,6 +20,10 @@ namespace kigl {
     struct GLVertexArray;
 }
 
+namespace pool {
+    class NodeHandle;
+}
+
 namespace render {
     class Batch;
 }
@@ -45,13 +49,25 @@ class ParticleGenrator;
 
 class Node final
 {
+    friend class pool::NodeHandle;
+
 public:
+    Node();
+    Node(ki::node_id id);
     Node(const mesh::MeshType* type);
+    Node(Node& o) = delete;
+    Node(const Node&) = delete;
+    Node(Node&& o) noexcept;
     ~Node();
+
+    Node& operator=(Node& o) = delete;
+    Node& operator=(Node&& o) noexcept;
 
     const std::string str() const noexcept;
 
     inline ki::node_id getId() const noexcept { return m_id; }
+
+    pool::NodeHandle toHandle() const noexcept;
 
     void prepare(
         const PrepareContext& ctx);
@@ -153,6 +169,7 @@ private:
     // *INTERNAL* LUID in scene
     // used for object identity in shader
     ki::node_id m_id;
+    uint32_t m_handleIndex;
 
     Node* m_parent{ nullptr };
     std::vector<Node*> m_children;

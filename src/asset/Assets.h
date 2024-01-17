@@ -1,11 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "glm/glm.hpp"
-#include <stduuid/uuid.h>
+
+#include "ki/size.h"
 
 #include "ViewportEffect.h"
+
 
 // configure assets locations
 class Assets final
@@ -213,10 +216,10 @@ public:
 
     glm::uvec3 computeGroups;
 
-    uuids::uuid rootUUID;
-    uuids::uuid volumeUUID;
-    uuids::uuid cubeMapUUID;
-    uuids::uuid skyboxUUID;
+    ki::node_id rootId;
+    ki::node_id volumeId;
+    ki::node_id cubeMapId;
+    ki::node_id skyboxId;
 
     // NOTE KI TEMPORARY HACKS
     // => provide logic for these via scenefile

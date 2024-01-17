@@ -23,7 +23,7 @@ namespace loader
         const YAML::Node& node,
         RootData& data) const
     {
-        data.rootId = m_assets.rootUUID;
+        data.rootId = m_assets.rootId;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -44,13 +44,14 @@ namespace loader
         auto& flags = type->m_flags;
         flags.invisible = true;
 
-        auto node = new Node(type);
+        auto node = new Node(m_ctx.m_assets.rootId);
+        node->m_type = type;
 
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
                 .target = node,
-                .uuid = data.rootId,
+                .id = data.rootId,
             };
             m_dispatcher->send(evt);
         }

@@ -8,7 +8,6 @@
 #include <glm/vec3.hpp>
 
 #include "ki/size.h"
-#include "ki/uuid.h"
 
 #include "audio/size.h"
 #include "audio/limits.h"
@@ -112,10 +111,7 @@ namespace event {
 
     struct NodeAction {
         Node* target{ nullptr };
-        // UUID of node for persistency
-        // => *CAN* be empty for auto generated nodes
-        uuids::uuid uuid{};
-        uuids::uuid parentUUID{};
+        ki::node_id id{ 0 };
         ki::node_id parentId{ 0 };
     };
 

@@ -81,7 +81,8 @@ ki::node_id ObjectIdRenderer::getObjectId(
     const ki::node_id nodeId =
         data[0] +
         data[1] * 256 +
-        data[2] * 256 * 256;
+        data[2] * 256 * 256 +
+        data[3] * 256 * 256 * 256;
 
     return nodeId;
 }

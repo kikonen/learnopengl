@@ -10,6 +10,6 @@ namespace loader {
             Context ctx);
 
         void attachCubeMap(
-            const uuids::uuid& rootId);
+            const ki::node_id rootId);
     };
 }

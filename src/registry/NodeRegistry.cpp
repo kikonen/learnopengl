@@ -64,7 +64,6 @@ NodeRegistry::~NodeRegistry()
     // NOTE KI forbid access into deleted nodes
     {
         m_idToNode.clear();
-        m_uuidToNode.clear();
 
         //m_parentToChildren.clear();
     }
@@ -87,7 +86,7 @@ NodeRegistry::~NodeRegistry()
     m_allNodes.clear();
 
     for (auto& [parentId, nodes] : m_pendingChildren) {
-        for (auto& [uuid, node] : nodes) {
+        for (auto& [nodeId, node] : nodes) {
             delete node;
         }
     }
@@ -206,8 +205,7 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             attachNode(
                 e.body.node.target,
-                e.body.node.uuid,
-                e.body.node.parentUUID,
+                e.body.node.id,
                 e.body.node.parentId);
         });
 
@@ -444,21 +442,24 @@ void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 
 void NodeRegistry::attachNode(
     Node* node,
-    const uuids::uuid& uuid,
-    const uuids::uuid& parentUUID,
-    ki::node_id parentId) noexcept
+    const ki::node_id nodeId,
+    const ki::node_id parentId) noexcept
 {
-    m_idToNode.insert(std::make_pair(node->getId(), node));
+    assert(node->getId() == nodeId);
+    assert(parentId || nodeId == m_assets.rootId);
+    assert(m_idToNode.find(nodeId) == m_idToNode.end());
+
+    m_idToNode.insert({ node->getId(), node });
 
     if (node->m_type->m_flags.skybox) {
         return bindSkybox(node);
     }
 
     // NOTE KI ignore children without parent; until parent is found
-    if (!bindParent(node, uuid, parentUUID, parentId)) return;
+    if (!bindParent(node, nodeId, parentId)) return;
 
-    bindNode(uuid, node);
-    bindChildren(uuid);
+    bindNode(nodeId, node);
+    bindChildren(nodeId);
 
     bindPendingChildren();
 }
@@ -497,7 +498,7 @@ int NodeRegistry::countSelected() const noexcept
 
 void NodeRegistry::changeParent(
     Node* node,
-    const uuids::uuid& parentId) noexcept
+    const ki::node_id parentId) noexcept
 {
     Node* parent = getNode(parentId);
     if (!parent) return;
@@ -528,7 +529,7 @@ void NodeRegistry::changeParent(
 }
 
 void NodeRegistry::bindNode(
-    const uuids::uuid& uuid,
+    const ki::node_id nodeId,
     Node* node)
 {
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
@@ -548,14 +549,12 @@ void NodeRegistry::bindNode(
         //    "REGISTER: {}-{}",
         //    program ? program->m_key : "<na>", programKey.str()));
 
-        if (!uuid.is_nil()) m_uuidToNode[uuid] = node;
-
         {
             std::lock_guard<std::mutex> lock(m_snapshotLock);
             m_allNodes.push_back(node);
         }
 
-        if (uuid == m_assets.rootUUID) {
+        if (nodeId == m_assets.rootId) {
             m_root = node;
         }
     }
@@ -591,18 +590,18 @@ void NodeRegistry::bindPendingChildren()
 {
     if (m_pendingChildren.empty()) return;
 
-    std::vector<uuids::uuid> boundIds;
+    std::vector<ki::node_id> boundIds;
 
     for (const auto& [parentId, children] : m_pendingChildren) {
-        const auto& parentIt = m_uuidToNode.find(parentId);
-        if (parentIt == m_uuidToNode.end()) continue;
+        const auto& parentIt = m_idToNode.find(parentId);
+        if (parentIt == m_idToNode.end()) continue;
 
         boundIds.push_back(parentId);
 
         auto& parent = parentIt->second;
-        for (auto& [uuid, child] : children) {
+        for (auto& [childId, child] : children) {
             KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-            bindNode(uuid, child);
+            bindNode(childId, child);
 
             child->setParent(parent);
             parent->addChild(child);
@@ -618,25 +617,17 @@ void NodeRegistry::bindPendingChildren()
 
 bool NodeRegistry::bindParent(
     Node* child,
-    const uuids::uuid& childUUID,
-    const uuids::uuid& parentUUID,
-    ki::node_id parentId)
+    const ki::node_id childId,
+    const ki::node_id parentId)
 {
-    if (parentId) {
-        auto* parent = m_idToNode.find(parentId)->second;
-        child->setParent(parent);
-        parent->addChild(child);
-        //m_parentToChildren[parent->getId()].push_back(child);
-        return true;
-    }
+    // NOTE KI everything else, except root requires parent
+    if (childId == m_assets.rootId) return true;
 
-    if (parentUUID.is_nil()) return true;
-
-    const auto& parentIt = m_uuidToNode.find(parentUUID);
-    if (parentIt == m_uuidToNode.end()) {
+    const auto& parentIt = m_idToNode.find(parentId);
+    if (parentIt == m_idToNode.end()) {
         KI_INFO(fmt::format("PENDING_CHILD: node={}", child->str()));
 
-        m_pendingChildren[parentUUID].push_back({ childUUID, child });
+        m_pendingChildren[parentId].push_back({ childId, child });
         return false;
     }
 
@@ -651,23 +642,23 @@ bool NodeRegistry::bindParent(
 }
 
 void NodeRegistry::bindChildren(
-    const uuids::uuid& parentUUID)
+    const ki::node_id parentId)
 {
-    const auto& it = m_pendingChildren.find(parentUUID);
+    const auto& it = m_pendingChildren.find(parentId);
     if (it == m_pendingChildren.end()) return;
 
-    Node* parent = m_uuidToNode.find(parentUUID)->second;
+    Node* parent = m_idToNode.find(parentId)->second;
 
-    for (auto& [uuid, child] : it->second) {
+    for (auto& [childId, child] : it->second) {
         KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parent->str(), child->str()));
-        bindNode(uuid, child);
+        bindNode(childId, child);
 
         child->setParent(parent);
         parent->addChild(child);
         //m_parentToChildren[parent->getId()].push_back(child);
     }
 
-    m_pendingChildren.erase(parentUUID);
+    m_pendingChildren.erase(parentId);
 }
 
 const Material& NodeRegistry::getSelectionMaterial() const noexcept

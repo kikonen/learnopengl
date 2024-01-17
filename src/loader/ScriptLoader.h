@@ -32,16 +32,16 @@ namespace loader {
             ScriptData& data) const;
 
         void createScriptEngine(
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             const ScriptEngineData& data);
 
         void createScripts(
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             ki::node_id nodeId,
             const std::vector<ScriptData>& scripts) const;
 
         void createScript(
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             ki::node_id nodeId,
             const ScriptData& data) const;
     };

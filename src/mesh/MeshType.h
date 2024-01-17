@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "backend/DrawOptions.h"
 
 #include "asset/Material.h"
@@ -9,6 +11,10 @@
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
+
+namespace pool {
+    class TypeHandle;
+}
 
 namespace render {
     struct MeshTypeKey;
@@ -32,11 +38,13 @@ namespace mesh {
 
     class MeshType final
     {
+        friend class pool::TypeHandle;
         friend class MeshTypeRegistry;
         friend struct render::MeshTypeComparator;
         friend struct render::MeshTypeKey;
 
     public:
+        MeshType();
         MeshType(std::string_view name);
         MeshType(MeshType& o) = delete;
         MeshType(const MeshType& o) = delete;
@@ -47,6 +55,7 @@ namespace mesh {
         MeshType& operator=(MeshType&& o) = delete;
 
         inline ki::type_id getId() const noexcept { return m_id; }
+        pool::TypeHandle toHandle() const noexcept;
 
         const std::string& getName() const noexcept { return m_name; }
 
@@ -113,6 +122,7 @@ namespace mesh {
 
     private:
         ki::type_id m_id{ 0 };
+        uint32_t m_handleIndex;
 
         std::string m_name;
 

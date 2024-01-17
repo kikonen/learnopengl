@@ -7,8 +7,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "ki/uuid.h"
-
 #include "asset/Shader.h"
 
 #include "mesh/EntityType.h"
@@ -73,12 +71,12 @@ namespace loader {
             const RootData& root);
 
         bool attachEntity(
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             const EntityData& data);
 
         const mesh::MeshType* attachEntityClone(
             const mesh::MeshType* type,
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
@@ -86,7 +84,7 @@ namespace loader {
 
         const mesh::MeshType* attachEntityCloneRepeat(
             const mesh::MeshType* type,
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
@@ -129,7 +127,7 @@ namespace loader {
 
         Node* createNode(
             const mesh::MeshType* type,
-            const uuids::uuid& rootId,
+            const ki::node_id rootId,
             const EntityCloneData& data,
             const bool cloned,
             const int cloneIndex,

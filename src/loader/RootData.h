@@ -2,12 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include <stduuid/uuid.h>
-
+#include "BaseId.h"
 
 namespace loader {
     struct RootData {
-        uuids::uuid rootId;
+        ki::node_id rootId;
 
         glm::vec3 pos{ 0.f };
     };

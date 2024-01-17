@@ -17,7 +17,7 @@ namespace loader{
         LightData& data) const
     {
         // Default to center
-        data.targetIdBase = { ROOT_UUID };
+        data.targetBaseId = { ROOT_ID };
 
         data.enabled = true;
 
@@ -55,7 +55,7 @@ namespace loader{
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
             else if (k == "target_id") {
-                data.targetIdBase = readUUID(v);
+                data.targetBaseId = readId(v);
             }
             else if (k == "linear") {
                 data.linear = readFloat(v);
@@ -91,7 +91,7 @@ namespace loader{
         auto light = std::make_unique<Light>();
 
         light->m_enabled = true;
-        light->setTargetId(resolveUUID(data.targetIdBase, cloneIndex, tile));
+        light->setTargetId(resolveId(data.targetBaseId, cloneIndex, tile, false));
 
         light->linear = data.linear;
         light->quadratic = data.quadratic;
