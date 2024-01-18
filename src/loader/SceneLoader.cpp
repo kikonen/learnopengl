@@ -694,7 +694,9 @@ namespace loader {
         }
 
         Node* node = new Node(nodeId);
+#ifdef _DEBUG
         node->m_resolvedSID = resolvedSID;
+#endif
         node->m_type = type;
 
         node->setCloneIndex(cloneIndex);
@@ -916,13 +918,21 @@ namespace loader {
         const RootData& root)
     {
         std::map<ki::node_id, std::string> collectedIds;
+        int pass1Errors = 0;
+        int pass2Errors = 0;
 
         for (const auto& entity : m_entities) {
-            validateEntity(root.rootId, entity, 0, collectedIds);
+            validateEntity(root.rootId, entity, 0, pass1Errors, collectedIds);
         }
 
         for (const auto& entity : m_entities) {
-            validateEntity(root.rootId, entity, 1, collectedIds);
+            validateEntity(root.rootId, entity, 1, pass2Errors, collectedIds);
+        }
+
+        if (pass1Errors > 0 || pass2Errors > 0) {
+            auto msg = fmt::format("VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
+            KI_CRITICAL(msg);
+            throw std::runtime_error{ msg };
         }
     }
 
@@ -930,15 +940,16 @@ namespace loader {
         const ki::node_id rootId,
         const EntityData& data,
         int pass,
+        int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
         if (data.clones.empty()) {
-            validateEntityClone(rootId, data, data.base, false, 0, pass, collectedIds);
+            validateEntityClone(rootId, data, data.base, false, 0, pass, errorCount, collectedIds);
         }
         else {
             int cloneIndex = 0;
             for (auto& cloneData : data.clones) {
-                validateEntityClone(rootId, data, cloneData, true, cloneIndex, pass, collectedIds);
+                validateEntityClone(rootId, data, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
                 cloneIndex++;
             }
         }
@@ -951,6 +962,7 @@ namespace loader {
         bool cloned,
         int cloneIndex,
         int pass,
+        int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
         if (!data.enabled) return;
@@ -972,6 +984,7 @@ namespace loader {
                         tile,
                         tilePositionOffset,
                         pass,
+                        errorCount,
                         collectedIds);
                 }
             }
@@ -987,12 +1000,13 @@ namespace loader {
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset,
         int pass,
+        int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
         if (!data.enabled) return;
 
         if (pass == 0) {
-            if (data.baseId.m_path == "light-2")
+            if (data.name == "Linden tree forest - part 1")
                 int x = 0;
 
             ki::node_id sid;
@@ -1015,10 +1029,10 @@ namespace loader {
                 }
             }
 
-            if (collectedIds.find(sid) != collectedIds.end()) {
-                auto msg = fmt::format("SID CONFLICT: {} = {}", sid, resolvedSID);
+            if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
+                auto msg = fmt::format("SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
                 KI_CRITICAL(msg);
-                throw std::runtime_error{ msg };
+                errorCount++;
             }
             collectedIds[sid] = resolvedSID;
         }
@@ -1037,7 +1051,7 @@ namespace loader {
                 if (collectedIds.find(sid) == collectedIds.end()) {
                     auto msg = fmt::format("PARENT SID MISSING: {} = {}", sid, resolvedSID);
                     KI_CRITICAL(msg);
-                    throw std::runtime_error{ msg };
+                    errorCount++;
                 }
             }
         }

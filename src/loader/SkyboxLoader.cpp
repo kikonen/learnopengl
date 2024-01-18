@@ -143,7 +143,9 @@ namespace loader {
         type->setCustomMaterial(std::move(material));
 
         auto node = new Node(m_ctx.m_assets.skyboxId);
+#ifdef _DEBUG
         node->m_resolvedSID = "<skybox>";
+#endif
         node->m_type = type;
 
         {

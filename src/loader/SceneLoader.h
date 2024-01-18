@@ -146,6 +146,7 @@ namespace loader {
             const ki::node_id rootId,
             const EntityData& data,
             int pass,
+            int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
         void validateEntityClone(
@@ -155,6 +156,7 @@ namespace loader {
             bool cloned,
             int cloneIndex,
             int pass,
+            int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
         void validateEntityCloneRepeat(
@@ -166,6 +168,7 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset,
             int pass,
+            int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
         const Material * findMaterial(

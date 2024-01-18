@@ -266,7 +266,9 @@ void TerrainGenerator::createTiles(
 
         auto nodeId = SID("<terrain_tiles>");
         m_node = new Node(nodeId);
+#ifdef _DEBUG
         m_node->m_resolvedSID = "<terrain_tiles>";
+#endif
         m_node->m_type = type;
 
         m_node->modifyTransform().setVolume(minmax.getVolume());

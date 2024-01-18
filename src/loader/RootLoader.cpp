@@ -45,7 +45,9 @@ namespace loader
         flags.invisible = true;
 
         auto node = new Node(m_ctx.m_assets.rootId);
+#ifdef _DEBUG
         node->m_resolvedSID = "<root>";
+#endif
         node->m_type = type;
 
         {

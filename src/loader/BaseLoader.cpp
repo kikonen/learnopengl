@@ -413,7 +413,7 @@ namespace loader
         }
         else {
             auto nodeId = SID(key);
-            KI_INFO_OUT(fmt::format("SID: sid={}, key={}", nodeId, key));
+            //KI_INFO_OUT(fmt::format("SID: sid={}, key={}", nodeId, key));
             return { nodeId, key };
         }
 

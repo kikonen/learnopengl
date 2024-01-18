@@ -70,7 +70,9 @@ namespace loader {
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
         auto node = new Node(m_ctx.m_assets.volumeId);
+#ifdef _DEBUG
         node->m_resolvedSID = "<volume>";
+#endif
         node->m_type = type;
 
         node->m_visible = false;

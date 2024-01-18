@@ -90,13 +90,13 @@ void Log::trace(std::string_view msg) noexcept
 void Log::info_out(std::string_view msg) noexcept
 {
     Log::info(msg);
-    std::cout << "INFO: " << msg << '\n';
+    std::cout << "I: " << msg << '\n';
 }
 
 void Log::warn_out(std::string_view msg) noexcept
 {
     Log::warn(msg);
-    std::cout << "WARN: " << msg << '\n';
+    std::cout << "W: " << msg << '\n';
 }
 
 void Log::out(std::string_view msg) noexcept

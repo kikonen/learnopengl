@@ -166,7 +166,9 @@ public:
 
     bool m_preparedRT{ false };
 
+#ifdef _DEBUG
     std::string m_resolvedSID;
+#endif
 
 private:
     // *INTERNAL* LUID in scene
