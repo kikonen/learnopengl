@@ -7,7 +7,6 @@
 
 #include "kigl/kigl.h"
 
-#include "pool/IdGenerator.h"
 #include "pool/NodeHandle.h"
 
 #include "asset/Sprite.h"
@@ -33,13 +32,10 @@
 #include "render/Batch.h"
 
 namespace {
-    IdGenerator<ki::node_id> ID_GENERATOR;
-
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
 }
 
 Node::Node()
-    :  m_id(ID_GENERATOR.nextId())
 {
 }
 
@@ -49,8 +45,7 @@ Node::Node(ki::node_id id)
 }
 
 Node::Node(const mesh::MeshType* type)
-    : m_id(ID_GENERATOR.nextId()),
-    m_type{ type }
+    : m_type{ type }
 {}
 
 Node::Node(Node&& o) noexcept

@@ -27,6 +27,7 @@ namespace loader
     static const std::string ROOT_ID{ "ROOT" };
 
     static const std::string MACRO_STEP_CLONE{ "c" };
+    static const std::string MACRO_STEP_TILE{ "t" };
     static const std::string MACRO_STEP_X{ "x" };
     static const std::string MACRO_STEP_Y{ "y" };
     static const std::string MACRO_STEP_Z{ "z" };
@@ -73,7 +74,7 @@ namespace loader
 
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
-        ki::node_id resolveId(
+        std::tuple<ki::node_id, std::string> resolveId(
             const BaseId& baseId,
             const int cloneIndex,
             const glm::uvec3& tile,

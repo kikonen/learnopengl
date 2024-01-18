@@ -139,7 +139,36 @@ namespace loader {
             const YAML::Node& node,
             MetaData& data) const;
 
-        const Material* findMaterial(
+        void validate(
+            const RootData& root);
+
+        void validateEntity(
+            const ki::node_id rootId,
+            const EntityData& data,
+            int pass,
+            std::map<ki::node_id, std::string>& collectedIds);
+
+        void validateEntityClone(
+            const ki::node_id rootId,
+            const EntityData& entity,
+            const EntityCloneData& data,
+            bool cloned,
+            int cloneIndex,
+            int pass,
+            std::map<ki::node_id, std::string>& collectedIds);
+
+        void validateEntityCloneRepeat(
+            const ki::node_id rootId,
+            const EntityData& entity,
+            const EntityCloneData& data,
+            bool cloned,
+            int cloneIndex,
+            const glm::uvec3& tile,
+            const glm::vec3& tilePositionOffset,
+            int pass,
+            std::map<ki::node_id, std::string>& collectedIds);
+
+        const Material * findMaterial(
             std::string_view name) const;
 
         const Sprite* findSprite(

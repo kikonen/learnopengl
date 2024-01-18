@@ -121,38 +121,47 @@ namespace loader {
         m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
-            std::ifstream fin(this->m_ctx.m_fullPath);
-            YAML::Node doc = YAML::Load(fin);
+            try {
+                std::ifstream fin(this->m_ctx.m_fullPath);
+                YAML::Node doc = YAML::Load(fin);
 
-            loadMeta(doc["meta"], m_meta);
+                loadMeta(doc["meta"], m_meta);
 
-            m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+                m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
 
-            m_fontLoader.loadFonts(doc["fonts"], m_fonts);
-            m_materialLoader.loadMaterials(doc["materials"], m_materials);
-            m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
+                m_fontLoader.loadFonts(doc["fonts"], m_fonts);
+                m_materialLoader.loadMaterials(doc["materials"], m_materials);
+                m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
-            m_rootLoader.loadRoot(doc["root"], m_root);
-            m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
+                m_rootLoader.loadRoot(doc["root"], m_root);
+                m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
 
-            m_entityLoader.loadEntities(
-                doc["entities"],
-                m_entities,
-                m_materialLoader,
-                m_customMaterialLoader,
-                m_spriteLoader,
-                m_cameraLoader,
-                m_lightLoader,
-                m_audioLoader,
-                m_controllerLoader,
-                m_generatorLoader,
-                m_physicsLoader,
-                m_scriptLoader);
+                m_entityLoader.loadEntities(
+                    doc["entities"],
+                    m_entities,
+                    m_materialLoader,
+                    m_customMaterialLoader,
+                    m_spriteLoader,
+                    m_cameraLoader,
+                    m_lightLoader,
+                    m_audioLoader,
+                    m_controllerLoader,
+                    m_generatorLoader,
+                    m_physicsLoader,
+                    m_scriptLoader);
 
-            attach(m_root);
+                validate(m_root);
+                attach(m_root);
 
-            std::lock_guard<std::mutex> lock(m_ready_lock);
-            m_runningCount--;
+                std::lock_guard<std::mutex> lock(m_ready_lock);
+                m_runningCount--;
+            }
+            catch (const std::runtime_error& ex) {
+                KI_CRITICAL(ex.what());
+
+                std::lock_guard<std::mutex> lock(m_ready_lock);
+                m_runningCount--;
+            }
         });
     }
 
@@ -267,9 +276,6 @@ namespace loader {
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    if (x > 0 && z > 0)
-                        int zz = 0;
-
                     type = attachEntityCloneRepeat(
                         type,
                         rootId,
@@ -332,11 +338,12 @@ namespace loader {
                     evt.body.node.parentId = rootId;
                 }
                 else {
-                    evt.body.node.parentId = resolveId(
+                    auto [parentId, _] = resolveId(
                         data.parentBaseId,
                         cloneIndex,
                         tile,
                         false);
+                    evt.body.node.parentId = parentId;
                 }
 
                 assert(node->getId() == nodeId);
@@ -673,14 +680,21 @@ namespace loader {
         const glm::vec3& tilePositionOffset)
     {
         ki::node_id nodeId;
+        std::string resolvedSID;
         {
-            nodeId = resolveId(data.baseId, cloneIndex, tile, false);
+            auto [k, v] = resolveId(data.baseId, cloneIndex, tile, true);
+            nodeId = k;
+            resolvedSID = v;
+
             if (!nodeId) {
-                nodeId = resolveId({ data.name }, cloneIndex, tile, false);
+                auto [k, v] = resolveId({ data.name }, cloneIndex, tile, true);
+                nodeId = k;
+                resolvedSID = v;
             }
         }
 
         Node* node = new Node(nodeId);
+        node->m_resolvedSID = resolvedSID;
         node->m_type = type;
 
         node->setCloneIndex(cloneIndex);
@@ -894,6 +908,137 @@ namespace loader {
             //}
             else {
                 reportUnknown("meta_entry", k, v);
+            }
+        }
+    }
+
+    void SceneLoader::validate(
+        const RootData& root)
+    {
+        std::map<ki::node_id, std::string> collectedIds;
+
+        for (const auto& entity : m_entities) {
+            validateEntity(root.rootId, entity, 0, collectedIds);
+        }
+
+        for (const auto& entity : m_entities) {
+            validateEntity(root.rootId, entity, 1, collectedIds);
+        }
+    }
+
+    void SceneLoader::validateEntity(
+        const ki::node_id rootId,
+        const EntityData& data,
+        int pass,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (data.clones.empty()) {
+            validateEntityClone(rootId, data, data.base, false, 0, pass, collectedIds);
+        }
+        else {
+            int cloneIndex = 0;
+            for (auto& cloneData : data.clones) {
+                validateEntityClone(rootId, data, cloneData, true, cloneIndex, pass, collectedIds);
+                cloneIndex++;
+            }
+        }
+    }
+
+    void SceneLoader::validateEntityClone(
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex,
+        int pass,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (!data.enabled) return;
+
+        const auto& repeat = data.repeat;
+
+        for (auto z = 0; z < repeat.zCount; z++) {
+            for (auto y = 0; y < repeat.yCount; y++) {
+                for (auto x = 0; x < repeat.xCount; x++) {
+                    const glm::uvec3 tile = { x, y, z };
+                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+
+                    validateEntityCloneRepeat(
+                        rootId,
+                        entity,
+                        data,
+                        cloned,
+                        cloneIndex,
+                        tile,
+                        tilePositionOffset,
+                        pass,
+                        collectedIds);
+                }
+            }
+        }
+    }
+
+    void SceneLoader::validateEntityCloneRepeat(
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex,
+        const glm::uvec3& tile,
+        const glm::vec3& tilePositionOffset,
+        int pass,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (!data.enabled) return;
+
+        if (pass == 0) {
+            if (data.baseId.m_path == "light-2")
+                int x = 0;
+
+            ki::node_id sid;
+            std::string resolvedSID;
+            {
+                auto [k, v] = resolveId(
+                    data.baseId,
+                    cloneIndex, tile,
+                    data.baseId.m_path == entity.base.baseId.m_path);
+                sid = k;
+                resolvedSID = v;
+
+                if (!sid) {
+                    auto [k, v] = resolveId(
+                        { data.name },
+                        cloneIndex, tile,
+                        true);
+                    sid = k;
+                    resolvedSID = v;
+                }
+            }
+
+            if (collectedIds.find(sid) != collectedIds.end()) {
+                auto msg = fmt::format("SID CONFLICT: {} = {}", sid, resolvedSID);
+                KI_CRITICAL(msg);
+                throw std::runtime_error{ msg };
+            }
+            collectedIds[sid] = resolvedSID;
+        }
+
+        if (pass == 1) {
+            // NOTE KI parentId can be *MISSING*
+            // but it cannot be duplicate
+            if (!data.parentBaseId.empty()) {
+                auto [sid, resolvedSID] = resolveId(
+                    data.parentBaseId,
+                    cloneIndex,
+                    tile,
+                    false);
+
+                // TODO KI validate missing
+                if (collectedIds.find(sid) == collectedIds.end()) {
+                    auto msg = fmt::format("PARENT SID MISSING: {} = {}", sid, resolvedSID);
+                    KI_CRITICAL(msg);
+                    throw std::runtime_error{ msg };
+                }
             }
         }
     }

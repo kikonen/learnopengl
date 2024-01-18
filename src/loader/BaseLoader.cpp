@@ -396,25 +396,25 @@ namespace loader
         return glm::vec2{ a[0], a[1] };
     }
 
-    ki::node_id BaseLoader::resolveId(
+    std::tuple<ki::node_id, std::string> BaseLoader::resolveId(
         const BaseId& baseId,
         const int cloneIndex,
         const glm::uvec3& tile,
         bool automatic)
     {
         if (baseId.empty()) {
-            return 0;
+            return { 0, "" };
         }
 
         std::string key = expandMacros(baseId.m_path, cloneIndex, tile, automatic);
 
         if (key == ROOT_ID) {
-            return m_ctx.m_assets.rootId;
+            return { m_ctx.m_assets.rootId, "<root>" };
         }
         else {
             auto nodeId = SID(key);
-            KI_INFO_OUT(fmt::format("key={}, sid={}", key, nodeId));
-            return nodeId;
+            KI_INFO_OUT(fmt::format("SID: sid={}, key={}", nodeId, key));
+            return { nodeId, key };
         }
 
     }
@@ -435,6 +435,13 @@ namespace loader
             if (pos != std::string::npos) {
                 handledClone = true;
                 out.replace(pos, 3, fmt::format("{}", cloneIndex));
+            }
+        }
+        {
+            const auto pos = out.find("{t}");
+            if (pos != std::string::npos) {
+                handledClone = true;
+                out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
             }
         }
         {
@@ -460,11 +467,11 @@ namespace loader
         }
 
         if (automatic) {
-            if (!handledClone) {
+            if (!handledClone && cloneIndex > 0) {
                 out = fmt::format("{}_{}", out, cloneIndex);
             }
 
-            if (!handledTile) {
+            if (!handledTile && (tile.x > 0 || tile.y > 0 || tile.z > 0)) {
                 out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
             }
         }

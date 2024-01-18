@@ -60,6 +60,7 @@ void TestSceneSetup::setupEffectExplosion()
 
         auto nodeId = SID("<effect>");
         auto node = new Node(nodeId);
+        node->m_resolvedSID = "<effect>";
         node->m_type = type;
 
         auto& transform = node->modifyTransform();

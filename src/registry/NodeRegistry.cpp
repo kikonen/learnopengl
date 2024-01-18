@@ -445,6 +445,7 @@ void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     const ki::node_id parentId) noexcept
 {
+    assert(node->getId() != 0);
     assert(node->getId() == nodeId);
     assert(parentId || nodeId == m_assets.rootId);
     assert(m_idToNode.find(nodeId) == m_idToNode.end());

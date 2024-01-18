@@ -265,7 +265,8 @@ void TerrainGenerator::createTiles(
         const auto type = registry->m_typeRegistry->getType(typeId);
 
         auto nodeId = SID("<terrain_tiles>");
-        m_node = new Node(type);
+        m_node = new Node(nodeId);
+        m_node->m_resolvedSID = "<terrain_tiles>";
         m_node->m_type = type;
 
         m_node->modifyTransform().setVolume(minmax.getVolume());

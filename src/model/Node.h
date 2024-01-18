@@ -50,6 +50,7 @@ class ParticleGenrator;
 class Node final
 {
     friend class pool::NodeHandle;
+    friend class NodeRegistry;
 
 public:
     Node();
@@ -164,6 +165,8 @@ public:
     uint32_t m_entityIndex{ 0 };
 
     bool m_preparedRT{ false };
+
+    std::string m_resolvedSID;
 
 private:
     // *INTERNAL* LUID in scene

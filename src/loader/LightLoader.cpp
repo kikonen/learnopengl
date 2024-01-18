@@ -91,7 +91,9 @@ namespace loader{
         auto light = std::make_unique<Light>();
 
         light->m_enabled = true;
-        light->setTargetId(resolveId(data.targetBaseId, cloneIndex, tile, false));
+
+        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile, false);
+        light->setTargetId(targetId);
 
         light->linear = data.linear;
         light->quadratic = data.quadratic;

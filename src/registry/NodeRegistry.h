@@ -27,6 +27,8 @@ using NodeVector = std::vector<Node*>;
 
 class NodeRegistry final
 {
+    friend class Node;
+
 public:
     NodeRegistry(
         const Assets& assets,
