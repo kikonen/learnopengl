@@ -67,6 +67,7 @@ public:
     const std::string str() const noexcept;
 
     inline ki::node_id getId() const noexcept { return m_id; }
+    inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
 
     pool::NodeHandle toHandle() const noexcept;
 
@@ -149,7 +150,7 @@ public:
 public:
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
-    bool m_visible{ true };
+    bool m_visible : 1 { true };
     // NOTE KI type needed with node for practicality reasons
     const mesh::MeshType* m_type{ nullptr };
 
@@ -164,7 +165,7 @@ public:
     uint32_t m_snapshotIndex{ 0 };
     uint32_t m_entityIndex{ 0 };
 
-    bool m_preparedRT{ false };
+    bool m_preparedRT : 1 { false };
 
 #ifdef _DEBUG
     std::string m_resolvedSID;
