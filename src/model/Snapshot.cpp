@@ -65,33 +65,43 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
     m_modelMatrix = o.m_modelMatrix;
-    m_modelScale = o.m_modelScale;
+
+    if (m_modelScale != o.m_modelScale) {
+        m_modelScale = o.m_modelScale;
+        m_dirtyScale = true;
+    }
 
     return *this;
 }
 
-//Snapshot& Snapshot::operator=(Snapshot& o) noexcept
-//{
-//    m_dirty = o.m_dirty;
-//    m_matrixLevel = o.m_matrixLevel;
-//
-//    m_flags = o.m_flags;
-//
-//    m_materialIndex = o.m_materialIndex;
-//    m_shapeIndex = o.m_shapeIndex;
-//
-//    m_volume = o.m_volume;
-//
-//    m_worldPos = o.m_worldPos;
-//    m_quatRotation = o.m_quatRotation;
-//    m_viewUp = o.m_viewUp;
-//    m_viewFront = o.m_viewFront;
-//    m_viewRight = o.m_viewRight;
-//    m_modelMatrix = o.m_modelMatrix;
-//    m_modelScale = o.m_modelScale;
-//
-//    return *this;
-//}
+Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
+{
+    if (&o == this) return *this;
+
+    m_dirty = o.m_dirty;
+    m_matrixLevel = o.m_matrixLevel;
+
+    m_flags = o.m_flags;
+
+    m_materialIndex = o.m_materialIndex;
+    m_shapeIndex = o.m_shapeIndex;
+
+    m_volume = o.m_volume;
+
+    m_worldPos = o.m_worldPos;
+    m_quatRotation = o.m_quatRotation;
+    m_viewUp = o.m_viewUp;
+    m_viewFront = o.m_viewFront;
+    m_viewRight = o.m_viewRight;
+    m_modelMatrix = o.m_modelMatrix;
+
+    if (m_modelScale != o.m_modelScale) {
+        m_modelScale = o.m_modelScale;
+        m_dirtyScale = true;
+    }
+
+    return *this;
+}
 
 glm::vec3 Snapshot::getDegreesRotation() const noexcept
 {
@@ -116,7 +126,10 @@ void Snapshot::updateEntity(
     const auto uniformScale = (m_flags & PLANE_BITS) != 0
         || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
-    entity.setModelMatrix(m_modelMatrix, uniformScale, true);
+    // NOTE KI normal may change only if scale changes
+    entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyScale);
 
     entity.u_worldScale = m_modelScale;
+
+    m_dirtyScale = false;
 }

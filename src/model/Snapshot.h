@@ -22,10 +22,11 @@ struct Snapshot {
     Snapshot(const NodeTransform&& o);
 
     Snapshot& operator=(const NodeTransform& o) noexcept;
-    Snapshot& operator=(Snapshot& o) = default;
-    Snapshot& operator=(const Snapshot& o) = default;
+    //Snapshot& operator=(Snapshot& o) = default;
+    Snapshot& operator=(const Snapshot& o) noexcept;
 
     bool m_dirty : 1 {true};
+    bool m_dirtyScale : 1 {true};
 
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
