@@ -179,6 +179,9 @@ https://glad.dav1d.de
   + https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/security-init-cookie
   + https://learn.microsoft.com/en-us/cpp/build/reference/sdl-enable-additional-security-checks?view=msvc-170
 
+## SIMD
+- https://gamedev.stackexchange.com/questions/132549/how-to-use-glm-simd-using-glm-version-0-9-8-2
+
 ## UUID
 - https://github.com/mariusbancila/stduuid
 - https://stackoverflow.com/questions/2351087/what-is-the-best-32bit-hash-function-for-short-strings-tag-names

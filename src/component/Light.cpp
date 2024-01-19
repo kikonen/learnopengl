@@ -81,7 +81,7 @@ DirLightUBO Light::toDirLightUBO() const noexcept
 {
     return {
         m_worldDir,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
     };
@@ -91,7 +91,7 @@ PointLightUBO Light::toPointightUBO() const noexcept
 {
     return {
         m_worldPosition,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
 
@@ -106,10 +106,10 @@ SpotLightUBO Light::toSpotLightUBO() const noexcept
 {
     return {
         m_worldPosition,
-        0,
+        //0,
 
         m_worldDir,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
 

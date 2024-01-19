@@ -81,7 +81,7 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
                 // vertex attr
-                glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, pos));
+                glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, x));
 
                 glVertexArrayAttribBinding(vao, ATTR_POS, VBO_POSITION_BINDING);
 

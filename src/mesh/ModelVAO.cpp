@@ -95,7 +95,7 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
                 // vertex attr
-                glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, pos));
+                glVertexArrayAttribFormat(vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, x));
 
                 glVertexArrayAttribBinding(vao, ATTR_POS, VBO_POSITION_BINDING);
 
@@ -205,7 +205,7 @@ namespace mesh {
                 modelVBO.m_positionEntries.end());
 
             for (size_t i = 0; i < count; i++) {
-                m_positionEntries[base + i].pos += modelVBO.m_positionOffset;
+                m_positionEntries[base + i] += modelVBO.m_positionOffset;
             }
         }
 

@@ -43,13 +43,13 @@ namespace mesh {
 
         for (auto&& vertex : m_positionEntries)
         {
-            minAABB.x = std::min(minAABB.x, vertex.pos.x);
-            minAABB.y = std::min(minAABB.y, vertex.pos.y);
-            minAABB.z = std::min(minAABB.z, vertex.pos.z);
+            minAABB.x = std::min(minAABB.x, vertex.x);
+            minAABB.y = std::min(minAABB.y, vertex.y);
+            minAABB.z = std::min(minAABB.z, vertex.z);
 
-            maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
-            maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
-            maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+            maxAABB.x = std::max(maxAABB.x, vertex.x);
+            maxAABB.y = std::max(maxAABB.y, vertex.y);
+            maxAABB.z = std::max(maxAABB.z, vertex.z);
         }
 
         return { minAABB, maxAABB, false };

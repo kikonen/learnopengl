@@ -7,7 +7,22 @@
 namespace mesh {
 #pragma pack(push, 1)
     struct PositionEntry {
-        glm::vec3 pos;
+        PositionEntry(const glm::vec3& v)
+            : x{ v.x }, y{ v.y }, z{ v.z }
+        {}
+
+
+        PositionEntry& operator+=(const glm::vec3& v)
+        {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+            return *this;
+        }
+
+        float x;
+        float y;
+        float z;
     };
 #pragma pack(pop)
 }
