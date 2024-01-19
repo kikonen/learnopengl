@@ -142,7 +142,7 @@ void SnapshotRegistry::copy(
                 dst[i] = src[i];
                 //memcpy(&dst[i], &src[i], sizeof(Snapshot));
                 src[i].m_dirty = false;
-                src[i].m_dirtyScale = false;
+                src[i].m_dirtyNormal = false;
             }
         }
     }

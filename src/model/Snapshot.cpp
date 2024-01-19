@@ -60,7 +60,12 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     o.m_volume.storeWorldVolume(m_volume);
 
     m_worldPos = o.m_worldPos;
-    m_quatRotation = o.m_quatRotation;
+
+    if (m_quatRotation != o.m_quatRotation) {
+        m_quatRotation = o.m_quatRotation;
+        m_dirtyNormal = true;
+    }
+
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
@@ -68,7 +73,7 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 
     if (m_modelScale != o.m_modelScale) {
         m_modelScale = o.m_modelScale;
-        m_dirtyScale = true;
+        m_dirtyNormal = true;
     }
 
     return *this;
@@ -89,7 +94,12 @@ Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
     m_volume = o.m_volume;
 
     m_worldPos = o.m_worldPos;
-    m_quatRotation = o.m_quatRotation;
+
+    if (m_quatRotation != o.m_quatRotation) {
+        m_quatRotation = o.m_quatRotation;
+        m_dirtyNormal = true;
+    }
+
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
@@ -97,7 +107,7 @@ Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
 
     if (m_modelScale != o.m_modelScale) {
         m_modelScale = o.m_modelScale;
-        m_dirtyScale = true;
+        m_dirtyNormal = true;
     }
 
     return *this;
@@ -127,9 +137,9 @@ void Snapshot::updateEntity(
         || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
     // NOTE KI normal may change only if scale changes
-    entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyScale);
+    entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyNormal);
 
     entity.u_worldScale = m_modelScale;
 
-    m_dirtyScale = false;
+    m_dirtyNormal = false;
 }
