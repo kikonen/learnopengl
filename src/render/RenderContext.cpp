@@ -238,7 +238,7 @@ void RenderContext::updateLightsUBO() const
 
 void RenderContext::validateRender(std::string_view label) const
 {
-    if (!m_batch->isFlushed()) {
+    if (!m_batch->empty()) {
         throw std::runtime_error{ fmt::format("CONTEXT: Batch was NOT flushed: name={}, label={}", m_name, label)};
     }
 

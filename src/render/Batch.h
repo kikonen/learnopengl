@@ -68,9 +68,9 @@ namespace render {
             Node& node,
             Program* program);
 
-        bool isFlushed() const noexcept
+        bool empty() const noexcept
         {
-            return m_entityIndeces.size() == 0;
+            return m_current.empty();
         }
 
         void flush(
@@ -97,11 +97,9 @@ namespace render {
         bool m_frustumCPU = false;
         bool m_frustumGPU = false;
 
-        std::vector<BatchCommand> m_batches;
+        BatchCommand m_current;
 
         EntityRegistry* m_entityRegistry{ nullptr };
-
-        std::vector<int> m_entityIndeces;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

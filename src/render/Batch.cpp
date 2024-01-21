@@ -78,10 +78,10 @@ namespace render {
         if (m_frustumCPU && !inFrustum(ctx, snapshot))
             return;
 
-        auto& top = m_batches.back();
+        auto& top = m_current;
         top.m_drawCount++;
 
-        m_entityIndeces.emplace_back(entityIndex);
+        top.addIndex(entityIndex);
     }
 
     void Batch::addSnapshots(
@@ -125,12 +125,12 @@ namespace render {
                 return;
         }
 
-        auto& top = m_batches.back();
+        auto& top = m_current;
 
         top.m_drawCount = 1;
         top.m_instancedCount = static_cast<int>(instanceCount);
 
-        m_entityIndeces.emplace_back(entityBase + startIndex);
+        top.addIndex(entityBase + startIndex);
     }
 
     void Batch::bind() noexcept
@@ -161,8 +161,8 @@ namespace render {
             bufferCount = 1;
         }
 
-        m_batches.reserve(BATCH_COUNT);
-        m_entityIndeces.reserve(ENTITY_COUNT);
+        m_current.clear();
+        m_current.reserve(ENTITY_COUNT);
 
         m_draw = std::make_unique<backend::DrawBuffer>(
             assets.glUseMapped,
@@ -186,12 +186,14 @@ namespace render {
         const backend::DrawOptions& drawOptions,
         Program* program) noexcept
     {
-        auto& cmd = m_batches.emplace_back();
+        flush(ctx);
+
+        auto& cmd = m_current;
 
         cmd.m_vao = vao;
         cmd.m_program = program;
         cmd.m_drawOptions = drawOptions;
-        cmd.m_index = static_cast<int>(m_entityIndeces.size());
+        cmd.m_index = 0; // static_cast<int>(m_entityIndeces.size());
     }
 
     void Batch::draw(
@@ -213,8 +215,8 @@ namespace render {
             const bool allowBlend = ctx.m_allowBlend;
 
             bool change = true;
-            if (!m_batches.empty()) {
-                auto& top = m_batches.back();
+            if (m_current.m_drawCount) {
+                auto& top = m_current;
 
                 change = program != top.m_program ||
                     vao != top.m_vao ||
@@ -227,8 +229,6 @@ namespace render {
             if (change) {
                 addCommand(ctx, type, vao, drawOptions, program);
             }
-
-            auto& top = m_batches.back();
         }
 
         node.bindBatch(ctx, *this);
@@ -237,15 +237,15 @@ namespace render {
     void Batch::flush(
         const RenderContext& ctx)
     {
-        // NOTE KI two cases
-        // - empty batch
-        // - "save back" entry without actual draw
-        size_t pendingCount = m_entityIndeces.size();
-
-        if (pendingCount == 0) {
-            m_batches.clear();
+        if (m_current.m_drawCount == 0) {
+            assert(m_current.m_entityIndeces.empty());
+            // NOTE KI if stale indeces then corrupt render
+            m_current.clear();
             return;
         }
+
+        // NOTE KI if no indeces then corrupt render
+        assert(!m_current.m_entityIndeces.empty());
 
         backend::gl::DrawIndirectCommand indirect{};
 
@@ -254,8 +254,8 @@ namespace render {
         // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
         //
 
-        for (auto& curr : m_batches) {
-            if (curr.m_drawCount == 0) continue;
+        {
+            auto& curr = m_current;
 
             backend::DrawRange drawRange = {
                 &ctx.m_state,
@@ -279,13 +279,13 @@ namespace render {
                 //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_baseInstance = curr.m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                            int entityIndex = m_entityIndeces[i] + instanceIndex;
+                            int entityIndex = curr.m_entityIndeces[i] + instanceIndex;
                             cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
@@ -303,13 +303,13 @@ namespace render {
                 //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_baseInstance = curr.m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);
                 }
                 else {
                     for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
                         for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                            int entityIndex = m_entityIndeces[i] + instanceIndex;
+                            int entityIndex = curr.m_entityIndeces[i] + instanceIndex;
                             cmd.u_baseInstance = entityIndex;
                             m_draw->send(drawRange, indirect);
                         }
@@ -325,8 +325,7 @@ namespace render {
         m_draw->flush();
         m_draw->drawPending(false);
 
-        m_batches.clear();
-        m_entityIndeces.clear();
+        m_current.clear();
     }
 
     backend::gl::PerformanceCounters Batch::getCounters(bool clear) const
