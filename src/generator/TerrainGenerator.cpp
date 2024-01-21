@@ -6,6 +6,8 @@
 
 #include "ki/sid.h"
 
+#include "pool/NodeHandle.h"
+
 #include "util/Log.h"
 #include "util/glm_format.h"
 #include "util/Perlin.h"
@@ -265,7 +267,8 @@ void TerrainGenerator::createTiles(
         const auto type = registry->m_typeRegistry->getType(typeId);
 
         auto nodeId = SID("<terrain_tiles>");
-        m_node = new Node(nodeId);
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         m_node->m_resolvedSID = "<terrain_tiles>";
 #endif

@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "pool/NodeHandle.h"
+
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
@@ -69,7 +71,8 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto node = new Node(m_ctx.m_assets.volumeId);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.volumeId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<volume>";
 #endif

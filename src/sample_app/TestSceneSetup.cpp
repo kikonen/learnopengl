@@ -4,6 +4,7 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "pool/NodeHandle.h"
 #include "ki/sid.h"
 
 #include "mesh/ModelLoader.h"
@@ -59,7 +60,8 @@ void TestSceneSetup::setupEffectExplosion()
         type->m_flags.noShadow = true;
 
         auto nodeId = SID("<effect>");
-        auto node = new Node(nodeId);
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<effect>";
 #endif

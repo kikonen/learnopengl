@@ -20,7 +20,6 @@
 #include "size.h"
 
 struct UpdateContext;
-class Node;
 class NodeController;
 
 namespace event {
@@ -110,8 +109,7 @@ namespace event {
     };
 
     struct NodeAction {
-        Node* target{ nullptr };
-        ki::node_id id{ 0 };
+        ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
     };
 
@@ -170,7 +168,7 @@ namespace event {
         Event(Event&& o) noexcept
             : type{ o.type },
             blob{ std::move(o.blob) },
-            body{o.body}
+            body{ o.body }
         {}
 
         Type type;

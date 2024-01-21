@@ -13,7 +13,9 @@
 namespace {
     //IdGenerator<ki::node_id> ID_GENERATOR;
 
-    pool::Pool<Node> s_pool;
+    constexpr size_t MAX_POOL_SIZE{ 100000 };
+
+    pool::Pool<Node> s_pool{ MAX_POOL_SIZE };
 }
 
 namespace pool {

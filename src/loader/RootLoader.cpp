@@ -2,6 +2,8 @@
 
 #include "ki/yaml.h"
 
+#include "pool/NodeHandle.h"
+
 #include "model/Node.h"
 
 #include "event/Dispatcher.h"
@@ -44,7 +46,8 @@ namespace loader
         auto& flags = type->m_flags;
         flags.invisible = true;
 
-        auto node = new Node(m_ctx.m_assets.rootId);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.rootId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<root>";
 #endif

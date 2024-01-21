@@ -8,10 +8,11 @@ namespace pool {
     template<typename T>
     class Pool {
     public:
-        Pool();
+        Pool(uint32_t size);
 
         Entry<T>& getEntry(uint32_t index) noexcept;
 
+        void reserve(uint32_t size) noexcept;
         uint32_t allocate() noexcept;
 
     private:

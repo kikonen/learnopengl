@@ -14,6 +14,8 @@
 #include "ki/yaml.h"
 #include "ki/sid.h"
 
+#include "pool/NodeHandle.h"
+
 #include "asset/Material.h"
 #include "asset/Sprite.h"
 #include "asset/Shape.h"
@@ -321,18 +323,15 @@ namespace loader {
 
         if (!*m_ctx.m_alive) return type;
 
-        auto node = createNode(
+        auto handle = createNode(
             type, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
             tilePositionOffset);
 
         {
-            const auto nodeId = node->getId();
-
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.id = nodeId;
+            evt.body.node.target = handle.toId();
             {
                 if (data.parentBaseId.empty()) {
                     evt.body.node.parentId = rootId;
@@ -353,19 +352,19 @@ namespace loader {
 
         if (data.active) {
             event::Event evt { event::Type::node_activate };
-            evt.body.node.target = node;
+            evt.body.node.target = handle.toId();
             m_dispatcher->send(evt);
         }
 
         if (data.selected) {
             event::Event evt { event::Type::node_select };
-            evt.body.node.target = node;
+            evt.body.node.target = handle.toId();
             m_dispatcher->send(evt);
         }
 
         if (data.camera.isDefault) {
             event::Event evt { event::Type::camera_activate };
-            evt.body.node.target = node;
+            evt.body.node.target = handle.toId();
             m_dispatcher->send(evt);
         }
 
@@ -388,7 +387,7 @@ namespace loader {
         {
             event::Event evt { event::Type::animate_rotate };
             evt.body.animate = {
-                .target = node->getId(),
+                .target = handle.toId(),
                 .duration = 20,
                 .data = { 0, 1.f, 0 },
                 .data2 = { 360.f, 0.f, 0.f },
@@ -397,8 +396,8 @@ namespace loader {
         }
 
         {
-            m_audioLoader.createAudio(data.audio, node->getId());
-            m_physicsLoader.createObject(data.physics, node->getId());
+            m_audioLoader.createAudio(data.audio, handle.toId());
+            m_physicsLoader.createObject(data.physics, handle.toId());
         }
 
         return type;
@@ -669,7 +668,7 @@ namespace loader {
         }
     }
 
-    Node* SceneLoader::createNode(
+    pool::NodeHandle SceneLoader::createNode(
         const mesh::MeshType* type,
         const ki::node_id rootId,
         const EntityCloneData& data,
@@ -693,7 +692,8 @@ namespace loader {
             }
         }
 
-        Node* node = new Node(nodeId);
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = resolvedSID;
 #endif
@@ -745,7 +745,7 @@ namespace loader {
             node->m_type = type;
         }
 
-        return node;
+        return handle;
     }
 
     void SceneLoader::assignFlags(

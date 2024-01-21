@@ -3,20 +3,25 @@
 #include "Pool.h"
 
 namespace {
-    constexpr size_t MAX_POOL_SIZE{ 100000 };
 }
 
 namespace pool {
     template<typename T>
-    Pool<T>::Pool()
+    Pool<T>::Pool(uint32_t size)
     {
-        m_pool.reserve(MAX_POOL_SIZE);
+        m_pool.reserve(size);
     }
 
     template<typename T>
     Entry<T>& Pool<T>::getEntry(uint32_t handleIndex) noexcept
     {
         return m_pool[handleIndex];
+    }
+
+    template<typename T>
+    void Pool<T>::reserve(uint32_t size) noexcept
+    {
+        m_pool.reserve(size);
     }
 
     template<typename T>

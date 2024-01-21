@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "pool/NodeHandle.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/MeshType.h"
 
@@ -142,7 +144,8 @@ namespace loader {
 
         type->setCustomMaterial(std::move(material));
 
-        auto node = new Node(m_ctx.m_assets.skyboxId);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.skyboxId);
+        auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<skybox>";
 #endif

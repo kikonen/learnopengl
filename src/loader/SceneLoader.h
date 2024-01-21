@@ -35,7 +35,9 @@ namespace mesh {
     class MeshType;
 }
 
-class Node;
+namespace pool {
+    class NodeHandle;
+}
 
 namespace loader {
     struct MetaData {
@@ -125,7 +127,7 @@ namespace loader {
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
-        Node* createNode(
+        pool::NodeHandle createNode(
             const mesh::MeshType* type,
             const ki::node_id rootId,
             const EntityCloneData& data,
