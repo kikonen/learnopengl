@@ -30,7 +30,7 @@ namespace audio
         m_vel{ o.m_vel },
         m_dir{ o.m_dir },
         m_matrixLevel{ o.m_matrixLevel},
-        m_node{ o.m_node }
+        m_nodeHandle{ o.m_nodeHandle }
     {
         // NOTE KI o is moved now
         o.m_sourceId = 0;
@@ -62,7 +62,7 @@ namespace audio
         m_vel = o.m_vel;
         m_dir = o.m_dir;
         m_matrixLevel = o.m_matrixLevel;
-        m_node = o.m_node;
+        m_nodeHandle = o.m_nodeHandle;
 
         o.m_sourceId = 0;
 
@@ -102,12 +102,13 @@ namespace audio
 
     void Source::updateFromNode()
     {
-        const auto level = m_node ? m_node->getTransform().getMatrixLevel() : 0;
+        const auto* node = m_nodeHandle.toNode();
+        const auto level = node ? node->getTransform().getMatrixLevel() : 0;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = m_node->getTransform().getWorldPosition();
-        m_dir = m_node->getTransform().getViewFront();
+        m_pos = node->getTransform().getWorldPosition();
+        m_dir = node->getTransform().getViewFront();
 
         updatePos();
     }

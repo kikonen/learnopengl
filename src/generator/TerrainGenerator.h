@@ -81,7 +81,7 @@ private:
     size_t m_poolSizeU{ 0 };
     size_t m_poolSizeV{ 0 };
 
-    Node* m_node{ nullptr };
+    pool::NodeHandle m_nodeHandle{};
 
     std::vector<TerrainTileInfo> m_tileInfos;
 };

@@ -3,6 +3,8 @@
 #include "model/NodeTransform.h"
 #include "model/InstancePhysics.h"
 
+#include "pool/NodeHandle.h"
+
 #include "kigl/kigl.h"
 
 namespace kigl {

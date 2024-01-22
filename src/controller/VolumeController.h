@@ -11,9 +11,14 @@ public:
         const UpdateContext& ctx,
         Node& node) noexcept override;
 
-    ki::node_id getTargetId();
-    void setTargetId(int targetId);
+    pool::NodeHandle getTargetId() const noexcept {
+        return m_targetId;
+    }
+
+    void setTargetId(pool::NodeHandle targetId) noexcept {
+        m_targetId = targetId;
+    }
 
 private:
-    ki::node_id m_targetId{ 0 };
+    pool::NodeHandle m_targetId{};
 };

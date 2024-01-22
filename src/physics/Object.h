@@ -4,11 +4,11 @@
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "size.h"
 #include "Body.h"
 #include "Geom.h"
-
-class Node;
 
 namespace physics {
     class PhysicsEngine;
@@ -38,6 +38,6 @@ namespace physics {
         dGeomID m_geomId{ nullptr };
 
         ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

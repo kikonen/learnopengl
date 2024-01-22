@@ -29,10 +29,10 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
     // NOTE KI for "directional" lights also target may change
     if (m_spot || m_directional) {
-        if (!m_targetNode) {
-            m_targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+        if (!m_targetHandle) {
+            m_targetHandle = pool::NodeHandle::toNode(m_targetId);
         }
-        auto* targetNode = m_targetNode;
+        auto* targetNode = m_targetHandle.toNode();
 
         if (!targetNode) {
             KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", m_targetId));

@@ -25,7 +25,7 @@ namespace script
 
         m_end = m_position;
         if (!m_relative) {
-            const auto& nodePosition = m_node->getTransform().getPosition();
+            const auto& nodePosition = getNode()->getTransform().getPosition();
             m_end -= nodePosition;
         }
     }
@@ -53,7 +53,7 @@ namespace script
         }
 
         auto adjust = position - m_previous;
-        m_node->modifyTransform().adjustPosition(adjust);
+        getNode()->modifyTransform().adjustPosition(adjust);
         m_previous = position;
     }
 }

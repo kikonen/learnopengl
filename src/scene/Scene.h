@@ -8,6 +8,8 @@
 
 #include "asset/Assets.h"
 
+#include "pool/NodeHandle.h"
+
 #include "backend/gl/PerformanceCounters.h"
 
 
@@ -130,7 +132,7 @@ private:
 
     std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
 
-    std::vector<Node*> m_particleGenerators;
+    std::vector<pool::NodeHandle> m_particleGenerators;
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 

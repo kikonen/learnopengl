@@ -269,20 +269,22 @@ void TerrainGenerator::createTiles(
         auto nodeId = SID("<terrain_tiles>");
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
+        assert(node);
 #ifdef _DEBUG
-        m_node->m_resolvedSID = "<terrain_tiles>";
+        node->m_resolvedSID = "<terrain_tiles>";
 #endif
-        m_node->m_type = type;
+        node->m_type = type;
 
-        m_node->modifyTransform().setVolume(minmax.getVolume());
-        m_node->m_instancer = this;
+        node->modifyTransform().setVolume(minmax.getVolume());
+        node->m_instancer = this;
+
+        m_nodeHandle = handle;
     }
 
     {
         event::Event evt { event::Type::node_add };
         evt.body.node = {
-            .target = m_node,
-            .id = m_node->getId(),
+            .target = m_nodeHandle.toId(),
             .parentId = container.getId(),
         };
         registry->m_dispatcher->send(evt);

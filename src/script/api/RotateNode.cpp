@@ -60,7 +60,7 @@ namespace script
         // NOTE KI trying to keep things relative to current context
         // i.e. allow multiple concurrent rotations
         {
-            auto& transform = m_node->modifyTransform();
+            auto& transform = getNode()->modifyTransform();
             const auto& base = transform.getQuatRotation();
             const auto relativeAxis = m_relative ? glm::mat3(base) * m_axis : m_axis;
 

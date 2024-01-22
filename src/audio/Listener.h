@@ -8,7 +8,7 @@
 
 #include "size.h"
 
-class Node;
+#include "pool/NodeHandle.h"
 
 namespace audio
 {
@@ -43,6 +43,6 @@ namespace audio
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
         ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

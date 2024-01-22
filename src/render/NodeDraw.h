@@ -3,6 +3,8 @@
 #include <functional>
 #include <map>
 
+#include "pool/NodeHandle.h"
+
 #include "GBuffer.h"
 #include "OITBuffer.h"
 #include "EffectBuffer.h"
@@ -73,7 +75,7 @@ namespace render {
         const mesh::MeshType* type;
     };
 
-    using NodeVector = std::vector<Node*>;
+    using NodeVector = std::vector<pool::NodeHandle>;
     using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
     using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
 
@@ -135,8 +137,6 @@ namespace render {
 
         void drawSkybox(
             const RenderContext& ctx);
-
-        void insertNode(NodeVector& list, Node* node);
 
     private:
         GBuffer m_gBuffer;

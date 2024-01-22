@@ -29,7 +29,7 @@ public:
 
 private:
 
-    Node* m_node{ nullptr };
+    pool::NodeHandle m_nodeHandle{};
 
     bool m_cameraSwitchDown{ false };
 

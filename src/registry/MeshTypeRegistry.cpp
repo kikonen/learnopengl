@@ -1,5 +1,7 @@
 #include "MeshTypeRegistry.h"
 
+#include "pool/TypeHandle.h"
+
 namespace {
     constexpr size_t MAX_TYPES = 10000;
 }
@@ -18,6 +20,8 @@ MeshTypeRegistry::MeshTypeRegistry(
 MeshTypeRegistry::~MeshTypeRegistry()
 {
     m_types.clear();
+
+    pool::TypeHandle::clear();
 }
 
 const mesh::MeshType* MeshTypeRegistry::getType(ki::type_id id) const noexcept

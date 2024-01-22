@@ -90,8 +90,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .id = m_assets.volumeId,
+                .target = m_assets.volumeId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <mutex>
 
 #include "Entry.h"
 
@@ -15,7 +16,9 @@ namespace pool {
         void reserve(uint32_t size) noexcept;
         uint32_t allocate() noexcept;
 
+        void clear() noexcept;
     private:
         std::vector<Entry<T>> m_pool;
+        std::mutex m_lock{};
     };
 }

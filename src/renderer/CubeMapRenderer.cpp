@@ -5,6 +5,8 @@
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
+#include "pool/NodeHandle.h"
+
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -276,7 +278,7 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
         m_mirrorMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node);
+    m_nodes.push_back(node->toHandle());
 }
 
 void CubeMapRenderer::clearCubeMap(
@@ -361,7 +363,10 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& node : m_nodes) {
+    for (const auto& handle : m_nodes) {
+        auto* node = handle.toNode();
+        if (!node) continue;
+
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
@@ -383,7 +388,8 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 
 Node* CubeMapRenderer::getTagNode()
 {
-    if (m_tagNode) return m_tagNode;
-    m_tagNode = m_registry->m_nodeRegistry->getNode(m_tagId);
-    return m_tagNode;
+    if (!m_tagNode) {
+        m_tagNode = pool::NodeHandle::toHandle(m_tagId);
+    }
+    return m_tagNode.toNode();
 }

@@ -74,8 +74,7 @@ void TestSceneSetup::setupEffectExplosion()
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .id = node->getId(),
+                .target = node->getId(),
                 .parentId = m_assets.rootId,
             };
             m_registry->m_dispatcher->send(evt);

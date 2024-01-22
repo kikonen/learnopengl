@@ -7,6 +7,8 @@
 
 #include "ki/limits.h"
 
+#include "pool/NodeHandle.h"
+
 #include "audio/size.h"
 
 #include "model/NodeTransform.h"
@@ -18,10 +20,6 @@ namespace backend {
 
 namespace kigl {
     struct GLVertexArray;
-}
-
-namespace pool {
-    class NodeHandle;
 }
 
 namespace render {
@@ -69,7 +67,9 @@ public:
     inline ki::node_id getId() const noexcept { return m_id; }
     inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
 
-    pool::NodeHandle toHandle() const noexcept;
+    pool::NodeHandle toHandle() const noexcept {
+            return { m_handleIndex, m_id };
+    }
 
     void prepare(
         const PrepareContext& ctx);
@@ -81,24 +81,28 @@ public:
     const backend::DrawOptions& getDrawOptions() const noexcept;
     void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
 
-    inline Node* getParent() {
-        return m_parent;
+    inline Node* getParent() const noexcept {
+        return m_parent.toNode();
     }
 
-    inline void setParent(Node* parent) {
+    inline void setParent(pool::NodeHandle parent) noexcept {
         m_parent = parent;
     }
 
-    inline const std::vector<Node*>& getChildren() const
+    inline void setParent(const Node* parent) noexcept {
+        m_parent = parent;
+    }
+
+    inline const std::vector<pool::NodeHandle>& getChildren() const noexcept
     {
         return m_children;
     }
 
-    inline void addChild(Node* child) {
+    inline void addChild(pool::NodeHandle child) {
         m_children.emplace_back(child);
     }
 
-    inline void removeChild(Node* node) {
+    inline void removeChild(pool::NodeHandle node) {
         // TODO KI
     }
 
@@ -177,8 +181,8 @@ private:
     ki::node_id m_id;
     uint32_t m_handleIndex;
 
-    Node* m_parent{ nullptr };
-    std::vector<Node*> m_children;
+    pool::NodeHandle m_parent{};
+    std::vector<pool::NodeHandle> m_children;
 
     NodeTransform m_transform;
 

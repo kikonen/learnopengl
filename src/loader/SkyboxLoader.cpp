@@ -154,8 +154,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .id = m_assets.skyboxId,
+                .target = m_assets.skyboxId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

@@ -68,12 +68,7 @@ const std::string Node::str() const noexcept
 {
     return fmt::format(
         "<NODE: id={}, type={}>",
-        m_id, m_type->str());
-}
-
-pool::NodeHandle Node::toHandle() const noexcept
-{
-    return { m_handleIndex, m_id };
+        m_id, m_type ? m_type->str() : "<null>");
 }
 
 void Node::prepare(
@@ -124,7 +119,9 @@ void Node::updateWT(
     if (m_generator) m_generator->updateWT(ctx, *this);
 
     if (!m_children.empty()) {
-        for (auto& child : m_children) {
+        for (auto& childHandle : m_children) {
+            auto* child = childHandle.toNode();
+            if (!child) continue;
             child->updateWT(ctx);
         }
     }
@@ -181,7 +178,7 @@ void Node::bindBatch(
 void Node::updateModelMatrix() noexcept
 {
     if (m_parent) {
-        m_transform.updateModelMatrix(m_parent->getTransform());
+        m_transform.updateModelMatrix(getParent()->getTransform());
     }
     else {
         m_transform.updateRootMatrix();

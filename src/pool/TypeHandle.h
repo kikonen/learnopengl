@@ -23,6 +23,8 @@ namespace pool {
 
         static TypeHandle allocate(ki::type_id id) noexcept;
 
+        static void clear() noexcept;
+
     private:
         const uint32_t m_handleIndex;
         const ki::type_id m_id;

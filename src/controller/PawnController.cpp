@@ -31,7 +31,7 @@ void PawnController::prepare(
 
     auto& assets = ctx.m_assets;
 
-    m_node = &node;
+    m_nodeHandle = node.toHandle();
 
     m_speedMoveNormal = assets.cameraMoveNormal;
     m_speedMoveRun = assets.cameraMoveRun;
@@ -44,13 +44,14 @@ void PawnController::prepare(
 void PawnController::onKey(
     const InputContext& ctx)
 {
-    if (!m_node) return;
+    auto* node = m_nodeHandle.toNode();
+    if (!node) return;
 
     const auto* input = ctx.m_input;
 
     const float dt = ctx.m_clock.elapsedSecs;
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
     const auto& viewUp = snapshot.getViewUp();
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
@@ -84,7 +85,7 @@ void PawnController::onKey(
                 m_registry->m_commandEngine->addCommand(
                     std::make_unique<script::RotateNode>(
                         0,
-                        m_node->getId(),
+                        m_nodeHandle.toId(),
                         0.f,
                         true,
                         snapshot.getViewUp(),
@@ -140,7 +141,7 @@ void PawnController::onKey(
             m_registry->m_commandEngine->addCommand(
                 std::make_unique<script::MoveNode>(
                     0,
-                    m_node->getId(),
+                    m_nodeHandle.toId(),
                     0.f,
                     true,
                     adjust));
@@ -156,11 +157,12 @@ void PawnController::onMouseMove(
     float xoffset,
     float yoffset)
 {
-    if (!m_node) return;
+    auto* node = m_nodeHandle.toNode();
+    if (!node) return;
 
     bool changed = false;
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
 
     glm::vec3 adjust{ 0.f };
 
@@ -175,7 +177,7 @@ void PawnController::onMouseMove(
         m_registry->m_commandEngine->addCommand(
             std::make_unique<script::RotateNode>(
                 0,
-                m_node->getId(),
+                m_nodeHandle.toId(),
                 0.f,
                 true,
                 snapshot.getViewUp(),

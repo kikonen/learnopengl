@@ -2,6 +2,8 @@
 
 #include "Command.h"
 
+#include "pool/NodeHandle.h"
+
 class Node;
 
 namespace script
@@ -19,10 +21,15 @@ namespace script
 
         virtual void bind(const UpdateContext& ctx, Node* node) noexcept;
 
+    protected:
+        inline Node* getNode() const noexcept {
+            return m_nodeHandle.toNode();
+        }
+
     public:
         const ki::node_id m_nodeId;
         const bool m_relative;
 
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

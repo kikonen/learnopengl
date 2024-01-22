@@ -56,8 +56,7 @@ namespace loader
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .id = data.rootId,
+                .target = data.rootId,
             };
             m_dispatcher->send(evt);
         }

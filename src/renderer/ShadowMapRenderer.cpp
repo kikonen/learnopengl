@@ -91,7 +91,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -123,7 +123,7 @@ bool ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode();
+    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
     if (!node) return false;
 
     {

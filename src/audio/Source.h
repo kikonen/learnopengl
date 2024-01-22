@@ -9,7 +9,7 @@
 #include "size.h"
 #include "limits.h"
 
-class Node;
+#include "pool/NodeHandle.h"
 
 namespace audio
 {
@@ -77,6 +77,6 @@ namespace audio
         glm::vec3 m_dir{ 0.f };
 
         ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

@@ -23,7 +23,7 @@
 #include "render/Batch.h"
 
 namespace {
-    const NodeVector EMPTY_NODE_LIST;
+    const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
     const ki::program_id NULL_PROGRAM_ID = 0;
 }
@@ -143,8 +143,9 @@ namespace render {
 
                 const MeshTypeKey typeKey(type);
 
-                auto& vTyped = (*map)[programKey][typeKey];
-                insertNode(vTyped, node);
+                auto& list = (*map)[programKey][typeKey];
+                list.reserve(100);
+                list.push_back(node->toHandle());
             }
         }
     }
@@ -624,8 +625,10 @@ namespace render {
 
                 auto& batch = ctx.m_batch;
 
-                for (auto& node : it.second) {
-                    if (!nodeSelector(node)) continue;
+                for (auto& handle : it.second) {
+                    auto* node = handle.toNode();
+                    if (!node || !nodeSelector(node)) continue;
+
                     rendered = true;
                     batch->draw(ctx, *node, program);
                 }
@@ -673,8 +676,9 @@ namespace render {
                 if (!type->isReady()) continue;
                 if (!typeSelector(type)) continue;
 
-                for (const auto& node : map.second) {
-                    if (!nodeSelector(node)) continue;
+                for (const auto& handle : map.second) {
+                    auto* node = handle.toNode();
+                    if (!node || !nodeSelector(node)) continue;
 
                     const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
                     const float distance = glm::length(viewPos - snapshot.getWorldPosition());
@@ -715,8 +719,9 @@ namespace render {
 
                 auto& batch = ctx.m_batch;
 
-                for (auto& node : it.second) {
-                    if (!nodeSelector(node)) continue;
+                for (auto& handle : it.second) {
+                    auto* node = handle.toNode();
+                    if (!node || !nodeSelector(node)) continue;
 
                     batch->draw(ctx, *node, activeProgram);
                 }
@@ -751,7 +756,7 @@ namespace render {
     void NodeDraw::drawSkybox(
         const RenderContext& ctx)
     {
-        Node* node = ctx.m_registry->m_nodeRegistry->m_skybox;
+        auto* node = ctx.m_registry->m_nodeRegistry->m_skybox.toNode();
         if (!node) return;
 
         if (!node->m_type->isReady()) return;
@@ -763,11 +768,5 @@ namespace render {
         program->bind(ctx.m_state);
         m_textureQuad.draw(ctx.m_state);
         ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-    }
-
-    void NodeDraw::insertNode(NodeVector& list, Node* node)
-    {
-        list.reserve(100);
-        list.push_back(node);
     }
 }

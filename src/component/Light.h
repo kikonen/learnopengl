@@ -5,6 +5,7 @@
 #include "asset/LightUBO.h"
 
 #include "ki/size.h"
+#include "pool/NodeHandle.h"
 
 struct UpdateContext;
 class Node;
@@ -78,8 +79,7 @@ private:
     glm::vec3 m_worldTargetPosition{ 0.0f };
 
     ki::node_id m_targetId;
-
-    Node* m_targetNode{ nullptr };
+    pool::NodeHandle m_targetHandle{};
 
     ki::level_id m_nodeMatrixLevel{ (ki::level_id)-1 };
     ki::level_id m_targetMatrixLevel{ (ki::level_id)-1 };

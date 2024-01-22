@@ -4,6 +4,8 @@
 
 #include "component/Camera.h"
 
+#include "pool/NodeHandle.h"
+
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -375,7 +377,7 @@ void WaterMapRenderer::handleNodeAdded(Node* node)
 {
     if (!node->m_type->m_flags.water) return;
 
-    m_nodes.push_back(node);
+    m_nodes.push_back(node->toHandle());
 }
 
 void WaterMapRenderer::drawNodes(
@@ -393,7 +395,7 @@ void WaterMapRenderer::drawNodes(
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     {
-        Node* sourceNode = m_sourceNode;
+        Node* sourceNode = m_sourceNode.toNode();
 
         ctx.m_nodeDraw->drawNodes(
             ctx,
@@ -421,7 +423,10 @@ Node* WaterMapRenderer::findClosest(
 
     std::map<float, Node*> sorted;
 
-    for (const auto& node : m_nodes) {
+    for (const auto& handle : m_nodes) {
+        auto* node = handle.toNode();
+        if (!node) continue;
+
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = glm::length(ray);

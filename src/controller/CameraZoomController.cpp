@@ -32,7 +32,7 @@ void CameraZoomController::prepare(
 
     if (!node.m_camera) return;
 
-    m_node = &node;
+    m_nodeHandle = node.toHandle();
 
     m_speedZoomNormal = assets.cameraZoomNormal;
     m_speedZoomRun = assets.cameraZoomRun;
@@ -43,11 +43,12 @@ void CameraZoomController::prepare(
 void CameraZoomController::onKey(
     const InputContext& ctx)
 {
-    if (!m_node) return;
+    auto* node = m_nodeHandle.toNode();
+    if (!node) return;
 
     const auto* input = ctx.m_input;
 
-    auto* camera = m_node->m_camera.get();
+    auto* camera = node->m_camera.get();
     const float dt = ctx.m_clock.elapsedSecs;
 
     glm::vec3 zoomSpeed{ m_speedZoomNormal };
@@ -71,7 +72,7 @@ void CameraZoomController::onKey(
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            Node* nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_node, offset);
+            auto nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_nodeHandle, offset);
 
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
@@ -98,14 +99,15 @@ void CameraZoomController::onMouseMove(
     float xoffset,
     float yoffset)
 {
-    if (!m_node) return;
+    auto* node = m_nodeHandle.toNode();
+    if (!node) return;
 
     bool changed = false;
     const float MAX_ANGLE = 89.f;
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_node->m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;
@@ -134,7 +136,7 @@ void CameraZoomController::onMouseMove(
         m_registry->m_commandEngine->addCommand(
             std::make_unique<script::RotateNode>(
                 0,
-                m_node->getId(),
+                m_nodeHandle.toId(),
                 0.f,
                 true,
                 snapshot.getViewRight(),
@@ -149,8 +151,10 @@ void CameraZoomController::onMouseScroll(
     float xoffset,
     float yoffset)
 {
-    if (!m_node) return;
-    auto* camera = m_node->m_camera.get();
+    auto* node = m_nodeHandle.toNode();
+    if (!node) return;
+
+    auto* camera = node->m_camera.get();
 
     auto adjustment = m_speedMouseSensitivity.z * yoffset;
 

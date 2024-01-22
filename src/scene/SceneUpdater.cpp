@@ -7,6 +7,8 @@
 #include "ki/RenderClock.h"
 #include "ki/Timer.h"
 
+#include "pool/NodeHandle.h"
+
 #include "util/thread.h"
 #include "util/Log.h"
 
@@ -76,7 +78,8 @@ void SceneUpdater::prepare()
     dispatcher->addListener(
         event::Type::node_added,
         [this](const event::Event& e) {
-            this->handleNodeAdded(e.body.node.target);
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeAdded(node);
         });
 }
 
@@ -197,6 +200,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
 void SceneUpdater::handleNodeAdded(Node* node)
 {
+    if (!node) return;
+
     m_registry->m_physicsEngine->handleNodeAdded(node);
 
     //    auto& type = node->m_type;

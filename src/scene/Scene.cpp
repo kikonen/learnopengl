@@ -129,7 +129,8 @@ void Scene::prepareRT()
     dispatcherView->addListener(
         event::Type::node_added,
         [this](const event::Event& e) {
-            this->handleNodeAdded(e.body.node.target);
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeAdded(node);
         });
 
     m_renderData->prepare(
@@ -312,6 +313,8 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
 void Scene::handleNodeAdded(Node* node)
 {
+    if (!node) return;
+
     m_registry->m_nodeRegistry->handleNodeAdded(node);
     m_nodeDraw->handleNodeAdded(node);
     m_mirrorMapRenderer->handleNodeAdded(node);

@@ -51,7 +51,7 @@ private:
 public:
     std::shared_ptr<Viewport> m_reflectionDebugViewport;
 
-    Node* m_sourceNode{ nullptr };
+    pool::NodeHandle m_sourceNode{};
 
 private:
     const bool m_doubleBuffer;
@@ -76,5 +76,5 @@ private:
 
     Material m_tagMaterial;
 
-    std::vector<Node*> m_nodes;
+    std::vector<pool::NodeHandle> m_nodes;
 };

@@ -13,7 +13,7 @@
 namespace {
     //IdGenerator<ki::type_id> ID_GENERATOR;
 
-    pool::Pool<mesh::MeshType> s_pool;
+    pool::Pool<mesh::MeshType> s_pool{ 10000 };
 }
 
 namespace pool {
@@ -35,5 +35,10 @@ namespace pool {
         entry.m_data.m_handleIndex = handleIndex;
 
         return { handleIndex, id };
+    }
+
+    void TypeHandle::clear() noexcept
+    {
+        s_pool.clear();
     }
 }

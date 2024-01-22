@@ -2,6 +2,8 @@
 
 #include "model/Node.h"
 
+#include "pool/NodeHandle.h"
+
 #include "api/CancelCommand.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
@@ -104,7 +106,7 @@ namespace script
         if (!cmd->isNode()) return true;
 
         auto nodeId = (dynamic_cast<NodeCommand*>(cmd))->m_nodeId;
-        return ctx.m_registry->m_nodeRegistry->getNode(nodeId);
+        return pool::NodeHandle::toNode(nodeId);
     }
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
@@ -211,7 +213,7 @@ namespace script
 
             if (cmd->isNode()) {
                 auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-                auto* node = ctx.m_registry->m_nodeRegistry->getNode(nodeCmd->m_nodeId);
+                auto* node = pool::NodeHandle::toNode(nodeCmd->m_nodeId);
                 if (!node) {
                     activateNext(cmd.get());
                     cmd->m_canceled = true;

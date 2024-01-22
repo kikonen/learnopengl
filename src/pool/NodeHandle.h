@@ -49,12 +49,36 @@ namespace pool {
             return *this;
         }
 
-        Node* toNode() const noexcept;
+        NodeHandle& operator=(const Node* node) noexcept;
 
+        bool operator==(const NodeHandle& o) const noexcept
+        {
+            return m_handleIndex == o.m_handleIndex &&
+                m_id == o.m_id;
+        }
+
+        bool present() const noexcept { return m_handleIndex > 0; }
+        bool isNull() const noexcept { return m_handleIndex == 0;  }
+        operator int() const { return m_handleIndex; }
+
+        void reset() noexcept {
+            m_handleIndex = 0;
+            m_id = 0;
+        }
+
+        Node* toNode() const noexcept;
         ki::node_id toId() const noexcept { return m_id; }
 
         static NodeHandle allocate(ki::node_id id) noexcept;
 
+        static NodeHandle toHandle(ki::node_id id) noexcept;
+
+        static Node* toNode(ki::node_id id) noexcept;
+
+        static void clear() noexcept;
+
+    public:
+        static NodeHandle NULL_HANDLE;
 
     private:
         uint32_t m_handleIndex;

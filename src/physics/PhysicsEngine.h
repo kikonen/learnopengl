@@ -14,7 +14,10 @@
 
 struct UpdateContext;
 
-class Node;
+namespace pool {
+    class NodeHandle;
+}
+
 namespace mesh {
     class MeshType;
 }
@@ -81,11 +84,11 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
-        std::vector<Node*> m_enforceBoundsDynamic;
+        std::vector<pool::NodeHandle> m_enforceBoundsDynamic;
 
-        std::vector<Node*> m_enforceBoundsStatic;
+        std::vector<pool::NodeHandle> m_enforceBoundsStatic;
 
-        std::vector<Node*> m_pendingNodes;
+        std::vector<pool::NodeHandle> m_pendingNodes;
 
         std::vector<physics::physics_id> m_pending;
 

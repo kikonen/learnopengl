@@ -344,8 +344,6 @@ namespace loader {
                         false);
                     evt.body.node.parentId = parentId;
                 }
-
-                assert(node->getId() == nodeId);
             }
             m_dispatcher->send(evt);
         }
@@ -371,11 +369,11 @@ namespace loader {
         for (auto& controllerData : data.controllers) {
             if (!controllerData.enabled) continue;
 
-            auto* controller = m_controllerLoader.createController(controllerData, node);
+            auto* controller = m_controllerLoader.createController(controllerData, handle);
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->getId(),
+                .target = handle.toId(),
                 .controller = controller
             };
             m_dispatcher->send(evt);
@@ -694,6 +692,7 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
+        assert(node);
 #ifdef _DEBUG
         node->m_resolvedSID = resolvedSID;
 #endif

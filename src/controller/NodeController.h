@@ -2,6 +2,8 @@
 
 #include "kigl/kigl.h"
 
+#include "pool/NodeHandle.h"
+
 struct PrepareContext;
 struct InputContext;
 struct UpdateContext;
