@@ -736,12 +736,14 @@ namespace loader {
         const glm::vec3& clonePositionOffset,
         const glm::vec3& tilePositionOffset)
     {
-        ki::node_id nodeId;
+        ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
-            auto [k, v] = resolveId(data.baseId, cloneIndex, tile, true);
-            nodeId = k;
-            resolvedSID = v;
+            if (!data.baseId.empty()) {
+                auto [k, v] = resolveId(data.baseId, cloneIndex, tile, false);
+                nodeId = k;
+                resolvedSID = v;
+            }
 
             if (!nodeId) {
                 auto [k, v] = resolveId({ data.name }, cloneIndex, tile, true);
