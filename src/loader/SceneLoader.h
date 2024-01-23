@@ -11,6 +11,8 @@
 
 #include "mesh/EntityType.h"
 
+#include "ResolvedEntity.h"
+
 #include "BaseLoader.h"
 #include "RootLoader.h"
 #include "ScriptLoader.h"
@@ -72,11 +74,22 @@ namespace loader {
         void attach(
             const RootData& root);
 
-        bool attachEntity(
+        void notifySceneLoaded();
+
+        void attachResolvedEntities(
+            std::vector<ResolvedEntity>& resolvedEntities);
+
+        void attachResolvedEntity(
+            const ResolvedEntity& resolvedEntity);
+
+        void addResolvedEntity(
+            const ResolvedEntity& resolvedEntity);
+
+        bool resolveEntity(
             const ki::node_id rootId,
             const EntityData& data);
 
-        const mesh::MeshType* attachEntityClone(
+        const mesh::MeshType* resolveEntityClone(
             const mesh::MeshType* type,
             const ki::node_id rootId,
             const EntityData& entity,
@@ -84,7 +97,7 @@ namespace loader {
             bool cloned,
             int cloneIndex);
 
-        const mesh::MeshType* attachEntityCloneRepeat(
+        const mesh::MeshType* resolveEntityCloneRepeat(
             const mesh::MeshType* type,
             const ki::node_id rootId,
             const EntityData& entity,
@@ -195,6 +208,8 @@ namespace loader {
         ScriptEngineData m_scriptEngineData;
 
         std::vector<EntityData> m_entities;
+
+        std::vector<ResolvedEntity> m_resolvedEntities;
 
         std::vector<FontData> m_fonts;
 

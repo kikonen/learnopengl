@@ -52,6 +52,7 @@
 
 #include <engine/AsyncLoader.h>
 
+#include "DagSort.h"
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
@@ -184,6 +185,20 @@ namespace loader {
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
         // => worker will trigger event into UI thread after processing all updates
+
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
+            try {
+                attachResolvedEntities(m_resolvedEntities);
+                notifySceneLoaded();
+            }
+            catch (const std::runtime_error& ex) {
+                throw ex;
+            }
+        });
+    }
+
+    void SceneLoader::notifySceneLoaded()
+    {
         {
             event::Event evt { event::Type::scene_loaded };
             m_dispatcher->send(evt);
@@ -207,7 +222,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& entity : m_entities) {
-                if (attachEntity(root.rootId, entity)) {
+                if (resolveEntity(root.rootId, entity)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: entity={}, pending={}", entity.base.name, m_pendingCount));
                 }
@@ -217,152 +232,54 @@ namespace loader {
         }
     }
 
-    bool SceneLoader::attachEntity(
-        const ki::node_id rootId,
-        const EntityData& data)
+    void SceneLoader::attachResolvedEntities(
+        std::vector<ResolvedEntity>& resolvedEntities)
     {
-        if (!data.base.enabled) {
-            return false;
+        DagSort sorter;
+        auto sorted = sorter.sort(resolvedEntities);
+
+        for (auto* resolved : sorted) {
+            if (!*m_ctx.m_alive) return;
+            attachResolvedEntity(*resolved);
         }
-
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
-            try {
-                if (data.clones.empty()) {
-                    const mesh::MeshType* type{ nullptr };
-                    attachEntityClone(type, rootId, data, data.base, false, 0);
-                }
-                else {
-                    const mesh::MeshType* type{ nullptr };
-
-                    int cloneIndex = 0;
-                    for (auto& cloneData : data.clones) {
-                        if (!*m_ctx.m_alive) return;
-                        type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
-                        if (!data.base.cloneMesh)
-                            type = nullptr;
-                        cloneIndex++;
-                    }
-                }
-                loadedEntity(data, true);
-            }
-            catch (const std::runtime_error& ex) {
-                loadedEntity(data, false);
-                throw ex;
-            }
-        });
-
-        return true;
     }
 
-    const mesh::MeshType* SceneLoader::attachEntityClone(
-        const mesh::MeshType* type,
-        const ki::node_id rootId,
-        const EntityData& entity,
-        const EntityCloneData& data,
-        bool cloned,
-        int cloneIndex)
+    void SceneLoader::attachResolvedEntity(
+        const ResolvedEntity& resolved)
     {
-        if (!*m_ctx.m_alive) return type;
-
-        if (!data.enabled) {
-            return type;
-        }
-
-        const auto& repeat = data.repeat;
-
-        for (auto z = 0; z < repeat.zCount; z++) {
-            for (auto y = 0; y < repeat.yCount; y++) {
-                for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx.m_alive) return type;
-
-                    const glm::uvec3 tile = { x, y, z };
-                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-
-                    type = attachEntityCloneRepeat(
-                        type,
-                        rootId,
-                        entity,
-                        data,
-                        cloned,
-                        cloneIndex,
-                        tile,
-                        tilePositionOffset);
-
-                    if (!entity.base.cloneMesh)
-                        type = nullptr;
-                }
-            }
-        }
-
-        return type;
-    }
-
-    const mesh::MeshType* SceneLoader::attachEntityCloneRepeat(
-        const mesh::MeshType* type,
-        const ki::node_id rootId,
-        const EntityData& entity,
-        const EntityCloneData& data,
-        bool cloned,
-        int cloneIndex,
-        const glm::uvec3& tile,
-        const glm::vec3& tilePositionOffset)
-    {
-        if (!*m_ctx.m_alive) return type;
-
-        if (!data.enabled) {
-            return type;
-        }
-
-        // NOTE KI overriding material in clones is *NOT* supported"
-        if (!type) {
-            type = createType(
-                data,
-                tile);
-            if (!type) return type;
-        }
-
-        if (!*m_ctx.m_alive) return type;
-
-        auto handle = createNode(
-            type, rootId, data,
-            cloned, cloneIndex, tile,
-            data.clonePositionOffset,
-            tilePositionOffset);
+        auto& handle = resolved.handle;
+        auto& data = resolved.data;
 
         {
             event::Event evt { event::Type::node_add };
-            evt.body.node.target = handle.toId();
-            {
-                if (data.parentBaseId.empty()) {
-                    evt.body.node.parentId = rootId;
-                }
-                else {
-                    auto [parentId, _] = resolveId(
-                        data.parentBaseId,
-                        cloneIndex,
-                        tile,
-                        false);
-                    evt.body.node.parentId = parentId;
-                }
-            }
+            evt.body.node = {
+                .target = handle.toId(),
+                .parentId = resolved.parentId,
+            };
             m_dispatcher->send(evt);
         }
 
         if (data.active) {
             event::Event evt { event::Type::node_activate };
-            evt.body.node.target = handle.toId();
+            evt.body.node = {
+                .target = handle.toId(),
+            };
             m_dispatcher->send(evt);
         }
 
         if (data.selected) {
             event::Event evt { event::Type::node_select };
-            evt.body.node.target = handle.toId();
+            evt.body.node = {
+                .target = handle.toId(),
+            };
             m_dispatcher->send(evt);
         }
 
         if (data.camera.isDefault) {
             event::Event evt { event::Type::camera_activate };
-            evt.body.node.target = handle.toId();
+            evt.body.node = {
+                .target = handle.toId(),
+            };
             m_dispatcher->send(evt);
         }
 
@@ -397,6 +314,149 @@ namespace loader {
             m_audioLoader.createAudio(data.audio, handle.toId());
             m_physicsLoader.createObject(data.physics, handle.toId());
         }
+    }
+
+    void SceneLoader::addResolvedEntity(
+        const ResolvedEntity& resolved)
+    {
+        {
+            std::lock_guard<std::mutex> lock(m_ready_lock);
+            m_resolvedEntities.push_back(resolved);
+        }
+    }
+
+    bool SceneLoader::resolveEntity(
+        const ki::node_id rootId,
+        const EntityData& data)
+    {
+        if (!data.base.enabled) {
+            return false;
+        }
+
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
+            try {
+                if (data.clones.empty()) {
+                    const mesh::MeshType* type{ nullptr };
+                    resolveEntityClone(type, rootId, data, data.base, false, 0);
+                }
+                else {
+                    const mesh::MeshType* type{ nullptr };
+
+                    int cloneIndex = 0;
+                    for (auto& cloneData : data.clones) {
+                        if (!*m_ctx.m_alive) return;
+                        type = resolveEntityClone(type, rootId, data, cloneData, true, cloneIndex);
+                        if (!data.base.cloneMesh)
+                            type = nullptr;
+                        cloneIndex++;
+                    }
+                }
+                loadedEntity(data, true);
+            }
+            catch (const std::runtime_error& ex) {
+                loadedEntity(data, false);
+                throw ex;
+            }
+        });
+
+        return true;
+    }
+
+    const mesh::MeshType* SceneLoader::resolveEntityClone(
+        const mesh::MeshType* type,
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex)
+    {
+        if (!*m_ctx.m_alive) return type;
+
+        if (!data.enabled) {
+            return type;
+        }
+
+        const auto& repeat = data.repeat;
+
+        for (auto z = 0; z < repeat.zCount; z++) {
+            for (auto y = 0; y < repeat.yCount; y++) {
+                for (auto x = 0; x < repeat.xCount; x++) {
+                    if (!*m_ctx.m_alive) return type;
+
+                    const glm::uvec3 tile = { x, y, z };
+                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+
+                    type = resolveEntityCloneRepeat(
+                        type,
+                        rootId,
+                        entity,
+                        data,
+                        cloned,
+                        cloneIndex,
+                        tile,
+                        tilePositionOffset);
+
+                    if (!entity.base.cloneMesh)
+                        type = nullptr;
+                }
+            }
+        }
+
+        return type;
+    }
+
+    const mesh::MeshType* SceneLoader::resolveEntityCloneRepeat(
+        const mesh::MeshType* type,
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex,
+        const glm::uvec3& tile,
+        const glm::vec3& tilePositionOffset)
+    {
+        if (!*m_ctx.m_alive) return type;
+
+        if (!data.enabled) {
+            return type;
+        }
+
+        // NOTE KI overriding material in clones is *NOT* supported"
+        if (!type) {
+            type = createType(
+                data,
+                tile);
+            if (!type) return type;
+        }
+
+        if (!*m_ctx.m_alive) return type;
+
+        auto handle = createNode(
+            type, rootId, data,
+            cloned, cloneIndex, tile,
+            data.clonePositionOffset,
+            tilePositionOffset);
+
+        ki::node_id parentId;
+        if (data.parentBaseId.empty()) {
+            parentId = rootId;
+        }
+        else {
+            auto [id, _] = resolveId(
+                data.parentBaseId,
+                cloneIndex,
+                tile,
+                false);
+            parentId = id;
+        }
+
+        ResolvedEntity resolved{
+            parentId,
+            handle,
+            data
+        };
+
+        addResolvedEntity(resolved);
 
         return type;
     }

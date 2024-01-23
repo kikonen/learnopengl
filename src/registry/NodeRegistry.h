@@ -107,16 +107,11 @@ private:
         const ki::node_id nodeId,
         const ki::node_id parentId) noexcept;
 
-    void bindPendingChildren();
-
     void bindNode(
         const ki::node_id nodeId);
 
     bool bindParent(
         const ki::node_id nodeId,
-        const ki::node_id parentId);
-
-    void bindChildren(
         const ki::node_id parentId);
 
     void bindSkybox(
@@ -140,8 +135,6 @@ private:
     Registry* m_registry{ nullptr };
 
     mutable std::mutex m_snapshotLock{};
-
-    std::unordered_map<ki::node_id, std::vector<ki::node_id>> m_pendingChildren;
 
     std::vector<NodeComponent<Camera>> m_cameraComponents;
 

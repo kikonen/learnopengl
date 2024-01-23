@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 
 #include <ode/ode.h>
 
@@ -28,7 +29,9 @@ struct NodeTransform;
 namespace physics {
     class PhysicsEngine {
     public:
-        PhysicsEngine(const Assets& assets);
+        PhysicsEngine(
+            const Assets& assets,
+            std::shared_ptr<std::atomic<bool>> alive);
         ~PhysicsEngine();
 
         void prepare();
@@ -72,6 +75,7 @@ namespace physics {
 
     private:
         const Assets& m_assets;
+        std::shared_ptr<std::atomic<bool>> m_alive;
 
         bool m_prepared{ false };
 

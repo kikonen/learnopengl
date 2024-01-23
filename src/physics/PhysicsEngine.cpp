@@ -77,8 +77,11 @@ namespace physics
         }
     };
 
-    PhysicsEngine::PhysicsEngine(const Assets& assets)
-        : m_assets(assets)
+    PhysicsEngine::PhysicsEngine(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive)
+        : m_assets(assets),
+        m_alive(alive)
     {
     }
 
@@ -154,6 +157,8 @@ namespace physics
                 //}
 
                 for (int i = 0; i < n; i++) {
+                    if (!*m_alive) return;
+
                     dSpaceCollide(m_spaceId, this, &nearCallback);
                     dWorldQuickStep(m_worldId, STEP_SIZE);
                     dJointGroupEmpty(m_contactgroupId);

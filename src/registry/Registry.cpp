@@ -42,7 +42,7 @@ Registry::Registry(
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
     m_programRegistryImpl(std::make_unique<ProgramRegistry>(assets, m_alive)),
     m_audioEngineImpl(std::make_unique<audio::AudioEngine>()),
-    m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets)),
+    m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets, m_alive)),
     m_commandEngineImpl(std::make_unique<script::CommandEngine>()),
     m_scriptEngineImpl(std::make_unique<script::ScriptEngine>()),
     m_fontRegistryImpl(std::make_unique<FontRegistry>(assets)),

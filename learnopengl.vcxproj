@@ -194,6 +194,7 @@
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
+    <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
@@ -399,8 +400,10 @@
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
     <ClInclude Include="src\ki\sid.h" />
+    <ClInclude Include="src\loader\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
+    <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />

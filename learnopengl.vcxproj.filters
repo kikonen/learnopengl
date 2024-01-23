@@ -615,6 +615,9 @@
     <ClCompile Include="src\loader\BaseId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\DagSort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1458,6 +1461,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\sid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\ResolvedEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\DagSort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

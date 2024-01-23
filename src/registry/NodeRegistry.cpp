@@ -82,7 +82,6 @@ NodeRegistry::~NodeRegistry()
     }
 
     m_allNodes.clear();
-    m_pendingChildren.clear();
 
     m_skybox.reset();
 
@@ -470,12 +469,12 @@ void NodeRegistry::attachNode(
     }
 
     // NOTE KI ignore children without parent; until parent is found
-    if (!bindParent(nodeId, parentId)) return;
+    if (!bindParent(nodeId, parentId)) {
+        KI_WARN_OUT(fmt::format("IGNORE: MISSING parent - parentId={}, node={}", parentId, node->str()));
+        return;
+    }
 
     bindNode(nodeId);
-    bindChildren(nodeId);
-
-    bindPendingChildren();
 }
 
 int NodeRegistry::countTagged() const noexcept
@@ -607,36 +606,6 @@ void NodeRegistry::bindNode(
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
 
-void NodeRegistry::bindPendingChildren()
-{
-    if (m_pendingChildren.empty()) return;
-
-    std::vector<ki::node_id> boundIds;
-
-    for (const auto& [parentId, children] : m_pendingChildren) {
-        auto* parent = pool::NodeHandle::toNode(parentId);
-        if (!parent) continue;
-
-        boundIds.push_back(parentId);
-
-        for (auto& nodeId : children) {
-            auto* node = pool::NodeHandle::toNode(nodeId);
-            if (!node) continue;
-
-            KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parentId, nodeId));
-            bindNode(nodeId);
-
-            node->setParent(parent->toHandle());
-            parent->addChild(node->toHandle());
-        }
-    }
-
-    for (auto& parentId : boundIds) {
-        m_pendingChildren.erase(parentId);
-    }
-}
-
-
 bool NodeRegistry::bindParent(
     const ki::node_id nodeId,
     const ki::node_id parentId)
@@ -647,12 +616,9 @@ bool NodeRegistry::bindParent(
     auto* parent = pool::NodeHandle::toNode(parentId);
     auto* node = pool::NodeHandle::toNode(nodeId);
 
-    if (!node) return true;
+    if (!node) return false;
 
     if (!parent) {
-        KI_INFO(fmt::format("PENDING_CHILD: node={}", nodeId));
-
-        m_pendingChildren[parentId].push_back(nodeId);
         return false;
     }
 
@@ -661,31 +627,7 @@ bool NodeRegistry::bindParent(
     node->setParent(parent->toHandle());
     parent->addChild(node->toHandle());
 
-    //m_parentToChildren[parent->getId()].push_back(child);
-
     return true;
-}
-
-void NodeRegistry::bindChildren(
-    const ki::node_id parentId)
-{
-    const auto& it = m_pendingChildren.find(parentId);
-    if (it == m_pendingChildren.end()) return;
-
-    auto* parent = pool::NodeHandle::toNode(parentId);
-
-    for (auto& nodeId : it->second) {
-        auto* node = pool::NodeHandle::toNode(nodeId);
-        if (!node) continue;
-
-        KI_INFO(fmt::format("BIND_CHILD: parent={}, child={}", parentId, nodeId));
-        bindNode(nodeId);
-
-        node->setParent(parent->toHandle());
-        parent->addChild(node->toHandle());
-    }
-
-    m_pendingChildren.erase(parentId);
 }
 
 const Material& NodeRegistry::getSelectionMaterial() const noexcept
