@@ -269,6 +269,7 @@ bool CubeMapRenderer::render(
 
 void CubeMapRenderer::handleNodeAdded(Node* node)
 {
+    if (!isEnabled()) return;
     if (!node->m_type->m_flags.cubeMap) return;
 
     if (m_waterMapRenderer->isEnabled()) {

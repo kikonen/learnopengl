@@ -375,6 +375,7 @@ bool WaterMapRenderer::render(
 
 void WaterMapRenderer::handleNodeAdded(Node* node)
 {
+    if (!isEnabled()) return;
     if (!node->m_type->m_flags.water) return;
 
     m_nodes.push_back(node->toHandle());

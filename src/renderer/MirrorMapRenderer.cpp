@@ -285,6 +285,7 @@ bool MirrorMapRenderer::render(
 
 void MirrorMapRenderer::handleNodeAdded(Node* node)
 {
+    if (!isEnabled()) return;
     if (!node->m_type->m_flags.mirror) return;
 
     if (m_waterMapRenderer->isEnabled()) {
