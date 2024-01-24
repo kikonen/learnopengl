@@ -61,10 +61,10 @@ void PawnController::onKey(
         moveSpeed = m_speedMoveRun;
         rotateSpeed = m_speedRotateRun;
 
-        if (input->isModifierDown(Modifier::ALT)) {
-            moveSpeed *= 10;
-            rotateSpeed *= 2;
-        }
+    }
+    if (input->isModifierDown(Modifier::ALT)) {
+        moveSpeed *= 10;
+        rotateSpeed *= 2;
     }
 
     {
