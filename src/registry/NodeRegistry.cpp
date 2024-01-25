@@ -6,8 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "util/thread.h"
 #include "ki/limits.h"
-
 #include "kigl/kigl.h"
 
 #include "asset/Program.h"
@@ -63,11 +63,6 @@ NodeRegistry::~NodeRegistry()
 {
     std::lock_guard<std::mutex> lock(m_snapshotLock);
 
-    // NOTE KI forbid access into deleted nodes
-    {
-        //m_parentToChildren.clear();
-    }
-
     {
         m_activeNode.reset();
         m_activeCameraNode.reset();
@@ -82,6 +77,8 @@ NodeRegistry::~NodeRegistry()
     }
 
     m_allNodes.clear();
+    m_cachedNodesWT.clear();
+    m_cachedNodesRT.clear();
 
     m_skybox.reset();
 
@@ -101,11 +98,17 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    //std::lock_guard<std::mutex> lock(m_snapshotLock);
+    cacheNodes(m_cachedNodesWT);
 
-    auto* root = getRootWT();
-    if (root) {
-        root->updateWT(ctx);
+    // NOTE KI nodes are in DAG order
+    for (auto* node : m_cachedNodesWT) {
+        if (!node) continue;
+
+        node->updateModelMatrix();
+
+        if (node->m_generator) {
+            node->m_generator->updateWT(ctx, *node);
+        }
     }
 
     ctx.m_registry->m_physicsEngine->updateBounds(ctx);
@@ -120,8 +123,7 @@ void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
 {
     std::lock_guard<std::mutex> lock(m_snapshotLock);
 
-    for (auto& handle : m_allNodes) {
-        auto* node = handle.toNode();
+    for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
 
         auto& transform = node->modifyTransform();
@@ -144,6 +146,8 @@ void NodeRegistry::snapshotRT(SnapshotRegistry& snapshotRegistry)
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
+    cacheNodes(m_cachedNodesRT);
+
     m_rootRT = m_rootWT;
 
     auto* root = getRootRT();
@@ -178,8 +182,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
     std::lock_guard<std::mutex> lock(m_snapshotLock);
 
-    for (auto& handle : m_allNodes) {
-        auto* node = handle.toNode();
+    for (auto* node : m_cachedNodesRT) {
         if (!node) continue;
         if (node->m_entityIndex) {
             auto& snapshot = snapshotRegistry.modifyActiveSnapshot(node->m_snapshotIndex);
@@ -433,10 +436,9 @@ void NodeRegistry::handleNodeAdded(Node* node)
 void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 {
     if (!append) {
-        for (auto& handle : m_allNodes) {
-            if (auto* node = handle.toNode()) {
-                node->setSelectionMaterialIndex(-1);
-            }
+        for (auto* node : m_cachedNodesRT) {
+            if (!node) continue;
+            node->setSelectionMaterialIndex(-1);
         }
     }
 
@@ -468,7 +470,7 @@ void NodeRegistry::attachNode(
         return bindSkybox(node->toHandle());
     }
 
-    // NOTE KI ignore children without parent; until parent is found
+    // NOTE KI ignore nodes without parent
     if (!bindParent(nodeId, parentId)) {
         KI_WARN_OUT(fmt::format("IGNORE: MISSING parent - parentId={}, node={}", parentId, node->str()));
         return;
@@ -479,16 +481,13 @@ void NodeRegistry::attachNode(
 
 int NodeRegistry::countTagged() const noexcept
 {
-    //std::lock_guard<std::mutex> lock(m_lock);
+    ASSERT_RT();
 
     int count = m_taggedCount;
     if (count < 0) {
         count = 0;
-        std::lock_guard<std::mutex> lock(m_snapshotLock);
-        for (auto& handle : m_allNodes) {
-            if (auto* node = handle.toNode()) {
-                if (node->isTagged()) count++;
-            }
+        for (auto* node : m_cachedNodesRT) {
+            if (node && node->isTagged()) count++;
         }
         m_taggedCount = count;
     }
@@ -497,16 +496,13 @@ int NodeRegistry::countTagged() const noexcept
 
 int NodeRegistry::countSelected() const noexcept
 {
-    //std::lock_guard<std::mutex> lock(m_lock);
+    ASSERT_RT();
 
     int count = m_selectedCount;
     if (count < 0) {
         count = 0;
-        std::lock_guard<std::mutex> lock(m_snapshotLock);
-        for (auto& handle : m_allNodes) {
-            if (auto* node = handle.toNode()) {
-                if (node->isSelected()) count++;
-            }
+        for (auto* node : m_cachedNodesRT) {
+            if (node && node->isSelected()) count++;
         }
         m_selectedCount = count;
     }
@@ -523,29 +519,7 @@ void NodeRegistry::changeParent(
     if (!node) return;
     if (!parent) return;
 
-    {
-        auto* oldParent = node->getParent();
-        if (oldParent == parent) return;
-
-        if (oldParent) {
-            oldParent->removeChild(node->toHandle());
-        }
-
-        //auto& oldChildren = m_parentToChildren[oldParent->getId()];
-        //const auto& it = std::remove_if(
-        //    oldChildren.begin(),
-        //    oldChildren.end(),
-        //    [&node](auto& n) {
-        //        return n->getId() == node->getId();
-        //    });
-        //oldChildren.erase(it, oldChildren.end());
-    }
-
     node->setParent(parent->toHandle());
-    parent->addChild(node->toHandle());
-
-    //auto& children = m_parentToChildren[parent->getId()];
-    //children.push_back(node);
 }
 
 void NodeRegistry::bindNode(
@@ -625,7 +599,6 @@ bool NodeRegistry::bindParent(
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parentId, nodeId));
 
     node->setParent(parent->toHandle());
-    parent->addChild(node->toHandle());
 
     return true;
 }
@@ -638,6 +611,17 @@ const Material& NodeRegistry::getSelectionMaterial() const noexcept
 void NodeRegistry::setSelectionMaterial(const Material& material)
 {
     *m_selectionMaterial = material;
+}
+
+void NodeRegistry::cacheNodes(std::vector<Node*>& cache) const noexcept
+{
+    std::lock_guard<std::mutex> lock(m_snapshotLock);
+    cache.clear();
+    cache.reserve(m_allNodes.size());
+
+    for (auto& handle : m_allNodes) {
+        cache.push_back(handle.toNode());
+    }
 }
 
 void NodeRegistry::setActiveNode(pool::NodeHandle handle)
@@ -709,3 +693,4 @@ void NodeRegistry::bindSkybox(
         m_registry->m_dispatcherView->send(evt);
     }
 }
+

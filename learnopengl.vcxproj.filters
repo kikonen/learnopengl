@@ -618,6 +618,9 @@
     <ClCompile Include="src\loader\DagSort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ki\FpsCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1467,6 +1470,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\DagSort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ki\FpsCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

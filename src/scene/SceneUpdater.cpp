@@ -6,6 +6,7 @@
 
 #include "ki/RenderClock.h"
 #include "ki/Timer.h"
+#include "ki/FpsCounter.h"
 
 #include "pool/NodeHandle.h"
 
@@ -114,11 +115,15 @@ void SceneUpdater::run()
     //const int delay = (int)(1000.f / 60.f);
     const int delay = 5;
 
+    ki::FpsCounter fpsCounter;
+
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedDuration;
 
     while (*m_alive) {
+        fpsCounter.startFame();
+
         loopTime = std::chrono::system_clock::now();
         elapsedDuration = loopTime - prevLoopTime;
         prevLoopTime = loopTime;
@@ -137,6 +142,13 @@ void SceneUpdater::run()
             m_registry.get());
 
         update(ctx);
+
+        fpsCounter.endFame(clock.elapsedSecs);
+
+        if (fpsCounter.isUpdate())
+        {
+            KI_INFO(fpsCounter.formatSummary("UPDATER"));
+        }
 
         if (!m_registry->m_commandEngine->hasPending()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(delay));

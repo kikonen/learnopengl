@@ -81,7 +81,6 @@ namespace script
     void CommandEngine::update(const UpdateContext& ctx)
     {
         //updateOldest();
-        processCanceled(ctx);
         processPending(ctx);
         processBlocked(ctx);
         processActive(ctx);
@@ -96,11 +95,6 @@ namespace script
         return cmd->m_id;
     }
 
-    bool CommandEngine::isCanceled(script::command_id commandId) const noexcept
-    {
-        return std::find(m_canceled.begin(), m_canceled.end(), commandId) != m_canceled.end();
-    }
-
     bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) const noexcept
     {
         if (!cmd->isNode()) return true;
@@ -111,7 +105,19 @@ namespace script
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
     {
-        m_canceled.push_back(commandId);
+        {
+            std::lock_guard<std::mutex> lock{ m_pendingLock };
+            for (auto& cmd : m_pending) {
+                if (cmd->m_id == commandId) {
+                    cmd->m_canceled = true;
+                }
+            }
+        }
+
+        const auto& it = m_commands.find(commandId);
+        if (it != m_commands.end()) {
+            it->second->m_canceled = true;
+        }
     }
 
     bool CommandEngine::isAlive(script::command_id commandId) const noexcept
@@ -136,32 +142,6 @@ namespace script
                 it->second->m_ready = true;
             }
         }
-    }
-
-    void CommandEngine::processCanceled(const UpdateContext& ctx) noexcept
-    {
-        // NOTE KI can cancel only *EXISTING* commands not future commands
-        if (m_canceled.empty()) return;
-
-        {
-            std::lock_guard<std::mutex> lock{ m_pendingLock };
-            for (auto& cmd : m_pending) {
-                if (!isCanceled(cmd->m_id)) continue;
-                cmd->m_canceled = true;
-            }
-        }
-
-        for (auto& cmd : m_blocked) {
-            if (!isCanceled(cmd->m_id)) continue;
-            cmd->m_canceled = true;
-        }
-
-        for (auto& cmd : m_active) {
-            if (!isCanceled(cmd->m_id)) continue;
-            cmd->m_canceled = true;
-        }
-
-        m_canceled.clear();
     }
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept

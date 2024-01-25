@@ -193,6 +193,7 @@
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
+    <ClCompile Include="src\ki\FpsCounter.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
@@ -399,6 +400,7 @@
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
+    <ClInclude Include="src\ki\FpsCounter.h" />
     <ClInclude Include="src\ki\sid.h" />
     <ClInclude Include="src\loader\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />

@@ -100,6 +100,8 @@ public:
     void setSelectionMaterial(const Material& material);
 
 private:
+    void cacheNodes(std::vector<Node*>& cache) const noexcept;
+
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 
@@ -129,6 +131,9 @@ private:
 
     // EntityRegistry
     std::vector<pool::NodeHandle> m_allNodes;
+
+    std::vector<Node*> m_cachedNodesWT;
+    std::vector<Node*> m_cachedNodesRT;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 

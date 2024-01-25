@@ -74,8 +74,6 @@ public:
     void prepare(
         const PrepareContext& ctx);
 
-    void updateWT(const UpdateContext& ctx) noexcept;
-
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
     const backend::DrawOptions& getDrawOptions() const noexcept;
@@ -91,15 +89,6 @@ public:
 
     inline void setParent(const Node* parent) noexcept {
         m_parent = parent;
-    }
-
-    inline const std::vector<pool::NodeHandle>& getChildren() const noexcept
-    {
-        return m_children;
-    }
-
-    inline void addChild(pool::NodeHandle child) {
-        m_children.emplace_back(child);
     }
 
     inline void removeChild(pool::NodeHandle node) {
@@ -182,7 +171,6 @@ private:
     uint32_t m_handleIndex;
 
     pool::NodeHandle m_parent{};
-    std::vector<pool::NodeHandle> m_children;
 
     NodeTransform m_transform;
 

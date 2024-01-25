@@ -111,22 +111,6 @@ void Node::prepare(
     }
 }
 
-void Node::updateWT(
-    const UpdateContext& ctx) noexcept
-{
-    updateModelMatrix();
-
-    if (m_generator) m_generator->updateWT(ctx, *this);
-
-    if (!m_children.empty()) {
-        for (auto& childHandle : m_children) {
-            auto* child = childHandle.toNode();
-            if (!child) continue;
-            child->updateWT(ctx);
-        }
-    }
-}
-
 bool Node::isEntity() const noexcept
 {
     return m_type->getMesh() &&
