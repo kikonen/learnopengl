@@ -15,6 +15,7 @@
 #include "ki/sid.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "asset/Material.h"
 #include "asset/Sprite.h"
@@ -46,9 +47,9 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/MeshTypeRegistry.h"
 
 #include <engine/AsyncLoader.h>
 
@@ -336,18 +337,19 @@ namespace loader {
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
             try {
                 if (data.clones.empty()) {
-                    const mesh::MeshType* type{ nullptr };
-                    resolveEntityClone(type, rootId, data, data.base, false, 0);
+                    pool::TypeHandle typeHandle{};
+                    resolveEntityClone(typeHandle, rootId, data, data.base, false, 0);
                 }
                 else {
-                    const mesh::MeshType* type{ nullptr };
+                    pool::TypeHandle typeHandle{};
 
                     int cloneIndex = 0;
                     for (auto& cloneData : data.clones) {
                         if (!*m_ctx.m_alive) return;
-                        type = resolveEntityClone(type, rootId, data, cloneData, true, cloneIndex);
-                        if (!data.base.cloneMesh)
-                            type = nullptr;
+                        typeHandle = resolveEntityClone(typeHandle, rootId, data, cloneData, true, cloneIndex);
+                        if (!data.base.cloneMesh) {
+                            typeHandle = pool::TypeHandle::NULL_HANDLE;
+                        }
                         cloneIndex++;
                     }
                 }
@@ -362,18 +364,18 @@ namespace loader {
         return true;
     }
 
-    const mesh::MeshType* SceneLoader::resolveEntityClone(
-        const mesh::MeshType* type,
+    pool::TypeHandle SceneLoader::resolveEntityClone(
+        pool::TypeHandle typeHandle,
         const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex)
     {
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
         if (!data.enabled) {
-            return type;
+            return typeHandle;
         }
 
         const auto& repeat = data.repeat;
@@ -381,13 +383,13 @@ namespace loader {
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx.m_alive) return type;
+                    if (!*m_ctx.m_alive) return typeHandle;
 
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    type = resolveEntityCloneRepeat(
-                        type,
+                    typeHandle = resolveEntityCloneRepeat(
+                        typeHandle,
                         rootId,
                         entity,
                         data,
@@ -397,16 +399,16 @@ namespace loader {
                         tilePositionOffset);
 
                     if (!entity.base.cloneMesh)
-                        type = nullptr;
+                        typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
         }
 
-        return type;
+        return typeHandle;
     }
 
-    const mesh::MeshType* SceneLoader::resolveEntityCloneRepeat(
-        const mesh::MeshType* type,
+    pool::TypeHandle SceneLoader::resolveEntityCloneRepeat(
+        pool::TypeHandle typeHandle,
         const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
@@ -415,24 +417,24 @@ namespace loader {
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset)
     {
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
         if (!data.enabled) {
-            return type;
+            return typeHandle;
         }
 
         // NOTE KI overriding material in clones is *NOT* supported"
-        if (!type) {
-            type = createType(
+        if (!typeHandle) {
+            typeHandle = createType(
                 data,
                 tile);
-            if (!type) return type;
+            if (!typeHandle) return typeHandle;
         }
 
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
         auto handle = createNode(
-            type, rootId, data,
+            typeHandle, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
             tilePositionOffset);
@@ -458,15 +460,18 @@ namespace loader {
 
         addResolvedEntity(resolved);
 
-        return type;
+        return typeHandle;
     }
 
-    const mesh::MeshType* SceneLoader::createType(
+    const pool::TypeHandle SceneLoader::createType(
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
-        auto* type = m_registry->m_typeRegistry->registerType(data.baseId.m_path);
-        assignFlags(data, type);
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName(data.baseId.m_path);
+
+        assignFlags(data, typeHandle);
 
         type->m_priority = data.priority;
 
@@ -479,9 +484,9 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveMaterial(type, data);
-            resolveSprite(type, data);
-            resolveMesh(type, data, tile);
+            resolveMaterial(typeHandle, data);
+            resolveSprite(typeHandle, data);
+            resolveMesh(typeHandle, data, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
@@ -490,21 +495,23 @@ namespace loader {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
                         data.baseId, data.desc));
-                    return nullptr;
+                    return pool::TypeHandle::NULL_HANDLE;
                 }
             }
 
-            modifyMaterials(type, data);
-            resolveProgram(type, data);
+            modifyMaterials(typeHandle, data);
+            resolveProgram(typeHandle, data);
         }
 
-        return type;
+        return typeHandle;
     }
 
     void SceneLoader::resolveProgram(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         bool useTBN = false;
         bool useParallax = false;
         bool useDudvTex = false;
@@ -611,7 +618,7 @@ namespace loader {
     }
 
     text::font_id SceneLoader::resolveFont(
-        const mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const TextData& data) const
      {
         auto* font = findFont(data.font);
@@ -619,9 +626,11 @@ namespace loader {
     }
 
     void SceneLoader::resolveMaterial(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
         const Material* material = nullptr;
@@ -639,9 +648,11 @@ namespace loader {
     }
 
     void SceneLoader::modifyMaterials(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         type->modifyMaterials([this, &data](Material& m) {
             m_materialLoader.modifyMaterial(m, data.materialModifiers);
             m.loadTextures(m_assets);
@@ -649,9 +660,11 @@ namespace loader {
     }
 
     void SceneLoader::resolveSprite(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         const Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
@@ -664,10 +677,12 @@ namespace loader {
     }
 
     void SceneLoader::resolveMesh(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
+        auto* type = typeHandle.toType();
+
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
@@ -727,7 +742,7 @@ namespace loader {
     }
 
     pool::NodeHandle SceneLoader::createNode(
-        const mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const ki::node_id rootId,
         const EntityCloneData& data,
         const bool cloned,
@@ -736,6 +751,8 @@ namespace loader {
         const glm::vec3& clonePositionOffset,
         const glm::vec3& tilePositionOffset)
     {
+        auto* type = typeHandle.toType();
+
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
@@ -758,7 +775,7 @@ namespace loader {
 #ifdef _DEBUG
         node->m_resolvedSID = resolvedSID;
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
@@ -782,7 +799,7 @@ namespace loader {
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
 
         if (type->m_entityType == mesh::EntityType::text) {
-            auto fontId = resolveFont(type, data.text);
+            auto fontId = resolveFont(typeHandle, data.text);
             auto generator = std::make_unique<TextGenerator>();
             generator->setFontId(fontId);
             generator->setText(data.text.text);
@@ -795,15 +812,12 @@ namespace loader {
             data.script);
 
         {
-            auto* t = m_registry->m_typeRegistry->modifyType(type->getId());
-            t->setCustomMaterial(
+            type->setCustomMaterial(
                 m_customMaterialLoader.createCustomMaterial(
                     data.customMaterial,
                     cloneIndex,
                     tile));
-            m_registry->m_typeRegistry->registerCustomMaterial(type->getId());
-            type = t;
-            node->m_type = type;
+            m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
         }
 
         return handle;
@@ -811,8 +825,10 @@ namespace loader {
 
     void SceneLoader::assignFlags(
         const EntityCloneData& data,
-        mesh::MeshType* type)
+        pool::TypeHandle typeHandle)
     {
+        auto* type = typeHandle.toType();
+
         mesh::NodeRenderFlags& flags = type->m_flags;
 
         flags.gbuffer = data.programName.starts_with("g_");

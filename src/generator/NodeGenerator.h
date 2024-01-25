@@ -4,6 +4,7 @@
 #include "model/InstancePhysics.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "kigl/kigl.h"
 

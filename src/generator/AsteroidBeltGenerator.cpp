@@ -81,9 +81,9 @@ void AsteroidBeltGenerator::createAsteroids(
 {
     auto& registry = ctx.m_registry;
 
-    auto& type = container.m_type;
+    auto* type = container.m_typeHandle.toType();
 
-    const auto* mesh = container.m_type->getMesh();
+    const auto* mesh = type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();
@@ -94,7 +94,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
         auto& asteroid = m_transforms.emplace_back();
 
-        asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
+        asteroid.setMaterialIndex(type->getMaterialIndex());
         asteroid.setVolume(volume);
     }
 

@@ -8,6 +8,7 @@
 #include "ki/limits.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "audio/size.h"
 
@@ -24,10 +25,6 @@ namespace kigl {
 
 namespace render {
     class Batch;
-}
-
-namespace mesh {
-    class MeshType;
 }
 
 class Assets;
@@ -53,7 +50,6 @@ class Node final
 public:
     Node();
     Node(ki::node_id id);
-    Node(const mesh::MeshType* type);
     Node(Node& o) = delete;
     Node(const Node&) = delete;
     Node(Node&& o) noexcept;
@@ -144,8 +140,7 @@ public:
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
     bool m_visible : 1 { true };
-    // NOTE KI type needed with node for practicality reasons
-    const mesh::MeshType* m_type{ nullptr };
+    pool::TypeHandle m_typeHandle{};
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };

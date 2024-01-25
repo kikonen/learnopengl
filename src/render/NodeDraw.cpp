@@ -5,6 +5,8 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "pool/TypeHandle.h"
+
 #include "component/Camera.h"
 
 #include "mesh/MeshType.h"
@@ -38,14 +40,11 @@ namespace render {
         }
     };
 
-    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    MeshTypeKey::MeshTypeKey(const mesh::MeshType* type)
-        : type(type)
-    {}
 
     bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
-        const auto& a = type;
-        const auto& b = o.type;
+        const auto& a = m_typeHandle.toType();
+        const auto& b = o.m_typeHandle.toType();
+
         if (a->m_drawOptions < b->m_drawOptions) return true;
         else if (b->m_drawOptions < a->m_drawOptions) return false;
         return a->m_id < b->m_id;
@@ -110,7 +109,7 @@ namespace render {
 
     void NodeDraw::handleNodeAdded(Node* node)
     {
-        const auto* type = node->m_type;
+        auto* type = node->m_typeHandle.toType();
         auto* program = type->m_program;
 
         if (type->m_entityType != mesh::EntityType::origo) {
@@ -141,7 +140,7 @@ namespace render {
                     -type->m_priority,
                     type->getDrawOptions());
 
-                const MeshTypeKey typeKey(type);
+                const MeshTypeKey typeKey(node->m_typeHandle);
 
                 auto& list = (*map)[programKey][typeKey];
                 list.reserve(100);
@@ -615,10 +614,11 @@ namespace render {
         auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
 
         auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
-            auto* program = typeMap.begin()->first.type->m_program;
+            auto* type = typeMap.begin()->first.m_typeHandle.toType();
+            auto* program = type->m_program;
 
             for (const auto& it : typeMap) {
-                auto* type = it.first.type;
+                auto* type = it.first.m_typeHandle.toType();
 
                 if (!type->isReady()) continue;
                 if (!typeSelector(type)) continue;
@@ -671,7 +671,7 @@ namespace render {
         std::map<float, Node*> sorted;
         for (const auto& all : m_blendedNodes) {
             for (const auto& map : all.second) {
-                auto* type = map.first.type;
+                auto* type = map.first.m_typeHandle.toType();
 
                 if (!type->isReady()) continue;
                 if (!typeSelector(type)) continue;
@@ -691,7 +691,8 @@ namespace render {
         // NOTE KI order = from furthest away to nearest
         for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
             auto* node = it->second;
-            auto* program = node->m_type->m_program;
+            auto* type = node->m_typeHandle.toType();
+            auto* program = type->m_program;
 
             ctx.m_batch->draw(ctx, *node, program);
         }
@@ -709,7 +710,7 @@ namespace render {
     {
         auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
             for (const auto& it : typeMap) {
-                auto* type = it.first.type;
+                auto* type = it.first.m_typeHandle.toType();
 
                 if (!type->isReady()) continue;
                 if (!typeSelector(type)) continue;
@@ -759,10 +760,12 @@ namespace render {
         auto* node = ctx.m_registry->m_nodeRegistry->m_skybox.toNode();
         if (!node) return;
 
-        if (!node->m_type->isReady()) return;
+        auto* type = node->m_typeHandle.toType();
+
+        if (!type->isReady()) return;
 
         auto& batch = ctx.m_batch;
-        auto* program = node->m_type->m_program;
+        auto* program = type->m_program;
 
         ctx.m_state.setDepthFunc(GL_LEQUAL);
         program->bind(ctx.m_state);

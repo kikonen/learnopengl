@@ -16,7 +16,6 @@
 #include "model/Node.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -35,7 +34,9 @@ namespace loader {
     {
         if (!m_assets.showCubeMapCenter) return;
 
-        auto* type = m_registry->m_typeRegistry->registerType("<cube_map>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<cube_map>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -74,7 +75,7 @@ namespace loader {
 #ifdef _DEBUG
         node->m_resolvedSID = "<cube_map>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         node->m_visible = false;
 

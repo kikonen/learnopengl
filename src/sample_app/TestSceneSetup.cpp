@@ -54,7 +54,10 @@ void TestSceneSetup::setupEffectExplosion()
     m_asyncLoader->addLoader(m_alive, [this]() {
         Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
 
-        auto type = m_registry->m_typeRegistry->registerType("<effect>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<effect>");
+
         type->m_program = program;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
@@ -65,7 +68,7 @@ void TestSceneSetup::setupEffectExplosion()
 #ifdef _DEBUG
         node->m_resolvedSID = "<effect>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         auto& transform = node->modifyTransform();
 

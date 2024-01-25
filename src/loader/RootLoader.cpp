@@ -11,7 +11,6 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 
 namespace loader
 {
@@ -40,8 +39,9 @@ namespace loader
     void RootLoader::attachRoot(
         const RootData& data)
     {
-        auto* type = m_registry->m_typeRegistry->registerType("<root>");
-        type->m_entityType = mesh::EntityType::origo;
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<root>");
 
         auto& flags = type->m_flags;
         flags.invisible = true;
@@ -51,7 +51,7 @@ namespace loader
 #ifdef _DEBUG
         node->m_resolvedSID = "<root>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         {
             event::Event evt { event::Type::node_add };

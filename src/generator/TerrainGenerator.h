@@ -7,7 +7,6 @@
 
 namespace mesh {
     class ModelMesh;
-    class MeshType;
 }
 
 namespace physics {
@@ -59,9 +58,9 @@ private:
         Node& container,
         physics::HeightMap* heightMap);
 
-    ki::type_id createType(
+    pool::TypeHandle createType(
         Registry* registry,
-        const mesh::MeshType* containerType);
+        pool::TypeHandle containerTypeHandle);
 
 public:
     int m_worldTileSize{ 100 };

@@ -4,6 +4,7 @@
 #include <map>
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "GBuffer.h"
 #include "OITBuffer.h"
@@ -68,11 +69,14 @@ namespace render {
 
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeKey {
-        MeshTypeKey(const mesh::MeshType* type);
+        // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+        MeshTypeKey(pool::TypeHandle typeHandle)
+            : m_typeHandle(typeHandle)
+        {}
 
         bool operator<(const MeshTypeKey& o) const;
 
-        const mesh::MeshType* type;
+        const pool::TypeHandle m_typeHandle;
     };
 
     using NodeVector = std::vector<pool::NodeHandle>;

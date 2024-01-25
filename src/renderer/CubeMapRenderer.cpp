@@ -270,7 +270,10 @@ bool CubeMapRenderer::render(
 void CubeMapRenderer::handleNodeAdded(Node* node)
 {
     if (!isEnabled()) return;
-    if (!node->m_type->m_flags.cubeMap) return;
+
+    auto* type = node->m_typeHandle.toType();
+
+    if (!type->m_flags.cubeMap) return;
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);

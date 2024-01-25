@@ -181,7 +181,6 @@ namespace render {
 
     void Batch::addCommand(
         const RenderContext& ctx,
-        const mesh::MeshType* type,
         const kigl::GLVertexArray* vao,
         const backend::DrawOptions& drawOptions,
         Program* program) noexcept
@@ -199,7 +198,7 @@ namespace render {
         Node& node,
         Program* program)
     {
-        const auto type = node.m_type;
+        auto* type = node.m_typeHandle.toType();
 
         if (type->m_flags.invisible || !node.m_visible) return;
 
@@ -225,7 +224,7 @@ namespace render {
             }
 
             if (change) {
-                addCommand(ctx, type, vao, drawOptions, program);
+                addCommand(ctx, vao, drawOptions, program);
             }
 
             auto& top = m_batches.back();

@@ -32,12 +32,6 @@ namespace mesh {
     {
     }
 
-    MeshType::MeshType(std::string_view name)
-        : m_name{ name },
-        m_materialVBO{ std::make_unique<MaterialVBO>()}
-    {
-    }
-
     MeshType::MeshType(MeshType&& o) noexcept
         : m_id{ o.m_id },
         m_name{ o.m_name },

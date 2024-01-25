@@ -13,9 +13,9 @@
 #include "model/Node.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/MeshTypeRegistry.h"
 
 #include "scene/SkyboxMaterial.h"
 
@@ -101,7 +101,10 @@ namespace loader {
     {
         if (!data.valid()) return;
 
-        auto* type = m_registry->m_typeRegistry->registerType("<skybox>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<skybox>");
+
         type->m_priority = data.priority;
 
         auto future = m_registry->m_modelRegistry->getMesh(
@@ -140,7 +143,7 @@ namespace loader {
             material->m_faces = data.faces;
         }
 
-        m_registry->m_typeRegistry->registerCustomMaterial(type->getId());
+        m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
 
         type->setCustomMaterial(std::move(material));
 
@@ -149,7 +152,7 @@ namespace loader {
 #ifdef _DEBUG
         node->m_resolvedSID = "<skybox>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         {
             event::Event evt { event::Type::node_add };

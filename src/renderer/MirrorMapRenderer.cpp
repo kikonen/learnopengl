@@ -283,10 +283,13 @@ bool MirrorMapRenderer::render(
     return true;
 }
 
-void MirrorMapRenderer::handleNodeAdded(Node* node)
+void MirrorMapRenderer::handleNodeAdded(
+    Node* node)
 {
     if (!isEnabled()) return;
-    if (!node->m_type->m_flags.mirror) return;
+
+    auto* type = node->m_typeHandle.toType();
+    if (!type->m_flags.mirror) return;
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);

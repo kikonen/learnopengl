@@ -30,7 +30,6 @@
 #include "event/Dispatcher.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -180,7 +179,7 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    const auto typeId = createType(registry, container.m_type);
+    auto typeHandle = createType(registry, container.m_typeHandle);
     {
         auto future = registry->m_modelRegistry->getMesh(
             TERRAIN_QUAD_MESH_NAME,
@@ -189,7 +188,7 @@ void TerrainGenerator::createTiles(
         mesh->setAABB(aabb);
 
         {
-            auto* type = registry->m_typeRegistry->modifyType(typeId);
+            auto* type = typeHandle.toType();
             type->setMesh(mesh);
         }
     }
@@ -198,7 +197,7 @@ void TerrainGenerator::createTiles(
     // NOTE KI only SINGLE material supported
     int materialIndex = -1;
     {
-        auto* type = registry->m_typeRegistry->modifyType(typeId);
+        auto* type = typeHandle.toType();
 
         auto& drawOptions = type->modifyDrawOptions();
         drawOptions.m_patchVertices = 3;
@@ -264,8 +263,6 @@ void TerrainGenerator::createTiles(
         minmax.updateVolume();
         KI_INFO_OUT(fmt::format("TERRAIN: minmax={}", minmax.getVolume()));
 
-        const auto type = registry->m_typeRegistry->getType(typeId);
-
         auto nodeId = SID("<terrain_tiles>");
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
@@ -273,7 +270,7 @@ void TerrainGenerator::createTiles(
 #ifdef _DEBUG
         node->m_resolvedSID = "<terrain_tiles>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         node->modifyTransform().setVolume(minmax.getVolume());
         node->m_instancer = this;
@@ -291,11 +288,15 @@ void TerrainGenerator::createTiles(
     }
 }
 
-ki::type_id TerrainGenerator::createType(
+pool::TypeHandle TerrainGenerator::createType(
     Registry* registry,
-    const mesh::MeshType* containerType)
+    pool::TypeHandle containerTypeHandle)
 {
-    auto type = registry->m_typeRegistry->registerType(containerType->getName());
+    auto* containerType = containerTypeHandle.toType();
+    auto typeHandle = pool::TypeHandle::allocate();
+
+    auto* type = typeHandle.toType();
+    type->setName(containerType->getName());
     type->m_entityType = mesh::EntityType::terrain;
 
     auto& flags = type->m_flags;
@@ -322,5 +323,5 @@ ki::type_id TerrainGenerator::createType(
         materialVBO->setMaterials(containerMaterials->getMaterials());
     }
 
-    return type->getId();
+    return typeHandle;
 }

@@ -189,7 +189,7 @@ namespace physics
             auto* node = handle.toNode();
             if (!node) return;
 
-            const auto& type = *node->m_type;
+            const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
                 for (auto& transform : node->m_instancer->modifyTransforms()) {
@@ -267,7 +267,8 @@ namespace physics
 
             if (node->getTransform().getMatrixLevel() < 0) continue;
 
-            if (node->m_type->m_flags.staticPhysics) {
+            auto* type = node->m_typeHandle.toType();
+            if (type->m_flags.staticPhysics) {
                 m_enforceBoundsStatic.push_back(handle);
             }
             else {
@@ -295,7 +296,7 @@ namespace physics
 
     void PhysicsEngine::enforceBounds(
         const UpdateContext& ctx,
-        const mesh::MeshType& type,
+        const mesh::MeshType* type,
         Node& node,
         NodeTransform& transform)
     {
@@ -377,7 +378,8 @@ namespace physics
 
     void PhysicsEngine::handleNodeAdded(Node* node)
     {
-        if (!node->m_type->m_flags.enforceBounds) return;
+        auto* type = node->m_typeHandle.toType();
+        if (!type->m_flags.enforceBounds) return;
         m_pendingNodes.push_back(node->toHandle());
     }
 }

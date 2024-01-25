@@ -19,7 +19,6 @@
 
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -38,7 +37,9 @@ namespace loader {
     {
         if (!m_assets.showVolume) return;
 
-        auto type = m_registry->m_typeRegistry->registerType("<volume>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<volume>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -76,7 +77,7 @@ namespace loader {
 #ifdef _DEBUG
         node->m_resolvedSID = "<volume>";
 #endif
-        node->m_type = type;
+        node->m_typeHandle = typeHandle;
 
         node->m_visible = false;
 

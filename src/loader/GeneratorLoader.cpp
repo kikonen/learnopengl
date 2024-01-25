@@ -82,13 +82,14 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
+        auto* type = node->m_typeHandle.toType();
         const auto& center = node->getTransform().getPosition();
 
         switch (data.type) {
         case GeneratorType::terrain: {
             auto generator{ std::make_unique<TerrainGenerator>() };
 
-            auto& materialVBO = node->m_type->m_materialVBO;
+            auto& materialVBO = type->m_materialVBO;
             const auto& tiling = data.tiling;
 
             generator->m_modelsDir = m_assets.modelsDir;

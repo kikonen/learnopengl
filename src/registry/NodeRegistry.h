@@ -11,6 +11,7 @@
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "component/Camera.h"
 #include "component/NodeComponent.h"

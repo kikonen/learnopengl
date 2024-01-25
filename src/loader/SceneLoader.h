@@ -33,12 +33,9 @@
 
 class Registry;
 
-namespace mesh {
-    class MeshType;
-}
-
 namespace pool {
     class NodeHandle;
+    class TypeHandle;
 }
 
 namespace loader {
@@ -89,16 +86,16 @@ namespace loader {
             const ki::node_id rootId,
             const EntityData& data);
 
-        const mesh::MeshType* resolveEntityClone(
-            const mesh::MeshType* type,
+        pool::TypeHandle resolveEntityClone(
+            pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const EntityData& entity,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
 
-        const mesh::MeshType* resolveEntityCloneRepeat(
-            const mesh::MeshType* type,
+        pool::TypeHandle resolveEntityCloneRepeat(
+            pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const EntityData& entity,
             const EntityCloneData& data,
@@ -109,39 +106,39 @@ namespace loader {
 
         void assignFlags(
             const EntityCloneData& data,
-            mesh::MeshType* type);
+            pool::TypeHandle typeHandle);
 
-        const mesh::MeshType* createType(
+        const pool::TypeHandle createType(
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         void resolveProgram(
-            mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const EntityCloneData& data);
 
         text::font_id resolveFont(
-            const mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const TextData& data) const;
 
         void resolveMaterial(
-            mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const EntityCloneData& data);
 
         void modifyMaterials(
-            mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const EntityCloneData& data);
 
         void resolveSprite(
-            mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const EntityCloneData& data);
 
         void resolveMesh(
-            mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
         pool::NodeHandle createNode(
-            const mesh::MeshType* type,
+            pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const EntityCloneData& data,
             const bool cloned,

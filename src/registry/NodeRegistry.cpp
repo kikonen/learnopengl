@@ -389,7 +389,8 @@ void NodeRegistry::attachListeners()
         event::Type::type_prepare_view,
         [this](const event::Event& e) {
             auto& data = e.body.meshType;
-            auto* type = m_registry->m_typeRegistry->modifyType(data.target);
+            auto* type = pool::TypeHandle::toType(data.target);
+            if (!type) return;
             type->prepareRT({ m_assets, m_registry });
         });
 }
@@ -399,6 +400,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     if (!node) return;
 
     auto handle = node->toHandle();
+    auto* type = node->m_typeHandle.toType();
 
     m_registry->m_snapshotRegistry->copyFromPending(0);
     if (node->m_generator) {
@@ -407,7 +409,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
     node->m_preparedRT = true;
 
-    if (node->m_type->getMesh()) {
+    if (type->getMesh()) {
         node->m_entityIndex = m_registry->m_entityRegistry->registerEntity();
     }
 
@@ -466,7 +468,9 @@ void NodeRegistry::attachNode(
     assert(node);
     assert(parentId || nodeId == m_assets.rootId);
 
-    if (node->m_type->m_flags.skybox) {
+    auto* type = node->m_typeHandle.toType();
+
+    if (type->m_flags.skybox) {
         return bindSkybox(node->toHandle());
     }
 
@@ -532,14 +536,9 @@ void NodeRegistry::bindNode(
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    const mesh::MeshType* type;
-    {
-        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->getId());
-        t->prepare({ m_assets, m_registry });
+    auto* type = node->m_typeHandle.toType();
 
-        type = t;
-        node->m_type = type;
-    }
+    type->prepare({ m_assets, m_registry });
     node->prepare({ m_assets, m_registry });
 
     {
@@ -573,7 +572,7 @@ void NodeRegistry::bindNode(
 
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_type->getId();
+        evt.body.meshType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
     }
 
@@ -675,21 +674,16 @@ void NodeRegistry::bindSkybox(
     auto* node = handle.toNode();
     if (!node) return;
 
-    const mesh::MeshType* type;
-    {
-        auto* t = m_registry->m_typeRegistry->modifyType(node->m_type->getId());
-        t->prepare({ m_assets, m_registry });
+    auto* type = node->m_typeHandle.toType();
 
-        type = t;
-        node->m_type = type;
-    }
+    type->prepare({ m_assets, m_registry });
     node->prepare({ m_assets, m_registry });
 
     m_skybox = handle;
 
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_type->getId();
+        evt.body.meshType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
     }
 }

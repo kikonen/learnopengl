@@ -10,10 +10,6 @@ namespace backend {
     class DrawBuffer;
 }
 
-namespace mesh {
-    class MeshType;
-}
-
 class Program;
 
 struct Snapshot;
@@ -82,7 +78,6 @@ namespace render {
     private:
         void addCommand(
             const RenderContext& ctx,
-            const mesh::MeshType* type,
             const kigl::GLVertexArray* vao,
             const backend::DrawOptions& drawOptions,
             Program* program) noexcept;

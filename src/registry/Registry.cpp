@@ -48,7 +48,7 @@ Registry::Registry(
     m_fontRegistryImpl(std::make_unique<FontRegistry>(assets)),
     m_materialRegistryImpl(std::make_unique<MaterialRegistry>(assets, m_alive)),
     m_spriteRegistryImpl(std::make_unique<SpriteRegistry>(assets, m_alive)),
-    m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>(assets, m_alive)),
+    m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>(assets)),
     m_modelRegistryImpl(std::make_unique<ModelRegistry>(assets, m_alive)),
     m_nodeRegistryImpl(std::make_unique<NodeRegistry>(assets, m_alive)),
     m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},

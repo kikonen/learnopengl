@@ -17,7 +17,6 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 
 #include "MaterialLoader.h"

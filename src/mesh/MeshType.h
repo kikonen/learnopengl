@@ -45,7 +45,6 @@ namespace mesh {
 
     public:
         MeshType();
-        MeshType(std::string_view name);
         MeshType(MeshType& o) = delete;
         MeshType(const MeshType& o) = delete;
         MeshType(MeshType&& o) noexcept;
@@ -58,6 +57,9 @@ namespace mesh {
         pool::TypeHandle toHandle() const noexcept;
 
         const std::string& getName() const noexcept { return m_name; }
+        void setName(std::string_view name) noexcept {
+            m_name = name;
+        }
 
         inline bool isReady() const noexcept { return m_preparedView; }
 

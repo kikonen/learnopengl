@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "pool/TypeHandle.h"
 #include "model/Particle.h"
 
 class Assets;
@@ -12,10 +13,6 @@ class RenderContext;
 
 class Registry;
 class Program;
-
-namespace mesh {
-    class MeshType;
-}
 
 class ParticleSystem final
 {
@@ -36,5 +33,5 @@ private:
 
     Program* particleProgram{ nullptr };
 
-    mesh::MeshType* type{ nullptr };
+    pool::TypeHandle m_typeHandle{};
 };
