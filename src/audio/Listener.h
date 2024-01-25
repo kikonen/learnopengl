@@ -8,17 +8,19 @@
 
 #include "size.h"
 
-class Node;
+#include "pool/NodeHandle.h"
 
 namespace audio
 {
     struct Listener {
-        Listener();
+        Listener() {}
         Listener(Listener& o) = delete;
-        Listener& operator=(Listener& o) = delete;
-        Listener& operator=(Listener&& o) noexcept;
+        Listener(const Listener& o) = delete;
         Listener(Listener&& o) noexcept;
         ~Listener();
+
+        Listener& operator=(Listener& o) = delete;
+        Listener& operator=(Listener&& o) noexcept;
 
         inline bool isReady() const { return m_matrixLevel > -1; }
 
@@ -41,6 +43,6 @@ namespace audio
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
         ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

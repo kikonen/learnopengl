@@ -114,7 +114,6 @@ entities:
       x_count: 2
       x_step: 4
   - name: Giant wooden box
-    id: e264f27f-d949-4504-b862-583213484d7c
     type: quad
     xxmodel: woodwall
     material: giant_woodbox
@@ -127,7 +126,6 @@ entities:
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]
-        id: 9da42971-4809-480b-98b6-ed238b978ed2
       - pos: [0.0, -100.0, .0]
         rot: [270, 0, 0]
       - pos: [100.0, 0.0, 0.0]

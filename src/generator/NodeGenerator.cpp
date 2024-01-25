@@ -101,7 +101,7 @@ void NodeGenerator::updateEntity(
 
         auto& entity = entities[i];
 
-        entity.u_objectID = container.m_id;
+        entity.u_objectID = container.getId();
         entity.u_flags = flags;
         entity.u_highlightIndex = highlightIndex;
 
@@ -139,13 +139,13 @@ void NodeGenerator::bindBatch(
 const kigl::GLVertexArray* NodeGenerator::getVAO(
     const Node& container) const noexcept
 {
-    return container.m_type->getVAO();
+    return container.m_typeHandle.toType()->getVAO();
 }
 
 const backend::DrawOptions& NodeGenerator::getDrawOptions(
     const Node& container) const noexcept
 {
-    return container.m_type->getDrawOptions();
+    return container.m_typeHandle.toType()->getDrawOptions();
 }
 
 const glm::vec4 NodeGenerator::calculateVolume()

@@ -4,6 +4,9 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "pool/NodeHandle.h"
+#include "ki/sid.h"
+
 #include "mesh/ModelLoader.h"
 #include "mesh/MeshType.h"
 
@@ -22,7 +25,6 @@
 #include "engine/AsyncLoader.h"
 
 namespace {
-    //constexpr auto PLANET_UUID = KI_UUID("8712cec1-e1a3-4973-8889-533adfbbb196");
 }
 
 TestSceneSetup::TestSceneSetup(
@@ -52,12 +54,22 @@ void TestSceneSetup::setupEffectExplosion()
     m_asyncLoader->addLoader(m_alive, [this]() {
         Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
 
-        auto type = m_registry->m_typeRegistry->registerType("<effect>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<effect>");
+
         type->m_program = program;
         type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
 
-        auto node = new Node(type);
+        auto nodeId = SID("<effect>");
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
+#ifdef _DEBUG
+        node->m_resolvedSID = "<effect>";
+#endif
+        node->m_typeHandle = typeHandle;
+
         auto& transform = node->modifyTransform();
 
         transform.setScale(2);
@@ -65,9 +77,8 @@ void TestSceneSetup::setupEffectExplosion()
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .uuid = {},
-                .parentUUID = m_assets.rootUUID,
+                .target = node->getId(),
+                .parentId = m_assets.rootId,
             };
             m_registry->m_dispatcher->send(evt);
         }

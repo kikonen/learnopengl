@@ -7,7 +7,6 @@
 
 namespace mesh {
     class ModelMesh;
-    class MeshType;
 }
 
 namespace physics {
@@ -37,7 +36,7 @@ public:
         const PrepareContext& ctx,
         Node& container) override;
 
-    virtual void update(
+    virtual void updateWT(
         const UpdateContext& ctx,
         Node& container) override;
 
@@ -59,9 +58,9 @@ private:
         Node& container,
         physics::HeightMap* heightMap);
 
-    ki::type_id createType(
+    pool::TypeHandle createType(
         Registry* registry,
-        const mesh::MeshType* containerType);
+        pool::TypeHandle containerTypeHandle);
 
 public:
     int m_worldTileSize{ 100 };
@@ -81,7 +80,7 @@ private:
     size_t m_poolSizeU{ 0 };
     size_t m_poolSizeV{ 0 };
 
-    Node* m_node{ nullptr };
+    pool::NodeHandle m_nodeHandle{};
 
     std::vector<TerrainTileInfo> m_tileInfos;
 };

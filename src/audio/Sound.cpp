@@ -14,25 +14,6 @@ namespace {
 
 namespace audio
 {
-    Sound& Sound::operator=(Sound&& o) noexcept
-    {
-        m_id = o.m_id;
-        m_bufferId = o.m_bufferId;
-        m_sampleRate = o.m_sampleRate;
-        m_bitDepth = o.m_bitDepth;
-        m_sampleCount = o.m_sampleCount;
-        m_lengthInSeconds = o.m_lengthInSeconds;
-        m_channelCount = o.m_channelCount;
-        m_isMono = o.m_isMono;
-        m_isStereo = o.m_isStereo;
-        m_format = o.m_format;
-        m_data = std::move(o.m_data);
-
-        o.m_bufferId = 0;
-
-        return *this;
-    }
-
     Sound::Sound(Sound&& o) noexcept
         : m_id{ o.m_id },
         m_bufferId{ o.m_bufferId },
@@ -55,6 +36,27 @@ namespace audio
         if (m_bufferId) {
             alDeleteBuffers(1, &m_bufferId);
         }
+    }
+
+    Sound& Sound::operator=(Sound&& o) noexcept
+    {
+        if (&o == this) return *this;
+
+        m_id = o.m_id;
+        m_bufferId = o.m_bufferId;
+        m_sampleRate = o.m_sampleRate;
+        m_bitDepth = o.m_bitDepth;
+        m_sampleCount = o.m_sampleCount;
+        m_lengthInSeconds = o.m_lengthInSeconds;
+        m_channelCount = o.m_channelCount;
+        m_isMono = o.m_isMono;
+        m_isStereo = o.m_isStereo;
+        m_format = o.m_format;
+        m_data = std::move(o.m_data);
+
+        o.m_bufferId = 0;
+
+        return *this;
     }
 
     void Sound::prepare()

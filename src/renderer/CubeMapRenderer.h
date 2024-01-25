@@ -70,11 +70,11 @@ private:
 
     Material m_tagMaterial;
 
-    uuids::uuid m_tagID;
-    Node* m_tagNode{ nullptr };
+    ki::node_id m_tagId;
+    pool::NodeHandle m_tagNode{};
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
 
-    std::vector<Node*> m_nodes;
+    std::vector<pool::NodeHandle> m_nodes;
 };

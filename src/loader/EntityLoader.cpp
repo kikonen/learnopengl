@@ -17,7 +17,6 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 
 #include "MaterialLoader.h"
@@ -155,28 +154,32 @@ namespace loader {
                     reportUnknown("entity_type", k, v);
                 }
             }
+            else if (k == "xid") {
+                data.baseId = readId(v);
+                data.enabled = false;
+            }
+            else if (k == "id") {
+                data.baseId = readId(v);
+            }
+            else if (k == "parent_id") {
+                data.parentBaseId = readId(v);
+            }
+            else if (k == "xxname" || k == "xname") {
+				// NOTE quick disable logic
+                data.name = readString(v);
+                data.enabled = false;
+			}
             else if (k == "name") {
                 data.name = readString(v);
             }
-			else if (k == "xxname" || k == "xname") {
-				// NOTE quick disable logic
-				data.name = readString(v);
-				data.enabled = false;
-			}
+            else if (k == "desc") {
+                data.desc = readString(v);
+            }
             else if (k == "active") {
                 data.active = readBool(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);
-            }
-			else if (k == "desc") {
-                data.desc = readString(v);
-            }
-            else if (k == "id") {
-                data.idBase = readUUID(v);
-            }
-            else if (k == "parent_id") {
-                data.parentIdBase = readUUID(v);
             }
             else if (k == "model") {
                 if (v.Type() == YAML::NodeType::Sequence) {

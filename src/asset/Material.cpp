@@ -5,9 +5,10 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <mutex>
 
 #include "fmt/format.h"
+
+#include "pool/IdGenerator.h"
 
 #include "util/Util.h"
 
@@ -21,15 +22,7 @@
 
 
 namespace {
-    ki::material_id idBase = 0;
-
-    std::mutex type_id_lock{};
-
-    ki::material_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++idBase;
-    }
+    IdGenerator<ki::material_id> ID_GENERATOR;
 
     float calculateAmbient(glm::vec3 ambient) {
         return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -133,7 +126,7 @@ const Material* Material::findID(
 }
 
 Material::Material()
-    : m_id(nextID())
+    : m_id(ID_GENERATOR.nextId())
 {
 }
 

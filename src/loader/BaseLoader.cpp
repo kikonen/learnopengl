@@ -8,7 +8,7 @@
 
 #include "util/Log.h"
 #include "ki/yaml.h"
-#include "ki/uuid.h"
+#include "ki/sid.h"
 
 #include "util/Util.h"
 
@@ -17,23 +17,12 @@
 #include "registry/Registry.h"
 
 namespace {
-    std::mutex uuid_lock{};
-
-    std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
+    //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
 }
 
 namespace loader
 {
     //static const float DEF_ALPHA = 1.0;
-
-    //static const std::string AUTO_UUID{ "AUTO" };
-    //static const std::string ROOT_UUID{ "ROOT" };
-    //static const std::string VOLUME_UUID{ "VOLUME" };
-    //static const std::string CUBE_MAP_UUID{ "CUBE_MAP" };
-
-    //static const std::string MACRO_STEP_X{ "X" };
-    //static const std::string MACRO_STEP_Y{ "Y" };
-    //static const std::string MACRO_STEP_Z{ "Z" };
 
     BaseLoader::BaseLoader(
         Context ctx)
@@ -407,112 +396,96 @@ namespace loader
         return glm::vec2{ a[0], a[1] };
     }
 
-    uuids::uuid BaseLoader::resolveUUID(
-        const BaseUUID& parts,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
-        if (parts.empty()) {
-            return {};
-        }
-
-        const auto key = util::toUpper(parts[0]);
-
-        if (key.empty()) return {};
-
-        if (key == AUTO_UUID) {
-            return resolveAutoUUID(parts, cloneIndex, tile, 1);
-        }
-        else if (key == ROOT_UUID) {
-            return m_ctx.m_assets.rootUUID;
-        }
-        else if (key == VOLUME_UUID) {
-            return m_ctx.m_assets.volumeUUID;
-        }
-        else if (key == CUBE_MAP_UUID) {
-            return m_ctx.m_assets.cubeMapUUID;
-        }
-        else if (std::regex_match(key, UUID_RE)) {
-            return KI_UUID(key);
-        }
-        else {
-            return resolveAutoUUID(parts, cloneIndex, tile, 0);
-        }
-    }
-
-    uuids::uuid BaseLoader::resolveAutoUUID(
-        const BaseUUID& parts,
+    std::tuple<ki::node_id, std::string> BaseLoader::resolveId(
+        const BaseId& baseId,
         const int cloneIndex,
         const glm::uvec3& tile,
-        int index)
+        bool automatic)
     {
-        uuids::uuid uuid;
-        if (parts.size() > index) {
-            std::string name = expandMacros(parts[index], cloneIndex, tile);
-
-            {
-                std::lock_guard<std::mutex> lock(uuid_lock);
-
-                if (const auto& it = m_ctx.m_autoIds->find(name);
-                    it == m_ctx.m_autoIds->end())
-                {
-                    uuid = uuids::uuid_system_generator{}();
-                    (*m_ctx.m_autoIds)[name] = uuid;
-                }
-                else {
-                    uuid = it->second;
-                }
-            }
+        if (baseId.empty()) {
+            return { 0, "" };
         }
-        if (uuid.is_nil()) {
-            uuid = uuids::uuid_system_generator{}();
+
+        std::string key = expandMacros(baseId.m_path, cloneIndex, tile, automatic);
+
+        if (key == ROOT_ID) {
+            return { m_ctx.m_assets.rootId, "<root>" };
         }
-        return uuid;
+        else {
+            auto nodeId = SID(key);
+            //KI_INFO_OUT(fmt::format("SID: sid={}, key={}", nodeId, key));
+            return { nodeId, key };
+        }
+
     }
 
     std::string BaseLoader::expandMacros(
         const std::string& str,
         const int cloneIndex,
-        const glm::uvec3& tile)
+        const glm::uvec3& tile,
+        bool automatic)
     {
         std::string out{ str };
 
+        bool handledClone = false;
+        bool handledTile = false;
+
+        {
+            const auto pos = out.find("{c}");
+            if (pos != std::string::npos) {
+                handledClone = true;
+                out.replace(pos, 3, fmt::format("{}", cloneIndex));
+            }
+        }
+        {
+            const auto pos = out.find("{t}");
+            if (pos != std::string::npos) {
+                handledClone = true;
+                out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
+            }
+        }
         {
             const auto pos = out.find("{x}");
             if (pos != std::string::npos) {
+                handledTile = true;
                 out.replace(pos, 3, fmt::format("{}", tile.x));
             }
         }
         {
             const auto pos = out.find("{y}");
             if (pos != std::string::npos) {
+                handledTile = true;
                 out.replace(pos, 3, fmt::format("{}", tile.y));
             }
         }
         {
             const auto pos = out.find("{z}");
             if (pos != std::string::npos) {
+                handledTile = true;
                 out.replace(pos, 3, fmt::format("{}", tile.z));
+            }
+        }
+
+        if (automatic) {
+            if (!handledClone && cloneIndex > 0) {
+                out = fmt::format("{}_{}", out, cloneIndex);
+            }
+
+            if (!handledTile && (tile.x > 0 || tile.y > 0 || tile.z > 0)) {
+                out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
             }
         }
 
         return out;
     }
 
-    BaseUUID BaseLoader::readUUID(const YAML::Node& node) const
+    BaseId BaseLoader::readId(const YAML::Node& node) const
     {
-        BaseUUID parts;
+        BaseId baseId;
 
-        if (node.IsSequence()) {
-            for (const auto& e : node) {
-                parts.push_back(e.as<std::string>());
-            }
-        }
-        else {
-            parts.push_back(node.as<std::string>());
-        }
+        baseId.m_path = node.as<std::string>();
 
-        return parts;
+        return baseId;
     }
 
     const std::string BaseLoader::resolveTexturePath(std::string_view path) const

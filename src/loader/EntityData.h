@@ -11,7 +11,7 @@
 
 #include "mesh/EntityType.h"
 
-#include "BaseUUID.h"
+#include "BaseId.h"
 #include "BaseData.h"
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
@@ -33,13 +33,13 @@ namespace loader {
 
         mesh::EntityType type{ mesh::EntityType::model };
 
+        BaseId baseId;
+        BaseId parentBaseId;
+
         std::string name;
         std::string desc;
 
         int priority{ 0 };
-
-        BaseUUID idBase;
-        BaseUUID parentIdBase;
 
         std::string meshName;
         std::string meshPath;

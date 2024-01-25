@@ -26,7 +26,7 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -43,7 +43,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -56,44 +56,64 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
     m_materialIndex = o.m_materialIndex;
     m_shapeIndex = o.m_shapeIndex;
 
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 
     m_worldPos = o.m_worldPos;
-    m_quatRotation = o.m_quatRotation;
+
+    if (m_quatRotation != o.m_quatRotation) {
+        m_quatRotation = o.m_quatRotation;
+        m_dirtyNormal = true;
+    }
+
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
     m_modelMatrix = o.m_modelMatrix;
-    m_modelScale = o.m_modelScale;
+
+    if (m_modelScale != o.m_modelScale) {
+        m_modelScale = o.m_modelScale;
+        m_dirtyNormal = true;
+    }
 
     return *this;
 }
 
-//Snapshot& Snapshot::operator=(Snapshot& o) noexcept
-//{
-//    m_dirty = o.m_dirty;
-//    m_matrixLevel = o.m_matrixLevel;
-//
-//    m_flags = o.m_flags;
-//
-//    m_materialIndex = o.m_materialIndex;
-//    m_shapeIndex = o.m_shapeIndex;
-//
-//    m_volume = o.m_volume;
-//
-//    m_worldPos = o.m_worldPos;
-//    m_quatRotation = o.m_quatRotation;
-//    m_viewUp = o.m_viewUp;
-//    m_viewFront = o.m_viewFront;
-//    m_viewRight = o.m_viewRight;
-//    m_modelMatrix = o.m_modelMatrix;
-//    m_modelScale = o.m_modelScale;
-//
-//    return *this;
-//}
+Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
+{
+    if (&o == this) return *this;
 
-const glm::vec3& Snapshot::getDegreesRotation() const noexcept
+    m_dirty = o.m_dirty;
+    m_matrixLevel = o.m_matrixLevel;
+
+    m_flags = o.m_flags;
+
+    m_materialIndex = o.m_materialIndex;
+    m_shapeIndex = o.m_shapeIndex;
+
+    m_volume = o.m_volume;
+
+    m_worldPos = o.m_worldPos;
+
+    if (m_quatRotation != o.m_quatRotation) {
+        m_quatRotation = o.m_quatRotation;
+        m_dirtyNormal = true;
+    }
+
+    m_viewUp = o.m_viewUp;
+    m_viewFront = o.m_viewFront;
+    m_viewRight = o.m_viewRight;
+    m_modelMatrix = o.m_modelMatrix;
+
+    if (m_modelScale != o.m_modelScale) {
+        m_modelScale = o.m_modelScale;
+        m_dirtyNormal = true;
+    }
+
+    return *this;
+}
+
+glm::vec3 Snapshot::getDegreesRotation() const noexcept
 {
     return util::quatToDegrees(m_quatRotation);
 }
@@ -116,7 +136,10 @@ void Snapshot::updateEntity(
     const auto uniformScale = (m_flags & PLANE_BITS) != 0
         || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
-    entity.setModelMatrix(m_modelMatrix, uniformScale, true);
+    // NOTE KI normal may change only if scale changes
+    entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyNormal);
 
     entity.u_worldScale = m_modelScale;
+
+    m_dirtyNormal = false;
 }

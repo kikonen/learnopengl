@@ -3,6 +3,9 @@
 #include "model/NodeTransform.h"
 #include "model/InstancePhysics.h"
 
+#include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
+
 #include "kigl/kigl.h"
 
 namespace kigl {
@@ -43,7 +46,11 @@ public:
         const PrepareContext& ctx,
         Node& container) {}
 
-    virtual void update(
+    virtual void prepareRT(
+        const PrepareContext& ctx,
+        Node& container) {}
+
+    virtual void updateWT(
         const UpdateContext& ctx,
         Node& container) {}
 

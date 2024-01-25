@@ -2,6 +2,8 @@
 
 #include "ki/yaml.h"
 
+#include "pool/NodeHandle.h"
+
 #include "model/Node.h"
 
 #include "event/Dispatcher.h"
@@ -9,7 +11,6 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 
 namespace loader
 {
@@ -23,7 +24,7 @@ namespace loader
         const YAML::Node& node,
         RootData& data) const
     {
-        data.rootId = m_assets.rootUUID;
+        data.rootId = m_assets.rootId;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -38,19 +39,24 @@ namespace loader
     void RootLoader::attachRoot(
         const RootData& data)
     {
-        auto* type = m_registry->m_typeRegistry->registerType("<root>");
-        type->m_entityType = mesh::EntityType::origo;
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<root>");
 
         auto& flags = type->m_flags;
         flags.invisible = true;
 
-        auto node = new Node(type);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.rootId);
+        auto* node = handle.toNode();
+#ifdef _DEBUG
+        node->m_resolvedSID = "<root>";
+#endif
+        node->m_typeHandle = typeHandle;
 
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .uuid = data.rootId,
+                .target = data.rootId,
             };
             m_dispatcher->send(evt);
         }

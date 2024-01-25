@@ -130,13 +130,12 @@ entities:
       quadratic: 0.07
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 1000
-  - name: ball origo
+  - id: ball_origo
     type: origo
-    id: origo
     pos: [0.0, 25.0, 0.0]
   - name: Basic ball
     model: water_ball
-    parent_id: origo
+    parent_id: ball_origo
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
@@ -153,7 +152,7 @@ entities:
         type: sphere
         size: 1.3
   - name: Gold ball
-    parent_id: origo
+    parent_id: ball_origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 5.0]
@@ -175,7 +174,7 @@ entities:
         type: sphere
         size: 1.3
   - name: Fence ball
-    parent_id: origo
+    parent_id: ball_origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 10.0]
@@ -199,7 +198,7 @@ entities:
         type: sphere
         size: 1.3
   - name: Plastic ball
-    parent_id: origo
+    parent_id: ball_origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 15.0]
@@ -218,7 +217,7 @@ entities:
         type: sphere
         size: 1.3
   - name: Rusted iron ball
-    parent_id: origo
+    parent_id: ball_origo
     model: water_ball
     program: g_tex
     pos: [-10.0, 0.0, 20.0]
@@ -238,7 +237,7 @@ entities:
         type: sphere
         size: 1.3
   - name: Old gold ball
-    parent_id: origo
+    parent_id: ball_origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 25.0]
@@ -274,9 +273,8 @@ entities:
       render_back: true
       no_shadow: true
     scale: 200
-  - name: cube origo
+  - id: cube_origo
     type: origo
-    id: cube_origo
     pos: [0.0, 30.0, 0.0]
   - name: Four cubes
     parent_id: cube_origo

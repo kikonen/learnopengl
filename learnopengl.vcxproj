@@ -138,7 +138,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -160,8 +160,8 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;WIN32</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -170,6 +170,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <StringPooling>true</StringPooling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -192,10 +193,17 @@
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
+    <ClCompile Include="src\ki\FpsCounter.cpp" />
+    <ClCompile Include="src\loader\BaseId.cpp" />
+    <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
+    <ClCompile Include="src\pool\IdHash.cpp" />
+    <ClCompile Include="src\pool\Pool.hpp" />
+    <ClCompile Include="src\pool\TypeHandle.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
+    <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
@@ -218,7 +226,7 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
     <ClCompile Include="src\loader\AudioLoader.cpp" />
     <ClCompile Include="src\loader\BaseLoader.cpp" />
-    <ClCompile Include="src\loader\BaseUUID.h" />
+    <ClCompile Include="src\loader\BaseId.h" />
     <ClCompile Include="src\loader\CameraLoader.cpp" />
     <ClCompile Include="src\loader\Contet.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
@@ -392,8 +400,12 @@
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
+    <ClInclude Include="src\ki\FpsCounter.h" />
+    <ClInclude Include="src\ki\sid.h" />
+    <ClInclude Include="src\loader\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
+    <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
@@ -403,7 +415,12 @@
     <ClInclude Include="src\mesh\TextMesh.h" />
     <ClInclude Include="src\mesh\TextureEntry.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
+    <ClInclude Include="src\pool\Entry.h" />
+    <ClInclude Include="src\pool\IdHash.h" />
+    <ClInclude Include="src\pool\TypeHandle.h" />
     <ClInclude Include="src\registry\FontRegistry.h" />
+    <ClInclude Include="src\pool\NodeHandle.h" />
+    <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
@@ -594,6 +611,7 @@
     <ClInclude Include="src\util\DirtyVector.hpp" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
+    <ClInclude Include="src\pool\IdGenerator.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\asset\ImageTexture.h" />
     <ClInclude Include="src\asset\PlainTexture.h" />

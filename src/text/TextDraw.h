@@ -2,17 +2,16 @@
 
 #include <string_view>
 
+#include <glm/glm.hpp>
+
 #include "text/size.h"
 
-#include "mesh/ModelVAO.h"
-#include "mesh/ModelVBO.h"
-
-namespace backend {
-    struct DrawOptions;
+namespace kigl {
+    class GLState;
 }
 
-namespace kigl {
-    struct GLVertexArray;
+namespace mesh {
+    class ModelVBO;
 }
 
 struct PrepareContext;
@@ -38,20 +37,12 @@ namespace text
             const RenderContext& ctx,
             text::font_id fontId,
             std::string_view text,
-            backend::DrawOptions& drawOptions,
-            bool append);
+            glm::vec2& pen,
+            mesh::ModelVBO& vbo);
 
         void clear();
 
-        const kigl::GLVertexArray* getVAO() const noexcept
-        {
-            return m_vao.getVAO();
-        }
-
     private:
-        mesh::ModelVAO m_vao{ "text" };
-        mesh::ModelVBO m_vbo;
-
         text::FontAtlas* m_lastFont{ nullptr };
     };
 }

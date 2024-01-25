@@ -16,6 +16,5 @@ namespace loader {
         m_fileName(fileName),
         m_fullPath(util::joinPath(dirName, fileName))
     {
-        m_autoIds = std::make_shared<std::unordered_map<std::string, uuids::uuid>>();
     }
 }

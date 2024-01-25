@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <sstream>
-#include <mutex>
 #include <filesystem>
 
 #include <fmt/format.h>
@@ -22,6 +21,8 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "pool/IdGenerator.h"
+
 #include "kigl/GLState.h"
 
 #include "ProgramUniforms.h"
@@ -34,15 +35,7 @@ namespace {
 
     const std::string GEOM_NONE{ "" };
 
-    ki::program_id idBase = 0;
-
-    std::mutex type_id_lock{};
-
-    ki::program_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(type_id_lock);
-        return ++idBase;
-    }
+    IdGenerator<ki::program_id> ID_GENERATOR;
 }
 
 Program::Program(
@@ -52,7 +45,7 @@ Program::Program(
     const bool compute,
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<> >& defines)
-    : m_id(nextID()),
+    : m_id(ID_GENERATOR.nextId()),
     m_assets{ assets },
     m_key{ key },
     m_programName{ name },

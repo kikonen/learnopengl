@@ -12,6 +12,10 @@
 #include "util/glm_util.h"
 
 #include "ki/yaml.h"
+#include "ki/sid.h"
+
+#include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "asset/Material.h"
 #include "asset/Sprite.h"
@@ -43,12 +47,13 @@
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/MeshTypeRegistry.h"
 
 #include <engine/AsyncLoader.h>
 
+#include "DagSort.h"
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
@@ -120,38 +125,47 @@ namespace loader {
         m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
-            std::ifstream fin(this->m_ctx.m_fullPath);
-            YAML::Node doc = YAML::Load(fin);
+            try {
+                std::ifstream fin(this->m_ctx.m_fullPath);
+                YAML::Node doc = YAML::Load(fin);
 
-            loadMeta(doc["meta"], m_meta);
+                loadMeta(doc["meta"], m_meta);
 
-            m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+                m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
 
-            m_fontLoader.loadFonts(doc["fonts"], m_fonts);
-            m_materialLoader.loadMaterials(doc["materials"], m_materials);
-            m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
+                m_fontLoader.loadFonts(doc["fonts"], m_fonts);
+                m_materialLoader.loadMaterials(doc["materials"], m_materials);
+                m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
-            m_rootLoader.loadRoot(doc["root"], m_root);
-            m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
+                m_rootLoader.loadRoot(doc["root"], m_root);
+                m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
 
-            m_entityLoader.loadEntities(
-                doc["entities"],
-                m_entities,
-                m_materialLoader,
-                m_customMaterialLoader,
-                m_spriteLoader,
-                m_cameraLoader,
-                m_lightLoader,
-                m_audioLoader,
-                m_controllerLoader,
-                m_generatorLoader,
-                m_physicsLoader,
-                m_scriptLoader);
+                m_entityLoader.loadEntities(
+                    doc["entities"],
+                    m_entities,
+                    m_materialLoader,
+                    m_customMaterialLoader,
+                    m_spriteLoader,
+                    m_cameraLoader,
+                    m_lightLoader,
+                    m_audioLoader,
+                    m_controllerLoader,
+                    m_generatorLoader,
+                    m_physicsLoader,
+                    m_scriptLoader);
 
-            attach(m_root);
+                validate(m_root);
+                attach(m_root);
 
-            std::lock_guard<std::mutex> lock(m_ready_lock);
-            m_runningCount--;
+                std::lock_guard<std::mutex> lock(m_ready_lock);
+                m_runningCount--;
+            }
+            catch (const std::runtime_error& ex) {
+                KI_CRITICAL(ex.what());
+
+                std::lock_guard<std::mutex> lock(m_ready_lock);
+                m_runningCount--;
+            }
         });
     }
 
@@ -172,6 +186,20 @@ namespace loader {
         // NOTE KI event will be put queue *AFTER* entity attach events
         // => should they should be fully attached in scene at this point
         // => worker will trigger event into UI thread after processing all updates
+
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
+            try {
+                attachResolvedEntities(m_resolvedEntities);
+                notifySceneLoaded();
+            }
+            catch (const std::runtime_error& ex) {
+                throw ex;
+            }
+        });
+    }
+
+    void SceneLoader::notifySceneLoaded()
+    {
         {
             event::Event evt { event::Type::scene_loaded };
             m_dispatcher->send(evt);
@@ -195,7 +223,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& entity : m_entities) {
-                if (attachEntity(root.rootId, entity)) {
+                if (resolveEntity(root.rootId, entity)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: entity={}, pending={}", entity.base.name, m_pendingCount));
                 }
@@ -205,29 +233,123 @@ namespace loader {
         }
     }
 
-    bool SceneLoader::attachEntity(
-        const uuids::uuid& rootId,
+    void SceneLoader::attachResolvedEntities(
+        std::vector<ResolvedEntity>& resolvedEntities)
+    {
+        DagSort sorter;
+        auto sorted = sorter.sort(resolvedEntities);
+
+        for (auto* resolved : sorted) {
+            if (!*m_ctx.m_alive) return;
+            attachResolvedEntity(*resolved);
+        }
+    }
+
+    void SceneLoader::attachResolvedEntity(
+        const ResolvedEntity& resolved)
+    {
+        auto& handle = resolved.handle;
+        auto& data = resolved.data;
+
+        {
+            event::Event evt { event::Type::node_add };
+            evt.body.node = {
+                .target = handle.toId(),
+                .parentId = resolved.parentId,
+            };
+            m_dispatcher->send(evt);
+        }
+
+        if (data.active) {
+            event::Event evt { event::Type::node_activate };
+            evt.body.node = {
+                .target = handle.toId(),
+            };
+            m_dispatcher->send(evt);
+        }
+
+        if (data.selected) {
+            event::Event evt { event::Type::node_select };
+            evt.body.node = {
+                .target = handle.toId(),
+            };
+            m_dispatcher->send(evt);
+        }
+
+        if (data.camera.isDefault) {
+            event::Event evt { event::Type::camera_activate };
+            evt.body.node = {
+                .target = handle.toId(),
+            };
+            m_dispatcher->send(evt);
+        }
+
+        for (auto& controllerData : data.controllers) {
+            if (!controllerData.enabled) continue;
+
+            auto* controller = m_controllerLoader.createController(controllerData, handle);
+
+            event::Event evt { event::Type::controller_add };
+            evt.body.control = {
+                .target = handle.toId(),
+                .controller = controller
+            };
+            m_dispatcher->send(evt);
+        }
+
+        // try anim event
+        //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
+        if (data.desc == "Cow")
+        {
+            event::Event evt { event::Type::animate_rotate };
+            evt.body.animate = {
+                .target = handle.toId(),
+                .duration = 20,
+                .data = { 0, 1.f, 0 },
+                .data2 = { 360.f, 0.f, 0.f },
+            };
+            m_dispatcher->send(evt);
+        }
+
+        {
+            m_audioLoader.createAudio(data.audio, handle.toId());
+            m_physicsLoader.createObject(data.physics, handle.toId());
+        }
+    }
+
+    void SceneLoader::addResolvedEntity(
+        const ResolvedEntity& resolved)
+    {
+        {
+            std::lock_guard<std::mutex> lock(m_ready_lock);
+            m_resolvedEntities.push_back(resolved);
+        }
+    }
+
+    bool SceneLoader::resolveEntity(
+        const ki::node_id rootId,
         const EntityData& data)
     {
         if (!data.base.enabled) {
             return false;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, &rootId, &data]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
             try {
                 if (data.clones.empty()) {
-                    const mesh::MeshType* type{ nullptr };
-                    attachEntityClone(type, rootId, data, data.base, false, 0);
+                    pool::TypeHandle typeHandle{};
+                    resolveEntityClone(typeHandle, rootId, data, data.base, false, 0);
                 }
                 else {
-                    const mesh::MeshType* type{ nullptr };
+                    pool::TypeHandle typeHandle{};
 
                     int cloneIndex = 0;
                     for (auto& cloneData : data.clones) {
                         if (!*m_ctx.m_alive) return;
-                        type = attachEntityClone(type, rootId, data, cloneData, true, cloneIndex);
-                        if (!data.base.cloneMesh)
-                            type = nullptr;
+                        typeHandle = resolveEntityClone(typeHandle, rootId, data, cloneData, true, cloneIndex);
+                        if (!data.base.cloneMesh) {
+                            typeHandle = pool::TypeHandle::NULL_HANDLE;
+                        }
                         cloneIndex++;
                     }
                 }
@@ -242,18 +364,18 @@ namespace loader {
         return true;
     }
 
-    const mesh::MeshType* SceneLoader::attachEntityClone(
-        const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+    pool::TypeHandle SceneLoader::resolveEntityClone(
+        pool::TypeHandle typeHandle,
+        const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex)
     {
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
         if (!data.enabled) {
-            return type;
+            return typeHandle;
         }
 
         const auto& repeat = data.repeat;
@@ -261,16 +383,13 @@ namespace loader {
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx.m_alive) return type;
+                    if (!*m_ctx.m_alive) return typeHandle;
 
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    if (x > 0 && z > 0)
-                        int zz = 0;
-
-                    type = attachEntityCloneRepeat(
-                        type,
+                    typeHandle = resolveEntityCloneRepeat(
+                        typeHandle,
                         rootId,
                         entity,
                         data,
@@ -280,17 +399,17 @@ namespace loader {
                         tilePositionOffset);
 
                     if (!entity.base.cloneMesh)
-                        type = nullptr;
+                        typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
         }
 
-        return type;
+        return typeHandle;
     }
 
-    const mesh::MeshType* SceneLoader::attachEntityCloneRepeat(
-        const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+    pool::TypeHandle SceneLoader::resolveEntityCloneRepeat(
+        pool::TypeHandle typeHandle,
+        const ki::node_id rootId,
         const EntityData& entity,
         const EntityCloneData& data,
         bool cloned,
@@ -298,109 +417,61 @@ namespace loader {
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset)
     {
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
         if (!data.enabled) {
-            return type;
+            return typeHandle;
         }
 
         // NOTE KI overriding material in clones is *NOT* supported"
-        if (!type) {
-            type = createType(
+        if (!typeHandle) {
+            typeHandle = createType(
                 data,
                 tile);
-            if (!type) return type;
+            if (!typeHandle) return typeHandle;
         }
 
-        if (!*m_ctx.m_alive) return type;
+        if (!*m_ctx.m_alive) return typeHandle;
 
-        auto node = createNode(
-            type, rootId, data,
+        auto handle = createNode(
+            typeHandle, rootId, data,
             cloned, cloneIndex, tile,
             data.clonePositionOffset,
             tilePositionOffset);
 
-        {
-            // NOTE KI no id for clones; would duplicate base id => conflicts
-            // => except if clone defines own ID
-            const auto uuid = resolveUUID(data.idBase, cloneIndex, tile);
-
-            event::Event evt { event::Type::node_add };
-            evt.body.node.target = node;
-            evt.body.node.uuid = uuid;
-            {
-                if (data.parentIdBase.empty()) {
-                    evt.body.node.parentUUID = rootId;
-                }
-                else {
-                    evt.body.node.parentUUID = resolveUUID(
-                        data.parentIdBase,
-                        cloneIndex,
-                        tile);
-                }
-            }
-            m_dispatcher->send(evt);
+        ki::node_id parentId;
+        if (data.parentBaseId.empty()) {
+            parentId = rootId;
+        }
+        else {
+            auto [id, _] = resolveId(
+                data.parentBaseId,
+                cloneIndex,
+                tile,
+                false);
+            parentId = id;
         }
 
-        if (data.active) {
-            event::Event evt { event::Type::node_activate };
-            evt.body.node.target = node;
-            m_dispatcher->send(evt);
-        }
+        ResolvedEntity resolved{
+            parentId,
+            handle,
+            data
+        };
 
-        if (data.selected) {
-            event::Event evt { event::Type::node_select };
-            evt.body.node.target = node;
-            m_dispatcher->send(evt);
-        }
+        addResolvedEntity(resolved);
 
-        if (data.camera.isDefault) {
-            event::Event evt { event::Type::camera_activate };
-            evt.body.node.target = node;
-            m_dispatcher->send(evt);
-        }
-
-        for (auto& controllerData : data.controllers) {
-            if (!controllerData.enabled) continue;
-
-            auto* controller = m_controllerLoader.createController(controllerData, node);
-
-            event::Event evt { event::Type::controller_add };
-            evt.body.control = {
-                .target = node->m_id,
-                .controller = controller
-            };
-            m_dispatcher->send(evt);
-        }
-
-        // try anim event
-        //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
-        if (data.name == "Cow")
-        {
-            event::Event evt { event::Type::animate_rotate };
-            evt.body.animate = {
-                .target = node->m_id,
-                .duration = 20,
-                .data = { 0, 1.f, 0 },
-                .data2 = { 360.f, 0.f, 0.f },
-            };
-            m_dispatcher->send(evt);
-        }
-
-        {
-            m_audioLoader.createAudio(data.audio, node->m_id);
-            m_physicsLoader.createObject(data.physics, node->m_id);
-        }
-
-        return type;
+        return typeHandle;
     }
 
-    const mesh::MeshType* SceneLoader::createType(
+    const pool::TypeHandle SceneLoader::createType(
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
-        auto* type = m_registry->m_typeRegistry->registerType(data.name);
-        assignFlags(data, type);
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName(data.baseId.m_path);
+
+        assignFlags(data, typeHandle);
 
         type->m_priority = data.priority;
 
@@ -413,9 +484,9 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveMaterial(type, data);
-            resolveSprite(type, data);
-            resolveMesh(type, data, tile);
+            resolveMaterial(typeHandle, data);
+            resolveSprite(typeHandle, data);
+            resolveMesh(typeHandle, data, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
@@ -423,22 +494,24 @@ namespace loader {
                 if (!type->getMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                        data.idBase, data.name));
-                    return nullptr;
+                        data.baseId, data.desc));
+                    return pool::TypeHandle::NULL_HANDLE;
                 }
             }
 
-            modifyMaterials(type, data);
-            resolveProgram(type, data);
+            modifyMaterials(typeHandle, data);
+            resolveProgram(typeHandle, data);
         }
 
-        return type;
+        return typeHandle;
     }
 
     void SceneLoader::resolveProgram(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         bool useTBN = false;
         bool useParallax = false;
         bool useDudvTex = false;
@@ -545,7 +618,7 @@ namespace loader {
     }
 
     text::font_id SceneLoader::resolveFont(
-        const mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const TextData& data) const
      {
         auto* font = findFont(data.font);
@@ -553,9 +626,11 @@ namespace loader {
     }
 
     void SceneLoader::resolveMaterial(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         // NOTE KI need to create copy *IF* modifiers
         // TODO KI should make copy *ALWAYS* for safety
         const Material* material = nullptr;
@@ -573,9 +648,11 @@ namespace loader {
     }
 
     void SceneLoader::modifyMaterials(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         type->modifyMaterials([this, &data](Material& m) {
             m_materialLoader.modifyMaterial(m, data.materialModifiers);
             m.loadTextures(m_assets);
@@ -583,9 +660,11 @@ namespace loader {
     }
 
     void SceneLoader::resolveSprite(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
+        auto* type = typeHandle.toType();
+
         const Sprite* sprite{ nullptr };
 
         if (!data.spriteName.empty()) {
@@ -598,10 +677,12 @@ namespace loader {
     }
 
     void SceneLoader::resolveMesh(
-        mesh::MeshType* type,
+        pool::TypeHandle typeHandle,
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
+        auto* type = typeHandle.toType();
+
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
@@ -613,8 +694,8 @@ namespace loader {
             type->m_entityType = mesh::EntityType::model;
 
             KI_INFO(fmt::format(
-                "SCENE_FILE ATTACH: id={}, type={}",
-                data.idBase, type->str()));
+                "SCENE_FILE ATTACH: id={}, desc={}, type={}",
+                data.baseId, data.desc, type->str()));
         }
         else if (data.type == mesh::EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
@@ -660,9 +741,9 @@ namespace loader {
         }
     }
 
-    Node* SceneLoader::createNode(
-        const mesh::MeshType* type,
-        const uuids::uuid& rootId,
+    pool::NodeHandle SceneLoader::createNode(
+        pool::TypeHandle typeHandle,
+        const ki::node_id rootId,
         const EntityCloneData& data,
         const bool cloned,
         const int cloneIndex,
@@ -670,7 +751,31 @@ namespace loader {
         const glm::vec3& clonePositionOffset,
         const glm::vec3& tilePositionOffset)
     {
-        Node* node = new Node(type);
+        auto* type = typeHandle.toType();
+
+        ki::node_id nodeId{ 0 };
+        std::string resolvedSID;
+        {
+            if (!data.baseId.empty()) {
+                auto [k, v] = resolveId(data.baseId, cloneIndex, tile, false);
+                nodeId = k;
+                resolvedSID = v;
+            }
+
+            if (!nodeId) {
+                auto [k, v] = resolveId({ data.name }, cloneIndex, tile, true);
+                nodeId = k;
+                resolvedSID = v;
+            }
+        }
+
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
+        assert(node);
+#ifdef _DEBUG
+        node->m_resolvedSID = resolvedSID;
+#endif
+        node->m_typeHandle = typeHandle;
 
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
@@ -694,7 +799,7 @@ namespace loader {
         node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
 
         if (type->m_entityType == mesh::EntityType::text) {
-            auto fontId = resolveFont(type, data.text);
+            auto fontId = resolveFont(typeHandle, data.text);
             auto generator = std::make_unique<TextGenerator>();
             generator->setFontId(fontId);
             generator->setText(data.text.text);
@@ -703,28 +808,27 @@ namespace loader {
 
         m_scriptLoader.createScript(
             rootId,
-            node->m_id,
+            node->getId(),
             data.script);
 
         {
-            auto* t = m_registry->m_typeRegistry->modifyType(type->m_id);
-            t->setCustomMaterial(
+            type->setCustomMaterial(
                 m_customMaterialLoader.createCustomMaterial(
                     data.customMaterial,
                     cloneIndex,
                     tile));
-            m_registry->m_typeRegistry->registerCustomMaterial(type->m_id);
-            type = t;
-            node->m_type = type;
+            m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
         }
 
-        return node;
+        return handle;
     }
 
     void SceneLoader::assignFlags(
         const EntityCloneData& data,
-        mesh::MeshType* type)
+        pool::TypeHandle typeHandle)
     {
+        auto* type = typeHandle.toType();
+
         mesh::NodeRenderFlags& flags = type->m_flags;
 
         flags.gbuffer = data.programName.starts_with("g_");
@@ -753,12 +857,12 @@ namespace loader {
                 flags.blend = e->second;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blend) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", data.baseId, data.desc));
                     flags.alpha = true;
                 }
                 // NOTE KI blend CANNOT be gbuffer
                 if (flags.blend && flags.gbuffer) {
-                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): {}", data.name));
+                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): id={}, desc={}", data.baseId, data.desc));
                     // NOTE KI turning off blend; shader is designed for gbuffer
                     flags.blend = false;
                 }
@@ -770,7 +874,7 @@ namespace loader {
                 flags.blendOIT = e->second;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blendOIT) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): {}", data.name));
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", data.baseId, data.desc));
                     flags.alpha = true;
                 }
             }
@@ -883,6 +987,149 @@ namespace loader {
             //}
             else {
                 reportUnknown("meta_entry", k, v);
+            }
+        }
+    }
+
+    void SceneLoader::validate(
+        const RootData& root)
+    {
+        std::map<ki::node_id, std::string> collectedIds;
+        int pass1Errors = 0;
+        int pass2Errors = 0;
+
+        for (const auto& entity : m_entities) {
+            validateEntity(root.rootId, entity, 0, pass1Errors, collectedIds);
+        }
+
+        for (const auto& entity : m_entities) {
+            validateEntity(root.rootId, entity, 1, pass2Errors, collectedIds);
+        }
+
+        if (pass1Errors > 0 || pass2Errors > 0) {
+            auto msg = fmt::format("VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
+            KI_CRITICAL(msg);
+            throw std::runtime_error{ msg };
+        }
+    }
+
+    void SceneLoader::validateEntity(
+        const ki::node_id rootId,
+        const EntityData& data,
+        int pass,
+        int& errorCount,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (data.clones.empty()) {
+            validateEntityClone(rootId, data, data.base, false, 0, pass, errorCount, collectedIds);
+        }
+        else {
+            int cloneIndex = 0;
+            for (auto& cloneData : data.clones) {
+                validateEntityClone(rootId, data, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
+                cloneIndex++;
+            }
+        }
+    }
+
+    void SceneLoader::validateEntityClone(
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex,
+        int pass,
+        int& errorCount,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (!data.enabled) return;
+
+        const auto& repeat = data.repeat;
+
+        for (auto z = 0; z < repeat.zCount; z++) {
+            for (auto y = 0; y < repeat.yCount; y++) {
+                for (auto x = 0; x < repeat.xCount; x++) {
+                    const glm::uvec3 tile = { x, y, z };
+                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+
+                    validateEntityCloneRepeat(
+                        rootId,
+                        entity,
+                        data,
+                        cloned,
+                        cloneIndex,
+                        tile,
+                        tilePositionOffset,
+                        pass,
+                        errorCount,
+                        collectedIds);
+                }
+            }
+        }
+    }
+
+    void SceneLoader::validateEntityCloneRepeat(
+        const ki::node_id rootId,
+        const EntityData& entity,
+        const EntityCloneData& data,
+        bool cloned,
+        int cloneIndex,
+        const glm::uvec3& tile,
+        const glm::vec3& tilePositionOffset,
+        int pass,
+        int& errorCount,
+        std::map<ki::node_id, std::string>& collectedIds)
+    {
+        if (!data.enabled) return;
+
+        if (pass == 0) {
+            if (data.name == "Linden tree forest - part 1")
+                int x = 0;
+
+            ki::node_id sid;
+            std::string resolvedSID;
+            {
+                auto [k, v] = resolveId(
+                    data.baseId,
+                    cloneIndex, tile,
+                    data.baseId.m_path == entity.base.baseId.m_path);
+                sid = k;
+                resolvedSID = v;
+
+                if (!sid) {
+                    auto [k, v] = resolveId(
+                        { data.name },
+                        cloneIndex, tile,
+                        true);
+                    sid = k;
+                    resolvedSID = v;
+                }
+            }
+
+            if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
+                auto msg = fmt::format("SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
+                KI_CRITICAL(msg);
+                errorCount++;
+            }
+            collectedIds[sid] = resolvedSID;
+        }
+
+        if (pass == 1) {
+            // NOTE KI parentId can be *MISSING*
+            // but it cannot be duplicate
+            if (!data.parentBaseId.empty()) {
+                auto [sid, resolvedSID] = resolveId(
+                    data.parentBaseId,
+                    cloneIndex,
+                    tile,
+                    false);
+
+                // TODO KI validate missing
+                if (collectedIds.find(sid) == collectedIds.end()) {
+                    auto msg = fmt::format("PARENT SID MISSING: {} = {}", sid, resolvedSID);
+                    KI_CRITICAL(msg);
+                    errorCount++;
+                }
             }
         }
     }

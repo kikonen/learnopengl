@@ -77,8 +77,11 @@ namespace physics
         }
     };
 
-    PhysicsEngine::PhysicsEngine(const Assets& assets)
-        : m_assets(assets)
+    PhysicsEngine::PhysicsEngine(
+        const Assets& assets,
+        std::shared_ptr<std::atomic<bool>> alive)
+        : m_assets(assets),
+        m_alive(alive)
     {
     }
 
@@ -154,6 +157,8 @@ namespace physics
                 //}
 
                 for (int i = 0; i < n; i++) {
+                    if (!*m_alive) return;
+
                     dSpaceCollide(m_spaceId, this, &nearCallback);
                     dWorldQuickStep(m_worldId, STEP_SIZE);
                     dJointGroupEmpty(m_contactgroupId);
@@ -180,8 +185,11 @@ namespace physics
         if (!m_enabled) return;
         preparePendingNodes(ctx);
 
-        auto enforce = [&ctx, this](Node* node) {
-            const auto& type = *node->m_type;
+        auto enforce = [&ctx, this](pool::NodeHandle handle) {
+            auto* node = handle.toNode();
+            if (!node) return;
+
+            const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
                 for (auto& transform : node->m_instancer->modifyTransforms()) {
@@ -195,8 +203,8 @@ namespace physics
 
         if (!m_enforceBoundsStatic.empty()) {
             std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
-            for (auto* node : m_enforceBoundsStatic) {
-                enforce(node);
+            for (auto& handle : m_enforceBoundsStatic) {
+                enforce(handle);
             }
             // NOTE KI static is enforced only once (after initial model setup)
             m_enforceBoundsStatic.clear();
@@ -204,8 +212,8 @@ namespace physics
 
         if (!m_enforceBoundsDynamic.empty()) {
             //std::cout << "dynamic: " << m_enforceBoundsDynamic.size() << '\n';
-            for (auto* node : m_enforceBoundsDynamic) {
-                enforce(node);
+            for (auto& handle : m_enforceBoundsDynamic) {
+                enforce(handle);
             }
         }
     }
@@ -218,7 +226,11 @@ namespace physics
 
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id - 1];
-            const auto level = obj.m_node->getTransform().getMatrixLevel();
+
+            auto* node = obj.m_nodeHandle.toNode();
+            if (!node) continue;
+
+            const auto level = node->getTransform().getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
 
             obj.prepare(m_worldId, m_spaceId);
@@ -247,19 +259,23 @@ namespace physics
     {
         if (m_pendingNodes.empty()) return;
 
-        std::map<Node*, bool> prepared;
+        std::vector<ki::node_id> prepared;
 
-        for (auto* node : m_pendingNodes) {
+        for (auto& handle : m_pendingNodes) {
+            auto* node = handle.toNode();
+            if (!node) continue;
+
             if (node->getTransform().getMatrixLevel() < 0) continue;
 
-            if (node->m_type->m_flags.staticPhysics) {
-                m_enforceBoundsStatic.push_back(node);
+            auto* type = node->m_typeHandle.toType();
+            if (type->m_flags.staticPhysics) {
+                m_enforceBoundsStatic.push_back(handle);
             }
             else {
-                m_enforceBoundsDynamic.push_back(node);
+                m_enforceBoundsDynamic.push_back(handle);
             }
 
-            prepared.insert({ node, true });
+            prepared.push_back(node->getId());
         }
 
         if (!prepared.empty()) {
@@ -267,8 +283,12 @@ namespace physics
             const auto& it = std::remove_if(
                 m_pendingNodes.begin(),
                 m_pendingNodes.end(),
-                [&prepared](auto& id) {
-                    return prepared.find(id) != prepared.end();
+                [&prepared](const auto& handle) {
+                    const auto& it = std::find_if(
+                        prepared.cbegin(),
+                        prepared.cend(),
+                        [nodeId = handle.toId()](const auto& id) { return id == nodeId; });
+                    return it != prepared.end();
                 });
             m_pendingNodes.erase(it, m_pendingNodes.end());
         }
@@ -276,7 +296,7 @@ namespace physics
 
     void PhysicsEngine::enforceBounds(
         const UpdateContext& ctx,
-        const mesh::MeshType& type,
+        const mesh::MeshType* type,
         Node& node,
         NodeTransform& transform)
     {
@@ -358,7 +378,8 @@ namespace physics
 
     void PhysicsEngine::handleNodeAdded(Node* node)
     {
-        if (!node->m_type->m_flags.enforceBounds) return;
-        m_pendingNodes.push_back(node);
+        auto* type = node->m_typeHandle.toType();
+        if (!type->m_flags.enforceBounds) return;
+        m_pendingNodes.push_back(node->toHandle());
     }
 }

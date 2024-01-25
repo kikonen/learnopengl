@@ -127,7 +127,7 @@ entities:
       - pos: [25.0, 10.0, 25.0]
         id: light-8
     script_file: scripts/anim_moving_point_light
-  - name: Moving point light
+  - id: moving_point_light_{c}
     desc: "NOTE overriding material in clones is *NOT* supported"
     parent_id: zero-origo
     pos: [0, 0, 0]
@@ -225,7 +225,7 @@ entities:
     pos: [0.0, 4.5, 0.0]
     render_flags:
       cube_map: true
-  - name: EXAMPLE
+  - id: example_{t}
     model: glass_ball
     program: g_tex
     pos: [-1.5, 5.0, -1.5]
@@ -277,7 +277,7 @@ entities:
       alpha: true
       blend_oit: true
       render_back: true
-  - name: Stained windows
+  - id: stained_windows_{t}
     model: quad
     material: window_2
     program: g_tex
@@ -296,7 +296,7 @@ entities:
     pos: [-1.0, 13.5, 14.0]
     render_flags:
       cube_map: true
-  - name: Brick wall
+  - id: brick_wall_{t}
     model: quad
     material: brickwall
     program: g_tex
@@ -314,7 +314,7 @@ entities:
     rotation: [0, 180, 0]
     render_flags:
       render_back: true
-  - name: Wood wall
+  - id: wood_wall_{t}
     model: quad
     material: woodwall
     program: g_tex
@@ -324,7 +324,7 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-  - name: Wood wall - upper - normal
+  - id: wood_wall_upper_normal_{t}
     model: quad
     material: woodwall
     material_modifier:
@@ -601,7 +601,7 @@ entities:
       tiling_y: 2
     pos: [5.0, 25.0, 5.0]
     scale: 1
-  - name: Four cubes
+  - id: four_cubes_{c}
     model: texture_cube_3
     program: g_tex
     scale: 1
@@ -619,7 +619,7 @@ entities:
         id: cube-3
       - pos: [5.0, 20.0, 5.0]
         id: cube-4
-  - name: Blend cubes
+  - id: blend_cubes_{c}
     model: rubik_cube
     program: g_tex
     render_flags:
@@ -639,7 +639,7 @@ entities:
     rotation: [0, 180, 0]
     scale: 1
     selected: false
-  - name: Pool surface
+  - id: pool_surface_{t}
     type: quad
     priority: -5
     material: pool_surface
@@ -660,7 +660,7 @@ entities:
       y_step: 0
       z_step: 60
     script_file: scripts/anim_water
-  - name: Pool floor
+  - id: pool_floor_{t}
     model: quad
     priority: -10
     material: pool_floor
@@ -685,7 +685,7 @@ entities:
       geom:
         type: plane
         rot: [0, 0, 0]
-  - name: Pool side
+  - id: pool_side_{c}
     model: pool_brick
     program: g_tex
     material_modifier:
@@ -722,7 +722,7 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-  - name: grid points
+  - id: grid_points_{t}
     model: glass_ball
     program: g_tex
     pos: [-1024, 150, -1024]
@@ -745,7 +745,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - xname: Sea surface
+  - xid: sea_surface_{t}
     desc: TODO KI conflicting water reflect with pool
     priority: -20
     type: quad
@@ -766,7 +766,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - name: Sea floor
+  - id: sea_floor_{t}
     priority: -25
     model: quad
     material: sea_floor
@@ -806,7 +806,7 @@ entities:
       cube_map: true
   - name: Rock
     parent_id: rock-origo
-    model: [rock, rock]
+    model: [rock2, rock]
     program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
@@ -817,7 +817,7 @@ entities:
       tiling: 4
   - name: Asteroid belt
     parent_id: planet-origo
-    model: [rock, rock]
+    model: [rock2, rock]
     instanced: true
     program: g_tex
     force_material: true
@@ -855,7 +855,7 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - name: Linden tree forest - part 1
+  - id: linden_tree_forest_part_1_{t}
     type: model
     model: quad
     xtype: billboard
@@ -878,7 +878,7 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
-  - name: Linden tree forest - part 2
+  - id: linden_tree_forest_part_2_{t}
     type: model
     model: quad
     xtype: billboard
@@ -902,7 +902,7 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
-  - name: Linden tree forest - part 3
+  - id: linden_tree_forest_part_3_{t}
     type: model
     model: quad
     xtype: billboard
@@ -926,7 +926,7 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
-  - name: Linden tree forest - part 4
+  - id: linden_tree_forest_part_4_{t}
     type: model
     model: quad
     xtype: billboard
@@ -950,7 +950,7 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
-  - name: Skeleton army
+  - id: skeleton_army_{t}
     type: billboard
     priority: 1
     program: g_tex
@@ -977,7 +977,7 @@ entities:
         type: capsule
         size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
-  - name: Giant wooden box
+  - xid: giant_wooden_box_{c}
     model: quad
     xxmodel: woodwall
     material: giant_woodbox
@@ -987,7 +987,6 @@ entities:
       render_back: true
       no_shadow: true
     scale: 100
-    enabled: false
     clones:
       - pos: [0.0, 100.0, 0.0]
         rot: [90, 0, 0]

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ki/uuid.h>
-
 #include "NodeGenerator.h"
 
 struct PrepareContext;
@@ -15,7 +13,7 @@ public:
         const PrepareContext& ctx,
         Node& container) override;
 
-    virtual void update(
+    virtual void updateWT(
         const UpdateContext& ctx,
         Node& container) override;
 

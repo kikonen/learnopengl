@@ -9,6 +9,8 @@
 
 #include "backend/DrawOptions.h"
 
+#include "pool/TypeHandle.h"
+
 #include "mesh/Mesh.h"
 
 #include "engine/PrepareContext.h"
@@ -25,9 +27,8 @@ namespace {
 }
 
 namespace mesh {
-    MeshType::MeshType(std::string_view name)
-        : m_name{ name },
-        m_materialVBO{ std::make_unique<MaterialVBO>()}
+    MeshType::MeshType()
+        : m_materialVBO{ std::make_unique<MaterialVBO>() }
     {
     }
 
@@ -65,6 +66,11 @@ namespace mesh {
             m_id, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1,
             m_materialIndex,
             m_materialVBO->getMaterialCount());
+    }
+
+    pool::TypeHandle MeshType::toHandle() const noexcept
+    {
+        return { m_handleIndex, m_id };
     }
 
     void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)

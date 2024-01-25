@@ -26,7 +26,10 @@ struct AABB final
         return *this;
     }
 
-    AABB(const glm::vec3& min, const glm::vec3& max, bool quad) noexcept
+    AABB(
+        const glm::vec3& min,
+        const glm::vec3& max,
+        bool quad) noexcept
         : m_min{ min },
         m_max{ max },
         m_quad{ quad }
@@ -40,11 +43,7 @@ struct AABB final
         return m_volume;
     }
 
-    inline void updateVolume() {
-        const glm::vec3 center = (m_max + m_min) * 0.5f;
-        const float radius = glm::length(m_min - m_max) * 0.5f;
-        m_volume = glm::vec4(center, radius);
-    }
+    void updateVolume();
 
     void minmax(const glm::vec3& pos);
 

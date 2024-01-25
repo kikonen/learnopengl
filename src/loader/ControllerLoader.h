@@ -3,6 +3,10 @@
 #include "BaseLoader.h"
 #include "ControllerData.h"
 
+namespace pool {
+    class NodeHandle;
+}
+
 class Node;
 class NodeController;
 
@@ -23,6 +27,6 @@ namespace loader {
 
         NodeController* createController(
             const ControllerData& data,
-            Node* node);
+            pool::NodeHandle node);
     };
 }

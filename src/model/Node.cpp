@@ -1,12 +1,13 @@
 #include "Node.h"
 
-#include <mutex>
 #include <fmt/format.h>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "kigl/kigl.h"
+
+#include "pool/NodeHandle.h"
 
 #include "asset/Sprite.h"
 
@@ -31,24 +32,28 @@
 #include "render/Batch.h"
 
 namespace {
-    ki::node_id idBase = 100;
-
-    std::mutex object_id_lock{};
-
     const static glm::mat4 IDENTITY_MATRIX{ 1.f };
-
-    ki::node_id nextID() noexcept
-    {
-        std::lock_guard<std::mutex> lock(object_id_lock);
-        return ++idBase;
-    }
 }
 
-Node::Node(const mesh::MeshType* type)
-    : m_type(type),
-    m_id(nextID())
+Node::Node()
 {
 }
+
+Node::Node(ki::node_id id)
+    : m_id{ id }
+{
+}
+
+Node::Node(Node&& o) noexcept
+    : m_id{ o.m_id }
+{}
+
+Node& Node::operator=(Node&& o) noexcept
+{
+    if (&o == this) return *this;
+    return *this;
+}
+
 
 Node::~Node()
 {
@@ -57,9 +62,10 @@ Node::~Node()
 
 const std::string Node::str() const noexcept
 {
+    auto* type = m_typeHandle.toType();
     return fmt::format(
         "<NODE: id={}, type={}>",
-        m_id, m_type->str());
+        m_id, type ? type->str() : "<null>");
 }
 
 void Node::prepare(
@@ -67,27 +73,29 @@ void Node::prepare(
 {
     auto& registry = ctx.m_registry;
 
-    if (m_type->getMesh()) {
+    auto* type = m_typeHandle.toType();
+
+    if (type->getMesh()) {
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         {
-            m_transform.setMaterialIndex(m_type->getMaterialIndex());
+            m_transform.setMaterialIndex(type->getMaterialIndex());
 
             ki::size_t_entity_flags flags = 0;
 
-            if (m_type->m_entityType == mesh::EntityType::billboard) {
+            if (type->m_entityType == mesh::EntityType::billboard) {
                 flags |= ENTITY_BILLBOARD_BIT;
             }
-            if (m_type->m_entityType == mesh::EntityType::sprite) {
+            if (type->m_entityType == mesh::EntityType::sprite) {
                 flags |= ENTITY_SPRITE_BIT;
-                auto& shape = m_type->m_sprite->m_shapes[m_type->m_sprite->m_shapes.size() - 1];
+                auto& shape = type->m_sprite->m_shapes[type->m_sprite->m_shapes.size() - 1];
                 m_transform.m_shapeIndex = shape.m_registeredIndex;
                 //m_instance.m_materialIndex = shape.m_materialIndex;
             }
-            if (m_type->m_entityType == mesh::EntityType::skybox) {
+            if (type->m_entityType == mesh::EntityType::skybox) {
                 flags |= ENTITY_SKYBOX_BIT;
             }
-            if (m_type->m_flags.noFrustum) {
+            if (type->m_flags.noFrustum) {
                 flags |= ENTITY_NO_FRUSTUM_BIT;
             }
 
@@ -102,24 +110,11 @@ void Node::prepare(
     }
 }
 
-void Node::updateWT(
-    const UpdateContext& ctx) noexcept
-{
-    updateModelMatrix();
-
-    if (m_generator) m_generator->update(ctx, *this);
-
-    if (!m_children.empty()) {
-        for (auto& child : m_children) {
-            child->updateWT(ctx);
-        }
-    }
-}
-
 bool Node::isEntity() const noexcept
 {
-    return m_type->getMesh() &&
-        !m_type->m_flags.invisible;
+    auto* type = m_typeHandle.toType();
+    return type->getMesh() &&
+        !type->m_flags.invisible;
 }
 
 void Node::updateVAO(const RenderContext& ctx) noexcept
@@ -135,7 +130,7 @@ const kigl::GLVertexArray* Node::getVAO() const noexcept
         return m_instancer->getVAO(*this);
     }
     else {
-        return m_type->getVAO();
+        return m_typeHandle.toType()->getVAO();
     }
 }
 
@@ -145,7 +140,7 @@ const backend::DrawOptions& Node::getDrawOptions() const noexcept
         return m_instancer->getDrawOptions(*this);
     }
     else {
-        return m_type->getDrawOptions();
+        return m_typeHandle.toType()->getDrawOptions();
     }
 }
 
@@ -167,7 +162,7 @@ void Node::bindBatch(
 void Node::updateModelMatrix() noexcept
 {
     if (m_parent) {
-        m_transform.updateModelMatrix(m_parent->getTransform());
+        m_transform.updateModelMatrix(getParent()->getTransform());
     }
     else {
         m_transform.updateRootMatrix();
@@ -216,7 +211,7 @@ ki::node_id Node::lua_getId() const noexcept
 
 const std::string& Node::lua_getName() const noexcept
 {
-    return m_type->m_name;
+    return m_typeHandle.toType()->getName();
 }
 
 int Node::lua_getCloneIndex() const noexcept

@@ -9,19 +9,21 @@
 #include "size.h"
 #include "limits.h"
 
-class Node;
+#include "pool/NodeHandle.h"
 
 namespace audio
 {
     struct Sound;
 
     struct Source {
-        Source();
+        Source() {}
         Source(Source& o) = delete;
-        Source& operator=(Source& o) = delete;
-        Source& operator=(Source&& o) noexcept;
+        Source(const Source& o) = delete;
         Source(Source&&) noexcept;
         ~Source();
+
+        Source& operator=(Source& o) = delete;
+        Source& operator=(Source&& o) noexcept;
 
         inline bool isReady() const { return m_matrixLevel > -1; }
 
@@ -75,6 +77,6 @@ namespace audio
         glm::vec3 m_dir{ 0.f };
 
         ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-        Node* m_node{ nullptr };
+        pool::NodeHandle m_nodeHandle{};
     };
 }

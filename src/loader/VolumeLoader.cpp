@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "pool/NodeHandle.h"
+
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
@@ -17,7 +19,6 @@
 
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -32,11 +33,13 @@ namespace loader {
     }
 
     void VolumeLoader::attachVolume(
-        const uuids::uuid& rootId)
+        const ki::node_id rootId)
     {
         if (!m_assets.showVolume) return;
 
-        auto type = m_registry->m_typeRegistry->registerType("<volume>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<volume>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -69,7 +72,13 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto node = new Node(type);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.volumeId);
+        auto* node = handle.toNode();
+#ifdef _DEBUG
+        node->m_resolvedSID = "<volume>";
+#endif
+        node->m_typeHandle = typeHandle;
+
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
@@ -82,9 +91,8 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .uuid = m_assets.volumeUUID,
-                .parentUUID = rootId,
+                .target = m_assets.volumeId,
+                .parentId = rootId,
             };
             m_dispatcher->send(evt);
         }
@@ -93,7 +101,7 @@ namespace loader {
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
-                .target = node->m_id,
+                .target = node->getId(),
                 .controller = controller
             };
             m_dispatcher->send(evt);

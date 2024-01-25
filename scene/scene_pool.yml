@@ -44,7 +44,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Other
+  - id: cube_1
     model: texture_cube
     program: g_tex
     material_modifier:
@@ -125,7 +125,7 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-  - name: Linden tree forest - part 1
+  - name: Linden tree forest - part 1.1
     type: model
     model: quad
     program: g_tex
@@ -146,7 +146,7 @@ entities:
         z_count: 3
         x_step: 20
         z_step: -40
-  - name: Linden tree forest - part 2
+  - name: Linden tree forest - part 2.1
     type: model
     model: quad
     program: g_tex
@@ -209,7 +209,7 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
-  - name: Other
+  - id: cube_2
     model: texture_cube
     program: g_tex
     material_modifier:
@@ -253,7 +253,7 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
-  - name: Linden tree forest - part 1
+  - name: Linden tree forest - part 1.2
     type: model
     model: quad
     program: g_tex
@@ -274,7 +274,7 @@ entities:
         z_count: 3
         x_step: 20
         z_step: -40
-  - name: Linden tree forest - part 2
+  - name: Linden tree forest - part 2.2
     type: model
     model: quad
     program: g_tex

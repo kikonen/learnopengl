@@ -1,5 +1,7 @@
 #include "NodeCommand.h"
 
+#include "model/Node.h"
+
 namespace script
 {
     NodeCommand::NodeCommand(
@@ -16,6 +18,6 @@ namespace script
     void NodeCommand::bind(const UpdateContext& ctx, Node* node) noexcept
     {
         Command::bind(ctx);
-        m_node = node;
+        m_nodeHandle = node->toHandle();
     }
 }

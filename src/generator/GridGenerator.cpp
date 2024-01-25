@@ -28,7 +28,7 @@ void GridGenerator::prepare(
     prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
-void GridGenerator::update(
+void GridGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {

@@ -6,7 +6,7 @@
 
 #include "asset/Assets.h"
 
-#include "mesh/MeshType.h"
+#include "pool/TypeHandle.h"
 
 class RenderContext;
 
@@ -16,30 +16,19 @@ class RenderContext;
 class MeshTypeRegistry {
 public:
     MeshTypeRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+        const Assets& assets);
 
     ~MeshTypeRegistry();
 
-    const mesh::MeshType* getType(ki::type_id) const noexcept;
-    mesh::MeshType* modifyType(ki::type_id);
-
-    mesh::MeshType* registerType(
-        const std::string& name);
-
     void registerCustomMaterial(
-        ki::type_id typeId);
+        pool::TypeHandle typeHandle);
 
     void bind(const RenderContext& ctx);
 
 private:
     const Assets& m_assets;
 
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
     mutable std::mutex m_lock{};
 
-    std::vector<mesh::MeshType> m_types;
-
-    std::vector<ki::type_id> m_customMaterialTypes;
+    std::vector<pool::TypeHandle> m_customMaterialTypes;
 };

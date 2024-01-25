@@ -8,7 +8,6 @@
 #include <glm/vec3.hpp>
 
 #include "ki/size.h"
-#include "ki/uuid.h"
 
 #include "audio/size.h"
 #include "audio/limits.h"
@@ -21,7 +20,6 @@
 #include "size.h"
 
 struct UpdateContext;
-class Node;
 class NodeController;
 
 namespace event {
@@ -111,11 +109,7 @@ namespace event {
     };
 
     struct NodeAction {
-        Node* target{ nullptr };
-        // UUID of node for persistency
-        // => *CAN* be empty for auto generated nodes
-        uuids::uuid uuid{};
-        uuids::uuid parentUUID{};
+        ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
     };
 
@@ -174,7 +168,7 @@ namespace event {
         Event(Event&& o) noexcept
             : type{ o.type },
             blob{ std::move(o.blob) },
-            body{o.body}
+            body{ o.body }
         {}
 
         Type type;

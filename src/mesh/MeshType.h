@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "backend/DrawOptions.h"
 
 #include "asset/Material.h"
@@ -9,6 +11,10 @@
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
+
+namespace pool {
+    class TypeHandle;
+}
 
 namespace render {
     struct MeshTypeKey;
@@ -32,17 +38,28 @@ namespace mesh {
 
     class MeshType final
     {
+        friend class pool::TypeHandle;
         friend class MeshTypeRegistry;
         friend struct render::MeshTypeComparator;
         friend struct render::MeshTypeKey;
 
     public:
-        MeshType(std::string_view name);
+        MeshType();
         MeshType(MeshType& o) = delete;
-        MeshType& operator=(MeshType& o) = delete;
-        MeshType& operator=(MeshType&& o) = delete;
+        MeshType(const MeshType& o) = delete;
         MeshType(MeshType&& o) noexcept;
         ~MeshType();
+
+        MeshType& operator=(const MeshType& o) = delete;
+        MeshType& operator=(MeshType&& o) = delete;
+
+        inline ki::type_id getId() const noexcept { return m_id; }
+        pool::TypeHandle toHandle() const noexcept;
+
+        const std::string& getName() const noexcept { return m_name; }
+        void setName(std::string_view name) noexcept {
+            m_name = name;
+        }
 
         inline bool isReady() const noexcept { return m_preparedView; }
 
@@ -90,9 +107,6 @@ namespace mesh {
         }
 
     public:
-        ki::type_id m_id{ 0 };
-        const std::string m_name;
-
         EntityType m_entityType{ EntityType::origo };
         NodeRenderFlags m_flags;
 
@@ -109,6 +123,11 @@ namespace mesh {
         int m_materialIndex{ 0 };
 
     private:
+        ki::type_id m_id{ 0 };
+        uint32_t m_handleIndex;
+
+        std::string m_name;
+
         bool m_prepared : 1 {false};
         bool m_preparedView : 1 {false};
 

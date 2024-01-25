@@ -1,6 +1,6 @@
 #include "SnapshotRegistry.h"
 
-#include "util/DirtyVector.h"
+#include "util/DirtyVector.hpp"
 
 
 SnapshotRegistry::SnapshotRegistry()
@@ -142,6 +142,7 @@ void SnapshotRegistry::copy(
                 dst[i] = src[i];
                 //memcpy(&dst[i], &src[i], sizeof(Snapshot));
                 src[i].m_dirty = false;
+                src[i].m_dirtyNormal = false;
             }
         }
     }

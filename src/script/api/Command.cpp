@@ -1,19 +1,11 @@
 #include "Command.h"
 
-#include <mutex>
-
 #include "engine/UpdateContext.h"
 
+#include "pool/IdGenerator.h"
+
 namespace {
-    script::command_id idBase = 0;
-
-    std::mutex id_lock{};
-
-    script::command_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(id_lock);
-        return ++idBase;
-    }
+    IdGenerator<script::command_id> ID_GENERATOR;
 }
 
 namespace script
@@ -21,7 +13,7 @@ namespace script
     Command::Command(
         script::command_id afterCommandId,
         float duration) noexcept
-        : m_id(nextID()),
+        : m_id(ID_GENERATOR.nextId()),
         m_afterCommandId(afterCommandId),
         m_duration(duration)
     {

@@ -21,7 +21,7 @@ public:
         float yoffset) override;
 
 private:
-    Node* m_node{ nullptr };
+    pool::NodeHandle m_nodeHandle{};
 
     glm::vec3 m_speedMoveNormal{ 0.f };
     glm::vec3 m_speedMoveRun{ 0.f };

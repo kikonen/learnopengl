@@ -28,7 +28,7 @@ namespace physics
         m_mass{ o.m_mass },
         m_bodyId{ o.m_bodyId },
         m_geomId{ o.m_geomId },
-        m_node{ o.m_node }
+        m_nodeHandle{ o.m_nodeHandle }
     {
         // NOTE KI o is moved now
         o.m_geomId = 0;
@@ -149,7 +149,10 @@ namespace physics
 
     void Object::updateToPhysics(bool force)
     {
-        const auto& transform = m_node->getTransform();
+        const auto* node = m_nodeHandle.toNode();
+        if (!node) return;
+
+        const auto& transform = node->getTransform();
         const auto level = transform.getMatrixLevel();
         if (!force && m_matrixLevel == level) return;
         m_matrixLevel = level;
@@ -206,6 +209,12 @@ namespace physics
         if (!m_bodyId) return;
         if (m_body.kinematic) return;
 
+        auto* node = m_nodeHandle.toNode();
+        if (!node) return;
+
+        auto* parent = node->getParent();
+        if (!parent) return;
+
         const dReal* dpos = dBodyGetPosition(m_bodyId);
         const dReal* dquat = dBodyGetQuaternion(m_bodyId);
 
@@ -224,12 +233,12 @@ namespace physics
             pos.y = 400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
-        pos -= m_node->getParent()->getTransform().getWorldPosition();
+        pos -= parent->getTransform().getWorldPosition();
 
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        auto& transform = m_node->modifyTransform();
+        auto& transform = node->modifyTransform();
         transform.setPosition(pos);
         transform.setQuatRotation(rotBase);
         //m_node->updateModelMatrix();

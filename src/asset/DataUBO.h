@@ -6,28 +6,28 @@
 #pragma pack(push, 1)
 struct DataUBO {
     glm::vec3 u_viewPos;
-    int pad_u_viewPos;
+    //int pad_u_viewPos;
 
     glm::vec3 u_viewFront;
-    int pad_u_viewFront;
+    //int pad_u_viewFront;
 
     glm::vec3 u_viewUp;
-    int pad_u_viewUp;
+    //int pad_u_viewUp;
 
     glm::vec3 u_viewRight;
-    int pad_u_viewRight;
+    //int pad_u_viewRight;
 
     glm::vec3 u_mainViewPos;
-    int pad_u_mainViewPos;
+    //int pad_u_mainViewPos;
 
     glm::vec3 u_mainViewFront;
-    int pad_u_mainViewFront;
+    //int pad_u_mainViewFront;
 
     glm::vec3 u_mainViewUp;
-    int pad_u_mainViewUp;
+    //int pad_u_mainViewUp;
 
     glm::vec3 u_mainViewRight;
-    int pad_u_mainViewRight;
+    //int pad_u_mainViewRight;
 
     glm::vec4 u_fogColor;
 

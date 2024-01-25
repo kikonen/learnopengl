@@ -2,6 +2,9 @@
 
 #include "kigl/kigl.h"
 
+#include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
+
 struct PrepareContext;
 struct InputContext;
 struct UpdateContext;

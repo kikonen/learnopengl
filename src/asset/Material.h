@@ -77,13 +77,13 @@ public:
 
 public:
     Material();
-
+    Material(Material& o) = default;
     Material(const Material& o) = default;
     Material(Material&& o) = default;
-    Material& operator=(const Material&) = default;
-    Material& operator=(Material&&) = default;
-
     ~Material();
+
+    Material& operator=(const Material& o) = default;
+    Material& operator=(Material&& o) = default;
 
     void loadTextures(const Assets& assets);
 

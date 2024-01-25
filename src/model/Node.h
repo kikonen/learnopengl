@@ -7,6 +7,9 @@
 
 #include "ki/limits.h"
 
+#include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
+
 #include "audio/size.h"
 
 #include "model/NodeTransform.h"
@@ -22,10 +25,6 @@ namespace kigl {
 
 namespace render {
     class Batch;
-}
-
-namespace mesh {
-    class MeshType;
 }
 
 class Assets;
@@ -45,40 +44,50 @@ class ParticleGenrator;
 
 class Node final
 {
+    friend class pool::NodeHandle;
+    friend class NodeRegistry;
+
 public:
-    Node(const mesh::MeshType* type);
+    Node();
+    Node(ki::node_id id);
+    Node(Node& o) = delete;
+    Node(const Node&) = delete;
+    Node(Node&& o) noexcept;
     ~Node();
+
+    Node& operator=(Node& o) = delete;
+    Node& operator=(Node&& o) noexcept;
 
     const std::string str() const noexcept;
 
+    inline ki::node_id getId() const noexcept { return m_id; }
+    inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
+
+    pool::NodeHandle toHandle() const noexcept {
+            return { m_handleIndex, m_id };
+    }
+
     void prepare(
         const PrepareContext& ctx);
-
-    void updateWT(const UpdateContext& ctx) noexcept;
 
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
     const backend::DrawOptions& getDrawOptions() const noexcept;
     void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
 
-    inline Node* getParent() {
-        return m_parent;
+    inline Node* getParent() const noexcept {
+        return m_parent.toNode();
     }
 
-    inline void setParent(Node* parent) {
+    inline void setParent(pool::NodeHandle parent) noexcept {
         m_parent = parent;
     }
 
-    inline const std::vector<Node*>& getChildren() const
-    {
-        return m_children;
+    inline void setParent(const Node* parent) noexcept {
+        m_parent = parent;
     }
 
-    inline void addChild(Node* child) {
-        m_children.emplace_back(child);
-    }
-
-    inline void removeChild(Node* node) {
+    inline void removeChild(pool::NodeHandle node) {
         // TODO KI
     }
 
@@ -127,18 +136,11 @@ public:
 
     const std::array<float, 3> lua_getPos() const noexcept;
 
-protected:
-
 public:
-    // *INTERNAL* LUID in scene
-    // used for object identity in shader
-    const ki::node_id m_id;
-
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
-    bool m_visible{ true };
-    // NOTE KI type needed with node for practicality reasons
-    const mesh::MeshType* m_type{ nullptr };
+    bool m_visible : 1 { true };
+    pool::TypeHandle m_typeHandle{};
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
@@ -151,11 +153,19 @@ public:
     uint32_t m_snapshotIndex{ 0 };
     uint32_t m_entityIndex{ 0 };
 
-    bool m_preparedRT{ false };
+    bool m_preparedRT : 1 { false };
+
+#ifdef _DEBUG
+    std::string m_resolvedSID;
+#endif
 
 private:
-    Node* m_parent{ nullptr };
-    std::vector<Node*> m_children;
+    // *INTERNAL* LUID in scene
+    // used for object identity in shader
+    ki::node_id m_id;
+    uint32_t m_handleIndex;
+
+    pool::NodeHandle m_parent{};
 
     NodeTransform m_transform;
 

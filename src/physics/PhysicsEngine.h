@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 
 #include <ode/ode.h>
 
@@ -14,7 +15,10 @@
 
 struct UpdateContext;
 
-class Node;
+namespace pool {
+    class NodeHandle;
+}
+
 namespace mesh {
     class MeshType;
 }
@@ -25,7 +29,9 @@ struct NodeTransform;
 namespace physics {
     class PhysicsEngine {
     public:
-        PhysicsEngine(const Assets& assets);
+        PhysicsEngine(
+            const Assets& assets,
+            std::shared_ptr<std::atomic<bool>> alive);
         ~PhysicsEngine();
 
         void prepare();
@@ -56,7 +62,7 @@ namespace physics {
 
         void enforceBounds(
             const UpdateContext& ctx,
-            const mesh::MeshType& type,
+            const mesh::MeshType* type,
             Node& node,
             NodeTransform& transform);
 
@@ -69,6 +75,7 @@ namespace physics {
 
     private:
         const Assets& m_assets;
+        std::shared_ptr<std::atomic<bool>> m_alive;
 
         bool m_prepared{ false };
 
@@ -81,11 +88,11 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
-        std::vector<Node*> m_enforceBoundsDynamic;
+        std::vector<pool::NodeHandle> m_enforceBoundsDynamic;
 
-        std::vector<Node*> m_enforceBoundsStatic;
+        std::vector<pool::NodeHandle> m_enforceBoundsStatic;
 
-        std::vector<Node*> m_pendingNodes;
+        std::vector<pool::NodeHandle> m_pendingNodes;
 
         std::vector<physics::physics_id> m_pending;
 

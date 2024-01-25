@@ -4,11 +4,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "ki/uuid.h"
 #include "asset/Assets.h"
 
 #include "Context.h"
-#include "BaseUUID.h"
+#include "BaseId.h"
 #include "BaseData.h"
 
 namespace YAML {
@@ -25,14 +24,13 @@ namespace loader
 {
     static const float DEF_ALPHA = 1.0;
 
-    static const std::string AUTO_UUID{ "AUTO" };
-    static const std::string ROOT_UUID{ "ROOT" };
-    static const std::string VOLUME_UUID{ "VOLUME" };
-    static const std::string CUBE_MAP_UUID{ "CUBE_MAP" };
+    static const std::string ROOT_ID{ "ROOT" };
 
-    static const std::string MACRO_STEP_X{ "X" };
-    static const std::string MACRO_STEP_Y{ "Y" };
-    static const std::string MACRO_STEP_Z{ "Z" };
+    static const std::string MACRO_STEP_CLONE{ "c" };
+    static const std::string MACRO_STEP_TILE{ "t" };
+    static const std::string MACRO_STEP_X{ "x" };
+    static const std::string MACRO_STEP_Y{ "y" };
+    static const std::string MACRO_STEP_Z{ "z" };
 
     class BaseLoader
     {
@@ -76,23 +74,19 @@ namespace loader
 
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
-        uuids::uuid resolveUUID(
-            const BaseUUID& parts,
-            const int cloneIndex,
-            const glm::uvec3& tile);
-
-        uuids::uuid resolveAutoUUID(
-            const BaseUUID& parts,
+        std::tuple<ki::node_id, std::string> resolveId(
+            const BaseId& baseId,
             const int cloneIndex,
             const glm::uvec3& tile,
-            int index);
+            bool automatic);
 
         std::string expandMacros(
             const std::string& str,
             const int cloneIndex,
-            const glm::uvec3& tile);
+            const glm::uvec3& tile,
+            bool automatic);
 
-        BaseUUID readUUID(const YAML::Node& node) const;
+        BaseId readId(const YAML::Node& node) const;
 
         std::string readFile(std::string_view filename) const;
 

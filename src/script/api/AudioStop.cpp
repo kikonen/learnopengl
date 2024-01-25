@@ -37,7 +37,7 @@ namespace script
         }
 
         auto ae = ctx.m_registry->m_audioEngine;
-        const auto sourceId = m_node->m_audioSourceIds[m_index];
+        const auto sourceId = getNode()->m_audioSourceIds[m_index];
         ae->stopSource(sourceId);
 
         m_finished = true;

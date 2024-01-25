@@ -10,7 +10,7 @@ namespace loader {
             Context ctx);
 
         void attachVolume(
-            const uuids::uuid& rootId);
+            const ki::node_id rootId);
 
     };
 }

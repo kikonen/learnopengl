@@ -9,6 +9,7 @@
 
 #include "util/Util.h"
 
+#include "ki/FpsCounter.h"
 #include "ki/Timer.h"
 
 #include "kigl/kigl.h"
@@ -126,30 +127,11 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
 
-    auto renderStart = std::chrono::system_clock::now();
-    auto renderEnd = std::chrono::system_clock::now();
-
-    auto frameTime = std::chrono::system_clock::now();
-
     std::chrono::duration<float> elapsedDuration;
-    std::chrono::duration<float> renderDuration;
-    std::chrono::duration<float> frameDuration;
 
     ki::RenderClock& clock = m_clock;
 
-    float frameSecs = 0;
-
-    char titleSB[256];
-
-    // NOTE KI moving avg of render time and fps
-    constexpr int FPS_FRAMES = 10;
-    int avgIndex = 0;
-    std::array<float, FPS_FRAMES> fpsSecs{ 0.f };
-    std::array<float, FPS_FRAMES> renderSecs{ 0.f };
-    for (int i = 0; i < FPS_FRAMES; i++) {
-        fpsSecs[i] = 0.f;
-        renderSecs[i] = 0.f;
-    }
+    ki::FpsCounter fpsCounter;
 
     InputContext inputCtx{
         clock,
@@ -165,7 +147,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
         {
             //KI_TIMER("loop");
-
             loopTime = std::chrono::system_clock::now();
             elapsedDuration = loopTime - prevLoopTime;
 
@@ -184,7 +165,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             // render
             // ------
             {
-                renderStart = std::chrono::system_clock::now();
+                fpsCounter.startFame();
 
                 // serious sync issue entity data vs. drawing
                 // - looks like camera is jerky, but it's lack of sync between
@@ -209,9 +190,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                     m_registry->m_programRegistry->validate();
                 }
 
-                renderEnd = std::chrono::system_clock::now();
-                renderDuration = renderEnd - renderStart;
-                renderSecs[avgIndex] = renderDuration.count();
+                fpsCounter.endFame(clock.elapsedSecs);
             }
 
             //m_registry->m_snapshotRegistry->unlock();
@@ -230,50 +209,15 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         }
 
         if (!close) {
-            frameTime = std::chrono::system_clock::now();
-            frameDuration = frameTime - loopTime;
-            frameSecs = frameDuration.count();
-
             prevLoopTime = loopTime;
 
-            //sprintf_s(
-            //    titleSB,
-            //    256,
-            //    "%s - FPS: %-5.2f - RENDER: %-5.2fms FRAME: (%-5.2f fps)",
-            //    m_title.c_str(),
-            //    1.0f / clock.elapsedSecs,
-            //    renderSecs * 1000.f,
-            //    1.0f / frameSecs);
-
-            fpsSecs[avgIndex] = clock.elapsedSecs;
-
-            avgIndex = (avgIndex + 1) % FPS_FRAMES;
-
-            // update title when wraparound
-            if (avgIndex == 0)
+            if (fpsCounter.isUpdate())
             {
-                float fpsTotal = 0.f;
-                float renderTotal = 0.f;
-                for (int i = 0; i < FPS_FRAMES; i++) {
-                    fpsTotal += fpsSecs[i];
-                    renderTotal += renderSecs[i];
-                }
-
-                float fpsAvg = (float)FPS_FRAMES / fpsTotal;
-                float renderAvg = renderTotal * 1000.f / (float)FPS_FRAMES;
-
-                sprintf_s(
-                    titleSB,
-                    256,
-                    "%s - FPS: %-5.0f - RENDER: %-5.1fms",
-                    m_title.c_str(),
-                    round(fpsAvg),
-                    renderAvg);
-
-                m_window->setTitle(titleSB);
+                auto summary = fpsCounter.formatSummary(m_title.c_str());
+                m_window->setTitle(summary);
 
                 if (m_window->isFullScreen() && !m_assets.glVendorNvidia) {
-                    std::cout << titleSB << '\n';
+                    std::cout << summary << '\n';
                 }
             }
         }

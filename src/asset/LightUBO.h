@@ -13,7 +13,7 @@ constexpr size_t MAX_LIGHT_COUNT = 128;
 // NOTE KI align 16 for UBO struct
 struct DirLightUBO {
     glm::vec3 u_dir;
-    int pad1;
+    //int pad1;
 
     // color + a = intensity
     glm::vec4 u_diffuse;
@@ -22,7 +22,7 @@ struct DirLightUBO {
 // NOTE KI align 16 for UBO struct
 struct PointLightUBO {
     glm::vec3 u_pos;
-    int pad1;
+    //int pad1;
 
     // color + a = intensity
     glm::vec4 u_diffuse;
@@ -36,10 +36,10 @@ struct PointLightUBO {
 // NOTE KI align 16 for UBO struct
 struct SpotLightUBO {
     glm::vec3 u_pos;
-    int pad1;
+    //int pad1;
 
     glm::vec3 u_dir;
-    int pad2;
+    //int pad2;
 
     // color + a = intensity
     glm::vec4 u_diffuse;

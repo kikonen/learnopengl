@@ -5,6 +5,8 @@
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
+#include "pool/NodeHandle.h"
+
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -102,7 +104,7 @@ void CubeMapRenderer::prepareRT(
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
 
-    m_tagID = assets.cubeMapUUID;
+    m_tagId = assets.cubeMapId;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
@@ -195,7 +197,7 @@ bool CubeMapRenderer::render(
             m_registry->m_commandEngine->addCommand(
                 std::make_unique<script::MoveNode>(
                     0,
-                    tagNode->m_id,
+                    tagNode->getId(),
                     0.f,
                     false,
                     tagPos));
@@ -267,7 +269,11 @@ bool CubeMapRenderer::render(
 
 void CubeMapRenderer::handleNodeAdded(Node* node)
 {
-    if (!node->m_type->m_flags.cubeMap) return;
+    if (!isEnabled()) return;
+
+    auto* type = node->m_typeHandle.toType();
+
+    if (!type->m_flags.cubeMap) return;
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);
@@ -276,7 +282,7 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
         m_mirrorMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node);
+    m_nodes.push_back(node->toHandle());
 }
 
 void CubeMapRenderer::clearCubeMap(
@@ -361,7 +367,10 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& node : m_nodes) {
+    for (const auto& handle : m_nodes) {
+        auto* node = handle.toNode();
+        if (!node) continue;
+
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
@@ -383,7 +392,8 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 
 Node* CubeMapRenderer::getTagNode()
 {
-    if (m_tagNode) return m_tagNode;
-    m_tagNode = m_registry->m_nodeRegistry->getNode(m_tagID);
-    return m_tagNode;
+    if (!m_tagNode) {
+        m_tagNode = pool::NodeHandle::toHandle(m_tagId);
+    }
+    return m_tagNode.toNode();
 }

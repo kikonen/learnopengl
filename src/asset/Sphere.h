@@ -66,6 +66,7 @@ struct Sphere final
     void updateVolume(
         const ki::level_id matrixLevel,
         const glm::mat4& modelMatrix,
+        const glm::vec3& worldPos,
         float maxScale) const noexcept;
 
 private:

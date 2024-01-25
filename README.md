@@ -171,6 +171,23 @@ https://glad.dav1d.de
 ## C++
 - https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 
+## Visual C++
+- https://preshing.com/20110711/visual-c-performance-pitfalls/
+- __security_check_cookie
+  + https://preshing.com/20110807/the-cost-of-buffer-security-checks-in-visual-c/
+  + https://nfrechette.github.io/2020/06/26/buffer_security_checks/
+  + https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/security-init-cookie
+  + https://learn.microsoft.com/en-us/cpp/build/reference/sdl-enable-additional-security-checks?view=msvc-170
+
+## SIMD
+- https://gamedev.stackexchange.com/questions/132549/how-to-use-glm-simd-using-glm-version-0-9-8-2
+
+## UUID
+- https://github.com/mariusbancila/stduuid
+- https://stackoverflow.com/questions/2351087/what-is-the-best-32bit-hash-function-for-short-strings-tag-names
+- http://www.orthogonal.com.au/computers/hashstrings/
+- https://github.com/google/crc32c
+
 ## Libraries
 - https://github.com/nothings/stb
 - https://github.com/wqking/eventpp

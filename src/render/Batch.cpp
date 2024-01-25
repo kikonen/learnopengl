@@ -6,7 +6,6 @@
 
 #include "glm/glm.hpp"
 
-#include "ki/uuid.h"
 #include "util/glm_format.h"
 
 #include "asset/Program.h"
@@ -101,12 +100,12 @@ namespace render {
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
-        const size_t count = snapshots.size();
+        const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
         if (count <= 0) return;
 
-        size_t startIndex = 0;
-        size_t instanceCount = count;
+        uint32_t startIndex = 0;
+        uint32_t instanceCount = count;
 
         if (m_frustumCPU) {
             while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
@@ -115,7 +114,7 @@ namespace render {
             }
 
             if (instanceCount > 0) {
-                size_t endIndex = snapshots.size() - 1;
+                uint32_t endIndex = static_cast<uint32_t>(snapshots.size() - 1);
                 while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
                     endIndex--;
                     instanceCount--;
@@ -182,7 +181,6 @@ namespace render {
 
     void Batch::addCommand(
         const RenderContext& ctx,
-        const mesh::MeshType* type,
         const kigl::GLVertexArray* vao,
         const backend::DrawOptions& drawOptions,
         Program* program) noexcept
@@ -200,7 +198,7 @@ namespace render {
         Node& node,
         Program* program)
     {
-        const auto type = node.m_type;
+        auto* type = node.m_typeHandle.toType();
 
         if (type->m_flags.invisible || !node.m_visible) return;
 
@@ -226,7 +224,7 @@ namespace render {
             }
 
             if (change) {
-                addCommand(ctx, type, vao, drawOptions, program);
+                addCommand(ctx, vao, drawOptions, program);
             }
 
             auto& top = m_batches.back();

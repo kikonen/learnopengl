@@ -29,13 +29,13 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
     // NOTE KI for "directional" lights also target may change
     if (m_spot || m_directional) {
-        if (!m_targetNode) {
-            m_targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetId);
+        if (!m_targetHandle) {
+            m_targetHandle = pool::NodeHandle::toNode(m_targetId);
         }
-        auto* targetNode = m_targetNode;
+        auto* targetNode = m_targetHandle.toNode();
 
         if (!targetNode) {
-            KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", KI_UUID_STR(m_targetId)));
+            KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", m_targetId));
             targetNode = ctx.m_registry->m_nodeRegistry->getRootRT();
         }
 
@@ -81,7 +81,7 @@ DirLightUBO Light::toDirLightUBO() const noexcept
 {
     return {
         m_worldDir,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
     };
@@ -91,7 +91,7 @@ PointLightUBO Light::toPointightUBO() const noexcept
 {
     return {
         m_worldPosition,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
 
@@ -106,10 +106,10 @@ SpotLightUBO Light::toSpotLightUBO() const noexcept
 {
     return {
         m_worldPosition,
-        0,
+        //0,
 
         m_worldDir,
-        0,
+        //0,
 
         glm::vec4(diffuse, intensity),
 

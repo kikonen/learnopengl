@@ -18,6 +18,168 @@
 
 #include "Input.h"
 
+namespace
+{
+    // https://github.com/glfw/glfw/issues/1699
+    bool glfw_get_mouse_monitor(
+        GLFWmonitor** monitor,
+        GLFWwindow* window
+    ) {
+        bool success = false;
+
+        double cursor_position[2] = { 0 };
+        glfwGetCursorPos(window, &cursor_position[0], &cursor_position[1]);
+
+        int window_position[2] = { 0 };
+        glfwGetWindowPos(window, &window_position[0], &window_position[1]);
+
+        int monitors_size = 0;
+        GLFWmonitor** monitors = glfwGetMonitors(&monitors_size);
+
+        // convert cursor position from window coordinates to screen coordinates
+        cursor_position[0] += window_position[0];
+        cursor_position[1] += window_position[1];
+
+        for (int i = 0; ((!success) && (i < monitors_size)); ++i)
+        {
+            int monitor_position[2] = { 0 };
+            glfwGetMonitorPos(monitors[i], &monitor_position[0], &monitor_position[1]);
+
+            const GLFWvidmode* monitor_video_mode = glfwGetVideoMode(monitors[i]);
+
+            if (
+                (cursor_position[0] < monitor_position[0]) ||
+                (cursor_position[0] > (monitor_position[0] + monitor_video_mode->width)) ||
+                (cursor_position[1] < monitor_position[1]) ||
+                (cursor_position[1] > (monitor_position[1] + monitor_video_mode->height))
+                ) {
+                *monitor = monitors[i];
+                success = true;
+            }
+        }
+
+        // true: monitor contains the monitor the mouse is on
+        // false: monitor is unmodified
+        return success;
+    }
+
+    bool glfw_get_window_monitor(
+        GLFWmonitor** monitor,
+        GLFWwindow* window
+    ) {
+        bool success = false;
+
+        int window_rectangle[4] = { 0 };
+        glfwGetWindowPos(window, &window_rectangle[0], &window_rectangle[1]);
+        glfwGetWindowSize(window, &window_rectangle[2], &window_rectangle[3]);
+
+        int monitors_size = 0;
+        GLFWmonitor** monitors = glfwGetMonitors(&monitors_size);
+
+        GLFWmonitor* closest_monitor = NULL;
+
+        int max_overlap_area = 0;
+
+        for (int i = 0; i < monitors_size; ++i)
+        {
+            int monitor_position[2] = { 0 };
+            glfwGetMonitorPos(monitors[i], &monitor_position[0], &monitor_position[1]);
+
+            const GLFWvidmode* monitor_video_mode = glfwGetVideoMode(monitors[i]);
+
+            int monitor_rectangle[4] = {
+                monitor_position[0],
+                monitor_position[1],
+                monitor_video_mode->width,
+                monitor_video_mode->height,
+            };
+
+            if (
+                !(
+                    ((window_rectangle[0] + window_rectangle[2]) < monitor_rectangle[0]) ||
+                    (window_rectangle[0] > (monitor_rectangle[0] + monitor_rectangle[2])) ||
+                    ((window_rectangle[1] + window_rectangle[3]) < monitor_rectangle[1]) ||
+                    (window_rectangle[1] > (monitor_rectangle[1] + monitor_rectangle[3]))
+                    )
+                ) {
+                int intersection_rectangle[4] = { 0 };
+
+                // x, width
+                if (window_rectangle[0] < monitor_rectangle[0])
+                {
+                    intersection_rectangle[0] = monitor_rectangle[0];
+
+                    if ((window_rectangle[0] + window_rectangle[2]) < (monitor_rectangle[0] + monitor_rectangle[2]))
+                    {
+                        intersection_rectangle[2] = (window_rectangle[0] + window_rectangle[2]) - intersection_rectangle[0];
+                    }
+                    else
+                    {
+                        intersection_rectangle[2] = monitor_rectangle[2];
+                    }
+                }
+                else
+                {
+                    intersection_rectangle[0] = window_rectangle[0];
+
+                    if ((monitor_rectangle[0] + monitor_rectangle[2]) < (window_rectangle[0] + window_rectangle[2]))
+                    {
+                        intersection_rectangle[2] = (monitor_rectangle[0] + monitor_rectangle[2]) - intersection_rectangle[0];
+                    }
+                    else
+                    {
+                        intersection_rectangle[2] = window_rectangle[2];
+                    }
+                }
+
+                // y, height
+                if (window_rectangle[1] < monitor_rectangle[1])
+                {
+                    intersection_rectangle[1] = monitor_rectangle[1];
+
+                    if ((window_rectangle[1] + window_rectangle[3]) < (monitor_rectangle[1] + monitor_rectangle[3]))
+                    {
+                        intersection_rectangle[3] = (window_rectangle[1] + window_rectangle[3]) - intersection_rectangle[1];
+                    }
+                    else
+                    {
+                        intersection_rectangle[3] = monitor_rectangle[3];
+                    }
+                }
+                else
+                {
+                    intersection_rectangle[1] = window_rectangle[1];
+
+                    if ((monitor_rectangle[1] + monitor_rectangle[3]) < (window_rectangle[1] + window_rectangle[3]))
+                    {
+                        intersection_rectangle[3] = (monitor_rectangle[1] + monitor_rectangle[3]) - intersection_rectangle[1];
+                    }
+                    else
+                    {
+                        intersection_rectangle[3] = window_rectangle[3];
+                    }
+                }
+
+                int overlap_area = intersection_rectangle[2] * intersection_rectangle[3];
+                if (overlap_area > max_overlap_area)
+                {
+                    closest_monitor = monitors[i];
+                    max_overlap_area = overlap_area;
+                }
+            }
+        }
+
+        if (closest_monitor)
+        {
+            *monitor = closest_monitor;
+            success = true;
+        }
+
+        // true: monitor contains the monitor the window is most on
+        // false: monitor is unmodified
+        return success;
+    }
+}
 
 Window::Window(
     Engine& engine)
@@ -84,17 +246,26 @@ void Window::toggleFullScreen()
             m_windowedWasMaximized = glfwGetWindowAttrib(m_glfwWindow, GLFW_MAXIMIZED);
         }
 
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+        GLFWmonitor* monitor{ nullptr };
+        bool success = glfw_get_window_monitor(&monitor, m_glfwWindow);
+        if (!success) {
+            monitor = glfwGetPrimaryMonitor();
+        }
+
         glm::uvec2 size{ 0 };
         const auto* mode = glfwGetVideoMode(monitor);
         size.x = mode->width;
         size.y = mode->height;
 
+        int monitorPos[2] = { 0 };
+        glfwGetMonitorPos(monitor, &monitorPos[0], &monitorPos[1]);
+
         glfwSetWindowMonitor(
             m_glfwWindow,
             monitor,
-            0,
-            0,
+            monitorPos[0],
+            monitorPos[1],
             size.x,
             size.y,
             GLFW_DONT_CARE);
@@ -115,6 +286,8 @@ void Window::toggleFullScreen()
         }
         m_fullScreen = false;
     }
+
+    m_input->updateKeyStates();
 
     // https://community.khronos.org/t/glfw-fullscreen-problem/51536
     glfwSwapInterval(assets.glfwSwapInterval);

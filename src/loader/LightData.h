@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "BaseUUID.h"
+#include "BaseId.h"
 
 class Light;
 
@@ -18,7 +18,7 @@ namespace loader {
         bool enabled{ false };
         LightType type{ LightType::none };
 
-        BaseUUID targetIdBase;
+        BaseId targetBaseId;
 
         float linear{ 0.f };
         float quadratic{ 0.f };

@@ -24,7 +24,7 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            ctx.m_registry->m_scriptEngine->invokeFunction(m_node, m_functionName);
+            ctx.m_registry->m_scriptEngine->invokeFunction(getNode(), m_functionName);
         }
     }
 }

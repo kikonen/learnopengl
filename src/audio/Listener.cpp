@@ -11,24 +11,6 @@ namespace {
 
 namespace audio
 {
-    Listener::Listener()
-    {}
-
-    Listener& Listener::operator=(Listener&& o) noexcept
-    {
-        m_id = o.m_id;
-        m_default = o.m_default;
-        m_gain = o.m_gain;
-        m_pos = o.m_pos;
-        m_vel = o.m_vel;
-        m_front = o.m_front;
-        m_up = o.m_up;
-        m_matrixLevel = o.m_matrixLevel;
-        m_node = o.m_node;
-
-        return *this;
-    }
-
     Listener::Listener(Listener&& o) noexcept
         : m_id{ o.m_id },
         m_default( o.m_default ),
@@ -38,11 +20,28 @@ namespace audio
         m_front{ o.m_front },
         m_up{ o.m_up },
         m_matrixLevel{ o.m_matrixLevel },
-        m_node{ o.m_node }
+        m_nodeHandle{ o.m_nodeHandle }
     {}
 
     Listener::~Listener()
     {}
+
+    Listener& Listener::operator=(Listener&& o) noexcept
+    {
+        if (&o == this) return *this;
+
+        m_id = o.m_id;
+        m_default = o.m_default;
+        m_gain = o.m_gain;
+        m_pos = o.m_pos;
+        m_vel = o.m_vel;
+        m_front = o.m_front;
+        m_up = o.m_up;
+        m_matrixLevel = o.m_matrixLevel;
+        m_nodeHandle = o.m_nodeHandle;
+
+        return *this;
+    }
 
     void Listener::prepare()
     {
@@ -52,13 +51,14 @@ namespace audio
 
     void Listener::updateFromNode()
     {
-        const auto level = m_node ? m_node->getTransform().getMatrixLevel() : 0;
+        const auto* node = m_nodeHandle.toNode();
+        const auto level = m_nodeHandle ? node->getTransform().getMatrixLevel() : 0;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = m_node->getTransform().getWorldPosition();
-        m_front = m_node->getTransform().getViewFront();
-        m_up = m_node->getTransform().getViewUp();
+        m_pos = node->getTransform().getWorldPosition();
+        m_front = node->getTransform().getViewFront();
+        m_up = node->getTransform().getViewUp();
 
         updatePos();
     }

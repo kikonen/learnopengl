@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "pool/NodeHandle.h"
+
 class Program;
 
 struct PrepareContext;

@@ -33,7 +33,6 @@ namespace script
         bool hasPending() const noexcept;
 
     private:
-        bool isCanceled(script::command_id commandId) const noexcept;
         bool isValid(const UpdateContext& ctx, Command* cmd) const noexcept;
 
         void activateNext(const Command* cmd) noexcept;
@@ -63,9 +62,5 @@ namespace script
         int m_cleanupStep = 0;
 
         std::unordered_map<script::command_id, Command*> m_commands;
-
-        std::vector<script::command_id> m_canceled;
-
-        //script::command_id m_oldestAliveCommandId = -1;
     };
 }

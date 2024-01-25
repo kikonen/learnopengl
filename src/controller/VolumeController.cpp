@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "pool/NodeHandle.h"
+
 #include "model/Node.h"
 
 #include "engine/UpdateContext.h"
@@ -17,9 +19,7 @@ bool VolumeController::updateWT(
     const UpdateContext& ctx,
     Node& volumeNode) noexcept
 {
-    if (!m_targetID) return false;
-
-    Node* targetNode = ctx.m_registry->m_nodeRegistry->getNode(m_targetID);
+    Node* targetNode = m_targetId.toNode();
 
     if (!targetNode) {
         volumeNode.m_visible = false;
@@ -52,14 +52,4 @@ bool VolumeController::updateWT(
     }
 
     return true;
-}
-
-int VolumeController::getTarget()
-{
-    return m_targetID;
-}
-
-void VolumeController::setTarget(int targetID)
-{
-    m_targetID = targetID;
 }

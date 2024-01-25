@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "pool/NodeHandle.h"
+
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
@@ -14,7 +16,6 @@
 #include "model/Node.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
@@ -29,11 +30,13 @@ namespace loader {
     }
 
     void CubeMapLoader::attachCubeMap(
-        const uuids::uuid& rootId)
+        const ki::node_id rootId)
     {
         if (!m_assets.showCubeMapCenter) return;
 
-        auto* type = m_registry->m_typeRegistry->registerType("<cube_map>");
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<cube_map>");
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
@@ -67,7 +70,13 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto node = new Node(type);
+        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.cubeMapId);
+        auto* node = handle.toNode();
+#ifdef _DEBUG
+        node->m_resolvedSID = "<cube_map>";
+#endif
+        node->m_typeHandle = typeHandle;
+
         node->m_visible = false;
 
         auto& transform = node->modifyTransform();
@@ -82,9 +91,8 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = node,
-                .uuid = m_assets.cubeMapUUID,
-                .parentUUID = rootId,
+                .target = m_assets.cubeMapId,
+                .parentId = rootId,
             };
             m_dispatcher->send(evt);
         }

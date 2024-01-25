@@ -1,24 +1,16 @@
 #include "Mesh.h"
 
-#include <mutex>
+#include <fmt/format.h>
 
-#include "fmt/format.h"
+#include "pool/IdGenerator.h"
 
 namespace {
-    ki::mesh_id idBase = 0;
-
-    std::mutex id_lock{};
-
-    ki::mesh_id nextID()
-    {
-        std::lock_guard<std::mutex> lock(id_lock);
-        return ++idBase;
-    }
+    IdGenerator<ki::mesh_id> ID_GENERATOR;
 }
 
 namespace mesh {
     Mesh::Mesh()
-        : m_id(nextID())
+        : m_id(ID_GENERATOR.nextId())
     {
     }
 

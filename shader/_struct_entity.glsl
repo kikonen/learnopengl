@@ -2,10 +2,9 @@
 // => mat4 wastes lot of space (2 * vec4)
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 struct Entity {
-  vec4 u_modelMatrix0;
-  vec4 u_modelMatrix1;
-  vec4 u_modelMatrix2;
-  vec4 u_modelMatrix3;
+  vec4 u_modelMatrixRow0;
+  vec4 u_modelMatrixRow1;
+  vec4 u_modelMatrixRow2;
 
   vec4 u_normalMatrix0;
   vec4 u_normalMatrix1;

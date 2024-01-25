@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ki/uuid.h>
+#include "ki/size.h"
 
 class Group {
 public:
-    uuids::uuid m_id;
+    ki::node_id m_id;
 };

@@ -2,6 +2,8 @@
 
 #include "asset/Shader.h"
 
+#include "pool/NodeHandle.h"
+
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -281,15 +283,19 @@ bool MirrorMapRenderer::render(
     return true;
 }
 
-void MirrorMapRenderer::handleNodeAdded(Node* node)
+void MirrorMapRenderer::handleNodeAdded(
+    Node* node)
 {
-    if (!node->m_type->m_flags.mirror) return;
+    if (!isEnabled()) return;
+
+    auto* type = node->m_typeHandle.toType();
+    if (!type->m_flags.mirror) return;
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node);
+    m_nodes.push_back(node->toHandle());
 }
 
 void MirrorMapRenderer::drawNodes(
@@ -333,7 +339,7 @@ void MirrorMapRenderer::drawNodes(
     //ctx.updateClipPlanesUBO();
     //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
     {
-        Node* sourceNode = m_sourceNode;
+        Node* sourceNode = m_sourceNode.toNode();
 
         ctx.m_nodeDraw->drawNodes(
             ctx,
@@ -358,7 +364,10 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 
     std::map<float, Node*> sorted;
 
-    for (const auto& node : m_nodes) {
+    for (const auto& handle : m_nodes) {
+        auto* node = handle.toNode();
+        if (!node) continue;
+
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
         const auto& viewFront = snapshot.getViewFront();
 

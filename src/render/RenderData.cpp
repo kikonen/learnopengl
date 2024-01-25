@@ -169,7 +169,9 @@ namespace render {
         }
 
         if (useLight) {
-            auto* node = registry->m_nodeRegistry->getDirLightNode();
+            auto& handle = registry->m_nodeRegistry->getDirLightNode();
+            auto* node = handle.toNode();
+
             if (node && node->m_light->m_enabled) {
                 lightsUbo.u_dir[0] = node->m_light->toDirLightUBO();
                 lightsUbo.u_dirCount = 1;
@@ -181,8 +183,11 @@ namespace render {
 
         if (useLight) {
             int count = 0;
-            const auto& nodes = registry->m_nodeRegistry->getPointLightNodes();
-            for (auto* node : nodes) {
+            auto& handles = registry->m_nodeRegistry->getPointLightNodes();
+            for (auto& handle : handles) {
+                auto* node = handle.toNode();
+                if (!node) continue;
+
                 if (count >= MAX_LIGHT_COUNT) break;
                 if (!node->m_light->m_enabled) continue;
 
@@ -191,7 +196,7 @@ namespace render {
             }
             lightsUbo.u_pointCount = count;
 
-            const int diff = static_cast<int>(nodes.size()) - MAX_LIGHT_COUNT;
+            const int diff = static_cast<int>(handles.size()) - MAX_LIGHT_COUNT;
             if (diff > 0) {
                 KI_INFO_OUT(fmt::format("SKIPPED POINT_LIGHTS: {}", diff));
             }
@@ -199,8 +204,11 @@ namespace render {
 
         if (useLight) {
             int count = 0;
-            const auto& nodes = registry->m_nodeRegistry->getSpotLightNodes();
-            for (auto* node : nodes) {
+            const auto& handles = registry->m_nodeRegistry->getSpotLightNodes();
+            for (auto& handle : handles) {
+                auto* node = handle.toNode();
+                if (!node) continue;
+
                 if (count >= MAX_LIGHT_COUNT) break;
                 if (!node->m_light->m_enabled) continue;
 
@@ -209,7 +217,7 @@ namespace render {
             }
             lightsUbo.u_spotCount = count;
 
-            const int diff = static_cast<int>(registry->m_nodeRegistry->getSpotLightNodes().size()) - MAX_LIGHT_COUNT;
+            const int diff = static_cast<int>(handles.size()) - MAX_LIGHT_COUNT;
             if (diff > 0) {
                 KI_INFO_OUT(fmt::format("SKIPPED SPOT_LIGHTS: {}", diff));
             }

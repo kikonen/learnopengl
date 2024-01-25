@@ -6,6 +6,9 @@
 
 #include "ki/RenderClock.h"
 #include "ki/Timer.h"
+#include "ki/FpsCounter.h"
+
+#include "pool/NodeHandle.h"
 
 #include "util/thread.h"
 #include "util/Log.h"
@@ -76,7 +79,8 @@ void SceneUpdater::prepare()
     dispatcher->addListener(
         event::Type::node_added,
         [this](const event::Event& e) {
-            this->handleNodeAdded(e.body.node.target);
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeAdded(node);
         });
 }
 
@@ -111,11 +115,15 @@ void SceneUpdater::run()
     //const int delay = (int)(1000.f / 60.f);
     const int delay = 5;
 
+    ki::FpsCounter fpsCounter;
+
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedDuration;
 
     while (*m_alive) {
+        fpsCounter.startFame();
+
         loopTime = std::chrono::system_clock::now();
         elapsedDuration = loopTime - prevLoopTime;
         prevLoopTime = loopTime;
@@ -134,6 +142,13 @@ void SceneUpdater::run()
             m_registry.get());
 
         update(ctx);
+
+        fpsCounter.endFame(clock.elapsedSecs);
+
+        if (fpsCounter.isUpdate())
+        {
+            KI_INFO(fpsCounter.formatSummary("UPDATER"));
+        }
 
         if (!m_registry->m_commandEngine->hasPending()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(delay));
@@ -197,6 +212,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
 void SceneUpdater::handleNodeAdded(Node* node)
 {
+    if (!node) return;
+
     m_registry->m_physicsEngine->handleNodeAdded(node);
 
     //    auto& type = node->m_type;

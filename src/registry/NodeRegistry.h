@@ -9,7 +9,9 @@
 #include <fmt/format.h>
 
 #include "ki/size.h"
-#include "ki/uuid.h"
+
+#include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "component/Camera.h"
 #include "component/NodeComponent.h"
@@ -22,12 +24,11 @@ struct UpdateContext;
 class Registry;
 class SnapshotRegistry;
 
-class Node;
-using NodeVector = std::vector<Node*>;
-
 
 class NodeRegistry final
 {
+    friend class Node;
+
 public:
     NodeRegistry(
         const Assets& assets,
@@ -49,34 +50,14 @@ public:
 
     void handleNodeAdded(Node* node);
 
-    //inline bool containsNode(const int id) const noexcept
-    //{
-    //    const auto& it = m_idToNode.find(id);
-    //    return it != m_idToNode.end();
-    //}
-
     // @return root if root is prepared for RT
     Node* getRootRT() const noexcept {
-        return m_rootPreparedRT ? m_root : nullptr;
+        return m_rootRT.toNode();
     }
 
     // @return root if root is prepared for WT
     Node* getRootWT() const noexcept {
-        return m_root;
-    }
-
-    // @return node null if not found
-    inline Node* getNode(const ki::node_id id) const noexcept
-    {
-        const auto& it = m_idToNode.find(id);
-        return it != m_idToNode.end() ? it->second : nullptr;
-    }
-
-    // @return node null if not found
-    inline Node* getNode(const uuids::uuid& id) const noexcept
-    {
-        const auto& it = m_uuidToNode.find(id);
-        return it != m_uuidToNode.end() ? it->second : nullptr;
+        return m_rootWT.toNode();
     }
 
     void selectNodeById(ki::node_id id, bool append) const noexcept;
@@ -92,30 +73,27 @@ public:
     }
 
     void changeParent(
-        Node* node,
-        const uuids::uuid& parentId) noexcept;
+        const ki::node_id id,
+        const ki::node_id parentId) noexcept;
 
-    //inline const NodeVector* getChildren(const Node& parent) const noexcept {
-    //    const auto& it = m_parentToChildren.find(parent.m_id);
-    //    return it != m_parentToChildren.end() ? &it->second : nullptr;
-    //}
+    inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
+    inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode.toNode(); }
 
-    inline Node* getActiveNode() const noexcept { return m_activeNode; }
-    inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode; }
+    pool::NodeHandle getNextCameraNode(
+        pool::NodeHandle srcNode,
+        int offset) const noexcept;
 
-    Node* getNextCameraNode(Node* srcNode, int offset) const noexcept;
+    pool::NodeHandle findDefaultCameraNode() const;
 
-    Node* findDefaultCameraNode() const;
-
-    const Node* getDirLightNode() const noexcept {
-        return m_dirLightNodes.empty() ? nullptr : m_dirLightNodes[0];
+    const pool::NodeHandle& getDirLightNode() const noexcept {
+        return m_dirLightNodes.empty() ? pool::NodeHandle::NULL_HANDLE : m_dirLightNodes[0];
     }
 
-    const NodeVector& getPointLightNodes() const noexcept {
+    const std::vector<pool::NodeHandle>& getPointLightNodes() const noexcept {
         return m_pointLightNodes;
     }
 
-    const NodeVector& getSpotLightNodes() const noexcept {
+    const std::vector<pool::NodeHandle>& getSpotLightNodes() const noexcept {
         return m_spotLightNodes;
     }
 
@@ -123,44 +101,40 @@ public:
     void setSelectionMaterial(const Material& material);
 
 private:
-    void setActiveNode(Node* node);
-    void setActiveCameraNode(Node* node);
+    void cacheNodes(std::vector<Node*>& cache) const noexcept;
+
+    void setActiveNode(pool::NodeHandle node);
+    void setActiveCameraNode(pool::NodeHandle node);
 
     void attachNode(
-        Node* node,
-        const uuids::uuid& uuid,
-        const uuids::uuid& parentUUID,
-        ki::node_id parentId) noexcept;
-
-    void bindPendingChildren();
+        const ki::node_id nodeId,
+        const ki::node_id parentId) noexcept;
 
     void bindNode(
-        const uuids::uuid& uuid,
-        Node* node);
+        const ki::node_id nodeId);
 
     bool bindParent(
-        Node* node,
-        const uuids::uuid& uuid,
-        const uuids::uuid& parentUUID,
-        ki::node_id parentId);
-
-    void bindChildren(
-        const uuids::uuid& parentUUID);
+        const ki::node_id nodeId,
+        const ki::node_id parentId);
 
     void bindSkybox(
-        Node* node) noexcept;
+        pool::NodeHandle handle) noexcept;
 
 public:
-    Node* m_skybox{ nullptr };
+    pool::NodeHandle m_skybox{};
 
 private:
     const Assets& m_assets;
 
-    Node* m_root{ nullptr };
+    pool::NodeHandle m_rootWT{};
+    pool::NodeHandle m_rootRT{};
     bool m_rootPreparedRT{ false };
 
     // EntityRegistry
-    std::vector<Node*> m_allNodes;
+    std::vector<pool::NodeHandle> m_allNodes;
+
+    std::vector<Node*> m_cachedNodesWT;
+    std::vector<Node*> m_cachedNodesRT;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
@@ -168,23 +142,16 @@ private:
 
     mutable std::mutex m_snapshotLock{};
 
-    std::unordered_map<ki::node_id, Node*> m_idToNode;
-    std::unordered_map<uuids::uuid, Node*> m_uuidToNode;
-
-    std::unordered_map<uuids::uuid, std::vector<std::tuple<const uuids::uuid, Node*>>> m_pendingChildren;
-
-    //std::unordered_map<ki::node_id, NodeVector> m_parentToChildren;
-
     std::vector<NodeComponent<Camera>> m_cameraComponents;
 
-    NodeVector m_cameraNodes;
+    std::vector<pool::NodeHandle> m_cameraNodes;
 
-    NodeVector m_dirLightNodes;
-    NodeVector m_pointLightNodes;
-    NodeVector m_spotLightNodes;
+    std::vector<pool::NodeHandle> m_dirLightNodes;
+    std::vector<pool::NodeHandle> m_pointLightNodes;
+    std::vector<pool::NodeHandle> m_spotLightNodes;
 
-    Node* m_activeNode{ nullptr };
-    Node* m_activeCameraNode{ nullptr };
+    pool::NodeHandle m_activeNode{};
+    pool::NodeHandle m_activeCameraNode{};
 
     std::unique_ptr<Material> m_selectionMaterial;
 

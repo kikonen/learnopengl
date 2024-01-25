@@ -1,0 +1,61 @@
+---
+name: Spyro
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+entities:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 0, 3]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Rock
+    model: [rock2, rock]
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    force_material: true
+    material_modifier:
+      metal: [0.5, 0.0, 0, 1]
+      map_pbr: textures\Rock002_1K-PNG
+      tiling: 4
+materials:
+  - name: default
+    kd: [0.8, 0.8, 0.0, 1.0]
+    reflection: 0.05
+  - name: teapot
+    kd: [0.578, 0.578, 0.168, 1.0]
+    reflection: 0.05
+  - name: cow
+    kd: [0.160, 0.578, 0.168, 1.0]
+    reflection: 0.05
+  - name: default_ball
+    kd: [0.8, 0.8, 0.0, 1.0]
+    reflection: 0.05
+  - name: default_ball
+    kd: [0.8, 0.8, 0.0, 1.0]
+    reflection: 0.05
+  - name: gold_ball
+    kd: [0.7516, 0.6065, 0.2265, 1.0]
+    reflection: 0.05
+  - name: silver_ball
+    kd: [0.5075, 0.5075, 0.5075, 1.0]
+    reflection: 0.05
+  - name: bronze_ball
+    kd: [0.7140, 0.4284, 0.1814, 1.0]
+    reflection: 0.05

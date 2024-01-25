@@ -32,20 +32,24 @@
 struct EntitySSBO {
     // NOTE KI must align struct to 16 byte boundary
     // matrix is just N * vec4, thus vec4 is *largest*
-    glm::mat4 u_modelMatrix{ 1.f }; // 4 * 4 * 4 = 64
+    // NOTE KI encode in *ROW* order
+    // last row is *ALWAYS* [0, 0, 0, 1]
+    glm::vec4 u_modelMatrixRow0{ 1.f };
+    glm::vec4 u_modelMatrixRow1{ 1.f };
+    glm::vec4 u_modelMatrixRow2{ 1.f };
 
     glm::vec3 u_normalMatrix0{ 0.f }; // 4 *  4 * 4 = 64
-    int pad1;
+    //int pad1;
     glm::vec3 u_normalMatrix1{ 0.f }; // 4 *  4 * 4 = 64
-    int pad2;
+    //int pad2;
     glm::vec3 u_normalMatrix2{ 0.f }; // 4 *  4 * 4 = 64
-    int pad3;
+    //int pad3;
 
     // center + radius
     glm::vec4 u_volume{ 0.f }; // 3 * 1 * 4 = 12 => 16
 
     glm::vec3 u_worldScale{ 0.f };
-    int pad4_1;
+    //int pad4_1;
 
     GLint u_materialIndex{ 0 }; // 1 * 4 = 4
     GLint u_shapeIndex{ -1 }; // 1 * 4 = 4
@@ -64,27 +68,28 @@ struct EntitySSBO {
     int pad2_2;
     int pad2_3;
 
-    // NOTE KI maxScale *CANNOT* be get from modelmatrix if both
-    // Scale AND Rotation is applied!
-    inline float getMaxScale() const {
-        return std::max(std::max(u_worldScale.x, u_worldScale.y), u_worldScale.z);
-    }
-
-    inline const glm::vec4& getWorldPosition() const {
-        return u_modelMatrix[3];
-    }
-
-    inline const glm::mat4& getModelMatrix() const {
-        return u_modelMatrix;
-    }
-
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     inline void setModelMatrix(
         const glm::mat4& mat,
         bool uniformScale,
         bool updateNormal)
     {
-        u_modelMatrix = mat;
+        {
+            u_modelMatrixRow0[0] = mat[0][0];
+            u_modelMatrixRow0[1] = mat[1][0];
+            u_modelMatrixRow0[2] = mat[2][0];
+            u_modelMatrixRow0[3] = mat[3][0];
+
+            u_modelMatrixRow1[0] = mat[0][1];
+            u_modelMatrixRow1[1] = mat[1][1];
+            u_modelMatrixRow1[2] = mat[2][1];
+            u_modelMatrixRow1[3] = mat[3][1];
+
+            u_modelMatrixRow2[0] = mat[0][2];
+            u_modelMatrixRow2[1] = mat[1][2];
+            u_modelMatrixRow2[2] = mat[2][2];
+            u_modelMatrixRow2[3] = mat[3][2];
+        }
 
         if (updateNormal) {
             if (uniformScale) {
@@ -115,13 +120,6 @@ struct EntitySSBO {
     //    u_normalMatrix0 = mat[0];
     //    u_normalMatrix1 = mat[1];
     //    u_normalMatrix2 = mat[2];
-    //}
-
-    //inline void adjustPosition(const glm::vec3 adjust) {
-    //    glm::vec4& c = u_modelMatrix[3];
-    //    c.x += adjust.x;
-    //    c.y += adjust.y;
-    //    c.z += adjust.z;
     //}
 };
 #pragma pack(pop)

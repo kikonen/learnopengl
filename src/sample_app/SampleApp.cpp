@@ -7,6 +7,8 @@
 
 #include "kigl/kigl.h"
 
+#include "pool/NodeHandle.h"
+
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
@@ -333,19 +335,19 @@ void SampleApp::selectNode(
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
-    auto* node = nodeRegistry.getNode(nodeId);
+    auto* node = pool::NodeHandle::toNode(nodeId);
 
     if (selectMode) {
-        auto* volumeNode = nodeRegistry.getNode(ctx.m_assets.volumeUUID);
+        auto* volumeNode = pool::NodeHandle::toNode(ctx.m_assets.volumeId);
 
         // deselect
         if (node && node->isSelected()) {
-            nodeRegistry.selectNodeById(-1, false);
+            nodeRegistry.selectNodeById(0, false);
 
             if (volumeNode) {
                 auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
                 if (controller) {
-                    controller->setTarget(-1);
+                    controller->setTargetId(pool::NodeHandle::NULL_HANDLE);
                 }
             }
 
@@ -364,7 +366,7 @@ void SampleApp::selectNode(
         if (volumeNode) {
             auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
             if (controller) {
-                controller->setTarget(node ? node->m_id : -1);
+                controller->setTargetId(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE);
             }
         }
         KI_INFO(fmt::format("selected: {}", nodeId));
@@ -373,7 +375,7 @@ void SampleApp::selectNode(
             {
                 event::Event evt { event::Type::animate_rotate };
                 evt.body.animate = {
-                    .target = node->m_id,
+                    .target = node->getId(),
                     .duration = 5,
                     .relative = true,
                     .data = { 0.f, 1.f, 0.f },
@@ -393,7 +395,7 @@ void SampleApp::selectNode(
             auto exists = m_registry->m_controllerRegistry->hasController(node);
             if (exists) {
                 event::Event evt { event::Type::node_activate };
-                evt.body.node.target = node;
+                evt.body.node.target = node->getId();
                 ctx.m_registry->m_dispatcher->send(evt);
             }
 
@@ -402,7 +404,7 @@ void SampleApp::selectNode(
     } else if (cameraMode) {
         // NOTE KI null == default camera
         event::Event evt { event::Type::camera_activate };
-        evt.body.node.target = node;
+        evt.body.node.target = node->getId();
         ctx.m_registry->m_dispatcher->send(evt);
 
         node = nullptr;

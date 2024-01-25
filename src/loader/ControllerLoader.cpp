@@ -74,11 +74,9 @@ namespace loader {
 
     NodeController* ControllerLoader::createController(
         const ControllerData& data,
-        Node* node)
+        pool::NodeHandle handle)
     {
         if (!data.enabled) return nullptr;
-
-        const auto& center = node->getTransform().getPosition();
 
         switch (data.type) {
         case ControllerType::pawn: {

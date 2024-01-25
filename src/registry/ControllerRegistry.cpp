@@ -38,7 +38,7 @@ void ControllerRegistry::prepare(Registry* registry)
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
     for (const auto& it : m_controllers) {
-        Node* node = m_registry->m_nodeRegistry->getNode(it.first);
+        auto* node = pool::NodeHandle::toNode(it.first);
         if (!node) continue;
 
         bool changed = false;
@@ -59,7 +59,7 @@ void ControllerRegistry::addController(
 {
     if (!controller) return;
 
-    Node* node = m_registry->m_nodeRegistry->getNode(targetId);
+    auto* node = pool::NodeHandle::toNode(targetId);
 
     if (!node) {
         KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - targetId={}", targetId));

@@ -37,7 +37,7 @@ void AsteroidBeltGenerator::prepare(
     prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
 }
 
-void AsteroidBeltGenerator::update(
+void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {
@@ -81,9 +81,9 @@ void AsteroidBeltGenerator::createAsteroids(
 {
     auto& registry = ctx.m_registry;
 
-    auto& type = container.m_type;
+    auto* type = container.m_typeHandle.toType();
 
-    const auto* mesh = container.m_type->getMesh();
+    const auto* mesh = type->getMesh();
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();
@@ -94,7 +94,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
         auto& asteroid = m_transforms.emplace_back();
 
-        asteroid.setMaterialIndex(container.m_type->getMaterialIndex());
+        asteroid.setMaterialIndex(type->getMaterialIndex());
         asteroid.setVolume(volume);
     }
 
@@ -154,9 +154,18 @@ void AsteroidBeltGenerator::initAsteroids(
         }
 
         {
-            // 3. make asteroids to rotate slowly
+            // 4. make asteroids to rotate center slowly
             float velocity = (rand() % 200) / 20000.0f + 0.0005f;
-            physics.m_angularVelocity = velocity;
+            physics.m_velocity = velocity;
+        }
+
+        {
+            // 5. each asteroid slow rotates its' own axis
+            glm::vec3 axis({ 100 - rand() % 200, 100 - rand() % 200, 100 - rand() % 200 });
+            float degrees = (100 - rand() % 200) / 1.f;
+
+            physics.m_axis = glm::normalize(axis);
+            physics.m_angularRotation = glm::radians(degrees);
         }
     }
 }
@@ -173,10 +182,16 @@ void AsteroidBeltGenerator::rotateAsteroids(
         auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
-        glm::mat4 modelMat{ 1.f };
-        float angle = physics.m_angularVelocity * elapsed;
+        {
+            float angle = physics.m_velocity * elapsed;
+            auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
+            asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
+        }
 
-        auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
-        asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
+        // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+        {
+            auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
+            asteroid.adjustQuatRotation(rot);
+        }
     }
 }

@@ -4,7 +4,8 @@
 
 #include <fmt/format.h>
 
-#include "ki/uuid.h"
+#include "ki/sid.h"
+
 #include "kigl/kigl.h"
 
 Assets::Assets()
@@ -206,10 +207,15 @@ Assets::Assets()
 
     computeGroups = { 1, 1, 1 };
 
-    rootUUID =    KI_UUID("11111111-1111-1111-1111-111111111111");
-    volumeUUID =  KI_UUID("11111111-1111-1111-1111-222222222222");
-    cubeMapUUID = KI_UUID("11111111-1111-1111-1111-333333333333");
-    skyboxUUID =  KI_UUID("11111111-1111-1111-1111-444444444444");
+    //rootId    = SID("<root>");
+    //volumeId  = SID("<volume>");
+    //cubeMapId = SID("<cube_map>");
+    //skyboxId  = SID("<skybox>");
+
+    rootId = 1;
+    volumeId = 2;
+    cubeMapId = 3;
+    skyboxId = 4;
 
     /////////////////////////
     // TEMPORARIES
