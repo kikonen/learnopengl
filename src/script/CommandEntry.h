@@ -58,16 +58,8 @@ namespace script
             m_ready{ o.m_ready },
             m_next{ o.m_next }
         {
-            if (o.m_cmd) {
-                memcpy(m_buffer, o.m_buffer, sizeof(m_buffer));
-                m_cmd = reinterpret_cast<Command*>(&m_buffer);
-
-                o.m_cmd = nullptr;
-            }
-            else {
-                m_cmd = nullptr;
-                memset(m_buffer, 0, sizeof(m_buffer));
-            }
+            moveCommand(o.m_cmd);
+            o.m_cmd = nullptr;
         }
 
         template<class T>
@@ -76,6 +68,12 @@ namespace script
             T* data = reinterpret_cast<T*>(&m_buffer);
             *data = std::move(o);
             m_cmd = reinterpret_cast<T*>(&m_buffer);
+        }
+
+        ~CommandEntry() {
+            if (m_cmd) {
+                m_cmd->~Command();
+            }
         }
 
         CommandEntry& operator=(CommandEntry&& o) noexcept
@@ -88,9 +86,7 @@ namespace script
             m_ready = o.m_ready;
             m_next = o.m_next;
 
-            memcpy(m_buffer, o.m_buffer, sizeof(m_buffer));
-            m_cmd = reinterpret_cast<Command*>(&m_buffer);
-
+            moveCommand(o.m_cmd);
             o.m_cmd = nullptr;
 
             return *this;
@@ -99,16 +95,14 @@ namespace script
         template<typename T>
         void set(T&& o) noexcept
         {
-            T* data = reinterpret_cast<T*>(&m_buffer);
-            *data = std::move(o);
-            m_cmd = reinterpret_cast<T*>(&m_buffer);
+            //T* data = reinterpret_cast<T*>(&m_buffer);
+            //*data = std::move(o);
+            //m_cmd = reinterpret_cast<T*>(&m_buffer);
+            moveCommand(&o);
         }
 
-        ~CommandEntry() {
-            if (m_cmd) {
-                m_cmd->~Command();
-            }
-        }
+        void moveCommand(Command* other_cmd);
+
 
         script::command_id afterId{ 0 };
 
