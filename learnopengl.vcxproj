@@ -423,6 +423,7 @@
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
+    <ClInclude Include="src\script\CommandEntry.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\size.h" />

@@ -169,7 +169,10 @@ https://glad.dav1d.de
 - http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
 
 ## C++
+- https://en.cppreference.com/w/
 - https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
+- https://blog.andreiavram.ro/cpp-custom-allocators-first-step/
+- https://en.cppreference.com/w/cpp/language/new
 
 ## Visual C++
 - https://preshing.com/20110711/visual-c-performance-pitfalls/

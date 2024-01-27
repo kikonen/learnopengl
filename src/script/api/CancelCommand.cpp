@@ -9,10 +9,9 @@
 namespace script
 {
     CancelCommand::CancelCommand(
-        script::command_id afterCommandId,
         float duration,
         script::command_id commandId) noexcept
-        : Command(afterCommandId, duration),
+        : Command(duration),
         m_commandId(commandId)
     {
     }

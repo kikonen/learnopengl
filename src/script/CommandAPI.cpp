@@ -10,6 +10,7 @@
 #include "ScriptEngine.h"
 
 #include "script/CommandEngine.h"
+#include "script/CommandEntry.h"
 
 #include "api/CancelCommand.h"
 #include "api/Wait.h"
@@ -103,10 +104,11 @@ namespace script
         //KI_INFO_OUT(fmt::format("wait: command={}, opt={}", commandId, opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<CancelCommand>(
-                opt.afterId,
+            opt.afterId,
+            CancelCommand{
                 opt.duration,
-                commandId));
+                static_cast<script::command_id>(commandId)
+            });
     }
 
     int CommandAPI::lua_wait(
@@ -117,9 +119,10 @@ namespace script
         //KI_INFO_OUT(fmt::format("wait: opt={}", opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<Wait>(
-                opt.afterId,
-                opt.duration));
+            opt.afterId,
+            Wait{
+                opt.duration
+            });
     }
 
     int CommandAPI::lua_sync(
@@ -132,10 +135,11 @@ namespace script
         //KI_INFO_OUT(fmt::format("sync: commandIds={}, opt={}", commandIds[0], opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<Sync>(
-                opt.afterId,
+            opt.afterId,
+            Sync{
                 opt.duration,
-                commandIds));
+                commandIds
+            });
     }
 
     int CommandAPI::lua_move(
@@ -148,12 +152,13 @@ namespace script
         //KI_INFO_OUT(fmt::format("move: node={}, pos={}, opt={}", m_nodeId, pos, opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<MoveNode>(
-                opt.afterId,
+            opt.afterId,
+            MoveNode{
                 m_nodeId,
                 opt.duration,
                 opt.relative,
-                pos));
+                pos
+            });
     }
 
     int CommandAPI::lua_moveSpline(
@@ -168,13 +173,14 @@ namespace script
         //KI_INFO_OUT(fmt::format("move_spline: node={}, p={}, pos={}, opt={}", m_nodeId, p, pos, opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<MoveSplineNode>(
-                opt.afterId,
+            opt.afterId,
+            MoveSplineNode{
                 m_nodeId,
                 opt.duration,
                 opt.relative,
                 p,
-                pos));
+                pos
+            });
     }
 
     int CommandAPI::lua_rotate(
@@ -188,13 +194,14 @@ namespace script
         //KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_nodeId, rot, opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<RotateNode>(
-                opt.afterId,
+            opt.afterId,
+            RotateNode{
                 m_nodeId,
                 opt.duration,
                 opt.relative,
                 dir,
-                lua_degrees));
+                lua_degrees
+            });
     }
 
     int CommandAPI::lua_scale(
@@ -207,12 +214,13 @@ namespace script
         //KI_INFO_OUT(fmt::format("scale: node={}, scale={}, opt={}", m_nodeId, scale, opt.str()));
 
         return m_commandEngine->addCommand(
-            std::make_unique<ScaleNode>(
-                opt.afterId,
+            opt.afterId,
+            ScaleNode{
                 m_nodeId,
                 opt.duration,
                 opt.relative,
-                scale));
+                scale
+            });
     }
 
     int CommandAPI::lua_audioPlay(
@@ -221,11 +229,12 @@ namespace script
         const auto opt = readOptions(lua_opt);
 
         return m_commandEngine->addCommand(
-            std::make_unique<AudioPlay>(
-                opt.afterId,
+            opt.afterId,
+            AudioPlay{
                 m_nodeId,
                 opt.index,
-                opt.sync));
+                opt.sync
+            });
     }
 
     int CommandAPI::lua_audioPause(
@@ -234,10 +243,11 @@ namespace script
         const auto opt = readOptions(lua_opt);
 
         return m_commandEngine->addCommand(
-            std::make_unique<AudioPause>(
-                opt.afterId,
+            opt.afterId,
+            AudioPause{
                 m_nodeId,
-                opt.index));
+                opt.index
+            });
     }
 
     int CommandAPI::lua_audioStop(
@@ -246,10 +256,11 @@ namespace script
         const auto opt = readOptions(lua_opt);
 
         return m_commandEngine->addCommand(
-            std::make_unique<AudioStop>(
-                opt.afterId,
+            opt.afterId,
+            AudioStop{
                 m_nodeId,
-                opt.index));
+                opt.index
+            });
     }
 
     int CommandAPI::lua_start(
@@ -266,10 +277,11 @@ namespace script
         //KI_INFO_OUT(fmt::format("start: node={}, opt={}, coroutine={}", m_nodeId, opt.str(), coroutine->m_id));
 
         return m_commandEngine->addCommand(
-            std::make_unique<StartNode>(
-                opt.afterId,
+            opt.afterId,
+            StartNode{
                 m_nodeId,
-                coroutine));
+                coroutine
+            });
     }
 
     int CommandAPI::lua_resume(
@@ -288,9 +300,10 @@ namespace script
         auto& coroutine = m_coroutines[coroutineID];
 
         return m_commandEngine->addCommand(
-            std::make_unique<ResumeNode>(
-                opt.afterId,
+            opt.afterId,
+            ResumeNode{
                 m_nodeId,
-                coroutine));
+                coroutine
+            });
     }
 }

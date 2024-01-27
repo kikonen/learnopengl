@@ -7,21 +7,20 @@
 namespace script
 {
     MoveSplineNode::MoveSplineNode(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& controlPoint,
         const glm::vec3& position) noexcept
-        : NodeCommand(afterCommandId, nodeId, duration, relative),
+        : NodeCommand(nodeId, duration, relative),
         m_controlPoint(controlPoint),
         m_position(position)
     {
     }
 
-    void MoveSplineNode::bind(const UpdateContext& ctx, Node* node) noexcept
+    void MoveSplineNode::bind(const UpdateContext& ctx) noexcept
     {
-        NodeCommand::bind(ctx, node);
+        NodeCommand::bind(ctx);
 
         m_end = m_position;
         if (!m_relative) {

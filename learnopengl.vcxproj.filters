@@ -1475,6 +1475,9 @@
     <ClInclude Include="src\ki\FpsCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\script\CommandEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

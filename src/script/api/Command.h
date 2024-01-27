@@ -18,15 +18,17 @@ namespace script
     {
     public:
         // @param duration seconds
-        Command(
-            script::command_id afterCommandId,
-            float duration) noexcept;
+        Command(float duration) noexcept;
 
         virtual ~Command() {}
 
         inline bool isCompleted() const noexcept
         {
-            return m_canceled || m_finished;
+            return m_finished;
+        }
+
+        void setId(script::command_id id) {
+            m_id = id;
         }
 
         virtual bool isNode() noexcept { return false; }
@@ -38,19 +40,13 @@ namespace script
             const UpdateContext& ctx) noexcept = 0;
 
     public:
-        const script::command_id m_id;
-        const script::command_id m_afterCommandId;
-
-        // seconds
-        const float m_duration;
-
-        bool m_canceled = false;
-        bool m_ready = false;
         bool m_finished = false;
 
-        std::vector<script::command_id> m_next;
-
     protected:
+        // seconds
+        float m_duration;
+
+        script::command_id m_id{ 0 };
         float m_elapsedTime = 0.f;
     };
 }

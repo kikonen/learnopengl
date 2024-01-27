@@ -8,7 +8,6 @@ namespace script
     {
     public:
         Wait(
-            script::command_id afterCommandId,
             float duration) noexcept;
 
         virtual void execute(

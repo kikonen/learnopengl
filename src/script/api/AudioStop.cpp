@@ -14,17 +14,11 @@
 namespace script
 {
     AudioStop::AudioStop(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         int index) noexcept
-        : NodeCommand(afterCommandId, nodeId, 0, false),
+        : NodeCommand(nodeId, 0, false),
         m_index(index)
     {
-    }
-
-    void AudioStop::bind(const UpdateContext& ctx, Node* node) noexcept
-    {
-        NodeCommand::bind(ctx, node);
     }
 
     void AudioStop::execute(

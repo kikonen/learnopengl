@@ -13,19 +13,13 @@
 namespace script
 {
     AudioPlay::AudioPlay(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         int index,
         bool sync) noexcept
-        : NodeCommand(afterCommandId, nodeId, 0, false),
+        : NodeCommand(nodeId, 0, false),
         m_index(index),
         m_sync(sync)
     {
-    }
-
-    void AudioPlay::bind(const UpdateContext& ctx, Node* node) noexcept
-    {
-        NodeCommand::bind(ctx, node);
     }
 
     void AudioPlay::execute(

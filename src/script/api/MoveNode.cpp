@@ -7,19 +7,18 @@
 namespace script
 {
     MoveNode::MoveNode(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& position) noexcept
-        : NodeCommand(afterCommandId, nodeId, duration, relative),
+        : NodeCommand(nodeId, duration, relative),
         m_position(position)
     {
     }
 
-    void MoveNode::bind(const UpdateContext& ctx, Node* node) noexcept
+    void MoveNode::bind(const UpdateContext& ctx) noexcept
     {
-        NodeCommand::bind(ctx, node);
+        NodeCommand::bind(ctx);
 
         m_end = m_position;
         if (!m_relative) {

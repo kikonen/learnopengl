@@ -24,23 +24,22 @@ namespace {
 namespace script
 {
     RotateNode::RotateNode(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& axis,
         const float degrees) noexcept
-        : NodeCommand(afterCommandId, nodeId, duration, relative),
+        : NodeCommand(nodeId, duration, relative),
         m_axis(glm::normalize(axis)),
         m_radians(glm::radians(degrees))
     {
     }
 
-    void RotateNode::bind(const UpdateContext& ctx, Node* node) noexcept
+    void RotateNode::bind(const UpdateContext& ctx) noexcept
     {
-        NodeCommand::bind(ctx, node);
+        NodeCommand::bind(ctx);
 
-        m_base = node->getTransform().getQuatRotation();
+        m_base = getNode()->getTransform().getQuatRotation();
 
         // NOTE KI relative means now "relative to axis of node"
         if (m_relative) {

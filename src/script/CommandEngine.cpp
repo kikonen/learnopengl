@@ -2,11 +2,14 @@
 
 #include "model/Node.h"
 
+#include "pool/IdGenerator.h"
 #include "pool/NodeHandle.h"
 
 #include "api/CancelCommand.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
+
+#include "CommandEntry.h"
 
 #include "api/Command.h"
 
@@ -29,11 +32,24 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+namespace {
+    IdGenerator<script::command_id> ID_GENERATOR;
+
+    constexpr size_t COMMANDS_SIZE = 10000;
+}
+
 namespace script
 {
     CommandEngine::CommandEngine()
-        : m_cleanupStep(5)
-    {}
+        : m_cleanupStep(5),
+        m_pending{ std::make_unique<std::vector<CommandEntry>>() },
+        m_blocked{ std::make_unique<std::vector<CommandEntry>>() },
+        m_active{ std::make_unique<std::vector<CommandEntry>>() }
+    {
+        m_pending->reserve(COMMANDS_SIZE);
+        m_blocked->reserve(COMMANDS_SIZE);
+        m_active->reserve(COMMANDS_SIZE);
+    }
 
     void CommandEngine::prepare(Registry* registry)
     {
@@ -42,10 +58,11 @@ namespace script
             [this](const event::Event& e) {
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:wait {}\n", anim.target));
-                addCommand(
-                    std::make_unique<Wait>(
-                        anim.after,
-                        anim.duration));
+                addCommand<Wait>(
+                    anim.after,
+                    Wait{
+                        anim.duration,
+                    });
             });
 
         registry->m_dispatcher->addListener(
@@ -54,12 +71,13 @@ namespace script
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:move {}\n", anim.target));
                 addCommand(
-                    std::make_unique<MoveNode>(
-                        anim.after,
+                    anim.after,
+                    MoveNode{
                         anim.target,
                         anim.duration,
                         anim.relative,
-                        anim.data));
+                        anim.data
+                    });
             });
 
         registry->m_dispatcher->addListener(
@@ -68,13 +86,14 @@ namespace script
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:rotate {}\n", anim.target));
                 addCommand(
-                    std::make_unique<RotateNode>(
-                        anim.after,
+                    anim.after,
+                    RotateNode {
                         anim.target,
                         anim.duration,
                         anim.relative,
                         anim.data,
-                        anim.data2.x));
+                        anim.data2.x
+                    });
             });
     }
 
@@ -87,197 +106,207 @@ namespace script
         processCleanup(ctx);
     }
 
-    script::command_id CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
+    script::command_id CommandEngine::addCommand(
+        CommandEntry&& entry) noexcept
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
 
-        auto& cmd = m_pending.emplace_back(std::move(pcmd));
-        return cmd->m_id;
-    }
+        auto& moved = m_pending->emplace_back(std::move(entry));
 
-    bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) const noexcept
-    {
-        if (!cmd->isNode()) return true;
+        moved.m_id = ID_GENERATOR.nextId();
+        moved.m_cmd->setId(moved.m_id);
 
-        auto nodeId = (dynamic_cast<NodeCommand*>(cmd))->m_nodeId;
-        return pool::NodeHandle::toNode(nodeId);
+        return moved.m_id;
     }
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
     {
+        bool found = false;
         {
             std::lock_guard<std::mutex> lock{ m_pendingLock };
-            for (auto& cmd : m_pending) {
-                if (cmd->m_id == commandId) {
-                    cmd->m_canceled = true;
+            for (auto& entry : *m_pending) {
+                if (entry.m_id == commandId) {
+                    killEntry(entry);
+                    found = true;
                 }
             }
         }
 
-        const auto& it = m_commands.find(commandId);
-        if (it != m_commands.end()) {
-            it->second->m_canceled = true;
+        if (!found) {
+            for (auto& entry : *m_blocked) {
+                if (entry.m_id == commandId) {
+                    killEntry(entry);
+                    m_blockedDeadCount++;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            for (auto& entry : *m_active) {
+                if (entry.m_id == commandId) {
+                    killEntry(entry);
+                    m_activeDeadCount++;
+                    found = true;
+                }
+            }
         }
     }
 
     bool CommandEngine::isAlive(script::command_id commandId) const noexcept
     {
-        return m_commands.find(commandId) != m_commands.end();
+        return m_alive.find(commandId) != m_alive.end();
     }
 
     bool CommandEngine::hasPending() const noexcept
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
-        return !m_pending.empty();
+        return !m_pending->empty();
     }
 
-    void CommandEngine::activateNext(const Command* cmd) noexcept
+    void CommandEngine::activateNext(const CommandEntry& prevEntry) noexcept
     {
-        if (cmd->m_next.empty()) return;
+        if (prevEntry.m_next.empty()) return;
 
-        for (auto nextId : cmd->m_next) {
-            if (const auto& it = m_commands.find(nextId);
-                it != m_commands.end())
-            {
-                it->second->m_ready = true;
+        for (auto nextId : prevEntry.m_next) {
+            for (auto& entry : *m_blocked) {
+                if (entry.m_id == nextId) {
+                    entry.m_ready = true;
+                }
             }
         }
+    }
+
+    void CommandEngine::bindNext(CommandEntry& nextEntry) noexcept
+    {
+        const auto afterId = nextEntry.afterId;
+        bool found = false;
+
+        if (afterId > 0 && !found) {
+            for (auto& entry : *m_blocked) {
+                if (entry.m_id == afterId) {
+                    entry.m_next.push_back(nextEntry.m_id);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (afterId > 0 && !found) {
+            for (auto& entry : *m_active) {
+                if (entry.m_id == afterId) {
+                    entry.m_next.push_back(nextEntry.m_id);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            nextEntry.m_ready = true;
+        }
+    }
+
+    void CommandEngine::killEntry(CommandEntry& deadEntry) noexcept
+    {
+        deadEntry.m_alive = false;
+        m_alive.erase(deadEntry.m_id);
+
+        activateNext(deadEntry);
     }
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
 
-        // NOTE KI scripts cannot exist before node is in registry
-        // => thus it MUST exist
-        if (m_pending.empty()) return;
+        if (m_pending->empty()) return;
 
-        for (auto& cmd : m_pending) {
-            // canceled; discard
-            if (cmd->m_canceled) continue;
+        for (auto& entry : *m_pending) {
+            if (!entry.m_alive) continue;
 
-            m_commands.insert(std::make_pair(cmd->m_id, cmd.get()));
+            bindNext(entry);
 
-            bool ready = true;
-            if (cmd->m_afterCommandId > 0) {
-                if (const auto& it = m_commands.find(cmd->m_afterCommandId);
-                    it != m_commands.end())
-                {
-                    it->second->m_next.push_back(cmd->m_id);
-                    ready = false;
-                }
-            }
-            cmd->m_ready = ready;
+            auto& moved = m_blocked->emplace_back(std::move(entry));
 
-            m_blocked.emplace_back(std::move(cmd));
+            m_alive.insert({ entry.m_id, true });
         }
-        m_pending.clear();
+
+        m_pending->clear();
     }
 
     void CommandEngine::processBlocked(const UpdateContext& ctx) noexcept
     {
-        if (m_blocked.empty()) return;
+        if (m_blocked->empty()) return;
 
-        for (auto& cmd : m_blocked) {
-            // canceled; discard
-            if (cmd->m_canceled) {
-                activateNext(cmd.get());
-                m_blockedCleanup = true;
+        for (auto& entry : *m_blocked) {
+            if (!entry.m_alive) continue;
+
+            // NOTE KI execute flag can be set only when previous is finished
+            if (!entry.m_ready) continue;
+
+            Command* cmd{ entry.m_cmd };
+            cmd->bind(ctx);
+
+            if (cmd->isCompleted()) {
+                killEntry(entry);
+                m_blockedDeadCount++;
                 continue;
             }
 
-            // NOTE KI execute flag can be set only when previous is finished
-            if (!cmd->m_ready) continue;
+            auto& moved = m_active->emplace_back(std::move(entry));
 
-            m_blockedCleanup = true;
-
-            if (cmd->isNode()) {
-                auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-                auto* node = pool::NodeHandle::toNode(nodeCmd->m_nodeId);
-                if (!node) {
-                    activateNext(cmd.get());
-                    cmd->m_canceled = true;
-                    continue;
-                }
-                nodeCmd->bind(ctx, node);
-            }
-            else {
-                cmd->bind(ctx);
-            }
-
-            m_active.emplace_back(std::move(cmd));
+            // NOTE KI mark for cleanup
+            entry.m_alive = false;
+            m_blockedDeadCount++;
         }
     }
 
     void CommandEngine::processActive(const UpdateContext& ctx)
     {
-        if (m_active.empty()) return;
+        if (m_active->empty()) return;
 
-        for (auto& cmd : m_active) {
-            if (!cmd->isCompleted()) {
-                cmd->execute(ctx);
-            }
+        for (auto& entry : *m_active) {
+            if (!entry.m_alive) continue;
+
+            Command* cmd{ entry.m_cmd };
+            cmd->execute(ctx);
 
             if (cmd->isCompleted()) {
-                activateNext(cmd.get());
-                m_activeCleanup = true;
+                killEntry(entry);
+                m_activeDeadCount++;
             }
         }
     }
 
     void CommandEngine::processCleanup(const UpdateContext& ctx) noexcept
     {
-        // TODO KI current m_blocked logic requires cleanup on every step
-        //m_cleanupIndex++;
-        //if ((m_cleanupIndex % m_cleanupStep) != 0) return;
+        auto blockedCleanup = (m_blocked->size() / (float)m_blockedDeadCount) > 0.5;
+        auto activeCleanup = (m_active->size() / (float)m_activeDeadCount) > 0.5;
 
-        if (m_blockedCleanup) {
+        if (blockedCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
-                m_blocked.begin(),
-                m_blocked.end(),
-                [this](auto& cmd) {
-                    if (cmd && cmd->m_canceled) m_commands.erase(cmd->m_id);
-                    return !cmd || cmd->m_canceled;
+                m_blocked->begin(),
+                m_blocked->end(),
+                [this](auto& entry) {
+                    return !entry.m_alive;
                 });
-            m_blocked.erase(it, m_blocked.end());
+            m_blocked->erase(it, m_blocked->end());
 
-            m_blockedCleanup = false;
+            m_blockedDeadCount = 0;
         }
 
-        if (m_activeCleanup) {
+        if (activeCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
-                m_active.begin(),
-                m_active.end(),
-                [this](auto& cmd) {
-                    if (cmd->m_finished || cmd->m_canceled) m_commands.erase(cmd->m_id);
-                    return cmd->m_finished || cmd->m_canceled;;
+                m_active->begin(),
+                m_active->end(),
+                [this](auto& entry) {
+                    return !entry.m_alive;
                 });
-            m_active.erase(it, m_active.end());
+            m_active->erase(it, m_active->end());
 
-            m_activeCleanup = false;
+            m_activeDeadCount = 0;
         }
     }
-
-    //void CommandEngine::updateOldest() noexcept
-    //{
-    //    int min = INT_MAX;
-    //    for (const auto& cmd : m_pending) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    for (const auto& cmd : m_blocked) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    for (const auto& cmd : m_active) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    m_oldestAliveCommandId = min;
-    //}
 }

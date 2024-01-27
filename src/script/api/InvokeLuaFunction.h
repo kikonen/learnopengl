@@ -10,7 +10,6 @@ namespace script
     {
     public:
         InvokeLuaFunction(
-            script::command_id afterCommandId,
             ki::node_id nodeId,
             std::string_view functionName) noexcept;
 
@@ -18,6 +17,6 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const std::string m_functionName;
+        std::string m_functionName;
     };
 }

@@ -9,10 +9,9 @@
 namespace script
 {
     Sync::Sync(
-        script::command_id afterCommandId,
         float duration,
         const std::vector<script::command_id>& commandIds) noexcept
-        : Command(afterCommandId, duration),
+        : Command(duration),
         m_commandIds(commandIds)
     {
     }

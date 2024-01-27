@@ -7,19 +7,18 @@
 namespace script
 {
     ScaleNode::ScaleNode(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         float duration,
         bool relative,
         const glm::vec3& scale) noexcept
-        : NodeCommand(afterCommandId, nodeId, duration, relative),
+        : NodeCommand(nodeId, duration, relative),
         m_scale(scale)
     {
     }
 
-    void ScaleNode::bind(const UpdateContext& ctx, Node* node) noexcept
+    void ScaleNode::bind(const UpdateContext& ctx) noexcept
     {
-        NodeCommand::bind(ctx, node);
+        NodeCommand::bind(ctx);
 
         m_end = m_scale;
         if (!m_relative) {
