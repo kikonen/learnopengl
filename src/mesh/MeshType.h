@@ -124,7 +124,7 @@ namespace mesh {
 
     private:
         ki::type_id m_id{ 0 };
-        uint32_t m_handleIndex;
+        uint32_t m_handleIndex{ 0 };
 
         std::string m_name;
 

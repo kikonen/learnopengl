@@ -206,6 +206,7 @@
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
+    <ClCompile Include="src\script\CommandHandle.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
     <ClCompile Include="src\text\TextMaterial.cpp" />
@@ -424,7 +425,9 @@
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
+    <ClInclude Include="src\script\CommandEngine.hpp" />
     <ClInclude Include="src\script\CommandEntry.h" />
+    <ClInclude Include="src\script\CommandHandle.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\size.h" />

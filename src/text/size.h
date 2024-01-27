@@ -1,6 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace text
 {
-    typedef unsigned short font_id;
+    typedef uint8_t font_id;
 }

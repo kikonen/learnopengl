@@ -5,10 +5,7 @@
 #include <memory>
 #include <mutex>
 
-#include "ki/size.h"
 #include "size.h"
-
-#include "CommandEntry.h"
 
 struct UpdateContext;
 class Registry;
@@ -16,12 +13,13 @@ class Registry;
 namespace script
 {
     struct CommandEntry;
+    class CommandHandle;
 
     class CommandEngine final
     {
     public:
         CommandEngine();
-        ~CommandEngine() = default;
+        ~CommandEngine();
 
         void prepare(Registry* registry);
 
@@ -30,17 +28,10 @@ namespace script
         template<typename T>
         script::command_id addCommand(
             script::command_id afterId,
-            T&& cmd) noexcept
-        {
-            //return addCommand({ afterId, std::move(cmd) });
-            CommandEntry entry;
-            entry.afterId = afterId;
-            entry.set<T>(std::move(cmd));
-            return addCommand(std::move(entry));
-        }
+            T&& cmd) noexcept;
 
-        script::command_id addCommand(
-            CommandEntry&& entry) noexcept;
+        void addPending(
+            const CommandHandle& handle) noexcept;
 
         void cancel(script::command_id commandId) noexcept;
 
@@ -49,9 +40,9 @@ namespace script
         bool hasPending() const noexcept;
 
     private:
-        void activateNext(const CommandEntry& prevEntry) noexcept;
-        void bindNext(CommandEntry& nextEntry) noexcept;
-        void killEntry(CommandEntry& deadEntry) noexcept;
+        void activateNext(const CommandEntry* prevEntry) noexcept;
+        void bindNext(CommandEntry* nextEntry) noexcept;
+        void killEntry(CommandEntry* deadEntry) noexcept;
 
         void processCanceled(const UpdateContext& ctx) noexcept;
         void processPending(const UpdateContext& ctx) noexcept;
@@ -64,9 +55,9 @@ namespace script
     private:
         mutable std::mutex m_pendingLock{};
 
-        std::unique_ptr<std::vector<CommandEntry>> m_pending;
-        std::unique_ptr<std::vector<CommandEntry>> m_blocked;
-        std::unique_ptr<std::vector<CommandEntry>> m_active;
+        std::vector<CommandHandle> m_pending;
+        std::vector<CommandHandle> m_blocked;
+        std::vector<CommandHandle> m_active;
 
         size_t m_blockedDeadCount{ 0 };
         size_t m_activeDeadCount{ 0 };

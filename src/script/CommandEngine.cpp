@@ -1,8 +1,8 @@
 #include "CommandEngine.h"
+#include "CommandEngine.hpp"
 
 #include "model/Node.h"
 
-#include "pool/IdGenerator.h"
 #include "pool/NodeHandle.h"
 
 #include "api/CancelCommand.h"
@@ -33,23 +33,20 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    IdGenerator<script::command_id> ID_GENERATOR;
-
     constexpr size_t COMMANDS_SIZE = 10000;
 }
 
 namespace script
 {
     CommandEngine::CommandEngine()
-        : m_cleanupStep(5),
-        m_pending{ std::make_unique<std::vector<CommandEntry>>() },
-        m_blocked{ std::make_unique<std::vector<CommandEntry>>() },
-        m_active{ std::make_unique<std::vector<CommandEntry>>() }
+        : m_cleanupStep(5)
     {
-        m_pending->reserve(COMMANDS_SIZE);
-        m_blocked->reserve(COMMANDS_SIZE);
-        m_active->reserve(COMMANDS_SIZE);
+        m_pending.reserve(COMMANDS_SIZE);
+        m_blocked.reserve(COMMANDS_SIZE);
+        m_active.reserve(COMMANDS_SIZE);
     }
+
+    CommandEngine::~CommandEngine() = default;
 
     void CommandEngine::prepare(Registry* registry)
     {
@@ -106,17 +103,11 @@ namespace script
         processCleanup(ctx);
     }
 
-    script::command_id CommandEngine::addCommand(
-        CommandEntry&& entry) noexcept
+    void CommandEngine::addPending(
+        const CommandHandle& handle) noexcept
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
-
-        auto& moved = m_pending->emplace_back(std::move(entry));
-
-        moved.m_id = ID_GENERATOR.nextId();
-        moved.m_cmd->setId(moved.m_id);
-
-        return moved.m_id;
+        m_pending.emplace_back(handle);
     }
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
@@ -124,8 +115,9 @@ namespace script
         bool found = false;
         {
             std::lock_guard<std::mutex> lock{ m_pendingLock };
-            for (auto& entry : *m_pending) {
-                if (entry.m_id == commandId) {
+            for (auto& handle : m_pending) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == commandId) {
                     killEntry(entry);
                     found = true;
                 }
@@ -133,8 +125,9 @@ namespace script
         }
 
         if (!found) {
-            for (auto& entry : *m_blocked) {
-                if (entry.m_id == commandId) {
+            for (auto& handle : m_blocked) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == commandId) {
                     killEntry(entry);
                     m_blockedDeadCount++;
                     found = true;
@@ -143,8 +136,9 @@ namespace script
         }
 
         if (!found) {
-            for (auto& entry : *m_active) {
-                if (entry.m_id == commandId) {
+            for (auto& handle : m_active) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == commandId) {
                     killEntry(entry);
                     m_activeDeadCount++;
                     found = true;
@@ -161,31 +155,33 @@ namespace script
     bool CommandEngine::hasPending() const noexcept
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
-        return !m_pending->empty();
+        return !m_pending.empty();
     }
 
-    void CommandEngine::activateNext(const CommandEntry& prevEntry) noexcept
+    void CommandEngine::activateNext(const CommandEntry* prevEntry) noexcept
     {
-        if (prevEntry.m_next.empty()) return;
+        if (prevEntry->m_next.empty()) return;
 
-        for (auto nextId : prevEntry.m_next) {
-            for (auto& entry : *m_blocked) {
-                if (entry.m_id == nextId) {
-                    entry.m_ready = true;
+        for (auto nextId : prevEntry->m_next) {
+            for (auto& handle : m_blocked) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == nextId) {
+                    entry->m_ready = true;
                 }
             }
         }
     }
 
-    void CommandEngine::bindNext(CommandEntry& nextEntry) noexcept
+    void CommandEngine::bindNext(CommandEntry* nextEntry) noexcept
     {
-        const auto afterId = nextEntry.afterId;
+        const auto afterId = nextEntry->afterId;
         bool found = false;
 
         if (afterId > 0 && !found) {
-            for (auto& entry : *m_blocked) {
-                if (entry.m_id == afterId) {
-                    entry.m_next.push_back(nextEntry.m_id);
+            for (auto& handle : m_blocked) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == afterId) {
+                    entry->m_next.push_back(nextEntry->m_id);
                     found = true;
                     break;
                 }
@@ -193,9 +189,10 @@ namespace script
         }
 
         if (afterId > 0 && !found) {
-            for (auto& entry : *m_active) {
-                if (entry.m_id == afterId) {
-                    entry.m_next.push_back(nextEntry.m_id);
+            for (auto& handle : m_active) {
+                auto* entry = handle.toCommand();
+                if (entry && entry->m_id == afterId) {
+                    entry->m_next.push_back(nextEntry->m_id);
                     found = true;
                     break;
                 }
@@ -203,14 +200,14 @@ namespace script
         }
 
         if (!found) {
-            nextEntry.m_ready = true;
+            nextEntry->m_ready = true;
         }
     }
 
-    void CommandEngine::killEntry(CommandEntry& deadEntry) noexcept
+    void CommandEngine::killEntry(CommandEntry* deadEntry) noexcept
     {
-        deadEntry.m_alive = false;
-        m_alive.erase(deadEntry.m_id);
+        deadEntry->m_alive = false;
+        m_alive.erase(deadEntry->m_id);
 
         activateNext(deadEntry);
     }
@@ -219,32 +216,36 @@ namespace script
     {
         std::lock_guard<std::mutex> lock{ m_pendingLock };
 
-        if (m_pending->empty()) return;
+        if (m_pending.empty()) return;
 
-        for (auto& entry : *m_pending) {
-            if (!entry.m_alive) continue;
+        for (auto& handle : m_pending) {
+            auto* entry = handle.toCommand();
+
+            if (!entry || !entry->m_alive) continue;
 
             bindNext(entry);
 
-            auto& moved = m_blocked->emplace_back(std::move(entry));
+            m_blocked.emplace_back(handle);
 
-            m_alive.insert({ entry.m_id, true });
+            m_alive.insert({ handle.toId(), true});
         }
 
-        m_pending->clear();
+        m_pending.clear();
     }
 
     void CommandEngine::processBlocked(const UpdateContext& ctx) noexcept
     {
-        if (m_blocked->empty()) return;
+        if (m_blocked.empty()) return;
 
-        for (auto& entry : *m_blocked) {
-            if (!entry.m_alive) continue;
+        for (auto& handle : m_blocked) {
+            auto* entry = handle.toCommand();
+
+            if (!entry || !entry->m_alive || entry->m_active) continue;
 
             // NOTE KI execute flag can be set only when previous is finished
-            if (!entry.m_ready) continue;
+            if (!entry->m_ready) continue;
 
-            Command* cmd{ entry.m_cmd };
+            Command* cmd{ entry->m_cmd };
             cmd->bind(ctx);
 
             if (cmd->isCompleted()) {
@@ -253,22 +254,23 @@ namespace script
                 continue;
             }
 
-            auto& moved = m_active->emplace_back(std::move(entry));
+            m_active.emplace_back(handle);
 
-            // NOTE KI mark for cleanup
-            entry.m_alive = false;
+            entry->m_active = true;
             m_blockedDeadCount++;
         }
     }
 
     void CommandEngine::processActive(const UpdateContext& ctx)
     {
-        if (m_active->empty()) return;
+        if (m_active.empty()) return;
 
-        for (auto& entry : *m_active) {
-            if (!entry.m_alive) continue;
+        for (auto& handle : m_active) {
+            auto* entry = handle.toCommand();
 
-            Command* cmd{ entry.m_cmd };
+            if (!entry || !entry->m_alive) continue;
+
+            Command* cmd{ entry->m_cmd };
             cmd->execute(ctx);
 
             if (cmd->isCompleted()) {
@@ -280,18 +282,19 @@ namespace script
 
     void CommandEngine::processCleanup(const UpdateContext& ctx) noexcept
     {
-        auto blockedCleanup = (m_blocked->size() / (float)m_blockedDeadCount) > 0.5;
-        auto activeCleanup = (m_active->size() / (float)m_activeDeadCount) > 0.5;
+        auto blockedCleanup = (m_blocked.size() / (float)m_blockedDeadCount) > 0.5;
+        auto activeCleanup = (m_active.size() / (float)m_activeDeadCount) > 0.5;
 
         if (blockedCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
-                m_blocked->begin(),
-                m_blocked->end(),
-                [this](auto& entry) {
-                    return !entry.m_alive;
+                m_blocked.begin(),
+                m_blocked.end(),
+                [this](auto& handle) {
+                    auto* entry = handle.toCommand();
+                    return !entry || !entry->m_alive || entry->m_active;
                 });
-            m_blocked->erase(it, m_blocked->end());
+            m_blocked.erase(it, m_blocked.end());
 
             m_blockedDeadCount = 0;
         }
@@ -299,12 +302,13 @@ namespace script
         if (activeCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
-                m_active->begin(),
-                m_active->end(),
-                [this](auto& entry) {
-                    return !entry.m_alive;
+                m_active.begin(),
+                m_active.end(),
+                [this](auto& handle) {
+                    auto* entry = handle.toCommand();
+                    return !entry || !entry->m_alive;
                 });
-            m_active->erase(it, m_active->end());
+            m_active.erase(it, m_active.end());
 
             m_activeDeadCount = 0;
         }

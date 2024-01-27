@@ -24,7 +24,6 @@
 #include "api/AudioStop.h"
 
 struct UpdateContext;
-
 namespace script
 {
     constexpr size_t COMMAND_BUFFER_SIZE = std::max({
@@ -44,7 +43,11 @@ namespace script
         sizeof(script::StartNode)
     });
 
+    class CommandHandle;
+
     struct CommandEntry {
+        friend class CommandHandle;
+
         CommandEntry()
             : m_buffer{ 0 }
         {}
@@ -103,13 +106,15 @@ namespace script
 
         void moveCommand(Command* other_cmd);
 
+        script::command_id m_id{ 0 };
+        uint32_t m_handleIndex{ 0 };
 
         script::command_id afterId{ 0 };
 
-        script::command_id m_id{ 0 };
 
         bool m_alive : 1 { true };
         bool m_ready : 1 { false };
+        bool m_active : 1 { false };
 
         std::vector<script::command_id> m_next;
 

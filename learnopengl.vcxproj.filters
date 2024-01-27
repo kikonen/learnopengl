@@ -624,6 +624,9 @@
     <ClCompile Include="src\script\CommandEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\CommandHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1479,6 +1482,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\CommandEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\CommandHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\CommandEngine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -64,7 +64,7 @@ public:
     inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
 
     pool::NodeHandle toHandle() const noexcept {
-            return { m_handleIndex, m_id };
+        return { m_handleIndex, m_id };
     }
 
     void prepare(
@@ -160,10 +160,8 @@ public:
 #endif
 
 private:
-    // *INTERNAL* LUID in scene
-    // used for object identity in shader
-    ki::node_id m_id;
-    uint32_t m_handleIndex;
+    ki::node_id m_id{ 0 };
+    uint32_t m_handleIndex{ 0 };
 
     pool::NodeHandle m_parent{};
 
