@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "CommandEngine.h"
 
 #include "CommandHandle.h"
@@ -15,6 +17,10 @@ namespace script {
 
         {
             CommandEntry* entry = handle.toCommand();
+            if (!entry) {
+                std::cerr << "FATAL: pool full\n";
+                return 0;
+            }
             entry->afterId = afterId;
             entry->set<T>(std::move(cmd));
         }

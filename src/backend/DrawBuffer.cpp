@@ -12,7 +12,7 @@
 #include "asset/Shader.h"
 #include "asset/uniform.h"
 
-#include "kigl/GLSyncQueue.hpp"
+#include "kigl/GLSyncQueue_impl.h"
 
 #include "engine/PrepareContext.h"
 

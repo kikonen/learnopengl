@@ -10,59 +10,59 @@ namespace {
 }
 
 namespace script {
-    void CommandEntry::moveCommand(Command* other_cmd) {
+    void CommandEntry::moveCommand(Command* other_cmd, bool useDelete) {
         if (other_cmd) {
             if (auto* src = dynamic_cast<CancelCommand*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~CancelCommand();
+                if (useDelete) src->~CancelCommand();
             }
             else if (auto* src = dynamic_cast<Sync*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~Sync();
+                if (useDelete) src->~Sync();
             }
             else if (auto* src = dynamic_cast<Wait*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~Wait();
+                if (useDelete) src->~Wait();
             }
             else if (auto* src = dynamic_cast<InvokeLuaFunction*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~InvokeLuaFunction();
+                if (useDelete) src->~InvokeLuaFunction();
             }
             else if (auto* src = dynamic_cast<AudioPause*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~AudioPause();
+                if (useDelete) src->~AudioPause();
             }
             else if (auto* src = dynamic_cast<AudioPlay*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~AudioPlay();
+                if (useDelete) src->~AudioPlay();
             }
             else if (auto* src = dynamic_cast<AudioStop*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~AudioStop();
+                if (useDelete) src->~AudioStop();
             }
             else if (auto* src = dynamic_cast<MoveNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~MoveNode();
+                if (useDelete) src->~MoveNode();
             }
             else if (auto* src = dynamic_cast<MoveSplineNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~MoveSplineNode();
+                if (useDelete) src->~MoveSplineNode();
             }
             else if (auto* src = dynamic_cast<RotateNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~RotateNode();
+                if (useDelete) src->~RotateNode();
             }
             else if (auto* src = dynamic_cast<ScaleNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~ScaleNode();
+                if (useDelete) src->~ScaleNode();
             }
             else if (auto* src = dynamic_cast<ResumeNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~ResumeNode();
+                if (useDelete) src->~ResumeNode();
             }
             else if (auto* src = dynamic_cast<StartNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
-                src->~StartNode();
+                if (useDelete) src->~StartNode();
             }
         }
         else {

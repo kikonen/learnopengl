@@ -42,7 +42,10 @@ namespace script
     private:
         void activateNext(const CommandEntry* prevEntry) noexcept;
         void bindNext(CommandEntry* nextEntry) noexcept;
-        void killEntry(CommandEntry* deadEntry) noexcept;
+
+        void killEntry(
+            CommandHandle& handle,
+            CommandEntry* deadEntry) noexcept;
 
         void processCanceled(const UpdateContext& ctx) noexcept;
         void processPending(const UpdateContext& ctx) noexcept;

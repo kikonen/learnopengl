@@ -200,7 +200,7 @@
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
-    <ClCompile Include="src\pool\Pool.hpp" />
+    <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
@@ -401,7 +401,7 @@
     <ClInclude Include="src\engine\InputContext.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
-    <ClInclude Include="src\kigl\GLSyncQueue.hpp" />
+    <ClInclude Include="src\kigl\GLSyncQueue_impl.h" />
     <ClInclude Include="src\ki\FpsCounter.h" />
     <ClInclude Include="src\ki\sid.h" />
     <ClInclude Include="src\loader\DagSort.h" />
@@ -425,7 +425,7 @@
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
-    <ClInclude Include="src\script\CommandEngine.hpp" />
+    <ClInclude Include="src\script\CommandEngine_impl.h" />
     <ClInclude Include="src\script\CommandEntry.h" />
     <ClInclude Include="src\script\CommandHandle.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
@@ -613,7 +613,7 @@
     <ClInclude Include="src\text\FontHandle.h" />
     <ClInclude Include="src\text\TextDraw.h" />
     <ClInclude Include="src\util\DirtyVector.h" />
-    <ClInclude Include="src\util\DirtyVector.hpp" />
+    <ClInclude Include="src\util\DirtyVector_impl.h" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\pool\IdGenerator.h" />

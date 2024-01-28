@@ -61,7 +61,7 @@ namespace script
             m_ready{ o.m_ready },
             m_next{ o.m_next }
         {
-            moveCommand(o.m_cmd);
+            moveCommand(o.m_cmd, true);
             o.m_cmd = nullptr;
         }
 
@@ -89,7 +89,7 @@ namespace script
             m_ready = o.m_ready;
             m_next = o.m_next;
 
-            moveCommand(o.m_cmd);
+            moveCommand(o.m_cmd, true);
             o.m_cmd = nullptr;
 
             return *this;
@@ -101,16 +101,15 @@ namespace script
             //T* data = reinterpret_cast<T*>(&m_buffer);
             //*data = std::move(o);
             //m_cmd = reinterpret_cast<T*>(&m_buffer);
-            moveCommand(&o);
+            moveCommand(&o, false);
         }
 
-        void moveCommand(Command* other_cmd);
+        void moveCommand(Command* other_cmd, bool useDelete);
 
         script::command_id m_id{ 0 };
         uint32_t m_handleIndex{ 0 };
 
         script::command_id afterId{ 0 };
-
 
         bool m_alive : 1 { true };
         bool m_ready : 1 { false };

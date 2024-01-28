@@ -10,7 +10,7 @@
 #include "ScriptEngine.h"
 
 #include "script/CommandEngine.h"
-#include "script/CommandEngine.hpp"
+#include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
 
 #include "api/CancelCommand.h"

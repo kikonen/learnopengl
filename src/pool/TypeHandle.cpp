@@ -8,7 +8,7 @@
 
 #include "mesh/MeshType.h"
 
-#include "Pool.hpp"
+#include "Pool_impl.h"
 #include "IdGenerator.h"
 
 namespace {

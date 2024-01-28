@@ -1,5 +1,5 @@
 #include "CommandEngine.h"
-#include "CommandEngine.hpp"
+#include "CommandEngine_impl.h"
 
 #include "model/Node.h"
 
@@ -114,8 +114,9 @@ namespace script
     {
         const auto& it = m_alive.find(commandId);
         if (it != m_alive.end()) {
-            if (auto* entry = it->second.toCommand()) {
-                killEntry(entry);
+            auto handle = it->second;
+            if (auto* entry = handle.toCommand()) {
+                killEntry(handle, entry);
             }
         }
     }
@@ -159,12 +160,15 @@ namespace script
         }
     }
 
-    void CommandEngine::killEntry(CommandEntry* deadEntry) noexcept
+    void CommandEngine::killEntry(
+        CommandHandle& handle,
+        CommandEntry* deadEntry) noexcept
     {
+        handle.release();
         deadEntry->m_alive = false;
-        m_alive.erase(deadEntry->m_id);
-
         activateNext(deadEntry);
+
+        m_alive.erase(deadEntry->m_id);
     }
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
@@ -207,7 +211,7 @@ namespace script
             cmd->bind(ctx);
 
             if (cmd->isCompleted()) {
-                killEntry(entry);
+                killEntry(handle, entry);
                 m_blockedDeadCount++;
                 continue;
             }
@@ -235,7 +239,7 @@ namespace script
             cmd->execute(ctx);
 
             if (cmd->isCompleted()) {
-                killEntry(entry);
+                killEntry(handle, entry);
                 m_activeDeadCount++;
             }
         }

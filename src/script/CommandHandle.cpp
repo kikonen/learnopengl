@@ -4,7 +4,7 @@
 #include <mutex>
 #include <map>
 
-#include "pool/Pool.hpp"
+#include "pool/Pool_impl.h"
 #include "pool/IdGenerator.h"
 
 #include "CommandEntry.h"
@@ -37,9 +37,10 @@ namespace script {
 
         auto& entry = s_pool.getEntry(m_handleIndex);
         if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
-            // TODO KI release
             entry.m_data.m_id = 0;
             entry.m_data.m_handleIndex = 0;
+
+            s_pool.release(m_handleIndex);
 
             m_id = 0;
             m_handleIndex = 0;
@@ -66,6 +67,8 @@ namespace script {
         if (!id) return NULL_HANDLE;
 
         auto handleIndex = s_pool.allocate();
+        if (!handleIndex) return {};
+
         auto& entry = s_pool.getEntry(handleIndex);
 
         entry.m_data.m_id = id;
