@@ -112,37 +112,10 @@ namespace script
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
     {
-        bool found = false;
-        {
-            std::lock_guard lock{ m_pendingLock };
-            for (auto& handle : m_pending) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == commandId) {
-                    killEntry(entry);
-                    found = true;
-                }
-            }
-        }
-
-        if (!found) {
-            for (auto& handle : m_blocked) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == commandId) {
-                    killEntry(entry);
-                    m_blockedDeadCount++;
-                    found = true;
-                }
-            }
-        }
-
-        if (!found) {
-            for (auto& handle : m_active) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == commandId) {
-                    killEntry(entry);
-                    m_activeDeadCount++;
-                    found = true;
-                }
+        const auto& it = m_alive.find(commandId);
+        if (it != m_alive.end()) {
+            if (auto* entry = it->second.toCommand()) {
+                killEntry(entry);
             }
         }
     }
@@ -163,9 +136,9 @@ namespace script
         if (prevEntry->m_next.empty()) return;
 
         for (auto nextId : prevEntry->m_next) {
-            for (auto& handle : m_blocked) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == nextId) {
+            const auto& it = m_alive.find(nextId);
+            if (it != m_alive.end()) {
+                if (auto* entry = it->second.toCommand()) {
                     entry->m_ready = true;
                 }
             }
@@ -174,32 +147,14 @@ namespace script
 
     void CommandEngine::bindNext(CommandEntry* nextEntry) noexcept
     {
-        const auto afterId = nextEntry->afterId;
-        bool found = false;
+        const auto& it = m_alive.find(nextEntry->afterId);
 
-        if (afterId > 0 && !found) {
-            for (auto& handle : m_blocked) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == afterId) {
-                    entry->m_next.push_back(nextEntry->m_id);
-                    found = true;
-                    break;
-                }
+        if (it != m_alive.end()) {
+            auto* entry = it->second.toCommand();
+            if (entry) {
+                entry->m_next.push_back(nextEntry->m_id);
             }
-        }
-
-        if (afterId > 0 && !found) {
-            for (auto& handle : m_active) {
-                auto* entry = handle.toCommand();
-                if (entry && entry->m_id == afterId) {
-                    entry->m_next.push_back(nextEntry->m_id);
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
+        } else {
             nextEntry->m_ready = true;
         }
     }
@@ -227,7 +182,7 @@ namespace script
 
             m_blocked.emplace_back(handle);
 
-            m_alive.insert({ handle.toId(), true});
+            m_alive.insert({ handle.toId(), handle});
         }
 
         m_pending.clear();
@@ -240,7 +195,10 @@ namespace script
         for (auto& handle : m_blocked) {
             auto* entry = handle.toCommand();
 
-            if (!entry || !entry->m_alive || entry->m_active) continue;
+            if (!entry || !entry->m_alive || entry->m_active) {
+                m_blockedDeadCount++;
+                continue;
+            }
 
             // NOTE KI execute flag can be set only when previous is finished
             if (!entry->m_ready) continue;
@@ -268,7 +226,10 @@ namespace script
         for (auto& handle : m_active) {
             auto* entry = handle.toCommand();
 
-            if (!entry || !entry->m_alive) continue;
+            if (!entry || !entry->m_alive) {
+                m_activeDeadCount++;
+                continue;
+            }
 
             Command* cmd{ entry->m_cmd };
             cmd->execute(ctx);

@@ -67,6 +67,6 @@ namespace script
         int m_cleanupIndex{ 0 };
         int m_cleanupStep{ 0 };
 
-        std::unordered_map<script::command_id, bool> m_alive;
+        std::unordered_map<script::command_id, CommandHandle> m_alive;
     };
 }
