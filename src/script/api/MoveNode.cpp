@@ -13,8 +13,7 @@ namespace script
         const glm::vec3& position) noexcept
         : NodeCommand(nodeId, duration, relative),
         m_position(position)
-    {
-    }
+    {}
 
     void MoveNode::bind(const UpdateContext& ctx) noexcept
     {

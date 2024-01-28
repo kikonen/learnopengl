@@ -37,8 +37,9 @@ namespace pool {
     {
         std::unique_lock lock(m_lock);
 
-        // TODO KI release
+        // TODO KI release memory properly
         auto& entry = m_pool[index];
+        entry.~Entry<T>();
         entry.m_nextFree = m_nextFree;
         m_nextFree = index;
     }
@@ -52,15 +53,13 @@ namespace pool {
 
         uint32_t index = m_nextFree;
 
-        if (index >= m_blockSize)
-            int x = 0;
-
         auto& entry = m_pool[index];
-        if (entry.m_nextFree == -1)
-            int x = 0;
+        int32_t nextFree = entry.m_nextFree;
 
-        m_nextFree = entry.m_nextFree;
-        entry.m_nextFree = -1;
+        // TODO KI allocate memory properly
+        new(&entry) Entry<T>{};
+
+        m_nextFree = nextFree;
 
         return index;
     }

@@ -20,7 +20,9 @@ namespace script
         // @param duration seconds
         Command(float duration) noexcept;
 
-        virtual ~Command() {}
+        virtual ~Command() {
+            m_id = 0;
+        }
 
         inline bool isCompleted() const noexcept
         {

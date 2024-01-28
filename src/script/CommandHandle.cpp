@@ -37,9 +37,6 @@ namespace script {
 
         auto& entry = s_pool.getEntry(m_handleIndex);
         if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
-            entry.m_data.m_id = 0;
-            entry.m_data.m_handleIndex = 0;
-
             s_pool.release(m_handleIndex);
 
             m_id = 0;

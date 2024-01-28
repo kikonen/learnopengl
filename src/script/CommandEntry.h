@@ -48,8 +48,9 @@ namespace script
     struct CommandEntry {
         friend class CommandHandle;
 
+        // NOTE KI clearing m_buffer is waste of CPU cycles here
+        // m_cmd ptr controls access
         CommandEntry()
-            : m_buffer{ 0 }
         {}
 
         CommandEntry(const CommandEntry& o) = delete;
@@ -76,7 +77,10 @@ namespace script
         ~CommandEntry() {
             if (m_cmd) {
                 m_cmd->~Command();
+                m_cmd = nullptr;
             }
+            m_id = 0;
+            m_handleIndex = 0;
         }
 
         CommandEntry& operator=(CommandEntry&& o) noexcept
@@ -98,9 +102,6 @@ namespace script
         template<typename T>
         void set(T&& o) noexcept
         {
-            //T* data = reinterpret_cast<T*>(&m_buffer);
-            //*data = std::move(o);
-            //m_cmd = reinterpret_cast<T*>(&m_buffer);
             moveCommand(&o, false);
         }
 
