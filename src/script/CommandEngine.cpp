@@ -164,11 +164,11 @@ namespace script
         CommandHandle& handle,
         CommandEntry* deadEntry) noexcept
     {
-        handle.release();
-        deadEntry->m_alive = false;
         activateNext(deadEntry);
+        deadEntry->m_alive = false;
 
         m_alive.erase(deadEntry->m_id);
+        handle.release();
     }
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
@@ -205,8 +205,11 @@ namespace script
             }
 
             // NOTE KI execute flag can be set only when previous is finished
-            if (!entry->m_ready) continue;
-
+            if (!entry->m_ready) {
+                //const auto& it = m_alive.find(entry->afterId);
+                //auto* nextEntry = it != m_alive.end() ? it->second.toCommand() : nullptr;
+                continue;
+            }
             Command* cmd{ entry->m_cmd };
             cmd->bind(ctx);
 
