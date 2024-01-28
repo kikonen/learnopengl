@@ -1,7 +1,6 @@
 #include "Image.h"
 
 #include <map>
-#include <mutex>
 
 #include "fmt/format.h"
 
@@ -17,10 +16,6 @@
 #pragma warning(pop)
 
 #include "util/Log.h"
-
-namespace {
-    std::mutex load_lock{};
-}
 
 Image::Image(Image&& o) noexcept
     : m_path{ o.m_path },
@@ -62,8 +57,6 @@ Image::~Image()
 // NOTE KI *NOT* thread safe
 // https://github.com/nothings/stb/issues/309
 int Image::load() {
-    //std::lock_guard<std::mutex> lock(load_lock);
-
     if (m_loaded) {
         return m_res;
     }

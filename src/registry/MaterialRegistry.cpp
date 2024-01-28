@@ -43,7 +43,7 @@ void MaterialRegistry::registerMaterial(Material& material)
 {
     if (material.m_registeredIndex >= 0) return;
 
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     const size_t count = 1;
 
@@ -69,7 +69,7 @@ void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
     // NOTE KI *NO* indeces if single material
     if (materialVBO.isSingle()) return;
 
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     const size_t count = materialVBO.getIndeces().size();
     const size_t index = m_indeces.size();
@@ -97,7 +97,7 @@ void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
 Material* MaterialRegistry::find(
     std::string_view name)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     const auto& it = std::find_if(
         m_materials.begin(),
@@ -109,7 +109,7 @@ Material* MaterialRegistry::find(
 Material* MaterialRegistry::findById(
     const int id)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     const auto& it = std::find_if(
         m_materials.begin(),
@@ -121,7 +121,7 @@ Material* MaterialRegistry::findById(
 void MaterialRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     updateMaterialBuffer();
     updateIndexBuffer();

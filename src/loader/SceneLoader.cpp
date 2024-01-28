@@ -93,7 +93,7 @@ namespace loader {
 
     bool SceneLoader::isRunning()
     {
-        std::lock_guard<std::mutex> lock(m_ready_lock);
+        std::lock_guard lock(m_ready_lock);
         return m_runningCount > 0 || m_pendingCount > 0;
     }
 
@@ -121,7 +121,7 @@ namespace loader {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
         }
 
-        std::lock_guard<std::mutex> lock(m_ready_lock);
+        std::lock_guard lock(m_ready_lock);
         m_runningCount++;
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
@@ -157,13 +157,13 @@ namespace loader {
                 validate(m_root);
                 attach(m_root);
 
-                std::lock_guard<std::mutex> lock(m_ready_lock);
+                std::lock_guard lock(m_ready_lock);
                 m_runningCount--;
             }
             catch (const std::runtime_error& ex) {
                 KI_CRITICAL(ex.what());
 
-                std::lock_guard<std::mutex> lock(m_ready_lock);
+                std::lock_guard lock(m_ready_lock);
                 m_runningCount--;
             }
         });
@@ -173,7 +173,7 @@ namespace loader {
         const EntityData& data,
         bool success)
     {
-        std::lock_guard<std::mutex> lock(m_ready_lock);
+        std::lock_guard lock(m_ready_lock);
 
         m_pendingCount--;
 
@@ -219,7 +219,7 @@ namespace loader {
         m_fontLoader.createFonts(m_fonts);
 
         {
-            std::lock_guard<std::mutex> lock(m_ready_lock);
+            std::lock_guard lock(m_ready_lock);
 
             m_pendingCount = 0;
             for (const auto& entity : m_entities) {
@@ -321,7 +321,7 @@ namespace loader {
         const ResolvedEntity& resolved)
     {
         {
-            std::lock_guard<std::mutex> lock(m_ready_lock);
+            std::lock_guard lock(m_ready_lock);
             m_resolvedEntities.push_back(resolved);
         }
     }

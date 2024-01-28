@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <mutex>
+#include <shared_mutex>
 
 #include "Entry.h"
 
@@ -19,6 +19,6 @@ namespace pool {
         void clear() noexcept;
     private:
         std::vector<Entry<T>> m_pool;
-        std::mutex m_lock{};
+        std::shared_mutex m_lock;
     };
 }

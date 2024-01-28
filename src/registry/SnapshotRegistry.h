@@ -85,7 +85,7 @@ private:
         uint32_t startIndex);
 
 private:
-    std::mutex m_lock{};
+    std::mutex m_lock;
 
     std::unique_ptr<util::DirtyVector<Snapshot>> m_snapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_pendingSnapshots;

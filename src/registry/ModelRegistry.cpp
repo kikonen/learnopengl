@@ -51,7 +51,7 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
 {
     if (!*m_alive) return {};
 
-    std::lock_guard<std::mutex> lock(m_meshes_lock);
+    std::lock_guard lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
     std::string key = util::joinPathExt(

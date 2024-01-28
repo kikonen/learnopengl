@@ -2,7 +2,6 @@
 
 #include <bitset>
 #include <vector>
-#include <mutex>
 #include <atomic>
 #include <span>
 
@@ -70,7 +69,6 @@ private:
     int m_maxDirty = -1;
 
     std::atomic<bool> m_dirtyFlag;
-    std::mutex m_lock{};
 
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
     kigl::GLFence m_fence{ "fence_entity" };

@@ -111,7 +111,7 @@ namespace script
 
     script::script_id ScriptEngine::registerScript(std::string_view source)
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::lock_guard lock(m_lock);
 
         Script script{ source };
         m_scripts.insert({ script.m_id, script });
@@ -154,7 +154,7 @@ namespace script
         ki::node_id nodeId,
         script::script_id scriptId)
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::lock_guard lock(m_lock);
 
         const auto it = m_scripts.find(scriptId);
         if (it == m_scripts.end()) return "";

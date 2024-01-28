@@ -106,7 +106,7 @@ namespace script
     void CommandEngine::addPending(
         const CommandHandle& handle) noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        std::lock_guard lock{ m_pendingLock };
         m_pending.emplace_back(handle);
     }
 
@@ -114,7 +114,7 @@ namespace script
     {
         bool found = false;
         {
-            std::lock_guard<std::mutex> lock{ m_pendingLock };
+            std::lock_guard lock{ m_pendingLock };
             for (auto& handle : m_pending) {
                 auto* entry = handle.toCommand();
                 if (entry && entry->m_id == commandId) {
@@ -154,7 +154,7 @@ namespace script
 
     bool CommandEngine::hasPending() const noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        std::lock_guard lock{ m_pendingLock };
         return !m_pending.empty();
     }
 
@@ -214,7 +214,7 @@ namespace script
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        std::lock_guard lock{ m_pendingLock };
 
         if (m_pending.empty()) return;
 

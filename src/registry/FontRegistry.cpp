@@ -20,7 +20,7 @@ void FontRegistry::prepareRT()
 
 void FontRegistry::updateRT(const UpdateContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::shared_lock lock(m_lock);
 
     for (auto& font : m_fonts) {
         font.prepare(ctx.m_assets);
@@ -32,7 +32,7 @@ text::FontAtlas* FontRegistry::modifyFont(text::font_id id)
 {
     if (id < 1) return nullptr;
 
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::shared_lock lock(m_lock);
     assert(id > 0 && id <= m_fonts.size());
 
     return &m_fonts[id - 1];
@@ -63,7 +63,7 @@ bool FontRegistry::unbindFont(
 text::font_id FontRegistry::registerFont(
     const std::string& name)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::unique_lock lock(m_lock);
 
     auto& font = m_fonts.emplace_back<text::FontAtlas>({});
     font.m_name = name;

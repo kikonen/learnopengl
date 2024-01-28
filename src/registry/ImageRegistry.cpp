@@ -8,9 +8,9 @@ namespace {
 
 Image* ImageRegistry::getImage(std::string_view path)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
-
     const std::string cacheKey{ path };
+
+    std::lock_guard lock(m_lock);
 
     auto e = m_images.find(cacheKey);
     if (e == m_images.end()) {

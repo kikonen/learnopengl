@@ -7,7 +7,7 @@ class IdGenerator {
 public:
     T nextId() noexcept
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::lock_guard lock(m_lock);
         return m_base++;
     }
 
