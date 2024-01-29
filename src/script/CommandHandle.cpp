@@ -22,15 +22,6 @@ namespace {
 namespace script {
     CommandHandle CommandHandle::NULL_HANDLE{ 0, 0 };
 
-    CommandHandle& CommandHandle::operator=(const CommandEntry* entry) noexcept
-    {
-        if (entry) {
-            m_handleIndex = entry->m_handleIndex;
-            m_id = entry->m_id;
-        }
-        return *this;
-    }
-
     void CommandHandle::release() noexcept
     {
         if (!m_handleIndex) return;
@@ -69,7 +60,6 @@ namespace script {
         auto& entry = s_pool.getEntry(handleIndex);
 
         entry.m_data.m_id = id;
-        entry.m_data.m_handleIndex = handleIndex;
 
         m_IdToIndex.insert({ id, handleIndex });
 

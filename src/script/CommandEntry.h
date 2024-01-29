@@ -80,7 +80,6 @@ namespace script
                 m_cmd = nullptr;
             }
             m_id = 0;
-            m_handleIndex = 0;
         }
 
         CommandEntry& operator=(CommandEntry&& o) noexcept
@@ -108,7 +107,6 @@ namespace script
         void moveCommand(Command* other_cmd, bool useDelete);
 
         script::command_id m_id{ 0 };
-        uint32_t m_handleIndex{ 0 };
 
         script::command_id afterId{ 0 };
 

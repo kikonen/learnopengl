@@ -58,7 +58,6 @@ namespace script {
         }
         else {
             m_cmd = nullptr;
-            memset(m_buffer, 0, sizeof(m_buffer));
         }
     }
 
