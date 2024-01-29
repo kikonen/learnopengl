@@ -17,6 +17,8 @@
 #include "registry/SnapshotRegistry.h"
 
 
+NodeGenerator::~NodeGenerator() = default;
+
 void NodeGenerator::prepareSnapshots(
     SnapshotRegistry& snapshotRegistry)
 {

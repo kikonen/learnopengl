@@ -13,8 +13,8 @@ namespace audio
     class SoundRegistry final
     {
     public:
-        SoundRegistry();;
-        ~SoundRegistry() = default;
+        SoundRegistry();
+        ~SoundRegistry();
 
         void clear();
 

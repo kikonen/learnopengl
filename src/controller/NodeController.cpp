@@ -2,6 +2,10 @@
 
 #include "engine/PrepareContext.h"
 
+NodeController::NodeController() = default;
+
+NodeController::~NodeController() = default;
+
 void NodeController::prepare(
     const PrepareContext& ctx,
     Node& node)

@@ -21,9 +21,9 @@ class RenderContext;
 class ParticleGenerator final
 {
 public:
-    ParticleGenerator() {}
+    ParticleGenerator();
 
-    ~ParticleGenerator() = default;
+    ~ParticleGenerator();
 
     virtual void update(const UpdateContext& ctx);
 

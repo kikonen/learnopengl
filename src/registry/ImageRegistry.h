@@ -11,7 +11,7 @@ class ImageRegistry final
 {
 public:
     ImageRegistry() = default;
-    ~ImageRegistry() = default;
+    ~ImageRegistry();
 
     Image* getImage(std::string_view path);
 public:

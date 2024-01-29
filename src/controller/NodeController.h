@@ -15,8 +15,8 @@ class Node;
 class NodeController
 {
 public:
-    NodeController() = default;
-    virtual ~NodeController() = default;
+    NodeController();
+    virtual ~NodeController();
 
     virtual void prepare(
         const PrepareContext& ctx,

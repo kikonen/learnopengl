@@ -15,7 +15,7 @@ class Light final
 {
 public:
     Light() {};
-    ~Light() = default;
+    ~Light();
 
     void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 

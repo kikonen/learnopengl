@@ -28,6 +28,8 @@ SpriteRegistry::SpriteRegistry(
     m_shapeIndex++;
 }
 
+SpriteRegistry::~SpriteRegistry() = default;
+
 void SpriteRegistry::registerSprite(Sprite& sprite)
 {
     std::lock_guard lock(m_lock);

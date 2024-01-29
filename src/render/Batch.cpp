@@ -42,6 +42,8 @@ namespace render {
     {
     }
 
+    Batch::~Batch() = default;
+
     bool Batch::inFrustum(
         const RenderContext& ctx,
         const Snapshot& snapshot) const noexcept

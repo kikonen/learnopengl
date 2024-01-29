@@ -10,6 +10,8 @@ namespace audio
         m_sounds.emplace_back<Sound>({});
     }
 
+    SoundRegistry::~SoundRegistry() = default;
+
     void SoundRegistry::clear()
     {
         std::unique_lock lock(m_lock);

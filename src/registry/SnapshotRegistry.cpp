@@ -14,6 +14,8 @@ SnapshotRegistry::SnapshotRegistry()
     copyFromPending(0);
 }
 
+SnapshotRegistry::~SnapshotRegistry() = default;
+
 uint32_t SnapshotRegistry::registerSnapshot() noexcept {
     return registerSnapshotRange(1);
 }

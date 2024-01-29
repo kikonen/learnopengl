@@ -7,6 +7,10 @@
 
 #include "scene/ParticleSystem.h"
 
+ParticleGenerator::ParticleGenerator()
+{}
+
+ParticleGenerator::~ParticleGenerator() = default;
 
 void ParticleGenerator::update(const UpdateContext& ctx)
 {

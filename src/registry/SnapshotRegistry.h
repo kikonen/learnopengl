@@ -17,7 +17,7 @@
 class SnapshotRegistry final {
 public:
     SnapshotRegistry();
-    ~SnapshotRegistry() = default;
+    ~SnapshotRegistry();
 
     inline Snapshot& modifySnapshot(uint32_t index) noexcept {
         auto& snapshots = m_snapshots->m_entries;

@@ -30,6 +30,8 @@ namespace mesh {
         m_ebo{ m_name + "_ebo" }
     {}
 
+    ModelVAO::~ModelVAO() = default;
+
     void ModelVAO::prepare(std::string_view name)
     {
         if (m_prepared) return;

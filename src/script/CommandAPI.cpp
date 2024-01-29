@@ -96,6 +96,8 @@ namespace script
         m_nodeId(nodeId)
     {}
 
+    CommandAPI::~CommandAPI() = default;
+
     int CommandAPI::lua_cancel(
         const sol::table& lua_opt,
         int commandId) noexcept

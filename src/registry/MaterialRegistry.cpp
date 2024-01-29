@@ -39,6 +39,8 @@ MaterialRegistry::MaterialRegistry(
     m_indeces.emplace_back(m_zero.m_registeredIndex);
 }
 
+MaterialRegistry::~MaterialRegistry() = default;
+
 void MaterialRegistry::registerMaterial(Material& material)
 {
     if (material.m_registeredIndex >= 0) return;

@@ -6,4 +6,9 @@
 #include "registry/NodeRegistry.h"
 
 namespace event {
+    BlobData::~BlobData()
+    {}
+
+    BlobData::Body::~Body()
+    {}
 }

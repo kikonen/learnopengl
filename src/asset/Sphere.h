@@ -14,7 +14,7 @@ struct Sphere final
     Sphere(const glm::vec3& center, float radius) noexcept;
     Sphere(const glm::vec4& worldVolume) noexcept;
 
-    ~Sphere() noexcept = default;
+    ~Sphere() noexcept;
 
     std::unique_ptr<Sphere> clone() const noexcept;
 

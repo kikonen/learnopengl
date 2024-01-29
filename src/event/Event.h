@@ -96,11 +96,11 @@ namespace event {
     // => To reduce bloating of Event struct size
     struct BlobData {
         BlobData() {};
-        ~BlobData() {};
+        ~BlobData();
 
         union Body {
             Body() {};
-            ~Body() {};
+            ~Body();
 
             PhysicsData physics;
             AudioSourceData audioSource;

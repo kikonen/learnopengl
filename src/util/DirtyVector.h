@@ -8,7 +8,7 @@ namespace util
         std::vector<bool> m_dirtyFlags;
 
         DirtyVector();
-        ~DirtyVector() = default;
+        ~DirtyVector();
 
         size_t size() const noexcept { return m_entries.size(); }
 

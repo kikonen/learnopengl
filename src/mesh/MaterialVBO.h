@@ -17,7 +17,7 @@ namespace mesh {
         MaterialVBO() = default;
         MaterialVBO(MaterialVBO&& o);
 
-        virtual ~MaterialVBO() = default;
+        virtual ~MaterialVBO();
 
         void setMaterials(const std::vector<Material>& materials);
 

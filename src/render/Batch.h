@@ -31,7 +31,7 @@ namespace render {
     {
     public:
         Batch();
-        ~Batch() = default;
+        ~Batch();
 
         // https://stackoverflow.com/questions/7823845/disable-compiler-generated-copy-assignment-operator
         Batch(const Batch&) = delete;

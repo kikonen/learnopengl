@@ -27,7 +27,7 @@ public:
         m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 
-    virtual ~WaterMapRenderer() = default;
+    virtual ~WaterMapRenderer();
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;

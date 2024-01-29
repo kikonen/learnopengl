@@ -27,6 +27,8 @@ namespace script
     {
     }
 
+    ScriptEngine::~ScriptEngine() = default;
+
     void ScriptEngine::prepare(
         const PrepareContext& ctx,
         CommandEngine* commandEngine)

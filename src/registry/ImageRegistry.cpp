@@ -6,6 +6,8 @@
 namespace {
 }
 
+ImageRegistry::~ImageRegistry() = default;
+
 Image* ImageRegistry::getImage(std::string_view path)
 {
     const std::string cacheKey{ path };
