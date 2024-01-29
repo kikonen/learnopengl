@@ -25,7 +25,7 @@ namespace script
     {
     public:
         ScriptEngine();
-        ~ScriptEngine() = default;
+        ~ScriptEngine();
 
         void prepare(
             const PrepareContext& ctx,

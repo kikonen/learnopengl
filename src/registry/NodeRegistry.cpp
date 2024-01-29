@@ -61,7 +61,7 @@ NodeRegistry::NodeRegistry(
 
 NodeRegistry::~NodeRegistry()
 {
-    std::lock_guard<std::mutex> lock(m_snapshotLock);
+    std::lock_guard lock(m_snapshotLock);
 
     {
         m_activeNode.reset();
@@ -121,7 +121,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
 void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
 {
-    std::lock_guard<std::mutex> lock(m_snapshotLock);
+    std::lock_guard lock(m_snapshotLock);
 
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
@@ -180,7 +180,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
     auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
     auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
 
-    std::lock_guard<std::mutex> lock(m_snapshotLock);
+    std::lock_guard lock(m_snapshotLock);
 
     for (auto* node : m_cachedNodesRT) {
         if (!node) continue;
@@ -543,7 +543,7 @@ void NodeRegistry::bindNode(
 
     {
         {
-            std::lock_guard<std::mutex> lock(m_snapshotLock);
+            std::lock_guard lock(m_snapshotLock);
             m_allNodes.push_back(handle);
         }
 
@@ -614,7 +614,7 @@ void NodeRegistry::setSelectionMaterial(const Material& material)
 
 void NodeRegistry::cacheNodes(std::vector<Node*>& cache) const noexcept
 {
-    std::lock_guard<std::mutex> lock(m_snapshotLock);
+    std::lock_guard lock(m_snapshotLock);
     cache.clear();
     cache.reserve(m_allNodes.size());
 

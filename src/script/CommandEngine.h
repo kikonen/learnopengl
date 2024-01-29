@@ -5,7 +5,6 @@
 #include <memory>
 #include <mutex>
 
-#include "ki/size.h"
 #include "size.h"
 
 struct UpdateContext;
@@ -13,19 +12,27 @@ class Registry;
 
 namespace script
 {
-    class Command;
+    struct CommandEntry;
+    class CommandHandle;
 
     class CommandEngine final
     {
     public:
         CommandEngine();
-        ~CommandEngine() = default;
+        ~CommandEngine();
 
         void prepare(Registry* registry);
 
         void update(const UpdateContext& ctx);
 
-        script::command_id addCommand(std::unique_ptr<Command> cmd) noexcept;
+        template<typename T>
+        script::command_id addCommand(
+            script::command_id afterId,
+            T&& cmd) noexcept;
+
+        void addPending(
+            const CommandHandle& handle) noexcept;
+
         void cancel(script::command_id commandId) noexcept;
 
         bool isAlive(script::command_id commandId) const noexcept;
@@ -33,9 +40,12 @@ namespace script
         bool hasPending() const noexcept;
 
     private:
-        bool isValid(const UpdateContext& ctx, Command* cmd) const noexcept;
+        void activateNext(const CommandEntry* prevEntry) noexcept;
+        void bindNext(CommandEntry* nextEntry) noexcept;
 
-        void activateNext(const Command* cmd) noexcept;
+        void killEntry(
+            CommandHandle& handle,
+            CommandEntry* deadEntry) noexcept;
 
         void processCanceled(const UpdateContext& ctx) noexcept;
         void processPending(const UpdateContext& ctx) noexcept;
@@ -48,19 +58,18 @@ namespace script
     private:
         mutable std::mutex m_pendingLock{};
 
-        std::vector<std::unique_ptr<Command>> m_pending;
-        std::vector<std::unique_ptr<Command>> m_blocked;
-        std::vector<std::unique_ptr<Command>> m_active;
+        std::vector<CommandHandle> m_pending;
+        std::vector<CommandHandle> m_blocked;
+        std::vector<CommandHandle> m_active;
 
-        bool m_blockedCleanup = false;
-        bool m_pendingCleanup = false;
-        bool m_activeCleanup = false;
+        size_t m_blockedDeadCount{ 0 };
+        size_t m_activeDeadCount{ 0 };
 
         // NOTE KI don't do cleanup on every iteration
         // - just minor temporary memory leak
-        int m_cleanupIndex = 0;
-        int m_cleanupStep = 0;
+        int m_cleanupIndex{ 0 };
+        int m_cleanupStep{ 0 };
 
-        std::unordered_map<script::command_id, Command*> m_commands;
+        std::unordered_map<script::command_id, CommandHandle> m_alive;
     };
 }

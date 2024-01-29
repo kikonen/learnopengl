@@ -134,13 +134,14 @@ void CameraZoomController::onMouseMove(
 
     if (changed) {
         m_registry->m_commandEngine->addCommand(
-            std::make_unique<script::RotateNode>(
-                0,
+            0,
+            script::RotateNode{
                 m_nodeHandle.toId(),
                 0.f,
                 true,
                 snapshot.getViewRight(),
-                -adjust.x));
+                -adjust.x
+            });
 
         //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }

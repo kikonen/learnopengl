@@ -21,17 +21,16 @@ MeshTypeRegistry::~MeshTypeRegistry()
 void MeshTypeRegistry::registerCustomMaterial(
     pool::TypeHandle typeHandle)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
-
     auto* type = typeHandle.toType();
-    assert(!type.m_customMaterial);
+    assert(!type->m_customMaterial);
 
+    std::lock_guard lock(m_lock);
     m_customMaterialTypes.push_back(typeHandle);
 }
 
 void MeshTypeRegistry::bind(const RenderContext& ctx)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
 
     for (auto& typeHandle : m_customMaterialTypes) {
         auto* type = typeHandle.toType();

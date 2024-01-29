@@ -9,7 +9,6 @@ namespace script
     {
     public:
         CancelCommand(
-            script::command_id afterCommandId,
             float duration,
             script::command_id commandId) noexcept;
 
@@ -17,6 +16,6 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const script::command_id m_commandId;
+        script::command_id m_commandId;
     };
 }

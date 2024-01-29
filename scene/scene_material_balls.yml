@@ -15,7 +15,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: origo
+  - id: world_origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
@@ -24,8 +24,7 @@ entities:
     force_material: true
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 25, 40]
     front: [0, 0, -1]
@@ -35,7 +34,7 @@ entities:
         default: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     camera:

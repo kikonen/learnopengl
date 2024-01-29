@@ -195,12 +195,13 @@ bool CubeMapRenderer::render(
             const auto tagPos = centerPos - rootPos;
 
             m_registry->m_commandEngine->addCommand(
-                std::make_unique<script::MoveNode>(
-                    0,
+                0,
+                script::MoveNode{
                     tagNode->getId(),
                     0.f,
                     false,
-                    tagPos));
+                    tagPos
+                });
 
             tagNode->m_visible = true;
             //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;

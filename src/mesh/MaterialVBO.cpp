@@ -34,6 +34,8 @@ namespace mesh {
         o.m_bufferIndex = 0;
     }
 
+    MaterialVBO::~MaterialVBO() = default;
+
     void MaterialVBO::setMaterials(const std::vector<Material>& materials)
     {
         m_materials = materials;

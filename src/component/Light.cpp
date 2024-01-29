@@ -13,6 +13,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/SnapshotRegistry.h"
 
+Light::~Light() = default;
 
 void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {

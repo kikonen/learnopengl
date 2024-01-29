@@ -1,4 +1,5 @@
 #include "CommandEngine.h"
+#include "CommandEngine_impl.h"
 
 #include "model/Node.h"
 
@@ -7,6 +8,8 @@
 #include "api/CancelCommand.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
+
+#include "CommandEntry.h"
 
 #include "api/Command.h"
 
@@ -29,11 +32,21 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+namespace {
+    constexpr size_t COMMANDS_SIZE = 10000;
+}
+
 namespace script
 {
     CommandEngine::CommandEngine()
         : m_cleanupStep(5)
-    {}
+    {
+        m_pending.reserve(COMMANDS_SIZE);
+        m_blocked.reserve(COMMANDS_SIZE);
+        m_active.reserve(COMMANDS_SIZE);
+    }
+
+    CommandEngine::~CommandEngine() = default;
 
     void CommandEngine::prepare(Registry* registry)
     {
@@ -42,10 +55,11 @@ namespace script
             [this](const event::Event& e) {
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:wait {}\n", anim.target));
-                addCommand(
-                    std::make_unique<Wait>(
-                        anim.after,
-                        anim.duration));
+                addCommand<Wait>(
+                    anim.after,
+                    Wait{
+                        anim.duration,
+                    });
             });
 
         registry->m_dispatcher->addListener(
@@ -54,12 +68,13 @@ namespace script
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:move {}\n", anim.target));
                 addCommand(
-                    std::make_unique<MoveNode>(
-                        anim.after,
+                    anim.after,
+                    MoveNode{
                         anim.target,
                         anim.duration,
                         anim.relative,
-                        anim.data));
+                        anim.data
+                    });
             });
 
         registry->m_dispatcher->addListener(
@@ -68,13 +83,14 @@ namespace script
                 auto& anim = e.body.animate;
                 KI_OUT(fmt::format("ANIM:rotate {}\n", anim.target));
                 addCommand(
-                    std::make_unique<RotateNode>(
-                        anim.after,
+                    anim.after,
+                    RotateNode {
                         anim.target,
                         anim.duration,
                         anim.relative,
                         anim.data,
-                        anim.data2.x));
+                        anim.data2.x
+                    });
             });
     }
 
@@ -87,90 +103,92 @@ namespace script
         processCleanup(ctx);
     }
 
-    script::command_id CommandEngine::addCommand(std::unique_ptr<Command> pcmd) noexcept
+    void CommandEngine::addPending(
+        const CommandHandle& handle) noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
-
-        auto& cmd = m_pending.emplace_back(std::move(pcmd));
-        return cmd->m_id;
-    }
-
-    bool CommandEngine::isValid(const UpdateContext& ctx, Command* cmd) const noexcept
-    {
-        if (!cmd->isNode()) return true;
-
-        auto nodeId = (dynamic_cast<NodeCommand*>(cmd))->m_nodeId;
-        return pool::NodeHandle::toNode(nodeId);
+        std::lock_guard lock{ m_pendingLock };
+        m_pending.emplace_back(handle);
     }
 
     void CommandEngine::cancel(script::command_id commandId) noexcept
     {
-        {
-            std::lock_guard<std::mutex> lock{ m_pendingLock };
-            for (auto& cmd : m_pending) {
-                if (cmd->m_id == commandId) {
-                    cmd->m_canceled = true;
-                }
+        const auto& it = m_alive.find(commandId);
+        if (it != m_alive.end()) {
+            auto handle = it->second;
+            if (auto* entry = handle.toCommand()) {
+                killEntry(handle, entry);
             }
-        }
-
-        const auto& it = m_commands.find(commandId);
-        if (it != m_commands.end()) {
-            it->second->m_canceled = true;
         }
     }
 
     bool CommandEngine::isAlive(script::command_id commandId) const noexcept
     {
-        return m_commands.find(commandId) != m_commands.end();
+        return m_alive.find(commandId) != m_alive.end();
     }
 
     bool CommandEngine::hasPending() const noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        std::lock_guard lock{ m_pendingLock };
         return !m_pending.empty();
     }
 
-    void CommandEngine::activateNext(const Command* cmd) noexcept
+    void CommandEngine::activateNext(const CommandEntry* prevEntry) noexcept
     {
-        if (cmd->m_next.empty()) return;
+        if (prevEntry->m_next.empty()) return;
 
-        for (auto nextId : cmd->m_next) {
-            if (const auto& it = m_commands.find(nextId);
-                it != m_commands.end())
-            {
-                it->second->m_ready = true;
+        for (auto nextId : prevEntry->m_next) {
+            const auto& it = m_alive.find(nextId);
+            if (it != m_alive.end()) {
+                if (auto* entry = it->second.toCommand()) {
+                    entry->m_ready = true;
+                }
             }
         }
+    }
+
+    void CommandEngine::bindNext(CommandEntry* nextEntry) noexcept
+    {
+        const auto& it = m_alive.find(nextEntry->afterId);
+
+        if (it != m_alive.end()) {
+            auto* entry = it->second.toCommand();
+            if (entry) {
+                entry->m_next.push_back(nextEntry->m_id);
+            }
+        } else {
+            nextEntry->m_ready = true;
+        }
+    }
+
+    void CommandEngine::killEntry(
+        CommandHandle& handle,
+        CommandEntry* deadEntry) noexcept
+    {
+        activateNext(deadEntry);
+        deadEntry->m_alive = false;
+
+        m_alive.erase(deadEntry->m_id);
+        handle.release();
     }
 
     void CommandEngine::processPending(const UpdateContext& ctx) noexcept
     {
-        std::lock_guard<std::mutex> lock{ m_pendingLock };
+        std::lock_guard lock{ m_pendingLock };
 
-        // NOTE KI scripts cannot exist before node is in registry
-        // => thus it MUST exist
         if (m_pending.empty()) return;
 
-        for (auto& cmd : m_pending) {
-            // canceled; discard
-            if (cmd->m_canceled) continue;
+        for (auto& handle : m_pending) {
+            auto* entry = handle.toCommand();
 
-            m_commands.insert(std::make_pair(cmd->m_id, cmd.get()));
+            if (!entry || !entry->m_alive) continue;
 
-            bool ready = true;
-            if (cmd->m_afterCommandId > 0) {
-                if (const auto& it = m_commands.find(cmd->m_afterCommandId);
-                    it != m_commands.end())
-                {
-                    it->second->m_next.push_back(cmd->m_id);
-                    ready = false;
-                }
-            }
-            cmd->m_ready = ready;
+            bindNext(entry);
 
-            m_blocked.emplace_back(std::move(cmd));
+            m_blocked.emplace_back(handle);
+
+            m_alive.insert({ handle.toId(), handle});
         }
+
         m_pending.clear();
     }
 
@@ -178,34 +196,33 @@ namespace script
     {
         if (m_blocked.empty()) return;
 
-        for (auto& cmd : m_blocked) {
-            // canceled; discard
-            if (cmd->m_canceled) {
-                activateNext(cmd.get());
-                m_blockedCleanup = true;
+        for (auto& handle : m_blocked) {
+            auto* entry = handle.toCommand();
+
+            if (!entry || !entry->m_alive || entry->m_active) {
+                m_blockedDeadCount++;
                 continue;
             }
 
             // NOTE KI execute flag can be set only when previous is finished
-            if (!cmd->m_ready) continue;
-
-            m_blockedCleanup = true;
-
-            if (cmd->isNode()) {
-                auto* nodeCmd = dynamic_cast<NodeCommand*>(cmd.get());
-                auto* node = pool::NodeHandle::toNode(nodeCmd->m_nodeId);
-                if (!node) {
-                    activateNext(cmd.get());
-                    cmd->m_canceled = true;
-                    continue;
-                }
-                nodeCmd->bind(ctx, node);
+            if (!entry->m_ready) {
+                //const auto& it = m_alive.find(entry->afterId);
+                //auto* nextEntry = it != m_alive.end() ? it->second.toCommand() : nullptr;
+                continue;
             }
-            else {
-                cmd->bind(ctx);
+            Command* cmd{ entry->m_cmd };
+            cmd->bind(ctx);
+
+            if (cmd->isCompleted()) {
+                killEntry(handle, entry);
+                m_blockedDeadCount++;
+                continue;
             }
 
-            m_active.emplace_back(std::move(cmd));
+            m_active.emplace_back(handle);
+
+            entry->m_active = true;
+            m_blockedDeadCount++;
         }
     }
 
@@ -213,71 +230,55 @@ namespace script
     {
         if (m_active.empty()) return;
 
-        for (auto& cmd : m_active) {
-            if (!cmd->isCompleted()) {
-                cmd->execute(ctx);
+        for (auto& handle : m_active) {
+            auto* entry = handle.toCommand();
+
+            if (!entry || !entry->m_alive) {
+                m_activeDeadCount++;
+                continue;
             }
 
+            Command* cmd{ entry->m_cmd };
+            cmd->execute(ctx);
+
             if (cmd->isCompleted()) {
-                activateNext(cmd.get());
-                m_activeCleanup = true;
+                killEntry(handle, entry);
+                m_activeDeadCount++;
             }
         }
     }
 
     void CommandEngine::processCleanup(const UpdateContext& ctx) noexcept
     {
-        // TODO KI current m_blocked logic requires cleanup on every step
-        //m_cleanupIndex++;
-        //if ((m_cleanupIndex % m_cleanupStep) != 0) return;
+        auto blockedCleanup = (m_blocked.size() / (float)m_blockedDeadCount) < 0.5;
+        auto activeCleanup = (m_active.size() / (float)m_activeDeadCount) < 0.5;
 
-        if (m_blockedCleanup) {
+        if (blockedCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
                 m_blocked.begin(),
                 m_blocked.end(),
-                [this](auto& cmd) {
-                    if (cmd && cmd->m_canceled) m_commands.erase(cmd->m_id);
-                    return !cmd || cmd->m_canceled;
+                [this](auto& handle) {
+                    auto* entry = handle.toCommand();
+                    return !entry || !entry->m_alive || entry->m_active;
                 });
             m_blocked.erase(it, m_blocked.end());
 
-            m_blockedCleanup = false;
+            m_blockedDeadCount = 0;
         }
 
-        if (m_activeCleanup) {
+        if (activeCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
                 m_active.begin(),
                 m_active.end(),
-                [this](auto& cmd) {
-                    if (cmd->m_finished || cmd->m_canceled) m_commands.erase(cmd->m_id);
-                    return cmd->m_finished || cmd->m_canceled;;
+                [this](auto& handle) {
+                    auto* entry = handle.toCommand();
+                    return !entry || !entry->m_alive;
                 });
             m_active.erase(it, m_active.end());
 
-            m_activeCleanup = false;
+            m_activeDeadCount = 0;
         }
     }
-
-    //void CommandEngine::updateOldest() noexcept
-    //{
-    //    int min = INT_MAX;
-    //    for (const auto& cmd : m_pending) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    for (const auto& cmd : m_blocked) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    for (const auto& cmd : m_active) {
-    //        if (cmd->m_id < min) {
-    //            min = cmd->m_id;
-    //        }
-    //    }
-    //    m_oldestAliveCommandId = min;
-    //}
 }

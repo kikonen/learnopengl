@@ -2,7 +2,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <mutex>
+#include <shared_mutex>
 
 #include "size.h"
 
@@ -13,8 +13,8 @@ namespace audio
     class SoundRegistry final
     {
     public:
-        SoundRegistry();;
-        ~SoundRegistry() = default;
+        SoundRegistry();
+        ~SoundRegistry();
 
         void clear();
 
@@ -28,6 +28,6 @@ namespace audio
         std::unordered_map<std::string, audio::sound_id> m_pathToId;
         std::vector<Sound> m_sounds;
 
-        std::mutex m_lock{};
+        std::shared_mutex m_lock;
     };
 }

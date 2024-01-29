@@ -25,7 +25,7 @@ namespace script
             ScriptEngine* scriptEngine,
             CommandEngine* commandEngine,
             ki::node_id nodeId);
-        ~CommandAPI() = default;
+        ~CommandAPI();
 
     public:
         int lua_cancel(

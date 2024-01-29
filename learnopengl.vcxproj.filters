@@ -600,7 +600,7 @@
     <ClCompile Include="src\engine\InputContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\pool\Pool.hpp">
+    <ClCompile Include="src\pool\Pool_impl.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pool\NodeHandle.cpp">
@@ -619,6 +619,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ki\FpsCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\CommandEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\CommandHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1424,7 +1430,7 @@
     <ClInclude Include="src\mesh\BaseBVO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\kigl\GLSyncQueue.hpp">
+    <ClInclude Include="src\kigl\GLSyncQueue_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\TerrainTileSSBO.h">
@@ -1442,7 +1448,7 @@
     <ClInclude Include="src\util\DirtyVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\DirtyVector.hpp">
+    <ClInclude Include="src\util\DirtyVector_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pool\Entry.h">
@@ -1473,6 +1479,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\FpsCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\CommandEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\CommandHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\CommandEngine_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

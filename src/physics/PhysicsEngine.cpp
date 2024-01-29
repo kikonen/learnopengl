@@ -222,7 +222,7 @@ namespace physics
     {
         if (m_pending.empty()) return;
 
-        std::map<physics::physics_id, bool> prepared;
+        std::unordered_map<physics::physics_id, bool> prepared;
 
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id - 1];

@@ -51,7 +51,7 @@ Program* ProgramRegistry::getProgram(
 {
     if (!*m_alive) return nullptr;
 
-    std::lock_guard<std::mutex> lock(m_programs_lock);
+    std::lock_guard lock(m_programs_lock);
 
     std::string key{ name };
 

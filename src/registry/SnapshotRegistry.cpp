@@ -1,6 +1,6 @@
 #include "SnapshotRegistry.h"
 
-#include "util/DirtyVector.hpp"
+#include "util/DirtyVector_impl.h"
 
 
 SnapshotRegistry::SnapshotRegistry()
@@ -13,6 +13,8 @@ SnapshotRegistry::SnapshotRegistry()
     copyToPending(0);
     copyFromPending(0);
 }
+
+SnapshotRegistry::~SnapshotRegistry() = default;
 
 uint32_t SnapshotRegistry::registerSnapshot() noexcept {
     return registerSnapshotRange(1);
@@ -42,7 +44,7 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
 }
 
 //void SnapshotRegistry::swap() {
-//    std::lock_guard<std::mutex> lock(m_lock);
+//    std::lock_guard lock(m_lock);
 //    // NOTE KI swap only if pending is not locked by RT
 //    if (!m_pendingSnapshots) return;
 //
@@ -70,14 +72,14 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
 //}
 //
 //void SnapshotRegistry::lock() {
-//    std::lock_guard<std::mutex> lock(m_lock);
+//    std::lock_guard lock(m_lock);
 //    if (m_pendingSnapshots) {
 //        m_activeSnapshots.swap(m_pendingSnapshots);
 //    }
 //}
 //
 //void SnapshotRegistry::unlock() {
-//    std::lock_guard<std::mutex> lock(m_lock);
+//    std::lock_guard lock(m_lock);
 //    if (m_activeSnapshots) {
 //        m_activeSnapshots.swap(m_pendingSnapshots);
 //    }
@@ -85,13 +87,13 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
 
 void SnapshotRegistry::copyToPending(uint32_t startIndex)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
     copy(*m_snapshots.get(), *m_pendingSnapshots.get(), startIndex);
 }
 
 void SnapshotRegistry::copyFromPending(uint32_t startIndex)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
     copy(*m_pendingSnapshots.get(), *m_activeSnapshots.get(), startIndex);
 }
 

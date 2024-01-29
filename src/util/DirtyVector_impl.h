@@ -14,6 +14,9 @@ namespace util
     }
 
     template<typename T>
+    DirtyVector<T>::~DirtyVector() = default;
+
+    template<typename T>
     void DirtyVector<T>::reserve(size_t requestedSize)
     {
         // NOTE KI reserve but don't fill extra space always

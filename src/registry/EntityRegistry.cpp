@@ -59,7 +59,6 @@ void EntityRegistry::prepare()
 void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
     //if (!m_dirty) return;
-    //std::lock_guard<std::mutex> lock(m_lock);
 
     processNodes(ctx);
 
@@ -178,8 +177,6 @@ uint32_t EntityRegistry::registerEntity()
 uint32_t EntityRegistry::registerEntityRange(const size_t count)
 {
     ASSERT_RT();
-
-    //std::lock_guard<std::mutex> lock(m_lock);
 
     if (m_entries.size() + count > MAX_ENTITY_COUNT)
         throw std::runtime_error{ fmt::format("MAX_ENTITY_COUNT: {}", MAX_ENTITY_COUNT) };

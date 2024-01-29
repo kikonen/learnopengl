@@ -66,14 +66,13 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     bool gammaCorrect,
     const TextureSpec& spec)
 {
-    std::lock_guard<std::mutex> lock(textures_lock);
-
     const std::string cacheKey = fmt::format(
         "{}_{}_{}-{}_{}_{}_{}",
         path, gammaCorrect,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
+    std::lock_guard lock(textures_lock);
     {
         const auto& e = textures.find(cacheKey);
         if (e != textures.end())

@@ -26,6 +26,8 @@ Sphere::Sphere(const glm::vec4& worldVolume) noexcept
     m_worldRadius{ worldVolume.a }
 {}
 
+Sphere::~Sphere() noexcept = default;
+
 std::unique_ptr<Sphere> Sphere::clone() const noexcept
 {
     auto clone = std::make_unique<Sphere>(m_center, m_radius);

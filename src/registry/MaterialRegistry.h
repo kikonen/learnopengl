@@ -25,7 +25,7 @@ public:
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
-    ~MaterialRegistry() = default;
+    ~MaterialRegistry();
 
     // Updates m_registeredIndex of Material
     void registerMaterial(Material& material);

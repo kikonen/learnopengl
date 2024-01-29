@@ -42,6 +42,7 @@ namespace {
     static const int ATT_ALBEDO_INDEX = 0;
 }
 
+WaterMapRenderer::~WaterMapRenderer() = default;
 
 void WaterMapRenderer::prepareRT(
     const PrepareContext& ctx)

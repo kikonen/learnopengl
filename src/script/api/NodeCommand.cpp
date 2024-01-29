@@ -5,19 +5,19 @@
 namespace script
 {
     NodeCommand::NodeCommand(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         float duration,
         bool relative) noexcept
-        : Command(afterCommandId, duration),
+        : Command(duration),
         m_nodeId(nodeId),
         m_relative(relative)
     {
     }
 
-    void NodeCommand::bind(const UpdateContext& ctx, Node* node) noexcept
+    void NodeCommand::bind(const UpdateContext& ctx) noexcept
     {
         Command::bind(ctx);
-        m_nodeHandle = node->toHandle();
+        m_nodeHandle = pool::NodeHandle::toHandle(m_nodeId);
+        m_finished = !m_nodeHandle.toNode();
     }
 }

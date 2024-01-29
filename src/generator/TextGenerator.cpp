@@ -41,7 +41,8 @@ void TextGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    m_drawOptions = container.m_type->getDrawOptions();
+    auto* type = container.m_typeHandle.toType();
+    m_drawOptions = type->getDrawOptions();
 
     container.m_instancer = this;
 }

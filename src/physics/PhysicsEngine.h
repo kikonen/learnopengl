@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <mutex>
 
 #include <ode/ode.h>
@@ -71,7 +71,7 @@ namespace physics {
         dSpaceID m_spaceId{ nullptr };
         dJointGroupID m_contactgroupId{ nullptr };
 
-        std::map<dGeomID, Object*> m_geomToObject;
+        std::unordered_map<dGeomID, Object*> m_geomToObject;
 
     private:
         const Assets& m_assets;

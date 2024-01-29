@@ -10,17 +10,11 @@
 namespace script
 {
     StartNode::StartNode(
-        script::command_id afterCommandId,
         ki::node_id nodeId,
         Coroutine* coroutine) noexcept
-        : NodeCommand(afterCommandId, nodeId, 0, false),
+        : NodeCommand(nodeId, 0, false),
         m_coroutine(coroutine)
     {
-    }
-
-    void StartNode::bind(const UpdateContext& ctx, Node* node) noexcept
-    {
-        NodeCommand::bind(ctx, node);
     }
 
     void StartNode::execute(

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace audio
 {
-    typedef unsigned short sound_id;
-    typedef unsigned short source_id;
-    typedef unsigned short listener_id;
+    typedef uint16_t sound_id;
+    typedef uint16_t source_id;
+    typedef uint16_t listener_id;
 }

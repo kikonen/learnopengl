@@ -40,7 +40,7 @@ class NodeGenerator
 {
 public:
     NodeGenerator() = default;
-    virtual ~NodeGenerator() = default;
+    virtual ~NodeGenerator();
 
     virtual void prepare(
         const PrepareContext& ctx,

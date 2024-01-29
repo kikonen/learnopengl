@@ -17,7 +17,7 @@
 class SnapshotRegistry final {
 public:
     SnapshotRegistry();
-    ~SnapshotRegistry() = default;
+    ~SnapshotRegistry();
 
     inline Snapshot& modifySnapshot(uint32_t index) noexcept {
         auto& snapshots = m_snapshots->m_entries;
@@ -85,7 +85,7 @@ private:
         uint32_t startIndex);
 
 private:
-    std::mutex m_lock{};
+    std::mutex m_lock;
 
     std::unique_ptr<util::DirtyVector<Snapshot>> m_snapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_pendingSnapshots;

@@ -11,18 +11,13 @@ namespace script
     {
     public:
         AudioStop(
-            script::command_id afterCommandId,
             ki::node_id nodeId,
             int index) noexcept;
-
-        virtual void bind(
-            const UpdateContext& ctx,
-            Node* node) noexcept override;
 
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const int m_index;
+        int m_index;
     };
 }

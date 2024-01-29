@@ -1,7 +1,9 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace physics
 {
-    typedef unsigned int physics_id;
-    typedef unsigned int height_map_id;
+    typedef uint32_t physics_id;
+    typedef uint16_t height_map_id;
 }

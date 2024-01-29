@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
-#include <mutex>
+#include <atomic>
+#include <shared_mutex>
 
 #include "Entry.h"
 
@@ -9,16 +9,22 @@ namespace pool {
     template<typename T>
     class Pool {
     public:
-        Pool(uint32_t size);
+        Pool(uint32_t blockSize);
 
         Entry<T>& getEntry(uint32_t index) noexcept;
 
-        void reserve(uint32_t size) noexcept;
+        void release(uint32_t index) noexcept;
         uint32_t allocate() noexcept;
 
         void clear() noexcept;
+
     private:
-        std::vector<Entry<T>> m_pool;
-        std::mutex m_lock{};
+        const uint32_t m_blockSize;
+        const uint32_t m_entrySize;
+
+        int32_t m_nextFree;
+        Entry<T>* m_pool;
+
+        std::shared_mutex m_lock;
     };
 }

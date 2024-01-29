@@ -24,7 +24,7 @@ public:
         const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
-    ~SpriteRegistry() = default;
+    ~SpriteRegistry();
 
     void registerSprite(Sprite& sprite);
 

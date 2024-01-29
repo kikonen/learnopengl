@@ -1,6 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace event
 {
-    typedef unsigned int event_id;
+    typedef uint32_t event_id;
 }

@@ -12,7 +12,7 @@
 
 #include "asset/UBO.h"
 
-#include "kigl/GLSyncQueue.hpp"
+#include "kigl/GLSyncQueue_impl.h"
 
 #include "model/Node.h"
 #include "component/Light.h"

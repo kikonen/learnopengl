@@ -12,7 +12,6 @@ namespace script
     {
     public:
         ResumeNode(
-            script::command_id afterCommandId,
             ki::node_id nodeId,
             Coroutine* coroutine) noexcept;
 

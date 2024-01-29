@@ -10,16 +10,18 @@ namespace audio
         m_sounds.emplace_back<Sound>({});
     }
 
+    SoundRegistry::~SoundRegistry() = default;
+
     void SoundRegistry::clear()
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::unique_lock lock(m_lock);
         m_sounds.clear();
     }
 
     Sound* SoundRegistry::getSound(
         audio::sound_id id)
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::shared_lock lock(m_lock);
 
         if (id < 1 || id >= m_sounds.size()) return nullptr;
         return &m_sounds[id];
@@ -27,7 +29,7 @@ namespace audio
 
     audio::sound_id SoundRegistry::registerSound(std::string_view fullPath)
     {
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::unique_lock lock(m_lock);
 
         const auto& it = m_pathToId.find(std::string{ fullPath });
         if (it != m_pathToId.end()) return it->second;

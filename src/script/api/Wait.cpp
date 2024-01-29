@@ -5,9 +5,8 @@
 namespace script
 {
     Wait::Wait(
-        script::command_id afterCommandId,
         float duration) noexcept
-        : Command(afterCommandId, duration)
+        : Command(duration)
     {
     }
 

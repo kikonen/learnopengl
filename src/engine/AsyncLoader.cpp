@@ -37,7 +37,7 @@ void AsyncLoader::addLoader(
         return;
     }
 
-    std::lock_guard<std::mutex> lock(m_load_lock);
+    std::lock_guard lock(m_load_lock);
     m_startedCount++;
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
@@ -51,7 +51,7 @@ void AsyncLoader::addLoader(
                 if (*sceneAlive && *m_alive) {
                     loader();
                 }
-                std::unique_lock<std::mutex> lock(m_load_lock);
+                std::unique_lock lock(m_load_lock);
                 m_loadedCount++;
                 m_waitCondition.notify_all();
             } catch (const std::runtime_error& ex) {

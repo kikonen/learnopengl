@@ -24,7 +24,7 @@ namespace mesh {
     class ModelVAO {
     public:
         ModelVAO(std::string_view name);
-        ~ModelVAO() = default;
+        ~ModelVAO();
 
         void prepare(std::string_view name);
         void clear();

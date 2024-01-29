@@ -139,6 +139,6 @@ void Registry::postRT(const UpdateContext& ctx)
 
 void Registry::withLock(const std::function<void(Registry&)>& fn)
 {
-    std::lock_guard<std::mutex> lock(m_lock);
+    std::lock_guard lock(m_lock);
     fn(*this);
 }

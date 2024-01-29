@@ -31,6 +31,8 @@ Camera::Camera(
     setAxis(front, up);
 }
 
+Camera::~Camera() = default;
+
 void Camera::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;

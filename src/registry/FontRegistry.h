@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <mutex>
+#include <shared_mutex>
 
 #include "asset/Assets.h"
 
@@ -28,7 +28,7 @@ public:
     {
         if (id < 1) return nullptr;
 
-        std::lock_guard<std::mutex> lock(m_lock);
+        std::shared_lock lock(m_lock);
         assert(id > 0 && id <= m_fonts.size());
 
         return &m_fonts[id - 1];
@@ -50,7 +50,7 @@ public:
 private:
     const Assets& m_assets;
 
-    mutable std::mutex m_lock{};
+    mutable std::shared_mutex m_lock{};
 
     std::vector<text::FontAtlas> m_fonts;
 };

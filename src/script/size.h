@@ -1,7 +1,9 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace script
 {
-    typedef unsigned int command_id;
-    typedef unsigned int script_id;
+    typedef uint32_t command_id;
+    typedef uint32_t script_id;
 }

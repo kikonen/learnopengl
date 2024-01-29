@@ -54,21 +54,22 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     bool is16Bbit,
     const TextureSpec& spec)
 {
-    std::lock_guard<std::mutex> lock(textures_lock);
+    std::string cacheKey;
+    {
+        std::string pathsStr;
+        for (auto& tex : sourceTextures) {
+            pathsStr.append(";");
+            pathsStr.append(tex ? tex->m_path : "-");
+        }
 
-    std::string pathsStr;
-
-    for (auto& tex : sourceTextures) {
-        pathsStr.append(";");
-        pathsStr.append(tex ? tex->m_path : "-");
+        const std::string cacheKey = fmt::format(
+            "{}_{}_{}_{}-{}_{}_{}_{}_{}",
+            name, pathsStr, defaults, is16Bbit,
+            spec.wrapS, spec.wrapT,
+            spec.minFilter, spec.magFilter, spec.mipMapLevels);
     }
 
-    const std::string cacheKey = fmt::format(
-        "{}_{}_{}_{}-{}_{}_{}_{}_{}",
-        name, pathsStr, defaults, is16Bbit,
-        spec.wrapS, spec.wrapT,
-        spec.minFilter, spec.magFilter, spec.mipMapLevels);
-
+    std::lock_guard lock(textures_lock);
     {
         const auto& e = textures.find(cacheKey);
         if (e != textures.end())

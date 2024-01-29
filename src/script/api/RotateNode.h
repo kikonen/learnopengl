@@ -11,7 +11,6 @@ namespace script
     {
     public:
         RotateNode(
-            script::command_id afterCommandId,
             ki::node_id nodeId,
             float duration,
             bool relative,
@@ -19,15 +18,14 @@ namespace script
             const float degrees) noexcept;
 
         virtual void bind(
-            const UpdateContext& ctx,
-            Node* node) noexcept override;
+            const UpdateContext& ctx) noexcept override;
 
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const glm::vec3 m_axis;
-        const float m_radians;
+        glm::vec3 m_axis;
+        float m_radians;
         float m_previousRadians{ 0.f };
 
         glm::quat m_base{ 1.f, 0.f, 0.f, 0.f };

@@ -83,13 +83,14 @@ void PawnController::onKey(
 
             if (changed) {
                 m_registry->m_commandEngine->addCommand(
-                    std::make_unique<script::RotateNode>(
-                        0,
+                    0,
+                    script::RotateNode{
                         m_nodeHandle.toId(),
                         0.f,
                         true,
                         snapshot.getViewUp(),
-                        adjust.y));
+                        adjust.y
+                    });
                 //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
@@ -139,12 +140,13 @@ void PawnController::onKey(
 
         if (changed) {
             m_registry->m_commandEngine->addCommand(
-                std::make_unique<script::MoveNode>(
-                    0,
+                0,
+                script::MoveNode{
                     m_nodeHandle.toId(),
                     0.f,
                     true,
-                    adjust));
+                    adjust
+                });
 
             //glm::vec3 adjust = snapshot.getPosition();
             //m_node->getTransform().setPosition(pos);
@@ -175,13 +177,14 @@ void PawnController::onMouseMove(
 
     if (changed) {
         m_registry->m_commandEngine->addCommand(
-            std::make_unique<script::RotateNode>(
-                0,
+            0,
+            script::RotateNode{
                 m_nodeHandle.toId(),
                 0.f,
                 true,
                 snapshot.getViewUp(),
-                adjust.y));
+                adjust.y
+            });
         //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
