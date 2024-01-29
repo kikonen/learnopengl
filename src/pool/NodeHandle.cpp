@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <mutex>
-#include <map>
+#include <unordered_map>
 
 #include "ki/size.h"
 
@@ -18,7 +18,7 @@ namespace {
 
     pool::Pool<Node> s_pool{ MAX_POOL_SIZE };
 
-    std::map<ki::node_id, uint32_t> m_IdToIndex;
+    std::unordered_map<ki::node_id, uint32_t> m_IdToIndex;
 }
 
 namespace pool {

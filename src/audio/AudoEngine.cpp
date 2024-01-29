@@ -1,6 +1,6 @@
 #include "AudioEngine.h"
 
-#include <map>
+#include <unordered_map>
 
 #include <fmt/format.h>
 
@@ -243,7 +243,7 @@ namespace audio
     {
         if (m_pendingListeners.empty()) return;
 
-        std::map<audio::listener_id, bool> prepared;
+        std::unordered_map<audio::listener_id, bool> prepared;
 
         for (const auto& id : m_pendingListeners) {
             auto& obj = m_listeners[id];
@@ -275,7 +275,7 @@ namespace audio
     {
         if (m_pendingSources.empty()) return;
 
-        std::map<audio::source_id, bool> prepared;
+        std::unordered_map<audio::source_id, bool> prepared;
 
         for (const auto& id : m_pendingSources) {
             auto& obj = m_sources[id];

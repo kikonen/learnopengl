@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <mutex>
-#include <map>
+#include <unordered_map>
 
 #include "pool/Pool_impl.h"
 #include "pool/IdGenerator.h"
@@ -16,7 +16,7 @@ namespace {
 
     pool::Pool<script::CommandEntry> s_pool{ MAX_POOL_SIZE };
 
-    std::map<script::command_id, uint32_t> m_IdToIndex;
+    std::unordered_map<script::command_id, uint32_t> m_IdToIndex;
 }
 
 namespace script {
@@ -29,6 +29,11 @@ namespace script {
         auto& entry = s_pool.getEntry(m_handleIndex);
         if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
             s_pool.release(m_handleIndex);
+
+            const auto& it = m_IdToIndex.find(m_id);
+            if (it != m_IdToIndex.end()) {
+                m_IdToIndex.erase(it);
+            }
 
             m_id = 0;
             m_handleIndex = 0;
