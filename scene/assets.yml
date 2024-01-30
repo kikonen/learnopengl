@@ -68,7 +68,7 @@ assets:
 
   frustum_enabled: true
   frustum_cpu: true
-  frustum_gpu: false
+  frustum_gpu: true
   frustum_debug: true
   frustum_visual: false
 

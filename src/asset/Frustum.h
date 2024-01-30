@@ -13,11 +13,11 @@ struct Frustum {
 
     const std::array<glm::vec4, 6> getPlanes() const noexcept {
         return {
-            topFace.getPlane(),
-            bottomFace.getPlane(),
+            nearFace.getPlane(),
             leftFace.getPlane(),
             rightFace.getPlane(),
-            nearFace.getPlane(),
+            topFace.getPlane(),
+            bottomFace.getPlane(),
             farFace.getPlane(),
         };
     }

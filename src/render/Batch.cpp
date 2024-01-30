@@ -277,8 +277,8 @@ namespace render {
                 cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
                 cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
-                //if (!m_frustumGPU && drawOptions.instanced) {
-                if (drawOptions.m_instanced) {
+                if (!m_frustumGPU && drawOptions.m_instanced) {
+                //if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
                     cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     m_draw->send(drawRange, indirect);

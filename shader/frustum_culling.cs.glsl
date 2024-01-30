@@ -98,7 +98,7 @@ bool isOnFrustum(in vec4 volume)
 
 void main(void) {
   // NOTE KI this is valid *ONLY* if local_y == local_z == 1
-  const uint drawIndex = gl_GlobalInvocationID.x + CS_GROUP_X * (gl_GlobalInvocationID.y - 1);
+  const uint drawIndex = gl_GlobalInvocationID.x + (CS_GROUP_X - 1) * (gl_GlobalInvocationID.y - 1);
 
   const DrawParameters param = u_params[u_drawParametersIndex];
   //if (drawIndex > param.drawCount) return;

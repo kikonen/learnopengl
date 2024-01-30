@@ -157,22 +157,18 @@ namespace backend {
         // - bind draw program
         // - execute draw program
 
-        constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
-        const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
         if (m_frustumGPU) {
-            gl::DrawIndirectParameters params{
-                static_cast<GLuint>(cmdRange.m_baseIndex),
-                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type)),
-                static_cast<GLuint>(drawCount)
-            };
-
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
             data += cmdRange.m_index;
 
-            // NOTE KI memcpy is *likely* faster than assignment operator
-            memcpy(data, &params, PARAMS_SZ);
+            data->u_baseIndex = static_cast<GLuint>(cmdRange.m_baseIndex);
+            data->u_drawType = static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type));
+            data->u_drawCount = static_cast<GLuint>(drawCount);
 
-            m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
+            constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
+            m_drawParameters.flushRange(
+                cmdRange.m_index * PARAMS_SZ,
+                PARAMS_SZ);
         }
 
         if (m_frustumGPU) {
@@ -180,16 +176,16 @@ namespace backend {
 
             m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
 
-            const int maxX = m_computeGroups[0];
-            int groupX = drawCount;
-            int groupY = 1;
-            if (drawCount > maxX) {
-                groupX = maxX;
-                groupY = drawCount / maxX;
-                if (drawCount % maxX != 0) groupY++;
-            }
-
+            //const int maxX = m_computeGroups[0];
+            //int groupX = drawCount;
+            //int groupY = 1;
+            //if (drawCount > maxX) {
+            //    groupX = maxX;
+            //    groupY = drawCount / maxX;
+            //    if (drawCount % maxX != 0) groupY++;
+            //}
             //glDispatchCompute(m_computeGroups[0], groupY, 1);
+
             glDispatchCompute(drawCount, 1, 1);
         }
 
