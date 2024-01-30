@@ -14,6 +14,7 @@ namespace {
 
     constexpr size_t MAX_POOL_SIZE{ 100000 };
 
+    std::mutex m_lock;
     pool::Pool<script::CommandEntry> s_pool{ MAX_POOL_SIZE };
 
     std::unordered_map<script::command_id, uint32_t> m_IdToIndex;
@@ -25,6 +26,8 @@ namespace script {
     void CommandHandle::release() noexcept
     {
         if (!m_handleIndex) return;
+
+        std::lock_guard lock(m_lock);
 
         auto& entry = s_pool.getEntry(m_handleIndex);
         if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
@@ -59,6 +62,8 @@ namespace script {
     {
         if (!id) return NULL_HANDLE;
 
+        std::lock_guard lock(m_lock);
+
         auto handleIndex = s_pool.allocate();
         if (!handleIndex) return {};
 
@@ -73,6 +78,8 @@ namespace script {
 
     CommandHandle CommandHandle::toHandle(script::command_id id) noexcept
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_IdToIndex.find(id);
         if (it == m_IdToIndex.end()) return {};
         return { it->second, id };
@@ -80,6 +87,8 @@ namespace script {
 
     CommandEntry* CommandHandle::toCommand(script::command_id id) noexcept
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_IdToIndex.find(id);
         if (it == m_IdToIndex.end()) return nullptr;
         CommandHandle handle{ it->second, id };
@@ -88,6 +97,8 @@ namespace script {
 
     void CommandHandle::clear() noexcept
     {
+        std::lock_guard lock(m_lock);
+
         s_pool.clear();
     }
 

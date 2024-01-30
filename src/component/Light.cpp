@@ -31,7 +31,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
     // NOTE KI for "directional" lights also target may change
     if (m_spot || m_directional) {
         if (!m_targetHandle) {
-            m_targetHandle = pool::NodeHandle::toNode(m_targetId);
+            m_targetHandle = pool::NodeHandle::toHandle(m_targetId);
         }
         auto* targetNode = m_targetHandle.toNode();
 
