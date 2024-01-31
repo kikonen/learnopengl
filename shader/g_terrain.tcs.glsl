@@ -5,6 +5,8 @@ layout(vertices=3) out;
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 

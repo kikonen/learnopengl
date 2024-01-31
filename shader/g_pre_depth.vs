@@ -8,12 +8,14 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
-#include uniform_matrices.glsl
-#include uniform_data.glsl
-
+#include ssbo_instance_indeces.glsl
 #ifdef USE_ALPHA
 #include ssbo_material_indeces.glsl
 #endif
+
+#include uniform_matrices.glsl
+#include uniform_data.glsl
+
 
 #ifdef USE_ALPHA
 out VS_OUT {
@@ -34,7 +36,9 @@ Entity entity;
 
 void main()
 {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
 
   vec4 worldPos;

@@ -6,6 +6,8 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl
 

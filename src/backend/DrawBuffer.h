@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include <glm/glm.hpp>
 
 #include "kigl/kigl.h"
@@ -42,6 +44,9 @@ namespace backend {
             const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
+        void sendInstanceIndeces(
+            std::span<GLuint> indeces);
+
         void flushIfNeeded();
         void flush();
 
@@ -77,6 +82,8 @@ namespace backend {
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
         std::vector<backend::DrawRange> m_drawRanges;
+
+        kigl::GLBuffer m_indexBuffer{ "instance_index" };
 
         kigl::GLBuffer m_drawParameters{ "draw_parameters" };
         kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };

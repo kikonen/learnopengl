@@ -4,9 +4,11 @@
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+#include ssbo_materials.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include ssbo_materials.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -52,6 +54,7 @@ void main() {
   #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+
   entity = u_entities[fs_in.entityIndex];
 
   #include var_tex_material_normal.glsl

@@ -257,6 +257,10 @@ namespace render {
         // https://www.khronos.org/opengl/wiki/Vertex_Specification#Instanced_arrays
         //
 
+        auto* draw = m_draw.get();
+
+        draw->sendInstanceIndeces(m_entityIndeces);
+
         for (auto& curr : m_batches) {
             if (curr.m_drawCount == 0) continue;
 
@@ -278,20 +282,24 @@ namespace render {
                 cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
                 cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
-                if (!m_frustumGPU && drawOptions.m_instanced) {
-                //if (drawOptions.m_instanced) {
+                //if (!m_frustumGPU && drawOptions.m_instanced) {
+                if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
-                    m_draw->send(drawRange, indirect);
+                    //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_baseInstance = curr.m_index;
+                    draw->send(drawRange, indirect);
                 }
                 else {
-                    for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                        for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                            int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.u_baseInstance = entityIndex;
-                            m_draw->send(drawRange, indirect);
-                        }
-                    }
+                    //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    //    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                    //        int entityIndex = m_entityIndeces[i] + instanceIndex;
+                    //        cmd.u_baseInstance = entityIndex;
+                    //        draw->send(drawRange, indirect);
+                    //    }
+                    //}
+                    cmd.u_instanceCount = curr.m_drawCount;
+                    cmd.u_baseInstance = curr.m_index;
+                    draw->send(drawRange, indirect);
                 }
             }
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
@@ -305,17 +313,21 @@ namespace render {
                 //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = m_entityIndeces[curr.m_index];
-                    m_draw->send(drawRange, indirect);
+                    //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
+                    cmd.u_baseInstance = curr.m_index;
+                    draw->send(drawRange, indirect);
                 }
                 else {
-                    for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                        for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                            int entityIndex = m_entityIndeces[i] + instanceIndex;
-                            cmd.u_baseInstance = entityIndex;
-                            m_draw->send(drawRange, indirect);
-                        }
-                    }
+                    //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
+                    //    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
+                    //        int entityIndex = m_entityIndeces[i] + instanceIndex;
+                    //        cmd.u_baseInstance = entityIndex;
+                    //        draw->send(drawRange, indirect);
+                    //    }
+                    //}
+                    cmd.u_instanceCount = curr.m_drawCount;
+                    cmd.u_baseInstance = curr.m_index;
+                    draw->send(drawRange, indirect);
                 }
             }
             else {
@@ -324,8 +336,8 @@ namespace render {
             }
         }
 
-        m_draw->flush();
-        m_draw->drawPending(false);
+        draw->flush();
+        draw->drawPending(false);
 
         m_batches.clear();
         m_entityIndeces.clear();

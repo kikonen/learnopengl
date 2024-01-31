@@ -8,9 +8,11 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+#include ssbo_material_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include ssbo_material_indeces.glsl
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
@@ -44,7 +46,9 @@ const vec3 UP = vec3(0, 1, 0);
 Entity entity;
 
 void main() {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
 
   const vec4 pos = vec4(a_pos, 1.0);

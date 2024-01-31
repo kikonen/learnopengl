@@ -93,7 +93,7 @@ namespace render {
 
         std::vector<BatchCommand> m_batches;
 
-        std::vector<int> m_entityIndeces;
+        std::vector<GLuint> m_entityIndeces;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

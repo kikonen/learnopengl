@@ -7,6 +7,8 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #include struct_entity.glsl
 
 #include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
@@ -28,7 +30,9 @@ const vec3 UP = vec3(0, 1, 0);
 Entity entity;
 
 void main() {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 

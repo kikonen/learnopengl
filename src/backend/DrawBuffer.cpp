@@ -25,6 +25,12 @@
 #include "backend/gl/PerformanceCounters.h"
 #include "DrawOptions.h"
 
+namespace {
+    constexpr size_t INDEX_BLOCK_SIZE = 1000;
+    constexpr size_t INDEX_BLOCK_COUNT = 500;
+
+    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
+}
 
 namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
@@ -114,6 +120,9 @@ namespace backend {
         for (int i = 0; i < rangeCount; i++) {
             m_drawRanges.emplace_back();
         }
+
+        //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+        m_indexBuffer.createEmpty(1 * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
     }
 
     void DrawBuffer::bind()
@@ -238,6 +247,33 @@ namespace backend {
         if (m_commands->send(cmd)) {
             flush();
         }
+    }
+
+    void DrawBuffer::sendInstanceIndeces(
+        std::span<GLuint> indeces)
+    {
+        {
+            const size_t totalCount = indeces.size();
+            constexpr size_t sz = sizeof(GLuint);
+
+            // NOTE KI *reallocate* SSBO if needed
+            if (m_indexBuffer.m_size < totalCount * sz) {
+                size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
+                size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
+                m_indexBuffer.resizeBuffer(bufferSize);
+            }
+
+            m_indexBuffer.invalidateRange(
+                0 * sz,
+                totalCount * sz);
+
+            m_indexBuffer.update(
+                0 * sz,
+                totalCount * sz,
+                indeces.data());
+        }
+
+        m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
     void DrawBuffer::drawPending(bool drawCurrent)
