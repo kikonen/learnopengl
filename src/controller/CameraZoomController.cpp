@@ -1,5 +1,7 @@
 #include "CameraZoomController.h"
 
+#include "asset/Assets.h"
+
 #include "gui/Input.h"
 
 #include "model/Node.h"
@@ -28,7 +30,7 @@ void CameraZoomController::prepare(
     Node& node)
 {
     NodeController::prepare(ctx, node);
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     if (!node.m_camera) return;
 

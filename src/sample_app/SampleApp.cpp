@@ -63,14 +63,16 @@ int SampleApp::onInit()
     m_title = "OpenGL";
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
-    m_assets = loadAssets();
+    Assets::set(loadAssets());
     return 0;
 }
 
-int SampleApp::onSetup() {
+int SampleApp::onSetup()
+{
+    const auto& assets = Assets::get();
+
     m_currentScene = loadScene();
     m_sceneUpdater = std::make_shared<SceneUpdater>(
-        m_assets,
         m_registry,
         m_alive);
 
@@ -78,13 +80,13 @@ int SampleApp::onSetup() {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    if (m_assets.glfwSwapInterval >= 0) {
-        glfwSwapInterval(m_assets.glfwSwapInterval);
+    if (assets.glfwSwapInterval >= 0) {
+        glfwSwapInterval(assets.glfwSwapInterval);
     }
 
     //state.setEnabled(GL_MULTISAMPLE, false);
 
-    if (m_assets.useIMGUI) {
+    if (assets.useIMGUI) {
         m_frameInit = std::make_unique<FrameInit>(*m_window);
         m_frame = std::make_unique<EditorFrame>(*m_window);
     }
@@ -117,7 +119,6 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
     {
         UpdateContext ctx(
             clock,
-            m_assets,
             m_currentScene->m_registry.get());
 
         updater->updateRT(ctx);
@@ -133,7 +134,6 @@ int SampleApp::onPost(const ki::RenderClock& clock) {
     {
         UpdateContext ctx(
             clock,
-            m_assets,
             m_currentScene->m_registry.get());
 
         updater->postRT(ctx);
@@ -142,7 +142,10 @@ int SampleApp::onPost(const ki::RenderClock& clock) {
     return 0;
 }
 
-int SampleApp::onRender(const ki::RenderClock& clock) {
+int SampleApp::onRender(const ki::RenderClock& clock)
+{
+    const auto& assets = Assets::get();
+
     auto* scene = m_currentScene.get();
     Window* window = m_window.get();
 
@@ -157,7 +160,6 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     {
         UpdateViewContext ctx(
             clock,
-            m_assets,
             m_currentScene->m_registry.get(),
             size.x,
             size.y);
@@ -169,21 +171,20 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         "TOP",
         nullptr,
         clock,
-        m_assets,
         m_currentScene->m_registry.get(),
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
         cameraNode->m_camera.get(),
-        m_assets.nearPlane,
-        m_assets.farPlane,
+        assets.nearPlane,
+        assets.farPlane,
         size.x, size.y);
     {
-        ctx.m_forceWireframe = m_assets.forceWireframe;
-        ctx.m_useLight = m_assets.useLight;
+        ctx.m_forceWireframe = assets.forceWireframe;
+        ctx.m_useLight = assets.useLight;
 
         // https://paroj.github.io/gltut/apas04.html
-        if (m_assets.rasterizerDiscard) {
+        if (assets.rasterizerDiscard) {
             //glEnable(GL_RASTERIZER_DISCARD);
             state.setEnabled(GL_RASTERIZER_DISCARD, true);
         }
@@ -198,7 +199,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         // => ensure "sane" start state for each loop
         state.clearColor(BLACK_COLOR);
 
-        if (m_assets.useIMGUI) {
+        if (assets.useIMGUI) {
             m_frame->bind(ctx);
             state.clear();
         }
@@ -221,7 +222,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if ((state.shift || state.ctrl || state.alt) && (!m_assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }
@@ -229,7 +230,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         m_lastInputState = state;
     }
 
-    if (m_assets.useIMGUI) {
+    if (assets.useIMGUI) {
         ImGui::ShowDemoWindow();
 
         m_frame->draw(ctx);
@@ -245,7 +246,9 @@ void SampleApp::frustumDebug(
     const RenderContext& ctx,
     const ki::RenderClock& clock)
 {
-    if (!m_assets.frustumDebug) return;
+    const auto& assets = Assets::get();
+
+    if (!assets.frustumDebug) return;
 
     auto* scene = m_currentScene.get();
     if (!scene) return;
@@ -260,14 +263,14 @@ void SampleApp::frustumDebug(
 
         auto countersLocal = scene->getCountersLocal(true);
 
-        if (m_assets.frustumCPU) {
+        if (assets.frustumCPU) {
             auto ratio = (float)countersLocal.u_skipCount / (float)countersLocal.u_drawCount;
             KI_INFO_OUT(fmt::format(
                 "BATCH: cpu-draw={}, cpu-skip={}, cpu-ratio={}",
                 countersLocal.u_drawCount, countersLocal.u_skipCount, ratio));
         }
 
-        if (m_assets.frustumGPU) {
+        if (assets.frustumGPU) {
             auto ratio = (float)m_skipCount / (float)m_drawCount;
             auto frameDraw = (float)m_drawCount / (float)clock.frameCount;
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
@@ -328,6 +331,8 @@ void SampleApp::selectNode(
     const InputState& inputState,
     const InputState& lastInputState)
 {
+    const auto& assets = Assets::get();
+
     const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
     const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
     const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
@@ -337,7 +342,7 @@ void SampleApp::selectNode(
     auto* node = pool::NodeHandle::toNode(nodeId);
 
     if (selectMode) {
-        auto* volumeNode = pool::NodeHandle::toNode(ctx.m_assets.volumeId);
+        auto* volumeNode = pool::NodeHandle::toNode(assets.volumeId);
 
         // deselect
         if (node && node->isSelected()) {
@@ -418,16 +423,17 @@ Assets SampleApp::loadAssets()
 
 std::shared_ptr<Scene> SampleApp::loadScene()
 {
-    auto scene = std::make_shared<Scene>(m_assets, m_registry, m_alive);
+    const auto& assets = Assets::get();
+
+    auto scene = std::make_shared<Scene>(m_registry, m_alive);
 
     {
-        if (!m_assets.sceneFile.empty()) {
+        if (!assets.sceneFile.empty()) {
             loader::Context ctx{
-                m_assets,
                 m_alive,
                 m_asyncLoader,
-                m_assets.sceneDir,
-                m_assets.sceneFile,
+                assets.sceneDir,
+                assets.sceneFile,
             };
             std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
             m_loaders.push_back(std::move(loader));
@@ -441,7 +447,6 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     }
 
     //m_testSetup = std::make_unique<TestSceneSetup>(
-    //    m_assets,
     //    m_alive,
     //    m_asyncLoader);
 

@@ -4,8 +4,6 @@
 #include <atomic>
 #include <mutex>
 
-#include "asset/Assets.h"
-
 namespace event
 {
     class Dispatcher;
@@ -48,7 +46,6 @@ class SnapshotRegistry;
 class Registry {
 public:
     Registry(
-        const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
     ~Registry();
@@ -63,8 +60,6 @@ public:
     void withLock(const std::function<void(Registry&)>& fn);
 
 private:
-    const Assets& m_assets;
-
     bool m_prepared = false;
 
     std::shared_ptr<std::atomic<bool>> m_alive;

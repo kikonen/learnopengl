@@ -88,7 +88,7 @@ void Viewport::setTextureId(GLuint textureId)
     m_textureId = textureId;
 }
 
-void Viewport::prepareRT(const Assets& assets)
+void Viewport::prepareRT()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -96,7 +96,7 @@ void Viewport::prepareRT(const Assets& assets)
     // NOTE KI no program VAO/VBO with framebuffer blit
     if (m_useDirectBlit) return;
 
-    m_program->prepareRT(assets);
+    m_program->prepareRT();
 }
 
 void Viewport::updateTransform(const UpdateViewContext& ctx)

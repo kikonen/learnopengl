@@ -2,6 +2,8 @@
 
 #include "ki/yaml.h"
 
+#include "asset/Assets.h"
+
 #include "pool/NodeHandle.h"
 
 #include "model/Node.h"
@@ -24,7 +26,9 @@ namespace loader
         const YAML::Node& node,
         RootData& data) const
     {
-        data.rootId = m_assets.rootId;
+        const auto& assets = Assets::get();
+
+        data.rootId = assets.rootId;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -39,6 +43,8 @@ namespace loader
     void RootLoader::attachRoot(
         const RootData& data)
     {
+        const auto& assets = Assets::get();
+
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<root>");
@@ -46,7 +52,7 @@ namespace loader
         auto& flags = type->m_flags;
         flags.invisible = true;
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.rootId);
+        auto handle = pool::NodeHandle::allocate(assets.rootId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<root>";

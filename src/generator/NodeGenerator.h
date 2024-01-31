@@ -22,7 +22,6 @@ namespace render {
 
 class Node;
 
-class Assets;
 struct Snapshot;
 struct EntitySSBO;
 
@@ -58,7 +57,6 @@ public:
         SnapshotRegistry& snapshotRegistry);
 
     virtual void updateEntity(
-        const Assets& assets,
         SnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container);

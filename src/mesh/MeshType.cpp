@@ -21,8 +21,6 @@
 #include "registry/SpriteRegistry.h"
 
 
-class Assets;
-
 namespace {
 }
 
@@ -144,15 +142,15 @@ namespace mesh {
         m_vao = m_mesh->prepareRT(ctx);
 
         if (m_program) {
-            m_program->prepareRT(ctx.m_assets);
+            m_program->prepareRT();
         }
 
         if (m_shadowProgram) {
-            m_shadowProgram->prepareRT(ctx.m_assets);
+            m_shadowProgram->prepareRT();
         }
 
         if (m_preDepthProgram) {
-            m_preDepthProgram->prepareRT(ctx.m_assets);
+            m_preDepthProgram->prepareRT();
         }
 
         if (m_customMaterial) {

@@ -63,7 +63,6 @@ void TextGenerator::updateWT(
 }
 
 void TextGenerator::updateEntity(
-    const Assets& assets,
     SnapshotRegistry& snapshotRegistry,
     EntityRegistry& entityRegistry,
     Node& container)

@@ -1,5 +1,6 @@
 #include "NodeDraw.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -65,39 +66,39 @@ namespace render {
     void NodeDraw::prepareRT(
         const PrepareContext& ctx)
     {
+        const auto& assets = Assets::get();
         auto& registry = ctx.m_registry;
-        auto& assets = ctx.m_assets;
 
-        m_gBuffer.prepare(assets);
-        m_oitBuffer.prepare(assets, &m_gBuffer);
-        m_effectBuffer.prepare(assets, &m_gBuffer);
+        m_gBuffer.prepare();
+        m_oitBuffer.prepare(&m_gBuffer);
+        m_effectBuffer.prepare(&m_gBuffer);
 
         m_plainQuad.prepare();
         m_textureQuad.prepare();
 
         m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
-        m_deferredProgram->prepareRT(assets);
+        m_deferredProgram->prepareRT();
 
         m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
-        m_oitProgram->prepareRT(assets);
+        m_oitProgram->prepareRT();
 
         m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
-        m_blendOitProgram->prepareRT(assets);
+        m_blendOitProgram->prepareRT();
 
         m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
-        m_bloomProgram->prepareRT(assets);
+        m_bloomProgram->prepareRT();
 
         m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
-        m_blendBloomProgram->prepareRT(assets);
+        m_blendBloomProgram->prepareRT();
 
         m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
-        m_emissionProgram->prepareRT(assets);
+        m_emissionProgram->prepareRT();
 
         m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
-        m_fogProgram->prepareRT(assets);
+        m_fogProgram->prepareRT();
 
         m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
-        m_hdrGammaProgram->prepareRT(assets);
+        m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
     }
@@ -160,6 +161,7 @@ namespace render {
         GLbitfield copyMask)
     {
         //m_timeElapsedQuery.begin();
+        const auto& assets = Assets::get();
         auto& state = kigl::GLState::get();
 
         // https://community.khronos.org/t/selectively-writing-to-buffers/71054
@@ -181,7 +183,7 @@ namespace render {
             auto oldAllowBlend = ctx.setAllowBlend(false);
 
             // NOTE KI "pre pass depth" causes more artifacts than benefits
-            if (ctx.m_assets.prepassDepthEnabled)
+            if (assets.prepassDepthEnabled)
             {
                 m_gBuffer.m_buffer->resetDrawBuffers(0);
 
@@ -205,7 +207,7 @@ namespace render {
 
             {
                 state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
-                if (ctx.m_assets.prepassDepthEnabled) {
+                if (assets.prepassDepthEnabled) {
                     state.setDepthFunc(GL_LEQUAL);
                 }
 
@@ -217,7 +219,7 @@ namespace render {
 
                 ctx.m_batch->flush(ctx);
 
-                if (ctx.m_assets.prepassDepthEnabled) {
+                if (assets.prepassDepthEnabled) {
                     state.setDepthFunc(ctx.m_depthFunc);
                 }
             }
@@ -283,7 +285,7 @@ namespace render {
         // NOTE KI OIT after *forward* pass to allow using depth texture from them
         if (ctx.m_allowBlend)
         {
-            if (ctx.m_assets.effectOitEnabled)
+            if (assets.effectOitEnabled)
             {
                 state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
                 // NOTE KI do NOT modify depth with blend
@@ -361,13 +363,13 @@ namespace render {
                 state.setEnabled(GL_BLEND, true);
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-                if (ctx.m_assets.effectFogEnabled) {
+                if (assets.effectFogEnabled) {
                     state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
                     m_fogProgram->bind();
                     m_textureQuad.draw();
                 }
 
-                if (ctx.m_assets.effectOitEnabled) {
+                if (assets.effectOitEnabled) {
                     state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
 
                     m_blendOitProgram->bind();
@@ -379,7 +381,7 @@ namespace render {
                 state.setEnabled(GL_BLEND, false);
             }
 
-            if (ctx.m_assets.effectBloomEnabled)
+            if (assets.effectBloomEnabled)
             {
                 state.setStencil({});
 
@@ -394,7 +396,7 @@ namespace render {
 
                 bool cleared[2]{ false, false };
 
-                for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
+                for (int i = 0; i < assets.effectBloomIterations; i++) {
                     auto& buf = m_effectBuffer.m_buffers[i % 2];
                     buf->bind(ctx);
 
@@ -498,11 +500,11 @@ namespace render {
         }
 
         // pass 12 - cleanup
-        if (ctx.m_assets.glUseInvalidate)
+        if (assets.glUseInvalidate)
         {
             //kigl::GLState::get().bindFrameBuffer(0, false);
 
-            if (ctx.m_assets.effectOitEnabled) {
+            if (assets.effectOitEnabled) {
                 m_oitBuffer.invalidateAll();
             }
             m_effectBuffer.invalidateAll();
@@ -520,7 +522,9 @@ namespace render {
         const RenderContext& ctx,
         FrameBuffer* targetBuffer)
     {
-        if (!(ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)) return;
+        const auto& assets = Assets::get();
+
+        if (!(ctx.m_allowDrawDebug && assets.drawDebug)) return;
 
         //m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 

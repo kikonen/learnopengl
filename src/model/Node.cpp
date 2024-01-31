@@ -5,6 +5,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/Assets.h"
+
 #include "kigl/kigl.h"
 
 #include "pool/NodeHandle.h"
@@ -195,8 +197,10 @@ void Node::setSelectionMaterialIndex(int index)
     }
 }
 
-int Node::getHighlightIndex(const Assets& assets) const noexcept
+int Node::getHighlightIndex() const noexcept
 {
+    auto& assets = Assets::get();
+
     if (assets.showHighlight) {
         if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
         if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;

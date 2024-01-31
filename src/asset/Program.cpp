@@ -8,8 +8,9 @@
 
 #include "util/Util.h"
 
-#include "asset/UBO.h"
+#include "asset/Assets.h"
 
+#include "asset/UBO.h"
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
 #include "asset/BufferInfoUBO.h"
@@ -39,20 +40,20 @@ namespace {
 }
 
 Program::Program(
-    const Assets& assets,
     std::string_view key,
     std::string_view name,
     const bool compute,
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<> >& defines)
     : m_id(ID_GENERATOR.nextId()),
-    m_assets{ assets },
     m_key{ key },
     m_programName{ name },
     m_compute{ compute },
     m_geometryType{ geometryType },
     m_defines{ defines }
 {
+    auto& assets = Assets::get();
+
     std::string basePath;
     {
         basePath = util::joinPath(
@@ -113,7 +114,7 @@ void Program::load()
     }
 }
 
-int Program::prepareRT(const Assets& assets)
+int Program::prepareRT()
 {
     if (m_prepared) return m_prepareResult;
     m_prepared = true;
@@ -497,6 +498,8 @@ std::vector<std::string> Program::processInclude(
     std::string_view includePath,
     int lineNumber)
 {
+    const auto& assets = Assets::get();
+
     std::string simplifiedPath{ includePath };
     if (simplifiedPath.starts_with('"'))
         simplifiedPath = simplifiedPath.substr(1, simplifiedPath.length() - 1);
@@ -506,7 +509,7 @@ std::vector<std::string> Program::processInclude(
     std::string path;
     {
         path = util::joinPathExt(
-            m_assets.shadersDir,
+            assets.shadersDir,
             "",
             "_",
             simplifiedPath);

@@ -12,10 +12,8 @@ namespace {
 }
 
 ModelRegistry::ModelRegistry(
-    const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+    : m_alive(alive)
 {
 }
 
@@ -90,7 +88,7 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                mesh::ModelLoader loader(m_assets, m_alive);
+                mesh::ModelLoader loader(m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {

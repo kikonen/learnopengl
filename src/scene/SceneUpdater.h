@@ -2,8 +2,6 @@
 
 #include <memory>
 
-#include "asset/Assets.h"
-
 struct UpdateContext;
 class Registry;
 class Node;
@@ -12,7 +10,6 @@ class SceneUpdater
 {
 public:
     SceneUpdater(
-        const Assets& assets,
         std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
 
@@ -33,8 +30,6 @@ private:
     void handleNodeAdded(Node* node);
 
 private:
-    const Assets& m_assets;
-
     bool m_loaded{ false };
 
     std::atomic<bool> m_running;

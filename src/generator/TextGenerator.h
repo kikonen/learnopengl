@@ -34,7 +34,6 @@ public:
         Node& container) override;
 
     virtual void updateEntity(
-        const Assets& assets,
         SnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container) override;

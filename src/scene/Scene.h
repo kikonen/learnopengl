@@ -6,8 +6,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Assets.h"
-
 #include "pool/NodeHandle.h"
 
 #include "backend/gl/PerformanceCounters.h"
@@ -57,7 +55,6 @@ class Scene final
 {
 public:
     Scene(
-        const Assets& assets,
         std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
@@ -101,8 +98,6 @@ public:
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };
 
 public:
-    const Assets& m_assets;
-
     std::unique_ptr<render::RenderData> m_renderData;
 
     std::shared_ptr<Registry> m_registry;

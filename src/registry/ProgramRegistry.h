@@ -5,16 +5,12 @@
 #include <string>
 #include <mutex>
 
-#include "asset/Assets.h"
-
-
 class Program;
 
 class ProgramRegistry final
 {
 public:
-    ProgramRegistry(
-        const Assets& assets);
+    ProgramRegistry();
 
     ~ProgramRegistry();
 
@@ -38,8 +34,6 @@ public:
     void validate();
 
 private:
-    const Assets& m_assets;
-
     // name + geom
     std::unordered_map<std::string, std::unique_ptr<Program>> m_programs;
 

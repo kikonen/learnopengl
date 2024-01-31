@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
@@ -82,6 +84,8 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
+        const auto& assets = Assets::get();
+
         auto* type = node->m_typeHandle.toType();
         const auto& center = node->getTransform().getPosition();
 
@@ -92,7 +96,7 @@ namespace loader {
             auto& materialVBO = type->m_materialVBO;
             const auto& tiling = data.tiling;
 
-            generator->m_modelsDir = m_assets.modelsDir;
+            generator->m_modelsDir = assets.modelsDir;
             generator->m_worldTileSize = tiling.tile_size;
             generator->m_worldTilesU = tiling.tiles.x;
             generator->m_worldTilesV = tiling.tiles.z;

@@ -27,8 +27,6 @@ namespace render {
     class Batch;
 }
 
-class Assets;
-
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -110,7 +108,7 @@ public:
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    int getHighlightIndex(const Assets& assets) const noexcept;
+    int getHighlightIndex() const noexcept;
 
     inline int getCloneIndex() const noexcept {
         return m_cloneIndex;
@@ -120,9 +118,9 @@ public:
         m_cloneIndex = cloneIndex;
     }
 
-    inline bool isHighlighted(const Assets & assets) const noexcept
+    inline bool isHighlighted() const noexcept
     {
-        return getHighlightIndex(assets) != -1;
+        return getHighlightIndex() != -1;
     }
 
     inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }

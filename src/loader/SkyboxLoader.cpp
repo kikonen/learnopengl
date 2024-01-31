@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "pool/NodeHandle.h"
 
 #include "mesh/ModelMesh.h"
@@ -101,6 +103,8 @@ namespace loader {
     {
         if (!data.valid()) return;
 
+        const auto& assets = Assets::get();
+
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<skybox>");
@@ -109,7 +113,7 @@ namespace loader {
 
         auto future = m_registry->m_modelRegistry->getMesh(
             SKYBOX_MESH_NAME,
-            m_assets.modelsDir);
+            assets.modelsDir);
         auto* mesh = future.get();
         type->setMesh(mesh);
         type->m_entityType = mesh::EntityType::skybox;
@@ -147,7 +151,7 @@ namespace loader {
 
         type->setCustomMaterial(std::move(material));
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.skyboxId);
+        auto handle = pool::NodeHandle::allocate(assets.skyboxId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<skybox>";
@@ -157,7 +161,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.skyboxId,
+                .target = assets.skyboxId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

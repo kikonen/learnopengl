@@ -4,9 +4,7 @@
 
 #include "kigl/GLState.h"
 
-FontRegistry::FontRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+FontRegistry::FontRegistry()
 {}
 
 FontRegistry::~FontRegistry()
@@ -23,7 +21,7 @@ void FontRegistry::updateRT(const UpdateContext& ctx)
     std::shared_lock lock(m_lock);
 
     for (auto& font : m_fonts) {
-        font.prepare(ctx.m_assets);
+        font.prepare();
         font.update();
     }
 }

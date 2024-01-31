@@ -65,7 +65,6 @@ void NodeGenerator::prepareEntities(
 }
 
 void NodeGenerator::updateEntity(
-    const Assets& assets,
     SnapshotRegistry& snapshotRegistry,
     EntityRegistry& entityRegistry,
     Node& container)
@@ -95,7 +94,7 @@ void NodeGenerator::updateEntity(
         m_reservedCount);
 
     const auto flags = containerSnapshot.m_flags;
-    const auto highlightIndex = container.getHighlightIndex(assets);
+    const auto highlightIndex = container.getHighlightIndex();
 
     for (uint32_t i = 0; i < m_reservedCount; i++) {
         auto& snapshot = snapshots[i];

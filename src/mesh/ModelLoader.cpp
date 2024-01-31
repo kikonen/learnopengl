@@ -26,10 +26,8 @@ namespace {
 
 namespace mesh {
     ModelLoader::ModelLoader(
-        const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive)
-        : assets(assets),
-        m_alive(alive)
+        : m_alive(alive)
     {
     }
 

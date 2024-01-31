@@ -17,6 +17,7 @@
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
+#include "asset/Assets.h"
 #include "asset/Material.h"
 #include "asset/Sprite.h"
 #include "asset/Shape.h"
@@ -655,7 +656,7 @@ namespace loader {
 
         type->modifyMaterials([this, &data](Material& m) {
             m_materialLoader.modifyMaterial(m, data.materialModifiers);
-            m.loadTextures(m_assets);
+            m.loadTextures();
         });
     }
 
@@ -681,13 +682,15 @@ namespace loader {
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
+        const auto& assets = Assets::get();
+
         auto* type = typeHandle.toType();
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 data.meshName,
-                m_assets.modelsDir,
+                assets.modelsDir,
                 data.meshPath);
             auto* mesh = future.get();
             type->setMesh(mesh);
@@ -700,7 +703,7 @@ namespace loader {
         else if (data.type == mesh::EntityType::quad) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_assets.modelsDir);
+                assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = mesh::EntityType::quad;
@@ -708,7 +711,7 @@ namespace loader {
         else if (data.type == mesh::EntityType::billboard) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_assets.modelsDir);
+                assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = mesh::EntityType::billboard;
@@ -716,7 +719,7 @@ namespace loader {
         else if (data.type == mesh::EntityType::sprite) {
             auto future = m_registry->m_modelRegistry->getMesh(
                 QUAD_MESH_NAME,
-                m_assets.modelsDir);
+                assets.modelsDir);
             auto* mesh = future.get();
             type->setMesh(mesh);
             type->m_entityType = mesh::EntityType::sprite;
@@ -970,7 +973,7 @@ namespace loader {
         MetaData& data) const
     {
         data.name = "<noname>";
-        //data.modelsDir = m_assets.modelsDir;
+        //data.modelsDir = assets.modelsDir;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();

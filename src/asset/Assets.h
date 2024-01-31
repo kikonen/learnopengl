@@ -14,6 +14,10 @@
 class Assets final
 {
 public:
+    static const Assets& get() noexcept;
+    static Assets& modify() noexcept;
+    static void set(const Assets& assets) noexcept;
+
     Assets();
 
 public:

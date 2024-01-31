@@ -66,7 +66,7 @@ void ControllerRegistry::addController(
         return;
     }
 
-    PrepareContext ctx{ m_assets, m_registry };
+    PrepareContext ctx{ m_registry };
     controller->prepare(ctx, *node);
 
     {

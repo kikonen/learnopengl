@@ -1,5 +1,6 @@
 #include "MirrorMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "pool/NodeHandle.h"
@@ -55,7 +56,7 @@ void MirrorMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
@@ -97,7 +98,7 @@ void MirrorMapRenderer::prepareRT(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepareRT(assets);
+        m_reflectionDebugViewport->prepareRT();
     }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
@@ -121,6 +122,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
+    const auto& assets = Assets::get();
+
     m_waterMapRenderer->updateRT(ctx);
     if (m_mirrorMapRenderer) {
         m_mirrorMapRenderer->updateRT(ctx);
@@ -128,8 +131,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.y);
+    int w = (int)(assets.mirrorReflectionBufferScale * res.x);
+    int h = (int)(assets.mirrorReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -237,7 +240,7 @@ bool MirrorMapRenderer::render(
             glm::vec3 reflectUp = viewUp;
 
             //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-            //const float fovAngle = ctx.m_assets.mirrorFov;
+            //const float fovAngle = assets.mirrorFov;
 
             camera.setWorldPosition(mirrorEyePos);
             camera.setAxis(reflectFront, reflectUp);
@@ -303,10 +306,12 @@ void MirrorMapRenderer::drawNodes(
     render::FrameBuffer* targetBuffer,
     Node* current)
 {
+    const auto& assets = Assets::get();
+
     bool renderedWater{ false };
     bool renderedMirror{ false };
 
-    if (ctx.m_assets.mirrorRenderWater) {
+    if (assets.mirrorRenderWater) {
         if (m_waterMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_waterMapRenderer->m_sourceNode = current;
@@ -315,7 +320,7 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
-    if (ctx.m_assets.mirrorRenderMirror) {
+    if (assets.mirrorRenderMirror) {
         if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_mirrorMapRenderer->m_sourceNode = current;

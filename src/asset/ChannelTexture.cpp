@@ -118,8 +118,7 @@ ChannelTexture::~ChannelTexture()
     }
 }
 
-void ChannelTexture::prepare(
-    const Assets& assets)
+void ChannelTexture::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;

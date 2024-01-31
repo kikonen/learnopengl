@@ -16,7 +16,6 @@
 #include "component/Camera.h"
 #include "component/NodeComponent.h"
 
-class Assets;
 struct Material;
 
 struct UpdateContext;
@@ -30,8 +29,7 @@ class NodeRegistry final
     friend class Node;
 
 public:
-    NodeRegistry(
-        const Assets& assets);
+    NodeRegistry();
 
     ~NodeRegistry();
 
@@ -123,8 +121,6 @@ public:
     pool::NodeHandle m_skybox{};
 
 private:
-    const Assets& m_assets;
-
     pool::NodeHandle m_rootWT{};
     pool::NodeHandle m_rootRT{};
     bool m_rootPreparedRT{ false };

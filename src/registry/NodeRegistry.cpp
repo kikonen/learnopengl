@@ -10,6 +10,7 @@
 #include "ki/limits.h"
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 
 #include "model/Node.h"
@@ -51,9 +52,7 @@ namespace {
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 }
 
-NodeRegistry::NodeRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+NodeRegistry::NodeRegistry()
 {
 }
 
@@ -188,7 +187,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 
                 entity->u_objectID = node->getId();
-                entity->u_highlightIndex = node->getHighlightIndex(ctx.m_assets);
+                entity->u_highlightIndex = node->getHighlightIndex();
                 snapshot.updateEntity(*entity);
                 snapshot.m_dirty = false;
             }
@@ -196,7 +195,6 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
         if (node->m_generator) {
             node->m_generator->updateEntity(
-                ctx.m_assets,
                 snapshotRegistry,
                 entityRegistry,
                 *node);
@@ -206,6 +204,8 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
 void NodeRegistry::attachListeners()
 {
+    auto& assets = Assets::get();
+
     auto* dispatcher = m_registry->m_dispatcher;
     auto* dispatcherView = m_registry->m_dispatcherView;
 
@@ -217,7 +217,7 @@ void NodeRegistry::attachListeners()
                 e.body.node.parentId);
         });
 
-    if (m_assets.useScript) {
+    if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,
             [this](const event::Event& e) {
@@ -359,7 +359,7 @@ void NodeRegistry::attachListeners()
             }
         });
 
-    if (m_assets.useScript) {
+    if (assets.useScript) {
         dispatcher->addListener(
             event::Type::script_bind,
             [this](const event::Event& e) {
@@ -389,7 +389,7 @@ void NodeRegistry::attachListeners()
             auto& data = e.body.meshType;
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
-            type->prepareRT({ m_assets, m_registry });
+            type->prepareRT({ m_registry });
         });
 }
 
@@ -402,7 +402,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
 
     m_registry->m_snapshotRegistry->copyFromPending(0);
     if (node->m_generator) {
-        const PrepareContext ctx{ m_assets, m_registry };
+        const PrepareContext ctx{ m_registry };
         node->m_generator->prepareRT(ctx, *node);
     }
     node->m_preparedRT = true;
@@ -461,10 +461,12 @@ void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     const ki::node_id parentId) noexcept
 {
+    auto& assets = Assets::get();
+
     auto* node = pool::NodeHandle::toNode(nodeId);
 
     assert(node);
-    assert(parentId || nodeId == m_assets.rootId);
+    assert(parentId || nodeId == assets.rootId);
 
     auto* type = node->m_typeHandle.toType();
 
@@ -530,14 +532,16 @@ void NodeRegistry::bindNode(
     Node* node = pool::NodeHandle::toNode(nodeId);
     if (!node) return;
 
+    auto& assets = Assets::get();
+
     pool::NodeHandle handle = node->toHandle();
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_assets, m_registry });
-    node->prepare({ m_assets, m_registry });
+    type->prepare({ m_registry });
+    node->prepare({ m_registry });
 
     {
         {
@@ -545,7 +549,7 @@ void NodeRegistry::bindNode(
             m_allNodes.push_back(handle);
         }
 
-        if (nodeId == m_assets.rootId) {
+        if (nodeId == assets.rootId) {
             m_rootWT = handle;
         }
     }
@@ -581,8 +585,10 @@ bool NodeRegistry::bindParent(
     const ki::node_id nodeId,
     const ki::node_id parentId)
 {
+    auto& assets = Assets::get();
+
     // NOTE KI everything else, except root requires parent
-    if (nodeId == m_assets.rootId) return true;
+    if (nodeId == assets.rootId) return true;
 
     auto* parent = pool::NodeHandle::toNode(parentId);
     auto* node = pool::NodeHandle::toNode(nodeId);
@@ -674,8 +680,8 @@ void NodeRegistry::bindSkybox(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_assets, m_registry });
-    node->prepare({ m_assets, m_registry });
+    type->prepare({ m_registry });
+    node->prepare({ m_registry });
 
     m_skybox = handle;
 

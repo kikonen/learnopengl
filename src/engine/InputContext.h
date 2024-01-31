@@ -2,8 +2,6 @@
 
 #include "ki/RenderClock.h"
 
-#include "asset/Assets.h"
-
 #include "gui/Input.h"
 
 #include "engine/PrepareContext.h"
@@ -17,7 +15,6 @@ struct InputContext final {
 public:
     InputContext(
         const ki::RenderClock& clock,
-        const Assets& assets,
         Registry* registry,
         const Input* const input);
 
@@ -25,8 +22,6 @@ public:
 
 public:
     const ki::RenderClock& m_clock;
-
-    const Assets& m_assets;
 
     Registry* const m_registry;
 

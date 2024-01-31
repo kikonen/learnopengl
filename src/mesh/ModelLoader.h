@@ -7,7 +7,6 @@
 
 #include "glm/glm.hpp"
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 struct Sphere;
@@ -32,7 +31,6 @@ namespace mesh {
 
     public:
         ModelLoader(
-            const Assets& assets,
             std::shared_ptr<std::atomic<bool>> alive);
 
         ~ModelLoader();
@@ -46,9 +44,6 @@ namespace mesh {
     private:
         void loadData(
             ModelMesh& mesh);
-
-    public:
-        const Assets& assets;
 
     private:
         unsigned int resolveVertexIndex(

@@ -3,16 +3,13 @@
 #include <vector>
 #include <shared_mutex>
 
-#include "asset/Assets.h"
-
 #include "text/FontAtlas.h"
 
 struct UpdateContext;
 
 class FontRegistry {
 public:
-    FontRegistry(
-        const Assets& assets);
+    FontRegistry();
 
     ~FontRegistry();
 
@@ -42,8 +39,6 @@ public:
         const std::string& name);
 
 private:
-    const Assets& m_assets;
-
     mutable std::shared_mutex m_lock{};
 
     std::vector<text::FontAtlas> m_fonts;

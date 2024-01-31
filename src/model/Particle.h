@@ -14,11 +14,9 @@ struct Particle final
     Material material;
 
     //Material getMaterial(
-    //    const Assets& assets,
     //    const std::string& path,
     //    const std::string& normalMapPath);
 
     //static Mesh* getMesh(
-    //    const Assets& assets,
     //    const Material& material);
 };

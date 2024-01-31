@@ -9,6 +9,8 @@
 
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "ki/FpsCounter.h"
 #include "ki/Timer.h"
 
@@ -40,8 +42,8 @@ int Engine::init() {
 
     onInit();
 
-    m_registry = std::make_shared<Registry>(m_assets, m_alive);
-    m_asyncLoader = std::make_shared<AsyncLoader>(m_assets, m_alive);
+    m_registry = std::make_shared<Registry>(m_alive);
+    m_asyncLoader = std::make_shared<AsyncLoader>(m_alive);
 
     m_window = std::make_unique<Window>(*this);
     return m_window->create() ? 0 : -1;
@@ -71,6 +73,8 @@ int Engine::setup() {
 }
 
 void Engine::run() {
+    auto& assets = Assets::modify();
+
     const auto& info = kigl::GL::getInfo();
     const auto& extensions = kigl::GL::getExtensions();
     // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
@@ -101,23 +105,23 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
         info.preferredFormatRGB8));
 
     const auto vendor = util::toLower(info.vendor);
-    m_assets.glVendorNvidia = std::regex_match(vendor, std::regex(".*nvidia.*"));
-    m_assets.glVendorIntel = std::regex_match(vendor, std::regex(".*intel.*"));
+    assets.glVendorNvidia = std::regex_match(vendor, std::regex(".*nvidia.*"));
+    assets.glVendorIntel = std::regex_match(vendor, std::regex(".*intel.*"));
 
     KI_INFO("[EXTENSIONS]");
     for (const auto& ext : extensions) {
         KI_INFO(ext);
     }
 
-    m_assets.glPreferredTextureFormatRGBA = info.preferredFormatRGBA8;
-    m_assets.glPreferredTextureFormatRGB = info.preferredFormatRGB8;
+    assets.glPreferredTextureFormatRGBA = info.preferredFormatRGBA8;
+    assets.glPreferredTextureFormatRGB = info.preferredFormatRGB8;
 
     KI_INFO("setup");
-    if (!m_assets.glNoError) {
+    if (!assets.glNoError) {
         kigl::GL::startError();
     }
 
-    if (m_assets.glDebug) {
+    if (assets.glDebug) {
         // NOTE KI MUST AFTER glfwWindow create
         kigl::GL::startDebug();
     }
@@ -138,7 +142,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     InputContext inputCtx{
         clock,
-        m_assets,
         m_registry.get(),
         m_window->m_input.get() };
 
@@ -175,7 +178,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 //   draw loop and update of UBOs & mapped buffers in next frame
                 // => INEFFICIENT, need to improve this
                 // https://forums.developer.nvidia.com/t/persistent-buffer-synchronization-doesnt-work/66636/5
-                if (m_assets.glUseFinish) {
+                if (assets.glUseFinish) {
                     //std::cout << ".";
                     glFinish();
                 }
@@ -219,7 +222,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 auto summary = fpsCounter.formatSummary(m_title.c_str());
                 m_window->setTitle(summary);
 
-                if (m_window->isFullScreen() && !m_assets.glVendorNvidia) {
+                if (m_window->isFullScreen() && !assets.glVendorNvidia) {
                     std::cout << summary << '\n';
                 }
             }

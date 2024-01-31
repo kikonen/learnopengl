@@ -1,6 +1,7 @@
 #include "NodeRenderer.h"
 #include "NodeRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -38,13 +39,13 @@ void NodeRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    auto& assets = Assets::get();
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
     m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
-    m_selectionProgram->prepareRT(assets);
+    m_selectionProgram->prepareRT();
 
     //m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramPointSprite->prepare(assets);
@@ -52,11 +53,13 @@ void NodeRenderer::prepareRT(
 
 void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 {
+    auto& assets = Assets::get();
+
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = (int)(ctx.m_assets.gBufferScale * res.x);
-    int h = (int)(ctx.m_assets.gBufferScale * res.y);
+    int w = (int)(assets.gBufferScale * res.x);
+    int h = (int)(assets.gBufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
@@ -91,10 +94,12 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
+    const auto& assets = Assets::get();
+
     ctx.validateRender("node_map");
 
-    m_taggedCount = ctx.m_assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
-    m_selectedCount = ctx.m_assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
+    m_taggedCount = assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
+    m_selectedCount = assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
 
     {
         targetBuffer->clearAll();
@@ -119,7 +124,9 @@ void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    if (!ctx.m_assets.showHighlight) return;
+    const auto& assets = Assets::get();
+
+    if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     auto& state = kigl::GLState::get();
@@ -140,7 +147,7 @@ void NodeRenderer::fillHighlightMask(
             ctx,
             [this](const mesh::MeshType* type) { return m_selectionProgram; },
             [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
+            [&ctx](const Node* node) { return node->isHighlighted(); },
             render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
@@ -151,7 +158,9 @@ void NodeRenderer::renderHighlight(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    if (!ctx.m_assets.showHighlight) return;
+    const auto& assets = Assets::get();
+
+    if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
     auto& state = kigl::GLState::get();
@@ -174,7 +183,7 @@ void NodeRenderer::renderHighlight(
             ctx,
             [this](const mesh::MeshType* type) { return m_selectionProgram; },
             [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(ctx.m_assets); },
+            [&ctx](const Node* node) { return node->isHighlighted(); },
             render::NodeDraw::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);

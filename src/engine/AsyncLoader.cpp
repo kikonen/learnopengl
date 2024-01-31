@@ -2,13 +2,13 @@
 
 #include "util/Log.h"
 
+#include "asset/Assets.h"
+
 #include "kigl/kigl.h"
 
 AsyncLoader::AsyncLoader(
-    const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive)
-  : m_assets(assets),
-    m_alive(alive)
+  : m_alive(alive)
 {
 }
 
@@ -32,7 +32,9 @@ void AsyncLoader::addLoader(
     std::shared_ptr<std::atomic<bool>> sceneAlive,
     std::function<void()> loader)
 {
-    if (!m_assets.asyncLoaderEnabled) {
+    const auto& assets = Assets::get();
+
+    if (!assets.asyncLoaderEnabled) {
         loader();
         return;
     }
@@ -45,8 +47,10 @@ void AsyncLoader::addLoader(
     auto th = std::thread{
         [this, loader, sceneAlive]() {
             try {
-                if (m_assets.asyncLoaderDelay > 0)
-                    std::this_thread::sleep_for(std::chrono::milliseconds(m_assets.asyncLoaderDelay));
+                const auto& assets = Assets::get();
+
+                if (assets.asyncLoaderDelay > 0)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(assets.asyncLoaderDelay));
 
                 if (*sceneAlive && *m_alive) {
                     loader();

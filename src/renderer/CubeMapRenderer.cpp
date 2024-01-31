@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
@@ -96,7 +97,7 @@ void CubeMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -163,6 +164,8 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 bool CubeMapRenderer::render(
     const RenderContext& parentCtx)
 {
+    const auto& assets = Assets::get();
+
     parentCtx.validateRender("cube_map");
 
     if (!isEnabled()) return false;
@@ -183,7 +186,7 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    if (parentCtx.m_assets.showCubeMapCenter) {
+    if (assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
             const auto* rootNode = parentCtx.m_registry->m_nodeRegistry->getRootRT();
@@ -316,17 +319,19 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
+    const auto& assets = Assets::get();
+
     bool renderedWater{ false };
     bool renderedMirror{ false };
 
-    if (ctx.m_assets.cubeMapRenderWater) {
+    if (assets.cubeMapRenderWater) {
         // NOTE KI notice if water was actually existing
         if (m_waterMapRenderer->isEnabled()) {
             renderedWater = m_waterMapRenderer->render(ctx);
         }
     }
 
-    if (ctx.m_assets.cubeMapRenderMirror) {
+    if (assets.cubeMapRenderMirror) {
         // NOTE KI mirror is *NOT* rendered in all cube sides
         // => only when eye reflect dir in mirror matches closest
         if (m_mirrorMapRenderer->isEnabled()) {

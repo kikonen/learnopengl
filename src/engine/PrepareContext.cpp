@@ -2,8 +2,6 @@
 
 
 PrepareContext::PrepareContext(
-    const Assets& assets,
     Registry* registry)
-    : m_assets(assets),
-    m_registry(registry)
+    : m_registry(registry)
 {}

@@ -9,7 +9,6 @@
 #include <glm/ext.hpp>
 
 #include "kigl/kigl.h"
-#include "Assets.h"
 
 namespace uniform {
     class Uniform;
@@ -26,7 +25,6 @@ class Program final
 public:
     // public due to shared_ptr
     Program(
-        const Assets& assets,
         std::string_view key,
         std::string_view name,
         const bool compute,
@@ -51,7 +49,7 @@ public:
 
     void load();
 
-    int prepareRT(const Assets& assets);
+    int prepareRT();
 
     void bind() const noexcept;
 
@@ -106,8 +104,6 @@ public:
     std::unique_ptr<ProgramUniforms> m_uniforms;
 
 private:
-    const Assets& m_assets;
-
     int m_prepareResult = -1;
     bool m_prepared = false;
 

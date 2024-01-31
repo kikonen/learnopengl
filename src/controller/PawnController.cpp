@@ -1,5 +1,7 @@
 #include "PawnController.h"
 
+#include "asset/Assets.h"
+
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 
@@ -29,7 +31,7 @@ void PawnController::prepare(
 {
     NodeController::prepare(ctx, node);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_nodeHandle = node.toHandle();
 

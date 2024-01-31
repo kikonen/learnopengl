@@ -4,8 +4,6 @@
 #include <map>
 #include <mutex>
 
-#include "asset/Assets.h"
-
 #include "pool/TypeHandle.h"
 
 class RenderContext;
@@ -15,8 +13,7 @@ class RenderContext;
 //
 class MeshTypeRegistry {
 public:
-    MeshTypeRegistry(
-        const Assets& assets);
+    MeshTypeRegistry();
 
     ~MeshTypeRegistry();
 
@@ -26,8 +23,6 @@ public:
     void bind(const RenderContext& ctx);
 
 private:
-    const Assets& m_assets;
-
     mutable std::mutex m_lock{};
 
     std::vector<pool::TypeHandle> m_customMaterialTypes;

@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "asset/Assets.h"
-
 #include "Context.h"
 #include "BaseId.h"
 #include "BaseData.h"
@@ -101,7 +99,6 @@ namespace loader
             const YAML::Node& v) const;
 
     public:
-        const Assets& m_assets;
         Context m_ctx;
 
         std::shared_ptr<Registry> m_registry;

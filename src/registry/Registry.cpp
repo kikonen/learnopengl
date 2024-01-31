@@ -33,28 +33,26 @@
 #include "registry/SnapshotRegistry.h"
 
 Registry::Registry(
-    const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive),
+    : m_alive(alive),
     // registries
     m_dispatcherImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
-    m_programRegistryImpl(std::make_unique<ProgramRegistry>(assets)),
+    m_programRegistryImpl(std::make_unique<ProgramRegistry>()),
     m_audioEngineImpl(std::make_unique<audio::AudioEngine>()),
-    m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(assets, m_alive)),
+    m_physicsEngineImpl(std::make_unique<physics::PhysicsEngine>(m_alive)),
     m_commandEngineImpl(std::make_unique<script::CommandEngine>()),
     m_scriptEngineImpl(std::make_unique<script::ScriptEngine>()),
-    m_fontRegistryImpl(std::make_unique<FontRegistry>(assets)),
-    m_materialRegistryImpl(std::make_unique<MaterialRegistry>(assets)),
-    m_spriteRegistryImpl(std::make_unique<SpriteRegistry>(assets)),
-    m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>(assets)),
-    m_modelRegistryImpl(std::make_unique<ModelRegistry>(assets, m_alive)),
-    m_nodeRegistryImpl(std::make_unique<NodeRegistry>(assets)),
+    m_fontRegistryImpl(std::make_unique<FontRegistry>()),
+    m_materialRegistryImpl(std::make_unique<MaterialRegistry>()),
+    m_spriteRegistryImpl(std::make_unique<SpriteRegistry>()),
+    m_typeRegistryImpl(std::make_unique<MeshTypeRegistry>()),
+    m_modelRegistryImpl(std::make_unique<ModelRegistry>(m_alive)),
+    m_nodeRegistryImpl(std::make_unique<NodeRegistry>()),
     m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},
-    m_entityRegistryImpl(std::make_unique<EntityRegistry>(assets)),
-    m_viewportRegistryImpl(std::make_unique<ViewportRegistry>(assets)),
-    m_controllerRegistryImpl(std::make_unique<ControllerRegistry>(assets)),
+    m_entityRegistryImpl(std::make_unique<EntityRegistry>()),
+    m_viewportRegistryImpl(std::make_unique<ViewportRegistry>()),
+    m_controllerRegistryImpl(std::make_unique<ControllerRegistry>()),
     // pointers
     m_dispatcher(m_dispatcherImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
@@ -102,7 +100,7 @@ void Registry::prepareWT()
 {
     ASSERT_WT();
 
-    PrepareContext ctx{ m_assets, this };
+    PrepareContext ctx{ this };
 
     // NOTE KI does not matter which thread does prepare
     m_physicsEngine->prepare();

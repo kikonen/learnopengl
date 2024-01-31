@@ -50,7 +50,7 @@ namespace backend {
     {
         const auto info = kigl::GL::getInfo();
 
-        auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
         auto& registry = ctx.m_registry;
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
@@ -77,7 +77,7 @@ namespace backend {
                     { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
                 });
 
-            m_cullingCompute->prepareRT(assets);
+            m_cullingCompute->prepareRT();
         }
 
         if (m_frustumGPU) {

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "asset/Assets.h"
+
 #include "render/RenderContext.h"
 
 #include "model/Node.h"
@@ -16,7 +18,7 @@ Renderer::~Renderer()
 void Renderer::prepareRT(
     const PrepareContext& ctx)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_registry = ctx.m_registry;
 

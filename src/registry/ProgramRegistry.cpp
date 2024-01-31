@@ -4,9 +4,7 @@
 
 #include "asset/Program.h"
 
-ProgramRegistry::ProgramRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+ProgramRegistry::ProgramRegistry()
 {
 }
 
@@ -73,7 +71,6 @@ Program* ProgramRegistry::getProgram(
 
     if (!program) {
         m_programs[key] = std::make_unique<Program>(
-            m_assets,
             key,
             name,
             compute,

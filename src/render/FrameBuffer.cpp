@@ -5,6 +5,8 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
+#include "asset/Assets.h"
+
 #include "kigl/GLState.h"
 
 #include "render/RenderContext.h"
@@ -308,7 +310,9 @@ namespace render {
         GLbitfield clearMask,
         const glm::vec4& debugColor)
     {
-        const bool useDebugColor = ctx.m_assets.useDebugColor;
+        const auto& assets = Assets::get();
+
+        const bool useDebugColor = assets.useDebugColor;
         const bool hasAttachments = !m_spec.attachments.empty();
 
         //if (clearMask & GL_COLOR_BUFFER_BIT) {

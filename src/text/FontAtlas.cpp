@@ -44,11 +44,12 @@ namespace text
     {
     }
 
-    void FontAtlas::prepare(
-        const Assets& assets)
+    void FontAtlas::prepare()
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        const auto& assets = Assets::get();
 
         const size_t depth = 1;
         {

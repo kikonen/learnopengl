@@ -1,8 +1,7 @@
 #pragma once
 
+#include <vector>
 #include <memory>
-
-#include "asset/Assets.h"
 
 struct UpdateViewContext;
 class RenderContext;
@@ -28,7 +27,6 @@ namespace render {
         ~EffectBuffer() {}
 
         void prepare(
-            const Assets& assets,
             GBuffer* gBuffer);
 
         void updateRT(const UpdateViewContext& ctx);

@@ -1,5 +1,6 @@
 #include "WaterMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "kigl/GLState.h"
@@ -54,7 +55,7 @@ void WaterMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
@@ -92,7 +93,7 @@ void WaterMapRenderer::prepareRT(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepareRT(assets);
+        m_reflectionDebugViewport->prepareRT();
     }
 
     {
@@ -114,7 +115,7 @@ void WaterMapRenderer::prepareRT(
         m_refractionDebugViewport->setGammaCorrect(true);
         m_refractionDebugViewport->setHardwareGamma(true);
 
-        m_refractionDebugViewport->prepareRT(assets);
+        m_refractionDebugViewport->prepareRT();
     }
 
     glm::vec3 origo(0);
@@ -134,10 +135,12 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& ctx)
 
 void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
+    const auto& assets = Assets::get();
+
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.waterReflectionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.waterReflectionBufferScale * res.y);
+    int w = (int)(assets.waterReflectionBufferScale * res.x);
+    int h = (int)(assets.waterReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -182,10 +185,11 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
+    const auto& assets = Assets::get();
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.waterRefractionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.waterRefractionBufferScale * res.y);
+    int w = (int)(assets.waterRefractionBufferScale * res.x);
+    int h = (int)(assets.waterRefractionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;

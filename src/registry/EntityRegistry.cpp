@@ -2,6 +2,8 @@
 
 #include "util/thread.h"
 
+#include "asset/Assets.h"
+
 #include "EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -25,8 +27,7 @@ namespace {
     constexpr size_t MAX_SKIP = 20;
 }
 
-EntityRegistry::EntityRegistry(const Assets& assets)
-    : m_assets(assets)
+EntityRegistry::EntityRegistry()
 {
     // null entry
     registerEntity();
@@ -34,10 +35,12 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
-    m_useMapped = m_assets.glUseMapped;
-    m_useInvalidate = m_assets.glUseInvalidate;
-    m_useFence = m_assets.glUseFence;
-    m_useDebugFence = m_assets.glUseDebugFence;
+    auto& assets = Assets::get();
+
+    m_useMapped = assets.glUseMapped;
+    m_useInvalidate = assets.glUseInvalidate;
+    m_useFence = assets.glUseFence;
+    m_useDebugFence = assets.glUseDebugFence;
 
     m_useMapped = false;
     m_useInvalidate = true;

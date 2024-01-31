@@ -185,7 +185,9 @@ Window::Window(
     Engine& engine)
     : m_engine(engine)
 {
-    m_size = engine.getAssets().windowSize;
+    const auto& assets = Assets::get();
+
+    m_size = assets.windowSize;
     m_title = "GL test";
 
     m_input = std::make_unique<Input>(this);
@@ -230,7 +232,8 @@ void Window::setTitle(std::string_view title)
 
 void Window::toggleFullScreen()
 {
-    const auto& assets = m_engine.getAssets();
+    const auto& assets = Assets::get();
+
     bool fullScreen = glfwGetWindowMonitor(m_glfwWindow) == nullptr;
 
     if (fullScreen) {
@@ -305,7 +308,7 @@ bool Window::isClosed() const
 
 void Window::createGLFWWindow()
 {
-    const auto& assets = m_engine.getAssets();
+    const auto& assets = Assets::get();
 
     // glfw: initialize and configure
     // ------------------------------
@@ -461,10 +464,10 @@ void Window::onWindowResize(int width, int height)
 
 void Window::onMouseMove(float xpos, float ypos)
 {
-    const auto& assets = m_engine.getAssets();
+    const auto& assets = Assets::get();
+
     const InputContext ctx{
         m_engine.getClock(),
-        assets,
         m_engine.getRegistry(),
         m_input.get() };
 
@@ -508,7 +511,6 @@ void Window::onMouseWheel(float xoffset, float yoffset)
 {
     const InputContext ctx{
         m_engine.getClock(),
-        m_engine.getAssets(),
         m_engine.getRegistry(),
         m_input.get() };
 

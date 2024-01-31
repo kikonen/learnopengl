@@ -6,6 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "util/Log.h"
 #include "ki/yaml.h"
 #include "ki/sid.h"
@@ -26,8 +28,7 @@ namespace loader
 
     BaseLoader::BaseLoader(
         Context ctx)
-        : m_assets(ctx.m_assets),
-        m_ctx(ctx)
+        : m_ctx(ctx)
     {
     }
 
@@ -402,6 +403,8 @@ namespace loader
         const glm::uvec3& tile,
         bool automatic)
     {
+        const auto& assets = Assets::get();
+
         if (baseId.empty()) {
             return { 0, "" };
         }
@@ -409,7 +412,7 @@ namespace loader
         std::string key = expandMacros(baseId.m_path, cloneIndex, tile, automatic);
 
         if (key == ROOT_ID) {
-            return { m_ctx.m_assets.rootId, "<root>" };
+            return { assets.rootId, "<root>" };
         }
         else {
             auto nodeId = SID(key);

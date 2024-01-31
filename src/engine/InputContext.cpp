@@ -4,11 +4,9 @@
 
 InputContext::InputContext(
     const ki::RenderClock& clock,
-    const Assets& assets,
     Registry* registry,
     const Input* const input)
     : m_clock(clock),
-    m_assets(assets),
     m_registry(registry),
     m_input(input)
 {
@@ -17,7 +15,6 @@ InputContext::InputContext(
 PrepareContext InputContext::toPrepareContext() const
 {
     return {
-        m_assets,
         m_registry,
     };
 }

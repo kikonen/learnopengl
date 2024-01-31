@@ -1,5 +1,6 @@
 #include "ObjectIdRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
@@ -97,10 +98,10 @@ void ObjectIdRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    m_idProgram->prepareRT(assets);
+    m_idProgram->prepareRT();
 
     //m_idProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
     //m_idProgramPointSprite->prepare(assets);
@@ -115,16 +116,17 @@ void ObjectIdRenderer::prepareRT(
         0,
         m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
 
-    m_debugViewport->prepareRT(assets);
+    m_debugViewport->prepareRT();
 }
 
 void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 {
+    const auto& assets = Assets::get();
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = (int)(ctx.m_assets.gBufferScale * res.x);
-    int h = (int)(ctx.m_assets.gBufferScale * res.y);
+    int w = (int)(assets.gBufferScale * res.x);
+    int h = (int)(assets.gBufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

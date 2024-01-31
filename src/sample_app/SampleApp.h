@@ -2,6 +2,8 @@
 
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
+
 #include "engine/Engine.h"
 
 #include "gui/FrameInit.h"

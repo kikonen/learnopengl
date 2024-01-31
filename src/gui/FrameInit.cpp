@@ -4,12 +4,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "asset/Assets.h"
+
 #include "engine/Engine.h"
 
 FrameInit::FrameInit(Window& window)
     : window(window)
 {
-    auto& assets = window.getEngine().getAssets();
+    const auto& assets = Assets::get();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();

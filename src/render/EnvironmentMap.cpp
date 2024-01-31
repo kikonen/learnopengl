@@ -6,6 +6,7 @@
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 
 #include "engine/PrepareContext.h"
@@ -21,7 +22,7 @@ namespace render {
         const PrepareContext& ctx,
         int size)
     {
-        auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
         auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 
@@ -44,7 +45,7 @@ namespace render {
 
         {
             auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
-            program->prepareRT(assets);
+            program->prepareRT();
 
             program->bind();
             state.bindTexture(UNIT_HDR_TEXTURE, m_hdriTextureID, false);

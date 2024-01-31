@@ -21,9 +21,7 @@ namespace {
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
-MaterialRegistry::MaterialRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+MaterialRegistry::MaterialRegistry()
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker
     m_materials.reserve(MAX_MATERIAL_COUNT);
@@ -153,7 +151,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = index; i < totalCount; i++) {
             auto& material = m_materials[i];
-            material.prepare(m_assets);
+            material.prepare();
             m_materialsSSBO.emplace_back(material.toSSBO());
         }
     }

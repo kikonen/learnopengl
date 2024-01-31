@@ -12,6 +12,7 @@
 #include "util/glm_format.h"
 #include "util/Perlin.h"
 
+#include "asset/Assets.h"
 #include "asset/Image.h"
 #include "asset/AABB.h"
 
@@ -49,7 +50,9 @@ void TerrainGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    m_gridSize = ctx.m_assets.terrainGridSize;
+    const auto& assets = Assets::get();
+
+    m_gridSize = assets.terrainGridSize;
 
     m_poolSizeU = 4;
     m_poolSizeV = 4;
@@ -91,10 +94,10 @@ physics::HeightMap* TerrainGenerator::prepareHeightMap(
     const PrepareContext& ctx,
     Node& container)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
-    const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
+    const auto& imagePath = m_material.getTexturePath(m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
     auto image = std::make_unique<Image>(imagePath, false);
@@ -160,7 +163,7 @@ void TerrainGenerator::createTiles(
     Node& container,
     physics::HeightMap* heightMap)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
     auto* entityRegistry = registry->m_entityRegistry;
@@ -206,7 +209,7 @@ void TerrainGenerator::createTiles(
             m.tilingX = (float)m_worldTilesU;
             m.tilingY = (float)m_worldTilesV;
 
-            m.loadTextures(assets);
+            m.loadTextures();
 
             materialRegistry->registerMaterial(m);
             materialIndex = m.m_registeredIndex;

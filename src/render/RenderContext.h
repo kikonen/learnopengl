@@ -8,8 +8,6 @@
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
 
-#include "asset/Assets.h"
-
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"
 
@@ -56,7 +54,6 @@ public:
         std::string_view name,
         const RenderContext* parent,
         const ki::RenderClock& clock,
-        const Assets& assets,
         Registry* registry,
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
@@ -101,7 +98,6 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
-    const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
     render::RenderData* const m_renderData;

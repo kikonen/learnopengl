@@ -6,6 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "util/Util.h"
 
 #include "engine/PrepareContext.h"
@@ -33,7 +35,7 @@ namespace script
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
-        auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
 
         m_commandEngine = commandEngine;
 

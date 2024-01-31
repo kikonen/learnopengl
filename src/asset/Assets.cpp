@@ -8,6 +8,23 @@
 
 #include "kigl/kigl.h"
 
+namespace {
+    static Assets s_assets;
+}
+
+const Assets& Assets::get() noexcept {
+    return s_assets;
+}
+
+Assets& Assets::modify() noexcept {
+    return s_assets;
+}
+
+void Assets::set(const Assets& assets) noexcept
+{
+    s_assets = assets;
+}
+
 Assets::Assets()
 {
     glsl_version[0] = 4;

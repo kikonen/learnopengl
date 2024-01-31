@@ -1,5 +1,6 @@
 #include "ShadowMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -36,7 +37,7 @@ void ShadowMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
@@ -84,7 +85,7 @@ void ShadowMapRenderer::prepareRT(
             });
 
         m_debugViewport->setEffectEnabled(false);
-        m_debugViewport->prepareRT(assets);
+        m_debugViewport->prepareRT();
     }
 }
 
@@ -122,19 +123,21 @@ bool ShadowMapRenderer::render(
 
     if (!needRender(ctx)) return false;
 
+
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
     auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
     if (!node) return false;
 
+    const auto& assets = Assets::get();
     auto& state = kigl::GLState::get();
 
     {
         // OpenGL Programming Guide, 8th Edition, page 404
         // Enable polygon offset to resolve depth-fighting isuses
-        state.setEnabled(GL_POLYGON_OFFSET_FILL, ctx.m_assets.shadowPolygonOffsetEnabled);
-        state.polygonOffset(ctx.m_assets.shadowPolygonOffset);
+        state.setEnabled(GL_POLYGON_OFFSET_FILL, assets.shadowPolygonOffsetEnabled);
+        state.polygonOffset(assets.shadowPolygonOffset);
         state.cullFace(GL_FRONT);
 
         for (auto& cascade : m_cascades) {

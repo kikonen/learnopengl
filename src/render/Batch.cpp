@@ -6,8 +6,10 @@
 
 #include "glm/glm.hpp"
 
+
 #include "util/glm_format.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/Sphere.h"
 #include "asset/Frustum.h"
@@ -148,7 +150,7 @@ namespace render {
         if (m_prepared) return;
         m_prepared = true;
 
-        auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
 
         if (entryCount <= 0) {
             entryCount = assets.batchSize;

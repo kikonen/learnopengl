@@ -5,6 +5,7 @@
 
 #include "pool/NodeHandle.h"
 
+#include "asset/Assets.h"
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
@@ -32,7 +33,9 @@ namespace loader {
     void CubeMapLoader::attachCubeMap(
         const ki::node_id rootId)
     {
-        if (!m_assets.showCubeMapCenter) return;
+        const auto& assets = Assets::get();
+
+        if (!assets.showCubeMapCenter) return;
 
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
@@ -40,7 +43,7 @@ namespace loader {
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
-            m_assets.modelsDir);
+            assets.modelsDir);
         auto& mesh = future.get();
 
         type->setMesh(mesh);
@@ -70,7 +73,7 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.cubeMapId);
+        auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<cube_map>";
@@ -91,7 +94,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.cubeMapId,
+                .target = assets.cubeMapId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

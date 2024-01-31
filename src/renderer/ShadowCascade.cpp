@@ -2,6 +2,7 @@
 
 #include "util/glm_format.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -82,14 +83,14 @@ ShadowCascade::~ShadowCascade()
 void ShadowCascade::prepareRT(
     const PrepareContext& ctx)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
     m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    m_solidShadowProgram->prepareRT(assets);
-    m_alphaShadowProgram->prepareRT(assets);
+    m_solidShadowProgram->prepareRT();
+    m_alphaShadowProgram->prepareRT();
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 

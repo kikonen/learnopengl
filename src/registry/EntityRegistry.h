@@ -8,7 +8,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
 
-#include "asset/Assets.h"
 #include "asset/SSBO.h"
 
 #include "EntitySSBO.h"
@@ -23,7 +22,7 @@ class RenderContext;
 //
 class EntityRegistry {
 public:
-    EntityRegistry(const Assets& assets);
+    EntityRegistry();
 
     void prepare();
     void updateRT(const UpdateContext& ctx);
@@ -61,8 +60,6 @@ private:
     void processNodes(const UpdateContext& ctx);
 
 private:
-    const Assets& m_assets;
-
     std::vector<EntitySSBO> m_entries;
     std::vector<bool> m_dirty;
     int m_minDirty = -1;

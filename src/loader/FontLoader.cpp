@@ -72,7 +72,7 @@ namespace loader {
         font->m_atlasSize = data.atlasSize;
 
         // TODO KI race condition with RT
-        //font->prepare(m_assets);
+        //font->prepare();
 
         return id;
     }

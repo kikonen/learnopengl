@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "pool/NodeHandle.h"
 
 #include "asset/Material.h"
@@ -35,7 +37,9 @@ namespace loader {
     void VolumeLoader::attachVolume(
         const ki::node_id rootId)
     {
-        if (!m_assets.showVolume) return;
+        const auto& assets = Assets::get();
+
+        if (!assets.showVolume) return;
 
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
@@ -43,7 +47,7 @@ namespace loader {
 
         auto future = m_registry->m_modelRegistry->getMesh(
             "ball_volume",
-            m_assets.modelsDir);
+            assets.modelsDir);
         auto* mesh = future.get();
 
         type->setMesh(mesh);
@@ -72,7 +76,7 @@ namespace loader {
 
         type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.volumeId);
+        auto handle = pool::NodeHandle::allocate(assets.volumeId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<volume>";
@@ -91,7 +95,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.volumeId,
+                .target = assets.volumeId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

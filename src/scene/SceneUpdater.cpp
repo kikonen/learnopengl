@@ -35,11 +35,10 @@ namespace {
     size_t count = 0;
 }
 
-SceneUpdater::SceneUpdater(const Assets& assets,
+SceneUpdater::SceneUpdater(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_registry(registry),
+    : m_registry(registry),
     m_alive(alive)
 {}
 
@@ -138,7 +137,6 @@ void SceneUpdater::run()
 
         UpdateContext ctx(
             clock,
-            m_assets,
             m_registry.get());
 
         update(ctx);

@@ -3,8 +3,8 @@
 namespace kigl {
     GLState& GLState::get() noexcept
     {
-        static GLState state{};
-        return state;
+        static GLState s_state{};
+        return s_state;
     }
 
     GLState::GLState()

@@ -1,5 +1,6 @@
 #include "GBuffer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "engine/UpdateViewContext.h"
@@ -12,16 +13,18 @@ namespace {
 }
 
 namespace render {
-    void GBuffer::prepare(const Assets& assets)
+    void GBuffer::prepare()
     {
     }
 
     void GBuffer::updateRT(const UpdateViewContext& ctx)
     {
+        const auto& assets = Assets::get();
+
         const auto& res = ctx.m_resolution;
 
-        int w = (int)(ctx.m_assets.gBufferScale * res.x);
-        int h = (int)(ctx.m_assets.gBufferScale * res.y);
+        int w = (int)(assets.gBufferScale * res.x);
+        int h = (int)(assets.gBufferScale * res.y);
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 

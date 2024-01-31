@@ -4,7 +4,6 @@
 
 #include "ki/RenderClock.h"
 
-#include "asset/Assets.h"
 #include "registry/Registry.h"
 
 #include "ki/RenderClock.h"
@@ -27,10 +26,6 @@ public:
     int init();
     int setup();
     void run();
-
-    inline const Assets& getAssets() const noexcept {
-        return m_assets;
-    }
 
     inline Registry* getRegistry() const noexcept {
         return m_registry.get();
@@ -65,9 +60,8 @@ public:
     std::shared_ptr<SceneUpdater> m_sceneUpdater;
 
     std::unique_ptr<Window> m_window;
-protected:
-    Assets m_assets;
 
+protected:
     ki::RenderClock m_clock;
 
     std::shared_ptr<std::atomic<bool>> m_alive;

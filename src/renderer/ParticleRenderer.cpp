@@ -19,7 +19,7 @@ void ParticleRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     particleProgram = m_registry->m_programRegistry->getProgram(SHADER_PARTICLE);
-    particleProgram->prepareRT(ctx.m_assets);
+    particleProgram->prepareRT();
 }
 
 void ParticleRenderer::render(

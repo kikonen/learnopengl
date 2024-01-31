@@ -31,7 +31,7 @@ void ParticleSystem::prepareRT(
     m_prepared = true;
 
     particleProgram = ctx.m_registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
-    particleProgram->prepareRT(ctx.m_assets);
+    particleProgram->prepareRT();
 }
 
 void ParticleSystem::update(const UpdateContext& ctx)

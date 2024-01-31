@@ -4,7 +4,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "kigl/GLBuffer.h"
@@ -21,8 +20,7 @@ struct MaterialSSBO;
 
 class MaterialRegistry {
 public:
-    MaterialRegistry(
-        const Assets& assets);
+    MaterialRegistry();
 
     ~MaterialRegistry();
 
@@ -51,8 +49,6 @@ private:
     void updateIndexBuffer();
 
 private:
-    const Assets& m_assets;
-
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 

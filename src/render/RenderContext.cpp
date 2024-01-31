@@ -4,13 +4,14 @@
 #include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
+
 #include "kigl/kigl.h"
 #include "kigl/GLState.h"
 
-#include "component/Light.h"
-
+#include "asset/Assets.h"
 #include "asset/ImageTexture.h"
 
+#include "component/Light.h"
 #include "component/Camera.h"
 
 #include "script/CommandEngine.h"
@@ -36,7 +37,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_assets,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -60,7 +60,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_assets,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -76,7 +75,6 @@ RenderContext::RenderContext(
     std::string_view name,
     const RenderContext* parent,
     const ki::RenderClock& clock,
-    const Assets& assets,
     Registry* registry,
     render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
@@ -88,7 +86,6 @@ RenderContext::RenderContext(
     int height)
     : m_name{ name },
     m_parent{ parent },
-    m_assets{ assets },
     m_clock{ clock },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
@@ -100,6 +97,8 @@ RenderContext::RenderContext(
     m_resolution({ width, height }),
     m_aspectRatio{ (float)width / (float)height }
 {
+    auto& assets = Assets::get();
+
     if (m_parent) {
         m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
@@ -265,7 +264,6 @@ UpdateContext RenderContext::toUpdateContext() const
 {
     return {
         m_clock,
-        m_assets,
         m_registry,
     };
 }
@@ -273,7 +271,6 @@ UpdateContext RenderContext::toUpdateContext() const
 PrepareContext RenderContext::toPrepareContext() const
 {
     return {
-        m_assets,
         m_registry,
     };
 }

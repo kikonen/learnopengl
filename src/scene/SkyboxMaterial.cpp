@@ -4,6 +4,7 @@
 
 #include "util/Util.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "render/CubeMap.h"
@@ -54,12 +55,14 @@ void SkyboxMaterial::prepareRT(
 void SkyboxMaterial::prepareFaces(
     const PrepareContext& ctx)
 {
+    const auto& assets = Assets::get();
+
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         std::string basePath;
         {
             basePath = util::joinPath(
-                ctx.m_assets.assetsDir,
+                assets.assetsDir,
                 m_materialName);
         }
 
@@ -87,11 +90,13 @@ void SkyboxMaterial::prepareFaces(
 void SkyboxMaterial::prepareHdri(
     const PrepareContext& ctx)
 {
+    const auto& assets = Assets::get();
+
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
     std::string filePath;
     {
         filePath = util::joinPath(
-            ctx.m_assets.assetsDir,
+            assets.assetsDir,
             m_materialName);
     }
 
@@ -102,25 +107,31 @@ void SkyboxMaterial::prepareHdri(
 void SkyboxMaterial::prepareSkybox(
     const PrepareContext& ctx)
 {
-    if (!(ctx.m_assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+    const auto& assets = Assets::get();
+
+    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_skyboxMap.m_hdriTextureID = m_hdriTexture;
-    m_skyboxMap.prepareRT(ctx, ctx.m_assets.skyboxSize);
+    m_skyboxMap.prepareRT(ctx, assets.skyboxSize);
 }
 
 void SkyboxMaterial::prepareEnvironment(
     const PrepareContext& ctx)
 {
-    if (!(ctx.m_assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+    const auto& assets = Assets::get();
+
+    if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
     m_environmentMap.m_hdriTextureID = m_hdriTexture;
-    m_environmentMap.prepareRT(ctx, ctx.m_assets.environmentMapSize);
+    m_environmentMap.prepareRT(ctx, assets.environmentMapSize);
 }
 
 void SkyboxMaterial::prepareIrradiance(
     const PrepareContext& ctx)
 {
-    if (!(ctx.m_assets.environmentMapEnabled && m_environmentMap.valid())) return;
+    const auto& assets = Assets::get();
+
+    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_irradianceMap.m_envCubeMapID = m_environmentMap;
     m_irradianceMap.prepareRT(ctx);
@@ -129,7 +140,9 @@ void SkyboxMaterial::prepareIrradiance(
 void SkyboxMaterial::preparePrefilter(
     const PrepareContext& ctx)
 {
-    if (!(ctx.m_assets.environmentMapEnabled && m_environmentMap.valid())) return;
+    const auto& assets = Assets::get();
+
+    if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
     m_prefilterMap.m_envCubeMapID = m_environmentMap;
     m_prefilterMap.prepareRT(ctx);
@@ -138,7 +151,9 @@ void SkyboxMaterial::preparePrefilter(
 void SkyboxMaterial::prepareBrdfLut(
     const PrepareContext& ctx)
 {
-    if (!(ctx.m_assets.environmentMapEnabled)) return;
+    const auto& assets = Assets::get();
+
+    if (!(assets.environmentMapEnabled)) return;
 
     m_brdfLutTexture.prepareRT(ctx);
 }

@@ -11,7 +11,6 @@
 #include "util/Util.h"
 #include "kigl/GLVertexArray.h"
 
-#include "asset/Assets.h"
 #include "mesh/ModelVAO.h"
 
 struct Material;
@@ -25,7 +24,6 @@ namespace mesh {
 class ModelRegistry {
 public:
     ModelRegistry(
-        const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
     ~ModelRegistry();
@@ -50,8 +48,6 @@ private:
     std::shared_future<mesh::ModelMesh*> startLoad(mesh::ModelMesh* mesh);
 
 private:
-    const Assets& m_assets;
-
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_meshes_lock{};

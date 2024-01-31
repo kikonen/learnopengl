@@ -14,6 +14,6 @@ public:
 
     virtual ~PlainTexture();
 
-    void prepare(const Assets& assets) override;
+    void prepare() override;
     void setData(void* data, int size);
 };

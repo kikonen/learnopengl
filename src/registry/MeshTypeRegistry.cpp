@@ -7,9 +7,7 @@
 namespace {
 }
 
-MeshTypeRegistry::MeshTypeRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+MeshTypeRegistry::MeshTypeRegistry()
 {
 }
 
