@@ -1,7 +1,7 @@
 #version 460 core
 
 #include struct_material.glsl
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 
 
 in VS_OUT {

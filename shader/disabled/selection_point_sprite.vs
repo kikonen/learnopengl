@@ -2,7 +2,7 @@
 
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 
 out VS_OUT {

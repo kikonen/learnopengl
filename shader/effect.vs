@@ -7,7 +7,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl
 

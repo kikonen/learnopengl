@@ -7,8 +7,8 @@
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
-#include uniform_materials.glsl
-#include uniform_shapes.glsl
+#include ssbo_materials.glsl
+#include ssbo_shapes.glsl
 
 in VS_OUT {
   vec2 texCoord;

@@ -134,7 +134,9 @@ namespace render {
         top.m_drawCount = 1;
         top.m_instancedCount = static_cast<int>(instanceCount);
 
-        m_entityIndeces.emplace_back(entityBase + startIndex);
+        for (uint32_t i = 0; i < instanceCount; i++) {
+            m_entityIndeces.emplace_back(entityBase + startIndex + i);
+        }
     }
 
     void Batch::bind() noexcept

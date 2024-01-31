@@ -5,10 +5,10 @@
 #ifdef USE_ALPHA
 #include struct_shape.glsl
 
-#include uniform_shapes.glsl
+#include ssbo_shapes.glsl
 #endif
 
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

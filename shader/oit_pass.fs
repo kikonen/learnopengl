@@ -4,8 +4,8 @@
 #include struct_shape.glsl
 
 #include uniform_data.glsl
-#include uniform_materials.glsl
-#include uniform_shapes.glsl
+#include ssbo_materials.glsl
+#include ssbo_shapes.glsl
 
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth

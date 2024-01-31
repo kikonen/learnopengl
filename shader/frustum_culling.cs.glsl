@@ -4,7 +4,7 @@ layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 
 // struct DrawElementsIndirectCommand

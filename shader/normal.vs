@@ -6,7 +6,7 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 

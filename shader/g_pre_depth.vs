@@ -7,12 +7,12 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
 #ifdef USE_ALPHA
-#include uniform_material_indeces.glsl
+#include ssbo_material_indeces.glsl
 #endif
 
 #ifdef USE_ALPHA
