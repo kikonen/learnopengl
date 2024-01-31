@@ -37,7 +37,9 @@ Entity entity;
 Material material;
 
 void main() {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
 
   int materialIndex = entity.u_materialIndex;

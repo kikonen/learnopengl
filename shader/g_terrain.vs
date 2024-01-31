@@ -45,7 +45,9 @@ Entity entity;
 Material material;
 
 void main() {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
@@ -61,7 +63,7 @@ void main() {
 //  gl_Position = u_projectedMatrix * worldPos;
   gl_Position = pos;
 
-  vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
+  vs_out.entityIndex = entityIndex;
   vs_out.materialIndex = materialIndex;
   vs_out.heightMapTex = material.heightMapTex;
 
