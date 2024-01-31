@@ -16,10 +16,6 @@ namespace uniform {
     class Subroutine;
 }
 
-namespace kigl {
-    class GLState;
-}
-
 struct ProgramUniforms;
 
 class Program final
@@ -57,7 +53,7 @@ public:
 
     int prepareRT(const Assets& assets);
 
-    void bind(kigl::GLState& state) const noexcept;
+    void bind() const noexcept;
 
     int prepared() noexcept { return m_prepared; }
 

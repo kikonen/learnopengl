@@ -67,14 +67,14 @@ namespace mesh {
         prepareVAO(*m_vao, m_positionVbo, m_normalVbo, m_textureVbo, m_ebo);
     }
 
-    void ModelVAO::bind(kigl::GLState& state)
+    void ModelVAO::bind()
     {
-        state.bindVAO(*m_vao);
+        kigl::GLState::get().bindVAO(*m_vao);
     }
 
-    void ModelVAO::unbind(kigl::GLState& state)
+    void ModelVAO::unbind()
     {
-        state.bindVAO(0);
+        kigl::GLState::get().bindVAO(0);
     }
 
     void ModelVAO::prepareVAO(

@@ -4,7 +4,6 @@
 
 #include "kigl/kigl.h"
 
-#include "kigl/GLState.h"
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 

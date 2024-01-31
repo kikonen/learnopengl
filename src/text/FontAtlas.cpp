@@ -119,13 +119,13 @@ namespace text
         m_usedAtlasSize = currentAtlasSize;
     }
 
-    void FontAtlas::bindTextures(kigl::GLState& state)
+    void FontAtlas::bindTextures()
     {
-        m_texture.bindTexture(state, UNIT_FONT_ATLAS);
+        m_texture.bindTexture(UNIT_FONT_ATLAS);
     }
 
-    void FontAtlas::unbindTextures(kigl::GLState& state)
+    void FontAtlas::unbindTextures()
     {
-        m_texture.unbindTexture(state, UNIT_FONT_ATLAS);
+        m_texture.unbindTexture(UNIT_FONT_ATLAS);
     }
 }

@@ -357,7 +357,8 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 
 void Scene::draw(const RenderContext& ctx)
 {
-    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    auto& state = kigl::GLState::get();
+    state.setDepthFunc(ctx.m_depthFunc);
 
     bool wasCubeMap = false;
     int renderCount = 0;
@@ -367,7 +368,7 @@ void Scene::draw(const RenderContext& ctx)
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
-    ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
+    state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->render(ctx)) {
         wasCubeMap = ctx.m_assets.cubeMapSkipOthers;

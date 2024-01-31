@@ -7,10 +7,6 @@
 
 #include "text/FontAtlas.h"
 
-namespace kigl {
-    class GLState;
-}
-
 struct UpdateContext;
 
 class FontRegistry {
@@ -37,11 +33,9 @@ public:
     text::FontAtlas* modifyFont(text::font_id id);
 
     bool bindFont(
-        kigl::GLState& state,
         text::font_id id);
 
     bool unbindFont(
-        kigl::GLState& state,
         text::font_id id);
 
     text::font_id registerFont(

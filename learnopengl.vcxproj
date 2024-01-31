@@ -290,7 +290,6 @@
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\mesh\SpriteMesh.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
-    <ClCompile Include="src\backend\RenderSystem.cpp" />
     <ClCompile Include="src\script\api\CancelCommand.cpp" />
     <ClCompile Include="src\script\api\Command.cpp" />
     <ClCompile Include="src\script\CommandAPI.cpp" />
@@ -566,9 +565,6 @@
     <ClInclude Include="src\registry\ModelRegistry.h" />
     <ClInclude Include="src\registry\MeshTypeRegistry.h" />
     <ClInclude Include="src\registry\ProgramRegistry.h" />
-    <ClInclude Include="src\backend\Command.h" />
-    <ClInclude Include="src\backend\DrawCommands.h" />
-    <ClInclude Include="src\backend\RenderSystem.h" />
     <ClInclude Include="src\script\api\CancelCommand.h" />
     <ClInclude Include="src\script\api\Command.h" />
     <ClInclude Include="src\script\CommandAPI.h" />

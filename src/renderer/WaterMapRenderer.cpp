@@ -2,6 +2,8 @@
 
 #include "asset/Shader.h"
 
+#include "kigl/GLState.h"
+
 #include "component/Camera.h"
 
 #include "pool/NodeHandle.h"
@@ -230,6 +232,8 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
     //if (!m_rendered) return;
 
+    auto& state = kigl::GLState::get();
+
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
 
@@ -237,7 +241,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     refractionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);
 
     if (m_noiseTextureID > 0) {
-        ctx.m_state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
+        state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
     }
 }
 
@@ -251,6 +255,8 @@ bool WaterMapRenderer::render(
     auto closest = findClosest(parentCtx);
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
+
+    auto& state = kigl::GLState::get();
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -268,7 +274,7 @@ bool WaterMapRenderer::render(
 
     // https://prideout.net/clip-planes
 
-    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
+    state.setEnabled(GL_CLIP_DISTANCE0, true);
 
     // reflection map
     {
@@ -364,7 +370,7 @@ bool WaterMapRenderer::render(
     parentCtx.updateDataUBO();
     parentCtx.updateClipPlanesUBO();
 
-    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
+    state.setEnabled(GL_CLIP_DISTANCE0, false);
 
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % m_bufferCount;

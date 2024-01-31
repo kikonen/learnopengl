@@ -141,7 +141,7 @@ void TextGenerator::bindBatch(
     Node& container,
     render::Batch& batch)
 {
-    m_draw->updateRT(ctx.m_state);
+    m_draw->updateRT();
 
     const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
     batch.addSnapshot(ctx, snapshot, container.m_entityIndex);

@@ -2,14 +2,10 @@
 
 #include "kigl/kigl.h"
 
-#include "kigl/GLState.h"
-
 #include "ki/RenderClock.h"
 
 #include "asset/Assets.h"
 #include "registry/Registry.h"
-
-#include "backend/RenderSystem.h"
 
 #include "ki/RenderClock.h"
 
@@ -79,6 +75,4 @@ protected:
     std::string m_title;
 
     InputState m_lastInputState;
-
-    std::unique_ptr<backend::RenderSystem> m_backend;
 };

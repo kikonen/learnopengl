@@ -1,5 +1,7 @@
 #include "ViewportRenderer.h"
 
+#include "kigl/GLState.h"
+
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -34,25 +36,27 @@ void ViewportRenderer::render(
 
     if (viewports.empty()) return;
 
+    auto& state = kigl::GLState::get();
+
     bool forceWireframe = ctx.m_forceWireframe;
     ctx.m_forceWireframe = false;
     ctx.bindDefaults();
 
-    ctx.m_state.setDepthFunc(GL_LEQUAL);
+    state.setDepthFunc(GL_LEQUAL);
 
     // NOTE KI don't blend MAIN buffer
     bool blend = false;
     for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
-        ctx.m_state.setEnabled(GL_BLEND, blend);
+        state.setEnabled(GL_BLEND, blend);
         viewport->draw(ctx);
         viewport->unbind(ctx);
         blend = true;
     }
 
-    ctx.m_state.setEnabled(GL_BLEND, false);
-    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    state.setEnabled(GL_BLEND, false);
+    state.setDepthFunc(ctx.m_depthFunc);
 
     ctx.m_forceWireframe = forceWireframe;
     ctx.bindDefaults();

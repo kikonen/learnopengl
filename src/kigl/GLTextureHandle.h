@@ -53,14 +53,14 @@ namespace kigl {
             kigl::setLabel(GL_TEXTURE, m_textureID, name);
         }
 
-        void bindTexture(kigl::GLState& state, int unitIndex)
+        void bindTexture(int unitIndex)
         {
-            state.bindTexture(unitIndex, m_textureID, false);
+            kigl::GLState::get().bindTexture(unitIndex, m_textureID, false);
         }
 
-        void unbindTexture(kigl::GLState& state, int unitIndex)
+        void unbindTexture(int unitIndex)
         {
-            state.unbindTexture(unitIndex, false);
+            kigl::GLState::get().unbindTexture(unitIndex, false);
         }
 
         operator int() const { return m_textureID; }

@@ -13,6 +13,7 @@
 #include "ki/Timer.h"
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 #include "kigl/OpenGLInfo.h"
 
 #include "asset/MaterialSSBO.h"
@@ -47,7 +48,9 @@ int Engine::init() {
 }
 
 int Engine::setup() {
-    GLenum keys[] = {
+    auto& state = kigl::GLState::get();
+
+    const GLenum keys[] = {
         GL_BLEND,
         GL_CLIP_DISTANCE0,
         GL_CLIP_DISTANCE1,
@@ -59,7 +62,7 @@ int Engine::setup() {
         GL_TEXTURE_CUBE_MAP_SEAMLESS,
     };
     for (auto& key : keys) {
-        m_registry->m_state.track(key);
+        state.track(key);
     }
 
     m_registry->prepareShared();

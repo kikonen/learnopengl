@@ -33,8 +33,8 @@ namespace text
 
         void update();
 
-        void bindTextures(kigl::GLState& state);
-        void unbindTextures(kigl::GLState& state);
+        void bindTextures();
+        void unbindTextures();
 
         FontHandle* getFont() {
             return m_fontHandle.get();

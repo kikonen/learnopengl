@@ -6,8 +6,6 @@
 
 #include "asset/Assets.h"
 
-#include "kigl/GLState.h"
-
 namespace event
 {
     class Dispatcher;
@@ -97,8 +95,6 @@ private:
     std::unique_ptr<ControllerRegistry> m_controllerRegistryImpl;
 
 public:
-    kigl::GLState m_state;
-
     // NOTE KI initialization order!
     event::Dispatcher* const m_dispatcher;
     event::Dispatcher* const m_dispatcherView;

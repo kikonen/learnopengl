@@ -1,6 +1,7 @@
 #include "EnvironmentMap.h"
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
@@ -22,7 +23,7 @@ namespace render {
     {
         auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
-        auto& state = registry->m_state;
+        auto& state = kigl::GLState::get();
 
         if (m_hdriTextureID <= 0) return;
 
@@ -45,11 +46,11 @@ namespace render {
             auto program = registry->m_programRegistry->getProgram(SHADER_HDRI_CUBE_MAP);
             program->prepareRT(assets);
 
-            program->bind(state);
+            program->bind();
             state.bindTexture(UNIT_HDR_TEXTURE, m_hdriTextureID, false);
 
             CubeRender renderer;
-            renderer.render(state, program, m_cubeTexture, m_size);
+            renderer.render(program, m_cubeTexture, m_size);
 
             state.unbindTexture(UNIT_HDR_TEXTURE, false);
             state.clear();
@@ -58,6 +59,7 @@ namespace render {
 
     void EnvironmentMap::bindTexture(const RenderContext& ctx, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, m_cubeTexture, false);
+        auto& state = kigl::GLState::get();
+        state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 }

@@ -151,8 +151,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
     Node* cameraNode = scene->getActiveCameraNode();
     if (!cameraNode) return 0;
 
-
-    auto& state = m_registry->m_state;
+    auto& state = kigl::GLState::get();
     const glm::uvec2& size = window->getSize();
 
     {
@@ -186,7 +185,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
         // https://paroj.github.io/gltut/apas04.html
         if (m_assets.rasterizerDiscard) {
             //glEnable(GL_RASTERIZER_DISCARD);
-            ctx.m_state.setEnabled(GL_RASTERIZER_DISCARD, true);
+            state.setEnabled(GL_RASTERIZER_DISCARD, true);
         }
 
         //m_state.useProgram(0);
@@ -197,7 +196,7 @@ int SampleApp::onRender(const ki::RenderClock& clock) {
 
         // make clear color by default black
         // => ensure "sane" start state for each loop
-        ctx.m_state.clearColor(BLACK_COLOR);
+        state.clearColor(BLACK_COLOR);
 
         if (m_assets.useIMGUI) {
             m_frame->bind(ctx);

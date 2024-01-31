@@ -14,7 +14,6 @@
 #include "engine/PrepareContext.h"
 
 #include "ki/RenderClock.h"
-#include "kigl/GLState.h"
 
 namespace render {
     class NodeDraw;
@@ -110,8 +109,6 @@ public:
     render::Batch* const m_batch;
 
     GLenum m_depthFunc{ GL_LESS };
-
-    kigl::GLState& m_state;
 
     RenderContextDefaults m_defaults;
 

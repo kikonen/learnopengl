@@ -259,7 +259,6 @@ namespace render {
             if (curr.m_drawCount == 0) continue;
 
             backend::DrawRange drawRange = {
-                &ctx.m_state,
                 curr.m_program,
                 curr.m_vao,
                 curr.m_drawOptions,

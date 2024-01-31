@@ -11,7 +11,6 @@
 
 namespace render {
     void CubeRender::render(
-        kigl::GLState& state,
         Program* program,
         int cubeTextureID,
         int size)
@@ -73,7 +72,7 @@ namespace render {
                 glClearNamedFramebufferfv(*captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
                 glClearNamedFramebufferfv(*captureFBO, GL_DEPTH, 0, &clearDepth);
 
-                cube.draw(state);
+                cube.draw();
             }
         }
     }

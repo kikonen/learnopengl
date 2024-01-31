@@ -254,7 +254,7 @@ void ShadowCascade::drawNodes(
     };
 
     {
-        m_solidShadowProgram->bind(ctx.m_state);
+        m_solidShadowProgram->bind();
         m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
@@ -266,7 +266,7 @@ void ShadowCascade::drawNodes(
     }
 
     {
-        m_alphaShadowProgram->bind(ctx.m_state);
+        m_alphaShadowProgram->bind();
         m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(

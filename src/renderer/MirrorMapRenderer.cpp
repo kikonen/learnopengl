@@ -337,7 +337,7 @@ void MirrorMapRenderer::drawNodes(
 
 
     //ctx.updateClipPlanesUBO();
-    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
+    //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, true);
     {
         Node* sourceNode = m_sourceNode.toNode();
 
@@ -352,7 +352,7 @@ void MirrorMapRenderer::drawNodes(
             render::NodeDraw::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
-    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
+    //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)

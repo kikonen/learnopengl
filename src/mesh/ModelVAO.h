@@ -12,10 +12,6 @@
 #include "mesh/TextureEntry.h"
 #include "mesh/IndexEntry.h"
 
-namespace kigl {
-    class GLState;
-}
-
 struct UpdateContext;
 
 namespace mesh {
@@ -29,8 +25,8 @@ namespace mesh {
         void prepare(std::string_view name);
         void clear();
 
-        void bind(kigl::GLState& state);
-        void unbind(kigl::GLState& state);
+        void bind();
+        void unbind();
 
         // @return VBO for model mesh
         kigl::GLVertexArray* registerModel(ModelVBO& modelVBO);

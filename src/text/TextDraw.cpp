@@ -150,11 +150,10 @@ namespace text
     {
     }
 
-    void TextDraw::updateRT(
-        kigl::GLState& state)
+    void TextDraw::updateRT()
     {
         if (m_lastFont) {
-            m_lastFont->bindTextures(state);
+            m_lastFont->bindTextures();
         }
     }
 

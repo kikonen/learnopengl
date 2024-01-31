@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "kigl/GLState.h"
+
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -172,7 +174,7 @@ namespace backend {
         }
 
         if (m_frustumGPU) {
-            m_cullingCompute->bind(*drawRange.m_state);
+            m_cullingCompute->bind();
 
             m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
 
@@ -300,9 +302,9 @@ namespace backend {
         const backend::DrawRange& drawRange) const
     {
         const auto& drawOptions = drawRange.m_drawOptions;
-        auto& state = *drawRange.m_state;
+        auto& state = kigl::GLState::get();
 
-        drawRange.m_program->bind(state);
+        drawRange.m_program->bind();
         state.bindVAO(*drawRange.m_vao);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);

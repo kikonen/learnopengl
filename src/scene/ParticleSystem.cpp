@@ -3,6 +3,8 @@
 #include "asset/Shader.h"
 #include "asset/Program.h"
 
+#include "kigl/GLState.h"
+
 #include "component/Camera.h"
 
 #include "engine/UpdateContext.h"
@@ -42,8 +44,10 @@ void ParticleSystem::bind(const RenderContext& ctx)
 
 void ParticleSystem::render(const RenderContext& ctx)
 {
-    ctx.m_state.setEnabled(GL_BLEND, true);
-    ctx.m_state.setEnabled(GL_CULL_FACE, false);
+    auto& state = kigl::GLState::get();
+
+    state.setEnabled(GL_BLEND, true);
+    state.setEnabled(GL_CULL_FACE, false);
 
     for (auto& w : particles) {
         //Program* program;// = t->bind(ctx, nullptr);

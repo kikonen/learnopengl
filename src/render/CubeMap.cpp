@@ -46,7 +46,8 @@ namespace render {
 
     void CubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, m_cubeTexture, false);
+        auto& state = kigl::GLState::get();
+        state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 
     //

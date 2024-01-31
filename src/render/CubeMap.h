@@ -13,10 +13,6 @@ class RenderContext;
 
 class Program;
 
-namespace {
-    class GLState;
-}
-
 namespace render {
     class CubeMap
     {

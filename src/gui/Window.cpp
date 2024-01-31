@@ -449,12 +449,14 @@ void Window::processInput(const InputContext& ctx)
 
 void Window::onWindowResize(int width, int height)
 {
+    auto& state = kigl::GLState::get();
+
     glViewport(0, 0, width, height);
 
     m_size = { width, height };
     m_sizeValid = false;
 
-    m_engine.getRegistry()->m_state.clear();
+    state.clear();
 }
 
 void Window::onMouseMove(float xpos, float ypos)

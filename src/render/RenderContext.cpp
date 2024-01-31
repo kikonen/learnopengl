@@ -5,6 +5,7 @@
 //#include <glm/ext.hpp>
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
 #include "component/Light.h"
 
@@ -14,8 +15,6 @@
 
 #include "script/CommandEngine.h"
 #include "script/ScriptEngine.h"
-
-#include "backend/RenderSystem.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -91,7 +90,6 @@ RenderContext::RenderContext(
     m_parent{ parent },
     m_assets{ assets },
     m_clock{ clock },
-    m_state{ registry->m_state },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
     m_batch{ batch },
@@ -194,13 +192,15 @@ void RenderContext::bindDefaults() const
 {
     validateRender("bind_defaults");
 
-    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    m_state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
-    m_state.cullFace(m_defaults.m_cullFace);
-    m_state.frontFace(m_defaults.m_frontFace);
+    auto& state = kigl::GLState::get();
 
-    m_state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
-    m_state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
+    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
+    state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
+    state.cullFace(m_defaults.m_cullFace);
+    state.frontFace(m_defaults.m_frontFace);
+
+    state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
+    state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
 }
 
 void RenderContext::updateUBOs() const

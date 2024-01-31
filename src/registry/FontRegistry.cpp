@@ -39,23 +39,21 @@ text::FontAtlas* FontRegistry::modifyFont(text::font_id id)
 }
 
 bool FontRegistry::bindFont(
-    kigl::GLState& state,
     text::font_id id)
 {
     auto* font = getFont(id);
     if (font) {
-        font->bindTextures(state);
+        font->bindTextures();
     }
     return font;
 }
 
 bool FontRegistry::unbindFont(
-    kigl::GLState& state,
     text::font_id id)
 {
     auto* font = getFont(id);
     if (font) {
-        font->unbindTextures(state);
+        font->unbindTextures();
     }
     return font;
 }
@@ -67,7 +65,7 @@ text::font_id FontRegistry::registerFont(
 
     auto& font = m_fonts.emplace_back<text::FontAtlas>({});
     font.m_name = name;
-    font.m_id = static_cast<ki::type_id>(m_fonts.size());
+    font.m_id = static_cast<text::font_id>(m_fonts.size());
 
     return font.m_id;
 }

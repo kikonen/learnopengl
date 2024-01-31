@@ -28,7 +28,7 @@ namespace render {
     {
         auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
-        auto& state = registry->m_state;
+        auto& state = kigl::GLState::get();
 
         m_size = assets.brdfLutSize;
 
@@ -48,9 +48,9 @@ namespace render {
             auto program = registry->m_programRegistry->getProgram(SHADER_BRDF_LUT);
             program->prepareRT(assets);
 
-            program->bind(state);
+            program->bind();
 
-            render(state, program, m_texture, m_size);
+            render(program, m_texture, m_size);
 
             state.clear();
         }
@@ -58,11 +58,11 @@ namespace render {
 
     void BrdfLutTexture::bindTexture(const RenderContext& ctx, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, m_texture, false);
+        auto& state = kigl::GLState::get();
+        state.bindTexture(unitIndex, m_texture, false);
     }
 
     void BrdfLutTexture::render(
-        kigl::GLState& state,
         Program* program,
         int textureID,
         int size)
@@ -100,7 +100,7 @@ namespace render {
             TextureQuad quad;
             quad.prepare();
 
-            quad.draw(state);
+            quad.draw();
         }
     }
 }

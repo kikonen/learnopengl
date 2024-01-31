@@ -3,8 +3,6 @@
 #include "kigl/kigl.h"
 
 namespace kigl {
-    class GLState;
-
     struct GLStencilOp {
         // glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         GLenum sfail{ GL_KEEP };

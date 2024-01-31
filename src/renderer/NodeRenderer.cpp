@@ -6,6 +6,8 @@
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "kigl/GLState.h"
+
 #include "mesh/MeshType.h"
 
 #include "component/Camera.h"
@@ -120,16 +122,18 @@ void NodeRenderer::fillHighlightMask(
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
+    auto& state = kigl::GLState::get();
+
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_HIGHLIGHT));
+    state.setStencil(kigl::GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
     // draw entity data mask
     {
-        //m_selectionProgramPointSprite->bind(ctx.m_state);
+        //m_selectionProgramPointSprite->bind();
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
 
-        m_selectionProgram->bind(ctx.m_state);
+        m_selectionProgram->bind();
         m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
 
         ctx.m_nodeDraw->drawProgram(
@@ -150,17 +154,19 @@ void NodeRenderer::renderHighlight(
     if (!ctx.m_assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
+    auto& state = kigl::GLState::get();
+
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
-    ctx.m_state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
+    state.setEnabled(GL_DEPTH_TEST, false);
+    state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
 
     // draw selection color (scaled a bit bigger)
     {
-        //m_selectionProgramPointSprite->bind(ctx.m_state);
+        //m_selectionProgramPointSprite->bind();
         //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
 
-        m_selectionProgram->bind(ctx.m_state);
+        m_selectionProgram->bind();
         m_selectionProgram->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
 
         // draw all selected nodes with stencil
@@ -173,5 +179,5 @@ void NodeRenderer::renderHighlight(
     }
     ctx.m_batch->flush(ctx);
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+    state.setEnabled(GL_DEPTH_TEST, true);
 }

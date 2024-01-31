@@ -2,6 +2,8 @@
 
 #include "glm/ext.hpp"
 
+#include "kigl/GLState.h"
+
 #include "render/RenderContext.h"
 
 namespace {
@@ -185,14 +187,16 @@ namespace render {
         const RenderContext& ctx,
         int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, textureID, false);
+        auto& state = kigl::GLState::get();
+        state.bindTexture(unitIndex, textureID, false);
     }
 
     void FrameBufferAttachment::unbindTexture(
         const RenderContext& ctx,
         int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, 0, true);
+        auto& state = kigl::GLState::get();
+        state.bindTexture(unitIndex, 0, true);
     }
 
     FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* shared)

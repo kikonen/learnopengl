@@ -3,6 +3,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "kigl/GLState.h"
+
 #include "component/Camera.h"
 
 #include "engine/PrepareContext.h"
@@ -161,7 +163,9 @@ void ObjectIdRenderer::render(
 
 void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+    auto& state = kigl::GLState::get();
+
+    state.setEnabled(GL_DEPTH_TEST, true);
 
     ctx.bindDefaults();
 
