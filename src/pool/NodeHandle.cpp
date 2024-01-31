@@ -38,9 +38,11 @@ namespace pool {
     {
         if (!m_handleIndex) return nullptr;
 
-        auto& entry = s_pool.getEntry(m_handleIndex);
-        if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
-            return &entry.m_data;
+        auto* entry = s_pool.getEntry(m_handleIndex);
+        if (!entry) return nullptr;
+
+        if (entry->m_data.m_id && entry->m_data.m_id == m_id) {
+            return &entry->m_data;
         }
 
         // TODO KI invalidated; clear iteslf
@@ -56,10 +58,12 @@ namespace pool {
         std::lock_guard lock(m_lock);
 
         auto handleIndex = s_pool.allocate();
-        auto& entry = s_pool.getEntry(handleIndex);
+        if (!handleIndex) return {};
 
-        entry.m_data.m_id = id;
-        entry.m_data.m_handleIndex = handleIndex;
+        auto* entry = s_pool.getEntry(handleIndex);
+
+        entry->m_data.m_id = id;
+        entry->m_data.m_handleIndex = handleIndex;
 
         m_IdToIndex.insert({ id, handleIndex });
 

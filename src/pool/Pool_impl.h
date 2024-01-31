@@ -3,11 +3,13 @@
 #include "Pool.h"
 
 namespace {
-    constexpr int32_t IN_USE = -1;
-    constexpr int32_t TERMINATOR = -2;
 }
 
 namespace pool {
+    inline int32_t NULL_INDEX = 0;
+    inline int32_t IN_USE = -1;
+    inline int32_t TERMINATOR = -2;
+
     template<typename T>
     Pool<T>::Pool(uint32_t blockSize)
         : m_blockSize{ blockSize },
@@ -28,18 +30,20 @@ namespace pool {
     }
 
     template<typename T>
-    Entry<T>& Pool<T>::getEntry(uint32_t handleIndex) noexcept
+    Entry<T>* Pool<T>::getEntry(uint32_t handleIndex) noexcept
     {
         // NOTE KI in theory lock needed, but logic quarantees that free operations
         // are not done in unsafe locationss
         //std::shared_lock lock(m_lock);
-        return m_pool[handleIndex];
+        return m_pool ? &m_pool[handleIndex] : nullptr;
     }
 
     template<typename T>
     void Pool<T>::release(uint32_t index) noexcept
     {
-        std::unique_lock lock(m_lock);
+        std::lock_guard lock(m_lock);
+
+        if (!m_pool) return;
 
         // TODO KI release memory properly
         auto& entry = m_pool[index];
@@ -51,9 +55,10 @@ namespace pool {
     template<typename T>
     uint32_t Pool<T>::allocate() noexcept
     {
-        std::unique_lock lock(m_lock);
+        std::lock_guard lock(m_lock);
 
-        if (m_nextFree == TERMINATOR) return 0;
+        if (m_nextFree == TERMINATOR) return NULL_INDEX;
+        if (!m_pool) return NULL_INDEX;
 
         uint32_t index = m_nextFree;
 
@@ -71,7 +76,7 @@ namespace pool {
     template<typename T>
     void Pool<T>::clear() noexcept
     {
-        std::unique_lock lock(m_lock);
+        std::lock_guard lock(m_lock);
 
         // NOTE KI release all used entries for clean shutdown
         for (uint32_t i = 0; i < m_blockSize; i++) {
