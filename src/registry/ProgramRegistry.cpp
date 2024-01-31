@@ -5,10 +5,8 @@
 #include "asset/Program.h"
 
 ProgramRegistry::ProgramRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+    const Assets& assets)
+    : m_assets(assets)
 {
 }
 
@@ -49,8 +47,6 @@ Program* ProgramRegistry::getProgram(
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<>>& defines)
 {
-    if (!*m_alive) return nullptr;
-
     std::lock_guard lock(m_programs_lock);
 
     std::string key{ name };

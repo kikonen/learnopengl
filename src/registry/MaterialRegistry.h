@@ -22,8 +22,7 @@ struct MaterialSSBO;
 class MaterialRegistry {
 public:
     MaterialRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+        const Assets& assets);
 
     ~MaterialRegistry();
 
@@ -53,8 +52,6 @@ private:
 
 private:
     const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};

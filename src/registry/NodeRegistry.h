@@ -31,8 +31,7 @@ class NodeRegistry final
 
 public:
     NodeRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+        const Assets& assets);
 
     ~NodeRegistry();
 
@@ -135,8 +134,6 @@ private:
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
 
     Registry* m_registry{ nullptr };
 

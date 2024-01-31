@@ -21,8 +21,7 @@ struct Shape;
 class SpriteRegistry {
 public:
     SpriteRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+        const Assets& assets);
 
     ~SpriteRegistry();
 
@@ -40,8 +39,6 @@ private:
 
 private:
     const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};

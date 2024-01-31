@@ -16,10 +16,8 @@ namespace {
 }
 
 SpriteRegistry::SpriteRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+    const Assets& assets)
+    : m_assets(assets)
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker
     m_shapesSSBO.reserve(MAX_SHAPE_COUNT);
