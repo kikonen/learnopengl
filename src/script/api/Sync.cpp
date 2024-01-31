@@ -26,7 +26,7 @@ namespace script
                     count++;
                 }
                 else {
-                    if (!ctx.m_registry->m_commandEngine->isAlive(commandId)) count++;
+                    if (!script::CommandEngine::get().isAlive(commandId)) count++;
                 }
             }
             m_syncedAll = m_commandIds.size() == count;

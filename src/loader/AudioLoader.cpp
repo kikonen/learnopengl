@@ -159,7 +159,7 @@ namespace loader
         const auto& assets = Assets::get();
 
         std::string fullPath = util::joinPath(assets.assetsDir, data.path);
-        auto soundId = m_registry->m_audioEngine->registerSound(fullPath);
+        auto soundId = audio::AudioEngine::get().registerSound(fullPath);
 
         if (!soundId) return;
 

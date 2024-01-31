@@ -22,10 +22,10 @@ void TextMaterial::updateRT(const RenderContext& ctx)
 
 void TextMaterial::bindTextures(const RenderContext& ctx)
 {
-    ctx.m_registry->m_fontRegistry->bindFont(m_fontId);
+    FontRegistry::get().bindFont(m_fontId);
 }
 
 void TextMaterial::unbindTextures(const RenderContext& ctx)
 {
-    ctx.m_registry->m_fontRegistry->unbindFont(m_fontId);
+    FontRegistry::get().unbindFont(m_fontId);
 }

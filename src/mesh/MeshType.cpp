@@ -101,11 +101,11 @@ namespace mesh {
         m_prepared = true;
 
         for (auto& material : m_materialVBO->modifyMaterials()) {
-            ctx.m_registry->m_materialRegistry->registerMaterial(material);
+            MaterialRegistry::get().registerMaterial(material);
         }
 
         if (m_entityType == EntityType::sprite && m_sprite) {
-            ctx.m_registry->m_spriteRegistry->registerSprite(*m_sprite);
+            SpriteRegistry::get().registerSprite(*m_sprite);
         }
 
         m_vao = m_mesh->prepareRT(ctx);
@@ -113,7 +113,7 @@ namespace mesh {
         {
             m_mesh->prepareMaterials(*m_materialVBO);
 
-            ctx.m_registry->m_materialRegistry->registerMaterialVBO(*m_materialVBO);
+            MaterialRegistry::get().registerMaterialVBO(*m_materialVBO);
             m_materialIndex = m_materialVBO->resolveMaterialIndex();
         }
 

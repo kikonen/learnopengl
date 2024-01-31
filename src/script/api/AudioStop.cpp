@@ -30,9 +30,9 @@ namespace script
             return;
         }
 
-        auto ae = ctx.m_registry->m_audioEngine;
+        auto& ae = audio::AudioEngine::get();
         const auto sourceId = getNode()->m_audioSourceIds[m_index];
-        ae->stopSource(sourceId);
+        ae.stopSource(sourceId);
 
         m_finished = true;
     }

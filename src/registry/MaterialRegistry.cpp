@@ -21,6 +21,12 @@ namespace {
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
+MaterialRegistry& MaterialRegistry::get() noexcept
+{
+    static MaterialRegistry s_registry;
+    return s_registry;
+}
+
 MaterialRegistry::MaterialRegistry()
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker

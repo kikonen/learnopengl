@@ -24,6 +24,11 @@ namespace {
 
 namespace script
 {
+    ScriptEngine& ScriptEngine::get() noexcept
+    {
+        static ScriptEngine s_engine;
+        return s_engine;
+    }
 
     ScriptEngine::ScriptEngine()
     {

@@ -22,7 +22,10 @@ class RenderContext;
 //
 class EntityRegistry {
 public:
+    static EntityRegistry& get() noexcept;
+
     EntityRegistry();
+    EntityRegistry& operator=(const EntityRegistry&) = delete;
 
     void prepare();
     void updateRT(const UpdateContext& ctx);

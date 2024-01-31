@@ -23,7 +23,7 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            ctx.m_registry->m_commandEngine->cancel(m_commandId);
+            script::CommandEngine::get().cancel(m_commandId);
         }
     }
 }

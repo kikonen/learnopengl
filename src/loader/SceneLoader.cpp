@@ -594,14 +594,14 @@ namespace loader {
                 definitions[DEF_USE_NORMAL_PATTERN] = "1";
             }
 
-            type->m_program = m_registry->m_programRegistry->getProgram(
+            type->m_program = ProgramRegistry::get().getProgram(
                 data.programName,
                 false,
                 data.geometryType,
                 definitions);
 
             if (!data.shadowProgramName.empty()) {
-                type->m_shadowProgram = m_registry->m_programRegistry->getProgram(
+                type->m_shadowProgram = ProgramRegistry::get().getProgram(
                     data.shadowProgramName,
                     false,
                     "",
@@ -609,7 +609,7 @@ namespace loader {
             }
 
             if (usePreDepth) {
-                type->m_preDepthProgram = m_registry->m_programRegistry->getProgram(
+                type->m_preDepthProgram = ProgramRegistry::get().getProgram(
                     data.preDepthProgramName,
                     false,
                     "",
@@ -688,7 +688,7 @@ namespace loader {
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
-            auto future = m_registry->m_modelRegistry->getMesh(
+            auto future = ModelRegistry::get().getMesh(
                 data.meshName,
                 assets.modelsDir,
                 data.meshPath);
@@ -701,7 +701,7 @@ namespace loader {
                 data.baseId, data.desc, type->str()));
         }
         else if (data.type == mesh::EntityType::quad) {
-            auto future = m_registry->m_modelRegistry->getMesh(
+            auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
             auto* mesh = future.get();
@@ -709,7 +709,7 @@ namespace loader {
             type->m_entityType = mesh::EntityType::quad;
         }
         else if (data.type == mesh::EntityType::billboard) {
-            auto future = m_registry->m_modelRegistry->getMesh(
+            auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
             auto* mesh = future.get();
@@ -717,7 +717,7 @@ namespace loader {
             type->m_entityType = mesh::EntityType::billboard;
         }
         else if (data.type == mesh::EntityType::sprite) {
-            auto future = m_registry->m_modelRegistry->getMesh(
+            auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
             auto* mesh = future.get();
@@ -820,7 +820,7 @@ namespace loader {
                     data.customMaterial,
                     cloneIndex,
                     tile));
-            m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
+            MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
         }
 
         return handle;

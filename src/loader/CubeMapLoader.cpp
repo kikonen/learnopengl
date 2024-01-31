@@ -41,7 +41,7 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<cube_map>");
 
-        auto future = m_registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             "ball_volume",
             assets.modelsDir);
         auto& mesh = future.get();
@@ -71,7 +71,7 @@ namespace loader {
         flags.noNormals = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
-        type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
+        type->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 
         auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();

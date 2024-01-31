@@ -10,7 +10,10 @@ class Program;
 class ProgramRegistry final
 {
 public:
+    static ProgramRegistry& get() noexcept;
+
     ProgramRegistry();
+    ProgramRegistry& operator=(const ProgramRegistry&) = delete;
 
     ~ProgramRegistry();
 

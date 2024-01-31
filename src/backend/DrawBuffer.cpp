@@ -68,7 +68,7 @@ namespace backend {
 
         if (m_frustumGPU) {
             m_computeGroups = assets.computeGroups;
-            m_cullingCompute = registry->m_programRegistry->getComputeProgram(
+            m_cullingCompute = ProgramRegistry::get().getComputeProgram(
                 CS_FRUSTUM_CULLING,
                 {
                     { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },

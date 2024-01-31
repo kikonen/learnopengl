@@ -77,9 +77,13 @@ namespace physics
         }
     };
 
-    PhysicsEngine::PhysicsEngine(
-        std::shared_ptr<std::atomic<bool>> alive)
-        : m_alive(alive)
+    PhysicsEngine& PhysicsEngine::get() noexcept
+    {
+        static PhysicsEngine s_engine;
+        return s_engine;
+    }
+
+    PhysicsEngine::PhysicsEngine()
     {
     }
 
@@ -102,9 +106,11 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::prepare()
+    void PhysicsEngine::prepare(std::shared_ptr<std::atomic<bool>> alive)
     {
         m_prepared = true;
+        m_alive = alive;
+
         dInitODE2(0);
         m_worldId = dWorldCreate();
         m_spaceId = dHashSpaceCreate(0);

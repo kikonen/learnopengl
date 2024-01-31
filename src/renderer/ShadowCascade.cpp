@@ -86,8 +86,8 @@ void ShadowCascade::prepareRT(
     const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
-    m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
-    m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_solidShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
+    m_alphaShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
     m_solidShadowProgram->prepareRT();
     m_alphaShadowProgram->prepareRT();
@@ -118,7 +118,7 @@ GLuint ShadowCascade::getTextureID()
 
 void ShadowCascade::bind(const RenderContext& ctx)
 {
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto* node = NodeRegistry::get().getDirLightNode().toNode();
     if (!node) return;
 
     {

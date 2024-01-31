@@ -20,7 +20,10 @@ struct MaterialSSBO;
 
 class MaterialRegistry {
 public:
+    static MaterialRegistry& get() noexcept;
+
     MaterialRegistry();
+    MaterialRegistry& operator=(const MaterialRegistry&) = delete;
 
     ~MaterialRegistry();
 

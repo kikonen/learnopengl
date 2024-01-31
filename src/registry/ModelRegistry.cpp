@@ -11,17 +11,22 @@
 namespace {
 }
 
-ModelRegistry::ModelRegistry(
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive(alive)
+ModelRegistry& ModelRegistry::get() noexcept
+{
+    static ModelRegistry s_registry;
+    return s_registry;
+}
+
+ModelRegistry::ModelRegistry()
 {
 }
 
 ModelRegistry::~ModelRegistry() {
 }
 
-void ModelRegistry::prepare()
+void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 {
+    m_alive = alive;
     m_vao.prepare("model");
 }
 

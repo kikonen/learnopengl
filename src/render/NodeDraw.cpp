@@ -76,28 +76,28 @@ namespace render {
         m_plainQuad.prepare();
         m_textureQuad.prepare();
 
-        m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
+        m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS);
         m_deferredProgram->prepareRT();
 
-        m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
+        m_oitProgram = ProgramRegistry::get().getProgram(SHADER_OIT_PASS);
         m_oitProgram->prepareRT();
 
-        m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
+        m_blendOitProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS);
         m_blendOitProgram->prepareRT();
 
-        m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
+        m_bloomProgram = ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS);
         m_bloomProgram->prepareRT();
 
-        m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
+        m_blendBloomProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS);
         m_blendBloomProgram->prepareRT();
 
-        m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
+        m_emissionProgram = ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS);
         m_emissionProgram->prepareRT();
 
-        m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
+        m_fogProgram = ProgramRegistry::get().getProgram(SHADER_FOG_PASS);
         m_fogProgram->prepareRT();
 
-        m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
+        m_hdrGammaProgram = ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS);
         m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
@@ -618,7 +618,7 @@ namespace render {
     {
         bool rendered{ false };
 
-        auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
+        auto& nodeRegistry = NodeRegistry::get();
 
         auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
             auto* type = typeMap.begin()->first.m_typeHandle.toType();
@@ -766,7 +766,7 @@ namespace render {
     {
         auto& state = kigl::GLState::get();
 
-        auto* node = ctx.m_registry->m_nodeRegistry->m_skybox.toNode();
+        auto* node = NodeRegistry::get().m_skybox.toNode();
         if (!node) return;
 
         auto* type = node->m_typeHandle.toType();

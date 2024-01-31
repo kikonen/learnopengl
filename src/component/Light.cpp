@@ -37,7 +37,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) {
             KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", m_targetId));
-            targetNode = ctx.m_registry->m_nodeRegistry->getRootRT();
+            targetNode = NodeRegistry::get().getRootRT();
         }
 
         if (!targetNode) return;

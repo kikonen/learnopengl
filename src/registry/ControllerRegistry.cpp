@@ -13,6 +13,12 @@
 
 class Node;
 
+ControllerRegistry& ControllerRegistry::get() noexcept
+{
+    static ControllerRegistry s_registry;
+    return s_registry;
+}
+
 ControllerRegistry::~ControllerRegistry()
 {
     for (const auto& it : m_controllers) {

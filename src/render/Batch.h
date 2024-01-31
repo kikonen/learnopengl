@@ -18,7 +18,6 @@ struct PrepareContext;
 class RenderContext;
 
 class Node;
-class EntityRegistry;
 
 namespace render {
     // NOTE KI use single shared UBO buffer for rendering
@@ -93,8 +92,6 @@ namespace render {
         bool m_frustumGPU = false;
 
         std::vector<BatchCommand> m_batches;
-
-        EntityRegistry* m_entityRegistry{ nullptr };
 
         std::vector<int> m_entityIndeces;
 

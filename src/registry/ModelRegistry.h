@@ -23,12 +23,14 @@ namespace mesh {
 
 class ModelRegistry {
 public:
-    ModelRegistry(
-        std::shared_ptr<std::atomic<bool>> alive);
+    static ModelRegistry& get() noexcept;
+
+    ModelRegistry();
+    ModelRegistry& operator=(const ModelRegistry&) = delete;
 
     ~ModelRegistry();
 
-    void prepare();
+    void prepare(std::shared_ptr<std::atomic<bool>> alive);
 
     void updateRT(const UpdateContext& ctx);
 

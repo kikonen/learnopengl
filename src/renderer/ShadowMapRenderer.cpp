@@ -71,7 +71,7 @@ void ShadowMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH));
+            ProgramRegistry::get().getProgram(SHADER_DEBUG_DEPTH));
 
         m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
@@ -94,7 +94,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto* node = NodeRegistry::get().getDirLightNode().toNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -127,7 +127,7 @@ bool ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto* node = NodeRegistry::get().getDirLightNode().toNode();
     if (!node) return false;
 
     const auto& assets = Assets::get();

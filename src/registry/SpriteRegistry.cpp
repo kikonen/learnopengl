@@ -15,6 +15,12 @@ namespace {
     constexpr size_t MAX_SHAPE_COUNT = SHAPE_BLOCK_SIZE * SHAPE_BLOCK_COUNT;
 }
 
+SpriteRegistry& SpriteRegistry::get() noexcept
+{
+    static SpriteRegistry s_registry;
+    return s_registry;
+}
+
 SpriteRegistry::SpriteRegistry()
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker

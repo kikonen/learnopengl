@@ -108,7 +108,7 @@ void CubeMapRenderer::prepareRT(
     m_tagId = assets.cubeMapId;
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
+    MaterialRegistry::get().registerMaterial(m_tagMaterial);
 
     int size = assets.cubeMapSize;
 
@@ -189,7 +189,7 @@ bool CubeMapRenderer::render(
     if (assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto* rootNode = parentCtx.m_registry->m_nodeRegistry->getRootRT();
+            const auto* rootNode = NodeRegistry::get().getRootRT();
             const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
             const auto& rootSnapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(rootNode->m_snapshotIndex);
 
@@ -197,7 +197,7 @@ bool CubeMapRenderer::render(
             const auto& centerPos = snapshot.getWorldPosition();
             const auto tagPos = centerPos - rootPos;
 
-            m_registry->m_commandEngine->addCommand(
+            script::CommandEngine::get().addCommand(
                 0,
                 script::MoveNode{
                     tagNode->getId(),

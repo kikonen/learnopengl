@@ -24,7 +24,11 @@ namespace script
     class ScriptEngine final
     {
     public:
+        static ScriptEngine& get() noexcept;
+
         ScriptEngine();
+        ScriptEngine& operator=(const ScriptEngine&) = delete;
+
         ~ScriptEngine();
 
         void prepare(

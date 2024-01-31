@@ -58,7 +58,7 @@ namespace render {
         }
 
         {
-            auto program = registry->m_programRegistry->getProgram(SHADER_PREFILTER_CUBE_MAP);
+            auto* program = ProgramRegistry::get().getProgram(SHADER_PREFILTER_CUBE_MAP);
             program->prepareRT();
 
             program->bind();

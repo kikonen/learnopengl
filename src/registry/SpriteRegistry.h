@@ -19,7 +19,10 @@ struct Shape;
 
 class SpriteRegistry {
 public:
+    static SpriteRegistry& get() noexcept;
+
     SpriteRegistry();
+    SpriteRegistry& operator=(const SpriteRegistry&) = delete;
 
     ~SpriteRegistry();
 

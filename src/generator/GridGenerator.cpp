@@ -83,8 +83,6 @@ void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     Node& node)
 {
-    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
-
     const auto count = m_zCount * m_xCount * m_yCount;
 
     m_transforms.reserve(count);

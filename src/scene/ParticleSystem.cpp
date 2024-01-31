@@ -30,7 +30,7 @@ void ParticleSystem::prepareRT(
     if (m_prepared) return;
     m_prepared = true;
 
-    particleProgram = ctx.m_registry->m_programRegistry->getProgram(SHADER_PARTICLE, {});
+    particleProgram = ProgramRegistry::get().getProgram(SHADER_PARTICLE, {});
     particleProgram->prepareRT();
 }
 

@@ -11,9 +11,12 @@ class NodeController;
 
 class ControllerRegistry {
 public:
+    static ControllerRegistry& get() noexcept;
+
     ControllerRegistry()
     {
     }
+    ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     ~ControllerRegistry();
 

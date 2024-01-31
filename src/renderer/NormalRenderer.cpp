@@ -26,7 +26,7 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
+    m_normalProgram = ProgramRegistry::get().getProgram(SHADER_NORMAL);
     m_normalProgram->prepareRT();
 }
 

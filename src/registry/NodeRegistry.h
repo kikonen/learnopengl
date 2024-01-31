@@ -29,7 +29,10 @@ class NodeRegistry final
     friend class Node;
 
 public:
+    static NodeRegistry& get() noexcept;
+
     NodeRegistry();
+    NodeRegistry& operator=(const NodeRegistry&) = delete;
 
     ~NodeRegistry();
 

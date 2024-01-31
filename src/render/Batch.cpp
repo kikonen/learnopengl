@@ -179,8 +179,6 @@ namespace render {
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
-
-        m_entityRegistry = ctx.m_registry->m_entityRegistry;
     }
 
     void Batch::addCommand(

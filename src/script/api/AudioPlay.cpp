@@ -31,12 +31,12 @@ namespace script
             return;
         }
 
-        auto ae = ctx.m_registry->m_audioEngine;
+        auto& ae = audio::AudioEngine::get();
         const auto sourceId = getNode()->m_audioSourceIds[m_index];
         if (!m_started) {
-            ae->playSource(sourceId);
+            ae.playSource(sourceId);
             m_started = true;
         }
-        m_finished = m_sync ? !ae->isPlaying(sourceId) : true;
+        m_finished = m_sync ? !ae.isPlaying(sourceId) : true;
     }
 }

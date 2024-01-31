@@ -27,11 +27,14 @@ struct NodeTransform;
 namespace physics {
     class PhysicsEngine {
     public:
-        PhysicsEngine(
-            std::shared_ptr<std::atomic<bool>> alive);
+        static PhysicsEngine& get() noexcept;
+
+        PhysicsEngine();
+        PhysicsEngine& operator=(const PhysicsEngine&) = delete;
+
         ~PhysicsEngine();
 
-        void prepare();
+        void prepare(std::shared_ptr<std::atomic<bool>> alive);
         void update(const UpdateContext& ctx);
         void updateBounds(const UpdateContext& ctx);
 

@@ -58,7 +58,7 @@ void WaterMapRenderer::prepareRT(
     const auto& assets = Assets::get();
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
+    MaterialRegistry::get().registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
@@ -82,7 +82,7 @@ void WaterMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
@@ -104,7 +104,7 @@ void WaterMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
             auto& buffer = m_refractionBuffers[m_prevIndex];

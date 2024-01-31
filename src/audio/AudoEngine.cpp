@@ -21,6 +21,12 @@ namespace audio
 {
     struct Sound;
 
+    AudioEngine& AudioEngine::get() noexcept
+    {
+        static AudioEngine s_engine;
+        return s_engine;
+    }
+
     AudioEngine::AudioEngine()
         : m_soundRegistry(std::make_unique<SoundRegistry>())
     {

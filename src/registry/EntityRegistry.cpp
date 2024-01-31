@@ -27,6 +27,12 @@ namespace {
     constexpr size_t MAX_SKIP = 20;
 }
 
+EntityRegistry& EntityRegistry::get() noexcept
+{
+    static EntityRegistry s_registry;
+    return s_registry;
+}
+
 EntityRegistry::EntityRegistry()
 {
     // null entry
@@ -220,5 +226,5 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
+    NodeRegistry::get().updateEntity(ctx);
 }

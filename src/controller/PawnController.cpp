@@ -84,7 +84,7 @@ void PawnController::onKey(
             }
 
             if (changed) {
-                m_registry->m_commandEngine->addCommand(
+                script::CommandEngine::get().addCommand(
                     0,
                     script::RotateNode{
                         m_nodeHandle.toId(),
@@ -141,7 +141,7 @@ void PawnController::onKey(
         }
 
         if (changed) {
-            m_registry->m_commandEngine->addCommand(
+            script::CommandEngine::get().addCommand(
                 0,
                 script::MoveNode{
                     m_nodeHandle.toId(),
@@ -178,7 +178,7 @@ void PawnController::onMouseMove(
     }
 
     if (changed) {
-        m_registry->m_commandEngine->addCommand(
+        script::CommandEngine::get().addCommand(
             0,
             script::RotateNode{
                 m_nodeHandle.toId(),

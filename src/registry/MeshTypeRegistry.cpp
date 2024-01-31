@@ -7,6 +7,12 @@
 namespace {
 }
 
+MeshTypeRegistry& MeshTypeRegistry::get() noexcept
+{
+    static MeshTypeRegistry s_registry;
+    return s_registry;
+}
+
 MeshTypeRegistry::MeshTypeRegistry()
 {
 }

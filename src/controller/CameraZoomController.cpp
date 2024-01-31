@@ -74,7 +74,7 @@ void CameraZoomController::onKey(
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            auto nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_nodeHandle, offset);
+            auto nextCamera = NodeRegistry::get().getNextCameraNode(m_nodeHandle, offset);
 
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
@@ -135,7 +135,7 @@ void CameraZoomController::onMouseMove(
     }
 
     if (changed) {
-        m_registry->m_commandEngine->addCommand(
+        script::CommandEngine::get().addCommand(
             0,
             script::RotateNode{
                 m_nodeHandle.toId(),

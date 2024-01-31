@@ -104,9 +104,9 @@ physics::HeightMap* TerrainGenerator::prepareHeightMap(
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = image->load();
 
-    auto* pe = registry->m_physicsEngine;
-    auto id = pe->registerHeightMap();
-    auto* heightMap = pe->getHeightMap(id);
+    auto& pe = physics::PhysicsEngine::get();
+    auto id = pe.registerHeightMap();
+    auto* heightMap = pe.getHeightMap(id);
 
     {
         heightMap->m_origin = &container;
@@ -166,8 +166,7 @@ void TerrainGenerator::createTiles(
     const auto& assets = Assets::get();
     auto& registry = ctx.m_registry;
 
-    auto* entityRegistry = registry->m_entityRegistry;
-    auto* materialRegistry = registry->m_materialRegistry;
+    auto& entityRegistry = EntityRegistry::get();
 
     const float scale = m_worldTileSize / 2.f;
 
@@ -184,7 +183,7 @@ void TerrainGenerator::createTiles(
 
     auto typeHandle = createType(registry, container.m_typeHandle);
     {
-        auto future = registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             TERRAIN_QUAD_MESH_NAME,
             m_modelsDir);
         auto* mesh = future.get();
@@ -205,13 +204,13 @@ void TerrainGenerator::createTiles(
         auto& drawOptions = type->modifyDrawOptions();
         drawOptions.m_patchVertices = 3;
 
-        type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
+        type->modifyMaterials([this, &materialIndex, &assets](Material& m) {
             m.tilingX = (float)m_worldTilesU;
             m.tilingY = (float)m_worldTilesV;
 
             m.loadTextures();
 
-            materialRegistry->registerMaterial(m);
+            MaterialRegistry::get().registerMaterial(m);
             materialIndex = m.m_registeredIndex;
         });
     }

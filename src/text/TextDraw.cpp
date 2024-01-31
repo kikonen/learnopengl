@@ -164,7 +164,7 @@ namespace text
         glm::vec2& pen,
         mesh::ModelVBO& vbo)
     {
-        auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
+        auto* font = FontRegistry::get().getFont(fontId);
         if (!font) return;
 
         addText(vbo, font, text, pen);

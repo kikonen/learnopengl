@@ -9,7 +9,10 @@ struct UpdateContext;
 
 class FontRegistry {
 public:
+    static FontRegistry& get() noexcept;
+
     FontRegistry();
+    FontRegistry& operator=(const FontRegistry&) = delete;
 
     ~FontRegistry();
 

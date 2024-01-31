@@ -13,7 +13,10 @@ class RenderContext;
 //
 class MeshTypeRegistry {
 public:
+    static MeshTypeRegistry& get() noexcept;
+
     MeshTypeRegistry();
+    MeshTypeRegistry& operator=(const MeshTypeRegistry&) = delete;
 
     ~MeshTypeRegistry();
 

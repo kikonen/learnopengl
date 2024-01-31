@@ -202,7 +202,7 @@ void Scene::prepareRT()
             glm::vec2(2.f, 2.f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_mainViewport->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
         });
@@ -220,7 +220,7 @@ void Scene::prepareRT()
         m_mainViewport->setEffect(assets.viewportEffect);
 
         m_mainViewport->prepareRT();
-        m_registry->m_viewportRegistry->addViewport(m_mainViewport);
+        ViewportRegistry::get().addViewport(m_mainViewport);
     }
 
     if (assets.showRearView) {
@@ -231,7 +231,7 @@ void Scene::prepareRT()
             glm::vec2(0.5f, 0.5f),
             true,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_rearViewport->setBindBefore([this](Viewport& vp) {
             auto* buffer = m_rearRenderer->m_buffer.get();
@@ -243,31 +243,31 @@ void Scene::prepareRT()
         m_rearViewport->setHardwareGamma(true);
 
         m_rearViewport->prepareRT();
-        m_registry->m_viewportRegistry->addViewport(m_rearViewport);
+        ViewportRegistry::get().addViewport(m_rearViewport);
     }
 
     if (assets.showObjectIDView) {
         if (m_objectIdRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
+            ViewportRegistry::get().addViewport(m_objectIdRenderer->m_debugViewport);
         }
     }
 
     if (assets.showShadowMapView) {
         if (m_shadowMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_shadowMapRenderer->m_debugViewport);
+            ViewportRegistry::get().addViewport(m_shadowMapRenderer->m_debugViewport);
         }
     }
     if (assets.showReflectionView) {
         if (m_waterMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
+            ViewportRegistry::get().addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_reflectionDebugViewport);
+            ViewportRegistry::get().addViewport(m_mirrorMapRenderer->m_reflectionDebugViewport);
         }
     }
     if (assets.showRefractionView) {
         if (m_waterMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_refractionDebugViewport);
+            ViewportRegistry::get().addViewport(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
@@ -320,7 +320,7 @@ void Scene::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    m_registry->m_nodeRegistry->handleNodeAdded(node);
+    NodeRegistry::get().handleNodeAdded(node);
     m_nodeDraw->handleNodeAdded(node);
     m_mirrorMapRenderer->handleNodeAdded(node);
     m_waterMapRenderer->handleNodeAdded(node);
@@ -333,7 +333,7 @@ void Scene::bind(const RenderContext& ctx)
         m_shadowMapRenderer->bind(ctx);
     }
 
-    m_registry->m_typeRegistry->bind(ctx);
+    MeshTypeRegistry::get().bind(ctx);
 
     m_renderData->bind();
 
@@ -476,9 +476,9 @@ void Scene::drawScene(
 {
     auto& assets = Assets::get();
 
-    m_registry->m_materialRegistry->bind(ctx);
-    m_registry->m_spriteRegistry->bind(ctx);
-    m_registry->m_entityRegistry->bind(ctx);
+    MaterialRegistry::get().bind(ctx);
+    SpriteRegistry::get().bind(ctx);
+    EntityRegistry::get().bind(ctx);
 
     if (m_cubeMapRenderer->isEnabled()) {
         m_cubeMapRenderer->bindTexture(ctx);
@@ -509,24 +509,24 @@ void Scene::drawScene(
 
 Node* Scene::getActiveNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveNode();
+    return NodeRegistry::get().getActiveNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
-    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
 }
 
 Node* Scene::getActiveCameraNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCameraNode();
+    return NodeRegistry::get().getActiveCameraNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCameraNode();
-    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
 }
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)

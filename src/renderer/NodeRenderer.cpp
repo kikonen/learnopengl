@@ -44,10 +44,10 @@ void NodeRenderer::prepareRT(
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
-    m_selectionProgram = m_registry->m_programRegistry->getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    m_selectionProgram = ProgramRegistry::get().getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionProgram->prepareRT();
 
-    //m_selectionProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
+    //m_selectionProgramPointSprite = ProgramRegistry::get().getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
     //m_selectionProgramPointSprite->prepare(assets);
 }
 
@@ -98,8 +98,8 @@ void NodeRenderer::render(
 
     ctx.validateRender("node_map");
 
-    m_taggedCount = assets.showTagged ? ctx.m_registry->m_nodeRegistry->countTagged() : 0;
-    m_selectedCount = assets.showSelection ? ctx.m_registry->m_nodeRegistry->countSelected() : 0;
+    m_taggedCount = assets.showTagged ? NodeRegistry::get().countTagged() : 0;
+    m_selectedCount = assets.showSelection ? NodeRegistry::get().countSelected() : 0;
 
     {
         targetBuffer->clearAll();

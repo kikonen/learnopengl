@@ -51,7 +51,7 @@ void TestSceneSetup::setup(
 void TestSceneSetup::setupEffectExplosion()
 {
     m_asyncLoader->addLoader(m_alive, [this]() {
-        Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
+        Program* program = ProgramRegistry::get().getProgram(SHADER_EFFECT);
 
         const auto& assets = Assets::get();
 
@@ -105,7 +105,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec2(0.25f, 0.25f),
         false,
         texture->m_textureID,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+        ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
     viewport->prepareRT();
-    m_registry->m_viewportRegistry->addViewport(viewport);
+    ViewportRegistry::get().addViewport(viewport);
 }

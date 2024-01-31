@@ -4,6 +4,12 @@
 
 #include "kigl/GLState.h"
 
+FontRegistry& FontRegistry::get() noexcept
+{
+    static FontRegistry s_registry;
+    return s_registry;
+}
+
 FontRegistry::FontRegistry()
 {}
 

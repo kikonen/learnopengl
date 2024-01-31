@@ -30,7 +30,7 @@ bool VolumeController::updateWT(
     const auto& modelMatrix = transform.getModelMatrix();
     const auto& maxScale = transform.getWorldMaxScale();
 
-    const auto* rootNode = ctx.m_registry->m_nodeRegistry->getRootWT();
+    const auto* rootNode = NodeRegistry::get().getRootWT();
     const auto& rootPos = rootNode->getTransform().getWorldPosition();
 
     const auto& volume = transform.getVolume();

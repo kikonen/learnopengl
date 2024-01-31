@@ -90,7 +90,7 @@ namespace mesh {
         m_indeces.clear();
         //m_vertices.clear();
 
-        m_vao = ctx.m_registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
+        m_vao = ModelRegistry::get().registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 

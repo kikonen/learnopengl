@@ -128,7 +128,7 @@ namespace loader {
         for (const auto& script : scripts) {
             if (script.empty()) continue;
 
-            auto scriptId = m_registry->m_scriptEngine->registerScript(script);
+            auto scriptId = script::ScriptEngine::get().registerScript(script);
             {
                 event::Event evt { event::Type::script_bind };
                 auto& body = evt.body.script = {

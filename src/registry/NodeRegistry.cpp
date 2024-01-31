@@ -52,6 +52,12 @@ namespace {
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 }
 
+NodeRegistry& NodeRegistry::get() noexcept
+{
+    static NodeRegistry s_registry;
+    return s_registry;
+}
+
 NodeRegistry::NodeRegistry()
 {
 }
@@ -88,7 +94,7 @@ void NodeRegistry::prepare(
     m_registry = registry;
     m_selectionMaterial = std::make_unique<Material>();
     *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->registerMaterial(*m_selectionMaterial);
+    MaterialRegistry::get().registerMaterial(*m_selectionMaterial);
 
     attachListeners();
 }
@@ -108,8 +114,8 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
     }
 
-    ctx.m_registry->m_physicsEngine->updateBounds(ctx);
-    ctx.m_registry->m_controllerRegistry->updateWT(ctx);
+    physics::PhysicsEngine::get().updateBounds(ctx);
+    ControllerRegistry::get().updateWT(ctx);
 
     {
         snapshotWT(*m_registry->m_snapshotRegistry);
@@ -175,7 +181,7 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
     auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
-    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
+    auto& entityRegistry = EntityRegistry::get();
 
     std::lock_guard lock(m_snapshotLock);
 
@@ -224,8 +230,8 @@ void NodeRegistry::attachListeners()
                 auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
 
-                auto* se = m_registry->m_scriptEngine;
-                const auto& scripts = se->getNodeScripts(data.target);
+                auto& se = script::ScriptEngine::get();
+                const auto& scripts = se.getNodeScripts(data.target);
 
                 for (const auto& scriptId : scripts) {
                     {
@@ -273,10 +279,10 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.blob->body.audioListener;
             auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
-            auto* ae = m_registry->m_audioEngine;
-            auto id = ae->registerListener();
+            auto& ae = audio::AudioEngine::get();
+            auto id = ae.registerListener();
             if (id) {
-                auto* listener = ae->getListener(id);
+                auto* listener = ae.getListener(id);
 
                 listener->m_default = data.isDefault;
                 listener->m_gain = data.gain;
@@ -292,13 +298,13 @@ void NodeRegistry::attachListeners()
                 return;
             }
             auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
-            auto* ae = m_registry->m_audioEngine;
-            auto id = ae->registerSource(data.soundId);
+            auto& ae = audio::AudioEngine::get();
+            auto id = ae.registerSource(data.soundId);
             if (id) {
                 auto* node = handle.toNode();
                 node->m_audioSourceIds[data.index] = id;
 
-                auto* source = ae->getSource(id);
+                auto* source = ae.getSource(id);
 
                 source->m_autoPlay = data.isAutoPlay;
                 source->m_referenceDistance = data.referenceDistance;
@@ -317,41 +323,41 @@ void NodeRegistry::attachListeners()
         event::Type::audio_listener_activate,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->setActiveListener(data.id);
+            audio::AudioEngine::get().setActiveListener(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_play,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->playSource(data.id);
+            audio::AudioEngine::get().playSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_stop,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->stopSource(data.id);
+            audio::AudioEngine::get().stopSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_pause,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->pauseSource(data.id);
+            audio::AudioEngine::get().pauseSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::physics_add,
         [this](const event::Event& e) {
             auto& data = e.blob->body.physics;
-            auto* pe = m_registry->m_physicsEngine;
+            auto& pe = physics::PhysicsEngine::get();
             auto handle = pool::NodeHandle::toHandle(e.body.physics.target);
 
-            auto id = pe->registerObject();
+            auto id = pe.registerObject();
 
             if (id) {
-                auto* obj = pe->getObject(id);
+                auto* obj = pe.getObject(id);
                 obj->m_update = data.update;
                 obj->m_body = data.body;
                 obj->m_geom = data.geom;
@@ -365,7 +371,7 @@ void NodeRegistry::attachListeners()
             [this](const event::Event& e) {
                 auto& data = e.body.script;
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                m_registry->m_scriptEngine->bindNodeScript(data.target, data.id);
+                script::ScriptEngine::get().bindNodeScript(data.target, data.id);
             });
 
         dispatcher->addListener(
@@ -374,11 +380,11 @@ void NodeRegistry::attachListeners()
                 auto& data = e.body.script;
                 if (data.target) {
                     if (auto* node = pool::NodeHandle::toNode(data.target)) {
-                        m_registry->m_scriptEngine->runNodeScript(node, data.id);
+                        script::ScriptEngine::get().runNodeScript(node, data.id);
                     }
                 }
                 else {
-                    m_registry->m_scriptEngine->runGlobalScript(data.id);
+                    script::ScriptEngine::get().runGlobalScript(data.id);
                 }
             });
     }
@@ -408,7 +414,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     node->m_preparedRT = true;
 
     if (type->getMesh()) {
-        node->m_entityIndex = m_registry->m_entityRegistry->registerEntity();
+        node->m_entityIndex = EntityRegistry::get().registerEntity();
     }
 
     if (node->m_camera) {

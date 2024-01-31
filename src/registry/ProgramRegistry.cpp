@@ -4,6 +4,12 @@
 
 #include "asset/Program.h"
 
+ProgramRegistry& ProgramRegistry::get() noexcept
+{
+    static ProgramRegistry s_registry;
+    return s_registry;
+}
+
 ProgramRegistry::ProgramRegistry()
 {
 }

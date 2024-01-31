@@ -46,7 +46,7 @@ namespace render {
         }
 
         {
-            auto program = registry->m_programRegistry->getProgram(SHADER_BRDF_LUT);
+            auto* program = ProgramRegistry::get().getProgram(SHADER_BRDF_LUT);
             program->prepareRT();
 
             program->bind();

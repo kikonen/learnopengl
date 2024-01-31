@@ -111,7 +111,7 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        auto future = m_registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             SKYBOX_MESH_NAME,
             assets.modelsDir);
         auto* mesh = future.get();
@@ -131,7 +131,7 @@ namespace loader {
         flags.noNormals = true;
         flags.gbuffer = false;// data.programName.starts_with("g_");
 
-        type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
+        type->m_program = ProgramRegistry::get().getProgram(data.programName);
 
         bool gammaCorrect = data.gammaCorrect;
         if (data.hdri) {
@@ -147,7 +147,7 @@ namespace loader {
             material->m_faces = data.faces;
         }
 
-        m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
+        MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
 
         type->setCustomMaterial(std::move(material));
 

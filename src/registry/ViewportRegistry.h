@@ -7,9 +7,12 @@
 class ViewportRegistry
 {
 public:
+    static ViewportRegistry& get() noexcept;
+
     ViewportRegistry()
     {
     }
+    ViewportRegistry& operator=(const ViewportRegistry&) = delete;
 
     void prepare();
 

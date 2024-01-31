@@ -100,10 +100,10 @@ void ObjectIdRenderer::prepareRT(
 
     const auto& assets = Assets::get();
 
-    m_idProgram = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    m_idProgram = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepareRT();
 
-    //m_idProgramPointSprite = m_registry->m_programRegistry->getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
+    //m_idProgramPointSprite = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
     //m_idProgramPointSprite->prepare(assets);
 
     m_debugViewport = std::make_shared<Viewport>(
@@ -114,7 +114,7 @@ void ObjectIdRenderer::prepareRT(
         glm::vec2(0.5f, 0.5f),
         true,
         0,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+        ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
     m_debugViewport->prepareRT();
 }

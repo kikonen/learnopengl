@@ -23,7 +23,7 @@ void ViewportRenderer::prepareRT(
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
+    for (auto& viewport : ViewportRegistry::get().getViewports()) {
         viewport->updateRT(ctx);
     }
 }
@@ -32,7 +32,7 @@ void ViewportRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* destinationBuffer)
 {
-    auto& viewports = ctx.m_registry->m_viewportRegistry->getViewports();
+    auto& viewports = ViewportRegistry::get().getViewports();
 
     if (viewports.empty()) return;
 

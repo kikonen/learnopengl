@@ -92,21 +92,21 @@ int SampleApp::onSetup()
     }
 
     if (false) {
-        auto engine = m_registry->m_audioEngine;
-        audio::sound_id soundId = engine->registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
+        auto& engine = audio::AudioEngine::get();
+        audio::sound_id soundId = engine.registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
 
-        audio::source_id sourceId = engine->registerSource(soundId);
-        auto* source = engine->getSource(sourceId);
+        audio::source_id sourceId = engine.registerSource(soundId);
+        auto* source = engine.getSource(sourceId);
         if (source) {
             // TODO KI spatial left/right requires *MONO* sound
             source->m_pos = { 0.1f, 0.0f, 0.0f };
             source->update();
         }
 
-        audio::listener_id listenerId = engine->registerListener();
-        engine->setActiveListener(listenerId);
+        audio::listener_id listenerId = engine.registerListener();
+        engine.setActiveListener(listenerId);
 
-        engine->playSource(sourceId);
+        engine.playSource(sourceId);
     }
 
     return 0;
@@ -337,7 +337,7 @@ void SampleApp::selectNode(
     const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
     const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
 
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& nodeRegistry = NodeRegistry::get();
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);
 
@@ -349,7 +349,7 @@ void SampleApp::selectNode(
             nodeRegistry.selectNodeById(0, false);
 
             if (volumeNode) {
-                auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
+                auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);
                 if (controller) {
                     controller->setTargetId(pool::NodeHandle::NULL_HANDLE);
                 }
@@ -368,7 +368,7 @@ void SampleApp::selectNode(
         nodeRegistry.selectNodeById(nodeId, inputState.shift);
 
         if (volumeNode) {
-            auto* controller = ctx.m_registry->m_controllerRegistry->get<VolumeController>(volumeNode);
+            auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);
             if (controller) {
                 controller->setTargetId(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE);
             }
@@ -396,7 +396,7 @@ void SampleApp::selectNode(
         }
     } else if (playerMode) {
         if (node && inputState.ctrl) {
-            auto exists = m_registry->m_controllerRegistry->hasController(node);
+            auto exists = ControllerRegistry::get().hasController(node);
             if (exists) {
                 event::Event evt { event::Type::node_activate };
                 evt.body.node.target = node->getId();

@@ -193,7 +193,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                     close = onPost(clock);
                 }
                 if (!close) {
-                    m_registry->m_programRegistry->validate();
+                    ProgramRegistry::get().validate();
                 }
 
                 fpsCounter.endFame(clock.elapsedSecs);

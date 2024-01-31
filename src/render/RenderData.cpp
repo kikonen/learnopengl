@@ -169,7 +169,7 @@ namespace render {
         }
 
         if (useLight) {
-            auto& handle = registry->m_nodeRegistry->getDirLightNode();
+            auto& handle = NodeRegistry::get().getDirLightNode();
             auto* node = handle.toNode();
 
             if (node && node->m_light->m_enabled) {
@@ -183,7 +183,7 @@ namespace render {
 
         if (useLight) {
             int count = 0;
-            auto& handles = registry->m_nodeRegistry->getPointLightNodes();
+            auto& handles = NodeRegistry::get().getPointLightNodes();
             for (auto& handle : handles) {
                 auto* node = handle.toNode();
                 if (!node) continue;
@@ -204,7 +204,7 @@ namespace render {
 
         if (useLight) {
             int count = 0;
-            const auto& handles = registry->m_nodeRegistry->getSpotLightNodes();
+            const auto& handles = NodeRegistry::get().getSpotLightNodes();
             for (auto& handle : handles) {
                 auto* node = handle.toNode();
                 if (!node) continue;
