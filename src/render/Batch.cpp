@@ -2,6 +2,8 @@
 #include "Batch.h"
 
 #include <mutex>
+#include <iostream>
+
 #include <fmt/format.h>
 
 #include "glm/glm.hpp"
@@ -104,38 +106,76 @@ namespace render {
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
-        const uint32_t count = static_cast<uint32_t>(snapshots.size());
+        if (false) {
+            const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
-        if (count <= 0) return;
+            if (count <= 0) return;
 
-        uint32_t startIndex = 0;
-        uint32_t instanceCount = count;
+            uint32_t startIndex = 0;
+            uint32_t instanceCount = count;
 
-        if (m_frustumCPU) {
-            while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
-                startIndex++;
-                instanceCount--;
-            }
-
-            if (instanceCount > 0) {
-                uint32_t endIndex = static_cast<uint32_t>(snapshots.size() - 1);
-                while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
-                    endIndex--;
+            if (m_frustumCPU) {
+                while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
+                    startIndex++;
                     instanceCount--;
                 }
+
+                if (instanceCount > 0) {
+                    uint32_t endIndex = static_cast<uint32_t>(snapshots.size() - 1);
+                    while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
+                        endIndex--;
+                        instanceCount--;
+                    }
+                }
+
+                if (instanceCount == 0)
+                    return;
             }
 
-            if (instanceCount == 0)
-                return;
+            auto& top = m_batches.back();
+
+            top.m_drawCount = 1;
+            top.m_instancedCount = static_cast<int>(instanceCount);
+
+            for (uint32_t i = 0; i < instanceCount; i++) {
+                m_entityIndeces.emplace_back(entityBase + startIndex + i);
+            }
         }
+        else {
+            const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
-        auto& top = m_batches.back();
+            if (count <= 0) return;
 
-        top.m_drawCount = 1;
-        top.m_instancedCount = static_cast<int>(instanceCount);
+            if (m_frustumCPU) {
+                uint32_t instanceCount = count;
 
-        for (uint32_t i = 0; i < instanceCount; i++) {
-            m_entityIndeces.emplace_back(entityBase + startIndex + i);
+                for (uint32_t i = 0; i < count; i++) {
+                    if (!inFrustum(ctx, snapshots[i])) {
+                        instanceCount--;
+                        continue;
+                    }
+                    m_entityIndeces.emplace_back(entityBase + i);
+                }
+
+                if (instanceCount == 0)
+                    return;
+
+                auto& top = m_batches.back();
+
+                //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
+                top.m_drawCount = 1;
+                top.m_instancedCount = static_cast<int>(instanceCount);
+            }
+            else {
+                auto& top = m_batches.back();
+
+                top.m_drawCount = 1;
+                top.m_instancedCount = static_cast<int>(count);
+
+                for (uint32_t i = 0; i < count; i++) {
+                    m_entityIndeces.emplace_back(entityBase + i);
+                }
+            }
         }
     }
 
