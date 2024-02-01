@@ -44,6 +44,10 @@ namespace backend {
             const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
+        void sendDirect(
+            const backend::DrawRange& sendRange,
+            const backend::gl::DrawIndirectCommand& cmd);
+
         void sendInstanceIndeces(
             std::span<GLuint> indeces);
 

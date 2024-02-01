@@ -249,6 +249,37 @@ namespace backend {
         }
     }
 
+    void DrawBuffer::sendDirect(
+        const backend::DrawRange& drawRange,
+        const backend::gl::DrawIndirectCommand& cmd)
+    {
+        const auto& drawOptions = drawRange.m_drawOptions;
+        bindDrawRange(drawRange);
+
+        // https://www.khronos.org/opengl/wiki/Vertex_Rendering
+        if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
+            auto& elem = cmd.element;
+            glDrawElementsInstancedBaseVertexBaseInstance(
+                drawOptions.m_mode,
+                elem.u_count,
+                GL_UNSIGNED_INT,
+                (void*)(elem.u_firstIndex * sizeof(GLuint)),
+                elem.u_instanceCount,
+                elem.u_baseVertex,
+                elem.u_baseInstance);
+        }
+        else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
+        {
+            auto& arr = cmd.array;
+            glDrawArraysInstancedBaseInstance(
+                drawOptions.m_mode,
+                arr.u_firstVertex,
+                arr.u_vertexCount,
+                arr.u_instanceCount,
+                arr.u_baseInstance);
+        }
+    }
+
     void DrawBuffer::sendInstanceIndeces(
         std::span<GLuint> indeces)
     {

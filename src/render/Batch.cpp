@@ -360,7 +360,7 @@ namespace render {
                     cmd.u_instanceCount = curr.m_instancedCount;
                     //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     cmd.u_baseInstance = curr.m_index;
-                    draw->send(drawRange, indirect);
+                    draw->sendDirect(drawRange, indirect);
                 }
                 else {
                     //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
@@ -372,7 +372,7 @@ namespace render {
                     //}
                     cmd.u_instanceCount = curr.m_drawCount;
                     cmd.u_baseInstance = curr.m_index;
-                    draw->send(drawRange, indirect);
+                    draw->sendDirect(drawRange, indirect);
                 }
             }
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
@@ -388,7 +388,7 @@ namespace render {
                     cmd.u_instanceCount = curr.m_instancedCount;
                     //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     cmd.u_baseInstance = curr.m_index;
-                    draw->send(drawRange, indirect);
+                    draw->sendDirect(drawRange, indirect);
                 }
                 else {
                     //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
@@ -400,7 +400,7 @@ namespace render {
                     //}
                     cmd.u_instanceCount = curr.m_drawCount;
                     cmd.u_baseInstance = curr.m_index;
-                    draw->send(drawRange, indirect);
+                    draw->sendDirect(drawRange, indirect);
                 }
             }
             else {
