@@ -20,7 +20,7 @@
 
 namespace {
     constexpr size_t ENTITY_BLOCK_SIZE = 100;
-    constexpr size_t ENTITY_BLOCK_COUNT = 20000;
+    constexpr size_t ENTITY_BLOCK_COUNT = 40000;
 
     constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
 
