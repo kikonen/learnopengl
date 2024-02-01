@@ -370,6 +370,10 @@ void AssetsLoader::loadAssets(
                 data.frustumVisual = readBool(v);
                 continue;
             }
+            if (k == "frustum_parallel_limit") {
+                data.frustumParallelLimit = readInt(v);
+                continue;
+            }
         }
         {
             if (k == "mirror_map_enabled") {

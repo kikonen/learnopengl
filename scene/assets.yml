@@ -69,6 +69,7 @@ assets:
   frustum_enabled: true
   frustum_cpu: true
   frustum_gpu: false
+  frustum_parallel_limit: 500
   frustum_debug: true
   frustum_visual: false
 

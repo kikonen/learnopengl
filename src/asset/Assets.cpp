@@ -122,6 +122,7 @@ Assets::Assets()
     frustumGPU = false;
     frustumCPU = true;
     frustumAny = frustumEnabled && (frustumCPU || frustumGPU);
+    frustumParallelLimit = 999;
 
     frustumDebug = false;
     frustumVisual = false;

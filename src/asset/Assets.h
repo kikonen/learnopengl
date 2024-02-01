@@ -118,9 +118,9 @@ public:
     bool frustumCPU;
     bool frustumGPU;
     bool frustumAny;
+    int frustumParallelLimit;
     bool frustumDebug;
     bool frustumVisual;
-
     float cameraFov;
 
     int renderFrameStart;

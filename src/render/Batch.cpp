@@ -159,7 +159,7 @@ namespace render {
                     accept.push_back(i);
                 }
 
-                if (count > 1000) {
+                if (count > m_frustumParallelLimit) {
                     std::for_each(
                         std::execution::par_unseq,
                         accept.begin(),
@@ -253,6 +253,7 @@ namespace render {
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
+        m_frustumParallelLimit = assets.frustumParallelLimit;
     }
 
     void Batch::addCommand(
