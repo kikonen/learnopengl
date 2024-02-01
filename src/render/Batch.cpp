@@ -3,6 +3,8 @@
 
 #include <mutex>
 #include <iostream>
+#include <algorithm>
+#include <execution>
 
 #include <fmt/format.h>
 
@@ -39,6 +41,8 @@ namespace {
     constexpr int BATCH_COUNT = 100;
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
+
+    std::vector<uint32_t> accept;
 }
 
 namespace render {
@@ -149,20 +153,48 @@ namespace render {
             if (m_frustumCPU) {
                 uint32_t instanceCount = count;
 
+                accept.reserve(snapshots.size());
+                accept.clear();
                 for (uint32_t i = 0; i < count; i++) {
-                    if (!inFrustum(ctx, snapshots[i])) {
+                    accept.push_back(i);
+                }
+
+                if (count > 1000) {
+                    std::for_each(
+                        std::execution::par_unseq,
+                        accept.begin(),
+                        accept.end(),
+                        [this, &ctx, &snapshots](uint32_t& idx) {
+                            if (!inFrustum(ctx, snapshots[idx]))
+                                idx = -1;
+                        });
+                }
+                else {
+                    std::for_each(
+                        std::execution::unseq,
+                        accept.begin(),
+                        accept.end(),
+                        [this, &ctx, &snapshots](uint32_t& idx) {
+                            if (!inFrustum(ctx, snapshots[idx]))
+                                idx = -1;
+                        });
+                }
+
+                for (uint32_t i = 0; i < count; i++) {
+                    if (accept[i] == -1) {
                         instanceCount--;
                         continue;
                     }
                     m_entityIndeces.emplace_back(entityBase + i);
                 }
 
+                //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
+
                 if (instanceCount == 0)
                     return;
 
                 auto& top = m_batches.back();
 
-                //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
                 top.m_drawCount = 1;
                 top.m_instancedCount = static_cast<int>(instanceCount);
             }
