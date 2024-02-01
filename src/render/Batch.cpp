@@ -355,21 +355,12 @@ namespace render {
                 cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
                 cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
-                //if (!m_frustumGPU && drawOptions.m_instanced) {
                 if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     cmd.u_baseInstance = curr.m_index;
                     draw->sendDirect(drawRange, indirect);
                 }
                 else {
-                    //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                    //    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                    //        int entityIndex = m_entityIndeces[i] + instanceIndex;
-                    //        cmd.u_baseInstance = entityIndex;
-                    //        draw->send(drawRange, indirect);
-                    //    }
-                    //}
                     cmd.u_instanceCount = curr.m_drawCount;
                     cmd.u_baseInstance = curr.m_index;
                     draw->sendDirect(drawRange, indirect);
@@ -383,21 +374,12 @@ namespace render {
                 cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_firstVertex = drawOptions.m_indexOffset / sizeof(GLuint);
 
-                //if (!m_frustumGPU && drawOptions.instanced) {
                 if (drawOptions.m_instanced) {
                     cmd.u_instanceCount = curr.m_instancedCount;
-                    //cmd.u_baseInstance = m_entityIndeces[curr.m_index];
                     cmd.u_baseInstance = curr.m_index;
                     draw->sendDirect(drawRange, indirect);
                 }
                 else {
-                    //for (int i = curr.m_index; i < curr.m_index + curr.m_drawCount; i++) {
-                    //    for (int instanceIndex = 0; instanceIndex < curr.m_instancedCount; instanceIndex++) {
-                    //        int entityIndex = m_entityIndeces[i] + instanceIndex;
-                    //        cmd.u_baseInstance = entityIndex;
-                    //        draw->send(drawRange, indirect);
-                    //    }
-                    //}
                     cmd.u_instanceCount = curr.m_drawCount;
                     cmd.u_baseInstance = curr.m_index;
                     draw->sendDirect(drawRange, indirect);
