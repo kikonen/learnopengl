@@ -160,7 +160,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_snapshotRegistry->copyFromPending(0);
+            m_registry->m_snapshotRegistry->copyFromPending(0, -1);
 
             // input
             // -----

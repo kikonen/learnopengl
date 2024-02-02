@@ -81,10 +81,6 @@ namespace render {
             const backend::DrawOptions& drawOptions,
             Program* program) noexcept;
 
-        bool inFrustum(
-            const RenderContext& ctx,
-            const Snapshot& snapshot) const noexcept;
-
     private:
         bool m_prepared = false;
 

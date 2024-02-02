@@ -43,6 +43,14 @@ namespace {
     constexpr int BATCH_RANGE_COUNT = 8;
 
     std::vector<uint32_t> s_accept;
+
+    inline bool inFrustum(
+        const Frustum& frustum,
+        const Snapshot& snapshot) noexcept
+    {
+        const Sphere& volume{ snapshot.m_volume };
+        return volume.isOnFrustum(frustum);
+    }
 }
 
 namespace render {
@@ -52,41 +60,25 @@ namespace render {
 
     Batch::~Batch() = default;
 
-    bool Batch::inFrustum(
-        const RenderContext& ctx,
-        const Snapshot& snapshot) const noexcept
-    {
-        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
-            return true;
-
-        bool visible;
-        {
-            const auto& frustum = ctx.m_camera->getFrustum();
-            const Sphere& volume{ snapshot.m_volume };
-
-            visible = volume.isOnFrustum(frustum);
-        }
-
-        if (visible) {
-            m_drawCount++;
-        }
-        else {
-            m_skipCount++;
-        }
-
-        return visible;
-    }
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
-        //if (entityIndex < 0) throw std::runtime_error{ "INVALID_ENTITY_INDEX" };
+        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+            return;
+
         if (entityIndex < 0) return;
 
-        if (m_frustumCPU && !inFrustum(ctx, snapshot))
+        const auto& frustum = ctx.m_camera->getFrustum();
+
+        if (m_frustumCPU && !inFrustum(frustum, snapshot)) {
+            m_skipCount++;
             return;
+        }
+
+        m_drawCount++;
 
         auto& top = m_batches.back();
         top.m_drawCount++;
@@ -110,104 +102,81 @@ namespace render {
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
-        if (false) {
-            const uint32_t count = static_cast<uint32_t>(snapshots.size());
+        const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
-            if (count <= 0) return;
+        if (count <= 0) return;
 
-            uint32_t startIndex = 0;
+        bool useFrustum = m_frustumCPU;
+        {
+            auto& snapshot = snapshots[0];
+            if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+                useFrustum = false;
+        }
+
+        if (useFrustum) {
             uint32_t instanceCount = count;
 
-            if (m_frustumCPU) {
-                while (instanceCount > 0 && !inFrustum(ctx, snapshots[startIndex])) {
-                    startIndex++;
-                    instanceCount--;
-                }
-
-                if (instanceCount > 0) {
-                    uint32_t endIndex = static_cast<uint32_t>(snapshots.size() - 1);
-                    while (instanceCount > 0 && !inFrustum(ctx, snapshots[endIndex])) {
-                        endIndex--;
-                        instanceCount--;
-                    }
-                }
-
-                if (instanceCount == 0)
-                    return;
+            s_accept.reserve(snapshots.size());
+            s_accept.clear();
+            for (uint32_t i = 0; i < count; i++) {
+                s_accept.push_back(i);
             }
+
+            const auto& frustum = ctx.m_camera->getFrustum();
+
+            if (count > m_frustumParallelLimit) {
+                std::for_each(
+                    std::execution::par_unseq,
+                    s_accept.begin(),
+                    s_accept.end(),
+                    [this, &frustum, &snapshots](uint32_t& idx) {
+                        if (!inFrustum(frustum, snapshots[idx]))
+                            idx = -1;
+                    });
+            }
+            else {
+                std::for_each(
+                    std::execution::unseq,
+                    s_accept.begin(),
+                    s_accept.end(),
+                    [this, &frustum, &snapshots](uint32_t& idx) {
+                        if (!inFrustum(frustum, snapshots[idx]))
+                            idx = -1;
+                    });
+            }
+
+            for (uint32_t i = 0; i < count; i++) {
+                if (s_accept[i] == -1) {
+                    instanceCount--;
+                    continue;
+                }
+                m_entityIndeces.emplace_back(entityBase + i);
+            }
+
+            //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
+
+            if (instanceCount == 0)
+                return;
 
             auto& top = m_batches.back();
 
             top.m_drawCount = 1;
             top.m_instancedCount = static_cast<int>(instanceCount);
 
-            for (uint32_t i = 0; i < instanceCount; i++) {
-                m_entityIndeces.emplace_back(entityBase + startIndex + i);
-            }
+            m_skipCount += count - instanceCount;
+            m_drawCount += instanceCount;
         }
         else {
-            const uint32_t count = static_cast<uint32_t>(snapshots.size());
+            auto& top = m_batches.back();
 
-            if (count <= 0) return;
+            top.m_drawCount = 1;
+            top.m_instancedCount = static_cast<int>(count);
 
-            if (m_frustumCPU) {
-                uint32_t instanceCount = count;
-
-                s_accept.reserve(snapshots.size());
-                s_accept.clear();
-                for (uint32_t i = 0; i < count; i++) {
-                    s_accept.push_back(i);
-                }
-
-                if (count > m_frustumParallelLimit) {
-                    std::for_each(
-                        std::execution::par_unseq,
-                        s_accept.begin(),
-                        s_accept.end(),
-                        [this, &ctx, &snapshots](uint32_t& idx) {
-                            if (!inFrustum(ctx, snapshots[idx]))
-                                idx = -1;
-                        });
-                }
-                else {
-                    std::for_each(
-                        std::execution::unseq,
-                        s_accept.begin(),
-                        s_accept.end(),
-                        [this, &ctx, &snapshots](uint32_t& idx) {
-                            if (!inFrustum(ctx, snapshots[idx]))
-                                idx = -1;
-                        });
-                }
-
-                for (uint32_t i = 0; i < count; i++) {
-                    if (s_accept[i] == -1) {
-                        instanceCount--;
-                        continue;
-                    }
-                    m_entityIndeces.emplace_back(entityBase + i);
-                }
-
-                //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
-
-                if (instanceCount == 0)
-                    return;
-
-                auto& top = m_batches.back();
-
-                top.m_drawCount = 1;
-                top.m_instancedCount = static_cast<int>(instanceCount);
+            for (uint32_t i = 0; i < count; i++) {
+                m_entityIndeces.emplace_back(entityBase + i);
             }
-            else {
-                auto& top = m_batches.back();
 
-                top.m_drawCount = 1;
-                top.m_instancedCount = static_cast<int>(count);
-
-                for (uint32_t i = 0; i < count; i++) {
-                    m_entityIndeces.emplace_back(entityBase + i);
-                }
-            }
+            m_drawCount += count;
         }
     }
 
@@ -322,6 +291,8 @@ namespace render {
             m_batches.clear();
             return;
         }
+
+        //std::cout << "instances: " << m_entityIndeces.size() << '\n';
 
         backend::gl::DrawIndirectCommand indirect{};
 

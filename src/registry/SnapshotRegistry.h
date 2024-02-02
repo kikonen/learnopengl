@@ -75,14 +75,15 @@ public:
     //// NOTE KI swap only if pending is empty
     //void unlock();
 
-    void copyToPending(uint32_t startIndex);
-    void copyFromPending(uint32_t startIndex);
+    void copyToPending(uint32_t startIndex, int32_t count);
+    void copyFromPending(uint32_t startIndex, int32_t count);
 
 private:
     void copy(
         util::DirtyVector<Snapshot>& src,
         util::DirtyVector<Snapshot>& dst,
-        uint32_t startIndex);
+        uint32_t startIndex,
+        int32_t count);
 
 private:
     std::mutex m_lock;
@@ -90,4 +91,6 @@ private:
     std::unique_ptr<util::DirtyVector<Snapshot>> m_snapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_pendingSnapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_activeSnapshots{ nullptr };
+
+    std::vector<bool> m_dirtyNormalTmp;
 };

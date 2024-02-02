@@ -406,7 +406,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
-    m_registry->m_snapshotRegistry->copyFromPending(0);
+    m_registry->m_snapshotRegistry->copyFromPending(0, -1);
     if (node->m_generator) {
         const PrepareContext ctx{ m_registry };
         node->m_generator->prepareRT(ctx, *node);
@@ -564,7 +564,7 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex);
+    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
 
     {
         event::Event evt { event::Type::node_added };

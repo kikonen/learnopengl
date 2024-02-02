@@ -5,7 +5,8 @@ namespace util
     template<typename T>
     struct DirtyVector {
         std::vector<T> m_entries;
-        std::vector<bool> m_dirtyFlags;
+
+        std::vector<bool> m_dirty;
 
         DirtyVector();
         ~DirtyVector();
