@@ -42,7 +42,7 @@ namespace {
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
 
-    std::vector<uint32_t> accept;
+    std::vector<uint32_t> s_accept;
 }
 
 namespace render {
@@ -153,17 +153,17 @@ namespace render {
             if (m_frustumCPU) {
                 uint32_t instanceCount = count;
 
-                accept.reserve(snapshots.size());
-                accept.clear();
+                s_accept.reserve(snapshots.size());
+                s_accept.clear();
                 for (uint32_t i = 0; i < count; i++) {
-                    accept.push_back(i);
+                    s_accept.push_back(i);
                 }
 
                 if (count > m_frustumParallelLimit) {
                     std::for_each(
                         std::execution::par_unseq,
-                        accept.begin(),
-                        accept.end(),
+                        s_accept.begin(),
+                        s_accept.end(),
                         [this, &ctx, &snapshots](uint32_t& idx) {
                             if (!inFrustum(ctx, snapshots[idx]))
                                 idx = -1;
@@ -172,8 +172,8 @@ namespace render {
                 else {
                     std::for_each(
                         std::execution::unseq,
-                        accept.begin(),
-                        accept.end(),
+                        s_accept.begin(),
+                        s_accept.end(),
                         [this, &ctx, &snapshots](uint32_t& idx) {
                             if (!inFrustum(ctx, snapshots[idx]))
                                 idx = -1;
@@ -181,7 +181,7 @@ namespace render {
                 }
 
                 for (uint32_t i = 0; i < count; i++) {
-                    if (accept[i] == -1) {
+                    if (s_accept[i] == -1) {
                         instanceCount--;
                         continue;
                     }

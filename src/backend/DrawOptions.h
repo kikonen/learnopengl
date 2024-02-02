@@ -31,7 +31,7 @@ namespace backend {
         bool m_tessellation : 1 {false};
         uint8_t m_patchVertices{ 3 };
 
-        // cont of indeces for indexed drawing
+        // count of indeces for indexed drawing
         // 0 for non indexed draw
         GLsizei m_indexCount{ 0 };
         GLsizei m_indexFirst{ 0 };
@@ -64,6 +64,7 @@ namespace backend {
                 m_type == b.m_type;
         }
 
+        // NOTE KI for MeshTypeKey/MeshTypeComparator
         inline bool operator<(const DrawOptions& o) const noexcept {
             return std::tie(m_instanced, m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_vertexOffset, m_indexOffset) <
                 std::tie(o.m_instanced, o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_vertexOffset, o.m_indexOffset);

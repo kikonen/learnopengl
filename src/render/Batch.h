@@ -90,7 +90,7 @@ namespace render {
 
         bool m_frustumCPU = false;
         bool m_frustumGPU = false;
-        int m_frustumParallelLimit = 999;
+        uint32_t m_frustumParallelLimit = 999;
 
         std::vector<BatchCommand> m_batches;
 

@@ -56,11 +56,11 @@ struct Sphere final
     {
         // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
         return isOnOrForwardPlane(frustum.nearFace) &&
+            isOnOrForwardPlane(frustum.farFace) &&
             isOnOrForwardPlane(frustum.leftFace) &&
             isOnOrForwardPlane(frustum.rightFace) &&
             isOnOrForwardPlane(frustum.topFace) &&
-            isOnOrForwardPlane(frustum.bottomFace) &&
-            isOnOrForwardPlane(frustum.farFace);
+            isOnOrForwardPlane(frustum.bottomFace);
     };
 
     void updateVolume(
