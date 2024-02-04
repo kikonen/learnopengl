@@ -13,6 +13,6 @@ namespace util
 
         size_t size() const noexcept { return m_entries.size(); }
 
-        void reserve(size_t size);
+        void allocate(size_t size);
     };
 }

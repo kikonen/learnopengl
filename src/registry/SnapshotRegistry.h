@@ -91,7 +91,4 @@ private:
     std::unique_ptr<util::DirtyVector<Snapshot>> m_snapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_pendingSnapshots;
     std::unique_ptr<util::DirtyVector<Snapshot>> m_activeSnapshots{ nullptr };
-
-    std::vector<bool> m_dstDirty;
-    std::vector<bool> m_dstDirtyNormal;
 };

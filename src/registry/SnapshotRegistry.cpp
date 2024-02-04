@@ -25,7 +25,7 @@ uint32_t SnapshotRegistry::registerSnapshot() noexcept {
 uint32_t SnapshotRegistry::registerSnapshotRange(size_t count) noexcept {
     const uint32_t index = static_cast<uint32_t>(m_snapshots->size());
 
-    m_snapshots->reserve(m_snapshots->size() + count);
+    m_snapshots->allocate(m_snapshots->size() + count);
 
     return index;
 }
@@ -110,52 +110,19 @@ void SnapshotRegistry::copy(
         count = srcVector.size() - startIndex;
     }
     if (!count) return;
+
     {
         auto& src = srcVector.m_entries;
         auto& dst = dstVector.m_entries;
-        auto& dstDirty = m_dstDirty;
-        auto& dstDirtyNormal = m_dstDirtyNormal;
 
-        dstVector.reserve(srcVector.size());
-        dstDirtyNormal.reserve(srcVector.size());
-
-        while (dstDirty.size() < srcVector.size()) {
-            dstDirty.push_back(false);
-        }
-        while (dstDirtyNormal.size() < srcVector.size()) {
-            dstDirtyNormal.push_back(false);
-        }
-
-        size_t minDirty = startIndex + count;
-        size_t maxDirty = 0;
+        dstVector.allocate(srcVector.size());
 
         for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
-                if (minDirty == startIndex + count)
-                    minDirty = i;
-                maxDirty = i;
-
-                dstDirty[i] = true;
-                dstDirtyNormal[i] = src[i].m_dirtyNormal || dst[i].m_dirtyNormal;
-
+                dst[i] = src[i];
                 src[i].m_dirty = false;
                 src[i].m_dirtyNormal = false;
             }
-            else {
-                dstDirty[i] = dst[i].m_dirty;
-                dstDirtyNormal[i] = dst[i].m_dirtyNormal;
-            }
-        }
-
-        if (minDirty > maxDirty) return;
-
-        //std::cout << "copy: " << (maxDirty - minDirty + 1) * sizeof(Snapshot) << " bytes\n";
-
-        memcpy(&dst[minDirty], &src[minDirty], (maxDirty - minDirty + 1) * sizeof(Snapshot));
-
-        for (size_t i = minDirty; i <= maxDirty; i++) {
-            dst[i].m_dirty = dstDirty[i];
-            dst[i].m_dirtyNormal = dstDirtyNormal[i];
         }
     }
 }

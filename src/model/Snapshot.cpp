@@ -83,7 +83,9 @@ Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
 {
     if (&o == this) return *this;
 
-    m_dirty = o.m_dirty;
+    m_dirty |= o.m_dirty;
+    m_dirtyNormal |= o.m_dirtyNormal;
+
     m_matrixLevel = o.m_matrixLevel;
 
     m_flags = o.m_flags;
@@ -95,20 +97,14 @@ Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
 
     m_worldPos = o.m_worldPos;
 
-    if (m_quatRotation != o.m_quatRotation) {
-        m_quatRotation = o.m_quatRotation;
-        m_dirtyNormal = true;
-    }
+    m_quatRotation = o.m_quatRotation;
 
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     m_viewRight = o.m_viewRight;
     m_modelMatrix = o.m_modelMatrix;
 
-    if (m_modelScale != o.m_modelScale) {
-        m_modelScale = o.m_modelScale;
-        m_dirtyNormal = true;
-    }
+    m_modelScale = o.m_modelScale;
 
     return *this;
 }
