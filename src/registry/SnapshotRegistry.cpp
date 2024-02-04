@@ -113,13 +113,17 @@ void SnapshotRegistry::copy(
     {
         auto& src = srcVector.m_entries;
         auto& dst = dstVector.m_entries;
-        auto& tmp = m_dirtyNormalTmp;
+        auto& wasDirty = m_wasDirty;
+        auto& wasDirtyNormal = m_wasDirtyNormal;
 
         dstVector.reserve(srcVector.size());
-        tmp.reserve(srcVector.size());
+        wasDirtyNormal.reserve(srcVector.size());
 
-        while (tmp.size() < srcVector.size()) {
-            tmp.push_back(false);
+        while (wasDirty.size() < srcVector.size()) {
+            wasDirty.push_back(false);
+        }
+        while (wasDirtyNormal.size() < srcVector.size()) {
+            wasDirtyNormal.push_back(false);
         }
 
         size_t minDirty = startIndex + count;
@@ -131,7 +135,8 @@ void SnapshotRegistry::copy(
                     minDirty = i;
                 maxDirty = i;
 
-                tmp[i] = dst[i].m_dirtyNormal;
+                wasDirty[i] = dst[i].m_dirty;
+                wasDirtyNormal[i] = dst[i].m_dirtyNormal;
             }
         }
 
@@ -142,12 +147,11 @@ void SnapshotRegistry::copy(
         memcpy(&dst[minDirty], &src[minDirty], (maxDirty - minDirty + 1) * sizeof(Snapshot));
 
         for (size_t i = minDirty; i <= maxDirty; i++) {
-            if (src[i].m_dirty) {
-                dst[i].m_dirtyNormal = tmp[i] || src[i].m_dirtyNormal;
+            dst[i].m_dirty = wasDirty[i] || src[i].m_dirty;
+            dst[i].m_dirtyNormal = wasDirtyNormal[i] || src[i].m_dirtyNormal;
 
-                src[i].m_dirty = false;
-                src[i].m_dirtyNormal = false;
-            }
+            src[i].m_dirty = false;
+            src[i].m_dirtyNormal = false;
         }
     }
 }
