@@ -12,13 +12,9 @@ namespace mesh {
         bool preDepth : 1 {false};
 
         // NOTE KI contained node is in the context of container, managing
-        // instanced list of transforms rooted into container
+        // list of transforms rooted into container
         // NOTE KI container itself IS in hiearchy
         bool contained : 1 {false};
-        // NOTE KI instanced container manages list of transforms,
-        // rooted into parent of container
-        // NOTE KI container itself is NOT in hiearchy
-        bool instanced : 1 {false};
 
         bool mirror : 1 {false};
         bool water : 1 {false};

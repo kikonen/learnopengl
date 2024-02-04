@@ -24,10 +24,6 @@ namespace backend {
         bool m_blend : 1 {false};
         bool m_blendOIT : 1 {false};
 
-        // NOTE KI STRONG assumption; instanced nodes are in same sequence
-        // and first entry drawn is first one on that sequence
-        bool m_instanced : 1 {false};
-
         bool m_tessellation : 1 {false};
         uint8_t m_patchVertices{ 3 };
 
@@ -45,11 +41,9 @@ namespace backend {
             bool allowBlend) const noexcept
         {
             // NOTE KI multi/single material *CAN* go in same indirect draw
-            // NOTE KI multiple "instanced" at once does not work
             return isSameMultiDraw(b, allowBlend, forceWireframe) &&
                 m_vertexOffset == b.m_vertexOffset &&
-                m_indexOffset == b.m_indexOffset &&
-                (m_instanced == b.m_instanced ? !b.m_instanced : false);
+                m_indexOffset == b.m_indexOffset;
         }
 
         inline bool isSameMultiDraw(
@@ -61,13 +55,14 @@ namespace backend {
                 (forceWireframe ? true : m_wireframe == b.m_wireframe) &&
                 (allowBlend ? m_blend == b.m_blend : true) &&
                 m_mode == b.m_mode &&
-                m_type == b.m_type;
+                m_type == b.m_type &&
+                m_tessellation == b.m_tessellation;
         }
 
         // NOTE KI for MeshTypeKey/MeshTypeComparator
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_instanced, m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_vertexOffset, m_indexOffset) <
-                std::tie(o.m_instanced, o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_vertexOffset, o.m_indexOffset);
+            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_vertexOffset, m_indexOffset) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_vertexOffset, o.m_indexOffset);
         }
     };
 }

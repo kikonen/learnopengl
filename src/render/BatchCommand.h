@@ -18,7 +18,6 @@ namespace render {
         backend::DrawOptions m_drawOptions;
 
         int m_index{ 0 };
-        int m_drawCount{ 0 };
-        int m_instancedCount{ 1 };
+        int m_instanceCount{ 0 };
     };
 }

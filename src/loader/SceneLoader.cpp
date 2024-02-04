@@ -476,10 +476,6 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        if (data.instanced) {
-            type->m_flags.instanced = true;
-        }
-
         if (data.type == mesh::EntityType::origo) {
             type->m_flags.invisible = true;
             type->m_entityType = mesh::EntityType::origo;

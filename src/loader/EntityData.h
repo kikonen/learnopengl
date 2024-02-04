@@ -62,7 +62,6 @@ namespace loader {
         glm::vec3 scale{ 1.f };
 
         bool selected{ false };
-        bool instanced{ false };
         bool cloneMesh{ true };
 
         Tiling tiling;

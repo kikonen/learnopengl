@@ -286,9 +286,6 @@ namespace loader {
             else if (k == "generator") {
                 generatorLoader.loadGenerator(v, data.generator);
             }
-            else if (k == "instanced") {
-                data.instanced = readBool(v);
-            }
             else if (k == "selected") {
                 data.selected = readBool(v);
             }

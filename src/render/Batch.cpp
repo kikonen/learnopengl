@@ -81,7 +81,7 @@ namespace render {
         m_drawCount++;
 
         auto& top = m_batches.back();
-        top.m_drawCount++;
+        top.m_instanceCount++;
 
         m_entityIndeces.emplace_back(entityIndex);
     }
@@ -160,8 +160,7 @@ namespace render {
 
             auto& top = m_batches.back();
 
-            top.m_drawCount = 1;
-            top.m_instancedCount = static_cast<int>(instanceCount);
+            top.m_instanceCount += static_cast<int>(instanceCount);
 
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
@@ -169,8 +168,7 @@ namespace render {
         else {
             auto& top = m_batches.back();
 
-            top.m_drawCount = 1;
-            top.m_instancedCount = static_cast<int>(count);
+            top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
                 m_entityIndeces.emplace_back(entityBase + i);
@@ -306,7 +304,7 @@ namespace render {
         draw->sendInstanceIndeces(m_entityIndeces);
 
         for (auto& curr : m_batches) {
-            if (curr.m_drawCount == 0) continue;
+            if (curr.m_instanceCount == 0) continue;
 
             backend::DrawRange drawRange = {
                 curr.m_program,
@@ -326,16 +324,9 @@ namespace render {
                 cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
                 cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
 
-                if (drawOptions.m_instanced) {
-                    cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = curr.m_index;
-                    draw->sendDirect(drawRange, indirect);
-                }
-                else {
-                    cmd.u_instanceCount = curr.m_drawCount;
-                    cmd.u_baseInstance = curr.m_index;
-                    draw->sendDirect(drawRange, indirect);
-                }
+                cmd.u_instanceCount = curr.m_instanceCount;
+                cmd.u_baseInstance = curr.m_index;
+                draw->sendDirect(drawRange, indirect);
             }
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
@@ -345,16 +336,9 @@ namespace render {
                 cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_firstVertex = drawOptions.m_indexOffset / sizeof(GLuint);
 
-                if (drawOptions.m_instanced) {
-                    cmd.u_instanceCount = curr.m_instancedCount;
-                    cmd.u_baseInstance = curr.m_index;
-                    draw->sendDirect(drawRange, indirect);
-                }
-                else {
-                    cmd.u_instanceCount = curr.m_drawCount;
-                    cmd.u_baseInstance = curr.m_index;
-                    draw->sendDirect(drawRange, indirect);
-                }
+                cmd.u_instanceCount = curr.m_instanceCount;
+                cmd.u_baseInstance = curr.m_index;
+                draw->sendDirect(drawRange, indirect);
             }
             else {
                 // NOTE KI "none" no drawing

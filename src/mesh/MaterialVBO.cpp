@@ -7,7 +7,6 @@
 #include "mesh/ModelMesh.h"
 
 namespace {
-    int instancedCount = 0;
     int vertecedCount = 0;
 
     std::unique_ptr<Material> NULL_MATERIAL;
