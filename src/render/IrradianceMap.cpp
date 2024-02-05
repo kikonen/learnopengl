@@ -13,7 +13,6 @@
 #include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
-#include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 
 #include "CubeRender.h"
@@ -24,7 +23,6 @@ namespace render {
         const PrepareContext& ctx)
     {
         const auto& assets = Assets::get();
-        auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 
         if (m_envCubeMapID <= 0) return;

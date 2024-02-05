@@ -142,7 +142,10 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
+
+    const auto& snapshot = nr.getActiveSnapshot(container.m_snapshotIndex);
     batch.addSnapshot(ctx, snapshot, container.m_entityIndex);
 }
 

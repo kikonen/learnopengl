@@ -3,14 +3,12 @@
 #include <memory>
 
 struct UpdateContext;
-class Registry;
 class Node;
 
 class SceneUpdater
 {
 public:
     SceneUpdater(
-        std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
 
     ~SceneUpdater();
@@ -34,6 +32,4 @@ private:
 
     std::atomic<bool> m_running;
     std::shared_ptr<std::atomic<bool>> m_alive;
-
-    std::shared_ptr<Registry> m_registry;
 };

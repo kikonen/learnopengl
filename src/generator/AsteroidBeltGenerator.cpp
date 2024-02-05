@@ -33,8 +33,10 @@ void AsteroidBeltGenerator::prepare(
 {
     NodeGenerator::prepare(ctx, container);
 
+    auto& registry = Registry::get();
+
     createAsteroids(ctx, container);
-    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
+    prepareSnapshots(*registry.m_snapshotRegistry);
 }
 
 void AsteroidBeltGenerator::updateWT(
@@ -59,8 +61,6 @@ void AsteroidBeltGenerator::updateAsteroids(
     Node& container,
     bool rotate)
 {
-    auto* registry = ctx.m_registry;
-
     const auto& parentTransform = container.getParent()->getTransform();
 
     if (rotate) {
@@ -79,8 +79,6 @@ void AsteroidBeltGenerator::createAsteroids(
     const PrepareContext& ctx,
     Node& container)
 {
-    auto& registry = ctx.m_registry;
-
     auto* type = container.m_typeHandle.toType();
 
     const auto* mesh = type->getMesh();

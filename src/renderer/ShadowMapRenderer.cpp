@@ -38,7 +38,7 @@ void ShadowMapRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     const auto& assets = Assets::get();
-    auto& registry = ctx.m_registry;
+    auto& registry = Registry::get();
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;

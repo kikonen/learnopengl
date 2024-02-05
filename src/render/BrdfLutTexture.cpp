@@ -17,7 +17,6 @@
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 
-#include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 
 namespace {
@@ -28,7 +27,6 @@ namespace render {
         const PrepareContext& ctx)
     {
         const auto& assets = Assets::get();
-        auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 
         m_size = assets.brdfLutSize;

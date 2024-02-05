@@ -4,21 +4,16 @@
 
 #include "engine/PrepareContext.h"
 
-class Registry;
-
 //
 // Context for doing updates, without rendering
 //
 struct UpdateContext final {
 public:
     UpdateContext(
-        const ki::RenderClock& clock,
-        Registry* registry);
+        const ki::RenderClock& clock);
 
     PrepareContext toPrepareContext() const;
 
 public:
     const ki::RenderClock& m_clock;
-
-    Registry* const m_registry;
 };

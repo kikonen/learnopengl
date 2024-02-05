@@ -59,7 +59,6 @@ private:
         physics::HeightMap* heightMap);
 
     pool::TypeHandle createType(
-        Registry* registry,
         pool::TypeHandle containerTypeHandle);
 
 public:

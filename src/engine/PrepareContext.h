@@ -7,9 +7,7 @@ class Registry;
 //
 struct PrepareContext final {
 public:
-    PrepareContext(
-        Registry* registry);
+    PrepareContext();
 
 public:
-    Registry* const m_registry;
 };

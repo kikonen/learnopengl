@@ -29,10 +29,15 @@
 #include "registry/ControllerRegistry.h"
 #include "registry/SnapshotRegistry.h"
 
-Registry::Registry(
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive(alive),
-    // registries
+
+Registry& Registry::get() noexcept
+{
+    static Registry s_registry;
+    return s_registry;
+}
+
+Registry::Registry()
+    : // registries
     m_dispatcherImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
     m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},
@@ -47,10 +52,12 @@ Registry::~Registry()
 {
 }
 
-void Registry::prepareShared()
+void Registry::prepareShared(std::shared_ptr<std::atomic<bool>> alive)
 {
     if (m_prepared) return;
     m_prepared = true;
+
+    m_alive = alive;
 
     m_dispatcher->prepare();
     m_dispatcherView->prepare();
@@ -62,23 +69,23 @@ void Registry::prepareShared()
 
     ViewportRegistry::get().prepare();
 
-    NodeRegistry::get().prepare(this);
+    NodeRegistry::get().prepare();
 }
 
 void Registry::prepareWT()
 {
     ASSERT_WT();
 
-    PrepareContext ctx{ this };
+    PrepareContext ctx{};
 
     // NOTE KI does not matter which thread does prepare
     physics::PhysicsEngine::get().prepare(m_alive);
 
     audio::AudioEngine::get().prepare();
 
-    ControllerRegistry::get().prepare(this);
+    ControllerRegistry::get().prepare();
 
-    script::CommandEngine::get().prepare(this);
+    script::CommandEngine::get().prepare();
     script::ScriptEngine::get().prepare(ctx, &script::CommandEngine::get());
 }
 

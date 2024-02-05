@@ -3,16 +3,13 @@
 #include "engine/PrepareContext.h"
 
 UpdateContext::UpdateContext(
-    const ki::RenderClock& clock,
-    Registry* registry)
-    : m_clock(clock),
-    m_registry(registry)
+    const ki::RenderClock& clock)
+    : m_clock(clock)
 {
 }
 
 PrepareContext UpdateContext::toPrepareContext() const
 {
     return {
-        m_registry,
     };
 }

@@ -51,6 +51,7 @@ void TerrainGenerator::prepare(
     Node& container)
 {
     const auto& assets = Assets::get();
+    auto& registry = Registry::get();
 
     m_gridSize = assets.terrainGridSize;
 
@@ -60,7 +61,7 @@ void TerrainGenerator::prepare(
     auto* heightMap = prepareHeightMap(ctx, container);
 
     createTiles(ctx, container, heightMap);
-    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
+    prepareSnapshots(*registry.m_snapshotRegistry);
 }
 
 void TerrainGenerator::prepareEntity(
@@ -95,7 +96,7 @@ physics::HeightMap* TerrainGenerator::prepareHeightMap(
     Node& container)
 {
     const auto& assets = Assets::get();
-    auto& registry = ctx.m_registry;
+    auto& registry = Registry::get();
 
     const auto& imagePath = m_material.getTexturePath(m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
@@ -164,7 +165,7 @@ void TerrainGenerator::createTiles(
     physics::HeightMap* heightMap)
 {
     const auto& assets = Assets::get();
-    auto& registry = ctx.m_registry;
+    auto& registry = Registry::get();
 
     auto& entityRegistry = EntityRegistry::get();
 
@@ -181,7 +182,7 @@ void TerrainGenerator::createTiles(
 
     KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
 
-    auto typeHandle = createType(registry, container.m_typeHandle);
+    auto typeHandle = createType(container.m_typeHandle);
     {
         auto future = ModelRegistry::get().getMesh(
             TERRAIN_QUAD_MESH_NAME,
@@ -286,12 +287,11 @@ void TerrainGenerator::createTiles(
             .target = m_nodeHandle.toId(),
             .parentId = container.getId(),
         };
-        registry->m_dispatcher->send(evt);
+        registry.m_dispatcher->send(evt);
     }
 }
 
 pool::TypeHandle TerrainGenerator::createType(
-    Registry* registry,
     pool::TypeHandle containerTypeHandle)
 {
     auto* containerType = containerTypeHandle.toType();

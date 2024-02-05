@@ -5,7 +5,6 @@
 #include "model/Node.h"
 
 struct UpdateContext;
-class Registry;
 
 class NodeController;
 
@@ -20,7 +19,7 @@ public:
 
     ~ControllerRegistry();
 
-    void prepare(Registry* registry);
+    void prepare();
 
     void updateWT(const UpdateContext& ctx);
 
@@ -72,7 +71,5 @@ public:
         NodeController* controller);
 
 private:
-    Registry* m_registry{ nullptr };
-
     std::unordered_map<ki::node_id, std::vector<NodeController*>> m_controllers;
 };

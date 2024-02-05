@@ -45,6 +45,8 @@ void CameraZoomController::prepare(
 void CameraZoomController::onKey(
     const InputContext& ctx)
 {
+    auto& registry = Registry::get();
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -79,7 +81,7 @@ void CameraZoomController::onKey(
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
             evt.body.node.target = nextCamera;
-            m_registry->m_dispatcher->send(evt);
+            registry.m_dispatcher->send(evt);
         }
     } else {
 
@@ -101,6 +103,8 @@ void CameraZoomController::onMouseMove(
     float xoffset,
     float yoffset)
 {
+    auto& registry = Registry::get();
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -109,7 +113,7 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = registry.m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;

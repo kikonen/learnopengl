@@ -20,7 +20,6 @@ struct Material;
 
 struct UpdateContext;
 
-class Registry;
 class SnapshotRegistry;
 
 
@@ -36,8 +35,7 @@ public:
 
     ~NodeRegistry();
 
-    void prepare(
-        Registry* registry);
+    void prepare();
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
@@ -133,8 +131,6 @@ private:
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;
-
-    Registry* m_registry{ nullptr };
 
     mutable std::mutex m_snapshotLock{};
 

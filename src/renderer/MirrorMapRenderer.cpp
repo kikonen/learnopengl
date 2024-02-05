@@ -193,6 +193,9 @@ bool MirrorMapRenderer::render(
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
+
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
@@ -203,7 +206,7 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
+            const auto& snapshot = nr.getActiveSnapshot(closest->m_snapshotIndex);
             const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
@@ -364,6 +367,9 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
+
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
@@ -373,7 +379,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = nr.getActiveSnapshot(node->m_snapshotIndex);
         const auto& viewFront = snapshot.getViewFront();
 
         const auto dot = glm::dot(viewFront, cameraFront);

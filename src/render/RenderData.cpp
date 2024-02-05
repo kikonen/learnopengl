@@ -158,7 +158,7 @@ namespace render {
         m_clipPlanes->next();
     }
 
-    void RenderData::updateLights(Registry* registry, bool useLight)
+    void RenderData::updateLights(bool useLight)
     {
         LightsUBO& lightsUbo = *m_lightsUbo;
 

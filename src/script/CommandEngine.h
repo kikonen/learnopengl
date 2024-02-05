@@ -8,7 +8,6 @@
 #include "size.h"
 
 struct UpdateContext;
-class Registry;
 
 namespace script
 {
@@ -25,7 +24,7 @@ namespace script
 
         ~CommandEngine();
 
-        void prepare(Registry* registry);
+        void prepare();
 
         void update(const UpdateContext& ctx);
 

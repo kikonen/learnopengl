@@ -23,6 +23,7 @@
 #include "engine/AsyncLoader.h"
 #include "engine/InputContext.h"
 
+#include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 #include "registry/SnapshotRegistry.h"
 
@@ -42,7 +43,6 @@ int Engine::init() {
 
     onInit();
 
-    m_registry = std::make_shared<Registry>(m_alive);
     m_asyncLoader = std::make_shared<AsyncLoader>(m_alive);
 
     m_window = std::make_unique<Window>(*this);
@@ -67,13 +67,14 @@ int Engine::setup() {
         state.track(key);
     }
 
-    m_registry->prepareShared();
+    Registry::get().prepareShared(m_alive);
 
     return onSetup();
 }
 
 void Engine::run() {
     auto& assets = Assets::modify();
+    auto& registry = Registry::get();
 
     const auto& info = kigl::GL::getInfo();
     const auto& extensions = kigl::GL::getExtensions();
@@ -142,7 +143,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     InputContext inputCtx{
         clock,
-        m_registry.get(),
         m_window->m_input.get() };
 
     // render loop
@@ -160,7 +160,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_snapshotRegistry->copyFromPending(0, -1);
+            registry.m_snapshotRegistry->copyFromPending(0, -1);
 
             // input
             // -----
@@ -198,8 +198,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 fpsCounter.endFame(clock.elapsedSecs);
             }
-
-            //m_registry->m_snapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();

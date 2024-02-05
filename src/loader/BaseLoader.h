@@ -16,8 +16,6 @@ namespace event {
     class Dispatcher;
 }
 
-class Registry;
-
 namespace loader
 {
     static const float DEF_ALPHA = 1.0;
@@ -36,7 +34,7 @@ namespace loader
         BaseLoader(
             Context ctx);
 
-        void setRegistry(std::shared_ptr<Registry> registry);
+        void setRegistry();
 
         void loadRepeat(
             const YAML::Node& node,
@@ -101,7 +99,6 @@ namespace loader
     public:
         Context m_ctx;
 
-        std::shared_ptr<Registry> m_registry;
         event::Dispatcher* m_dispatcher { nullptr };
     };
 }

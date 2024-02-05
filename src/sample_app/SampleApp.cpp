@@ -24,6 +24,7 @@
 
 #include "mesh/MeshType.h"
 
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/SnapshotRegistry.h"
@@ -73,7 +74,6 @@ int SampleApp::onSetup()
 
     m_currentScene = loadScene();
     m_sceneUpdater = std::make_shared<SceneUpdater>(
-        m_registry,
         m_alive);
 
     m_sceneUpdater->start();
@@ -118,8 +118,7 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
 
     {
         UpdateContext ctx(
-            clock,
-            m_currentScene->m_registry.get());
+            clock);
 
         updater->updateRT(ctx);
     }
@@ -133,8 +132,7 @@ int SampleApp::onPost(const ki::RenderClock& clock) {
 
     {
         UpdateContext ctx(
-            clock,
-            m_currentScene->m_registry.get());
+            clock);
 
         updater->postRT(ctx);
     }
@@ -160,7 +158,6 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     {
         UpdateViewContext ctx(
             clock,
-            m_currentScene->m_registry.get(),
             size.x,
             size.y);
 
@@ -171,7 +168,6 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         "TOP",
         nullptr,
         clock,
-        m_currentScene->m_registry.get(),
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
@@ -332,6 +328,7 @@ void SampleApp::selectNode(
     const InputState& lastInputState)
 {
     const auto& assets = Assets::get();
+    auto& registry = Registry::get();
 
     const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
     const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
@@ -358,7 +355,7 @@ void SampleApp::selectNode(
             {
                 event::Event evt { event::Type::audio_source_pause };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                registry.m_dispatcher->send(evt);
             }
 
             return;
@@ -385,13 +382,13 @@ void SampleApp::selectNode(
                     .data = { 0.f, 1.f, 0.f },
                     .data2 = { 360.f, 0, 0 },
                 };
-                ctx.m_registry->m_dispatcher->send(evt);
+                registry.m_dispatcher->send(evt);
             }
 
             {
                 event::Event evt { event::Type::audio_source_play };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                registry.m_dispatcher->send(evt);
             }
         }
     } else if (playerMode) {
@@ -400,7 +397,7 @@ void SampleApp::selectNode(
             if (exists) {
                 event::Event evt { event::Type::node_activate };
                 evt.body.node.target = node->getId();
-                ctx.m_registry->m_dispatcher->send(evt);
+                registry.m_dispatcher->send(evt);
             }
 
             node = nullptr;
@@ -409,7 +406,7 @@ void SampleApp::selectNode(
         // NOTE KI null == default camera
         event::Event evt { event::Type::camera_activate };
         evt.body.node.target = node->getId();
-        ctx.m_registry->m_dispatcher->send(evt);
+        registry.m_dispatcher->send(evt);
 
         node = nullptr;
     }
@@ -425,7 +422,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 {
     const auto& assets = Assets::get();
 
-    auto scene = std::make_shared<Scene>(m_registry, m_alive);
+    auto scene = std::make_shared<Scene>(m_alive);
 
     {
         if (!assets.sceneFile.empty()) {
@@ -442,7 +439,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     for (auto& loader : m_loaders) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx.str()));
-        loader->prepare(m_registry);
+        loader->prepare();
         loader->load();
     }
 
@@ -451,7 +448,6 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     //    m_asyncLoader);
 
     //m_testSetup->setup(
-    //    scene->m_registry
     //);
 
     scene->prepareRT();

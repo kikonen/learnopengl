@@ -36,10 +36,8 @@ namespace {
 }
 
 SceneUpdater::SceneUpdater(
-    std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_registry(registry),
-    m_alive(alive)
+    : m_alive(alive)
 {}
 
 SceneUpdater::~SceneUpdater()
@@ -58,20 +56,23 @@ bool SceneUpdater::isRunning() const
 
 void SceneUpdater::prepare()
 {
-    m_registry->prepareWT();
+    auto& registry = Registry::get();
+    auto* dispatcher = registry.m_dispatcher;
 
-    auto* dispatcher = m_registry->m_dispatcher;
+    registry.prepareWT();
 
     dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
+
+            auto& registry = Registry::get();
             physics::PhysicsEngine::get().setEnabled(true);
 
             // NOTE KI trigger UI sidew update *after* all worker side processing done
             {
                 event::Event evt { event::Type::scene_loaded };
-                m_registry->m_dispatcherView->send(evt);
+                registry.m_dispatcherView->send(evt);
             }
         });
 
@@ -136,8 +137,7 @@ void SceneUpdater::run()
         //std::cout << "elapsed=" << clock.elapsedSecs << '\n';
 
         UpdateContext ctx(
-            clock,
-            m_registry.get());
+            clock);
 
         update(ctx);
 
@@ -156,10 +156,12 @@ void SceneUpdater::run()
 
 void SceneUpdater::update(const UpdateContext& ctx)
 {
+    auto& registry = Registry::get();
+
     KI_TIMER("loop    ");
     {
         KI_TIMER("event   ");
-        m_registry->m_dispatcher->dispatchEvents();
+        registry.m_dispatcher->dispatchEvents();
     }
 
     count++;
@@ -173,7 +175,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
         {
             KI_TIMER("registry");
-            m_registry->updateWT(ctx);
+            registry.updateWT(ctx);
         }
 
         if (m_loaded) {
@@ -205,7 +207,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //}
 
     // NOTE KI sync to RT
-    m_registry->m_snapshotRegistry->copyToPending(0, -1);
+    registry.m_snapshotRegistry->copyToPending(0, -1);
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)

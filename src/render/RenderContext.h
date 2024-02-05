@@ -20,7 +20,6 @@ namespace render {
 }
 
 class Camera;
-class Registry;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -54,7 +53,6 @@ public:
         std::string_view name,
         const RenderContext* parent,
         const ki::RenderClock& clock,
-        Registry* registry,
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
         render::Batch* batch,
@@ -114,8 +112,6 @@ public:
     const float m_farPlane;
 
     const float m_aspectRatio;
-
-    Registry* const m_registry;
 
     Camera* const m_camera;
 

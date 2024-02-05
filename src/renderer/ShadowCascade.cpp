@@ -84,7 +84,7 @@ void ShadowCascade::prepareRT(
     const PrepareContext& ctx)
 {
     const auto& assets = Assets::get();
-    auto& registry = ctx.m_registry;
+    auto& registry = Registry::get();
 
     m_solidShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
     m_alphaShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });

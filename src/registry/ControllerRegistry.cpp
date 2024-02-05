@@ -29,11 +29,11 @@ ControllerRegistry::~ControllerRegistry()
     m_controllers.clear();
 }
 
-void ControllerRegistry::prepare(Registry* registry)
+void ControllerRegistry::prepare()
 {
-    m_registry = registry;
+    auto& registry = Registry::get();
 
-    registry->m_dispatcher->addListener(
+    registry.m_dispatcher->addListener(
         event::Type::controller_add,
         [this](const event::Event& e) {
             auto& action = e.body.control;
@@ -72,7 +72,7 @@ void ControllerRegistry::addController(
         return;
     }
 
-    PrepareContext ctx{ m_registry };
+    PrepareContext ctx{};
     controller->prepare(ctx, *node);
 
     {

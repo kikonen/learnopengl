@@ -14,13 +14,6 @@
 #include "component/Light.h"
 #include "component/Camera.h"
 
-#include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
-
-#include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/EntityRegistry.h"
-
 #include "render/NodeDraw.h"
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
@@ -37,7 +30,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
         parent->m_batch,
@@ -60,7 +52,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
         parent->m_batch,
@@ -75,7 +66,6 @@ RenderContext::RenderContext(
     std::string_view name,
     const RenderContext* parent,
     const ki::RenderClock& clock,
-    Registry* registry,
     render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
     render::Batch* batch,
@@ -90,7 +80,6 @@ RenderContext::RenderContext(
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
     m_batch{ batch },
-    m_registry{ registry },
     m_camera{ camera },
     m_nearPlane{ nearPlane },
     m_farPlane{ farPlane },
@@ -232,7 +221,7 @@ void RenderContext::updateClipPlanesUBO() const
 void RenderContext::updateLightsUBO() const
 {
     validateRender("update_lights_ubo");
-    m_renderData->updateLights(m_registry, m_useLight);
+    m_renderData->updateLights(m_useLight);
 }
 
 void RenderContext::validateRender(std::string_view label) const
@@ -264,13 +253,11 @@ UpdateContext RenderContext::toUpdateContext() const
 {
     return {
         m_clock,
-        m_registry,
     };
 }
 
 PrepareContext RenderContext::toPrepareContext() const
 {
     return {
-        m_registry,
     };
 }

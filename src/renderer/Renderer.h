@@ -11,8 +11,6 @@ struct UpdateContext;
 struct UpdateViewContext;
 class RenderContext;
 
-class Registry;
-
 class Node;
 
 class Renderer
@@ -54,8 +52,6 @@ protected:
     std::string m_name;
 
     bool m_enabled{ false };
-
-    Registry* m_registry{ nullptr };
 
     bool m_useFrameStep{ false };
     int m_renderFrameStart = 0;

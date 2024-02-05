@@ -36,11 +36,8 @@ TestSceneSetup::TestSceneSetup(
 {
 }
 
-void TestSceneSetup::setup(
-    std::shared_ptr<Registry> registry)
+void TestSceneSetup::setup()
 {
-    m_registry = registry;
-
     if (true) {
         //setupEffectExplosion();
 
@@ -81,7 +78,7 @@ void TestSceneSetup::setupEffectExplosion()
                 .target = node->getId(),
                 .parentId = assets.rootId,
             };
-            m_registry->m_dispatcher->send(evt);
+            Registry::get().m_dispatcher->send(evt);
         }
     });
 }

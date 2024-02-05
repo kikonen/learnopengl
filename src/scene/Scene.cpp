@@ -60,10 +60,8 @@ namespace {
 }
 
 Scene::Scene(
-    std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive(alive),
-    m_registry(registry)
+    : m_alive(alive)
 {
     auto& assets = Assets::get();
 
@@ -118,10 +116,11 @@ void Scene::destroy()
 void Scene::prepareRT()
 {
     auto& assets = Assets::get();
+    auto& registry = Registry::get();
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
-    auto* dispatcherView = m_registry->m_dispatcherView;
+    auto* dispatcherView = registry.m_dispatcherView;
 
     dispatcherView->addListener(
         event::Type::scene_loaded,
@@ -144,7 +143,7 @@ void Scene::prepareRT()
         assets.glUseDebugFence,
         assets.batchDebug);
 
-    PrepareContext ctx{ m_registry.get() };
+    PrepareContext ctx{};
 
     m_batch->prepareRT(ctx);
     m_nodeDraw->prepareRT(ctx);
@@ -274,9 +273,11 @@ void Scene::prepareRT()
 
 void Scene::updateRT(const UpdateContext& ctx)
 {
-    m_registry->m_dispatcherView->dispatchEvents();
+    auto& registry = Registry::get();
 
-    m_registry->updateRT(ctx);
+    registry.m_dispatcherView->dispatchEvents();
+
+    registry.updateRT(ctx);
 
     m_renderData->update();
 
@@ -287,7 +288,9 @@ void Scene::updateRT(const UpdateContext& ctx)
 
 void Scene::postRT(const UpdateContext& ctx)
 {
-    m_registry->postRT(ctx);
+    auto& registry = Registry::get();
+
+    registry.postRT(ctx);
 }
 
 void Scene::updateViewRT(const UpdateViewContext& ctx)

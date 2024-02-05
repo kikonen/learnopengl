@@ -4,8 +4,6 @@
 
 #include "ki/RenderClock.h"
 
-#include "registry/Registry.h"
-
 #include "ki/RenderClock.h"
 
 #include "gui/Input.h"
@@ -26,10 +24,6 @@ public:
     int init();
     int setup();
     void run();
-
-    inline Registry* getRegistry() const noexcept {
-        return m_registry.get();
-    }
 
     inline const ki::RenderClock& getClock() const noexcept {
         return m_clock;
@@ -53,8 +47,6 @@ public:
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders
     std::shared_ptr<AsyncLoader> m_asyncLoader;
-
-    std::shared_ptr<Registry> m_registry;
 
     std::shared_ptr<Scene> m_currentScene;
     std::shared_ptr<SceneUpdater> m_sceneUpdater;

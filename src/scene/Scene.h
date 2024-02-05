@@ -32,8 +32,6 @@ class Viewport;
 
 class NodeController;
 
-class Registry;
-
 struct UpdateContext;
 struct UpdateViewContext;
 class RenderContext;
@@ -55,7 +53,6 @@ class Scene final
 {
 public:
     Scene(
-        std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
 
@@ -99,8 +96,6 @@ public:
 
 public:
     std::unique_ptr<render::RenderData> m_renderData;
-
-    std::shared_ptr<Registry> m_registry;
 
     std::unique_ptr<render::Batch> m_batch;
     std::unique_ptr<render::NodeDraw> m_nodeDraw;

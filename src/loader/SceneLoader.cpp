@@ -98,22 +98,21 @@ namespace loader {
         return m_runningCount > 0 || m_pendingCount > 0;
     }
 
-    void SceneLoader::prepare(
-        std::shared_ptr<Registry> registry)
+    void SceneLoader::prepare()
     {
-        m_registry = registry;
-        m_dispatcher = registry->m_dispatcher;
+        auto& registry = Registry::get();
+        m_dispatcher = registry.m_dispatcher;
 
-        m_fontLoader.setRegistry(registry);
-        m_materialLoader.setRegistry(registry);
-        m_rootLoader.setRegistry(registry);
-        m_scriptLoader.setRegistry(registry);
-        m_skyboxLoader.setRegistry(registry);
-        m_volumeLoader.setRegistry(registry);
-        m_cubeMapLoader.setRegistry(registry);
-        m_audioLoader.setRegistry(registry);
-        m_physicsLoader.setRegistry(registry);
-        m_entityLoader.setRegistry(registry);
+        m_fontLoader.setRegistry();
+        m_materialLoader.setRegistry();
+        m_rootLoader.setRegistry();
+        m_scriptLoader.setRegistry();
+        m_skyboxLoader.setRegistry();
+        m_volumeLoader.setRegistry();
+        m_cubeMapLoader.setRegistry();
+        m_audioLoader.setRegistry();
+        m_physicsLoader.setRegistry();
+        m_entityLoader.setRegistry();
     }
 
     void SceneLoader::load()

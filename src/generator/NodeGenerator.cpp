@@ -120,15 +120,16 @@ void NodeGenerator::bindBatch(
 {
     if (m_activeCount == 0) return;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
 
-    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+    bool ready = nr.hasActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 
     if (!ready) return;
 
-    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
+    const auto& snapshots = nr.getActiveSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 

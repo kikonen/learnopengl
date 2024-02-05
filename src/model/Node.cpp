@@ -73,7 +73,8 @@ const std::string Node::str() const noexcept
 void Node::prepare(
     const PrepareContext& ctx)
 {
-    auto& registry = ctx.m_registry;
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
 
     auto* type = m_typeHandle.toType();
 
@@ -105,7 +106,7 @@ void Node::prepare(
         }
 
     }
-    m_snapshotIndex = ctx.m_registry->m_snapshotRegistry->registerSnapshot();
+    m_snapshotIndex = nr.registerSnapshot();
 
     if (m_generator) {
         m_generator->prepare(ctx, *this);
@@ -153,7 +154,10 @@ void Node::bindBatch(
     if (m_instancer) {
         m_instancer->bindBatch(ctx, *this, batch);
     } else {
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+        auto& registry = Registry::get();
+        auto& nr = *registry.m_snapshotRegistry;
+
+        const auto& snapshot = nr.getActiveSnapshot(m_snapshotIndex);
         batch.addSnapshot(
             ctx,
             snapshot,

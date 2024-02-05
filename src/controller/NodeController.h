@@ -8,7 +8,6 @@
 struct PrepareContext;
 struct InputContext;
 struct UpdateContext;
-class Registry;
 
 class Node;
 
@@ -44,6 +43,4 @@ public:
 
 protected:
     bool m_prepared{ false };
-
-    Registry* m_registry{ nullptr };
 };

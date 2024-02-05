@@ -2,8 +2,6 @@
 
 #include "kigl/GLSyncQueue.h"
 
-class Registry;
-
 struct MatricesUBO;
 struct DataUBO;
 struct BufferInfoUBO;
@@ -30,7 +28,7 @@ namespace render {
         void updateData(const DataUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
         void updateClipPlanes(const ClipPlanesUBO& data);
-        void updateLights(Registry* registry, bool useLight);
+        void updateLights(bool useLight);
 
     private:
         //void updateImageTextures();

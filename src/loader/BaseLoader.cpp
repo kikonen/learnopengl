@@ -32,10 +32,10 @@ namespace loader
     {
     }
 
-    void BaseLoader::setRegistry(std::shared_ptr<Registry> registry)
+    void BaseLoader::setRegistry()
     {
-        m_registry = registry;
-        m_dispatcher = m_registry->m_dispatcher;
+        auto& registry = Registry::get();
+        m_dispatcher = registry.m_dispatcher;
     }
 
     void BaseLoader::loadTiling(

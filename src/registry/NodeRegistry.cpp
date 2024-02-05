@@ -88,10 +88,8 @@ NodeRegistry::~NodeRegistry()
     pool::NodeHandle::clear();
 }
 
-void NodeRegistry::prepare(
-    Registry* registry)
+void NodeRegistry::prepare()
 {
-    m_registry = registry;
     m_selectionMaterial = std::make_unique<Material>();
     *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     MaterialRegistry::get().registerMaterial(*m_selectionMaterial);
@@ -118,7 +116,8 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ControllerRegistry::get().updateWT(ctx);
 
     {
-        snapshotWT(*m_registry->m_snapshotRegistry);
+        auto& registry = Registry::get();
+        snapshotWT(*registry.m_snapshotRegistry);
     }
 }
 
@@ -180,7 +179,9 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& registry = Registry::get();
+
+    auto& snapshotRegistry = *registry.m_snapshotRegistry;
     auto& entityRegistry = EntityRegistry::get();
 
     std::lock_guard lock(m_snapshotLock);
@@ -211,9 +212,10 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 void NodeRegistry::attachListeners()
 {
     auto& assets = Assets::get();
+    auto& registry = Registry::get();
 
-    auto* dispatcher = m_registry->m_dispatcher;
-    auto* dispatcherView = m_registry->m_dispatcherView;
+    auto* dispatcher = registry.m_dispatcher;
+    auto* dispatcherView = registry.m_dispatcherView;
 
     dispatcher->addListener(
         event::Type::node_add,
@@ -226,7 +228,7 @@ void NodeRegistry::attachListeners()
     if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,
-            [this](const event::Event& e) {
+            [this, &dispatcher](const event::Event& e) {
                 auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
 
@@ -240,7 +242,7 @@ void NodeRegistry::attachListeners()
                             .target = data.target,
                             .id = scriptId,
                         };
-                        m_registry->m_dispatcher->send(evt);
+                        dispatcher->send(evt);
                     }
                 }
             });
@@ -395,7 +397,7 @@ void NodeRegistry::attachListeners()
             auto& data = e.body.meshType;
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
-            type->prepareRT({ m_registry });
+            type->prepareRT({});
         });
 }
 
@@ -403,12 +405,14 @@ void NodeRegistry::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
+    auto& registry = Registry::get();
+
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
-    m_registry->m_snapshotRegistry->copyFromPending(0, -1);
+    registry.m_snapshotRegistry->copyFromPending(0, -1);
     if (node->m_generator) {
-        const PrepareContext ctx{ m_registry };
+        const PrepareContext ctx{};
         node->m_generator->prepareRT(ctx, *node);
     }
     node->m_preparedRT = true;
@@ -539,6 +543,7 @@ void NodeRegistry::bindNode(
     if (!node) return;
 
     auto& assets = Assets::get();
+    auto& registry = Registry::get();
 
     pool::NodeHandle handle = node->toHandle();
 
@@ -546,8 +551,8 @@ void NodeRegistry::bindNode(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_registry });
-    node->prepare({ m_registry });
+    type->prepare({});
+    node->prepare({});
 
     {
         {
@@ -564,24 +569,24 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
+    registry.m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
 
     {
         event::Event evt { event::Type::node_added };
         evt.body.node.target = nodeId;
-        m_registry->m_dispatcher->send(evt);
+        registry.m_dispatcher->send(evt);
     }
 
     {
         event::Event evt { event::Type::node_added };
         evt.body.node.target = nodeId;
-        m_registry->m_dispatcherView->send(evt);
+        registry.m_dispatcherView->send(evt);
     }
 
     {
         event::Event evt { event::Type::type_prepare_view };
         evt.body.meshType.target = node->m_typeHandle.toId();
-        m_registry->m_dispatcherView->send(evt);
+        registry.m_dispatcherView->send(evt);
     }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
@@ -686,15 +691,17 @@ void NodeRegistry::bindSkybox(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_registry });
-    node->prepare({ m_registry });
+    type->prepare({});
+    node->prepare({});
 
     m_skybox = handle;
 
     {
+        auto& registry = Registry::get();
+
         event::Event evt { event::Type::type_prepare_view };
         evt.body.meshType.target = node->m_typeHandle.toId();
-        m_registry->m_dispatcherView->send(evt);
+        registry.m_dispatcherView->send(evt);
     }
 }
 

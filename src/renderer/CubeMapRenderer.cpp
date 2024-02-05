@@ -165,6 +165,8 @@ bool CubeMapRenderer::render(
     const RenderContext& parentCtx)
 {
     const auto& assets = Assets::get();
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
 
     parentCtx.validateRender("cube_map");
 
@@ -190,8 +192,8 @@ bool CubeMapRenderer::render(
         Node* tagNode = getTagNode();
         if (tagNode) {
             const auto* rootNode = NodeRegistry::get().getRootRT();
-            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
-            const auto& rootSnapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(rootNode->m_snapshotIndex);
+            const auto& snapshot = nr.getActiveSnapshot(centerNode->m_snapshotIndex);
+            const auto& rootSnapshot = nr.getActiveSnapshot(rootNode->m_snapshotIndex);
 
             const auto& rootPos = rootSnapshot.getWorldPosition();
             const auto& centerPos = snapshot.getWorldPosition();
@@ -231,7 +233,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
+        const auto& snapshot = nr.getActiveSnapshot(centerNode->m_snapshotIndex);
         const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
@@ -368,6 +370,9 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
+    auto& registry = Registry::get();
+    auto& nr = *registry.m_snapshotRegistry;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
@@ -377,7 +382,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = nr.getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
 

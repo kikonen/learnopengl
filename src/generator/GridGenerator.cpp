@@ -25,7 +25,9 @@ void GridGenerator::prepare(
         ctx,
         container);
 
-    prepareSnapshots(*ctx.m_registry->m_snapshotRegistry);
+    auto& registry = Registry::get();
+
+    prepareSnapshots(*registry.m_snapshotRegistry);
 }
 
 void GridGenerator::updateWT(

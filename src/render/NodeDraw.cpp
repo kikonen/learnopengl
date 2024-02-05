@@ -67,7 +67,6 @@ namespace render {
         const PrepareContext& ctx)
     {
         const auto& assets = Assets::get();
-        auto& registry = ctx.m_registry;
 
         m_gBuffer.prepare();
         m_oitBuffer.prepare(&m_gBuffer);
@@ -670,7 +669,8 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+        auto& registry = Registry::get();
+        auto& nr = *registry.m_snapshotRegistry;
 
         const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
 
@@ -687,7 +687,7 @@ namespace render {
                     auto* node = handle.toNode();
                     if (!node || !nodeSelector(node)) continue;
 
-                    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+                    const auto& snapshot = nr.getActiveSnapshot(node->m_snapshotIndex);
                     const float distance = glm::length(viewPos - snapshot.getWorldPosition());
                     sorted[distance] = node;
                 }

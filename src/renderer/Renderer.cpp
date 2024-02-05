@@ -8,7 +8,6 @@
 
 #include "engine/PrepareContext.h"
 
-#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
 
@@ -19,8 +18,6 @@ void Renderer::prepareRT(
     const PrepareContext& ctx)
 {
     const auto& assets = Assets::get();
-
-    m_registry = ctx.m_registry;
 
     m_renderFrameStart = assets.renderFrameStart;
     m_renderFrameStep = assets.renderFrameStep;

@@ -18,12 +18,13 @@ class SnapshotRegistry;
 //
 class Registry {
 public:
-    Registry(
-        std::shared_ptr<std::atomic<bool>> alive);
+    static Registry& get() noexcept;
+
+    Registry();
 
     ~Registry();
 
-    void prepareShared();
+    void prepareShared(std::shared_ptr<std::atomic<bool>> alive);
     void prepareWT();
 
     void updateWT(const UpdateContext& ctx);

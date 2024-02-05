@@ -12,8 +12,6 @@
 
 #include "asset/DynamicCubeMap.h"
 
-#include "registry/Registry.h"
-
 #include "scene/Scene.h"
 
 #include "Input.h"
@@ -468,7 +466,6 @@ void Window::onMouseMove(float xpos, float ypos)
 
     const InputContext ctx{
         m_engine.getClock(),
-        m_engine.getRegistry(),
         m_input.get() };
 
     m_input->onMouseMove(xpos, ypos);
@@ -511,7 +508,6 @@ void Window::onMouseWheel(float xoffset, float yoffset)
 {
     const InputContext ctx{
         m_engine.getClock(),
-        m_engine.getRegistry(),
         m_input.get() };
 
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();

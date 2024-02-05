@@ -31,8 +31,6 @@
 #include "PhysicsLoader.h"
 #include "EntityLoader.h"
 
-class Registry;
-
 namespace pool {
     class NodeHandle;
     class TypeHandle;
@@ -58,8 +56,7 @@ namespace loader {
 
         bool isRunning();
 
-        void prepare(
-            std::shared_ptr<Registry> registry);
+        void prepare();
 
         void load();
 
