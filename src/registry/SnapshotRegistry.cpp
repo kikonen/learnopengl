@@ -119,9 +119,7 @@ void SnapshotRegistry::copy(
 
         for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
-                dst[i] = src[i];
-                src[i].m_dirty = false;
-                src[i].m_dirtyNormal = false;
+                dst[i].apply(src[i]);
             }
         }
     }

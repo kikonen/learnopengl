@@ -56,7 +56,12 @@ void NodeTransform::updateRootMatrix() noexcept
 void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 {
     ASSERT_WT();
+
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
+    {
+        m_parentMatrixLevel = parent.m_matrixLevel;
+        m_matrixLevel++;
+    }
 
     // NOTE KI only *SINGLE* thread is allowed to do model updates
     // => thus can use globally shared temp vars
@@ -88,9 +93,6 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
         updateModelAxis();
     }
 
-    m_parentMatrixLevel = parent.m_matrixLevel;
-    m_matrixLevel++;
-
     m_dirty = false;
     m_dirtySnapshot = true;
 }
@@ -100,10 +102,10 @@ void NodeTransform::updateModelAxis() noexcept
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
     // NOTE KI w == 0; only rotation
-    m_viewFront = glm::normalize(glm::mat3(m_quatRotation) * m_front);
+    m_viewFront = glm::mat3(m_quatRotation) * m_front;
 
-    m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-    m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
+    m_viewRight = glm::cross(m_viewFront, m_up);
+    m_viewUp = glm::cross(m_viewRight, m_viewFront);
 }
 
 void NodeTransform::updateRotationMatrix() noexcept

@@ -21,13 +21,40 @@ struct Snapshot {
     Snapshot(const NodeTransform& o);
     Snapshot(const NodeTransform&& o);
 
-    Snapshot& operator=(const NodeTransform& o) noexcept;
+    void apply(NodeTransform& o) noexcept;
+
     //Snapshot& operator=(Snapshot& o) = default;
-    Snapshot& operator=(const Snapshot& o) noexcept;
+    inline void apply(Snapshot& o) noexcept
+    {
+        m_dirty |= o.m_dirty;
+        m_dirtyNormal |= o.m_dirtyNormal;
 
-    bool m_dirty : 1 {true};
-    bool m_dirtyNormal : 1 {true};
+        m_matrixLevel = o.m_matrixLevel;
 
+        m_flags = o.m_flags;
+
+        m_materialIndex = o.m_materialIndex;
+        m_shapeIndex = o.m_shapeIndex;
+
+        m_volume = o.m_volume;
+
+        m_worldPos = o.m_worldPos;
+
+        m_quatRotation = o.m_quatRotation;
+
+        m_viewUp = o.m_viewUp;
+        m_viewFront = o.m_viewFront;
+        m_viewRight = o.m_viewRight;
+        m_modelMatrix = o.m_modelMatrix;
+
+        m_modelScale = o.m_modelScale;
+
+        o.m_dirty = false;
+        o.m_dirtyNormal = false;
+    }
+
+    ///////////////////////////////////////
+    //
     ki::level_id m_matrixLevel{ (ki::level_id)-1 };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
@@ -49,6 +76,8 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
+    bool m_dirty { true };
+    bool m_dirtyNormal { true };
 
     inline const glm::vec4& getVolume() const noexcept
     {

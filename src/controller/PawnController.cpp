@@ -54,7 +54,7 @@ void PawnController::onKey(
     const float dt = ctx.m_clock.elapsedSecs;
 
     const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
-    const auto& viewUp = snapshot.getViewUp();
+    const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ m_speedRotateNormal };
@@ -103,7 +103,7 @@ void PawnController::onKey(
         glm::vec3 adjust{ 0.f };
 
         {
-            const auto& viewFront = snapshot.getViewFront();
+            const auto& viewFront = glm::normalize(snapshot.getViewFront());
 
             if (input->isKeyDown(Key::FORWARD)) {
                 adjust += viewFront * dt * moveSpeed.z;
@@ -116,7 +116,7 @@ void PawnController::onKey(
         }
 
         {
-            const auto& viewRight = snapshot.getViewRight();
+            const auto& viewRight = glm::normalize(snapshot.getViewRight());
 
             if (input->isKeyDown(Key::LEFT)) {
                 adjust -= viewRight * dt * moveSpeed.x;

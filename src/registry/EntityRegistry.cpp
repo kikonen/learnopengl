@@ -211,18 +211,6 @@ uint32_t EntityRegistry::registerEntityRange(const size_t count)
     return static_cast<uint32_t>(firstIndex);
 }
 
-void EntityRegistry::markDirty(int index)
-{
-    ASSERT_RT();
-    if (index < m_minDirty || m_minDirty == -1) {
-        m_minDirty = index;
-    }
-    if (index > m_maxDirty || m_maxDirty == -1) {
-        m_maxDirty = index;
-    }
-
-    m_dirty[index] = true;
-}
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {

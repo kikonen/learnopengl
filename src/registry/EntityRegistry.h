@@ -57,7 +57,18 @@ public:
         return std::span{ m_entries }.subspan(start, count);
     }
 
-    void markDirty(int index);
+    inline void markDirty(int index) noexcept
+    {
+        //ASSERT_RT();
+        if (index < m_minDirty || m_minDirty == -1) {
+            m_minDirty = index;
+        }
+        if (index > m_maxDirty || m_maxDirty == -1) {
+            m_maxDirty = index;
+        }
+
+        m_dirty[index] = true;
+    }
 
 private:
     void processNodes(const UpdateContext& ctx);

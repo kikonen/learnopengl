@@ -217,8 +217,8 @@ bool MirrorMapRenderer::render(
             const auto& mirrorSize = volumeRadius;
             const auto& eyePos = parentCamera->getWorldPosition();
 
-            const auto& viewFront = snapshot.getViewFront();
-            const auto& viewUp = snapshot.getViewUp();
+            const auto& viewFront = glm::normalize(snapshot.getViewFront());
+            const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
             const auto eyeV = planePos - eyePos;
             const auto dist = glm::length(eyeV);
@@ -378,7 +378,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         if (!node) continue;
 
         const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
-        const auto& viewFront = snapshot.getViewFront();
+        const auto& viewFront = glm::normalize(snapshot.getViewFront());
 
         const auto dot = glm::dot(viewFront, cameraFront);
 

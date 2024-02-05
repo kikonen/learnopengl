@@ -21,6 +21,7 @@ class RenderContext;
 //
 struct NodeTransform {
     bool m_dirty : 1 {true};
+    bool m_dirtyNormal : 1 {true};
     bool m_dirtyRotation : 1 {true};
     bool m_dirtySnapshot : 1 {true};
 
@@ -124,6 +125,7 @@ struct NodeTransform {
             m_scale.z = scale;
 
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -138,6 +140,7 @@ struct NodeTransform {
             m_scale.z = scale.z;
 
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -151,6 +154,7 @@ struct NodeTransform {
         m_scale.z += adjust.z;
 
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setBaseRotation(const glm::quat& quat) noexcept
@@ -158,6 +162,7 @@ struct NodeTransform {
         m_baseRotation = glm::normalize(quat);
         m_dirtyRotation = true;
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setQuatRotation(const glm::quat& quat) noexcept
@@ -166,6 +171,7 @@ struct NodeTransform {
             m_quatRotation = quat;
             m_dirtyRotation = true;
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 

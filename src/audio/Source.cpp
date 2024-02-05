@@ -108,7 +108,7 @@ namespace audio
         m_matrixLevel = level;
 
         m_pos = node->getTransform().getWorldPosition();
-        m_dir = node->getTransform().getViewFront();
+        m_dir = glm::normalize(node->getTransform().getViewFront());
 
         updatePos();
     }

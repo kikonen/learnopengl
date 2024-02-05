@@ -39,11 +39,7 @@ void NodeGenerator::snapshotWT(
         assert(!transform.m_dirty);
         if (!transform.m_dirtySnapshot) continue;
 
-        auto& snapshot = snapshots[i];
-        snapshot = transform;
-        snapshot.m_dirty = true;
-
-        transform.m_dirtySnapshot = false;
+        snapshots[i].apply(transform);
     }
 }
 

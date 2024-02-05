@@ -47,9 +47,12 @@ Snapshot::Snapshot(const NodeTransform&& o)
     o.m_volume.storeWorldVolume(m_volume);
 }
 
-Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
+void Snapshot::apply(NodeTransform& o) noexcept
 {
     m_matrixLevel = o.m_matrixLevel;
+
+    m_dirty |= o.m_dirtySnapshot;
+    m_dirtyNormal |= o.m_dirtyNormal;
 
     m_flags = o.m_flags;
 
@@ -58,42 +61,6 @@ Snapshot& Snapshot::operator=(const NodeTransform& o) noexcept
 
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
-
-    m_worldPos = o.m_worldPos;
-
-    if (m_quatRotation != o.m_quatRotation) {
-        m_quatRotation = o.m_quatRotation;
-        m_dirtyNormal = true;
-    }
-
-    m_viewUp = o.m_viewUp;
-    m_viewFront = o.m_viewFront;
-    m_viewRight = o.m_viewRight;
-    m_modelMatrix = o.m_modelMatrix;
-
-    if (m_modelScale != o.m_modelScale) {
-        m_modelScale = o.m_modelScale;
-        m_dirtyNormal = true;
-    }
-
-    return *this;
-}
-
-Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
-{
-    if (&o == this) return *this;
-
-    m_dirty |= o.m_dirty;
-    m_dirtyNormal |= o.m_dirtyNormal;
-
-    m_matrixLevel = o.m_matrixLevel;
-
-    m_flags = o.m_flags;
-
-    m_materialIndex = o.m_materialIndex;
-    m_shapeIndex = o.m_shapeIndex;
-
-    m_volume = o.m_volume;
 
     m_worldPos = o.m_worldPos;
 
@@ -106,7 +73,8 @@ Snapshot& Snapshot::operator=(const Snapshot& o) noexcept
 
     m_modelScale = o.m_modelScale;
 
-    return *this;
+    o.m_dirtySnapshot = false;
+    o.m_dirtyNormal = false;
 }
 
 glm::vec3 Snapshot::getDegreesRotation() const noexcept

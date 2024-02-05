@@ -133,9 +133,7 @@ void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
 
         if (transform.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
-            snapshot = transform;
-            snapshot.m_dirty = true;
-            transform.m_dirtySnapshot = false;
+            snapshot.apply(transform);
         }
 
         if (node->m_generator) {
