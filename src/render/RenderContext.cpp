@@ -86,6 +86,8 @@ RenderContext::RenderContext(
     int height)
     : m_name{ name },
     m_parent{ parent },
+    m_assets{ Assets::get() },
+    m_state{ kigl::GLState::get() },
     m_clock{ clock },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
@@ -97,7 +99,7 @@ RenderContext::RenderContext(
     m_resolution({ width, height }),
     m_aspectRatio{ (float)width / (float)height }
 {
-    auto& assets = Assets::get();
+    auto& assets = m_assets;
 
     if (m_parent) {
         m_forceWireframe = m_parent->m_forceWireframe;
@@ -191,7 +193,7 @@ void RenderContext::bindDefaults() const
 {
     validateRender("bind_defaults");
 
-    auto& state = kigl::GLState::get();
+    auto& state = m_state;
 
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
     state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);

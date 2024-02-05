@@ -191,7 +191,7 @@ namespace render {
         if (m_prepared) return;
         m_prepared = true;
 
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
 
         if (entryCount <= 0) {
             entryCount = assets.batchSize;

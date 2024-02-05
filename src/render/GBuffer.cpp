@@ -19,7 +19,7 @@ namespace render {
 
     void GBuffer::updateRT(const UpdateViewContext& ctx)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
 
         const auto& res = ctx.m_resolution;
 

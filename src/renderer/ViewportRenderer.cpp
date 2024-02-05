@@ -36,7 +36,7 @@ void ViewportRenderer::render(
 
     if (viewports.empty()) return;
 
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
 
     bool forceWireframe = ctx.m_forceWireframe;
     ctx.m_forceWireframe = false;

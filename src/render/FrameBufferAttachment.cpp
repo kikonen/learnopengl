@@ -187,7 +187,7 @@ namespace render {
         const RenderContext& ctx,
         int unitIndex)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, textureID, false);
     }
 
@@ -195,7 +195,7 @@ namespace render {
         const RenderContext& ctx,
         int unitIndex)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, 0, true);
     }
 

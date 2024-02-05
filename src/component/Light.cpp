@@ -19,6 +19,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
 
     const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
@@ -37,7 +38,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) {
             KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", m_targetId));
-            targetNode = NodeRegistry::get().getRootRT();
+            targetNode = nodeRegistry.getRootRT();
         }
 
         if (!targetNode) return;

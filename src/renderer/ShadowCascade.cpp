@@ -83,7 +83,7 @@ ShadowCascade::~ShadowCascade()
 void ShadowCascade::prepareRT(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     m_solidShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
@@ -118,7 +118,9 @@ GLuint ShadowCascade::getTextureID()
 
 void ShadowCascade::bind(const RenderContext& ctx)
 {
-    auto* node = NodeRegistry::get().getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return;
 
     {

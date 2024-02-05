@@ -44,7 +44,7 @@ void ParticleSystem::bind(const RenderContext& ctx)
 
 void ParticleSystem::render(const RenderContext& ctx)
 {
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
 
     state.setEnabled(GL_BLEND, true);
     state.setEnabled(GL_CULL_FACE, false);

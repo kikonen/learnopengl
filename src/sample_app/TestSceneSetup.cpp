@@ -88,7 +88,7 @@ void TestSceneSetup::setupEffectExplosion()
 
 void TestSceneSetup::setupViewport1()
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     TextureSpec spec;
     // NOTE KI memory_leak

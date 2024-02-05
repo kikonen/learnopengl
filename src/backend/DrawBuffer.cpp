@@ -56,7 +56,7 @@ namespace backend {
     {
         const auto info = kigl::GL::getInfo();
 
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;

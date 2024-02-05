@@ -39,7 +39,7 @@ void NodeRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
@@ -53,7 +53,7 @@ void NodeRenderer::prepareRT(
 
 void NodeRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     const auto& res = ctx.m_resolution;
 
@@ -94,12 +94,13 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
     ctx.validateRender("node_map");
 
-    m_taggedCount = assets.showTagged ? NodeRegistry::get().countTagged() : 0;
-    m_selectedCount = assets.showSelection ? NodeRegistry::get().countSelected() : 0;
+    m_taggedCount = assets.showTagged ? nodeRegistry.countTagged() : 0;
+    m_selectedCount = assets.showSelection ? nodeRegistry.countSelected() : 0;
 
     {
         targetBuffer->clearAll();
@@ -124,12 +125,12 @@ void NodeRenderer::fillHighlightMask(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
 
     targetBuffer->bind(ctx);
 
@@ -158,12 +159,12 @@ void NodeRenderer::renderHighlight(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
 
     targetBuffer->bind(ctx);
 

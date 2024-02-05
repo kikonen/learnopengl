@@ -50,7 +50,7 @@ void TerrainGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_gridSize = assets.terrainGridSize;
 
@@ -94,7 +94,7 @@ physics::HeightMap* TerrainGenerator::prepareHeightMap(
     const PrepareContext& ctx,
     Node& container)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     const auto& imagePath = m_material.getTexturePath(m_material.map_height);
@@ -163,7 +163,7 @@ void TerrainGenerator::createTiles(
     Node& container,
     physics::HeightMap* heightMap)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     auto& entityRegistry = EntityRegistry::get();

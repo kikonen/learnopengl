@@ -30,7 +30,7 @@ void CameraZoomController::prepare(
     Node& node)
 {
     NodeController::prepare(ctx, node);
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!node.m_camera) return;
 
@@ -109,7 +109,9 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
+    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;

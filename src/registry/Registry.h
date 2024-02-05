@@ -11,6 +11,7 @@ namespace event
 
 struct UpdateContext;
 
+class NodeRegistry;
 class SnapshotRegistry;
 
 //
@@ -49,4 +50,5 @@ public:
     event::Dispatcher* const m_dispatcherView;
 
     SnapshotRegistry* const m_snapshotRegistry;
+    NodeRegistry* const m_nodeRegistry;
 };

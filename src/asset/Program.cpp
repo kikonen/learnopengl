@@ -52,7 +52,7 @@ Program::Program(
     m_geometryType{ geometryType },
     m_defines{ defines }
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     std::string basePath;
     {

@@ -18,7 +18,7 @@ namespace render {
 
     void OITBuffer::updateRT(const UpdateViewContext& ctx)
     {
-        auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         const auto& res = ctx.m_resolution;
 
         int w = (int)(assets.gBufferScale * res.x);

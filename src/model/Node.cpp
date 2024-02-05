@@ -199,7 +199,7 @@ void Node::setSelectionMaterialIndex(int index)
 
 int Node::getHighlightIndex() const noexcept
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     if (assets.showHighlight) {
         if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;

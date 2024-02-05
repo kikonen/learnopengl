@@ -210,7 +210,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
 void NodeRegistry::attachListeners()
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     auto* dispatcher = m_registry->m_dispatcher;
     auto* dispatcherView = m_registry->m_dispatcherView;
@@ -467,7 +467,7 @@ void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     const ki::node_id parentId) noexcept
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     auto* node = pool::NodeHandle::toNode(nodeId);
 
@@ -538,7 +538,7 @@ void NodeRegistry::bindNode(
     Node* node = pool::NodeHandle::toNode(nodeId);
     if (!node) return;
 
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     pool::NodeHandle handle = node->toHandle();
 
@@ -591,7 +591,7 @@ bool NodeRegistry::bindParent(
     const ki::node_id nodeId,
     const ki::node_id parentId)
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     // NOTE KI everything else, except root requires parent
     if (nodeId == assets.rootId) return true;
@@ -697,4 +697,3 @@ void NodeRegistry::bindSkybox(
         m_registry->m_dispatcherView->send(evt);
     }
 }
-

@@ -4,6 +4,7 @@
 
 #include "ki/RenderClock.h"
 
+class Assets;
 class Registry;
 
 //
@@ -18,6 +19,8 @@ public:
         int height);
 
 public:
+    const Assets& m_assets;
+
     const ki::RenderClock& m_clock;
 
     const glm::uvec2 m_resolution;

@@ -172,7 +172,7 @@ namespace render {
 
     void FrameBuffer::bind(const RenderContext& ctx)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
 
         ctx.validateRender("FBO");
 
@@ -201,13 +201,13 @@ namespace render {
 
     void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
     }
 
     void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, 0, true);
     }
 
@@ -310,7 +310,7 @@ namespace render {
         GLbitfield clearMask,
         const glm::vec4& debugColor)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
 
         const bool useDebugColor = assets.useDebugColor;
         const bool hasAttachments = !m_spec.attachments.empty();

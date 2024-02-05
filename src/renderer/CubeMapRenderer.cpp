@@ -97,7 +97,7 @@ void CubeMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -164,7 +164,7 @@ void CubeMapRenderer::bindTexture(const RenderContext& ctx)
 bool CubeMapRenderer::render(
     const RenderContext& parentCtx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = parentCtx.m_assets;
 
     parentCtx.validateRender("cube_map");
 
@@ -186,12 +186,16 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
+    auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+
     if (assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
-            const auto* rootNode = NodeRegistry::get().getRootRT();
-            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
-            const auto& rootSnapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(rootNode->m_snapshotIndex);
+            auto& nodeRegistry = *parentCtx.m_registry->m_nodeRegistry;
+
+            const auto* rootNode = nodeRegistry.getRootRT();
+            const auto& snapshot = snapshotRegistry.getActiveSnapshot(centerNode->m_snapshotIndex);
+            const auto& rootSnapshot = snapshotRegistry.getActiveSnapshot(rootNode->m_snapshotIndex);
 
             const auto& rootPos = rootSnapshot.getWorldPosition();
             const auto& centerPos = snapshot.getWorldPosition();
@@ -231,7 +235,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(centerNode->m_snapshotIndex);
+        const auto& snapshot = snapshotRegistry.getActiveSnapshot(centerNode->m_snapshotIndex);
         const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
@@ -319,7 +323,7 @@ void CubeMapRenderer::drawNodes(
     const Node* current,
     const glm::vec4& debugColor)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
@@ -368,6 +372,8 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
@@ -377,7 +383,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = std::abs(glm::length(ray));
 

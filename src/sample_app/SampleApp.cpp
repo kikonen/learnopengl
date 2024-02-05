@@ -246,7 +246,7 @@ void SampleApp::frustumDebug(
     const RenderContext& ctx,
     const ki::RenderClock& clock)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!assets.frustumDebug) return;
 
@@ -331,13 +331,13 @@ void SampleApp::selectNode(
     const InputState& inputState,
     const InputState& lastInputState)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
     const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
     const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
     const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
 
-    auto& nodeRegistry = NodeRegistry::get();
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);
 

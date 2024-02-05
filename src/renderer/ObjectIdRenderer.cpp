@@ -98,7 +98,7 @@ void ObjectIdRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_idProgram = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepareRT();
@@ -121,7 +121,7 @@ void ObjectIdRenderer::prepareRT(
 
 void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
     const auto& res = ctx.m_resolution;
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
@@ -165,7 +165,7 @@ void ObjectIdRenderer::render(
 
 void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
 {
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
 
     state.setEnabled(GL_DEPTH_TEST, true);
 

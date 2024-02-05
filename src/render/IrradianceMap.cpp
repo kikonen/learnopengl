@@ -23,7 +23,7 @@ namespace render {
     void IrradianceMap::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 

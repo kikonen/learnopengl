@@ -41,7 +41,7 @@ EntityRegistry::EntityRegistry()
 
 void EntityRegistry::prepare()
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     m_useMapped = assets.glUseMapped;
     m_useInvalidate = assets.glUseInvalidate;
@@ -226,5 +226,5 @@ void EntityRegistry::markDirty(int index)
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {
-    NodeRegistry::get().updateEntity(ctx);
+    ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
 }

@@ -37,7 +37,7 @@ void ShadowMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
@@ -94,7 +94,9 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return;
 
-    auto* node = NodeRegistry::get().getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -127,11 +129,13 @@ bool ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
-    auto* node = NodeRegistry::get().getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return false;
 
-    const auto& assets = Assets::get();
-    auto& state = kigl::GLState::get();
+    const auto& assets = ctx.m_assets;
+    auto& state = ctx.m_state;
 
     {
         // OpenGL Programming Guide, 8th Edition, page 404

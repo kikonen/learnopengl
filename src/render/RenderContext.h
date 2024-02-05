@@ -19,8 +19,14 @@ namespace render {
     class RenderData;
 }
 
-class Camera;
+namespace kigl {
+    class GLState;
+}
+
+class Assets;
 class Registry;
+
+class Camera;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -98,7 +104,10 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
+    const Assets& m_assets;
     const ki::RenderClock& m_clock;
+
+    kigl::GLState& m_state;
 
     render::RenderData* const m_renderData;
     render::NodeDraw* const m_nodeDraw;

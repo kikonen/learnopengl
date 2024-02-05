@@ -27,7 +27,7 @@ namespace render {
     void BrdfLutTexture::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 
@@ -59,7 +59,7 @@ namespace render {
 
     void BrdfLutTexture::bindTexture(const RenderContext& ctx, int unitIndex)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, m_texture, false);
     }
 

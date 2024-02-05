@@ -1,5 +1,6 @@
 #pragma once
 
+class Assets;
 class Registry;
 
 //
@@ -11,5 +12,7 @@ public:
         Registry* registry);
 
 public:
+    const Assets& m_assets;
+
     Registry* const m_registry;
 };

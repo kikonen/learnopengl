@@ -66,7 +66,7 @@ namespace render {
     void NodeDraw::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
 
         m_gBuffer.prepare();
@@ -161,8 +161,8 @@ namespace render {
         GLbitfield copyMask)
     {
         //m_timeElapsedQuery.begin();
-        const auto& assets = Assets::get();
-        auto& state = kigl::GLState::get();
+        const auto& assets = ctx.m_assets;
+        auto& state = ctx.m_state;
 
         // https://community.khronos.org/t/selectively-writing-to-buffers/71054
         auto* primaryBuffer = m_effectBuffer.m_primary.get();
@@ -522,7 +522,7 @@ namespace render {
         const RenderContext& ctx,
         FrameBuffer* targetBuffer)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
 
         if (!(ctx.m_allowDrawDebug && assets.drawDebug)) return;
 
@@ -618,7 +618,7 @@ namespace render {
     {
         bool rendered{ false };
 
-        auto& nodeRegistry = NodeRegistry::get();
+        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
         auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
             auto* type = typeMap.begin()->first.m_typeHandle.toType();
@@ -764,9 +764,10 @@ namespace render {
     void NodeDraw::drawSkybox(
         const RenderContext& ctx)
     {
-        auto& state = kigl::GLState::get();
+        auto& state = ctx.m_state;
 
-        auto* node = NodeRegistry::get().m_skybox.toNode();
+        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+        auto* node = nodeRegistry.m_skybox.toNode();
         if (!node) return;
 
         auto* type = node->m_typeHandle.toType();

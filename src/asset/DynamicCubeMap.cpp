@@ -28,7 +28,7 @@ void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
-    auto& state = kigl::GLState::get();
+    auto& state = ctx.m_state;
     // NOTE KI must flush before changing render target
     //ctx.m_batch->flush(ctx);
     if (!ctx.m_batch->isFlushed()) {

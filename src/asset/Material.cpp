@@ -170,7 +170,7 @@ void Material::loadTextures()
 
 std::string Material::resolveBaseDir()
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     std::string baseDir;
     switch (m_type) {
@@ -234,7 +234,7 @@ void Material::loadChannelTexture(
     const std::vector<int>& textureIndeces,
     const glm::vec4& defaults)
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     std::vector<ImageTexture*> sourceTextures;
 

@@ -23,6 +23,8 @@ namespace kigl {
 
         GLState();
 
+        GLState& operator=(const GLState&) = delete;
+
         void clear();
 
         void track(GLenum key) noexcept;

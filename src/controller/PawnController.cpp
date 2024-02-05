@@ -31,7 +31,7 @@ void PawnController::prepare(
 {
     NodeController::prepare(ctx, node);
 
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_nodeHandle = node.toHandle();
 

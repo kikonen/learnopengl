@@ -18,7 +18,7 @@ namespace render {
 
     void EffectBuffer::updateRT(const UpdateViewContext& ctx)
     {
-        auto& assets = Assets::get();
+        const auto& assets = Assets::get();
 
         const auto& res = ctx.m_resolution;
 

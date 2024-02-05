@@ -55,7 +55,7 @@ void SkyboxMaterial::prepareRT(
 void SkyboxMaterial::prepareFaces(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
@@ -90,7 +90,7 @@ void SkyboxMaterial::prepareFaces(
 void SkyboxMaterial::prepareHdri(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
     std::string filePath;
@@ -107,7 +107,7 @@ void SkyboxMaterial::prepareHdri(
 void SkyboxMaterial::prepareSkybox(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
@@ -118,7 +118,7 @@ void SkyboxMaterial::prepareSkybox(
 void SkyboxMaterial::prepareEnvironment(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
@@ -129,7 +129,7 @@ void SkyboxMaterial::prepareEnvironment(
 void SkyboxMaterial::prepareIrradiance(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
@@ -140,7 +140,7 @@ void SkyboxMaterial::prepareIrradiance(
 void SkyboxMaterial::preparePrefilter(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
@@ -151,7 +151,7 @@ void SkyboxMaterial::preparePrefilter(
 void SkyboxMaterial::prepareBrdfLut(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled)) return;
 

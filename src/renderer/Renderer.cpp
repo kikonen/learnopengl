@@ -18,7 +18,7 @@ Renderer::~Renderer()
 void Renderer::prepareRT(
     const PrepareContext& ctx)
 {
-    const auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     m_registry = ctx.m_registry;
 

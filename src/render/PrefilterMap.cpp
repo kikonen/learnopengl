@@ -27,7 +27,7 @@ namespace render {
     void PrefilterMap::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
         auto& state = kigl::GLState::get();
 

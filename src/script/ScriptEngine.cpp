@@ -40,7 +40,7 @@ namespace script
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
-        const auto& assets = Assets::get();
+        const auto& assets = ctx.m_assets;
 
         m_commandEngine = commandEngine;
 

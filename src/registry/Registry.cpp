@@ -28,6 +28,7 @@
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/SnapshotRegistry.h"
+#include "registry/NodeRegistry.h"
 
 Registry::Registry(
     std::shared_ptr<std::atomic<bool>> alive)
@@ -39,7 +40,8 @@ Registry::Registry(
     // pointers
     m_dispatcher(m_dispatcherImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
-    m_snapshotRegistry{ m_snapshotRegistryImpl.get() }
+    m_snapshotRegistry{ m_snapshotRegistryImpl.get() },
+    m_nodeRegistry{ &NodeRegistry::get() }
 {
 }
 

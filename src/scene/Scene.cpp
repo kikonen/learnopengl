@@ -32,6 +32,7 @@
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
@@ -65,7 +66,7 @@ Scene::Scene(
     : m_alive(alive),
     m_registry(registry)
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     {
         m_mainRenderer = std::make_unique<NodeRenderer>("main", true);
@@ -117,7 +118,7 @@ void Scene::destroy()
 
 void Scene::prepareRT()
 {
-    auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
@@ -292,7 +293,7 @@ void Scene::postRT(const UpdateContext& ctx)
 
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
-    auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->updateRT(ctx);
@@ -362,8 +363,8 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 
 void Scene::draw(const RenderContext& ctx)
 {
-    auto& assets = Assets::get();
-    auto& state = kigl::GLState::get();
+    const auto& assets = ctx.m_assets;
+    auto& state = ctx.m_state;
 
     state.setDepthFunc(ctx.m_depthFunc);
 
@@ -414,7 +415,7 @@ void Scene::drawMain(const RenderContext& parentCtx)
 // "back mirror" viewport
 void Scene::drawRear(const RenderContext& parentCtx)
 {
-    auto& assets = Assets::get();
+    const auto& assets = parentCtx.m_assets;
 
     if (!assets.showRearView) return;
 
@@ -474,7 +475,7 @@ void Scene::drawScene(
     const RenderContext& ctx,
     NodeRenderer* nodeRenderer)
 {
-    auto& assets = Assets::get();
+    const auto& assets = ctx.m_assets;
 
     MaterialRegistry::get().bind(ctx);
     SpriteRegistry::get().bind(ctx);
