@@ -1,9 +1,14 @@
 #pragma once
 
+#include <array>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "ki/size.h"
+#include "ki/limits.h"
+
+#include "backend/Lod.h"
 
 #include "util/glm_util.h"
 
@@ -49,6 +54,8 @@ struct Snapshot {
 
         m_modelScale = o.m_modelScale;
 
+        m_lods = o.m_lods;
+
         o.m_dirty = false;
         o.m_dirtyNormal = false;
     }
@@ -75,6 +82,8 @@ struct Snapshot {
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
+
+    std::array<backend::Lod, ki::MAX_LOD> m_lods;
 
     bool m_dirty { true };
     bool m_dirtyNormal { true };

@@ -121,7 +121,7 @@ void TextGenerator::updateVAO(
     auto& lod = m_drawOptions.m_lod;
     lod.m_baseVertex = m_vbo.getBaseVertex();
     lod.m_baseIndex = m_vbo.getBaseIndex();
-    lod.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
+    lod.m_indexCount = m_vbo.getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(

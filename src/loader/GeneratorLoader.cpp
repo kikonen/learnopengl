@@ -87,7 +87,6 @@ namespace loader {
         const auto& assets = Assets::get();
 
         auto* type = node->m_typeHandle.toType();
-        const auto& center = node->getTransform().getPosition();
 
         switch (data.type) {
         case GeneratorType::terrain: {

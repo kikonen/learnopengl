@@ -1,10 +1,15 @@
 #pragma once
 
+#include <array>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "asset/Sphere.h"
 
+#include "backend/Lod.h"
+
+#include "ki/limits.h"
 #include "ki/size.h"
 
 #include "util/glm_util.h"
@@ -59,6 +64,8 @@ struct NodeTransform {
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
+
+    std::array<backend::Lod, ki::MAX_LOD> m_lods;
 
     inline int getMaterialIndex() const noexcept
     {
