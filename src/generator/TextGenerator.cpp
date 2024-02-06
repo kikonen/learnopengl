@@ -112,14 +112,14 @@ void TextGenerator::updateVAO(
 
     m_aabb = m_vbo.calculateAABB();
 
-    m_vbo.m_positionOffset = -m_aabb.getVolume();
+    m_vbo.m_meshPositionOffset = -m_aabb.getVolume();
 
     m_vao.clear();
     m_vao.registerModel(m_vbo);
     m_vao.updateRT();
 
-    m_drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vbo.m_vertexOffset);
-    m_drawOptions.m_indexOffset = static_cast<uint32_t>(m_vbo.m_indexOffset);
+    m_drawOptions.m_baseVertex = m_vbo.getBaseVertex();
+    m_drawOptions.m_baseIndex = m_vbo.getBaseIndex();
     m_drawOptions.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
 }
 

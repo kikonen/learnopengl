@@ -184,7 +184,7 @@ namespace mesh {
             const size_t baseIndex = m_positionEntries.size();
             const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
-            modelVBO.m_vertexOffset = baseOffset;
+            modelVBO.m_positionVboOffset = baseOffset;
         }
 
         {
@@ -207,7 +207,7 @@ namespace mesh {
                 modelVBO.m_positionEntries.end());
 
             for (size_t i = 0; i < count; i++) {
-                m_positionEntries[base + i] += modelVBO.m_positionOffset;
+                m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
             }
         }
 
@@ -257,7 +257,7 @@ namespace mesh {
             if (m_indexEntries.size() + count >= MAX_INDEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
 
-            modelVBO.m_indexOffset = baseOffset;
+            modelVBO.m_indexEboOffset = baseOffset;
 
             {
                 size_t size = m_indexEntries.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;

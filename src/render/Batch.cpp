@@ -319,25 +319,27 @@ namespace render {
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-                cmd.u_count = drawOptions.m_indexCount;
-                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_firstIndex = drawOptions.m_indexOffset / sizeof(GLuint);
-                cmd.u_baseVertex = drawOptions.m_vertexOffset / sizeof(mesh::PositionEntry);
-
+                //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_instanceCount = curr.m_instanceCount;
                 cmd.u_baseInstance = curr.m_index;
+
+                cmd.u_baseVertex = drawOptions.m_baseVertex;
+                cmd.u_firstIndex = drawOptions.m_baseIndex;
+                cmd.u_count = drawOptions.m_indexCount;
+
                 draw->sendDirect(drawRange, indirect);
             }
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
-                cmd.u_vertexCount = drawOptions.m_indexCount;
-                cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_firstVertex = drawOptions.m_indexOffset / sizeof(GLuint);
-
+                //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_instanceCount = curr.m_instanceCount;
                 cmd.u_baseInstance = curr.m_index;
+
+                cmd.u_vertexCount = drawOptions.m_indexCount;
+                cmd.u_firstVertex = drawOptions.m_baseIndex;
+
                 draw->sendDirect(drawRange, indirect);
             }
             else {

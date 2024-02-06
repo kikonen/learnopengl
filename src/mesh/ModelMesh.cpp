@@ -106,8 +106,8 @@ namespace mesh {
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
-        drawOptions.m_indexCount = m_indexCount * 3;
-        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vertexVBO.m_vertexOffset);
-        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vertexVBO.m_indexOffset);
+        drawOptions.m_baseVertex = m_vertexVBO.getBaseVertex();
+        drawOptions.m_baseIndex = m_vertexVBO.getBaseIndex();
+        drawOptions.m_indexCount = m_vertexVBO.getIndexCount();
     }
 }

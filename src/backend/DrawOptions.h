@@ -32,8 +32,8 @@ namespace backend {
         GLsizei m_indexCount{ 0 };
         GLsizei m_indexFirst{ 0 };
 
-        uint32_t m_vertexOffset{ 0 };
-        uint32_t m_indexOffset{ 0 };
+        uint32_t m_baseVertex{ 0 };
+        uint32_t m_baseIndex{ 0 };
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,
@@ -42,8 +42,8 @@ namespace backend {
         {
             // NOTE KI multi/single material *CAN* go in same indirect draw
             return isSameMultiDraw(b, allowBlend, forceWireframe) &&
-                m_vertexOffset == b.m_vertexOffset &&
-                m_indexOffset == b.m_indexOffset;
+                m_baseVertex == b.m_baseVertex &&
+                m_baseIndex == b.m_baseIndex;
         }
 
         inline bool isSameMultiDraw(
@@ -61,8 +61,8 @@ namespace backend {
 
         // NOTE KI for MeshTypeKey/MeshTypeComparator
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_vertexOffset, m_indexOffset) <
-                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_vertexOffset, o.m_indexOffset);
+            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_baseVertex, m_baseIndex) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_baseVertex, o.m_baseIndex);
         }
     };
 }
