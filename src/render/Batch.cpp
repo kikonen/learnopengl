@@ -315,6 +315,7 @@ namespace render {
             };
 
             const auto& drawOptions = curr.m_drawOptions;
+            const auto& lod = drawOptions.m_lod;
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
@@ -323,9 +324,9 @@ namespace render {
                 cmd.u_instanceCount = curr.m_instanceCount;
                 cmd.u_baseInstance = curr.m_index;
 
-                cmd.u_baseVertex = drawOptions.m_baseVertex;
-                cmd.u_firstIndex = drawOptions.m_baseIndex;
-                cmd.u_count = drawOptions.m_indexCount;
+                cmd.u_baseVertex = lod.m_baseVertex;
+                cmd.u_firstIndex = lod.m_baseIndex;
+                cmd.u_count = lod.m_indexCount;
 
                 draw->sendDirect(drawRange, indirect);
             }
@@ -337,8 +338,8 @@ namespace render {
                 cmd.u_instanceCount = curr.m_instanceCount;
                 cmd.u_baseInstance = curr.m_index;
 
-                cmd.u_vertexCount = drawOptions.m_indexCount;
-                cmd.u_firstVertex = drawOptions.m_baseIndex;
+                cmd.u_vertexCount = lod.m_indexCount;
+                cmd.u_firstVertex = lod.m_baseIndex;
 
                 draw->sendDirect(drawRange, indirect);
             }

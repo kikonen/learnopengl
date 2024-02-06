@@ -397,6 +397,7 @@
     <ClInclude Include="src\asset\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
     <ClInclude Include="src\asset\ViewportEffect.h" />
+    <ClInclude Include="src\backend\Lod.h" />
     <ClInclude Include="src\engine\InputContext.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />

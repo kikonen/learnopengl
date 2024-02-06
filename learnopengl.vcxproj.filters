@@ -1478,6 +1478,9 @@
     <ClInclude Include="src\script\CommandEngine_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\backend\Lod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">
