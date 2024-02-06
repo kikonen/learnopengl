@@ -11,6 +11,8 @@
 
 #include "pool/NodeHandle.h"
 
+struct Snapshot;
+
 namespace audio
 {
     struct Sound;
@@ -29,7 +31,7 @@ namespace audio
 
         void prepare(const Sound* sound);
 
-        void updateFromNode();
+        void updateFromSnapshot(const Snapshot& snapshot);
 
         void update();
         void updatePos();

@@ -9,10 +9,16 @@
 
 #include "al_call.h"
 
+#include "model/Node.h"
+
 #include "SoundRegistry.h"
 #include "Sound.h"
 #include "Source.h"
 #include "Listener.h"
+
+#include "engine/UpdateContext.h"
+#include "registry/Registry.h"
+#include "registry/SnapshotRegistry.h"
 
 namespace {
 }
@@ -96,12 +102,18 @@ namespace audio
         preparePendingListeners(ctx);
         preparePendingSources(ctx);
 
+        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
         for (auto& listener : m_listeners) {
-            listener.updateFromNode();
+            const auto* node = listener.m_nodeHandle.toNode();
+            if (!node) continue;
+            listener.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
         }
 
         for (auto& source : m_sources) {
-            source.updateFromNode();
+            const auto* node = source.m_nodeHandle.toNode();
+            if (!node) continue;
+            source.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
         }
     }
 
@@ -249,12 +261,16 @@ namespace audio
     {
         if (m_pendingListeners.empty()) return;
 
+        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
         std::unordered_map<audio::listener_id, bool> prepared;
 
         for (const auto& id : m_pendingListeners) {
             auto& obj = m_listeners[id];
 
-            obj.updateFromNode();
+            const auto* node = obj.m_nodeHandle.toNode();
+            if (!node) continue;
+            obj.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
 
             if (obj.isReady()) {
                 obj.update();
@@ -281,12 +297,16 @@ namespace audio
     {
         if (m_pendingSources.empty()) return;
 
+        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
         std::unordered_map<audio::source_id, bool> prepared;
 
         for (const auto& id : m_pendingSources) {
             auto& obj = m_sources[id];
 
-            obj.updateFromNode();
+            const auto* node = obj.m_nodeHandle.toNode();
+            if (!node) continue;
+            obj.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
 
             if (obj.isReady()) {
                 obj.update();

@@ -5,7 +5,7 @@
 
 #include "util/Log.h"
 
-#include "model/Node.h"
+#include "model/Snapshot.h"
 
 #include "Sound.h"
 
@@ -100,15 +100,14 @@ namespace audio
         //update();
     }
 
-    void Source::updateFromNode()
+    void Source::updateFromSnapshot(const Snapshot& snapshot)
     {
-        const auto* node = m_nodeHandle.toNode();
-        const auto level = node ? node->getTransform().getMatrixLevel() : 0;
+        const auto level = snapshot.m_matrixLevel;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = node->getTransform().getWorldPosition();
-        m_dir = glm::normalize(node->getTransform().getViewFront());
+        m_pos = snapshot.getWorldPosition();
+        m_dir = glm::normalize(snapshot.getViewFront());
 
         updatePos();
     }

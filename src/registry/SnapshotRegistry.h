@@ -57,6 +57,10 @@ public:
         return std::span{ snapshots }.subspan(start, count);
     }
 
+    inline const Snapshot& getSnapshot(uint32_t index) const noexcept {
+        auto& snapshots = m_snapshots->m_entries;
+        return snapshots[index];
+    }
 
     void clearActiveDirty(uint32_t index) noexcept;
 

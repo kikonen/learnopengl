@@ -146,8 +146,6 @@ void CameraZoomController::onMouseMove(
                 snapshot.getViewRight(),
                 -adjust.x
             });
-
-        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 
