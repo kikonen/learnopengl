@@ -61,7 +61,6 @@ namespace mesh {
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_POINTS;
-        drawOptions.m_indexFirst = 0;
         drawOptions.m_indexCount = 1;
     }
 }

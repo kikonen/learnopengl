@@ -27,13 +27,9 @@ namespace backend {
         bool m_tessellation : 1 {false};
         uint8_t m_patchVertices{ 3 };
 
-        // count of indeces for indexed drawing
-        // 0 for non indexed draw
-        GLsizei m_indexCount{ 0 };
-        GLsizei m_indexFirst{ 0 };
-
         uint32_t m_baseVertex{ 0 };
         uint32_t m_baseIndex{ 0 };
+        GLsizei m_indexCount{ 0 };
 
         inline bool isSameDrawCommand(
             const DrawOptions& b,

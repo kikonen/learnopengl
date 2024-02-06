@@ -55,7 +55,6 @@ namespace mesh {
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = GL_TRIANGLES;
-        drawOptions.m_indexFirst = 0;
         drawOptions.m_indexCount = 0;
     }
 }

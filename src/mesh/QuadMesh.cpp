@@ -62,7 +62,6 @@ namespace mesh {
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_TRIANGLE_STRIP;
-        drawOptions.m_indexFirst = 0;
         drawOptions.m_indexCount = INDEX_COUNT;
     }
 }
