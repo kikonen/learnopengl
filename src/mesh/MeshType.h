@@ -63,7 +63,7 @@ namespace mesh {
 
         inline bool isReady() const noexcept { return m_preparedView; }
 
-        const std::string str() const noexcept;
+        std::string str() const noexcept;
 
         void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
         void setMesh(Mesh* mesh);

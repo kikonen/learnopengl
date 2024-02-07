@@ -15,7 +15,7 @@ namespace mesh {
         TerrainMesh();
         virtual ~TerrainMesh();
 
-        virtual const std::string str() const noexcept override;
+        virtual std::string str() const noexcept override;
 
         virtual const AABB calculateAABB() const override;
 

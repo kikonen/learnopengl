@@ -9,7 +9,7 @@
 struct Frustum {
     Frustum() noexcept = default;
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     const std::array<glm::vec4, 6> getPlanes() const noexcept {
         return {

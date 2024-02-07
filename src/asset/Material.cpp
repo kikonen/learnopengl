@@ -278,7 +278,7 @@ void Material::loadChannelTexture(
     }
 }
 
-const std::string Material::getTexturePath(
+std::string Material::getTexturePath(
     std::string_view textureName)
 {
     if (textureName.empty()) return {};

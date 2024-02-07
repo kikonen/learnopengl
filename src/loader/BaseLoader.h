@@ -88,7 +88,7 @@ namespace loader
 
         std::string readFile(std::string_view filename) const;
 
-        const std::string resolveTexturePath(std::string_view line) const;
+        std::string resolveTexturePath(std::string_view line) const;
 
         void reportUnknown(
             std::string_view scope,

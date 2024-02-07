@@ -11,7 +11,7 @@ namespace mesh {
         TextMesh();
         virtual ~TextMesh();
 
-        virtual const std::string str() const noexcept override;
+        virtual std::string str() const noexcept override;
 
         virtual const AABB calculateAABB() const override;
 

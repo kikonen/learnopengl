@@ -45,7 +45,7 @@ namespace mesh {
         return !(*this == b);
     }
 
-    const std::string Vertex::str() const noexcept
+    std::string Vertex::str() const noexcept
     {
         return fmt::format(
             "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {}), material={}>",

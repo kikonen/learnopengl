@@ -32,7 +32,7 @@ namespace mesh {
     {
     }
 
-    const std::string QuadMesh::str() const noexcept
+    std::string QuadMesh::str() const noexcept
     {
         return fmt::format("<QUAD: id={}>", m_id);
     }

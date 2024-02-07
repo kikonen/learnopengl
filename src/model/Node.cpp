@@ -62,7 +62,7 @@ Node::~Node()
     KI_INFO(fmt::format("NODE: delete - {}", str()));
 }
 
-const std::string Node::str() const noexcept
+std::string Node::str() const noexcept
 {
     auto* type = m_typeHandle.toType();
     return fmt::format(

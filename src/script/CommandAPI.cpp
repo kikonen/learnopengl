@@ -37,7 +37,7 @@ namespace {
         bool repeat = false;
         bool sync = false;
 
-        const std::string str() const noexcept {
+        std::string str() const noexcept {
             return fmt::format("<OPT: after={}, duration={}, relative={}, repeat={}>", afterId, duration, relative, repeat);
         }
     };

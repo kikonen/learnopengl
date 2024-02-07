@@ -27,7 +27,7 @@ namespace mesh {
     {
     }
 
-    const std::string TerrainMesh::str() const noexcept
+    std::string TerrainMesh::str() const noexcept
     {
         return fmt::format("<TERRAIN: id={}>", m_id);
     }

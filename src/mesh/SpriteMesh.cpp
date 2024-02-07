@@ -31,7 +31,7 @@ namespace mesh {
     {
     }
 
-    const std::string SpriteMesh::str() const noexcept
+    std::string SpriteMesh::str() const noexcept
     {
         return fmt::format("<SPRITE: id={}>", m_id);
     }

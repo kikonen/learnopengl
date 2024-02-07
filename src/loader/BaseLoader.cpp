@@ -491,7 +491,7 @@ namespace loader
         return baseId;
     }
 
-    const std::string BaseLoader::resolveTexturePath(std::string_view path) const
+    std::string BaseLoader::resolveTexturePath(std::string_view path) const
     {
         return std::string{ path };
     }

@@ -36,7 +36,7 @@ namespace render {
         m_spec.attachments.clear();
     }
 
-    const std::string FrameBuffer::str() const noexcept
+    std::string FrameBuffer::str() const noexcept
     {
         return fmt::format(
             "<FBO: name={}, fbo={}, w={}, h={}, attachments={}>",

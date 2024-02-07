@@ -26,7 +26,7 @@ namespace mesh {
 
         bool operator!=(const Vertex& b) const noexcept;
 
-        const std::string str() const noexcept;
+        std::string str() const noexcept;
 
     public:
         const glm::vec3 pos;

@@ -26,7 +26,7 @@ namespace mesh {
     {
     }
 
-    const std::string TextMesh::str() const noexcept
+    std::string TextMesh::str() const noexcept
     {
         return fmt::format("<TEXT: id={}>", m_id);
     }

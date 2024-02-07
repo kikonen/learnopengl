@@ -18,7 +18,7 @@ struct Sphere final
 
     std::unique_ptr<Sphere> clone() const noexcept;
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     inline const glm::vec4 getVolume() const noexcept {
         return { m_center, m_radius };

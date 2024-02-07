@@ -57,7 +57,7 @@ namespace mesh {
         KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
     }
 
-    const std::string MeshType::str() const noexcept
+    std::string MeshType::str() const noexcept
     {
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",

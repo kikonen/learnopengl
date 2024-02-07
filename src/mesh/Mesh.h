@@ -26,7 +26,7 @@ namespace mesh {
         Mesh();
         virtual ~Mesh();
 
-        virtual const std::string str() const noexcept;
+        virtual std::string str() const noexcept;
 
         virtual bool isValid() const noexcept { return true; }
         virtual void prepareVolume();

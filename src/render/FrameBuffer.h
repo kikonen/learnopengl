@@ -28,7 +28,7 @@ namespace render {
 
         virtual ~FrameBuffer();
 
-        const std::string str() const noexcept;
+        std::string str() const noexcept;
 
         virtual void prepare();
 

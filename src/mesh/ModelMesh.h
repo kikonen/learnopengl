@@ -32,7 +32,7 @@ namespace mesh {
 
         virtual ~ModelMesh();
 
-        virtual const std::string str() const noexcept override;
+        virtual std::string str() const noexcept override;
         virtual bool isValid() const noexcept override
         {
             return !m_vertices.empty() && !m_indeces.empty();

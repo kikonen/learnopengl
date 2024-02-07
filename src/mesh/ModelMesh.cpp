@@ -46,7 +46,7 @@ namespace mesh {
         m_vertices.clear();
     }
 
-    const std::string ModelMesh::str() const noexcept
+    std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
             "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",

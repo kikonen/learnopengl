@@ -111,7 +111,7 @@ public:
         const ki::material_id id,
         const std::vector<Material>& materials);
 
-    const std::string getTexturePath(
+    std::string getTexturePath(
         std::string_view textureName);
 
 private:

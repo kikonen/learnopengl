@@ -56,7 +56,7 @@ public:
     Node& operator=(Node& o) = delete;
     Node& operator=(Node&& o) noexcept;
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     inline ki::node_id getId() const noexcept { return m_id; }
     inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }

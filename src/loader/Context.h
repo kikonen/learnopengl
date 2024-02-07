@@ -15,7 +15,7 @@ namespace loader {
             const std::string& dirName,
             const std::string& fileName);
 
-        const std::string str() const noexcept
+        std::string str() const noexcept
         {
             return m_fullPath;
         }
