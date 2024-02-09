@@ -14,6 +14,7 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"

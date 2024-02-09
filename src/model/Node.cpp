@@ -19,6 +19,7 @@
 
 #include "generator/NodeGenerator.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/EntityFlags.h"
@@ -70,19 +71,23 @@ std::string Node::str() const noexcept
         m_id, type ? type->str() : "<null>");
 }
 
-void Node::prepare(
+void Node::prepareWT(
     const PrepareContext& ctx)
 {
     auto& registry = ctx.m_registry;
 
     auto* type = m_typeHandle.toType();
 
-    if (type->getMesh()) {
+    if (type->hasMesh()) {
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        {
-            m_transform.setMaterialIndex(type->getMaterialIndex());
+        int idx = 0;
+        for (auto& lod : type->getLods()) {
+            m_transform.m_lodMaterialIndeces[idx] = lod.m_materialSet.getMaterialIndex();
+            idx++;
+        }
 
+        {
             ki::size_t_entity_flags flags = 0;
 
             if (type->m_entityType == mesh::EntityType::billboard) {
@@ -92,7 +97,6 @@ void Node::prepare(
                 flags |= ENTITY_SPRITE_BIT;
                 auto& shape = type->m_sprite->m_shapes[type->m_sprite->m_shapes.size() - 1];
                 m_transform.m_shapeIndex = shape.m_registeredIndex;
-                //m_instance.m_materialIndex = shape.m_materialIndex;
             }
             if (type->m_entityType == mesh::EntityType::skybox) {
                 flags |= ENTITY_SKYBOX_BIT;
@@ -112,10 +116,16 @@ void Node::prepare(
     }
 }
 
+void Node::prepareRT(
+    const PrepareContext& ctx)
+{
+    auto* type = m_typeHandle.toType();
+}
+
 bool Node::isEntity() const noexcept
 {
     auto* type = m_typeHandle.toType();
-    return type->getMesh() &&
+    return type->hasMesh() &&
         !type->m_flags.invisible;
 }
 

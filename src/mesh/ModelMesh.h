@@ -46,7 +46,7 @@ namespace mesh {
             const PrepareContext& ctx) override;
 
         virtual void prepareMaterials(
-            MaterialVBO& materialVBO) override;
+            MaterialSet& materialSet) override;
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;

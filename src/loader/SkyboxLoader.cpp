@@ -7,8 +7,10 @@
 
 #include "pool/NodeHandle.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
+#include "mesh/ModelMesh.h"
 
 #include "event/Dispatcher.h"
 
@@ -115,7 +117,8 @@ namespace loader {
             SKYBOX_MESH_NAME,
             assets.modelsDir);
         auto* mesh = future.get();
-        type->setMesh(mesh);
+        type->addLod({ mesh });
+
         type->m_entityType = mesh::EntityType::skybox;
 
         auto& flags = type->m_flags;

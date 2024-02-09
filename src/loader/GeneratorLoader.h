@@ -1,10 +1,16 @@
 #pragma once
 
+#include <vector>
+
 #include "BaseLoader.h"
 #include "GeneratorData.h"
+#include "MaterialData.h"
 
-class Node;
 class NodeGenerator;
+
+namespace mesh {
+    class MeshType;
+}
 
 namespace loader {
     class GeneratorLoader : public BaseLoader
@@ -13,12 +19,13 @@ namespace loader {
         GeneratorLoader(
             Context ctx);
 
-         void loadGenerator(
+        void loadGenerator(
             const YAML::Node& node,
             GeneratorData& data) const;
 
-       std::unique_ptr<NodeGenerator> createGenerator(
+        std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            Node* node);
+            const std::vector<MaterialData>& materials,
+            mesh::MeshType* type);
     };
 }

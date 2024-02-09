@@ -12,6 +12,7 @@
 
 #include "component/Camera.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"

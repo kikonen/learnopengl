@@ -9,7 +9,7 @@
 #include "kigl/GLBuffer.h"
 
 namespace mesh {
-    class MaterialVBO;
+    class MaterialSet;
 }
 
 struct UpdateContext;
@@ -30,7 +30,9 @@ public:
     // Updates m_registeredIndex of Material
     void registerMaterial(Material& material);
 
-    void registerMaterialVBO(mesh::MaterialVBO& materialVBO);
+    // Register material indeces per vertex
+    // *ONLY* if multiple materials, thus varying per vertex
+    void registerVertexMaterials(mesh::MaterialSet& materialSet);
 
     size_t getBaseIndex() { return m_materials.size(); }
 

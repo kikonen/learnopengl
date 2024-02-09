@@ -16,6 +16,8 @@
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
+
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"

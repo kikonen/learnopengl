@@ -4,6 +4,7 @@
 
 #include "kigl/kigl.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "text/TextDraw.h"

@@ -17,7 +17,9 @@
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 
 namespace {
 }

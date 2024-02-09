@@ -8,8 +8,10 @@
 #include "pool/NodeHandle.h"
 #include "ki/sid.h"
 
-#include "mesh/ModelLoader.h"
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
+#include "mesh/ModelLoader.h"
 
 #include "model/Node.h"
 

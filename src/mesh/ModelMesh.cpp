@@ -12,7 +12,6 @@
 #include "asset/Sphere.h"
 
 #include "mesh/ModelMaterialInit.h"
-#include "mesh/MeshType.h"
 
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
@@ -95,10 +94,10 @@ namespace mesh {
     }
 
     void ModelMesh::prepareMaterials(
-        MaterialVBO& materialVBO)
+        MaterialSet& materialSet)
     {
         ModelMaterialInit init;
-        init.prepare(*this, materialVBO);
+        init.prepare(*this, materialSet);
     }
 
     void ModelMesh::prepareDrawOptions(

@@ -2,6 +2,7 @@
 
 #include "pool/TypeHandle.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 namespace {

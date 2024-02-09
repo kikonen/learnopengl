@@ -7,8 +7,6 @@
 
 #include "asset/Sphere.h"
 
-#include "backend/Lod.h"
-
 #include "ki/limits.h"
 #include "ki/size.h"
 
@@ -37,7 +35,6 @@ struct NodeTransform {
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
-    int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
 
     Sphere m_volume;
@@ -65,20 +62,7 @@ struct NodeTransform {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    std::array<backend::Lod, ki::MAX_LOD> m_lods;
-
-    inline int getMaterialIndex() const noexcept
-    {
-        return m_materialIndex;
-    }
-
-    inline void setMaterialIndex(int materialIndex) noexcept
-    {
-        if (m_materialIndex != materialIndex) {
-            m_materialIndex = materialIndex;
-            m_dirtySnapshot = true;
-        }
-    }
+    std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
     inline const glm::vec4 getVolume() const noexcept
     {

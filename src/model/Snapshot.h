@@ -38,7 +38,6 @@ struct Snapshot {
 
         m_flags = o.m_flags;
 
-        m_materialIndex = o.m_materialIndex;
         m_shapeIndex = o.m_shapeIndex;
 
         m_volume = o.m_volume;
@@ -54,7 +53,7 @@ struct Snapshot {
 
         m_modelScale = o.m_modelScale;
 
-        m_lods = o.m_lods;
+        m_lodMaterialIndeces = o.m_lodMaterialIndeces;
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;
@@ -66,7 +65,6 @@ struct Snapshot {
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
-    int m_materialIndex{ 0 };
     int m_shapeIndex{ 0 };
 
     glm::vec4 m_volume{ 0.f };
@@ -83,6 +81,9 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
+    std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+
+    // NOTE KI only in *active*
     std::array<backend::Lod, ki::MAX_LOD> m_lods;
 
     bool m_dirty { true };

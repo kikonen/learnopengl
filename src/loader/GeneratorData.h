@@ -24,5 +24,7 @@ namespace loader {
 
         Repeat repeat;
         Tiling tiling;
+
+        std::string materialName;
     };
 }

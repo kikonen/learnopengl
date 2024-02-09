@@ -13,13 +13,13 @@
 #include "asset/Volume.h"
 #include "asset/AABB.h"
 
-#include "mesh/MaterialVBO.h"
-
 #include "registry/Registry.h"
 
 struct PrepareContext;
 
 namespace mesh {
+    class MaterialSet;
+
     class Mesh
     {
     public:
@@ -39,7 +39,7 @@ namespace mesh {
             const PrepareContext& ctx) = 0;
 
         virtual void prepareMaterials(
-            MaterialVBO& materialVBO) {};
+            MaterialSet& materialSet) {}
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) = 0;

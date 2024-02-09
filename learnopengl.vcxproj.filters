@@ -522,7 +522,7 @@
     <ClCompile Include="src\text\TextMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\MaterialVBO.cpp">
+    <ClCompile Include="src\mesh\MaterialSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
@@ -622,6 +622,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\CommandHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\LodMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1349,7 +1352,7 @@
     <ClInclude Include="src\mesh\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\MaterialVBO.h">
+    <ClInclude Include="src\mesh\MaterialSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\ModelMaterialInit.h">
@@ -1479,6 +1482,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\backend\Lod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\LodMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\InstanceEntty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

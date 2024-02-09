@@ -10,14 +10,17 @@
 namespace mesh {
     class Mesh;
 
-    class MaterialVBO {
+    class MaterialSet {
         friend class MeshType;
 
     public:
-        MaterialVBO() = default;
-        MaterialVBO(MaterialVBO&& o);
+        MaterialSet() = default;
+        MaterialSet(MaterialSet&& o);
 
-        virtual ~MaterialVBO();
+        MaterialSet& operator=(MaterialSet&& o);
+        MaterialSet& operator=(const MaterialSet& o);
+
+        virtual ~MaterialSet();
 
         void setMaterials(const std::vector<Material>& materials);
 
@@ -60,7 +63,7 @@ namespace mesh {
         bool isUseDefaultMaterial() const { return m_useDefaultMaterial; };
         bool isForceDefaultMaterial() const { return m_forceDefaultMaterial; };
 
-        int resolveMaterialIndex() const;
+        int getMaterialIndex() const noexcept;
 
     public:
         size_t m_bufferIndex{ 0 };

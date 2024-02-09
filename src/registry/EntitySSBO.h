@@ -51,7 +51,9 @@ struct EntitySSBO {
     glm::vec3 u_worldScale{ 0.f };
     //int pad4_1;
 
+    // TODO KI material is *PER* INSTANCED/LOD
     GLint u_materialIndex{ 0 }; // 1 * 4 = 4
+
     GLint u_shapeIndex{ -1 }; // 1 * 4 = 4
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 

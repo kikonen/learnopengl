@@ -65,7 +65,10 @@ public:
         return { m_handleIndex, m_id };
     }
 
-    void prepare(
+    void prepareWT(
+        const PrepareContext& ctx);
+
+    void prepareRT(
         const PrepareContext& ctx);
 
     void updateVAO(const RenderContext& ctx) noexcept;
@@ -135,10 +138,10 @@ public:
     const std::array<float, 3> lua_getPos() const noexcept;
 
 public:
-    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
-
-    bool m_visible : 1 { true };
     pool::TypeHandle m_typeHandle{};
+
+    uint32_t m_snapshotIndex{ 0 };
+    uint32_t m_entityIndex{ 0 };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
@@ -148,9 +151,9 @@ public:
 
     NodeGenerator* m_instancer{ nullptr };
 
-    uint32_t m_snapshotIndex{ 0 };
-    uint32_t m_entityIndex{ 0 };
+    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+    bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
 
 #ifdef _DEBUG

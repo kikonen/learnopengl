@@ -6,6 +6,7 @@
 
 #include "ki/size.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "Pool_impl.h"

@@ -60,7 +60,7 @@ void GridGenerator::updateInstances(
 
                 transform.setPosition(containerTransform.getPosition() + pos);
 
-                transform.setMaterialIndex(containerTransform.getMaterialIndex());
+                transform.m_lodMaterialIndeces = containerTransform.m_lodMaterialIndeces;
                 transform.setVolume(containerTransform.getVolume());
 
                 transform.setQuatRotation(containerTransform.getQuatRotation());

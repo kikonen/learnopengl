@@ -15,7 +15,6 @@ namespace {
 Snapshot::Snapshot(const NodeTransform& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_volume{ o.m_volume.getVolume() },
     m_worldPos{ o.m_worldPos },
@@ -24,7 +23,8 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_viewFront{ o.m_viewFront },
     m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
-    m_modelScale{ o.m_modelScale }
+    m_modelScale{ o.m_modelScale },
+    m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
 {
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
@@ -33,7 +33,6 @@ Snapshot::Snapshot(const NodeTransform& o)
 Snapshot::Snapshot(const NodeTransform&& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    m_materialIndex{ o.m_materialIndex },
     m_shapeIndex{ o.m_shapeIndex },
     m_worldPos{ o.m_worldPos },
     m_quatRotation{ o.m_quatRotation },
@@ -41,7 +40,8 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_viewFront{ o.m_viewFront },
     m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
-    m_modelScale{ o.m_modelScale }
+    m_modelScale{ o.m_modelScale },
+    m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
 {
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
@@ -56,7 +56,6 @@ void Snapshot::apply(NodeTransform& o) noexcept
 
     m_flags = o.m_flags;
 
-    m_materialIndex = o.m_materialIndex;
     m_shapeIndex = o.m_shapeIndex;
 
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
@@ -72,6 +71,8 @@ void Snapshot::apply(NodeTransform& o) noexcept
     m_modelMatrix = o.m_modelMatrix;
 
     m_modelScale = o.m_modelScale;
+
+    m_lodMaterialIndeces = o.m_lodMaterialIndeces;
 
     o.m_dirtySnapshot = false;
     o.m_dirtyNormal = false;
@@ -89,7 +90,7 @@ void Snapshot::updateEntity(
 
     entity.u_flags = m_flags;
 
-    entity.u_materialIndex = m_materialIndex;
+    entity.u_materialIndex = m_lodMaterialIndeces[0];
     entity.u_shapeIndex = m_shapeIndex;
 
     entity.u_volume = m_volume;

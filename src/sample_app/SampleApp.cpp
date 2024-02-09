@@ -22,6 +22,7 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "registry/NodeRegistry.h"

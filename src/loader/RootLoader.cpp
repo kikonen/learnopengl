@@ -10,6 +10,7 @@
 
 #include "event/Dispatcher.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"

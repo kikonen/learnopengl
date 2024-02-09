@@ -9,6 +9,7 @@
 #include "model/Node.h"
 #include "model/NodeTransform.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "engine/UpdateContext.h"

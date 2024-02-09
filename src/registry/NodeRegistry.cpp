@@ -15,6 +15,7 @@
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "component/Light.h"
@@ -404,6 +405,8 @@ void NodeRegistry::handleNodeAdded(Node* node)
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
+    node->prepareRT({ m_registry });
+
     m_registry->m_snapshotRegistry->copyFromPending(0, -1);
     if (node->m_generator) {
         const PrepareContext ctx{ m_registry };
@@ -411,7 +414,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
     node->m_preparedRT = true;
 
-    if (type->getMesh()) {
+    if (type->hasMesh()) {
         node->m_entityIndex = EntityRegistry::get().registerEntity();
     }
 
@@ -544,8 +547,8 @@ void NodeRegistry::bindNode(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_registry });
-    node->prepare({ m_registry });
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry });
 
     {
         {
@@ -564,6 +567,13 @@ void NodeRegistry::bindNode(
     // => otherwise IOOBE will trigger
     m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
 
+    // NOTE KI type must be prepared *before* node
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_typeHandle.toId();
+        m_registry->m_dispatcherView->send(evt);
+    }
+
     {
         event::Event evt { event::Type::node_added };
         evt.body.node.target = nodeId;
@@ -573,12 +583,6 @@ void NodeRegistry::bindNode(
     {
         event::Event evt { event::Type::node_added };
         evt.body.node.target = nodeId;
-        m_registry->m_dispatcherView->send(evt);
-    }
-
-    {
-        event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
     }
 
@@ -684,8 +688,8 @@ void NodeRegistry::bindSkybox(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_registry });
-    node->prepare({ m_registry });
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry });
 
     m_skybox = handle;
 

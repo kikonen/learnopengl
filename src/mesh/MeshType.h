@@ -1,16 +1,21 @@
 #pragma once
 
+#include <vector>
 #include <functional>
 
 #include "backend/DrawOptions.h"
 
 #include "asset/Material.h"
 
+#include "ki/limits.h"
+
 #include "kigl/GLVertexArray.h"
 
 #include "EntityType.h"
 
 #include "NodeRenderFlags.h"
+
+#include "mesh/LodMesh.h"
 
 namespace pool {
     class TypeHandle;
@@ -34,7 +39,7 @@ class MeshTypeRegistry;
 
 namespace mesh {
     class Mesh;
-    class MaterialVBO;
+    struct LodMesh;
 
     class MeshType final
     {
@@ -61,22 +66,30 @@ namespace mesh {
             m_name = name;
         }
 
-        inline bool isReady() const noexcept { return m_preparedView; }
+        inline bool isReady() const noexcept { return m_preparedRT; }
 
         std::string str() const noexcept;
 
-        void setMesh(std::unique_ptr<Mesh> mesh, bool unique);
-        void setMesh(Mesh* mesh);
+        LodMesh* addLod(LodMesh&& lod);
 
-        inline const Mesh* getMesh() const noexcept {
-            return m_mesh;
+        inline const LodMesh* getLod(uint8_t lodIndex) const noexcept {
+            return m_lods->empty() ? nullptr : &(*m_lods)[lodIndex];
         }
 
-        void modifyMaterials(std::function<void(Material&)> fn);
+        inline const std::vector<LodMesh>& getLods() const noexcept {
+            return *m_lods;
+        }
 
-        inline int getMaterialIndex() const noexcept
-        {
-            return m_materialIndex;
+        inline LodMesh* modifyLod(uint8_t lodIndex) noexcept {
+            return m_lods->empty() ? nullptr : &(*m_lods)[lodIndex];
+        }
+
+        inline std::vector<LodMesh>& modifyLods() noexcept {
+            return *m_lods;
+        }
+
+        inline bool hasMesh() const noexcept {
+            return m_lods->empty() ? false : (*m_lods)[0].m_mesh;
         }
 
         template<typename T>
@@ -86,7 +99,7 @@ namespace mesh {
 
         void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
-        void prepare(
+        void prepareWT(
             const PrepareContext& ctx);
 
         void prepareRT(
@@ -117,10 +130,7 @@ namespace mesh {
         Program* m_shadowProgram{ nullptr };
         Program* m_preDepthProgram{ nullptr };
 
-        std::unique_ptr<MaterialVBO> m_materialVBO{ nullptr };
         std::unique_ptr<Sprite> m_sprite{ nullptr };
-
-        int m_materialIndex{ 0 };
 
     private:
         ki::type_id m_id{ 0 };
@@ -128,17 +138,14 @@ namespace mesh {
 
         std::string m_name;
 
-        bool m_prepared : 1 {false};
-        bool m_preparedView : 1 {false};
+        bool m_preparedWT : 1 {false};
+        bool m_preparedRT : 1 {false};
 
         kigl::GLVertexArray* m_vao{ nullptr };
         backend::DrawOptions m_drawOptions;
 
-        Mesh* m_mesh{ nullptr };
-        std::unique_ptr<Mesh> m_deleter;
+        std::unique_ptr<std::vector<LodMesh>> m_lods;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
-
-        kigl::GLVertexArray m_privateVAO;
     };
 }

@@ -1,26 +1,25 @@
 #include "ModelMaterialInit.h"
 
-#include "asset/Program.h"
 #include "ModelMesh.h"
-#include "MaterialVBO.h"
+#include "MaterialSet.h"
 
 
 namespace mesh {
     void ModelMaterialInit::prepare(
         ModelMesh& mesh,
-        MaterialVBO& materialVBO)
+        MaterialSet& materialSet)
     {
-        KI_INFO(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialVBO.getMaterialCount()));
-        prepareVertices(mesh.m_vertices, materialVBO);
+        KI_INFO(fmt::format("PREPARE_MATERIAL: mesh={}, materials={}", mesh.str(), materialSet.getMaterialCount()));
+        prepareVertices(mesh.m_vertices, materialSet);
     }
 
     void ModelMaterialInit::prepareVertices(
         std::vector<Vertex>& vertices,
-        MaterialVBO& materialVBO)
+        MaterialSet& materialSet)
     {
         // https://paroj.github.io/gltut/Basic%20Optimization.html
         {
-            const bool single = materialVBO.getMaterialCount() == 1;
+            const bool single = materialSet.getMaterialCount() == 1;
 
             // NOTE KI *NO* indeces if single material
             if (single) {
@@ -28,18 +27,18 @@ namespace mesh {
             }
 
             const size_t vertexCount = vertices.size();
-            auto& indeces = materialVBO.modifyIndeces();
+            auto& indeces = materialSet.modifyIndeces();
             indeces.reserve(vertexCount);
 
-            const auto& materials = materialVBO.getMaterials();
+            const auto& materials = materialSet.getMaterials();
 
             for (size_t i = 0; i < vertexCount; i++) {
                 const auto& vertex = vertices[i];
                 auto* mat = Material::findID(vertex.materialID, materials);
 
                 bool forcedDefault = false;
-                if (materialVBO.isUseDefaultMaterial()) {
-                    if (materialVBO.isForceDefaultMaterial()) {
+                if (materialSet.isUseDefaultMaterial()) {
+                    if (materialSet.isForceDefaultMaterial()) {
                         mat = &materials[0];
                         forcedDefault = true;
                     }

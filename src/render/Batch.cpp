@@ -22,8 +22,8 @@
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
-#include "mesh/PositionEntry.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"

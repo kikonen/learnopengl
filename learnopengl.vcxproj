@@ -197,6 +197,7 @@
     <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
+    <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
@@ -256,7 +257,7 @@
     <ClCompile Include="src\event\Dispatcher.cpp" />
     <ClCompile Include="src\engine\AssetsLoader.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
-    <ClCompile Include="src\mesh\MaterialVBO.cpp" />
+    <ClCompile Include="src\mesh\MaterialSet.cpp" />
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
     <ClCompile Include="src\mesh\ModelVBO.cpp" />
     <ClCompile Include="src\mesh\ModelVAO.cpp" />
@@ -411,6 +412,8 @@
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
+    <ClInclude Include="src\mesh\InstanceEntty.h" />
+    <ClInclude Include="src\mesh\LodMesh.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />
     <ClInclude Include="src\mesh\PositionVBO.h" />
@@ -513,7 +516,7 @@
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\Uniform.h" />
     <ClInclude Include="src\mesh\NormalEntry.h" />
-    <ClInclude Include="src\mesh\MaterialVBO.h" />
+    <ClInclude Include="src\mesh\MaterialSet.h" />
     <ClInclude Include="src\mesh\ModelMaterialInit.h" />
     <ClInclude Include="src\mesh\ModelVBO.h" />
     <ClInclude Include="src\mesh\QuadVAO.h" />

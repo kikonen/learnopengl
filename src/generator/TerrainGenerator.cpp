@@ -18,9 +18,11 @@
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/TerrainMesh.h"
-#include "mesh/MeshType.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -44,6 +46,7 @@ namespace {
 TerrainGenerator::TerrainGenerator()
     : NodeGenerator()
 {
+    m_material = Material::createMaterial(BasicMaterial::gold);
 }
 
 void TerrainGenerator::prepare(
@@ -191,28 +194,33 @@ void TerrainGenerator::createTiles(
 
         {
             auto* type = typeHandle.toType();
-            type->setMesh(mesh);
+            auto* lod = type->addLod({ mesh });
+
+            lod->setupMeshMaterials(m_material, true, true);
+
+            for (auto& m : lod->m_materialSet.modifyMaterials()) {
+                m.tilingX = (float)m_worldTilesU;
+                m.tilingY = (float)m_worldTilesV;
+            }
+
+            lod->registerMaterials();
         }
     }
 
     // NOTE KI must laod textures in the context of *THIS* material
     // NOTE KI only SINGLE material supported
-    int materialIndex = -1;
+    int materialIndex = 0;
     {
         auto* type = typeHandle.toType();
 
         auto& drawOptions = type->modifyDrawOptions();
         drawOptions.m_patchVertices = 3;
 
-        type->modifyMaterials([this, &materialIndex, &assets](Material& m) {
-            m.tilingX = (float)m_worldTilesU;
-            m.tilingY = (float)m_worldTilesV;
+        auto* lod = type->getLod(0);
 
-            m.loadTextures();
-
-            MaterialRegistry::get().registerMaterial(m);
+        for (auto& m : lod->m_materialSet.getMaterials()) {
             materialIndex = m.m_registeredIndex;
-        });
+        }
     }
 
     const glm::vec4 tileVolume = aabb.getVolume();
@@ -248,7 +256,7 @@ void TerrainGenerator::createTiles(
             {
                 auto& transform = m_transforms.emplace_back();
 
-                transform.setMaterialIndex(materialIndex);
+                transform.m_lodMaterialIndeces[0] = materialIndex;
                 transform.setVolume(tileVolume);
             }
 
@@ -311,19 +319,6 @@ pool::TypeHandle TerrainGenerator::createType(
     type->m_program = containerType->m_program;
     type->m_shadowProgram = containerType->m_shadowProgram;
     type->m_preDepthProgram = containerType->m_preDepthProgram;
-
-    // TODO KI *redundant* copy of material
-    {
-        auto& containerMaterials = containerType->m_materialVBO;
-        auto& materialVBO = type->m_materialVBO;
-
-        // NOTE MUST copy *all* data from materials
-        auto* material = containerMaterials->getDefaultMaterial();
-        if (material) {
-            materialVBO->setDefaultMaterial(*material, true, true);
-        }
-        materialVBO->setMaterials(containerMaterials->getMaterials());
-    }
 
     return typeHandle;
 }

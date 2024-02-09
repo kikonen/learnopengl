@@ -7,6 +7,8 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "mesh/Mesh.h"
+
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -83,7 +85,8 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto* type = container.m_typeHandle.toType();
 
-    const auto* mesh = type->getMesh();
+    auto* lod = type->getLod(0);
+    const auto* mesh = lod->m_mesh;
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();
@@ -93,8 +96,8 @@ void AsteroidBeltGenerator::createAsteroids(
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
+        asteroid.m_lodMaterialIndeces = containerTransform.m_lodMaterialIndeces;
 
-        asteroid.setMaterialIndex(type->getMaterialIndex());
         asteroid.setVolume(volume);
     }
 

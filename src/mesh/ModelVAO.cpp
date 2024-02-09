@@ -5,6 +5,8 @@
 
 #include "asset/Shader.h"
 
+#include "util/thread.h"
+
 #include "kigl/GLState.h"
 
 #include "mesh/ModelVBO.h"
@@ -173,6 +175,7 @@ namespace mesh {
 
     kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
     {
+        ASSERT_RT();
         assert(!modelVBO.m_positionEntries.empty());
         assert(!modelVBO.m_normalEntries.empty());
         assert(!modelVBO.m_textureEntries.empty());
@@ -277,6 +280,8 @@ namespace mesh {
 
     void ModelVAO::updateRT()
     {
+        ASSERT_RT();
+
         updatePositionBuffer();
         updateNormalBuffer();
         updateTextureBuffer();

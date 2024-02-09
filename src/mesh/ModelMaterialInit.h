@@ -8,17 +8,17 @@
 namespace mesh {
     struct Vertex;
     class ModelMesh;
-    class MaterialVBO;
+    class MaterialSet;
 
     class ModelMaterialInit {
     public:
         void prepare(
             ModelMesh& mesh,
-            MaterialVBO& materialVBO);
+            MaterialSet& materialSet);
 
     private:
         void prepareVertices(
             std::vector<Vertex>& vertices,
-            MaterialVBO& materialVBO);
+            MaterialSet& materialSet);
     };
 }

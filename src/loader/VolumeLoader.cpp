@@ -10,7 +10,9 @@
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 
 #include "controller/VolumeController.h"
@@ -50,16 +52,16 @@ namespace loader {
             assets.modelsDir);
         auto* mesh = future.get();
 
-        type->setMesh(mesh);
+        auto* lod = type->addLod({ mesh });
+
+        type->m_entityType = mesh::EntityType::marker;
 
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
             material.m_name = "volume";
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO->setDefaultMaterial(material, true, true);
-            materialVBO->setMaterials({ material });
+            lod->m_materialSet.setMaterials({ material });
         }
 
         auto& flags = type->m_flags;

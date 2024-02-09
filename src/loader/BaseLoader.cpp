@@ -18,6 +18,9 @@
 
 #include "registry/Registry.h"
 
+#include "MaterialData.h"
+
+
 namespace {
     //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
 }
@@ -499,6 +502,17 @@ namespace loader
     std::string BaseLoader::readFile(std::string_view filename) const
     {
         return util::readFile(m_ctx.m_dirName, filename);
+    }
+
+    const Material* BaseLoader::findMaterial(
+        std::string_view name,
+        const std::vector<MaterialData>& materials) const
+    {
+        const auto& it = std::find_if(
+            materials.cbegin(),
+            materials.cend(),
+            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
+        return it != materials.end() ? &(it->material) : nullptr;
     }
 
     void BaseLoader::reportUnknown(

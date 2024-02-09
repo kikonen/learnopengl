@@ -11,7 +11,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 
 #include "model/Node.h"
@@ -44,9 +46,11 @@ namespace loader {
         auto future = ModelRegistry::get().getMesh(
             "ball_volume",
             assets.modelsDir);
-        auto& mesh = future.get();
 
-        type->setMesh(mesh);
+        auto* mesh = future.get();
+        auto* lod = type->addLod({ mesh });
+
+        type->m_entityType = mesh::EntityType::marker;
 
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
@@ -54,9 +58,7 @@ namespace loader {
             //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO->setDefaultMaterial(material, true, true);
-            materialVBO->setMaterials({ material });
+            lod->m_materialSet.setMaterials({ material });
         }
 
         auto& flags = type->m_flags;

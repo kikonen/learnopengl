@@ -9,6 +9,7 @@
 
 #include "kigl/GLState.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "component/Camera.h"

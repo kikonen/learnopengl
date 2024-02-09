@@ -11,9 +11,11 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/Vertex.h"
-#include "mesh/MeshType.h"
 
 
 namespace {

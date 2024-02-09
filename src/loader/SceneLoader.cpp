@@ -24,6 +24,9 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/QuadMesh.h"
 #include "mesh/SpriteMesh.h"
@@ -481,14 +484,13 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveMaterial(typeHandle, data);
             resolveSprite(typeHandle, data);
             resolveMesh(typeHandle, data, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
             if (data.type != mesh::EntityType::container) {
-                if (!type->getMesh()) {
+                if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
                         data.baseId, data.desc));
@@ -496,7 +498,8 @@ namespace loader {
                 }
             }
 
-            modifyMaterials(typeHandle, data);
+            resolveMaterials(typeHandle, data);
+            // NOTE KI DEP: program after materials
             resolveProgram(typeHandle, data);
         }
 
@@ -518,11 +521,8 @@ namespace loader {
         bool useCubeMap = false;
         bool useNormalPattern = false;
 
-        type->modifyMaterials([
-            this,
-                &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useDisplacementTex, &useNormalPattern, &useParallax,
-                &data
-            ](Material& m) {
+        for (auto& lod : type->modifyLods()) {
+            for (auto& m : lod.m_materialSet.modifyMaterials()) {
                 useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
                 useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
                 useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
@@ -533,7 +533,9 @@ namespace loader {
                 if (!useParallax) {
                     m.parallaxDepth = 0.f;
                 }
-            });
+            }
+        }
+
         useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
         if (!data.programName.empty()) {
@@ -622,38 +624,38 @@ namespace loader {
         return font ? font->id : 0;
     }
 
-    void SceneLoader::resolveMaterial(
-        pool::TypeHandle typeHandle,
+    Material SceneLoader::resolveDefaultMaterial(
         const EntityCloneData& data)
     {
-        auto* type = typeHandle.toType();
-
-        // NOTE KI need to create copy *IF* modifiers
-        // TODO KI should make copy *ALWAYS* for safety
         const Material* material = nullptr;
 
         if (!data.materialName.empty()) {
-            material = findMaterial(data.materialName);
+            material = findMaterial(data.materialName, m_materials);
         }
 
         if (!material) {
             material = &m_defaultMaterial;
         }
 
-        auto& materialVBO = type->m_materialVBO;
-        materialVBO->setDefaultMaterial(*material, true, data.forceMaterial);
+        return *material;
     }
 
-    void SceneLoader::modifyMaterials(
+    void SceneLoader::resolveMaterials(
         pool::TypeHandle typeHandle,
         const EntityCloneData& data)
     {
         auto* type = typeHandle.toType();
 
-        type->modifyMaterials([this, &data](Material& m) {
-            m_materialLoader.modifyMaterial(m, data.materialModifiers);
-            m.loadTextures();
-        });
+        Material defaultMaterial = resolveDefaultMaterial(data);
+
+        for (auto& lod : type->modifyLods()) {
+            lod.setupMeshMaterials(defaultMaterial, true, data.forceMaterial);
+
+            for (auto& m : lod.m_materialSet.modifyMaterials()) {
+                m_materialLoader.modifyMaterial(m, data.materialModifiers);
+                m.loadTextures();
+            };
+        }
     }
 
     void SceneLoader::resolveSprite(
@@ -688,8 +690,7 @@ namespace loader {
                 data.meshName,
                 assets.modelsDir,
                 data.meshPath);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
+            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::model;
 
             KI_INFO(fmt::format(
@@ -700,30 +701,30 @@ namespace loader {
             auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
+            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::quad;
         }
         else if (data.type == mesh::EntityType::billboard) {
             auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
+            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::billboard;
         }
         else if (data.type == mesh::EntityType::sprite) {
             auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
                 assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
+            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::sprite;
         }
         else if (data.type == mesh::EntityType::text) {
             type->m_entityType = mesh::EntityType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
-            type->setMesh(std::move(mesh), true);
+
+            mesh::LodMesh lod;
+            lod.setMesh(std::move(mesh), true);
+            type->addLod(std::move(lod));
         }
         else if (data.type == mesh::EntityType::terrain) {
             type->m_entityType = mesh::EntityType::terrain;
@@ -788,14 +789,20 @@ namespace loader {
         transform.setScale(data.scale);
         transform.setFront(data.front);
 
-        auto mesh = type->getMesh();
-        if (mesh) {
-            transform.setVolume(mesh->getAABB().getVolume());
+        auto* lod = type->getLod(0);
+        if (lod) {
+            auto* mesh = lod->m_mesh;
+            if (mesh) {
+                transform.setVolume(mesh->getAABB().getVolume());
+            }
         }
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
-        node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
+        node->m_generator = m_generatorLoader.createGenerator(
+            data.generator,
+            m_materials,
+            type);
 
         if (type->m_entityType == mesh::EntityType::text) {
             auto fontId = resolveFont(typeHandle, data.text);
@@ -1131,16 +1138,6 @@ namespace loader {
                 }
             }
         }
-    }
-
-    const Material* SceneLoader::findMaterial(
-        std::string_view name) const
-    {
-        const auto& it = std::find_if(
-            m_materials.cbegin(),
-            m_materials.cend(),
-            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
-        return it != m_materials.end() ? &(it->material) : nullptr;
     }
 
     const Sprite* SceneLoader::findSprite(

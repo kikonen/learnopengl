@@ -86,6 +86,8 @@ namespace physics {
 
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
+        if (m_height == 0 || m_width == 0) return 0;
+
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"
 

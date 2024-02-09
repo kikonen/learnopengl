@@ -11,6 +11,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
