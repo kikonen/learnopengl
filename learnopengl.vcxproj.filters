@@ -1490,6 +1490,9 @@
     <ClInclude Include="src\mesh\InstanceSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\loader\LodData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

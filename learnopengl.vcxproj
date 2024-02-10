@@ -408,6 +408,7 @@
     <ClInclude Include="src\loader\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
+    <ClInclude Include="src\loader\LodData.h" />
     <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />

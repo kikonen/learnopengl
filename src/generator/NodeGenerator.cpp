@@ -1,10 +1,14 @@
 #include "NodeGenerator.h"
 
+#include <iostream>
+
 #include "asset/AABB.h"
 
 #include "backend/Lod.h"
 
 #include "model/Node.h"
+
+#include "component/Camera.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -136,11 +140,39 @@ void NodeGenerator::bindBatch(
         m_lods.reserve(m_reservedCount);
         m_lods.clear();
 
-        auto* meshLod = type->getLod(0);
-        const auto& lod = meshLod->m_lod;
-        for (auto& snapshot : snapshots) {
-            // TODO KI select LOD based to distance
-            m_lods.push_back(&lod);
+        if (m_lods.size() != m_transforms.size()) {
+            m_lods.clear();
+
+            const auto& cameraPos = ctx.m_camera->getWorldPosition();
+
+            auto& meshLods = type->getLods();
+
+            //auto* meshLod = type->getLod(0);
+            //const auto& lod = meshLod->m_lod;
+
+            for (auto& snapshot : snapshots) {
+                auto distance = glm::length(snapshot.getWorldPosition() - cameraPos);
+                //std::cout << "DIST: " << distance << "\n";
+
+                int lodIndex = 0;
+                for (; lodIndex < meshLods.size(); lodIndex++) {
+                    if (distance < meshLods[lodIndex].m_lod.m_distance)
+                        break;
+                }
+                if (lodIndex >= meshLods.size()) {
+                    lodIndex--;
+                }
+
+                // TODO KI select LOD based to distance
+                //int lodIndex = static_cast<int>(rand() * (meshLods.size() + 1)) % meshLods.size();
+
+                m_lods.push_back(&meshLods[lodIndex].m_lod);
+            }
+
+            //m_lods[0] = &meshLods[meshLods.size() - 1].m_lod;
+            if (meshLods.size() > 1) {
+                m_lods[0] = &meshLods[1].m_lod;
+            }
         }
     }
     auto lodSpan = std::span<const backend::Lod*>{ m_lods };

@@ -121,11 +121,14 @@ namespace loader {
             const TextData& data) const;
 
         Material resolveDefaultMaterial(
-            const EntityCloneData& data);
+            const EntityCloneData& entityData,
+            const LodData& data);
 
         void resolveMaterials(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& data);
+            const EntityCloneData& entityData,
+            const LodData& data,
+            int lodIndex);
 
         void resolveSprite(
             pool::TypeHandle typeHandle,

@@ -498,7 +498,11 @@ namespace loader {
                 }
             }
 
-            resolveMaterials(typeHandle, data);
+            int lodIndex = 0;
+            for (auto& lodData : data.lods) {
+                resolveMaterials(typeHandle, data, lodData, lodIndex++);
+            }
+
             // NOTE KI DEP: program after materials
             resolveProgram(typeHandle, data);
         }
@@ -625,7 +629,8 @@ namespace loader {
     }
 
     Material SceneLoader::resolveDefaultMaterial(
-        const EntityCloneData& data)
+        const EntityCloneData& entityData,
+        const LodData& data)
     {
         const Material* material = nullptr;
 
@@ -642,16 +647,19 @@ namespace loader {
 
     void SceneLoader::resolveMaterials(
         pool::TypeHandle typeHandle,
-        const EntityCloneData& data)
+        const EntityCloneData& entityData,
+        const LodData& data,
+        int lodIndex)
     {
         auto* type = typeHandle.toType();
 
-        Material defaultMaterial = resolveDefaultMaterial(data);
+        Material defaultMaterial = resolveDefaultMaterial(entityData, data);
 
-        for (auto& lod : type->modifyLods()) {
-            lod.setupMeshMaterials(defaultMaterial, true, data.forceMaterial);
+        auto* lodMesh = type->modifyLod(lodIndex);
+        if (lodMesh) {
+            lodMesh->setupMeshMaterials(defaultMaterial, true, entityData.forceMaterial);
 
-            for (auto& m : lod.m_materialSet.modifyMaterials()) {
+            for (auto& m : lodMesh->m_materialSet.modifyMaterials()) {
                 m_materialLoader.modifyMaterial(m, data.materialModifiers);
                 m.loadTextures();
             };
@@ -686,16 +694,21 @@ namespace loader {
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
-            auto future = ModelRegistry::get().getMesh(
-                data.meshName,
-                assets.modelsDir,
-                data.meshPath);
-            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::model;
 
-            KI_INFO(fmt::format(
-                "SCENE_FILE ATTACH: id={}, desc={}, type={}",
-                data.baseId, data.desc, type->str()));
+            for (auto& lodData : data.lods) {
+                auto future = ModelRegistry::get().getMesh(
+                    lodData.meshName,
+                    assets.modelsDir,
+                    lodData.meshPath);
+
+                auto* lod = type->addLod({ future.get() });
+                lod->m_lod.m_distance = lodData.distance;
+
+                KI_INFO(fmt::format(
+                    "SCENE_FILE ATTACH: id={}, desc={}, type={}",
+                    data.baseId, data.desc, type->str()));
+            }
         }
         else if (data.type == mesh::EntityType::quad) {
             auto future = ModelRegistry::get().getMesh(

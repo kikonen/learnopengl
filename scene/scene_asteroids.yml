@@ -36,85 +36,60 @@ entities:
     id: planet-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    script_file: scripts/anim_asteroids_roll
+    xscript_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
     model: [planet, planet]
     program: g_tex
     pos: [0, 0, 0]
     scale: 1
-  - xid: asteroid_belt_lod_0
+  - id: asteroid_belt
     parent_id: planet-origo
-    model: [rock2, rock]
-    instanced: true
-    program: g_tex
-    force_material: true
-    material_modifier:
-      metal: [0.5, 0.0, 0, 1]
-      map_pbr: textures\Rock002_1K-PNG
-      tiling: 4
-    pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      count: 200000
-  - xid: asteroid_belt_lod_1
-    parent_id: planet-origo
-    model: [rock2, rock_lod_1]
-    instanced: true
-    program: g_tex
-    force_material: true
-    material_modifier:
-      metal: [0.5, 0.0, 0, 1]
-      map_pbr: textures\Rock002_1K-PNG
-      tiling: 4
-    pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      count: 200000
-  - xid: asteroid_belt_lod_2
-    parent_id: planet-origo
-    model: [rock2, rock_lod_2]
-    instanced: true
-    program: g_tex
-    force_material: true
-    material_modifier:
-      xmetal: [0.5, 0.0, 0, 1]
-      map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-      tiling: 4
-    pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      count: 200000
-  - id: asteroid_belt_lod_3
-    parent_id: planet-origo
-    model: [rock2, rock_lod_3]
-    instanced: true
-    program: g_tex
-    force_material: true
-    material_modifier:
-      xmetal: [0.5, 0.0, 0, 1]
-      map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-      tiling: 4
-    pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      count: 200000
-  - xid: asteroid_belt_lod_4
-    parent_id: planet-origo
-    model: [rock2, rock_lod_4]
-    instanced: true
     program: g_tex
     force_material: true
     render_flags:
       render_back: true
-    material_modifier:
-      xmetal: [0.5, 0.0, 0, 1]
-      map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-      tiling: 4
+    lods:
+      - model: [rock2, rock]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [1, 1, 0]
+          tiling: 4
+        distance: 20
+      - model: [rock2, rock_lod_1]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [0, 1, 1]
+          tiling: 4
+        distance: 40
+      - model: [rock2, rock_lod_2]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0, 1]
+          tiling: 4
+        distance: 60
+      - model: [rock2, rock_lod_3]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 1, 0]
+          tiling: 4
+        distance: 80
+      - model: [rock2, rock_lod_4]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [1, 0, 0]
+          tiling: 4
+        distance: 100
     pos: [0, 0, 0]
+    instanced: true
     generator:
       type: asteroid_belt
-      count: 200000
+      count: 20000
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5

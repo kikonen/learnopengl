@@ -14,7 +14,7 @@ namespace backend {
         uint32_t m_baseIndex{ 0 };
         uint32_t m_indexCount{ 0 };
 
-        // Distance from camera
+        // Distance upto lod is applied
         float m_distance{ 0.f };
 
         int32_t m_materialIndex{ 0 };

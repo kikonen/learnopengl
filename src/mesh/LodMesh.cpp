@@ -21,6 +21,7 @@ namespace mesh {
         m_mesh = o.m_mesh;
         m_deleter = std::move(o.m_deleter);
         m_materialSet = std::move(o.m_materialSet);
+        m_lod = o.m_lod;
 
         o.m_mesh = nullptr;
     }
@@ -33,6 +34,7 @@ namespace mesh {
         m_mesh = o.m_mesh;
         m_deleter = std::move(o.m_deleter);
         m_materialSet = std::move(o.m_materialSet);
+        m_lod = o.m_lod;
 
         o.m_mesh = nullptr;
 

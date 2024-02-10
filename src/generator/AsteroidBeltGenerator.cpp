@@ -21,6 +21,10 @@
 #include "registry/EntityRegistry.h"
 
 
+namespace {
+    bool done = false;
+}
+
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
     : m_asteroidCount(asteroidCount),
     m_radius(70.0),
@@ -43,6 +47,7 @@ void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {
+    if (done) return;
     const auto parentLevel = container.getParent()->getTransform().getMatrixLevel();
     const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
@@ -52,6 +57,7 @@ void AsteroidBeltGenerator::updateWT(
         transform.m_dirtySnapshot = true;
     }
 
+    done = true;
     m_updateIndex++;
     m_containerMatrixLevel = parentLevel;
 }
