@@ -855,94 +855,22 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - id: linden_tree_forest_part_1_{t}
+  - id: linden_tree_forest
     type: model
-    model: quad
-    xtype: billboard
+    model: linden_tree
     priority: 1
     program: g_tex
     instanced: true
-    pos: [250, 15.0, 150.0]
+    pos: [250, 10.0, 150.0]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_2_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_3_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 45, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_4_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 135, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
+    scale: 10
     generator:
       type: grid
       repeat:

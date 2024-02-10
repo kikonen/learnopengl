@@ -66,44 +66,23 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 50000
-  - name: Linden tree forest - part 1
+  - id: linden_tree_forest_1
     type: model
-    model: quad
+    model: linden_tree
     priority: 1
     program: g_tex
     instanced: true
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [5, 5, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 20
-        z_step: -20
-  - name: Linden tree forest - part 2
-    type: model
-    model: quad
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [20, 0.0, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [5, 5, 1]
+    scale: 5
     generator:
       type: grid
       repeat:

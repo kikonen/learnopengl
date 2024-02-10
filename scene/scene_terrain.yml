@@ -97,44 +97,22 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-  - name: Linden tree forest - part 1
+  - id: linden_tree_forest_1
     type: model
-    model: quad
+    model: linden_tree
     priority: 1
     program: g_tex
     instanced: true
     pos: [150, 15.0, 150.0]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 20
-        z_count: 20
-        x_step: -20
-        z_step: 20
-  - name: Linden tree forest - part 2
-    type: model
-    model: quad
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [150, 15.0, 150.0]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
+    scale: 10
     generator:
       type: grid
       repeat:

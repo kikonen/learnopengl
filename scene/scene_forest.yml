@@ -39,86 +39,22 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Linden tree forest - part 1
+  - id: linden_tree_forest
     type: model
-    model: quad
+    model: linden_tree
     program: g_tex
     instanced: true
-    pos: [-1000, -5.0, 0.0]
+    pos: [-1000, 10.0, 0.0]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 200
-        z_count: 200
-        x_step: 20
-        z_step: -20
-  - name: Linden tree forest - part 2
-    type: model
-    model: quad
-    program: g_tex
-    instanced: true
-    pos: [-1000, -5.0, 0.0]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 200
-        z_count: 200
-        x_step: 20
-        z_step: -20
-  - name: Linden tree forest - part 3
-    type: model
-    model: quad
-    program: g_tex
-    instanced: true
-    pos: [-1000, -5.0, 0.0]
-    rotation: [0, 45, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 200
-        z_count: 200
-        x_step: 20
-        z_step: -20
-  - name: Linden tree forest - part 4
-    type: model
-    model: quad
-    program: g_tex
-    instanced: true
-    pos: [-1000, -5.0, 0.0]
-    rotation: [0, 135, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
+    xscale: [7, 10, 1]
+    scale: 10
     generator:
       type: grid
       repeat:
@@ -127,13 +63,10 @@ entities:
         x_step: 20
         z_step: -20
   - name: wooden floor
-    model: quad
-    xxmodel: woodwall
+    model: plane
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    front: [0, 1, 0]
-    base_rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
