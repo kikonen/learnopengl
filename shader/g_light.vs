@@ -6,6 +6,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
+#include struct_instance.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
@@ -29,18 +30,20 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 
 #include fn_calculate_clipping.glsl
 
 void main() {
-  const uint entityIndex = u_instances[gl_BaseInstance + gl_InstanceID];
+  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = entity.u_materialIndex;
+  const int materialIndex = instance.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
 

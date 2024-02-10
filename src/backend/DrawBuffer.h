@@ -14,6 +14,8 @@
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
 
+#include "mesh/InstanceSSBO.h"
+
 #include "DrawRange.h"
 #include "DrawOptions.h"
 
@@ -49,7 +51,7 @@ namespace backend {
             const backend::gl::DrawIndirectCommand& cmd);
 
         void sendInstanceIndeces(
-            std::span<GLuint> indeces);
+            std::span<mesh::InstanceSSBO> indeces);
 
         void flushIfNeeded();
         void flush();

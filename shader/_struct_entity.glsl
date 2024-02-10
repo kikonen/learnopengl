@@ -15,7 +15,7 @@ struct Entity {
 
   vec4 u_worldScale;
 
-  int u_materialIndex;
+  //int u_materialIndex;
   int u_shapeIndex;
   uint u_highlightIndex;
 

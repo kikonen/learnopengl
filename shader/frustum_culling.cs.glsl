@@ -3,6 +3,7 @@
 layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
 #include struct_entity.glsl
+#include struct_instance.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
@@ -72,6 +73,7 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 
 float getSignedDistanceToPlane(in vec4 plane, in vec3 p)

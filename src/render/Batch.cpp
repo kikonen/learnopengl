@@ -83,7 +83,11 @@ namespace render {
         auto& top = m_batches.back();
         top.m_instanceCount++;
 
-        m_entityIndeces.emplace_back(entityIndex);
+        GLint materialIndex = snapshot.m_lodMaterialIndeces[0];
+
+        auto& instance = m_entityIndeces.emplace_back();
+        instance.u_entityIndex = entityIndex;
+        instance.u_materialIndex = materialIndex;
     }
 
     void Batch::addSnapshots(
@@ -150,7 +154,9 @@ namespace render {
                     instanceCount--;
                     continue;
                 }
-                m_entityIndeces.emplace_back(entityBase + i);
+                auto& instance = m_entityIndeces.emplace_back();
+                instance.u_entityIndex = entityBase + i;
+                instance.u_materialIndex = snapshots[i].m_lodMaterialIndeces[0];
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
@@ -171,7 +177,9 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                m_entityIndeces.emplace_back(entityBase + i);
+                auto& instance = m_entityIndeces.emplace_back();
+                instance.u_entityIndex = entityBase + i;
+                instance.u_materialIndex = snapshots[i].m_lodMaterialIndeces[0];
             }
 
             m_drawCount += count;

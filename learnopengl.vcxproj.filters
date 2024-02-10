@@ -1487,7 +1487,7 @@
     <ClInclude Include="src\mesh\LodMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\InstanceEntty.h">
+    <ClInclude Include="src\mesh\InstanceSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

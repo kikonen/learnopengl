@@ -122,7 +122,7 @@ namespace backend {
         }
 
         //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
-        m_indexBuffer.createEmpty(1 * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+        m_indexBuffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
     }
 
     void DrawBuffer::bind()
@@ -281,11 +281,11 @@ namespace backend {
     }
 
     void DrawBuffer::sendInstanceIndeces(
-        std::span<GLuint> indeces)
+        std::span<mesh::InstanceSSBO> indeces)
     {
         {
             const size_t totalCount = indeces.size();
-            constexpr size_t sz = sizeof(GLuint);
+            constexpr size_t sz = sizeof(mesh::InstanceSSBO);
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_indexBuffer.m_size < totalCount * sz) {

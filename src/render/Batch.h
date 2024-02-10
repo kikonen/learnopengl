@@ -6,6 +6,8 @@
 
 #include "BatchCommand.h"
 
+#include "mesh/InstanceSSBO.h"
+
 namespace backend {
     class DrawBuffer;
 }
@@ -90,7 +92,7 @@ namespace render {
 
         std::vector<BatchCommand> m_batches;
 
-        std::vector<GLuint> m_entityIndeces;
+        std::vector<mesh::InstanceSSBO> m_entityIndeces;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

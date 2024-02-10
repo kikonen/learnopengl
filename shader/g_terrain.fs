@@ -2,6 +2,7 @@
 
 #include struct_material.glsl
 #include struct_entity.glsl
+#include struct_instance.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
@@ -41,6 +42,7 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 Material material;
 

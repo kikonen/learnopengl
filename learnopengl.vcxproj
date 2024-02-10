@@ -412,7 +412,7 @@
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
-    <ClInclude Include="src\mesh\InstanceEntty.h" />
+    <ClInclude Include="src\mesh\InstanceSSBO.h" />
     <ClInclude Include="src\mesh\LodMesh.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />
