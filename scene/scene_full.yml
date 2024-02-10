@@ -450,7 +450,7 @@ entities:
     render_flags:
       render_back: false
     selected: false
-  - name: Cow fur
+  - xname: Cow fur
     model: cow
     program: g_fur
     pos: [5.0, 25.0, -5.0]
