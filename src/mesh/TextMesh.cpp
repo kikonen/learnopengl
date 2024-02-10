@@ -51,6 +51,11 @@ namespace mesh {
         return m_vao;
     }
 
+    void TextMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+    }
+
     void TextMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {

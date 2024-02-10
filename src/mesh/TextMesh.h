@@ -20,6 +20,9 @@ namespace mesh {
         virtual kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh) override;
+
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;
 

@@ -29,17 +29,17 @@ namespace backend {
         bool m_tessellation : 1 {false};
         uint8_t m_patchVertices{ 3 };
 
-        Lod m_lod;
+        //Lod m_lod;
 
-        inline bool isSameDrawCommand(
-            const DrawOptions& o,
-            bool forceWireframe,
-            bool allowBlend) const noexcept
-        {
-            // NOTE KI multi/single material *CAN* go in same indirect draw
-            return m_lod == o.m_lod &&
-                isSameMultiDraw(o, allowBlend, forceWireframe);
-        }
+        //inline bool isSameDrawCommand(
+        //    const DrawOptions& o,
+        //    bool forceWireframe,
+        //    bool allowBlend) const noexcept
+        //{
+        //    // NOTE KI multi/single material *CAN* go in same indirect draw
+        //    return m_lod == o.m_lod &&
+        //        isSameMultiDraw(o, allowBlend, forceWireframe);
+        //}
 
         inline bool isSameMultiDraw(
             const DrawOptions& o,
@@ -56,8 +56,8 @@ namespace backend {
 
         // NOTE KI for MeshTypeKey/MeshTypeComparator
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode, m_lod.m_baseVertex, m_lod.m_baseIndex) <
-                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode, o.m_lod.m_baseVertex, o.m_lod.m_baseIndex);
+            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode);
         }
     };
 }

@@ -6,6 +6,8 @@
 #include <memory>
 #include <functional>
 
+#include "backend/Lod.h"
+
 #include "MaterialSet.h"
 
 namespace kigl {
@@ -51,8 +53,7 @@ namespace mesh {
 
         Mesh* m_mesh{ nullptr };
 
-        // Distance from camera
-        float m_distance{ 0.f };
+        backend::Lod m_lod;
 
         std::unique_ptr<Mesh> m_deleter;
         MaterialSet m_materialSet;

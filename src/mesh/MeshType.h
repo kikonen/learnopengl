@@ -70,26 +70,26 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        LodMesh* addLod(LodMesh&& lod);
+        LodMesh* addLod(LodMesh&& lodMesh);
 
         inline const LodMesh* getLod(uint8_t lodIndex) const noexcept {
-            return m_lods->empty() ? nullptr : &(*m_lods)[lodIndex];
+            return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
         inline const std::vector<LodMesh>& getLods() const noexcept {
-            return *m_lods;
+            return *m_lodMeshes;
         }
 
         inline LodMesh* modifyLod(uint8_t lodIndex) noexcept {
-            return m_lods->empty() ? nullptr : &(*m_lods)[lodIndex];
+            return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
         inline std::vector<LodMesh>& modifyLods() noexcept {
-            return *m_lods;
+            return *m_lodMeshes;
         }
 
         inline bool hasMesh() const noexcept {
-            return m_lods->empty() ? false : (*m_lods)[0].m_mesh;
+            return m_lodMeshes->empty() ? false : (*m_lodMeshes)[0].m_mesh;
         }
 
         template<typename T>
@@ -144,7 +144,7 @@ namespace mesh {
         kigl::GLVertexArray* m_vao{ nullptr };
         backend::DrawOptions m_drawOptions;
 
-        std::unique_ptr<std::vector<LodMesh>> m_lods;
+        std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
     };

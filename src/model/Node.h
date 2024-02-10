@@ -74,7 +74,11 @@ public:
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
     const backend::DrawOptions& getDrawOptions() const noexcept;
-    void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
+
+    void bindBatch(
+        const RenderContext& ctx,
+        mesh::MeshType* type,
+        render::Batch& batch) noexcept;
 
     inline Node* getParent() const noexcept {
         return m_parent.toNode();

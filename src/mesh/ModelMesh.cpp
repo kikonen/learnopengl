@@ -11,6 +11,7 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
 
 #include "engine/PrepareContext.h"
@@ -100,15 +101,18 @@ namespace mesh {
         init.prepare(*this, materialSet);
     }
 
+    void ModelMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_baseVertex = m_vertexVBO.getBaseVertex();
+        lodMesh.m_lod.m_baseIndex = m_vertexVBO.getBaseIndex();
+        lodMesh.m_lod.m_indexCount = m_vertexVBO.getIndexCount();
+    }
+
     void ModelMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
-
-        auto& lod = drawOptions.m_lod;
-        lod.m_baseVertex = m_vertexVBO.getBaseVertex();
-        lod.m_baseIndex = m_vertexVBO.getBaseIndex();
-        lod.m_indexCount = m_vertexVBO.getIndexCount();
     }
 }

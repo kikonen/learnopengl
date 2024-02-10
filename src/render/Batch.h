@@ -12,6 +12,10 @@ namespace backend {
     class DrawBuffer;
 }
 
+namespace mesh {
+    class MeshType;
+}
+
 class Program;
 
 struct Snapshot;
@@ -40,16 +44,21 @@ namespace render {
 
         void addSnapshot(
             const RenderContext& ctx,
+            const mesh::MeshType* type,
+            const backend::Lod* lod,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
-        void addSnapshots(
-            const RenderContext& ctx,
-            const std::span<const Snapshot>& snapshots,
-            const std::span<uint32_t>& entityIndeces) noexcept;
+        //void addSnapshots(
+        //    const RenderContext& ctx,
+        //    mesh::MeshType* type,
+        //    const std::span<const Snapshot>& snapshots,
+        //    const std::span<uint32_t>& entityIndeces) noexcept;
 
         void addSnapshotsInstanced(
             const RenderContext& ctx,
+            const mesh::MeshType* type,
+            const std::span<const backend::Lod*>& lods,
             const std::span<const Snapshot>& snapshots,
             uint32_t entityBase) noexcept;
 

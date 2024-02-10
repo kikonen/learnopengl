@@ -58,13 +58,16 @@ namespace mesh {
         return m_vao;
     }
 
+    void SpriteMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_indexCount = 1;
+    }
+
     void SpriteMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_POINTS;
-
-        auto& lod = drawOptions.m_lod;
-        lod.m_indexCount = 1;
     }
 }

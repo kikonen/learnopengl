@@ -96,8 +96,6 @@ void AsteroidBeltGenerator::createAsteroids(
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
-        asteroid.m_lodMaterialIndeces = containerTransform.m_lodMaterialIndeces;
-
         asteroid.setVolume(volume);
     }
 

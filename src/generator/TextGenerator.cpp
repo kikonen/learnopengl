@@ -119,10 +119,10 @@ void TextGenerator::updateVAO(
     m_vao.registerModel(m_vbo);
     m_vao.updateRT();
 
-    auto& lod = m_drawOptions.m_lod;
-    lod.m_baseVertex = m_vbo.getBaseVertex();
-    lod.m_baseIndex = m_vbo.getBaseIndex();
-    lod.m_indexCount = m_vbo.getIndexCount();
+    //auto& lod = m_drawOptions.m_lod;
+    //lod.m_baseVertex = m_vbo.getBaseVertex();
+    //lod.m_baseIndex = m_vbo.getBaseIndex();
+    //lod.m_indexCount = m_vbo.getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(
@@ -139,13 +139,20 @@ const backend::DrawOptions& TextGenerator::getDrawOptions(
 
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
+    mesh::MeshType* type,
     Node& container,
     render::Batch& batch)
 {
     m_draw->updateRT();
 
     const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
-    batch.addSnapshot(ctx, snapshot, container.m_entityIndex);
+
+    batch.addSnapshot(
+        ctx,
+        type,
+        &type->getLod(0)->m_lod,
+        snapshot,
+        container.m_entityIndex);
 }
 
 void TextGenerator::clear()

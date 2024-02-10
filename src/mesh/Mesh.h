@@ -19,6 +19,7 @@ struct PrepareContext;
 
 namespace mesh {
     class MaterialSet;
+    struct LodMesh;
 
     class Mesh
     {
@@ -40,6 +41,9 @@ namespace mesh {
 
         virtual void prepareMaterials(
             MaterialSet& materialSet) {}
+
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh) = 0;
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) = 0;

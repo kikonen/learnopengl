@@ -14,6 +14,7 @@ namespace kigl {
 
 namespace backend {
     struct DrawOptions;
+    struct Lod;
 }
 
 namespace render {
@@ -63,6 +64,7 @@ public:
 
     virtual void bindBatch(
         const RenderContext& ctx,
+        mesh::MeshType* type,
         Node& container,
         render::Batch& batch);
 
@@ -118,5 +120,6 @@ protected:
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
+    std::vector<const backend::Lod*> m_lods;
     std::vector<InstancePhysics> m_physics;
 };

@@ -86,12 +86,14 @@ namespace mesh {
         }
 
         MaterialRegistry::get().registerVertexMaterials(m_materialSet);
+        m_lod.m_materialIndex = m_materialSet.getMaterialIndex();
     }
 
     void LodMesh::prepareRT(const PrepareContext& ctx)
     {
         if (m_mesh) {
             m_vao = m_mesh->prepareRT(ctx);
+            m_mesh->prepareLod(*this);
         }
     }
 }

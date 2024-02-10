@@ -9,6 +9,9 @@
 
 class Program;
 
+namespace backend {
+    struct Lod;
+}
 
 namespace render {
     struct BatchCommand {
@@ -17,7 +20,9 @@ namespace render {
         const kigl::GLVertexArray* m_vao{ nullptr };
         backend::DrawOptions m_drawOptions;
 
-        int m_index{ 0 };
+        int m_baseIndex{ 0 };
         int m_instanceCount{ 0 };
+
+        const backend::Lod* m_lod{ nullptr };
     };
 }

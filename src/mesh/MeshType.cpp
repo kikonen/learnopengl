@@ -27,7 +27,7 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType()
-        : m_lods{ std::make_unique<std::vector<LodMesh>>()}
+        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
@@ -44,7 +44,7 @@ namespace mesh {
         m_vao{ o.m_vao },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
-        m_lods{ std::move(o.m_lods) },
+        m_lodMeshes{ std::move(o.m_lodMeshes) },
         m_customMaterial{ std::move(o.m_customMaterial) }
     {
     }
@@ -71,8 +71,8 @@ namespace mesh {
     LodMesh* MeshType::addLod(
         LodMesh&& lod)
     {
-        m_lods->push_back(std::move(lod));
-        return &(*m_lods)[m_lods->size() - 1];
+        m_lodMeshes->push_back(std::move(lod));
+        return &(*m_lodMeshes)[m_lodMeshes->size() - 1];
     }
 
     void MeshType::prepareWT(
@@ -83,8 +83,8 @@ namespace mesh {
 
         if (!hasMesh()) return;
 
-        for (auto& lod : *m_lods) {
-            lod.registerMaterials();
+        for (auto& lodMesh : *m_lodMeshes) {
+            lodMesh.registerMaterials();
         }
 
         if (m_entityType == EntityType::sprite && m_sprite) {
@@ -100,20 +100,20 @@ namespace mesh {
 
         if (!hasMesh()) return;
 
-        for (auto& lod : *m_lods) {
-            lod.prepareRT(ctx);
+        for (auto& lodMesh : *m_lodMeshes) {
+            lodMesh.prepareRT(ctx);
         }
 
         {
-            auto& lod = (*m_lods)[0];
-            m_vao = lod.m_vao;
+            auto& lodMesh = (*m_lodMeshes)[0];
+            m_vao = lodMesh.m_vao;
             m_drawOptions.m_renderBack = m_flags.renderBack;
             m_drawOptions.m_wireframe = m_flags.wireframe;
             m_drawOptions.m_blend = m_flags.blend;
             m_drawOptions.m_blendOIT = m_flags.blendOIT;
             m_drawOptions.m_tessellation = m_flags.tessellation;
 
-            lod.m_mesh->prepareDrawOptions(m_drawOptions);
+            lodMesh.m_mesh->prepareDrawOptions(m_drawOptions);
         }
 
         if (m_program) {

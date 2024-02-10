@@ -62,7 +62,7 @@ struct NodeTransform {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
     inline const glm::vec4 getVolume() const noexcept
     {

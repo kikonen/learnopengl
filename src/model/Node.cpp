@@ -81,12 +81,6 @@ void Node::prepareWT(
     if (type->hasMesh()) {
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-        int idx = 0;
-        for (auto& lod : type->getLods()) {
-            m_transform.m_lodMaterialIndeces[idx] = lod.m_materialSet.getMaterialIndex();
-            idx++;
-        }
-
         {
             ki::size_t_entity_flags flags = 0;
 
@@ -158,14 +152,21 @@ const backend::DrawOptions& Node::getDrawOptions() const noexcept
 
 void Node::bindBatch(
     const RenderContext& ctx,
+    mesh::MeshType* type,
     render::Batch& batch) noexcept
 {
     if (m_instancer) {
-        m_instancer->bindBatch(ctx, *this, batch);
+        m_instancer->bindBatch(ctx, type, *this, batch);
     } else {
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+
+        // TODO KI select LOD based to distance
+        auto* lod = &type->getLod(0)->m_lod;
+
         batch.addSnapshot(
             ctx,
+            type,
+            lod,
             snapshot,
             m_entityIndex);
     }

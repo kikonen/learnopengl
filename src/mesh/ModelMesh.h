@@ -48,6 +48,9 @@ namespace mesh {
         virtual void prepareMaterials(
             MaterialSet& materialSet) override;
 
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh);
+
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;
 

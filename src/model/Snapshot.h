@@ -53,7 +53,7 @@ struct Snapshot {
 
         m_modelScale = o.m_modelScale;
 
-        m_lodMaterialIndeces = o.m_lodMaterialIndeces;
+        //m_lodMaterialIndeces = o.m_lodMaterialIndeces;
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;
@@ -81,10 +81,10 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
-    // NOTE KI only in *active*
-    std::array<backend::Lod, ki::MAX_LOD> m_lods;
+    //// NOTE KI only in *active*
+    //std::array<backend::Lod, ki::MAX_LOD> m_lods;
 
     bool m_dirty { true };
     bool m_dirtyNormal { true };

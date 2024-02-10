@@ -6,8 +6,8 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/TerrainVAO.h"
-
 
 namespace {
 
@@ -52,13 +52,16 @@ namespace mesh {
         return m_vao;
     }
 
+    void TerrainMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_indexCount = 1;
+    }
+
     void TerrainMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_PATCHES;
-
-        auto& lod = drawOptions.m_lod;
-        lod.m_indexCount = 1;
     }
 }

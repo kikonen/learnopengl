@@ -12,7 +12,6 @@
 
 
 #include "util/glm_format.h"
-
 #include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/Sphere.h"
@@ -21,6 +20,7 @@
 #include "backend/gl/DrawIndirectCommand.h"
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
+#include "backend/Lod.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -63,6 +63,8 @@ namespace render {
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
+        const mesh::MeshType* type,
+        const backend::Lod* lod,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
@@ -82,27 +84,31 @@ namespace render {
 
         auto& top = m_batches.back();
         top.m_instanceCount++;
+        top.m_lod = lod;
 
-        GLint materialIndex = snapshot.m_lodMaterialIndeces[0];
+        GLint materialIndex = lod->m_materialIndex;
 
         auto& instance = m_entityIndeces.emplace_back();
         instance.u_entityIndex = entityIndex;
         instance.u_materialIndex = materialIndex;
     }
 
-    void Batch::addSnapshots(
-        const RenderContext& ctx,
-        const std::span<const Snapshot>& snapshots,
-        const std::span<uint32_t>& entityIndeces) noexcept
-    {
-        uint32_t i = 0;
-        for (const auto& snapshot : snapshots) {
-            addSnapshot(ctx, snapshot, entityIndeces[i++]);
-        }
-    }
+    //void Batch::addSnapshots(
+    //    const RenderContext& ctx,
+    //    mesh::MeshType* type,
+    //    const std::span<const Snapshot>& snapshots,
+    //    const std::span<uint32_t>& entityIndeces) noexcept
+    //{
+    //    uint32_t i = 0;
+    //    for (const auto& snapshot : snapshots) {
+    //        addSnapshot(ctx, type, snapshot, entityIndeces[i++]);
+    //    }
+    //}
 
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
+        const mesh::MeshType* type,
+        const std::span<const backend::Lod*>& lods,
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
@@ -156,7 +162,7 @@ namespace render {
                 }
                 auto& instance = m_entityIndeces.emplace_back();
                 instance.u_entityIndex = entityBase + i;
-                instance.u_materialIndex = snapshots[i].m_lodMaterialIndeces[0];
+                instance.u_materialIndex = lods[i]->m_materialIndex;
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
@@ -167,6 +173,7 @@ namespace render {
             auto& top = m_batches.back();
 
             top.m_instanceCount += static_cast<int>(instanceCount);
+            top.m_lod = lods[0];
 
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
@@ -175,11 +182,12 @@ namespace render {
             auto& top = m_batches.back();
 
             top.m_instanceCount += static_cast<int>(count);
+            top.m_lod = lods[0];
 
             for (uint32_t i = 0; i < count; i++) {
                 auto& instance = m_entityIndeces.emplace_back();
                 instance.u_entityIndex = entityBase + i;
-                instance.u_materialIndex = snapshots[i].m_lodMaterialIndeces[0];
+                instance.u_materialIndex = lods[i]->m_materialIndex;
             }
 
             m_drawCount += count;
@@ -242,7 +250,7 @@ namespace render {
         cmd.m_vao = vao;
         cmd.m_program = program;
         cmd.m_drawOptions = drawOptions;
-        cmd.m_index = static_cast<int>(m_entityIndeces.size());
+        cmd.m_baseIndex = static_cast<int>(m_entityIndeces.size());
     }
 
     void Batch::draw(
@@ -269,10 +277,11 @@ namespace render {
 
                 change = program != top.m_program ||
                     vao != top.m_vao ||
-                    !top.m_drawOptions.isSameDrawCommand(
-                        drawOptions,
-                        ctx.m_forceWireframe,
-                        allowBlend);
+                    true;
+                    //!top.m_drawOptions.isSameDrawCommand(
+                    //    drawOptions,
+                    //    ctx.m_forceWireframe,
+                    //    allowBlend);
             }
 
             if (change) {
@@ -282,7 +291,7 @@ namespace render {
             auto& top = m_batches.back();
         }
 
-        node.bindBatch(ctx, *this);
+        node.bindBatch(ctx, type, *this);
     }
 
     void Batch::flush(
@@ -323,18 +332,19 @@ namespace render {
             };
 
             const auto& drawOptions = curr.m_drawOptions;
-            const auto& lod = drawOptions.m_lod;
+            //const auto& lod = drawOptions.m_lod;
+            const backend::Lod* lod = curr.m_lod;
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
                 //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_instanceCount = curr.m_instanceCount;
-                cmd.u_baseInstance = curr.m_index;
+                cmd.u_baseInstance = curr.m_baseIndex;
 
-                cmd.u_baseVertex = lod.m_baseVertex;
-                cmd.u_firstIndex = lod.m_baseIndex;
-                cmd.u_count = lod.m_indexCount;
+                cmd.u_baseVertex = lod->m_baseVertex;
+                cmd.u_firstIndex = lod->m_baseIndex;
+                cmd.u_count = lod->m_indexCount;
 
                 draw->sendDirect(drawRange, indirect);
             }
@@ -344,10 +354,10 @@ namespace render {
 
                 //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_instanceCount = curr.m_instanceCount;
-                cmd.u_baseInstance = curr.m_index;
+                cmd.u_baseInstance = curr.m_baseIndex;
 
-                cmd.u_vertexCount = lod.m_indexCount;
-                cmd.u_firstVertex = lod.m_baseIndex;
+                cmd.u_vertexCount = lod->m_indexCount;
+                cmd.u_firstVertex = lod->m_baseIndex;
 
                 draw->sendDirect(drawRange, indirect);
             }

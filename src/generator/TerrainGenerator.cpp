@@ -209,18 +209,11 @@ void TerrainGenerator::createTiles(
 
     // NOTE KI must laod textures in the context of *THIS* material
     // NOTE KI only SINGLE material supported
-    int materialIndex = 0;
     {
         auto* type = typeHandle.toType();
 
         auto& drawOptions = type->modifyDrawOptions();
         drawOptions.m_patchVertices = 3;
-
-        auto* lod = type->getLod(0);
-
-        for (auto& m : lod->m_materialSet.getMaterials()) {
-            materialIndex = m.m_registeredIndex;
-        }
     }
 
     const glm::vec4 tileVolume = aabb.getVolume();
@@ -255,8 +248,6 @@ void TerrainGenerator::createTiles(
 
             {
                 auto& transform = m_transforms.emplace_back();
-
-                transform.m_lodMaterialIndeces[0] = materialIndex;
                 transform.setVolume(tileVolume);
             }
 

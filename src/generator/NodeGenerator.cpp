@@ -2,6 +2,8 @@
 
 #include "asset/AABB.h"
 
+#include "backend/Lod.h"
+
 #include "model/Node.h"
 
 #include "mesh/LodMesh.h"
@@ -112,6 +114,7 @@ void NodeGenerator::updateEntity(
 
 void NodeGenerator::bindBatch(
     const RenderContext& ctx,
+    mesh::MeshType* type,
     Node& container,
     render::Batch& batch)
 {
@@ -129,9 +132,25 @@ void NodeGenerator::bindBatch(
         m_snapshotBase,
         m_reservedCount);
 
+    {
+        m_lods.reserve(m_reservedCount);
+        m_lods.clear();
+
+        auto* meshLod = type->getLod(0);
+        const auto& lod = meshLod->m_lod;
+        for (auto& snapshot : snapshots) {
+            // TODO KI select LOD based to distance
+            m_lods.push_back(&lod);
+        }
+    }
+    auto lodSpan = std::span<const backend::Lod*>{ m_lods };
+
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
-    //batch.addInstanced(ctx, container.getEntityIndex(), m_activeFirst, m_activeCount);
-    batch.addSnapshotsInstanced(ctx, snapshots, m_entityBase);
+    batch.addSnapshotsInstanced(
+        ctx,
+        type,
+        lodSpan,
+        snapshots, m_entityBase);
 }
 
 const kigl::GLVertexArray* NodeGenerator::getVAO(

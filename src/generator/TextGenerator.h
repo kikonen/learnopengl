@@ -44,6 +44,7 @@ public:
 
     virtual void bindBatch(
         const RenderContext& ctx,
+        mesh::MeshType* type,
         Node& container,
         render::Batch& batch) override;
 
