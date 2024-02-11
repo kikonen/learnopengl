@@ -151,12 +151,12 @@ void NodeGenerator::bindBatch(
             //const auto& lod = meshLod->m_lod;
 
             for (auto& snapshot : snapshots) {
-                auto distance = glm::length(snapshot.getWorldPosition() - cameraPos);
+                auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
                 //std::cout << "DIST: " << distance << "\n";
 
                 int lodIndex = 0;
                 for (; lodIndex < meshLods.size(); lodIndex++) {
-                    if (distance < meshLods[lodIndex].m_lod.m_distance)
+                    if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
                         break;
                 }
                 if (lodIndex >= meshLods.size()) {
@@ -167,11 +167,6 @@ void NodeGenerator::bindBatch(
                 //int lodIndex = static_cast<int>(rand() * (meshLods.size() + 1)) % meshLods.size();
 
                 m_lods.push_back(&meshLods[lodIndex].m_lod);
-            }
-
-            //m_lods[0] = &meshLods[meshLods.size() - 1].m_lod;
-            if (meshLods.size() > 1) {
-                m_lods[0] = &meshLods[1].m_lod;
             }
         }
     }

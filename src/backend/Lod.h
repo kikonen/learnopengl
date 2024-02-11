@@ -17,7 +17,15 @@ namespace backend {
         // Distance upto lod is applied
         float m_distance{ 0.f };
 
+        // Squared Distance upto lod is applied
+        float m_distance2{ 0.f };
+
         int32_t m_materialIndex{ 0 };
+
+        void setDistance(float dist) {
+            m_distance = dist;
+            m_distance2 = dist * dist;
+        }
 
         inline bool operator==(const Lod& o) const noexcept
         {

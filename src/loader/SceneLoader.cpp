@@ -703,7 +703,7 @@ namespace loader {
                     lodData.meshPath);
 
                 auto* lod = type->addLod({ future.get() });
-                lod->m_lod.m_distance = lodData.distance;
+                lod->m_lod.setDistance(lodData.distance);
 
                 KI_INFO(fmt::format(
                     "SCENE_FILE ATTACH: id={}, desc={}, type={}",

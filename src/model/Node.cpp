@@ -165,11 +165,11 @@ void Node::bindBatch(
             const auto& cameraPos = ctx.m_camera->getWorldPosition();
             auto& meshLods = type->getLods();
 
-            auto distance = glm::length(snapshot.getWorldPosition() - cameraPos);
+            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
             int lodIndex = 0;
             for (; lodIndex < meshLods.size(); lodIndex++) {
-                if (distance < meshLods[lodIndex].m_lod.m_distance)
+                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
                     break;
             }
             if (lodIndex >= meshLods.size()) {
