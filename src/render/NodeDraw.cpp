@@ -638,7 +638,7 @@ namespace render {
                     if (!node || !nodeSelector(node)) continue;
 
                     rendered = true;
-                    batch->draw(ctx, *node, program);
+                    batch->draw(ctx, type, *node, program);
                 }
             }
             };
@@ -702,7 +702,7 @@ namespace render {
             auto* type = node->m_typeHandle.toType();
             auto* program = type->m_program;
 
-            ctx.m_batch->draw(ctx, *node, program);
+            ctx.m_batch->draw(ctx, type, *node, program);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect
@@ -732,7 +732,7 @@ namespace render {
                     auto* node = handle.toNode();
                     if (!node || !nodeSelector(node)) continue;
 
-                    batch->draw(ctx, *node, activeProgram);
+                    batch->draw(ctx, type, *node, activeProgram);
                 }
             }
             };

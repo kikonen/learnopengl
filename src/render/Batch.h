@@ -71,6 +71,7 @@ namespace render {
 
         void draw(
             const RenderContext& ctx,
+            mesh::MeshType* type,
             Node& node,
             Program* program);
 

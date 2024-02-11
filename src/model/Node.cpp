@@ -160,8 +160,24 @@ void Node::bindBatch(
     } else {
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
 
-        // TODO KI select LOD based to distance
-        auto* lod = &type->getLod(0)->m_lod;
+        const backend::Lod* lod;
+        {
+            const auto& cameraPos = ctx.m_camera->getWorldPosition();
+            auto& meshLods = type->getLods();
+
+            auto distance = glm::length(snapshot.getWorldPosition() - cameraPos);
+
+            int lodIndex = 0;
+            for (; lodIndex < meshLods.size(); lodIndex++) {
+                if (distance < meshLods[lodIndex].m_lod.m_distance)
+                    break;
+            }
+            if (lodIndex >= meshLods.size()) {
+                lodIndex--;
+            }
+
+            lod = &meshLods[lodIndex].m_lod;
+        }
 
         batch.addSnapshot(
             ctx,

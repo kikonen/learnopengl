@@ -1,5 +1,9 @@
 #pragma once
 
+#include <map>
+#include <vector>
+#include <stdint.h>
+
 #include <glm/glm.hpp>
 
 #include "kigl/GLVertexArray.h"
@@ -14,6 +18,13 @@ namespace backend {
 }
 
 namespace render {
+    struct LodKey {
+        const backend::Lod* m_lod;
+        bool operator<(const LodKey& o) const noexcept {
+            return *m_lod < *o.m_lod;
+        }
+    };
+
     struct BatchCommand {
         const Program* m_program{ nullptr };
 
@@ -23,6 +34,6 @@ namespace render {
         int m_baseIndex{ 0 };
         int m_instanceCount{ 0 };
 
-        const backend::Lod* m_lod{ nullptr };
+        std::map<LodKey, std::vector<uint32_t>> m_lodInstances;
     };
 }

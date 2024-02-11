@@ -36,6 +36,7 @@
 #include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
+#include "BatchCommand.h"
 
 namespace {
     constexpr int BATCH_COUNT = 100;
@@ -84,13 +85,10 @@ namespace render {
 
         auto& top = m_batches.back();
         top.m_instanceCount++;
-        top.m_lod = lod;
 
-        GLint materialIndex = lod->m_materialIndex;
-
-        auto& instance = m_entityIndeces.emplace_back();
-        instance.u_entityIndex = entityIndex;
-        instance.u_materialIndex = materialIndex;
+        LodKey key{ lod };
+        auto& lodInstances = top.m_lodInstances[key];
+        lodInstances.push_back(entityIndex);
     }
 
     //void Batch::addSnapshots(
@@ -155,14 +153,17 @@ namespace render {
                     });
             }
 
+            auto& top = m_batches.back();
+
             for (uint32_t i = 0; i < count; i++) {
                 if (s_accept[i] == -1) {
                     instanceCount--;
                     continue;
                 }
-                auto& instance = m_entityIndeces.emplace_back();
-                instance.u_entityIndex = entityBase + i;
-                instance.u_materialIndex = lods[i]->m_materialIndex;
+
+                LodKey key{ lods[i] };
+                auto& lodInstances = top.m_lodInstances[key];
+                lodInstances.push_back(entityBase + i);
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
@@ -170,10 +171,7 @@ namespace render {
             if (instanceCount == 0)
                 return;
 
-            auto& top = m_batches.back();
-
             top.m_instanceCount += static_cast<int>(instanceCount);
-            top.m_lod = lods[0];
 
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
@@ -182,12 +180,11 @@ namespace render {
             auto& top = m_batches.back();
 
             top.m_instanceCount += static_cast<int>(count);
-            top.m_lod = lods[0];
 
             for (uint32_t i = 0; i < count; i++) {
-                auto& instance = m_entityIndeces.emplace_back();
-                instance.u_entityIndex = entityBase + i;
-                instance.u_materialIndex = lods[i]->m_materialIndex;
+                LodKey key{ lods[i] };
+                auto& lodInstances = top.m_lodInstances[key];
+                lodInstances.push_back(entityBase + i);
             }
 
             m_drawCount += count;
@@ -250,16 +247,15 @@ namespace render {
         cmd.m_vao = vao;
         cmd.m_program = program;
         cmd.m_drawOptions = drawOptions;
-        cmd.m_baseIndex = static_cast<int>(m_entityIndeces.size());
+        cmd.m_baseIndex = 0; // static_cast<int>(m_entityIndeces.size());
     }
 
     void Batch::draw(
         const RenderContext& ctx,
+        mesh::MeshType* type,
         Node& node,
         Program* program)
     {
-        auto* type = node.m_typeHandle.toType();
-
         if (type->m_flags.invisible || !node.m_visible) return;
 
         node.updateVAO(ctx);
@@ -276,8 +272,7 @@ namespace render {
                 auto& top = m_batches.back();
 
                 change = program != top.m_program ||
-                    vao != top.m_vao ||
-                    true;
+                    vao != top.m_vao;
                     //!top.m_drawOptions.isSameDrawCommand(
                     //    drawOptions,
                     //    ctx.m_forceWireframe,
@@ -297,19 +292,30 @@ namespace render {
     void Batch::flush(
         const RenderContext& ctx)
     {
-        // NOTE KI two cases
-        // - empty batch
-        // - "save back" entry without actual draw
-        size_t pendingCount = m_entityIndeces.size();
+        std::map<LodKey, uint32_t> lodBaseIndex;
 
-        if (pendingCount == 0) {
-            m_batches.clear();
-            return;
+        {
+            m_entityIndeces.clear();
+            for (auto& curr : m_batches) {
+                if (curr.m_instanceCount == 0) continue;
+
+                for (const auto& lodEntry : curr.m_lodInstances) {
+                    const auto* lod = lodEntry.first.m_lod;
+
+                    lodBaseIndex[lodEntry.first] = static_cast<uint32_t>(m_entityIndeces.size());
+                    for (auto& entityIndex : lodEntry.second) {
+                        auto& instance = m_entityIndeces.emplace_back();
+                        instance.u_entityIndex = entityIndex;
+                        instance.u_materialIndex = lod->m_materialIndex;
+                    }
+                }
+            }
+
+            if (m_entityIndeces.empty()) {
+                m_batches.clear();
+                return;
+            }
         }
-
-        //std::cout << "instances: " << m_entityIndeces.size() << '\n';
-
-        backend::gl::DrawIndirectCommand indirect{};
 
         // NOTE KI baseVertex usage
         // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
@@ -319,6 +325,8 @@ namespace render {
         auto* draw = m_draw.get();
 
         draw->sendInstanceIndeces(m_entityIndeces);
+
+        backend::gl::DrawIndirectCommand indirect{};
 
         for (auto& curr : m_batches) {
             if (curr.m_instanceCount == 0) continue;
@@ -332,38 +340,42 @@ namespace render {
             };
 
             const auto& drawOptions = curr.m_drawOptions;
-            //const auto& lod = drawOptions.m_lod;
-            const backend::Lod* lod = curr.m_lod;
 
-            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
-                backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
+            for (const auto& lodEntry : curr.m_lodInstances) {
+                auto baseInstance = lodBaseIndex[lodEntry.first];
+                GLuint instanceCount = static_cast<GLuint>(lodEntry.second.size());
+                const auto* lod = lodEntry.first.m_lod;
 
-                //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_instanceCount = curr.m_instanceCount;
-                cmd.u_baseInstance = curr.m_baseIndex;
+                if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
+                    backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-                cmd.u_baseVertex = lod->m_baseVertex;
-                cmd.u_firstIndex = lod->m_baseIndex;
-                cmd.u_count = lod->m_indexCount;
+                    //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                    cmd.u_instanceCount = instanceCount;
+                    cmd.u_baseInstance = baseInstance;
 
-                draw->sendDirect(drawRange, indirect);
-            }
-            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
-            {
-                backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
+                    cmd.u_baseVertex = lod->m_baseVertex;
+                    cmd.u_firstIndex = lod->m_baseIndex;
+                    cmd.u_count = lod->m_indexCount;
 
-                //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_instanceCount = curr.m_instanceCount;
-                cmd.u_baseInstance = curr.m_baseIndex;
+                    draw->sendDirect(drawRange, indirect);
+                }
+                else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
+                {
+                    backend::gl::DrawArraysIndirectCommand& cmd = indirect.array;
 
-                cmd.u_vertexCount = lod->m_indexCount;
-                cmd.u_firstVertex = lod->m_baseIndex;
+                    //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                    cmd.u_instanceCount = instanceCount;
+                    cmd.u_baseInstance = baseInstance;
 
-                draw->sendDirect(drawRange, indirect);
-            }
-            else {
-                // NOTE KI "none" no drawing
-                KI_INFO("no render");
+                    cmd.u_vertexCount = lod->m_indexCount;
+                    cmd.u_firstVertex = lod->m_baseIndex;
+
+                    draw->sendDirect(drawRange, indirect);
+                }
+                else {
+                    // NOTE KI "none" no drawing
+                    KI_INFO("no render");
+                }
             }
         }
 

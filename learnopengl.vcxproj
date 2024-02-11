@@ -206,6 +206,7 @@
     <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
+    <ClCompile Include="src\render\BatchCommand.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
     <ClCompile Include="src\script\CommandHandle.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
