@@ -49,6 +49,7 @@ entities:
     force_material: true
     render_flags:
       render_back: true
+    pos: [0, 0, 0]
     lods:
       - model: [rock2, rock]
         material_modifier:
@@ -85,7 +86,6 @@ entities:
           kd: [1, 0, 0]
           tiling: 4
         distance: 100
-    pos: [0, 0, 0]
     instanced: true
     generator:
       type: asteroid_belt

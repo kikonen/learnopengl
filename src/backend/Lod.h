@@ -31,13 +31,14 @@ namespace backend {
         {
             // NOTE KI there cannot be different index count mesh in same base
             return m_baseVertex == o.m_baseVertex &&
-                m_baseIndex == o.m_baseIndex;
+                m_baseIndex == o.m_baseIndex &&
+                m_materialIndex == o.m_materialIndex;
         }
 
         inline bool operator<(const Lod& o) const noexcept {
             // NOTE KI there cannot be different index count mesh in same base
-            return std::tie(m_baseVertex, m_baseIndex) <
-                std::tie(o.m_baseVertex, o.m_baseIndex);
+            return std::tie(m_baseVertex, m_baseIndex, m_materialIndex) <
+                std::tie(o.m_baseVertex, o.m_baseIndex, o.m_materialIndex);
         }
     };
 }
