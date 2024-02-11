@@ -16,6 +16,8 @@
 
 #include "engine/PrepareContext.h"
 
+#include "model/Snapshot.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
@@ -145,5 +147,29 @@ namespace mesh {
     void MeshType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
     {
         m_customMaterial = std::move(customMaterial);
+    }
+
+    const backend::Lod* MeshType::getLod(
+        const glm::vec3& cameraPos,
+        const Snapshot& snapshot) const
+    {
+        const backend::Lod* lod;
+        {
+            auto& meshLods = *m_lodMeshes.get();
+
+            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+
+            int lodIndex = 0;
+            for (; lodIndex < meshLods.size(); lodIndex++) {
+                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
+                    break;
+            }
+            if (lodIndex >= meshLods.size()) {
+                lodIndex--;
+            }
+
+            lod = &meshLods[lodIndex].m_lod;
+        }
+        return lod;
     }
 }

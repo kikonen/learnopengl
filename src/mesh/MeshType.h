@@ -31,6 +31,8 @@ class Sprite;
 
 struct PrepareContext;
 
+struct Snapshot;
+
 class CustomMaterial;
 class Program;
 class Registry;
@@ -118,6 +120,10 @@ namespace mesh {
         inline backend::DrawOptions& modifyDrawOptions() noexcept {
             return m_drawOptions;
         }
+
+        const backend::Lod* getLod(
+            const glm::vec3& cameraPos,
+            const Snapshot& snapshot) const;
 
     public:
         EntityType m_entityType{ EntityType::origo };

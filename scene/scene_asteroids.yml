@@ -36,7 +36,7 @@ entities:
     id: planet-origo
     type: origo
     pos: [0.0, 0.0, 0.0]
-    xscript_file: scripts/anim_asteroids_roll
+    script_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
     model: [planet, planet]
@@ -54,42 +54,42 @@ entities:
       - model: [rock2, rock]
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [1, 1, 0]
+          map_pbr: textures\Rock002_1K-PNG
+          #kd: [1, 1, 0]
           tiling: 4
         distance: 20
       - model: [rock2, rock_lod_1]
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [0, 1, 1]
+          map_pbr: textures\Rock002_1K-PNG
+          #kd: [0, 1, 1]
           tiling: 4
         distance: 40
       - model: [rock2, rock_lod_2]
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [0, 0, 1]
           tiling: 4
         distance: 60
       - model: [rock2, rock_lod_3]
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 1, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [0, 1, 0]
           tiling: 4
         distance: 80
       - model: [rock2, rock_lod_4]
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [1, 0, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [1, 0, 0]
           tiling: 4
         distance: 100
     instanced: true
     generator:
       type: asteroid_belt
-      count: 20000
+      count: 200000
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5

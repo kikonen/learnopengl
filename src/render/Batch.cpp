@@ -65,7 +65,7 @@ namespace render {
     void Batch::addSnapshot(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const backend::Lod* lod,
+        const backend::Lod* lod_NOPE,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
@@ -85,6 +85,9 @@ namespace render {
 
         auto& top = m_batches.back();
         top.m_instanceCount++;
+
+        const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        const auto* lod = type->getLod(cameraPos, snapshot);
 
         LodKey key{ lod };
         auto& lodInstances = top.m_lodInstances[key];
@@ -106,13 +109,15 @@ namespace render {
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const std::span<const backend::Lod*>& lods,
+        const std::span<const backend::Lod*>& lods_NOPE,
         const std::span<const Snapshot>& snapshots,
         uint32_t entityBase) noexcept
     {
         const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
         if (count <= 0) return;
+
+        const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
         bool useFrustum = m_frustumCPU;
         {
@@ -161,7 +166,9 @@ namespace render {
                     continue;
                 }
 
-                LodKey key{ lods[i] };
+                const auto* lod = type->getLod(cameraPos, snapshots[i]);
+
+                LodKey key{ lod };
                 auto& lodInstances = top.m_lodInstances[key];
                 lodInstances.push_back(entityBase + i);
             }
@@ -182,7 +189,8 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                LodKey key{ lods[i] };
+                const auto* lod = type->getLod(cameraPos, snapshots[i]);
+                LodKey key{ lod };
                 auto& lodInstances = top.m_lodInstances[key];
                 lodInstances.push_back(entityBase + i);
             }

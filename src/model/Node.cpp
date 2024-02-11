@@ -160,24 +160,24 @@ void Node::bindBatch(
     } else {
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
 
-        const backend::Lod* lod;
-        {
-            const auto& cameraPos = ctx.m_camera->getWorldPosition();
-            auto& meshLods = type->getLods();
+        const backend::Lod* lod = nullptr;
+        //{
+        //    const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        //    auto& meshLods = type->getLods();
 
-            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+        //    auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
-            int lodIndex = 0;
-            for (; lodIndex < meshLods.size(); lodIndex++) {
-                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
-                    break;
-            }
-            if (lodIndex >= meshLods.size()) {
-                lodIndex--;
-            }
+        //    int lodIndex = 0;
+        //    for (; lodIndex < meshLods.size(); lodIndex++) {
+        //        if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
+        //            break;
+        //    }
+        //    if (lodIndex >= meshLods.size()) {
+        //        lodIndex--;
+        //    }
 
-            lod = &meshLods[lodIndex].m_lod;
-        }
+        //    lod = &meshLods[lodIndex].m_lod;
+        //}
 
         batch.addSnapshot(
             ctx,
