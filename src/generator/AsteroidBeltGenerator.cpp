@@ -57,7 +57,7 @@ void AsteroidBeltGenerator::updateWT(
         transform.m_dirtySnapshot = true;
     }
 
-    done = true;
+    //done = true;
     m_updateIndex++;
     m_containerMatrixLevel = parentLevel;
 }

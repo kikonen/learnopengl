@@ -292,12 +292,14 @@ namespace render {
     void Batch::flush(
         const RenderContext& ctx)
     {
-        std::map<LodKey, uint32_t> lodBaseIndex;
+        std::map<const Program*, std::map<LodKey, uint32_t>> programLodBaseIndex;
 
         {
             m_entityIndeces.clear();
             for (auto& curr : m_batches) {
                 if (curr.m_instanceCount == 0) continue;
+
+                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
 
                 for (const auto& lodEntry : curr.m_lodInstances) {
                     const auto* lod = lodEntry.first.m_lod;
@@ -342,6 +344,7 @@ namespace render {
             const auto& drawOptions = curr.m_drawOptions;
 
             for (const auto& lodEntry : curr.m_lodInstances) {
+                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
                 auto baseInstance = lodBaseIndex[lodEntry.first];
                 GLuint instanceCount = static_cast<GLuint>(lodEntry.second.size());
                 const auto* lod = lodEntry.first.m_lod;
