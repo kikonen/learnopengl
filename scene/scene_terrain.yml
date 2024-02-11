@@ -102,9 +102,7 @@ entities:
     model: linden_tree
     priority: 1
     program: g_tex
-    instanced: true
     pos: [150, 15.0, 150.0]
-    material: linden_tree
     force_material: true
     render_flags:
       alpha: true
@@ -113,6 +111,14 @@ entities:
       enforce_bounds: true
       render_back: true
     scale: 10
+    lods:
+      - model: linden_tree
+        material: linden_tree
+        distance: 450
+      - model: linden_tree_lod_1
+        material: linden_tree
+        distance: 99999
+    instanced: true
     generator:
       type: grid
       repeat:

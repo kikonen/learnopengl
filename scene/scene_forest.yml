@@ -41,11 +41,8 @@ entities:
       intensity: 30000
   - id: linden_tree_forest
     type: model
-    model: linden_tree
     program: g_tex
-    instanced: true
     pos: [-1000, 10.0, 0.0]
-    material: linden_tree
     force_material: true
     render_flags:
       alpha: true
@@ -53,8 +50,17 @@ entities:
       static_physics: true
       enforce_bounds: true
       render_back: true
+    force_material: true
     xscale: [7, 10, 1]
     scale: 10
+    lods:
+      - model: linden_tree
+        material: linden_tree
+        distance: 450
+      - model: linden_tree_lod_1
+        material: linden_tree
+        distance: 99999
+    instanced: true
     generator:
       type: grid
       repeat:
