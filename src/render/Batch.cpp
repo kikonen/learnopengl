@@ -280,11 +280,11 @@ namespace render {
                 auto& top = m_batches.back();
 
                 change = program != top.m_program ||
-                    vao != top.m_vao;
-                    //!top.m_drawOptions.isSameDrawCommand(
-                    //    drawOptions,
-                    //    ctx.m_forceWireframe,
-                    //    allowBlend);
+                    vao != top.m_vao ||
+                    !top.m_drawOptions.isSameDrawCommand(
+                        drawOptions,
+                        ctx.m_forceWireframe,
+                        allowBlend);
             }
 
             if (change) {

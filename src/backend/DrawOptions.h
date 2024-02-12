@@ -29,17 +29,14 @@ namespace backend {
 
         bool m_tessellation : 1 {false};
 
-        //Lod m_lod;
-
-        //inline bool isSameDrawCommand(
-        //    const DrawOptions& o,
-        //    bool forceWireframe,
-        //    bool allowBlend) const noexcept
-        //{
-        //    // NOTE KI multi/single material *CAN* go in same indirect draw
-        //    return m_lod == o.m_lod &&
-        //        isSameMultiDraw(o, allowBlend, forceWireframe);
-        //}
+        inline bool isSameDrawCommand(
+            const DrawOptions& o,
+            bool forceWireframe,
+            bool allowBlend) const noexcept
+        {
+            // NOTE KI multi/single material *CAN* go in same indirect draw
+            return isSameMultiDraw(o, allowBlend, forceWireframe);
+        }
 
         inline bool isSameMultiDraw(
             const DrawOptions& o,
