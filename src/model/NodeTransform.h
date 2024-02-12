@@ -23,20 +23,6 @@ class RenderContext;
 // rendering entity and node instance updated, with aim to use separate threads
 //
 struct NodeTransform {
-    bool m_dirty : 1 {true};
-    bool m_dirtyNormal : 1 {true};
-    bool m_dirtyRotation : 1 {true};
-    bool m_dirtySnapshot : 1 {true};
-
-    ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
-    ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-
-    ki::level_id m_physicsLevel{ (ki::level_id)-1 };
-
-    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
-
-    int m_shapeIndex{ 0 };
-
     Sphere m_volume;
 
     glm::vec3 m_position{ 0.f };
@@ -63,6 +49,23 @@ struct NodeTransform {
     glm::vec3 m_modelScale{ 1.f };
 
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+
+    int m_shapeIndex{ 0 };
+
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
+
+    ki::level_id m_parentMatrixLevel{ 0 };
+    ki::level_id m_matrixLevel{ 0 };
+
+    ki::level_id m_physicsLevel{ 0 };
+
+    bool m_dirty : 1 {true};
+    bool m_dirtyNormal : 1 {true};
+    bool m_dirtyRotation : 1 {true};
+    bool m_dirtySnapshot : 1 {true};
+
+    ///////////////////////////////////////
+    //
 
     inline const glm::vec4 getVolume() const noexcept
     {

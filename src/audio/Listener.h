@@ -44,7 +44,7 @@ namespace audio
         glm::vec3 m_front{ 0.f, 0.f, -1.f };
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
-        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
+        ki::level_id m_matrixLevel{ 0 };
         pool::NodeHandle m_nodeHandle{};
     };
 }

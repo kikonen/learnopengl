@@ -22,6 +22,36 @@ struct EntitySSBO;
 // Snapshot of transform for RT
 //
 struct Snapshot {
+    glm::vec4 m_volume{ 0.f };
+
+    glm::vec3 m_worldPos{ 0.f };
+
+    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+    glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
+
+    glm::vec3 m_viewUp{ 0.f };
+    glm::vec3 m_viewFront{ 0.f };
+    glm::vec3 m_viewRight{ 0.f };
+
+    glm::mat4 m_modelMatrix{ 1.f };
+    glm::vec3 m_modelScale{ 1.f };
+
+    int m_shapeIndex{ 0 };
+
+    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+
+    //// NOTE KI only in *active*
+    //std::array<backend::Lod, ki::MAX_LOD> m_lods;
+
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
+
+    ki::level_id m_matrixLevel{ 0 };
+
+    bool m_dirty : 1 { true };
+    bool m_dirtyNormal : 1 { true };
+
+    ///////////////////////////////////////
+    //
     Snapshot() = default;
     Snapshot(const NodeTransform& o);
     Snapshot(const NodeTransform&& o);
@@ -58,36 +88,6 @@ struct Snapshot {
         o.m_dirty = false;
         o.m_dirtyNormal = false;
     }
-
-    ///////////////////////////////////////
-    //
-    ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-
-    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
-
-    int m_shapeIndex{ 0 };
-
-    glm::vec4 m_volume{ 0.f };
-
-    glm::vec3 m_worldPos{ 0.f };
-
-    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
-
-    glm::vec3 m_viewUp{ 0.f };
-    glm::vec3 m_viewFront{ 0.f };
-    glm::vec3 m_viewRight{ 0.f };
-
-    glm::mat4 m_modelMatrix{ 1.f };
-    glm::vec3 m_modelScale{ 1.f };
-
-    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
-
-    //// NOTE KI only in *active*
-    //std::array<backend::Lod, ki::MAX_LOD> m_lods;
-
-    bool m_dirty { true };
-    bool m_dirtyNormal { true };
 
     inline const glm::vec4& getVolume() const noexcept
     {

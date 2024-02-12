@@ -14,12 +14,13 @@ namespace backend {
             arrays,
         };
 
-        Type m_type = Type::none;
-
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
         uint8_t m_mode = GL_POINTS;
+        uint8_t m_patchVertices{ 3 };
+
+        Type m_type : 2 = Type::none;
 
         bool m_renderBack : 1 {false};
         bool m_wireframe : 1 {false};
@@ -27,7 +28,6 @@ namespace backend {
         bool m_blendOIT : 1 {false};
 
         bool m_tessellation : 1 {false};
-        uint8_t m_patchVertices{ 3 };
 
         //Lod m_lod;
 

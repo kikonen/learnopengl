@@ -78,7 +78,8 @@ namespace audio
         glm::vec3 m_vel{ 0.f };
         glm::vec3 m_dir{ 0.f };
 
-        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
         pool::NodeHandle m_nodeHandle{};
+
+        ki::level_id m_matrixLevel{ 0 };
     };
 }

@@ -11,7 +11,7 @@ namespace ki
     typedef uint32_t sprite_id;
     typedef uint16_t program_id;
 
-    typedef uint32_t size_t_entity_flags;
+    typedef uint16_t size_t_entity_flags;
 
     typedef uint16_t level_id;
 }

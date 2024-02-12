@@ -76,7 +76,7 @@ private:
     glm::vec3 m_center{ 0.f };
     float m_radius{ 0.f };
 
-    mutable ki::level_id m_modelMatrixLevel{ (ki::level_id)-1 };
+    mutable ki::level_id m_modelMatrixLevel{ 0 };
     mutable glm::vec3 m_worldCenter{ 0.f };
     mutable float m_worldRadius{ 0.f };
 };
