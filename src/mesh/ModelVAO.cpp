@@ -309,9 +309,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_positionVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_positionVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_positionVbo.update(
                 updateIndex * sz,
@@ -343,9 +343,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_normalVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_normalVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_normalVbo.update(
                 updateIndex * sz,
@@ -377,9 +377,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_textureVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_textureVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_textureVbo.update(
                 updateIndex * sz,
@@ -411,9 +411,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_ebo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_ebo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_ebo.update(
                 updateIndex * sz,

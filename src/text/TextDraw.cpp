@@ -24,7 +24,6 @@
 
 #include "engine/UpdateContext.h"
 
-#include "TextMaterial.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
 

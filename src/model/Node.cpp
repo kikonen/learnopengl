@@ -140,16 +140,6 @@ const kigl::GLVertexArray* Node::getVAO() const noexcept
     }
 }
 
-const backend::DrawOptions& Node::getDrawOptions() const noexcept
-{
-    if (m_instancer) {
-        return m_instancer->getDrawOptions(*this);
-    }
-    else {
-        return m_typeHandle.toType()->getDrawOptions();
-    }
-}
-
 void Node::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,

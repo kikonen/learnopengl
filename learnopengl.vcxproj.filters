@@ -519,9 +519,6 @@
     <ClCompile Include="src\text\FontAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\text\TextMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\MaterialSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1332,9 +1329,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\size.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\text\TextMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\IndexEntry.h">

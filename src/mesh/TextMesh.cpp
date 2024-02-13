@@ -54,6 +54,9 @@ namespace mesh {
     void TextMesh::prepareLod(
         mesh::LodMesh& lodMesh)
     {
+        lodMesh.m_lod.m_baseVertex = 0;
+        lodMesh.m_lod.m_baseIndex = 0;
+        lodMesh.m_lod.m_indexCount = 0;
     }
 
     void TextMesh::prepareDrawOptions(

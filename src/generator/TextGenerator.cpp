@@ -42,9 +42,6 @@ void TextGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    auto* type = container.m_typeHandle.toType();
-    m_drawOptions = type->getDrawOptions();
-
     container.m_instancer = this;
 }
 
@@ -119,22 +116,19 @@ void TextGenerator::updateVAO(
     m_vao.registerModel(m_vbo);
     m_vao.updateRT();
 
-    //auto& lod = m_drawOptions.m_lod;
-    //lod.m_baseVertex = m_vbo.getBaseVertex();
-    //lod.m_baseIndex = m_vbo.getBaseIndex();
-    //lod.m_indexCount = m_vbo.getIndexCount();
+    auto* type = container.m_typeHandle.toType();
+
+    auto* lodMesh = type->modifyLod(0);
+    auto& lod = lodMesh->m_lod;
+    lod.m_baseVertex = m_vbo.getBaseVertex();
+    lod.m_baseIndex = m_vbo.getBaseIndex();
+    lod.m_indexCount = m_vbo.getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(
     const Node& container) const noexcept
 {
     return m_vao.getVAO();
-}
-
-const backend::DrawOptions& TextGenerator::getDrawOptions(
-    const Node& container) const noexcept
-{
-    return m_drawOptions;
 }
 
 void TextGenerator::bindBatch(

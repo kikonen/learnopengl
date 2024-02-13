@@ -100,13 +100,13 @@ namespace mesh {
         if (m_preparedRT) return;
         m_preparedRT = true;
 
-        if (!hasMesh()) return;
+        //if (!hasMesh()) return;
 
         for (auto& lodMesh : *m_lodMeshes) {
             lodMesh.prepareRT(ctx);
         }
 
-        {
+        if (!m_lodMeshes->empty()) {
             auto& lodMesh = (*m_lodMeshes)[0];
             m_vao = lodMesh.m_vao;
             m_drawOptions.m_renderBack = m_flags.renderBack;

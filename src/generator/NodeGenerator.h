@@ -75,9 +75,6 @@ public:
     virtual const kigl::GLVertexArray* getVAO(
         const Node& container) const noexcept;
 
-    virtual const backend::DrawOptions& getDrawOptions(
-        const Node& container) const noexcept;
-
     inline const std::vector<NodeTransform>& getTransforms() noexcept
     {
         return m_transforms;

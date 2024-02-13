@@ -32,7 +32,6 @@
 #include "mesh/SpriteMesh.h"
 #include "mesh/TextMesh.h"
 
-#include "text/TextMaterial.h"
 #include "text/TextDraw.h"
 
 #include "component/Light.h"

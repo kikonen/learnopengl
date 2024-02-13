@@ -211,7 +211,6 @@
     <ClCompile Include="src\script\CommandHandle.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
-    <ClCompile Include="src\text\TextMaterial.cpp" />
     <ClCompile Include="src\audio\al_call.cpp" />
     <ClCompile Include="src\audio\Listener.cpp" />
     <ClCompile Include="src\audio\SoundRegistry.cpp" />
@@ -436,7 +435,6 @@
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\size.h" />
-    <ClInclude Include="src\text\TextMaterial.h" />
     <ClInclude Include="src\audio\al_call.h" />
     <ClInclude Include="src\audio\limits.h" />
     <ClInclude Include="src\audio\Listener.h" />

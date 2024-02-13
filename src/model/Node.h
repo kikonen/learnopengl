@@ -73,7 +73,6 @@ public:
 
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
-    const backend::DrawOptions& getDrawOptions() const noexcept;
 
     void bindBatch(
         const RenderContext& ctx,

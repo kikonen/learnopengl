@@ -51,9 +51,6 @@ public:
     virtual const kigl::GLVertexArray* getVAO(
         const Node& container) const noexcept override;
 
-    virtual const backend::DrawOptions& getDrawOptions(
-        const Node& container) const noexcept override;
-
     text::font_id getFontId() const noexcept { return m_fontId; }
 
     void setFontId(text::font_id fontId) noexcept {
@@ -78,7 +75,6 @@ private:
     mesh::ModelVAO m_vao{ "text" };
     mesh::ModelVBO m_vbo;
 
-    backend::DrawOptions m_drawOptions;
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };

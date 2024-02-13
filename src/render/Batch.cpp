@@ -272,8 +272,10 @@ namespace render {
         if (!vao) return;
 
         {
-            const auto& drawOptions = node.getDrawOptions();
+            const auto& drawOptions = type->getDrawOptions();
             const bool allowBlend = ctx.m_allowBlend;
+
+            if (drawOptions.m_type == backend::DrawOptions::Type::none) return;
 
             bool change = true;
             if (!m_batches.empty()) {
