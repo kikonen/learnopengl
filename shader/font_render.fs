@@ -57,5 +57,6 @@ void main()
     discard;
   }
 
+  a = 1.0;
   o_fragColor = vec4(rgb, a);
 }
