@@ -267,15 +267,14 @@ namespace render {
 
             state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
-            bool rendered = drawNodesImpl(
+            drawNodesImpl(
                 ctx,
                 [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
                 kindBits);
 
-            if (rendered) {
-                ctx.m_batch->flush(ctx);
-
+            auto flushedCount = ctx.m_batch->flush(ctx);
+            if (flushedCount > 0) {
                 // NOTE KI depth again if changes; FOG is broken without this
                 m_gBuffer.m_buffer->copy(
                     m_gBuffer.m_depthTexture.get(),

@@ -228,7 +228,7 @@ namespace render {
         }
 
         m_batches.reserve(BATCH_COUNT);
-        m_entityIndeces.reserve(ENTITY_COUNT);
+        //m_entityIndeces.reserve(ENTITY_COUNT);
 
         m_draw = std::make_unique<backend::DrawBuffer>(
             assets.glUseMapped,
@@ -299,9 +299,21 @@ namespace render {
         node.bindBatch(ctx, type, *this);
     }
 
-    void Batch::flush(
+    bool Batch::isFlushed() const noexcept
+    {
+        size_t pendingCount = 0;
+        for (auto& curr : m_batches) {
+            if (curr.m_instanceCount == 0) continue;
+            pendingCount += curr.m_instanceCount;
+        }
+        return pendingCount == 0;
+    }
+
+    size_t Batch::flush(
         const RenderContext& ctx)
     {
+        size_t flushCount = 0;
+
         std::map<const Program*, std::map<LodKey, uint32_t>> programLodBaseIndex;
 
         {
@@ -325,9 +337,11 @@ namespace render {
 
             if (m_entityIndeces.empty()) {
                 m_batches.clear();
-                return;
+                return 0;
             }
         }
+        flushCount = m_entityIndeces.size();
+        m_flushedTotalCount += flushCount;
 
         // NOTE KI baseVertex usage
         // https://community.khronos.org/t/vertex-buffer-management-with-indirect-drawing/77272
@@ -397,6 +411,8 @@ namespace render {
 
         m_batches.clear();
         m_entityIndeces.clear();
+
+        return flushCount;
     }
 
     backend::gl::PerformanceCounters Batch::getCounters(bool clear) const
@@ -406,7 +422,10 @@ namespace render {
 
     backend::gl::PerformanceCounters Batch::getCountersLocal(bool clear) const
     {
-        backend::gl::PerformanceCounters counters{ m_drawCount, m_skipCount };
+        backend::gl::PerformanceCounters counters{
+            static_cast<GLuint>(m_drawCount),
+            static_cast<GLuint>(m_skipCount) };
+
         if (clear) {
             m_drawCount = 0;
             m_skipCount = 0;

@@ -75,12 +75,17 @@ namespace render {
             Node& node,
             Program* program);
 
-        bool isFlushed() const noexcept
-        {
-            return m_entityIndeces.size() == 0;
+        bool isFlushed() const noexcept;
+
+        size_t getFlushedTotalCount() const noexcept {
+            return m_flushedTotalCount;
         }
 
-        void flush(
+        void clearFlushedTotalCount() noexcept {
+            m_flushedTotalCount = 0;
+        }
+
+        size_t flush(
             const RenderContext& ctx);
 
         backend::gl::PerformanceCounters getCounters(bool clear) const;
@@ -106,7 +111,9 @@ namespace render {
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 
-        mutable unsigned long m_drawCount = 0;
-        mutable unsigned long m_skipCount = 0;
+        mutable size_t m_drawCount{ 0 };
+        mutable size_t m_skipCount{ 0 };
+
+        size_t m_flushedTotalCount{ 0 };
     };
 }

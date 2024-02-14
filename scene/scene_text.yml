@@ -6,8 +6,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     model: water_ball
     program: g_tex
     pos: [2.5, 2, 3]
@@ -23,7 +22,7 @@ entities:
         default: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     pos: [0, 4, 5]
@@ -32,7 +31,7 @@ entities:
       type: camera_zoom
     camera:
       default: true
-  - name: Text plane
+  - id: font_atlas
     model: quad
     material: metal
     custom_material:
@@ -46,7 +45,7 @@ entities:
       xblend: true
       xeffect: true
       render_back: true
-  - name: Hello world
+  - id: hello_world
     type: text
     material: hello
     text:
@@ -62,7 +61,7 @@ entities:
       xeffect: true
       render_back: true
     script_file: scripts/seq_hello_text
-  - name: Directional light
+  - id: directional_light
     pos: [0, 25, 40]
     scale: 2.5
     model: light
@@ -76,7 +75,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: wooden wall
+  - id: wooden_wall
     model: quad
     material: wood_floor
     program: g_tex
@@ -85,19 +84,19 @@ entities:
       no_shadow: true
     pos: [-1, 2.5, -3.001]
     scale: 0.5
-  - name: wooden floor
+  - id: wooden_floor
     model: plane
     material: wood_floor
     program: g_tex
     render_flags:
       no_shadow: true
     scale: 100
-  - name: Cube map - mirror_ball
+  - id: cube_map_mirror_ball
     type: origo
     pos: [0, 2, -7]
     render_flags:
       cube_map: true
-  - name: Mirror ball
+  - id: mirror_ball
     model: glass_ball
     program: g_tex
     pos: [0, 2, -7]
