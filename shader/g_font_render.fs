@@ -119,13 +119,11 @@ void main()
     if (a < 0.7) {
       discard;
     }
-    rgb = materialColor.rgb;
   }
+  rgb = materialColor.rgb;
 
-  o_fragColor = vec4(rgb, 1.0);// + vec4(0.8, 0, 0, 0);
-  //o_fragColor = material.diffuse;
+  o_fragColor = vec4(rgb, 1.0);
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
-
   o_fragNormal = encodeGNormal(normal);
 }

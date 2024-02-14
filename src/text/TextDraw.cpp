@@ -41,8 +41,8 @@ namespace
         glm::vec2& pen)
     {
         const auto penOrigin = pen;
-        const glm::vec3 normal{ 0.f, 0.f, 0.f };
-        const glm::vec3 tangent{ 0.f, 0.f, 0.f };
+        const glm::vec3 normal{ 0.f, 0.f, 1.f };
+        const glm::vec3 tangent{ 1.f, 0.f, 0.f };
         const char* prev = { nullptr };
 
         const mesh::NormalEntry normals[4]{

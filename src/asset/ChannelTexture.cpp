@@ -62,7 +62,7 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
             pathsStr.append(tex ? tex->m_path : "-");
         }
 
-        const std::string cacheKey = fmt::format(
+        cacheKey = fmt::format(
             "{}_{}_{}_{}-{}_{}_{}_{}_{}",
             name, pathsStr, defaults, is16Bbit,
             spec.wrapS, spec.wrapT,
@@ -77,12 +77,14 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     }
 
     auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, is16Bbit, spec));
-    textures[cacheKey] = future;
+    textures.insert({ cacheKey, future });
     return future;
 }
 
 const std::pair<int, const std::vector<const ChannelTexture*>&> ChannelTexture::getPreparedTextures()
 {
+    std::lock_guard lock(textures_lock);
+
     if (!preparedTexturesReady) {
         preparedTexturesReady = true;
         preparedTexturesLevel++;
