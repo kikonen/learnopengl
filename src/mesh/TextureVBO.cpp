@@ -19,9 +19,10 @@ namespace mesh {
 
     void TextureVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
+        constexpr size_t sz = sizeof(TextureEntry);
         {
             m_entries.reserve(VERTEX_BLOCK_SIZE);
-            m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sizeof(TextureEntry), GL_DYNAMIC_STORAGE_BIT);
+            m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sz, GL_DYNAMIC_STORAGE_BIT);
         }
 
         {
@@ -29,7 +30,7 @@ namespace mesh {
             // https://solidpixel.github.io/2022/07/21/vertexpacking.html
             // https://www.intel.com/content/www/us/en/developer/articles/guide/developer-and-optimization-guide-for-intel-processor-graphics-gen11-api.html
 
-            glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sizeof(TextureEntry));
+            glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
             {
                 glEnableVertexArrayAttrib(vao, m_attr);
 

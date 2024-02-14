@@ -26,7 +26,7 @@ namespace {
 }
 
 TextGenerator::TextGenerator()
-    : m_vboAtlasTex{ ATTR_ATLAS_TEX, VBO_POSITION_BINDING, "vbo_atlas" }
+    : m_vboAtlasTex{ ATTR_FONT_TEX, VBO_FONT_BINDING, "vbo_font" }
 {}
 
 void TextGenerator::prepare(
@@ -43,6 +43,8 @@ void TextGenerator::prepareRT(
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
     m_vao.prepare("text");
+
+    m_vboAtlasTex.prepareVAO(*m_vao.modifyVAO());
 }
 
 void TextGenerator::updateWT(
@@ -93,7 +95,7 @@ void TextGenerator::updateVAO(
 
     m_vao.clear();
     m_vao.registerModel(m_vbo);
-    //m_vao.registerVBO(m_vboAtlasTex);
+    m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
     m_vao.updateRT();
 
     auto* type = container.m_typeHandle.toType();

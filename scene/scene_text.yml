@@ -1,7 +1,8 @@
 ---
 name: Test
 skybox:
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/borghese_gardens_2k.hdr
 script:
   scripts:
     - path: lib/common
@@ -62,7 +63,7 @@ entities:
       render_back: true
     script_file: scripts/seq_hello_text
   - id: directional_light
-    pos: [0, 25, 40]
+    pos: [-15, 25, 40]
     scale: 2.5
     model: light
     program: g_light
@@ -118,7 +119,8 @@ materials:
     kd: [1.0, 0.0, 0.0, 1.0]
     xmetal: [.7, 0.0, 0, 1]
     map_pbr: textures\Plastic 01 [4K]
-    tiling: 1
+    xmap_pbr: textures\Fence007A_4K-JPG
+    tiling: 2
   - name: wood_floor
     kd: [0.8, 0.8, 0.0, 1.0]
     map_pbr: textures\Planks 09 [8K]

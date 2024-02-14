@@ -61,6 +61,10 @@ namespace
 
         //pen.y += line_ascender;
 
+        const ftgl::texture_glyph_t* m_glyph = texture_font_get_glyph(font, M_CH);
+        const float glyphMaxW = m_glyph->s1 - m_glyph->s0;
+        const float glyphMaxH = m_glyph->t1 - m_glyph->t0;
+
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
         for (const char& ch : text) {
             float line_top = pen.y + line_ascender;
@@ -95,6 +99,9 @@ namespace
             const float s1 = glyph->s1;
             const float t1 = glyph->t1;
 
+            const float glyphW = glyph->s1 - glyph->s0;
+            const float glyphH = glyph->t1 - glyph->t0;
+
             const GLuint index = (GLuint)vbo.m_normalEntries.size();
 
             const mesh::IndexEntry indeces[2] {
@@ -114,6 +121,13 @@ namespace
                 { {s1, t0} },
             };
 
+            const mesh::TextureEntry material[4]{
+                { {0, 0} },
+                { {0,                  glyphH / glyphMaxH} },
+                { {glyphW / glyphMaxW, glyphH / glyphMaxH} },
+                { {glyphW / glyphMaxW, 0} },
+            };
+
             for (const auto& v : positions) {
                 vbo.m_positionEntries.push_back(v);
             }
@@ -122,10 +136,13 @@ namespace
             }
             for (const auto& v : textures) {
                 atlasVbo.addEntry(v);
-                vbo.m_textureEntries.push_back(v);
+                //vbo.m_textureEntries.push_back(v);
             }
             for (const auto& v : positions) {
                 //vbo.m_textureEntries.push_back(mesh::TextureEntry{ { v.x, v.y } });
+            }
+            for (const auto& v : material) {
+                vbo.m_textureEntries.push_back(v);
             }
             for (const auto& v : indeces) {
                 vbo.m_indexEntries.push_back(v);

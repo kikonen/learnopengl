@@ -6,7 +6,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
-//layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
+layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
 
 #include struct_material.glsl
 #include struct_clip_plane.glsl
@@ -111,8 +111,7 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
-  vs_out.atlasCoord.x = a_texCoord.x;
-  vs_out.atlasCoord.y = a_texCoord.y;
+  vs_out.atlasCoord = a_atlasCoord;
 
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;

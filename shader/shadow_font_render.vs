@@ -9,10 +9,10 @@
 #include uniform_matrices.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_TEX) in vec2 a_texCoord;
+layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
 
 out VS_OUT {
-  vec2 texCoord;
+  vec2 atlasCoord;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ void main()
 
   #include var_entity_model_matrix.glsl
 
-  vs_out.texCoord = a_texCoord;
+  vs_out.atlasCoord = a_atlasCoord;
 
   gl_Position = u_projectedMatrix * modelMatrix * vec4(a_pos, 1.0);
 }

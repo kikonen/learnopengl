@@ -57,6 +57,8 @@ namespace mesh {
         kigl::GLBuffer m_vbo;
         size_t m_lastBufferSize = 0;
 
+        kigl::GLVertexArray* m_vao{ nullptr };
+
         std::vector<T_Entry> m_entries;
     };
 }
