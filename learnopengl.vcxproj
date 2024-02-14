@@ -200,6 +200,7 @@
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
+    <ClCompile Include="src\mesh\TextureVBO.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
@@ -207,6 +208,7 @@
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
+    <ClCompile Include="src\script\api\SetTextNode.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
     <ClCompile Include="src\script\CommandHandle.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
@@ -411,6 +413,7 @@
     <ClInclude Include="src\loader\LodData.h" />
     <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TextData.h" />
+    <ClInclude Include="src\mesh\TextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\InstanceSSBO.h" />
@@ -420,6 +423,8 @@
     <ClInclude Include="src\mesh\PositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
     <ClInclude Include="src\mesh\TextureEntry.h" />
+    <ClInclude Include="src\mesh\VBO.h" />
+    <ClInclude Include="src\mesh\VBO_impl.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
     <ClInclude Include="src\pool\Entry.h" />
     <ClInclude Include="src\pool\IdHash.h" />
@@ -429,6 +434,7 @@
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
+    <ClInclude Include="src\script\api\SetTextNode.h" />
     <ClInclude Include="src\script\CommandEngine_impl.h" />
     <ClInclude Include="src\script\CommandEntry.h" />
     <ClInclude Include="src\script\CommandHandle.h" />

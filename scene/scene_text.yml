@@ -48,11 +48,11 @@ entities:
       render_back: true
   - name: Hello world
     type: text
-    material: metal
+    material: hello
     text:
       font: hello_font
       text: ÄÅÖ äåö - Hello world
-    program: font_render
+    program: g_font_render
     shadow_program: shadow_font_render
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
@@ -61,7 +61,7 @@ entities:
       xblend: true
       xeffect: true
       render_back: true
-    xscript_file: scripts/anim_rotate_object
+    script_file: scripts/seq_hello_text
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -113,8 +113,14 @@ materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
   - name: metal
-    kd: [0.8, 0.8, 0.0, 1.0]
+    kd: [0.8, 0.0, 0.0, 1.0]
     metal: [1.0, 0.0, 0, 1]
+  - name: hello
+    kd: [1.0, 0.0, 0.0, 1.0]
+    xmetal: [.7, 0.0, 0, 1]
+    map_pbr: textures\Plastic 01 [4K]
+    tiling: 1
   - name: wood_floor
+    kd: [0.8, 0.8, 0.0, 1.0]
     map_pbr: textures\Planks 09 [8K]
     tiling: 20

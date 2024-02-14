@@ -20,22 +20,13 @@
 #include "registry/SnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 
-namespace {
-    std::array<std::string,3> texts{
-R"(This the story
-And it will continue
-So be prepared
-until the end)",
-"Viva la vida!",
-// "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
-"Terveisiä täältä! - ÄÅÖ - äåö",
-    };
+#include "mesh/VBO_impl.h"
 
-    float elapsed = 0.f;
-    int index = 0;
+namespace {
 }
 
 TextGenerator::TextGenerator()
+    : m_vboAtlasTex{ ATTR_ATLAS_TEX, VBO_POSITION_BINDING, "vbo_atlas" }
 {}
 
 void TextGenerator::prepare(
@@ -80,24 +71,11 @@ void TextGenerator::updateVAO(
     const RenderContext& ctx,
     const Node& container)
 {
-    //std::cout << fmt::format("total={}, elapsed={}\n", elapsed, ctx.m_clock.elapsedSecs);
-
-    elapsed += ctx.m_clock.elapsedSecs;
-
-    constexpr float step = 20.f;
-    bool hit = elapsed >= step;
-    //hit = false;
-    if (hit) {
-        elapsed -= step;
-        setText(texts[index++]);
-        index = index % texts.size();
-        m_dirty = true;
-    }
-
     if (!m_dirty) return;
     m_dirty = false;
 
     m_vbo.clear();
+    m_vboAtlasTex.clear();
 
     glm::vec2 pen{ 0.f };
 
@@ -106,7 +84,8 @@ void TextGenerator::updateVAO(
         m_fontId,
         m_text,
         pen,
-        m_vbo);
+        m_vbo,
+        m_vboAtlasTex);
 
     m_aabb = m_vbo.calculateAABB();
 
@@ -114,6 +93,7 @@ void TextGenerator::updateVAO(
 
     m_vao.clear();
     m_vao.registerModel(m_vbo);
+    //m_vao.registerVBO(m_vboAtlasTex);
     m_vao.updateRT();
 
     auto* type = container.m_typeHandle.toType();
@@ -153,4 +133,5 @@ void TextGenerator::clear()
 {
     m_vao.clear();
     m_vbo.clear();
+    m_vboAtlasTex.clear();
 }

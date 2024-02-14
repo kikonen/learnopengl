@@ -57,6 +57,10 @@ namespace script
             const sol::table& lua_opt,
             const sol::table& scale) noexcept;
 
+        int lua_set_text(
+            const sol::table& lua_opt,
+            const sol::table& lua_text) noexcept;
+
         int lua_audioPlay(
             const sol::table& lua_opt) noexcept;
 

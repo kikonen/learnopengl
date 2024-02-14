@@ -132,6 +132,12 @@ public:
     inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
 
+    template<typename T>
+    T* getGenerator()
+    {
+        return dynamic_cast<T*>(m_generator.get());
+    }
+
 public:
     ki::node_id lua_getId() const noexcept;
     const std::string& lua_getName() const noexcept;

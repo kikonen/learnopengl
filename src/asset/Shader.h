@@ -77,8 +77,8 @@ const std::string DEF_CS_GROUP_Z{ "CS_GROUP_Z" };
 constexpr int ATTR_POS = 0;
 constexpr int ATTR_NORMAL = 1;
 constexpr int ATTR_TANGENT = 2;
-//constexpr int ATTR_BITANGENT = 3;
-constexpr int ATTR_TEX = 4;
+constexpr int ATTR_TEX = 3;
+constexpr int ATTR_ATLAS_TEX = 4;
 
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 5;
 

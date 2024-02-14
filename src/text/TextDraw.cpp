@@ -3,22 +3,15 @@
 #include <glm/glm.hpp>
 
 #include <freetype-gl/texture-font.h>
-//#include <freetype-gl/vertex-buffer.h>
-
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-
-#include "kigl/GLState.h"
 
 #include "mesh/ModelVBO.h"
-#include "mesh/ModelVAO.h"
+#include "mesh/TextureVBO.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
 
-#include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
+//#include "mesh/LodMesh.h"
+//#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 
@@ -28,8 +21,9 @@
 #include "FontHandle.h"
 
 #include "registry/Registry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/FontRegistry.h"
+
+#include "mesh/VBO_impl.h"
 
 namespace
 {
@@ -41,6 +35,7 @@ namespace
     //
     void addText(
         mesh::ModelVBO& vbo,
+        mesh::TextureVBO& atlasVbo,
         text::FontAtlas* fontAtlas,
         std::string_view text,
         glm::vec2& pen)
@@ -126,7 +121,11 @@ namespace
                 vbo.m_normalEntries.push_back(v);
             }
             for (const auto& v : textures) {
+                atlasVbo.addEntry(v);
                 vbo.m_textureEntries.push_back(v);
+            }
+            for (const auto& v : positions) {
+                //vbo.m_textureEntries.push_back(mesh::TextureEntry{ { v.x, v.y } });
             }
             for (const auto& v : indeces) {
                 vbo.m_indexEntries.push_back(v);
@@ -163,12 +162,13 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         glm::vec2& pen,
-        mesh::ModelVBO& vbo)
+        mesh::ModelVBO& vbo,
+        mesh::TextureVBO& atlasVbo)
     {
         auto* font = FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(vbo, font, text, pen);
+        addText(vbo, atlasVbo, font, text, pen);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

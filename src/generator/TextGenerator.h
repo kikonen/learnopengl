@@ -9,6 +9,7 @@
 #include "backend/DrawOptions.h"
 
 #include "mesh/ModelVBO.h"
+#include "mesh/TextureVBO.h"
 #include "mesh/ModelVAO.h"
 
 #include "text/size.h"
@@ -74,6 +75,7 @@ private:
 
     mesh::ModelVAO m_vao{ "text" };
     mesh::ModelVBO m_vbo;
+    mesh::TextureVBO m_vboAtlasTex;
 
     std::unique_ptr<text::TextDraw> m_draw;
 

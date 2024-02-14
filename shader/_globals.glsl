@@ -108,8 +108,8 @@
 #define ATTR_POS 0
 #define ATTR_NORMAL 1
 #define ATTR_TANGENT 2
-//#define ATTR_BITANGENT 3
-#define ATTR_TEX 4
+#define ATTR_TEX 3
+#define ATTR_ATLAS_TEX 4
 
 #define DRAW_TYPE_NONE 0
 #define DRAW_TYPE_ELEMENTS 1

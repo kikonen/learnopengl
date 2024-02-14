@@ -23,6 +23,7 @@
 #include "api/ScaleNode.h"
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
+#include "api/SetTextNode.h"
 
 #include "api/AudioPlay.h"
 #include "api/AudioPause.h"
@@ -223,6 +224,29 @@ namespace script
                 opt.duration,
                 opt.relative,
                 scale
+            });
+    }
+
+    int CommandAPI::lua_set_text(
+        const sol::table& lua_opt,
+        const sol::table& lua_text) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        std::string text;
+        lua_text.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == "text") {
+                text = value.as<std::string>();
+            }
+        });
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            SetTextNode{
+                m_nodeId,
+                opt.duration,
+                text
             });
     }
 

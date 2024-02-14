@@ -96,6 +96,7 @@ namespace script
             ut["moveSpline"] = &CommandAPI::lua_moveSpline;
             ut["rotate"] = &CommandAPI::lua_rotate;
             ut["scale"] = &CommandAPI::lua_scale;
+            ut["set_text"] = &CommandAPI::lua_set_text;
 
             ut["audioPlay"] = &CommandAPI::lua_audioPlay;
             ut["audioPause"] = &CommandAPI::lua_audioPause;

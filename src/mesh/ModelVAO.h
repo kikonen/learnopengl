@@ -31,6 +31,8 @@ namespace mesh {
         // @return VBO for model mesh
         kigl::GLVertexArray* registerModel(ModelVBO& modelVBO);
 
+        void registerVBO(ModelVBO& vbo);
+
         const kigl::GLVertexArray* getVAO() const
         {
             return m_vao.get();
