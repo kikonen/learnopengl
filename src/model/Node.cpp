@@ -82,24 +82,12 @@ void Node::prepareWT(
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         {
-            ki::size_t_entity_flags flags = 0;
+            m_transform.m_flags = type->resolveEntityFlags();
 
-            if (type->m_entityType == mesh::EntityType::billboard) {
-                flags |= ENTITY_BILLBOARD_BIT;
-            }
             if (type->m_entityType == mesh::EntityType::sprite) {
-                flags |= ENTITY_SPRITE_BIT;
                 auto& shape = type->m_sprite->m_shapes[type->m_sprite->m_shapes.size() - 1];
                 m_transform.m_shapeIndex = shape.m_registeredIndex;
             }
-            if (type->m_entityType == mesh::EntityType::skybox) {
-                flags |= ENTITY_SKYBOX_BIT;
-            }
-            if (type->m_flags.noFrustum) {
-                flags |= ENTITY_NO_FRUSTUM_BIT;
-            }
-
-            m_transform.m_flags = flags;
         }
 
     }

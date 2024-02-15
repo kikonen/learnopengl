@@ -65,11 +65,10 @@ entities:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - name: Water surface - SINGLE
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [-50, 14.5, -20]
-    rotation: [270.0, 0.0, 0.0]
     scale: 70
     render_flags:
       no_shadow: true
@@ -77,11 +76,10 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [0, 14.0, 0]
-    rotation: [270.0, 0.0, 0.0]
     scale: 800
     render_flags:
       no_shadow: true

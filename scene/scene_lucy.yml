@@ -54,11 +54,10 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface
-    type: quad
+    model: plane
     material: pool_surface
     program: g_water
     pos: [0, 3.1, 0]
-    rotation: [270.0, 0.0, 0.0]
     scale: 100
     render_flags:
       no_shadow: true

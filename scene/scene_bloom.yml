@@ -91,13 +91,14 @@ entities:
         x_step: 20
         z_step: -20
   - name: Skeleton army - grid
-    type: billboard
+    model: quad
     priority: 1
     program: g_tex
     instanced: true
     pos: [20, 0.0, 20]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       physics: true
       enforce_bounds: true
@@ -111,12 +112,13 @@ entities:
         x_step: 10
         z_step: -10
   - name: Skeleton army
-    type: billboard
+    model: quad
     priority: 1
     program: g_tex
     pos: [20, 0.0, 50]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       physics: true
       enforce_bounds: true

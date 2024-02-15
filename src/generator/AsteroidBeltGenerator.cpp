@@ -102,6 +102,7 @@ void AsteroidBeltGenerator::createAsteroids(
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
+        asteroid.m_flags = type->resolveEntityFlags();
         asteroid.setVolume(volume);
     }
 

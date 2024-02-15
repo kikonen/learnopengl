@@ -127,12 +127,13 @@ entities:
         x_step: -20
         z_step: 20
   - name: Skeleton army
-    type: billboard
+    model quad:
     priority: 1
     program: g_tex
     pos: [0, 11.5, 0.0]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       render_back: true
       enforce_bounds: true

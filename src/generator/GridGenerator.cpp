@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
 
 #include "model/Node.h"
@@ -82,11 +83,14 @@ void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     Node& node)
 {
+    auto* type = node.m_typeHandle.toType();
+
     const auto count = m_zCount * m_xCount * m_yCount;
 
     m_transforms.reserve(count);
 
     for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
+        transform.m_flags = type->resolveEntityFlags();
     }
 }

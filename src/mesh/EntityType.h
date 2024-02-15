@@ -6,8 +6,6 @@ namespace mesh {
         marker,
         container,
         model,
-        quad,
-        billboard,
         sprite,
         point_sprite,
         text,

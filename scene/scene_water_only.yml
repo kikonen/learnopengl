@@ -31,11 +31,10 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Water surface
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [-30, 0, -30]
-    rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
       no_shadow: true

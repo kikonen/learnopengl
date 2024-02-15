@@ -709,20 +709,6 @@ namespace loader {
                     data.baseId, data.desc, type->str()));
             }
         }
-        else if (data.type == mesh::EntityType::quad) {
-            auto future = ModelRegistry::get().getMesh(
-                QUAD_MESH_NAME,
-                assets.modelsDir);
-            type->addLod({ future.get() });
-            type->m_entityType = mesh::EntityType::quad;
-        }
-        else if (data.type == mesh::EntityType::billboard) {
-            auto future = ModelRegistry::get().getMesh(
-                QUAD_MESH_NAME,
-                assets.modelsDir);
-            type->addLod({ future.get() });
-            type->m_entityType = mesh::EntityType::billboard;
-        }
         else if (data.type == mesh::EntityType::sprite) {
             auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
@@ -961,6 +947,12 @@ namespace loader {
             const auto& e = data.renderFlags.find("effect");
             if (e != data.renderFlags.end()) {
                 flags.effect = e->second;
+            }
+        }
+        {
+            const auto& e = data.renderFlags.find("billboard");
+            if (e != data.renderFlags.end()) {
+                flags.billboard = e->second;
             }
         }
         {

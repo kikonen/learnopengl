@@ -23,6 +23,8 @@ namespace mesh {
         bool effect : 1 {false};
         bool skybox : 1 {false};
 
+        bool billboard : 1 {false};
+
         bool noShadow : 1 {false};
         bool noSelect : 1 {false};
         bool noReflect : 1 {false};

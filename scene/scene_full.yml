@@ -256,13 +256,13 @@ entities:
       render_back: true
   - name: Window 1_1
     model: quad
-    type: billboard
     material: window_1
     program: g_tex
     pos: [5.0, 12.0, 0.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [2.5, 4, 0]
     render_flags:
+      billboard: true
       alpha: true
       blend_oit: true
       render_back: true
@@ -640,13 +640,11 @@ entities:
     scale: 1
     selected: false
   - id: pool_surface_{t}
-    type: quad
+    model: plane
     priority: -5
     material: pool_surface
     program: g_water
     pos: [0, 9.5, -10]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -661,13 +659,11 @@ entities:
       z_step: 60
     script_file: scripts/anim_water
   - id: pool_floor_{t}
-    model: quad
+    model: plane
     priority: -10
     material: pool_floor
     program: g_tex
     pos: [0.0, 3.7, -10.0]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -745,15 +741,13 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - xid: sea_surface_{t}
+  - id: sea_surface_{t}
     desc: TODO KI conflicting water reflect with pool
     priority: -20
-    type: quad
+    model: plane
     material: sea_surface
     program: g_water
     pos: [-1072, 0.0, -772]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 128
     render_flags:
       no_shadow: true
@@ -768,11 +762,10 @@ entities:
       z_step: 256
   - id: sea_floor_{t}
     priority: -25
-    model: quad
+    model: plane
     material: sea_floor
     program: g_tex
     pos: [-1072, -70.0, -772]
-    rotation: [270.0, 0.0, 0.0]
     scale: 128
     render_flags:
       no_shadow: true
@@ -916,12 +909,13 @@ entities:
         x_step: -20
         z_step: 20
   - id: skeleton_army_{t}
-    type: billboard
+    model: quad
     priority: 1
     program: g_tex
     pos: [15, 11.5, 60.0]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       render_back: true
       enforce_bounds: true

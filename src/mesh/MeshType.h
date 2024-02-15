@@ -125,6 +125,8 @@ namespace mesh {
             const glm::vec3& cameraPos,
             const Snapshot& snapshot) const;
 
+        ki::size_t_entity_flags resolveEntityFlags() const noexcept;
+
     public:
         EntityType m_entityType{ EntityType::origo };
         NodeRenderFlags m_flags;

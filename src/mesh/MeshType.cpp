@@ -17,6 +17,7 @@
 #include "engine/PrepareContext.h"
 
 #include "model/Snapshot.h"
+#include "model/EntityFlags.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -171,5 +172,20 @@ namespace mesh {
             lod = &meshLods[lodIndex].m_lod;
         }
         return lod;
+    }
+
+    ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
+        ki::size_t_entity_flags flags = 0;
+
+        if (m_flags.billboard) {
+            flags |= ENTITY_BILLBOARD_BIT;
+        }
+        if (m_entityType == mesh::EntityType::sprite) {
+            flags |= ENTITY_SPRITE_BIT;
+        }
+        if (m_flags.noFrustum) {
+            flags |= ENTITY_NO_FRUSTUM_BIT;
+        }
+        return flags;
     }
 }

@@ -46,7 +46,7 @@ entities:
       xblend: true
       xeffect: true
       render_back: true
-  - id: hello_world
+  - xid: hello_world
     type: text
     material: hello
     text:
@@ -62,6 +62,20 @@ entities:
       xeffect: true
       render_back: true
     script_file: scripts/seq_hello_text
+  - id: another_text
+    type: text
+    material: another_text
+    text:
+      font: another_font
+      text: Look at ME
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [0, 4, -8]
+    scale: 0.01
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
   - id: directional_light
     pos: [-15, 25, 40]
     scale: 2.5
@@ -113,11 +127,15 @@ entities:
     material: cow
     material_modifier:
       map_pbr: textures/Plastic 01 [4K]
+    render_flags:
+      billboard: true
 fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
     size: 72
-    xatlas_size: 512
+  - name: another_font
+    path: fonts/Lobster-Regular.ttf
+    size: 36
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
@@ -128,6 +146,9 @@ materials:
     map_pbr: textures\Plastic 01 [4K]
     xmap_pbr: textures\Fence007A_4K-JPG
     map_pbr: textures\Metal007_1K-PNG
+    tiling: 1
+  - name: another_text
+    map_pbr: textures\Leather037_1K
     tiling: 1
   - name: wood_floor
     kd: [0.8, 0.8, 0.0, 1.0]

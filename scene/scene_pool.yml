@@ -91,11 +91,10 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool surface
-    type: quad
+    model: plane
     material: pool_surface
     program: g_water
     pos: [0, 9.0, -10]
-    rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -113,7 +112,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      map_pbr: textures\Tiles004_1K-PNG
+      xmap_pbr: textures\Tiles004_1K-PNG
+      metal: [1.0, 0.0, 0, 1]
+      map_pbr: textures\planks_metal
       tiling_x: 30
       tiling_y: 4
     clones:
@@ -148,7 +149,7 @@ entities:
         x_step: 20
         z_step: -40
   - name: Skeleton army
-    type: quad
+    model: quad
     priority: 1
     program: g_tex
     pos: [-20, 12.5, 80]
@@ -205,11 +206,10 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface - SINGLE
-    type: quad
+    model: plane
     material: pool_surface
     program: g_water
     pos: [160, 9.0, 20]
-    rotation: [270.0, 0.0, 0.0]
     scale: 60
     render_flags:
       no_shadow: true
@@ -220,7 +220,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      map_pbr: textures\Tiles004_1K-PNG
+      xmap_pbr: textures\Tiles004_1K-PNG
+      metal: [1.0, 0.0, 0, 1]
+      map_pbr: textures\planks_metal
       tiling_x: 30
       tiling_y: 4
     clones:

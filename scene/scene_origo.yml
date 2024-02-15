@@ -77,11 +77,12 @@ entities:
       - pos: [5.0, 0.0, 5.0]
         rotation: [0, 180, 0]
   - name: Skeleton army
-    type: billboard
+    model: quad
     program: g_tex
     pos: [15, 6.5, -20.0]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       render_back: true
     scale: [1.5, 3, 1]
@@ -106,7 +107,7 @@ entities:
       refraction: 0.05
       refraction_ratio: [1.0, 1.52]
   - name: Brick wall
-    type: quad
+    model: quad
     material: brickwall
     program: g_tex
     pos: [-5.0, 8.5, -14.0]
@@ -117,7 +118,7 @@ entities:
       x_step: 4
     enabled: false
   - name: Wood wall
-    type: quad
+    model: quad
     material: woodwall
     program: g_tex
     pos: [-3.0, 8.5, -14.0]
@@ -128,7 +129,7 @@ entities:
       x_step: 4
     enabled: false
   - name: Giant wooden box
-    type: quad
+    model: quad
     xmodel: woodwall
     material: giant_woodbox
     program: g_tex
@@ -152,7 +153,7 @@ entities:
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
   - name: Big mirror 1
-    type: quad
+    model: quad
     material: mirror
     program: g_mirror
     pos: [-40.0, 10.0, -10.0]

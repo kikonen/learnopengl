@@ -138,12 +138,6 @@ namespace loader {
                 else if (type == "model") {
                     data.type = mesh::EntityType::model;
                 }
-                else if (type == "quad") {
-                    data.type = mesh::EntityType::quad;
-                }
-                else if (type == "billboard") {
-                    data.type = mesh::EntityType::billboard;
-                }
                 else if (type == "sprite") {
                     data.type = mesh::EntityType::sprite;
                 }
