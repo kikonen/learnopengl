@@ -66,6 +66,21 @@ entities:
         default: true
     controllers:
       - type: pawn
+  - id: fps_counter
+    parent_id: player
+    type: text
+    material: fps_text
+    text:
+      font: fps_font
+      text: "- fps"
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [-1.8, 0.95, -2.5]
+    scale: 0.0025
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
   - name: Player Camera
     parent_id: player
     type: origo
@@ -1045,9 +1060,16 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
+fonts:
+  - name: fps_font
+    path: fonts/Vera.ttf
+    size: 36
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
+  - name: fps_text
+    kd: [0.0, 0.8, 0.0, 1.0]
+    xmetal: [1.0, 0.0, 0, 1]
   - name: teapot
     kd: [0.578, 0.578, 0.168, 1.0]
   - name: cow

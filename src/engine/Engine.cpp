@@ -219,12 +219,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
             if (fpsCounter.isUpdate())
             {
-                auto summary = fpsCounter.formatSummary(m_title.c_str());
-                m_window->setTitle(summary);
-
-                if (m_window->isFullScreen() && !assets.glVendorNvidia) {
-                    std::cout << summary << '\n';
-                }
+                showFps(fpsCounter);
             }
         }
 
@@ -232,6 +227,18 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     }
 
     onDestroy();
+}
+
+void Engine::showFps(const ki::FpsCounter& fpsCounter)
+{
+    auto& assets = Assets::modify();
+
+    auto summary = fpsCounter.formatSummary(m_title.c_str());
+    m_window->setTitle(summary);
+
+    if (m_window->isFullScreen() && !assets.glVendorNvidia) {
+        std::cout << summary << '\n';
+    }
 }
 
 void Engine::onDestroy()

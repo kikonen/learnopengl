@@ -7,6 +7,8 @@
 
 #include "kigl/kigl.h"
 
+#include "ki/sid.h"
+
 #include "pool/NodeHandle.h"
 
 #include "editor/EditorFrame.h"
@@ -16,6 +18,9 @@
 #include "backend/gl/PerformanceCounters.h"
 
 #include "controller/VolumeController.h"
+
+#include "script/api/SetTextNode.h"
+#include "script/CommandEngine.h"
 
 #include "event/Dispatcher.h"
 
@@ -49,6 +54,8 @@
 
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
+
+    ki::node_id fpsNodeId = SID("fps_counter");
 }
 
 SampleApp::SampleApp()
@@ -287,6 +294,20 @@ void SampleApp::frustumDebug(
     }
 }
 
+void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
+{
+    Engine::showFps(fpsCounter);
+
+    auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
+
+    script::CommandEngine::get().addCommand(
+        0,
+        script::SetTextNode{
+            fpsNodeId,
+            0.f,
+            fpsText
+        });
+}
 
 void SampleApp::onDestroy()
 {

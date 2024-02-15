@@ -29,7 +29,7 @@ namespace ki {
             return m_avgIndex == 0;
         }
 
-        std::string formatSummary(const char* title);
+        std::string formatSummary(const char* title) const noexcept;
 
     private:
         void updateAvg();
@@ -46,6 +46,6 @@ namespace ki {
         float m_fpsAvg;
         float m_millisAvg;
 
-        char m_formatBuffer[256];
+        mutable char m_formatBuffer[256];
     };
 }

@@ -7,6 +7,7 @@
 #include "registry/Registry.h"
 
 #include "ki/RenderClock.h"
+#include "ki/FpsCounter.h"
 
 #include "gui/Input.h"
 
@@ -44,6 +45,8 @@ protected:
     virtual int onPost(const ki::RenderClock& clock) = 0;
 
     virtual void onDestroy();
+
+    virtual void showFps(const ki::FpsCounter& fpsCounter);
 
 public:
     bool m_debug = false;

@@ -23,6 +23,21 @@ entities:
         default: true
     controllers:
       - type: pawn
+  - id: fps_counter
+    parent_id: player
+    type: text
+    material: fps_text
+    text:
+      font: fps_font
+      text: "- fps"
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [1.0, 0.75, -0.75]
+    scale: 0.01
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
   - id: player_camera
     parent_id: player
     type: origo
@@ -136,6 +151,9 @@ fonts:
   - name: another_font
     path: fonts/Lobster-Regular.ttf
     size: 36
+  - name: fps_font
+    path: fonts/Vera.ttf
+    size: 36
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
@@ -150,6 +168,9 @@ materials:
   - name: another_text
     map_pbr: textures\Leather037_1K
     tiling: 1
+  - name: fps_text
+    kd: [0.0, 0.8, 0.0, 1.0]
+    xmetal: [1.0, 0.0, 0, 1]
   - name: wood_floor
     kd: [0.8, 0.8, 0.0, 1.0]
     map_pbr: textures\Planks 09 [8K]

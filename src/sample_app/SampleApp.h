@@ -30,6 +30,8 @@ protected:
 
     void onDestroy() override;
 
+    virtual void showFps(const ki::FpsCounter& fpsCounter) override;
+
 private:
     void frustumDebug(
         const RenderContext& ctx,
