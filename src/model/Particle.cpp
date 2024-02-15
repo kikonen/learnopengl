@@ -2,7 +2,6 @@
 
 
 //Material Particle::getMaterial(
-//    const Assets& assets,
 //    std::string_view path,
 //    std::string_view normalMapPath)
 //{
@@ -18,15 +17,14 @@
 //}
 //
 //MeshType* Particle::getMeshType(
-//    const Assets& assets,
 //    std::string_view path,
 //    std::string_view normalMapPath)
 //{
-//    auto type = std::make_shared<MeshType>(MeshType::nextID(), Program::getProgram(assets, TEX_TEXTURE, ""));
+//    auto type = std::make_shared<MeshType>(MeshType::nextID(), Program::getProgram(TEX_TEXTURE, ""));
 //    type->renderBack = true;
 //
 //    QuadMesh* mesh = new QuadMesh(path);
-//    mesh->material = Sprite::getMaterial(assets, path, normalMapPath);
+//    mesh->material = Sprite::getMaterial(path, normalMapPath);
 //
 //    return type;
 //}

@@ -4,18 +4,18 @@
 #include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
+
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
-#include "component/Light.h"
-
+#include "asset/Assets.h"
 #include "asset/ImageTexture.h"
 
+#include "component/Light.h"
 #include "component/Camera.h"
 
 #include "script/CommandEngine.h"
 #include "script/ScriptEngine.h"
-
-#include "backend/RenderSystem.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -37,7 +37,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_assets,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -61,7 +60,6 @@ RenderContext::RenderContext(
         name,
         parent,
         parent->m_clock,
-        parent->m_assets,
         parent->m_registry,
         parent->m_renderData,
         parent->m_nodeDraw,
@@ -77,7 +75,6 @@ RenderContext::RenderContext(
     std::string_view name,
     const RenderContext* parent,
     const ki::RenderClock& clock,
-    const Assets& assets,
     Registry* registry,
     render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
@@ -89,9 +86,9 @@ RenderContext::RenderContext(
     int height)
     : m_name{ name },
     m_parent{ parent },
-    m_assets{ assets },
+    m_assets{ Assets::get() },
+    m_state{ kigl::GLState::get() },
     m_clock{ clock },
-    m_state{ registry->m_state },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
     m_batch{ batch },
@@ -102,6 +99,8 @@ RenderContext::RenderContext(
     m_resolution({ width, height }),
     m_aspectRatio{ (float)width / (float)height }
 {
+    auto& assets = m_assets;
+
     if (m_parent) {
         m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
@@ -194,13 +193,15 @@ void RenderContext::bindDefaults() const
 {
     validateRender("bind_defaults");
 
-    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
-    m_state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
-    m_state.cullFace(m_defaults.m_cullFace);
-    m_state.frontFace(m_defaults.m_frontFace);
+    auto& state = m_state;
 
-    m_state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
-    m_state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
+    // https://cmichel.io/understanding-front-faces-winding-order-and-normals
+    state.setEnabled(GL_CULL_FACE, m_defaults.m_cullFaceEnabled);
+    state.cullFace(m_defaults.m_cullFace);
+    state.frontFace(m_defaults.m_frontFace);
+
+    state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
+    state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
 }
 
 void RenderContext::updateUBOs() const
@@ -265,7 +266,6 @@ UpdateContext RenderContext::toUpdateContext() const
 {
     return {
         m_clock,
-        m_assets,
         m_registry,
     };
 }
@@ -273,7 +273,6 @@ UpdateContext RenderContext::toUpdateContext() const
 PrepareContext RenderContext::toPrepareContext() const
 {
     return {
-        m_assets,
         m_registry,
     };
 }

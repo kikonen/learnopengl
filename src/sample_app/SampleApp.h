@@ -2,6 +2,8 @@
 
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
+
 #include "engine/Engine.h"
 
 #include "gui/FrameInit.h"
@@ -27,6 +29,8 @@ protected:
     int onPost(const ki::RenderClock& clock) override;
 
     void onDestroy() override;
+
+    virtual void showFps(const ki::FpsCounter& fpsCounter) override;
 
 private:
     void frustumDebug(

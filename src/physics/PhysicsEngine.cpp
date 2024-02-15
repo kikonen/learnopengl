@@ -9,6 +9,7 @@
 #include "model/Node.h"
 #include "model/NodeTransform.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "engine/UpdateContext.h"
@@ -77,11 +78,13 @@ namespace physics
         }
     };
 
-    PhysicsEngine::PhysicsEngine(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive)
-        : m_assets(assets),
-        m_alive(alive)
+    PhysicsEngine& PhysicsEngine::get() noexcept
+    {
+        static PhysicsEngine s_engine;
+        return s_engine;
+    }
+
+    PhysicsEngine::PhysicsEngine()
     {
     }
 
@@ -104,9 +107,11 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::prepare()
+    void PhysicsEngine::prepare(std::shared_ptr<std::atomic<bool>> alive)
     {
         m_prepared = true;
+        m_alive = alive;
+
         dInitODE2(0);
         m_worldId = dWorldCreate();
         m_spaceId = dHashSpaceCreate(0);

@@ -28,19 +28,20 @@ void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
 
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
+    auto& state = ctx.m_state;
     // NOTE KI must flush before changing render target
     //ctx.m_batch->flush(ctx);
     if (!ctx.m_batch->isFlushed()) {
         throw std::runtime_error{ fmt::format("BIND_ERROR: Batch was NOT flushed: FBO={}", (int)m_fbo) };
     }
 
-    ctx.m_state.bindFrameBuffer(m_fbo, false);
-    ctx.m_state.setViewport({ 0, 0, m_size, m_size });
+    state.bindFrameBuffer(m_fbo, false);
+    state.setViewport({ 0, 0, m_size, m_size });
 }
 
 void DynamicCubeMap::unbind(const RenderContext& ctx)
 {
-    //ctx.m_state.bindFrameBuffer(0, false);
+    //kigl::GLState::get().bindFrameBuffer(0, false);
 }
 
 void DynamicCubeMap::prepareRT(

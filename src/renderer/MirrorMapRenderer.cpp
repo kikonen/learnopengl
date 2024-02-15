@@ -1,9 +1,11 @@
 #include "MirrorMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "pool/NodeHandle.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -55,11 +57,11 @@ void MirrorMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
     m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
+    MaterialRegistry::get().registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;
@@ -86,7 +88,7 @@ void MirrorMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
@@ -97,7 +99,7 @@ void MirrorMapRenderer::prepareRT(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepareRT(assets);
+        m_reflectionDebugViewport->prepareRT();
     }
 
     m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
@@ -121,6 +123,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
 
+    const auto& assets = ctx.m_assets;
+
     m_waterMapRenderer->updateRT(ctx);
     if (m_mirrorMapRenderer) {
         m_mirrorMapRenderer->updateRT(ctx);
@@ -128,8 +132,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.mirrorReflectionBufferScale * res.y);
+    int w = (int)(assets.mirrorReflectionBufferScale * res.x);
+    int h = (int)(assets.mirrorReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -200,7 +204,9 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
+            auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+
+            const auto& snapshot = snapshotRegistry.getActiveSnapshot(closest->m_snapshotIndex);
             const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
@@ -212,8 +218,8 @@ bool MirrorMapRenderer::render(
             const auto& mirrorSize = volumeRadius;
             const auto& eyePos = parentCamera->getWorldPosition();
 
-            const auto& viewFront = snapshot.getViewFront();
-            const auto& viewUp = snapshot.getViewUp();
+            const auto& viewFront = glm::normalize(snapshot.getViewFront());
+            const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
             const auto eyeV = planePos - eyePos;
             const auto dist = glm::length(eyeV);
@@ -237,7 +243,7 @@ bool MirrorMapRenderer::render(
             glm::vec3 reflectUp = viewUp;
 
             //const float fovAngle = glm::degrees(2.0f * atanf((mirrorSize / 2.0f) / dist));
-            //const float fovAngle = ctx.m_assets.mirrorFov;
+            //const float fovAngle = assets.mirrorFov;
 
             camera.setWorldPosition(mirrorEyePos);
             camera.setAxis(reflectFront, reflectUp);
@@ -303,10 +309,12 @@ void MirrorMapRenderer::drawNodes(
     render::FrameBuffer* targetBuffer,
     Node* current)
 {
+    const auto& assets = ctx.m_assets;
+
     bool renderedWater{ false };
     bool renderedMirror{ false };
 
-    if (ctx.m_assets.mirrorRenderWater) {
+    if (assets.mirrorRenderWater) {
         if (m_waterMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_waterMapRenderer->m_sourceNode = current;
@@ -315,7 +323,7 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
-    if (ctx.m_assets.mirrorRenderMirror) {
+    if (assets.mirrorRenderMirror) {
         if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_mirrorMapRenderer->m_sourceNode = current;
@@ -337,7 +345,7 @@ void MirrorMapRenderer::drawNodes(
 
 
     //ctx.updateClipPlanesUBO();
-    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
+    //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, true);
     {
         Node* sourceNode = m_sourceNode.toNode();
 
@@ -352,12 +360,14 @@ void MirrorMapRenderer::drawNodes(
             render::NodeDraw::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
-    //ctx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
+    //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
+
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
 
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
@@ -368,8 +378,8 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
-        const auto& viewFront = snapshot.getViewFront();
+        const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+        const auto& viewFront = glm::normalize(snapshot.getViewFront());
 
         const auto dot = glm::dot(viewFront, cameraFront);
 

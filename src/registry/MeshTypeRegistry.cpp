@@ -2,14 +2,19 @@
 
 #include "pool/TypeHandle.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 namespace {
 }
 
-MeshTypeRegistry::MeshTypeRegistry(
-    const Assets& assets)
-    : m_assets(assets)
+MeshTypeRegistry& MeshTypeRegistry::get() noexcept
+{
+    static MeshTypeRegistry s_registry;
+    return s_registry;
+}
+
+MeshTypeRegistry::MeshTypeRegistry()
 {
 }
 

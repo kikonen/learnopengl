@@ -2,6 +2,8 @@
 
 #include "util/thread.h"
 
+#include "asset/Assets.h"
+
 #include "EntitySSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -10,23 +12,26 @@
 
 #include "model/Node.h"
 
-#include "mesh/MeshType.h"
-
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
 
 namespace {
     constexpr size_t ENTITY_BLOCK_SIZE = 100;
-    constexpr size_t ENTITY_BLOCK_COUNT = 20000;
+    constexpr size_t ENTITY_BLOCK_COUNT = 40000;
 
     constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
 
     constexpr size_t MAX_SKIP = 20;
 }
 
-EntityRegistry::EntityRegistry(const Assets& assets)
-    : m_assets(assets)
+EntityRegistry& EntityRegistry::get() noexcept
+{
+    static EntityRegistry s_registry;
+    return s_registry;
+}
+
+EntityRegistry::EntityRegistry()
 {
     // null entry
     registerEntity();
@@ -34,10 +39,12 @@ EntityRegistry::EntityRegistry(const Assets& assets)
 
 void EntityRegistry::prepare()
 {
-    m_useMapped = m_assets.glUseMapped;
-    m_useInvalidate = m_assets.glUseInvalidate;
-    m_useFence = m_assets.glUseFence;
-    m_useDebugFence = m_assets.glUseDebugFence;
+    const auto& assets = Assets::get();
+
+    m_useMapped = assets.glUseMapped;
+    m_useInvalidate = assets.glUseInvalidate;
+    m_useFence = assets.glUseFence;
+    m_useDebugFence = assets.glUseDebugFence;
 
     m_useMapped = false;
     m_useInvalidate = true;
@@ -202,18 +209,6 @@ uint32_t EntityRegistry::registerEntityRange(const size_t count)
     return static_cast<uint32_t>(firstIndex);
 }
 
-void EntityRegistry::markDirty(int index)
-{
-    ASSERT_RT();
-    if (index < m_minDirty || m_minDirty == -1) {
-        m_minDirty = index;
-    }
-    if (index > m_maxDirty || m_maxDirty == -1) {
-        m_maxDirty = index;
-    }
-
-    m_dirty[index] = true;
-}
 
 void EntityRegistry::processNodes(const UpdateContext& ctx)
 {

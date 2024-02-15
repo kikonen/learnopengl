@@ -5,8 +5,8 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_materials.glsl
-#include uniform_shapes.glsl
+#include ssbo_materials.glsl
+#include ssbo_shapes.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

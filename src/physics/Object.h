@@ -29,7 +29,6 @@ namespace physics {
 
         physics::physics_id m_id{ 0 };
 
-        bool m_update{ false };
         Body m_body{};
         Geom m_geom{};
 
@@ -37,7 +36,9 @@ namespace physics {
         dBodyID m_bodyId{ nullptr };
         dGeomID m_geomId{ nullptr };
 
-        ki::level_id m_matrixLevel{ (ki::level_id)-1 };
         pool::NodeHandle m_nodeHandle{};
+
+        ki::level_id m_matrixLevel{ 0 };
+        bool m_update : 1{ false };
     };
 }

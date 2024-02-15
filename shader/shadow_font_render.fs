@@ -1,10 +1,9 @@
 #version 460 core
 
 in VS_OUT {
-  vec2 texCoord;
+  vec2 atlasCoord;
+  flat uvec2 atlasHandle;
 } fs_in;
-
-layout(binding = UNIT_FONT_ATLAS) uniform sampler2D u_fontAtlas;
 
 ////////////////////////////////////////////////////////////
 //
@@ -24,9 +23,9 @@ const float glow_center    = 1.25;
 
 void main()
 {
-  const vec2 texCoord = fs_in.texCoord;
+  sampler2D atlas = sampler2D(fs_in.atlasHandle);
+  vec4 color = texture2D(atlas, fs_in.atlasCoord.st);
 
-  vec4  color = texture2D(u_fontAtlas, fs_in.texCoord.st);
   float dist  = color.r;
   float width = fwidth(dist);
   float alpha = smoothstep(glyph_center-width, glyph_center+width, dist);

@@ -27,8 +27,6 @@ namespace render {
     class Batch;
 }
 
-class Assets;
-
 class Camera;
 class Light;
 class ParticleGenerator;
@@ -58,7 +56,7 @@ public:
     Node& operator=(Node& o) = delete;
     Node& operator=(Node&& o) noexcept;
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     inline ki::node_id getId() const noexcept { return m_id; }
     inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
@@ -67,13 +65,19 @@ public:
         return { m_handleIndex, m_id };
     }
 
-    void prepare(
+    void prepareWT(
+        const PrepareContext& ctx);
+
+    void prepareRT(
         const PrepareContext& ctx);
 
     void updateVAO(const RenderContext& ctx) noexcept;
     const kigl::GLVertexArray* getVAO() const noexcept;
-    const backend::DrawOptions& getDrawOptions() const noexcept;
-    void bindBatch(const RenderContext& ctx, render::Batch& batch) noexcept;
+
+    void bindBatch(
+        const RenderContext& ctx,
+        mesh::MeshType* type,
+        render::Batch& batch) noexcept;
 
     inline Node* getParent() const noexcept {
         return m_parent.toNode();
@@ -110,7 +114,7 @@ public:
     void setSelectionMaterialIndex(int index);
 
     // @return -1 if no highlight color
-    int getHighlightIndex(const Assets& assets) const noexcept;
+    int getHighlightIndex() const noexcept;
 
     inline int getCloneIndex() const noexcept {
         return m_cloneIndex;
@@ -120,13 +124,19 @@ public:
         m_cloneIndex = cloneIndex;
     }
 
-    inline bool isHighlighted(const Assets & assets) const noexcept
+    inline bool isHighlighted() const noexcept
     {
-        return getHighlightIndex(assets) != -1;
+        return getHighlightIndex() != -1;
     }
 
     inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
     inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
+
+    template<typename T>
+    T* getGenerator()
+    {
+        return dynamic_cast<T*>(m_generator.get());
+    }
 
 public:
     ki::node_id lua_getId() const noexcept;
@@ -137,10 +147,10 @@ public:
     const std::array<float, 3> lua_getPos() const noexcept;
 
 public:
-    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
-
-    bool m_visible : 1 { true };
     pool::TypeHandle m_typeHandle{};
+
+    uint32_t m_snapshotIndex{ 0 };
+    uint32_t m_entityIndex{ 0 };
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
@@ -150,9 +160,9 @@ public:
 
     NodeGenerator* m_instancer{ nullptr };
 
-    uint32_t m_snapshotIndex{ 0 };
-    uint32_t m_entityIndex{ 0 };
+    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+    bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
 
 #ifdef _DEBUG

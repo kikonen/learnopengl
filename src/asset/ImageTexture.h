@@ -27,8 +27,7 @@ public:
 
     virtual ~ImageTexture();
 
-    void prepare(
-        const Assets& assets) override;
+    void prepare() override;
 
     bool isValid() { return m_valid; }
 

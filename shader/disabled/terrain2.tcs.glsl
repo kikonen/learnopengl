@@ -6,11 +6,11 @@ layout(vertices=3) out;
 #include struct_entity.glsl
 #include struct_clip_plane.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 #include uniform_clip_planes.glsl
-#include uniform_material_indeces.glsl
+#include ssbo_material_indeces.glsl
 
 in VS_OUT {
   flat uint entityIndex;

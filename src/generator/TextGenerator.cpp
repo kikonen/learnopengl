@@ -7,43 +7,34 @@
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "render/Batch.h"
 
 #include "text/TextDraw.h"
+#include "text/FontAtlas.h"
 
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
 #include "registry/SnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
+#include "registry/FontRegistry.h"
+
+#include "mesh/VBO_impl.h"
 
 namespace {
-    std::array<std::string,3> texts{
-R"(This the story
-And it will continue
-So be prepared
-until the end)",
-"Viva la vida!",
-// "Terveisi\u00e4 T\u00e4\u00e4lt\u00e4 - \u00c4\u00c5\u00d6 \u00e4\u00e5\u00f6",
-"Terveisiä täältä! - ÄÅÖ - äåö",
-    };
-
-    float elapsed = 0.f;
-    int index = 0;
 }
 
 TextGenerator::TextGenerator()
+    : m_vboAtlasTex{ ATTR_FONT_TEX, VBO_FONT_BINDING, "vbo_font" }
 {}
 
 void TextGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    auto* type = container.m_typeHandle.toType();
-    m_drawOptions = type->getDrawOptions();
-
     container.m_instancer = this;
 }
 
@@ -54,6 +45,8 @@ void TextGenerator::prepareRT(
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
     m_vao.prepare("text");
+
+    m_vboAtlasTex.prepareVAO(*m_vao.modifyVAO());
 }
 
 void TextGenerator::updateWT(
@@ -63,7 +56,6 @@ void TextGenerator::updateWT(
 }
 
 void TextGenerator::updateEntity(
-    const Assets& assets,
     SnapshotRegistry& snapshotRegistry,
     EntityRegistry& entityRegistry,
     Node& container)
@@ -83,24 +75,11 @@ void TextGenerator::updateVAO(
     const RenderContext& ctx,
     const Node& container)
 {
-    //std::cout << fmt::format("total={}, elapsed={}\n", elapsed, ctx.m_clock.elapsedSecs);
-
-    elapsed += ctx.m_clock.elapsedSecs;
-
-    constexpr float step = 20.f;
-    bool hit = elapsed >= step;
-    //hit = false;
-    if (hit) {
-        elapsed -= step;
-        setText(texts[index++]);
-        index = index % texts.size();
-        m_dirty = true;
-    }
-
     if (!m_dirty) return;
     m_dirty = false;
 
     m_vbo.clear();
+    m_vboAtlasTex.clear();
 
     glm::vec2 pen{ 0.f };
 
@@ -109,19 +88,25 @@ void TextGenerator::updateVAO(
         m_fontId,
         m_text,
         pen,
-        m_vbo);
+        m_vbo,
+        m_vboAtlasTex);
 
     m_aabb = m_vbo.calculateAABB();
 
-    m_vbo.m_positionOffset = -m_aabb.getVolume();
+    m_vbo.m_meshPositionOffset = -m_aabb.getVolume();
 
     m_vao.clear();
     m_vao.registerModel(m_vbo);
+    m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
     m_vao.updateRT();
 
-    m_drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vbo.m_vertexOffset);
-    m_drawOptions.m_indexOffset = static_cast<uint32_t>(m_vbo.m_indexOffset);
-    m_drawOptions.m_indexCount = static_cast<uint32_t>(m_vbo.getIndexCount());
+    auto* type = container.m_typeHandle.toType();
+
+    auto* lodMesh = type->modifyLod(0);
+    auto& lod = lodMesh->m_lod;
+    lod.m_baseVertex = m_vbo.getBaseVertex();
+    lod.m_baseIndex = m_vbo.getBaseIndex();
+    lod.m_indexCount = m_vbo.getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(
@@ -130,25 +115,32 @@ const kigl::GLVertexArray* TextGenerator::getVAO(
     return m_vao.getVAO();
 }
 
-const backend::DrawOptions& TextGenerator::getDrawOptions(
-    const Node& container) const noexcept
-{
-    return m_drawOptions;
-}
-
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
+    mesh::MeshType* type,
     Node& container,
     render::Batch& batch)
 {
-    m_draw->updateRT(ctx.m_state);
+    m_draw->updateRT();
 
     const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
-    batch.addSnapshot(ctx, snapshot, container.m_entityIndex);
+
+    batch.addSnapshot(
+        ctx,
+        type,
+        &type->getLod(0)->m_lod,
+        snapshot,
+        container.m_entityIndex);
+}
+
+GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
+{
+    return FontRegistry::get().getFont(m_fontId)->getTextureHandle();
 }
 
 void TextGenerator::clear()
 {
     m_vao.clear();
     m_vbo.clear();
+    m_vboAtlasTex.clear();
 }

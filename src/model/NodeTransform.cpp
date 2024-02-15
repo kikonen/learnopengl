@@ -14,8 +14,6 @@
 #include "render/RenderContext.h"
 
 namespace {
-    glm::mat4 shared_translateMatrix{ 1.f };
-    glm::mat4 shared_scaleMatrix{ 1.f };
 }
 
 void NodeTransform::updateRootMatrix() noexcept
@@ -25,15 +23,19 @@ void NodeTransform::updateRootMatrix() noexcept
 
     updateRotationMatrix();
 
-    shared_translateMatrix[3].x = m_position.x;
-    shared_translateMatrix[3].y = m_position.y;
-    shared_translateMatrix[3].z = m_position.z;
+    static glm::mat4 s_translateMatrix{ 1.f };
+    static glm::mat4 s_scaleMatrix{ 1.f };
+    {
+        s_translateMatrix[3].x = m_position.x;
+        s_translateMatrix[3].y = m_position.y;
+        s_translateMatrix[3].z = m_position.z;
 
-    shared_scaleMatrix[0].x = m_scale.x;
-    shared_scaleMatrix[1].y = m_scale.y;
-    shared_scaleMatrix[2].z = m_scale.z;
+        s_scaleMatrix[0].x = m_scale.x;
+        s_scaleMatrix[1].y = m_scale.y;
+        s_scaleMatrix[2].z = m_scale.z;
+    }
 
-    m_modelMatrix = shared_translateMatrix * m_rotationMatrix * shared_scaleMatrix;
+    m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
     m_modelScale = m_scale;
 
     {
@@ -54,23 +56,30 @@ void NodeTransform::updateRootMatrix() noexcept
 void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 {
     ASSERT_WT();
+
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
+    {
+        m_parentMatrixLevel = parent.m_matrixLevel;
+        m_matrixLevel++;
+    }
 
     // NOTE KI only *SINGLE* thread is allowed to do model updates
     // => thus can use globally shared temp vars
+    static glm::mat4 s_translateMatrix{ 1.f };
+    static glm::mat4 s_scaleMatrix{ 1.f };
     {
-        shared_translateMatrix[3].x = m_position.x;
-        shared_translateMatrix[3].y = m_position.y;
-        shared_translateMatrix[3].z = m_position.z;
+        s_translateMatrix[3].x = m_position.x;
+        s_translateMatrix[3].y = m_position.y;
+        s_translateMatrix[3].z = m_position.z;
 
-        shared_scaleMatrix[0].x = m_scale.x;
-        shared_scaleMatrix[1].y = m_scale.y;
-        shared_scaleMatrix[2].z = m_scale.z;
+        s_scaleMatrix[0].x = m_scale.x;
+        s_scaleMatrix[1].y = m_scale.y;
+        s_scaleMatrix[2].z = m_scale.z;
     }
 
     bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
-    m_modelMatrix = parent.m_modelMatrix * shared_translateMatrix * m_rotationMatrix * shared_scaleMatrix;
+    m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
     m_modelScale = parent.m_modelScale * m_scale;
 
     {
@@ -84,9 +93,6 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
         updateModelAxis();
     }
 
-    m_parentMatrixLevel = parent.m_matrixLevel;
-    m_matrixLevel++;
-
     m_dirty = false;
     m_dirtySnapshot = true;
 }
@@ -96,10 +102,10 @@ void NodeTransform::updateModelAxis() noexcept
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
     // NOTE KI w == 0; only rotation
-    m_viewFront = glm::normalize(glm::mat3(m_quatRotation) * m_front);
+    m_viewFront = glm::mat3(m_quatRotation) * m_front;
 
-    m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-    m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
+    m_viewRight = glm::cross(m_viewFront, m_up);
+    m_viewUp = glm::cross(m_viewRight, m_viewFront);
 }
 
 void NodeTransform::updateRotationMatrix() noexcept

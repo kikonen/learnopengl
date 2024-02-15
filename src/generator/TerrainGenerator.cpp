@@ -12,14 +12,17 @@
 #include "util/glm_format.h"
 #include "util/Perlin.h"
 
+#include "asset/Assets.h"
 #include "asset/Image.h"
 #include "asset/AABB.h"
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/TerrainMesh.h"
-#include "mesh/MeshType.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -43,13 +46,16 @@ namespace {
 TerrainGenerator::TerrainGenerator()
     : NodeGenerator()
 {
+    m_material = Material::createMaterial(BasicMaterial::gold);
 }
 
 void TerrainGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
 {
-    m_gridSize = ctx.m_assets.terrainGridSize;
+    const auto& assets = ctx.m_assets;
+
+    m_gridSize = assets.terrainGridSize;
 
     m_poolSizeU = 4;
     m_poolSizeV = 4;
@@ -91,19 +97,19 @@ physics::HeightMap* TerrainGenerator::prepareHeightMap(
     const PrepareContext& ctx,
     Node& container)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
-    const auto& imagePath = m_material.getTexturePath(assets, m_material.map_height);
+    const auto& imagePath = m_material.getTexturePath(m_material.map_height);
     KI_INFO(fmt::format("TERRAIN: height={}", imagePath));
 
     auto image = std::make_unique<Image>(imagePath, false);
     // NOTE KI don't flip, otherwise have to reverse offsets
     int res = image->load();
 
-    auto* pe = registry->m_physicsEngine;
-    auto id = pe->registerHeightMap();
-    auto* heightMap = pe->getHeightMap(id);
+    auto& pe = physics::PhysicsEngine::get();
+    auto id = pe.registerHeightMap();
+    auto* heightMap = pe.getHeightMap(id);
 
     {
         heightMap->m_origin = &container;
@@ -163,8 +169,7 @@ void TerrainGenerator::createTiles(
     const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
-    auto* entityRegistry = registry->m_entityRegistry;
-    auto* materialRegistry = registry->m_materialRegistry;
+    auto& entityRegistry = EntityRegistry::get();
 
     const float scale = m_worldTileSize / 2.f;
 
@@ -181,7 +186,7 @@ void TerrainGenerator::createTiles(
 
     auto typeHandle = createType(registry, container.m_typeHandle);
     {
-        auto future = registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             TERRAIN_QUAD_MESH_NAME,
             m_modelsDir);
         auto* mesh = future.get();
@@ -189,28 +194,26 @@ void TerrainGenerator::createTiles(
 
         {
             auto* type = typeHandle.toType();
-            type->setMesh(mesh);
+            auto* lod = type->addLod({ mesh });
+
+            lod->setupMeshMaterials(m_material, true, true);
+
+            for (auto& m : lod->m_materialSet.modifyMaterials()) {
+                m.tilingX = (float)m_worldTilesU;
+                m.tilingY = (float)m_worldTilesV;
+            }
+
+            lod->registerMaterials();
         }
     }
 
     // NOTE KI must laod textures in the context of *THIS* material
     // NOTE KI only SINGLE material supported
-    int materialIndex = -1;
     {
         auto* type = typeHandle.toType();
 
         auto& drawOptions = type->modifyDrawOptions();
         drawOptions.m_patchVertices = 3;
-
-        type->modifyMaterials([this, &materialIndex, &materialRegistry, &assets](Material& m) {
-            m.tilingX = (float)m_worldTilesU;
-            m.tilingY = (float)m_worldTilesV;
-
-            m.loadTextures(assets);
-
-            materialRegistry->registerMaterial(m);
-            materialIndex = m.m_registeredIndex;
-        });
     }
 
     const glm::vec4 tileVolume = aabb.getVolume();
@@ -245,8 +248,6 @@ void TerrainGenerator::createTiles(
 
             {
                 auto& transform = m_transforms.emplace_back();
-
-                transform.setMaterialIndex(materialIndex);
                 transform.setVolume(tileVolume);
             }
 
@@ -309,19 +310,6 @@ pool::TypeHandle TerrainGenerator::createType(
     type->m_program = containerType->m_program;
     type->m_shadowProgram = containerType->m_shadowProgram;
     type->m_preDepthProgram = containerType->m_preDepthProgram;
-
-    // TODO KI *redundant* copy of material
-    {
-        auto& containerMaterials = containerType->m_materialVBO;
-        auto& materialVBO = type->m_materialVBO;
-
-        // NOTE MUST copy *all* data from materials
-        auto* material = containerMaterials->getDefaultMaterial();
-        if (material) {
-            materialVBO->setDefaultMaterial(*material, true, true);
-        }
-        materialVBO->setMaterials(containerMaterials->getMaterials());
-    }
 
     return typeHandle;
 }

@@ -1,9 +1,12 @@
 #include "ShadowMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
+
+#include "kigl/GLState.h"
 
 #include "model/Viewport.h"
 
@@ -34,7 +37,7 @@ void ShadowMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
@@ -68,7 +71,7 @@ void ShadowMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            registry->m_programRegistry->getProgram(SHADER_DEBUG_DEPTH));
+            ProgramRegistry::get().getProgram(SHADER_DEBUG_DEPTH));
 
         m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
@@ -82,7 +85,7 @@ void ShadowMapRenderer::prepareRT(
             });
 
         m_debugViewport->setEffectEnabled(false);
-        m_debugViewport->prepareRT(assets);
+        m_debugViewport->prepareRT();
     }
 }
 
@@ -91,7 +94,9 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -120,25 +125,31 @@ bool ShadowMapRenderer::render(
 
     if (!needRender(ctx)) return false;
 
+
     // NOTE KI no shadows if no light
     if (!ctx.m_useLight) return false;
 
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return false;
+
+    const auto& assets = ctx.m_assets;
+    auto& state = ctx.m_state;
 
     {
         // OpenGL Programming Guide, 8th Edition, page 404
         // Enable polygon offset to resolve depth-fighting isuses
-        ctx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, ctx.m_assets.shadowPolygonOffsetEnabled);
-        ctx.m_state.polygonOffset(ctx.m_assets.shadowPolygonOffset);
-        ctx.m_state.cullFace(GL_FRONT);
+        state.setEnabled(GL_POLYGON_OFFSET_FILL, assets.shadowPolygonOffsetEnabled);
+        state.polygonOffset(assets.shadowPolygonOffset);
+        state.cullFace(GL_FRONT);
 
         for (auto& cascade : m_cascades) {
             cascade->render(ctx);
         }
 
-        ctx.m_state.cullFace(ctx.m_defaults.m_cullFace);
-        ctx.m_state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
+        state.cullFace(ctx.m_defaults.m_cullFace);
+        state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
     }
 
     m_rotateElapsedSecs += ctx.m_clock.elapsedSecs;

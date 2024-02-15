@@ -1,8 +1,11 @@
 #version 460 core
 
 #include struct_entity.glsl
+#include struct_instance.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
@@ -24,14 +27,18 @@ out VS_OUT {
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 
 void main()
 {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = instance.u_entityIndex;
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
 
-  int materialIndex = entity.u_materialIndex;
+  const int materialIndex = instance.u_materialIndex;
 
   vs_out.texCoord = a_texCoord;
   vs_out.materialIndex = materialIndex;

@@ -1,9 +1,14 @@
 #pragma once
 
+#include <array>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "ki/size.h"
+#include "ki/limits.h"
+
+#include "backend/Lod.h"
 
 #include "util/glm_util.h"
 
@@ -17,24 +22,6 @@ struct EntitySSBO;
 // Snapshot of transform for RT
 //
 struct Snapshot {
-    Snapshot() = default;
-    Snapshot(const NodeTransform& o);
-    Snapshot(const NodeTransform&& o);
-
-    Snapshot& operator=(const NodeTransform& o) noexcept;
-    //Snapshot& operator=(Snapshot& o) = default;
-    Snapshot& operator=(const Snapshot& o) noexcept;
-
-    bool m_dirty : 1 {true};
-    bool m_dirtyNormal : 1 {true};
-
-    ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-
-    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
-
-    int m_materialIndex{ 0 };
-    int m_shapeIndex{ 0 };
-
     glm::vec4 m_volume{ 0.f };
 
     glm::vec3 m_worldPos{ 0.f };
@@ -49,6 +36,58 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
+    int m_shapeIndex{ 0 };
+
+    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+
+    //// NOTE KI only in *active*
+    //std::array<backend::Lod, ki::MAX_LOD> m_lods;
+
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
+
+    ki::level_id m_matrixLevel{ 0 };
+
+    bool m_dirty : 1 { true };
+    bool m_dirtyNormal : 1 { true };
+
+    ///////////////////////////////////////
+    //
+    Snapshot() = default;
+    Snapshot(const NodeTransform& o);
+    Snapshot(const NodeTransform&& o);
+
+    void apply(NodeTransform& o) noexcept;
+
+    //Snapshot& operator=(Snapshot& o) = default;
+    inline void apply(Snapshot& o) noexcept
+    {
+        m_dirty |= o.m_dirty;
+        m_dirtyNormal |= o.m_dirtyNormal;
+
+        m_matrixLevel = o.m_matrixLevel;
+
+        m_flags = o.m_flags;
+
+        m_shapeIndex = o.m_shapeIndex;
+
+        m_volume = o.m_volume;
+
+        m_worldPos = o.m_worldPos;
+
+        m_quatRotation = o.m_quatRotation;
+
+        m_viewUp = o.m_viewUp;
+        m_viewFront = o.m_viewFront;
+        m_viewRight = o.m_viewRight;
+        m_modelMatrix = o.m_modelMatrix;
+
+        m_modelScale = o.m_modelScale;
+
+        //m_lodMaterialIndeces = o.m_lodMaterialIndeces;
+
+        o.m_dirty = false;
+        o.m_dirtyNormal = false;
+    }
 
     inline const glm::vec4& getVolume() const noexcept
     {

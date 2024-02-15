@@ -45,9 +45,9 @@ namespace render {
         glVertexArrayBindingDivisor(m_vao, VBO_VERTEX_BINDING, 0);
     }
 
-    void PlainQuad::draw(kigl::GLState& state)
+    void PlainQuad::draw()
     {
-        state.bindVAO(m_vao);
+        kigl::GLState::get().bindVAO(m_vao);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         //glBindVertexArray(0);
     }

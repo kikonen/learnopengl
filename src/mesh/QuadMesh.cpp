@@ -6,7 +6,9 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/QuadVAO.h"
 
 
@@ -32,7 +34,7 @@ namespace mesh {
     {
     }
 
-    const std::string QuadMesh::str() const noexcept
+    std::string QuadMesh::str() const noexcept
     {
         return fmt::format("<QUAD: id={}>", m_id);
     }
@@ -57,12 +59,16 @@ namespace mesh {
         return m_vao;
     }
 
+    void QuadMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_indexCount = INDEX_COUNT;
+    }
+
     void QuadMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_TRIANGLE_STRIP;
-        drawOptions.m_indexFirst = 0;
-        drawOptions.m_indexCount = INDEX_COUNT;
     }
 }

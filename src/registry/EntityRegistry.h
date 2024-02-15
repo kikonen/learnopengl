@@ -8,7 +8,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
 
-#include "asset/Assets.h"
 #include "asset/SSBO.h"
 
 #include "EntitySSBO.h"
@@ -23,7 +22,10 @@ class RenderContext;
 //
 class EntityRegistry {
 public:
-    EntityRegistry(const Assets& assets);
+    static EntityRegistry& get() noexcept;
+
+    EntityRegistry();
+    EntityRegistry& operator=(const EntityRegistry&) = delete;
 
     void prepare();
     void updateRT(const UpdateContext& ctx);
@@ -55,14 +57,23 @@ public:
         return std::span{ m_entries }.subspan(start, count);
     }
 
-    void markDirty(int index);
+    inline void markDirty(int index) noexcept
+    {
+        //ASSERT_RT();
+        if (index < m_minDirty || m_minDirty == -1) {
+            m_minDirty = index;
+        }
+        if (index > m_maxDirty || m_maxDirty == -1) {
+            m_maxDirty = index;
+        }
+
+        m_dirty[index] = true;
+    }
 
 private:
     void processNodes(const UpdateContext& ctx);
 
 private:
-    const Assets& m_assets;
-
     std::vector<EntitySSBO> m_entries;
     std::vector<bool> m_dirty;
     int m_minDirty = -1;

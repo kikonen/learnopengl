@@ -2,7 +2,7 @@
 
 #include struct_material.glsl
 
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 #include uniform_matrices.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

@@ -11,9 +11,11 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/Vertex.h"
-#include "mesh/MeshType.h"
 
 
 namespace {
@@ -26,10 +28,8 @@ namespace {
 
 namespace mesh {
     ModelLoader::ModelLoader(
-        const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive)
-        : assets(assets),
-        m_alive(alive)
+        : m_alive(alive)
     {
     }
 

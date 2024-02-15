@@ -5,6 +5,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/Assets.h"
+
 #include "kigl/kigl.h"
 
 #include "pool/NodeHandle.h"
@@ -17,6 +19,7 @@
 
 #include "generator/NodeGenerator.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/EntityFlags.h"
@@ -60,7 +63,7 @@ Node::~Node()
     KI_INFO(fmt::format("NODE: delete - {}", str()));
 }
 
-const std::string Node::str() const noexcept
+std::string Node::str() const noexcept
 {
     auto* type = m_typeHandle.toType();
     return fmt::format(
@@ -68,38 +71,23 @@ const std::string Node::str() const noexcept
         m_id, type ? type->str() : "<null>");
 }
 
-void Node::prepare(
+void Node::prepareWT(
     const PrepareContext& ctx)
 {
     auto& registry = ctx.m_registry;
 
     auto* type = m_typeHandle.toType();
 
-    if (type->getMesh()) {
+    if (type->hasMesh()) {
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         {
-            m_transform.setMaterialIndex(type->getMaterialIndex());
+            m_transform.m_flags = type->resolveEntityFlags();
 
-            ki::size_t_entity_flags flags = 0;
-
-            if (type->m_entityType == mesh::EntityType::billboard) {
-                flags |= ENTITY_BILLBOARD_BIT;
-            }
             if (type->m_entityType == mesh::EntityType::sprite) {
-                flags |= ENTITY_SPRITE_BIT;
                 auto& shape = type->m_sprite->m_shapes[type->m_sprite->m_shapes.size() - 1];
                 m_transform.m_shapeIndex = shape.m_registeredIndex;
-                //m_instance.m_materialIndex = shape.m_materialIndex;
             }
-            if (type->m_entityType == mesh::EntityType::skybox) {
-                flags |= ENTITY_SKYBOX_BIT;
-            }
-            if (type->m_flags.noFrustum) {
-                flags |= ENTITY_NO_FRUSTUM_BIT;
-            }
-
-            m_transform.m_flags = flags;
         }
 
     }
@@ -110,10 +98,16 @@ void Node::prepare(
     }
 }
 
+void Node::prepareRT(
+    const PrepareContext& ctx)
+{
+    auto* type = m_typeHandle.toType();
+}
+
 bool Node::isEntity() const noexcept
 {
     auto* type = m_typeHandle.toType();
-    return type->getMesh() &&
+    return type->hasMesh() &&
         !type->m_flags.invisible;
 }
 
@@ -134,26 +128,39 @@ const kigl::GLVertexArray* Node::getVAO() const noexcept
     }
 }
 
-const backend::DrawOptions& Node::getDrawOptions() const noexcept
-{
-    if (m_instancer) {
-        return m_instancer->getDrawOptions(*this);
-    }
-    else {
-        return m_typeHandle.toType()->getDrawOptions();
-    }
-}
-
 void Node::bindBatch(
     const RenderContext& ctx,
+    mesh::MeshType* type,
     render::Batch& batch) noexcept
 {
     if (m_instancer) {
-        m_instancer->bindBatch(ctx, *this, batch);
+        m_instancer->bindBatch(ctx, type, *this, batch);
     } else {
         const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+
+        const backend::Lod* lod = nullptr;
+        //{
+        //    const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        //    auto& meshLods = type->getLods();
+
+        //    auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+
+        //    int lodIndex = 0;
+        //    for (; lodIndex < meshLods.size(); lodIndex++) {
+        //        if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
+        //            break;
+        //    }
+        //    if (lodIndex >= meshLods.size()) {
+        //        lodIndex--;
+        //    }
+
+        //    lod = &meshLods[lodIndex].m_lod;
+        //}
+
         batch.addSnapshot(
             ctx,
+            type,
+            lod,
             snapshot,
             m_entityIndex);
     }
@@ -195,8 +202,10 @@ void Node::setSelectionMaterialIndex(int index)
     }
 }
 
-int Node::getHighlightIndex(const Assets& assets) const noexcept
+int Node::getHighlightIndex() const noexcept
 {
+    const auto& assets = Assets::get();
+
     if (assets.showHighlight) {
         if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
         if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;

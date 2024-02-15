@@ -43,13 +43,53 @@ entities:
       - pos: [5.0, 2.0, -5.0]
       - pos: [-5.0, 2.0, 5.0]
       - pos: [5.0, 2.0, 5.0]
+  - id: rock
+    program: g_tex
+    force_material: true
+    render_flags:
+      render_back: true
+    lods:
+      - model: [rock2, rock]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [1, 1, 0]
+          tiling: 4
+        distance: 20
+      - model: [rock2, rock_lod_1]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [0, 1, 1]
+          tiling: 4
+        distance: 40
+      - model: [rock2, rock_lod_2]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0, 1]
+          tiling: 4
+        distance: 60
+      - model: [rock2, rock_lod_3]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 1, 0]
+          tiling: 4
+        distance: 80
+      - model: [rock2, rock_lod_4]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [1, 0, 0]
+          tiling: 4
+        distance: 100
+    pos: [0, 2, -10]
   - id: wooden_floor
-    model: quad
+    model: plane
     xxmodel: woodwall
     material: wood_floor
     program: g_tex
-    base_rot: [270, 0, 0]
-    front: [0, 1, 0]
     render_flags:
       no_shadow: true
     scale: 100

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "asset/Assets.h"
+
 #include "render/RenderContext.h"
 
 #include "model/Node.h"
@@ -16,7 +18,7 @@ Renderer::~Renderer()
 void Renderer::prepareRT(
     const PrepareContext& ctx)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
 
     m_registry = ctx.m_registry;
 
@@ -34,7 +36,7 @@ bool Renderer::setClosest(Node* closest, int tagIndex)
         if (closest) {
             closest->setTagMaterialIndex(tagIndex);
         }
-        m_registry->m_nodeRegistry->clearTaggedCount();
+        NodeRegistry::get().clearTaggedCount();
     }
     m_lastClosest = closest;
     return changed;

@@ -6,8 +6,8 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/TerrainVAO.h"
-
 
 namespace {
 
@@ -27,7 +27,7 @@ namespace mesh {
     {
     }
 
-    const std::string TerrainMesh::str() const noexcept
+    std::string TerrainMesh::str() const noexcept
     {
         return fmt::format("<TERRAIN: id={}>", m_id);
     }
@@ -52,12 +52,16 @@ namespace mesh {
         return m_vao;
     }
 
+    void TerrainMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_indexCount = 1;
+    }
+
     void TerrainMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_PATCHES;
-        drawOptions.m_indexFirst = 0;
-        drawOptions.m_indexCount = 1;
     }
 }

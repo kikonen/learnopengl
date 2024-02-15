@@ -5,6 +5,7 @@
 
 #include "engine/PrepareContext.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
@@ -26,8 +27,8 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_normalProgram = m_registry->m_programRegistry->getProgram(SHADER_NORMAL);
-    m_normalProgram->prepareRT(ctx.m_assets);
+    m_normalProgram = ProgramRegistry::get().getProgram(SHADER_NORMAL);
+    m_normalProgram->prepareRT();
 }
 
 void NormalRenderer::render(

@@ -2,7 +2,7 @@
 
 #include struct_material.glsl
 
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 #include uniform_textures.glsl
 
 in GS_OUT {

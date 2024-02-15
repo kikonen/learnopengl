@@ -1,5 +1,7 @@
 #include "CameraLoader.h"
 
+#include "asset/Assets.h"
+
 #include "ki/yaml.h"
 #include "util/Util.h"
 
@@ -17,7 +19,9 @@ namespace loader
         const YAML::Node& node,
         CameraData& data) const
     {
-        data.fov = m_assets.cameraFov;
+        const auto& assets = Assets::get();
+
+        data.fov = assets.cameraFov;
 
         data.enabled = true;
 

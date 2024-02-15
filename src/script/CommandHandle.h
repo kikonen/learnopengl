@@ -50,7 +50,7 @@ namespace script {
             return *this;
         }
 
-        CommandHandle& operator=(const CommandEntry* entry) noexcept;
+        //CommandHandle& operator=(const CommandEntry* entry) noexcept;
 
         bool operator==(const CommandHandle& o) const noexcept
         {

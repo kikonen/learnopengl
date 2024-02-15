@@ -2,8 +2,6 @@
 
 #include <unordered_map>
 
-#include "asset/Assets.h"
-
 #include "model/Node.h"
 
 struct UpdateContext;
@@ -13,10 +11,12 @@ class NodeController;
 
 class ControllerRegistry {
 public:
-    ControllerRegistry(const Assets& assets)
-        : m_assets(assets)
+    static ControllerRegistry& get() noexcept;
+
+    ControllerRegistry()
     {
     }
+    ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     ~ControllerRegistry();
 
@@ -72,8 +72,6 @@ public:
         NodeController* controller);
 
 private:
-    const Assets m_assets;
-
     Registry* m_registry{ nullptr };
 
     std::unordered_map<ki::node_id, std::vector<NodeController*>> m_controllers;

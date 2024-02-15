@@ -14,6 +14,7 @@ namespace kigl {
 
 namespace backend {
     struct DrawOptions;
+    struct Lod;
 }
 
 namespace render {
@@ -22,7 +23,6 @@ namespace render {
 
 class Node;
 
-class Assets;
 struct Snapshot;
 struct EntitySSBO;
 
@@ -58,13 +58,13 @@ public:
         SnapshotRegistry& snapshotRegistry);
 
     virtual void updateEntity(
-        const Assets& assets,
         SnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container);
 
     virtual void bindBatch(
         const RenderContext& ctx,
+        mesh::MeshType* type,
         Node& container,
         render::Batch& batch);
 
@@ -73,9 +73,6 @@ public:
         const Node& container) {}
 
     virtual const kigl::GLVertexArray* getVAO(
-        const Node& container) const noexcept;
-
-    virtual const backend::DrawOptions& getDrawOptions(
         const Node& container) const noexcept;
 
     inline const std::vector<NodeTransform>& getTransforms() noexcept
@@ -120,5 +117,6 @@ protected:
     int m_containerMatrixLevel = -1;
 
     std::vector<NodeTransform> m_transforms;
+    std::vector<const backend::Lod*> m_lods;
     std::vector<InstancePhysics> m_physics;
 };

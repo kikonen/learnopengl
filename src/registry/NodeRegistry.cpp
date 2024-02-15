@@ -10,10 +10,12 @@
 #include "ki/limits.h"
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "component/Light.h"
@@ -26,6 +28,7 @@
 #include "event/Dispatcher.h"
 
 #include "generator/NodeGenerator.h"
+#include "generator/TextGenerator.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -51,11 +54,13 @@ namespace {
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 }
 
-NodeRegistry::NodeRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+NodeRegistry& NodeRegistry::get() noexcept
+{
+    static NodeRegistry s_registry;
+    return s_registry;
+}
+
+NodeRegistry::NodeRegistry()
 {
 }
 
@@ -91,7 +96,7 @@ void NodeRegistry::prepare(
     m_registry = registry;
     m_selectionMaterial = std::make_unique<Material>();
     *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    registry->m_materialRegistry->registerMaterial(*m_selectionMaterial);
+    MaterialRegistry::get().registerMaterial(*m_selectionMaterial);
 
     attachListeners();
 }
@@ -111,8 +116,8 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
     }
 
-    ctx.m_registry->m_physicsEngine->updateBounds(ctx);
-    ctx.m_registry->m_controllerRegistry->updateWT(ctx);
+    physics::PhysicsEngine::get().updateBounds(ctx);
+    ControllerRegistry::get().updateWT(ctx);
 
     {
         snapshotWT(*m_registry->m_snapshotRegistry);
@@ -130,9 +135,7 @@ void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
 
         if (transform.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
-            snapshot = transform;
-            snapshot.m_dirty = true;
-            transform.m_dirtySnapshot = false;
+            snapshot.apply(transform);
         }
 
         if (node->m_generator) {
@@ -178,7 +181,7 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
     auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
-    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
+    auto& entityRegistry = EntityRegistry::get();
 
     std::lock_guard lock(m_snapshotLock);
 
@@ -190,7 +193,13 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 
                 entity->u_objectID = node->getId();
-                entity->u_highlightIndex = node->getHighlightIndex(ctx.m_assets);
+                entity->u_highlightIndex = node->getHighlightIndex();
+
+                auto* textGenerator = node->getGenerator<TextGenerator>();
+                if (textGenerator) {
+                    entity->u_fontHandle = textGenerator->getAtlasTextureHandle();
+                }
+
                 snapshot.updateEntity(*entity);
                 snapshot.m_dirty = false;
             }
@@ -198,7 +207,6 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
         if (node->m_generator) {
             node->m_generator->updateEntity(
-                ctx.m_assets,
                 snapshotRegistry,
                 entityRegistry,
                 *node);
@@ -208,6 +216,8 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
 void NodeRegistry::attachListeners()
 {
+    const auto& assets = Assets::get();
+
     auto* dispatcher = m_registry->m_dispatcher;
     auto* dispatcherView = m_registry->m_dispatcherView;
 
@@ -219,15 +229,15 @@ void NodeRegistry::attachListeners()
                 e.body.node.parentId);
         });
 
-    if (m_assets.useScript) {
+    if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,
             [this](const event::Event& e) {
                 auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
 
-                auto* se = m_registry->m_scriptEngine;
-                const auto& scripts = se->getNodeScripts(data.target);
+                auto& se = script::ScriptEngine::get();
+                const auto& scripts = se.getNodeScripts(data.target);
 
                 for (const auto& scriptId : scripts) {
                     {
@@ -275,10 +285,10 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             auto& data = e.blob->body.audioListener;
             auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
-            auto* ae = m_registry->m_audioEngine;
-            auto id = ae->registerListener();
+            auto& ae = audio::AudioEngine::get();
+            auto id = ae.registerListener();
             if (id) {
-                auto* listener = ae->getListener(id);
+                auto* listener = ae.getListener(id);
 
                 listener->m_default = data.isDefault;
                 listener->m_gain = data.gain;
@@ -294,13 +304,13 @@ void NodeRegistry::attachListeners()
                 return;
             }
             auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
-            auto* ae = m_registry->m_audioEngine;
-            auto id = ae->registerSource(data.soundId);
+            auto& ae = audio::AudioEngine::get();
+            auto id = ae.registerSource(data.soundId);
             if (id) {
                 auto* node = handle.toNode();
                 node->m_audioSourceIds[data.index] = id;
 
-                auto* source = ae->getSource(id);
+                auto* source = ae.getSource(id);
 
                 source->m_autoPlay = data.isAutoPlay;
                 source->m_referenceDistance = data.referenceDistance;
@@ -319,41 +329,41 @@ void NodeRegistry::attachListeners()
         event::Type::audio_listener_activate,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->setActiveListener(data.id);
+            audio::AudioEngine::get().setActiveListener(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_play,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->playSource(data.id);
+            audio::AudioEngine::get().playSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_stop,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->stopSource(data.id);
+            audio::AudioEngine::get().stopSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::audio_source_pause,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            m_registry->m_audioEngine->pauseSource(data.id);
+            audio::AudioEngine::get().pauseSource(data.id);
         });
 
     dispatcher->addListener(
         event::Type::physics_add,
         [this](const event::Event& e) {
             auto& data = e.blob->body.physics;
-            auto* pe = m_registry->m_physicsEngine;
+            auto& pe = physics::PhysicsEngine::get();
             auto handle = pool::NodeHandle::toHandle(e.body.physics.target);
 
-            auto id = pe->registerObject();
+            auto id = pe.registerObject();
 
             if (id) {
-                auto* obj = pe->getObject(id);
+                auto* obj = pe.getObject(id);
                 obj->m_update = data.update;
                 obj->m_body = data.body;
                 obj->m_geom = data.geom;
@@ -361,13 +371,13 @@ void NodeRegistry::attachListeners()
             }
         });
 
-    if (m_assets.useScript) {
+    if (assets.useScript) {
         dispatcher->addListener(
             event::Type::script_bind,
             [this](const event::Event& e) {
                 auto& data = e.body.script;
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                m_registry->m_scriptEngine->bindNodeScript(data.target, data.id);
+                script::ScriptEngine::get().bindNodeScript(data.target, data.id);
             });
 
         dispatcher->addListener(
@@ -376,11 +386,11 @@ void NodeRegistry::attachListeners()
                 auto& data = e.body.script;
                 if (data.target) {
                     if (auto* node = pool::NodeHandle::toNode(data.target)) {
-                        m_registry->m_scriptEngine->runNodeScript(node, data.id);
+                        script::ScriptEngine::get().runNodeScript(node, data.id);
                     }
                 }
                 else {
-                    m_registry->m_scriptEngine->runGlobalScript(data.id);
+                    script::ScriptEngine::get().runGlobalScript(data.id);
                 }
             });
     }
@@ -391,7 +401,7 @@ void NodeRegistry::attachListeners()
             auto& data = e.body.meshType;
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
-            type->prepareRT({ m_assets, m_registry });
+            type->prepareRT({ m_registry });
         });
 }
 
@@ -402,15 +412,17 @@ void NodeRegistry::handleNodeAdded(Node* node)
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
-    m_registry->m_snapshotRegistry->copyFromPending(0);
+    node->prepareRT({ m_registry });
+
+    m_registry->m_snapshotRegistry->copyFromPending(0, -1);
     if (node->m_generator) {
-        const PrepareContext ctx{ m_assets, m_registry };
+        const PrepareContext ctx{ m_registry };
         node->m_generator->prepareRT(ctx, *node);
     }
     node->m_preparedRT = true;
 
-    if (type->getMesh()) {
-        node->m_entityIndex = m_registry->m_entityRegistry->registerEntity();
+    if (type->hasMesh()) {
+        node->m_entityIndex = EntityRegistry::get().registerEntity();
     }
 
     if (node->m_camera) {
@@ -463,10 +475,12 @@ void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     const ki::node_id parentId) noexcept
 {
+    const auto& assets = Assets::get();
+
     auto* node = pool::NodeHandle::toNode(nodeId);
 
     assert(node);
-    assert(parentId || nodeId == m_assets.rootId);
+    assert(parentId || nodeId == assets.rootId);
 
     auto* type = node->m_typeHandle.toType();
 
@@ -532,14 +546,16 @@ void NodeRegistry::bindNode(
     Node* node = pool::NodeHandle::toNode(nodeId);
     if (!node) return;
 
+    const auto& assets = Assets::get();
+
     pool::NodeHandle handle = node->toHandle();
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_assets, m_registry });
-    node->prepare({ m_assets, m_registry });
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry });
 
     {
         {
@@ -547,7 +563,7 @@ void NodeRegistry::bindNode(
             m_allNodes.push_back(handle);
         }
 
-        if (nodeId == m_assets.rootId) {
+        if (nodeId == assets.rootId) {
             m_rootWT = handle;
         }
     }
@@ -556,7 +572,14 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex);
+    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
+
+    // NOTE KI type must be prepared *before* node
+    {
+        event::Event evt { event::Type::type_prepare_view };
+        evt.body.meshType.target = node->m_typeHandle.toId();
+        m_registry->m_dispatcherView->send(evt);
+    }
 
     {
         event::Event evt { event::Type::node_added };
@@ -570,12 +593,6 @@ void NodeRegistry::bindNode(
         m_registry->m_dispatcherView->send(evt);
     }
 
-    {
-        event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_typeHandle.toId();
-        m_registry->m_dispatcherView->send(evt);
-    }
-
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
 
@@ -583,8 +600,10 @@ bool NodeRegistry::bindParent(
     const ki::node_id nodeId,
     const ki::node_id parentId)
 {
+    const auto& assets = Assets::get();
+
     // NOTE KI everything else, except root requires parent
-    if (nodeId == m_assets.rootId) return true;
+    if (nodeId == assets.rootId) return true;
 
     auto* parent = pool::NodeHandle::toNode(parentId);
     auto* node = pool::NodeHandle::toNode(nodeId);
@@ -676,8 +695,8 @@ void NodeRegistry::bindSkybox(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepare({ m_assets, m_registry });
-    node->prepare({ m_assets, m_registry });
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry });
 
     m_skybox = handle;
 
@@ -687,4 +706,3 @@ void NodeRegistry::bindSkybox(
         m_registry->m_dispatcherView->send(evt);
     }
 }
-

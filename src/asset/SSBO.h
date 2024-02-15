@@ -14,6 +14,7 @@ constexpr GLuint SSBO_DRAW_COMMANDS = 5;
 constexpr GLuint SSBO_DRAW_PARAMETERS = 6;
 constexpr GLuint SSBO_PERFORMANCE_COUNTERS = 7;
 constexpr GLuint SSBO_SHAPES = 8;
+constexpr GLuint SSBO_INSTANCE_INDECES = 9;
 
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552

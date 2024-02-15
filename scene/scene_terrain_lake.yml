@@ -45,7 +45,6 @@ entities:
     priority: 20
     type: container
     instanced: true
-    material: terrain_grass_2
     program: g_terrain
     depth_program: g_terrain_depth
     pos: [-1024, 0, -1024]
@@ -59,17 +58,17 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
+      material: terrain_grass_2
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - name: Water surface - SINGLE
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [-50, 14.5, -20]
-    rotation: [270.0, 0.0, 0.0]
     scale: 70
     render_flags:
       no_shadow: true
@@ -77,11 +76,10 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [0, 14.0, 0]
-    rotation: [270.0, 0.0, 0.0]
     scale: 800
     render_flags:
       no_shadow: true

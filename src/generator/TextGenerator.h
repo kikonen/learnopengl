@@ -9,6 +9,7 @@
 #include "backend/DrawOptions.h"
 
 #include "mesh/ModelVBO.h"
+#include "mesh/TextureVBO.h"
 #include "mesh/ModelVAO.h"
 
 #include "text/size.h"
@@ -34,7 +35,6 @@ public:
         Node& container) override;
 
     virtual void updateEntity(
-        const Assets& assets,
         SnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container) override;
@@ -45,13 +45,11 @@ public:
 
     virtual void bindBatch(
         const RenderContext& ctx,
+        mesh::MeshType* type,
         Node& container,
         render::Batch& batch) override;
 
     virtual const kigl::GLVertexArray* getVAO(
-        const Node& container) const noexcept override;
-
-    virtual const backend::DrawOptions& getDrawOptions(
         const Node& container) const noexcept override;
 
     text::font_id getFontId() const noexcept { return m_fontId; }
@@ -68,6 +66,8 @@ public:
         m_dirty = true;
     }
 
+    GLuint64 getAtlasTextureHandle() const noexcept;
+
     void clear();
 
 private:
@@ -77,8 +77,8 @@ private:
 
     mesh::ModelVAO m_vao{ "text" };
     mesh::ModelVBO m_vbo;
+    mesh::TextureVBO m_vboAtlasTex;
 
-    backend::DrawOptions m_drawOptions;
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };

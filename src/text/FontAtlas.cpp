@@ -44,11 +44,12 @@ namespace text
     {
     }
 
-    void FontAtlas::prepare(
-        const Assets& assets)
+    void FontAtlas::prepare()
     {
         if (m_prepared) return;
         m_prepared = true;
+
+        const auto& assets = Assets::get();
 
         const size_t depth = 1;
         {
@@ -97,6 +98,9 @@ namespace text
             glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
             //glGenerateTextureMipmap(texId);
 
+            m_textureHandle = glGetTextureHandleARB(m_texture);
+            glMakeTextureHandleResidentARB(m_textureHandle);
+
             m_usedAtlasSize = m_atlasHandle->m_atlas->used;
         }
     }
@@ -119,13 +123,13 @@ namespace text
         m_usedAtlasSize = currentAtlasSize;
     }
 
-    void FontAtlas::bindTextures(kigl::GLState& state)
+    void FontAtlas::bindTextures()
     {
-        m_texture.bindTexture(state, UNIT_FONT_ATLAS);
+        m_texture.bindTexture(UNIT_FONT_ATLAS);
     }
 
-    void FontAtlas::unbindTextures(kigl::GLState& state)
+    void FontAtlas::unbindTextures()
     {
-        m_texture.unbindTexture(state, UNIT_FONT_ATLAS);
+        m_texture.unbindTexture(UNIT_FONT_ATLAS);
     }
 }

@@ -1,13 +1,8 @@
-#include "MaterialVBO.h"
+#include "MaterialSet.h"
 
 #include <fmt/format.h>
 
-#include "asset/Program.h"
-
-#include "mesh/ModelMesh.h"
-
 namespace {
-    int instancedCount = 0;
     int vertecedCount = 0;
 
     std::unique_ptr<Material> NULL_MATERIAL;
@@ -22,7 +17,7 @@ namespace {
 }
 
 namespace mesh {
-    MaterialVBO::MaterialVBO(MaterialVBO&& o)
+    MaterialSet::MaterialSet(MaterialSet&& o)
         : m_bufferIndex{ o.m_bufferIndex },
         m_materials{ std::move(o.m_materials) },
         m_indeces{ std::move(o.m_indeces) },
@@ -34,11 +29,50 @@ namespace mesh {
         o.m_bufferIndex = 0;
     }
 
-    MaterialVBO::~MaterialVBO() = default;
+    MaterialSet& MaterialSet::operator=(MaterialSet&& o)
+    {
+        m_bufferIndex = o.m_bufferIndex;
+        m_materials = std::move(o.m_materials);
+        m_indeces = std::move(o.m_indeces);
+        m_prepared = o.m_prepared;
+        m_defaultMaterial = std::move(o.m_defaultMaterial);
+        m_useDefaultMaterial = o.m_useDefaultMaterial;
+        m_forceDefaultMaterial = o.m_forceDefaultMaterial;
 
-    void MaterialVBO::setMaterials(const std::vector<Material>& materials)
+        o.m_bufferIndex = 0;
+
+        return *this;
+    }
+
+    MaterialSet& MaterialSet::operator=(const MaterialSet& o)
+    {
+        if (&o == this) return *this;
+
+        m_bufferIndex = o.m_bufferIndex;
+        m_materials = std::move(o.m_materials);
+        m_indeces = std::move(o.m_indeces);
+        m_prepared = o.m_prepared;
+
+        if (o.m_defaultMaterial) {
+            m_defaultMaterial = std::make_unique<Material>();
+            *m_defaultMaterial = *o.m_defaultMaterial;
+        }
+        else {
+            m_defaultMaterial.reset();
+        }
+
+        m_useDefaultMaterial = o.m_useDefaultMaterial;
+        m_forceDefaultMaterial = o.m_forceDefaultMaterial;
+
+        return *this;
+    }
+
+    MaterialSet::~MaterialSet() = default;
+
+    void MaterialSet::setMaterials(const std::vector<Material>& materials)
     {
         m_materials = materials;
+
         if (m_useDefaultMaterial) {
             m_defaultMaterial->m_default = true;
             m_defaultMaterial->m_id = Material::DEFAULT_ID;
@@ -59,33 +93,34 @@ namespace mesh {
         }
     }
 
-    const Material& MaterialVBO::getFirst() const noexcept
+    const Material& MaterialSet::getFirst() const noexcept
     {
         if (m_materials.empty()) return *NULL_MATERIAL;
         return m_materials[0];
     }
 
-    void MaterialVBO::setDefaultMaterial(
+    void MaterialSet::setDefaultMaterial(
         const Material& material,
         bool useDefaultMaterial,
         bool forceDefaultMaterial
     )
     {
-        m_defaultMaterial = std::make_unique<Material>(material);
+        m_defaultMaterial = std::make_unique<Material>();
+        *m_defaultMaterial = material;
         m_useDefaultMaterial = useDefaultMaterial;
         m_forceDefaultMaterial = forceDefaultMaterial;
     }
 
-    Material* MaterialVBO::getDefaultMaterial() const
+    Material* MaterialSet::getDefaultMaterial() const
     {
         return m_defaultMaterial.get();
     }
 
-    int MaterialVBO::resolveMaterialIndex() const
+    int MaterialSet::getMaterialIndex() const noexcept
     {
         if (isSingle()) {
             // NOTE KI *NO* indeces if single material
-            return getFirst().m_registeredIndex;
+            return m_materials.empty() ? 0 : getFirst().m_registeredIndex;
         }
         // NOTE KI special trick; -1 to indicate "multi material" index
         return -static_cast<int>(m_bufferIndex);

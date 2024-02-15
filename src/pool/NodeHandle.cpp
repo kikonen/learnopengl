@@ -16,6 +16,7 @@ namespace {
 
     constexpr size_t MAX_POOL_SIZE{ 100000 };
 
+    std::mutex m_lock;
     pool::Pool<Node> s_pool{ MAX_POOL_SIZE };
 
     std::unordered_map<ki::node_id, uint32_t> m_IdToIndex;
@@ -37,9 +38,11 @@ namespace pool {
     {
         if (!m_handleIndex) return nullptr;
 
-        auto& entry = s_pool.getEntry(m_handleIndex);
-        if (entry.m_data.m_id && entry.m_data.m_id == m_id) {
-            return &entry.m_data;
+        auto* entry = s_pool.getEntry(m_handleIndex);
+        if (!entry) return nullptr;
+
+        if (entry->m_data.m_id && entry->m_data.m_id == m_id) {
+            return &entry->m_data;
         }
 
         // TODO KI invalidated; clear iteslf
@@ -52,11 +55,15 @@ namespace pool {
     {
         if (!id) return NULL_HANDLE;
 
-        auto handleIndex = s_pool.allocate();
-        auto& entry = s_pool.getEntry(handleIndex);
+        std::lock_guard lock(m_lock);
 
-        entry.m_data.m_id = id;
-        entry.m_data.m_handleIndex = handleIndex;
+        auto handleIndex = s_pool.allocate();
+        if (!handleIndex) return {};
+
+        auto* entry = s_pool.getEntry(handleIndex);
+
+        entry->m_data.m_id = id;
+        entry->m_data.m_handleIndex = handleIndex;
 
         m_IdToIndex.insert({ id, handleIndex });
 
@@ -65,6 +72,8 @@ namespace pool {
 
     NodeHandle NodeHandle::toHandle(ki::node_id id) noexcept
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_IdToIndex.find(id);
         if (it == m_IdToIndex.end()) return {};
         return { it->second, id };
@@ -72,6 +81,8 @@ namespace pool {
 
     Node* NodeHandle::toNode(ki::node_id id) noexcept
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_IdToIndex.find(id);
         if (it == m_IdToIndex.end()) return nullptr;
         NodeHandle handle{ it->second, id };
@@ -80,6 +91,8 @@ namespace pool {
 
     void NodeHandle::clear() noexcept
     {
+        std::lock_guard lock(m_lock);
+
         s_pool.clear();
     }
 }

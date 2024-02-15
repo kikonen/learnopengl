@@ -57,6 +57,10 @@ public:
         return std::span{ snapshots }.subspan(start, count);
     }
 
+    inline const Snapshot& getSnapshot(uint32_t index) const noexcept {
+        auto& snapshots = m_snapshots->m_entries;
+        return snapshots[index];
+    }
 
     void clearActiveDirty(uint32_t index) noexcept;
 
@@ -75,14 +79,15 @@ public:
     //// NOTE KI swap only if pending is empty
     //void unlock();
 
-    void copyToPending(uint32_t startIndex);
-    void copyFromPending(uint32_t startIndex);
+    void copyToPending(uint32_t startIndex, int32_t count);
+    void copyFromPending(uint32_t startIndex, int32_t count);
 
 private:
     void copy(
         util::DirtyVector<Snapshot>& src,
         util::DirtyVector<Snapshot>& dst,
-        uint32_t startIndex);
+        uint32_t startIndex,
+        int32_t count);
 
 private:
     std::mutex m_lock;

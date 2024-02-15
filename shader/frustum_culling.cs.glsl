@@ -3,8 +3,11 @@
 layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
 #include struct_entity.glsl
+#include struct_instance.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 
 // struct DrawElementsIndirectCommand
@@ -70,6 +73,7 @@ layout (binding = SSBO_DRAW_PARAMETERS, std430) readonly buffer DrawParametersSS
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 
 float getSignedDistanceToPlane(in vec4 plane, in vec3 p)
@@ -98,7 +102,7 @@ bool isOnFrustum(in vec4 volume)
 
 void main(void) {
   // NOTE KI this is valid *ONLY* if local_y == local_z == 1
-  const uint drawIndex = gl_GlobalInvocationID.x + CS_GROUP_X * (gl_GlobalInvocationID.y - 1);
+  const uint drawIndex = gl_GlobalInvocationID.x + (CS_GROUP_X - 1) * (gl_GlobalInvocationID.y - 1);
 
   const DrawParameters param = u_params[u_drawParametersIndex];
   //if (drawIndex > param.drawCount) return;

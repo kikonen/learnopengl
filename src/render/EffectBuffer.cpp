@@ -1,5 +1,7 @@
 #include "EffectBuffer.h"
 
+#include "asset/Assets.h"
+
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -9,7 +11,6 @@
 
 namespace render {
     void EffectBuffer::prepare(
-        const Assets& assets,
         GBuffer* gBuffer)
     {
         m_gBuffer = gBuffer;
@@ -17,10 +18,12 @@ namespace render {
 
     void EffectBuffer::updateRT(const UpdateViewContext& ctx)
     {
+        const auto& assets = Assets::get();
+
         const auto& res = ctx.m_resolution;
 
-        int w = (int)(ctx.m_assets.gBufferScale * res.x);
-        int h = (int)(ctx.m_assets.gBufferScale * res.y);
+        int w = (int)(assets.gBufferScale * res.x);
+        int h = (int)(assets.gBufferScale * res.y);
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 

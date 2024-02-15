@@ -11,9 +11,13 @@
 
 #include "pool/TypeHandle.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/Mesh.h"
 
 #include "engine/PrepareContext.h"
+
+#include "model/Snapshot.h"
+#include "model/EntityFlags.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -21,16 +25,13 @@
 #include "registry/SpriteRegistry.h"
 
 
-class Assets;
-
 namespace {
 }
 
 namespace mesh {
     MeshType::MeshType()
-        : m_materialVBO{ std::make_unique<MaterialVBO>() }
-    {
-    }
+        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
+    {}
 
     MeshType::MeshType(MeshType&& o) noexcept
         : m_id{ o.m_id },
@@ -41,16 +42,13 @@ namespace mesh {
         m_program{ o.m_program },
         m_shadowProgram{ o.m_shadowProgram },
         m_preDepthProgram{ o.m_preDepthProgram },
-        m_materialVBO{ std::move(o.m_materialVBO) },
         m_sprite{ std::move(o.m_sprite) },
-        m_materialIndex{ o.m_materialIndex },
         m_drawOptions{ o.m_drawOptions },
         m_vao{ o.m_vao },
-        m_prepared{ o.m_prepared },
-        m_mesh{ o.m_mesh },
-        m_deleter{ std::move(o.m_deleter) },
-        m_customMaterial{ std::move(o.m_customMaterial) },
-        m_privateVAO{ o.m_privateVAO }
+        m_preparedWT{ o.m_preparedWT },
+        m_preparedRT{ o.m_preparedRT },
+        m_lodMeshes{ std::move(o.m_lodMeshes) },
+        m_customMaterial{ std::move(o.m_customMaterial) }
     {
     }
 
@@ -59,13 +57,13 @@ namespace mesh {
         KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
     }
 
-    const std::string MeshType::str() const noexcept
+    std::string MeshType::str() const noexcept
     {
+        auto* lod = getLod(0);
+
         return fmt::format(
-            "<NODE_TYPE: id={}, name={}, mesh={}, vao={}, materialIndex={}, materialCount={}>",
-            m_id, m_name, m_mesh ? m_mesh->str() : "N/A", m_vao ? *m_vao : -1,
-            m_materialIndex,
-            m_materialVBO->getMaterialCount());
+            "<NODE_TYPE: id={}, name={}, vao={}, lod={}>",
+            m_id, m_name, m_vao ? *m_vao : -1, lod ? lod->str() : "N/A");
     }
 
     pool::TypeHandle MeshType::toHandle() const noexcept
@@ -73,86 +71,64 @@ namespace mesh {
         return { m_handleIndex, m_id };
     }
 
-    void MeshType::setMesh(std::unique_ptr<Mesh> mesh, bool umique)
+    LodMesh* MeshType::addLod(
+        LodMesh&& lod)
     {
-        setMesh(mesh.get());
-        m_deleter = std::move(mesh);
+        m_lodMeshes->push_back(std::move(lod));
+        return &(*m_lodMeshes)[m_lodMeshes->size() - 1];
     }
 
-    void MeshType::setMesh(Mesh* mesh)
-    {
-        m_mesh = mesh;
-        if (!m_mesh) return;
-
-        m_materialVBO->setMaterials(m_mesh->getMaterials());
-    }
-
-    void MeshType::modifyMaterials(std::function<void(Material&)> fn)
-    {
-        for (auto& material : m_materialVBO->modifyMaterials()) {
-            fn(material);
-        }
-    }
-
-    void MeshType::prepare(
+    void MeshType::prepareWT(
         const PrepareContext& ctx)
     {
-        if (!m_mesh) return;
+        if (m_preparedWT) return;
+        m_preparedWT = true;
 
-        if (m_prepared) return;
-        m_prepared = true;
+        if (!hasMesh()) return;
 
-        for (auto& material : m_materialVBO->modifyMaterials()) {
-            ctx.m_registry->m_materialRegistry->registerMaterial(material);
+        for (auto& lodMesh : *m_lodMeshes) {
+            lodMesh.registerMaterials();
         }
 
         if (m_entityType == EntityType::sprite && m_sprite) {
-            ctx.m_registry->m_spriteRegistry->registerSprite(*m_sprite);
-        }
-
-        m_vao = m_mesh->prepareRT(ctx);
-
-        {
-            m_mesh->prepareMaterials(*m_materialVBO);
-
-            ctx.m_registry->m_materialRegistry->registerMaterialVBO(*m_materialVBO);
-            m_materialIndex = m_materialVBO->resolveMaterialIndex();
-        }
-
-        {
-            m_drawOptions.m_renderBack = m_flags.renderBack;
-            m_drawOptions.m_wireframe = m_flags.wireframe;
-            m_drawOptions.m_blend = m_flags.blend;
-            m_drawOptions.m_blendOIT = m_flags.blendOIT;
-            m_drawOptions.m_instanced = m_flags.instanced;
-            m_drawOptions.m_tessellation = m_flags.tessellation;
-
-            m_mesh->prepareDrawOptions(m_drawOptions);
+            SpriteRegistry::get().registerSprite(*m_sprite);
         }
     }
 
     void MeshType::prepareRT(
         const PrepareContext& ctx)
     {
-        if (!m_mesh) return;
+        if (m_preparedRT) return;
+        m_preparedRT = true;
 
-        if (m_preparedView) return;
-        m_preparedView = true;
+        //if (!hasMesh()) return;
 
-        //m_privateVAO.create();
+        for (auto& lodMesh : *m_lodMeshes) {
+            lodMesh.prepareRT(ctx);
+        }
 
-        m_vao = m_mesh->prepareRT(ctx);
+        if (!m_lodMeshes->empty()) {
+            auto& lodMesh = (*m_lodMeshes)[0];
+            m_vao = lodMesh.m_vao;
+            m_drawOptions.m_renderBack = m_flags.renderBack;
+            m_drawOptions.m_wireframe = m_flags.wireframe;
+            m_drawOptions.m_blend = m_flags.blend;
+            m_drawOptions.m_blendOIT = m_flags.blendOIT;
+            m_drawOptions.m_tessellation = m_flags.tessellation;
+
+            lodMesh.m_mesh->prepareDrawOptions(m_drawOptions);
+        }
 
         if (m_program) {
-            m_program->prepareRT(ctx.m_assets);
+            m_program->prepareRT();
         }
 
         if (m_shadowProgram) {
-            m_shadowProgram->prepareRT(ctx.m_assets);
+            m_shadowProgram->prepareRT();
         }
 
         if (m_preDepthProgram) {
-            m_preDepthProgram->prepareRT(ctx.m_assets);
+            m_preDepthProgram->prepareRT();
         }
 
         if (m_customMaterial) {
@@ -172,5 +148,44 @@ namespace mesh {
     void MeshType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
     {
         m_customMaterial = std::move(customMaterial);
+    }
+
+    const backend::Lod* MeshType::getLod(
+        const glm::vec3& cameraPos,
+        const Snapshot& snapshot) const
+    {
+        const backend::Lod* lod;
+        {
+            auto& meshLods = *m_lodMeshes.get();
+
+            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+
+            int lodIndex = 0;
+            for (; lodIndex < meshLods.size(); lodIndex++) {
+                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
+                    break;
+            }
+            if (lodIndex >= meshLods.size()) {
+                lodIndex--;
+            }
+
+            lod = &meshLods[lodIndex].m_lod;
+        }
+        return lod;
+    }
+
+    ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
+        ki::size_t_entity_flags flags = 0;
+
+        if (m_flags.billboard) {
+            flags |= ENTITY_BILLBOARD_BIT;
+        }
+        if (m_entityType == mesh::EntityType::sprite) {
+            flags |= ENTITY_SPRITE_BIT;
+        }
+        if (m_flags.noFrustum) {
+            flags |= ENTITY_NO_FRUSTUM_BIT;
+        }
+        return flags;
     }
 }

@@ -4,6 +4,7 @@
 
 #include "kigl/kigl.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "text/TextDraw.h"
@@ -26,7 +27,7 @@ namespace mesh {
     {
     }
 
-    const std::string TextMesh::str() const noexcept
+    std::string TextMesh::str() const noexcept
     {
         return fmt::format("<TEXT: id={}>", m_id);
     }
@@ -50,12 +51,18 @@ namespace mesh {
         return m_vao;
     }
 
+    void TextMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_baseVertex = 0;
+        lodMesh.m_lod.m_baseIndex = 0;
+        lodMesh.m_lod.m_indexCount = 0;
+    }
+
     void TextMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = GL_TRIANGLES;
-        drawOptions.m_indexFirst = 0;
-        drawOptions.m_indexCount = 0;
     }
 }

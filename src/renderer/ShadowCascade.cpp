@@ -2,6 +2,7 @@
 
 #include "util/glm_format.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -10,6 +11,7 @@
 #include "component/Light.h"
 #include "component/Camera.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -82,14 +84,14 @@ ShadowCascade::~ShadowCascade()
 void ShadowCascade::prepareRT(
     const PrepareContext& ctx)
 {
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
-    m_solidShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH);
-    m_alphaShadowProgram = registry->m_programRegistry->getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    m_solidShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
+    m_alphaShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    m_solidShadowProgram->prepareRT(assets);
-    m_alphaShadowProgram->prepareRT(assets);
+    m_solidShadowProgram->prepareRT();
+    m_alphaShadowProgram->prepareRT();
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
@@ -117,7 +119,9 @@ GLuint ShadowCascade::getTextureID()
 
 void ShadowCascade::bind(const RenderContext& ctx)
 {
-    auto* node = ctx.m_registry->m_nodeRegistry->getDirLightNode().toNode();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+
+    auto* node = nodeRegistry.getDirLightNode().toNode();
     if (!node) return;
 
     {
@@ -254,7 +258,7 @@ void ShadowCascade::drawNodes(
     };
 
     {
-        m_solidShadowProgram->bind(ctx.m_state);
+        m_solidShadowProgram->bind();
         m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(
@@ -266,7 +270,7 @@ void ShadowCascade::drawNodes(
     }
 
     {
-        m_alphaShadowProgram->bind(ctx.m_state);
+        m_alphaShadowProgram->bind();
         m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
 
         ctx.m_nodeDraw->drawProgram(

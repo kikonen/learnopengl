@@ -13,20 +13,21 @@
 #include "asset/Volume.h"
 #include "asset/AABB.h"
 
-#include "mesh/MaterialVBO.h"
-
 #include "registry/Registry.h"
 
 struct PrepareContext;
 
 namespace mesh {
+    class MaterialSet;
+    struct LodMesh;
+
     class Mesh
     {
     public:
         Mesh();
         virtual ~Mesh();
 
-        virtual const std::string str() const noexcept;
+        virtual std::string str() const noexcept;
 
         virtual bool isValid() const noexcept { return true; }
         virtual void prepareVolume();
@@ -39,7 +40,10 @@ namespace mesh {
             const PrepareContext& ctx) = 0;
 
         virtual void prepareMaterials(
-            MaterialVBO& materialVBO) {};
+            MaterialSet& materialSet) {}
+
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh) = 0;
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) = 0;

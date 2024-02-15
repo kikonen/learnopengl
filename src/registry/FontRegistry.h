@@ -3,20 +3,16 @@
 #include <vector>
 #include <shared_mutex>
 
-#include "asset/Assets.h"
-
 #include "text/FontAtlas.h"
-
-namespace kigl {
-    class GLState;
-}
 
 struct UpdateContext;
 
 class FontRegistry {
 public:
-    FontRegistry(
-        const Assets& assets);
+    static FontRegistry& get() noexcept;
+
+    FontRegistry();
+    FontRegistry& operator=(const FontRegistry&) = delete;
 
     ~FontRegistry();
 
@@ -37,19 +33,15 @@ public:
     text::FontAtlas* modifyFont(text::font_id id);
 
     bool bindFont(
-        kigl::GLState& state,
         text::font_id id);
 
     bool unbindFont(
-        kigl::GLState& state,
         text::font_id id);
 
     text::font_id registerFont(
         const std::string& name);
 
 private:
-    const Assets& m_assets;
-
     mutable std::shared_mutex m_lock{};
 
     std::vector<text::FontAtlas> m_fonts;

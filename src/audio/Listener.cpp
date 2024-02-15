@@ -4,7 +4,7 @@
 
 #include "util/Log.h"
 
-#include "model/Node.h"
+#include "model/Snapshot.h"
 
 namespace {
 }
@@ -49,16 +49,15 @@ namespace audio
         KI_INFO_OUT(fmt::format("LISTENER: id={}", m_id));
     }
 
-    void Listener::updateFromNode()
+    void Listener::updateFromSnapshot(const Snapshot& snapshot)
     {
-        const auto* node = m_nodeHandle.toNode();
-        const auto level = m_nodeHandle ? node->getTransform().getMatrixLevel() : 0;
+        const auto level = snapshot.m_matrixLevel;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = node->getTransform().getWorldPosition();
-        m_front = node->getTransform().getViewFront();
-        m_up = node->getTransform().getViewUp();
+        m_pos = snapshot.getWorldPosition();
+        m_front = glm::normalize(snapshot.getViewFront());
+        m_up = glm::normalize(snapshot.getViewUp());
 
         updatePos();
     }

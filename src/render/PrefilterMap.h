@@ -10,10 +10,6 @@ class RenderContext;
 class CubeMap;
 class Program;
 
-namespace kigl {
-    class GLState;
-}
-
 namespace render {
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
     // - hdri is *linear*
@@ -34,7 +30,6 @@ namespace render {
 
     private:
         void render(
-            kigl::GLState& state,
             Program* program,
             int cubeTextureID,
             int baseSize);

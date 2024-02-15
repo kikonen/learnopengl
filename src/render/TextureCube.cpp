@@ -92,9 +92,9 @@ namespace render {
         glVertexArrayBindingDivisor(m_vao, VBO_VERTEX_BINDING, 0);
     }
 
-    void TextureCube::draw(kigl::GLState& state)
+    void TextureCube::draw()
     {
-        state.bindVAO(m_vao);
+        kigl::GLState::get().bindVAO(m_vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 }

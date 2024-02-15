@@ -1,11 +1,15 @@
 #include "WaterMapRenderer.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
+
+#include "kigl/GLState.h"
 
 #include "component/Camera.h"
 
 #include "pool/NodeHandle.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -52,10 +56,10 @@ void WaterMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
 
     m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_registry->m_materialRegistry->registerMaterial(m_tagMaterial);
+    MaterialRegistry::get().registerMaterial(m_tagMaterial);
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;
@@ -79,7 +83,7 @@ void WaterMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
@@ -90,7 +94,7 @@ void WaterMapRenderer::prepareRT(
         m_reflectionDebugViewport->setGammaCorrect(true);
         m_reflectionDebugViewport->setHardwareGamma(true);
 
-        m_reflectionDebugViewport->prepareRT(assets);
+        m_reflectionDebugViewport->prepareRT();
     }
 
     {
@@ -101,7 +105,7 @@ void WaterMapRenderer::prepareRT(
             glm::vec2(0.5f, 0.5f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
             auto& buffer = m_refractionBuffers[m_prevIndex];
@@ -112,7 +116,7 @@ void WaterMapRenderer::prepareRT(
         m_refractionDebugViewport->setGammaCorrect(true);
         m_refractionDebugViewport->setHardwareGamma(true);
 
-        m_refractionDebugViewport->prepareRT(assets);
+        m_refractionDebugViewport->prepareRT();
     }
 
     glm::vec3 origo(0);
@@ -132,10 +136,12 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& ctx)
 
 void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
+    const auto& assets = ctx.m_assets;
+
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.waterReflectionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.waterReflectionBufferScale * res.y);
+    int w = (int)(assets.waterReflectionBufferScale * res.x);
+    int h = (int)(assets.waterReflectionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -180,10 +186,11 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
+    const auto& assets = ctx.m_assets;
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(ctx.m_assets.waterRefractionBufferScale * res.x);
-    int h = (int)(ctx.m_assets.waterRefractionBufferScale * res.y);
+    int w = (int)(assets.waterRefractionBufferScale * res.x);
+    int h = (int)(assets.waterRefractionBufferScale * res.y);
 
     if (m_squareAspectRatio) {
         h = w;
@@ -230,6 +237,8 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
 {
     //if (!m_rendered) return;
 
+    auto& state = ctx.m_state;
+
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
 
@@ -237,7 +246,7 @@ void WaterMapRenderer::bindTexture(const RenderContext& ctx)
     refractionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);
 
     if (m_noiseTextureID > 0) {
-        ctx.m_state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
+        state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);
     }
 }
 
@@ -252,6 +261,9 @@ bool WaterMapRenderer::render(
     setClosest(closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
+    auto& state = parentCtx.m_state;
+    auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
 
@@ -262,13 +274,13 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& snapshot = parentCtx.m_registry->m_snapshotRegistry->getActiveSnapshot(closest->m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getActiveSnapshot(closest->m_snapshotIndex);
     const auto& planePos = snapshot.getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
 
-    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, true);
+    state.setEnabled(GL_CLIP_DISTANCE0, true);
 
     // reflection map
     {
@@ -364,7 +376,7 @@ bool WaterMapRenderer::render(
     parentCtx.updateDataUBO();
     parentCtx.updateClipPlanesUBO();
 
-    parentCtx.m_state.setEnabled(GL_CLIP_DISTANCE0, false);
+    state.setEnabled(GL_CLIP_DISTANCE0, false);
 
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % m_bufferCount;
@@ -422,6 +434,8 @@ Node* WaterMapRenderer::findClosest(
 {
     if (m_nodes.empty()) return nullptr;
 
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
@@ -431,7 +445,7 @@ Node* WaterMapRenderer::findClosest(
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = glm::length(ray);
         //glm::vec3 fromCamera = glm::normalize(ray);

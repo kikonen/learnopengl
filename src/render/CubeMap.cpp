@@ -46,7 +46,8 @@ namespace render {
 
     void CubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, m_cubeTexture, false);
+        auto& state = ctx.m_state;
+        state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 
     //

@@ -12,10 +12,18 @@
 #include "kigl/GLStencilMode.h"
 
 namespace kigl {
+    // NOTE KI GLState *MUST* be global singleton since there is only
+    // single state in OpenGL (only single OpengL context used)
+    // => Sharing it via Registry just complicates things redundantly
+    // => If truly needed, can make ThreadLocal
     class GLState final
     {
     public:
+        static GLState& get() noexcept;
+
         GLState();
+
+        GLState& operator=(const GLState&) = delete;
 
         void clear();
 

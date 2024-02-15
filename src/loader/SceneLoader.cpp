@@ -17,18 +17,21 @@
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
+#include "asset/Assets.h"
 #include "asset/Material.h"
 #include "asset/Sprite.h"
 #include "asset/Shape.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
+#include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/QuadMesh.h"
 #include "mesh/SpriteMesh.h"
 #include "mesh/TextMesh.h"
 
-#include "text/TextMaterial.h"
 #include "text/TextDraw.h"
 
 #include "component/Light.h"
@@ -475,23 +478,18 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        if (data.instanced) {
-            type->m_flags.instanced = true;
-        }
-
         if (data.type == mesh::EntityType::origo) {
             type->m_flags.invisible = true;
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveMaterial(typeHandle, data);
             resolveSprite(typeHandle, data);
             resolveMesh(typeHandle, data, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
             if (data.type != mesh::EntityType::container) {
-                if (!type->getMesh()) {
+                if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
                         data.baseId, data.desc));
@@ -499,7 +497,12 @@ namespace loader {
                 }
             }
 
-            modifyMaterials(typeHandle, data);
+            int lodIndex = 0;
+            for (auto& lodData : data.lods) {
+                resolveMaterials(typeHandle, data, lodData, lodIndex++);
+            }
+
+            // NOTE KI DEP: program after materials
             resolveProgram(typeHandle, data);
         }
 
@@ -521,11 +524,8 @@ namespace loader {
         bool useCubeMap = false;
         bool useNormalPattern = false;
 
-        type->modifyMaterials([
-            this,
-                &useNormalTex, &useCubeMap, &useDudvTex, &useHeightTex, &useDisplacementTex, &useNormalPattern, &useParallax,
-                &data
-            ](Material& m) {
+        for (auto& lod : type->modifyLods()) {
+            for (auto& m : lod.m_materialSet.modifyMaterials()) {
                 useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
                 useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
                 useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
@@ -536,7 +536,9 @@ namespace loader {
                 if (!useParallax) {
                     m.parallaxDepth = 0.f;
                 }
-            });
+            }
+        }
+
         useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
         if (!data.programName.empty()) {
@@ -593,14 +595,14 @@ namespace loader {
                 definitions[DEF_USE_NORMAL_PATTERN] = "1";
             }
 
-            type->m_program = m_registry->m_programRegistry->getProgram(
+            type->m_program = ProgramRegistry::get().getProgram(
                 data.programName,
                 false,
                 data.geometryType,
                 definitions);
 
             if (!data.shadowProgramName.empty()) {
-                type->m_shadowProgram = m_registry->m_programRegistry->getProgram(
+                type->m_shadowProgram = ProgramRegistry::get().getProgram(
                     data.shadowProgramName,
                     false,
                     "",
@@ -608,7 +610,7 @@ namespace loader {
             }
 
             if (usePreDepth) {
-                type->m_preDepthProgram = m_registry->m_programRegistry->getProgram(
+                type->m_preDepthProgram = ProgramRegistry::get().getProgram(
                     data.preDepthProgramName,
                     false,
                     "",
@@ -625,38 +627,42 @@ namespace loader {
         return font ? font->id : 0;
     }
 
-    void SceneLoader::resolveMaterial(
-        pool::TypeHandle typeHandle,
-        const EntityCloneData& data)
+    Material SceneLoader::resolveDefaultMaterial(
+        const EntityCloneData& entityData,
+        const LodData& data)
     {
-        auto* type = typeHandle.toType();
-
-        // NOTE KI need to create copy *IF* modifiers
-        // TODO KI should make copy *ALWAYS* for safety
         const Material* material = nullptr;
 
         if (!data.materialName.empty()) {
-            material = findMaterial(data.materialName);
+            material = findMaterial(data.materialName, m_materials);
         }
 
         if (!material) {
             material = &m_defaultMaterial;
         }
 
-        auto& materialVBO = type->m_materialVBO;
-        materialVBO->setDefaultMaterial(*material, true, data.forceMaterial);
+        return *material;
     }
 
-    void SceneLoader::modifyMaterials(
+    void SceneLoader::resolveMaterials(
         pool::TypeHandle typeHandle,
-        const EntityCloneData& data)
+        const EntityCloneData& entityData,
+        const LodData& data,
+        int lodIndex)
     {
         auto* type = typeHandle.toType();
 
-        type->modifyMaterials([this, &data](Material& m) {
-            m_materialLoader.modifyMaterial(m, data.materialModifiers);
-            m.loadTextures(m_assets);
-        });
+        Material defaultMaterial = resolveDefaultMaterial(entityData, data);
+
+        auto* lodMesh = type->modifyLod(lodIndex);
+        if (lodMesh) {
+            lodMesh->setupMeshMaterials(defaultMaterial, true, entityData.forceMaterial);
+
+            for (auto& m : lodMesh->m_materialSet.modifyMaterials()) {
+                m_materialLoader.modifyMaterial(m, data.materialModifiers);
+                m.loadTextures();
+            };
+        }
     }
 
     void SceneLoader::resolveSprite(
@@ -681,50 +687,42 @@ namespace loader {
         const EntityCloneData& data,
         const glm::uvec3& tile)
     {
+        const auto& assets = Assets::get();
+
         auto* type = typeHandle.toType();
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (data.type == mesh::EntityType::model) {
-            auto future = m_registry->m_modelRegistry->getMesh(
-                data.meshName,
-                m_assets.modelsDir,
-                data.meshPath);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
             type->m_entityType = mesh::EntityType::model;
 
-            KI_INFO(fmt::format(
-                "SCENE_FILE ATTACH: id={}, desc={}, type={}",
-                data.baseId, data.desc, type->str()));
-        }
-        else if (data.type == mesh::EntityType::quad) {
-            auto future = m_registry->m_modelRegistry->getMesh(
-                QUAD_MESH_NAME,
-                m_assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
-            type->m_entityType = mesh::EntityType::quad;
-        }
-        else if (data.type == mesh::EntityType::billboard) {
-            auto future = m_registry->m_modelRegistry->getMesh(
-                QUAD_MESH_NAME,
-                m_assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
-            type->m_entityType = mesh::EntityType::billboard;
+            for (auto& lodData : data.lods) {
+                auto future = ModelRegistry::get().getMesh(
+                    lodData.meshName,
+                    assets.modelsDir,
+                    lodData.meshPath);
+
+                auto* lod = type->addLod({ future.get() });
+                lod->m_lod.setDistance(lodData.distance);
+
+                KI_INFO(fmt::format(
+                    "SCENE_FILE ATTACH: id={}, desc={}, type={}",
+                    data.baseId, data.desc, type->str()));
+            }
         }
         else if (data.type == mesh::EntityType::sprite) {
-            auto future = m_registry->m_modelRegistry->getMesh(
+            auto future = ModelRegistry::get().getMesh(
                 QUAD_MESH_NAME,
-                m_assets.modelsDir);
-            auto* mesh = future.get();
-            type->setMesh(mesh);
+                assets.modelsDir);
+            type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::sprite;
         }
         else if (data.type == mesh::EntityType::text) {
             type->m_entityType = mesh::EntityType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
-            type->setMesh(std::move(mesh), true);
+
+            mesh::LodMesh lod;
+            lod.setMesh(std::move(mesh), true);
+            type->addLod(std::move(lod));
         }
         else if (data.type == mesh::EntityType::terrain) {
             type->m_entityType = mesh::EntityType::terrain;
@@ -789,14 +787,20 @@ namespace loader {
         transform.setScale(data.scale);
         transform.setFront(data.front);
 
-        auto mesh = type->getMesh();
-        if (mesh) {
-            transform.setVolume(mesh->getAABB().getVolume());
+        auto* lod = type->getLod(0);
+        if (lod) {
+            auto* mesh = lod->m_mesh;
+            if (mesh) {
+                transform.setVolume(mesh->getAABB().getVolume());
+            }
         }
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
-        node->m_generator = m_generatorLoader.createGenerator(data.generator, node);
+        node->m_generator = m_generatorLoader.createGenerator(
+            data.generator,
+            m_materials,
+            type);
 
         if (type->m_entityType == mesh::EntityType::text) {
             auto fontId = resolveFont(typeHandle, data.text);
@@ -817,7 +821,7 @@ namespace loader {
                     data.customMaterial,
                     cloneIndex,
                     tile));
-            m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
+            MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
         }
 
         return handle;
@@ -946,6 +950,12 @@ namespace loader {
             }
         }
         {
+            const auto& e = data.renderFlags.find("billboard");
+            if (e != data.renderFlags.end()) {
+                flags.billboard = e->second;
+            }
+        }
+        {
             const auto& e = data.renderFlags.find("tessellation");
             if (e != data.renderFlags.end()) {
                 flags.tessellation = e->second;
@@ -970,7 +980,7 @@ namespace loader {
         MetaData& data) const
     {
         data.name = "<noname>";
-        //data.modelsDir = m_assets.modelsDir;
+        //data.modelsDir = assets.modelsDir;
 
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
@@ -1132,16 +1142,6 @@ namespace loader {
                 }
             }
         }
-    }
-
-    const Material* SceneLoader::findMaterial(
-        std::string_view name) const
-    {
-        const auto& it = std::find_if(
-            m_materials.cbegin(),
-            m_materials.cend(),
-            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
-        return it != m_materials.end() ? &(it->material) : nullptr;
     }
 
     const Sprite* SceneLoader::findSprite(

@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
 
 #include "model/Node.h"
@@ -60,7 +61,6 @@ void GridGenerator::updateInstances(
 
                 transform.setPosition(containerTransform.getPosition() + pos);
 
-                transform.setMaterialIndex(containerTransform.getMaterialIndex());
                 transform.setVolume(containerTransform.getVolume());
 
                 transform.setQuatRotation(containerTransform.getQuatRotation());
@@ -83,7 +83,7 @@ void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     Node& node)
 {
-    auto& entityRegistry = *ctx.m_registry->m_entityRegistry;
+    auto* type = node.m_typeHandle.toType();
 
     const auto count = m_zCount * m_xCount * m_yCount;
 
@@ -91,5 +91,6 @@ void GridGenerator::prepareInstances(
 
     for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
+        transform.m_flags = type->resolveEntityFlags();
     }
 }

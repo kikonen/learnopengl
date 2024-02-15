@@ -6,12 +6,9 @@
 
 #include "text/size.h"
 
-namespace kigl {
-    class GLState;
-}
-
 namespace mesh {
     class ModelVBO;
+    class TextureVBO;
 }
 
 struct PrepareContext;
@@ -30,15 +27,15 @@ namespace text
         void prepareRT(
             const PrepareContext& ctx);
 
-        void updateRT(
-            kigl::GLState& state);
+        void updateRT();
 
         void render(
             const RenderContext& ctx,
             text::font_id fontId,
             std::string_view text,
             glm::vec2& pen,
-            mesh::ModelVBO& vbo);
+            mesh::ModelVBO& vbo,
+            mesh::TextureVBO& atlasVbo);
 
         void clear();
 

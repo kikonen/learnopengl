@@ -15,11 +15,13 @@ namespace {
     constexpr size_t MAX_SHAPE_COUNT = SHAPE_BLOCK_SIZE * SHAPE_BLOCK_COUNT;
 }
 
-SpriteRegistry::SpriteRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+SpriteRegistry& SpriteRegistry::get() noexcept
+{
+    static SpriteRegistry s_registry;
+    return s_registry;
+}
+
+SpriteRegistry::SpriteRegistry()
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker
     m_shapesSSBO.reserve(MAX_SHAPE_COUNT);
@@ -98,7 +100,7 @@ void SpriteRegistry::updateShapeBuffer()
         // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = spriteIndex; i < spriteCount; i++) {
             auto& sprite = m_sprites[i];
-            sprite.prepare(m_assets);
+            sprite.prepare();
             for (auto& shape : sprite.m_shapes) {
                 m_shapesSSBO.emplace_back(shape.toSSBO());
             }

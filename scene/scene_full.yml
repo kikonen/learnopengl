@@ -66,6 +66,21 @@ entities:
         default: true
     controllers:
       - type: pawn
+  - id: fps_counter
+    parent_id: player
+    type: text
+    material: fps_text
+    text:
+      font: fps_font
+      text: "- fps"
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [-1.8, 0.95, -2.5]
+    scale: 0.0025
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
   - name: Player Camera
     parent_id: player
     type: origo
@@ -256,13 +271,13 @@ entities:
       render_back: true
   - name: Window 1_1
     model: quad
-    type: billboard
     material: window_1
     program: g_tex
     pos: [5.0, 12.0, 0.0]
     rotation: [0.0, 180.0, 0.0]
     scale: [2.5, 4, 0]
     render_flags:
+      billboard: true
       alpha: true
       blend_oit: true
       render_back: true
@@ -450,7 +465,7 @@ entities:
     render_flags:
       render_back: false
     selected: false
-  - name: Cow fur
+  - xname: Cow fur
     model: cow
     program: g_fur
     pos: [5.0, 25.0, -5.0]
@@ -640,13 +655,11 @@ entities:
     scale: 1
     selected: false
   - id: pool_surface_{t}
-    type: quad
+    model: plane
     priority: -5
     material: pool_surface
     program: g_water
     pos: [0, 9.5, -10]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -661,13 +674,11 @@ entities:
       z_step: 60
     script_file: scripts/anim_water
   - id: pool_floor_{t}
-    model: quad
+    model: plane
     priority: -10
     material: pool_floor
     program: g_tex
     pos: [0.0, 3.7, -10.0]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -705,7 +716,6 @@ entities:
     priority: 20
     type: container
     instanced: true
-    material: terrain_grass_2
     program: g_terrain
     depth_program: g_terrain_depth
     pos: [-1200, -5.5, -900]
@@ -717,6 +727,7 @@ entities:
       tessellation: true
     generator:
       type: terrain
+      material: terrain_grass_2
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
@@ -745,15 +756,13 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - xid: sea_surface_{t}
+  - id: sea_surface_{t}
     desc: TODO KI conflicting water reflect with pool
     priority: -20
-    type: quad
+    model: plane
     material: sea_surface
     program: g_water
     pos: [-1072, 0.0, -772]
-    base_rot: [270.0, 0.0, 0.0]
-    front: [0, 1, 0]
     scale: 128
     render_flags:
       no_shadow: true
@@ -768,11 +777,10 @@ entities:
       z_step: 256
   - id: sea_floor_{t}
     priority: -25
-    model: quad
+    model: plane
     material: sea_floor
     program: g_tex
     pos: [-1072, -70.0, -772]
-    rotation: [270.0, 0.0, 0.0]
     scale: 128
     render_flags:
       no_shadow: true
@@ -817,15 +825,46 @@ entities:
       tiling: 4
   - name: Asteroid belt
     parent_id: planet-origo
-    model: [rock2, rock]
-    instanced: true
     program: g_tex
     force_material: true
-    material_modifier:
-      metal: [0.5, 0.0, 0, 1]
-      map_pbr: textures\Rock002_1K-PNG
-      tiling: 4
     pos: [0, 0, 0]
+    lods:
+      - model: [rock2, rock]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          map_pbr: textures\Rock002_1K-PNG
+          #kd: [1, 1, 0]
+          tiling: 4
+        distance: 20
+      - model: [rock2, rock_lod_1]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          map_pbr: textures\Rock002_1K-PNG
+          #kd: [0, 1, 1]
+          tiling: 4
+        distance: 40
+      - model: [rock2, rock_lod_2]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [0, 0, 1]
+          tiling: 4
+        distance: 60
+      - model: [rock2, rock_lod_3]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [0, 1, 0]
+          tiling: 4
+        distance: 80
+      - model: [rock2, rock_lod_4]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          #kd: [1, 0, 0]
+          tiling: 4
+        distance: 100
+    instanced: true
     generator:
       type: asteroid_belt
       count: 1000
@@ -855,94 +894,28 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - id: linden_tree_forest_part_1_{t}
+  - id: linden_tree_forest
     type: model
-    model: quad
-    xtype: billboard
     priority: 1
     program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
+    pos: [250, 10.0, 150.0]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_2_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
+    scale: 10
+    lods:
+      - model: linden_tree
+        material: linden_tree
+        distance: 450
+      - model: linden_tree_lod_1
+        material: linden_tree
+        distance: 99999
     instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_3_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 45, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: linden_tree_forest_part_4_{t}
-    type: model
-    model: quad
-    xtype: billboard
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [250, 15.0, 150.0]
-    rotation: [0, 135, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
     generator:
       type: grid
       repeat:
@@ -951,12 +924,13 @@ entities:
         x_step: -20
         z_step: 20
   - id: skeleton_army_{t}
-    type: billboard
+    model: quad
     priority: 1
     program: g_tex
     pos: [15, 11.5, 60.0]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       render_back: true
       enforce_bounds: true
@@ -1086,9 +1060,16 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
+fonts:
+  - name: fps_font
+    path: fonts/Vera.ttf
+    size: 36
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]
+  - name: fps_text
+    kd: [0.0, 0.8, 0.0, 1.0]
+    xmetal: [1.0, 0.0, 0, 1]
   - name: teapot
     kd: [0.578, 0.578, 0.168, 1.0]
   - name: cow

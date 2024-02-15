@@ -152,7 +152,7 @@ private:
 
     // NOTE KI *identity* matrix for standalone camera
     glm::quat m_nodeQuat{ 1.f, 0.f, 0.f, 0.f };
-    ki::level_id m_nodeLevel{ (ki::level_id)-1 };
+    ki::level_id m_nodeLevel{ 0 };
 
     float m_fov{ 45.f };
     float m_fovProjection = -1.0f;
@@ -176,9 +176,9 @@ private:
 
     mutable glm::mat4 m_viewMatrix{ 1.f };
 
-    ki::level_id m_projectionLevel{ (ki::level_id)-1 };
-    ki::level_id m_projectedLevel{ (ki::level_id)-1 };
-    ki::level_id m_viewLevel{ (ki::level_id)-1 };
+    ki::level_id m_projectionLevel{ 0 };
+    ki::level_id m_projectedLevel{ 0 };
+    ki::level_id m_viewLevel{ 0 };
 
     glm::vec3 m_worldPosition{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };

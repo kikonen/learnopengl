@@ -1,9 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "ki/RenderClock.h"
 
-#include "asset/Assets.h"
-
+class Assets;
 class Registry;
 
 //
@@ -13,15 +14,14 @@ struct UpdateViewContext final {
 public:
     UpdateViewContext(
         const ki::RenderClock& clock,
-        const Assets& assets,
         Registry* registry,
         int width,
         int height);
 
 public:
-    const ki::RenderClock& m_clock;
-
     const Assets& m_assets;
+
+    const ki::RenderClock& m_clock;
 
     const glm::uvec2 m_resolution;
 

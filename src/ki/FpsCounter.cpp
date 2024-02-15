@@ -41,7 +41,7 @@ namespace ki {
         m_millisAvg = renderTotal * 1000.f / (float)FPS_FRAMES;
     }
 
-    std::string FpsCounter::formatSummary(const char* title)
+    std::string FpsCounter::formatSummary(const char* title) const noexcept
     {
         sprintf_s(
             m_formatBuffer,

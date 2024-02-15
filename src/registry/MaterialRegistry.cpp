@@ -2,10 +2,12 @@
 
 #include "fmt/format.h"
 
+#include "util/Thread.h"
+
 #include "asset/SSBO.h"
 #include "asset/MaterialSSBO.h"
 
-#include "mesh/MaterialVBO.h"
+#include "mesh/MaterialSet.h"
 
 
 namespace {
@@ -21,11 +23,13 @@ namespace {
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
-MaterialRegistry::MaterialRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+MaterialRegistry& MaterialRegistry::get() noexcept
+{
+    static MaterialRegistry s_registry;
+    return s_registry;
+}
+
+MaterialRegistry::MaterialRegistry()
 {
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker
     m_materials.reserve(MAX_MATERIAL_COUNT);
@@ -66,14 +70,15 @@ void MaterialRegistry::registerMaterial(Material& material)
     m_materials.emplace_back(material);
 }
 
-void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
+void MaterialRegistry::registerVertexMaterials(mesh::MaterialSet& materialSet)
 {
     // NOTE KI *NO* indeces if single material
-    if (materialVBO.isSingle()) return;
+    if (materialSet.isSingle()) return;
 
     std::lock_guard lock(m_lock);
 
-    const size_t count = materialVBO.getIndeces().size();
+    const auto& srcIndeces = materialSet.getIndeces();
+    const size_t count = srcIndeces.size();
     const size_t index = m_indeces.size();
     const size_t offset = index * sizeof(GLuint);
 
@@ -87,13 +92,13 @@ void MaterialRegistry::registerMaterialVBO(mesh::MaterialVBO& materialVBO)
         m_indeces.reserve(size);
     }
 
-    materialVBO.m_bufferIndex = index;
-    //materialVBO.m_buffer = &m_indexBuffer;
+    materialSet.m_bufferIndex = index;
+    //materialSet.m_buffer = &m_indexBuffer;
 
     m_indeces.insert(
         m_indeces.end(),
-        materialVBO.getIndeces().begin(),
-        materialVBO.getIndeces().end());
+        srcIndeces.begin(),
+        srcIndeces.end());
 }
 
 Material* MaterialRegistry::find(
@@ -155,7 +160,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = index; i < totalCount; i++) {
             auto& material = m_materials[i];
-            material.prepare(m_assets);
+            material.prepare();
             m_materialsSSBO.emplace_back(material.toSSBO());
         }
     }

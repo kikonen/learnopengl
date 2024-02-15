@@ -55,7 +55,7 @@ const Sprite* Sprite::findID(
     return it != sprites.end() ? &(*it) : nullptr;
 }
 
-void Sprite::prepare(const Assets& assets)
+void Sprite::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;

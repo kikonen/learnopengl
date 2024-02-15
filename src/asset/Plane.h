@@ -19,7 +19,7 @@ struct Plane {
         m_distance(glm::dot(m_normal, origin))
     {}
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     inline const glm::vec4 getPlane() const noexcept
     {

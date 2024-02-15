@@ -57,19 +57,20 @@ entities:
     scale: [0.8, 1.8, 1]
     script_file: scripts/anim_rotate_object
   - name: Object back
-    type: billboard
+    model: quad
     program: g_tex
     pos: [5, 0, 0]
     material: skeleton_back
     sprite: skeleton
     render_flags:
+      billboard: true
       alpha: true
       physics: true
       enforce_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
   - name: Object right
-    type: quad
+    model: quad
     program: g_tex
     pos: [7.5, 0, 0]
     material: skeleton_right

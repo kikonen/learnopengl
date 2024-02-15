@@ -5,6 +5,8 @@
 
 #include "asset/Shader.h"
 
+#include "util/thread.h"
+
 #include "kigl/GLState.h"
 
 #include "mesh/ModelVBO.h"
@@ -67,14 +69,14 @@ namespace mesh {
         prepareVAO(*m_vao, m_positionVbo, m_normalVbo, m_textureVbo, m_ebo);
     }
 
-    void ModelVAO::bind(kigl::GLState& state)
+    void ModelVAO::bind()
     {
-        state.bindVAO(*m_vao);
+        kigl::GLState::get().bindVAO(*m_vao);
     }
 
-    void ModelVAO::unbind(kigl::GLState& state)
+    void ModelVAO::unbind()
     {
-        state.bindVAO(0);
+        kigl::GLState::get().bindVAO(0);
     }
 
     void ModelVAO::prepareVAO(
@@ -173,6 +175,7 @@ namespace mesh {
 
     kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
     {
+        ASSERT_RT();
         assert(!modelVBO.m_positionEntries.empty());
         assert(!modelVBO.m_normalEntries.empty());
         assert(!modelVBO.m_textureEntries.empty());
@@ -184,7 +187,7 @@ namespace mesh {
             const size_t baseIndex = m_positionEntries.size();
             const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
-            modelVBO.m_vertexOffset = baseOffset;
+            modelVBO.m_positionVboOffset = baseOffset;
         }
 
         {
@@ -207,7 +210,7 @@ namespace mesh {
                 modelVBO.m_positionEntries.end());
 
             for (size_t i = 0; i < count; i++) {
-                m_positionEntries[base + i] += modelVBO.m_positionOffset;
+                m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
             }
         }
 
@@ -257,7 +260,7 @@ namespace mesh {
             if (m_indexEntries.size() + count >= MAX_INDEX_COUNT)
                 throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
 
-            modelVBO.m_indexOffset = baseOffset;
+            modelVBO.m_indexEboOffset = baseOffset;
 
             {
                 size_t size = m_indexEntries.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
@@ -277,6 +280,8 @@ namespace mesh {
 
     void ModelVAO::updateRT()
     {
+        ASSERT_RT();
+
         updatePositionBuffer();
         updateNormalBuffer();
         updateTextureBuffer();
@@ -304,9 +309,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_positionVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_positionVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_positionVbo.update(
                 updateIndex * sz,
@@ -338,9 +343,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_normalVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_normalVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_normalVbo.update(
                 updateIndex * sz,
@@ -372,9 +377,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_textureVbo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_textureVbo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_textureVbo.update(
                 updateIndex * sz,
@@ -406,9 +411,9 @@ namespace mesh {
 
             const size_t updateCount = totalCount - updateIndex;
 
-            m_ebo.invalidateRange(
-                updateIndex * sz,
-                updateCount * sz);
+            //m_ebo.invalidateRange(
+            //    updateIndex * sz,
+            //    updateCount * sz);
 
             m_ebo.update(
                 updateIndex * sz,

@@ -1,7 +1,7 @@
 assets:
   log_file: log/development.log
   scene_file: scene_physics.yml
-  scene_file: scene_text.yml
+  scene_file: scene_forest.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -69,6 +69,7 @@ assets:
   frustum_enabled: true
   frustum_cpu: true
   frustum_gpu: false
+  frustum_parallel_limit: 500
   frustum_debug: true
   frustum_visual: false
 

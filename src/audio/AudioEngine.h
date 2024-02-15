@@ -24,7 +24,11 @@ namespace audio
     //
     class AudioEngine {
     public:
+        static AudioEngine& get() noexcept;
+
         AudioEngine();
+        AudioEngine& operator=(const AudioEngine&) = delete;
+
         ~AudioEngine();
 
         void prepare();

@@ -34,6 +34,6 @@ struct OBB {
     glm::vec4 m_corners[8];
     glm::vec4 m_projected[8];
 
-    ki::level_id m_projectedLevel{ (ki::level_id)-1 };
-    ki::level_id m_modelLevel{ (ki::level_id)-1 };
+    ki::level_id m_projectedLevel{ 0 };
+    ki::level_id m_modelLevel{ 0 };
 };

@@ -5,10 +5,10 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include struct_material.glsl
 #include struct_entity.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 #include uniform_textures.glsl
 
 in TCS_OUT {

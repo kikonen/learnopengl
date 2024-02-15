@@ -9,10 +9,6 @@ class RenderContext;
 
 class Program;
 
-namespace kigl {
-    class GLState;
-}
-
 namespace render {
     // https://learnopengl.com/PBR/IBL/Specular-IBL
     class BrdfLutTexture
@@ -32,7 +28,6 @@ namespace render {
 
     private:
         void render(
-            kigl::GLState& state,
             Program* program,
             int cubeTextureID,
             int baseSize);

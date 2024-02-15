@@ -5,17 +5,15 @@
 #include <string>
 #include <mutex>
 
-#include "asset/Assets.h"
-
-
 class Program;
 
 class ProgramRegistry final
 {
 public:
-    ProgramRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+    static ProgramRegistry& get() noexcept;
+
+    ProgramRegistry();
+    ProgramRegistry& operator=(const ProgramRegistry&) = delete;
 
     ~ProgramRegistry();
 
@@ -39,10 +37,6 @@ public:
     void validate();
 
 private:
-    const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
     // name + geom
     std::unordered_map<std::string, std::unique_ptr<Program>> m_programs;
 

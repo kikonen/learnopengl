@@ -3,32 +3,27 @@
 #include <glm/glm.hpp>
 
 #include <freetype-gl/texture-font.h>
-//#include <freetype-gl/vertex-buffer.h>
-
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-
-#include "kigl/GLState.h"
 
 #include "mesh/ModelVBO.h"
-#include "mesh/ModelVAO.h"
+#include "mesh/TextureVBO.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
-#include "mesh/MeshType.h"
+
+//#include "mesh/LodMesh.h"
+//#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 
 #include "engine/UpdateContext.h"
 
-#include "TextMaterial.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
 
 #include "registry/Registry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/FontRegistry.h"
+
+#include "mesh/VBO_impl.h"
 
 namespace
 {
@@ -40,13 +35,14 @@ namespace
     //
     void addText(
         mesh::ModelVBO& vbo,
+        mesh::TextureVBO& atlasVbo,
         text::FontAtlas* fontAtlas,
         std::string_view text,
         glm::vec2& pen)
     {
         const auto penOrigin = pen;
-        const glm::vec3 normal{ 0.f, 0.f, 0.f };
-        const glm::vec3 tangent{ 0.f, 0.f, 0.f };
+        const glm::vec3 normal{ 0.f, 0.f, 1.f };
+        const glm::vec3 tangent{ 1.f, 0.f, 0.f };
         const char* prev = { nullptr };
 
         const mesh::NormalEntry normals[4]{
@@ -64,6 +60,10 @@ namespace
         const auto line_height = line_ascender - line_descender;
 
         //pen.y += line_ascender;
+
+        const ftgl::texture_glyph_t* m_glyph = texture_font_get_glyph(font, M_CH);
+        const float glyphMaxW = m_glyph->s1 - m_glyph->s0;
+        const float glyphMaxH = m_glyph->t1 - m_glyph->t0;
 
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
         for (const char& ch : text) {
@@ -99,6 +99,9 @@ namespace
             const float s1 = glyph->s1;
             const float t1 = glyph->t1;
 
+            const float glyphW = glyph->s1 - glyph->s0;
+            const float glyphH = glyph->t1 - glyph->t0;
+
             const GLuint index = (GLuint)vbo.m_normalEntries.size();
 
             const mesh::IndexEntry indeces[2] {
@@ -118,6 +121,13 @@ namespace
                 { {s1, t0} },
             };
 
+            const mesh::TextureEntry material[4]{
+                { {0, 0} },
+                { {0,                  glyphH / glyphMaxH} },
+                { {glyphW / glyphMaxW, glyphH / glyphMaxH} },
+                { {glyphW / glyphMaxW, 0} },
+            };
+
             for (const auto& v : positions) {
                 vbo.m_positionEntries.push_back(v);
             }
@@ -125,6 +135,13 @@ namespace
                 vbo.m_normalEntries.push_back(v);
             }
             for (const auto& v : textures) {
+                atlasVbo.addEntry(v);
+                //vbo.m_textureEntries.push_back(v);
+            }
+            for (const auto& v : positions) {
+                //vbo.m_textureEntries.push_back(mesh::TextureEntry{ { v.x, v.y } });
+            }
+            for (const auto& v : material) {
                 vbo.m_textureEntries.push_back(v);
             }
             for (const auto& v : indeces) {
@@ -150,11 +167,10 @@ namespace text
     {
     }
 
-    void TextDraw::updateRT(
-        kigl::GLState& state)
+    void TextDraw::updateRT()
     {
         if (m_lastFont) {
-            m_lastFont->bindTextures(state);
+            m_lastFont->bindTextures();
         }
     }
 
@@ -163,12 +179,13 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         glm::vec2& pen,
-        mesh::ModelVBO& vbo)
+        mesh::ModelVBO& vbo,
+        mesh::TextureVBO& atlasVbo)
     {
-        auto* font = ctx.m_registry->m_fontRegistry->getFont(fontId);
+        auto* font = FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(vbo, font, text, pen);
+        addText(vbo, atlasVbo, font, text, pen);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

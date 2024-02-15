@@ -3,13 +3,10 @@
 #include <future>
 #include <mutex>
 
-#include "asset/Assets.h"
-
 class AsyncLoader
 {
 public:
     AsyncLoader(
-        const Assets& assets,
         std::shared_ptr<std::atomic<bool>> alive);
 
     virtual void setup();
@@ -21,8 +18,6 @@ public:
     void waitForReady();
 
 private:
-    const Assets& m_assets;
-
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     int m_startedCount = 0;

@@ -3,8 +3,11 @@
 layout(vertices=3) out;
 
 #include struct_entity.glsl
+#include struct_instance.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
@@ -48,6 +51,7 @@ out TCS_OUT {
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
 Entity entity;
 
 void main()

@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "asset/Assets.h"
 #include "TextureSpec.h"
 
 #include "kigl/kigl.h"
@@ -20,8 +19,7 @@ public:
 
     virtual ~Texture();
 
-    virtual void prepare(
-        const Assets& assets) = 0;
+    virtual void prepare() = 0;
 
     static GLuint nextIndex();
 

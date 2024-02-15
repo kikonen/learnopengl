@@ -5,12 +5,15 @@
 
 #include "pool/NodeHandle.h"
 
+#include "asset/Assets.h"
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
 #include "event/Dispatcher.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 
 #include "model/Node.h"
@@ -32,18 +35,22 @@ namespace loader {
     void CubeMapLoader::attachCubeMap(
         const ki::node_id rootId)
     {
-        if (!m_assets.showCubeMapCenter) return;
+        const auto& assets = Assets::get();
+
+        if (!assets.showCubeMapCenter) return;
 
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<cube_map>");
 
-        auto future = m_registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             "ball_volume",
-            m_assets.modelsDir);
-        auto& mesh = future.get();
+            assets.modelsDir);
 
-        type->setMesh(mesh);
+        auto* mesh = future.get();
+        auto* lod = type->addLod({ mesh });
+
+        type->m_entityType = mesh::EntityType::marker;
 
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
@@ -51,9 +58,7 @@ namespace loader {
             //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO->setDefaultMaterial(material, true, true);
-            materialVBO->setMaterials({ material });
+            lod->m_materialSet.setMaterials({ material });
         }
 
         auto& flags = type->m_flags;
@@ -68,9 +73,9 @@ namespace loader {
         flags.noNormals = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
-        type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
+        type->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.cubeMapId);
+        auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<cube_map>";
@@ -91,7 +96,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.cubeMapId,
+                .target = assets.cubeMapId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

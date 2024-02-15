@@ -3,7 +3,7 @@
 #include <fmt/format.h>
 
 
-const std::string Frustum::str() const noexcept
+std::string Frustum::str() const noexcept
 {
     return fmt::format(
         "<FRUSTUM: top={}, bottom={}, left={}, right={}, near={}, far={}>",

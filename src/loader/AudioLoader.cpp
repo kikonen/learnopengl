@@ -3,6 +3,8 @@
 #include "ki/yaml.h"
 #include "ki/limits.h"
 
+#include "asset/Assets.h"
+
 #include "util/Util.h"
 
 #include "audio/Source.h"
@@ -154,8 +156,10 @@ namespace loader
     {
         if (!data.enabled) return;
 
-        std::string fullPath = util::joinPath(m_assets.assetsDir, data.path);
-        auto soundId = m_registry->m_audioEngine->registerSound(fullPath);
+        const auto& assets = Assets::get();
+
+        std::string fullPath = util::joinPath(assets.assetsDir, data.path);
+        auto soundId = audio::AudioEngine::get().registerSound(fullPath);
 
         if (!soundId) return;
 

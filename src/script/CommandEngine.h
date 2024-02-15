@@ -18,7 +18,11 @@ namespace script
     class CommandEngine final
     {
     public:
+        static CommandEngine& get() noexcept;
+
         CommandEngine();
+        CommandEngine& operator=(const CommandEngine&) = delete;
+
         ~CommandEngine();
 
         void prepare(Registry* registry);

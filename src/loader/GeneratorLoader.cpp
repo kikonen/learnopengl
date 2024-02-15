@@ -3,10 +3,15 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+#include "asset/Material.h"
+
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
-#include "mesh/MaterialVBO.h"
+
+#include "mesh/MaterialSet.h"
 
 #include "generator/GridGenerator.h"
 #include "generator/TerrainGenerator.h"
@@ -70,6 +75,9 @@ namespace loader {
             else if (k == "tiling") {
                 loadTiling(v, data.tiling);
             }
+            else if (k == "material") {
+                data.materialName = readString(v);
+            }
             else {
                 reportUnknown("generator_entry", k, v);
             }
@@ -78,30 +86,30 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        Node* node)
+        const std::vector<MaterialData>& materials,
+        mesh::MeshType* type)
     {
         if (!data.enabled) return nullptr;
 
-        auto* type = node->m_typeHandle.toType();
-        const auto& center = node->getTransform().getPosition();
+        const auto& assets = Assets::get();
 
         switch (data.type) {
         case GeneratorType::terrain: {
             auto generator{ std::make_unique<TerrainGenerator>() };
 
-            auto& materialVBO = type->m_materialVBO;
             const auto& tiling = data.tiling;
 
-            generator->m_modelsDir = m_assets.modelsDir;
+            generator->m_modelsDir = assets.modelsDir;
             generator->m_worldTileSize = tiling.tile_size;
             generator->m_worldTilesU = tiling.tiles.x;
             generator->m_worldTilesV = tiling.tiles.z;
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
 
-            auto* material = materialVBO->getDefaultMaterial();
+            auto* material = findMaterial(data.materialName, materials);
             if (material) {
                 generator->m_material = *material;
+                generator->m_material.loadTextures();
             }
 
             return generator;

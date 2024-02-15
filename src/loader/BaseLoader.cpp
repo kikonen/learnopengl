@@ -6,6 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "util/Log.h"
 #include "ki/yaml.h"
 #include "ki/sid.h"
@@ -15,6 +17,9 @@
 #include "engine/AsyncLoader.h"
 
 #include "registry/Registry.h"
+
+#include "MaterialData.h"
+
 
 namespace {
     //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
@@ -26,8 +31,7 @@ namespace loader
 
     BaseLoader::BaseLoader(
         Context ctx)
-        : m_assets(ctx.m_assets),
-        m_ctx(ctx)
+        : m_ctx(ctx)
     {
     }
 
@@ -402,6 +406,8 @@ namespace loader
         const glm::uvec3& tile,
         bool automatic)
     {
+        const auto& assets = Assets::get();
+
         if (baseId.empty()) {
             return { 0, "" };
         }
@@ -409,7 +415,7 @@ namespace loader
         std::string key = expandMacros(baseId.m_path, cloneIndex, tile, automatic);
 
         if (key == ROOT_ID) {
-            return { m_ctx.m_assets.rootId, "<root>" };
+            return { assets.rootId, "<root>" };
         }
         else {
             auto nodeId = SID(key);
@@ -488,7 +494,7 @@ namespace loader
         return baseId;
     }
 
-    const std::string BaseLoader::resolveTexturePath(std::string_view path) const
+    std::string BaseLoader::resolveTexturePath(std::string_view path) const
     {
         return std::string{ path };
     }
@@ -496,6 +502,17 @@ namespace loader
     std::string BaseLoader::readFile(std::string_view filename) const
     {
         return util::readFile(m_ctx.m_dirName, filename);
+    }
+
+    const Material* BaseLoader::findMaterial(
+        std::string_view name,
+        const std::vector<MaterialData>& materials) const
+    {
+        const auto& it = std::find_if(
+            materials.cbegin(),
+            materials.cend(),
+            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
+        return it != materials.end() ? &(it->material) : nullptr;
     }
 
     void BaseLoader::reportUnknown(

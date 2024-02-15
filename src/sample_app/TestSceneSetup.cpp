@@ -1,5 +1,6 @@
 #include "TestSceneSetup.h"
 
+#include "asset/Assets.h"
 #include "asset/PlainTexture.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
@@ -7,8 +8,10 @@
 #include "pool/NodeHandle.h"
 #include "ki/sid.h"
 
-#include "mesh/ModelLoader.h"
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
+#include "mesh/ModelLoader.h"
 
 #include "model/Node.h"
 
@@ -28,11 +31,9 @@ namespace {
 }
 
 TestSceneSetup::TestSceneSetup(
-    const Assets& assets,
     std::shared_ptr<std::atomic<bool>> alive,
     std::shared_ptr<AsyncLoader> asyncLoader)
-    : m_assets(assets),
-    m_alive(alive),
+    : m_alive(alive),
     m_asyncLoader(asyncLoader)
 {
 }
@@ -52,7 +53,9 @@ void TestSceneSetup::setup(
 void TestSceneSetup::setupEffectExplosion()
 {
     m_asyncLoader->addLoader(m_alive, [this]() {
-        Program* program = m_registry->m_programRegistry->getProgram(SHADER_EFFECT);
+        Program* program = ProgramRegistry::get().getProgram(SHADER_EFFECT);
+
+        const auto& assets = Assets::get();
 
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
@@ -78,7 +81,7 @@ void TestSceneSetup::setupEffectExplosion()
             event::Event evt { event::Type::node_add };
             evt.body.node = {
                 .target = node->getId(),
-                .parentId = m_assets.rootId,
+                .parentId = assets.rootId,
             };
             m_registry->m_dispatcher->send(evt);
         }
@@ -87,10 +90,12 @@ void TestSceneSetup::setupEffectExplosion()
 
 void TestSceneSetup::setupViewport1()
 {
+    const auto& assets = Assets::get();
+
     TextureSpec spec;
     // NOTE KI memory_leak
     auto texture = new PlainTexture("checkerboard", false, spec, 1, 1);
-    texture->prepare(m_assets);
+    texture->prepare();
 
     unsigned int color = 0x90ff2020;
     texture->setData(&color, sizeof(unsigned int));
@@ -102,7 +107,7 @@ void TestSceneSetup::setupViewport1()
         glm::vec2(0.25f, 0.25f),
         false,
         texture->m_textureID,
-        m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
-    viewport->prepareRT(m_assets);
-    m_registry->m_viewportRegistry->addViewport(viewport);
+        ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
+    viewport->prepareRT();
+    ViewportRegistry::get().addViewport(viewport);
 }

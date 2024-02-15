@@ -13,6 +13,12 @@
 
 class Node;
 
+ControllerRegistry& ControllerRegistry::get() noexcept
+{
+    static ControllerRegistry s_registry;
+    return s_registry;
+}
+
 ControllerRegistry::~ControllerRegistry()
 {
     for (const auto& it : m_controllers) {
@@ -66,7 +72,7 @@ void ControllerRegistry::addController(
         return;
     }
 
-    PrepareContext ctx{ m_assets, m_registry };
+    PrepareContext ctx{ m_registry };
     controller->prepare(ctx, *node);
 
     {

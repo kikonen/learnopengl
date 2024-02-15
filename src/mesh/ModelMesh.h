@@ -32,7 +32,7 @@ namespace mesh {
 
         virtual ~ModelMesh();
 
-        virtual const std::string str() const noexcept override;
+        virtual std::string str() const noexcept override;
         virtual bool isValid() const noexcept override
         {
             return !m_vertices.empty() && !m_indeces.empty();
@@ -46,7 +46,10 @@ namespace mesh {
             const PrepareContext& ctx) override;
 
         virtual void prepareMaterials(
-            MaterialVBO& materialVBO) override;
+            MaterialSet& materialSet) override;
+
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh);
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;

@@ -81,6 +81,6 @@ private:
     ki::node_id m_targetId;
     pool::NodeHandle m_targetHandle{};
 
-    ki::level_id m_nodeMatrixLevel{ (ki::level_id)-1 };
-    ki::level_id m_targetMatrixLevel{ (ki::level_id)-1 };
+    ki::level_id m_nodeMatrixLevel{ 0 };
+    ki::level_id m_targetMatrixLevel{ 0 };
 };

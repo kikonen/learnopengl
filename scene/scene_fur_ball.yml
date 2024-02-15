@@ -73,7 +73,7 @@ entities:
       z_step: -15
   - xname: Fur
     model: cow
-    xxtype: quad
+    xxmodel: quad
     material: fur
     force_material: true
     program: g_fur

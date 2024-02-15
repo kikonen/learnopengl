@@ -23,6 +23,7 @@
 #include "PhysicsData.h"
 #include "ScriptData.h"
 #include "TextData.h"
+#include "LodData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -41,8 +42,7 @@ namespace loader {
 
         int priority{ 0 };
 
-        std::string meshName;
-        std::string meshPath;
+        std::vector<LodData> lods;
 
         std::string programName{};
         std::string geometryType;
@@ -62,7 +62,6 @@ namespace loader {
         glm::vec3 scale{ 1.f };
 
         bool selected{ false };
-        bool instanced{ false };
         bool cloneMesh{ true };
 
         Tiling tiling;
@@ -70,19 +69,13 @@ namespace loader {
 
         glm::vec3 clonePositionOffset{ 0.f };
 
-        bool loadTextures{ true };
-        std::string materialName;
         // NOTE KI overrides *ALL* materials with defaultMaterial
         bool forceMaterial{ false };
-
-        MaterialData materialModifiers;
 
         CustomMaterialData customMaterial;
         PhysicsData physics;
 
         std::string spriteName;
-
-        int batchSize{ -1 };
 
         Repeat repeat;
 

@@ -1,6 +1,12 @@
 #include "GLState.h"
 
 namespace kigl {
+    GLState& GLState::get() noexcept
+    {
+        static GLState s_state{};
+        return s_state;
+    }
+
     GLState::GLState()
     {
         clear();

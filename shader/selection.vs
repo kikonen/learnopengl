@@ -6,11 +6,14 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
 #include struct_entity.glsl
+#include struct_instance.glsl
 
-#include uniform_entities.glsl
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+#include ssbo_material_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-#include uniform_material_indeces.glsl
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
@@ -41,10 +44,14 @@ SET_FLOAT_PRECISION;
 
 const vec3 UP = vec3(0, 1, 0);
 
+Instance instance;
 Entity entity;
 
 void main() {
-  entity = u_entities[gl_BaseInstance + gl_InstanceID];
+  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint entityIndex = instance.u_entityIndex;
+  entity = u_entities[entityIndex];
+
   #include var_entity_model_matrix.glsl
 
   const vec4 pos = vec4(a_pos, 1.0);
@@ -92,7 +99,7 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  int materialIndex = entity.u_materialIndex;
+  int materialIndex = instance.u_materialIndex;
   if (materialIndex < 0) {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }

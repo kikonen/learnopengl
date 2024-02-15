@@ -2,8 +2,6 @@
 
 #include <memory>
 
-class Assets;
-
 struct UpdateViewContext;
 class RenderContext;
 
@@ -21,7 +19,6 @@ namespace render {
         ~OITBuffer() {}
 
         void prepare(
-            const Assets& assets,
             GBuffer* gBuffer);
 
         void updateRT(const UpdateViewContext& ctx);

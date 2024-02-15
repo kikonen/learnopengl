@@ -5,8 +5,6 @@
 
 #include "asset/Shape.h"
 
-class Assets;
-
 class Sprite final {
 public:
     Sprite();
@@ -24,7 +22,7 @@ public:
         const ki::sprite_id id,
         const std::vector<Sprite>& sprites);
 
-    void prepare(const Assets& assets);
+    void prepare();
 
     std::vector<Shape>& getShapes() {
         return m_shapes;

@@ -7,6 +7,8 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "mesh/Mesh.h"
+
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -18,6 +20,10 @@
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
 
+
+namespace {
+    bool done = false;
+}
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
     : m_asteroidCount(asteroidCount),
@@ -41,6 +47,7 @@ void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {
+    if (done) return;
     const auto parentLevel = container.getParent()->getTransform().getMatrixLevel();
     const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
@@ -50,6 +57,7 @@ void AsteroidBeltGenerator::updateWT(
         transform.m_dirtySnapshot = true;
     }
 
+    //done = true;
     m_updateIndex++;
     m_containerMatrixLevel = parentLevel;
 }
@@ -83,7 +91,8 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto* type = container.m_typeHandle.toType();
 
-    const auto* mesh = type->getMesh();
+    auto* lod = type->getLod(0);
+    const auto* mesh = lod->m_mesh;
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();
@@ -93,8 +102,7 @@ void AsteroidBeltGenerator::createAsteroids(
         m_physics.emplace_back();
 
         auto& asteroid = m_transforms.emplace_back();
-
-        asteroid.setMaterialIndex(type->getMaterialIndex());
+        asteroid.m_flags = type->resolveEntityFlags();
         asteroid.setVolume(volume);
     }
 

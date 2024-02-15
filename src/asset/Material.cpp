@@ -12,6 +12,7 @@
 
 #include "util/Util.h"
 
+#include "asset/Assets.h"
 #include "asset/Shader.h"
 
 #include "asset/ImageTexture.h"
@@ -137,26 +138,25 @@ Material::~Material()
         m_id, m_name, m_registeredIndex));
 }
 
-void Material::loadTextures(const Assets& assets)
+void Material::loadTextures()
 {
     if (m_loaded) return;
     m_loaded = true;
 
-    loadTexture(assets, MATERIAL_DIFFUSE_IDX, map_kd, true, true);
-    loadTexture(assets, MATERIAL_EMISSION_IDX, map_ke, true, false);
-    loadTexture(assets, MATERIAL_SPECULAR_IDX, map_ks, false, false);
-    loadTexture(assets, MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
-    loadTexture(assets, MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
-    loadTexture(assets, MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
-    loadTexture(assets, MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
-    loadTexture(assets, MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
-    loadTexture(assets, MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
-    loadTexture(assets, MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
-    loadTexture(assets, MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
-    loadTexture(assets, MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
+    loadTexture(MATERIAL_DIFFUSE_IDX, map_kd, true, true);
+    loadTexture(MATERIAL_EMISSION_IDX, map_ke, true, false);
+    loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
+    loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
+    loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
+    loadTexture(MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
+    loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
+    loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
+    loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
+    loadTexture(MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
+    loadTexture(MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
+    loadTexture(MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
 
     loadChannelTexture(
-        assets,
         MATERIAL_METAL_CHANNEL_MAP_IDX,
         fmt::format("material_{}_metal", m_registeredIndex),
         {
@@ -168,8 +168,10 @@ void Material::loadTextures(const Assets& assets)
         metal);
 }
 
-std::string Material::resolveBaseDir(const Assets& assets)
+std::string Material::resolveBaseDir()
 {
+    const auto& assets = Assets::get();
+
     std::string baseDir;
     switch (m_type) {
     case MaterialType::asset:
@@ -185,7 +187,6 @@ std::string Material::resolveBaseDir(const Assets& assets)
 }
 
 void Material::loadTexture(
-    const Assets& assets,
     int idx,
     std::string_view textureName,
     bool gammaCorrect,
@@ -193,7 +194,9 @@ void Material::loadTexture(
 {
     if (textureName.empty()) return;
 
-    std::string texturePath = getTexturePath(assets, textureName);
+    const auto& assets = Assets::get();
+
+    std::string texturePath = getTexturePath(textureName);
 
     KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
@@ -226,12 +229,13 @@ void Material::loadTexture(
 }
 
 void Material::loadChannelTexture(
-    const Assets& assets,
     int idx,
     std::string_view name,
     const std::vector<int>& textureIndeces,
     const glm::vec4& defaults)
 {
+    const auto& assets = Assets::get();
+
     std::vector<ImageTexture*> sourceTextures;
 
     int validCount = 0;
@@ -274,8 +278,7 @@ void Material::loadChannelTexture(
     }
 }
 
-const std::string Material::getTexturePath(
-    const Assets& assets,
+std::string Material::getTexturePath(
     std::string_view textureName)
 {
     if (textureName.empty()) return {};
@@ -284,7 +287,7 @@ const std::string Material::getTexturePath(
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
-            resolveBaseDir(assets),
+            resolveBaseDir(),
             m_path,
             textureName, "");
     }
@@ -297,7 +300,7 @@ bool Material::hasTex(int index) const
     return tex.m_texture != nullptr;
 }
 
-void Material::prepare(const Assets& assets)
+void Material::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -306,7 +309,7 @@ void Material::prepare(const Assets& assets)
         if (!tex.m_texture) continue;
         if (tex.m_channelPart) continue;
 
-        tex.m_texture->prepare(assets);
+        tex.m_texture->prepare();
         //tex.m_texIndex = tex.m_texture->m_texIndex;
         tex.m_handle = tex.m_texture->m_handle;
     }

@@ -4,11 +4,13 @@
 
 #include "asset/Program.h"
 
-ProgramRegistry::ProgramRegistry(
-    const Assets& assets,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive)
+ProgramRegistry& ProgramRegistry::get() noexcept
+{
+    static ProgramRegistry s_registry;
+    return s_registry;
+}
+
+ProgramRegistry::ProgramRegistry()
 {
 }
 
@@ -49,8 +51,6 @@ Program* ProgramRegistry::getProgram(
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<>>& defines)
 {
-    if (!*m_alive) return nullptr;
-
     std::lock_guard lock(m_programs_lock);
 
     std::string key{ name };
@@ -77,7 +77,6 @@ Program* ProgramRegistry::getProgram(
 
     if (!program) {
         m_programs[key] = std::make_unique<Program>(
-            m_assets,
             key,
             name,
             compute,

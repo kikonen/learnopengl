@@ -1,10 +1,11 @@
 #pragma once
 
+#include <span>
+
 #include <glm/glm.hpp>
 
 #include "kigl/kigl.h"
 
-#include "kigl/GLState.h"
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
@@ -12,6 +13,8 @@
 
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
+
+#include "mesh/InstanceSSBO.h"
 
 #include "DrawRange.h"
 #include "DrawOptions.h"
@@ -42,6 +45,13 @@ namespace backend {
         void send(
             const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
+
+        void sendDirect(
+            const backend::DrawRange& sendRange,
+            const backend::gl::DrawIndirectCommand& cmd);
+
+        void sendInstanceIndeces(
+            std::span<mesh::InstanceSSBO> indeces);
 
         void flushIfNeeded();
         void flush();
@@ -78,6 +88,8 @@ namespace backend {
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
         std::vector<backend::DrawRange> m_drawRanges;
+
+        kigl::GLBuffer m_indexBuffer{ "instance_index" };
 
         kigl::GLBuffer m_drawParameters{ "draw_parameters" };
         kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };

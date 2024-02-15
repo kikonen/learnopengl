@@ -23,7 +23,7 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            ctx.m_registry->m_scriptEngine->invokeFunction(getNode(), m_functionName);
+            script::ScriptEngine::get().invokeFunction(getNode(), m_functionName);
         }
     }
 }

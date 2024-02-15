@@ -210,9 +210,6 @@
     <ClCompile Include="src\controller\VolumeController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\backend\RenderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vendor\glad\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -522,10 +519,7 @@
     <ClCompile Include="src\text\FontAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\text\TextMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\MaterialVBO.cpp">
+    <ClCompile Include="src\mesh\MaterialSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
@@ -625,6 +619,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\CommandHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\LodMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\BatchCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\TextureVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\api\SetTextNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -846,15 +852,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\VolumeController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\Command.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\RenderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\backend\DrawCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glad\include\glad\glad.h">
@@ -1340,9 +1337,6 @@
     <ClInclude Include="src\text\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\text\TextMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\IndexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1361,7 +1355,7 @@
     <ClInclude Include="src\mesh\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\MaterialVBO.h">
+    <ClInclude Include="src\mesh\MaterialSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\ModelMaterialInit.h">
@@ -1488,6 +1482,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\CommandEngine_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backend\Lod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\LodMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\InstanceSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\LodData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TextureVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\VBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\VBO_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\api\SetTextNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

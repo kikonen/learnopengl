@@ -91,11 +91,10 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool surface
-    type: quad
+    model: plane
     material: pool_surface
     program: g_water
     pos: [0, 9.0, -10]
-    rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
       no_shadow: true
@@ -113,7 +112,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      map_pbr: textures\Tiles004_1K-PNG
+      xmap_pbr: textures\Tiles004_1K-PNG
+      metal: [1.0, 0.0, 0, 1]
+      map_pbr: textures\planks_metal
       tiling_x: 30
       tiling_y: 4
     clones:
@@ -125,42 +126,21 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-  - name: Linden tree forest - part 1.1
+  - id: linden_tree_forest_1
     type: model
-    model: quad
+    model: linden_tree
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 40]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [14, 20, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 1
-        z_count: 3
-        x_step: 20
-        z_step: -40
-  - name: Linden tree forest - part 2.1
-    type: model
-    model: quad
-    program: g_tex
-    instanced: true
-    pos: [-40.0, 4, 40]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [14, 20, 1]
+    scale: 20
     generator:
       type: grid
       repeat:
@@ -169,7 +149,7 @@ entities:
         x_step: 20
         z_step: -40
   - name: Skeleton army
-    type: quad
+    model: quad
     priority: 1
     program: g_tex
     pos: [-20, 12.5, 80]
@@ -190,7 +170,6 @@ entities:
     priority: 20
     type: container
     instanced: true
-    material: terrain_grass_2
     program: g_terrain
     depth_program: g_terrain_depth
     pos: [-1024, 10, -1024]
@@ -204,6 +183,7 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
+      material: terrain_grass_2
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
@@ -226,11 +206,10 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface - SINGLE
-    type: quad
+    model: plane
     material: pool_surface
     program: g_water
     pos: [160, 9.0, 20]
-    rotation: [270.0, 0.0, 0.0]
     scale: 60
     render_flags:
       no_shadow: true
@@ -241,7 +220,9 @@ entities:
     model: pool_brick
     program: g_tex
     material_modifier:
-      map_pbr: textures\Tiles004_1K-PNG
+      xmap_pbr: textures\Tiles004_1K-PNG
+      metal: [1.0, 0.0, 0, 1]
+      map_pbr: textures\planks_metal
       tiling_x: 30
       tiling_y: 4
     clones:
@@ -253,42 +234,21 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
-  - name: Linden tree forest - part 1.2
+  - id: linden_tree_forest_2
     type: model
-    model: quad
+    model: linden_tree
     program: g_tex
     instanced: true
     pos: [240.0, 14, 40]
     material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [14, 20, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 1
-        z_count: 3
-        x_step: 20
-        z_step: -40
-  - name: Linden tree forest - part 2.2
-    type: model
-    model: quad
-    program: g_tex
-    instanced: true
-    pos: [240.0, 14, 40]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [14, 20, 1]
+    scale: 20
     generator:
       type: grid
       repeat:

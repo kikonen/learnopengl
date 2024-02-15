@@ -1,5 +1,7 @@
 #include "SnapshotRegistry.h"
 
+#include <iostream>
+
 #include "util/DirtyVector_impl.h"
 
 
@@ -10,8 +12,8 @@ SnapshotRegistry::SnapshotRegistry()
 {
     // null entry
     registerSnapshot();
-    copyToPending(0);
-    copyFromPending(0);
+    copyToPending(0, -1);
+    copyFromPending(0, -1);
 }
 
 SnapshotRegistry::~SnapshotRegistry() = default;
@@ -23,23 +25,23 @@ uint32_t SnapshotRegistry::registerSnapshot() noexcept {
 uint32_t SnapshotRegistry::registerSnapshotRange(size_t count) noexcept {
     const uint32_t index = static_cast<uint32_t>(m_snapshots->size());
 
-    m_snapshots->reserve(m_snapshots->size() + count);
+    m_snapshots->allocate(m_snapshots->size() + count);
 
     return index;
 }
 
 void SnapshotRegistry::markDirty(uint32_t index) noexcept {
-    auto& dirtyFlags = m_snapshots->m_dirtyFlags;
+    auto& dirtyFlags = m_snapshots->m_dirty;
     dirtyFlags[index] = true;
 }
 
 void SnapshotRegistry::clearDirty(uint32_t index) noexcept {
-    auto& dirtyFlags = m_snapshots->m_dirtyFlags;
+    auto& dirtyFlags = m_snapshots->m_dirty;
     dirtyFlags[index] = false;
 }
 
 void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
-    auto& dirtyFlags = m_activeSnapshots->m_dirtyFlags;
+    auto& dirtyFlags = m_activeSnapshots->m_dirty;
     dirtyFlags[index] = false;
 }
 
@@ -85,66 +87,39 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
 //    }
 //}
 
-void SnapshotRegistry::copyToPending(uint32_t startIndex)
+void SnapshotRegistry::copyToPending(uint32_t startIndex, int32_t count)
 {
     std::lock_guard lock(m_lock);
-    copy(*m_snapshots.get(), *m_pendingSnapshots.get(), startIndex);
+    copy(*m_snapshots.get(), *m_pendingSnapshots.get(), startIndex, count);
 }
 
-void SnapshotRegistry::copyFromPending(uint32_t startIndex)
+void SnapshotRegistry::copyFromPending(uint32_t startIndex, int32_t count)
 {
     std::lock_guard lock(m_lock);
-    copy(*m_pendingSnapshots.get(), *m_activeSnapshots.get(), startIndex);
+    copy(*m_pendingSnapshots.get(), *m_activeSnapshots.get(), startIndex, count);
 }
 
 void SnapshotRegistry::copy(
     util::DirtyVector<Snapshot>& srcVector,
     util::DirtyVector<Snapshot>& dstVector,
-    uint32_t startIndex)
+    uint32_t startIndex,
+    int32_t requestedCount)
 {
-    //{
-    //    auto& src = srcVector.m_entries;
-    //    auto& dst = dstVector.m_entries;
-    //    const auto size = src.size();
-
-    //    dstVector.reserve(size);
-
-    //    memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
-
-    //    //for (auto& snapshot : dst) {
-    //    //    snapshot.m_dirty = true;
-    //    //}
-    //}
-    //{
-    //    auto& src = srcVector.m_dirtyFlags;
-    //    auto& dst = dstVector.m_dirtyFlags;
-    //    const auto size = src.size();
-
-    //    dstVector.reserve(size);
-
-    //    for (size_t i = startIndex; i < size; i++) {
-    //        dst[i] = src[i];
-    //    }
-    //}
-
+    size_t count = requestedCount;
+    if (requestedCount == -1) {
+        count = srcVector.size() - startIndex;
+    }
+    if (!count) return;
 
     {
-        const auto size = srcVector.size();
-        dstVector.reserve(size);
-
         auto& src = srcVector.m_entries;
         auto& dst = dstVector.m_entries;
 
-        // NOTE KI *CANNOT* do full memcpy since other side may not
-        // have processed dirty entries, and writing those down as clean would break logic
-        //memcpy(&dst[startIndex], &src[startIndex], (size - startIndex) * sizeof(Snapshot));
+        dstVector.allocate(srcVector.size());
 
-        for (size_t i = startIndex; i < size; i++) {
+        for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
-                dst[i] = src[i];
-                //memcpy(&dst[i], &src[i], sizeof(Snapshot));
-                src[i].m_dirty = false;
-                src[i].m_dirtyNormal = false;
+                dst[i].apply(src[i]);
             }
         }
     }

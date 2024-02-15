@@ -14,6 +14,7 @@
 
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
@@ -120,6 +121,8 @@ namespace loader {
 
         data.enabled = true;
 
+        bool needLod = false;
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
@@ -134,12 +137,6 @@ namespace loader {
                 }
                 else if (type == "model") {
                     data.type = mesh::EntityType::model;
-                }
-                else if (type == "quad") {
-                    data.type = mesh::EntityType::quad;
-                }
-                else if (type == "billboard") {
-                    data.type = mesh::EntityType::billboard;
                 }
                 else if (type == "sprite") {
                     data.type = mesh::EntityType::sprite;
@@ -182,13 +179,7 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                if (v.Type() == YAML::NodeType::Sequence) {
-                    data.meshPath = v[0].as<std::string>();
-                    data.meshName = v[1].as<std::string>();
-                }
-                else {
-                    data.meshName = readString(v);
-                }
+                needLod = true;
             }
             else if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -226,22 +217,16 @@ namespace loader {
                 loadText(v, data.text);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                needLod = true;
             }
             else if (k == "material_modifier") {
-                materialLoader.loadMaterialModifiers(v, data.materialModifiers);
+                needLod = true;
             }
             else if (k == "force_material") {
                 data.forceMaterial = readBool(v);
             }
             else if (k == "sprite") {
                 data.spriteName = readString(v);
-            }
-            else if (k == "batch_size") {
-                data.batchSize = readInt(v);
-            }
-            else if (k == "load_textures") {
-                data.loadTextures = readBool(v);
             }
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);
@@ -286,9 +271,6 @@ namespace loader {
             else if (k == "generator") {
                 generatorLoader.loadGenerator(v, data.generator);
             }
-            else if (k == "instanced") {
-                data.instanced = readBool(v);
-            }
             else if (k == "selected") {
                 data.selected = readBool(v);
             }
@@ -318,9 +300,19 @@ namespace loader {
             else if (k == "script_file") {
                 scriptLoader.loadScript(v, data.script);
             }
+            else if (k == "lods") {
+                loadLods(v, data.lods, materialLoader);
+            }
             else {
                 reportUnknown("entity_entry", k, v);
             }
+        }
+
+        if (needLod && data.lods.empty()) {
+            if (data.lods.empty()) {
+                data.lods.emplace_back();
+            }
+            loadLod(node, data.lods[0], materialLoader);
         }
 
         if (hasClones) {
@@ -371,6 +363,48 @@ namespace loader {
             }
             else {
                 reportUnknown("text_entry", k, v);
+            }
+        }
+    }
+
+    void EntityLoader::loadLods(
+        const YAML::Node& node,
+        std::vector<LodData>& lods,
+        MaterialLoader& materialLoader) const
+    {
+        for (const auto& entry : node) {
+            LodData& data = lods.emplace_back();
+            loadLod(entry, data, materialLoader);
+        }
+    }
+
+    void EntityLoader::loadLod(
+        const YAML::Node& node,
+        LodData& data,
+        MaterialLoader& materialLoader) const
+    {
+        for (const auto& pair : node) {
+            const auto& key = pair.first.as<std::string>();
+            const auto& v = pair.second;
+            const auto k = util::toLower(key);
+
+            if (k == "distance") {
+                data.distance = readFloat(v);
+            }
+            else if (k == "model") {
+                if (v.Type() == YAML::NodeType::Sequence) {
+                    data.meshPath = v[0].as<std::string>();
+                    data.meshName = v[1].as<std::string>();
+                }
+                else {
+                    data.meshName = readString(v);
+                }
+            }
+            else if (k == "material") {
+                data.materialName = readString(v);
+            }
+            else if (k == "material_modifier") {
+                materialLoader.loadMaterialModifiers(v, data.materialModifiers);
             }
         }
     }

@@ -9,7 +9,8 @@ script:
 entities:
   - name: Player
     id: player
-    model: player
+    xmodel: player
+    type: origo
     pos: [0, 5, 5]
     front: [0, 0, -1]
     scale: 0.8
@@ -22,7 +23,7 @@ entities:
         default: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     camera:
@@ -30,11 +31,10 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Water surface
-    type: quad
+    model: plane
     material: water_surface
     program: g_water
     pos: [-30, 0, -30]
-    rotation: [270.0, 0.0, 0.0]
     scale: 30
     render_flags:
       no_shadow: true

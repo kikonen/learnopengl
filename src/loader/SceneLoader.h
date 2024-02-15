@@ -120,13 +120,15 @@ namespace loader {
             pool::TypeHandle typeHandle,
             const TextData& data) const;
 
-        void resolveMaterial(
-            pool::TypeHandle typeHandle,
-            const EntityCloneData& data);
+        Material resolveDefaultMaterial(
+            const EntityCloneData& entityData,
+            const LodData& data);
 
-        void modifyMaterials(
+        void resolveMaterials(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& data);
+            const EntityCloneData& entityData,
+            const LodData& data,
+            int lodIndex);
 
         void resolveSprite(
             pool::TypeHandle typeHandle,
@@ -182,9 +184,6 @@ namespace loader {
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
-
-        const Material * findMaterial(
-            std::string_view name) const;
 
         const Sprite* findSprite(
             std::string_view name) const;

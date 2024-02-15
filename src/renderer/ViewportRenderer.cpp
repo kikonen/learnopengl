@@ -1,5 +1,7 @@
 #include "ViewportRenderer.h"
 
+#include "kigl/GLState.h"
+
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
@@ -21,7 +23,7 @@ void ViewportRenderer::prepareRT(
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    for (auto& viewport : ctx.m_registry->m_viewportRegistry->getViewports()) {
+    for (auto& viewport : ViewportRegistry::get().getViewports()) {
         viewport->updateRT(ctx);
     }
 }
@@ -30,29 +32,31 @@ void ViewportRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* destinationBuffer)
 {
-    auto& viewports = ctx.m_registry->m_viewportRegistry->getViewports();
+    auto& viewports = ViewportRegistry::get().getViewports();
 
     if (viewports.empty()) return;
+
+    auto& state = ctx.m_state;
 
     bool forceWireframe = ctx.m_forceWireframe;
     ctx.m_forceWireframe = false;
     ctx.bindDefaults();
 
-    ctx.m_state.setDepthFunc(GL_LEQUAL);
+    state.setDepthFunc(GL_LEQUAL);
 
     // NOTE KI don't blend MAIN buffer
     bool blend = false;
     for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
-        ctx.m_state.setEnabled(GL_BLEND, blend);
+        state.setEnabled(GL_BLEND, blend);
         viewport->draw(ctx);
         viewport->unbind(ctx);
         blend = true;
     }
 
-    ctx.m_state.setEnabled(GL_BLEND, false);
-    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    state.setEnabled(GL_BLEND, false);
+    state.setDepthFunc(ctx.m_depthFunc);
 
     ctx.m_forceWireframe = forceWireframe;
     ctx.bindDefaults();

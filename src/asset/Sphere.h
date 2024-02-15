@@ -18,7 +18,7 @@ struct Sphere final
 
     std::unique_ptr<Sphere> clone() const noexcept;
 
-    const std::string str() const noexcept;
+    std::string str() const noexcept;
 
     inline const glm::vec4 getVolume() const noexcept {
         return { m_center, m_radius };
@@ -56,11 +56,14 @@ struct Sphere final
     {
         // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
         return isOnOrForwardPlane(frustum.nearFace) &&
+            isOnOrForwardPlane(frustum.farFace) &&
             isOnOrForwardPlane(frustum.leftFace) &&
             isOnOrForwardPlane(frustum.rightFace) &&
             isOnOrForwardPlane(frustum.topFace) &&
-            isOnOrForwardPlane(frustum.bottomFace) &&
-            isOnOrForwardPlane(frustum.farFace);
+            isOnOrForwardPlane(frustum.bottomFace);
+
+        //return isOnOrForwardPlane(frustum.nearFace) &&
+        //    isOnOrForwardPlane(frustum.farFace);
     };
 
     void updateVolume(
@@ -73,7 +76,7 @@ private:
     glm::vec3 m_center{ 0.f };
     float m_radius{ 0.f };
 
-    mutable ki::level_id m_modelMatrixLevel{ (ki::level_id)-1 };
+    mutable ki::level_id m_modelMatrixLevel{ 0 };
     mutable glm::vec3 m_worldCenter{ 0.f };
     mutable float m_worldRadius{ 0.f };
 };

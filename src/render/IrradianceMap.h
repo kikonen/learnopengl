@@ -13,7 +13,6 @@ struct PrepareContext;
 class RenderContext;
 
 class Program;
-class GLState;
 
 namespace render {
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636

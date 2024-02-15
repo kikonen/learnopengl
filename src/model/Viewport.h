@@ -11,7 +11,6 @@ namespace render {
     class FrameBuffer;
 }
 
-class Assets;
 class Program;
 
 struct UpdateViewContext;
@@ -52,7 +51,7 @@ public:
 
     void setTextureId(GLuint textureId);
 
-    void prepareRT(const Assets& assets);
+    void prepareRT();
 
     void updateRT(const UpdateViewContext& ctx);
 

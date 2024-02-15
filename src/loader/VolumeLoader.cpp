@@ -3,12 +3,16 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "pool/NodeHandle.h"
 
 #include "asset/Material.h"
 #include "asset/Shader.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/ModelMesh.h"
 
 #include "controller/VolumeController.h"
@@ -35,27 +39,29 @@ namespace loader {
     void VolumeLoader::attachVolume(
         const ki::node_id rootId)
     {
-        if (!m_assets.showVolume) return;
+        const auto& assets = Assets::get();
+
+        if (!assets.showVolume) return;
 
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<volume>");
 
-        auto future = m_registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             "ball_volume",
-            m_assets.modelsDir);
+            assets.modelsDir);
         auto* mesh = future.get();
 
-        type->setMesh(mesh);
+        auto* lod = type->addLod({ mesh });
+
+        type->m_entityType = mesh::EntityType::marker;
 
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
             material.m_name = "volume";
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
-            auto& materialVBO = type->m_materialVBO;
-            materialVBO->setDefaultMaterial(material, true, true);
-            materialVBO->setMaterials({ material });
+            lod->m_materialSet.setMaterials({ material });
         }
 
         auto& flags = type->m_flags;
@@ -70,9 +76,9 @@ namespace loader {
         flags.noNormals = true;
         flags.gbuffer = SHADER_VOLUME.starts_with("g_");
 
-        type->m_program = m_registry->m_programRegistry->getProgram(SHADER_VOLUME);
+        type->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.volumeId);
+        auto handle = pool::NodeHandle::allocate(assets.volumeId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<volume>";
@@ -91,7 +97,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.volumeId,
+                .target = assets.volumeId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

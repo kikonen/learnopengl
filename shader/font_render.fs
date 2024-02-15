@@ -1,7 +1,7 @@
 #version 460 core
 
 #include struct_material.glsl
-#include uniform_materials.glsl
+#include ssbo_materials.glsl
 
 
 in VS_OUT {
@@ -57,5 +57,6 @@ void main()
     discard;
   }
 
+  a = 1.0;
   o_fragColor = vec4(rgb, a);
 }

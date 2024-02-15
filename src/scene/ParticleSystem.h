@@ -5,8 +5,6 @@
 #include "pool/TypeHandle.h"
 #include "model/Particle.h"
 
-class Assets;
-
 struct PrepareContext;
 struct UpdateContext;
 class RenderContext;

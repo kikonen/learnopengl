@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "asset/Assets.h"
-
 #include "Context.h"
 #include "BaseId.h"
 #include "BaseData.h"
@@ -18,10 +16,13 @@ namespace event {
     class Dispatcher;
 }
 
+struct Material;
 class Registry;
 
 namespace loader
 {
+    struct MaterialData;
+
     static const float DEF_ALPHA = 1.0;
 
     static const std::string ROOT_ID{ "ROOT" };
@@ -90,7 +91,11 @@ namespace loader
 
         std::string readFile(std::string_view filename) const;
 
-        const std::string resolveTexturePath(std::string_view line) const;
+        std::string resolveTexturePath(std::string_view line) const;
+
+        const Material* findMaterial(
+            std::string_view name,
+            const std::vector<MaterialData>& materials) const;
 
         void reportUnknown(
             std::string_view scope,
@@ -101,7 +106,6 @@ namespace loader
             const YAML::Node& v) const;
 
     public:
-        const Assets& m_assets;
         Context m_ctx;
 
         std::shared_ptr<Registry> m_registry;

@@ -2,17 +2,17 @@
 
 #include <vector>
 
-#include "asset/Assets.h"
-
 #include "model/Viewport.h"
 
 class ViewportRegistry
 {
 public:
-    ViewportRegistry(const Assets& assets)
-        : m_assets(assets)
+    static ViewportRegistry& get() noexcept;
+
+    ViewportRegistry()
     {
     }
+    ViewportRegistry& operator=(const ViewportRegistry&) = delete;
 
     void prepare();
 
@@ -27,8 +27,6 @@ public:
     }
 
 private:
-    const Assets& m_assets;
-
     std::vector<std::shared_ptr<Viewport>> m_viewports;
 
 };

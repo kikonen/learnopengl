@@ -8,13 +8,10 @@
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
 
-#include "asset/Assets.h"
-
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"
 
 #include "ki/RenderClock.h"
-#include "kigl/GLState.h"
 
 namespace render {
     class NodeDraw;
@@ -22,8 +19,14 @@ namespace render {
     class RenderData;
 }
 
-class Camera;
+namespace kigl {
+    class GLState;
+}
+
+class Assets;
 class Registry;
+
+class Camera;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -57,7 +60,6 @@ public:
         std::string_view name,
         const RenderContext* parent,
         const ki::RenderClock& clock,
-        const Assets& assets,
         Registry* registry,
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
@@ -105,13 +107,13 @@ public:
     const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
+    kigl::GLState& m_state;
+
     render::RenderData* const m_renderData;
     render::NodeDraw* const m_nodeDraw;
     render::Batch* const m_batch;
 
     GLenum m_depthFunc{ GL_LESS };
-
-    kigl::GLState& m_state;
 
     RenderContextDefaults m_defaults;
 

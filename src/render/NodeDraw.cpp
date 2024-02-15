@@ -1,14 +1,18 @@
 #include "NodeDraw.h"
 
+#include "asset/Assets.h"
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
 #include "asset/Uniform.h"
 
+#include "kigl/GLState.h"
+
 #include "pool/TypeHandle.h"
 
 #include "component/Camera.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
@@ -63,39 +67,39 @@ namespace render {
     void NodeDraw::prepareRT(
         const PrepareContext& ctx)
     {
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
-        auto& assets = ctx.m_assets;
 
-        m_gBuffer.prepare(assets);
-        m_oitBuffer.prepare(assets, &m_gBuffer);
-        m_effectBuffer.prepare(assets, &m_gBuffer);
+        m_gBuffer.prepare();
+        m_oitBuffer.prepare(&m_gBuffer);
+        m_effectBuffer.prepare(&m_gBuffer);
 
         m_plainQuad.prepare();
         m_textureQuad.prepare();
 
-        m_deferredProgram = registry->m_programRegistry->getProgram(SHADER_DEFERRED_PASS);
-        m_deferredProgram->prepareRT(assets);
+        m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS);
+        m_deferredProgram->prepareRT();
 
-        m_oitProgram = registry->m_programRegistry->getProgram(SHADER_OIT_PASS);
-        m_oitProgram->prepareRT(assets);
+        m_oitProgram = ProgramRegistry::get().getProgram(SHADER_OIT_PASS);
+        m_oitProgram->prepareRT();
 
-        m_blendOitProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_OIT_PASS);
-        m_blendOitProgram->prepareRT(assets);
+        m_blendOitProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS);
+        m_blendOitProgram->prepareRT();
 
-        m_bloomProgram = registry->m_programRegistry->getProgram(SHADER_BLOOM_PASS);
-        m_bloomProgram->prepareRT(assets);
+        m_bloomProgram = ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS);
+        m_bloomProgram->prepareRT();
 
-        m_blendBloomProgram = registry->m_programRegistry->getProgram(SHADER_BLEND_BLOOM_PASS);
-        m_blendBloomProgram->prepareRT(assets);
+        m_blendBloomProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS);
+        m_blendBloomProgram->prepareRT();
 
-        m_emissionProgram = registry->m_programRegistry->getProgram(SHADER_EMISSION_PASS);
-        m_emissionProgram->prepareRT(assets);
+        m_emissionProgram = ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS);
+        m_emissionProgram->prepareRT();
 
-        m_fogProgram = registry->m_programRegistry->getProgram(SHADER_FOG_PASS);
-        m_fogProgram->prepareRT(assets);
+        m_fogProgram = ProgramRegistry::get().getProgram(SHADER_FOG_PASS);
+        m_fogProgram->prepareRT();
 
-        m_hdrGammaProgram = registry->m_programRegistry->getProgram(SHADER_HDR_GAMMA_PASS);
-        m_hdrGammaProgram->prepareRT(assets);
+        m_hdrGammaProgram = ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS);
+        m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
     }
@@ -158,6 +162,8 @@ namespace render {
         GLbitfield copyMask)
     {
         //m_timeElapsedQuery.begin();
+        const auto& assets = ctx.m_assets;
+        auto& state = ctx.m_state;
 
         // https://community.khronos.org/t/selectively-writing-to-buffers/71054
         auto* primaryBuffer = m_effectBuffer.m_primary.get();
@@ -167,7 +173,7 @@ namespace render {
         // => nodes supporting G-buffer
         //if (false)
         {
-            ctx.m_state.setStencil({});
+            state.setStencil({});
 
             // NOTE KI intel requires FBO to be bound to clearing draw buffers
             // (nvidia seemingly does not)
@@ -178,7 +184,7 @@ namespace render {
             auto oldAllowBlend = ctx.setAllowBlend(false);
 
             // NOTE KI "pre pass depth" causes more artifacts than benefits
-            if (ctx.m_assets.prepassDepthEnabled)
+            if (assets.prepassDepthEnabled)
             {
                 m_gBuffer.m_buffer->resetDrawBuffers(0);
 
@@ -201,9 +207,9 @@ namespace render {
             }
 
             {
-                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
-                if (ctx.m_assets.prepassDepthEnabled) {
-                    ctx.m_state.setDepthFunc(GL_LEQUAL);
+                state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+                if (assets.prepassDepthEnabled) {
+                    state.setDepthFunc(GL_LEQUAL);
                 }
 
                 drawNodesImpl(
@@ -214,8 +220,8 @@ namespace render {
 
                 ctx.m_batch->flush(ctx);
 
-                if (ctx.m_assets.prepassDepthEnabled) {
-                    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+                if (assets.prepassDepthEnabled) {
+                    state.setDepthFunc(ctx.m_depthFunc);
                 }
             }
 
@@ -239,17 +245,17 @@ namespace render {
         // pass 3 - light
         //if (false)
         {
-            ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero());
-            ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+            state.setStencil(kigl::GLStencilMode::only_non_zero());
+            state.setEnabled(GL_DEPTH_TEST, false);
 
             primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
-            m_deferredProgram->bind(ctx.m_state);
-            m_textureQuad.draw(ctx.m_state);
+            m_deferredProgram->bind();
+            m_textureQuad.draw();
 
             primaryBuffer->resetDrawBuffers(1);
 
-            ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+            state.setEnabled(GL_DEPTH_TEST, true);
         }
 
         // pass 4 - non G-buffer solid nodes
@@ -259,16 +265,20 @@ namespace render {
         {
             ctx.validateRender("non_gbuffer");
 
-            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+            state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
-            bool rendered = drawNodesImpl(
+            drawNodesImpl(
                 ctx,
                 [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
                 nodeSelector,
                 kindBits);
 
-            if (rendered) {
-                ctx.m_batch->flush(ctx);
+            auto flushedCount = ctx.m_batch->flush(ctx);
+            if (flushedCount > 0) {
+                // NOTE KI depth again if changes; FOG is broken without this
+                m_gBuffer.m_buffer->copy(
+                    m_gBuffer.m_depthTexture.get(),
+                    GBuffer::ATT_DEPTH_INDEX);
 
                 // NOTE KI need to reset possibly changed drawing modes
                 // ex. selection volume changes to GL_LINE
@@ -280,13 +290,13 @@ namespace render {
         // NOTE KI OIT after *forward* pass to allow using depth texture from them
         if (ctx.m_allowBlend)
         {
-            if (ctx.m_assets.effectOitEnabled)
+            if (assets.effectOitEnabled)
             {
-                ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
+                state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
                 // NOTE KI do NOT modify depth with blend
-                ctx.m_state.setDepthMask(GL_FALSE);
+                state.setDepthMask(GL_FALSE);
 
-                ctx.m_state.setEnabled(GL_BLEND, true);
+                state.setEnabled(GL_BLEND, true);
 
                 m_oitBuffer.bind(ctx);
                 m_oitBuffer.clearAll();
@@ -310,11 +320,11 @@ namespace render {
                 // ex. if not done OIT vs. bloom works strangely
                 glBlendFunci(0, GL_ONE, GL_ONE);
                 glBlendFunci(1, GL_ONE, GL_ONE);
-                ctx.m_state.invalidateBlendMode();
+                state.invalidateBlendMode();
 
-                ctx.m_state.setEnabled(GL_BLEND, false);
+                state.setEnabled(GL_BLEND, false);
 
-                ctx.m_state.setDepthMask(GL_TRUE);
+                state.setDepthMask(GL_TRUE);
             }
         }
 
@@ -324,7 +334,7 @@ namespace render {
 
         // pass 6 - skybox (*before* blend)
         {
-            ctx.m_state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
+            state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
             drawSkybox(ctx);
         }
 
@@ -333,7 +343,7 @@ namespace render {
         //if (false)
         if (ctx.m_allowBlend)
         {
-            ctx.m_state.setStencil({});
+            state.setStencil({});
 
             drawBlendedImpl(
                 ctx,
@@ -350,48 +360,48 @@ namespace render {
         // pass 8 - screenspace effects
         if (ctx.m_allowBlend)
         {
-            ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+            state.setEnabled(GL_DEPTH_TEST, false);
             // NOTE KI do NOT modify depth with blend (likely redundant)
-            ctx.m_state.setDepthMask(GL_FALSE);
+            state.setDepthMask(GL_FALSE);
 
             {
-                ctx.m_state.setEnabled(GL_BLEND, true);
-                ctx.m_state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+                state.setEnabled(GL_BLEND, true);
+                state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-                if (ctx.m_assets.effectFogEnabled) {
-                    ctx.m_state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
-                    m_fogProgram->bind(ctx.m_state);
-                    m_textureQuad.draw(ctx.m_state);
+                if (assets.effectFogEnabled) {
+                    state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+                    m_fogProgram->bind();
+                    m_textureQuad.draw();
                 }
 
-                if (ctx.m_assets.effectOitEnabled) {
-                    ctx.m_state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
+                if (assets.effectOitEnabled) {
+                    state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
 
-                    m_blendOitProgram->bind(ctx.m_state);
+                    m_blendOitProgram->bind();
                     m_oitBuffer.bindTexture(ctx);
 
-                    m_textureQuad.draw(ctx.m_state);
+                    m_textureQuad.draw();
                 }
 
-                ctx.m_state.setEnabled(GL_BLEND, false);
+                state.setEnabled(GL_BLEND, false);
             }
 
-            if (ctx.m_assets.effectBloomEnabled)
+            if (assets.effectBloomEnabled)
             {
-                ctx.m_state.setStencil({});
+                state.setStencil({});
 
                 primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
                 primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
 
-                //m_emissionProgram->bind(ctx.m_state);
+                //m_emissionProgram->bind();
                 //m_textureQuad.draw(ctx);
 
-                m_bloomProgram->bind(ctx.m_state);
+                m_bloomProgram->bind();
                 primaryBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
                 bool cleared[2]{ false, false };
 
-                for (int i = 0; i < ctx.m_assets.effectBloomIterations; i++) {
+                for (int i = 0; i < assets.effectBloomIterations; i++) {
                     auto& buf = m_effectBuffer.m_buffers[i % 2];
                     buf->bind(ctx);
 
@@ -401,7 +411,7 @@ namespace render {
                     }
 
                     m_bloomProgram->m_uniforms->u_effectBloomIteration.set(i);
-                    m_textureQuad.draw(ctx.m_state);
+                    m_textureQuad.draw();
 
                     buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
                 }
@@ -409,8 +419,8 @@ namespace render {
                 secondaryBuffer->bind(ctx);
                 secondaryBuffer->clearAll();
 
-                m_blendBloomProgram->bind(ctx.m_state);
-                m_textureQuad.draw(ctx.m_state);
+                m_blendBloomProgram->bind();
+                m_textureQuad.draw();
             }
             else {
                 primaryBuffer->copy(
@@ -422,10 +432,10 @@ namespace render {
                 //secondaryBuffer->bind(ctx);
             }
 
-            ctx.m_state.setDepthMask(GL_TRUE);
-            ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+            state.setDepthMask(GL_TRUE);
+            state.setEnabled(GL_DEPTH_TEST, true);
 
-            ctx.m_state.setStencil({});
+            state.setStencil({});
         }
 
         // pass 11 - debug info
@@ -476,9 +486,9 @@ namespace render {
 
                     if (hdr) {
                         targetBuffer->bind(ctx);
-                        m_hdrGammaProgram->bind(ctx.m_state);
+                        m_hdrGammaProgram->bind();
                         secondaryBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-                        m_textureQuad.draw(ctx.m_state);
+                        m_textureQuad.draw();
                     }
                     else {
                         secondaryBuffer->blit(
@@ -495,11 +505,11 @@ namespace render {
         }
 
         // pass 12 - cleanup
-        if (ctx.m_assets.glUseInvalidate)
+        if (assets.glUseInvalidate)
         {
-            //ctx.m_state.bindFrameBuffer(0, false);
+            //kigl::GLState::get().bindFrameBuffer(0, false);
 
-            if (ctx.m_assets.effectOitEnabled) {
+            if (assets.effectOitEnabled) {
                 m_oitBuffer.invalidateAll();
             }
             m_effectBuffer.invalidateAll();
@@ -517,7 +527,9 @@ namespace render {
         const RenderContext& ctx,
         FrameBuffer* targetBuffer)
     {
-        if (!(ctx.m_allowDrawDebug && ctx.m_assets.drawDebug)) return;
+        const auto& assets = ctx.m_assets;
+
+        if (!(ctx.m_allowDrawDebug && assets.drawDebug)) return;
 
         //m_effectBuffer.m_primary->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
@@ -611,7 +623,7 @@ namespace render {
     {
         bool rendered{ false };
 
-        auto* nodeRegistry = ctx.m_registry->m_nodeRegistry;
+        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
         auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
             auto* type = typeMap.begin()->first.m_typeHandle.toType();
@@ -630,7 +642,7 @@ namespace render {
                     if (!node || !nodeSelector(node)) continue;
 
                     rendered = true;
-                    batch->draw(ctx, *node, program);
+                    batch->draw(ctx, type, *node, program);
                 }
             }
             };
@@ -694,7 +706,7 @@ namespace render {
             auto* type = node->m_typeHandle.toType();
             auto* program = type->m_program;
 
-            ctx.m_batch->draw(ctx, *node, program);
+            ctx.m_batch->draw(ctx, type, *node, program);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect
@@ -724,7 +736,7 @@ namespace render {
                     auto* node = handle.toNode();
                     if (!node || !nodeSelector(node)) continue;
 
-                    batch->draw(ctx, *node, activeProgram);
+                    batch->draw(ctx, type, *node, activeProgram);
                 }
             }
             };
@@ -757,7 +769,10 @@ namespace render {
     void NodeDraw::drawSkybox(
         const RenderContext& ctx)
     {
-        auto* node = ctx.m_registry->m_nodeRegistry->m_skybox.toNode();
+        auto& state = ctx.m_state;
+
+        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+        auto* node = nodeRegistry.m_skybox.toNode();
         if (!node) return;
 
         auto* type = node->m_typeHandle.toType();
@@ -767,9 +782,9 @@ namespace render {
         auto& batch = ctx.m_batch;
         auto* program = type->m_program;
 
-        ctx.m_state.setDepthFunc(GL_LEQUAL);
-        program->bind(ctx.m_state);
-        m_textureQuad.draw(ctx.m_state);
-        ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+        state.setDepthFunc(GL_LEQUAL);
+        program->bind();
+        m_textureQuad.draw();
+        state.setDepthFunc(ctx.m_depthFunc);
     }
 }

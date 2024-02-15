@@ -1,7 +1,6 @@
 #pragma once
 
-#include "asset/Assets.h"
-
+class Assets;
 class Registry;
 
 //
@@ -10,7 +9,6 @@ class Registry;
 struct PrepareContext final {
 public:
     PrepareContext(
-        const Assets& assets,
         Registry* registry);
 
 public:

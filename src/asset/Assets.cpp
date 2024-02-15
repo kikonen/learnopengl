@@ -8,6 +8,23 @@
 
 #include "kigl/kigl.h"
 
+namespace {
+    static Assets s_assets;
+}
+
+const Assets& Assets::get() noexcept {
+    return s_assets;
+}
+
+Assets& Assets::modify() noexcept {
+    return s_assets;
+}
+
+void Assets::set(const Assets& assets) noexcept
+{
+    s_assets = assets;
+}
+
 Assets::Assets()
 {
     glsl_version[0] = 4;
@@ -105,6 +122,7 @@ Assets::Assets()
     frustumGPU = false;
     frustumCPU = true;
     frustumAny = frustumEnabled && (frustumCPU || frustumGPU);
+    frustumParallelLimit = 999;
 
     frustumDebug = false;
     frustumVisual = false;

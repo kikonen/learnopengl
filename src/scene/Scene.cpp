@@ -7,6 +7,7 @@
 #include "ki/Timer.h"
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
 #include "asset/UBO.h"
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
@@ -31,6 +32,7 @@
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
@@ -59,13 +61,13 @@ namespace {
 }
 
 Scene::Scene(
-    const Assets& assets,
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_alive(alive),
+    : m_alive(alive),
     m_registry(registry)
 {
+    const auto& assets = Assets::get();
+
     {
         m_mainRenderer = std::make_unique<NodeRenderer>("main", true);
         m_rearRenderer = std::make_unique<NodeRenderer>("rear", true);
@@ -85,13 +87,13 @@ Scene::Scene(
 
         m_viewportRenderer->setEnabled(true);
 
-        m_waterMapRenderer->setEnabled(m_assets.waterMapEnabled);
-        m_mirrorMapRenderer->setEnabled(m_assets.mirrorMapEnabled);
-        m_cubeMapRenderer->setEnabled(m_assets.cubeMapEnabled);
-        m_shadowMapRenderer->setEnabled(m_assets.shadowMapEnabled);
+        m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
+        m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
+        m_cubeMapRenderer->setEnabled(assets.cubeMapEnabled);
+        m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
-        m_normalRenderer->setEnabled(m_assets.showNormals);
+        m_normalRenderer->setEnabled(assets.showNormals);
     }
 
     m_particleSystem = std::make_unique<ParticleSystem>();
@@ -116,6 +118,8 @@ void Scene::destroy()
 
 void Scene::prepareRT()
 {
+    const auto& assets = Assets::get();
+
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
     auto* dispatcherView = m_registry->m_dispatcherView;
@@ -135,13 +139,13 @@ void Scene::prepareRT()
 
     m_renderData->prepare(
         false,
-        m_assets.glUseInvalidate,
-        m_assets.glUseFence,
-        m_assets.glUseSingleFence,
-        m_assets.glUseDebugFence,
-        m_assets.batchDebug);
+        assets.glUseInvalidate,
+        assets.glUseFence,
+        assets.glUseSingleFence,
+        assets.glUseDebugFence,
+        assets.batchDebug);
 
-    PrepareContext ctx{ m_assets, m_registry.get() };
+    PrepareContext ctx{ m_registry.get() };
 
     m_batch->prepareRT(ctx);
     m_nodeDraw->prepareRT(ctx);
@@ -199,7 +203,7 @@ void Scene::prepareRT()
             glm::vec2(2.f, 2.f),
             false,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_mainViewport->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
         });
@@ -213,14 +217,14 @@ void Scene::prepareRT()
         m_mainViewport->setGammaCorrect(true);
         m_mainViewport->setHardwareGamma(true);
 
-        m_mainViewport->setEffectEnabled(m_assets.viewportEffectEnabled);
-        m_mainViewport->setEffect(m_assets.viewportEffect);
+        m_mainViewport->setEffectEnabled(assets.viewportEffectEnabled);
+        m_mainViewport->setEffect(assets.viewportEffect);
 
-        m_mainViewport->prepareRT(m_assets);
-        m_registry->m_viewportRegistry->addViewport(m_mainViewport);
+        m_mainViewport->prepareRT();
+        ViewportRegistry::get().addViewport(m_mainViewport);
     }
 
-    if (m_assets.showRearView) {
+    if (assets.showRearView) {
         m_rearViewport = std::make_shared<Viewport>(
             "Rear",
             glm::vec3(-1.f, -0.5f, 0),
@@ -228,7 +232,7 @@ void Scene::prepareRT()
             glm::vec2(0.5f, 0.5f),
             true,
             0,
-            m_registry->m_programRegistry->getProgram(SHADER_VIEWPORT));
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_rearViewport->setBindBefore([this](Viewport& vp) {
             auto* buffer = m_rearRenderer->m_buffer.get();
@@ -239,32 +243,32 @@ void Scene::prepareRT()
         m_rearViewport->setGammaCorrect(true);
         m_rearViewport->setHardwareGamma(true);
 
-        m_rearViewport->prepareRT(m_assets);
-        m_registry->m_viewportRegistry->addViewport(m_rearViewport);
+        m_rearViewport->prepareRT();
+        ViewportRegistry::get().addViewport(m_rearViewport);
     }
 
-    if (m_assets.showObjectIDView) {
+    if (assets.showObjectIDView) {
         if (m_objectIdRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_objectIdRenderer->m_debugViewport);
+            ViewportRegistry::get().addViewport(m_objectIdRenderer->m_debugViewport);
         }
     }
 
-    if (m_assets.showShadowMapView) {
+    if (assets.showShadowMapView) {
         if (m_shadowMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_shadowMapRenderer->m_debugViewport);
+            ViewportRegistry::get().addViewport(m_shadowMapRenderer->m_debugViewport);
         }
     }
-    if (m_assets.showReflectionView) {
+    if (assets.showReflectionView) {
         if (m_waterMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
+            ViewportRegistry::get().addViewport(m_waterMapRenderer->m_reflectionDebugViewport);
         }
         if (m_mirrorMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_mirrorMapRenderer->m_reflectionDebugViewport);
+            ViewportRegistry::get().addViewport(m_mirrorMapRenderer->m_reflectionDebugViewport);
         }
     }
-    if (m_assets.showRefractionView) {
+    if (assets.showRefractionView) {
         if (m_waterMapRenderer->isEnabled()) {
-            m_registry->m_viewportRegistry->addViewport(m_waterMapRenderer->m_refractionDebugViewport);
+            ViewportRegistry::get().addViewport(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
 }
@@ -289,6 +293,8 @@ void Scene::postRT(const UpdateContext& ctx)
 
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
+    const auto& assets = ctx.m_assets;
+
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->updateRT(ctx);
     }
@@ -299,7 +305,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
     m_mainRenderer->updateRT(ctx);
 
-    if (m_assets.showRearView) {
+    if (assets.showRearView) {
         m_rearRenderer->updateRT(ctx);
     }
 
@@ -315,7 +321,7 @@ void Scene::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    m_registry->m_nodeRegistry->handleNodeAdded(node);
+    NodeRegistry::get().handleNodeAdded(node);
     m_nodeDraw->handleNodeAdded(node);
     m_mirrorMapRenderer->handleNodeAdded(node);
     m_waterMapRenderer->handleNodeAdded(node);
@@ -328,7 +334,7 @@ void Scene::bind(const RenderContext& ctx)
         m_shadowMapRenderer->bind(ctx);
     }
 
-    m_registry->m_typeRegistry->bind(ctx);
+    MeshTypeRegistry::get().bind(ctx);
 
     m_renderData->bind();
 
@@ -357,7 +363,10 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 
 void Scene::draw(const RenderContext& ctx)
 {
-    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    const auto& assets = ctx.m_assets;
+    auto& state = ctx.m_state;
+
+    state.setDepthFunc(ctx.m_depthFunc);
 
     bool wasCubeMap = false;
     int renderCount = 0;
@@ -367,10 +376,10 @@ void Scene::draw(const RenderContext& ctx)
         m_shadowMapRenderer->bindTexture(ctx);
     }
 
-    ctx.m_state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, ctx.m_assets.cubeMapSeamless);
+    state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->render(ctx)) {
-        wasCubeMap = ctx.m_assets.cubeMapSkipOthers;
+        wasCubeMap = assets.cubeMapSkipOthers;
     }
 
     if (!wasCubeMap && m_waterMapRenderer->render(ctx))
@@ -406,7 +415,9 @@ void Scene::drawMain(const RenderContext& parentCtx)
 // "back mirror" viewport
 void Scene::drawRear(const RenderContext& parentCtx)
 {
-    if (!m_assets.showRearView) return;
+    const auto& assets = parentCtx.m_assets;
+
+    if (!assets.showRearView) return;
 
     auto* parentCamera = parentCtx.m_camera;
 
@@ -464,9 +475,11 @@ void Scene::drawScene(
     const RenderContext& ctx,
     NodeRenderer* nodeRenderer)
 {
-    m_registry->m_materialRegistry->bind(ctx);
-    m_registry->m_spriteRegistry->bind(ctx);
-    m_registry->m_entityRegistry->bind(ctx);
+    const auto& assets = ctx.m_assets;
+
+    MaterialRegistry::get().bind(ctx);
+    SpriteRegistry::get().bind(ctx);
+    EntityRegistry::get().bind(ctx);
 
     if (m_cubeMapRenderer->isEnabled()) {
         m_cubeMapRenderer->bindTexture(ctx);
@@ -488,7 +501,7 @@ void Scene::drawScene(
         m_particleSystem->render(ctx);
     }
 
-    if (m_assets.showNormals) {
+    if (assets.showNormals) {
         if (m_normalRenderer->isEnabled()) {
             m_normalRenderer->render(ctx);
         }
@@ -497,24 +510,24 @@ void Scene::drawScene(
 
 Node* Scene::getActiveNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveNode();
+    return NodeRegistry::get().getActiveNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
-    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
 }
 
 Node* Scene::getActiveCameraNode() const
 {
-    return m_registry->m_nodeRegistry->getActiveCameraNode();
+    return NodeRegistry::get().getActiveCameraNode();
 }
 
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCameraNode();
-    return node ? m_registry->m_controllerRegistry->getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
 }
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)

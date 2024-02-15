@@ -47,7 +47,7 @@ namespace render {
             wireframe(drawOptions.m_wireframe)
         {};
 
-        const std::string str() const noexcept
+        std::string str() const noexcept
         {
             return fmt::format(
                 "<PROGRAM_KEY: id={}, pri={}, renderBack={}, wireframe={}>",

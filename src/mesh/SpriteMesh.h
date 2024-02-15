@@ -14,7 +14,7 @@ namespace mesh {
         SpriteMesh();
         virtual ~SpriteMesh();
 
-        virtual const std::string str() const noexcept override;
+        virtual std::string str() const noexcept override;
 
         virtual const AABB calculateAABB() const override;
 
@@ -22,6 +22,9 @@ namespace mesh {
 
         virtual kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
+
+        virtual void prepareLod(
+            mesh::LodMesh& lodMesh) override;
 
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;

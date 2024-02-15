@@ -38,6 +38,12 @@ namespace {
 
 namespace script
 {
+    CommandEngine& CommandEngine::get() noexcept
+    {
+        static CommandEngine s_engine;
+        return s_engine;
+    }
+
     CommandEngine::CommandEngine()
         : m_cleanupStep(5)
     {

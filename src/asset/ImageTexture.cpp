@@ -114,8 +114,7 @@ ImageTexture::~ImageTexture()
 {
 }
 
-void ImageTexture::prepare(
-    const Assets& assets)
+void ImageTexture::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;

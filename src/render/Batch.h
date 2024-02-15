@@ -6,8 +6,14 @@
 
 #include "BatchCommand.h"
 
+#include "mesh/InstanceSSBO.h"
+
 namespace backend {
     class DrawBuffer;
+}
+
+namespace mesh {
+    class MeshType;
 }
 
 class Program;
@@ -18,7 +24,6 @@ struct PrepareContext;
 class RenderContext;
 
 class Node;
-class EntityRegistry;
 
 namespace render {
     // NOTE KI use single shared UBO buffer for rendering
@@ -39,16 +44,21 @@ namespace render {
 
         void addSnapshot(
             const RenderContext& ctx,
+            const mesh::MeshType* type,
+            const backend::Lod* lod,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
-        void addSnapshots(
-            const RenderContext& ctx,
-            const std::span<const Snapshot>& snapshots,
-            const std::span<uint32_t>& entityIndeces) noexcept;
+        //void addSnapshots(
+        //    const RenderContext& ctx,
+        //    mesh::MeshType* type,
+        //    const std::span<const Snapshot>& snapshots,
+        //    const std::span<uint32_t>& entityIndeces) noexcept;
 
         void addSnapshotsInstanced(
             const RenderContext& ctx,
+            const mesh::MeshType* type,
+            const std::span<const backend::Lod*>& lods,
             const std::span<const Snapshot>& snapshots,
             uint32_t entityBase) noexcept;
 
@@ -61,15 +71,21 @@ namespace render {
 
         void draw(
             const RenderContext& ctx,
+            mesh::MeshType* type,
             Node& node,
             Program* program);
 
-        bool isFlushed() const noexcept
-        {
-            return m_entityIndeces.size() == 0;
+        bool isFlushed() const noexcept;
+
+        size_t getFlushedTotalCount() const noexcept {
+            return m_flushedTotalCount;
         }
 
-        void flush(
+        void clearFlushedTotalCount() noexcept {
+            m_flushedTotalCount = 0;
+        }
+
+        size_t flush(
             const RenderContext& ctx);
 
         backend::gl::PerformanceCounters getCounters(bool clear) const;
@@ -82,25 +98,22 @@ namespace render {
             const backend::DrawOptions& drawOptions,
             Program* program) noexcept;
 
-        bool inFrustum(
-            const RenderContext& ctx,
-            const Snapshot& snapshot) const noexcept;
-
     private:
         bool m_prepared = false;
 
         bool m_frustumCPU = false;
         bool m_frustumGPU = false;
+        uint32_t m_frustumParallelLimit = 999;
 
         std::vector<BatchCommand> m_batches;
 
-        EntityRegistry* m_entityRegistry{ nullptr };
-
-        std::vector<int> m_entityIndeces;
+        std::vector<mesh::InstanceSSBO> m_entityIndeces;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 
-        mutable unsigned long m_drawCount = 0;
-        mutable unsigned long m_skipCount = 0;
+        mutable size_t m_drawCount{ 0 };
+        mutable size_t m_skipCount{ 0 };
+
+        size_t m_flushedTotalCount{ 0 };
     };
 }

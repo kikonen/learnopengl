@@ -11,8 +11,8 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
-#include "mesh/MeshType.h"
 
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
@@ -46,7 +46,7 @@ namespace mesh {
         m_vertices.clear();
     }
 
-    const std::string ModelMesh::str() const noexcept
+    std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
             "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
@@ -90,15 +90,23 @@ namespace mesh {
         m_indeces.clear();
         //m_vertices.clear();
 
-        m_vao = ctx.m_registry->m_modelRegistry->registerModelVBO(m_vertexVBO);
+        m_vao = ModelRegistry::get().registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 
     void ModelMesh::prepareMaterials(
-        MaterialVBO& materialVBO)
+        MaterialSet& materialSet)
     {
         ModelMaterialInit init;
-        init.prepare(*this, materialVBO);
+        init.prepare(*this, materialSet);
+    }
+
+    void ModelMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_baseVertex = m_vertexVBO.getBaseVertex();
+        lodMesh.m_lod.m_baseIndex = m_vertexVBO.getBaseIndex();
+        lodMesh.m_lod.m_indexCount = m_vertexVBO.getIndexCount();
     }
 
     void ModelMesh::prepareDrawOptions(
@@ -106,8 +114,5 @@ namespace mesh {
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
-        drawOptions.m_indexCount = m_indexCount * 3;
-        drawOptions.m_vertexOffset = static_cast<uint32_t>(m_vertexVBO.m_vertexOffset);
-        drawOptions.m_indexOffset = static_cast<uint32_t>(m_vertexVBO.m_indexOffset);
     }
 }

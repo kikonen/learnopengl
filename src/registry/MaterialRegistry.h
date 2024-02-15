@@ -4,13 +4,12 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "kigl/GLBuffer.h"
 
 namespace mesh {
-    class MaterialVBO;
+    class MaterialSet;
 }
 
 struct UpdateContext;
@@ -21,16 +20,19 @@ struct MaterialSSBO;
 
 class MaterialRegistry {
 public:
-    MaterialRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+    static MaterialRegistry& get() noexcept;
+
+    MaterialRegistry();
+    MaterialRegistry& operator=(const MaterialRegistry&) = delete;
 
     ~MaterialRegistry();
 
     // Updates m_registeredIndex of Material
     void registerMaterial(Material& material);
 
-    void registerMaterialVBO(mesh::MaterialVBO& materialVBO);
+    // Register material indeces per vertex
+    // *ONLY* if multiple materials, thus varying per vertex
+    void registerVertexMaterials(mesh::MaterialSet& materialSet);
 
     size_t getBaseIndex() { return m_materials.size(); }
 
@@ -52,10 +54,6 @@ private:
     void updateIndexBuffer();
 
 private:
-    const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 

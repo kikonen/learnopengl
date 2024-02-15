@@ -5,7 +5,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Assets.h"
 #include "asset/Sprite.h"
 #include "asset/ShapeSSBO.h"
 
@@ -20,9 +19,10 @@ struct Shape;
 
 class SpriteRegistry {
 public:
-    SpriteRegistry(
-        const Assets& assets,
-        std::shared_ptr<std::atomic<bool>> alive);
+    static SpriteRegistry& get() noexcept;
+
+    SpriteRegistry();
+    SpriteRegistry& operator=(const SpriteRegistry&) = delete;
 
     ~SpriteRegistry();
 
@@ -39,10 +39,6 @@ private:
     void updateShapeBuffer();
 
 private:
-    const Assets& m_assets;
-
-    std::shared_ptr<std::atomic<bool>> m_alive;
-
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 

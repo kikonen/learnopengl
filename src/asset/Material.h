@@ -85,11 +85,11 @@ public:
     Material& operator=(const Material& o) = default;
     Material& operator=(Material&& o) = default;
 
-    void loadTextures(const Assets& assets);
+    void loadTextures();
 
     bool hasTex(int index) const;
 
-    void prepare(const Assets& assets);
+    void prepare();
 
     const MaterialSSBO toSSBO() const;
 
@@ -111,22 +111,19 @@ public:
         const ki::material_id id,
         const std::vector<Material>& materials);
 
-    const std::string getTexturePath(
-        const Assets& assets,
+    std::string getTexturePath(
         std::string_view textureName);
 
 private:
-    std::string resolveBaseDir(const Assets& assets);
+    std::string resolveBaseDir();
 
     void loadTexture(
-        const Assets& assets,
         int idx,
         std::string_view name,
         bool gammaCorrect,
         bool usePlaceholder);
 
     void loadChannelTexture(
-        const Assets& assets,
         int idx,
         std::string_view name,
         const std::vector<int>& textureIndeces,

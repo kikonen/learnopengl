@@ -5,6 +5,10 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
+#include "asset/Assets.h"
+
+#include "kigl/GLState.h"
+
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/RenderData.h"
@@ -32,7 +36,7 @@ namespace render {
         m_spec.attachments.clear();
     }
 
-    const std::string FrameBuffer::str() const noexcept
+    std::string FrameBuffer::str() const noexcept
     {
         return fmt::format(
             "<FBO: name={}, fbo={}, w={}, h={}, attachments={}>",
@@ -168,15 +172,17 @@ namespace render {
 
     void FrameBuffer::bind(const RenderContext& ctx)
     {
+        auto& state = ctx.m_state;
+
         ctx.validateRender("FBO");
 
-        bool changed = ctx.m_state.bindFrameBuffer(m_fbo, m_forceBind);
+        bool changed = state.bindFrameBuffer(m_fbo, m_forceBind);
         if (changed) {
-            changed = ctx.m_state.setViewport({ 0, 0, m_spec.width, m_spec.height });
+            changed = state.setViewport({ 0, 0, m_spec.width, m_spec.height });
         }
 
         if (changed) {
-            if (ctx.m_state.setBufferResolution(m_bufferInfo.u_bufferResolution)) {
+            if (state.setBufferResolution(m_bufferInfo.u_bufferResolution)) {
                 ctx.m_renderData->updateBufferInfo(m_bufferInfo);
             }
         }
@@ -195,12 +201,14 @@ namespace render {
 
     void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
+        auto& state = ctx.m_state;
+        state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
     }
 
     void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
     {
-        ctx.m_state.bindTexture(unitIndex, 0, true);
+        auto& state = ctx.m_state;
+        state.bindTexture(unitIndex, 0, true);
     }
 
     // mask = GL_COLOR_BUFFER_BIT,
@@ -302,15 +310,17 @@ namespace render {
         GLbitfield clearMask,
         const glm::vec4& debugColor)
     {
-        const bool useDebugColor = ctx.m_assets.useDebugColor;
+        const auto& assets = ctx.m_assets;
+
+        const bool useDebugColor = assets.useDebugColor;
         const bool hasAttachments = !m_spec.attachments.empty();
 
         //if (clearMask & GL_COLOR_BUFFER_BIT) {
         //    if (useDebugColor) {
-        //        ctx.m_state.clearColor(debugColor);
+        //        ki::GLState.get().clearColor(debugColor);
         //    }
         //    else {
-        //        ctx.m_state.clearColor(BLACK_COLOR);
+        //        ki::GLState.get().clearColor(BLACK_COLOR);
         //    }
         //}
 

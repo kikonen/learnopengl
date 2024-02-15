@@ -1,5 +1,7 @@
 #include "CameraZoomController.h"
 
+#include "asset/Assets.h"
+
 #include "gui/Input.h"
 
 #include "model/Node.h"
@@ -28,7 +30,7 @@ void CameraZoomController::prepare(
     Node& node)
 {
     NodeController::prepare(ctx, node);
-    auto& assets = ctx.m_assets;
+    const auto& assets = ctx.m_assets;
 
     if (!node.m_camera) return;
 
@@ -72,7 +74,7 @@ void CameraZoomController::onKey(
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            auto nextCamera = m_registry->m_nodeRegistry->getNextCameraNode(m_nodeHandle, offset);
+            auto nextCamera = NodeRegistry::get().getNextCameraNode(m_nodeHandle, offset);
 
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
@@ -107,7 +109,9 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+
+    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;
@@ -133,7 +137,7 @@ void CameraZoomController::onMouseMove(
     }
 
     if (changed) {
-        m_registry->m_commandEngine->addCommand(
+        script::CommandEngine::get().addCommand(
             0,
             script::RotateNode{
                 m_nodeHandle.toId(),
@@ -142,8 +146,6 @@ void CameraZoomController::onMouseMove(
                 snapshot.getViewRight(),
                 -adjust.x
             });
-
-        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }
 

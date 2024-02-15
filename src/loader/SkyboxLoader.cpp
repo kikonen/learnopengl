@@ -3,10 +3,14 @@
 #include "ki/yaml.h"
 #include "util/Util.h"
 
+#include "asset/Assets.h"
+
 #include "pool/NodeHandle.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
+#include "mesh/ModelMesh.h"
 
 #include "event/Dispatcher.h"
 
@@ -101,17 +105,20 @@ namespace loader {
     {
         if (!data.valid()) return;
 
+        const auto& assets = Assets::get();
+
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<skybox>");
 
         type->m_priority = data.priority;
 
-        auto future = m_registry->m_modelRegistry->getMesh(
+        auto future = ModelRegistry::get().getMesh(
             SKYBOX_MESH_NAME,
-            m_assets.modelsDir);
+            assets.modelsDir);
         auto* mesh = future.get();
-        type->setMesh(mesh);
+        type->addLod({ mesh });
+
         type->m_entityType = mesh::EntityType::skybox;
 
         auto& flags = type->m_flags;
@@ -127,7 +134,7 @@ namespace loader {
         flags.noNormals = true;
         flags.gbuffer = false;// data.programName.starts_with("g_");
 
-        type->m_program = m_registry->m_programRegistry->getProgram(data.programName);
+        type->m_program = ProgramRegistry::get().getProgram(data.programName);
 
         bool gammaCorrect = data.gammaCorrect;
         if (data.hdri) {
@@ -143,11 +150,11 @@ namespace loader {
             material->m_faces = data.faces;
         }
 
-        m_registry->m_typeRegistry->registerCustomMaterial(typeHandle);
+        MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
 
         type->setCustomMaterial(std::move(material));
 
-        auto handle = pool::NodeHandle::allocate(m_ctx.m_assets.skyboxId);
+        auto handle = pool::NodeHandle::allocate(assets.skyboxId);
         auto* node = handle.toNode();
 #ifdef _DEBUG
         node->m_resolvedSID = "<skybox>";
@@ -157,7 +164,7 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.body.node = {
-                .target = m_assets.skyboxId,
+                .target = assets.skyboxId,
                 .parentId = rootId,
             };
             m_dispatcher->send(evt);

@@ -36,7 +36,7 @@ std::unique_ptr<Sphere> Sphere::clone() const noexcept
     return clone;
 }
 
-const std::string Sphere::str() const noexcept
+std::string Sphere::str() const noexcept
 {
     return fmt::format(
         "<SPHERE: center={}, radius={}, worldCenter={}, worldRadius={}>",

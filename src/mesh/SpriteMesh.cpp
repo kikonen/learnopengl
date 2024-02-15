@@ -6,7 +6,9 @@
 
 #include "asset/Sphere.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 #include "mesh/SpriteVAO.h"
 
 
@@ -31,7 +33,7 @@ namespace mesh {
     {
     }
 
-    const std::string SpriteMesh::str() const noexcept
+    std::string SpriteMesh::str() const noexcept
     {
         return fmt::format("<SPRITE: id={}>", m_id);
     }
@@ -56,12 +58,16 @@ namespace mesh {
         return m_vao;
     }
 
+    void SpriteMesh::prepareLod(
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_lod.m_indexCount = 1;
+    }
+
     void SpriteMesh::prepareDrawOptions(
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = GL_POINTS;
-        drawOptions.m_indexFirst = 0;
-        drawOptions.m_indexCount = 1;
     }
 }

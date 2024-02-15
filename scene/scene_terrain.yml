@@ -43,7 +43,6 @@ entities:
     priority: 20
     type: container
     instanced: true
-    material: terrain_grass_2
     program: g_terrain
     depth_program: g_terrain_depth
     pos: [-1024, 0, -1024]
@@ -57,6 +56,7 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
+      material: terrain_grass_2
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
@@ -97,44 +97,28 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-  - name: Linden tree forest - part 1
+  - id: linden_tree_forest_1
     type: model
-    model: quad
+    model: linden_tree
     priority: 1
     program: g_tex
-    instanced: true
     pos: [150, 15.0, 150.0]
-    material: linden_tree
+    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_physics: true
       enforce_bounds: true
       render_back: true
-    scale: [7, 10, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 20
-        z_count: 20
-        x_step: -20
-        z_step: 20
-  - name: Linden tree forest - part 2
-    type: model
-    model: quad
-    priority: 1
-    program: g_tex
+    scale: 10
+    lods:
+      - model: linden_tree
+        material: linden_tree
+        distance: 450
+      - model: linden_tree_lod_1
+        material: linden_tree
+        distance: 99999
     instanced: true
-    pos: [150, 15.0, 150.0]
-    rotation: [0, 90, 0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_physics: true
-      enforce_bounds: true
-      render_back: true
-    scale: [7, 10, 1]
     generator:
       type: grid
       repeat:
@@ -143,12 +127,13 @@ entities:
         x_step: -20
         z_step: 20
   - name: Skeleton army
-    type: billboard
+    model quad:
     priority: 1
     program: g_tex
     pos: [0, 11.5, 0.0]
     material: skeleton
     render_flags:
+      billboard: true
       alpha: true
       render_back: true
       enforce_bounds: true

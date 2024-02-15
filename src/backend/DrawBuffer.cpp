@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "kigl/GLState.h"
+
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -23,6 +25,12 @@
 #include "backend/gl/PerformanceCounters.h"
 #include "DrawOptions.h"
 
+namespace {
+    constexpr size_t INDEX_BLOCK_SIZE = 1000;
+    constexpr size_t INDEX_BLOCK_COUNT = 500;
+
+    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
+}
 
 namespace backend {
     constexpr int BUFFER_ALIGNMENT = 1;
@@ -48,7 +56,7 @@ namespace backend {
     {
         const auto info = kigl::GL::getInfo();
 
-        auto& assets = ctx.m_assets;
+        const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
@@ -66,7 +74,7 @@ namespace backend {
 
         if (m_frustumGPU) {
             m_computeGroups = assets.computeGroups;
-            m_cullingCompute = registry->m_programRegistry->getComputeProgram(
+            m_cullingCompute = ProgramRegistry::get().getComputeProgram(
                 CS_FRUSTUM_CULLING,
                 {
                     { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
@@ -75,7 +83,7 @@ namespace backend {
                     { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
                 });
 
-            m_cullingCompute->prepareRT(assets);
+            m_cullingCompute->prepareRT();
         }
 
         if (m_frustumGPU) {
@@ -112,6 +120,9 @@ namespace backend {
         for (int i = 0; i < rangeCount; i++) {
             m_drawRanges.emplace_back();
         }
+
+        //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+        m_indexBuffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
     }
 
     void DrawBuffer::bind()
@@ -157,39 +168,35 @@ namespace backend {
         // - bind draw program
         // - execute draw program
 
-        constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
-        const size_t paramsOffset = cmdRange.m_index * PARAMS_SZ;
         if (m_frustumGPU) {
-            gl::DrawIndirectParameters params{
-                static_cast<GLuint>(cmdRange.m_baseIndex),
-                static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type)),
-                static_cast<GLuint>(drawCount)
-            };
-
             auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
             data += cmdRange.m_index;
 
-            // NOTE KI memcpy is *likely* faster than assignment operator
-            memcpy(data, &params, PARAMS_SZ);
+            data->u_baseIndex = static_cast<GLuint>(cmdRange.m_baseIndex);
+            data->u_drawType = static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type));
+            data->u_drawCount = static_cast<GLuint>(drawCount);
 
-            m_drawParameters.flushRange(paramsOffset, PARAMS_SZ);
+            constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
+            m_drawParameters.flushRange(
+                cmdRange.m_index * PARAMS_SZ,
+                PARAMS_SZ);
         }
 
         if (m_frustumGPU) {
-            m_cullingCompute->bind(*drawRange.m_state);
+            m_cullingCompute->bind();
 
             m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
 
-            const int maxX = m_computeGroups[0];
-            int groupX = drawCount;
-            int groupY = 1;
-            if (drawCount > maxX) {
-                groupX = maxX;
-                groupY = drawCount / maxX;
-                if (drawCount % maxX != 0) groupY++;
-            }
-
+            //const int maxX = m_computeGroups[0];
+            //int groupX = drawCount;
+            //int groupY = 1;
+            //if (drawCount > maxX) {
+            //    groupX = maxX;
+            //    groupY = drawCount / maxX;
+            //    if (drawCount % maxX != 0) groupY++;
+            //}
             //glDispatchCompute(m_computeGroups[0], groupY, 1);
+
             glDispatchCompute(drawCount, 1, 1);
         }
 
@@ -240,6 +247,64 @@ namespace backend {
         if (m_commands->send(cmd)) {
             flush();
         }
+    }
+
+    void DrawBuffer::sendDirect(
+        const backend::DrawRange& drawRange,
+        const backend::gl::DrawIndirectCommand& cmd)
+    {
+        const auto& drawOptions = drawRange.m_drawOptions;
+        bindDrawRange(drawRange);
+
+        // https://www.khronos.org/opengl/wiki/Vertex_Rendering
+        if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
+            auto& elem = cmd.element;
+            glDrawElementsInstancedBaseVertexBaseInstance(
+                drawOptions.m_mode,
+                elem.u_count,
+                GL_UNSIGNED_INT,
+                (void*)(elem.u_firstIndex * sizeof(GLuint)),
+                elem.u_instanceCount,
+                elem.u_baseVertex,
+                elem.u_baseInstance);
+        }
+        else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
+        {
+            auto& arr = cmd.array;
+            glDrawArraysInstancedBaseInstance(
+                drawOptions.m_mode,
+                arr.u_firstVertex,
+                arr.u_vertexCount,
+                arr.u_instanceCount,
+                arr.u_baseInstance);
+        }
+    }
+
+    void DrawBuffer::sendInstanceIndeces(
+        std::span<mesh::InstanceSSBO> indeces)
+    {
+        {
+            const size_t totalCount = indeces.size();
+            constexpr size_t sz = sizeof(mesh::InstanceSSBO);
+
+            // NOTE KI *reallocate* SSBO if needed
+            if (m_indexBuffer.m_size < totalCount * sz) {
+                size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
+                size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
+                m_indexBuffer.resizeBuffer(bufferSize);
+            }
+
+            m_indexBuffer.invalidateRange(
+                0 * sz,
+                totalCount * sz);
+
+            m_indexBuffer.update(
+                0 * sz,
+                totalCount * sz,
+                indeces.data());
+        }
+
+        m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
     void DrawBuffer::drawPending(bool drawCurrent)
@@ -304,9 +369,9 @@ namespace backend {
         const backend::DrawRange& drawRange) const
     {
         const auto& drawOptions = drawRange.m_drawOptions;
-        auto& state = *drawRange.m_state;
+        auto& state = kigl::GLState::get();
 
-        drawRange.m_program->bind(state);
+        drawRange.m_program->bind();
         state.bindVAO(*drawRange.m_vao);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);

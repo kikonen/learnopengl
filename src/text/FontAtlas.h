@@ -10,7 +10,6 @@
 #include "text/FontHandle.h"
 #include "text/AtlasHandle.h"
 
-class Assets;
 class RenderContext;
 
 namespace text
@@ -28,16 +27,19 @@ namespace text
         FontAtlas(FontAtlas&& o) noexcept;
         ~FontAtlas();
 
-        void prepare(
-            const Assets& assets);
+        void prepare();
 
         void update();
 
-        void bindTextures(kigl::GLState& state);
-        void unbindTextures(kigl::GLState& state);
+        void bindTextures();
+        void unbindTextures();
 
         FontHandle* getFont() {
             return m_fontHandle.get();
+        }
+
+        GLuint64 getTextureHandle() const noexcept {
+            return m_textureHandle;
         }
 
     public:
@@ -56,6 +58,7 @@ namespace text
 
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };
 
+        GLuint64 m_textureHandle{ 0 };
         kigl::GLTextureHandle m_texture;
     };
 }

@@ -4,8 +4,8 @@
 #include struct_material.glsl
 #include struct_shape.glsl
 
-#include uniform_materials.glsl
-#include uniform_shapes.glsl
+#include ssbo_materials.glsl
+#include ssbo_shapes.glsl
 #endif
 
 #ifndef USE_ALPHA

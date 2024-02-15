@@ -35,11 +35,10 @@ namespace {
     size_t count = 0;
 }
 
-SceneUpdater::SceneUpdater(const Assets& assets,
+SceneUpdater::SceneUpdater(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_assets(assets),
-    m_registry(registry),
+    : m_registry(registry),
     m_alive(alive)
 {}
 
@@ -67,7 +66,7 @@ void SceneUpdater::prepare()
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
-            this->m_registry->m_physicsEngine->setEnabled(true);
+            physics::PhysicsEngine::get().setEnabled(true);
 
             // NOTE KI trigger UI sidew update *after* all worker side processing done
             {
@@ -138,7 +137,6 @@ void SceneUpdater::run()
 
         UpdateContext ctx(
             clock,
-            m_assets,
             m_registry.get());
 
         update(ctx);
@@ -150,7 +148,7 @@ void SceneUpdater::run()
             KI_INFO(fpsCounter.formatSummary("UPDATER"));
         }
 
-        if (!m_registry->m_commandEngine->hasPending()) {
+        if (!script::CommandEngine::get().hasPending()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(delay));
         }
     }
@@ -170,7 +168,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
         //std::cout << count << '\n';
         if (m_loaded) {
             KI_TIMER("command ");
-            m_registry->m_commandEngine->update(ctx);
+            script::CommandEngine::get().update(ctx);
         }
 
         {
@@ -181,19 +179,19 @@ void SceneUpdater::update(const UpdateContext& ctx)
         if (m_loaded) {
             {
                 KI_TIMER("node    ");
-                m_registry->m_nodeRegistry->updateWT(ctx);
+                NodeRegistry::get().updateWT(ctx);
             }
             //{
             //    KI_TIMER("bounds-1");
-            //    m_registry->m_physicsEngine->updateBounds(ctx);
+            //    physics::PhysicsEngine::get().updateBounds(ctx);
             //}
             {
                 KI_TIMER("physics ");
-                m_registry->m_physicsEngine->update(ctx);
+                physics::PhysicsEngine::get().update(ctx);
             }
             {
                 KI_TIMER("audio   ");
-                m_registry->m_audioEngine->update(ctx);
+                audio::AudioEngine::get().update(ctx);
             }
         }
     }
@@ -207,14 +205,14 @@ void SceneUpdater::update(const UpdateContext& ctx)
     //}
 
     // NOTE KI sync to RT
-    m_registry->m_snapshotRegistry->copyToPending(0);
+    m_registry->m_snapshotRegistry->copyToPending(0, -1);
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    m_registry->m_physicsEngine->handleNodeAdded(node);
+    physics::PhysicsEngine::get().handleNodeAdded(node);
 
     //    auto& type = node->m_type;
     //

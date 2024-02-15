@@ -1,10 +1,13 @@
 #pragma once
 
+#include <array>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "asset/Sphere.h"
 
+#include "ki/limits.h"
 #include "ki/size.h"
 
 #include "util/glm_util.h"
@@ -20,20 +23,6 @@ class RenderContext;
 // rendering entity and node instance updated, with aim to use separate threads
 //
 struct NodeTransform {
-    bool m_dirty : 1 {true};
-    bool m_dirtyRotation : 1 {true};
-    bool m_dirtySnapshot : 1 {true};
-
-    ki::level_id m_parentMatrixLevel{ (ki::level_id)-1 };
-    ki::level_id m_matrixLevel{ (ki::level_id)-1 };
-
-    ki::level_id m_physicsLevel{ (ki::level_id)-1 };
-
-    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
-
-    int m_materialIndex{ 0 };
-    int m_shapeIndex{ 0 };
-
     Sphere m_volume;
 
     glm::vec3 m_position{ 0.f };
@@ -59,18 +48,24 @@ struct NodeTransform {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    inline int getMaterialIndex() const noexcept
-    {
-        return m_materialIndex;
-    }
+    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
-    inline void setMaterialIndex(int materialIndex) noexcept
-    {
-        if (m_materialIndex != materialIndex) {
-            m_materialIndex = materialIndex;
-            m_dirtySnapshot = true;
-        }
-    }
+    int m_shapeIndex{ 0 };
+
+    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
+
+    ki::level_id m_parentMatrixLevel{ 0 };
+    ki::level_id m_matrixLevel{ 0 };
+
+    ki::level_id m_physicsLevel{ 0 };
+
+    bool m_dirty : 1 {true};
+    bool m_dirtyNormal : 1 {true};
+    bool m_dirtyRotation : 1 {true};
+    bool m_dirtySnapshot : 1 {true};
+
+    ///////////////////////////////////////
+    //
 
     inline const glm::vec4 getVolume() const noexcept
     {
@@ -124,6 +119,7 @@ struct NodeTransform {
             m_scale.z = scale;
 
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -138,6 +134,7 @@ struct NodeTransform {
             m_scale.z = scale.z;
 
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 
@@ -151,6 +148,7 @@ struct NodeTransform {
         m_scale.z += adjust.z;
 
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setBaseRotation(const glm::quat& quat) noexcept
@@ -158,6 +156,7 @@ struct NodeTransform {
         m_baseRotation = glm::normalize(quat);
         m_dirtyRotation = true;
         m_dirty = true;
+        m_dirtyNormal = true;
     }
 
     void setQuatRotation(const glm::quat& quat) noexcept
@@ -166,6 +165,7 @@ struct NodeTransform {
             m_quatRotation = quat;
             m_dirtyRotation = true;
             m_dirty = true;
+            m_dirtyNormal = true;
         }
     }
 

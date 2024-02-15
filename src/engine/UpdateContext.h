@@ -2,10 +2,9 @@
 
 #include "ki/RenderClock.h"
 
-#include "asset/Assets.h"
-
 #include "engine/PrepareContext.h"
 
+class Assets;
 class Registry;
 
 //
@@ -15,15 +14,13 @@ struct UpdateContext final {
 public:
     UpdateContext(
         const ki::RenderClock& clock,
-        const Assets& assets,
         Registry* registry);
 
     PrepareContext toPrepareContext() const;
 
 public:
-    const ki::RenderClock& m_clock;
-
     const Assets& m_assets;
+    const ki::RenderClock& m_clock;
 
     Registry* const m_registry;
 };

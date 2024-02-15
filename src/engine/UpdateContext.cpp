@@ -1,13 +1,14 @@
 #include "UpdateContext.h"
 
+#include "asset/Assets.h"
+
 #include "engine/PrepareContext.h"
 
 UpdateContext::UpdateContext(
     const ki::RenderClock& clock,
-    const Assets& assets,
     Registry* registry)
-    : m_clock(clock),
-    m_assets(assets),
+    : m_assets{ Assets::get() },
+    m_clock(clock),
     m_registry(registry)
 {
 }
@@ -15,7 +16,6 @@ UpdateContext::UpdateContext(
 PrepareContext UpdateContext::toPrepareContext() const
 {
     return {
-        m_assets,
         m_registry,
     };
 }

@@ -6,6 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "util/Util.h"
 
 #include "engine/PrepareContext.h"
@@ -15,13 +17,20 @@
 
 #include "model/Node.h"
 
+#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+
 
 namespace {
 }
 
 namespace script
 {
+    ScriptEngine& ScriptEngine::get() noexcept
+    {
+        static ScriptEngine s_engine;
+        return s_engine;
+    }
 
     ScriptEngine::ScriptEngine()
     {
@@ -33,7 +42,7 @@ namespace script
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
-        auto& assets = ctx.m_assets;
+        const auto& assets = ctx.m_assets;
 
         m_commandEngine = commandEngine;
 
@@ -87,6 +96,7 @@ namespace script
             ut["moveSpline"] = &CommandAPI::lua_moveSpline;
             ut["rotate"] = &CommandAPI::lua_rotate;
             ut["scale"] = &CommandAPI::lua_scale;
+            ut["set_text"] = &CommandAPI::lua_set_text;
 
             ut["audioPlay"] = &CommandAPI::lua_audioPlay;
             ut["audioPause"] = &CommandAPI::lua_audioPause;

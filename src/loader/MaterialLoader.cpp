@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "asset/Assets.h"
+
 #include "ki/yaml.h"
 #include "util/Util.h"
 
@@ -302,11 +304,13 @@ namespace loader {
         const std::string& pbrName,
         MaterialData& data) const
     {
+        const auto& assets = Assets::get();
+
         Material& material = data.material;
         MaterialField& fields = data.fields;
 
         const std::string basePath = util::joinPath(
-            m_assets.assetsDir,
+            assets.assetsDir,
             pbrName);
 
         for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {

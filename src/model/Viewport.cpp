@@ -9,6 +9,8 @@
 
 #include "util/Util.h"
 
+#include "kigl/GLState.h"
+
 #include "asset/Program.h"
 #include "asset/ProgramUniforms.h"
 #include "asset/Shader.h"
@@ -86,7 +88,7 @@ void Viewport::setTextureId(GLuint textureId)
     m_textureId = textureId;
 }
 
-void Viewport::prepareRT(const Assets& assets)
+void Viewport::prepareRT()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -94,7 +96,7 @@ void Viewport::prepareRT(const Assets& assets)
     // NOTE KI no program VAO/VBO with framebuffer blit
     if (m_useDirectBlit) return;
 
-    m_program->prepareRT(assets);
+    m_program->prepareRT();
 }
 
 void Viewport::updateTransform(const UpdateViewContext& ctx)
@@ -162,9 +164,11 @@ void Viewport::bind(const RenderContext& ctx)
     if (m_useDirectBlit) return;
     if (m_textureId == 0) return;
 
-    m_program->bind(ctx.m_state);
+    auto& state = kigl::GLState::get();
 
-    ctx.m_state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
+    m_program->bind();
+
+    state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
 
     auto* uniforms = m_program->m_uniforms.get();
 
@@ -200,11 +204,11 @@ void Viewport::draw(const RenderContext& ctx)
 
         if (m_gammaCorrect && m_hardwareGamma) {
             glEnable(GL_FRAMEBUFFER_SRGB);
-            getSharedQuad().draw(ctx.m_state);
+            getSharedQuad().draw();
             glDisable(GL_FRAMEBUFFER_SRGB);
         }
         else {
-            getSharedQuad().draw(ctx.m_state);
+            getSharedQuad().draw();
         }
     }
 }

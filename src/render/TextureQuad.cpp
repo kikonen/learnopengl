@@ -53,9 +53,9 @@ namespace render {
         }
     }
 
-    void TextureQuad::draw(kigl::GLState& state)
+    void TextureQuad::draw()
     {
-        state.bindVAO(m_vao);
+        kigl::GLState::get().bindVAO(m_vao);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 }

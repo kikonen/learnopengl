@@ -5,9 +5,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-namespace kigl {
-    class GLState;
-}
 
 namespace render {
     class TextureQuad {
@@ -17,7 +14,7 @@ namespace render {
 
         void prepare();
 
-        void draw(kigl::GLState& state);
+        void draw();
 
     private:
         kigl::GLVertexArray m_vao;

@@ -2,16 +2,12 @@
 
 #include "kigl/kigl.h"
 
-#include "kigl/GLState.h"
-
 #include "ki/RenderClock.h"
 
-#include "asset/Assets.h"
 #include "registry/Registry.h"
 
-#include "backend/RenderSystem.h"
-
 #include "ki/RenderClock.h"
+#include "ki/FpsCounter.h"
 
 #include "gui/Input.h"
 
@@ -32,10 +28,6 @@ public:
     int setup();
     void run();
 
-    inline const Assets& getAssets() const noexcept {
-        return m_assets;
-    }
-
     inline Registry* getRegistry() const noexcept {
         return m_registry.get();
     }
@@ -54,6 +46,8 @@ protected:
 
     virtual void onDestroy();
 
+    virtual void showFps(const ki::FpsCounter& fpsCounter);
+
 public:
     bool m_debug = false;
 
@@ -69,9 +63,8 @@ public:
     std::shared_ptr<SceneUpdater> m_sceneUpdater;
 
     std::unique_ptr<Window> m_window;
-protected:
-    Assets m_assets;
 
+protected:
     ki::RenderClock m_clock;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
@@ -79,6 +72,4 @@ protected:
     std::string m_title;
 
     InputState m_lastInputState;
-
-    std::unique_ptr<backend::RenderSystem> m_backend;
 };

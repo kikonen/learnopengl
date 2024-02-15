@@ -70,5 +70,15 @@ namespace loader {
         void loadText(
             const YAML::Node& node,
             TextData& data) const;
+
+        void loadLods(
+            const YAML::Node& node,
+            std::vector<LodData>& lods,
+            MaterialLoader& materialLoader) const;
+
+        void loadLod(
+            const YAML::Node& node,
+            LodData& data,
+            MaterialLoader& materialLoader) const;
     };
 }

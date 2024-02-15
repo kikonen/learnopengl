@@ -63,16 +63,16 @@ namespace loader {
     text::font_id FontLoader::createFont(
         const FontData& data) const
     {
-        auto* fr = m_registry->m_fontRegistry;
-        auto id = fr->registerFont(data.name);
+        auto& fr = FontRegistry::get();
+        auto id = fr.registerFont(data.name);
 
-        auto* font = fr->modifyFont(id);
+        auto* font = fr.modifyFont(id);
         font->m_fontPath = data.path;
         font->m_fontSize = data.size;
         font->m_atlasSize = data.atlasSize;
 
         // TODO KI race condition with RT
-        //font->prepare(m_assets);
+        //font->prepare();
 
         return id;
     }
