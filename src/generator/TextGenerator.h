@@ -66,6 +66,8 @@ public:
         m_dirty = true;
     }
 
+    GLuint64 getAtlasTextureHandle() const noexcept;
+
     void clear();
 
 private:

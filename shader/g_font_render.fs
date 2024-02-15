@@ -24,6 +24,7 @@ in VS_OUT {
 
   vec2 atlasCoord;
 
+  flat uvec2 atlasHandle;
   flat uint materialIndex;
   flat uint shapeIndex;
 
@@ -37,7 +38,6 @@ in VS_OUT {
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
-layout(binding = UNIT_FONT_ATLAS) uniform sampler2D u_fontAtlas;
 
 LAYOUT_G_BUFFER_OUT;
 
@@ -101,7 +101,9 @@ void main()
   // Font shaping
   vec3 rgb;
   {
-    vec4  atlasValue = texture2D(u_fontAtlas, fs_in.atlasCoord.st);
+    sampler2D atlas = sampler2D(fs_in.atlasHandle);
+    vec4  atlasValue = texture2D(atlas, fs_in.atlasCoord.st);
+
     float dist  = atlasValue.r;
     float width = fwidth(dist);
     float alpha = smoothstep(glyph_center-width, glyph_center+width, dist);

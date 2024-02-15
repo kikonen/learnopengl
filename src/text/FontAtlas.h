@@ -38,6 +38,10 @@ namespace text
             return m_fontHandle.get();
         }
 
+        GLuint64 getTextureHandle() const noexcept {
+            return m_textureHandle;
+        }
+
     public:
         text::font_id m_id{ 0 };
         std::string m_name;
@@ -54,6 +58,7 @@ namespace text
 
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };
 
+        GLuint64 m_textureHandle{ 0 };
         kigl::GLTextureHandle m_texture;
     };
 }

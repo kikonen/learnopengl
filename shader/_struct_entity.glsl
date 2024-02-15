@@ -27,4 +27,6 @@ struct Entity {
 
   float u_rangeYmin;
   float u_rangeYmax;
+
+  uvec2 u_fontHandle;
 };

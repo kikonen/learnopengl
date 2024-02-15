@@ -13,6 +13,7 @@ layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
 
 out VS_OUT {
   vec2 atlasCoord;
+  flat uvec2 atlasHandle;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -33,6 +34,7 @@ void main()
   #include var_entity_model_matrix.glsl
 
   vs_out.atlasCoord = a_atlasCoord;
+  vs_out.atlasHandle = entity.u_fontHandle;
 
   gl_Position = u_projectedMatrix * modelMatrix * vec4(a_pos, 1.0);
 }

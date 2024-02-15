@@ -28,6 +28,7 @@
 #include "event/Dispatcher.h"
 
 #include "generator/NodeGenerator.h"
+#include "generator/TextGenerator.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -193,6 +194,12 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
                 entity->u_objectID = node->getId();
                 entity->u_highlightIndex = node->getHighlightIndex();
+
+                auto* textGenerator = node->getGenerator<TextGenerator>();
+                if (textGenerator) {
+                    entity->u_fontHandle = textGenerator->getAtlasTextureHandle();
+                }
+
                 snapshot.updateEntity(*entity);
                 snapshot.m_dirty = false;
             }

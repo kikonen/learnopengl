@@ -46,9 +46,9 @@ bool FontRegistry::bindFont(
     text::font_id id)
 {
     auto* font = getFont(id);
-    if (font) {
-        font->bindTextures();
-    }
+    //if (font) {
+    //    font->bindTextures();
+    //}
     return font;
 }
 
@@ -56,9 +56,9 @@ bool FontRegistry::unbindFont(
     text::font_id id)
 {
     auto* font = getFont(id);
-    if (font) {
-        font->unbindTextures();
-    }
+    //if (font) {
+    //    font->unbindTextures();
+    //}
     return font;
 }
 

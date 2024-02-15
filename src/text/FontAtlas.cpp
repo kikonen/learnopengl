@@ -98,6 +98,9 @@ namespace text
             glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
             //glGenerateTextureMipmap(texId);
 
+            m_textureHandle = glGetTextureHandleARB(m_texture);
+            glMakeTextureHandleResidentARB(m_textureHandle);
+
             m_usedAtlasSize = m_atlasHandle->m_atlas->used;
         }
     }

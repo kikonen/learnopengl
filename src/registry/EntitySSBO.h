@@ -66,8 +66,10 @@ struct EntitySSBO {
     float u_rangeYmin{ 0.f };
     float u_rangeYmax{ 0.f };
 
-    //int pad2_1;
-    //int pad2_2;
+    GLuint64 u_fontHandle;
+
+    int pad2_1;
+    int pad2_2;
     //int pad2_3;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale

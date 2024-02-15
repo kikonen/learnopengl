@@ -13,12 +13,14 @@
 #include "render/Batch.h"
 
 #include "text/TextDraw.h"
+#include "text/FontAtlas.h"
 
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
 #include "registry/SnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
+#include "registry/FontRegistry.h"
 
 #include "mesh/VBO_impl.h"
 
@@ -129,6 +131,11 @@ void TextGenerator::bindBatch(
         &type->getLod(0)->m_lod,
         snapshot,
         container.m_entityIndex);
+}
+
+GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
+{
+    return FontRegistry::get().getFont(m_fontId)->getTextureHandle();
 }
 
 void TextGenerator::clear()

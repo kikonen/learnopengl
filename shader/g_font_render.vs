@@ -32,6 +32,7 @@ out VS_OUT {
 
   vec2 atlasCoord;
 
+  flat uvec2 atlasHandle;
   flat uint materialIndex;
   flat uint shapeIndex;
 
@@ -112,6 +113,7 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
+  vs_out.atlasHandle = entity.u_fontHandle;
 
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;

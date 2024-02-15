@@ -46,7 +46,7 @@ entities:
       xblend: true
       xeffect: true
       render_back: true
-  - xid: hello_world
+  - id: hello_world
     type: text
     material: hello
     text:
