@@ -33,6 +33,9 @@ namespace particle {
     {
         float x = m_definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 
+        auto& ps = ParticleSystem::get();
+        if (ps.getActiveParticleCount() >= 100000) return;
+
         for (int i = 0; i < 1000; i++) {
             Particle particle;
             particle.m_pos = { 50.f - prnd(100.f), 10.f - prnd(20.f), 50.f - prnd(100.f) };
@@ -44,7 +47,7 @@ namespace particle {
             //particle.m_materialIndex = materialIndex;
             particle.m_materialIndex = m_material.m_registeredIndex;
 
-            ParticleSystem::get().addParticle(particle);
+            ps.addParticle(particle);
 
             materialIndex++;
             if (materialIndex > 30)

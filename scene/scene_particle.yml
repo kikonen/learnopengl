@@ -24,6 +24,21 @@ entities:
         default: true
     controllers:
       - type: pawn
+  - id: fps_counter
+    parent_id: player
+    type: text
+    material: fps_text
+    text:
+      font: fps_font
+      text: "- fps"
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [1.0, 0.75, -0.75]
+    scale: 0.01
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
   - id: player_camera
     parent_id: player
     type: origo
@@ -125,7 +140,14 @@ entities:
     render_flags:
       no_shadow: true
     scale: 100
+fonts:
+  - name: fps_font
+    path: fonts/Vera.ttf
+    size: 36
 materials:
+  - name: fps_text
+    kd: [0.0, 0.8, 0.0, 1.0]
+    xmetal: [1.0, 0.0, 0, 1]
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
