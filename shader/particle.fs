@@ -70,7 +70,7 @@ void main() {
 #endif
 #endif
 
-  texColor.a = clamp(texColor.a, 0, 0.5);
+//  texColor.a = clamp(texColor.a, 0, 0.5);
 
 #ifndef USE_BLEND
   texColor = vec4(texColor.rgb, 1.0);

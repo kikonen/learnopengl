@@ -43,6 +43,7 @@ entities:
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
     particle:
+      material: firespin
   - id: four_cubes_{c}
     model: texture_cube_3
     program: g_tex
@@ -132,5 +133,9 @@ materials:
   - name: skeleton
     map_kd: sprites/skeleton.png
     metal: [0.7, 0.2, 0, 1]
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE
+  - name: firespin
+    map_kd: sprites/7_firespin_spritesheet.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE

@@ -74,6 +74,14 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
+  if (vs_out.texCoord.x == 1.0) {
+    vs_out.texCoord.x = 1.0 / 9.0;
+  }
+
+  if (vs_out.texCoord.y == 0.0) {
+    vs_out.texCoord.y = 1.0 - 1.0 / 9.0;
+  }
+
   vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;

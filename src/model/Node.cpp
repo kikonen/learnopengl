@@ -97,6 +97,10 @@ void Node::prepareWT(
     if (m_generator) {
         m_generator->prepare(ctx, *this);
     }
+
+    if (m_particleGenerator) {
+        m_particleGenerator->prepareWT();
+    }
 }
 
 void Node::prepareRT(

@@ -65,11 +65,11 @@ namespace particle {
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
-        if (m_particles.size() < 100000) {
-            for (int i = 0; i < 1000; i++) {
-                generator->updateWT(ctx);
-            }
-        }
+        //if (m_particles.size() < 500000) {
+        //    for (int i = 0; i < 1000; i++) {
+        //        generator->updateWT(ctx);
+        //    }
+        //}
 
         std::lock_guard lock(m_lock);
 

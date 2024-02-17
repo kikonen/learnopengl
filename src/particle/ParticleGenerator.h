@@ -25,6 +25,10 @@ namespace particle {
             m_material = material;
         }
 
+        Material& getMaterial() {
+            return m_material;
+        }
+
         void setDefinition(const ParticleDefinition& definition)
         {
             m_definition = definition;

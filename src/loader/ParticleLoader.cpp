@@ -20,16 +20,24 @@ namespace loader
         const YAML::Node& node,
         ParticleData& data) const
     {
+        data.enabled = true;
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const YAML::Node& v = pair.second;
 
-            if (k == "name") {
+            if (k == "xname" || k == "xxname" || k == "xenabled" || k == "xxenabled") {
+                data.enabled = false;
+            }
+            else if (k == "name") {
                 data.name = readString(v);
             }
-            //else if (k == "path") {
-            //    data.path = readString(v);
-            //}
+            else if (k == "enabled") {
+                data.enabled = readBool(v);
+            }
+            else if (k == "material") {
+                data.materialName = readString(v);
+            }
             //else if (k == "size") {
             //    data.size = readFloat(v);
             //}
@@ -53,6 +61,7 @@ namespace loader
         auto* material = findMaterial(data.materialName, materials);
         if (material) {
             generator->setMaterial(*material);
+            generator->getMaterial().loadTextures();
         }
 
         return generator;
