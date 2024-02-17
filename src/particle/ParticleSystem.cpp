@@ -23,7 +23,7 @@
 namespace {
     constexpr size_t PARTICLE_BLOCK_SIZE = 1000;
 
-    particle::ParticleGenerator generator;
+    std::unique_ptr<particle::ParticleGenerator> generator;
 }
 
 namespace particle {
@@ -56,16 +56,19 @@ namespace particle {
         m_useFence = false;
         m_useDebugFence = false;
 
-        generator.prepareWT();
+        generator = std::make_unique<particle::ParticleGenerator>();
+        generator->prepareWT();
 
-        m_ssbo.createEmpty(PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(1000 * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
-        if (m_particles.size() < 10000) {
-            generator.updateWT(ctx);
+        if (m_particles.size() < 100000) {
+            for (int i = 0; i < 1000; i++) {
+                generator->updateWT(ctx);
+            }
         }
 
         std::lock_guard lock(m_lock);
@@ -95,6 +98,11 @@ namespace particle {
     {
         std::lock_guard lock(m_lock);
 
+        if (m_particles.empty()) {
+            m_activeCount = 0;
+            return;
+        }
+
         constexpr size_t sz = sizeof(ParticleSSBO);
         const size_t totalCount = m_particles.size();
 
@@ -113,9 +121,15 @@ namespace particle {
             m_ssbo.resizeBuffer(bufferSize);
         }
 
+        m_ssbo.invalidateRange(
+            0,
+            totalCount * sz);
+
         m_ssbo.update(
             0,
             totalCount * sz,
             m_entries.data());
+
+        m_activeCount = totalCount;
     }
 }

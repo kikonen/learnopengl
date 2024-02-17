@@ -59,15 +59,18 @@ void main() {
 
   vec4 texColor = material.diffuse;
 
-// #ifdef USE_ALPHA
-// #ifdef USE_BLEND_OIT
-//   if (material.diffuse.a < 0.95)
-//     discard;
-// #else
-//   if (material.diffuse.a < 0.01)
-//     discard;
-// #endif
-// #endif
+
+#ifdef USE_ALPHA
+#ifdef USE_BLEND_OIT
+  if (material.diffuse.a < 0.95)
+    discard;
+#else
+  if (material.diffuse.a < 0.01)
+    discard;
+#endif
+#endif
+
+  texColor.a = clamp(texColor.a, 0, 0.5);
 
 #ifndef USE_BLEND
   texColor = vec4(texColor.rgb, 1.0);
@@ -76,5 +79,5 @@ void main() {
   texColor = calculateFog(fs_in.viewPos, texColor);
 
   o_fragColor = texColor;
-  o_fragColor = vec4(1, 0, 0, 1);
+//  o_fragColor = vec4(1, 0, 0, 1);
 }

@@ -53,6 +53,27 @@ entities:
       - pos: [5.0, 2.0, -5.0]
       - pos: [-5.0, 2.0, 5.0]
       - pos: [5.0, 2.0, 5.0]
+  - name: Skeleton army - grid
+    model: quad
+    priority: 1
+    program: g_tex
+    instanced: true
+    pos: [20, 0.0, 20]
+    material: skeleton
+    render_flags:
+      billboard: true
+      alpha: true
+      physics: true
+      enforce_bounds: true
+      render_back: true
+    scale: [1.5, 3, 1]
+    generator:
+      type: grid
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 10
+        z_step: -10
   - id: rock
     program: g_tex
     force_material: true
@@ -108,3 +129,8 @@ materials:
     map_pbr: textures\Planks 09 [8K]
     parallax_depth: 0.0
     tiling: 10
+  - name: skeleton
+    map_kd: sprites/skeleton.png
+    metal: [0.7, 0.2, 0, 1]
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

@@ -39,7 +39,11 @@ void ParticleRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    particleProgram = ProgramRegistry::get().getProgram(SHADER_PARTICLE);
+    particleProgram = ProgramRegistry::get().getProgram(
+        SHADER_PARTICLE,
+        { { DEF_USE_ALPHA, "1" },
+          { DEF_USE_BLEND, "1" } });
+
     particleProgram->prepareRT();
 
     auto future = ModelRegistry::get().getMesh(
@@ -55,11 +59,19 @@ void ParticleRenderer::render(
 {
     auto& state = ctx.m_state;
 
-    const auto instanceCount = particle::ParticleSystem::get().getParticleCount();
+    const auto instanceCount = particle::ParticleSystem::get().getActiveParticleCount();
     if (instanceCount == 0) return;
 
+    state.setDepthMask(GL_FALSE);
     state.setEnabled(GL_BLEND, true);
-    state.setEnabled(GL_CULL_FACE, false);
+    //state.setEnabled(GL_CULL_FACE, false);
+
+    //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+
+    // https://stackoverflow.com/questions/31850635/opengl-additive-blending-get-issue-when-no-background
+    //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA });
+    state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
+    //glBlendFunc(GL_ONE, GL_ONE);
 
     GLuint firstIndex = lodMesh.m_lod.m_baseIndex;
     GLuint baseVertex = lodMesh.m_lod.m_baseVertex;
@@ -78,4 +90,8 @@ void ParticleRenderer::render(
         0);
 
     ctx.bindDefaults();
+    state.invalidateBlendMode();
+
+    state.setDepthMask(GL_TRUE);
+    state.setEnabled(GL_BLEND, false);
 }

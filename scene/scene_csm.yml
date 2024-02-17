@@ -95,7 +95,7 @@ entities:
         z_count: 2
         x_step: 10
         z_step: -10
-  - xname: Skeleton army
+  - name: Skeleton army
     model: quad
     priority: 1
     program: g_tex

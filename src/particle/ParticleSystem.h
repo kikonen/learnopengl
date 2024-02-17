@@ -33,8 +33,8 @@ namespace particle {
 
         void addParticle(const Particle& particle);
 
-        uint32_t getParticleCount() const noexcept {
-            return static_cast<uint32_t>(m_particles.size());
+        uint32_t getActiveParticleCount() const noexcept {
+            return static_cast<uint32_t>(m_activeCount);
         }
 
     private:
@@ -48,6 +48,7 @@ namespace particle {
         pool::TypeHandle m_typeHandle{};
 
         std::vector<ParticleSSBO> m_entries;
+        size_t m_activeCount{ 0 };
 
         kigl::GLBuffer m_ssbo{ "particle_ssbo" };
         size_t m_lastParticleSize{ 0 };
