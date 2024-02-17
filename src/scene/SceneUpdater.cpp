@@ -19,6 +19,8 @@
 
 #include "audio/AudioEngine.h"
 
+#include "particle/ParticleSystem.h"
+
 #include "physics/PhysicsEngine.h"
 
 #include "engine/UpdateContext.h"
@@ -27,7 +29,6 @@
 #include "registry/NodeRegistry.h"
 #include "registry/SnapshotRegistry.h"
 
-#include "component/ParticleGenerator.h"
 
 #define KI_TIMER(x)
 
@@ -188,6 +189,10 @@ void SceneUpdater::update(const UpdateContext& ctx)
             {
                 KI_TIMER("physics ");
                 physics::PhysicsEngine::get().update(ctx);
+            }
+            {
+                KI_TIMER("particle");
+                particle::ParticleSystem::get().updateWT(ctx);
             }
             {
                 KI_TIMER("audio   ");

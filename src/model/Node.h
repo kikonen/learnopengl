@@ -27,9 +27,12 @@ namespace render {
     class Batch;
 }
 
+namespace particle {
+    class ParticleGenerator;
+}
+
 class Camera;
 class Light;
-class ParticleGenerator;
 class NodeGenerator;
 
 struct PrepareContext;
@@ -37,7 +40,6 @@ struct UpdateContext;
 class RenderContext;
 
 class EntityRegistry;
-class ParticleGenrator;
 
 
 class Node final
@@ -154,7 +156,7 @@ public:
 
     std::unique_ptr<Camera> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
-    std::unique_ptr<ParticleGenerator> m_particleGenerator{ nullptr };
+    std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 

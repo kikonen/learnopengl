@@ -51,11 +51,10 @@
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
+#include "renderer/ParticleRenderer.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
-
-#include "scene/ParticleSystem.h"
 
 namespace {
 }
@@ -78,6 +77,7 @@ Scene::Scene(
         m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("main", true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
+        m_particleRenderer = std::make_unique<ParticleRenderer>(true);
 
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
@@ -91,12 +91,11 @@ Scene::Scene(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
         m_cubeMapRenderer->setEnabled(assets.cubeMapEnabled);
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
+        m_particleRenderer->setEnabled(assets.particlesEnabled);
 
         m_objectIdRenderer->setEnabled(true);
         m_normalRenderer->setEnabled(assets.showNormals);
     }
-
-    m_particleSystem = std::make_unique<ParticleSystem>();
 
     m_batch = std::make_unique<render::Batch>();
     m_nodeDraw = std::make_unique<render::NodeDraw>();
@@ -106,7 +105,6 @@ Scene::Scene(
 Scene::~Scene()
 {
     *m_alive = false;
-    m_particleGenerators.clear();
 
     KI_INFO("SCENE: deleted");
 }
@@ -176,6 +174,9 @@ void Scene::prepareRT()
     if (m_shadowMapRenderer->isEnabled()) {
         m_shadowMapRenderer->prepareRT(ctx);
     }
+    if (m_particleRenderer->isEnabled()) {
+        m_particleRenderer->prepareRT(ctx);
+    }
 
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->prepareRT(ctx);
@@ -183,10 +184,6 @@ void Scene::prepareRT()
 
     if (m_normalRenderer->isEnabled()) {
         m_normalRenderer->prepareRT(ctx);
-    }
-
-    if (m_particleSystem) {
-        m_particleSystem->prepareRT(ctx);
     }
 
     {
@@ -280,10 +277,6 @@ void Scene::updateRT(const UpdateContext& ctx)
     m_registry->updateRT(ctx);
 
     m_renderData->update();
-
-    //if (m_particleSystem) {
-    //    m_particleSystem->update(ctx);
-    //}
 }
 
 void Scene::postRT(const UpdateContext& ctx)
@@ -495,10 +488,8 @@ void Scene::drawScene(
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 
-    //targetBuffer->bind(ctx);
-
-    if (m_particleSystem) {
-        m_particleSystem->render(ctx);
+    if (m_particleRenderer) {
+        m_particleRenderer->render(ctx);
     }
 
     if (assets.showNormals) {

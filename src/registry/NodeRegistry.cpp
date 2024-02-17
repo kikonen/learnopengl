@@ -20,7 +20,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
@@ -113,6 +114,10 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
         if (node->m_generator) {
             node->m_generator->updateWT(ctx, *node);
+        }
+
+        if (node->m_particleGenerator) {
+            node->m_particleGenerator->updateWT(ctx);
         }
     }
 

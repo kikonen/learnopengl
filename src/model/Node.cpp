@@ -15,7 +15,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "generator/NodeGenerator.h"
 

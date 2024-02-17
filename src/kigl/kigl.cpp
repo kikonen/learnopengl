@@ -86,7 +86,7 @@ namespace kigl {
             "OPENGL: {} 0x{:x} ({}) {} {} - {}",
             formatSource(source), id, id, formatType(type), formatSeverity(severity), message);
 
-        int index = -1;// sb.find("GL_INVALID_OPERATION");
+        int index = sb.find("GL_INVALID_OPERATION");
 
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:

@@ -1,0 +1,110 @@
+---
+name: Player
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+entities:
+  - id: player
+    model: water_ball
+    program: g_tex
+    pos: [0, 2, 0.0]
+    front: [0, 0, -1]
+    rot: [0, 45, 0]
+    scale: 1.0
+    material_modifier:
+      tiling: 5
+    render_flags:
+      allow_normals: false
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    pos: [0, 3, 5]
+    rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
+    camera:
+      default: true
+  - name: origo
+    model: water_ball
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    scale: 1
+    material: default_ball
+    force_material: true
+    material_modifier:
+      kd: [0.0, 0.2, 0.8, 1.0]
+    particle:
+  - id: four_cubes_{c}
+    model: texture_cube_3
+    program: g_tex
+    scale: 1
+    base_rot: [-90, 0, 0]
+    clones:
+      - pos: [-5.0, 2.0, -5.0]
+      - pos: [5.0, 2.0, -5.0]
+      - pos: [-5.0, 2.0, 5.0]
+      - pos: [5.0, 2.0, 5.0]
+  - id: rock
+    program: g_tex
+    force_material: true
+    render_flags:
+      render_back: true
+    lods:
+      - model: [rock2, rock]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [1, 1, 0]
+          tiling: 4
+        distance: 20
+      - model: [rock2, rock_lod_1]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_pbr: textures\Rock002_1K-PNG
+          kd: [0, 1, 1]
+          tiling: 4
+        distance: 40
+      - model: [rock2, rock_lod_2]
+        material_modifier:
+          metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0, 1]
+          tiling: 4
+        distance: 60
+      - model: [rock2, rock_lod_3]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 1, 0]
+          tiling: 4
+        distance: 80
+      - model: [rock2, rock_lod_4]
+        material_modifier:
+          #metal: [0.5, 0.0, 0, 1]
+          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [1, 0, 0]
+          tiling: 4
+        distance: 100
+    pos: [0, 2, -10]
+  - id: wooden_floor
+    model: plane
+    xxmodel: woodwall
+    material: wood_floor
+    program: g_tex
+    render_flags:
+      no_shadow: true
+    scale: 100
+materials:
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    parallax_depth: 0.0
+    tiling: 10

@@ -19,6 +19,8 @@
 
 #include "physics/PhysicsEngine.h"
 
+#include "particle/ParticleSystem.h"
+
 #include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/SpriteRegistry.h"
@@ -65,6 +67,8 @@ void Registry::prepareShared()
     ViewportRegistry::get().prepare();
 
     NodeRegistry::get().prepare(this);
+
+    particle::ParticleSystem::get().prepare();
 }
 
 void Registry::prepareWT()
@@ -82,6 +86,7 @@ void Registry::prepareWT()
 
     script::CommandEngine::get().prepare(this);
     script::ScriptEngine::get().prepare(ctx, &script::CommandEngine::get());
+
 }
 
 void Registry::updateWT(const UpdateContext& ctx)
@@ -99,6 +104,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     ModelRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
+    particle::ParticleSystem::get().updateRT(ctx);
 }
 
 void Registry::postRT(const UpdateContext& ctx)

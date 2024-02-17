@@ -25,7 +25,6 @@ namespace render {
 
 class Camera;
 class Light;
-class ParticleGenerator;
 
 class Node;
 class Viewport;
@@ -45,10 +44,10 @@ class WaterMapRenderer;
 class MirrorMapRenderer;
 class CubeMapRenderer;
 class ShadowMapRenderer;
+class ParticleRenderer;
 
 class ObjectIdRenderer;
 class NormalRenderer;
-class ParticleSystem;
 
 
 class Scene final
@@ -122,12 +121,10 @@ private:
     std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
     std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
 
+    std::unique_ptr<ParticleRenderer> m_particleRenderer{ nullptr };
+
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
     std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
-
-    std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
-
-    std::vector<pool::NodeHandle> m_particleGenerators;
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 

@@ -48,7 +48,7 @@
     <ClCompile Include="src\model\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\Particle.cpp">
+    <ClCompile Include="src\particle\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp">
@@ -111,9 +111,6 @@
     <ClCompile Include="src\scene\Raycast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\ParticleSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\asset\Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -138,7 +135,7 @@
     <ClCompile Include="src\renderer\ParticleRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\ParticleGenerator.cpp">
+    <ClCompile Include="src\particle\ParticleGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Log.cpp">
@@ -633,6 +630,12 @@
     <ClCompile Include="src\script\api\SetTextNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\particle\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\ParticleLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -671,7 +674,7 @@
     <ClInclude Include="src\model\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\Particle.h">
+    <ClInclude Include="src\particle\Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\generator\AsteroidBeltGenerator.h">
@@ -734,10 +737,7 @@
     <ClInclude Include="src\scene\Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\ParticleGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\ParticleSystem.h">
+    <ClInclude Include="src\particle\ParticleGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Program.h">
@@ -1506,6 +1506,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\SetTextNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\particle\ParticleDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\particle\ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\ParticleLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\ParticleData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\particle\ParticleSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

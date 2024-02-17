@@ -19,6 +19,8 @@
 
 #include "engine/PrepareContext.h"
 
+#include "renderer/ParticleRenderer.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
@@ -32,6 +34,8 @@ namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
     const ki::program_id NULL_PROGRAM_ID = 0;
+
+    ParticleRenderer particleRenderer{ true };
 }
 
 namespace render {
@@ -102,6 +106,8 @@ namespace render {
         m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
+
+        particleRenderer.prepareRT(ctx);
     }
 
     void NodeDraw::updateRT(const UpdateViewContext& ctx)
@@ -355,6 +361,12 @@ namespace render {
                 },
                 nodeSelector);
             ctx.m_batch->flush(ctx);
+        }
+
+        if (ctx.m_allowBlend)
+        {
+            state.setStencil({});
+            particleRenderer.render(ctx);
         }
 
         // pass 8 - screenspace effects

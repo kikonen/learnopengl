@@ -20,6 +20,7 @@
 #include "AudioData.h"
 #include "ControllerData.h"
 #include "GeneratorData.h"
+#include "ParticleData.h"
 #include "PhysicsData.h"
 #include "ScriptData.h"
 #include "TextData.h"
@@ -88,6 +89,8 @@ namespace loader {
         TextData text;
 
         GeneratorData generator;
+
+        ParticleData particle;
     };
 
     struct EntityData {

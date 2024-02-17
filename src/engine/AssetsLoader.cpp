@@ -490,6 +490,12 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "particles_enabled") {
+                data.particlesEnabled = readBool(v);
+                continue;
+            }
+        }
+        {
             if (k == "shadow_map_enabled") {
                 data.shadowMapEnabled = readBool(v);
                 continue;

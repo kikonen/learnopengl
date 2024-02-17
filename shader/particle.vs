@@ -1,20 +1,33 @@
 #version 460 core
 
-#include struct_entity.glsl
-#include struct_instance.glsl
+layout (location = ATTR_POS) in vec3 a_pos;
+layout (location = ATTR_NORMAL) in vec3 a_normal;
+layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
+#include struct_particle.glsl
+#include struct_material.glsl
+#include struct_clip_plane.glsl
+
+#include ssbo_particles.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_clip_planes.glsl
 
 out VS_OUT {
+  flat uint particleIndex;
+
+  vec3 worldPos;
+  vec3 normal;
+  vec2 texCoord;
+  vec3 vertexPos;
+  vec3 viewPos;
+
   flat uint materialIndex;
 } vs_out;
 
-const vec4 pos = vec4(0.0, -1.0, 0.0, 1.0);
-const vec3 normal = vec3(0.0, 0.0, 1.0);
+out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
 //
@@ -22,23 +35,51 @@ const vec3 normal = vec3(0.0, 0.0, 1.0);
 
 SET_FLOAT_PRECISION;
 
-Instance instance;
-Entity entity;
+const vec3 UP = vec3(0, 1, 0);
+
+Particle particle;
+
+#include fn_calculate_clipping.glsl
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
-  const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  const uint particleIndex = gl_BaseInstance + gl_InstanceID;
+  particle = u_particles[particleIndex];
 
-  #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
+  int materialIndex = particle.u_materialIndex;
 
-  const int materialIndex = instance.u_materialIndex;
-  const vec4 worldPos = modelMatrix * pos;
+  const vec4 pos = vec4(a_pos, 1.0);
+  vec4 worldPos;
+  vec3 normal;
 
-  const vec4 pos = u_projectedMatrix * worldPos;
+  // always billboard
+  {
+    vec3 particlePos = vec3(particle.u_worldPos);
+    float particleScale = particle.u_worldScale;
 
+    worldPos = vec4(particlePos
+                    + u_viewRight * a_pos.x * particleScale
+                    + UP * a_pos.y * particleScale,
+                    1.0);
+
+    normal = -u_viewFront;
+  }
+
+  const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
+
+  gl_Position = u_projectedMatrix * worldPos;
+
+  vs_out.particleIndex = particleIndex;
   vs_out.materialIndex = materialIndex;
-  gl_PointSize = 64;//(1.0 - pos.z / pos.w) * 64.0;
-  gl_Position = pos;
+
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+
+  vs_out.worldPos = worldPos.xyz;
+  vs_out.vertexPos = a_pos;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
+
+  // NOTE KI pointless to normalize vs side
+  vs_out.normal = normal;
+
+  calculateClipping(worldPos);
 }

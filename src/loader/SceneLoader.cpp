@@ -36,7 +36,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
 
@@ -80,6 +81,7 @@ namespace loader {
         m_audioLoader(ctx),
         m_controllerLoader(ctx),
         m_generatorLoader(ctx),
+        m_particleLoader(ctx),
         m_physicsLoader(ctx),
         m_entityLoader(ctx)
     {
@@ -114,6 +116,8 @@ namespace loader {
         m_volumeLoader.setRegistry(registry);
         m_cubeMapLoader.setRegistry(registry);
         m_audioLoader.setRegistry(registry);
+        m_generatorLoader.setRegistry(registry);
+        m_particleLoader.setRegistry(registry);
         m_physicsLoader.setRegistry(registry);
         m_entityLoader.setRegistry(registry);
     }
@@ -154,6 +158,7 @@ namespace loader {
                     m_audioLoader,
                     m_controllerLoader,
                     m_generatorLoader,
+                    m_particleLoader,
                     m_physicsLoader,
                     m_scriptLoader);
 
@@ -801,6 +806,10 @@ namespace loader {
             data.generator,
             m_materials,
             type);
+
+        node->m_particleGenerator = m_particleLoader.createParticle(
+            data.particle,
+            m_materials);
 
         if (type->m_entityType == mesh::EntityType::text) {
             auto fontId = resolveFont(typeHandle, data.text);

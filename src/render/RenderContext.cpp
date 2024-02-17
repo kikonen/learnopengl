@@ -87,7 +87,7 @@ RenderContext::RenderContext(
     : m_name{ name },
     m_parent{ parent },
     m_assets{ Assets::get() },
-    m_state{ kigl::GLState::get() },
+    m_state{ m_parent ? m_parent->m_state : kigl::GLState::get() },
     m_clock{ clock },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
@@ -179,7 +179,8 @@ RenderContext::RenderContext(
         assets.effectBloomExposure,
 
         (float)m_clock.ts,
-        0,
+        0, // particleCount
+        0, // shadowCount
     };
 
     m_clipPlanes.u_clipCount = 0;

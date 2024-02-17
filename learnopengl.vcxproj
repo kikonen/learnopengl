@@ -197,10 +197,12 @@
     <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
+    <ClCompile Include="src\loader\ParticleLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\mesh\PositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\mesh\TextureVBO.cpp" />
+    <ClCompile Include="src\particle\ParticleSystem.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
@@ -343,10 +345,9 @@
     <ClCompile Include="src\engine\AsyncLoader.cpp" />
     <ClCompile Include="src\gui\FrameInit.cpp" />
     <ClCompile Include="src\editor\EditorFrame.cpp" />
-    <ClCompile Include="src\model\Particle.cpp" />
-    <ClCompile Include="src\component\ParticleGenerator.cpp" />
+    <ClCompile Include="src\particle\Particle.cpp" />
+    <ClCompile Include="src\particle\ParticleGenerator.cpp" />
     <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
-    <ClCompile Include="src\scene\ParticleSystem.cpp" />
     <ClCompile Include="src\renderer\CubeMapRenderer.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\mesh\QuadMesh.cpp" />
@@ -411,6 +412,8 @@
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\loader\LodData.h" />
+    <ClInclude Include="src\loader\ParticleData.h" />
+    <ClInclude Include="src\loader\ParticleLoader.h" />
     <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\TextureVBO.h" />
@@ -426,6 +429,9 @@
     <ClInclude Include="src\mesh\VBO.h" />
     <ClInclude Include="src\mesh\VBO_impl.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
+    <ClInclude Include="src\particle\ParticleDefinition.h" />
+    <ClInclude Include="src\particle\ParticleSSBO.h" />
+    <ClInclude Include="src\particle\ParticleSystem.h" />
     <ClInclude Include="src\pool\Entry.h" />
     <ClInclude Include="src\pool\IdHash.h" />
     <ClInclude Include="src\pool\TypeHandle.h" />
@@ -633,10 +639,9 @@
     <ClInclude Include="src\engine\AsyncLoader.h" />
     <ClInclude Include="src\gui\FrameInit.h" />
     <ClInclude Include="src\editor\EditorFrame.h" />
-    <ClInclude Include="src\model\Particle.h" />
-    <ClInclude Include="src\component\ParticleGenerator.h" />
+    <ClInclude Include="src\particle\Particle.h" />
+    <ClInclude Include="src\particle\ParticleGenerator.h" />
     <ClInclude Include="src\renderer\ParticleRenderer.h" />
-    <ClInclude Include="src\scene\ParticleSystem.h" />
     <ClInclude Include="src\renderer\CubeMapRenderer.h" />
     <ClInclude Include="src\mesh\Mesh.h" />
     <ClInclude Include="src\mesh\QuadMesh.h" />

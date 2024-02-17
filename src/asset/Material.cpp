@@ -133,9 +133,9 @@ Material::Material()
 
 Material::~Material()
 {
-    KI_INFO(fmt::format(
-        "MATERIAL: delete - ID={}, name={}, index={}",
-        m_id, m_name, m_registeredIndex));
+    //KI_INFO(fmt::format(
+    //    "MATERIAL: delete - ID={}, name={}, index={}",
+    //    m_id, m_name, m_registeredIndex));
 }
 
 void Material::loadTextures()
