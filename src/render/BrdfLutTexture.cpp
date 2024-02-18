@@ -98,7 +98,7 @@ namespace render {
             glClearNamedFramebufferfv(*captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
             glClearNamedFramebufferfv(*captureFBO, GL_DEPTH, 0, &clearDepth);
 
-            TextureQuad quad;
+            TextureQuad& quad = TextureQuad::get();
             quad.prepare();
 
             quad.draw();

@@ -19,8 +19,17 @@ namespace {
 }
 
 namespace render {
+    TextureQuad& TextureQuad::get() noexcept
+    {
+        static TextureQuad s_instance;
+        return s_instance;
+    }
+
     void TextureQuad::prepare()
     {
+        if (m_prepared) return;
+        m_prepared = true;
+
         // NOTE KI z == 1.0 for skybox
         const VertexEntry vertices[4] = {
             VertexEntry{ {-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f} },

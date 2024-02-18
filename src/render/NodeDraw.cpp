@@ -59,6 +59,7 @@ namespace render {
     }
 
     NodeDraw::NodeDraw()
+        : m_textureQuad{ render::TextureQuad::get() }
     {}
 
     NodeDraw::~NodeDraw()
