@@ -31,6 +31,12 @@ namespace particle {
 
         void updateRT(const UpdateContext& ctx);
 
+        void setEnabled(bool enabled) {
+            m_enabled = enabled;
+        }
+
+        bool isEnabled() { return m_enabled; }
+
         void addParticle(const Particle& particle);
 
         uint32_t getActiveParticleCount() const noexcept {
@@ -41,6 +47,8 @@ namespace particle {
         void updateParticleBuffer();
 
     private:
+        bool m_enabled{ false };
+
         std::mutex m_lock{};
 
         std::vector<Particle> m_particles;

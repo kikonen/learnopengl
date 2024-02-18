@@ -389,6 +389,19 @@ namespace loader
         return { 0, a, 0 };
     }
 
+    float BaseLoader::readFractional(const YAML::Node& node) const
+    {
+        if (node.IsSequence()) {
+            auto a = readFloatVector(node, 2);
+            if (a.size() < 1) {
+                a.push_back(1.0);
+            }
+            return a[0] / a[1];
+        }
+
+        return readFloat(node);
+    }
+
     glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const
     {
         auto a = readFloatVector(node, 2);

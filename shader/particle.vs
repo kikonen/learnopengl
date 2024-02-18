@@ -71,15 +71,21 @@ void main() {
   vs_out.particleIndex = particleIndex;
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  const uvec2 si = particle.u_spriteIndex;
+  //const uvec2 si = uvec2(4, 7);
+  float tx = u_materials[materialIndex].tilingX;
+  float ty = u_materials[materialIndex].tilingY;
 
-  if (vs_out.texCoord.x == 1.0) {
-    vs_out.texCoord.x = 1.0 / 9.0;
+  if (a_texCoord.x == 0.0) {
+    vs_out.texCoord.x = si.x * tx;
+  } else {
+    vs_out.texCoord.x = (si.x + 1) * tx;
   }
 
-  if (vs_out.texCoord.y == 0.0) {
-    vs_out.texCoord.y = 1.0 - 1.0 / 9.0;
+  if (a_texCoord.y == 0.0) {
+    vs_out.texCoord.y = 1.0 - (si.y + 1) * ty;
+  } else {
+    vs_out.texCoord.y = 1.0 - si.y * ty;
   }
 
   vs_out.worldPos = worldPos.xyz;

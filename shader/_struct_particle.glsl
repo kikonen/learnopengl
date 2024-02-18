@@ -8,5 +8,5 @@ struct Particle {
 
   int u_materialIndex;
 
-  uint u_flags;
+  uvec2 u_spriteIndex;
 };

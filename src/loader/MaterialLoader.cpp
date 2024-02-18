@@ -265,17 +265,18 @@ namespace loader {
                 fields.refractionRatio = true;
             }
             else if (k == "tiling") {
-                material.tilingX = readFloat(v);
-                material.tilingY = readFloat(v);
+                float tiling = readFractional(v);
+                material.tilingX = tiling;
+                material.tilingY = tiling;
                 fields.tilingX = true;
                 fields.tilingY = true;
             }
             else if (k == "tiling_x") {
-                material.tilingX = readFloat(v);
+                material.tilingX = readFractional(v);
                 fields.tilingX = true;
             }
             else if (k == "tiling_y") {
-                material.tilingY = readFloat(v);
+                material.tilingY = readFractional(v);
                 fields.tilingY = true;
             }
             else if (k == "layers") {

@@ -16,7 +16,6 @@ struct ParticleSSBO {
 
     GLint u_materialIndex{ 0 };
 
-    int pad1;
-    int pad2;
+    glm::uvec2 m_spriteIndex{ 0 };
 };
 #pragma pack(pop)

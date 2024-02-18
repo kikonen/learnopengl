@@ -15,6 +15,12 @@ namespace particle {
     {
         glm::vec3 m_pos{ 0.f };
         glm::vec3 m_dir{ 0.f };
+
+        int m_cols{ 1 };
+        int m_maxIndex{ 1 };
+
+        int m_index{ 0 };
+
         float m_velocity{ 0.f };
         float m_lifetime{ 0.f };
 
@@ -30,6 +36,7 @@ namespace particle {
                 m_pos,
                 m_scale,
                 m_materialIndex,
+                { m_index % m_cols, m_index / m_cols },
             };
         }
     };

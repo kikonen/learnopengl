@@ -36,6 +36,7 @@ void ParticleRenderer::prepareRT(
     m_prepared = true;
 
     const auto& assets = ctx.m_assets;
+    m_enabled = assets.particlesEnabled;
 
     Renderer::prepareRT(ctx);
 
@@ -57,6 +58,8 @@ void ParticleRenderer::prepareRT(
 void ParticleRenderer::render(
     const RenderContext& ctx)
 {
+    if (!isEnabled()) return;
+
     auto& state = ctx.m_state;
 
     const auto instanceCount = particle::ParticleSystem::get().getActiveParticleCount();

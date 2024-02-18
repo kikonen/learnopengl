@@ -46,6 +46,9 @@ namespace particle {
     void ParticleSystem::prepare() {
         const auto& assets = Assets::get();
 
+        m_enabled = assets.particlesEnabled;
+        if (!isEnabled()) return;
+
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
         m_useFence = assets.glUseFence;
@@ -65,6 +68,8 @@ namespace particle {
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
+        if (!isEnabled()) return;
+
         //if (m_particles.size() < 500000) {
         //    for (int i = 0; i < 1000; i++) {
         //        generator->updateWT(ctx);
@@ -91,6 +96,7 @@ namespace particle {
 
     void ParticleSystem::updateRT(const UpdateContext& ctx)
     {
+        if (!isEnabled()) return;
         updateParticleBuffer();
     }
 

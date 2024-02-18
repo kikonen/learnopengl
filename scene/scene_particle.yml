@@ -159,5 +159,6 @@ materials:
       wrap: GL_CLAMP_TO_EDGE
   - name: firespin
     map_kd: sprites/7_firespin_spritesheet.png
+    tiling: [1, 8]
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
