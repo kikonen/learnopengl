@@ -43,19 +43,27 @@ namespace particle {
             return static_cast<uint32_t>(m_activeCount);
         }
 
+        bool isFull() const noexcept {
+            return !m_enabled || m_particles.size() >= m_maxCount;
+        }
+
     private:
+        void snapshotParticles();
         void updateParticleBuffer();
 
     private:
         bool m_enabled{ false };
 
         std::mutex m_lock{};
+        std::mutex m_snapshotLock{};
 
+        size_t m_maxCount{ 0 };
         std::vector<Particle> m_particles;
 
         pool::TypeHandle m_typeHandle{};
 
-        std::vector<ParticleSSBO> m_entries;
+        std::vector<ParticleSSBO> m_snapshot;
+        size_t m_snapshotCount{ 0 };
         size_t m_activeCount{ 0 };
 
         kigl::GLBuffer m_ssbo{ "particle_ssbo" };

@@ -146,7 +146,7 @@ void SceneUpdater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fpsCounter.formatSummary("UPDATER"));
+            KI_INFO(fmt::format("{} - particles: {}", fpsCounter.formatSummary("UPDATER"), particle::ParticleSystem::get().getActiveParticleCount()));
         }
 
         if (!script::CommandEngine::get().hasPending()) {

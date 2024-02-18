@@ -490,8 +490,12 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "particles_enabled") {
-                data.particlesEnabled = readBool(v);
+            if (k == "particle_enabled") {
+                data.particleEnabled = readBool(v);
+                continue;
+            }
+            if (k == "particle_max_count") {
+                data.particleMaxCount = readInt(v);
                 continue;
             }
         }

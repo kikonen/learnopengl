@@ -169,7 +169,8 @@ public:
     float fogEnd;
     float fogDensity;
 
-    bool particlesEnabled;
+    bool particleEnabled;
+    int particleMaxCount;
 
     bool shadowMapEnabled;
 

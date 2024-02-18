@@ -34,14 +34,13 @@ namespace particle {
         float x = m_definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 
         auto& ps = ParticleSystem::get();
-        if (!ps.isEnabled()) return;
-        if (ps.getActiveParticleCount() >= 200000) return;
+        if (ps.isFull()) return;
 
         for (int i = 0; i < 1000; i++) {
             Particle particle;
             particle.m_pos = { 50.f - prnd(100.f), 10.f - prnd(20.f), 50.f - prnd(100.f) };
             particle.m_dir = { 0.f, 1.f, 0.f };
-            particle.m_velocity = 0.01f + prnd(2.f);
+            particle.m_velocity = 0.01f + prnd(.4f);
             particle.m_lifetime = 10.f + prnd(200.f);
             particle.m_scale = 0.0001f + prnd(0.2f);
             //particle.m_materialIndex = (m_material.m_registeredIndex * rand()) % 10;

@@ -111,7 +111,8 @@ assets:
   fog_end: 2000.0
   fog_density: 1.1
 
-  particles_enabled: true
+  particle_enabled: true
+  particle_max_count: 200000
 
   shadow_map_enabled: true
 

@@ -33,7 +33,7 @@ void ParticleRenderer::prepareRT(
     m_prepared = true;
 
     const auto& assets = ctx.m_assets;
-    m_enabled = assets.particlesEnabled;
+    m_enabled = assets.particleEnabled;
 
     Renderer::prepareRT(ctx);
 
