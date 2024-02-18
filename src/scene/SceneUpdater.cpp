@@ -19,8 +19,6 @@
 
 #include "audio/AudioEngine.h"
 
-#include "particle/ParticleSystem.h"
-
 #include "physics/PhysicsEngine.h"
 
 #include "engine/UpdateContext.h"
@@ -146,7 +144,7 @@ void SceneUpdater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fmt::format("{} - particles: {}", fpsCounter.formatSummary("UPDATER"), particle::ParticleSystem::get().getActiveParticleCount()));
+            KI_INFO(fmt::format("{}", fpsCounter.formatSummary("WT")));
         }
 
         if (!script::CommandEngine::get().hasPending()) {
@@ -191,23 +189,11 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 physics::PhysicsEngine::get().update(ctx);
             }
             {
-                KI_TIMER("particle");
-                particle::ParticleSystem::get().updateWT(ctx);
-            }
-            {
                 KI_TIMER("audio   ");
                 audio::AudioEngine::get().update(ctx);
             }
         }
     }
-
-    //for (auto& generator : m_particleGenerators) {
-    //    generator->update(ctx);
-    //}
-
-    //if (m_particleSystem) {
-    //    m_particleSystem->update(ctx);
-    //}
 
     // NOTE KI sync to RT
     m_registry->m_snapshotRegistry->copyToPending(0, -1);
@@ -218,13 +204,4 @@ void SceneUpdater::handleNodeAdded(Node* node)
     if (!node) return;
 
     physics::PhysicsEngine::get().handleNodeAdded(node);
-
-    //    auto& type = node->m_type;
-    //
-    //    if (node->m_particleGenerator) {
-    //        if (m_particleSystem) {
-    //            node->m_particleGenerator->setSystem(m_particleSystem.get());
-    //            m_particleGenerators.push_back(node);
-    //        }
-    //    }
 }

@@ -45,6 +45,7 @@
 
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
+#include "scene/ParticleUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -84,7 +85,12 @@ int SampleApp::onSetup()
         m_registry,
         m_alive);
 
+    m_particleUpdater = std::make_shared<ParticleUpdater>(
+        m_registry,
+        m_alive);
+
     m_sceneUpdater->start();
+    m_particleUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -121,30 +127,30 @@ int SampleApp::onSetup()
 }
 
 int SampleApp::onUpdate(const ki::RenderClock& clock) {
-    auto* updater = m_currentScene.get();
-    if (!updater) return 0;
+    auto* scene = m_currentScene.get();
+    if (!scene) return 0;
 
     {
         UpdateContext ctx(
             clock,
             m_currentScene->m_registry.get());
 
-        updater->updateRT(ctx);
+        scene->updateRT(ctx);
     }
 
     return 0;
 }
 
 int SampleApp::onPost(const ki::RenderClock& clock) {
-    auto* updater = m_currentScene.get();
-    if (!updater) return 0;
+    auto* scene = m_currentScene.get();
+    if (!scene) return 0;
 
     {
         UpdateContext ctx(
             clock,
             m_currentScene->m_registry.get());
 
-        updater->postRT(ctx);
+        scene->postRT(ctx);
     }
 
     return 0;
@@ -330,14 +336,25 @@ void SampleApp::onDestroy()
     }
 
     if (m_sceneUpdater) {
-        KI_INFO_OUT("APP: stopping worker...");
+        KI_INFO_OUT("APP: stopping WT...");
         m_sceneUpdater->destroy();
 
         // NOTE KI wait for worker threads to shutdown
         while (m_sceneUpdater->isRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        KI_INFO_OUT("APP: worker stopped!");
+        KI_INFO_OUT("APP: WT stopped!");
+    }
+
+    if (m_particleUpdater) {
+        KI_INFO_OUT("APP: stopping PT...");
+        m_particleUpdater->destroy();
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_particleUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: PT stopped!");
     }
 
     if (m_currentScene) {

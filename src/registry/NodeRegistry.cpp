@@ -117,7 +117,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
 
         if (node->m_particleGenerator) {
-            node->m_particleGenerator->updateWT(ctx);
+            node->m_particleGenerator->updateWT(ctx, *node);
         }
     }
 

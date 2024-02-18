@@ -452,6 +452,8 @@ entities:
     render_flags:
       render_back: true
     selected: false
+    particle:
+      material: firespin
   - name: Cow
     model: cow
     program: g_tex
@@ -1160,3 +1162,9 @@ materials:
     tiling: 2
   - name: plasma_ball
     map_kd: textures/noise_256.png
+  - name: firespin
+    kd: [1, 1, 1, 1]
+    map_kd: sprites/7_firespin_spritesheet.png
+    tiling: [1, 8]
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

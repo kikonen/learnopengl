@@ -636,6 +636,9 @@
     <ClCompile Include="src\loader\ParticleLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\ParticleUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1521,6 +1524,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\particle\ParticleSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\ParticleUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

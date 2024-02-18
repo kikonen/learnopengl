@@ -9,6 +9,8 @@
 struct PrepareContext;
 struct UpdateContext;
 
+class Node;
+
 namespace particle {
     class ParticleGenerator final
     {
@@ -19,7 +21,9 @@ namespace particle {
 
         void prepareWT();
 
-        void updateWT(const UpdateContext& ctx);
+        void updateWT(
+            const UpdateContext& ctx,
+            Node& node);
 
         void setMaterial(const Material& material) {
             m_material = material;

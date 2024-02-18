@@ -210,6 +210,7 @@
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
+    <ClCompile Include="src\scene\ParticleUpdater.cpp" />
     <ClCompile Include="src\script\api\SetTextNode.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
     <ClCompile Include="src\script\CommandHandle.cpp" />
@@ -440,6 +441,7 @@
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
+    <ClInclude Include="src\scene\ParticleUpdater.h" />
     <ClInclude Include="src\script\api\SetTextNode.h" />
     <ClInclude Include="src\script\CommandEngine_impl.h" />
     <ClInclude Include="src\script\CommandEntry.h" />
