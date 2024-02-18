@@ -158,6 +158,8 @@ materials:
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
   - name: firespin
+    kd: [1, 1, 1, 1]
+    xkd: [0.5, 1.5, 0.2, 0.2]
     map_kd: sprites/7_firespin_spritesheet.png
     tiling: [1, 8]
     texture_spec:

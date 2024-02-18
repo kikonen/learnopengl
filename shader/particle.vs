@@ -15,11 +15,11 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  vec3 worldPos;
   vec2 texCoord;
   vec3 viewPos;
 
-  flat uint materialIndex;
+  flat vec4 diffuse;
+  flat uvec2 diffuseTex;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -60,7 +60,8 @@ void main() {
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  vs_out.materialIndex = materialIndex;
+  vs_out.diffuse = u_materials[materialIndex].diffuse;
+  vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
 
   const uvec2 si = particle.u_spriteIndex;
   const float tx = u_materials[materialIndex].tilingX;
@@ -78,7 +79,6 @@ void main() {
     vs_out.texCoord.y = 1.0 - si.y * ty;
   }
 
-  vs_out.worldPos = worldPos.xyz;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   calculateClipping(worldPos);
