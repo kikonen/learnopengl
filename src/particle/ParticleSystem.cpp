@@ -62,7 +62,7 @@ namespace particle {
         generator = std::make_unique<particle::ParticleGenerator>();
         generator->prepareWT();
 
-        m_ssbo.createEmpty(1000 * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(2100 * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
