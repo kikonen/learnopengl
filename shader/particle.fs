@@ -14,12 +14,8 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
-  flat uint particleIndex;
-
   vec3 worldPos;
-  vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
   vec3 viewPos;
 
   flat uint materialIndex;
@@ -54,8 +50,6 @@ void main() {
     discard;
 #endif
 #endif
-
-  #include var_tex_material_normal.glsl
 
   vec4 texColor = material.diffuse;
 

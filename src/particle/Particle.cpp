@@ -3,7 +3,7 @@
 #include "engine/UpdateContext.h"
 
 namespace particle {
-    bool Particle::update(const UpdateContext& ctx)
+    bool Particle::update(const UpdateContext& ctx) noexcept
     {
         m_lifetime -= ctx.m_clock.elapsedSecs;
         if (m_lifetime <= 0) return false;

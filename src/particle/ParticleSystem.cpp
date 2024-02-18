@@ -22,6 +22,7 @@
 
 namespace {
     constexpr size_t PARTICLE_BLOCK_SIZE = 1000;
+    constexpr size_t MAX_BLOCK_COUNT = 1100;
 
     std::unique_ptr<particle::ParticleGenerator> generator;
 }
@@ -35,11 +36,14 @@ namespace particle {
 
     ParticleSystem::ParticleSystem()
     {
+        m_particles.resize(MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE);
     }
 
     void ParticleSystem::addParticle(const Particle& particle)
     {
         std::lock_guard lock(m_lock);
+        if (m_particles.size() >= MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE) return;
+
         m_particles.push_back(particle);
     }
 
@@ -62,19 +66,13 @@ namespace particle {
         generator = std::make_unique<particle::ParticleGenerator>();
         generator->prepareWT();
 
-        m_ssbo.createEmpty(2100 * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
         if (!isEnabled()) return;
-
-        //if (m_particles.size() < 500000) {
-        //    for (int i = 0; i < 1000; i++) {
-        //        generator->updateWT(ctx);
-        //    }
-        //}
 
         std::lock_guard lock(m_lock);
 
@@ -89,6 +87,7 @@ namespace particle {
                 i--;
             }
         }
+
         if (size != m_particles.size()) {
             m_particles.resize(size);
         }
@@ -118,7 +117,7 @@ namespace particle {
         }
 
         for (size_t i = 0; i < m_particles.size(); i++) {
-            m_entries[i] = m_particles[i].toSSBO();
+            m_entries[i] = std::move(m_particles[i].toSSBO());
         }
 
         if (m_ssbo.m_size < totalCount * sz) {
@@ -127,9 +126,9 @@ namespace particle {
             m_ssbo.resizeBuffer(bufferSize);
         }
 
-        m_ssbo.invalidateRange(
-            0,
-            totalCount * sz);
+        //m_ssbo.invalidateRange(
+        //    0,
+        //    totalCount * sz);
 
         m_ssbo.update(
             0,

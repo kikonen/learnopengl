@@ -10,9 +10,8 @@
 //
 #pragma pack(push, 1)
 struct ParticleSSBO {
-    glm::vec3 u_pos{ 0.f };
-
-    float u_scale{ 1.f };
+    // xyz = pos, a = scale
+    glm::vec4 u_pos_scale{ 0.f };
 
     GLint u_materialIndex{ 0 };
 

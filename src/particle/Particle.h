@@ -28,13 +28,12 @@ namespace particle {
 
         GLint m_materialIndex{ 0 };
 
-        bool update(const UpdateContext& ctx);
+        bool update(const UpdateContext& ctx) noexcept;
 
-        const ParticleSSBO toSSBO() const noexcept
+        ParticleSSBO toSSBO() const noexcept
         {
             return {
-                m_pos,
-                m_scale,
+                { m_pos, m_scale },
                 m_materialIndex,
                 { m_index % m_cols, m_index / m_cols },
             };
