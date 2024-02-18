@@ -51,7 +51,6 @@
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
-#include "renderer/ParticleRenderer.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
@@ -77,7 +76,6 @@ Scene::Scene(
         m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("main", true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
-        m_particleRenderer = std::make_unique<ParticleRenderer>(true);
 
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
@@ -91,7 +89,6 @@ Scene::Scene(
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
         m_cubeMapRenderer->setEnabled(assets.cubeMapEnabled);
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
-        m_particleRenderer->setEnabled(assets.particlesEnabled);
 
         m_objectIdRenderer->setEnabled(true);
         m_normalRenderer->setEnabled(assets.showNormals);
@@ -173,9 +170,6 @@ void Scene::prepareRT()
     }
     if (m_shadowMapRenderer->isEnabled()) {
         m_shadowMapRenderer->prepareRT(ctx);
-    }
-    if (m_particleRenderer->isEnabled()) {
-        m_particleRenderer->prepareRT(ctx);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
@@ -486,10 +480,6 @@ void Scene::drawScene(
 
     if (nodeRenderer->isEnabled()) {
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
-    }
-
-    if (m_particleRenderer) {
-        m_particleRenderer->render(ctx);
     }
 
     if (assets.showNormals) {

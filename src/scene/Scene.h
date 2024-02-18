@@ -44,7 +44,6 @@ class WaterMapRenderer;
 class MirrorMapRenderer;
 class CubeMapRenderer;
 class ShadowMapRenderer;
-class ParticleRenderer;
 
 class ObjectIdRenderer;
 class NormalRenderer;
@@ -120,8 +119,6 @@ private:
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
     std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
     std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
-
-    std::unique_ptr<ParticleRenderer> m_particleRenderer{ nullptr };
 
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
     std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };

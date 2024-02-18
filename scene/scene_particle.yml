@@ -81,7 +81,7 @@ entities:
       alpha: true
       physics: true
       enforce_bounds: true
-      render_back: true
+      xrender_back: true
     scale: [1.5, 3, 1]
     generator:
       type: grid
