@@ -270,7 +270,7 @@ namespace physics
             auto* node = handle.toNode();
             if (!node) continue;
 
-            if (node->getTransform().getMatrixLevel() < 0) continue;
+            if (node->getTransform().getMatrixLevel() == 0) continue;
 
             auto* type = node->m_typeHandle.toType();
             if (type->m_flags.staticPhysics) {

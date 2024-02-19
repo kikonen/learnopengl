@@ -144,7 +144,10 @@ void SceneUpdater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fmt::format("{}", fpsCounter.formatSummary("WT")));
+            KI_INFO(fmt::format(
+                "{} - nodes: {}",
+                fpsCounter.formatSummary("WT"),
+                ctx.m_registry->m_nodeRegistry->getNodeCount()));
         }
 
         if (!script::CommandEngine::get().hasPending()) {

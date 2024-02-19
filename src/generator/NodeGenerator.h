@@ -114,7 +114,7 @@ protected:
 
     uint32_t m_reservedCount{ 0 };
 
-    int m_containerMatrixLevel = -1;
+    ki::level_id m_containerMatrixLevel{ 0 };
 
     std::vector<NodeTransform> m_transforms;
     std::vector<const backend::Lod*> m_lods;

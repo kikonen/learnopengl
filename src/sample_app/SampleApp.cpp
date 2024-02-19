@@ -335,9 +335,13 @@ void SampleApp::onDestroy()
         KI_INFO_OUT("APP: loaders stopped!");
     }
 
+    {
+        m_sceneUpdater->destroy();
+        m_particleUpdater->destroy();
+    }
+
     if (m_sceneUpdater) {
         KI_INFO_OUT("APP: stopping WT...");
-        m_sceneUpdater->destroy();
 
         // NOTE KI wait for worker threads to shutdown
         while (m_sceneUpdater->isRunning()) {
@@ -348,7 +352,6 @@ void SampleApp::onDestroy()
 
     if (m_particleUpdater) {
         KI_INFO_OUT("APP: stopping PT...");
-        m_particleUpdater->destroy();
 
         // NOTE KI wait for worker threads to shutdown
         while (m_particleUpdater->isRunning()) {
