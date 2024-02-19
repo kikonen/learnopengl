@@ -58,9 +58,6 @@ entities:
     render_flags:
       allow_normals: false
       xenforce_bounds: true
-    particle_generator:
-      - "ParticleDefinition pd;"
-      - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
     audio:
       listener:
         default: true
@@ -453,7 +450,7 @@ entities:
       render_back: true
     selected: false
     particle:
-      material: firespin
+      material: particle_casting
   - name: Cow
     model: cow
     program: g_tex
@@ -531,10 +528,6 @@ entities:
     program: g_tex
     pos: [5.0, 30.0, 0.0]
     scale: 1.3
-    particle_generator:
-      - ParticleDefinition pd;
-      - //pd.material = Sprite::getMaterial(assets, "Skeleton_VH.PNG", "");
-      - node->particleGenerator = new ParticleGenerator(assets, pd);
     material_modifier:
       xreflection: 0.3
   - name: Basic ball
@@ -1162,9 +1155,10 @@ materials:
     tiling: 2
   - name: plasma_ball
     map_kd: textures/noise_256.png
-  - name: firespin
+  - name: particle_casting
     kd: [1, 1, 1, 1]
-    map_kd: sprites/7_firespin_spritesheet.png
-    tiling: [1, 8]
+    map_kd: particles/4_casting_spritesheet.png
+    sprites: 73
+    sprites_x: 9
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE

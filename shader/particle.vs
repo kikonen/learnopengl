@@ -63,20 +63,27 @@ void main() {
   vs_out.diffuse = u_materials[materialIndex].diffuse;
   vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
 
-  const uvec2 si = particle.u_spriteIndex;
-  const float tx = u_materials[materialIndex].tilingX;
-  const float ty = u_materials[materialIndex].tilingY;
+  const uint spriteIndex = particle.u_spriteIndex;
+
+  const uint spritesX = u_materials[materialIndex].spritesX;
+  const uint spritesY = u_materials[materialIndex].spritesY;
+
+  const float tx = 1.0 / spritesX;
+  const float ty = 1.0 / spritesY;
+
+  const uint sx = spriteIndex % spritesX;
+  const uint sy = spriteIndex / spritesX;
 
   if (a_texCoord.x == 0.0) {
-    vs_out.texCoord.x = si.x * tx;
+    vs_out.texCoord.x = sx * tx;
   } else {
-    vs_out.texCoord.x = (si.x + 1) * tx;
+    vs_out.texCoord.x = (sx + 1) * tx;
   }
 
   if (a_texCoord.y == 0.0) {
-    vs_out.texCoord.y = 1.0 - (si.y + 1) * ty;
+    vs_out.texCoord.y = 1.0 - (sy + 1) * ty;
   } else {
-    vs_out.texCoord.y = 1.0 - si.y * ty;
+    vs_out.texCoord.y = 1.0 - sy * ty;
   }
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;

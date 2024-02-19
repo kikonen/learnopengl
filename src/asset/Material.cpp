@@ -349,6 +349,10 @@ const MaterialSSBO Material::toSSBO() const
         tilingX,
         tilingY,
 
+        spriteCount,
+        spritesX,
+        spritesY,
+
         layers,
         layersDepth,
         parallaxDepth,

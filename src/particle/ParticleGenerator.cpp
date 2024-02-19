@@ -41,7 +41,7 @@ namespace particle {
         const auto& transform = node.getTransform();
         glm::vec3 pos = transform.getWorldPosition();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             Particle particle;
 
             particle.m_pos = {
@@ -55,14 +55,10 @@ namespace particle {
             particle.m_scale = 0.0001f + prnd(0.2f);
             particle.m_materialIndex = m_material.m_registeredIndex;
 
-            const int rows = 8;
-            const int cols = 8;
-            const int max = rows * cols - 3;
-            const int idx = floor(prnd(max));
+            const int idx = floor(prnd(m_material.spriteCount));
 
-            particle.m_index = idx;
-            particle.m_cols = cols;
-            particle.m_maxIndex = rows * cols - 3;
+            particle.m_spriteIndex = idx;
+            particle.m_spriteCount = m_material.spriteCount;
 
             ps.addParticle(particle);
         }

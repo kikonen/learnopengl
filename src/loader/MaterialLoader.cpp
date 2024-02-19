@@ -279,6 +279,14 @@ namespace loader {
                 material.tilingY = readFractional(v);
                 fields.tilingY = true;
             }
+            else if (k == "sprites") {
+                material.spriteCount = readInt(v);
+                fields.spriteCount = true;
+            }
+            else if (k == "sprites_x") {
+                material.spritesX = readInt(v);
+                fields.spritesX = true;
+            }
             else if (k == "layers") {
                 material.layers = readInt(v);
                 fields.layers = true;
@@ -298,6 +306,11 @@ namespace loader {
             else {
                 reportUnknown("material_entry", k, v);
             }
+        }
+
+        material.spritesY = material.spriteCount / material.spritesX;
+        if (material.spriteCount % material.spritesX != 0) {
+            material.spritesY++;
         }
     }
 
@@ -454,6 +467,10 @@ namespace loader {
 
         if (f.tilingX) m.tilingX = mod.tilingX;
         if (f.tilingY) m.tilingY = mod.tilingY;
+
+        if (f.spriteCount) m.spriteCount = mod.spriteCount;
+        if (f.spritesX) m.spritesX = mod.spritesX;
+        if (f.spritesX) m.spritesY = mod.spritesY;
 
         if (f.ns) m.ns = mod.ns;
 

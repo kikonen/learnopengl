@@ -74,7 +74,7 @@ void ParticleUpdater::run()
 {
     ki::RenderClock clock;
 
-    std::cout << "PT: worker=" << util::isWorkerThread() << '\n';
+    std::cout << "PS: worker=" << util::isWorkerThread() << '\n';
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
@@ -109,7 +109,7 @@ void ParticleUpdater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fmt::format("{} - particles: {}", fpsCounter.formatSummary("PT"), particle::ParticleSystem::get().getActiveParticleCount()));
+            KI_INFO(fmt::format("{} - particles: {}", fpsCounter.formatSummary("PS"), particle::ParticleSystem::get().getActiveParticleCount()));
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));

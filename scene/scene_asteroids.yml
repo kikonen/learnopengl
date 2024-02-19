@@ -58,7 +58,7 @@ entities:
     pos: [0, 0, 0]
     scale: 1
     particle:
-      material: firespin
+      material: particle_firespin
   - id: asteroid_belt
     parent_id: planet-origo
     program: g_tex
@@ -130,9 +130,10 @@ materials:
   - name: fps_text
     kd: [0.0, 0.8, 0.0, 1.0]
     xmetal: [1.0, 0.0, 0, 1]
-  - name: firespin
+  - name: particle_firespin
     kd: [1, 1, 1, 1]
-    map_kd: sprites/7_firespin_spritesheet.png
-    tiling: [1, 8]
+    map_kd: particles/7_firespin_spritesheet.png
+    sprites: 61
+    sprites_x: 8
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
