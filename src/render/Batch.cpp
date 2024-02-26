@@ -97,8 +97,8 @@ namespace render {
     //void Batch::addSnapshots(
     //    const RenderContext& ctx,
     //    mesh::MeshType* type,
-    //    const std::span<const Snapshot>& snapshots,
-    //    const std::span<uint32_t>& entityIndeces) noexcept
+    //    std::span<const Snapshot> snapshots,
+    //    std::span<uint32_t> entityIndeces) noexcept
     //{
     //    uint32_t i = 0;
     //    for (const auto& snapshot : snapshots) {
@@ -109,8 +109,8 @@ namespace render {
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const std::span<const backend::Lod*>& lods_NOPE,
-        const std::span<const Snapshot>& snapshots,
+        std::span<const backend::Lod*> lods_NOPE,
+        std::span<const Snapshot> snapshots,
         uint32_t entityBase) noexcept
     {
         const uint32_t count = static_cast<uint32_t>(snapshots.size());

@@ -11,7 +11,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 Light::~Light() = default;
 
@@ -20,9 +20,9 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
     if (!m_enabled) return;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getSnapshot(node.m_snapshotIndex);
     const bool nodeChanged = m_nodeMatrixLevel != snapshot.getMatrixLevel();
 
     if (nodeChanged) {
@@ -43,13 +43,13 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) return;
 
-        bool ready = snapshotRegistry.hasActiveSnapshot(targetNode->m_snapshotIndex);
+        bool ready = snapshotRegistry.hasSnapshot(targetNode->m_snapshotIndex);
         if (!ready) {
             KI_INFO(fmt::format("LIGHT: snapshot not_ready: target={}", targetNode->str()));
             return;
         }
 
-        const auto& targetSnapshot = snapshotRegistry.getActiveSnapshot(targetNode->m_snapshotIndex);
+        const auto& targetSnapshot = snapshotRegistry.getSnapshot(targetNode->m_snapshotIndex);
 
         const bool targetChanged = m_targetMatrixLevel != targetSnapshot.getMatrixLevel();
         const bool changed = targetChanged || nodeChanged;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 
 struct UpdateContext;
 class Registry;
@@ -21,6 +22,11 @@ public:
 
     void prepare();
 
+    bool isPrepared() const noexcept {
+        std::lock_guard lock(m_prepareLock);
+        return m_prepared;
+    }
+
     void start();
     void run();
 
@@ -31,6 +37,9 @@ private:
 
 private:
     bool m_loaded{ false };
+    bool m_prepared{ false };
+
+    mutable std::mutex m_prepareLock;
 
     std::atomic<bool> m_running;
     std::shared_ptr<std::atomic<bool>> m_alive;

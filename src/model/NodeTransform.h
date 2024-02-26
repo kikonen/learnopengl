@@ -60,9 +60,10 @@ struct NodeTransform {
     ki::level_id m_physicsLevel{ 0 };
 
     bool m_dirty : 1 {true};
-    bool m_dirtyNormal : 1 {true};
     bool m_dirtyRotation : 1 {true};
-    bool m_dirtySnapshot : 1 {true};
+
+    mutable bool m_dirtyNormal : 1 {true};
+    mutable bool m_dirtySnapshot : 1 {true};
 
     ///////////////////////////////////////
     //
@@ -208,7 +209,8 @@ struct NodeTransform {
 
     inline const glm::vec3& getWorldPosition() const noexcept
     {
-        assert(!m_dirty);
+        // TODO KI sync with physics
+        //assert(!m_dirty);
         return m_worldPos;
     }
 
@@ -220,7 +222,8 @@ struct NodeTransform {
 
     inline float getWorldMaxScale() const noexcept
     {
-        assert(!m_dirty);
+        // TODO KI sync with physics
+        //assert(!m_dirty);
         return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
     }
 

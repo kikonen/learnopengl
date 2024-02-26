@@ -106,7 +106,7 @@ namespace loader {
         std::shared_ptr<Registry> registry)
     {
         m_registry = registry;
-        m_dispatcher = registry->m_dispatcher;
+        m_dispatcher = registry->m_dispatcherWorker;
 
         m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
@@ -971,16 +971,22 @@ namespace loader {
             }
         }
         {
-            const auto& e = data.renderFlags.find("static_physics");
+            const auto& e = data.renderFlags.find("static_bounds");
             if (e != data.renderFlags.end()) {
-                flags.staticPhysics = e->second;
+                flags.staticBounds = e->second;
+                flags.physics = e->second;
             }
         }
         {
-            const auto& e = data.renderFlags.find("enforce_bounds");
+            const auto& e = data.renderFlags.find("dynamic_bounds");
             if (e != data.renderFlags.end()) {
-                flags.enforceBounds = e->second;
+                flags.dynamicBounds = e->second;
+                flags.physics = e->second;
             }
+        }
+
+        if (data.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
+            flags.physics = true;
         }
     }
 

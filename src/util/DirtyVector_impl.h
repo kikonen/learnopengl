@@ -24,15 +24,8 @@ namespace util
             auto count = requestedSize - m_entries.size();
             size_t size = m_entries.size() + std::max(DIRTY_VECTOR_BLOCK_SIZE, count) + DIRTY_VECTOR_BLOCK_SIZE;
 
-            m_entries.reserve(size);
-            m_dirty.reserve(size);
-        }
-
-        auto diff = requestedSize - m_entries.size();
-
-        while (diff-- > 0) {
-            m_entries.emplace_back();
-            m_dirty.emplace_back(false);
+            m_entries.resize(size);
+            m_dirty.resize(size);
         }
     }
 }

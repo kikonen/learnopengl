@@ -87,9 +87,7 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      physics: true
-      enforce_bounds: true
-      xrender_back: true
+      dynamic_bounds: true
     scale: [1.5, 3, 1]
     generator:
       type: grid

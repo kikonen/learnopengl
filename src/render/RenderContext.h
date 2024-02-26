@@ -2,11 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/UBO.h"
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
 #include "asset/ClipPlaneUBO.h"
-#include "asset/LightUBO.h"
+
+#include "kigl/kigl.h"
 
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"

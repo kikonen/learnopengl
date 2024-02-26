@@ -52,14 +52,14 @@ namespace render {
         //void addSnapshots(
         //    const RenderContext& ctx,
         //    mesh::MeshType* type,
-        //    const std::span<const Snapshot>& snapshots,
-        //    const std::span<uint32_t>& entityIndeces) noexcept;
+        //    std::span<const Snapshot> snapshots,
+        //    std::span<uint32_t> entityIndeces) noexcept;
 
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const mesh::MeshType* type,
-            const std::span<const backend::Lod*>& lods,
-            const std::span<const Snapshot>& snapshots,
+            std::span<const backend::Lod*> lods,
+            std::span<const Snapshot> snapshots,
             uint32_t entityBase) noexcept;
 
         void bind() noexcept;
