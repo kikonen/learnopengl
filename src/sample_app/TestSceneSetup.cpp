@@ -83,7 +83,7 @@ void TestSceneSetup::setupEffectExplosion()
                 .target = node->getId(),
                 .parentId = assets.rootId,
             };
-            m_registry->m_dispatcher->send(evt);
+            m_registry->m_dispatcherWorker->send(evt);
         }
     });
 }

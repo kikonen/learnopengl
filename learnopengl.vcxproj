@@ -208,7 +208,7 @@
     <ClCompile Include="src\pool\TypeHandle.cpp" />
     <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
-    <ClCompile Include="src\registry\SnapshotRegistry.cpp" />
+    <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
     <ClCompile Include="src\scene\ParticleUpdater.cpp" />
     <ClCompile Include="src\script\api\SetTextNode.cpp" />
@@ -439,7 +439,9 @@
     <ClInclude Include="src\registry\FontRegistry.h" />
     <ClInclude Include="src\pool\NodeHandle.h" />
     <ClInclude Include="src\pool\Pool.h" />
+    <ClInclude Include="src\registry\NodeSnapshotRegistry.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
+    <ClInclude Include="src\registry\SnapshotRegistry_impl.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
     <ClInclude Include="src\scene\ParticleUpdater.h" />
     <ClInclude Include="src\script\api\SetTextNode.h" />

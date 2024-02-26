@@ -28,13 +28,15 @@ namespace particle {
 
         bool update(const UpdateContext& ctx) noexcept;
 
-        ParticleSSBO toSSBO() const noexcept
+        void updateSSBO(ParticleSSBO& ssbo) const noexcept
         {
-            return {
-                { m_pos, m_scale },
-                m_materialIndex,
-                m_spriteIndex,
-            };
+            ssbo.u_pos_scale.x = m_pos.x;
+            ssbo.u_pos_scale.y = m_pos.y;
+            ssbo.u_pos_scale.z = m_pos.z;
+            ssbo.u_pos_scale.w = m_scale;
+            ssbo.u_materialIndex = m_materialIndex;
+            ssbo.u_spriteIndex = m_spriteIndex;
+            ssbo.u_materialIndex = m_materialIndex;
         }
     };
 }

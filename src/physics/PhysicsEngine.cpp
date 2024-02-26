@@ -273,7 +273,7 @@ namespace physics
             if (node->getTransform().getMatrixLevel() == 0) continue;
 
             auto* type = node->m_typeHandle.toType();
-            if (type->m_flags.staticPhysics) {
+            if (type->m_flags.staticBounds) {
                 m_enforceBoundsStatic.push_back(handle);
             }
             else {
@@ -384,7 +384,7 @@ namespace physics
     void PhysicsEngine::handleNodeAdded(Node* node)
     {
         auto* type = node->m_typeHandle.toType();
-        if (!type->m_flags.enforceBounds) return;
+        if (!(type->m_flags.staticBounds || type->m_flags.dynamicBounds)) return;
         m_pendingNodes.push_back(node->toHandle());
     }
 }

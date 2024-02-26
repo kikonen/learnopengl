@@ -585,7 +585,7 @@
     <ClCompile Include="src\mesh\PositionVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\SnapshotRegistry.cpp">
+    <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\InputContext.cpp">
@@ -637,6 +637,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\ParticleUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\PhysicsUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\ObjectSnapshotRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1436,7 +1442,7 @@
     <ClInclude Include="src\model\EntityFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\SnapshotRegistry.h">
+    <ClInclude Include="src\registry\NodeSnapshotRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\InputContext.h">
@@ -1527,6 +1533,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\ParticleUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\PhysicsUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\ObjectSnapshot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\SnapshotRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry\SnapshotRegistry_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\ObjectSnapshotRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\NodeBounds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

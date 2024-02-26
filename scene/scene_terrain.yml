@@ -49,11 +49,7 @@ entities:
     xxpos: [0, 0, 0]
     render_flags:
       pre_depth: true
-      xxwireframe: true
-      xxno_shadow: true
       tessellation: true
-      xxrender_back: true
-      xxno_frustum: true
     generator:
       type: terrain
       material: terrain_grass_2
@@ -107,8 +103,7 @@ entities:
     render_flags:
       alpha: true
       no_frustum: true
-      static_physics: true
-      enforce_bounds: true
+      static_bounds: true
       render_back: true
     scale: 10
     lods:
@@ -136,8 +131,7 @@ entities:
       billboard: true
       alpha: true
       render_back: true
-      enforce_bounds: true
-      physics: true
+      dynamic_bounds: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20

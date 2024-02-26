@@ -79,8 +79,7 @@ entities:
     render_flags:
       alpha: true
       no_frustum: true
-      static_physics: true
-      enforce_bounds: true
+      static_bounds: true
       render_back: true
     scale: 5
     generator:
@@ -100,8 +99,7 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [1.5, 3, 1]
     generator:
@@ -120,8 +118,7 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [1.5, 3, 1]
     repeat:

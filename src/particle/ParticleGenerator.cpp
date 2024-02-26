@@ -55,7 +55,7 @@ namespace particle {
             particle.m_scale = 0.0001f + prnd(0.2f);
             particle.m_materialIndex = m_material.m_registeredIndex;
 
-            const int idx = floor(prnd(m_material.spriteCount));
+            const int idx = static_cast<int>(floor(prnd(m_material.spriteCount)));
 
             particle.m_spriteIndex = idx;
             particle.m_spriteCount = m_material.spriteCount;
