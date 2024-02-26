@@ -11,7 +11,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 Light::~Light() = default;
 
@@ -20,7 +20,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
     if (!m_enabled) return;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
     const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
     const bool nodeChanged = m_nodeMatrixLevel != snapshot.getMatrixLevel();

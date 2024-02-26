@@ -1,25 +1,16 @@
 #include "RenderContext.h"
 #include "RenderContext.h"
 
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
-
-#include "kigl/kigl.h"
 #include "kigl/GLState.h"
 
 #include "asset/Assets.h"
-#include "asset/ImageTexture.h"
 
-#include "component/Light.h"
 #include "component/Camera.h"
 
-#include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
-
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/EntityRegistry.h"
 
 #include "render/NodeDraw.h"
 #include "render/RenderData.h"

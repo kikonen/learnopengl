@@ -21,7 +21,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -187,7 +187,7 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *parentCtx.m_registry->m_nodeSnapshotRegistry;
 
     if (assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
@@ -373,7 +373,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();

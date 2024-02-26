@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "ki/limits.h"
+#include "physics/size.h"
 
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
@@ -151,6 +152,9 @@ public:
 public:
     pool::TypeHandle m_typeHandle{};
 
+    physics::physics_id m_physicsId{ 0 };
+
+    uint32_t m_objectSnapshotIndex{ 0 };
     uint32_t m_snapshotIndex{ 0 };
     uint32_t m_entityIndex{ 0 };
 

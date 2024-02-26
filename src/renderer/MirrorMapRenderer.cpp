@@ -23,7 +23,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 
@@ -204,7 +204,7 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+            auto& snapshotRegistry = *parentCtx.m_registry->m_nodeSnapshotRegistry;
 
             const auto& snapshot = snapshotRegistry.getActiveSnapshot(closest->m_snapshotIndex);
             const glm::vec3& planePos = snapshot.getWorldPosition();
@@ -367,7 +367,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();

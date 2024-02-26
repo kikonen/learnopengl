@@ -1,4 +1,4 @@
-#include "ParticleUpdater.h"
+#include "PhysicsUpdater.h"
 
 #include <iostream>
 #include <thread>
@@ -11,7 +11,7 @@
 #include "util/thread.h"
 #include "util/Log.h"
 
-#include "particle/ParticleSystem.h"
+#include "physics/PhysicsEngine.h"
 
 #include "engine/UpdateContext.h"
 
@@ -24,32 +24,32 @@ namespace {
     size_t count = 0;
 }
 
-ParticleUpdater::ParticleUpdater(
+PhysicsUpdater::PhysicsUpdater(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
     : m_registry(registry),
     m_alive(alive)
 {}
 
-ParticleUpdater::~ParticleUpdater()
+PhysicsUpdater::~PhysicsUpdater()
 {
-    KI_INFO("PARTICLE_UPDATER: destroy");
+    KI_INFO("PHYSICS_UPDATER: destroy");
 }
 
-void ParticleUpdater::destroy()
+void PhysicsUpdater::destroy()
 {
 }
 
-bool ParticleUpdater::isRunning() const
+bool PhysicsUpdater::isRunning() const
 {
     return m_running;
 }
 
-void ParticleUpdater::prepare()
+void PhysicsUpdater::prepare()
 {
 }
 
-void ParticleUpdater::start()
+void PhysicsUpdater::start()
 {
     auto th = std::thread{
         [this]() mutable {
@@ -70,11 +70,11 @@ void ParticleUpdater::start()
     th.detach();
 }
 
-void ParticleUpdater::run()
+void PhysicsUpdater::run()
 {
     ki::RenderClock clock;
 
-    KI_INFO(fmt::format("PS: started - worker={}", util::isWorkerThread()));
+    KI_INFO(fmt::format("PE: started - worker={}", util::isWorkerThread()));
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
@@ -85,6 +85,8 @@ void ParticleUpdater::run()
     auto prevLoopTime = std::chrono::system_clock::now();
     auto loopTime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedDuration;
+
+    auto& pe = physics::PhysicsEngine::get();
 
     while (*m_alive) {
         fpsCounter.startFame();
@@ -109,18 +111,25 @@ void ParticleUpdater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fmt::format("{} - particles={}",
-                fpsCounter.formatSummary("PS"),
-                particle::ParticleSystem::get().getActiveParticleCount()));
+            KI_INFO(fmt::format("{} - objects={}, dynamic={}, static={}",
+                fpsCounter.formatSummary("PE"),
+                pe.getObjectCount(),
+                pe.getDynamicBoundsCount(),
+                pe.getStaticBoundsCount()));
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
 
-    KI_INFO(fmt::format("PS: stopped - worker={}", util::isWorkerThread()));
+    KI_INFO(fmt::format("PE: stopped - worker={}", util::isWorkerThread()));
 }
 
-void ParticleUpdater::update(const UpdateContext& ctx)
+void PhysicsUpdater::update(const UpdateContext& ctx)
 {
-    particle::ParticleSystem::get().updateWT(ctx);
+    auto& pe = physics::PhysicsEngine::get();
+
+    if (!pe.isEnabled()) return;
+
+    pe.updateBounds(ctx);
+    pe.updateWT(ctx);
 }

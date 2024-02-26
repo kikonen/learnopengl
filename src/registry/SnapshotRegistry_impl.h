@@ -4,11 +4,11 @@
 
 #include "util/DirtyVector_impl.h"
 
-
-SnapshotRegistry::SnapshotRegistry()
-    : m_snapshots{ std::make_unique<util::DirtyVector<Snapshot>>() },
-    m_pendingSnapshots{ std::make_unique<util::DirtyVector<Snapshot>>() },
-    m_activeSnapshots{ std::make_unique<util::DirtyVector<Snapshot>>() }
+template<typename T>
+SnapshotRegistry<T>::SnapshotRegistry()
+    : m_snapshots{ std::make_unique<util::DirtyVector<T>>() },
+    m_pendingSnapshots{ std::make_unique<util::DirtyVector<T>>() },
+    m_activeSnapshots{ std::make_unique<util::DirtyVector<T>>() }
 {
     // null entry
     registerSnapshot();
@@ -16,13 +16,16 @@ SnapshotRegistry::SnapshotRegistry()
     copyFromPending(0, -1);
 }
 
-SnapshotRegistry::~SnapshotRegistry() = default;
+template<typename T>
+SnapshotRegistry<T>::~SnapshotRegistry() = default;
 
-uint32_t SnapshotRegistry::registerSnapshot() noexcept {
+template<typename T>
+uint32_t SnapshotRegistry<T>::registerSnapshot() noexcept {
     return registerSnapshotRange(1);
 }
 
-uint32_t SnapshotRegistry::registerSnapshotRange(size_t count) noexcept {
+template<typename T>
+uint32_t SnapshotRegistry<T>::registerSnapshotRange(size_t count) noexcept {
     const uint32_t index = static_cast<uint32_t>(m_snapshots->size());
 
     m_snapshots->allocate(m_snapshots->size() + count);
@@ -30,20 +33,26 @@ uint32_t SnapshotRegistry::registerSnapshotRange(size_t count) noexcept {
     return index;
 }
 
-void SnapshotRegistry::markDirty(uint32_t index) noexcept {
+template<typename T>
+void SnapshotRegistry<T>::markDirty(uint32_t index) noexcept {
     auto& dirtyFlags = m_snapshots->m_dirty;
     dirtyFlags[index] = true;
 }
 
-void SnapshotRegistry::clearDirty(uint32_t index) noexcept {
+template<typename T>
+void SnapshotRegistry<T>::clearDirty(uint32_t index) noexcept {
     auto& dirtyFlags = m_snapshots->m_dirty;
     dirtyFlags[index] = false;
 }
 
-void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
+template<typename T>
+void SnapshotRegistry<T>::clearActiveDirty(uint32_t index) noexcept {
     auto& dirtyFlags = m_activeSnapshots->m_dirty;
     dirtyFlags[index] = false;
 }
+
+// NOTE KI *SWAP* approach did not work, since it caused that updates
+// were blocked due to RT side holding snapshot buffer, thus it could not be updated
 
 //void SnapshotRegistry::swap() {
 //    std::lock_guard lock(m_lock);
@@ -87,21 +96,24 @@ void SnapshotRegistry::clearActiveDirty(uint32_t index) noexcept {
 //    }
 //}
 
-void SnapshotRegistry::copyToPending(uint32_t startIndex, int32_t count)
+template<typename T>
+void SnapshotRegistry<T>::copyToPending(uint32_t startIndex, int32_t count)
 {
     std::lock_guard lock(m_lock);
     copy(*m_snapshots.get(), *m_pendingSnapshots.get(), startIndex, count);
 }
 
-void SnapshotRegistry::copyFromPending(uint32_t startIndex, int32_t count)
+template<typename T>
+void SnapshotRegistry<T>::copyFromPending(uint32_t startIndex, int32_t count)
 {
     std::lock_guard lock(m_lock);
     copy(*m_pendingSnapshots.get(), *m_activeSnapshots.get(), startIndex, count);
 }
 
-void SnapshotRegistry::copy(
-    util::DirtyVector<Snapshot>& srcVector,
-    util::DirtyVector<Snapshot>& dstVector,
+template<typename T>
+void SnapshotRegistry<T>::copy(
+    util::DirtyVector<T>& srcVector,
+    util::DirtyVector<T>& dstVector,
     uint32_t startIndex,
     int32_t requestedCount)
 {
@@ -119,7 +131,7 @@ void SnapshotRegistry::copy(
 
         for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
-                dst[i].apply(src[i]);
+                dst[i].applyFrom(src[i]);
             }
         }
     }

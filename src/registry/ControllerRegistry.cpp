@@ -33,7 +33,7 @@ void ControllerRegistry::prepare(Registry* registry)
 {
     m_registry = registry;
 
-    registry->m_dispatcher->addListener(
+    registry->m_dispatcherWorker->addListener(
         event::Type::controller_add,
         [this](const event::Event& e) {
             auto& action = e.body.control;

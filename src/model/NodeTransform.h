@@ -208,7 +208,8 @@ struct NodeTransform {
 
     inline const glm::vec3& getWorldPosition() const noexcept
     {
-        assert(!m_dirty);
+        // TODO KI sync with physics
+        //assert(!m_dirty);
         return m_worldPos;
     }
 
@@ -220,7 +221,8 @@ struct NodeTransform {
 
     inline float getWorldMaxScale() const noexcept
     {
-        assert(!m_dirty);
+        // TODO KI sync with physics
+        //assert(!m_dirty);
         return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
     }
 

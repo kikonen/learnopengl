@@ -47,7 +47,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     o.m_volume.storeWorldVolume(m_volume);
 }
 
-void Snapshot::apply(NodeTransform& o) noexcept
+void Snapshot::applyFrom(NodeTransform& o) noexcept
 {
     m_matrixLevel = o.m_matrixLevel;
 

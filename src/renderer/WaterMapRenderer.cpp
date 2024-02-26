@@ -19,7 +19,7 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
@@ -262,7 +262,7 @@ bool WaterMapRenderer::render(
     if (!closest) return false;
 
     auto& state = parentCtx.m_state;
-    auto& snapshotRegistry = *parentCtx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *parentCtx.m_registry->m_nodeSnapshotRegistry;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -434,7 +434,7 @@ Node* WaterMapRenderer::findClosest(
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();

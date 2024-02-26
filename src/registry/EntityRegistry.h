@@ -43,7 +43,7 @@ public:
         return &m_entries[index];
     }
 
-    inline const std::span<EntitySSBO> getEntityRange(uint32_t start, uint32_t count) noexcept {
+    inline std::span<const EntitySSBO> getEntityRange(uint32_t start, uint32_t count) const noexcept {
         return std::span{ m_entries }.subspan(start, count);
     }
 

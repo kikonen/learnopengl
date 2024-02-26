@@ -18,7 +18,7 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/FontRegistry.h"
 
@@ -56,7 +56,7 @@ void TextGenerator::updateWT(
 }
 
 void TextGenerator::updateEntity(
-    SnapshotRegistry& snapshotRegistry,
+    NodeSnapshotRegistry& snapshotRegistry,
     EntityRegistry& entityRegistry,
     Node& container)
 {
@@ -123,7 +123,7 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_nodeSnapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
 
     batch.addSnapshot(
         ctx,

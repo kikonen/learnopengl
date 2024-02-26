@@ -24,7 +24,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -688,7 +688,7 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+        auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
         const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
 

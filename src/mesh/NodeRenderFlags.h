@@ -36,7 +36,8 @@ namespace mesh {
 
         bool tessellation : 1 {false};
 
-        bool staticPhysics : 1 {false};
-        bool enforceBounds : 1 {false};
+        bool physics : 1 {false};
+        bool staticBounds : 1 {false};
+        bool dynamicBounds : 1 {false};
     };
 }

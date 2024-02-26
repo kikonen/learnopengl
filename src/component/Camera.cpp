@@ -9,7 +9,7 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 
 const float MIN_FOV = 10.0f;
@@ -37,7 +37,7 @@ void Camera::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
 
     const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
 

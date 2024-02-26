@@ -137,8 +137,7 @@ entities:
     render_flags:
       alpha: true
       no_frustum: true
-      static_physics: true
-      enforce_bounds: true
+      static_bounds: true
       render_back: true
     scale: 20
     generator:
@@ -156,8 +155,6 @@ entities:
     material: skeleton
     render_flags:
       alpha: true
-      xphysics: true
-      xenforce_bounds: true
       render_back: true
     scale: [1.5, 3, 1]
     repeat:
@@ -245,8 +242,7 @@ entities:
     render_flags:
       alpha: true
       no_frustum: true
-      static_physics: true
-      enforce_bounds: true
+      static_bounds: true
       render_back: true
     scale: 20
     generator:

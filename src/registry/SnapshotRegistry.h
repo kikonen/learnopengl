@@ -7,24 +7,28 @@
 
 #include "util/DirtyVector.h"
 
-#include "model/Snapshot.h"
-
 // Maintain separate snapshot copies for WT & RT
 // - intermediate "pending" copy required to allow both threads
 //   to do processing without constant locking of data
 // - i.e. neither RT or WT can directly touch other side snapshots since
 //   that would be immediate race condition
-class SnapshotRegistry final {
+template<typename T>
+class SnapshotRegistry {
 public:
     SnapshotRegistry();
     ~SnapshotRegistry();
 
-    inline Snapshot& modifySnapshot(uint32_t index) noexcept {
+    inline T& modifySnapshot(uint32_t index) noexcept {
         auto& snapshots = m_snapshots->m_entries;
         return snapshots[index];
     }
 
-    inline std::span<Snapshot> modifySnapshotRange(uint32_t start, uint32_t count) noexcept {
+    inline std::span<const T> getSnapshotRange(uint32_t start, uint32_t count) const noexcept {
+        auto& snapshots = m_snapshots->m_entries;
+        return std::span{ snapshots }.subspan(start, count);
+    }
+
+    inline std::span<T> modifySnapshotRange(uint32_t start, uint32_t count) noexcept {
         auto& snapshots = m_snapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }
@@ -33,7 +37,7 @@ public:
         return index < m_activeSnapshots->size();
     }
 
-    inline const Snapshot& getActiveSnapshot(uint32_t index) const noexcept {
+    inline const T& getActiveSnapshot(uint32_t index) const noexcept {
         auto& snapshots = m_activeSnapshots->m_entries;
         return snapshots[index];
     }
@@ -42,22 +46,22 @@ public:
         return start + count <= m_activeSnapshots->size();
     }
 
-    inline const std::span<const Snapshot> getActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
+    inline std::span<const T> getActiveSnapshotRange(uint32_t start, uint32_t count) const noexcept {
         const auto& snapshots = m_activeSnapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }
 
-    inline Snapshot& modifyActiveSnapshot(uint32_t index) noexcept {
+    inline T& modifyActiveSnapshot(uint32_t index) noexcept {
         auto& snapshots = m_activeSnapshots->m_entries;
         return snapshots[index];
     }
 
-    inline std::span<Snapshot> modifyActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
+    inline std::span<T> modifyActiveSnapshotRange(uint32_t start, uint32_t count) noexcept {
         auto& snapshots = m_activeSnapshots->m_entries;
         return std::span{ snapshots }.subspan(start, count);
     }
 
-    inline const Snapshot& getSnapshot(uint32_t index) const noexcept {
+    inline const T& getSnapshot(uint32_t index) const noexcept {
         auto& snapshots = m_snapshots->m_entries;
         return snapshots[index];
     }
@@ -84,15 +88,15 @@ public:
 
 private:
     void copy(
-        util::DirtyVector<Snapshot>& src,
-        util::DirtyVector<Snapshot>& dst,
+        util::DirtyVector<T>& src,
+        util::DirtyVector<T>& dst,
         uint32_t startIndex,
         int32_t count);
 
 private:
     std::mutex m_lock;
 
-    std::unique_ptr<util::DirtyVector<Snapshot>> m_snapshots;
-    std::unique_ptr<util::DirtyVector<Snapshot>> m_pendingSnapshots;
-    std::unique_ptr<util::DirtyVector<Snapshot>> m_activeSnapshots{ nullptr };
+    std::unique_ptr<util::DirtyVector<T>> m_snapshots;
+    std::unique_ptr<util::DirtyVector<T>> m_pendingSnapshots;
+    std::unique_ptr<util::DirtyVector<T>> m_activeSnapshots{ nullptr };
 };

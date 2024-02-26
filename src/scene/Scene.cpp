@@ -2,17 +2,15 @@
 
 #include <iostream>
 
+#include "kigl/GLState.h"
+
 #include "util/thread.h"
 
-#include "ki/Timer.h"
-#include "kigl/kigl.h"
-
 #include "asset/Assets.h"
-#include "asset/UBO.h"
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
-#include "backend/DrawBuffer.h"
+#include "asset/LightUBO.h"
 
 #include "model/Viewport.h"
 
@@ -36,13 +34,9 @@
 
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
-#include "render/CubeMap.h"
 #include "render/RenderContext.h"
 #include "render/WindowBuffer.h"
-#include "render/FrameBuffer.h"
 #include "render/RenderData.h"
-
-#include "renderer/ShadowCascade.h"
 
 #include "renderer/NodeRenderer.h"
 #include "renderer/ViewportRenderer.h"

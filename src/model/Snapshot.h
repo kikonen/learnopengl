@@ -56,10 +56,10 @@ struct Snapshot {
     Snapshot(const NodeTransform& o);
     Snapshot(const NodeTransform&& o);
 
-    void apply(NodeTransform& o) noexcept;
+    void applyFrom(NodeTransform& o) noexcept;
 
     //Snapshot& operator=(Snapshot& o) = default;
-    inline void apply(Snapshot& o) noexcept
+    inline void applyFrom(Snapshot& o) noexcept
     {
         m_dirty |= o.m_dirty;
         m_dirtyNormal |= o.m_dirtyNormal;

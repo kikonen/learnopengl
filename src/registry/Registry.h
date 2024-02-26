@@ -9,10 +9,14 @@ namespace event
     class Dispatcher;
 }
 
+namespace physics {
+    class ObjectSnapshotRegistry;
+}
+
 struct UpdateContext;
 
 class NodeRegistry;
-class SnapshotRegistry;
+class NodeSnapshotRegistry;
 
 //
 // Container for all registries to simplify passing them around
@@ -39,16 +43,18 @@ private:
     std::shared_ptr<std::atomic<bool>> m_alive;
     std::mutex m_lock{};
 
-    std::unique_ptr<event::Dispatcher> m_dispatcherImpl;
+    std::unique_ptr<event::Dispatcher> m_dispatcherWorkerImpl;
     std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
 
-    std::unique_ptr<SnapshotRegistry> m_snapshotRegistryImpl;
+    std::unique_ptr<physics::ObjectSnapshotRegistry> m_objectSnapshotRegistryImpl;
+    std::unique_ptr<NodeSnapshotRegistry> m_nodeSnapshotRegistryImpl;
 
 public:
     // NOTE KI initialization order!
-    event::Dispatcher* const m_dispatcher;
+    event::Dispatcher* const m_dispatcherWorker;
     event::Dispatcher* const m_dispatcherView;
 
-    SnapshotRegistry* const m_snapshotRegistry;
+    physics::ObjectSnapshotRegistry* const m_objectSnapshotRegistry;
+    NodeSnapshotRegistry* const m_nodeSnapshotRegistry;
     NodeRegistry* const m_nodeRegistry;
 };

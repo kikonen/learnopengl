@@ -32,7 +32,7 @@
 
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "engine/AssetsLoader.h"
 
@@ -46,6 +46,7 @@
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
 #include "scene/ParticleUpdater.h"
+#include "scene/PhysicsUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -89,8 +90,13 @@ int SampleApp::onSetup()
         m_registry,
         m_alive);
 
+    m_physicsUpdater = std::make_shared<PhysicsUpdater>(
+        m_registry,
+        m_alive);
+
     m_sceneUpdater->start();
     m_particleUpdater->start();
+    m_physicsUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -338,6 +344,7 @@ void SampleApp::onDestroy()
     {
         m_sceneUpdater->destroy();
         m_particleUpdater->destroy();
+        m_physicsUpdater->destroy();
     }
 
     if (m_sceneUpdater) {
@@ -351,13 +358,23 @@ void SampleApp::onDestroy()
     }
 
     if (m_particleUpdater) {
-        KI_INFO_OUT("APP: stopping PT...");
+        KI_INFO_OUT("APP: stopping PS...");
 
         // NOTE KI wait for worker threads to shutdown
         while (m_particleUpdater->isRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        KI_INFO_OUT("APP: PT stopped!");
+        KI_INFO_OUT("APP: PS stopped!");
+    }
+
+    if (m_physicsUpdater) {
+        KI_INFO_OUT("APP: stopping PE...");
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_physicsUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: PE stopped!");
     }
 
     if (m_currentScene) {
@@ -400,7 +417,7 @@ void SampleApp::selectNode(
             {
                 event::Event evt { event::Type::audio_source_pause };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             return;
@@ -427,13 +444,13 @@ void SampleApp::selectNode(
                     .data = { 0.f, 1.f, 0.f },
                     .data2 = { 360.f, 0, 0 },
                 };
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             {
                 event::Event evt { event::Type::audio_source_play };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
         }
     } else if (playerMode) {
@@ -442,7 +459,7 @@ void SampleApp::selectNode(
             if (exists) {
                 event::Event evt { event::Type::node_activate };
                 evt.body.node.target = node->getId();
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             node = nullptr;
@@ -451,7 +468,7 @@ void SampleApp::selectNode(
         // NOTE KI null == default camera
         event::Event evt { event::Type::camera_activate };
         evt.body.node.target = node->getId();
-        ctx.m_registry->m_dispatcher->send(evt);
+        ctx.m_registry->m_dispatcherWorker->send(evt);
 
         node = nullptr;
     }

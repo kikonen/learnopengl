@@ -8,6 +8,8 @@
 #include "ki/Timer.h"
 #include "ki/FpsCounter.h"
 
+#include "model/Node.h"
+
 #include "pool/NodeHandle.h"
 
 #include "util/thread.h"
@@ -19,13 +21,13 @@
 
 #include "audio/AudioEngine.h"
 
-#include "physics/PhysicsEngine.h"
-
 #include "engine/UpdateContext.h"
+
+#include "physics/PhysicsEngine.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 
 #define KI_TIMER(x)
@@ -57,15 +59,16 @@ bool SceneUpdater::isRunning() const
 
 void SceneUpdater::prepare()
 {
+    std::lock_guard lock(m_prepareLock);
+
     m_registry->prepareWT();
 
-    auto* dispatcher = m_registry->m_dispatcher;
+    auto* dispatcher = m_registry->m_dispatcherWorker;
 
     dispatcher->addListener(
         event::Type::scene_loaded,
         [this](const event::Event& e) {
             m_loaded = true;
-            physics::PhysicsEngine::get().setEnabled(true);
 
             // NOTE KI trigger UI sidew update *after* all worker side processing done
             {
@@ -79,7 +82,38 @@ void SceneUpdater::prepare()
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeAdded(node);
+
+            {
+                event::Event evt { event::Type::node_added };
+                evt.body.node = {
+                    .target = e.body.node.target,
+                };
+                m_registry->m_dispatcherView->send(evt);
+            }
         });
+
+    dispatcher->addListener(
+        event::Type::physics_add,
+        [this](const event::Event& e) {
+            auto& data = e.blob->body.physics;
+            auto& pe = physics::PhysicsEngine::get();
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+
+            {
+                physics::Object obj{};
+                obj.m_update = data.update;
+                obj.m_body = data.body;
+                obj.m_geom = data.geom;
+                obj.m_nodeHandle = node->toHandle();
+                obj.m_nodeSnapshotIndex = node->m_snapshotIndex;
+
+                auto [physicsId, snapshotIndex] = pe.registerObject(obj);
+                node->m_physicsId = physicsId;
+                node->m_objectSnapshotIndex = snapshotIndex;
+            }
+        });
+
+    m_prepared = true;
 }
 
 void SceneUpdater::start()
@@ -107,7 +141,8 @@ void SceneUpdater::run()
 {
     ki::RenderClock clock;
 
-    std::cout << "WT: worker=" << util::isWorkerThread() << '\n';
+    KI_INFO(fmt::format("WT: started - worker={}", util::isWorkerThread()));
+
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
@@ -145,7 +180,7 @@ void SceneUpdater::run()
         if (fpsCounter.isUpdate())
         {
             KI_INFO(fmt::format(
-                "{} - nodes: {}",
+                "{} - nodes={}",
                 fpsCounter.formatSummary("WT"),
                 ctx.m_registry->m_nodeRegistry->getNodeCount()));
         }
@@ -154,6 +189,8 @@ void SceneUpdater::run()
             std::this_thread::sleep_for(std::chrono::milliseconds(delay));
         }
     }
+
+    KI_INFO(fmt::format("WT: stopped - worker={}", util::isWorkerThread()));
 }
 
 void SceneUpdater::update(const UpdateContext& ctx)
@@ -161,7 +198,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     KI_TIMER("loop    ");
     {
         KI_TIMER("event   ");
-        m_registry->m_dispatcher->dispatchEvents();
+        m_registry->m_dispatcherWorker->dispatchEvents();
     }
 
     count++;
@@ -183,14 +220,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 KI_TIMER("node    ");
                 NodeRegistry::get().updateWT(ctx);
             }
-            //{
-            //    KI_TIMER("bounds-1");
-            //    physics::PhysicsEngine::get().updateBounds(ctx);
-            //}
-            {
-                KI_TIMER("physics ");
-                physics::PhysicsEngine::get().update(ctx);
-            }
             {
                 KI_TIMER("audio   ");
                 audio::AudioEngine::get().update(ctx);
@@ -199,12 +228,16 @@ void SceneUpdater::update(const UpdateContext& ctx)
     }
 
     // NOTE KI sync to RT
-    m_registry->m_snapshotRegistry->copyToPending(0, -1);
+    m_registry->m_nodeSnapshotRegistry->copyToPending(0, -1);
+
+    if (m_loaded) {
+        physics::PhysicsEngine::get().setEnabled(true);
+    }
 }
 
 void SceneUpdater::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    physics::PhysicsEngine::get().handleNodeAdded(node);
+    physics::PhysicsEngine::get().registerBoundsNode(node);
 }

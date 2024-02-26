@@ -12,12 +12,13 @@
 
 #include "engine/PrepareContext.h"
 
+#include "physics/PhysicsEngine.h"
+#include "physics/ObjectSnapshotRegistry.h"
+
 #include "script/api/Command.h"
 #include "script/CommandEngine.h"
 #include "script/CommandAPI.h"
 #include "script/ScriptEngine.h"
-
-#include "physics/PhysicsEngine.h"
 
 #include "particle/ParticleSystem.h"
 
@@ -29,20 +30,22 @@
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 #include "registry/NodeRegistry.h"
 
 Registry::Registry(
     std::shared_ptr<std::atomic<bool>> alive)
     : m_alive(alive),
     // registries
-    m_dispatcherImpl(std::make_unique<event::Dispatcher>()),
+    m_dispatcherWorkerImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
-    m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},
+    m_objectSnapshotRegistryImpl{ std::make_unique<physics::ObjectSnapshotRegistry>() },
+    m_nodeSnapshotRegistryImpl{std::make_unique<NodeSnapshotRegistry>()},
     // pointers
-    m_dispatcher(m_dispatcherImpl.get()),
+    m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
-    m_snapshotRegistry{ m_snapshotRegistryImpl.get() },
+    m_objectSnapshotRegistry{ m_objectSnapshotRegistryImpl.get() },
+    m_nodeSnapshotRegistry{ m_nodeSnapshotRegistryImpl.get() },
     m_nodeRegistry{ &NodeRegistry::get() }
 {
 }
@@ -56,7 +59,7 @@ void Registry::prepareShared()
     if (m_prepared) return;
     m_prepared = true;
 
-    m_dispatcher->prepare();
+    m_dispatcherWorker->prepare();
     m_dispatcherView->prepare();
 
     MaterialRegistry::get().prepare();
@@ -68,6 +71,8 @@ void Registry::prepareShared()
 
     NodeRegistry::get().prepare(this);
 
+    physics::PhysicsEngine::get().prepare(m_alive, this);
+
     particle::ParticleSystem::get().prepare();
 }
 
@@ -76,9 +81,6 @@ void Registry::prepareWT()
     ASSERT_WT();
 
     PrepareContext ctx{ this };
-
-    // NOTE KI does not matter which thread does prepare
-    physics::PhysicsEngine::get().prepare(m_alive);
 
     audio::AudioEngine::get().prepare();
 

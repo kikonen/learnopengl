@@ -24,7 +24,7 @@
 #include "engine/InputContext.h"
 
 #include "registry/ProgramRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "gui/Window.h"
 
@@ -160,7 +160,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_snapshotRegistry->copyFromPending(0, -1);
+            m_registry->m_nodeSnapshotRegistry->copyFromPending(0, -1);
 
             // input
             // -----
@@ -199,7 +199,7 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 fpsCounter.endFame(clock.elapsedSecs);
             }
 
-            //m_registry->m_snapshotRegistry->unlock();
+            //m_registry->m_nodeSnapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();
