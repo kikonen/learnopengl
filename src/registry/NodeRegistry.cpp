@@ -35,7 +35,6 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
-#include "physics/PhysicsEngine.h"
 #include "script/ScriptEngine.h"
 
 #include "Registry.h"
@@ -128,7 +127,6 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
     }
 
-    physics::PhysicsEngine::get().updateBounds(ctx);
     ControllerRegistry::get().updateWT(ctx);
 
     {

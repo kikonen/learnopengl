@@ -13,6 +13,7 @@
 #include "engine/PrepareContext.h"
 
 #include "physics/PhysicsEngine.h"
+#include "physics/ObjectSnapshotRegistry.h"
 
 #include "script/api/Command.h"
 #include "script/CommandEngine.h"
@@ -41,12 +42,18 @@ Registry::Registry(
     m_workerSnapshotRegistryImpl{std::make_unique<NodeSnapshotRegistry>()},
     m_pendingSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
     m_activeSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
+    m_workerObjectSnapshotRegistryImpl{ std::make_unique<physics::ObjectSnapshotRegistry>() },
+    m_pendingObjectSnapshotRegistryImpl{ std::make_unique<physics::ObjectSnapshotRegistry>() },
+    m_activeObjectSnapshotRegistryImpl{ std::make_unique<physics::ObjectSnapshotRegistry>() },
     // pointers
     m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
     m_workerSnapshotRegistry{ m_workerSnapshotRegistryImpl.get() },
     m_pendingSnapshotRegistry{ m_pendingSnapshotRegistryImpl.get() },
     m_activeSnapshotRegistry{ m_activeSnapshotRegistryImpl.get() },
+    m_workerObjectSnapshotRegistry{ m_workerObjectSnapshotRegistryImpl.get() },
+    m_pendingObjectSnapshotRegistry{ m_pendingObjectSnapshotRegistryImpl.get() },
+    m_activeObjectSnapshotRegistry{ m_activeObjectSnapshotRegistryImpl.get() },
     m_nodeRegistry{ &NodeRegistry::get() }
 {
 }
@@ -72,7 +79,7 @@ void Registry::prepareShared()
 
     NodeRegistry::get().prepare(this);
 
-    physics::PhysicsEngine::get().prepare(m_alive);
+    physics::PhysicsEngine::get().prepare(m_alive, this);
 
     particle::ParticleSystem::get().prepare();
 }

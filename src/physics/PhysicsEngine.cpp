@@ -7,7 +7,7 @@
 #include "util/glm_format.h"
 
 #include "model/Node.h"
-#include "model/NodeTransform.h"
+#include "model/Snapshot.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -18,6 +18,11 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
+
+#include "ObjectSnapshotRegistry.h"
+
+#include "registry/SnapshotRegistry_impl.h"
 
 #include "Surface.h"
 
@@ -107,8 +112,18 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::prepare(std::shared_ptr<std::atomic<bool>> alive)
+    void PhysicsEngine::prepare(
+        std::shared_ptr<std::atomic<bool>> alive,
+        Registry* registry)
     {
+        m_registry = registry;
+
+        m_workerObjectSnapshotRegistry = m_registry->m_workerObjectSnapshotRegistry;
+        m_pendingObjectSnapshotRegistry = m_registry->m_pendingObjectSnapshotRegistry;
+        m_activeObjectSnapshotRegistry = m_registry->m_activeObjectSnapshotRegistry;
+
+        m_pendingSnapshotRegistry = m_registry->m_pendingSnapshotRegistry;
+
         m_prepared = true;
         m_alive = alive;
 
@@ -127,17 +142,22 @@ namespace physics
         dWorldSetGravity(m_worldId, m_gravity.x, m_gravity.y, m_gravity.z);
     }
 
-    void PhysicsEngine::update(const UpdateContext& ctx)
+    void PhysicsEngine::updateWT(const UpdateContext& ctx)
     {
         if (!m_enabled) return;
 
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
         if (m_initialDelay > 10) {
-            preparePending(ctx);
+            preparePendingObjects(ctx);
 
-            for (auto* obj : m_updateObjects) {
-                obj->updateToPhysics(false);
+            if (!m_updateObjects.empty()) {
+                m_pendingSnapshotRegistry->withLock([&ctx, this]() {
+                    for (auto* obj : m_updateObjects) {
+                        auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj->m_nodeSnapshotIndex);
+                        obj->fromSnapshot(snapshot, false);
+                    }
+                });
             }
 
             const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
@@ -179,7 +199,8 @@ namespace physics
                 //}
 
                 for (const auto& obj : m_objects) {
-                    obj.updateFromPhysics();
+                    auto& snapshot = m_workerObjectSnapshotRegistry->modifySnapshot(obj.m_objectSnapshotIndex);
+                    obj.toSnapshot(snapshot);
                 }
             }
         }
@@ -188,111 +209,147 @@ namespace physics
     void PhysicsEngine::updateBounds(const UpdateContext& ctx)
     {
         if (!m_enabled) return;
-        preparePendingNodes(ctx);
 
-        auto enforce = [&ctx, this](pool::NodeHandle handle) {
-            auto* node = handle.toNode();
+        preparePendingBounds(ctx);
+
+        auto enforce = [&ctx, this](physics::NodeBounds bounds) {
+            auto* node = bounds.m_nodeHandle.toNode();
             if (!node) return;
 
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
-                for (auto& transform : node->m_instancer->modifyTransforms()) {
-                    enforceBounds(ctx, type, *node, transform);
+                const auto& snapshots = node->m_instancer->getSnapshots(*m_pendingSnapshotRegistry);
+                for (const auto& snapshot : snapshots) {
+                    enforceBounds(ctx, bounds, type, *node, snapshot);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->modifyTransform());
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
+                enforceBounds(ctx, bounds, type, *node, snapshot);
             }
         };
 
-        if (!m_enforceBoundsStatic.empty()) {
-            std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
-            for (auto& handle : m_enforceBoundsStatic) {
-                enforce(handle);
-            }
+        if (!m_staticBounds.empty()) {
+            std::cout << "static: " << m_staticBounds.size() << '\n';
+            m_pendingSnapshotRegistry->withLock([&enforce, this]() {
+                for (auto& bounds : m_staticBounds) {
+                    enforce(bounds);
+                }
+            });
             // NOTE KI static is enforced only once (after initial model setup)
-            m_enforceBoundsStatic.clear();
+            m_staticBounds.clear();
         }
 
-        if (!m_enforceBoundsDynamic.empty()) {
-            //std::cout << "dynamic: " << m_enforceBoundsDynamic.size() << '\n';
-            for (auto& handle : m_enforceBoundsDynamic) {
-                enforce(handle);
-            }
+        if (false && !m_dynamicBounds.empty()) {
+            //std::cout << "dynamic: " << m_dynamicBounds.size() << '\n';
+            m_pendingSnapshotRegistry->withLock([&enforce, this]() {
+                for (auto& bounds : m_dynamicBounds) {
+                    enforce(bounds);
+                }
+            });
         }
     }
 
-    void PhysicsEngine::preparePending(const UpdateContext& ctx)
+    void PhysicsEngine::updatePendingSnapshots()
     {
-        if (m_pending.empty()) return;
+        m_pendingObjectSnapshotRegistry->copyFrom(
+            m_workerObjectSnapshotRegistry,
+            0, -1);
+    }
+
+    void PhysicsEngine::updateActiveSnapshots()
+    {
+        m_pendingObjectSnapshotRegistry->copyTo(
+            m_activeObjectSnapshotRegistry,
+            0, -1);
+    }
+
+    void PhysicsEngine::preparePendingObjects(const UpdateContext& ctx)
+    {
+        std::lock_guard lock(m_pendingLock);
+
+        if (m_pendingObjects.empty()) return;
 
         std::unordered_map<physics::physics_id, bool> prepared;
 
-        for (const auto& id : m_pending) {
-            auto& obj = m_objects[id - 1];
+        m_pendingSnapshotRegistry->withLock([&prepared, this]() {
+            for (const auto& id : m_pendingObjects) {
+                auto& obj = m_objects[id - 1];
 
-            auto* node = obj.m_nodeHandle.toNode();
-            if (!node) continue;
+                auto* node = obj.m_nodeHandle.toNode();
+                if (!node) continue;
 
-            const auto level = node->getTransform().getMatrixLevel();
-            if (obj.m_matrixLevel == level) continue;
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj.m_nodeSnapshotIndex);
 
-            obj.prepare(m_worldId, m_spaceId);
-            obj.updateToPhysics(false);
+                const auto level = snapshot.getMatrixLevel();
+                if (obj.m_matrixLevel == level) continue;
 
-            if (obj.m_update) {
-                m_updateObjects.push_back(&obj);
+                obj.prepare(m_worldId, m_spaceId);
+                obj.fromSnapshot(snapshot, false);
+
+                if (obj.m_update) {
+                    m_updateObjects.push_back(&obj);
+                }
+
+                prepared.insert({ id, true });
             }
-
-            prepared.insert({ id, true });
-        }
+        });
 
         if (!prepared.empty()) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
-                m_pending.begin(),
-                m_pending.end(),
+                m_pendingObjects.begin(),
+                m_pendingObjects.end(),
                 [&prepared](auto& id) {
                     return prepared.find(id) != prepared.end();
                 });
-            m_pending.erase(it, m_pending.end());
+            m_pendingObjects.erase(it, m_pendingObjects.end());
         }
     }
 
-    void PhysicsEngine::preparePendingNodes(const UpdateContext& ctx)
+    void PhysicsEngine::preparePendingBounds(const UpdateContext& ctx)
     {
+        std::lock_guard lock(m_pendingLock);
+
         if (m_pendingNodes.empty()) return;
 
         std::vector<ki::node_id> prepared;
 
-        for (auto& handle : m_pendingNodes) {
-            auto* node = handle.toNode();
-            if (!node) continue;
+        m_pendingSnapshotRegistry->withLock([&prepared, this]() {
+            for (auto& bounds : m_pendingNodes) {
+                auto* node = bounds.m_nodeHandle.toNode();
 
-            if (node->getTransform().getMatrixLevel() == 0) continue;
+                if (!node) {
+                    // NOTE KI deleted node
+                    prepared.push_back(bounds.m_nodeHandle.toId());
+                    continue;
+                }
 
-            auto* type = node->m_typeHandle.toType();
-            if (type->m_flags.staticBounds) {
-                m_enforceBoundsStatic.push_back(handle);
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
+                if (snapshot.getMatrixLevel() == 0) continue;
+
+                if (bounds.m_static) {
+                    m_staticBounds.push_back(bounds);
+                }
+                else {
+                    m_dynamicBounds.push_back(bounds);
+                }
+
+                prepared.push_back(node->getId());
             }
-            else {
-                m_enforceBoundsDynamic.push_back(handle);
-            }
-
-            prepared.push_back(node->getId());
-        }
+        });
 
         if (!prepared.empty()) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
                 m_pendingNodes.begin(),
                 m_pendingNodes.end(),
-                [&prepared](const auto& handle) {
+                [&prepared](const auto& bounds) {
                     const auto& it = std::find_if(
                         prepared.cbegin(),
                         prepared.cend(),
-                        [nodeId = handle.toId()](const auto& id) { return id == nodeId; });
+                        [nodeId = bounds.m_nodeHandle.toId()](const auto& id) { return id == nodeId; });
                     return it != prepared.end();
                 });
             m_pendingNodes.erase(it, m_pendingNodes.end());
@@ -301,57 +358,53 @@ namespace physics
 
     void PhysicsEngine::enforceBounds(
         const UpdateContext& ctx,
+        NodeBounds& bounds,
         const mesh::MeshType* type,
         Node& node,
-        NodeTransform& transform)
+        const Snapshot& nodeSnapshot)
     {
-        if (transform.m_matrixLevel == transform.m_physicsLevel) return;
-        transform.m_physicsLevel = transform.m_matrixLevel;
+        if (nodeSnapshot.m_matrixLevel == bounds.m_matrixLevel) return;
+        bounds.m_matrixLevel = nodeSnapshot.m_matrixLevel;
 
-        const auto& worldPos = transform.getWorldPosition();
-        glm::vec3 pos = transform.getPosition();
+        const auto& worldPos = nodeSnapshot.getWorldPosition();
 
         const auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
-        auto y = surfaceY - parent->getTransform().getWorldPosition().y;
-        y += transform.getScale().y;
-        pos.y = y;
+        if (surfaceY != worldPos.y) {
+            auto& objectSnapshot = m_workerObjectSnapshotRegistry->modifySnapshot(bounds.m_objectSnapshotIndex);
+            objectSnapshot.m_worldPos = worldPos;
+            objectSnapshot.m_worldPos.y = surfaceY;
+            objectSnapshot.m_dirty = true;
+        }
+    }
 
-        //KI_INFO_OUT(fmt::format(
-        //    "({},{}, {}) => {}, {}, {}",
-        //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
+    std::tuple<physics::physics_id, uint32_t> PhysicsEngine::registerObject(
+        const physics::Object& src)
+    {
+        std::lock_guard lock(m_pendingLock);
 
-        transform.setPosition(pos);
-
-        if (transform.m_dirty) {
-            transform.updateModelMatrix(parent->getTransform());
-            auto& nodeTransform = node.modifyTransform();
-            nodeTransform.m_dirtySnapshot = true;
+        auto& dst = m_objects.emplace_back();
+        {
+            dst.m_objectSnapshotIndex = m_workerObjectSnapshotRegistry->registerSnapshot();
+            dst.m_update = src.m_update;
+            dst.m_body = src.m_body;
+            dst.m_geom = src.m_geom;
+            dst.m_nodeHandle = src.m_nodeHandle;
+            dst.m_id = static_cast<physics::physics_id>(m_objects.size());
+            dst.m_nodeSnapshotIndex = src.m_nodeSnapshotIndex;
         }
 
-        //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
-    }
+        m_pendingObjects.push_back(dst.m_id);
 
-    physics::physics_id PhysicsEngine::registerObject()
-    {
-        auto& obj = m_objects.emplace_back<Object>({});
-        obj.m_id = static_cast<physics::physics_id>(m_objects.size());
-
-        m_pending.push_back(obj.m_id);
-
-        return obj.m_id;
-    }
-
-    Object* PhysicsEngine::getObject(physics::physics_id id)
-    {
-        if (id < 1 || id > m_objects.size()) return nullptr;
-        return &m_objects[id - 1];
+        return { dst.m_id, dst.m_objectSnapshotIndex };
     }
 
     physics::height_map_id PhysicsEngine::registerHeightMap()
     {
+        std::lock_guard lock(m_lock);
+
         auto& map = m_heightMaps.emplace_back<HeightMap>({});
         map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size());
 
@@ -381,10 +434,23 @@ namespace physics
         return hit ? min : 0.f;
     }
 
-    void PhysicsEngine::handleNodeAdded(Node* node)
+    void PhysicsEngine::registerBoundsNode(Node* node)
     {
-        auto* type = node->m_typeHandle.toType();
-        if (!(type->m_flags.staticBounds || type->m_flags.dynamicBounds)) return;
-        m_pendingNodes.push_back(node->toHandle());
+        const auto* type = node->m_typeHandle.toType();
+        const auto enforce = type->m_flags.staticBounds || type->m_flags.dynamicBounds;
+        if (!enforce) return;
+
+        {
+            std::lock_guard lock(m_pendingLock);
+
+            auto& bounds = m_pendingNodes.emplace_back();
+
+            bounds.m_static = type->m_flags.staticBounds;
+            bounds.m_objectSnapshotIndex = m_workerObjectSnapshotRegistry->registerSnapshot();
+            bounds.m_nodeSnapshotIndex = node->m_snapshotIndex;
+            bounds.m_nodeHandle = node->toHandle();
+
+            node->m_objectSnapshotIndex = bounds.m_objectSnapshotIndex;
+        }
     }
 }
