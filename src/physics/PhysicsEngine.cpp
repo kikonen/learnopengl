@@ -116,7 +116,7 @@ namespace physics
     {
         m_registry = registry;
         m_objectSnapshotRegistry = m_registry->m_objectSnapshotRegistry;
-        m_nodeSnapshotRegistry = m_registry->m_nodeSnapshotRegistry;
+        m_pendingSnapshotRegistry = m_registry->m_pendingSnapshotRegistry;
 
         m_prepared = true;
         m_alive = alive;
@@ -149,7 +149,7 @@ namespace physics
 
             ctx.m_registry->m_nodeRegistry->withLock([this](NodeRegistry& nr) {
                 for (auto* obj : m_updateObjects) {
-                    auto& snapshot = m_nodeSnapshotRegistry->getActiveSnapshot(obj->m_nodeSnapshotIndex);
+                    auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj->m_nodeSnapshotIndex);
                     obj->fromSnapshot(snapshot, false);
                 }
             });
@@ -217,13 +217,13 @@ namespace physics
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
-                const auto& snapshots = node->m_instancer->getActiveSnapshots(*m_nodeSnapshotRegistry);
+                const auto& snapshots = node->m_instancer->getSnapshots(*m_pendingSnapshotRegistry);
                 for (const auto& snapshot : snapshots) {
                     enforceBounds(ctx, bounds, type, *node, snapshot);
                 }
             }
             else {
-                auto& snapshot = m_nodeSnapshotRegistry->getActiveSnapshot(bounds.m_nodeSnapshotIndex);
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
                 enforceBounds(ctx, bounds, type, *node, snapshot);
             }
         };
@@ -263,7 +263,7 @@ namespace physics
             auto* node = obj.m_nodeHandle.toNode();
             if (!node) continue;
 
-            auto& snapshot = m_nodeSnapshotRegistry->getActiveSnapshot(obj.m_nodeSnapshotIndex);
+            auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj.m_nodeSnapshotIndex);
 
             const auto level = snapshot.getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
@@ -307,7 +307,7 @@ namespace physics
                 continue;
             }
 
-            auto& snapshot = m_nodeSnapshotRegistry->getActiveSnapshot(bounds.m_nodeSnapshotIndex);
+            auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
             if (snapshot.getMatrixLevel() == 0) continue;
 
             if (bounds.m_static) {

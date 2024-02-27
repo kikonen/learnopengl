@@ -53,7 +53,7 @@ void PawnController::onKey(
 
     const float dt = ctx.m_clock.elapsedSecs;
 
-    const auto& snapshot = ctx.m_registry->m_nodeSnapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(node->m_snapshotIndex);
     const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
@@ -166,7 +166,7 @@ void PawnController::onMouseMove(
 
     bool changed = false;
 
-    const auto& snapshot = ctx.m_registry->m_nodeSnapshotRegistry->getActiveSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(node->m_snapshotIndex);
 
     glm::vec3 adjust{ 0.f };
 

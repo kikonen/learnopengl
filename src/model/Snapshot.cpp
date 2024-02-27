@@ -47,7 +47,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     o.m_volume.storeWorldVolume(m_volume);
 }
 
-void Snapshot::applyFrom(NodeTransform& o) noexcept
+void Snapshot::applyFrom(const NodeTransform& o) noexcept
 {
     m_matrixLevel = o.m_matrixLevel;
 
@@ -84,7 +84,7 @@ glm::vec3 Snapshot::getDegreesRotation() const noexcept
 }
 
 void Snapshot::updateEntity(
-    EntitySSBO& entity)
+    EntitySSBO& entity) const
 {
     ASSERT_RT();
 

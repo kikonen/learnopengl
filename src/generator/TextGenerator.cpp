@@ -123,7 +123,7 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    const auto& snapshot = ctx.m_registry->m_nodeSnapshotRegistry->getActiveSnapshot(container.m_snapshotIndex);
+    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(container.m_snapshotIndex);
 
     batch.addSnapshot(
         ctx,

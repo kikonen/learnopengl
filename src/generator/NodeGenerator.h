@@ -87,7 +87,7 @@ public:
         return m_transforms;
     }
 
-    std::span<const Snapshot> getActiveSnapshots(
+    std::span<const Snapshot> getSnapshots(
         NodeSnapshotRegistry& snapshotRegistry) const noexcept;
 
 protected:

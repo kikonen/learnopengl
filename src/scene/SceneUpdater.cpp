@@ -29,6 +29,8 @@
 #include "registry/NodeRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 
+#include "registry/SnapshotRegistry_impl.h"
+
 
 #define KI_TIMER(x)
 
@@ -228,7 +230,9 @@ void SceneUpdater::update(const UpdateContext& ctx)
     }
 
     // NOTE KI sync to RT
-    m_registry->m_nodeSnapshotRegistry->copyToPending(0, -1);
+    m_registry->m_pendingSnapshotRegistry->copyFrom(
+        m_registry->m_workerSnapshotRegistry,
+        0, -1);
 
     if (m_loaded) {
         physics::PhysicsEngine::get().setEnabled(true);

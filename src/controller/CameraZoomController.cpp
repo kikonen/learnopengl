@@ -109,9 +109,9 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;

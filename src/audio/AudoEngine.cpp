@@ -102,7 +102,7 @@ namespace audio
         preparePendingListeners(ctx);
         preparePendingSources(ctx);
 
-        auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
 
         for (auto& listener : m_listeners) {
             const auto* node = listener.m_nodeHandle.toNode();
@@ -261,7 +261,7 @@ namespace audio
     {
         if (m_pendingListeners.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
 
         std::unordered_map<audio::listener_id, bool> prepared;
 
@@ -297,7 +297,7 @@ namespace audio
     {
         if (m_pendingSources.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
 
         std::unordered_map<audio::source_id, bool> prepared;
 

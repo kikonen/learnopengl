@@ -60,9 +60,10 @@ struct NodeTransform {
     ki::level_id m_physicsLevel{ 0 };
 
     bool m_dirty : 1 {true};
-    bool m_dirtyNormal : 1 {true};
     bool m_dirtyRotation : 1 {true};
-    bool m_dirtySnapshot : 1 {true};
+
+    mutable bool m_dirtyNormal : 1 {true};
+    mutable bool m_dirtySnapshot : 1 {true};
 
     ///////////////////////////////////////
     //

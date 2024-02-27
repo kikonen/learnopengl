@@ -93,7 +93,7 @@ void Node::prepareWT(
 
     }
 
-    m_snapshotIndex = ctx.m_registry->m_nodeSnapshotRegistry->registerSnapshot();
+    m_snapshotIndex = ctx.m_registry->m_workerSnapshotRegistry->registerSnapshot();
 
     if (m_generator) {
         m_generator->prepare(ctx, *this);
@@ -142,7 +142,7 @@ void Node::bindBatch(
     if (m_instancer) {
         m_instancer->bindBatch(ctx, type, *this, batch);
     } else {
-        const auto& snapshot = ctx.m_registry->m_nodeSnapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+        const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
 
         const backend::Lod* lod = nullptr;
         //{

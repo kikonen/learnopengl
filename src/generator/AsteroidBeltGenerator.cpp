@@ -40,7 +40,7 @@ void AsteroidBeltGenerator::prepare(
     NodeGenerator::prepare(ctx, container);
 
     createAsteroids(ctx, container);
-    prepareSnapshots(*ctx.m_registry->m_nodeSnapshotRegistry);
+    prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void AsteroidBeltGenerator::updateWT(

@@ -262,7 +262,7 @@ bool WaterMapRenderer::render(
     if (!closest) return false;
 
     auto& state = parentCtx.m_state;
-    auto& snapshotRegistry = *parentCtx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *parentCtx.m_registry->m_activeSnapshotRegistry;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf
@@ -274,7 +274,7 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& snapshot = snapshotRegistry.getActiveSnapshot(closest->m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getSnapshot(closest->m_snapshotIndex);
     const auto& planePos = snapshot.getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
@@ -434,7 +434,7 @@ Node* WaterMapRenderer::findClosest(
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
@@ -445,7 +445,7 @@ Node* WaterMapRenderer::findClosest(
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
         const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
         const float distance = glm::length(ray);
         //glm::vec3 fromCamera = glm::normalize(ray);

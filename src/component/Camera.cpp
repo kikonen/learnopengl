@@ -37,15 +37,15 @@ void Camera::updateRT(const UpdateContext& ctx, Node& node) noexcept
 {
     if (!m_enabled) return;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node.m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getSnapshot(node.m_snapshotIndex);
 
     const auto& level = snapshot.getMatrixLevel();
     const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
-    const auto& parentSnapshot = snapshotRegistry.getActiveSnapshot(node.getParent()->m_snapshotIndex);
+    const auto& parentSnapshot = snapshotRegistry.getSnapshot(node.getParent()->m_snapshotIndex);
 
     m_nodeQuat = parentSnapshot.getQuatRotation() * snapshot.getQuatRotation();
     m_worldPosition = snapshot.getWorldPosition();

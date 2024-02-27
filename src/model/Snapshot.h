@@ -47,8 +47,8 @@ struct Snapshot {
 
     ki::level_id m_matrixLevel{ 0 };
 
-    bool m_dirty : 1 { true };
-    bool m_dirtyNormal : 1 { true };
+    mutable bool m_dirty : 1 { true };
+    mutable bool m_dirtyNormal : 1 { true };
 
     ///////////////////////////////////////
     //
@@ -56,10 +56,10 @@ struct Snapshot {
     Snapshot(const NodeTransform& o);
     Snapshot(const NodeTransform&& o);
 
-    void applyFrom(NodeTransform& o) noexcept;
+    void applyFrom(const NodeTransform& o) noexcept;
 
     //Snapshot& operator=(Snapshot& o) = default;
-    inline void applyFrom(Snapshot& o) noexcept
+    inline void applyFrom(const Snapshot& o) noexcept
     {
         m_dirty |= o.m_dirty;
         m_dirtyNormal |= o.m_dirtyNormal;
@@ -137,5 +137,5 @@ struct Snapshot {
     }
 
     void updateEntity(
-        EntitySSBO& entity);
+        EntitySSBO& entity) const;
 };

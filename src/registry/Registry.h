@@ -46,15 +46,22 @@ private:
     std::unique_ptr<event::Dispatcher> m_dispatcherWorkerImpl;
     std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
 
+    std::unique_ptr<NodeSnapshotRegistry> m_workerSnapshotRegistryImpl;
+    std::unique_ptr<NodeSnapshotRegistry> m_pendingSnapshotRegistryImpl;
+    std::unique_ptr<NodeSnapshotRegistry> m_activeSnapshotRegistryImpl;
+
     std::unique_ptr<physics::ObjectSnapshotRegistry> m_objectSnapshotRegistryImpl;
-    std::unique_ptr<NodeSnapshotRegistry> m_nodeSnapshotRegistryImpl;
 
 public:
     // NOTE KI initialization order!
     event::Dispatcher* const m_dispatcherWorker;
     event::Dispatcher* const m_dispatcherView;
 
+    NodeSnapshotRegistry* const m_workerSnapshotRegistry;
+    NodeSnapshotRegistry* const m_pendingSnapshotRegistry;
+    NodeSnapshotRegistry* const m_activeSnapshotRegistry;
+
     physics::ObjectSnapshotRegistry* const m_objectSnapshotRegistry;
-    NodeSnapshotRegistry* const m_nodeSnapshotRegistry;
+
     NodeRegistry* const m_nodeRegistry;
 };

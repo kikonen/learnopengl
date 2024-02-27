@@ -26,7 +26,7 @@ void GridGenerator::prepare(
         ctx,
         container);
 
-    prepareSnapshots(*ctx.m_registry->m_nodeSnapshotRegistry);
+    prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void GridGenerator::updateWT(

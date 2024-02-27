@@ -160,7 +160,9 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_nodeSnapshotRegistry->copyFromPending(0, -1);
+            m_registry->m_pendingSnapshotRegistry->copyTo(
+                m_registry->m_activeSnapshotRegistry,
+                0, -1);
 
             // input
             // -----
@@ -198,8 +200,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
                 fpsCounter.endFame(clock.elapsedSecs);
             }
-
-            //m_registry->m_nodeSnapshotRegistry->unlock();
 
             if (close) {
                 m_window->close();

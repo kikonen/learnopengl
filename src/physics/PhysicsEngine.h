@@ -102,7 +102,7 @@ namespace physics {
         Registry* m_registry{ nullptr };
 
         ObjectSnapshotRegistry* m_objectSnapshotRegistry;
-        NodeSnapshotRegistry* m_nodeSnapshotRegistry;
+        NodeSnapshotRegistry* m_pendingSnapshotRegistry;
 
         std::mutex m_lock;
         std::mutex m_pendingLock;

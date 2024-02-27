@@ -63,7 +63,7 @@ void TerrainGenerator::prepare(
     auto* heightMap = prepareHeightMap(ctx, container);
 
     createTiles(ctx, container, heightMap);
-    prepareSnapshots(*ctx.m_registry->m_nodeSnapshotRegistry);
+    prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void TerrainGenerator::prepareEntity(

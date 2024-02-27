@@ -45,6 +45,8 @@
 #include "ControllerRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 
+#include "registry/SnapshotRegistry_impl.h"
+
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
@@ -125,7 +127,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     ControllerRegistry::get().updateWT(ctx);
 
     {
-        snapshotWT(*m_registry->m_nodeSnapshotRegistry);
+        snapshotWT(*m_registry->m_workerSnapshotRegistry);
     }
 
     {
@@ -190,7 +192,7 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
     auto& entityRegistry = EntityRegistry::get();
 
     std::lock_guard lock(m_lock);
@@ -198,7 +200,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
     for (auto* node : m_cachedNodesRT) {
         if (!node) continue;
         if (node->m_entityIndex) {
-            auto& snapshot = snapshotRegistry.modifyActiveSnapshot(node->m_snapshotIndex);
+            const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
             if (snapshot.m_dirty) {
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 
@@ -406,7 +408,10 @@ void NodeRegistry::handleNodeAdded(Node* node)
 
     node->prepareRT({ m_registry });
 
-    m_registry->m_nodeSnapshotRegistry->copyFromPending(0, -1);
+    m_registry->m_pendingSnapshotRegistry->copyTo(
+        m_registry->m_activeSnapshotRegistry,
+        0, -1);
+
     if (node->m_generator) {
         const PrepareContext ctx{ m_registry };
         node->m_generator->prepareRT(ctx, *node);
@@ -564,7 +569,9 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_nodeSnapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
+    m_registry->m_pendingSnapshotRegistry->copyFrom(
+        m_registry->m_workerSnapshotRegistry,
+        node->m_snapshotIndex, -1);
 
     // NOTE KI type must be prepared *before* node
     {

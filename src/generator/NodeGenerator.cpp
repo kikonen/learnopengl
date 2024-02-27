@@ -26,10 +26,10 @@
 
 NodeGenerator::~NodeGenerator() = default;
 
-std::span<const Snapshot> NodeGenerator::getActiveSnapshots(
+std::span<const Snapshot> NodeGenerator::getSnapshots(
     NodeSnapshotRegistry& snapshotRegistry) const noexcept
 {
-    return snapshotRegistry.getActiveSnapshotRange(m_snapshotBase, m_transforms.size());
+    return snapshotRegistry.getSnapshotRange(m_snapshotBase, m_transforms.size());
 }
 
 void NodeGenerator::prepareSnapshots(
@@ -84,7 +84,7 @@ void NodeGenerator::updateEntity(
         prepareEntities(entityRegistry);
     }
 
-    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+    bool ready = snapshotRegistry.hasSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 
@@ -93,10 +93,10 @@ void NodeGenerator::updateEntity(
         return;
     }
 
-    auto snapshots = snapshotRegistry.modifyActiveSnapshotRange(
+    auto snapshots = snapshotRegistry.getSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
-    const auto& containerSnapshot = snapshotRegistry.getActiveSnapshot(container.m_snapshotIndex);
+    const auto& containerSnapshot = snapshotRegistry.getSnapshot(container.m_snapshotIndex);
 
     auto entities = entityRegistry.modifyEntityRange(
         m_entityBase,
@@ -130,15 +130,15 @@ void NodeGenerator::bindBatch(
 {
     if (m_activeCount == 0) return;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_nodeSnapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    bool ready = snapshotRegistry.hasActiveSnapshotRange(
+    bool ready = snapshotRegistry.hasSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 
     if (!ready) return;
 
-    const auto& snapshots = snapshotRegistry.getActiveSnapshotRange(
+    const auto& snapshots = snapshotRegistry.getSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
 
