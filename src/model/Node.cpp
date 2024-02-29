@@ -93,7 +93,12 @@ void Node::prepareWT(
 
     }
 
-    m_snapshotIndex = ctx.m_registry->m_workerSnapshotRegistry->registerSnapshot();
+    {
+        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
+        m_snapshotIndex = snapshotRegistry.registerSnapshot();
+        auto& snapshot = snapshotRegistry.modifySnapshot(m_snapshotIndex);
+        snapshot.m_handle = toHandle();
+    }
 
     if (m_generator) {
         m_generator->prepare(ctx, *this);

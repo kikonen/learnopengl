@@ -104,7 +104,7 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    cacheNodes(m_cachedNodesWT);
+    ctx.m_registry->m_workerSnapshotRegistry->cacheNodes(m_cachedNodesWT);
 
     {
         std::lock_guard lock(m_lock);
@@ -161,7 +161,7 @@ void NodeRegistry::snapshotRT(NodeSnapshotRegistry& snapshotRegistry)
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
-    cacheNodes(m_cachedNodesRT);
+    ctx.m_registry->m_activeSnapshotRegistry->cacheNodes(m_cachedNodesRT);
 
     m_rootRT = m_rootWT;
 
@@ -628,18 +628,6 @@ void NodeRegistry::withLock(const std::function<void(NodeRegistry&)>& fn)
 {
     std::lock_guard lock(m_lock);
     fn(*this);
-}
-
-void NodeRegistry::cacheNodes(std::vector<Node*>& cache) const noexcept
-{
-    std::lock_guard lock(m_lock);
-
-    cache.clear();
-    cache.reserve(m_allNodes.size());
-
-    for (auto& handle : m_allNodes) {
-        cache.push_back(handle.toNode());
-    }
 }
 
 void NodeRegistry::setActiveNode(pool::NodeHandle handle)

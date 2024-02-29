@@ -12,6 +12,8 @@
 
 #include "util/glm_util.h"
 
+#include "pool/NodeHandle.h"
+
 
 struct UpdateContext;
 
@@ -47,6 +49,8 @@ struct Snapshot {
 
     ki::level_id m_matrixLevel{ 0 };
 
+    pool::NodeHandle m_handle;
+
     mutable bool m_dirty : 1 { true };
     mutable bool m_dirtyNormal : 1 { true };
 
@@ -80,6 +84,7 @@ struct Snapshot {
         m_viewFront = o.m_viewFront;
         m_viewRight = o.m_viewRight;
         m_modelMatrix = o.m_modelMatrix;
+        m_handle = o.m_handle;
 
         m_modelScale = o.m_modelScale;
 

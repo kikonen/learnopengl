@@ -56,33 +56,37 @@ public:
     // were blocked due to RT side holding snapshot buffer, thus it could not be updated
 
     // lock this && copy to
-    void copyTo(
+    inline void copyTo(
         SnapshotRegistry<T>* dst,
         uint32_t startIndex,
-        int32_t count)
+        int32_t count) noexcept
     {
         std::lock_guard lock(m_lock);
         copy(m_snapshots.get(), dst->m_snapshots.get(), startIndex, count);
     }
 
     // lock this && copy from
-    void copyFrom(
+    inline void copyFrom(
         SnapshotRegistry<T>* src,
         uint32_t startIndex,
-        int32_t count)
+        int32_t count) noexcept
     {
         std::lock_guard lock(m_lock);
         copy(src->m_snapshots.get(), m_snapshots.get(), startIndex, count);
     }
 
-private:
+protected:
     void copy(
         util::DirtyVector<T>* src,
         util::DirtyVector<T>* dst,
         uint32_t startIndex,
-        int32_t count);
+        int32_t count) noexcept;
 
-private:
+    inline void apply(const T& src, T& dst) noexcept {
+        dst.applyFrom(src);
+    }
+
+protected:
     mutable std::mutex m_lock;
 
     std::unique_ptr<util::DirtyVector<T>> m_snapshots;

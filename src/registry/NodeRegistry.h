@@ -113,8 +113,6 @@ public:
     void withLock(const std::function<void(NodeRegistry&)>& fn);
 
 private:
-    void cacheNodes(std::vector<Node*>& cache) const noexcept;
-
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 

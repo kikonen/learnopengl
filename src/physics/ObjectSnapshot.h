@@ -13,7 +13,7 @@ namespace physics {
 
         bool m_dirty : 1 {false};
 
-        inline void applyFrom(ObjectSnapshot& o) noexcept {
+        inline void applyFrom(const ObjectSnapshot& o) noexcept {
             m_id = o.m_id;
             m_worldPos = o.m_worldPos;
             m_rot = o.m_rot;

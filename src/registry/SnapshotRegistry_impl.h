@@ -46,7 +46,7 @@ void SnapshotRegistry<T>::copy(
     util::DirtyVector<T>* srcVector,
     util::DirtyVector<T>* dstVector,
     uint32_t startIndex,
-    int32_t requestedCount)
+    int32_t requestedCount) noexcept
 {
     size_t count = requestedCount;
     if (requestedCount == -1) {
@@ -55,14 +55,14 @@ void SnapshotRegistry<T>::copy(
     if (!count) return;
 
     {
-        auto& src = srcVector->m_entries;
+        const auto& src = srcVector->m_entries;
         auto& dst = dstVector->m_entries;
 
         dstVector->allocate(srcVector->size());
 
         for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
-                dst[i].applyFrom(src[i]);
+                apply(src[i], dst[i]);
             }
         }
     }
