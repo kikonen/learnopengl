@@ -29,7 +29,9 @@ NodeGenerator::~NodeGenerator() = default;
 std::span<const Snapshot> NodeGenerator::getSnapshots(
     NodeSnapshotRegistry& snapshotRegistry) const noexcept
 {
-    return snapshotRegistry.getSnapshotRange(m_snapshotBase, m_transforms.size());
+    return snapshotRegistry.getSnapshotRange(
+        m_snapshotBase,
+        static_cast<uint32_t>(m_transforms.size()));
 }
 
 void NodeGenerator::prepareSnapshots(
@@ -47,7 +49,7 @@ void NodeGenerator::snapshotWT(
     auto snapshots = snapshotRegistry.modifySnapshotRange(m_snapshotBase, count);
 
     for (size_t i = 0; i < count; i++) {
-        auto& transform = m_transforms[i];
+        const auto& transform = m_transforms[i];
 
         assert(!transform.m_dirty);
         if (!transform.m_dirtySnapshot) continue;

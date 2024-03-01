@@ -146,7 +146,7 @@ void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
 
-        auto& transform = node->modifyTransform();
+        const auto& transform = node->getTransform();
 
         if (transform.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
@@ -158,9 +158,6 @@ void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
         }
     }
 }
-
-void NodeRegistry::snapshotRT(NodeSnapshotRegistry& snapshotRegistry)
-{}
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
@@ -406,14 +403,16 @@ void NodeRegistry::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
+    // NOTE KI eventpp cycle run after snapshot sync
+    // => thus not needed to redo it here
+    //m_registry->m_pendingSnapshotRegistry->copyTo(
+    //    m_registry->m_activeSnapshotRegistry,
+    //    node->m_snapshotIndex, 1);
+
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
     node->prepareRT({ m_registry });
-
-    m_registry->m_pendingSnapshotRegistry->copyTo(
-        m_registry->m_activeSnapshotRegistry,
-        0, -1);
 
     if (node->m_generator) {
         const PrepareContext ctx{ m_registry };

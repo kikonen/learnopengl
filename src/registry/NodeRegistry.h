@@ -45,7 +45,6 @@ public:
     void updateEntity(const UpdateContext& ctx);
 
     void snapshotWT(NodeSnapshotRegistry& snapshotRegistry);
-    void snapshotRT(NodeSnapshotRegistry& snapshotRegistry);
 
     void attachListeners();
 
