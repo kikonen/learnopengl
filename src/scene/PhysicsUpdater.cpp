@@ -118,7 +118,7 @@ void PhysicsUpdater::run()
                 pe.getStaticBoundsCount()));
         }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
 
     KI_INFO(fmt::format("PE: stopped - worker={}", util::isWorkerThread()));
@@ -132,4 +132,5 @@ void PhysicsUpdater::update(const UpdateContext& ctx)
 
     pe.updateBounds(ctx);
     pe.updateWT(ctx);
+    pe.updatePendingSnapshots();
 }

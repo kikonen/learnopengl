@@ -198,6 +198,9 @@ void SceneUpdater::run()
 void SceneUpdater::update(const UpdateContext& ctx)
 {
     KI_TIMER("loop    ");
+
+    physics::PhysicsEngine::get().updateActiveSnapshots();
+
     {
         KI_TIMER("event   ");
         m_registry->m_dispatcherWorker->dispatchEvents();

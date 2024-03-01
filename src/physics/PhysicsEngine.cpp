@@ -22,6 +22,8 @@
 
 #include "ObjectSnapshotRegistry.h"
 
+#include "registry/SnapshotRegistry_impl.h"
+
 #include "Surface.h"
 
 namespace {
@@ -115,7 +117,11 @@ namespace physics
         Registry* registry)
     {
         m_registry = registry;
-        m_objectSnapshotRegistry = m_registry->m_objectSnapshotRegistry;
+
+        m_workerObjectSnapshotRegistry = m_registry->m_workerObjectSnapshotRegistry;
+        m_pendingObjectSnapshotRegistry = m_registry->m_pendingObjectSnapshotRegistry;
+        m_activeObjectSnapshotRegistry = m_registry->m_activeObjectSnapshotRegistry;
+
         m_pendingSnapshotRegistry = m_registry->m_pendingSnapshotRegistry;
 
         m_prepared = true;
@@ -193,7 +199,7 @@ namespace physics
                 //}
 
                 for (const auto& obj : m_objects) {
-                    auto& snapshot = m_objectSnapshotRegistry->modifySnapshot(obj.m_objectSnapshotIndex);
+                    auto& snapshot = m_workerObjectSnapshotRegistry->modifySnapshot(obj.m_objectSnapshotIndex);
                     obj.toSnapshot(snapshot);
                 }
             }
@@ -243,6 +249,20 @@ namespace physics
                 }
             });
         }
+    }
+
+    void PhysicsEngine::updatePendingSnapshots()
+    {
+        m_pendingObjectSnapshotRegistry->copyFrom(
+            m_workerObjectSnapshotRegistry,
+            0, -1);
+    }
+
+    void PhysicsEngine::updateActiveSnapshots()
+    {
+        m_pendingObjectSnapshotRegistry->copyTo(
+            m_activeObjectSnapshotRegistry,
+            0, -1);
     }
 
     void PhysicsEngine::preparePendingObjects(const UpdateContext& ctx)
@@ -353,7 +373,7 @@ namespace physics
         auto* parent = node.getParent();
 
         if (surfaceY != worldPos.y) {
-            auto& objectSnapshot = m_objectSnapshotRegistry->modifySnapshot(bounds.m_objectSnapshotIndex);
+            auto& objectSnapshot = m_workerObjectSnapshotRegistry->modifySnapshot(bounds.m_objectSnapshotIndex);
             objectSnapshot.m_worldPos = worldPos;
             objectSnapshot.m_worldPos.y = surfaceY;
             objectSnapshot.m_dirty = true;
@@ -367,7 +387,7 @@ namespace physics
 
         auto& dst = m_objects.emplace_back();
         {
-            dst.m_objectSnapshotIndex = m_objectSnapshotRegistry->registerSnapshot();
+            dst.m_objectSnapshotIndex = m_workerObjectSnapshotRegistry->registerSnapshot();
             dst.m_update = src.m_update;
             dst.m_body = src.m_body;
             dst.m_geom = src.m_geom;
@@ -380,12 +400,6 @@ namespace physics
 
         return { dst.m_id, dst.m_objectSnapshotIndex };
     }
-
-    //Object* PhysicsEngine::getObject(physics::physics_id id)
-    //{
-    //    if (id < 1 || id > m_objects.size()) return nullptr;
-    //    return &m_objects[id - 1];
-    //}
 
     physics::height_map_id PhysicsEngine::registerHeightMap()
     {
@@ -432,7 +446,7 @@ namespace physics
             auto& bounds = m_pendingNodes.emplace_back();
 
             bounds.m_static = type->m_flags.staticBounds;
-            bounds.m_objectSnapshotIndex = m_objectSnapshotRegistry->registerSnapshot();
+            bounds.m_objectSnapshotIndex = m_workerObjectSnapshotRegistry->registerSnapshot();
             bounds.m_nodeSnapshotIndex = node->m_snapshotIndex;
             bounds.m_nodeHandle = node->toHandle();
 

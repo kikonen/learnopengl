@@ -50,7 +50,9 @@ private:
     std::unique_ptr<NodeSnapshotRegistry> m_pendingSnapshotRegistryImpl;
     std::unique_ptr<NodeSnapshotRegistry> m_activeSnapshotRegistryImpl;
 
-    std::unique_ptr<physics::ObjectSnapshotRegistry> m_objectSnapshotRegistryImpl;
+    std::unique_ptr<physics::ObjectSnapshotRegistry> m_workerObjectSnapshotRegistryImpl;
+    std::unique_ptr<physics::ObjectSnapshotRegistry> m_pendingObjectSnapshotRegistryImpl;
+    std::unique_ptr<physics::ObjectSnapshotRegistry> m_activeObjectSnapshotRegistryImpl;
 
 public:
     // NOTE KI initialization order!
@@ -61,7 +63,9 @@ public:
     NodeSnapshotRegistry* const m_pendingSnapshotRegistry;
     NodeSnapshotRegistry* const m_activeSnapshotRegistry;
 
-    physics::ObjectSnapshotRegistry* const m_objectSnapshotRegistry;
+    physics::ObjectSnapshotRegistry* const m_workerObjectSnapshotRegistry;
+    physics::ObjectSnapshotRegistry* const m_pendingObjectSnapshotRegistry;
+    physics::ObjectSnapshotRegistry* const m_activeObjectSnapshotRegistry;
 
     NodeRegistry* const m_nodeRegistry;
 };

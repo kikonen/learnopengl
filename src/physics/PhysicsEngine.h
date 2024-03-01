@@ -46,6 +46,9 @@ namespace physics {
         void updateWT(const UpdateContext& ctx);
         void updateBounds(const UpdateContext& ctx);
 
+        void updatePendingSnapshots();
+        void updateActiveSnapshots();
+
         inline bool isEnabled() const noexcept{
             return m_enabled;
         }
@@ -56,8 +59,6 @@ namespace physics {
 
         std::tuple<physics::physics_id, uint32_t> registerObject(
             const physics::Object& obj);
-
-        //Object* getObject(physics::physics_id id);
 
         physics::height_map_id registerHeightMap();
         HeightMap* getHeightMap(physics::height_map_id id);
@@ -101,7 +102,10 @@ namespace physics {
 
         Registry* m_registry{ nullptr };
 
-        ObjectSnapshotRegistry* m_objectSnapshotRegistry;
+        ObjectSnapshotRegistry* m_workerObjectSnapshotRegistry;
+        ObjectSnapshotRegistry* m_pendingObjectSnapshotRegistry;
+        ObjectSnapshotRegistry* m_activeObjectSnapshotRegistry;
+
         NodeSnapshotRegistry* m_pendingSnapshotRegistry;
 
         std::mutex m_lock;
