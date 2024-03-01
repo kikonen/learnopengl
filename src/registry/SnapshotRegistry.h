@@ -4,6 +4,7 @@
 #include <span>
 #include <mutex>
 #include <stdint.h>
+#include <functional>
 
 #include "util/DirtyVector.h"
 
@@ -54,6 +55,12 @@ public:
 
     // NOTE KI *SWAP* approach did not work, since it caused that updates
     // were blocked due to RT side holding snapshot buffer, thus it could not be updated
+
+    void withLock(const std::function<void()>& fn)
+    {
+        std::lock_guard lock(m_lock);
+        fn();
+    }
 
     // lock this && copy to
     inline void copyTo(

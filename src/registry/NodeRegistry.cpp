@@ -67,7 +67,7 @@ NodeRegistry::NodeRegistry()
 
 NodeRegistry::~NodeRegistry()
 {
-    std::lock_guard lock(m_lock);
+    //std::lock_guard lock(m_lock);
 
     {
         m_activeNode.reset();
@@ -104,10 +104,13 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    ctx.m_registry->m_workerSnapshotRegistry->cacheNodes(m_cachedNodesWT);
+    if (m_cachedNodeLevel != m_nodeLevel) {
+        ctx.m_registry->m_workerSnapshotRegistry->cacheNodes(m_cachedNodesWT);
+        m_cachedNodeLevel = m_nodeLevel;
+    }
 
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
         for (auto* node : m_cachedNodesWT) {
             if (!node) continue;
@@ -130,15 +133,15 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         snapshotWT(*m_registry->m_workerSnapshotRegistry);
     }
 
-    {
-        std::lock_guard lock(m_lock);
-        m_nodeLevel++;
-    }
+    //{
+    //    std::lock_guard lock(m_lock);
+    //    m_nodeLevel++;
+    //}
 }
 
 void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
 {
-    std::lock_guard lock(m_lock);
+    //std::lock_guard lock(m_lock);
 
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
@@ -195,7 +198,7 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
     auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
     auto& entityRegistry = EntityRegistry::get();
 
-    std::lock_guard lock(m_lock);
+    //std::lock_guard lock(m_lock);
 
     for (auto* node : m_cachedNodesRT) {
         if (!node) continue;
@@ -556,8 +559,9 @@ void NodeRegistry::bindNode(
 
     {
         {
-            std::lock_guard lock(m_lock);
+            //std::lock_guard lock(m_lock);
             m_allNodes.push_back(handle);
+            m_nodeLevel++;
         }
 
         if (nodeId == assets.rootId) {
@@ -571,7 +575,7 @@ void NodeRegistry::bindNode(
     // => otherwise IOOBE will trigger
     m_registry->m_pendingSnapshotRegistry->copyFrom(
         m_registry->m_workerSnapshotRegistry,
-        node->m_snapshotIndex, -1);
+        node->m_snapshotIndex, 1);
 
     // NOTE KI type must be prepared *before* node
     {
@@ -624,11 +628,11 @@ void NodeRegistry::setSelectionMaterial(const Material& material)
     *m_selectionMaterial = material;
 }
 
-void NodeRegistry::withLock(const std::function<void(NodeRegistry&)>& fn)
-{
-    std::lock_guard lock(m_lock);
-    fn(*this);
-}
+//void NodeRegistry::withLock(const std::function<void(NodeRegistry&)>& fn)
+//{
+//    std::lock_guard lock(m_lock);
+//    fn(*this);
+//}
 
 void NodeRegistry::setActiveNode(pool::NodeHandle handle)
 {

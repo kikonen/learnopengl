@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-#include <mutex>
+//#include <mutex>
 #include <functional>
 
 #include <fmt/format.h>
@@ -105,12 +105,12 @@ public:
     const Material& getSelectionMaterial() const noexcept;
     void setSelectionMaterial(const Material& material);
 
-    ki::level_id getLevel() const noexcept {
-        std::lock_guard lock(m_lock);
-        return m_nodeLevel;
-    }
+    //ki::level_id getLevel() const noexcept {
+    //    std::lock_guard lock(m_lock);
+    //    return m_nodeLevel;
+    //}
 
-    void withLock(const std::function<void(NodeRegistry&)>& fn);
+    //void withLock(const std::function<void(NodeRegistry&)>& fn);
 
 private:
     void setActiveNode(pool::NodeHandle node);
@@ -138,17 +138,18 @@ private:
     pool::NodeHandle m_rootRT{};
     bool m_rootPreparedRT{ false };
 
-    // EntityRegistry
+    // Internal tracking
     std::vector<pool::NodeHandle> m_allNodes;
 
     ki::level_id m_nodeLevel{ 0 };
+    ki::level_id m_cachedNodeLevel{ 0 };
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;
 
     Registry* m_registry{ nullptr };
 
-    mutable std::mutex m_lock;
+    //mutable std::mutex m_lock;
 
     std::vector<NodeComponent<Camera>> m_cameraComponents;
 

@@ -143,16 +143,16 @@ namespace physics
         m_initialDelay += ctx.m_clock.elapsedSecs;
 
         if (m_initialDelay > 10) {
-            ctx.m_registry->m_nodeRegistry->withLock([&ctx, this](NodeRegistry& nr) {
-                preparePendingObjects(ctx);
-            });
+            preparePendingObjects(ctx);
 
-            ctx.m_registry->m_nodeRegistry->withLock([this](NodeRegistry& nr) {
-                for (auto* obj : m_updateObjects) {
-                    auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj->m_nodeSnapshotIndex);
-                    obj->fromSnapshot(snapshot, false);
-                }
-            });
+            if (!m_updateObjects.empty()) {
+                m_pendingSnapshotRegistry->withLock([&ctx, this]() {
+                    for (auto* obj : m_updateObjects) {
+                        auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj->m_nodeSnapshotIndex);
+                        obj->fromSnapshot(snapshot, false);
+                    }
+                });
+            }
 
             const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
             const int n = static_cast<int>(dtTotal / STEP_SIZE);
@@ -192,12 +192,10 @@ namespace physics
                 //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
                 //}
 
-                ctx.m_registry->m_nodeRegistry->withLock([this](NodeRegistry& nr) {
-                    for (const auto& obj : m_objects) {
-                        auto& snapshot = m_objectSnapshotRegistry->modifySnapshot(obj.m_objectSnapshotIndex);
-                        obj.toSnapshot(snapshot);
-                    }
-                });
+                for (const auto& obj : m_objects) {
+                    auto& snapshot = m_objectSnapshotRegistry->modifySnapshot(obj.m_objectSnapshotIndex);
+                    obj.toSnapshot(snapshot);
+                }
             }
         }
     }
@@ -206,9 +204,7 @@ namespace physics
     {
         if (!m_enabled) return;
 
-        ctx.m_registry->m_nodeRegistry->withLock([&ctx, this](NodeRegistry& nr) {
-            preparePendingBounds(ctx);
-        });
+        preparePendingBounds(ctx);
 
         auto enforce = [&ctx, this](physics::NodeBounds bounds) {
             auto* node = bounds.m_nodeHandle.toNode();
@@ -230,7 +226,7 @@ namespace physics
 
         if (!m_staticBounds.empty()) {
             std::cout << "static: " << m_staticBounds.size() << '\n';
-            ctx.m_registry->m_nodeRegistry->withLock([&enforce, this](NodeRegistry& nr) {
+            m_pendingSnapshotRegistry->withLock([&enforce, this]() {
                 for (auto& bounds : m_staticBounds) {
                     enforce(bounds);
                 }
@@ -241,7 +237,7 @@ namespace physics
 
         if (false && !m_dynamicBounds.empty()) {
             //std::cout << "dynamic: " << m_dynamicBounds.size() << '\n';
-            ctx.m_registry->m_nodeRegistry->withLock([&enforce, this](NodeRegistry& nr) {
+            m_pendingSnapshotRegistry->withLock([&enforce, this]() {
                 for (auto& bounds : m_dynamicBounds) {
                     enforce(bounds);
                 }
@@ -257,26 +253,28 @@ namespace physics
 
         std::unordered_map<physics::physics_id, bool> prepared;
 
-        for (const auto& id : m_pendingObjects) {
-            auto& obj = m_objects[id - 1];
+        m_pendingSnapshotRegistry->withLock([&prepared, this]() {
+            for (const auto& id : m_pendingObjects) {
+                auto& obj = m_objects[id - 1];
 
-            auto* node = obj.m_nodeHandle.toNode();
-            if (!node) continue;
+                auto* node = obj.m_nodeHandle.toNode();
+                if (!node) continue;
 
-            auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj.m_nodeSnapshotIndex);
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(obj.m_nodeSnapshotIndex);
 
-            const auto level = snapshot.getMatrixLevel();
-            if (obj.m_matrixLevel == level) continue;
+                const auto level = snapshot.getMatrixLevel();
+                if (obj.m_matrixLevel == level) continue;
 
-            obj.prepare(m_worldId, m_spaceId);
-            obj.fromSnapshot(snapshot, false);
+                obj.prepare(m_worldId, m_spaceId);
+                obj.fromSnapshot(snapshot, false);
 
-            if (obj.m_update) {
-                m_updateObjects.push_back(&obj);
+                if (obj.m_update) {
+                    m_updateObjects.push_back(&obj);
+                }
+
+                prepared.insert({ id, true });
             }
-
-            prepared.insert({ id, true });
-        }
+        });
 
         if (!prepared.empty()) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
@@ -298,27 +296,29 @@ namespace physics
 
         std::vector<ki::node_id> prepared;
 
-        for (auto& bounds : m_pendingNodes) {
-            auto* node = bounds.m_nodeHandle.toNode();
+        m_pendingSnapshotRegistry->withLock([&prepared, this]() {
+            for (auto& bounds : m_pendingNodes) {
+                auto* node = bounds.m_nodeHandle.toNode();
 
-            if (!node) {
-                // NOTE KI deleted node
-                prepared.push_back(bounds.m_nodeHandle.toId());
-                continue;
+                if (!node) {
+                    // NOTE KI deleted node
+                    prepared.push_back(bounds.m_nodeHandle.toId());
+                    continue;
+                }
+
+                auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
+                if (snapshot.getMatrixLevel() == 0) continue;
+
+                if (bounds.m_static) {
+                    m_staticBounds.push_back(bounds);
+                }
+                else {
+                    m_dynamicBounds.push_back(bounds);
+                }
+
+                prepared.push_back(node->getId());
             }
-
-            auto& snapshot = m_pendingSnapshotRegistry->getSnapshot(bounds.m_nodeSnapshotIndex);
-            if (snapshot.getMatrixLevel() == 0) continue;
-
-            if (bounds.m_static) {
-                m_staticBounds.push_back(bounds);
-            }
-            else {
-                m_dynamicBounds.push_back(bounds);
-            }
-
-            prepared.push_back(node->getId());
-        }
+        });
 
         if (!prepared.empty()) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
