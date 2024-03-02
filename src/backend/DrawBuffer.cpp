@@ -116,10 +116,7 @@ namespace backend {
             m_useDebugFence);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
-        m_drawRanges.reserve(rangeCount);
-        for (int i = 0; i < rangeCount; i++) {
-            m_drawRanges.emplace_back();
-        }
+        m_drawRanges.resize(rangeCount);
 
         //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
         m_indexBuffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);

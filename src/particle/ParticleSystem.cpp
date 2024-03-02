@@ -110,13 +110,12 @@ namespace particle {
         constexpr size_t sz = sizeof(ParticleSSBO);
         const size_t totalCount = m_particles.size();
 
-        m_snapshot.reserve(m_particles.size());
-        while (m_snapshot.size() < m_particles.size()) {
-            m_snapshot.emplace_back();
+        if (m_snapshotCount != totalCount) {
+            m_snapshot.resize(totalCount);
         }
 
-        for (size_t i = 0; i < m_particles.size(); i++) {
-            m_snapshot[i] = std::move(m_particles[i].toSSBO());
+        for (size_t i = 0; i < totalCount; i++) {
+             m_particles[i].updateSSBO(m_snapshot[i]);
         }
 
         m_snapshotCount = totalCount;

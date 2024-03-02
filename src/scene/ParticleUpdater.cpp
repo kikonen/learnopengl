@@ -78,7 +78,7 @@ void ParticleUpdater::run()
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
-    const int delay = 5;
+    const int delay = 20;
 
     ki::FpsCounter fpsCounter;
 
