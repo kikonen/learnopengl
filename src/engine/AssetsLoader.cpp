@@ -490,6 +490,16 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "particle_enabled") {
+                data.particleEnabled = readBool(v);
+                continue;
+            }
+            if (k == "particle_max_count") {
+                data.particleMaxCount = readInt(v);
+                continue;
+            }
+        }
+        {
             if (k == "shadow_map_enabled") {
                 data.shadowMapEnabled = readBool(v);
                 continue;

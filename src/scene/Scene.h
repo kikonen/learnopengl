@@ -25,7 +25,6 @@ namespace render {
 
 class Camera;
 class Light;
-class ParticleGenerator;
 
 class Node;
 class Viewport;
@@ -48,7 +47,6 @@ class ShadowMapRenderer;
 
 class ObjectIdRenderer;
 class NormalRenderer;
-class ParticleSystem;
 
 
 class Scene final
@@ -124,10 +122,6 @@ private:
 
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
     std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
-
-    std::unique_ptr<ParticleSystem> m_particleSystem{ nullptr };
-
-    std::vector<pool::NodeHandle> m_particleGenerators;
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 

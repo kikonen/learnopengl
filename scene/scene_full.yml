@@ -57,10 +57,7 @@ entities:
     active: true
     render_flags:
       allow_normals: false
-      xenforce_bounds: true
-    particle_generator:
-      - "ParticleDefinition pd;"
-      - "node->particleGenerator = std::make_unique<ParticleGenerator>(pd);"
+      xdynamic_bounds: true
     audio:
       listener:
         default: true
@@ -452,6 +449,8 @@ entities:
     render_flags:
       render_back: true
     selected: false
+    particle:
+      material: particle_casting
   - name: Cow
     model: cow
     program: g_tex
@@ -529,10 +528,6 @@ entities:
     program: g_tex
     pos: [5.0, 30.0, 0.0]
     scale: 1.3
-    particle_generator:
-      - ParticleDefinition pd;
-      - //pd.material = Sprite::getMaterial(assets, "Skeleton_VH.PNG", "");
-      - node->particleGenerator = new ParticleGenerator(assets, pd);
     material_modifier:
       xreflection: 0.3
   - name: Basic ball
@@ -904,8 +899,7 @@ entities:
     render_flags:
       alpha: true
       no_frustum: true
-      static_physics: true
-      enforce_bounds: true
+      static_bounds: true
       render_back: true
     scale: 10
     lods:
@@ -932,9 +926,7 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      render_back: true
-      enforce_bounds: true
-      xphysics: true
+      dynamic_bounds: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
@@ -1160,3 +1152,10 @@ materials:
     tiling: 2
   - name: plasma_ball
     map_kd: textures/noise_256.png
+  - name: particle_casting
+    kd: [1, 1, 1, 1]
+    map_kd: particles/4_casting_spritesheet.png
+    sprites: 73
+    sprites_x: 9
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

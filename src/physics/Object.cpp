@@ -28,7 +28,10 @@ namespace physics
         m_mass{ o.m_mass },
         m_bodyId{ o.m_bodyId },
         m_geomId{ o.m_geomId },
-        m_nodeHandle{ o.m_nodeHandle }
+        m_nodeHandle{ o.m_nodeHandle },
+        m_objectSnapshotIndex{ o.m_objectSnapshotIndex },
+        m_nodeSnapshotIndex{ o.m_nodeSnapshotIndex },
+        m_matrixLevel{ o.m_matrixLevel }
     {
         // NOTE KI o is moved now
         o.m_geomId = 0;
@@ -147,17 +150,13 @@ namespace physics
         }
     }
 
-    void Object::updateToPhysics(bool force)
+    void Object::fromSnapshot(const Snapshot& snapshot, bool force)
     {
-        const auto* node = m_nodeHandle.toNode();
-        if (!node) return;
-
-        const auto& transform = node->getTransform();
-        const auto level = transform.getMatrixLevel();
+        const auto level = snapshot.getMatrixLevel();
         if (!force && m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        const glm::vec3& pos = transform.getWorldPosition();
+        const glm::vec3& pos = snapshot.getWorldPosition();
         {
             if (m_bodyId) {
                 dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
@@ -204,16 +203,10 @@ namespace physics
         }
     }
 
-    void Object::updateFromPhysics() const
+    void Object::toSnapshot(ObjectSnapshot& snapshot) const
     {
         if (!m_bodyId) return;
         if (m_body.kinematic) return;
-
-        auto* node = m_nodeHandle.toNode();
-        if (!node) return;
-
-        auto* parent = node->getParent();
-        if (!parent) return;
 
         const dReal* dpos = dBodyGetPosition(m_bodyId);
         const dReal* dquat = dBodyGetQuaternion(m_bodyId);
@@ -225,22 +218,26 @@ namespace physics
             static_cast<float>(dquat[2]),
             static_cast<float>(dquat[3]) };
 
-        if (pos.y < -400) {
-            pos.y = -400;
-            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+        {
+            // NOTE KI safety, don't allow escaping
+            if (pos.y < -1000) {
+                pos.y = -1000;
+                dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+            }
+            if (pos.y > 1000) {
+                pos.y = 1000;
+                dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+            }
         }
-        if (pos.y > 400) {
-            pos.y = 400;
-            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
-        }
-        pos -= parent->getTransform().getWorldPosition();
 
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        auto& transform = node->modifyTransform();
-        transform.setPosition(pos);
-        transform.setQuatRotation(rotBase);
-        //m_node->updateModelMatrix();
+        bool changed = snapshot.m_worldPos != pos || snapshot.m_rot != rotBase;
+        if (changed) {
+            snapshot.m_dirty = true;
+            snapshot.m_worldPos = pos;
+            snapshot.m_rot = rotBase;
+        }
     }
 }

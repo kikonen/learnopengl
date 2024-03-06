@@ -176,6 +176,9 @@ Assets::Assets()
     fogEnd = 700.0;
     fogDensity = 1.0;
 
+    particleEnabled = true;
+    particleMaxCount = 100000;
+
     shadowMapEnabled = true;
 
     shadowPolygonOffsetEnabled = true;

@@ -265,18 +265,27 @@ namespace loader {
                 fields.refractionRatio = true;
             }
             else if (k == "tiling") {
-                material.tilingX = readFloat(v);
-                material.tilingY = readFloat(v);
+                float tiling = readFractional(v);
+                material.tilingX = tiling;
+                material.tilingY = tiling;
                 fields.tilingX = true;
                 fields.tilingY = true;
             }
             else if (k == "tiling_x") {
-                material.tilingX = readFloat(v);
+                material.tilingX = readFractional(v);
                 fields.tilingX = true;
             }
             else if (k == "tiling_y") {
-                material.tilingY = readFloat(v);
+                material.tilingY = readFractional(v);
                 fields.tilingY = true;
+            }
+            else if (k == "sprites") {
+                material.spriteCount = readInt(v);
+                fields.spriteCount = true;
+            }
+            else if (k == "sprites_x") {
+                material.spritesX = readInt(v);
+                fields.spritesX = true;
             }
             else if (k == "layers") {
                 material.layers = readInt(v);
@@ -297,6 +306,11 @@ namespace loader {
             else {
                 reportUnknown("material_entry", k, v);
             }
+        }
+
+        material.spritesY = material.spriteCount / material.spritesX;
+        if (material.spriteCount % material.spritesX != 0) {
+            material.spritesY++;
         }
     }
 
@@ -453,6 +467,10 @@ namespace loader {
 
         if (f.tilingX) m.tilingX = mod.tilingX;
         if (f.tilingY) m.tilingY = mod.tilingY;
+
+        if (f.spriteCount) m.spriteCount = mod.spriteCount;
+        if (f.spritesX) m.spritesX = mod.spritesX;
+        if (f.spritesX) m.spritesY = mod.spritesY;
 
         if (f.ns) m.ns = mod.ns;
 

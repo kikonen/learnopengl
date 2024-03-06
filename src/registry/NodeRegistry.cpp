@@ -20,7 +20,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
@@ -34,8 +35,6 @@
 #include "audio/Source.h"
 #include "audio/AudioEngine.h"
 
-#include "physics/PhysicsEngine.h"
-
 #include "script/ScriptEngine.h"
 
 #include "Registry.h"
@@ -44,7 +43,9 @@
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
 #include "ControllerRegistry.h"
-#include "SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
+
+#include "registry/SnapshotRegistry_impl.h"
 
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
@@ -66,7 +67,7 @@ NodeRegistry::NodeRegistry()
 
 NodeRegistry::~NodeRegistry()
 {
-    std::lock_guard lock(m_snapshotLock);
+    //std::lock_guard lock(m_lock);
 
     {
         m_activeNode.reset();
@@ -103,39 +104,53 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    cacheNodes(m_cachedNodesWT);
+    if (m_cachedNodeLevel != m_nodeLevel) {
+        ctx.m_registry->m_workerSnapshotRegistry->cacheNodes(m_cachedNodesWT);
+        m_cachedNodeLevel = m_nodeLevel;
+    }
 
-    // NOTE KI nodes are in DAG order
-    for (auto* node : m_cachedNodesWT) {
-        if (!node) continue;
+    {
+        //std::lock_guard lock(m_lock);
+        // NOTE KI nodes are in DAG order
+        for (auto* node : m_cachedNodesWT) {
+            if (!node) continue;
 
-        node->updateModelMatrix();
+            node->updateModelMatrix();
 
-        if (node->m_generator) {
-            node->m_generator->updateWT(ctx, *node);
+            if (node->m_generator) {
+                node->m_generator->updateWT(ctx, *node);
+            }
+
+            if (node->m_particleGenerator) {
+                node->m_particleGenerator->updateWT(ctx, *node);
+            }
         }
     }
 
-    physics::PhysicsEngine::get().updateBounds(ctx);
     ControllerRegistry::get().updateWT(ctx);
 
     {
-        snapshotWT(*m_registry->m_snapshotRegistry);
+        snapshotWT(*m_registry->m_workerSnapshotRegistry);
     }
+
+    //{
+    //    std::lock_guard lock(m_lock);
+    //    m_nodeLevel++;
+    //}
 }
 
-void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
+void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
 {
-    std::lock_guard lock(m_snapshotLock);
+    //std::lock_guard lock(m_lock);
 
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
 
-        auto& transform = node->modifyTransform();
+        const auto& transform = node->getTransform();
 
         if (transform.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
-            snapshot.apply(transform);
+            snapshot.applyFrom(transform);
         }
 
         if (node->m_generator) {
@@ -144,12 +159,9 @@ void NodeRegistry::snapshotWT(SnapshotRegistry& snapshotRegistry)
     }
 }
 
-void NodeRegistry::snapshotRT(SnapshotRegistry& snapshotRegistry)
-{}
-
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
-    cacheNodes(m_cachedNodesRT);
+    ctx.m_registry->m_activeSnapshotRegistry->cacheNodes(m_cachedNodesRT);
 
     m_rootRT = m_rootWT;
 
@@ -180,15 +192,15 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
     auto& entityRegistry = EntityRegistry::get();
 
-    std::lock_guard lock(m_snapshotLock);
+    //std::lock_guard lock(m_lock);
 
     for (auto* node : m_cachedNodesRT) {
         if (!node) continue;
         if (node->m_entityIndex) {
-            auto& snapshot = snapshotRegistry.modifyActiveSnapshot(node->m_snapshotIndex);
+            const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
             if (snapshot.m_dirty) {
                 auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
 
@@ -218,7 +230,7 @@ void NodeRegistry::attachListeners()
 {
     const auto& assets = Assets::get();
 
-    auto* dispatcher = m_registry->m_dispatcher;
+    auto* dispatcher = m_registry->m_dispatcherWorker;
     auto* dispatcherView = m_registry->m_dispatcherView;
 
     dispatcher->addListener(
@@ -246,7 +258,7 @@ void NodeRegistry::attachListeners()
                             .target = data.target,
                             .id = scriptId,
                         };
-                        m_registry->m_dispatcher->send(evt);
+                        m_registry->m_dispatcherWorker->send(evt);
                     }
                 }
             });
@@ -353,24 +365,6 @@ void NodeRegistry::attachListeners()
             audio::AudioEngine::get().pauseSource(data.id);
         });
 
-    dispatcher->addListener(
-        event::Type::physics_add,
-        [this](const event::Event& e) {
-            auto& data = e.blob->body.physics;
-            auto& pe = physics::PhysicsEngine::get();
-            auto handle = pool::NodeHandle::toHandle(e.body.physics.target);
-
-            auto id = pe.registerObject();
-
-            if (id) {
-                auto* obj = pe.getObject(id);
-                obj->m_update = data.update;
-                obj->m_body = data.body;
-                obj->m_geom = data.geom;
-                obj->m_nodeHandle = handle;
-            }
-        });
-
     if (assets.useScript) {
         dispatcher->addListener(
             event::Type::script_bind,
@@ -409,12 +403,17 @@ void NodeRegistry::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
+    // NOTE KI eventpp cycle run after snapshot sync
+    // => thus not needed to redo it here
+    //m_registry->m_pendingSnapshotRegistry->copyTo(
+    //    m_registry->m_activeSnapshotRegistry,
+    //    node->m_snapshotIndex, 1);
+
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 
     node->prepareRT({ m_registry });
 
-    m_registry->m_snapshotRegistry->copyFromPending(0, -1);
     if (node->m_generator) {
         const PrepareContext ctx{ m_registry };
         node->m_generator->prepareRT(ctx, *node);
@@ -559,8 +558,9 @@ void NodeRegistry::bindNode(
 
     {
         {
-            std::lock_guard lock(m_snapshotLock);
+            //std::lock_guard lock(m_lock);
             m_allNodes.push_back(handle);
+            m_nodeLevel++;
         }
 
         if (nodeId == assets.rootId) {
@@ -572,7 +572,9 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_snapshotRegistry->copyToPending(node->m_snapshotIndex, -1);
+    m_registry->m_pendingSnapshotRegistry->copyFrom(
+        m_registry->m_workerSnapshotRegistry,
+        node->m_snapshotIndex, 1);
 
     // NOTE KI type must be prepared *before* node
     {
@@ -584,13 +586,7 @@ void NodeRegistry::bindNode(
     {
         event::Event evt { event::Type::node_added };
         evt.body.node.target = nodeId;
-        m_registry->m_dispatcher->send(evt);
-    }
-
-    {
-        event::Event evt { event::Type::node_added };
-        evt.body.node.target = nodeId;
-        m_registry->m_dispatcherView->send(evt);
+        m_registry->m_dispatcherWorker->send(evt);
     }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
@@ -631,16 +627,11 @@ void NodeRegistry::setSelectionMaterial(const Material& material)
     *m_selectionMaterial = material;
 }
 
-void NodeRegistry::cacheNodes(std::vector<Node*>& cache) const noexcept
-{
-    std::lock_guard lock(m_snapshotLock);
-    cache.clear();
-    cache.reserve(m_allNodes.size());
-
-    for (auto& handle : m_allNodes) {
-        cache.push_back(handle.toNode());
-    }
-}
+//void NodeRegistry::withLock(const std::function<void(NodeRegistry&)>& fn)
+//{
+//    std::lock_guard lock(m_lock);
+//    fn(*this);
+//}
 
 void NodeRegistry::setActiveNode(pool::NodeHandle handle)
 {

@@ -13,6 +13,9 @@ struct MaterialField {
     bool tilingX = false;
     bool tilingY = false;
 
+    bool spriteCount = false;
+    bool spritesX = false;
+
     bool ns = false;
 
     bool ka = false;

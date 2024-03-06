@@ -148,7 +148,7 @@ namespace render {
         EffectBuffer m_effectBuffer;
 
         PlainQuad m_plainQuad;
-        TextureQuad m_textureQuad;
+        TextureQuad& m_textureQuad;
 
         Program* m_deferredProgram{ nullptr };
         Program* m_oitProgram{ nullptr };

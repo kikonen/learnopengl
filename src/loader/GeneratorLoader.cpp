@@ -17,7 +17,6 @@
 #include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
 
-
 namespace loader {
     GeneratorLoader::GeneratorLoader(
         Context ctx)

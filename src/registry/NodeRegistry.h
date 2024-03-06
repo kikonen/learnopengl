@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-#include <mutex>
+//#include <mutex>
+#include <functional>
 
 #include <fmt/format.h>
 
@@ -21,7 +22,7 @@ struct Material;
 struct UpdateContext;
 
 class Registry;
-class SnapshotRegistry;
+class NodeSnapshotRegistry;
 
 
 class NodeRegistry final
@@ -43,8 +44,7 @@ public:
     void updateRT(const UpdateContext& ctx);
     void updateEntity(const UpdateContext& ctx);
 
-    void snapshotWT(SnapshotRegistry& snapshotRegistry);
-    void snapshotRT(SnapshotRegistry& snapshotRegistry);
+    void snapshotWT(NodeSnapshotRegistry& snapshotRegistry);
 
     void attachListeners();
 
@@ -79,6 +79,10 @@ public:
     inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
     inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode.toNode(); }
 
+    uint32_t getNodeCount() const noexcept {
+        return static_cast<uint32_t>(m_allNodes.size());
+    }
+
     pool::NodeHandle getNextCameraNode(
         pool::NodeHandle srcNode,
         int offset) const noexcept;
@@ -100,9 +104,14 @@ public:
     const Material& getSelectionMaterial() const noexcept;
     void setSelectionMaterial(const Material& material);
 
-private:
-    void cacheNodes(std::vector<Node*>& cache) const noexcept;
+    //ki::level_id getLevel() const noexcept {
+    //    std::lock_guard lock(m_lock);
+    //    return m_nodeLevel;
+    //}
 
+    //void withLock(const std::function<void(NodeRegistry&)>& fn);
+
+private:
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 
@@ -128,15 +137,18 @@ private:
     pool::NodeHandle m_rootRT{};
     bool m_rootPreparedRT{ false };
 
-    // EntityRegistry
+    // Internal tracking
     std::vector<pool::NodeHandle> m_allNodes;
+
+    ki::level_id m_nodeLevel{ 0 };
+    ki::level_id m_cachedNodeLevel{ 0 };
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;
 
     Registry* m_registry{ nullptr };
 
-    mutable std::mutex m_snapshotLock{};
+    //mutable std::mutex m_lock;
 
     std::vector<NodeComponent<Camera>> m_cameraComponents;
 

@@ -2,6 +2,7 @@ Debug/*
 .vs/*
 packages/*
 x64/*
+learnopengl/x64/*
 log/*
 !log/.gitkeep
 tmp/*

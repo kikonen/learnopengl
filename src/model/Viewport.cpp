@@ -25,16 +25,6 @@
 
 
 namespace {
-    render::TextureQuad g_sharedQuad;
-
-    bool g_sharedQuadPrepared{ false };
-    render::TextureQuad& getSharedQuad() {
-        if (!g_sharedQuadPrepared) {
-            g_sharedQuadPrepared = true;
-            g_sharedQuad.prepare();
-        }
-        return g_sharedQuad;
-    }
 }
 
 Viewport::Viewport(
@@ -202,13 +192,16 @@ void Viewport::draw(const RenderContext& ctx)
     {
         if (m_textureId == 0) return;
 
+        auto& quad = render::TextureQuad::get();
+        quad.prepare();
+
         if (m_gammaCorrect && m_hardwareGamma) {
             glEnable(GL_FRAMEBUFFER_SRGB);
-            getSharedQuad().draw();
+            quad.draw();
             glDisable(GL_FRAMEBUFFER_SRGB);
         }
         else {
-            getSharedQuad().draw();
+            quad.draw();
         }
     }
 }

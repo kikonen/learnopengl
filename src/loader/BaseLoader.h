@@ -73,6 +73,7 @@ namespace loader
 
         glm::vec3 readDegreesRotation(const YAML::Node& node) const;
 
+        float readFractional(const YAML::Node& node) const;
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
 
         std::tuple<ki::node_id, std::string> resolveId(

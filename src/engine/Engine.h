@@ -14,6 +14,8 @@
 class Window;
 class Scene;
 class SceneUpdater;
+class ParticleUpdater;
+class PhysicsUpdater;
 class AsyncLoader;
 
 /**
@@ -60,7 +62,10 @@ public:
     std::shared_ptr<Registry> m_registry;
 
     std::shared_ptr<Scene> m_currentScene;
+
     std::shared_ptr<SceneUpdater> m_sceneUpdater;
+    std::shared_ptr<ParticleUpdater> m_particleUpdater;
+    std::shared_ptr<PhysicsUpdater> m_physicsUpdater;
 
     std::unique_ptr<Window> m_window;
 

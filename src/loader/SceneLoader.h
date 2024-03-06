@@ -28,6 +28,7 @@
 #include "ControllerLoader.h"
 #include "AudioLoader.h"
 #include "GeneratorLoader.h"
+#include "ParticleLoader.h"
 #include "PhysicsLoader.h"
 #include "EntityLoader.h"
 
@@ -234,6 +235,7 @@ namespace loader {
         ControllerLoader m_controllerLoader;
         AudioLoader m_audioLoader;
         GeneratorLoader m_generatorLoader;
+        ParticleLoader m_particleLoader;
         PhysicsLoader m_physicsLoader;
     };
 }

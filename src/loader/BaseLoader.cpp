@@ -38,7 +38,7 @@ namespace loader
     void BaseLoader::setRegistry(std::shared_ptr<Registry> registry)
     {
         m_registry = registry;
-        m_dispatcher = m_registry->m_dispatcher;
+        m_dispatcher = m_registry->m_dispatcherWorker;
     }
 
     void BaseLoader::loadTiling(
@@ -387,6 +387,19 @@ namespace loader
 
         auto a = readFloat(node);
         return { 0, a, 0 };
+    }
+
+    float BaseLoader::readFractional(const YAML::Node& node) const
+    {
+        if (node.IsSequence()) {
+            auto a = readFloatVector(node, 2);
+            if (a.size() < 1) {
+                a.push_back(1.0);
+            }
+            return a[0] / a[1];
+        }
+
+        return readFloat(node);
     }
 
     glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const

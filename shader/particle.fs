@@ -1,19 +1,13 @@
 #version 460 core
 
-#include struct_material.glsl
-
-#include uniform_matrices.glsl
 #include uniform_data.glsl
-#include ssbo_materials.glsl
-
-#ifndef USE_ALPHA
-// https://www.khronos.org/opengl/wiki/Early_Fragment_Test
-// https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-layout(early_fragment_tests) in;
-#endif
 
 in VS_OUT {
-  flat uint materialIndex;
+  vec2 texCoord;
+  vec3 viewPos;
+
+  flat vec4 diffuse;
+  flat uvec2 diffuseTex;
 } fs_in;
 
 layout (location = 0) out vec4 o_fragColor;
@@ -24,20 +18,31 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+#include fn_calculate_fog.glsl
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  vec4 texColor = fs_in.diffuse;
 
-  vec2 pos = gl_PointCoord;
-
-  sampler2D sampler = sampler2D(material.diffuseTex);
-  vec4 texColor = texture(sampler, vec2(pos.x, 1.0 - pos.y));
+  if (fs_in.diffuseTex.x > 0) {
+    const vec2 texCoord = fs_in.texCoord;
+    texColor *= texture(
+      sampler2D(fs_in.diffuseTex),
+      texCoord);
+  }
 
 #ifdef USE_ALPHA
-  if (texColor.a < 0.1)
+  if (texColor.a < 0.01)
     discard;
 #endif
 
+//  texColor.a = clamp(texColor.a, 0, 0.5);
+
+#ifndef USE_BLEND
+  texColor = vec4(texColor.rgb, 1.0);
+#endif
+
+  texColor = calculateFog(fs_in.viewPos, texColor);
+
   o_fragColor = texColor;
+//  o_fragColor = vec4(1, 0, 0, 1);
 }

@@ -151,6 +151,10 @@ public:
     float tilingX = 1.0f;
     float tilingY = 1.0f;
 
+    uint16_t spriteCount = 1;
+    uint16_t spritesX = 1;
+    uint16_t spritesY = 1;
+
     std::array<BoundTexture, MATERIAL_TEXTURE_COUNT> m_textures;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.

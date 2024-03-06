@@ -24,7 +24,7 @@ namespace kigl {
         }
 
         void apply() {
-            glBlendEquation(blendEquation);
+            glBlendEquationSeparate(blendEquation, blendEquation);
 
             // NOTE KI FrameBufferAttachment::getTextureRGB() also fixes this
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

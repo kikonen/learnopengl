@@ -15,7 +15,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "generator/NodeGenerator.h"
 
@@ -26,7 +27,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 
 #include "engine/UpdateContext.h"
@@ -91,10 +92,20 @@ void Node::prepareWT(
         }
 
     }
-    m_snapshotIndex = ctx.m_registry->m_snapshotRegistry->registerSnapshot();
+
+    {
+        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
+        m_snapshotIndex = snapshotRegistry.registerSnapshot();
+        auto& snapshot = snapshotRegistry.modifySnapshot(m_snapshotIndex);
+        snapshot.m_handle = toHandle();
+    }
 
     if (m_generator) {
         m_generator->prepare(ctx, *this);
+    }
+
+    if (m_particleGenerator) {
+        m_particleGenerator->prepareWT();
     }
 }
 
@@ -136,7 +147,7 @@ void Node::bindBatch(
     if (m_instancer) {
         m_instancer->bindBatch(ctx, type, *this, batch);
     } else {
-        const auto& snapshot = ctx.m_registry->m_snapshotRegistry->getActiveSnapshot(m_snapshotIndex);
+        const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
 
         const backend::Lod* lod = nullptr;
         //{
