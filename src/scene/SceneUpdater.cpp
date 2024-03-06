@@ -99,16 +99,19 @@ void SceneUpdater::prepare()
         [this](const event::Event& e) {
             auto& data = e.blob->body.physics;
             auto& pe = physics::PhysicsEngine::get();
-            auto handle = pool::NodeHandle::toHandle(e.body.physics.target);
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
 
-            auto id = pe.registerObject();
+            {
+                physics::Object obj{};
+                obj.m_update = data.update;
+                obj.m_body = data.body;
+                obj.m_geom = data.geom;
+                obj.m_nodeHandle = node->toHandle();
+                obj.m_nodeSnapshotIndex = node->m_snapshotIndex;
 
-            if (id) {
-                auto* obj = pe.getObject(id);
-                obj->m_update = data.update;
-                obj->m_body = data.body;
-                obj->m_geom = data.geom;
-                obj->m_nodeHandle = handle;
+                auto [physicsId, snapshotIndex] = pe.registerObject(obj);
+                node->m_physicsId = physicsId;
+                node->m_objectSnapshotIndex = snapshotIndex;
             }
         });
 
@@ -196,6 +199,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
 {
     KI_TIMER("loop    ");
 
+    physics::PhysicsEngine::get().updateActiveSnapshots();
+
     {
         KI_TIMER("event   ");
         m_registry->m_dispatcherWorker->dispatchEvents();
@@ -221,10 +226,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 NodeRegistry::get().updateWT(ctx);
             }
             {
-                KI_TIMER("physics ");
-                physics::PhysicsEngine::get().update(ctx);
-            }
-            {
                 KI_TIMER("audio   ");
                 audio::AudioEngine::get().update(ctx);
             }
@@ -245,5 +246,5 @@ void SceneUpdater::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    physics::PhysicsEngine::get().handleNodeAdded(node);
+    physics::PhysicsEngine::get().registerBoundsNode(node);
 }

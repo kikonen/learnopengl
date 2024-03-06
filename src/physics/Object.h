@@ -10,6 +10,10 @@
 #include "Body.h"
 #include "Geom.h"
 
+#include "ObjectSnapshot.h"
+
+struct Snapshot;
+
 namespace physics {
     class PhysicsEngine;
 
@@ -24,10 +28,13 @@ namespace physics {
             dWorldID worldId,
             dSpaceID spaceId);
 
-        void updateToPhysics(bool force);
-        void updateFromPhysics() const;
+        void fromSnapshot(const Snapshot& snapshot, bool force);
+        void toSnapshot(ObjectSnapshot& snapshot) const;
 
         physics::physics_id m_id{ 0 };
+
+        uint32_t m_objectSnapshotIndex{ 0 };
+        uint32_t m_nodeSnapshotIndex{ 0 };
 
         Body m_body{};
         Geom m_geom{};

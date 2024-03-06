@@ -203,6 +203,7 @@
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\mesh\TextureVBO.cpp" />
     <ClCompile Include="src\particle\ParticleSystem.cpp" />
+    <ClCompile Include="src\physics\ObjectSnapshotRegistry.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
     <ClCompile Include="src\scene\ParticleUpdater.cpp" />
+    <ClCompile Include="src\scene\PhysicsUpdater.cpp" />
     <ClCompile Include="src\script\api\SetTextNode.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
     <ClCompile Include="src\script\CommandHandle.cpp" />
@@ -433,6 +435,9 @@
     <ClInclude Include="src\particle\ParticleDefinition.h" />
     <ClInclude Include="src\particle\ParticleSSBO.h" />
     <ClInclude Include="src\particle\ParticleSystem.h" />
+    <ClInclude Include="src\physics\NodeBounds.h" />
+    <ClInclude Include="src\physics\ObjectSnapshot.h" />
+    <ClInclude Include="src\physics\ObjectSnapshotRegistry.h" />
     <ClInclude Include="src\pool\Entry.h" />
     <ClInclude Include="src\pool\IdHash.h" />
     <ClInclude Include="src\pool\TypeHandle.h" />
@@ -444,6 +449,7 @@
     <ClInclude Include="src\registry\SnapshotRegistry_impl.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
     <ClInclude Include="src\scene\ParticleUpdater.h" />
+    <ClInclude Include="src\scene\PhysicsUpdater.h" />
     <ClInclude Include="src\script\api\SetTextNode.h" />
     <ClInclude Include="src\script\CommandEngine_impl.h" />
     <ClInclude Include="src\script\CommandEntry.h" />

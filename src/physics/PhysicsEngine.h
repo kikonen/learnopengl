@@ -9,6 +9,7 @@
 #include "ki/size.h"
 
 #include "Object.h"
+#include "NodeBounds.h"
 #include "HeightMap.h"
 
 struct UpdateContext;
@@ -22,9 +23,13 @@ namespace mesh {
 }
 
 struct NodeTransform;
-
+struct Snapshot;
+class Registry;
+class NodeSnapshotRegistry;
 
 namespace physics {
+    class ObjectSnapshotRegistry;
+
     class PhysicsEngine {
     public:
         static PhysicsEngine& get() noexcept;
@@ -34,11 +39,17 @@ namespace physics {
 
         ~PhysicsEngine();
 
-        void prepare(std::shared_ptr<std::atomic<bool>> alive);
-        void update(const UpdateContext& ctx);
+        void prepare(
+            std::shared_ptr<std::atomic<bool>> alive,
+            Registry* registry);
+
+        void updateWT(const UpdateContext& ctx);
         void updateBounds(const UpdateContext& ctx);
 
-        inline bool isEnabled(bool enabled) const noexcept{
+        void updatePendingSnapshots();
+        void updateActiveSnapshots();
+
+        inline bool isEnabled() const noexcept{
             return m_enabled;
         }
 
@@ -46,29 +57,38 @@ namespace physics {
             m_enabled = enabled;
         }
 
-        physics::physics_id registerObject();
-        Object* getObject(physics::physics_id id);
+        std::tuple<physics::physics_id, uint32_t> registerObject(
+            const physics::Object& obj);
 
         physics::height_map_id registerHeightMap();
         HeightMap* getHeightMap(physics::height_map_id id);
 
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
-        void handleNodeAdded(Node* node);
+        void registerBoundsNode(Node* node);
 
         uint32_t getObjectCount() const noexcept {
             return static_cast<uint32_t>(m_objects.size());
         }
 
+        uint32_t getStaticBoundsCount() const noexcept {
+            return static_cast<uint32_t>(m_staticBounds.size());
+        }
+
+        uint32_t getDynamicBoundsCount() const noexcept {
+            return static_cast<uint32_t>(m_dynamicBounds.size());
+        }
+
     private:
-        void preparePending(const UpdateContext& ctx);
-        void preparePendingNodes(const UpdateContext& ctx);
+        void preparePendingObjects(const UpdateContext& ctx);
+        void preparePendingBounds(const UpdateContext& ctx);
 
         void enforceBounds(
             const UpdateContext& ctx,
+            NodeBounds& bounds,
             const mesh::MeshType* type,
             Node& node,
-            NodeTransform& transform);
+            const Snapshot& snapshot);
 
     public:
         dWorldID m_worldId{ nullptr };
@@ -79,6 +99,17 @@ namespace physics {
 
     private:
         std::shared_ptr<std::atomic<bool>> m_alive;
+
+        Registry* m_registry{ nullptr };
+
+        ObjectSnapshotRegistry* m_workerObjectSnapshotRegistry;
+        ObjectSnapshotRegistry* m_pendingObjectSnapshotRegistry;
+        ObjectSnapshotRegistry* m_activeObjectSnapshotRegistry;
+
+        NodeSnapshotRegistry* m_pendingSnapshotRegistry;
+
+        std::mutex m_lock;
+        std::mutex m_pendingLock;
 
         bool m_prepared{ false };
 
@@ -91,13 +122,13 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
-        std::vector<pool::NodeHandle> m_enforceBoundsDynamic;
+        std::vector<physics::NodeBounds> m_dynamicBounds;
 
-        std::vector<pool::NodeHandle> m_enforceBoundsStatic;
+        std::vector<physics::NodeBounds> m_staticBounds;
 
-        std::vector<pool::NodeHandle> m_pendingNodes;
+        std::vector<physics::NodeBounds> m_pendingNodes;
 
-        std::vector<physics::physics_id> m_pending;
+        std::vector<physics::physics_id> m_pendingObjects;
 
         std::vector<Object*> m_updateObjects;
         std::vector<Object> m_objects;
