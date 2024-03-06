@@ -25,6 +25,11 @@ struct Material {
 
   float tilingX;
   float tilingY;
+
+  uint spriteCount;
+  uint spritesX;
+  uint spritesY;
+
   int layers;
   float layersDepth;
   float parallaxDepth;

@@ -2,17 +2,15 @@
 
 #include <iostream>
 
+#include "kigl/GLState.h"
+
 #include "util/thread.h"
 
-#include "ki/Timer.h"
-#include "kigl/kigl.h"
-
 #include "asset/Assets.h"
-#include "asset/UBO.h"
 #include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
-#include "backend/DrawBuffer.h"
+#include "asset/LightUBO.h"
 
 #include "model/Viewport.h"
 
@@ -36,13 +34,9 @@
 
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
-#include "render/CubeMap.h"
 #include "render/RenderContext.h"
 #include "render/WindowBuffer.h"
-#include "render/FrameBuffer.h"
 #include "render/RenderData.h"
-
-#include "renderer/ShadowCascade.h"
 
 #include "renderer/NodeRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -54,8 +48,6 @@
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
-
-#include "scene/ParticleSystem.h"
 
 namespace {
 }
@@ -96,8 +88,6 @@ Scene::Scene(
         m_normalRenderer->setEnabled(assets.showNormals);
     }
 
-    m_particleSystem = std::make_unique<ParticleSystem>();
-
     m_batch = std::make_unique<render::Batch>();
     m_nodeDraw = std::make_unique<render::NodeDraw>();
     m_renderData = std::make_unique<render::RenderData>();
@@ -106,7 +96,6 @@ Scene::Scene(
 Scene::~Scene()
 {
     *m_alive = false;
-    m_particleGenerators.clear();
 
     KI_INFO("SCENE: deleted");
 }
@@ -183,10 +172,6 @@ void Scene::prepareRT()
 
     if (m_normalRenderer->isEnabled()) {
         m_normalRenderer->prepareRT(ctx);
-    }
-
-    if (m_particleSystem) {
-        m_particleSystem->prepareRT(ctx);
     }
 
     {
@@ -280,10 +265,6 @@ void Scene::updateRT(const UpdateContext& ctx)
     m_registry->updateRT(ctx);
 
     m_renderData->update();
-
-    //if (m_particleSystem) {
-    //    m_particleSystem->update(ctx);
-    //}
 }
 
 void Scene::postRT(const UpdateContext& ctx)
@@ -493,12 +474,6 @@ void Scene::drawScene(
 
     if (nodeRenderer->isEnabled()) {
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
-    }
-
-    //targetBuffer->bind(ctx);
-
-    if (m_particleSystem) {
-        m_particleSystem->render(ctx);
     }
 
     if (assets.showNormals) {

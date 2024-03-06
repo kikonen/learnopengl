@@ -28,6 +28,7 @@
 #include "AudioLoader.h"
 #include "ControllerLoader.h"
 #include "GeneratorLoader.h"
+#include "ParticleLoader.h"
 #include "PhysicsLoader.h"
 #include "ScriptLoader.h"
 
@@ -49,6 +50,7 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
+        ParticleLoader& particleLoader,
         PhysicsLoader& physicsLoader,
         ScriptLoader& scriptLoader) const
     {
@@ -65,6 +67,7 @@ namespace loader {
                 audioLoader,
                 controllerLoader,
                 generatorLoader,
+                particleLoader,
                 physicsLoader,
                 scriptLoader);
         }
@@ -81,6 +84,7 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
+        ParticleLoader& particleLoader,
         PhysicsLoader& physicsLoader,
         ScriptLoader& scriptLoader) const
     {
@@ -97,6 +101,7 @@ namespace loader {
             audioLoader,
             controllerLoader,
             generatorLoader,
+            particleLoader,
             physicsLoader,
             scriptLoader);
     }
@@ -114,6 +119,7 @@ namespace loader {
         AudioLoader& audioLoader,
         ControllerLoader& controllerLoader,
         GeneratorLoader& generatorLoader,
+        ParticleLoader& particleLoader,
         PhysicsLoader& physicsLoader,
         ScriptLoader& scriptLoader) const
     {
@@ -271,6 +277,9 @@ namespace loader {
             else if (k == "generator") {
                 generatorLoader.loadGenerator(v, data.generator);
             }
+            else if (k == "particle") {
+                particleLoader.loadParticle(v, data.particle);
+            }
             else if (k == "selected") {
                 data.selected = readBool(v);
             }
@@ -338,6 +347,7 @@ namespace loader {
                             audioLoader,
                             controllerLoader,
                             generatorLoader,
+                            particleLoader,
                             physicsLoader,
                             scriptLoader);
                         clones.push_back(clone);

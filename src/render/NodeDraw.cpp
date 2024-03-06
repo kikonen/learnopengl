@@ -19,10 +19,12 @@
 
 #include "engine/PrepareContext.h"
 
+#include "renderer/ParticleRenderer.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ProgramRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
@@ -32,6 +34,8 @@ namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
     const ki::program_id NULL_PROGRAM_ID = 0;
+
+    ParticleRenderer particleRenderer{ true };
 }
 
 namespace render {
@@ -55,6 +59,7 @@ namespace render {
     }
 
     NodeDraw::NodeDraw()
+        : m_textureQuad{ render::TextureQuad::get() }
     {}
 
     NodeDraw::~NodeDraw()
@@ -102,6 +107,8 @@ namespace render {
         m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
+
+        particleRenderer.prepareRT(ctx);
     }
 
     void NodeDraw::updateRT(const UpdateViewContext& ctx)
@@ -355,6 +362,12 @@ namespace render {
                 },
                 nodeSelector);
             ctx.m_batch->flush(ctx);
+        }
+
+        if (ctx.m_allowBlend)
+        {
+            state.setStencil({});
+            particleRenderer.render(ctx);
         }
 
         // pass 8 - screenspace effects
@@ -675,7 +688,7 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+        auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
         const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
 
@@ -692,7 +705,7 @@ namespace render {
                     auto* node = handle.toNode();
                     if (!node || !nodeSelector(node)) continue;
 
-                    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+                    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
                     const float distance = glm::length(viewPos - snapshot.getWorldPosition());
                     sorted[distance] = node;
                 }

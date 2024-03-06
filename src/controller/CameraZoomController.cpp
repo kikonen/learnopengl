@@ -18,7 +18,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 
 CameraZoomController::CameraZoomController()
@@ -79,7 +79,7 @@ void CameraZoomController::onKey(
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate };
             evt.body.node.target = nextCamera;
-            m_registry->m_dispatcher->send(evt);
+            m_registry->m_dispatcherWorker->send(evt);
         }
     } else {
 
@@ -109,9 +109,9 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    auto& snapshotRegistry = *ctx.m_registry->m_snapshotRegistry;
+    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    const auto& snapshot = snapshotRegistry.getActiveSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;

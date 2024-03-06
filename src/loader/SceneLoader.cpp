@@ -36,7 +36,8 @@
 
 #include "component/Light.h"
 #include "component/Camera.h"
-#include "component/ParticleGenerator.h"
+
+#include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
 
@@ -80,6 +81,7 @@ namespace loader {
         m_audioLoader(ctx),
         m_controllerLoader(ctx),
         m_generatorLoader(ctx),
+        m_particleLoader(ctx),
         m_physicsLoader(ctx),
         m_entityLoader(ctx)
     {
@@ -104,7 +106,7 @@ namespace loader {
         std::shared_ptr<Registry> registry)
     {
         m_registry = registry;
-        m_dispatcher = registry->m_dispatcher;
+        m_dispatcher = registry->m_dispatcherWorker;
 
         m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
@@ -114,6 +116,8 @@ namespace loader {
         m_volumeLoader.setRegistry(registry);
         m_cubeMapLoader.setRegistry(registry);
         m_audioLoader.setRegistry(registry);
+        m_generatorLoader.setRegistry(registry);
+        m_particleLoader.setRegistry(registry);
         m_physicsLoader.setRegistry(registry);
         m_entityLoader.setRegistry(registry);
     }
@@ -154,6 +158,7 @@ namespace loader {
                     m_audioLoader,
                     m_controllerLoader,
                     m_generatorLoader,
+                    m_particleLoader,
                     m_physicsLoader,
                     m_scriptLoader);
 
@@ -802,6 +807,10 @@ namespace loader {
             m_materials,
             type);
 
+        node->m_particleGenerator = m_particleLoader.createParticle(
+            data.particle,
+            m_materials);
+
         if (type->m_entityType == mesh::EntityType::text) {
             auto fontId = resolveFont(typeHandle, data.text);
             auto generator = std::make_unique<TextGenerator>();
@@ -962,16 +971,22 @@ namespace loader {
             }
         }
         {
-            const auto& e = data.renderFlags.find("static_physics");
+            const auto& e = data.renderFlags.find("static_bounds");
             if (e != data.renderFlags.end()) {
-                flags.staticPhysics = e->second;
+                flags.staticBounds = e->second;
+                flags.physics = e->second;
             }
         }
         {
-            const auto& e = data.renderFlags.find("enforce_bounds");
+            const auto& e = data.renderFlags.find("dynamic_bounds");
             if (e != data.renderFlags.end()) {
-                flags.enforceBounds = e->second;
+                flags.dynamicBounds = e->second;
+                flags.physics = e->second;
             }
+        }
+
+        if (data.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
+            flags.physics = true;
         }
     }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include "model/NodeTransform.h"
 #include "model/InstancePhysics.h"
 
@@ -30,7 +32,7 @@ struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
 
-class SnapshotRegistry;
+class NodeSnapshotRegistry;
 class EntityRegistry;
 
 //
@@ -55,10 +57,10 @@ public:
         Node& container) {}
 
     void snapshotWT(
-        SnapshotRegistry& snapshotRegistry);
+        NodeSnapshotRegistry& snapshotRegistry);
 
     virtual void updateEntity(
-        SnapshotRegistry& snapshotRegistry,
+        NodeSnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container);
 
@@ -85,9 +87,12 @@ public:
         return m_transforms;
     }
 
+    std::span<const Snapshot> getSnapshots(
+        NodeSnapshotRegistry& snapshotRegistry) const noexcept;
+
 protected:
     void prepareSnapshots(
-        SnapshotRegistry& snapshotRegistry);
+        NodeSnapshotRegistry& snapshotRegistry);
 
     void prepareEntities(
         EntityRegistry& entityRegistry);
@@ -114,7 +119,7 @@ protected:
 
     uint32_t m_reservedCount{ 0 };
 
-    int m_containerMatrixLevel = -1;
+    ki::level_id m_containerMatrixLevel{ 0 };
 
     std::vector<NodeTransform> m_transforms;
     std::vector<const backend::Lod*> m_lods;

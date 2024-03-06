@@ -1,7 +1,7 @@
 assets:
   log_file: log/development.log
   scene_file: scene_physics.yml
-  scene_file: scene_forest.yml
+  scene_file: scene_particle.yml
 
   glfw_swap_interval: 1
   gl_debug: true
@@ -110,6 +110,9 @@ assets:
   fog_start: 500.0
   fog_end: 2000.0
   fog_density: 1.1
+
+  particle_enabled: true
+  particle_max_count: 100000
 
   shadow_map_enabled: true
 

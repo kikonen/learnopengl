@@ -39,8 +39,7 @@ entities:
     sprite: skeleton
     render_flags:
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
   - name: Object front
@@ -51,8 +50,7 @@ entities:
     sprite: skeleton
     render_flags:
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
     script_file: scripts/anim_rotate_object
@@ -65,9 +63,7 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      physics: true
-      enforce_bounds: true
-      render_back: true
+      dynamic_bounds: true
     scale: [0.8, 1.8, 1]
   - name: Object right
     model: quad
@@ -77,8 +73,7 @@ entities:
     sprite: skeleton
     render_flags:
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
   - name: Object left
@@ -89,8 +84,7 @@ entities:
     sprite: skeleton
     render_flags:
       alpha: true
-      physics: true
-      enforce_bounds: true
+      dynamic_bounds: true
       render_back: true
     scale: [0.8, 1.8, 1]
   - name: Directional light

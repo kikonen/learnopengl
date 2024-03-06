@@ -52,9 +52,10 @@ struct DataUBO {
     float u_effectBloomExposure;
 
     float u_time;
+    int u_particleCount;
     int u_shadowCount;
     int pad3_1;
-    int pad3_2;
+    //int pad3_2;
     //int pad3_3;
 
     // From *camera* view (not shadow view)

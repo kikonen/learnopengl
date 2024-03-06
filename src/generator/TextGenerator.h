@@ -35,7 +35,7 @@ public:
         Node& container) override;
 
     virtual void updateEntity(
-        SnapshotRegistry& snapshotRegistry,
+        NodeSnapshotRegistry& snapshotRegistry,
         EntityRegistry& entityRegistry,
         Node& container) override;
 

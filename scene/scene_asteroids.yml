@@ -9,8 +9,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 10]
     front: [0, 0, -1]
@@ -20,7 +19,22 @@ entities:
         default: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: fps_counter
+    parent_id: player
+    type: text
+    material: fps_text
+    text:
+      font: fps_font
+      text: "- fps"
+    program: g_font_render
+    shadow_program: shadow_font_render
+    pos: [-1.8, 0.95, -2.5]
+    scale: 0.0025
+    render_flags:
+      billboard: true
+      alpha: true
+      render_back: true
+  - id: player_camera
     parent_id: player
     type: origo
     camera:
@@ -43,6 +57,8 @@ entities:
     program: g_tex
     pos: [0, 0, 0]
     scale: 1
+    particle:
+      material: particle_firespin
   - id: asteroid_belt
     parent_id: planet-origo
     program: g_tex
@@ -104,3 +120,20 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 50000
+fonts:
+  - name: fps_font
+    path: fonts/Vera.ttf
+    size: 36
+materials:
+  - name: default
+    kd: [0.8, 0.8, 0.0, 1.0]
+  - name: fps_text
+    kd: [0.0, 0.8, 0.0, 1.0]
+    xmetal: [1.0, 0.0, 0, 1]
+  - name: particle_firespin
+    kd: [1, 1, 1, 1]
+    map_kd: particles/7_firespin_spritesheet.png
+    sprites: 61
+    sprites_x: 8
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

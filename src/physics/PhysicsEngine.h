@@ -38,7 +38,7 @@ namespace physics {
         void update(const UpdateContext& ctx);
         void updateBounds(const UpdateContext& ctx);
 
-        inline bool isEnabled(bool enabled) const {
+        inline bool isEnabled(bool enabled) const noexcept{
             return m_enabled;
         }
 
@@ -55,6 +55,10 @@ namespace physics {
         float getWorldSurfaceLevel(const glm::vec3& pos);
 
         void handleNodeAdded(Node* node);
+
+        uint32_t getObjectCount() const noexcept {
+            return static_cast<uint32_t>(m_objects.size());
+        }
 
     private:
         void preparePending(const UpdateContext& ctx);

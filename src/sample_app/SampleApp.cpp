@@ -32,7 +32,7 @@
 
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 
 #include "engine/AssetsLoader.h"
 
@@ -45,6 +45,7 @@
 
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
+#include "scene/ParticleUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -84,7 +85,12 @@ int SampleApp::onSetup()
         m_registry,
         m_alive);
 
+    m_particleUpdater = std::make_shared<ParticleUpdater>(
+        m_registry,
+        m_alive);
+
     m_sceneUpdater->start();
+    m_particleUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -121,30 +127,30 @@ int SampleApp::onSetup()
 }
 
 int SampleApp::onUpdate(const ki::RenderClock& clock) {
-    auto* updater = m_currentScene.get();
-    if (!updater) return 0;
+    auto* scene = m_currentScene.get();
+    if (!scene) return 0;
 
     {
         UpdateContext ctx(
             clock,
             m_currentScene->m_registry.get());
 
-        updater->updateRT(ctx);
+        scene->updateRT(ctx);
     }
 
     return 0;
 }
 
 int SampleApp::onPost(const ki::RenderClock& clock) {
-    auto* updater = m_currentScene.get();
-    if (!updater) return 0;
+    auto* scene = m_currentScene.get();
+    if (!scene) return 0;
 
     {
         UpdateContext ctx(
             clock,
             m_currentScene->m_registry.get());
 
-        updater->postRT(ctx);
+        scene->postRT(ctx);
     }
 
     return 0;
@@ -329,15 +335,29 @@ void SampleApp::onDestroy()
         KI_INFO_OUT("APP: loaders stopped!");
     }
 
-    if (m_sceneUpdater) {
-        KI_INFO_OUT("APP: stopping worker...");
+    {
         m_sceneUpdater->destroy();
+        m_particleUpdater->destroy();
+    }
+
+    if (m_sceneUpdater) {
+        KI_INFO_OUT("APP: stopping WT...");
 
         // NOTE KI wait for worker threads to shutdown
         while (m_sceneUpdater->isRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        KI_INFO_OUT("APP: worker stopped!");
+        KI_INFO_OUT("APP: WT stopped!");
+    }
+
+    if (m_particleUpdater) {
+        KI_INFO_OUT("APP: stopping PS...");
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_particleUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: PS stopped!");
     }
 
     if (m_currentScene) {
@@ -380,7 +400,7 @@ void SampleApp::selectNode(
             {
                 event::Event evt { event::Type::audio_source_pause };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             return;
@@ -407,13 +427,13 @@ void SampleApp::selectNode(
                     .data = { 0.f, 1.f, 0.f },
                     .data2 = { 360.f, 0, 0 },
                 };
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             {
                 event::Event evt { event::Type::audio_source_play };
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
         }
     } else if (playerMode) {
@@ -422,7 +442,7 @@ void SampleApp::selectNode(
             if (exists) {
                 event::Event evt { event::Type::node_activate };
                 evt.body.node.target = node->getId();
-                ctx.m_registry->m_dispatcher->send(evt);
+                ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
             node = nullptr;
@@ -431,7 +451,7 @@ void SampleApp::selectNode(
         // NOTE KI null == default camera
         event::Event evt { event::Type::camera_activate };
         evt.body.node.target = node->getId();
-        ctx.m_registry->m_dispatcher->send(evt);
+        ctx.m_registry->m_dispatcherWorker->send(evt);
 
         node = nullptr;
     }

@@ -1,25 +1,16 @@
 #include "RenderContext.h"
 #include "RenderContext.h"
 
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
-
-#include "kigl/kigl.h"
 #include "kigl/GLState.h"
 
 #include "asset/Assets.h"
-#include "asset/ImageTexture.h"
 
-#include "component/Light.h"
 #include "component/Camera.h"
 
-#include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
-
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/EntityRegistry.h"
 
 #include "render/NodeDraw.h"
 #include "render/RenderData.h"
@@ -87,7 +78,7 @@ RenderContext::RenderContext(
     : m_name{ name },
     m_parent{ parent },
     m_assets{ Assets::get() },
-    m_state{ kigl::GLState::get() },
+    m_state{ m_parent ? m_parent->m_state : kigl::GLState::get() },
     m_clock{ clock },
     m_renderData{ renderData },
     m_nodeDraw{ nodeDraw },
@@ -179,7 +170,8 @@ RenderContext::RenderContext(
         assets.effectBloomExposure,
 
         (float)m_clock.ts,
-        0,
+        0, // particleCount
+        0, // shadowCount
     };
 
     m_clipPlanes.u_clipCount = 0;

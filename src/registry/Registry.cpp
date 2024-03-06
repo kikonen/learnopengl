@@ -12,12 +12,14 @@
 
 #include "engine/PrepareContext.h"
 
+#include "physics/PhysicsEngine.h"
+
 #include "script/api/Command.h"
 #include "script/CommandEngine.h"
 #include "script/CommandAPI.h"
 #include "script/ScriptEngine.h"
 
-#include "physics/PhysicsEngine.h"
+#include "particle/ParticleSystem.h"
 
 #include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
@@ -27,20 +29,24 @@
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/SnapshotRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 #include "registry/NodeRegistry.h"
 
 Registry::Registry(
     std::shared_ptr<std::atomic<bool>> alive)
     : m_alive(alive),
     // registries
-    m_dispatcherImpl(std::make_unique<event::Dispatcher>()),
+    m_dispatcherWorkerImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
-    m_snapshotRegistryImpl{std::make_unique<SnapshotRegistry>()},
+    m_workerSnapshotRegistryImpl{std::make_unique<NodeSnapshotRegistry>()},
+    m_pendingSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
+    m_activeSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
     // pointers
-    m_dispatcher(m_dispatcherImpl.get()),
+    m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
-    m_snapshotRegistry{ m_snapshotRegistryImpl.get() },
+    m_workerSnapshotRegistry{ m_workerSnapshotRegistryImpl.get() },
+    m_pendingSnapshotRegistry{ m_pendingSnapshotRegistryImpl.get() },
+    m_activeSnapshotRegistry{ m_activeSnapshotRegistryImpl.get() },
     m_nodeRegistry{ &NodeRegistry::get() }
 {
 }
@@ -54,7 +60,7 @@ void Registry::prepareShared()
     if (m_prepared) return;
     m_prepared = true;
 
-    m_dispatcher->prepare();
+    m_dispatcherWorker->prepare();
     m_dispatcherView->prepare();
 
     MaterialRegistry::get().prepare();
@@ -65,6 +71,10 @@ void Registry::prepareShared()
     ViewportRegistry::get().prepare();
 
     NodeRegistry::get().prepare(this);
+
+    physics::PhysicsEngine::get().prepare(m_alive);
+
+    particle::ParticleSystem::get().prepare();
 }
 
 void Registry::prepareWT()
@@ -73,15 +83,13 @@ void Registry::prepareWT()
 
     PrepareContext ctx{ this };
 
-    // NOTE KI does not matter which thread does prepare
-    physics::PhysicsEngine::get().prepare(m_alive);
-
     audio::AudioEngine::get().prepare();
 
     ControllerRegistry::get().prepare(this);
 
     script::CommandEngine::get().prepare(this);
     script::ScriptEngine::get().prepare(ctx, &script::CommandEngine::get());
+
 }
 
 void Registry::updateWT(const UpdateContext& ctx)
@@ -99,6 +107,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     ModelRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
+    particle::ParticleSystem::get().updateRT(ctx);
 }
 
 void Registry::postRT(const UpdateContext& ctx)

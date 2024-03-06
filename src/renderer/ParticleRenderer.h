@@ -2,11 +2,14 @@
 
 #include "Renderer.h"
 
+#include "render/TextureQuad.h"
+
 class ParticleRenderer final : public Renderer
 {
 public:
     ParticleRenderer(bool useFrameStep)
-        : Renderer("main", useFrameStep)
+        : Renderer("main", useFrameStep),
+        m_quad{ render::TextureQuad::get() }
     {}
 
     virtual void prepareRT(
@@ -16,5 +19,7 @@ public:
         const RenderContext& ctx);
 
 private:
-    Program* particleProgram{ nullptr };
+    Program* m_particleProgram{ nullptr };
+
+    render::TextureQuad& m_quad;
 };

@@ -14,6 +14,7 @@ namespace loader {
     class AudioLoader;
     class ControllerLoader;
     class GeneratorLoader;
+    class ParticleLoader;
     class PhysicsLoader;
     class ScriptLoader;
 
@@ -34,6 +35,7 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
+            ParticleLoader& particleLoader,
             PhysicsLoader& physicsLoader,
             ScriptLoader& scriptLoader) const;
 
@@ -48,6 +50,7 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
+            ParticleLoader& particleLoader,
             PhysicsLoader& physicsLoader,
             ScriptLoader& scriptLoader) const;
 
@@ -64,6 +67,7 @@ namespace loader {
             AudioLoader& audioLoader,
             ControllerLoader& controllerLoader,
             GeneratorLoader& generatorLoader,
+            ParticleLoader& particleLoader,
             PhysicsLoader& physicsLoader,
             ScriptLoader& scriptLoader) const;
 
