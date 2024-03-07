@@ -43,8 +43,6 @@ void ParticleRenderer::prepareRT(
           { DEF_USE_BLEND, "1" } });
 
     m_particleProgram->prepareRT();
-
-    m_quad.prepare();
 }
 
 void ParticleRenderer::render(
@@ -68,28 +66,13 @@ void ParticleRenderer::render(
     state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
     //glBlendFunc(GL_ONE, GL_ONE);
 
-    state.bindVAO(m_quad.getVao());
-
     m_particleProgram->bind();
 
-    glDrawArraysInstancedBaseInstance(
-        GL_TRIANGLE_STRIP,
-        m_quad.getBaseVertex(),
-        m_quad.getIndexCount(),
-        instanceCount,
-        m_quad.getBaseIndex());
-
-    //glDrawElementsInstancedBaseVertexBaseInstance(
-    //    GL_TRIANGLE_STRIP,
-    //    m_quad.getIndexCount(),
-    //    GL_UNSIGNED_INT,
-    //    (void*)(m_quad.getBaseIndex() * sizeof(GLuint)),
-    //    instanceCount,
-    //    m_quad.getBaseVertex(),
-    //    0);
-
-    //ctx.bindDefaults();
-    //state.invalidateBlendMode();
+    glDrawArraysInstanced(
+        GL_POINTS,
+        0,
+        1,
+        instanceCount);
 
     state.setDepthMask(GL_TRUE);
     state.setEnabled(GL_BLEND, false);

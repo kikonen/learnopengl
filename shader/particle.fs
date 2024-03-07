@@ -3,7 +3,8 @@
 #include uniform_data.glsl
 
 in VS_OUT {
-  vec2 texCoord;
+  flat vec2 spriteCoord;
+  flat vec2 spriteSize;
   vec3 viewPos;
 
   flat vec4 diffuse;
@@ -24,11 +25,16 @@ void main() {
   vec4 texColor = fs_in.diffuse;
 
   if (fs_in.diffuseTex.x > 0) {
-    const vec2 texCoord = fs_in.texCoord;
+    vec2 texCoord = fs_in.spriteCoord;
+    texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
+    texCoord.y += gl_PointCoord.y * fs_in.spriteSize.y;
+
     texColor *= texture(
       sampler2D(fs_in.diffuseTex),
       texCoord);
   }
+
+//  texColor = vec4(1, 0, 0, 0.5);
 
 #ifdef USE_ALPHA
   if (texColor.a < 0.01)

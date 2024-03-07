@@ -8,8 +8,7 @@ class ParticleRenderer final : public Renderer
 {
 public:
     ParticleRenderer(bool useFrameStep)
-        : Renderer("main", useFrameStep),
-        m_quad{ render::TextureQuad::get() }
+        : Renderer("main", useFrameStep)
     {}
 
     virtual void prepareRT(
@@ -20,6 +19,4 @@ public:
 
 private:
     Program* m_particleProgram{ nullptr };
-
-    render::TextureQuad& m_quad;
 };
