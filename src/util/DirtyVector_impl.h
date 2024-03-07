@@ -19,13 +19,7 @@ namespace util
     template<typename T>
     void DirtyVector<T>::allocate(size_t requestedSize)
     {
-        // NOTE KI reserve but don't fill extra space always
-        {
-            auto count = requestedSize - m_entries.size();
-            size_t size = m_entries.size() + std::max(DIRTY_VECTOR_BLOCK_SIZE, count) + DIRTY_VECTOR_BLOCK_SIZE;
-
-            m_entries.resize(size);
-            m_dirty.resize(size);
-        }
+        m_entries.resize(requestedSize);
+        m_dirty.resize(requestedSize);
     }
 }

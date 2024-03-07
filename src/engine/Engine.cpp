@@ -59,6 +59,7 @@ int Engine::setup() {
         GL_CULL_FACE,
         GL_DEPTH_TEST,
         GL_POLYGON_OFFSET_FILL,
+        GL_PROGRAM_POINT_SIZE,
         GL_RASTERIZER_DISCARD,
         GL_STENCIL_TEST,
         GL_TEXTURE_CUBE_MAP_SEAMLESS,

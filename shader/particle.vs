@@ -1,8 +1,5 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_TEX) in vec2 a_texCoord;
-
 #include struct_particle.glsl
 #include struct_material.glsl
 #include struct_clip_plane.glsl
@@ -15,7 +12,8 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
-  vec2 texCoord;
+  flat vec2 spriteCoord;
+  flat vec2 spriteSize;
   vec3 viewPos;
 
   flat vec4 diffuse;
@@ -30,8 +28,6 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
-const vec3 UP = vec3(0, 1, 0);
-
 Particle particle;
 
 #include fn_calculate_clipping.glsl
@@ -42,23 +38,13 @@ void main() {
 
   const int materialIndex = particle.u_materialIndex;
 
-  const vec4 pos = vec4(a_pos, 1.0);
-  vec4 worldPos;
-
-  // always billboard
-  {
-    vec3 particlePos = particle.u_pos_scale.xyz;
-    float particleScale = particle.u_pos_scale.a;
-
-    worldPos = vec4(particlePos
-                    + u_viewRight * a_pos.x * particleScale
-                    + UP * a_pos.y * particleScale,
-                    1.0);
-  }
-
+  const vec4 worldPos = vec4(particle.u_pos_scale.xyz, 1.0);
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
 
   gl_Position = u_projectedMatrix * worldPos;
+
+  const float particleScale = particle.u_pos_scale.a / gl_Position.w;
+  gl_PointSize = 2000 * particleScale;
 
   vs_out.diffuse = u_materials[materialIndex].diffuse;
   vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
@@ -74,17 +60,11 @@ void main() {
   const uint sx = spriteIndex % spritesX;
   const uint sy = spriteIndex / spritesX;
 
-  if (a_texCoord.x == 0.0) {
-    vs_out.texCoord.x = sx * tx;
-  } else {
-    vs_out.texCoord.x = (sx + 1) * tx;
-  }
+  vs_out.spriteCoord.x = sx * tx;
+  vs_out.spriteCoord.y = 1.0 - (sy + 1) * ty;
 
-  if (a_texCoord.y == 0.0) {
-    vs_out.texCoord.y = 1.0 - (sy + 1) * ty;
-  } else {
-    vs_out.texCoord.y = 1.0 - sy * ty;
-  }
+  vs_out.spriteSize.x = tx;
+  vs_out.spriteSize.y = ty;
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
