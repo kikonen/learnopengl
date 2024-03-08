@@ -33,7 +33,7 @@ struct Snapshot {
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
-    glm::vec3 m_viewRight{ 0.f };
+    //glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
@@ -82,7 +82,7 @@ struct Snapshot {
 
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
-        m_viewRight = o.m_viewRight;
+        //m_viewRight = o.m_viewRight;
         m_modelMatrix = o.m_modelMatrix;
         m_handle = o.m_handle;
 
@@ -114,8 +114,9 @@ struct Snapshot {
         return m_viewFront;
     }
 
-    inline const glm::vec3& getViewRight() const noexcept {
-        return m_viewRight;
+    inline glm::vec3 getViewRight() const noexcept {
+        //return m_viewRight;
+        return glm::cross(m_viewFront, m_viewUp);
     }
 
     inline const glm::vec3& getWorldPosition() const noexcept

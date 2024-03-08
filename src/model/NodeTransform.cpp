@@ -104,8 +104,8 @@ void NodeTransform::updateModelAxis() noexcept
     // NOTE KI w == 0; only rotation
     m_viewFront = glm::mat3(m_quatRotation) * m_front;
 
-    m_viewRight = glm::cross(m_viewFront, m_up);
-    m_viewUp = glm::cross(m_viewRight, m_viewFront);
+    glm::vec3 viewRight = glm::cross(m_viewFront, m_up);
+    m_viewUp = glm::cross(viewRight, m_viewFront);
 }
 
 void NodeTransform::updateRotationMatrix() noexcept

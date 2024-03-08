@@ -43,7 +43,7 @@ struct NodeTransform {
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
-    glm::vec3 m_viewRight{ 0.f };
+    //glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
@@ -202,10 +202,10 @@ struct NodeTransform {
         return m_viewFront;
     }
 
-    inline const glm::vec3& getViewRight() const noexcept {
-        assert(!m_dirty);
-        return m_viewRight;
-    }
+    //inline const glm::vec3& getViewRight() const noexcept {
+    //    assert(!m_dirty);
+    //    return m_viewRight;
+    //}
 
     inline const glm::vec3& getWorldPosition() const noexcept
     {

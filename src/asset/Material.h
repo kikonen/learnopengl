@@ -93,8 +93,8 @@ public:
 
     const MaterialSSBO toSSBO() const;
 
-    const float getRefractionRatio() const{
-        return refractionRatio[1] != 0 ? refractionRatio[0] / refractionRatio[1] : refractionRatio[0];
+    const float getRefractionRatio() const noexcept{
+        return refractionRatio;
     }
 
     static Material createMaterial(BasicMaterial type);
@@ -130,15 +130,8 @@ private:
         const glm::vec4& defaults);
 
 public:
-    ki::material_id m_id;
+    std::array<BoundTexture, MATERIAL_TEXTURE_COUNT> m_textures;
 
-    std::string m_name;
-    std::string m_path;
-
-    MaterialType m_type{ MaterialType::asset };
-
-    bool m_default : 1 {false};
-    bool m_used : 1 {false};
     mutable int m_registeredIndex = -1;
 
     TextureSpec textureSpec;
@@ -146,16 +139,12 @@ public:
     int pattern = -1;
     float reflection = 0.f;
     float refraction = 0.f;
-    glm::vec2 refractionRatio{ 0 };
+    float refractionRatio{ 0 };
 
     float tilingX = 1.0f;
     float tilingY = 1.0f;
 
-    uint16_t spriteCount = 1;
-    uint16_t spritesX = 1;
-    uint16_t spritesY = 1;
-
-    std::array<BoundTexture, MATERIAL_TEXTURE_COUNT> m_textures;
+    float map_bump_strength{ 1.f };
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     // ranges between 0 and 1000
@@ -182,7 +171,6 @@ public:
     // bump map(which by default uses luminance channel of the image)
     // bump lemur_bump.tga
     std::string map_bump;
-    float map_bump_strength{ 1.f };
 
     // channel: metalness, roughness, displacement, ambient-occlusion
     glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
@@ -225,6 +213,20 @@ public:
     std::string map_noise;
 
     static const ki::material_id DEFAULT_ID = 0;
+
+    std::string m_name;
+    std::string m_path;
+
+    ki::material_id m_id;
+
+    uint8_t spriteCount = 1;
+    uint8_t spritesX = 1;
+    uint8_t spritesY = 1;
+
+    MaterialType m_type{ MaterialType::asset };
+
+    bool m_default : 1 {false};
+    bool m_used : 1 {false};
 
 private:
     bool m_prepared : 1 {false};

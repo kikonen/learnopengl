@@ -21,7 +21,7 @@ Snapshot::Snapshot(const NodeTransform& o)
     m_quatRotation{ o.m_quatRotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
-    m_viewRight{ o.m_viewRight },
+    //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
     //m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
@@ -38,7 +38,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     m_quatRotation{ o.m_quatRotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
-    m_viewRight{ o.m_viewRight },
+    //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
     //m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
@@ -67,7 +67,7 @@ void Snapshot::applyFrom(const NodeTransform& o) noexcept
 
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
-    m_viewRight = o.m_viewRight;
+    //m_viewRight = o.m_viewRight;
     m_modelMatrix = o.m_modelMatrix;
 
     m_modelScale = o.m_modelScale;
