@@ -27,17 +27,15 @@ namespace physics {
         void updateToPhysics(bool force);
         void updateFromPhysics() const;
 
-        physics::physics_id m_id{ 0 };
-
         Body m_body{};
         Geom m_geom{};
 
-        dMass m_mass;
         dBodyID m_bodyId{ nullptr };
         dGeomID m_geomId{ nullptr };
 
         pool::NodeHandle m_nodeHandle{};
 
+        physics::physics_id m_id{ 0 };
         ki::level_id m_matrixLevel{ 0 };
         bool m_update : 1{ false };
     };

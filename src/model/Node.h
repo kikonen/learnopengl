@@ -164,6 +164,20 @@ public:
 
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+private:
+    NodeTransform m_transform;
+
+    ki::node_id m_id{ 0 };
+    uint32_t m_handleIndex{ 0 };
+
+    pool::NodeHandle m_parent{};
+
+    int m_cloneIndex{ 0 };
+
+    int m_tagMaterialIndex{ -1 };
+    int m_selectionMaterialIndex{ -1 };
+
+public:
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
 
@@ -171,16 +185,4 @@ public:
     std::string m_resolvedSID;
 #endif
 
-private:
-    ki::node_id m_id{ 0 };
-    uint32_t m_handleIndex{ 0 };
-
-    pool::NodeHandle m_parent{};
-
-    NodeTransform m_transform;
-
-    int m_cloneIndex{ 0 };
-
-    int m_tagMaterialIndex{ -1 };
-    int m_selectionMaterialIndex{ -1 };
 };

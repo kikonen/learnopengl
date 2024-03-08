@@ -25,7 +25,6 @@ namespace physics
         m_update { o.m_update },
         m_body{ o.m_body },
         m_geom{ o.m_geom },
-        m_mass{ o.m_mass },
         m_bodyId{ o.m_bodyId },
         m_geomId{ o.m_geomId },
         m_nodeHandle{ o.m_nodeHandle }
@@ -58,26 +57,28 @@ namespace physics
         if (m_body.type != BodyType::none) {
             m_bodyId = dBodyCreate(worldId);
 
+            dMass mass;
+
             switch (m_body.type) {
             case BodyType::box: {
-                dMassSetBox(&m_mass, m_body.density, sz.x, sz.y, sz.z);
+                dMassSetBox(&mass, m_body.density, sz.x, sz.y, sz.z);
                 break;
             }
             case BodyType::sphere: {
-                dMassSetSphere(&m_mass, m_body.density, radius);
+                dMassSetSphere(&mass, m_body.density, radius);
                 break;
             }
             case BodyType::capsule: {
-                dMassSetCapsule(&m_mass, m_body.density, DIR_Z, radius, length);
+                dMassSetCapsule(&mass, m_body.density, DIR_Z, radius, length);
                 break;
             }
             case BodyType::cylinder: {
-                dMassSetCylinder(&m_mass, m_body.density, DIR_Z, radius, length);
+                dMassSetCylinder(&mass, m_body.density, DIR_Z, radius, length);
                 break;
             }
             }
 
-            dBodySetMass(m_bodyId, &m_mass);
+            dBodySetMass(m_bodyId, &mass);
         }
 
         switch (m_geom.type) {
