@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <mutex>
+#include <atomic>
 
 #include "pool/TypeHandle.h"
 
@@ -56,6 +57,8 @@ namespace particle {
 
         std::mutex m_lock{};
         std::mutex m_snapshotLock{};
+
+        std::atomic_bool m_updateReady{ false };
 
         size_t m_maxCount{ 0 };
         std::vector<Particle> m_particles;
