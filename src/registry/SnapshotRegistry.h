@@ -82,7 +82,11 @@ public:
 
         std::lock_guard lock(m_lock);
         copy(m_snapshots.get(), dst->m_snapshots.get(), startIndex, count);
-        m_dirty = false;
+
+        // NOTE KI can clear flag only if known full update
+        if (startIndex == 0 && count == -1) {
+            m_dirty = false;
+        }
     }
 
     // lock this && copy from
@@ -93,7 +97,8 @@ public:
     {
         std::lock_guard lock(m_lock);
         // NOTE KI combine all calls together
-        m_dirty = m_dirty || copy(src->m_snapshots.get(), m_snapshots.get(), startIndex, count);
+        bool dirty = copy(src->m_snapshots.get(), m_snapshots.get(), startIndex, count);
+        m_dirty = m_dirty || dirty;
     }
 
 protected:
