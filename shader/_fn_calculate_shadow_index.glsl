@@ -1,16 +1,17 @@
 uint calculateShadowIndex(
   in vec3 viewPos)
 {
-  uint shadowIndex = u_shadowCount - 1;
-
   const float depthValue = abs(viewPos.z);
 
-  for (int i = 0; i < u_shadowCount; i++) {
-    if (depthValue <= u_shadowPlanes[i + 1].z) {
-      shadowIndex = i;
-      break;
-    }
+  if (depthValue <= u_shadowCascade_0) {
+    return 0;
+  } else if (depthValue <= u_shadowCascade_1) {
+    return 1;
+  } else if (depthValue <= u_shadowCascade_2) {
+    return 2;
+  } else if (depthValue <= u_shadowCascade_3) {
+    return 3;
   }
 
-  return shadowIndex;
+  return 0;//u_shadowCount;
 }

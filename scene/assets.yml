@@ -71,7 +71,6 @@ assets:
   frustum_gpu: false
   frustum_parallel_limit: 500
   frustum_debug: true
-  frustum_visual: false
 
   camera_fov: 45
 
@@ -118,12 +117,11 @@ assets:
 
   shadow_polygon_offset_enabled: true
   shadow_polygon_offset: [2, 0.5]
-  shadow_planes: [0.1, 30, 120, 500]
-  xxshadow_planes: [0.1, 20, 100]
-  xxshadow_planes: [0.1, 100]
+  shadow_planes: [0.1, 25, 75, 150, 500]
   shadow_map_sizes: [1024, 1024, 1024, 1024]
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
+  shadow_visual: false
 
   cube_map_enabled: true
   cube_map_seamless: true

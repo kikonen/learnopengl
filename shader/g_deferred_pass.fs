@@ -99,7 +99,7 @@ void main()
 
     emission = (material.emission.r + material.emission.g + material.emission.b) > 0;
 
-    if (u_frustumVisual) {
+    if (u_shadowVisual) {
       color += CASCADE_COLORS[shadowIndex];
     }
   }

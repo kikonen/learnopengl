@@ -41,7 +41,7 @@ struct DataUBO {
 
     int u_environmentMapExist; // bool as 4 bytes
 
-    int u_frustumVisual; // bool as 4 bytes
+    int u_shadowVisual; // bool as 4 bytes
 
     float u_fogStart;
     float u_fogEnd;
@@ -52,14 +52,16 @@ struct DataUBO {
     float u_effectBloomExposure;
 
     float u_time;
-    int u_particleCount;
     int u_shadowCount;
-    int pad3_1;
-    //int pad3_2;
-    //int pad3_3;
 
     // From *camera* view (not shadow view)
     // NOTE KI std410 arrays are glm::vec4 *alignment* per item
-    glm::vec4 u_shadowPlanes[MAX_SHADOW_MAP_COUNT + 1];
+    float u_shadowCascade_0;
+    float u_shadowCascade_1;
+    float u_shadowCascade_2;
+    float u_shadowCascade_3;
+
+    int pad1;
+    int pad2;
 };
 #pragma pack(pop)
