@@ -446,12 +446,13 @@ Node* WaterMapRenderer::findClosest(
         if (!node) continue;
 
         const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-        const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
-        const float distance = glm::length(ray);
+        //auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+        auto dist2 = cameraPos.y - snapshot.getWorldPosition().y;
+
         //glm::vec3 fromCamera = glm::normalize(ray);
         //float dot = glm::dot(fromCamera, cameraDir);
         //if (dot < 0) continue;
-        sorted[distance] = node;
+        sorted[dist2] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

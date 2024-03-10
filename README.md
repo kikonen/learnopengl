@@ -3,7 +3,15 @@
 
 This is just scatchpad app for following OpenGL tutorial at learnopengl.com.
 
-# opengl GLAD setup
+# SETUP
+
+## Sub modules
+```bash
+git submodule init
+git submodule update --init  --recursive
+```
+
+## opengl GLAD setup
 
 1) generae package
 https://glad.dav1d.de
