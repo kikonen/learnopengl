@@ -391,9 +391,10 @@ void WaterMapRenderer::handleNodeAdded(Node* node)
     if (!isEnabled()) return;
 
     auto* type = node->m_typeHandle.toType();
-    if (!type->m_flags.water) return;
 
-    m_nodes.push_back(node->toHandle());
+    if (type->m_flags.water) {
+        m_nodes.push_back(node->toHandle());
+    }
 }
 
 void WaterMapRenderer::drawNodes(

@@ -282,8 +282,6 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
 
     auto* type = node->m_typeHandle.toType();
 
-    if (!type->m_flags.cubeMap) return;
-
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);
     }
@@ -291,7 +289,9 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
         m_mirrorMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node->toHandle());
+    if (type->m_flags.cubeMap) {
+        m_nodes.push_back(node->toHandle());
+    }
 }
 
 void CubeMapRenderer::clearCubeMap(
