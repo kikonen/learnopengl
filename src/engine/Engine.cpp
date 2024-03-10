@@ -72,6 +72,7 @@ int Engine::setup() {
     }
 
     m_registry->prepareShared();
+    m_registry->prepareRT();
 
     return onSetup();
 }

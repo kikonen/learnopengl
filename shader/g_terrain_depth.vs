@@ -57,9 +57,10 @@ void main() {
   gl_Position = pos;
 
   vs_out.modelMatrix = modelMatrix;
-  vs_out.rangeYmin = entity.u_rangeYmin;
-  vs_out.rangeYmax = entity.u_rangeYmax;
-  vs_out.heightMapTex = material.heightMapTex;
+
+  vs_out.rangeYmin = tile.u_rangeYmin;
+  vs_out.rangeYmax = tile.u_rangeYmax;
+  vs_out.heightMapTex = tile.heightMapTex;
 
   {
     float x = entity.u_tileX;

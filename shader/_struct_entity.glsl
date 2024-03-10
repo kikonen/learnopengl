@@ -15,18 +15,10 @@ struct Entity {
 
   vec4 u_worldScale;
 
-  //int u_materialIndex;
-  int u_shapeIndex;
   uint u_highlightIndex;
 
   uint u_objectID;
   uint u_flags;
-
-  uint u_tileX;
-  uint u_tileY;
-
-  float u_rangeYmin;
-  float u_rangeYmax;
 
   uvec2 u_fontHandle;
 };

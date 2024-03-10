@@ -11,7 +11,6 @@ struct Material {
   uvec2 normalMapTex;
 
   uvec2 dudvMapTex;
-  uvec2 heightMapTex;
   uvec2 noiseMapTex;
   uvec2 opacityMapTex;
 

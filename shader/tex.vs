@@ -120,7 +120,7 @@ void main() {
 
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = entity.u_shapeIndex;
+  vs_out.shapeIndex = instance.u_shapeIndex;
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;

@@ -21,7 +21,7 @@
 #include "ParticleGenerator.h"
 
 namespace {
-    constexpr size_t PARTICLE_BLOCK_SIZE = 1000;
+    constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 }
 
@@ -34,7 +34,7 @@ namespace particle {
 
     ParticleSystem::ParticleSystem()
     {
-        m_particles.resize(MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE);
+        m_particles.resize(MAX_BLOCK_COUNT * BLOCK_SIZE);
     }
 
     void ParticleSystem::addParticle(const Particle& particle)
@@ -49,7 +49,7 @@ namespace particle {
         const auto& assets = Assets::get();
 
         m_enabled = assets.particleEnabled;
-        m_maxCount = std::min<int>(assets.particleMaxCount, MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE);
+        m_maxCount = std::min<int>(assets.particleMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
 
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
@@ -63,7 +63,7 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        m_ssbo.createEmpty(MAX_BLOCK_COUNT * PARTICLE_BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(MAX_BLOCK_COUNT * BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
@@ -137,8 +137,8 @@ namespace particle {
         const size_t totalCount = m_snapshotCount;
 
         if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / PARTICLE_BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * PARTICLE_BLOCK_SIZE * sz;
+            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+            size_t bufferSize = blocks * BLOCK_SIZE * sz;
             m_ssbo.resizeBuffer(bufferSize);
         }
 

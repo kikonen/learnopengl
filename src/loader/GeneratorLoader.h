@@ -23,6 +23,10 @@ namespace loader {
             const YAML::Node& node,
             GeneratorData& data) const;
 
+        void loadTerrain(
+            const YAML::Node& node,
+            TerrainData& data) const;
+
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
             const std::vector<MaterialData>& materials,

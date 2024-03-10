@@ -2,6 +2,8 @@
 
 #include "BaseData.h"
 
+#include "TerrainData.h"
+
 class Node;
 class NodeGenerator;
 
@@ -24,6 +26,8 @@ namespace loader {
 
         Repeat repeat;
         Tiling tiling;
+
+        TerrainData terrainData;
 
         std::string materialName;
     };

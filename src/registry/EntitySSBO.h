@@ -51,25 +51,15 @@ struct EntitySSBO {
     glm::vec3 u_worldScale{ 0.f };
     //int pad4_1;
 
-    // TODO KI material is *PER* INSTANCED/LOD
-    //GLint u_materialIndex{ 0 }; // 1 * 4 = 4
+    GLuint64 u_fontHandle;
 
-    GLint u_shapeIndex{ -1 }; // 1 * 4 = 4
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
-    GLuint u_tileX{ 0 };
-    GLuint u_tileY{ 0 };
-
-    float u_rangeYmin{ 0.f };
-    float u_rangeYmax{ 0.f };
-
-    GLuint64 u_fontHandle;
-
     int pad2_1;
-    int pad2_2;
+    //int pad2_2;
     //int pad2_3;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale

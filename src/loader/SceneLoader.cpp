@@ -41,10 +41,10 @@
 
 #include "model/Node.h"
 
-#include "generator/GridGenerator.h"
-#include "generator/TerrainGenerator.h"
-#include "generator/AsteroidBeltGenerator.h"
+//#include "generator/GridGenerator.h"
+//#include "generator/AsteroidBeltGenerator.h"
 #include "generator/TextGenerator.h"
+//#include "terrain/TerrainGenerator.h"
 
 #include "event/Dispatcher.h"
 
@@ -523,7 +523,6 @@ namespace loader {
         bool useTBN = false;
         bool useParallax = false;
         bool useDudvTex = false;
-        bool useHeightTex = false;
         bool useDisplacementTex = false;
         bool useNormalTex = false;
         bool useCubeMap = false;
@@ -532,7 +531,6 @@ namespace loader {
         for (auto& lod : type->modifyLods()) {
             for (auto& m : lod.m_materialSet.modifyMaterials()) {
                 useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
-                useHeightTex |= m.hasTex(MATERIAL_HEIGHT_MAP_IDX);
                 useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
                 useNormalTex |= m.hasTex(MATERIAL_NORMAL_MAP_IDX);
                 useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
@@ -581,9 +579,6 @@ namespace loader {
             //if (useDudvTex) {
             //    definitions[DEF_USE_DUDV_TEX] = "1";
             //}
-            if (useHeightTex) {
-                definitions[DEF_USE_HEIGHT_TEX] = "1";
-            }
             //if (useDisplacementTex) {
             //    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
             //}

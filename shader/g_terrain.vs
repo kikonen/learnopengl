@@ -10,11 +10,13 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include struct_material.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl
+#include struct_terrain_tile.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
 #include ssbo_material_indeces.glsl
+#include ssbo_terrain_tiles.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -28,7 +30,10 @@ out VS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+
   flat float tilingX;
+  flat float rangeYmin;
+  flat float rangeYmax;
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
@@ -45,11 +50,14 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 Material material;
+TerrainTile tile;
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
+  tile = u_terrainTiles[instance.u_shapeIndex];
+  tile = u_terrainTiles[gl_InstanceID];
 
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
@@ -68,11 +76,14 @@ void main() {
 
   vs_out.entityIndex = entityIndex;
   vs_out.materialIndex = materialIndex;
-  vs_out.heightMapTex = material.heightMapTex;
+
+  vs_out.rangeYmin = tile.u_rangeYmin;
+  vs_out.rangeYmax = tile.u_rangeYmax;
+  vs_out.heightMapTex = tile.heightMapTex;
 
   {
-    float x = entity.u_tileX;
-    float y = entity.u_tileY;
+    float x = tile.u_tileX;
+    float y = tile.u_tileY;
     float tilingX = material.tilingX;
     float tilingY = material.tilingY;
     float sizeX = 1.0 / tilingX;

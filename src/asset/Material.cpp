@@ -148,7 +148,6 @@ void Material::loadTextures()
     loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
     loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
     loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
-    loadTexture(MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
     loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
     loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
     loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
@@ -334,7 +333,6 @@ const MaterialSSBO Material::toSSBO() const
         m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
 
         m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
-        m_textures[MATERIAL_HEIGHT_MAP_IDX].m_handle,
         m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
         m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
 

@@ -21,6 +21,8 @@
 
 #include "particle/ParticleSystem.h"
 
+#include "terrain/TerrainTileRegistry.h"
+
 #include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/SpriteRegistry.h"
@@ -57,6 +59,8 @@ Registry::~Registry()
 
 void Registry::prepareShared()
 {
+    ASSERT_RT();
+
     if (m_prepared) return;
     m_prepared = true;
 
@@ -75,6 +79,7 @@ void Registry::prepareShared()
     physics::PhysicsEngine::get().prepare(m_alive);
 
     particle::ParticleSystem::get().prepare();
+    terrain::TerrrainTileRegistry::get().prepare();
 }
 
 void Registry::prepareWT()
@@ -89,13 +94,17 @@ void Registry::prepareWT()
 
     script::CommandEngine::get().prepare(this);
     script::ScriptEngine::get().prepare(ctx, &script::CommandEngine::get());
+}
 
+void Registry::prepareRT()
+{
 }
 
 void Registry::updateWT(const UpdateContext& ctx)
 {
     ASSERT_WT();
     //ControllerRegistry::get().updateWT(ctx);
+    terrain::TerrrainTileRegistry::get().updateWT(ctx);
 }
 
 void Registry::updateRT(const UpdateContext& ctx)
@@ -108,6 +117,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
     particle::ParticleSystem::get().updateRT(ctx);
+    terrain::TerrrainTileRegistry::get().updateRT(ctx);
 }
 
 void Registry::postRT(const UpdateContext& ctx)

@@ -32,14 +32,13 @@ constexpr int MATERIAL_EMISSION_IDX = 1;
 constexpr int MATERIAL_SPECULAR_IDX = 2;
 constexpr int MATERIAL_NORMAL_MAP_IDX = 3;
 constexpr int MATERIAL_DUDV_MAP_IDX = 4;
-constexpr int MATERIAL_HEIGHT_MAP_IDX = 5;
-constexpr int MATERIAL_NOISE_MAP_IDX = 6;
-constexpr int MATERIAL_METALNESS_MAP_IDX = 7;
-constexpr int MATERIAL_ROUGHNESS_MAP_IDX = 8;
-constexpr int MATERIAL_OCCLUSION_MAP_IDX = 9;
-constexpr int MATERIAL_DISPLACEMENT_MAP_IDX = 10;
-constexpr int MATERIAL_OPACITY_MAP_IDX = 11;
-constexpr int MATERIAL_METAL_CHANNEL_MAP_IDX = 12;
+constexpr int MATERIAL_NOISE_MAP_IDX = 5;
+constexpr int MATERIAL_METALNESS_MAP_IDX = 6;
+constexpr int MATERIAL_ROUGHNESS_MAP_IDX = 7;
+constexpr int MATERIAL_OCCLUSION_MAP_IDX = 8;
+constexpr int MATERIAL_DISPLACEMENT_MAP_IDX = 9;
+constexpr int MATERIAL_OPACITY_MAP_IDX = 10;
+constexpr int MATERIAL_METAL_CHANNEL_MAP_IDX = 11;
 constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_METAL_CHANNEL_MAP_IDX + 1;
 
 /*
@@ -209,7 +208,6 @@ public:
     int illum = 0;
 
     std::string map_dudv;
-    std::string map_height;
     std::string map_noise;
 
     static const ki::material_id DEFAULT_ID = 0;

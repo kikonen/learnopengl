@@ -270,7 +270,7 @@
     <ClCompile Include="src\generator\NodeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\generator\TerrainGenerator.cpp">
+    <ClCompile Include="src\terrain\TerrainGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\physics\PhysicsEngine.cpp">
@@ -639,10 +639,7 @@
     <ClCompile Include="src\scene\ParticleUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\PhysicsUpdater.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\physics\ObjectSnapshotRegistry.cpp">
+    <ClCompile Include="src\terrain\TerrainTileRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -995,7 +992,7 @@
     <ClInclude Include="src\generator\NodeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\generator\TerrainGenerator.h">
+    <ClInclude Include="src\terrain\TerrainGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\TextureSpec.h">
@@ -1535,22 +1532,22 @@
     <ClInclude Include="src\scene\ParticleUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\PhysicsUpdater.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\physics\ObjectSnapshot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\registry\SnapshotRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\SnapshotRegistry_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\physics\ObjectSnapshotRegistry.h">
+    <ClInclude Include="src\terrain\TerrainTileInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\physics\NodeBounds.h">
+    <ClInclude Include="src\terrain\TerrainTileSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\terrain\TerrainTileRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\TerrainData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

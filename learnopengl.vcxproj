@@ -214,6 +214,7 @@
     <ClCompile Include="src\script\api\SetTextNode.cpp" />
     <ClCompile Include="src\script\CommandEntry.cpp" />
     <ClCompile Include="src\script\CommandHandle.cpp" />
+    <ClCompile Include="src\terrain\TerrainTileRegistry.cpp" />
     <ClCompile Include="src\text\AtlasHandle.cpp" />
     <ClCompile Include="src\text\FontAtlas.cpp" />
     <ClCompile Include="src\audio\al_call.cpp" />
@@ -277,7 +278,7 @@
     <ClCompile Include="src\script\api\Wait.cpp" />
     <ClCompile Include="src\generator\GridGenerator.cpp" />
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
-    <ClCompile Include="src\generator\TerrainGenerator.cpp" />
+    <ClCompile Include="src\terrain\TerrainGenerator.cpp" />
     <ClCompile Include="src\model\InstancePhysics.cpp" />
     <ClCompile Include="src\model\NodeTransform.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
@@ -416,6 +417,7 @@
     <ClInclude Include="src\loader\ParticleData.h" />
     <ClInclude Include="src\loader\ParticleLoader.h" />
     <ClInclude Include="src\loader\ResolvedEntity.h" />
+    <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\TextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
@@ -448,6 +450,9 @@
     <ClInclude Include="src\script\CommandEngine_impl.h" />
     <ClInclude Include="src\script\CommandEntry.h" />
     <ClInclude Include="src\script\CommandHandle.h" />
+    <ClInclude Include="src\terrain\TerrainTileInfo.h" />
+    <ClInclude Include="src\terrain\TerrainTileRegistry.h" />
+    <ClInclude Include="src\terrain\TerrainTileSSBO.h" />
     <ClInclude Include="src\text\AtlasHandle.h" />
     <ClInclude Include="src\text\FontAtlas.h" />
     <ClInclude Include="src\text\size.h" />
@@ -551,7 +556,7 @@
     <ClInclude Include="src\generator\GridGenerator.h" />
     <ClInclude Include="src\script\api\ResumeNode.h" />
     <ClInclude Include="src\generator\NodeGenerator.h" />
-    <ClInclude Include="src\generator\TerrainGenerator.h" />
+    <ClInclude Include="src\terrain\TerrainGenerator.h" />
     <ClInclude Include="src\kigl\GLRenderBufferHandle.h" />
     <ClInclude Include="src\kigl\GLSyncQueue.h" />
     <ClInclude Include="src\kigl\GLBuffer.h" />

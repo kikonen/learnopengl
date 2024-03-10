@@ -85,7 +85,7 @@ void main() {
   }
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = entity.u_shapeIndex;
+  vs_out.shapeIndex = instance.u_shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 }

@@ -14,8 +14,8 @@
 #include "mesh/MaterialSet.h"
 
 #include "generator/GridGenerator.h"
-#include "generator/TerrainGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
+#include "terrain/TerrainGenerator.h"
 
 namespace loader {
     GeneratorLoader::GeneratorLoader(
@@ -77,8 +77,31 @@ namespace loader {
             else if (k == "material") {
                 data.materialName = readString(v);
             }
+            else if (k == "terrain") {
+                loadTerrain(v, data.terrainData);
+            }
             else {
                 reportUnknown("generator_entry", k, v);
+            }
+        }
+    }
+
+    void GeneratorLoader::loadTerrain(
+        const YAML::Node& node,
+        TerrainData& data) const
+    {
+        for (const auto& pair : node) {
+            const std::string& k = pair.first.as<std::string>();
+            const YAML::Node& v = pair.second;
+
+            if (k == "enabled") {
+            }
+            else if (k == "map_height") {
+                std::string line = readString(v);
+                data.map_height = resolveTexturePath(line);
+            }
+            else {
+                reportUnknown("terrain_entry", k, v);
             }
         }
     }
@@ -94,14 +117,16 @@ namespace loader {
 
         switch (data.type) {
         case GeneratorType::terrain: {
-            auto generator{ std::make_unique<TerrainGenerator>() };
+            auto generator{ std::make_unique<terrain::TerrainGenerator>() };
 
+            const auto& terrainData = data.terrainData;
             const auto& tiling = data.tiling;
 
             generator->m_modelsDir = assets.modelsDir;
             generator->m_worldTileSize = tiling.tile_size;
             generator->m_worldTilesU = tiling.tiles.x;
             generator->m_worldTilesV = tiling.tiles.z;
+            generator->m_heightMapFile = terrainData.map_height;
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
 

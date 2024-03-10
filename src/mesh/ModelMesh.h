@@ -15,8 +15,6 @@
 namespace mesh {
     class ModelMesh final : public Mesh {
         friend class ModelLoader;
-        friend class TerrainGenerator;
-        friend class LegacyTerrainGenerator;
         friend class ModelVBO;
         friend class ModelMaterialInit;
 

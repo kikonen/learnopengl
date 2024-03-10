@@ -20,7 +20,10 @@ in VS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+
   flat float tilingX;
+  flat float rangeYmin;
+  flat float rangeYmax;
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
@@ -37,6 +40,9 @@ out TCS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+
+  flat float rangeYmin;
+  flat float rangeYmax;
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
@@ -67,6 +73,9 @@ void main()
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
+
+  tcs_out[gl_InvocationID].rangeYmin = tcs_in[gl_InvocationID].rangeYmin;
+  tcs_out[gl_InvocationID].rangeYmax = tcs_in[gl_InvocationID].rangeYmax;
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
 #ifdef USE_TBN

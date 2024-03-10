@@ -209,11 +209,6 @@ namespace loader {
                 material.map_dudv = resolveTexturePath(line);
                 fields.map_dudv = true;
             }
-            else if (k == "map_height") {
-                std::string line = readString(v);
-                material.map_height = resolveTexturePath(line);
-                fields.map_height = true;
-            }
             else if (k == "map_noise") {
                 std::string line = readString(v);
                 material.map_noise = resolveTexturePath(line);
@@ -495,7 +490,6 @@ namespace loader {
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
         if (f.map_dudv) m.map_dudv = mod.map_dudv;
-        if (f.map_height) m.map_height = mod.map_height;
         if (f.map_noise) m.map_noise = mod.map_noise;
 
         if (f.metal) m.metal = mod.metal;

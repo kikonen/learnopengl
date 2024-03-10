@@ -40,7 +40,6 @@ struct MaterialField {
     bool metal = false;
 
     bool map_dudv = false;
-    bool map_height = false;
     bool map_noise = false;
 
     bool map_roughness = false;
