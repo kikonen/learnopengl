@@ -128,32 +128,33 @@ namespace mesh {
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 
     public:
-        EntityType m_entityType{ EntityType::origo };
-        NodeRenderFlags m_flags;
-
-        // NOTE KI *BIGGER* values rendered first (can be negative)
-        uint8_t m_priority{ 0 };
-
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };
         Program* m_preDepthProgram{ nullptr };
 
         std::unique_ptr<Sprite> m_sprite{ nullptr };
 
-    private:
-        ki::type_id m_id{ 0 };
-        uint32_t m_handleIndex{ 0 };
-
-        std::string m_name;
-
-        bool m_preparedWT : 1 {false};
-        bool m_preparedRT : 1 {false};
-
         kigl::GLVertexArray* m_vao{ nullptr };
-        backend::DrawOptions m_drawOptions;
 
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
+
+        std::string m_name;
+
+        NodeRenderFlags m_flags;
+
+        uint32_t m_handleIndex{ 0 };
+        ki::type_id m_id{ 0 };
+
+        backend::DrawOptions m_drawOptions;
+
+        EntityType m_entityType{ EntityType::origo };
+
+        // NOTE KI *BIGGER* values rendered first (can be negative)
+        uint8_t m_priority{ 0 };
+
+        bool m_preparedWT : 1 {false};
+        bool m_preparedRT : 1 {false};
     };
 }

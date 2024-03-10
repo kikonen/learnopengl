@@ -158,7 +158,7 @@ RenderContext::RenderContext(
 
         assets.environmentMapEnabled,
 
-        assets.frustumVisual,
+        assets.shadowVisual,
 
         assets.fogStart,
         assets.fogEnd,
@@ -170,7 +170,6 @@ RenderContext::RenderContext(
         assets.effectBloomExposure,
 
         (float)m_clock.ts,
-        0, // particleCount
         0, // shadowCount
     };
 

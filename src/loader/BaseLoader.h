@@ -75,6 +75,7 @@ namespace loader
 
         float readFractional(const YAML::Node& node) const;
         glm::vec2 readRefractionRatio(const YAML::Node& node) const;
+        float convertRefractionRatio(const glm::vec2 ratio) const noexcept;
 
         std::tuple<ki::node_id, std::string> resolveId(
             const BaseId& baseId,

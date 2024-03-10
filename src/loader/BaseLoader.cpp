@@ -410,7 +410,11 @@ namespace loader
         if (a.size() < 1) {
             a.push_back(1.0);
         }
-        return glm::vec2{ a[0], a[1] };
+        return { a[0], a[1] };
+    }
+
+    float BaseLoader::convertRefractionRatio(const glm::vec2 ratio) const noexcept {
+        return ratio[1] != 0 ? ratio[0] / ratio[1] : ratio[0];
     }
 
     std::tuple<ki::node_id, std::string> BaseLoader::resolveId(

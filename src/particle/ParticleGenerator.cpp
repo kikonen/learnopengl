@@ -41,7 +41,7 @@ namespace particle {
         const auto& transform = node.getTransform();
         glm::vec3 pos = transform.getWorldPosition();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             Particle particle;
 
             particle.m_pos = {
@@ -51,7 +51,7 @@ namespace particle {
 
             particle.m_dir = { 0.f, 1.f, 0.f };
             particle.m_velocity = 0.01f + prnd(.4f);
-            particle.m_lifetime = 5.f + prnd(60.f);
+            particle.m_lifetime = 5.f + prnd(100.f);
             particle.m_scale = 0.0001f + prnd(0.2f);
             particle.m_materialIndex = m_material.m_registeredIndex;
 

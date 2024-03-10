@@ -8,6 +8,7 @@
 #include "imgui.h"
 
 #include "util/Util.h"
+#include "util/Log.h"
 
 #include "asset/Assets.h"
 
@@ -25,6 +26,8 @@
 
 #include "registry/ProgramRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
+
+#include "registry/SnapshotRegistry_impl.h"
 
 #include "gui/Window.h"
 
@@ -161,9 +164,15 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<float>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            m_registry->m_pendingSnapshotRegistry->copyTo(
-                m_registry->m_activeSnapshotRegistry,
-                0, -1);
+            if (m_registry->m_pendingSnapshotRegistry->isDirty()) {
+                //KI_INFO("COPY: snapshot_dirty");
+                m_registry->m_pendingSnapshotRegistry->copyTo(
+                    m_registry->m_activeSnapshotRegistry,
+                    0, -1);
+            //}
+            //else {
+            //    KI_INFO("SKIP: snapshot_not_dirty");
+            }
 
             // input
             // -----

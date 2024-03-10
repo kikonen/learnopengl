@@ -3,6 +3,7 @@
 #include <vector>
 #include <span>
 #include <mutex>
+#include <atomic>
 #include <stdint.h>
 #include <functional>
 
@@ -50,6 +51,15 @@ public:
     void markDirty(uint32_t index) noexcept;
     void clearDirty(uint32_t index) noexcept;
 
+    bool isDirty() const noexcept
+    {
+        return m_dirty;
+    }
+
+    bool isDirtyRange(
+        uint32_t startIndex,
+        int32_t requestedCount) const noexcept;
+
     uint32_t registerSnapshot() noexcept;
     uint32_t registerSnapshotRange(size_t count) noexcept;
 
@@ -68,8 +78,15 @@ public:
         uint32_t startIndex,
         int32_t count) noexcept
     {
+        if (!m_dirty) return;
+
         std::lock_guard lock(m_lock);
         copy(m_snapshots.get(), dst->m_snapshots.get(), startIndex, count);
+
+        // NOTE KI can clear flag only if known full update
+        if (startIndex == 0 && count == -1) {
+            m_dirty = false;
+        }
     }
 
     // lock this && copy from
@@ -79,11 +96,14 @@ public:
         int32_t count) noexcept
     {
         std::lock_guard lock(m_lock);
-        copy(src->m_snapshots.get(), m_snapshots.get(), startIndex, count);
+        // NOTE KI combine all calls together
+        bool dirty = copy(src->m_snapshots.get(), m_snapshots.get(), startIndex, count);
+        m_dirty = m_dirty || dirty;
     }
 
 protected:
-    void copy(
+    // @return true if src was dirty
+    bool copy(
         util::DirtyVector<T>* src,
         util::DirtyVector<T>* dst,
         uint32_t startIndex,
@@ -95,6 +115,8 @@ protected:
 
 protected:
     mutable std::mutex m_lock;
+
+    std::atomic_bool m_dirty{ false };
 
     std::unique_ptr<util::DirtyVector<T>> m_snapshots;
 };

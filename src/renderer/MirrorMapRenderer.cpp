@@ -295,13 +295,14 @@ void MirrorMapRenderer::handleNodeAdded(
     if (!isEnabled()) return;
 
     auto* type = node->m_typeHandle.toType();
-    if (!type->m_flags.mirror) return;
 
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node->toHandle());
+    if (type->m_flags.mirror) {
+        m_nodes.push_back(node->toHandle());
+    }
 }
 
 void MirrorMapRenderer::drawNodes(
@@ -392,11 +393,11 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
             // https://stackoverflow.com/questions/59534787/signed-distance-function-3d-plane
             //const auto eyeV = node->getWorldPosition() - cameraPos;
             //const auto eyeN = glm::normalize(eyeV);
-            const auto planeDist = glm::dot(viewFront, snapshot.getWorldPosition());
-            const auto planeDot = glm::dot(viewFront, cameraPos);
-            const auto dist = planeDot - planeDist;
+            const auto modelDot = glm::dot(viewFront, snapshot.getWorldPosition());
+            const auto cameraDot = glm::dot(viewFront, cameraPos);
+            const auto dot = cameraDot - modelDot;
 
-            if (dist <= 0) {
+            if (dot <= 0) {
                 // NOTE KI behind mirror; ignore
                 continue;
             }
@@ -409,9 +410,9 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 
         {
             const auto eyeV = snapshot.getWorldPosition() - cameraPos;
-            const auto dist = glm::length(eyeV);
+            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
-            sorted[dist] = node;
+            sorted[dist2] = node;
         }
     }
 

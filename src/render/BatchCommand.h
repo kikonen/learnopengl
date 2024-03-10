@@ -29,11 +29,12 @@ namespace render {
         const Program* m_program{ nullptr };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
-        backend::DrawOptions m_drawOptions;
+
+        std::map<LodKey, std::vector<uint32_t>> m_lodInstances;
 
         int m_baseIndex{ 0 };
         int m_instanceCount{ 0 };
 
-        std::map<LodKey, std::vector<uint32_t>> m_lodInstances;
+        backend::DrawOptions m_drawOptions;
     };
 }

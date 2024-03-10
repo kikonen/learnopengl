@@ -18,7 +18,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   bool u_environmentMapExist;
 
-  bool u_frustumVisual;
+  bool u_shadowVisual;
 
   float u_fogStart;
   float u_fogEnd;
@@ -31,5 +31,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_time;
   int u_shadowCount;
 
-  vec4 u_shadowPlanes[MAX_SHADOW_MAP_COUNT + 1];
+  float u_shadowCascade_0;
+  float u_shadowCascade_1;
+  float u_shadowCascade_2;
+  float u_shadowCascade_3;
 };

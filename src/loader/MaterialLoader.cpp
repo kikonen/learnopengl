@@ -261,7 +261,8 @@ namespace loader {
                 fields.refraction = true;
             }
             else if (k == "refraction_ratio") {
-                material.refractionRatio = readRefractionRatio(v);
+                auto ratio = readRefractionRatio(v);
+                material.refractionRatio = convertRefractionRatio(ratio);
                 fields.refractionRatio = true;
             }
             else if (k == "tiling") {

@@ -405,12 +405,6 @@ void NodeRegistry::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    // NOTE KI eventpp cycle run after snapshot sync
-    // => thus not needed to redo it here
-    //m_registry->m_pendingSnapshotRegistry->copyTo(
-    //    m_registry->m_activeSnapshotRegistry,
-    //    node->m_snapshotIndex, 1);
-
     auto handle = node->toHandle();
     auto* type = node->m_typeHandle.toType();
 

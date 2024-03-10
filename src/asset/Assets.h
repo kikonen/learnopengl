@@ -120,7 +120,6 @@ public:
     bool frustumAny;
     int frustumParallelLimit;
     bool frustumDebug;
-    bool frustumVisual;
     float cameraFov;
 
     int renderFrameStart;
@@ -183,6 +182,8 @@ public:
 
     int shadowRenderFrameStart;
     int shadowRenderFrameStep;
+
+    bool shadowVisual;
 
     bool cubeMapEnabled;
     bool cubeMapSeamless;

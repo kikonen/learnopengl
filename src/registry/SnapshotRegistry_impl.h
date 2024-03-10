@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "util/Log.h"
+
 #include "util/DirtyVector_impl.h"
 
 template<typename T>
@@ -42,7 +44,29 @@ void SnapshotRegistry<T>::clearDirty(uint32_t index) noexcept {
 }
 
 template<typename T>
-void SnapshotRegistry<T>::copy(
+bool SnapshotRegistry<T>::isDirtyRange(
+    uint32_t startIndex,
+    int32_t requestedCount) const noexcept
+{
+    size_t count = requestedCount;
+    if (requestedCount == -1) {
+        count = m_snapshots->size() - startIndex;
+    }
+    if (!count) return false;
+
+    {
+        const auto& src = m_snapshots->m_entries;
+
+        for (size_t i = startIndex; i < startIndex + count; i++) {
+            if (src[i].m_dirty) return true;
+        }
+    }
+
+    return false;
+}
+
+template<typename T>
+bool SnapshotRegistry<T>::copy(
     util::DirtyVector<T>* srcVector,
     util::DirtyVector<T>* dstVector,
     uint32_t startIndex,
@@ -52,8 +76,9 @@ void SnapshotRegistry<T>::copy(
     if (requestedCount == -1) {
         count = srcVector->size() - startIndex;
     }
-    if (!count) return;
+    if (!count) return false;
 
+    bool dirty = false;
     {
         const auto& src = srcVector->m_entries;
         auto& dst = dstVector->m_entries;
@@ -63,8 +88,11 @@ void SnapshotRegistry<T>::copy(
         for (size_t i = startIndex; i < startIndex + count; i++) {
             if (src[i].m_dirty) {
                 apply(src[i], dst[i]);
+                dirty = true;
             }
         }
     }
+
+    return dirty;
 }
 

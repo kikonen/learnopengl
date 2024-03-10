@@ -366,8 +366,8 @@ void AssetsLoader::loadAssets(
                 data.frustumDebug = readBool(v);
                 continue;
             }
-            if (k == "frustum_visual") {
-                data.frustumVisual = readBool(v);
+            if (k == "shadow_visual") {
+                data.shadowVisual = readBool(v);
                 continue;
             }
             if (k == "frustum_parallel_limit") {

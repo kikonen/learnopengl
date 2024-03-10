@@ -282,8 +282,6 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
 
     auto* type = node->m_typeHandle.toType();
 
-    if (!type->m_flags.cubeMap) return;
-
     if (m_waterMapRenderer->isEnabled()) {
         m_waterMapRenderer->handleNodeAdded(node);
     }
@@ -291,7 +289,9 @@ void CubeMapRenderer::handleNodeAdded(Node* node)
         m_mirrorMapRenderer->handleNodeAdded(node);
     }
 
-    m_nodes.push_back(node->toHandle());
+    if (type->m_flags.cubeMap) {
+        m_nodes.push_back(node->toHandle());
+    }
 }
 
 void CubeMapRenderer::clearCubeMap(
@@ -385,16 +385,16 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         if (!node) continue;
 
         const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-        const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
-        const float distance = std::abs(glm::length(ray));
+        auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
         if (false) {
+            const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
             const glm::vec3 fromCamera = glm::normalize(ray);
             const float dot = glm::dot(fromCamera, cameraDir);
             if (dot < 0) continue;
         }
 
-        sorted[distance] = node;
+        sorted[dist2] = node;
     }
 
     for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {

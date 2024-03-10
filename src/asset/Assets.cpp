@@ -125,7 +125,6 @@ Assets::Assets()
     frustumParallelLimit = 999;
 
     frustumDebug = false;
-    frustumVisual = false;
 
     cameraFov = 45.f;
 
@@ -189,6 +188,8 @@ Assets::Assets()
 
     shadowRenderFrameStart = 0;
     shadowRenderFrameStep = 2;
+
+    shadowVisual = false;
 
     cubeMapEnabled = true;
     cubeMapSeamless = true;

@@ -22,7 +22,7 @@
 
 namespace {
     constexpr size_t PARTICLE_BLOCK_SIZE = 1000;
-    constexpr size_t MAX_BLOCK_COUNT = 2100;
+    constexpr size_t MAX_BLOCK_COUNT = 5100;
 }
 
 namespace particle {
@@ -95,6 +95,8 @@ namespace particle {
     void ParticleSystem::updateRT(const UpdateContext& ctx)
     {
         if (!isEnabled()) return;
+        if (!m_updateReady) return;
+
         updateParticleBuffer();
     }
 
@@ -119,6 +121,7 @@ namespace particle {
         }
 
         m_snapshotCount = totalCount;
+        m_updateReady = true;
     }
 
     void ParticleSystem::updateParticleBuffer()
@@ -149,5 +152,7 @@ namespace particle {
             m_snapshot.data());
 
         m_activeCount = totalCount;
+
+        m_updateReady = false;
     }
 }
