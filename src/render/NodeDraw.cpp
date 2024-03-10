@@ -203,6 +203,7 @@ namespace render {
                         [&typeSelector](const mesh::MeshType* type) {
                             return type->m_flags.gbuffer &&
                                 type->m_flags.preDepth &&
+                                !type->m_flags.alpha &&
                                 typeSelector(type);
                         },
                         nodeSelector,
