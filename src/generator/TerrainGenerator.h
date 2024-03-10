@@ -16,8 +16,8 @@ namespace physics {
 class Registry;
 
 struct TerrainTileInfo {
-    int m_tileX;
-    int m_tileY;
+    int m_tileU;
+    int m_tileV;
 };
 
 //

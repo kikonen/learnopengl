@@ -73,8 +73,8 @@ void TerrainGenerator::prepareEntity(
     // TODO KI WT vs RT conflict
     const auto& info = m_tileInfos[index];
 
-    entity.u_tileX = info.m_tileX;
-    entity.u_tileY = info.m_tileY;
+    entity.u_tileX = info.m_tileU;
+    entity.u_tileY = info.m_tileV;
 
     entity.u_rangeYmin = m_verticalRange[0];
     entity.u_rangeYmax = m_verticalRange[1];
@@ -137,24 +137,18 @@ void TerrainGenerator::updateTiles(
 {
     const auto& containerTransform = container.getTransform();
 
-    // NOTE scale.y == makes *FLAT* plane
-    const glm::vec3 scale{ m_worldTileSize / 2, 1, m_worldTileSize / 2 };
     const int step = m_worldTileSize;
 
-    int idx = 0;
-    for (int v = 0; v < m_worldTilesV; v++) {
-        for (int u = 0; u < m_worldTilesU; u++) {
-            const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
+    for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
+        const auto& info = m_tileInfos[idx];
 
-            auto& transform = m_transforms[idx];
+        const glm::vec3 pos{ step / 2 + info.m_tileU * step, 0, step / 2 + info.m_tileV * step };
 
-            transform.setPosition(pos);
-            transform.setScale(scale);
+        auto& transform = m_transforms[idx];
 
-            transform.updateModelMatrix(containerTransform);
+        transform.setPosition(pos);
 
-            idx++;
-        }
+        transform.updateModelMatrix(containerTransform);
     }
 
     m_reservedCount = static_cast<uint32_t>(m_transforms.size());
@@ -171,18 +165,67 @@ void TerrainGenerator::createTiles(
 
     auto& entityRegistry = EntityRegistry::get();
 
-    const float scale = m_worldTileSize / 2.f;
+    // NOTE scale.y == makes *FLAT* plane
+    const glm::vec3 scale{ m_worldTileSize / 2.f, 1, m_worldTileSize / 2.f };
 
-    const float vertMinAABB = 3.f * m_verticalRange[0] / scale;
-    const float vertMaxAABB = 3.f * m_verticalRange[1] / scale;
+    //const float scale = m_worldTileSize / 2.f;
+    //const float vertMinAABB = 3.f * m_verticalRange[0] / scale.x;
+    //const float vertMaxAABB = 3.f * m_verticalRange[1] / scale.z;
+    {
+        const float vertMinAABB = m_verticalRange[0];
+        const float vertMaxAABB = m_verticalRange[1];
+        KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
+    }
 
     const AABB aabb{
-        glm::vec3{ -1.f, vertMinAABB, -1.f },
-        glm::vec3{ 1.f, vertMaxAABB, 1.f },
+        glm::vec3{ -1.f, 1, -1.f },
+        glm::vec3{ 1.f, 1, 1.f },
         false
     };
 
-    KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
+    const int tileCount = m_worldTilesU * m_worldTilesV;
+
+    m_transforms.reserve(tileCount);
+    m_tileInfos.reserve(tileCount);
+
+    // Setup initial static values for entity
+    KI_INFO_OUT(fmt::format("TERRAIN: tilesV={}, tilesU={}", m_worldTilesV, m_worldTilesU));
+    for (int v = 0; v < m_worldTilesV; v++) {
+        for (int u = 0; u < m_worldTilesU; u++) {
+            m_tileInfos.emplace_back(u, v);
+        }
+    }
+
+    const glm::vec4 tileVolume = aabb.getVolume();
+    const int step = m_worldTileSize;
+    AABB minmax{ true };
+
+    for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
+        const auto& info = m_tileInfos[idx];
+        const auto u = info.m_tileU;
+        const auto v = info.m_tileV;
+        const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
+
+        // TODO KI get height
+        {
+            glm::vec3 uvPos{
+                pos.x / heightMap->m_worldSizeU,
+                0.f,
+                1.f - pos.z / heightMap->m_worldSizeU };
+            const auto height = heightMap->getTerrainHeight(uvPos.x, uvPos.z);
+            minmax.minmax({ pos.x, height, pos.z });
+
+            KI_INFO_OUT(fmt::format(
+                "u={}, v={}, pos={}, uvPos={}, height={}, offsetU={}, offsetV={}, min={}, max={}",
+                u, v, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
+        }
+
+        {
+            auto& transform = m_transforms.emplace_back();
+            transform.setVolume(tileVolume);
+            transform.setScale(scale);
+        }
+    }
 
     auto typeHandle = createType(registry, container.m_typeHandle);
     {
@@ -204,58 +247,6 @@ void TerrainGenerator::createTiles(
             }
 
             lod->registerMaterials();
-        }
-    }
-
-    // NOTE KI must laod textures in the context of *THIS* material
-    // NOTE KI only SINGLE material supported
-    {
-        auto* type = typeHandle.toType();
-
-        auto& drawOptions = type->modifyDrawOptions();
-        drawOptions.m_patchVertices = 3;
-    }
-
-    const glm::vec4 tileVolume = aabb.getVolume();
-    const int step = m_worldTileSize;
-    AABB minmax{ true };
-
-    const int tileCount = m_worldTilesU * m_worldTilesV;
-
-    m_transforms.reserve(tileCount);
-    m_tileInfos.reserve(tileCount);
-
-    // Setup initial static values for entity
-    int idx = 0;
-    KI_INFO_OUT(fmt::format("TERRAIN: tilesV={}, tilesU={}", m_worldTilesV, m_worldTilesU));
-    for (int v = 0; v < m_worldTilesV; v++) {
-        for (int u = 0; u < m_worldTilesU; u++) {
-            const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
-
-            // TODO KI get height
-            {
-                glm::vec3 uvPos{
-                    pos.x / heightMap->m_worldSizeU,
-                    0.f,
-                    1.f - pos.z / heightMap->m_worldSizeU };
-                const auto height = heightMap->getTerrainHeight(uvPos.x, uvPos.z);
-                minmax.minmax({ pos.x, height, pos.z });
-
-                KI_INFO_OUT(fmt::format(
-                    "v={}, u={}, pos={}, uvPos={}, height={}, offsetU={}, offsetV={}, min={}, max={}",
-                    v, u, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
-            }
-
-            {
-                auto& transform = m_transforms.emplace_back();
-                transform.setVolume(tileVolume);
-            }
-
-            {
-                m_tileInfos.emplace_back(u, v);
-            }
-
-            idx++;
         }
     }
 
@@ -310,6 +301,9 @@ pool::TypeHandle TerrainGenerator::createType(
     type->m_program = containerType->m_program;
     type->m_shadowProgram = containerType->m_shadowProgram;
     type->m_preDepthProgram = containerType->m_preDepthProgram;
+
+    auto& drawOptions = type->modifyDrawOptions();
+    drawOptions.m_patchVertices = 3;
 
     return typeHandle;
 }
