@@ -75,9 +75,11 @@ namespace terrain {
     {
         std::lock_guard lock(m_lock);
 
+        tile.m_registeredIndex = static_cast<uint32_t>(m_tiles.size());
+
         m_tiles.push_back(tile);
         m_dirty = true;
-        tile.m_registeredIndex = static_cast<uint32_t>(m_tiles.size());
+
         return tile.m_registeredIndex;
     }
 

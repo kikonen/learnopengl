@@ -9,22 +9,21 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Plauer
-    id: player
+  - id: player
     type: origo
     pos: [0, 200, 100]
     front: [0, 0, -1]
     active: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: camera
     parent_id: player
     type: origo
     camera:
       default: true
     controllers:
       - type: camera_zoom
-  - name: Directional light
+  - id: directional_light
     pos: [0, 400, 500]
     scale: 2.5
     model: light
@@ -38,8 +37,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Terrain grass v2
-    id: auto
+  - id: terrain_grass
     priority: 20
     type: container
     instanced: true
@@ -62,7 +60,7 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-  - name: grid points
+  - id: grid_points
     model: glass_ball
     program: g_tex
     pos: [-1024, 150, -1024]
@@ -76,7 +74,7 @@ entities:
       x_step: 256
       y_step: 0
       z_step: 256
-  - name: Sea surface
+  - id: sea_surface
     model: plane
     priority: -20
     material: sea_surface
@@ -87,7 +85,7 @@ entities:
       no_shadow: true
       render_back: true
       water: true
-  - name: Sea floor
+  - id: sea_floor
     model: plane
     priority: -225
     material: sea_floor
@@ -97,7 +95,7 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-  - id: linden_tree_forest_1
+  - id: linden_tree_forest
     type: model
     model: linden_tree
     priority: 1
@@ -125,7 +123,7 @@ entities:
         z_count: 20
         x_step: -20
         z_step: 20
-  - name: Skeleton army
+  - id: skeleton_army_{t}
     model: quad
     priority: 1
     program: g_tex

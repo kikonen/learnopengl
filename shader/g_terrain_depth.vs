@@ -37,11 +37,13 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 Material material;
+TerrainTile tile;
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
+  tile = u_terrainTiles[entity.u_shapeIndex];
 
   #include var_entity_model_matrix.glsl
 
@@ -63,8 +65,8 @@ void main() {
   vs_out.heightMapTex = tile.heightMapTex;
 
   {
-    float x = entity.u_tileX;
-    float y = entity.u_tileY;
+    float x = tile.u_tileX;
+    float y = tile.u_tileY;
     float tilingX = material.tilingX;
     float tilingY = material.tilingY;
     float sizeX = 1.0 / tilingX;

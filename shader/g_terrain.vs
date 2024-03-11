@@ -56,8 +56,7 @@ void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
-  tile = u_terrainTiles[instance.u_shapeIndex];
-  tile = u_terrainTiles[gl_InstanceID];
+  tile = u_terrainTiles[entity.u_shapeIndex];
 
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl

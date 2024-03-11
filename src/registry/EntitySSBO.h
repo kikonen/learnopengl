@@ -58,7 +58,9 @@ struct EntitySSBO {
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
-    int pad2_1;
+    GLuint u_shapeIndex{ 0 };
+
+    //int pad2_1;
     //int pad2_2;
     //int pad2_3;
 

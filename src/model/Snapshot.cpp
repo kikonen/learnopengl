@@ -92,6 +92,8 @@ void Snapshot::updateEntity(
 
     entity.u_volume = m_volume;
 
+    entity.u_shapeIndex = m_shapeIndex;
+
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     // NOTE KI flat planes are *always* uniform, since problem with normal scaling does
     // not truly affect them

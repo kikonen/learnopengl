@@ -15,10 +15,12 @@ struct Entity {
 
   vec4 u_worldScale;
 
+  uvec2 u_fontHandle;
+
   uint u_highlightIndex;
 
   uint u_objectID;
   uint u_flags;
 
-  uvec2 u_fontHandle;
+  uint u_shapeIndex;
 };

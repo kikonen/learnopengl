@@ -16,7 +16,9 @@ namespace physics {
 
         ~HeightMap();
 
-        void prepare(Image* image);
+        void prepare(
+            Image* image,
+            bool flip);
 
         const AABB& getAABB() const noexcept { return m_aabb; }
         void setAABB(const AABB& aabb) { m_aabb = aabb; }
@@ -56,6 +58,7 @@ namespace physics {
         int m_width{ 0 };
 
         float* m_heights{ nullptr };
+        bool m_flip{ false };
 
         AABB m_aabb{};
     };

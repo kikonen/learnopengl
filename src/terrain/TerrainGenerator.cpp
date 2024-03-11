@@ -120,7 +120,7 @@ namespace terrain {
 
             heightMap->setAABB(aabb);
         }
-        heightMap->prepare(texture->m_image.get());
+        heightMap->prepare(texture->m_image.get(), true);
 
         return heightMap;
     }
@@ -258,6 +258,7 @@ namespace terrain {
                 auto& transform = m_transforms.emplace_back();
                 transform.setVolume(tileVolume);
                 transform.setScale(scale);
+                transform.m_shapeIndex = info.m_registeredIndex;
             }
         }
 
