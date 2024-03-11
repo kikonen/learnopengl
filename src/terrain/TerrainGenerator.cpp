@@ -65,7 +65,6 @@ namespace terrain {
         m_poolSizeV = 4;
 
         auto* heightMap = prepareHeightMap(ctx, container);
-        if (!heightMap) return;
 
         createTiles(ctx, container, heightMap);
         prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
@@ -98,6 +97,7 @@ namespace terrain {
 
         ImageTexture* texture = loadTexture();
         if (!texture) return nullptr;
+        if (!texture->isValid()) return nullptr;
 
         m_heightMapTex = texture;
 
@@ -234,6 +234,9 @@ namespace terrain {
         const int step = m_worldTileSize;
         AABB minmax{ true };
 
+        const int worldSizeU = m_worldTileSize * m_worldTilesU;
+        const int worldSizeV = m_worldTileSize * m_worldTilesV;
+
         for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
             const auto& info = m_tileInfos[idx];
             const auto u = info.m_tileU;
@@ -243,10 +246,10 @@ namespace terrain {
             // TODO KI get height
             {
                 glm::vec3 uvPos{
-                    pos.x / heightMap->m_worldSizeU,
+                    pos.x / worldSizeU,
                     0.f,
-                    1.f - pos.z / heightMap->m_worldSizeU };
-                const auto height = heightMap->getTerrainHeight(uvPos.x, uvPos.z);
+                    1.f - pos.z / worldSizeV };
+                const auto height = heightMap ? heightMap->getTerrainHeight(uvPos.x, uvPos.z) : 0.f;
                 minmax.minmax({ pos.x, height, pos.z });
 
                 KI_INFO_OUT(fmt::format(
