@@ -1550,6 +1550,15 @@
     <ClInclude Include="src\loader\TerrainData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\wrapper\include\lua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\wrapper\include\lauxlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\wrapper\include\lualib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">
