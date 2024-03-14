@@ -4,6 +4,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
@@ -36,7 +38,9 @@ SET_FLOAT_PRECISION;
 
 Instance instance;
 Entity entity;
-Material material;
+
+ResolvedMaterial material;
+
 TerrainTile tile;
 
 void main() {
@@ -47,9 +51,7 @@ void main() {
 
   #include var_entity_model_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
-
-  material = u_materials[materialIndex];
+  const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -67,8 +69,8 @@ void main() {
   {
     float x = tile.u_tileX;
     float y = tile.u_tileY;
-    float tilingX = material.tilingX;
-    float tilingY = material.tilingY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 

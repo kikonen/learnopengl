@@ -4,9 +4,22 @@
 //   }
 
 {
-  material.diffuse *= texture(sampler2D(material.diffuseTex), texCoord);
-  material.diffuse.a *= texture(sampler2D(material.opacityMapTex), texCoord).r;
+  const uint i = materialIndex;
 
-  material.emission *= texture(sampler2D(material.emissionTex), texCoord);
-  material.metal *= texture(sampler2D(material.metalTex), texCoord);
+  material.diffuse = u_materials[i].diffuse *
+    texture(sampler2D(u_materials[i].diffuseTex), texCoord);
+
+  material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
+
+  material.emission = u_materials[i].emission *
+    texture(sampler2D(u_materials[i].emissionTex), texCoord);
+
+  material.metal = u_materials[i].metal *
+    texture(sampler2D(u_materials[i].metalTex), texCoord);
+
+  material.reflection = u_materials[i].reflection;
+  material.refraction = u_materials[i].refraction;
+  material.refractionRatio = u_materials[i].refractionRatio;
+
+  material.parallaxDepth = u_materials[i].parallaxDepth;
 }

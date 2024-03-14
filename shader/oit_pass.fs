@@ -1,6 +1,8 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_shape.glsl
 
 #include uniform_data.glsl
@@ -28,11 +30,11 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 void main()
 {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl

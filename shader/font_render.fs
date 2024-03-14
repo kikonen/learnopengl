@@ -1,6 +1,8 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include ssbo_materials.glsl
 
 
@@ -30,11 +32,11 @@ const float outline_center = 0.55;
 vec3 glow_color     = vec3(1.0, 1.0, 1.0);
 const float glow_center    = 1.25;
 
-Material material;
+ResolvedMaterial material;
 
 void main()
 {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl

@@ -4,6 +4,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl

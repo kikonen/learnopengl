@@ -9,6 +9,8 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl

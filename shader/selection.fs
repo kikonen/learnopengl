@@ -1,6 +1,7 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
 
 #ifdef USE_ALPHA
 #include struct_shape.glsl
@@ -37,6 +38,7 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+
 void main() {
 #ifdef USE_ALPHA
   {
@@ -49,7 +51,7 @@ void main() {
   }
 #endif
 
-  Material highlightMaterial = u_materials[fs_in.highlightIndex];
+  const uint materialIndex = fs_in.highlightIndex;
 
-  o_fragColor = highlightMaterial.diffuse;
+  o_fragColor = u_materials[materialIndex].diffuse;
 }

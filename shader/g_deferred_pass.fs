@@ -1,7 +1,9 @@
 #version 460 core
 
 #include struct_lights.glsl
+
 #include struct_material.glsl
+#include struct_resolved_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -36,7 +38,7 @@ layout (location = 1) out vec4 o_fragBright;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 #include pbr.glsl
 #include fn_calculate_dir_light.glsl

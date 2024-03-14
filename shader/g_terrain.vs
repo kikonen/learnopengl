@@ -8,6 +8,8 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 #include struct_terrain_tile.glsl
@@ -49,7 +51,9 @@ SET_FLOAT_PRECISION;
 
 Instance instance;
 Entity entity;
-Material material;
+
+ResolvedMaterial material;
+
 TerrainTile tile;
 
 void main() {
@@ -61,9 +65,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
-
-  material = u_materials[materialIndex];
+  const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -83,8 +85,8 @@ void main() {
   {
     float x = tile.u_tileX;
     float y = tile.u_tileY;
-    float tilingX = material.tilingX;
-    float tilingY = material.tilingY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 
@@ -104,7 +106,7 @@ void main() {
   vs_out.normal = normalMatrix * a_normal;
 
 #ifdef USE_NORMAL_TEX
-  if (material.normalMapTex.x > 0) {
+  if (u_materials[materialIndex].normalMapTex.x > 0) {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = normalize(normalMatrix * a_tangent);
 

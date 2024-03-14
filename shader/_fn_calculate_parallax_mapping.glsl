@@ -1,19 +1,21 @@
 #ifdef USE_PARALLAX
 vec2 calculateParallaxMapping(
-  vec2 texCoord,
-  vec3 viewTangentDir)
+  const uint materialIndex,
+  const vec2 texCoord,
+  const vec3 viewTangentDir)
 {
-  sampler2D sampler = sampler2D(material.metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
   float height = texture(sampler, texCoord).b;
   vec2 p = viewTangentDir.xy / viewTangentDir.z * (height * material.parallaxDepth);
   return texCoord - p;
 }
 
 vec2 calculateDeepParallaxMapping(
-  vec2 texCoord,
-  vec3 viewTangentDir)
+  const uint materialIndex,
+  const vec2 texCoord,
+  const vec3 viewTangentDir)
 {
-  sampler2D sampler = sampler2D(material.metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
 
   // number of depth layers
   const float minLayers = 8.0;
@@ -46,10 +48,11 @@ vec2 calculateDeepParallaxMapping(
 }
 
 vec2 calculateParallaxOcclusionMapping(
-  vec2 texCoord,
-  vec3 viewTangentDir)
+  const uint materialIndex,
+  const vec2 texCoord,
+  const vec3 viewTangentDir)
 {
-  sampler2D sampler = sampler2D(material.metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
 
   // number of depth layers
   const float minLayers = 8.0;

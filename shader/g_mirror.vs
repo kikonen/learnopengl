@@ -5,6 +5,8 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
@@ -44,7 +46,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
+  const uint materialIndex = instance.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
   const vec3 normal = normalize(normalMatrix * a_normal);

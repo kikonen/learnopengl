@@ -1,6 +1,8 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_shape.glsl
 
 #include uniform_matrices.glsl
@@ -44,14 +46,14 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_parallax_mapping.glsl
 #include fn_gbuffer_encode.glsl
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl

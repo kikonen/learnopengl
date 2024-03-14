@@ -1,6 +1,7 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -32,7 +33,7 @@ float iTime;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 #ifdef EFFECT_SUN
   #include effect_sun.glsl
@@ -42,7 +43,7 @@ Material material;
 #endif
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
@@ -50,7 +51,7 @@ void main() {
   iTime = u_time;
   iResolution = u_bufferResolution;
   iMouse = u_bufferResolution * 0.5;
-  iChannel0 = material.diffuseTex;
+  iChannel0 = u_materials[materialIndex].diffuseTex;
 
   vec4 color;
   mainImage(color, gl_FragCoord.xy);

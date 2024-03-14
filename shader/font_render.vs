@@ -38,7 +38,7 @@ void main()
 
   #include var_entity_model_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
+  const uint materialIndex = instance.u_materialIndex;
 
   vs_out.texCoord = a_texCoord;
   vs_out.materialIndex = materialIndex;
