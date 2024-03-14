@@ -5,6 +5,8 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 

@@ -311,7 +311,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_resume(
+    int CommandAPI::lua_resume_wrapper(
         const sol::table& lua_opt,
         int coroutineID) noexcept
     {

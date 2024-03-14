@@ -1,6 +1,8 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_shape.glsl
 
 #include uniform_matrices.glsl
@@ -56,7 +58,7 @@ const float outline_center = 0.55;
 vec3 glow_color     = vec3(1.0, 1.0, 1.0);
 const float glow_center    = 1.25;
 
-Material material;
+ResolvedMaterial material;
 
 #include fn_calculate_normal_pattern.glsl
 #include fn_calculate_parallax_mapping.glsl
@@ -64,7 +66,7 @@ Material material;
 
 void main()
 {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl

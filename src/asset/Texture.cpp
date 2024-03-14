@@ -95,10 +95,10 @@ Texture::Texture(
 
 Texture::~Texture()
 {
-    if (m_textureID != 0) {
-        glDeleteTextures(1, &m_textureID);
-    }
-    if (m_handle != 0) {
+    if (m_handle) {
         glMakeImageHandleNonResidentARB(m_handle);
+    }
+    if (m_textureID) {
+        glDeleteTextures(1, &m_textureID);
     }
 }

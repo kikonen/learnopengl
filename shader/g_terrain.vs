@@ -8,13 +8,17 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
+#include struct_terrain_tile.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
 #include ssbo_material_indeces.glsl
+#include ssbo_terrain_tiles.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -28,7 +32,10 @@ out VS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+
   flat float tilingX;
+  flat float rangeYmin;
+  flat float rangeYmax;
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
@@ -44,19 +51,21 @@ SET_FLOAT_PRECISION;
 
 Instance instance;
 Entity entity;
-Material material;
+
+ResolvedMaterial material;
+
+TerrainTile tile;
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
+  tile = u_terrainTiles[entity.u_shapeIndex];
 
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
-
-  material = u_materials[materialIndex];
+  const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -68,13 +77,16 @@ void main() {
 
   vs_out.entityIndex = entityIndex;
   vs_out.materialIndex = materialIndex;
-  vs_out.heightMapTex = material.heightMapTex;
+
+  vs_out.rangeYmin = tile.u_rangeYmin;
+  vs_out.rangeYmax = tile.u_rangeYmax;
+  vs_out.heightMapTex = tile.heightMapTex;
 
   {
-    float x = entity.u_tileX;
-    float y = entity.u_tileY;
-    float tilingX = material.tilingX;
-    float tilingY = material.tilingY;
+    float x = tile.u_tileX;
+    float y = tile.u_tileY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 
@@ -94,7 +106,7 @@ void main() {
   vs_out.normal = normalMatrix * a_normal;
 
 #ifdef USE_NORMAL_TEX
-  if (material.normalMapTex.x > 0) {
+  if (u_materials[materialIndex].normalMapTex.x > 0) {
     const vec3 N = normalize(vs_out.normal);
     vec3 T = normalize(normalMatrix * a_tangent);
 

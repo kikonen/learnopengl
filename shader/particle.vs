@@ -1,7 +1,10 @@
 #version 460 core
 
 #include struct_particle.glsl
+
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_clip_plane.glsl
 
 #include ssbo_particles.glsl
@@ -36,7 +39,7 @@ void main() {
   const uint particleIndex = gl_BaseInstance + gl_InstanceID;
   particle = u_particles[particleIndex];
 
-  const int materialIndex = particle.u_materialIndex;
+  const uint materialIndex = particle.u_materialIndex;
 
   const vec4 worldPos = vec4(particle.u_pos_scale.xyz, 1.0);
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;

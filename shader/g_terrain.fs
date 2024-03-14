@@ -1,11 +1,8 @@
 #version 460 core
 
 #include struct_material.glsl
-#include struct_entity.glsl
-#include struct_instance.glsl
+#include struct_resolved_material.glsl
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
@@ -16,8 +13,6 @@
 layout(early_fragment_tests) in;
 
 in TES_OUT {
-  flat uint entityIndex;
-
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
@@ -42,30 +37,19 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
-Instance instance;
-Entity entity;
-Material material;
+ResolvedMaterial material;
 
-#include fn_calculate_normal_pattern.glsl
 #include fn_gbuffer_encode.glsl
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
-  entity = u_entities[fs_in.entityIndex];
-
   #include var_tex_material_normal.glsl
-
-#ifdef USE_NORMAL_PATTERN
-  if (material.pattern == 1) {
-    normal = calculateNormalPattern(fs_in.vertexPos, normal);
-  }
-#endif
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;

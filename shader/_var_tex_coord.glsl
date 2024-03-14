@@ -2,7 +2,10 @@
   vec2 texCoord;
   if (material.parallaxDepth > 0) {
     const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
-    texCoord = calculateParallaxOcclusionMapping(fs_in.texCoord, viewTangentDir);
+    texCoord = calculateParallaxOcclusionMapping(
+      materialIndex,
+      fs_in.texCoord,
+      viewTangentDir);
   } else {
     texCoord = fs_in.texCoord;
   }

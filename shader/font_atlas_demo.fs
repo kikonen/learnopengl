@@ -1,7 +1,10 @@
 #version 460 core
 
 #include struct_lights.glsl
+
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_shape.glsl
 
 #include uniform_matrices.glsl

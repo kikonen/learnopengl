@@ -93,6 +93,21 @@ entities:
     render_flags:
       no_shadow: true
     scale: 100
+  - name: Directional light
+    type: model
+    pos: [-25, 45, 0]
+    scale: 1.5
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    material_modifier:
+      kd: [0.8, 0.8, 0.6, 1.0]
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 20000
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

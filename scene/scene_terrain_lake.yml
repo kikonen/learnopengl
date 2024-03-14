@@ -59,6 +59,8 @@ entities:
     generator:
       type: terrain
       material: terrain_grass_2
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
@@ -101,7 +103,6 @@ materials:
     map_kd: textures/terrain_2/terrain_2_TX.jpg
     map_ks: textures/terrain_2/terrain_2_SpecLM.png
     map_bump: textures/terrain_2/terrain_2_TN.png
-    map_height: textures/terrain_2/terrain_2_height.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
   - name: water_surface

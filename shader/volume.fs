@@ -1,6 +1,7 @@
 #version 460 core
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
 
 #include ssbo_materials.glsl
 #include uniform_matrices.glsl
@@ -22,10 +23,8 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-Material material;
-
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
-  o_fragColor = material.diffuse;
+  o_fragColor = u_materials[materialIndex].diffuse;
 }

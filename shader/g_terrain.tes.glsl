@@ -21,6 +21,9 @@ in TCS_OUT {
   vec3 vertexPos;
 
   flat uint materialIndex;
+
+  flat float rangeYmin;
+  flat float rangeYmax;
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
@@ -29,8 +32,6 @@ in TCS_OUT {
 } tes_in[];
 
 out TES_OUT {
-  flat uint entityIndex;
-
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
@@ -93,9 +94,8 @@ void main()
   vec3 normal = interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal);
   vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
 
-
-  const float rangeYmin = entity.u_rangeYmin;
-  const float rangeYmax = entity.u_rangeYmax;
+  const float rangeYmin = tes_in[0].rangeYmin;
+  const float rangeYmax = tes_in[0].rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
   float avgHeight = fetchHeight(heightMap, texCoord);
@@ -105,7 +105,6 @@ void main()
 
   vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
-  tes_out.entityIndex = tes_in[0].entityIndex;
   tes_out.worldPos = worldPos.xyz;
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;

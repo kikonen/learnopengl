@@ -1,7 +1,10 @@
 #version 460 core
 
 #include struct_lights.glsl
+
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_shape.glsl
 
 #include uniform_matrices.glsl
@@ -51,7 +54,7 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 #include pbr.glsl
 #include fn_calculate_dir_light.glsl
@@ -62,7 +65,7 @@ Material material;
 #include fn_calculate_fog.glsl
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  const uint materialIndex = fs_in.materialIndex;
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl

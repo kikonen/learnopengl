@@ -4,6 +4,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl
@@ -77,7 +79,7 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = entity.u_shapeIndex;
+  vs_out.shapeIndex = instance.u_shapeIndex;
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;

@@ -4,6 +4,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include struct_material.glsl
+#include struct_resolved_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
@@ -36,18 +38,20 @@ SET_FLOAT_PRECISION;
 
 Instance instance;
 Entity entity;
-Material material;
+
+ResolvedMaterial material;
+
+TerrainTile tile;
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
+  tile = u_terrainTiles[entity.u_shapeIndex];
 
   #include var_entity_model_matrix.glsl
 
-  const int materialIndex = instance.u_materialIndex;
-
-  material = u_materials[materialIndex];
+  const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -57,15 +61,16 @@ void main() {
   gl_Position = pos;
 
   vs_out.modelMatrix = modelMatrix;
-  vs_out.rangeYmin = entity.u_rangeYmin;
-  vs_out.rangeYmax = entity.u_rangeYmax;
-  vs_out.heightMapTex = material.heightMapTex;
+
+  vs_out.rangeYmin = tile.u_rangeYmin;
+  vs_out.rangeYmax = tile.u_rangeYmax;
+  vs_out.heightMapTex = tile.heightMapTex;
 
   {
-    float x = entity.u_tileX;
-    float y = entity.u_tileY;
-    float tilingX = material.tilingX;
-    float tilingY = material.tilingY;
+    float x = tile.u_tileX;
+    float y = tile.u_tileY;
+    float tilingX = u_materials[materialIndex].tilingX;
+    float tilingY = u_materials[materialIndex].tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 

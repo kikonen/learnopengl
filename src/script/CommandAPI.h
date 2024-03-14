@@ -74,7 +74,7 @@ namespace script
             const sol::table& lua_opt,
             sol::function fn) noexcept;
 
-        int lua_resume(
+        int lua_resume_wrapper(
             const sol::table& lua_opt,
             int coroutineID) noexcept;
 

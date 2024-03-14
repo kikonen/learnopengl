@@ -26,6 +26,7 @@ public:
 
     void prepareShared();
     void prepareWT();
+    void prepareRT();
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);

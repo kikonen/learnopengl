@@ -36,8 +36,12 @@ namespace physics {
         delete[] m_heights;
     }
 
-    void HeightMap::prepare(Image* _image)
+    void HeightMap::prepare(
+        Image* _image,
+        bool flip)
     {
+        m_flip = flip;
+
         const auto& image = *_image;
 
         const int imageH = image.m_height;
@@ -62,17 +66,20 @@ namespace physics {
         m_heights = new float[size];
 
         const unsigned char* ptr = image.m_data;
-        for (int i = 0; i < size; i++) {
-            unsigned short heightValue = *((unsigned short*)ptr);
-            float y = rangeYmin + (float)heightValue / entryScale * rangeY;
+        for (int v = 0; v < imageH; v++) {
+            for (int u = 0; u < imageW; u++) {
+                unsigned short heightValue = *((unsigned short*)ptr);
+                float y = rangeYmin + (float)heightValue / entryScale * rangeY;
 
-            if (heightValue < minH) minH = heightValue;
-            if (heightValue > maxH) maxH = heightValue;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
+                if (heightValue < minH) minH = heightValue;
+                if (heightValue > maxH) maxH = heightValue;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
 
-            m_heights[i] = y;
-            ptr += entrySize;
+                m_heights[u + v * imageW] = y;
+
+                ptr += entrySize;
+            }
         }
 
         KI_INFO_OUT(fmt::format(
@@ -87,6 +94,8 @@ namespace physics {
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         if (m_height == 0 || m_width == 0) return 0;
+
+        if (m_flip) v = 1.f - v;
 
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"

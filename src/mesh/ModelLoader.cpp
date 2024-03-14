@@ -46,7 +46,8 @@ namespace mesh {
             m_defaultMaterial = *defaultMaterial;
         }
         else {
-            m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
+            // NOTE KI white causes least unexpectedly tinted results
+            m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
         }
 
         m_forceDefaultMaterial = forceDefaultMaterial;

@@ -111,7 +111,7 @@ void main() {
 #ifdef USE_NORMAL_TEX
   vec3 normal;
   if (u_materials[materialIndex].normalMapTex.x > 0) {
-    sampler2D sampler = sampler2D(material.normalMapTex);
+    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
 
     const vec3 N = normalize(fs_in.normal);
     const vec3 T = normalize(fs_in.tangent);

@@ -419,6 +419,8 @@ entities:
   - name: Shuttle
     model: [opengl_book/NasaShuttle, shuttle]
     program: g_tex
+    material_modifier:
+      kd: [1, 1, 1, 1]
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
   - name: Sword 2
@@ -706,7 +708,7 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-  - name: Terrain grass v2
+  - id: terrain_grass
     id: auto
     priority: 20
     type: container
@@ -723,6 +725,8 @@ entities:
     generator:
       type: terrain
       material: terrain_grass_2
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
       tiling:
         tile_size: 256
         tiles: [8, 0, 8]
@@ -1139,7 +1143,6 @@ materials:
     map_kd: textures/terrain_2/terrain_2_TX.jpg
     map_ks: textures/terrain_2/terrain_2_SpecLM.png
     map_bump: textures/terrain_2/terrain_2_TN.png
-    map_height: textures/terrain_2/terrain_2_height.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
   - name: sea_surface

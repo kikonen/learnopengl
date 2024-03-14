@@ -17,6 +17,7 @@
 
 #include "asset/ImageTexture.h"
 #include "asset/ChannelTexture.h"
+#include "asset/ColorTexture.h"
 
 #include "asset/MaterialSSBO.h"
 #include "asset/TextureUBO.h"
@@ -24,6 +25,8 @@
 
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
+
+    const glm::vec4 WHITE_RGBA{ 1.f };
 
     float calculateAmbient(glm::vec3 ambient) {
         return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -40,6 +43,13 @@ namespace {
         Material mat;
         mat.m_name = "<basic>";
         mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+        return mat;
+    }
+
+    Material createWhiteMaterial() {
+        Material mat;
+        mat.m_name = "<white>";
+        mat.kd = { 1.f, 1.f, 1.f, 1.f };
         return mat;
     }
 
@@ -83,6 +93,7 @@ Material Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
     case BasicMaterial::basic: return createBasicMaterial();
+    case BasicMaterial::white: return createWhiteMaterial();
     case BasicMaterial::gold: return createGoldMaterial();
     case BasicMaterial::silver: return createSilverMaterial();
     case BasicMaterial::bronze: return createBronzeMaterial();
@@ -148,7 +159,6 @@ void Material::loadTextures()
     loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
     loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
     loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
-    loadTexture(MATERIAL_HEIGHT_MAP_IDX, map_height, false, false);
     loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
     loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
     loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
@@ -323,22 +333,23 @@ const MaterialSSBO Material::toSSBO() const
         //ASSERT_TEX_INDEX(tex.m_texIndex);
     }
 
+    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
+
     return {
         kd,
         ke,
 
-        metal,
+        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? WHITE_RGBA : metal,
 
-        m_textures[MATERIAL_DIFFUSE_IDX].m_handle,
-        m_textures[MATERIAL_EMISSION_IDX].m_handle,
+        m_textures[MATERIAL_DIFFUSE_IDX].m_handle ? m_textures[MATERIAL_DIFFUSE_IDX].m_handle : whitePx,
+        m_textures[MATERIAL_EMISSION_IDX].m_handle ? m_textures[MATERIAL_EMISSION_IDX].m_handle : whitePx,
+
         m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
-
         m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
-        m_textures[MATERIAL_HEIGHT_MAP_IDX].m_handle,
         m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
-        m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle,
 
-        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle,
+        m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle ? m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle : whitePx,
+        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle : whitePx,
 
         pattern,
 
