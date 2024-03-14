@@ -1,15 +1,12 @@
-#define materialRGBA(tx) \
-  if (material.tx ## Tex.x > 0) { \
-    material.tx = texture(sampler2D(material.tx ## Tex), texCoord); \
-  }
+// #define materialRGBA(tx) \
+//   if (material.tx ## Tex.x > 0) { \
+//     material.tx = texture(sampler2D(material.tx ## Tex), texCoord); \
+//   }
 
 {
-  materialRGBA(diffuse);
-  materialRGBA(emission);
-  materialRGBA(metal);
+  material.diffuse *= texture(sampler2D(material.diffuseTex), texCoord);
+  material.diffuse.a *= texture(sampler2D(material.opacityMapTex), texCoord).r;
 
-  if (material.opacityMapTex.x > 0) {
-    sampler2D sampler = sampler2D(material.opacityMapTex);
-    material.diffuse.a = texture(sampler, texCoord).r;
-  }
+  material.emission *= texture(sampler2D(material.emissionTex), texCoord);
+  material.metal *= texture(sampler2D(material.metalTex), texCoord);
 }

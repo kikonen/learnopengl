@@ -137,6 +137,7 @@ namespace terrain {
             TextureSpec spec;
             spec.wrapS = GL_CLAMP_TO_EDGE;
             spec.wrapT = GL_CLAMP_TO_EDGE;
+            spec.mipMapLevels = 1;
 
             auto future = ImageTexture::getTexture(
                 texturePath,

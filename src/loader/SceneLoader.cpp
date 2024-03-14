@@ -85,7 +85,8 @@ namespace loader {
         m_physicsLoader(ctx),
         m_entityLoader(ctx)
     {
-        m_defaultMaterial = Material::createMaterial(BasicMaterial::basic);
+        // NOTE KI white causes least unexpectedly tinted results
+        m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
     }
 
     SceneLoader::~SceneLoader()

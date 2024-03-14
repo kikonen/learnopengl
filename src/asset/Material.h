@@ -13,6 +13,7 @@ struct MaterialSSBO;
 
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
+    white,
     gold,
     silver,
     bronze,
@@ -155,7 +156,7 @@ public:
     glm::vec3 ka { 0.01f, 0.01f, 0.01f };
 
     // Similarly, the diffuse color is declared using Kd.
-    glm::vec4 kd { 0.f, 0.f, 0.f, 1.f };
+    glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
     std::string map_kd;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
