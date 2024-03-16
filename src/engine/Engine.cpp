@@ -12,7 +12,6 @@
 
 #include "asset/Assets.h"
 
-#include "ki/FpsCounter.h"
 #include "ki/Timer.h"
 
 #include "kigl/kigl.h"
@@ -141,9 +140,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
 
     std::chrono::duration<float> elapsedDuration;
 
-    ki::RenderClock& clock = m_clock;
-
-    ki::FpsCounter fpsCounter;
+    auto& clock = m_clock;
+    auto& fpsCounter = m_fpsCounter;
 
     InputContext inputCtx{
         clock,

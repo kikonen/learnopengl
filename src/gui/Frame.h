@@ -6,6 +6,7 @@
 
 #include "gui/Window.h"
 
+struct PrepareContext;
 class RenderContext;
 
 class Frame
@@ -14,13 +15,13 @@ public:
     Frame(Window& window);
     ~Frame();
 
-    virtual void prepare();
+    virtual void prepare(const PrepareContext& ctx);
     virtual void bind(const RenderContext& ctx);
     virtual void draw(const RenderContext& ctx) = 0;
 
     virtual void render(const RenderContext& ctx);
 
-private:
+protected:
     bool m_prepared = false;
 
     Window& m_window;

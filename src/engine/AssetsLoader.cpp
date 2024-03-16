@@ -91,15 +91,15 @@ void AssetsLoader::loadAssets(
 
         {
             if (k == "log_file") {
-                data.logFile = v.as<std::string>();
+                data.logFile = readString(v);
                 continue;
             }
             if (k == "scene_dir") {
-                data.sceneDir = v.as<std::string>();
+                data.sceneDir = readString(v);
                 continue;
             }
             if (k == "scene_file") {
-                data.sceneFile = v.as<std::string>();
+                data.sceneFile = readString(v);
                 continue;
             }
         }
@@ -223,27 +223,27 @@ void AssetsLoader::loadAssets(
         }
         {
             if (k == "assets_dir") {
-                data.assetsDir = v.as<std::string>();
+                data.assetsDir = readString(v);
                 continue;
             }
             if (k == "models_dir") {
-                data.modelsDir = v.as<std::string>();
+                data.modelsDir = readString(v);
                 continue;
             }
             if (k == "sprites_dir") {
-                data.spritesDir = v.as<std::string>();
+                data.spritesDir = readString(v);
                 continue;
             }
             if (k == "textures_dir") {
-                data.texturesDir = v.as<std::string>();
+                data.texturesDir = readString(v);
                 continue;
             }
             if (k == "fonts_dir") {
-                data.fontsDir = v.as<std::string>();
+                data.fontsDir = readString(v);
                 continue;
             }
             if (k == "shaders_dir") {
-                data.shadersDir = v.as<std::string>();
+                data.shadersDir = readString(v);
                 continue;
             }
         }
@@ -253,11 +253,27 @@ void AssetsLoader::loadAssets(
                 continue;
             }
             if (k == "placeholder_texture") {
-                data.placeholderTexture = v.as<std::string>();
+                data.placeholderTexture = readString(v);
                 continue;
             }
             if (k == "use_imgui") {
-                data.useIMGUI = readBool(v);
+                data.useImGui = readBool(v);
+                continue;
+            }
+            if (k == "imgui_demo") {
+                data.imGuiDemo = readBool(v);
+                continue;
+            }
+            if (k == "imgui_font_size") {
+                data.imGuiFontSize = readInt(v);
+                continue;
+            }
+            if (k == "imgui_font_path") {
+                data.imGuiFontPath = readString(v);
+                continue;
+            }
+            if (k == "use_imgui") {
+                data.useImGui = readBool(v);
                 continue;
             }
             if (k == "use_script") {
@@ -607,7 +623,8 @@ void AssetsLoader::loadAssets(
                 continue;
             }
             if (k == "viewport_effect") {
-                std::string effect = v.as<std::string>();
+                std::string effect = readString(v);
+
                 if (effect == "none") {
                     data.viewportEffect = ViewportEffect::none;
                     continue;
@@ -679,6 +696,11 @@ void AssetsLoader::loadAssets(
     }
 
     data.frustumAny = data.frustumEnabled && (data.frustumCPU || data.frustumGPU);
+}
+
+std::string AssetsLoader::readString(const YAML::Node& node) const
+{
+    return node.as<std::string>();
 }
 
 bool AssetsLoader::readBool(const YAML::Node& node) const

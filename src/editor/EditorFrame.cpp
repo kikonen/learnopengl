@@ -2,9 +2,22 @@
 
 #include <math.h>
 
+#include "asset/Assets.h"
+
+#include "engine/Engine.h"
+
+#include "render/RenderContext.h"
+
 EditorFrame::EditorFrame(Window& window)
     : Frame(window)
 {
+}
+
+void EditorFrame::prepare(const PrepareContext& ctx)
+{
+    const auto& assets = ctx.m_assets;
+
+    Frame::prepare(ctx);
 }
 
 void EditorFrame::draw(const RenderContext& ctx)
@@ -18,6 +31,10 @@ void EditorFrame::draw(const RenderContext& ctx)
     ImGuiID dockspace_id = ImGui::GetID("learnopengl");
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         //}
+
+    const auto& fpsCounter = m_window.getEngine().getFpsCounter();
+    auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
+    ImGui::Text(fpsText.c_str());
 
     static float rotation = 0.0;
     ImGui::SliderFloat("rotation", &rotation, 0, 2);

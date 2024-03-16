@@ -1,8 +1,10 @@
 #include "FrameInit.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include "util/Util.h"
 
 #include "asset/Assets.h"
 
@@ -29,4 +31,18 @@ FrameInit::~FrameInit()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+void FrameInit::prepare(const PrepareContext& ctx)
+{
+    const auto& assets = Assets::get();
+
+    m_fontSize = assets.imGuiFontSize;
+    m_fontPath = util::joinPath(
+        assets.assetsDir,
+        assets.imGuiFontPath);
+
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    io.Fonts->AddFontFromFileTTF(m_fontPath.c_str(), m_fontSize);
 }

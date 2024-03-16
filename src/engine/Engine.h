@@ -6,7 +6,7 @@
 
 #include "registry/Registry.h"
 
-#include "ki/RenderClock.h"
+#include "ki/FpsCounter.h"
 #include "ki/FpsCounter.h"
 
 #include "gui/Input.h"
@@ -35,6 +35,10 @@ public:
 
     inline const ki::RenderClock& getClock() const noexcept {
         return m_clock;
+    }
+
+    inline const ki::FpsCounter& getFpsCounter() const noexcept {
+        return m_fpsCounter;
     }
 
 protected:
@@ -68,6 +72,7 @@ public:
 
 protected:
     ki::RenderClock m_clock;
+    ki::FpsCounter m_fpsCounter;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 

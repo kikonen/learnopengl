@@ -24,6 +24,7 @@ private:
         const YAML::Node& node,
         Assets& data);
 
+    std::string readString(const YAML::Node& node) const;
     bool readBool(const YAML::Node& node) const;
     int readInt(const YAML::Node& node) const;
     float readFloat(const YAML::Node& node) const;

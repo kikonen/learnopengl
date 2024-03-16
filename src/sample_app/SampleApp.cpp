@@ -36,6 +36,7 @@
 
 #include "engine/AssetsLoader.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
@@ -100,9 +101,14 @@ int SampleApp::onSetup()
 
     //state.setEnabled(GL_MULTISAMPLE, false);
 
-    if (assets.useIMGUI) {
+    if (assets.useImGui) {
         m_frameInit = std::make_unique<FrameInit>(*m_window);
         m_frame = std::make_unique<EditorFrame>(*m_window);
+
+        PrepareContext ctx{ m_registry.get()};
+
+        m_frameInit->prepare(ctx);
+        m_frame->prepare(ctx);
     }
 
     if (false) {
@@ -213,7 +219,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         // => ensure "sane" start state for each loop
         state.clearColor(BLACK_COLOR);
 
-        if (assets.useIMGUI) {
+        if (assets.useImGui) {
             m_frame->bind(ctx);
             state.clear();
         }
@@ -236,7 +242,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if ((state.shift || state.ctrl || state.alt) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && (!assets.useImGui || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }
@@ -244,8 +250,10 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         m_lastInputState = state;
     }
 
-    if (assets.useIMGUI) {
-        ImGui::ShowDemoWindow();
+    if (assets.useImGui) {
+        if (assets.imGuiDemo) {
+            ImGui::ShowDemoWindow();
+        }
 
         m_frame->draw(ctx);
         m_frame->render(ctx);

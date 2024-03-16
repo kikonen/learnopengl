@@ -11,7 +11,7 @@ Frame::~Frame()
 {
 }
 
-void Frame::prepare()
+void Frame::prepare(const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
