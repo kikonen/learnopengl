@@ -42,7 +42,9 @@ assets:
   placeholder_texture: textures/tiles_1024.png
 
   use_imgui: true
-  use_imgui_demo: true
+  imgui_demo: false
+  imgui_font_size: 18
+  imgui_font_path: fonts/Vera.ttf
 
   use_script: true
   use_light: true

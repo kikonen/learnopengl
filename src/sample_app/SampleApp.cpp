@@ -36,6 +36,7 @@
 
 #include "engine/AssetsLoader.h"
 
+#include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
@@ -103,6 +104,11 @@ int SampleApp::onSetup()
     if (assets.useImGui) {
         m_frameInit = std::make_unique<FrameInit>(*m_window);
         m_frame = std::make_unique<EditorFrame>(*m_window);
+
+        PrepareContext ctx{ m_registry.get()};
+
+        m_frameInit->prepare(ctx);
+        m_frame->prepare(ctx);
     }
 
     if (false) {
@@ -244,8 +250,10 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         m_lastInputState = state;
     }
 
-    if (assets.useImGui && assets.useImGuiDemo) {
-        ImGui::ShowDemoWindow();
+    if (assets.useImGui) {
+        if (assets.imGuiDemo) {
+            ImGui::ShowDemoWindow();
+        }
 
         m_frame->draw(ctx);
         m_frame->render(ctx);

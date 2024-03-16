@@ -93,7 +93,9 @@ Assets::Assets()
     placeholderTexture = "textures/tiles_1024.png";
 
     useImGui = false;
-    useImGuiDemo = false;
+    imGuiDemo = false;
+    imGuiFontSize = 12;
+    imGuiFontPath = "fonts/Vera.ttf";
 
     useScript = true;
     useLight = true;

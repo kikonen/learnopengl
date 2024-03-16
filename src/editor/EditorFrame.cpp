@@ -2,11 +2,22 @@
 
 #include <math.h>
 
+#include "asset/Assets.h"
+
 #include "engine/Engine.h"
+
+#include "render/RenderContext.h"
 
 EditorFrame::EditorFrame(Window& window)
     : Frame(window)
 {
+}
+
+void EditorFrame::prepare(const PrepareContext& ctx)
+{
+    const auto& assets = ctx.m_assets;
+
+    Frame::prepare(ctx);
 }
 
 void EditorFrame::draw(const RenderContext& ctx)

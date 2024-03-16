@@ -89,7 +89,9 @@ public:
     std::string placeholderTexture;
 
     bool useImGui;
-    bool useImGuiDemo;
+    bool imGuiDemo;
+    int imGuiFontSize;
+    std::string imGuiFontPath;
 
     bool useScript;
     bool useLight;
