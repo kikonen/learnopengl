@@ -20,7 +20,7 @@ public:
 
     virtual void render(const RenderContext& ctx);
 
-private:
+protected:
     bool m_prepared = false;
 
     Window& m_window;

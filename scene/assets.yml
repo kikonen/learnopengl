@@ -41,7 +41,8 @@ assets:
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024.png
 
-  use_imgui: false
+  use_imgui: true
+  use_imgui_demo: true
 
   use_script: true
   use_light: true

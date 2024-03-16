@@ -476,7 +476,7 @@ void Window::onMouseMove(float xpos, float ypos)
     bool isAlt = m_input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!assets.useIMGUI || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && (!assets.useImGui || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();

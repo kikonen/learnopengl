@@ -92,7 +92,8 @@ Assets::Assets()
     placeholderTextureAlways = false;
     placeholderTexture = "textures/tiles_1024.png";
 
-    useIMGUI = false;
+    useImGui = false;
+    useImGuiDemo = false;
 
     useScript = true;
     useLight = true;

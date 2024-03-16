@@ -88,7 +88,8 @@ public:
     bool placeholderTextureAlways;
     std::string placeholderTexture;
 
-    bool useIMGUI;
+    bool useImGui;
+    bool useImGuiDemo;
 
     bool useScript;
     bool useLight;

@@ -257,7 +257,11 @@ void AssetsLoader::loadAssets(
                 continue;
             }
             if (k == "use_imgui") {
-                data.useIMGUI = readBool(v);
+                data.useImGui = readBool(v);
+                continue;
+            }
+            if (k == "use_imgui_demo") {
+                data.useImGuiDemo = readBool(v);
                 continue;
             }
             if (k == "use_script") {
