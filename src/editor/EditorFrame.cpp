@@ -33,8 +33,9 @@ void EditorFrame::draw(const RenderContext& ctx)
         //}
 
     const auto& fpsCounter = m_window.getEngine().getFpsCounter();
-    auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
-    ImGui::Text(fpsText.c_str());
+    //auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
+    auto fpsSummary = fpsCounter.formatSummary("");
+    ImGui::Text(fpsSummary.c_str());
 
     static float rotation = 0.0;
     ImGui::SliderFloat("rotation", &rotation, 0, 2);
