@@ -280,12 +280,12 @@ namespace render {
         return spec;
     }
 
-    // G buffer: diffuse.rgb + (IGNORE light flag).a
+    // G buffer: diffuse.rgb
     FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedo(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA8;
+        spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
@@ -293,12 +293,12 @@ namespace render {
         return spec;
     }
 
-    // G buffer: diffuse.rgb + (IGNORE light flag).a
+    // G buffer: diffuse.rgb
     FrameBufferAttachment FrameBufferAttachment::getGBufferAlbedoHdr(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
+        spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;

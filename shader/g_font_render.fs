@@ -126,7 +126,7 @@ void main()
   }
   rgb = materialColor.rgb;
 
-  o_fragColor = vec4(rgb, 1.0);
+  o_fragColor = rgb;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
   o_fragNormal = encodeGNormal(normal);

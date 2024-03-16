@@ -59,7 +59,7 @@ void main() {
 
   texColor *= vec4(1.0, 1.0, 1.0, t);
 
-  o_fragColor = vec4(texColor.xyz, 1.0);
+  o_fragColor = texColor.xyz;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.xyz;
 

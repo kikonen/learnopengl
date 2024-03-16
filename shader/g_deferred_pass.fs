@@ -85,7 +85,6 @@ void main()
     material.diffuse = textureLod(g_albedo, texCoord, 0);
     material.diffuse.a = 1.0;
 
-    material.metal = textureLod(g_metal, texCoord, 0);
     material.emission = textureLod(g_emission, texCoord, 0);
     material.emission.a = 1.0;
 

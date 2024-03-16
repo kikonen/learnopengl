@@ -135,7 +135,7 @@
   color.b = clamp(color.b, MIN_CLAMP_COL_VALUE, MAX_CLAMP_COL_VALUE);
 
 #define LAYOUT_G_BUFFER_OUT\
- layout (location = 0) out vec4 o_fragColor;\
+ layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMetal;
