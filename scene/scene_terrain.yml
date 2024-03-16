@@ -132,8 +132,8 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      render_back: true
       dynamic_bounds: true
+      render_back: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
