@@ -265,15 +265,11 @@ void AssetsLoader::loadAssets(
                 continue;
             }
             if (k == "imgui_font_size") {
-                data.imGuiFontSize = readInt(v);
+                data.imGuiFontSize = readFloat(v);
                 continue;
             }
             if (k == "imgui_font_path") {
                 data.imGuiFontPath = readString(v);
-                continue;
-            }
-            if (k == "use_imgui") {
-                data.useImGui = readBool(v);
                 continue;
             }
             if (k == "use_script") {

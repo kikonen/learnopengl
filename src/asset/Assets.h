@@ -90,7 +90,7 @@ public:
 
     bool useImGui;
     bool imGuiDemo;
-    int imGuiFontSize;
+    float imGuiFontSize;
     std::string imGuiFontPath;
 
     bool useScript;
