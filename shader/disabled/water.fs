@@ -169,7 +169,7 @@ void main() {
 #ifdef USE_BLEND
   o_fragColor = texColor;
 #else
-  o_fragColor = vec4(texColor.xyz, 1.0);
+  o_fragColor = vec4(texColor.rgb, 1.0);
 #endif
 
   o_fragColor = texColor;

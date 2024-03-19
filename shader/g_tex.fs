@@ -94,9 +94,9 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  o_fragColor = color.xyz;
+  o_fragColor = color.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.xyz;
+  o_fragEmission = material.emission.rgb;
 
   //o_fragPosition = fs_in.worldPos;
   o_fragNormal = encodeGNormal(normal);

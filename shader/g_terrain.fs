@@ -61,9 +61,9 @@ void main() {
 
   vec4 texColor = material.diffuse;
 
-  o_fragColor = texColor.xyz;
+  o_fragColor = texColor.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.xyz;
+  o_fragEmission = material.emission.rgb;
 
   //o_fragPosition = fs_in.worldPos;
   o_fragNormal = encodeGNormal(normal);
