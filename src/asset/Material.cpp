@@ -27,6 +27,7 @@ namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
 
     const glm::vec4 WHITE_RGBA{ 1.f };
+    const glm::vec4 BLACK_RGBA{ 0.f };
 
     float calculateAmbient(glm::vec3 ambient) {
         return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -337,7 +338,7 @@ const MaterialSSBO Material::toSSBO() const
 
     return {
         kd,
-        ke,
+        m_textures[MATERIAL_EMISSION_IDX].m_handle ? WHITE_RGBA : ke,
 
         m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? WHITE_RGBA : metal,
 
