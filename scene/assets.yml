@@ -13,6 +13,7 @@ assets:
   gl_use_debug_fence: false
   gl_use_finish: false
 
+  compressed_textures_enabled: false
   prepass_depth_enabled: false
 
   g_buffer_scale: 0.5

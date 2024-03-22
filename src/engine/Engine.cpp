@@ -245,9 +245,9 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
     auto summary = fpsCounter.formatSummary(m_title.c_str());
     m_window->setTitle(summary);
 
-    if (m_window->isFullScreen() && !assets.glVendorNvidia) {
-        std::cout << summary << '\n';
-    }
+    //if (m_window->isFullScreen() && !assets.glVendorNvidia) {
+    //    std::cout << summary << '\n';
+    //}
 }
 
 void Engine::onDestroy()

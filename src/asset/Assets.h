@@ -48,6 +48,7 @@ public:
     bool glUseDebugFence;
     bool glUseFinish;
 
+    bool compressedTexturesEnabled;
     bool prepassDepthEnabled;
 
     float gBufferScale;

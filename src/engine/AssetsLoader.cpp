@@ -172,6 +172,10 @@ void AssetsLoader::loadAssets(
                 data.glUseFinish = readBool(v);
                 continue;
             }
+            if (k == "compressed_textures_enabled") {
+                data.compressedTexturesEnabled = readBool(v);
+                continue;
+            }
             if (k == "prepass_depth_enabled") {
                 data.prepassDepthEnabled = readBool(v);
                 continue;

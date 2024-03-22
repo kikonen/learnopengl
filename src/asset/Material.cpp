@@ -155,17 +155,20 @@ void Material::loadTextures()
     if (m_loaded) return;
     m_loaded = true;
 
-    loadTexture(MATERIAL_DIFFUSE_IDX, map_kd, true, true);
-    loadTexture(MATERIAL_EMISSION_IDX, map_ke, true, false);
-    loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
-    loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
-    loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
-    loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
-    loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
-    loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
-    loadTexture(MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
-    loadTexture(MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
-    loadTexture(MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
+    const auto& assets = Assets::get();
+    auto compressed = assets.compressedTexturesEnabled;
+
+    loadTexture(MATERIAL_DIFFUSE_IDX, map_kd, true, compressed, true);
+    loadTexture(MATERIAL_EMISSION_IDX, map_ke, true, compressed, false);
+    loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, compressed, false);
+    loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, compressed, false);
+    loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, compressed, false);
+    loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, compressed, false);
+    loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, compressed, false);
+    loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, compressed, false);
+    loadTexture(MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false, false);
+    loadTexture(MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, compressed, false);
+    loadTexture(MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false, false);
 
     loadChannelTexture(
         MATERIAL_METAL_CHANNEL_MAP_IDX,
@@ -201,6 +204,7 @@ void Material::loadTexture(
     int idx,
     std::string_view textureName,
     bool gammaCorrect,
+    bool compressed,
     bool usePlaceholder)
 {
     if (textureName.empty()) return;
@@ -217,6 +221,7 @@ void Material::loadTexture(
         textureName,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
         gammaCorrect,
+        compressed,
         textureSpec);
 
     future.wait();
@@ -227,7 +232,13 @@ void Material::loadTexture(
     }
 
     if (usePlaceholder && !texture->isValid()) {
-        future = ImageTexture::getTexture("tex-placeholder", placeholderPath, gammaCorrect, textureSpec);
+        future = ImageTexture::getTexture(
+            "tex-placeholder",
+            placeholderPath,
+            gammaCorrect,
+            false,
+            textureSpec);
+
         future.wait();
         if (future.valid()) {
             texture = future.get();

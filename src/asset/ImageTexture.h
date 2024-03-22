@@ -15,6 +15,7 @@ public:
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
+        bool compressed,
         const TextureSpec& spec);
 
     static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
@@ -23,6 +24,7 @@ public:
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
+        bool compressed,
         const TextureSpec& spec);
 
     virtual ~ImageTexture();
@@ -35,6 +37,9 @@ public:
 
 public:
     const std::string m_path;
+    const bool m_compressed;
+
+    int m_compressedFormat{ 0 };
 
     std::unique_ptr<Image> m_image;
 

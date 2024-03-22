@@ -4,12 +4,15 @@
 #include <mutex>
 #include <regex>
 
+#include <iostream>
+
 #include <regex>
-#include "fmt/format.h"
+#include <fmt/format.h>
 
 #include "asset/Image.h"
 
 #include "util/Util.h"
+#include "util/Log.h"
 
 #include "kigl/kigl.h"
 
@@ -64,11 +67,12 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     std::string_view name,
     std::string_view path,
     bool gammaCorrect,
+    bool compressed,
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}_{}-{}_{}_{}_{}",
-        path, gammaCorrect,
+        "{}_{}_{}-{}_{}-{}_{}_{}",
+        path, gammaCorrect, compressed,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -79,7 +83,7 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, spec));
+    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, compressed, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -104,9 +108,11 @@ ImageTexture::ImageTexture(
     std::string_view name,
     std::string_view path,
     bool gammaCorrect,
+    bool compressed,
     const TextureSpec& spec)
-    : Texture(name, gammaCorrect, spec),
-    m_path(path)
+    : Texture{ name, gammaCorrect, spec },
+    m_path{ path },
+    m_compressed{ compressed }
 {
 }
 
@@ -130,33 +136,39 @@ void ImageTexture::prepare()
         if (m_image->m_is16Bbit) {
             m_format = GL_RED;
             m_internalFormat = GL_R16;
+            m_compressedFormat = GL_COMPRESSED_RED;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RED;
             m_internalFormat = GL_R8;
+            m_compressedFormat = GL_COMPRESSED_RED;
         }
         //m_specialTexture = true;
     }
     else if (m_image->m_channels == 2) {
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
+        m_compressedFormat = GL_COMPRESSED_RG;
     }
     else if (m_image->m_channels == 3) {
         if (m_image->m_hdri) {
             // NOTE KI hdri is *linear* (no gamma)
             m_format = GL_RGB;
             m_internalFormat = GL_RGB16F;
+            m_compressedFormat = GL_COMPRESSED_RGB;
             m_pixelFormat = GL_FLOAT;
         }
         else if (m_image->m_is16Bbit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
+            m_compressedFormat = m_gammaCorrect ? GL_COMPRESSED_SRGB : GL_COMPRESSED_RGB;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB8;
+            m_compressedFormat = m_gammaCorrect ? GL_COMPRESSED_SRGB : GL_COMPRESSED_RGB;
             //m_internalFormat = assets.glPreferredTextureFormatRGB;
         }
     }
@@ -164,11 +176,13 @@ void ImageTexture::prepare()
         if (m_image->m_is16Bbit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
+            m_compressedFormat = m_gammaCorrect ? GL_COMPRESSED_SRGB_ALPHA : GL_COMPRESSED_RGBA;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+            m_compressedFormat = m_gammaCorrect ? GL_COMPRESSED_SRGB_ALPHA : GL_COMPRESSED_RGBA;
             //m_internalFormat = assets.glPreferredTextureFormatRGBA;
         }
     }
@@ -204,12 +218,22 @@ void ImageTexture::prepare()
             m_spec.mipMapLevels,
             static_cast<int>(log2(std::max(m_image->m_width, m_image->m_height))));
 
-        glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
+        if (m_compressed) {
+            glTextureStorage2D(m_textureID, mipMapLevels, m_compressedFormat, m_image->m_width, m_image->m_height);
+        }
+        else {
+            glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
+        }
+
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);
         glGenerateTextureMipmap(m_textureID);
 
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
+
+        GLint compFlag;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
+        KI_INFO_OUT(fmt::format("{}: compressed={}", m_image->m_path, compFlag));
 
         m_handle = glGetTextureHandleARB(m_textureID);
         glMakeTextureHandleResidentARB(m_handle);

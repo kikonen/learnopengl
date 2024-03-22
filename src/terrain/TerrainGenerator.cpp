@@ -143,6 +143,7 @@ namespace terrain {
                 texturePath,
                 texturePath,
                 false,
+                false,
                 spec);
 
             future.wait();

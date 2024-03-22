@@ -52,6 +52,7 @@ Assets::Assets()
     glUseDebugFence = false;
     glUseFinish = false;
 
+    compressedTexturesEnabled = false;
     prepassDepthEnabled = false;
 
     gBufferScale = 0.5f;
