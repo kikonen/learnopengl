@@ -24,6 +24,7 @@ in VS_OUT {
 
 out VS_OUT {
   vec3 worldPos;
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   flat uint materialIndex;
@@ -87,6 +88,7 @@ void main() {
 
       gs_out.furStrength = 1.0 - d;
       gs_out.worldPos = worldPos.xyx;
+      gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
       gs_out.normal = normal;
       gs_out.texCoord = vs_in[i].texCoord;
       gs_out.materialIndex = vs_in[i].materialIndex;

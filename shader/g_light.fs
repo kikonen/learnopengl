@@ -14,7 +14,7 @@ in VS_OUT {
   flat uint materialIndex;
 
   vec2 texCoord;
-  vec3 worldPos;
+  vec3 viewPos;
   vec3 normal;
 } fs_in;
 
@@ -46,5 +46,5 @@ void main() {
   o_fragEmission = texColor.rgb;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormal(normal);
+  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
 }

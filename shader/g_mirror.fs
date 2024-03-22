@@ -14,7 +14,8 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   vec4 glp;
 
-  vec3 worldPos;
+  //vec3 worldPos;
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
 
@@ -70,5 +71,5 @@ void main() {
   o_fragEmission = material.emission.rgb;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormal(normal);
+  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
 }

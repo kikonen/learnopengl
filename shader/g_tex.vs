@@ -24,7 +24,10 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_clip_planes.glsl
 
 out VS_OUT {
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -125,6 +128,9 @@ void main() {
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
 #endif
+
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
+
 #ifdef USE_NORMAL_PATTERN
   vs_out.vertexPos = a_pos;
 #endif

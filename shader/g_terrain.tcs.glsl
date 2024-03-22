@@ -14,7 +14,10 @@ layout(vertices=3) out;
 in VS_OUT {
   flat uint entityIndex;
 
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -34,7 +37,10 @@ in VS_OUT {
 out TCS_OUT {
   flat uint entityIndex;
 
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -68,7 +74,10 @@ void main()
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
   tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+#ifdef USE_CUBE_MAP
   tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
+#endif
+  tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
@@ -97,18 +106,18 @@ void main()
     // => to avoid terrain bumping around when rotating in place
     //mat4 mvMatrix = u_viewMatrix * modelMatrix;
     mat4 mvMatrix = modelMatrix;
-    vec4 viewPos = vec4(u_viewWorldPos, 1.0);
+    vec4 eyePos = vec4(u_viewWorldPos, 1.0);
 
-    vec4 viewPos00 = viewPos - mvMatrix * gl_in[0].gl_Position;
-    vec4 viewPos01 = viewPos - mvMatrix * gl_in[1].gl_Position;
-    vec4 viewPos10 = viewPos - mvMatrix * gl_in[2].gl_Position;
-    //vec4 viewPos11 = viewPos - mvMatrix * gl_in[3].gl_Position;
+    vec4 eyePos00 = eyePos - mvMatrix * gl_in[0].gl_Position;
+    vec4 eyePos01 = eyePos - mvMatrix * gl_in[1].gl_Position;
+    vec4 eyePos10 = eyePos - mvMatrix * gl_in[2].gl_Position;
+    //vec4 eyePos11 = eyePos - mvMatrix * gl_in[3].gl_Position;
 
     // "distance" from camera scaled between 0 and 1
-    float dist00 = clamp( (abs(viewPos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
-    float dist01 = clamp( (abs(viewPos01.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
-    float dist10 = clamp( (abs(viewPos10.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
-    //float dist11 = clamp( (abs(viewPos11.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist00 = clamp( (abs(eyePos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist01 = clamp( (abs(eyePos01.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    float dist10 = clamp( (abs(eyePos10.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
+    //float dist11 = clamp( (abs(eyePos11.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );
 
     float tessLevel0 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist10, dist00) );
     float tessLevel1 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(dist00, dist01) );

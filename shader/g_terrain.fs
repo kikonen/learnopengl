@@ -13,7 +13,10 @@
 layout(early_fragment_tests) in;
 
 in TES_OUT {
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -47,8 +50,6 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
-
   #include var_tex_material_normal.glsl
 
   // if (!gl_FrontFacing) {
@@ -56,6 +57,8 @@ void main() {
   // }
 
 #ifdef USE_CUBE_MAP
+  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
@@ -66,5 +69,5 @@ void main() {
   o_fragEmission = material.emission.rgb;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormal(normal);
+  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
 }

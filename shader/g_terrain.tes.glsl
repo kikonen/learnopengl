@@ -15,7 +15,10 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 in TCS_OUT {
   flat uint entityIndex;
 
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -32,7 +35,10 @@ in TCS_OUT {
 } tes_in[];
 
 out TES_OUT {
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -105,7 +111,10 @@ void main()
 
   vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
+#ifdef USE_CUBE_MAP
   tes_out.worldPos = worldPos.xyz;
+#endif
+  tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
   tes_out.vertexPos = vertexPos;
