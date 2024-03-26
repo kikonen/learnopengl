@@ -20,8 +20,6 @@ public:
         bool is16Bbit,
         const TextureSpec& spec);
 
-    static const std::pair<int, const std::vector<const ChannelTexture*>&> getPreparedTextures();
-
     ChannelTexture(
         std::string_view name,
         const std::vector<ImageTexture*>& sourceTextures,

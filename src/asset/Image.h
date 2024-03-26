@@ -23,10 +23,14 @@ public:
 
     int load();
 
+    int loadNormal();
+    int loadKtx();
+
 public:
     const std::string m_path;
     const bool m_flipped;
     const bool m_hdri;
+    const bool m_ktx;
 
     // NOTE KI stbi_load requires int
     int m_width{ 0 };

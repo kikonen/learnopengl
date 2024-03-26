@@ -32,10 +32,6 @@ namespace render {
         void updateClipPlanes(const ClipPlanesUBO& data);
         void updateLights(Registry* registry, bool useLight);
 
-    private:
-        //void updateImageTextures();
-        //void updateChannelTextures();
-
     public:
 
     private:
@@ -46,9 +42,5 @@ namespace render {
         std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO>> m_bufferInfo;
         std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO>> m_clipPlanes;
         std::unique_ptr<kigl::GLSyncQueue<LightsUBO>> m_lights;
-
-        //kigl::GLSyncQueue<TextureUBO, true> m_textures{ "textures", 1, MAX_TEXTURE_COUNT, false, false };
-        //int m_imageTextureLevel = -1;
-        //int m_channelTextureLevel = -1;
     };
 }

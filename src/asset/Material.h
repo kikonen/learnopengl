@@ -121,7 +121,6 @@ private:
         int idx,
         std::string_view name,
         bool gammaCorrect,
-        bool compressed,
         bool usePlaceholder);
 
     void loadChannelTexture(

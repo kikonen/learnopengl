@@ -15,21 +15,20 @@ public:
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
-        bool compressed,
         const TextureSpec& spec);
-
-    static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
 
     ImageTexture(
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
-        bool compressed,
         const TextureSpec& spec);
 
     virtual ~ImageTexture();
 
     void prepare() override;
+
+    void prepareNormal();
+    void prepareKtx();
 
     bool isValid() { return m_valid; }
 
@@ -37,9 +36,6 @@ public:
 
 public:
     const std::string m_path;
-    const bool m_compressed;
-
-    int m_compressedFormat{ 0 };
 
     std::unique_ptr<Image> m_image;
 
