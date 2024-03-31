@@ -44,7 +44,7 @@ https://glad.dav1d.de
 - https://computergraphics.stackexchange.com/questions/5810/shader-storage-buffer-indexing-by-4-bytes-instead-of-3
 - https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 
-## Bilboard
+## Billboard
 
 - https://ogldev.org/www/tutorial27/tutorial27.html
   * applied for "point sprite" billboard
@@ -87,13 +87,31 @@ https://glad.dav1d.de
 - https://computergraphics.stackexchange.com/questions/400/synchronizing-successive-opengl-compute-shader-invocations
 - https://www.reddit.com/r/vulkan/comments/lh9cu1/do_compute_shaders_only_parallelize_up_to_local/
 
+## GPU Texture Compression
+- KTX software
+  + https://github.com/KhronosGroup/KTX-Software
+  + https://github.com/KhronosGroup/3D-Formats-Guidelines/blob/main/KTXDeveloperGuide.md
+  + https://github.khronos.org/KTX-Software/libktx/index.html
+  + https://github.khronos.org/KTX-Software/ktxtools/toktx.html
+  + https://github.com/snowkit/ktx-format
+
+**ktx albedo**
+```bash
+ktxinfo.exe Planks09_col_2048.ktx
+```
+
+**Compress**
+```bash
+toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col_2048.png
+```
+
 ## Scripting
 - http://lua-users.org/wiki/ScopeTutorial
 - https://sol2.readthedocs.io/en/latest/tutorial/all-the-things.html
 - https://sol2.readthedocs.io/en/latest/tutorial/functions.html
 - https://github.com/ThePhD/sol2/issues/90
 
-## SKybox
+## Skybox
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml
 - https://www.rioki.org/2013/03/07/glsl-skybox.html
 
