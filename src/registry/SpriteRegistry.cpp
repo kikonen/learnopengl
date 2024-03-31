@@ -116,6 +116,7 @@ void SpriteRegistry::updateShapeBuffer()
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < shapeCount * sz) {
             m_ssbo.resizeBuffer(m_shapesSSBO.capacity() * sz);
+            m_ssbo.bindSSBO(SSBO_SHAPES);
             updateIndex = 0;
         }
 

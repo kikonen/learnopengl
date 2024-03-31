@@ -5,7 +5,7 @@
 #include "asset/ImageTexture.h"
 
 namespace {
-    constexpr size_t BLOCK_SIZE = 100;
+    constexpr size_t BLOCK_SIZE = 16;
     constexpr size_t MAX_BLOCK_COUNT = 100;
 }
 
@@ -39,7 +39,7 @@ namespace terrain {
         m_useFence = false;
         m_useDebugFence = false;
 
-        m_ssbo.createEmpty(MAX_BLOCK_COUNT * BLOCK_SIZE * sizeof(TerrainTileSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(TerrainTileSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);
     }
 
@@ -127,6 +127,7 @@ namespace terrain {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
             m_ssbo.resizeBuffer(bufferSize);
+            m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);
         }
 
         //m_ssbo.invalidateRange(

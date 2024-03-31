@@ -94,6 +94,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
             if (m_useMapped) {
                 m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
             }
+            else {
+                m_ssbo.bindSSBO(SSBO_ENTITIES);
+            }
             refreshAll = true;
         }
     }

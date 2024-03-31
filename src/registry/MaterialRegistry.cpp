@@ -17,8 +17,8 @@ namespace {
     constexpr size_t MAX_MATERIAL_COUNT = MATERIAL_BLOCK_SIZE * MATERIAL_BLOCK_COUNT;
 
     // scene_full = 91 109
-    constexpr size_t INDEX_BLOCK_SIZE = 1000;
-    constexpr size_t INDEX_BLOCK_COUNT = 500;
+    constexpr size_t INDEX_BLOCK_SIZE = 100;
+    constexpr size_t INDEX_BLOCK_COUNT = 2000;
 
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
@@ -173,6 +173,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
             m_ssbo.resizeBuffer(m_materials.capacity() * sz);
+            m_ssbo.bindSSBO(SSBO_MATERIALS);
             updateIndex = 0;
         }
 
@@ -202,6 +203,7 @@ void MaterialRegistry::updateIndexBuffer()
         // NOTE KI *reallocate* SSBO if needed
         if (m_indexBuffer.m_size < totalCount * sz) {
             m_indexBuffer.resizeBuffer(m_indeces.capacity() * sz);
+            m_indexBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
             updateIndex = 0;
         }
 
