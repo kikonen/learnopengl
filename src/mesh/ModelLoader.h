@@ -83,7 +83,8 @@ namespace mesh {
 
         std::string resolveTexturePath(
             std::string_view line,
-            int skipCount);
+            int skipCount,
+            bool useCompressed);
 
     private:
         Material m_defaultMaterial;

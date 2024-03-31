@@ -10,13 +10,15 @@ class Convert
   def encode_ext(ext)
     files = Dir["*.#{ext}"]
 
-    files.each do |f|
+    files.sort_by(&:downcase).each do |f|
       basename = File.basename(f, ".*")
 
       case basename.downcase
       when /_col_/, /_color_/, /_color\z/, /[-_]basecolor\z/
-        encode_srgb(f)
-      when /_nrm_/, /_normalgl_/, /_normalgl\z/, /[-_]normal\z/
+        encode_srgba(f)
+      when /_nrm_/, /_normalgl_/, /_normalgl\z/, /[-_]normal\z/, /_nrm\z/
+        encode_normal(f)
+      when /_specular_/, /[-_]specular\z/
         encode_normal(f)
       when /_opacity_/, /_opacity\z/
         encode_r(f)
@@ -34,8 +36,13 @@ class Convert
         #encode_r(f)
       else
         puts "SKIP: #{f}"
+        encode_srgba(f)
       end
     end
+  end
+
+  def encode_srgba(src)
+    encode(src, target_type: "RGBA", srgb: true)
   end
 
   def encode_srgb(src)
@@ -75,7 +82,8 @@ class Convert
       target_type,
       "--assign_oetf",
       srgb ? "srgb" : "linear",
-      false && normal_mode ? "--normal_mode" : nil,
+      "--lower_left_maps_to_s0t0",
+      normal_mode ? "--normal_mode" : nil,
     ].compact
 
     cmd << dst

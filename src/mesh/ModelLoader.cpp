@@ -9,6 +9,7 @@
 
 #include "ki/Timer.h"
 
+#include "asset/Assets.h"
 #include "asset/Sphere.h"
 
 #include "mesh/LodMesh.h"
@@ -487,13 +488,13 @@ namespace mesh {
                     material->d = stof(v1);
                 }
                 else if (k == "map_kd") {
-                    material->map_kd = resolveTexturePath(line, 0);
+                    material->map_kd = resolveTexturePath(line, 0, true);
                 }
                 else if (k == "map_ke") {
-                    material->map_ke = resolveTexturePath(line, 0);
+                    material->map_ke = resolveTexturePath(line, 0, true);
                 }
                 else if (k == "map_ks") {
-                    material->map_ks = resolveTexturePath(line, 0);
+                    material->map_ks = resolveTexturePath(line, 0, true);
                 }
                 else if (k == "map_bump") {
                     int skipCount = 0;
@@ -501,10 +502,10 @@ namespace mesh {
                         skipCount = 2;
                         material->map_bump_strength = stof(v2);
                     }
-                    material->map_bump = resolveTexturePath(line, skipCount);
+                    material->map_bump = resolveTexturePath(line, skipCount, true);
                 }
                 else if (k == "bump") {
-                    material->map_bump = resolveTexturePath(line, 0);
+                    material->map_bump = resolveTexturePath(line, 0, true);
                 }
             }
             file.close();
@@ -523,8 +524,13 @@ namespace mesh {
             materials.size()));
     }
 
-    std::string ModelLoader::resolveTexturePath(std::string_view line, int skipCount)
+    std::string ModelLoader::resolveTexturePath(
+        std::string_view line,
+        int skipCount,
+        bool useCompressed)
     {
+        const auto& assets = Assets::get();
+
         std::string k;
         std::stringstream is2(std::string{ line });
         is2 >> k;
@@ -535,6 +541,22 @@ namespace mesh {
         tmp << is2.rdbuf();
         std::string path = tmp.str();
         path.erase(0, path.find_first_not_of(' '));
-        return path;
+
+        std::filesystem::path filePath{ path };
+
+        if (useCompressed && assets.compressedTexturesEnabled) {
+            std::filesystem::path ktxPath{ path };
+            ktxPath.replace_extension(".ktx");
+
+            const auto fullPath = util::joinPath(
+                assets.assetsDir,
+                ktxPath.string());
+
+            if (util::fileExists(fullPath)) {
+                filePath = ktxPath;
+            }
+        }
+
+        return filePath.string();
     }
 }

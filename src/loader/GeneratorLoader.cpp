@@ -98,7 +98,7 @@ namespace loader {
             }
             else if (k == "map_height") {
                 std::string line = readString(v);
-                data.map_height = resolveTexturePath(line);
+                data.map_height = resolveTexturePath(line, false);
             }
             else {
                 reportUnknown("terrain_entry", k, v);

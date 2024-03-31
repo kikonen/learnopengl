@@ -186,22 +186,22 @@ namespace loader {
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
-                material.map_kd = resolveTexturePath(line);
+                material.map_kd = resolveTexturePath(line, true);
                 fields.map_kd = true;
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
-                material.map_ke = resolveTexturePath(line);
+                material.map_ke = resolveTexturePath(line, true);
                 fields.map_ke = true;
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
-                material.map_ks = resolveTexturePath(line);
+                material.map_ks = resolveTexturePath(line, true);
                 fields.map_ks = true;
             }
             else if (k == "map_bump" || k == "bump") {
                 std::string line = readString(v);
-                material.map_bump = resolveTexturePath(line);
+                material.map_bump = resolveTexturePath(line, true);
                 fields.map_bump = true;
             }
             else if (k == "map_bump_strength") {
@@ -210,37 +210,37 @@ namespace loader {
             }
             else if (k == "map_dudv") {
                 std::string line = readString(v);
-                material.map_dudv = resolveTexturePath(line);
+                material.map_dudv = resolveTexturePath(line, true);
                 fields.map_dudv = true;
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
-                material.map_noise = resolveTexturePath(line);
+                material.map_noise = resolveTexturePath(line, true);
                 fields.map_noise = true;
             }
             else if (k == "map_roughness") {
                 std::string line = readString(v);
-                material.map_roughness = resolveTexturePath(line);
+                material.map_roughness = resolveTexturePath(line, false);
                 fields.map_roughness = true;
             }
             else if (k == "map_metalness") {
                 std::string line = readString(v);
-                material.map_metalness = resolveTexturePath(line);
+                material.map_metalness = resolveTexturePath(line, false);
                 fields.map_metalness = true;
             }
             else if (k == "map_occlusion") {
                 std::string line = readString(v);
-                material.map_occlusion = resolveTexturePath(line);
+                material.map_occlusion = resolveTexturePath(line, false);
                 fields.map_occlusion = true;
             }
             else if (k == "map_displacement") {
                 std::string line = readString(v);
-                material.map_displacement = resolveTexturePath(line);
+                material.map_displacement = resolveTexturePath(line, false);
                 fields.map_displacement = true;
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
-                material.map_opacity = resolveTexturePath(line);
+                material.map_opacity = resolveTexturePath(line, true);
                 fields.map_opacity = true;
             }
             else if (k == "metal") {
