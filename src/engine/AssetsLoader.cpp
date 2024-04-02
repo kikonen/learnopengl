@@ -224,6 +224,10 @@ void AssetsLoader::loadAssets(
                 data.asyncLoaderDelay = readInt(v);
                 continue;
             }
+            if (k == "use_assimp_loader") {
+                data.useAssimpLoader = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "assets_dir") {

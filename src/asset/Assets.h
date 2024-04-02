@@ -71,6 +71,8 @@ public:
     bool asyncLoaderEnabled;
     int asyncLoaderDelay;
 
+    bool useAssimpLoader;
+
     std::string logFile;
 
     std::string sceneDir;

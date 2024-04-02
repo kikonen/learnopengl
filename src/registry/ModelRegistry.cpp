@@ -4,7 +4,8 @@
 
 #include "mesh/ModelMesh.h"
 #include "mesh/ModelVBO.h"
-#include "mesh/ModelLoader.h"
+#include "mesh/ObjectLoader.h"
+#include "mesh/AssimpLoader.h"
 
 #include "render/RenderContext.h"
 
@@ -93,7 +94,7 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                mesh::ModelLoader loader(m_alive);
+                mesh::ObjectLoader loader(m_alive);
                 auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {

@@ -11,8 +11,6 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelLoader.h"
-
 #include "model/Node.h"
 
 #include "event/Dispatcher.h"

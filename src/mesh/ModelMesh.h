@@ -15,6 +15,9 @@
 namespace mesh {
     class ModelMesh final : public Mesh {
         friend class ModelLoader;
+        friend class AssimpLoader;
+        friend class ObjectLoader;
+
         friend class ModelVBO;
         friend class ModelMaterialInit;
 

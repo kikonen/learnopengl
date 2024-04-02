@@ -75,6 +75,8 @@ Assets::Assets()
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
 
+    useAssimpLoader = false;
+
     logFile = "log/development.log";
 
     sceneDir = "scene";
