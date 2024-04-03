@@ -32,6 +32,12 @@ namespace mesh {
             m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
         }
 
+        {
+            m_defaultMaterial.m_default = true;
+            m_defaultMaterial.m_used = false;
+            m_defaultMaterial.m_id = Material::DEFAULT_ID;
+        }
+
         m_forceDefaultMaterial = forceDefaultMaterial;
 
         if (!mesh.m_loaded) {

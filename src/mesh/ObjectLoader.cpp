@@ -65,12 +65,6 @@ namespace mesh {
 
         positions.reserve(10000);
 
-        {
-            m_defaultMaterial.m_default = true;
-            m_defaultMaterial.m_used = false;
-            m_defaultMaterial.m_id = Material::DEFAULT_ID;
-        }
-
         std::string filePath = util::joinPathExt(
             mesh.m_rootDir,
             mesh.m_meshPath,

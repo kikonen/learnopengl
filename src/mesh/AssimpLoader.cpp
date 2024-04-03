@@ -71,6 +71,10 @@ namespace mesh
 
         processMaterials(modelMesh, materialMapping, scene);
         processNode(modelMesh, materialMapping, scene, scene->mRootNode);
+
+        if (m_defaultMaterial.m_used) {
+            modelMesh.m_materials.push_back(m_defaultMaterial);
+        }
     }
 
     void AssimpLoader::processNode(
@@ -96,25 +100,10 @@ namespace mesh
         const aiNode* node,
         const aiMesh* mesh)
     {
-        for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processFace(modelMesh, materialMapping, mesh, &mesh->mFaces[faceIdx]);
-        }
-    }
+        auto& vertices = modelMesh.m_vertices;
+        vertices.reserve(mesh->mNumVertices);
 
-    void AssimpLoader::processFace(
-        ModelMesh& modelMesh,
-        const std::map<size_t, ki::material_id>& materialMapping,
-        const aiMesh* mesh,
-        const aiFace* face)
-    {
-        Index index{ 0, 0, 0 };
-
-        modelMesh.m_vertices.resize(mesh->mNumVertices);
-
-        for (size_t i = 0; i < face->mNumIndices; i++)
-        {
-            int vertexIndex = face->mIndices[i];
-
+        for (size_t vertexIndex = 0; vertexIndex  < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord;
 
             if (mesh->HasTextureCoords(0))
@@ -132,14 +121,29 @@ namespace mesh
                 materialId = it != materialMapping.end() ? it->second : 0;
             }
 
-            Vertex v{ pos, texCoord, normal, tangent, materialId };
-            //modelMesh.m_vertices.push_back(v);
-            modelMesh.m_vertices[vertexIndex] = v;
+            if (m_forceDefaultMaterial || !materialId) {
+                m_defaultMaterial.m_used = true;
+                materialId = m_defaultMaterial.m_id;
+            }
 
-            // TODO KI
-            // - create Vertex
-            // - dedupe Vertex
-            index[i] = vertexIndex;
+            vertices.emplace_back(pos, texCoord, normal, tangent, materialId);
+        }
+
+        for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
+            processFace(modelMesh, materialMapping, mesh, &mesh->mFaces[faceIdx]);
+        }
+    }
+
+    void AssimpLoader::processFace(
+        ModelMesh& modelMesh,
+        const std::map<size_t, ki::material_id>& materialMapping,
+        const aiMesh* mesh,
+        const aiFace* face)
+    {
+        Index index{ 0, 0, 0 };
+        for (size_t i = 0; i < face->mNumIndices; i++)
+        {
+            index[i] = face->mIndices[i];
         }
         modelMesh.m_indeces.push_back({ index });
     }
