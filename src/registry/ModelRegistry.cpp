@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "mesh/ModelMesh.h"
 #include "mesh/ModelVBO.h"
 #include "mesh/ObjectLoader.h"
@@ -90,12 +92,22 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
     auto th = std::thread{
         [this, mesh, p = std::move(promise)]() mutable {
             try {
+                const auto assets = Assets::get();
+
                 std::string info = mesh->str();
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                mesh::ObjectLoader loader(m_alive);
-                auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
+                std::unique_ptr<mesh::ModelLoader> loader;
+
+                if (assets.useAssimpLoader) {
+                    loader = std::make_unique<mesh::AssimpLoader>(m_alive);
+                }
+                else {
+                    loader = std::make_unique<mesh::ObjectLoader>(m_alive);
+                }
+
+                auto loaded = loader->load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {
                     loaded->prepareVolume();

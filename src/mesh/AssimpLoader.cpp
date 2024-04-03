@@ -8,6 +8,20 @@
 
 #include "mesh/ModelMesh.h"
 
+namespace {
+    glm::vec4 toVec4(const aiColor4D& v) {
+        return { v.r, v.g, v.b, v.a };
+    }
+
+    glm::vec3 toVec3(const aiVector3D& v) {
+        return { v.x, v.y, v.z };
+    }
+
+    glm::vec2 toVec2(const aiVector3D& v) {
+        return { v.x, v.y };
+    }
+}
+
 namespace mesh
 {
     AssimpLoader::AssimpLoader(
@@ -19,12 +33,12 @@ namespace mesh
     {}
 
     void AssimpLoader::loadData(
-        ModelMesh& mesh)
+        ModelMesh& modelMesh)
     {
         std::string filePath = util::joinPathExt(
-            mesh.m_rootDir,
-            mesh.m_meshPath,
-            mesh.m_meshName, ".obj");
+            modelMesh.m_rootDir,
+            modelMesh.m_meshPath,
+            modelMesh.m_meshName, ".obj");
 
         KI_INFO(fmt::format("MESH_LOADER: path={}", filePath));
 
@@ -32,38 +46,160 @@ namespace mesh
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
         }
 
-        // Create an instance of the Importer class
         Assimp::Importer importer;
 
-        // And have it read the given file with some example postprocessing
-        // Usually - if speed is not the most important aspect for you - you'll
-        // probably to request more postprocessing than we do in this example.
         const aiScene* scene = importer.ReadFile(
             filePath,
             aiProcess_GenNormals |
-            aiProcess_GenSmoothNormals |
-            aiProcess_FixInfacingNormals |
+            //aiProcess_GenSmoothNormals |
+            //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
-            aiProcess_Triangulate |
+            //aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
-            aiProcess_ImproveCacheLocality |
+            //aiProcess_ImproveCacheLocality |
             aiProcess_LimitBoneWeights |
-            aiProcess_RemoveRedundantMaterials |
+            //aiProcess_RemoveRedundantMaterials |
             aiProcess_SortByPType);
 
         // If the import failed, report it
-        if (nullptr == scene) {
+        if (!scene) {
             KI_ERROR(importer.GetErrorString());
             return;
         }
 
-        // Now we can access the file's contents.
-        processScene(mesh, scene);
+        std::map<size_t, ki::material_id> materialMapping;
+
+        processMaterials(modelMesh, materialMapping, scene);
+        processNode(modelMesh, materialMapping, scene, scene->mRootNode);
     }
 
-    void AssimpLoader::processScene(
-        ModelMesh& mesh,
+    void AssimpLoader::processNode(
+        ModelMesh& modelMesh,
+        const std::map<size_t, ki::material_id>& materialMapping,
+        const aiScene* scene,
+        const aiNode* node)
+    {
+        for (size_t n = 0; n < node->mNumChildren; ++n)
+        {
+            processNode(modelMesh, materialMapping, scene, node->mChildren[n]);
+        }
+
+        for (size_t n = 0; n < node->mNumMeshes; ++n)
+        {
+            processMesh(modelMesh, materialMapping, node, scene->mMeshes[node->mMeshes[n]]);
+        }
+    }
+
+    void AssimpLoader::processMesh(
+        ModelMesh& modelMesh,
+        const std::map<size_t, ki::material_id>& materialMapping,
+        const aiNode* node,
+        const aiMesh* mesh)
+    {
+        for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
+            processFace(modelMesh, materialMapping, mesh, &mesh->mFaces[faceIdx]);
+        }
+    }
+
+    void AssimpLoader::processFace(
+        ModelMesh& modelMesh,
+        const std::map<size_t, ki::material_id>& materialMapping,
+        const aiMesh* mesh,
+        const aiFace* face)
+    {
+        Index index{ 0, 0, 0 };
+
+        modelMesh.m_vertices.resize(mesh->mNumVertices);
+
+        for (size_t i = 0; i < face->mNumIndices; i++)
+        {
+            int vertexIndex = face->mIndices[i];
+
+            glm::vec2 texCoord;
+
+            if (mesh->HasTextureCoords(0))
+            {
+                texCoord = toVec2(mesh->mTextureCoords[0][vertexIndex]);
+            }
+
+            const auto pos = toVec3(mesh->mVertices[vertexIndex]);
+            const auto normal = toVec3(mesh->mNormals[vertexIndex]);
+            const auto tangent = toVec3(mesh->mTangents[vertexIndex]);
+
+            ki::material_id materialId;
+            {
+                const auto& it = materialMapping.find(mesh->mMaterialIndex);
+                materialId = it != materialMapping.end() ? it->second : 0;
+            }
+
+            Vertex v{ pos, texCoord, normal, tangent, materialId };
+            //modelMesh.m_vertices.push_back(v);
+            modelMesh.m_vertices[vertexIndex] = v;
+
+            // TODO KI
+            // - create Vertex
+            // - dedupe Vertex
+            index[i] = vertexIndex;
+        }
+        modelMesh.m_indeces.push_back({ index });
+    }
+
+    void AssimpLoader::processMaterials(
+        ModelMesh& modelMesh,
+        std::map<size_t, ki::material_id>& materialMapping,
         const aiScene* scene)
     {
+        auto& materials = modelMesh.m_materials;
+
+        for (size_t n = 0; n < scene->mNumMaterials; ++n)
+        {
+            auto material = processMaterial(scene, scene->mMaterials[n]);
+            materials.push_back(material);
+            materialMapping.insert({ n, material.m_id });
+        }
+    }
+
+    Material AssimpLoader::processMaterial(
+        const aiScene* scene,
+        const aiMaterial* material)
+    {
+        Material result;
+        std::map<std::string, GLuint*> textureIdMap;
+
+        int ret1, ret2;
+        aiColor4D diffuse;
+        aiColor4D specular;
+        aiColor4D ambient;
+        aiColor4D emission;
+        ai_real shininess, strength;
+        unsigned int max;
+
+        int diffuseIndex = 0;
+        int normalIndex = 0;
+        aiString diffusePath;
+        aiString normalPath;
+
+        auto diffuseTexValid = material->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
+        auto normalTexValid = material->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
+
+        auto diffuseValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+        auto specularValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular);
+        auto ambientValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient);
+        auto emissionValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emission);
+
+        max = 1;
+        ret1 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS, &shininess, &max);
+        max = 1;
+        ret2 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
+
+        result.map_kd = diffusePath.C_Str();
+        result.kd = toVec4(diffuse);
+        result.ks = toVec4(specular);
+        result.ka = toVec4(ambient);
+        result.ke = toVec4(emission);
+
+        result.ns = shininess;
+
+        return result;
     }
 }

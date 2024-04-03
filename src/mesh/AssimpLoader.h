@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <atomic>
 
@@ -8,6 +9,10 @@
 #include "mesh/ModelLoader.h"
 
 struct aiScene;
+struct aiNode;
+struct aiMesh;
+struct aiFace;
+struct aiMaterial;
 
 namespace mesh {
     class AssimpLoader : public ModelLoader {
@@ -22,8 +27,31 @@ namespace mesh {
             ModelMesh& mesh);
 
     private:
-        void processScene(
+        void processNode(
             ModelMesh& mesh,
+            const std::map<size_t, ki::material_id>& materialMapping,
+            const aiScene* scene,
+            const aiNode* node);
+
+        void processMesh(
+            ModelMesh& modelMesh,
+            const std::map<size_t, ki::material_id>& materialMapping,
+            const aiNode* node,
+            const aiMesh* mesh);
+
+        void processFace(
+            ModelMesh& modelMesh,
+            const std::map<size_t, ki::material_id>& materialMapping,
+            const aiMesh* mesh,
+            const aiFace* face);
+
+        void processMaterials(
+            ModelMesh& modelMesh,
+            std::map<size_t, ki::material_id>& materialMapping,
             const aiScene* scene);
+
+        Material processMaterial(
+            const aiScene* scene,
+            const aiMaterial* material);
     };
 }
