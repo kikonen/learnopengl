@@ -43,14 +43,19 @@ namespace loader {
 
         if (!assets.showVolume) return;
 
-        auto typeHandle = pool::TypeHandle::allocate();
-        auto* type = typeHandle.toType();
-        type->setName("<volume>");
-
         auto future = ModelRegistry::get().getMesh(
             "ball_volume",
             assets.modelsDir);
         auto* mesh = future.get();
+
+        if (!mesh) {
+            KI_ERROR("Failed to load volume mesh");
+            return;
+        }
+
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<volume>");
 
         auto* lod = type->addLod({ mesh });
 

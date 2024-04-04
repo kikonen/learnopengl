@@ -39,15 +39,21 @@ namespace loader {
 
         if (!assets.showCubeMapCenter) return;
 
-        auto typeHandle = pool::TypeHandle::allocate();
-        auto* type = typeHandle.toType();
-        type->setName("<cube_map>");
-
         auto future = ModelRegistry::get().getMesh(
             "ball_volume",
             assets.modelsDir);
 
         auto* mesh = future.get();
+
+        if (!mesh) {
+            KI_ERROR("Failed to load cubemap mesh");
+            return;
+        }
+
+        auto typeHandle = pool::TypeHandle::allocate();
+        auto* type = typeHandle.toType();
+        type->setName("<cube_map>");
+
         auto* lod = type->addLod({ mesh });
 
         type->m_entityType = mesh::EntityType::marker;
