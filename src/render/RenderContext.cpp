@@ -88,7 +88,8 @@ RenderContext::RenderContext(
     m_nearPlane{ nearPlane },
     m_farPlane{ farPlane },
     m_resolution({ width, height }),
-    m_aspectRatio{ (float)width / (float)height }
+    m_aspectRatio{ (float)width / (float)height },
+    m_depthFunc{ GL_LESS }
 {
     auto& assets = m_assets;
 

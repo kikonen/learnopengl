@@ -113,7 +113,7 @@ public:
     render::NodeDraw* const m_nodeDraw;
     render::Batch* const m_batch;
 
-    GLenum m_depthFunc{ GL_LESS };
+    GLenum m_depthFunc;
 
     RenderContextDefaults m_defaults;
 
