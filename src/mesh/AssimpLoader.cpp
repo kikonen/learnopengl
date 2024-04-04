@@ -1,14 +1,24 @@
 #include "AssimpLoader.h"
 
+#include <iostream>
+
+#include <fmt/format.h>
+
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
+#include "util/glm_format.h"
 #include "util/Util.h"
 
 #include "mesh/ModelMesh.h"
 
 namespace {
+    const std::string SUPPORTED_TYPES[] {
+        ".dae",
+        ".obj",
+    };
+
     glm::vec4 toVec4(const aiColor4D& v) {
         return { v.r, v.g, v.b, v.a };
     }
@@ -35,11 +45,23 @@ namespace mesh
     void AssimpLoader::loadData(
         ModelMesh& modelMesh)
     {
-        std::string filePath = util::joinPathExt(
-            modelMesh.m_rootDir,
-            modelMesh.m_meshPath,
-            modelMesh.m_meshName, ".obj");
+        for (const auto& ext : SUPPORTED_TYPES) {
+            std::string filePath = util::joinPathExt(
+                modelMesh.m_rootDir,
+                modelMesh.m_meshPath,
+                modelMesh.m_meshName, ext);
 
+            if (util::fileExists(filePath)) {
+                loadDataType(modelMesh, ext, filePath);
+            }
+        }
+    }
+
+    void AssimpLoader::loadDataType(
+        ModelMesh& modelMesh,
+        const std::string& fileExt,
+        const std::string& filePath)
+    {
         KI_INFO(fmt::format("MESH_LOADER: path={}", filePath));
 
         if (!util::fileExists(filePath)) {
@@ -59,7 +81,8 @@ namespace mesh
             //aiProcess_ImproveCacheLocality |
             aiProcess_LimitBoneWeights |
             //aiProcess_RemoveRedundantMaterials |
-            aiProcess_SortByPType);
+            aiProcess_SortByPType |
+            0);
 
         // If the import failed, report it
         if (!scene) {

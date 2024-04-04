@@ -26,6 +26,11 @@ namespace mesh {
         void loadData(
             ModelMesh& mesh);
 
+        void loadDataType(
+            ModelMesh& modelMesh,
+            const std::string& fileExt,
+            const std::string& filePath);
+
     private:
         void processNode(
             ModelMesh& mesh,
