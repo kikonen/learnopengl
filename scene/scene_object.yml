@@ -30,6 +30,8 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 180, 0]
+    xrender_flags:
+      render_back: true
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]

@@ -70,7 +70,7 @@ namespace mesh {
             mesh.m_meshPath,
             mesh.m_meshName, ".obj");
 
-        KI_INFO(fmt::format("MESH_LOADER: path={}", filePath));
+        KI_INFO(fmt::format("OBJECT_LOADER: path={}", filePath));
 
         if (!util::fileExists(filePath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
@@ -209,7 +209,7 @@ namespace mesh {
 
             KI_INFO_OUT(fmt::format("VERTEX_COUNT={} - {}", vertices.size(), mesh.str()));
 
-            KI_INFO(fmt::format("MESH_LOADER: duration={}ms", loadTime));
+            KI_INFO(fmt::format("OBJECT_LOADER: duration={}ms", loadTime));
         }
         catch (std::ifstream::failure e) {
             std::string what{ e.what() };

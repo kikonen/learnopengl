@@ -60,6 +60,9 @@ namespace mesh {
         const std::string m_rootDir;
         const std::string m_meshPath;
 
+        std::string m_filePath;
+        std::string m_fileExt;
+
     protected:
         uint32_t m_indexCount{ 0 };
         std::vector<Index> m_indeces;

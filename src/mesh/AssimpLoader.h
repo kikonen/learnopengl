@@ -26,10 +26,8 @@ namespace mesh {
         void loadData(
             ModelMesh& mesh);
 
-        void loadDataType(
-            ModelMesh& modelMesh,
-            const std::string& fileExt,
-            const std::string& filePath);
+        void loadResolvedPath(
+            ModelMesh& modelMesh);
 
     private:
         void processNode(
@@ -41,12 +39,15 @@ namespace mesh {
         void processMesh(
             ModelMesh& modelMesh,
             const std::map<size_t, ki::material_id>& materialMapping,
+            size_t meshIndex,
             const aiNode* node,
             const aiMesh* mesh);
 
         void processFace(
             ModelMesh& modelMesh,
             const std::map<size_t, ki::material_id>& materialMapping,
+            size_t faceIndex,
+            size_t vertexOffset,
             const aiMesh* mesh,
             const aiFace* face);
 
@@ -56,7 +57,12 @@ namespace mesh {
             const aiScene* scene);
 
         Material processMaterial(
+            ModelMesh& modelMesh,
             const aiScene* scene,
             const aiMaterial* material);
+
+        std::string findTexturePath(
+            ModelMesh& modelMesh,
+            std::string assetPath);
     };
 }
