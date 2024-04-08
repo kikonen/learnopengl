@@ -19,6 +19,8 @@ namespace {
     std::mutex m_lock;
 
     const std::string SUPPORTED_TYPES[] {
+        ".glb",
+        ".fbx",
         ".dae",
         ".obj",
     };
