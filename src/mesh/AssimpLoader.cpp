@@ -306,13 +306,14 @@ namespace mesh
             parentPath.string(),
             assetPath, "");
 
-        KI_INFO_OUT(fmt::format("path={}", filePath));
-
         if (util::fileExists(filePath)) {
-            return util::joinPath(
+            assetPath = util::joinPath(
                 parentPath.filename().string(),
                 assetPath);
         }
+
+        KI_INFO_OUT(fmt::format("ASSIMP: texPath={}", assetPath));
+
         return assetPath;
     }
 }

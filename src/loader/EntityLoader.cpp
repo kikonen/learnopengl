@@ -223,6 +223,7 @@ namespace loader {
                 loadText(v, data.text);
             }
             else if (k == "material") {
+                data.forceMaterial = true;
                 needLod = true;
             }
             else if (k == "material_modifier") {
