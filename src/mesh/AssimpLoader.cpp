@@ -94,15 +94,16 @@ namespace mesh
 
         const aiScene* scene = importer.ReadFile(
             modelMesh.m_filePath,
-            aiProcess_GenNormals |
-            //aiProcess_GenSmoothNormals |
+            //aiProcess_GenNormals |
+            aiProcess_GenSmoothNormals |
+            aiProcess_ForceGenNormals |
             //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
             //aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
             //aiProcess_ImproveCacheLocality |
-            //aiProcess_LimitBoneWeights |
-            //aiProcess_RemoveRedundantMaterials |
+            aiProcess_LimitBoneWeights |
+            aiProcess_RemoveRedundantMaterials |
             aiProcess_GenUVCoords |
             aiProcess_SortByPType |
             0);
@@ -169,8 +170,15 @@ namespace mesh
             }
 
             const auto pos = toVec3(mesh->mVertices[vertexIndex]);
-            const auto normal = toVec3(mesh->mNormals[vertexIndex]);
-            const auto tangent = toVec3(mesh->mTangents[vertexIndex]);
+            glm::vec3 normal{ 0.f };
+            glm::vec3 tangent{ 0.f };
+
+            if (mesh->mNormals) {
+                normal = toVec3(mesh->mNormals[vertexIndex]);
+            }
+            if (mesh->mTangents) {
+                tangent = toVec3(mesh->mTangents[vertexIndex]);
+            }
 
             ki::material_id materialId;
             {
