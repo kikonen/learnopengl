@@ -26,7 +26,7 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Object
-    model: texture_cube_4
+    model: texture_cube_4/texture_cube_4.obj
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 180, 0]

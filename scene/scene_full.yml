@@ -645,7 +645,7 @@ entities:
       - pos: [-5.0, 30.0, 5.0]
       - pos: [5.0, 30.0, 5.0]
   - name: Wooden matrix Cube
-    model: texture_cube_4
+    model: texture_cube_4/texture_cube_4.obj
     program: g_tex
     pos: [-5.0, 25.0, 5.0]
     rotation: [0, 180, 0]
