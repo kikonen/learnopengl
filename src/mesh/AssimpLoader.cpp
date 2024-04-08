@@ -183,7 +183,7 @@ namespace mesh
                 materialId = m_defaultMaterial.m_id;
             }
 
-            KI_INFO_OUT(fmt::format("offset={}, pos={}", vertexOffset, pos));
+            //KI_INFO_OUT(fmt::format("offset={}, pos={}", vertexOffset, pos));
 
             vertices.emplace_back(pos, texCoord, normal, tangent, materialId);
         }
@@ -210,7 +210,7 @@ namespace mesh
             // => must apply vertex offset in index buffer to match that
             index[i] = face->mIndices[i] + vertexOffset;
         }
-        KI_INFO_OUT(fmt::format("face={}, offset={}, idx={}", faceIndex, vertexOffset, index));
+        //KI_INFO_OUT(fmt::format("face={}, offset={}, idx={}", faceIndex, vertexOffset, index));
         modelMesh.m_indeces.push_back({ index });
     }
 
@@ -246,13 +246,16 @@ namespace mesh
         unsigned int max;
 
         int diffuseIndex = 0;
+        int bumpIndex = 0;
         int normalIndex = 0;
         int emissionIndex = 0;
         aiString diffusePath;
+        aiString bumpPath;
         aiString normalPath;
         aiString emissionPath;
 
         auto diffuseTexValid = material->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
+        auto bumpTexValid = material->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath);
         auto normalTexValid = material->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
         auto emissionTexValid = material->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath);
 
@@ -269,11 +272,14 @@ namespace mesh
         if (diffuseTexValid == AI_SUCCESS) {
             result.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
         }
+        if (bumpTexValid == AI_SUCCESS) {
+            result.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
+        }
         if (normalTexValid == AI_SUCCESS) {
             result.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
         }
         if (emissionTexValid == AI_SUCCESS) {
-            result.map_ke= findTexturePath(modelMesh, emissionPath.C_Str());
+            result.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
         }
 
         result.kd = toVec4(diffuse);
@@ -299,6 +305,8 @@ namespace mesh
             modelMesh.m_rootDir,
             parentPath.string(),
             assetPath, "");
+
+        KI_INFO_OUT(fmt::format("path={}", filePath));
 
         if (util::fileExists(filePath)) {
             return util::joinPath(

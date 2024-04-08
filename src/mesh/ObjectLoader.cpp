@@ -68,7 +68,14 @@ namespace mesh {
         std::string filePath = util::joinPathExt(
             mesh.m_rootDir,
             mesh.m_meshPath,
-            mesh.m_meshName, ".obj");
+            mesh.m_meshName, "");
+
+        if (!util::fileExists(filePath)) {
+            filePath = util::joinPathExt(
+                mesh.m_rootDir,
+                mesh.m_meshPath,
+                mesh.m_meshName, ".obj");
+        }
 
         KI_INFO(fmt::format("OBJECT_LOADER: path={}", filePath));
 

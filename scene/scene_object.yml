@@ -53,6 +53,7 @@ entities:
     model: quad
     xxmodel: woodwall
     material: wood_floor
+    force_material: true
     program: g_tex
     position: [0, -3, 0]
     rot: [270, 0, 0]
