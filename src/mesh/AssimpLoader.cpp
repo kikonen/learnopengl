@@ -36,6 +36,15 @@ namespace {
     glm::vec2 toVec2(const aiVector3D& v) {
         return { v.x, v.y };
     }
+
+    glm::mat4 toMat4(const aiMatrix4x4 & v) {
+        return {
+            v.a1, v.b1, v.c1, v.d1,
+            v.a2, v.b2, v.c2, v.d2,
+            v.a3, v.b3, v.c3, v.d3,
+            v.a3, v.b4, v.c4, v.d4,
+        };
+    }
 }
 
 namespace mesh
@@ -132,7 +141,8 @@ namespace mesh
         const aiScene* scene,
         const aiNode* node)
     {
-        KI_INFO_OUT(fmt::format("children={}, meshes={}", node->mNumChildren, node->mNumMeshes));
+        const auto transform = toMat4(node->mTransformation);
+        KI_INFO_OUT(fmt::format("children={}, meshes={}, transform={}", node->mNumChildren, node->mNumMeshes, transform));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
@@ -280,6 +290,7 @@ namespace mesh
         ret2 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
 
         if (diffuseTexValid == AI_SUCCESS) {
+            //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
             result.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
         }
         if (bumpTexValid == AI_SUCCESS) {
