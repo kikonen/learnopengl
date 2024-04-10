@@ -110,7 +110,7 @@ namespace mesh
             aiProcess_ForceGenNormals |
             //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
-            //aiProcess_Triangulate |
+            aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
             //aiProcess_ImproveCacheLocality |
             aiProcess_LimitBoneWeights |
