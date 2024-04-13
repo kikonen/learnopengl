@@ -6,6 +6,10 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
+#ifdef USE_BONE
+layout (location = ATTR_BONE_INDEX) in uvec4 a_boneIndex;
+layout (location = ATTR_BONE_WEIGHT) in vec4 a_boneWeight;
+#endif
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -13,11 +17,18 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl
+#ifdef USE_BONE
+#include struct_bone_transform.glsl
+#endif
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
 #include ssbo_material_indeces.glsl
+
+#ifdef USE_BONE
+#include ssbo_bone_transforms.glsl
+#endif
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl

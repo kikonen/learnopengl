@@ -424,6 +424,8 @@
     <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\mesh\AssimpLoader.h" />
+    <ClInclude Include="src\mesh\BoneBinding.h" />
+    <ClInclude Include="src\mesh\BoneEntry.h" />
     <ClInclude Include="src\mesh\TextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />

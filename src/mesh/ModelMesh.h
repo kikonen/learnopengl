@@ -9,6 +9,7 @@
 
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
+#include "mesh/BoneBinding.h"
 #include "mesh/Mesh.h"
 #include "mesh/ModelVBO.h"
 
@@ -67,6 +68,10 @@ namespace mesh {
         uint32_t m_indexCount{ 0 };
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
+
+        std::vector<BoneBinding> m_bones;
+        std::map<std::string, uint32_t> m_boneNameToIndex;
+
         std::vector<Material> m_materials;
 
     private:

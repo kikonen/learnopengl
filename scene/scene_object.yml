@@ -26,10 +26,14 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Object
-    model: texture_cube_4/texture_cube_4.obj
+    #model: texture_cube_4/texture_cube_4.fbx
+    model: fbx/SK_Character_PunkGuy.fbx
+    xmodel: fbx/run.fbx
+    material: skin
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 180, 0]
+    scale: 0.025
     xrender_flags:
       render_back: true
   - name: Directional light
@@ -65,3 +69,8 @@ materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
     tiling: 60
+  - name: skin
+    xmap_kd: fbx/skaterMaleA.png
+    map_kd: fbx/Polygon_City_Characters_Texture_01_C.png
+    metal: [0.3, 0.4, 0, 1]
+    xtiling: 60

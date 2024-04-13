@@ -12,6 +12,10 @@ struct aiScene;
 struct aiNode;
 struct aiMesh;
 struct aiFace;
+struct aiBone;
+struct aiSkeleton;
+struct aiSkeletonBone;
+struct aiAnimation;
 struct aiMaterial;
 
 namespace mesh {
@@ -30,26 +34,58 @@ namespace mesh {
             ModelMesh& modelMesh);
 
     private:
+        void processSkeleton(
+            ModelMesh& mesh,
+            size_t skeletonIndex,
+            const aiScene* scene,
+            const aiSkeleton* skeleton);
+
+        void processSkeletonBone(
+            ModelMesh& mesh,
+            size_t skeletonIndex,
+            size_t boneIndex,
+            const aiScene* scene,
+            const aiSkeleton* skeleton,
+            const aiSkeletonBone* bone);
+
+        void processAnimation(
+            ModelMesh& mesh,
+            size_t animIndex,
+            const aiScene* scene,
+            const aiAnimation* animation);
+
         void processNode(
             ModelMesh& mesh,
             const std::map<size_t, ki::material_id>& materialMapping,
             const aiScene* scene,
-            const aiNode* node);
+            const aiNode* node,
+            int level);
 
         void processMesh(
             ModelMesh& modelMesh,
             const std::map<size_t, ki::material_id>& materialMapping,
             size_t meshIndex,
             const aiNode* node,
-            const aiMesh* mesh);
+            const aiMesh* mesh,
+            int level);
 
-        void processFace(
+        void processMeshFace(
             ModelMesh& modelMesh,
-            const std::map<size_t, ki::material_id>& materialMapping,
+            size_t meshIndex,
             size_t faceIndex,
             size_t vertexOffset,
             const aiMesh* mesh,
-            const aiFace* face);
+            const aiFace* face,
+            int level);
+
+        void processMeshBone(
+            ModelMesh& modelMesh,
+            size_t meshIndex,
+            size_t boneIndex,
+            size_t vertexOffset,
+            const aiMesh* mesh,
+            const aiBone* bone,
+            int level);
 
         void processMaterials(
             ModelMesh& modelMesh,
