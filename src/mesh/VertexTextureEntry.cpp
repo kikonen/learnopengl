@@ -1,4 +1,4 @@
-#include "TextureVBO.h"
+#include "VertexTextureVBO.h"
 
 #include "VBO_impl.h"
 
@@ -10,20 +10,20 @@ namespace {
 }
 
 namespace mesh {
-    TextureVBO::TextureVBO(
+    VertexTextureVBO::VertexTextureVBO(
         std::string_view name,
         int attr,
         int binding)
         : VBO(name, attr, binding)
     {}
 
-    TextureEntry TextureVBO::convertVertex(
-        const glm::vec2& vertex)
+    TextureEntry VertexTextureVBO::convertVertex(
+        const Vertex& vertex)
     {
-        return { vertex };
+        return { vertex.texture };
     }
 
-    void TextureVBO::prepareVAO(kigl::GLVertexArray& vao)
+    void VertexTextureVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
         constexpr size_t sz = sizeof(TextureEntry);
         {

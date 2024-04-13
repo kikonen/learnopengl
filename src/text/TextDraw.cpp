@@ -23,6 +23,9 @@
 #include "registry/Registry.h"
 #include "registry/FontRegistry.h"
 
+#include "mesh/IndexEntry.h"
+#include "mesh/NormalEntry.h"
+
 #include "mesh/VBO_impl.h"
 
 namespace
@@ -102,7 +105,7 @@ namespace
             const float glyphW = glyph->s1 - glyph->s0;
             const float glyphH = glyph->t1 - glyph->t0;
 
-            const GLuint index = (GLuint)vbo.m_normalEntries.size();
+            const GLuint index = 0;// (GLuint)vbo.m_normalEntries.size();
 
             const mesh::IndexEntry indeces[2] {
                 {index, index + 1, index + 2},
@@ -129,10 +132,10 @@ namespace
             };
 
             for (const auto& v : positions) {
-                vbo.m_positionEntries.push_back(v);
+                //vbo.m_positionEntries.push_back(v);
             }
             for (const auto& v : normals) {
-                vbo.m_normalEntries.push_back(v);
+                //vbo.m_normalEntries.push_back(v);
             }
             for (const auto& v : textures) {
                 atlasVbo.addEntry(v);
@@ -142,10 +145,10 @@ namespace
                 //vbo.m_textureEntries.push_back(mesh::TextureEntry{ { v.x, v.y } });
             }
             for (const auto& v : material) {
-                vbo.m_textureEntries.push_back(v);
+                //vbo.m_textureEntries.push_back(v);
             }
             for (const auto& v : indeces) {
-                vbo.m_indexEntries.push_back(v);
+                //vbo.m_indexEntries.push_back(v);
             }
 
             pen.x += glyph->advance_x;

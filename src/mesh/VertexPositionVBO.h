@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/AABB.h"
+
 #include "mesh/PositionEntry.h"
 
 #include "kigl/GLBuffer.h"
@@ -18,17 +20,22 @@ namespace mesh {
     //
     // https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions#storing-index-and-vertex-data-under-single-buffer
     //
-    class PositionVBO {
+    class VertexPositionVBO {
+        friend class ModelVAO;
+
     public:
-        PositionVBO(std::string_view name);
-        ~PositionVBO();
+        VertexPositionVBO(std::string_view name);
+        ~VertexPositionVBO();
 
         // @return base *offset* into buffer
         size_t addPositions(
+            const glm::vec3& posOffset,
             const std::vector<Vertex>& positions);
 
         // @return base *offset* into buffer
-        size_t addEntry(const PositionEntry& entry);
+        size_t addEntry(
+            const glm::vec3& posOffset,
+            const PositionEntry& entry);
 
         void reserveSize(size_t count);
 
@@ -41,6 +48,8 @@ namespace mesh {
         size_t getBaseOffset() const noexcept {
             return m_entries.size();
         }
+
+        AABB calculateAABB() const noexcept;
 
     private:
         bool m_prepared{ false };

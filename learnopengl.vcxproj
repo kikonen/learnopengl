@@ -201,9 +201,12 @@
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
-    <ClCompile Include="src\mesh\PositionVBO.cpp" />
+    <ClCompile Include="src\mesh\VertexNormalVBO.cpp" />
+    <ClCompile Include="src\mesh\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\mesh\TextureVBO.cpp" />
+    <ClCompile Include="src\mesh\VertexIndexEBO.cpp" />
+    <ClCompile Include="src\mesh\VertexTextureEntry.cpp" />
     <ClCompile Include="src\particle\ParticleSystem.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
@@ -426,6 +429,7 @@
     <ClInclude Include="src\mesh\AssimpLoader.h" />
     <ClInclude Include="src\mesh\BoneBinding.h" />
     <ClInclude Include="src\mesh\BoneEntry.h" />
+    <ClInclude Include="src\mesh\VertexNormalVBO.h" />
     <ClInclude Include="src\mesh\TextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
@@ -433,11 +437,13 @@
     <ClInclude Include="src\mesh\LodMesh.h" />
     <ClInclude Include="src\mesh\NodeRenderFlags.h" />
     <ClInclude Include="src\mesh\PositionEntry.h" />
-    <ClInclude Include="src\mesh\PositionVBO.h" />
+    <ClInclude Include="src\mesh\VertexPositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
     <ClInclude Include="src\mesh\TextureEntry.h" />
     <ClInclude Include="src\mesh\VBO.h" />
     <ClInclude Include="src\mesh\VBO_impl.h" />
+    <ClInclude Include="src\mesh\VertexIndexEBO.h" />
+    <ClInclude Include="src\mesh\VertexTextureVBO.h" />
     <ClInclude Include="src\model\EntityFlags.h" />
     <ClInclude Include="src\particle\ParticleDefinition.h" />
     <ClInclude Include="src\particle\ParticleSSBO.h" />

@@ -28,7 +28,7 @@ namespace {
 }
 
 TextGenerator::TextGenerator()
-    : m_vboAtlasTex{ ATTR_FONT_TEX, VBO_FONT_BINDING, "vbo_font" }
+    : m_vboAtlasTex{ "vbo_font", ATTR_FONT_TEX, VBO_FONT_BINDING }
 {}
 
 void TextGenerator::prepare(

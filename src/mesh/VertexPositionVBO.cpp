@@ -1,4 +1,4 @@
-#include "PositionVBO.h"
+#include "VertexPositionVBO.h"
 
 #include "glm/glm.hpp"
 
@@ -16,28 +16,60 @@ namespace {
 }
 
 namespace mesh {
-    PositionVBO::PositionVBO(std::string_view name)
+    VertexPositionVBO::VertexPositionVBO(std::string_view name)
         : m_vbo{ name }
     {}
 
-    PositionVBO::~PositionVBO()
+    VertexPositionVBO::~VertexPositionVBO()
     {
     }
 
-    size_t PositionVBO::addPositions(const std::vector<Vertex>& positions)
+    size_t VertexPositionVBO::addPositions(
+        const glm::vec3& posOffset,
+        const std::vector<Vertex>& positions)
     {
         const size_t baseIndex = m_entries.size();
         const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
         reserveSize(positions.size());
         for (const auto& vertex : positions) {
-            addEntry({ vertex.pos });
+            addEntry(posOffset, { vertex.pos });
         }
+
+        //{
+        //    const size_t count = modelVBO.m_positionEntries.size();
+
+        //    if (m_positionEntries.size() + count >= MAX_VERTEX_COUNT)
+        //        throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
+
+        //    {
+        //        size_t size = m_positionEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
+        //        size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
+        //        size = std::min(size, MAX_VERTEX_COUNT);
+        //        m_positionEntries.reserve(size);
+        //    }
+
+        //    auto base = m_positionEntries.size();
+        //    m_positionEntries.insert(
+        //        m_positionEntries.end(),
+        //        modelVBO.m_positionEntries.begin(),
+        //        modelVBO.m_positionEntries.end());
+
+        //    for (size_t i = 0; i < count; i++) {
+        //        m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
+        //    }
+        //}
+
+        //for (size_t i = 0; i < count; i++) {
+        //    m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
+        //}
 
         return baseOffset;
     }
 
-    size_t PositionVBO::addEntry(const PositionEntry& entry)
+    size_t VertexPositionVBO::addEntry(
+        const glm::vec3& posOffset,
+        const PositionEntry& entry)
     {
         if (m_entries.size() >= MAX_VERTEX_COUNT) {
             throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
@@ -47,13 +79,14 @@ namespace mesh {
         const size_t baseOffset = baseIndex * sizeof(PositionEntry);
 
         reserveSize(1);
-        m_entries.emplace_back(entry);
+        auto& stored = m_entries.emplace_back(entry);
+        //stored += posOffset;
 
         return baseOffset;
     }
 
     // https://paroj.github.io/gltut/Basic%20Optimization.html
-    void PositionVBO::reserveSize(size_t count)
+    void VertexPositionVBO::reserveSize(size_t count)
     {
         size_t size = m_entries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
         size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
@@ -61,7 +94,7 @@ namespace mesh {
         m_entries.reserve(size);
     }
 
-    void PositionVBO::prepareVAO(kigl::GLVertexArray& vao)
+    void VertexPositionVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
         {
             m_entries.reserve(VERTEX_BLOCK_SIZE);
@@ -92,7 +125,7 @@ namespace mesh {
         }
     }
 
-    void PositionVBO::updateVAO(kigl::GLVertexArray& vao)
+    void VertexPositionVBO::updateVAO(kigl::GLVertexArray& vao)
     {
         const size_t index = m_lastBufferSize;
         const size_t totalCount = m_entries.size();
@@ -122,9 +155,28 @@ namespace mesh {
         m_lastBufferSize = totalCount;
     }
 
-    void PositionVBO::clear()
+    void VertexPositionVBO::clear()
     {
         m_entries.clear();
         m_lastBufferSize = 0;
+    }
+
+    AABB VertexPositionVBO::calculateAABB() const noexcept
+    {
+        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+        for (auto&& vertex : m_entries)
+        {
+            minAABB.x = std::min(minAABB.x, vertex.x);
+            minAABB.y = std::min(minAABB.y, vertex.y);
+            minAABB.z = std::min(minAABB.z, vertex.z);
+
+            maxAABB.x = std::max(maxAABB.x, vertex.x);
+            maxAABB.y = std::max(maxAABB.y, vertex.y);
+            maxAABB.z = std::max(maxAABB.z, vertex.z);
+        }
+
+        return { minAABB, maxAABB, false };
     }
 }

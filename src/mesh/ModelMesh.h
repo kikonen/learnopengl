@@ -20,6 +20,7 @@ namespace mesh {
         friend class ObjectLoader;
 
         friend class ModelVBO;
+        friend class ModelVAO;
         friend class ModelMaterialInit;
 
     public:

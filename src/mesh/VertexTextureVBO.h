@@ -2,20 +2,21 @@
 
 #include <glm/glm.hpp>
 
+#include "mesh/Vertex.h"
 #include "mesh/TextureEntry.h"
 
 #include "VBO.h"
 
 namespace mesh {
-    class TextureVBO : public VBO<glm::vec2, TextureEntry> {
+    class VertexTextureVBO : public VBO<Vertex, TextureEntry> {
     public:
-        TextureVBO(
+        VertexTextureVBO(
             std::string_view name,
             int attr,
             int binding);
 
         virtual TextureEntry convertVertex(
-            const glm::vec2& vertex) override;
+            const Vertex& vertex) override;
 
         virtual void prepareVAO(kigl::GLVertexArray& vao) override;
     };

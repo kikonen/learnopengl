@@ -87,7 +87,7 @@ namespace mesh {
         // NOTE KI no need for thexe any longer (they are in buffers now)
         // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
         m_indexCount = static_cast<uint32_t>(m_indeces.size());
-        m_indeces.clear();
+        //m_indeces.clear();
         //m_vertices.clear();
 
         m_vao = ModelRegistry::get().registerModelVBO(m_vertexVBO);
