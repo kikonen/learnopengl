@@ -95,7 +95,7 @@ namespace mesh
     {
         std::lock_guard lock(m_lock);
 
-        KI_INFO_OUT(fmt::format("ASSIMP_LOADER: path={}", modelMesh.m_filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: path={}", modelMesh.m_filePath));
 
         if (!util::fileExists(modelMesh.m_filePath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", modelMesh.m_filePath) };
@@ -126,8 +126,8 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "SCENE: name={}, meshes={}, anims={}, skeletons={}, materials={}, textures={}",
-            scene->mName.C_Str(),
+            "ASSIMP: scene={}, meshes={}, anims={}, skeletons={}, materials={}, textures={}",
+            modelMesh.m_filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
             scene->mNumSkeletons,
@@ -169,9 +169,9 @@ namespace mesh
         const aiSkeleton* skeleton)
     {
         KI_INFO_OUT(fmt::format(
-            "skeleton={}, name={}, bones={}",
-            skeletonIndex,
+            "ASSIMP: skeleton={}, index={}, bones={}",
             skeleton->mName.C_Str(),
+            skeletonIndex,
             skeleton->mNumBones));
 
         for (size_t boneIndex = 0; boneIndex < skeleton->mNumBones; ++boneIndex)
@@ -195,8 +195,12 @@ namespace mesh
         const aiSkeletonBone* bone)
     {
         KI_INFO_OUT(fmt::format(
-            "skeleton={}, bone={}, parent={}",
-            skeletonIndex, boneIndex, bone->mParent));
+            "ASSIMP: skeleton={}, parent={}, bone={}, node={}, mesh={}",
+            skeletonIndex,
+            bone->mParent,
+            boneIndex,
+            bone->mNode->mName.C_Str(),
+            bone->mMeshId->mName.C_Str()));
     }
 
     void AssimpLoader::processAnimation(
@@ -206,9 +210,9 @@ namespace mesh
         const aiAnimation* anim)
     {
         KI_INFO_OUT(fmt::format(
-            "anim={}, name={}, duration={}, ticksPerSec={}, channels={}",
-            animIndex,
+            "ASSIMP: anim={}, index={}, duration={}, ticksPerSec={}, channels={}",
             anim->mName.C_Str(),
+            animIndex,
             anim->mDuration,
             anim->mTicksPerSecond,
             anim->mNumChannels));
@@ -217,7 +221,8 @@ namespace mesh
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
-                "anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                "ASSIMP: anim={}, index={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                anim->mName.C_Str(),
                 animIndex,
                 channelIdx,
                 channel->mNodeName.C_Str(),
@@ -235,7 +240,7 @@ namespace mesh
         int level)
     {
         const auto transform = toMat4(node->mTransformation);
-        KI_INFO_OUT(fmt::format("node: level={}, name={}, children={}, meshes={}, transform={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: level={}, node={}, children={}, meshes={}, transform={}",
             level,
             node->mName.C_Str(),
             node->mNumChildren,
@@ -248,7 +253,9 @@ namespace mesh
         }
 
         if (node->mNumMeshes > 0) {
-            for (size_t meshIndex = 0; meshIndex < node->mNumMeshes; ++meshIndex)
+            auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
+            auto count = std::min((unsigned int)10, node->mNumMeshes - from);
+            for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
             {
                 processMesh(modelMesh, materialMapping,
                     meshIndex,
@@ -271,8 +278,14 @@ namespace mesh
         const auto vertexOffset = vertices.size();
         vertices.reserve(vertexOffset + mesh->mNumVertices);
 
-        KI_INFO_OUT(fmt::format("{}: level={}, mesh={}, offset={}, vertices={}, faces={}, bones={}",
-            meshIndex, level, modelMesh.m_meshName, vertexOffset, mesh->mNumVertices, mesh->mNumFaces, mesh->mNumBones));
+        KI_INFO_OUT(fmt::format("ASSIMP: level={}, mesh={}, index={}, offset={}, vertices={}, faces={}, bones={}",
+            level,
+            mesh->mName.C_Str(),
+            meshIndex,
+            vertexOffset,
+            mesh->mNumVertices,
+            mesh->mNumFaces,
+            mesh->mNumBones));
 
         for (size_t vertexIndex = 0; vertexIndex  < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord;
@@ -304,7 +317,7 @@ namespace mesh
                 materialId = m_defaultMaterial.m_id;
             }
 
-            //KI_INFO_OUT(fmt::format("offset={}, pos={}", vertexOffset, pos));
+            //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
             vertices.emplace_back(pos, texCoord, normal, tangent, materialId);
         }
@@ -336,7 +349,7 @@ namespace mesh
             // => must apply vertex offset in index buffer to match that
             index[i] = face->mIndices[i] + vertexOffset;
         }
-        //KI_INFO_OUT(fmt::format("face={}, offset={}, idx={}", faceIndex, vertexOffset, index));
+        //KI_INFO_OUT(fmt::format("ASSIMP: face={}, offset={}, idx={}", faceIndex, vertexOffset, index));
         modelMesh.m_indeces.push_back({ index });
     }
 
@@ -349,8 +362,12 @@ namespace mesh
         const aiBone* bone,
         int level)
     {
-        KI_INFO_OUT(fmt::format("mesh={}, offset={}, bone={}, name={}",
-            meshIndex, vertexOffset, boneIndex, bone->mName.C_Str()));
+        KI_INFO_OUT(fmt::format("ASSIMP: mesh={}, index={}, offset={}, bone={}, name={}",
+            mesh->mName.C_Str(),
+            meshIndex,
+            vertexOffset,
+            boneIndex,
+            bone->mName.C_Str()));
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
@@ -358,10 +375,10 @@ namespace mesh
             const auto* weight =& bone->mWeights[i];
             const auto mat = toMat4(bone->mOffsetMatrix);
 
-            KI_INFO_OUT(fmt::format(
-                "mesh={}, bone={}, vertex={}, weight={}, mat={}",
-                meshIndex, boneIndex,
-                weight->mVertexId, weight->mWeight, mat));
+            //KI_INFO_OUT(fmt::format(
+            //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}, mat={}",
+            //    meshIndex, boneIndex,
+            //    weight->mVertexId, weight->mWeight, mat));
         }
     }
 

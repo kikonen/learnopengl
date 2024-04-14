@@ -25,17 +25,24 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - name: Object
+  - id: object
     #model: texture_cube_4/texture_cube_4.fbx
     model: fbx/SK_Character_PunkGuy.fbx
-    xmodel: fbx/run.fbx
-    material: skin
+    model: fbx/SK_Lion.FBX
+    material: skin_2
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 180, 0]
+    base_rotation: [-90, 0, 0]
     scale: 0.025
     xrender_flags:
       render_back: true
+  - xid: object_anim
+    model: fbx/anim/Lion@Jump.FBX
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    base_rotation: [-90, 0, 0]
+    scale: 0.025
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
@@ -73,4 +80,9 @@ materials:
     xmap_kd: fbx/skaterMaleA.png
     map_kd: fbx/Polygon_City_Characters_Texture_01_C.png
     metal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: skin_2
+    xmap_kd: fbx/skaterMaleA.png
+    map_pbr: fbx/skin_pbr
+    xmetal: [0.3, 0.4, 0, 1]
     xtiling: 60
