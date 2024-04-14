@@ -783,18 +783,23 @@ namespace loader {
 
         auto& transform = node->modifyTransform();
         transform.setPosition(pos);
-        transform.setBaseRotation(util::degreesToQuat(data.baseRotation));
+
         transform.setQuatRotation(util::degreesToQuat(data.rotation));
         transform.setScale(data.scale);
         transform.setFront(data.front);
+
+        auto baseTransform = glm::toMat4(util::degreesToQuat(data.baseRotation));
 
         auto* lod = type->getLod(0);
         if (lod) {
             auto* mesh = lod->m_mesh;
             if (mesh) {
                 transform.setVolume(mesh->getAABB().getVolume());
+                baseTransform = baseTransform * mesh->m_transform;
             }
         }
+
+        transform.setBaseTransform(baseTransform);
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);

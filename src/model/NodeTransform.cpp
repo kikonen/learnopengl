@@ -79,7 +79,7 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
 
     bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
-    m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
+    m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix * m_baseTransform;
     m_modelScale = parent.m_modelScale * m_scale;
 
     {
@@ -112,6 +112,6 @@ void NodeTransform::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;
-    m_rotationMatrix = glm::toMat4(m_quatRotation * m_baseRotation);
+    m_rotationMatrix = glm::toMat4(m_quatRotation);
     m_dirtyRotation = false;
 }

@@ -95,7 +95,7 @@ namespace mesh
     {
         std::lock_guard lock(m_lock);
 
-        KI_INFO_OUT(fmt::format("ASSIMP: path={}", modelMesh.m_filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", modelMesh.m_filePath));
 
         if (!util::fileExists(modelMesh.m_filePath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", modelMesh.m_filePath) };
@@ -126,7 +126,7 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: scene={}, meshes={}, anims={}, skeletons={}, materials={}, textures={}",
+            "ASSIMP: SCENE scene={}, meshes={}, anims={}, skeletons={}, materials={}, textures={}",
             modelMesh.m_filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
@@ -137,7 +137,7 @@ namespace mesh
         std::map<size_t, ki::material_id> materialMapping;
 
         processMaterials(modelMesh, materialMapping, scene);
-        processNode(modelMesh, materialMapping, scene, scene->mRootNode, 0);
+        processNode(modelMesh, materialMapping, scene, scene->mRootNode, 0, glm::mat4{ 1.f });
 
         if (m_defaultMaterial.m_used) {
             modelMesh.m_materials.push_back(m_defaultMaterial);
@@ -169,7 +169,7 @@ namespace mesh
         const aiSkeleton* skeleton)
     {
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: skeleton={}, index={}, bones={}",
+            "ASSIMP: SKELETON skeleton={}, index={}, bones={}",
             skeleton->mName.C_Str(),
             skeletonIndex,
             skeleton->mNumBones));
@@ -195,7 +195,7 @@ namespace mesh
         const aiSkeletonBone* bone)
     {
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: skeleton={}, parent={}, bone={}, node={}, mesh={}",
+            "ASSIMP: SKELETON bone={}, parent={}, bone={}, node={}, mesh={}",
             skeletonIndex,
             bone->mParent,
             boneIndex,
@@ -210,7 +210,7 @@ namespace mesh
         const aiAnimation* anim)
     {
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: anim={}, index={}, duration={}, ticksPerSec={}, channels={}",
+            "ASSIMP: ANIM anim={}, index={}, duration={}, ticksPerSec={}, channels={}",
             anim->mName.C_Str(),
             animIndex,
             anim->mDuration,
@@ -221,7 +221,7 @@ namespace mesh
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: anim={}, index={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                "ASSIMP: CHANNEL anim={}, index={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 anim->mName.C_Str(),
                 animIndex,
                 channelIdx,
@@ -237,11 +237,12 @@ namespace mesh
         const std::map<size_t, ki::material_id>& materialMapping,
         const aiScene* scene,
         const aiNode* node,
-        int level)
+        int nodeLevel,
+        const glm::mat4& parentTransform)
     {
-        const auto transform = toMat4(node->mTransformation);
-        KI_INFO_OUT(fmt::format("ASSIMP: level={}, node={}, children={}, meshes={}, transform={}",
-            level,
+        const auto transform = parentTransform * toMat4(node->mTransformation);
+        KI_INFO_OUT(fmt::format("ASSIMP: NODE level={}, node={}, children={}, meshes={}, transform={}",
+            nodeLevel,
             node->mName.C_Str(),
             node->mNumChildren,
             node->mNumMeshes,
@@ -249,10 +250,20 @@ namespace mesh
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            processNode(modelMesh, materialMapping, scene, node->mChildren[n], level + 1);
+            processNode(modelMesh, materialMapping, scene, node->mChildren[n], nodeLevel + 1, transform);
         }
 
         if (node->mNumMeshes > 0) {
+            if (!modelMesh.m_vertices.empty()) {
+                KI_INFO_OUT(fmt::format("ASSIMP: SKIP_MESH level={}, node={}, meshes={}",
+                    nodeLevel,
+                    node->mName.C_Str(),
+                    node->mNumMeshes));
+                return;
+            }
+
+            modelMesh.m_transform = transform;
+
             auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
             auto count = std::min((unsigned int)10, node->mNumMeshes - from);
             for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
@@ -261,7 +272,7 @@ namespace mesh
                     meshIndex,
                     node,
                     scene->mMeshes[node->mMeshes[meshIndex]],
-                    level);
+                    nodeLevel);
             }
         }
     }
@@ -272,17 +283,32 @@ namespace mesh
         size_t meshIndex,
         const aiNode* node,
         const aiMesh* mesh,
-        int level)
+        int nodeLevel)
     {
         auto& vertices = modelMesh.m_vertices;
         const auto vertexOffset = vertices.size();
         vertices.reserve(vertexOffset + mesh->mNumVertices);
 
-        KI_INFO_OUT(fmt::format("ASSIMP: level={}, mesh={}, index={}, offset={}, vertices={}, faces={}, bones={}",
-            level,
+        Material* mat = nullptr;
+        ki::material_id materialId;
+        {
+            const auto& it = materialMapping.find(mesh->mMaterialIndex);
+            materialId = it != materialMapping.end() ? it->second : 0;
+            mat = Material::findID(materialId, modelMesh.m_materials);
+        }
+
+        if (m_forceDefaultMaterial || !materialId) {
+            m_defaultMaterial.m_used = true;
+            materialId = m_defaultMaterial.m_id;
+        }
+
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH level={}, node={}, mesh={}, index={}, offset={}, material={}, vertices={}, faces={}, bones={}",
+            nodeLevel,
+            node->mName.C_Str(),
             mesh->mName.C_Str(),
             meshIndex,
             vertexOffset,
+            mat ? mat->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
             mesh->mNumFaces,
             mesh->mNumBones));
@@ -306,28 +332,17 @@ namespace mesh
                 tangent = toVec3(mesh->mTangents[vertexIndex]);
             }
 
-            ki::material_id materialId;
-            {
-                const auto& it = materialMapping.find(mesh->mMaterialIndex);
-                materialId = it != materialMapping.end() ? it->second : 0;
-            }
-
-            if (m_forceDefaultMaterial || !materialId) {
-                m_defaultMaterial.m_used = true;
-                materialId = m_defaultMaterial.m_id;
-            }
-
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
             vertices.emplace_back(pos, texCoord, normal, tangent, materialId);
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx], level);
+            processMeshFace(modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx], nodeLevel);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(modelMesh, meshIndex, boneIdx, vertexOffset, mesh, mesh->mBones[boneIdx], level);
+            processMeshBone(modelMesh, meshIndex, boneIdx, vertexOffset, mesh, mesh->mBones[boneIdx], nodeLevel);
         }
     }
 
@@ -349,7 +364,11 @@ namespace mesh
             // => must apply vertex offset in index buffer to match that
             index[i] = face->mIndices[i] + vertexOffset;
         }
-        //KI_INFO_OUT(fmt::format("ASSIMP: face={}, offset={}, idx={}", faceIndex, vertexOffset, index));
+        //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
+        //    mesh->mName.C_Str(),
+        //    faceIndex,
+        //    vertexOffset,
+        //    index));
         modelMesh.m_indeces.push_back({ index });
     }
 
@@ -360,14 +379,15 @@ namespace mesh
         size_t vertexOffset,
         const aiMesh* mesh,
         const aiBone* bone,
-        int level)
+        int nodeLevel)
     {
-        KI_INFO_OUT(fmt::format("ASSIMP: mesh={}, index={}, offset={}, bone={}, name={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: BONE level={}, bone={}, node={}, mesh={}, index={}, offset={}",
+            nodeLevel,
+            boneIndex,
+            bone->mName.C_Str(),
             mesh->mName.C_Str(),
             meshIndex,
-            vertexOffset,
-            boneIndex,
-            bone->mName.C_Str()));
+            vertexOffset));
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
@@ -402,6 +422,11 @@ namespace mesh
         const aiScene* scene,
         const aiMaterial* material)
     {
+        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
+            material->GetName().C_Str(),
+            material->mNumProperties,
+            material->mNumAllocated));
+
         Material result;
         std::map<std::string, GLuint*> textureIdMap;
 
@@ -458,6 +483,8 @@ namespace mesh
 
         result.ns = shininess;
 
+        result.m_name = material->GetName().C_Str();
+
         return result;
     }
 
@@ -481,7 +508,7 @@ namespace mesh
                 assetPath);
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: texPath={}", assetPath));
+        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}", assetPath));
 
         return assetPath;
     }

@@ -30,9 +30,8 @@ struct NodeTransform {
 
     glm::vec3 m_worldPos{ 0.f };
 
-    // Rotation for geometry, to align it correct way
-    // i.e. not affecting "front"
-    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+    // Base transform for mesh
+    glm::mat4 m_baseTransform{ 1.f };
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -67,6 +66,15 @@ struct NodeTransform {
 
     ///////////////////////////////////////
     //
+
+    void setBaseTransform(const glm::mat4& transform) noexcept
+    {
+        m_baseTransform = transform;
+        m_dirty = true;
+        m_dirtyRotation = true;
+        m_dirtyNormal = true;
+        m_dirtySnapshot = true;
+    }
 
     inline const glm::vec4 getVolume() const noexcept
     {
@@ -148,14 +156,6 @@ struct NodeTransform {
         m_scale.y += adjust.y;
         m_scale.z += adjust.z;
 
-        m_dirty = true;
-        m_dirtyNormal = true;
-    }
-
-    void setBaseRotation(const glm::quat& quat) noexcept
-    {
-        m_baseRotation = glm::normalize(quat);
-        m_dirtyRotation = true;
         m_dirty = true;
         m_dirtyNormal = true;
     }

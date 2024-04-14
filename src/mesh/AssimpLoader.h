@@ -59,7 +59,8 @@ namespace mesh {
             const std::map<size_t, ki::material_id>& materialMapping,
             const aiScene* scene,
             const aiNode* node,
-            int level);
+            int nodeLevel,
+            const glm::mat4& parentTransform);
 
         void processMesh(
             ModelMesh& modelMesh,
@@ -67,7 +68,7 @@ namespace mesh {
             size_t meshIndex,
             const aiNode* node,
             const aiMesh* mesh,
-            int level);
+            int nodeLevel);
 
         void processMeshFace(
             ModelMesh& modelMesh,
@@ -76,7 +77,7 @@ namespace mesh {
             size_t vertexOffset,
             const aiMesh* mesh,
             const aiFace* face,
-            int level);
+            int nodeLevel);
 
         void processMeshBone(
             ModelMesh& modelMesh,
@@ -85,7 +86,7 @@ namespace mesh {
             size_t vertexOffset,
             const aiMesh* mesh,
             const aiBone* bone,
-            int level);
+            int nodeLevel);
 
         void processMaterials(
             ModelMesh& modelMesh,

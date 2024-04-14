@@ -59,6 +59,8 @@ namespace mesh {
     public:
         const ki::mesh_id m_id;
 
+        glm::mat4 m_transform{ 1.f };
+
     protected:
         bool m_prepared = false;
 

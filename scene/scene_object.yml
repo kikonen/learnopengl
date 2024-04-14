@@ -32,8 +32,8 @@ entities:
     material: skin_2
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    rotation: [0, 180, 0]
-    base_rotation: [-90, 0, 0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
     scale: 0.025
     xrender_flags:
       render_back: true
@@ -41,7 +41,7 @@ entities:
     model: fbx/anim/Lion@Jump.FBX
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    base_rotation: [-90, 0, 0]
+    base_rotation: [0, 0, 0]
     scale: 0.025
   - name: Directional light
     type: origo
@@ -61,13 +61,12 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: quad
+    model: plane
     xxmodel: woodwall
     material: wood_floor
     force_material: true
     program: g_tex
     position: [0, -3, 0]
-    rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
