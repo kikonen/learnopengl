@@ -3,7 +3,7 @@
 local function animation(coid)
   print("cow run")
   while true do
-    local delay = math.random() * 60
+    local delay = math.random() * 6
 
     printf("moo: delay=%f, id=%i\n", delay, id)
 

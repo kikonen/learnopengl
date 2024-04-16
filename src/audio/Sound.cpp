@@ -124,7 +124,8 @@ namespace audio
             for (size_t i = 0; i < m_sampleCount; i++) {
                 for (size_t channel = 0; channel < m_channelCount; channel++) {
                     const auto v = audioFile.samples[channel][i];
-                    const auto converted = (ALint)(v * 65536.f / 2.f);
+                    auto converted = (ALint)(v * 65535.f / 2.f);
+                    converted = std::min(std::max(converted, (ALint)-32768), (ALint)32767);
                     buffer.push_back(converted);
                 }
             }
