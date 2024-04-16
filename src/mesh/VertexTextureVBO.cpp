@@ -43,7 +43,8 @@ namespace mesh {
                 // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
-                // vertex attr
+
+                // texture attr
                 glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(TextureEntry, texCoord));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
