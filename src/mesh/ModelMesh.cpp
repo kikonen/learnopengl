@@ -13,6 +13,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
+#include "mesh/PositionEntry.h"
 
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
@@ -82,15 +83,7 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        m_vertexVBO.prepare(*this);
-
-        // NOTE KI no need for thexe any longer (they are in buffers now)
-        // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
-        m_indexCount = static_cast<uint32_t>(m_indeces.size());
-        //m_indeces.clear();
-        //m_vertices.clear();
-
-        m_vao = ModelRegistry::get().registerModelVBO(m_vertexVBO);
+        m_vao = ModelRegistry::get().registerToVao({ 0.f, 0.f, 0.f }, this);
         return m_vao;
     }
 
@@ -104,9 +97,11 @@ namespace mesh {
     void ModelMesh::prepareLod(
         mesh::LodMesh& lodMesh)
     {
-        lodMesh.m_lod.m_baseVertex = m_vertexVBO.getBaseVertex();
-        lodMesh.m_lod.m_baseIndex = m_vertexVBO.getBaseIndex();
-        lodMesh.m_lod.m_indexCount = m_vertexVBO.getIndexCount();
+        auto& lod = lodMesh.m_lod;
+
+        lod.m_baseVertex = getBaseVertex();
+        lod.m_baseIndex = getBaseIndex();
+        lod.m_indexCount = getIndexCount();
     }
 
     void ModelMesh::prepareDrawOptions(

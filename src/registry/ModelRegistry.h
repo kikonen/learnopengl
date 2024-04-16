@@ -18,7 +18,6 @@ struct UpdateContext;
 
 namespace mesh {
     class ModelMesh;
-    class ModelVBO;
 }
 
 class ModelRegistry {
@@ -35,7 +34,9 @@ public:
     void updateRT(const UpdateContext& ctx);
 
     // @return VAO for mesh
-    kigl::GLVertexArray* registerModelVBO(mesh::ModelVBO& modelVBO);
+    kigl::GLVertexArray* registerToVao(
+        const glm::vec3& positionOffset,
+        mesh::ModelMesh* mesh);
 
     std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,

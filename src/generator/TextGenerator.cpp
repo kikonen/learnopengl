@@ -22,13 +22,15 @@
 #include "registry/EntityRegistry.h"
 #include "registry/FontRegistry.h"
 
+#include "mesh/ModelMesh.h"
 #include "mesh/VBO_impl.h"
 
 namespace {
 }
 
 TextGenerator::TextGenerator()
-    : m_vboAtlasTex{ "vbo_font", ATTR_FONT_TEX, VBO_FONT_BINDING }
+    : m_vboAtlasTex{ "vbo_font", ATTR_FONT_TEX, VBO_FONT_BINDING },
+    m_mesh{ std::make_unique<mesh::ModelMesh>("<text>", "") }
 {}
 
 void TextGenerator::prepare(
@@ -78,7 +80,11 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    m_vbo.clear();
+    auto* mesh = m_mesh.get();
+
+    mesh->m_vertices.clear();
+    mesh->m_indeces.clear();
+
     m_vboAtlasTex.clear();
 
     glm::vec2 pen{ 0.f };
@@ -88,15 +94,13 @@ void TextGenerator::updateVAO(
         m_fontId,
         m_text,
         pen,
-        m_vbo,
+        mesh,
         m_vboAtlasTex);
 
-    m_aabb = m_vbo.calculateAABB();
-
-    m_vbo.m_meshPositionOffset = -m_aabb.getVolume();
+    m_aabb = mesh->calculateAABB();
 
     m_vao.clear();
-    m_vao.registerModel(m_vbo);
+    m_vao.registerModel(m_aabb.getVolume(), mesh);
     m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
     m_vao.updateRT();
 
@@ -104,9 +108,10 @@ void TextGenerator::updateVAO(
 
     auto* lodMesh = type->modifyLod(0);
     auto& lod = lodMesh->m_lod;
-    lod.m_baseVertex = m_vbo.getBaseVertex();
-    lod.m_baseIndex = m_vbo.getBaseIndex();
-    lod.m_indexCount = m_vbo.getIndexCount();
+
+    lod.m_baseVertex = mesh->getBaseVertex();
+    lod.m_baseIndex = mesh->getBaseIndex();
+    lod.m_indexCount = mesh->getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(
@@ -140,7 +145,12 @@ GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 
 void TextGenerator::clear()
 {
-    m_vao.clear();
-    m_vbo.clear();
+    auto* mesh = m_mesh.get();
+
+    mesh->m_vertices.clear();
+    mesh->m_indeces.clear();
+
     m_vboAtlasTex.clear();
+
+    m_vao.clear();
 }

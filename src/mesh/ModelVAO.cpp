@@ -9,7 +9,6 @@
 
 #include "kigl/GLState.h"
 
-#include "mesh/ModelVBO.h"
 #include "mesh/ModelMesh.h"
 
 #include "VBO_impl.h"
@@ -76,21 +75,23 @@ namespace mesh {
         m_indexEbo.clear();
     }
 
-    kigl::GLVertexArray* ModelVAO::registerModel(ModelVBO& modelVBO)
+    kigl::GLVertexArray* ModelVAO::registerModel(
+        const glm::vec3& positionOffset,
+        mesh::ModelMesh* mesh)
     {
         ASSERT_RT();
 
-        auto& vertices = modelVBO.m_mesh->m_vertices;
-        auto& indeces = modelVBO.m_mesh->m_indeces;
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
 
         assert(!vertices.empty());
         assert(!indeces.empty());
 
         {
-            modelVBO.m_positionVboOffset = m_positionVbo.addPositions(
-                modelVBO.m_meshPositionOffset,
+            mesh->m_positionVboOffset = m_positionVbo.addPositions(
+                positionOffset,
                 vertices);
-            modelVBO.m_indexEboOffset = m_indexEbo.addIndeces(indeces);
+            mesh->m_indexEboOffset = m_indexEbo.addIndeces(indeces);
         }
 
         m_normalVbo.addVertices(vertices);

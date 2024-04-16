@@ -33,18 +33,12 @@ namespace mesh {
             return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));
         }
 
-        inline uint32_t getIndexCount() const noexcept {
-            return m_indexCount;
-        }
-
     public:
         // NOTE KI absolute offset into position VBO
         size_t m_positionVboOffset{ 0 };
 
         // NOTE KI absolute offset into EBO
         size_t m_indexEboOffset{ 0 };
-
-        uint32_t m_indexCount{ 0 };
 
         glm::vec3 m_meshPositionOffset{ 0.f };
 

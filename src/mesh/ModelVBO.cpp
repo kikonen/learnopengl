@@ -18,8 +18,6 @@ namespace mesh {
         m_prepared = true;
 
         m_mesh = &mesh;
-
-        m_indexCount = static_cast<uint32_t>(mesh.m_indeces.size() * 3);
     }
 
     void ModelVBO::clear()

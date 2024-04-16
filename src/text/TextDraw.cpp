@@ -23,6 +23,7 @@
 #include "registry/Registry.h"
 #include "registry/FontRegistry.h"
 
+#include "mesh/ModelMesh.h"
 #include "mesh/IndexEntry.h"
 #include "mesh/NormalEntry.h"
 
@@ -37,7 +38,7 @@ namespace
     // Generate verteces for glyphs into buffer
     //
     void addText(
-        mesh::ModelVBO& vbo,
+        mesh::ModelMesh* mesh,
         mesh::TextureVBO& atlasVbo,
         text::FontAtlas* fontAtlas,
         std::string_view text,
@@ -182,13 +183,13 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         glm::vec2& pen,
-        mesh::ModelVBO& vbo,
+        mesh::ModelMesh* mesh,
         mesh::TextureVBO& atlasVbo)
     {
         auto* font = FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(vbo, atlasVbo, font, text, pen);
+        addText(mesh, atlasVbo, font, text, pen);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

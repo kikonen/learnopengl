@@ -654,7 +654,7 @@
     <ClCompile Include="src\mesh\VertexNormalVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexTextureEntry.cpp">
+    <ClCompile Include="src\mesh\VertexTextureVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\VertexIndexEBO.cpp">

@@ -5,7 +5,6 @@
 #include "asset/Assets.h"
 
 #include "mesh/ModelMesh.h"
-#include "mesh/ModelVBO.h"
 #include "mesh/ObjectLoader.h"
 #include "mesh/AssimpLoader.h"
 
@@ -33,9 +32,11 @@ void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
     m_vao.prepare("model");
 }
 
-kigl::GLVertexArray* ModelRegistry::registerModelVBO(mesh::ModelVBO& modelVBO)
+kigl::GLVertexArray* ModelRegistry::registerToVao(
+    const glm::vec3& positionOffset,
+    mesh::ModelMesh* mesh)
 {
-    return m_vao.registerModel(modelVBO);
+    return m_vao.registerModel(positionOffset, mesh);
 }
 
 void ModelRegistry::updateRT(const UpdateContext& ctx)

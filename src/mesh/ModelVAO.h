@@ -4,14 +4,13 @@
 
 #include "kigl/GLVertexArray.h"
 
+#include "mesh/ModelMesh.h"
 #include "mesh/VertexPositionVBO.h"
 #include "mesh/VertexNormalVBO.h"
 #include "mesh/VertexTextureVBO.h"
 #include "mesh/VertexIndexEBO.h"
 
 namespace mesh {
-    class ModelVBO;
-
     class ModelVAO {
     public:
         ModelVAO(std::string_view name);
@@ -23,8 +22,10 @@ namespace mesh {
         void bind();
         void unbind();
 
-        // @return VBO for model mesh
-        kigl::GLVertexArray* registerModel(ModelVBO& modelVBO);
+        // @return VAO
+        kigl::GLVertexArray* registerModel(
+            const glm::vec3& positionOffset,
+            mesh::ModelMesh* mesh);
 
         const kigl::GLVertexArray* getVAO() const
         {

@@ -206,7 +206,7 @@
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\mesh\TextureVBO.cpp" />
     <ClCompile Include="src\mesh\VertexIndexEBO.cpp" />
-    <ClCompile Include="src\mesh\VertexTextureEntry.cpp" />
+    <ClCompile Include="src\mesh\VertexTextureVBO.cpp" />
     <ClCompile Include="src\particle\ParticleSystem.cpp" />
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />

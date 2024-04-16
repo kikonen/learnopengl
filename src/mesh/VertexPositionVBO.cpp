@@ -36,34 +36,6 @@ namespace mesh {
             addEntry(posOffset, { vertex.pos });
         }
 
-        //{
-        //    const size_t count = modelVBO.m_positionEntries.size();
-
-        //    if (m_positionEntries.size() + count >= MAX_VERTEX_COUNT)
-        //        throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
-
-        //    {
-        //        size_t size = m_positionEntries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
-        //        size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
-        //        size = std::min(size, MAX_VERTEX_COUNT);
-        //        m_positionEntries.reserve(size);
-        //    }
-
-        //    auto base = m_positionEntries.size();
-        //    m_positionEntries.insert(
-        //        m_positionEntries.end(),
-        //        modelVBO.m_positionEntries.begin(),
-        //        modelVBO.m_positionEntries.end());
-
-        //    for (size_t i = 0; i < count; i++) {
-        //        m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
-        //    }
-        //}
-
-        //for (size_t i = 0; i < count; i++) {
-        //    m_positionEntries[base + i] += modelVBO.m_meshPositionOffset;
-        //}
-
         return baseOffset;
     }
 

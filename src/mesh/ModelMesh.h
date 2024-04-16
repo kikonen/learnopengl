@@ -11,7 +11,7 @@
 #include "mesh/Vertex.h"
 #include "mesh/BoneBinding.h"
 #include "mesh/Mesh.h"
-#include "mesh/ModelVBO.h"
+#include "mesh/PositionEntry.h"
 
 namespace mesh {
     class ModelMesh final : public Mesh {
@@ -19,8 +19,6 @@ namespace mesh {
         friend class AssimpLoader;
         friend class ObjectLoader;
 
-        friend class ModelVBO;
-        friend class ModelVAO;
         friend class ModelMaterialInit;
 
     public:
@@ -57,6 +55,18 @@ namespace mesh {
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;
 
+        inline uint32_t getBaseVertex() const noexcept {
+            return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
+        }
+
+        inline uint32_t getBaseIndex() const noexcept {
+            return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));
+        }
+
+        inline uint32_t getIndexCount() const noexcept {
+            return static_cast<uint32_t>(m_indeces.size() * 3);
+        }
+
     public:
         const std::string m_meshName;
         const std::string m_rootDir;
@@ -65,20 +75,22 @@ namespace mesh {
         std::string m_filePath;
         std::string m_fileExt;
 
-    protected:
-        uint32_t m_indexCount{ 0 };
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
 
         std::vector<BoneBinding> m_bones;
         std::map<std::string, uint32_t> m_boneNameToIndex;
+        // NOTE KI absolute offset into position VBO
+        size_t m_positionVboOffset{ 0 };
 
+        // NOTE KI absolute offset into EBO
+        size_t m_indexEboOffset{ 0 };
+
+    protected:
         std::vector<Material> m_materials;
 
     private:
         bool m_loaded{ false };
         bool m_valid{ false };
-
-        ModelVBO m_vertexVBO;
     };
 }

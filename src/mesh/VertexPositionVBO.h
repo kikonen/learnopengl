@@ -21,8 +21,6 @@ namespace mesh {
     // https://github.com/fendevel/Guide-to-Modern-OpenGL-Functions#storing-index-and-vertex-data-under-single-buffer
     //
     class VertexPositionVBO {
-        friend class ModelVAO;
-
     public:
         VertexPositionVBO(std::string_view name);
         ~VertexPositionVBO();
