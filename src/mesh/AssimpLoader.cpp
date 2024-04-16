@@ -15,6 +15,8 @@
 
 #include "mesh/ModelMesh.h"
 
+#include "util/assimp_util.h"
+
 namespace {
     std::mutex m_lock;
 
@@ -24,27 +26,6 @@ namespace {
         ".dae",
         ".obj",
     };
-
-    glm::vec4 toVec4(const aiColor4D& v) {
-        return { v.r, v.g, v.b, v.a };
-    }
-
-    glm::vec3 toVec3(const aiVector3D& v) {
-        return { v.x, v.y, v.z };
-    }
-
-    glm::vec2 toVec2(const aiVector3D& v) {
-        return { v.x, v.y };
-    }
-
-    glm::mat4 toMat4(const aiMatrix4x4 & v) {
-        return {
-            v.a1, v.b1, v.c1, v.d1,
-            v.a2, v.b2, v.c2, v.d2,
-            v.a3, v.b3, v.c3, v.d3,
-            v.a4, v.b4, v.c4, v.d4,
-        };
-    }
 }
 
 namespace mesh
@@ -240,7 +221,7 @@ namespace mesh
         int nodeLevel,
         const glm::mat4& parentTransform)
     {
-        const auto transform = parentTransform * toMat4(node->mTransformation);
+        const auto transform = parentTransform * assimp_util::toMat4(node->mTransformation);
         KI_INFO_OUT(fmt::format("ASSIMP: NODE level={}, node={}, children={}, meshes={}, transform={}",
             nodeLevel,
             node->mName.C_Str(),
@@ -318,18 +299,18 @@ namespace mesh
 
             if (mesh->HasTextureCoords(0))
             {
-                texCoord = toVec2(mesh->mTextureCoords[0][vertexIndex]);
+                texCoord = assimp_util::toVec2(mesh->mTextureCoords[0][vertexIndex]);
             }
 
-            const auto pos = toVec3(mesh->mVertices[vertexIndex]);
+            const auto pos = assimp_util::toVec3(mesh->mVertices[vertexIndex]);
             glm::vec3 normal{ 0.f };
             glm::vec3 tangent{ 0.f };
 
             if (mesh->mNormals) {
-                normal = toVec3(mesh->mNormals[vertexIndex]);
+                normal = assimp_util::toVec3(mesh->mNormals[vertexIndex]);
             }
             if (mesh->mTangents) {
-                tangent = toVec3(mesh->mTangents[vertexIndex]);
+                tangent = assimp_util::toVec3(mesh->mTangents[vertexIndex]);
             }
 
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
@@ -362,7 +343,7 @@ namespace mesh
             // vertices and thus indeces areare per mesh, but they are *combined*
             // back single mesh in load
             // => must apply vertex offset in index buffer to match that
-            index[i] = face->mIndices[i] + vertexOffset;
+            index[i] = static_cast<int>(face->mIndices[i] + vertexOffset);
         }
         //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
         //    mesh->mName.C_Str(),
@@ -381,19 +362,24 @@ namespace mesh
         const aiBone* bone,
         int nodeLevel)
     {
-        KI_INFO_OUT(fmt::format("ASSIMP: BONE level={}, bone={}, node={}, mesh={}, index={}, offset={}",
-            nodeLevel,
+        const auto offsetMatrix = assimp_util::toMat4(bone->mOffsetMatrix);
+
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: BONE[{}] level={}, name={}, mesh[{}]={}, offset={}, weights={}, transform={}",
             boneIndex,
+            nodeLevel,
             bone->mName.C_Str(),
-            mesh->mName.C_Str(),
             meshIndex,
-            vertexOffset));
+            mesh->mName.C_Str(),
+            vertexOffset,
+            bone->mNumWeights,
+            offsetMatrix))
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
             const auto* weight =& bone->mWeights[i];
-            const auto mat = toMat4(bone->mOffsetMatrix);
+            const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
             //KI_INFO_OUT(fmt::format(
             //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}, mat={}",
@@ -476,10 +462,10 @@ namespace mesh
             result.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
         }
 
-        result.kd = toVec4(diffuse);
-        result.ks = toVec4(specular);
-        result.ka = toVec4(ambient);
-        result.ke = toVec4(emission);
+        result.kd = assimp_util::toVec4(diffuse);
+        result.ks = assimp_util::toVec4(specular);
+        result.ka = assimp_util::toVec4(ambient);
+        result.ke = assimp_util::toVec4(emission);
 
         result.ns = shininess;
 

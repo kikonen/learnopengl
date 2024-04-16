@@ -660,6 +660,9 @@
     <ClCompile Include="src\mesh\VertexIndexEBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\assimp_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1599,6 +1602,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\VertexIndexEBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\assimp_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
