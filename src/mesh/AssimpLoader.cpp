@@ -237,7 +237,12 @@ namespace mesh
         }
 
         if (node->mNumMeshes > 0) {
-            if (!modelMesh.m_vertices.empty()) {
+            // TODO KI *HOW* logic when meshes are for LODs and when they are
+            // required for model
+            // - linden_tree = multiple plane meshes with same material
+            // - texture_cube_4/airbnoat = separate meshes per material
+            // - lion = multiple LOD meshes, but for each LOD extra material mesh (which can be ignored likely)
+            if (false && !modelMesh.m_vertices.empty()) {
                 KI_INFO_OUT(fmt::format("ASSIMP: SKIP_MESH level={}, node={}, meshes={}",
                     nodeLevel,
                     node->mName.C_Str(),
@@ -248,7 +253,7 @@ namespace mesh
             modelMesh.m_transform = transform;
 
             auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
-            auto count = std::min((unsigned int)1, node->mNumMeshes - from);
+            auto count = std::min((unsigned int)10, node->mNumMeshes - from);
             for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
             {
                 processMesh(modelMesh, materialMapping,
