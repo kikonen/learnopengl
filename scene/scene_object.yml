@@ -35,8 +35,15 @@ entities:
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
     scale: 0.025
-    xrender_flags:
-      render_back: true
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+    audio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    script_file: scripts/cow_audio
   - xid: object_anim
     model: fbx/anim/Lion@Jump.FBX
     program: g_tex
