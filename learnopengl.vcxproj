@@ -184,6 +184,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\animation\BoneTransform.cpp" />
+    <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
     <ClCompile Include="src\asset\ColorTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
@@ -199,8 +201,10 @@
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
+    <ClCompile Include="src\animation\AnimationNode.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
+    <ClCompile Include="src\mesh\VertexBoneVBO.cpp" />
     <ClCompile Include="src\mesh\VertexNormalVBO.cpp" />
     <ClCompile Include="src\mesh\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
@@ -402,6 +406,8 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\BoneContainer.h" />
+    <ClInclude Include="src\animation\VertexBone.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\asset\BufferInfoUBO.h" />
     <ClInclude Include="src\asset\ChannelTexture.h" />
@@ -427,10 +433,13 @@
     <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
+    <ClInclude Include="src\animation\AnimationNode.h" />
+    <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\mesh\AssimpLoader.h" />
-    <ClInclude Include="src\mesh\BoneBinding.h" />
+    <ClInclude Include="src\animation\BoneTransform.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\BoneEntry.h" />
+    <ClInclude Include="src\mesh\VertexBoneVBO.h" />
     <ClInclude Include="src\mesh\VertexNormalVBO.h" />
     <ClInclude Include="src\mesh\TextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
