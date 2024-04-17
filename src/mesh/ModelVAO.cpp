@@ -24,7 +24,7 @@ namespace {
 namespace mesh {
     ModelVAO::ModelVAO(std::string_view name)
         : m_name(name),
-        m_positionVbo{ m_name + "_position_vbo" },
+        m_positionVbo{ m_name + "_position_vbo", ATTR_POS, VBO_POSITION_BINDING },
         m_normalVbo{ m_name + "_normal_vbo", ATTR_NORMAL, ATTR_TANGENT, VBO_NORMAL_BINDING },
         m_textureVbo{ m_name + "_texture_vbo", ATTR_TEX, VBO_TEXTURE_BINDING },
         m_indexEbo{ m_name + "_ebo" }
@@ -76,7 +76,6 @@ namespace mesh {
     }
 
     kigl::GLVertexArray* ModelVAO::registerModel(
-        const glm::vec3& positionOffset,
         mesh::ModelMesh* mesh)
     {
         ASSERT_RT();
@@ -88,9 +87,7 @@ namespace mesh {
         assert(!indeces.empty());
 
         {
-            mesh->m_positionVboOffset = m_positionVbo.addPositions(
-                positionOffset,
-                vertices);
+            mesh->m_positionVboOffset = m_positionVbo.addVertices(vertices);
             mesh->m_indexEboOffset = m_indexEbo.addIndeces(indeces);
         }
 

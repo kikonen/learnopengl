@@ -35,7 +35,6 @@ public:
 
     // @return VAO for mesh
     kigl::GLVertexArray* registerToVao(
-        const glm::vec3& positionOffset,
         mesh::ModelMesh* mesh);
 
     std::shared_future<mesh::ModelMesh*> getMesh(

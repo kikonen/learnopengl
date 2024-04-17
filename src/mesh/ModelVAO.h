@@ -24,7 +24,6 @@ namespace mesh {
 
         // @return VAO
         kigl::GLVertexArray* registerModel(
-            const glm::vec3& positionOffset,
             mesh::ModelMesh* mesh);
 
         const kigl::GLVertexArray* getVAO() const
@@ -42,15 +41,16 @@ namespace mesh {
     private:
         void prepareVAO();
 
+    public:
+        VertexPositionVBO m_positionVbo;
+        VertexNormalVBO m_normalVbo;
+        VertexTextureVBO m_textureVbo;
+        VertexIndexEBO m_indexEbo;
+
     private:
         bool m_prepared{ false };
         std::string m_name;
 
         std::unique_ptr<kigl::GLVertexArray> m_vao;
-
-        VertexPositionVBO m_positionVbo;
-        VertexNormalVBO m_normalVbo;
-        VertexTextureVBO m_textureVbo;
-        VertexIndexEBO m_indexEbo;
     };
 }

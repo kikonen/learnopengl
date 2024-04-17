@@ -7,9 +7,11 @@
 
 #include "asset/Material.h"
 
+#include "animation/VertexBone.h"
+#include "animation/BoneContainer.h"
+
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
-#include "mesh/BoneBinding.h"
 #include "mesh/Mesh.h"
 #include "mesh/PositionEntry.h"
 
@@ -78,8 +80,9 @@ namespace mesh {
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
 
-        std::vector<BoneBinding> m_bones;
-        std::map<std::string, uint32_t> m_boneNameToIndex;
+        std::vector<animation::VertexBone> m_vertexBones;
+        animation::BoneContainer m_boneContainer;
+
         // NOTE KI absolute offset into position VBO
         size_t m_positionVboOffset{ 0 };
 

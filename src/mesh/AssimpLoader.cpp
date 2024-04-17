@@ -13,6 +13,8 @@
 #include "util/glm_format.h"
 #include "util/Util.h"
 
+#include "animation/BoneContainer.h"
+
 #include "mesh/ModelMesh.h"
 
 #include "util/assimp_util.h"
@@ -246,7 +248,7 @@ namespace mesh
             modelMesh.m_transform = transform;
 
             auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
-            auto count = std::min((unsigned int)10, node->mNumMeshes - from);
+            auto count = std::min((unsigned int)1, node->mNumMeshes - from);
             for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
             {
                 processMesh(modelMesh, materialMapping,
@@ -343,7 +345,7 @@ namespace mesh
             // vertices and thus indeces areare per mesh, but they are *combined*
             // back single mesh in load
             // => must apply vertex offset in index buffer to match that
-            index[i] = static_cast<int>(face->mIndices[i] + vertexOffset);
+            index[i] = static_cast<glm::uint>(face->mIndices[i] + vertexOffset);
         }
         //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
         //    mesh->mName.C_Str(),
@@ -375,16 +377,25 @@ namespace mesh
             bone->mNumWeights,
             offsetMatrix))
 
+        auto boneId = modelMesh.m_boneContainer.getBoneId(bone);
+
+        auto& vertexBones = modelMesh.m_vertexBones;
+
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
-            const auto* weight =& bone->mWeights[i];
+            const auto& vw = bone->mWeights[i];
             const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
             //KI_INFO_OUT(fmt::format(
             //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}, mat={}",
             //    meshIndex, boneIndex,
             //    weight->mVertexId, weight->mWeight, mat));
+
+            auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
+
+            vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
+            vertexBones[vertexIndex].addBone(boneId, vw.mWeight);
         }
     }
 

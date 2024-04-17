@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "BoneBinding.h"
+#include "animation/VertexBone.h"
 
 namespace mesh {
     struct BoneEntry {
@@ -11,13 +11,13 @@ namespace mesh {
             m_weights{ 0.f }
         {}
 
-        BoneEntry(const BoneBinding& v)
+        BoneEntry(const animation::VertexBone& v)
         {
-            memcpy(m_boneIds, v.m_boneIds, sizeof(m_boneIds));
-            memcpy(m_weights, v.m_weights, sizeof(m_weights));
+            m_boneIds = v.m_boneIds;
+            m_weights = v.m_weights;
         }
 
-        uint32_t m_boneIds[MAX_VERTEX_BONE_COUNT];
-        float m_weights[MAX_VERTEX_BONE_COUNT];
+        glm::uvec4 m_boneIds;
+        glm::vec4 m_weights;
     };
 }

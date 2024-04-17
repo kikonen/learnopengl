@@ -35,6 +35,9 @@ namespace mesh {
         virtual T_Entry convertVertex(
             const T_Vertex& vertex) = 0;
 
+        size_t addEntries(
+            const std::vector<T_Entry>& entries);
+
         // @return base *offset* into buffer
         size_t addEntry(const T_Entry& entry);
 

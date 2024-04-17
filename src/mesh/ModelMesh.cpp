@@ -83,7 +83,7 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        m_vao = ModelRegistry::get().registerToVao({ 0.f, 0.f, 0.f }, this);
+        m_vao = ModelRegistry::get().registerToVao(this);
         return m_vao;
     }
 

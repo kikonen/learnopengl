@@ -49,6 +49,12 @@ namespace mesh {
         void registerMaterials();
         void prepareRT(const PrepareContext& ctx);
 
+        template<typename T>
+        inline T* getMesh() const noexcept
+        {
+            return dynamic_cast<T*>(m_mesh);
+        }
+
         /////////////////////
 
         Mesh* m_mesh{ nullptr };

@@ -33,10 +33,9 @@ void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 }
 
 kigl::GLVertexArray* ModelRegistry::registerToVao(
-    const glm::vec3& positionOffset,
     mesh::ModelMesh* mesh)
 {
-    return m_vao.registerModel(positionOffset, mesh);
+    return m_vao.registerModel(mesh);
 }
 
 void ModelRegistry::updateRT(const UpdateContext& ctx)

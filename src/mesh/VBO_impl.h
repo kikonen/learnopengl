@@ -49,6 +49,23 @@ namespace mesh {
     }
 
     template<typename T_Vertex, typename T_Entry>
+    size_t VBO<T_Vertex, T_Entry>::addEntries(
+        const std::vector<T_Entry>& entries)
+    {
+        constexpr size_t sz = sizeof(T_Entry);
+
+        const size_t baseIndex = m_entries.size();
+        const size_t baseOffset = baseIndex * sz;
+
+        reserveSize(entries.size());
+        for (const auto& entry: entries) {
+            addEntry(entry);
+        }
+
+        return baseOffset;
+    }
+
+    template<typename T_Vertex, typename T_Entry>
     size_t VBO<T_Vertex, T_Entry>::addEntry(const T_Entry& entry)
     {
         constexpr size_t sz = sizeof(T_Entry);

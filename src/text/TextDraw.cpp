@@ -4,30 +4,21 @@
 
 #include <freetype-gl/texture-font.h>
 
-#include "mesh/ModelVBO.h"
-#include "mesh/TextureVBO.h"
-
 #include "model/Node.h"
 #include "model/Snapshot.h"
-
-//#include "mesh/LodMesh.h"
-//#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 
 #include "engine/UpdateContext.h"
 
-#include "FontAtlas.h"
-#include "FontHandle.h"
-
 #include "registry/Registry.h"
 #include "registry/FontRegistry.h"
 
-#include "mesh/ModelMesh.h"
-#include "mesh/IndexEntry.h"
-#include "mesh/NormalEntry.h"
-
+#include "mesh/TextMesh.h"
 #include "mesh/VBO_impl.h"
+
+#include "FontAtlas.h"
+#include "FontHandle.h"
 
 namespace
 {
@@ -38,8 +29,7 @@ namespace
     // Generate verteces for glyphs into buffer
     //
     void addText(
-        mesh::ModelMesh* mesh,
-        mesh::TextureVBO& atlasVbo,
+        mesh::TextMesh* mesh,
         text::FontAtlas* fontAtlas,
         std::string_view text,
         glm::vec2& pen)
@@ -106,9 +96,9 @@ namespace
             const float glyphW = glyph->s1 - glyph->s0;
             const float glyphH = glyph->t1 - glyph->t0;
 
-            const GLuint index = 0;// (GLuint)vbo.m_normalEntries.size();
+            const GLuint index = (GLuint)mesh->m_normals.size();
 
-            const mesh::IndexEntry indeces[2] {
+            const mesh::Index indeces[2] {
                 {index, index + 1, index + 2},
                 {index, index + 2, index + 3},
             };
@@ -118,14 +108,14 @@ namespace
                 { { x1, y1, 0.f } },
                 { { x1, y0, 0.f } },
             };
-            const mesh::TextureEntry textures[4] {
+            const mesh::TextureEntry atlasCoords[4] {
                 { {s0, t0} },
                 { {s0, t1} },
                 { {s1, t1} },
                 { {s1, t0} },
             };
 
-            const mesh::TextureEntry material[4]{
+            const mesh::TextureEntry materialCoords[4]{
                 { {0, 0} },
                 { {0,                  glyphH / glyphMaxH} },
                 { {glyphW / glyphMaxW, glyphH / glyphMaxH} },
@@ -133,23 +123,19 @@ namespace
             };
 
             for (const auto& v : positions) {
-                //vbo.m_positionEntries.push_back(v);
+                mesh->m_positions.push_back(v);
             }
             for (const auto& v : normals) {
-                //vbo.m_normalEntries.push_back(v);
+                mesh->m_normals.push_back(v);
             }
-            for (const auto& v : textures) {
-                atlasVbo.addEntry(v);
-                //vbo.m_textureEntries.push_back(v);
+            for (const auto& v : atlasCoords) {
+                mesh->m_atlasCoords.emplace_back(v);
             }
-            for (const auto& v : positions) {
-                //vbo.m_textureEntries.push_back(mesh::TextureEntry{ { v.x, v.y } });
-            }
-            for (const auto& v : material) {
-                //vbo.m_textureEntries.push_back(v);
+            for (const auto& v : materialCoords) {
+                mesh->m_texCoords.push_back(v);
             }
             for (const auto& v : indeces) {
-                //vbo.m_indexEntries.push_back(v);
+                mesh->m_indeces.push_back(v);
             }
 
             pen.x += glyph->advance_x;
@@ -183,13 +169,12 @@ namespace text
         text::font_id fontId,
         std::string_view text,
         glm::vec2& pen,
-        mesh::ModelMesh* mesh,
-        mesh::TextureVBO& atlasVbo)
+        mesh::TextMesh* mesh)
     {
         auto* font = FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(mesh, atlasVbo, font, text, pen);
+        addText(mesh, font, text, pen);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

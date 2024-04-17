@@ -78,7 +78,7 @@ constexpr int ATTR_POS = 0;
 constexpr int ATTR_NORMAL = 1;
 constexpr int ATTR_TANGENT = 2;
 constexpr int ATTR_TEX = 3;
-constexpr int ATTR_FONT_TEX = 4;
+constexpr int ATTR_FONT_ATLAS_TEX = 4;
 constexpr int ATTR_BONE_INDEX = 5;
 constexpr int ATTR_BONE_WEIGHT = 6;
 
@@ -90,7 +90,7 @@ constexpr int VBO_VERTEX_BINDING = 0;
 constexpr int VBO_POSITION_BINDING = 1;
 constexpr int VBO_NORMAL_BINDING = 2;
 constexpr int VBO_TEXTURE_BINDING = 3;
-constexpr int VBO_FONT_BINDING = 4;
+constexpr int VBO_FONT_ATLAS_BINDING = 4;
 constexpr int VBO_BONE_BINDING = 5;
 //constexpr int VBO_MODEL_MATRIX_BINDING = 1;
 //constexpr int VBO_NORMAL_MATRIX_BINDING = 2;

@@ -14,7 +14,7 @@
 #include "text/size.h"
 
 namespace mesh {
-    class ModelMesh;
+    class TextMesh;
 }
 
 namespace text {
@@ -77,8 +77,6 @@ private:
     bool m_dirty{ true };
 
     AABB m_aabb;
-
-    std::unique_ptr<mesh::ModelMesh> m_mesh;
 
     mesh::TextureVBO m_vboAtlasTex;
     mesh::ModelVAO m_vao{ "text" };

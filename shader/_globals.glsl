@@ -112,7 +112,7 @@
 #define ATTR_NORMAL 1
 #define ATTR_TANGENT 2
 #define ATTR_TEX 3
-#define ATTR_FONT_TEX 4
+#define ATTR_FONT_ATLAS_TEX 4
 #define ATTR_BONE_INDEX  5
 #define ATTR_BONE_WEIGHT 6
 
