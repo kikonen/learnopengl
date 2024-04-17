@@ -1,29 +1,22 @@
-#include "TextureVBO.h"
+#include "AtlasTextureVBO.h"
 
-#include "VBO_impl.h"
-
-namespace {
-    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
-    constexpr size_t VERTEX_BLOCK_COUNT = 10000;
-
-    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
-}
+#include "mesh/VBO_impl.h"
 
 namespace mesh {
-    TextureVBO::TextureVBO(
+    AtlasTextureVBO::AtlasTextureVBO(
         std::string_view name,
         int attr,
         int binding)
         : VBO(name, attr, binding)
     {}
 
-    TextureEntry TextureVBO::convertVertex(
+    TextureEntry AtlasTextureVBO::convertVertex(
         const glm::vec2& vertex)
     {
         return { vertex };
     }
 
-    void TextureVBO::prepareVAO(kigl::GLVertexArray& vao)
+    void AtlasTextureVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
         constexpr size_t sz = sizeof(TextureEntry);
         {

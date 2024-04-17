@@ -522,9 +522,6 @@
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ModelVBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\ModelVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -624,7 +621,7 @@
     <ClCompile Include="src\render\BatchCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\TextureVBO.cpp">
+    <ClCompile Include="src\text\AtlasTextureVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\SetTextNode.cpp">
@@ -1400,9 +1397,6 @@
     <ClInclude Include="src\mesh\ModelMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ModelVBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1535,7 +1529,7 @@
     <ClInclude Include="src\loader\LodData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TextureVBO.h">
+    <ClInclude Include="src\text\AtlasTextureVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\VBO.h">

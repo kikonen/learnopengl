@@ -208,7 +208,7 @@
     <ClCompile Include="src\mesh\VertexNormalVBO.cpp" />
     <ClCompile Include="src\mesh\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
-    <ClCompile Include="src\mesh\TextureVBO.cpp" />
+    <ClCompile Include="src\text\AtlasTextureVBO.cpp" />
     <ClCompile Include="src\mesh\VertexIndexEBO.cpp" />
     <ClCompile Include="src\mesh\VertexTextureVBO.cpp" />
     <ClCompile Include="src\particle\ParticleSystem.cpp" />
@@ -275,7 +275,6 @@
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\mesh\MaterialSet.cpp" />
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
-    <ClCompile Include="src\mesh\ModelVBO.cpp" />
     <ClCompile Include="src\mesh\ModelVAO.cpp" />
     <ClCompile Include="src\mesh\QuadVAO.cpp" />
     <ClCompile Include="src\mesh\SpriteVAO.cpp" />
@@ -441,7 +440,7 @@
     <ClInclude Include="src\mesh\BoneEntry.h" />
     <ClInclude Include="src\mesh\VertexBoneVBO.h" />
     <ClInclude Include="src\mesh\VertexNormalVBO.h" />
-    <ClInclude Include="src\mesh\TextureVBO.h" />
+    <ClInclude Include="src\text\AtlasTextureVBO.h" />
     <ClInclude Include="src\mesh\BaseBVO.h" />
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\InstanceSSBO.h" />
@@ -564,7 +563,6 @@
     <ClInclude Include="src\mesh\NormalEntry.h" />
     <ClInclude Include="src\mesh\MaterialSet.h" />
     <ClInclude Include="src\mesh\ModelMaterialInit.h" />
-    <ClInclude Include="src\mesh\ModelVBO.h" />
     <ClInclude Include="src\mesh\QuadVAO.h" />
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />

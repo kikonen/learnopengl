@@ -4,12 +4,12 @@
 
 #include "mesh/TextureEntry.h"
 
-#include "VBO.h"
+#include "mesh/VBO.h"
 
 namespace mesh {
-    class TextureVBO : public VBO<glm::vec2, TextureEntry> {
+    class AtlasTextureVBO : public VBO<glm::vec2, TextureEntry> {
     public:
-        TextureVBO(
+        AtlasTextureVBO(
             std::string_view name,
             int attr,
             int binding);
