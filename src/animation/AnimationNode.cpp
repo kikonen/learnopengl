@@ -1,12 +1,10 @@
 #include "AnimationNode.h"
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
-
+#include <assimp/scene.h>
 
 namespace animation {
-    AnimationNode::AnimationNode(aiNode* node)
+    AnimationNode::AnimationNode(const aiNode* node)
+        : m_node{ node }
     {
     }
 }

@@ -184,6 +184,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\animation\AnimationContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
@@ -405,6 +406,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\AnimationContainer.h" />
     <ClInclude Include="src\animation\BoneContainer.h" />
     <ClInclude Include="src\animation\VertexBone.h" />
     <ClInclude Include="src\asset\AABB.h" />

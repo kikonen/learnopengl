@@ -8,9 +8,12 @@ struct aiNode;
 
 namespace animation {
     struct AnimationNode {
-        AnimationNode(aiNode* node);
+        AnimationNode(const aiNode* node);
 
-        int16_t m_parentIndex;
+        const aiNode* m_node;
+
+        int16_t m_id;
+        int16_t m_parentId;
 
         glm::mat4 m_transform;
     };

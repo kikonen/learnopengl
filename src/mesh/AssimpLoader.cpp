@@ -13,6 +13,8 @@
 #include "util/glm_format.h"
 #include "util/Util.h"
 
+#include "animation/AnimationContainer.h"
+#include "animation/AnimationNode.h"
 #include "animation/BoneContainer.h"
 
 #include "mesh/ModelMesh.h"
@@ -117,10 +119,16 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        std::map<size_t, ki::material_id> materialMapping;
+        animation::AnimationContainer animContainer;
 
-        processMaterials(modelMesh, materialMapping, scene);
-        processNode(modelMesh, materialMapping, scene, scene->mRootNode, 0, glm::mat4{ 1.f });
+        processMaterials(animContainer.m_materialMapping, modelMesh, scene);
+
+        collectNodes(animContainer, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+
+        processMeshes(
+            animContainer,
+            modelMesh,
+            scene);
 
         if (m_defaultMaterial.m_used) {
             modelMesh.m_materials.push_back(m_defaultMaterial);
@@ -129,6 +137,7 @@ namespace mesh
         for (size_t skeletonIndex = 0; skeletonIndex < scene->mNumSkeletons; ++skeletonIndex)
         {
             processSkeleton(
+                animContainer,
                 modelMesh,
                 skeletonIndex,
                 scene,
@@ -138,6 +147,7 @@ namespace mesh
         for (size_t animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex)
         {
             processAnimation(
+                animContainer,
                 modelMesh,
                 animIndex,
                 scene,
@@ -146,6 +156,7 @@ namespace mesh
     }
 
     void AssimpLoader::processSkeleton(
+        animation::AnimationContainer& animContainer,
         ModelMesh& modelMesh,
         size_t skeletonIndex,
         const aiScene* scene,
@@ -160,6 +171,7 @@ namespace mesh
         for (size_t boneIndex = 0; boneIndex < skeleton->mNumBones; ++boneIndex)
         {
             processSkeletonBone(
+                animContainer,
                 modelMesh,
                 skeletonIndex,
                 boneIndex,
@@ -170,6 +182,7 @@ namespace mesh
     }
 
     void AssimpLoader::processSkeletonBone(
+        animation::AnimationContainer& animContainer,
         ModelMesh& modelMesh,
         size_t skeletonIndex,
         size_t boneIndex,
@@ -187,6 +200,7 @@ namespace mesh
     }
 
     void AssimpLoader::processAnimation(
+        animation::AnimationContainer& animContainer,
         ModelMesh& modelMesh,
         size_t animIndex,
         const aiScene* scene,
@@ -215,63 +229,76 @@ namespace mesh
         }
     }
 
-    void AssimpLoader::processNode(
-        ModelMesh& modelMesh,
-        const std::map<size_t, ki::material_id>& materialMapping,
+    void AssimpLoader::collectNodes(
+        animation::AnimationContainer& animContainer,
         const aiScene* scene,
         const aiNode* node,
-        int nodeLevel,
+        int16_t parentId,
         const glm::mat4& parentTransform)
     {
         const auto transform = parentTransform * assimp_util::toMat4(node->mTransformation);
-        KI_INFO_OUT(fmt::format("ASSIMP: NODE level={}, node={}, children={}, meshes={}, transform={}",
-            nodeLevel,
+        auto& animNode = animContainer.addNode(node);
+        animNode.m_transform = transform;
+        animNode.m_parentId = parentId;
+
+        KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
+            parentId,
+            animNode.m_id,
             node->mName.C_Str(),
             node->mNumChildren,
-            node->mNumMeshes,
-            transform));
+            node->mNumMeshes));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            processNode(modelMesh, materialMapping, scene, node->mChildren[n], nodeLevel + 1, transform);
+            collectNodes(animContainer, scene, node->mChildren[n], animNode.m_id, transform);
         }
+    }
 
-        if (node->mNumMeshes > 0) {
+    void AssimpLoader::processMeshes(
+        animation::AnimationContainer& animContainer,
+        ModelMesh& modelMesh,
+        const aiScene* scene)
+    {
+        for (auto& animNode : animContainer.m_nodes) {
+            auto& node = animNode.m_node;
+            if (node->mNumMeshes == 0) continue;
+
             // TODO KI *HOW* logic when meshes are for LODs and when they are
             // required for model
             // - linden_tree = multiple plane meshes with same material
             // - texture_cube_4/airbnoat = separate meshes per material
             // - lion = multiple LOD meshes, but for each LOD extra material mesh (which can be ignored likely)
             if (false && !modelMesh.m_vertices.empty()) {
-                KI_INFO_OUT(fmt::format("ASSIMP: SKIP_MESH level={}, node={}, meshes={}",
-                    nodeLevel,
-                    node->mName.C_Str(),
+                KI_INFO_OUT(fmt::format("ASSIMP: SKIP node={}, meshes={}",
+                    animNode.m_id,
                     node->mNumMeshes));
-                return;
+                continue;
             }
 
-            modelMesh.m_transform = transform;
-
-            auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
-            auto count = std::min((unsigned int)10, node->mNumMeshes - from);
-            for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
             {
-                processMesh(modelMesh, materialMapping,
-                    meshIndex,
-                    node,
-                    scene->mMeshes[node->mMeshes[meshIndex]],
-                    nodeLevel);
+                modelMesh.m_transform = animNode.m_transform;
+
+                auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
+                auto count = std::min((unsigned int)10, node->mNumMeshes - from);
+                for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
+                {
+                    processMesh(
+                        animContainer,
+                        animNode,
+                        modelMesh,
+                        meshIndex,
+                        scene->mMeshes[node->mMeshes[meshIndex]]);
+                }
             }
         }
     }
 
     void AssimpLoader::processMesh(
+        animation::AnimationContainer& animContainer,
+        animation::AnimationNode& animNode,
         ModelMesh& modelMesh,
-        const std::map<size_t, ki::material_id>& materialMapping,
         size_t meshIndex,
-        const aiNode* node,
-        const aiMesh* mesh,
-        int nodeLevel)
+        const aiMesh* mesh)
     {
         auto& vertices = modelMesh.m_vertices;
         const auto vertexOffset = vertices.size();
@@ -280,8 +307,8 @@ namespace mesh
         Material* mat = nullptr;
         ki::material_id materialId;
         {
-            const auto& it = materialMapping.find(mesh->mMaterialIndex);
-            materialId = it != materialMapping.end() ? it->second : 0;
+            const auto& it = animContainer.m_materialMapping.find(mesh->mMaterialIndex);
+            materialId = it != animContainer.m_materialMapping.end() ? it->second : 0;
             mat = Material::findID(materialId, modelMesh.m_materials);
         }
 
@@ -290,11 +317,9 @@ namespace mesh
             materialId = m_defaultMaterial.m_id;
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH level={}, node={}, mesh={}, index={}, offset={}, material={}, vertices={}, faces={}, bones={}",
-            nodeLevel,
-            node->mName.C_Str(),
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
+            animNode.m_id,
             mesh->mName.C_Str(),
-            meshIndex,
             vertexOffset,
             mat ? mat->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
@@ -326,22 +351,23 @@ namespace mesh
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx], nodeLevel);
+            processMeshFace(animContainer, animNode, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(modelMesh, meshIndex, boneIdx, vertexOffset, mesh, mesh->mBones[boneIdx], nodeLevel);
+            processMeshBone(animContainer, animNode, modelMesh, meshIndex, boneIdx, vertexOffset, mesh, mesh->mBones[boneIdx]);
         }
     }
 
     void AssimpLoader::processMeshFace(
+        animation::AnimationContainer& animContainer,
+        animation::AnimationNode& animNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
         size_t vertexOffset,
         const aiMesh* mesh,
-        const aiFace* face,
-        int level)
+        const aiFace* face)
     {
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < face->mNumIndices; i++)
@@ -361,23 +387,23 @@ namespace mesh
     }
 
     void AssimpLoader::processMeshBone(
+        animation::AnimationContainer& animContainer,
+        animation::AnimationNode& animNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t boneIndex,
         size_t vertexOffset,
         const aiMesh* mesh,
-        const aiBone* bone,
-        int nodeLevel)
+        const aiBone* bone)
     {
         const auto offsetMatrix = assimp_util::toMat4(bone->mOffsetMatrix);
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE[{}] level={}, name={}, mesh[{}]={}, offset={}, weights={}, transform={}",
+            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, offset={}, weights={}, offsetMatrix={}",
+            animNode.m_id,
             boneIndex,
-            nodeLevel,
             bone->mName.C_Str(),
             meshIndex,
-            mesh->mName.C_Str(),
             vertexOffset,
             bone->mNumWeights,
             offsetMatrix))
@@ -405,8 +431,8 @@ namespace mesh
     }
 
     void AssimpLoader::processMaterials(
-        ModelMesh& modelMesh,
         std::map<size_t, ki::material_id>& materialMapping,
+        ModelMesh& modelMesh,
         const aiScene* scene)
     {
         auto& materials = modelMesh.m_materials;

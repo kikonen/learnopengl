@@ -672,6 +672,9 @@
     <ClCompile Include="src\util\assimp_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation\AnimationContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1626,6 +1629,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\VertexBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\AnimationContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
