@@ -237,20 +237,24 @@ namespace mesh
         const glm::mat4& parentTransform)
     {
         const auto transform = parentTransform * assimp_util::toMat4(node->mTransformation);
-        auto& animNode = animContainer.addNode(node);
-        animNode.m_transform = transform;
-        animNode.m_parentId = parentId;
+        uint16_t animId;
+        {
+            auto& animNode = animContainer.addNode(node);
+            animNode.m_transform = transform;
+            animNode.m_parentId = parentId;
+            animId = animNode.m_id;
+        }
 
         KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
             parentId,
-            animNode.m_id,
+            animId,
             node->mName.C_Str(),
             node->mNumChildren,
             node->mNumMeshes));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(animContainer, scene, node->mChildren[n], animNode.m_id, transform);
+            collectNodes(animContainer, scene, node->mChildren[n], animId, transform);
         }
     }
 
