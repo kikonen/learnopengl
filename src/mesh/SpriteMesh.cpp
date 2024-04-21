@@ -9,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/SpriteVAO.h"
+#include "mesh/vao/SpriteVAO.h"
 
 
 namespace {

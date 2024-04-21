@@ -9,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/QuadVAO.h"
+#include "mesh/vao/QuadVAO.h"
 
 
 namespace {
