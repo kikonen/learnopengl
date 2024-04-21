@@ -3,25 +3,22 @@
 #include <glm/glm.hpp>
 
 #include "mesh/Vertex.h"
-#include "mesh/NormalEntry.h"
+
+#include "TextureEntry.h"
 
 #include "VBO.h"
 
 namespace mesh {
-    class VertexNormalVBO : public VBO<Vertex, NormalEntry> {
+    class VertexTextureVBO : public VBO<Vertex, TextureEntry> {
     public:
-        VertexNormalVBO(
+        VertexTextureVBO(
             std::string_view name,
-            int normalAttr,
-            int tangentAttr,
+            int attr,
             int binding);
 
-        virtual NormalEntry convertVertex(
+        virtual TextureEntry convertVertex(
             const Vertex& vertex) override;
 
         virtual void prepareVAO(kigl::GLVertexArray& vao) override;
-
-    private:
-        const int m_tangentAttr;
     };
 }

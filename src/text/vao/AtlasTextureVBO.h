@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "mesh/TextureEntry.h"
+#include "mesh/vao/TextureEntry.h"
 
-#include "mesh/VBO.h"
+#include "mesh/vao/VBO.h"
 
 namespace mesh {
     class AtlasTextureVBO : public VBO<glm::vec2, TextureEntry> {

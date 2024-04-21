@@ -7,7 +7,8 @@
 #include "asset/AABB.h"
 
 #include "mesh/Vertex.h"
-#include "mesh/PositionEntry.h"
+
+#include "PositionEntry.h"
 
 #include "VBO.h"
 

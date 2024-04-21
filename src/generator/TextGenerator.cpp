@@ -10,7 +10,8 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 #include "mesh/TextMesh.h"
-#include "mesh/VBO_impl.h"
+
+#include "mesh/vao/VBO_impl.h"
 
 #include "render/Batch.h"
 

@@ -13,7 +13,8 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
-#include "mesh/PositionEntry.h"
+
+#include "mesh/vao/PositionEntry.h"
 
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
@@ -52,6 +53,10 @@ namespace mesh {
         return fmt::format(
             "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
             m_id, m_rootDir, m_meshPath, m_meshName);
+    }
+
+    uint32_t ModelMesh::getBaseVertex() const noexcept {
+        return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
     }
 
     const AABB ModelMesh::calculateAABB() const {

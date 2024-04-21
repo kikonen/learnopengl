@@ -1,6 +1,6 @@
 #include "AtlasTextureVBO.h"
 
-#include "mesh/VBO_impl.h"
+#include "mesh/vao/VBO_impl.h"
 
 namespace mesh {
     AtlasTextureVBO::AtlasTextureVBO(

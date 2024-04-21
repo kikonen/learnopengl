@@ -13,7 +13,6 @@
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
 #include "mesh/Mesh.h"
-#include "mesh/PositionEntry.h"
 
 namespace mesh {
     class ModelMesh final : public Mesh {
@@ -57,9 +56,7 @@ namespace mesh {
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;
 
-        inline uint32_t getBaseVertex() const noexcept {
-            return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
-        }
+        uint32_t getBaseVertex() const noexcept;
 
         inline uint32_t getBaseIndex() const noexcept {
             return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));

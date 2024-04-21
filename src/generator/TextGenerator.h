@@ -8,9 +8,10 @@
 
 #include "backend/DrawOptions.h"
 
-#include "mesh/ModelVAO.h"
+#include "mesh/vao/ModelVAO.h"
 
-#include "text/AtlasTextureVBO.h"
+#include "text/vao/AtlasTextureVBO.h"
+
 #include "text/size.h"
 
 namespace mesh {

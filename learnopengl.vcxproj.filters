@@ -522,19 +522,19 @@
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ModelVAO.cpp">
+    <ClCompile Include="src\mesh\vao\ModelVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\QuadVAO.cpp">
+    <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\SpriteVAO.cpp">
+    <ClCompile Include="src\mesh\vao\SpriteVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\TerrainVAO.cpp">
+    <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\SpriteMesh.cpp">
@@ -579,7 +579,7 @@
     <ClCompile Include="src\kigl\GLFence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexPositionVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexPositionVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp">
@@ -621,7 +621,7 @@
     <ClCompile Include="src\render\BatchCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\text\AtlasTextureVBO.cpp">
+    <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\SetTextNode.cpp">
@@ -648,19 +648,19 @@
     <ClCompile Include="src\mesh\ObjectLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexNormalVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexTextureVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexTextureVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexIndexEBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\AnimationNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\VertexBoneVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\BoneContainer.cpp">
@@ -673,6 +673,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\AnimationContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\SkinnedModelVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1364,7 +1367,7 @@
     <ClInclude Include="src\mesh\NodeRenderFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\PositionEntry.h">
+    <ClInclude Include="src\mesh\vao\PositionEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\AtlasHandle.h">
@@ -1376,22 +1379,22 @@
     <ClInclude Include="src\text\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\IndexEntry.h">
+    <ClInclude Include="src\mesh\vao\IndexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ModelVAO.h">
+    <ClInclude Include="src\mesh\vao\ModelVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\SpriteVAO.h">
+    <ClInclude Include="src\mesh\vao\SpriteVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\TerrainMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TerrainVAO.h">
+    <ClInclude Include="src\mesh\vao\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\NormalEntry.h">
+    <ClInclude Include="src\mesh\vao\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MaterialSet.h">
@@ -1400,7 +1403,7 @@
     <ClInclude Include="src\mesh\ModelMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\QuadVAO.h">
+    <ClInclude Include="src\mesh\vao\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\EntityType.h">
@@ -1451,13 +1454,13 @@
     <ClInclude Include="src\asset\ViewportEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexPositionVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexPositionVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TextureEntry.h">
+    <ClInclude Include="src\mesh\vao\TextureEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\BaseBVO.h">
+    <ClInclude Include="src\mesh\vao\BaseBVO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLSyncQueue_impl.h">
@@ -1532,13 +1535,13 @@
     <ClInclude Include="src\loader\LodData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\text\AtlasTextureVBO.h">
+    <ClInclude Include="src\text\vao\AtlasTextureVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VBO.h">
+    <ClInclude Include="src\mesh\vao\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VBO_impl.h">
+    <ClInclude Include="src\mesh\vao\VBO_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\SetTextNode.h">
@@ -1601,16 +1604,16 @@
     <ClInclude Include="src\animation\BoneTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\BoneEntry.h">
+    <ClInclude Include="src\mesh\vao\BoneEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexNormalVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexNormalVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexTextureVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexTextureVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexIndexEBO.h">
+    <ClInclude Include="src\mesh\vao\VertexIndexEBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\AnimationNode.h">
@@ -1619,7 +1622,7 @@
     <ClInclude Include="src\animation\Animator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VertexBoneVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexBoneVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\BoneContainer.h">
@@ -1632,6 +1635,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\AnimationContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\SkinnedModelVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

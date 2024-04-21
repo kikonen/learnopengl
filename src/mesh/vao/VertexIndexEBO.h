@@ -5,7 +5,8 @@
 
 #include "kigl/GLBuffer.h"
 
-#include "Index.h"
+#include "mesh/Index.h"
+
 #include "IndexEntry.h"
 
 namespace kigl {

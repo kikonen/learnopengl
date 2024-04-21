@@ -11,7 +11,7 @@
 #include "util/Util.h"
 #include "kigl/GLVertexArray.h"
 
-#include "mesh/ModelVAO.h"
+#include "mesh/vao/ModelVAO.h"
 
 struct Material;
 struct UpdateContext;

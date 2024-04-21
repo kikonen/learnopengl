@@ -4,10 +4,11 @@
 
 #include "mesh/Mesh.h"
 
-#include "mesh/NormalEntry.h"
-#include "mesh/PositionEntry.h"
-#include "mesh/TextureEntry.h"
 #include "mesh/Index.h"
+
+#include "mesh/vao/NormalEntry.h"
+#include "mesh/vao/PositionEntry.h"
+#include "mesh/vao/TextureEntry.h"
 
 namespace mesh {
     class TextMesh final : public Mesh

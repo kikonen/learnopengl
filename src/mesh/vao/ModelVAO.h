@@ -5,10 +5,11 @@
 #include "kigl/GLVertexArray.h"
 
 #include "mesh/ModelMesh.h"
-#include "mesh/VertexPositionVBO.h"
-#include "mesh/VertexNormalVBO.h"
-#include "mesh/VertexTextureVBO.h"
-#include "mesh/VertexIndexEBO.h"
+
+#include "VertexPositionVBO.h"
+#include "VertexNormalVBO.h"
+#include "VertexTextureVBO.h"
+#include "VertexIndexEBO.h"
 
 namespace mesh {
     class ModelVAO {
@@ -38,7 +39,7 @@ namespace mesh {
 
         void updateRT();
 
-    private:
+    protected:
         void prepareVAO();
 
     public:
@@ -47,7 +48,7 @@ namespace mesh {
         VertexTextureVBO m_textureVbo;
         VertexIndexEBO m_indexEbo;
 
-    private:
+    protected:
         bool m_prepared{ false };
         std::string m_name;
 

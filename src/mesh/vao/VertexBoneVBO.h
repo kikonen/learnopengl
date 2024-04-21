@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 
 #include "animation/VertexBone.h"
-#include "mesh/BoneEntry.h"
+
+#include "BoneEntry.h"
 
 #include "VBO.h"
 

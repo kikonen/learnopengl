@@ -15,7 +15,8 @@
 #include "registry/FontRegistry.h"
 
 #include "mesh/TextMesh.h"
-#include "mesh/VBO_impl.h"
+
+#include "mesh/vao/VBO_impl.h"
 
 #include "FontAtlas.h"
 #include "FontHandle.h"
