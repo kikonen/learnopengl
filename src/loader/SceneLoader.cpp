@@ -553,6 +553,7 @@ namespace loader {
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
             bool usePreDepth = type->m_flags.preDepth;
+            bool useBones = type->m_flags.useBones;
 
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
@@ -594,6 +595,9 @@ namespace loader {
             }
             if (useNormalPattern) {
                 definitions[DEF_USE_NORMAL_PATTERN] = "1";
+            }
+            if (useBones) {
+                definitions[DEF_USE_BONES] = "1";
             }
 
             type->m_program = ProgramRegistry::get().getProgram(
@@ -847,6 +851,12 @@ namespace loader {
 
         flags.gbuffer = data.programName.starts_with("g_");
 
+        {
+            const auto& e = data.renderFlags.find("use_bones");
+            if (e != data.renderFlags.end()) {
+                flags.useBones = e->second;
+            }
+        }
         {
             const auto& e = data.renderFlags.find("pre_depth");
             if (e != data.renderFlags.end()) {

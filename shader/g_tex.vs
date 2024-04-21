@@ -6,10 +6,8 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
-#ifdef USE_BONE
-layout (location = ATTR_BONE_INDEX) in uvec4 a_boneIndex;
-layout (location = ATTR_BONE_WEIGHT) in vec4 a_boneWeight;
-#endif
+
+#include tech_skinned_mesh_data.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -17,18 +15,11 @@ layout (location = ATTR_BONE_WEIGHT) in vec4 a_boneWeight;
 #include struct_clip_plane.glsl
 #include struct_entity.glsl
 #include struct_instance.glsl
-#ifdef USE_BONE
-#include struct_bone_transform.glsl
-#endif
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
 #include ssbo_material_indeces.glsl
-
-#ifdef USE_BONE
-#include ssbo_bone_transforms.glsl
-#endif
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -86,6 +77,8 @@ void main() {
     materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
   }
 
+  vec4 pos = vec4(a_pos, 1.0);
+
   vec4 worldPos;
   vec3 normal;
 #ifdef USE_TBN
@@ -98,9 +91,10 @@ void main() {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = entity.u_worldScale.xyz;
 
+    // TODO KI "vs_out.vertexPos" might be incorrect
     worldPos = vec4(entityPos
-                    + u_viewRight * a_pos.x * entityScale.x
-                    + UP * a_pos.y * entityScale.y,
+                    + u_viewRight * pos.x * entityScale.x
+                    + UP * pos.y * entityScale.y,
                     1.0);
 
     normal = -u_viewFront;
@@ -108,9 +102,9 @@ void main() {
     tangent = u_viewRight;
 #endif
   } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_viewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
+    pos = vec4(u_viewRight * pos.x
+	       + UP * pos.y,
+	       1.0);
 
     worldPos = modelMatrix * pos;
 
@@ -120,11 +114,17 @@ void main() {
 #endif
 
   } else {
-    worldPos = modelMatrix * vec4(a_pos, 1.0);
-
-    normal = normalize(normalMatrix * a_normal);
+    normal = a_normal;
 #ifdef USE_TBN
-    tangent = normalize(normalMatrix * a_tangent);
+    tangent = a_tangent;
+#endif
+
+    #include tech_skinned_mesh_skin.glsl
+
+    worldPos = modelMatrix * pos;
+    normal = normalize(normalMatrix * normal);
+#ifdef USE_TBN
+    tangent = normalize(normalMatrix * tangent);
 #endif
   }
 
@@ -143,7 +143,7 @@ void main() {
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
 #ifdef USE_NORMAL_PATTERN
-  vs_out.vertexPos = a_pos;
+  vs_out.vertexPos = pos.xyz;
 #endif
 
   // NOTE KI pointless to normalize vs side

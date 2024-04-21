@@ -38,6 +38,7 @@ entities:
     render_flags:
       xrender_back: true
       xwireframe: true
+      xuse_bones: true
     audio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
