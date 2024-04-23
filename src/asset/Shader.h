@@ -60,6 +60,7 @@ const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 const std::string DEF_USE_BONES{ "USE_BONES" };
+const std::string DEF_USE_BONES_DEBUG{ "USE_BONES_DEBUG" };
 
 const std::string DEF_MAT_COUNT{ "MAT_COUNT" };
 const std::string DEF_TEX_COUNT{ "TEX_COUNT" };

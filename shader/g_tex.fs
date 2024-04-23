@@ -37,6 +37,12 @@ in VS_OUT {
   vec3 viewTangentPos;
   vec3 tangentPos;
 #endif
+
+#ifdef USE_BONES
+#ifdef USE_BONES_DEBUG
+  vec4 boneWeights;
+#endif
+#endif
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
@@ -100,6 +106,12 @@ void main() {
   o_fragColor = color.rgb;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.rgb;
+
+#ifdef USE_BONES
+#ifdef USE_BONES_DEBUG
+  o_fragColor = fs_in.boneWeights.rgb;
+#endif
+#endif
 
   //o_fragPosition = fs_in.worldPos;
   o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);

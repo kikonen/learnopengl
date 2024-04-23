@@ -46,6 +46,12 @@ out VS_OUT {
   vec3 viewTangentPos;
   vec3 tangentPos;
 #endif
+
+#ifdef USE_BONES
+#ifdef USE_BONES_DEBUG
+  vec4 boneWeights;
+#endif
+#endif
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -135,6 +141,12 @@ void main() {
 
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+
+#ifdef USE_BONES
+#ifdef USE_BONES_DEBUG
+  vs_out.boneWeights = a_boneWeight;
+#endif
+#endif
 
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
