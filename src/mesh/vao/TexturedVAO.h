@@ -12,19 +12,18 @@
 #include "VertexIndexEBO.h"
 
 namespace mesh {
-    class ModelVAO {
+    class TexturedVAO {
     public:
-        ModelVAO(std::string_view name);
-        ~ModelVAO();
+        TexturedVAO(std::string_view name);
+        ~TexturedVAO();
 
-        void prepare(std::string_view name);
-        void clear();
+        virtual void prepare();
+        virtual void clear();
 
         void bind();
         void unbind();
 
-        // @return VAO
-        kigl::GLVertexArray* registerModel(
+        virtual const kigl::GLVertexArray* registerModel(
             mesh::ModelMesh* mesh);
 
         const kigl::GLVertexArray* getVAO() const
@@ -37,10 +36,10 @@ namespace mesh {
             return m_vao.get();
         }
 
-        void updateRT();
+        virtual void updateRT();
 
     protected:
-        void prepareVAO();
+        virtual void prepareVAO();
 
     public:
         VertexPositionVBO m_positionVbo;

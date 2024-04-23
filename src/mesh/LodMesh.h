@@ -64,6 +64,6 @@ namespace mesh {
         std::unique_ptr<Mesh> m_deleter;
         MaterialSet m_materialSet;
 
-        kigl::GLVertexArray* m_vao{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
     };
 }

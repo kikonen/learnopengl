@@ -59,7 +59,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* TextMesh::prepareRT(
+    const kigl::GLVertexArray* TextMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

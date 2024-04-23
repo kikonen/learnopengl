@@ -1,4 +1,4 @@
-#include "ModelVAO.h"
+#include "TexturedVAO.h"
 
 #include <glm/glm.hpp>
 #include <fmt/format.h>
@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace mesh {
-    ModelVAO::ModelVAO(std::string_view name)
+    TexturedVAO::TexturedVAO(std::string_view name)
         : m_name(name),
         m_positionVbo{ m_name + "_position_vbo", ATTR_POS, VBO_POSITION_BINDING },
         m_normalVbo{ m_name + "_normal_vbo", ATTR_NORMAL, ATTR_TANGENT, VBO_NORMAL_BINDING },
@@ -30,16 +30,16 @@ namespace mesh {
         m_indexEbo{ m_name + "_ebo" }
     {}
 
-    ModelVAO::~ModelVAO() = default;
+    TexturedVAO::~TexturedVAO() = default;
 
-    void ModelVAO::prepare(std::string_view name)
+    void TexturedVAO::prepare()
     {
         if (m_prepared) return;
         m_prepared = true;
 
         {
             m_vao = std::make_unique<kigl::GLVertexArray>();
-            m_vao->create(name);
+            m_vao->create(m_name);
         }
 
         // NOTE KI VBO & EBO are just empty buffers here
@@ -47,17 +47,17 @@ namespace mesh {
         prepareVAO();
     }
 
-    void ModelVAO::bind()
+    void TexturedVAO::bind()
     {
         kigl::GLState::get().bindVAO(*m_vao);
     }
 
-    void ModelVAO::unbind()
+    void TexturedVAO::unbind()
     {
         kigl::GLState::get().bindVAO(0);
     }
 
-    void ModelVAO::prepareVAO()
+    void TexturedVAO::prepareVAO()
     {
         auto& vao = *m_vao;
 
@@ -67,7 +67,7 @@ namespace mesh {
         m_indexEbo.prepareVAO(vao);
     }
 
-    void ModelVAO::clear()
+    void TexturedVAO::clear()
     {
         m_positionVbo.clear();
         m_normalVbo.clear();
@@ -75,7 +75,7 @@ namespace mesh {
         m_indexEbo.clear();
     }
 
-    kigl::GLVertexArray* ModelVAO::registerModel(
+    const kigl::GLVertexArray* TexturedVAO::registerModel(
         mesh::ModelMesh* mesh)
     {
         ASSERT_RT();
@@ -97,7 +97,7 @@ namespace mesh {
         return m_vao.get();
     }
 
-    void ModelVAO::updateRT()
+    void TexturedVAO::updateRT()
     {
         ASSERT_RT();
 

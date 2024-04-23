@@ -1,4 +1,4 @@
-#include "SkinnedModelVAO.h"
+#include "SkinnedVAO.h"
 
 #include <glm/glm.hpp>
 #include <fmt/format.h>
@@ -10,42 +10,42 @@
 #include "VBO_impl.h"
 
 namespace mesh {
-    SkinnedModelVAO::SkinnedModelVAO(std::string_view name)
-        : ModelVAO{ name },
+    SkinnedVAO::SkinnedVAO(std::string_view name)
+        : TexturedVAO{ name },
         m_boneVbo{ m_name + "_bone_vbo", ATTR_BONE_INDEX, ATTR_BONE_WEIGHT, VBO_BONE_BINDING }
     {}
 
-    SkinnedModelVAO::~SkinnedModelVAO() = default;
+    SkinnedVAO::~SkinnedVAO() = default;
 
-    void SkinnedModelVAO::prepareVAO()
+    void SkinnedVAO::prepareVAO()
     {
-        ModelVAO::prepareVAO();
+        TexturedVAO::prepareVAO();
 
         auto& vao = *m_vao;
 
         m_boneVbo.prepareVAO(vao);
     }
 
-    void SkinnedModelVAO::clear()
+    void SkinnedVAO::clear()
     {
-        ModelVAO::clear();
+        TexturedVAO::clear();
 
         m_boneVbo.clear();
     }
 
-    kigl::GLVertexArray* SkinnedModelVAO::registerModel(
+    const kigl::GLVertexArray* SkinnedVAO::registerModel(
         mesh::ModelMesh* mesh)
     {
-        ModelVAO::registerModel(mesh);
+        TexturedVAO::registerModel(mesh);
 
         m_boneVbo.addVertices(mesh->m_vertexBones);
 
         return m_vao.get();
     }
 
-    void SkinnedModelVAO::updateRT()
+    void SkinnedVAO::updateRT()
     {
-        ModelVAO::updateRT();
+        TexturedVAO::updateRT();
 
         m_boneVbo.updateVAO(*m_vao);
     }

@@ -36,7 +36,7 @@ namespace mesh {
         virtual const std::vector<Material>& getMaterials() const = 0;
 
         // @return VAO for mesh
-        virtual kigl::GLVertexArray* prepareRT(
+        virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
 
         virtual void prepareMaterials(
@@ -64,7 +64,7 @@ namespace mesh {
     protected:
         bool m_prepared = false;
 
-        kigl::GLVertexArray* m_vao{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
 
     private:
         AABB m_aabb{};

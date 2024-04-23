@@ -136,12 +136,14 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
 - http://c0de517e.blogspot.com/2015/01/notes-on-g-buffer-normal-encodings.html
   * example of g-buffer encoding
 
-## Assimp
+## Skeletal animation
 - https://github.com/assimp/assimp
 - https://assimp-docs.readthedocs.io/en/latest/usage/use_the_lib.html
 - https://realitymultiplied.wordpress.com/2016/04/12/assimp-skeletal-animation-tutorial-intro/
 - https://xphere.me/2019/05/bones-animation-with-openglassimpglm/
 - https://www.gamedev.net/forums/topic/688121-skeletal-animation-assimp-glm-and-me-in-between33/
+- https://realitymultiplied.wordpress.com/2016/04/12/assimp-skeletal-animation-tutorial-intro/
+- https://animcoding.com/post/animation-tech-intro-part-1-skinning
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html

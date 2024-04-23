@@ -34,6 +34,7 @@ namespace mesh {
             glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
             {
                 glEnableVertexArrayAttrib(vao, m_attr);
+                glEnableVertexArrayAttrib(vao, m_weightAttr);
 
                 // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
@@ -46,6 +47,7 @@ namespace mesh {
                 glVertexArrayAttribFormat(vao, m_weightAttr, 4, GL_FLOAT, GL_FALSE, offsetof(BoneEntry, m_weights));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
+                glVertexArrayAttribBinding(vao, m_weightAttr, m_binding);
 
                 // https://community.khronos.org/t/direct-state-access-instance-attribute-buffer-specification/75611
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification

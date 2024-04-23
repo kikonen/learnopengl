@@ -46,7 +46,7 @@ void TextGenerator::prepareRT(
 {
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
-    m_vao.prepare("text");
+    m_vao.prepare();
 
     m_vboAtlasTex.prepareVAO(*m_vao.modifyVAO());
 }

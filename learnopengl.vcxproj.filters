@@ -522,7 +522,7 @@
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\ModelVAO.cpp">
+    <ClCompile Include="src\mesh\vao\TexturedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
@@ -675,7 +675,7 @@
     <ClCompile Include="src\animation\AnimationContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\SkinnedModelVAO.cpp">
+    <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1382,7 +1382,7 @@
     <ClInclude Include="src\mesh\vao\IndexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\ModelVAO.h">
+    <ClInclude Include="src\mesh\vao\TexturedVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\SpriteVAO.h">
@@ -1458,9 +1458,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\TextureEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\vao\BaseBVO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLSyncQueue_impl.h">
@@ -1637,7 +1634,7 @@
     <ClInclude Include="src\animation\AnimationContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\SkinnedModelVAO.h">
+    <ClInclude Include="src\mesh\vao\SkinnedVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

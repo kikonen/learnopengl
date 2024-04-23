@@ -11,13 +11,13 @@
 #include "util/Util.h"
 #include "kigl/GLVertexArray.h"
 
-#include "mesh/vao/ModelVAO.h"
-
 struct Material;
 struct UpdateContext;
 
 namespace mesh {
     class ModelMesh;
+    class TexturedVAO;
+    class SkinnedVAO;
 }
 
 class ModelRegistry {
@@ -33,9 +33,15 @@ public:
 
     void updateRT(const UpdateContext& ctx);
 
-    // @return VAO for mesh
-    kigl::GLVertexArray* registerToVao(
-        mesh::ModelMesh* mesh);
+    mesh::TexturedVAO* getTexturedVao()
+    {
+        return m_texturedVao.get();
+    }
+
+    mesh::SkinnedVAO* getSkinnedVao()
+    {
+        return m_skinnedVao.get();
+    }
 
     std::shared_future<mesh::ModelMesh*> getMesh(
         std::string_view meshName,
@@ -58,5 +64,6 @@ private:
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 
-    mesh::ModelVAO m_vao{ "model" };
+    std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
+    std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 };

@@ -8,7 +8,7 @@
 
 #include "backend/DrawOptions.h"
 
-#include "mesh/vao/ModelVAO.h"
+#include "mesh/vao/TexturedVAO.h"
 
 #include "text/vao/AtlasTextureVBO.h"
 
@@ -80,7 +80,7 @@ private:
     AABB m_aabb;
 
     mesh::AtlasTextureVBO m_vboAtlasTex;
-    mesh::ModelVAO m_vao{ "text" };
+    mesh::TexturedVAO m_vao{ "text" };
 
     std::unique_ptr<text::TextDraw> m_draw;
 

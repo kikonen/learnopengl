@@ -49,7 +49,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* QuadMesh::prepareRT(
+    const kigl::GLVertexArray* QuadMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

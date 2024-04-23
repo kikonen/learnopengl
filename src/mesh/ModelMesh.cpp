@@ -14,6 +14,9 @@
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
 
+#include "mesh/vao/TexturedVAO.h"
+#include "mesh/vao/SkinnedVAO.h"
+
 #include "mesh/vao/PositionEntry.h"
 
 #include "engine/PrepareContext.h"
@@ -82,13 +85,19 @@ namespace mesh {
         return m_materials;
     }
 
-    kigl::GLVertexArray* ModelMesh::prepareRT(
+    const kigl::GLVertexArray* ModelMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        m_vao = ModelRegistry::get().registerToVao(this);
+        if (m_boneContainer.valid()) {
+            m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
+        }
+        else {
+            m_vao = ModelRegistry::get().getTexturedVao()->registerModel(this);
+        }
+
         return m_vao;
     }
 

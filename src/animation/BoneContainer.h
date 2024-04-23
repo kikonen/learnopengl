@@ -13,6 +13,10 @@ struct aiBone;
 namespace animation {
     // Manage bones shared based into their name
     struct BoneContainer {
+        bool valid() const noexcept {
+            return !m_bones.empty();
+        }
+
         std::vector<animation::BoneTransform> m_bones;
         std::map<std::string, uint16_t> m_boneNameToIndex;
 
