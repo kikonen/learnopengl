@@ -39,22 +39,6 @@ namespace mesh {
             ModelMesh& modelMesh);
 
     private:
-        void processSkeleton(
-            animation::AnimationContainer& animContainer,
-            ModelMesh& mesh,
-            size_t skeletonIndex,
-            const aiScene* scene,
-            const aiSkeleton* skeleton);
-
-        void processSkeletonBone(
-            animation::AnimationContainer& animContainer,
-            ModelMesh& mesh,
-            size_t skeletonIndex,
-            size_t boneIndex,
-            const aiScene* scene,
-            const aiSkeleton* skeleton,
-            const aiSkeletonBone* bone);
-
         void processAnimation(
             animation::AnimationContainer& animContainer,
             ModelMesh& mesh,

@@ -134,16 +134,6 @@ namespace mesh
             modelMesh.m_materials.push_back(m_defaultMaterial);
         }
 
-        for (size_t skeletonIndex = 0; skeletonIndex < scene->mNumSkeletons; ++skeletonIndex)
-        {
-            processSkeleton(
-                animContainer,
-                modelMesh,
-                skeletonIndex,
-                scene,
-                scene->mSkeletons[skeletonIndex]);
-        }
-
         for (size_t animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex)
         {
             processAnimation(
@@ -153,50 +143,6 @@ namespace mesh
                 scene,
                 scene->mAnimations[animIndex]);
         }
-    }
-
-    void AssimpLoader::processSkeleton(
-        animation::AnimationContainer& animContainer,
-        ModelMesh& modelMesh,
-        size_t skeletonIndex,
-        const aiScene* scene,
-        const aiSkeleton* skeleton)
-    {
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: SKELETON skeleton={}, index={}, bones={}",
-            skeleton->mName.C_Str(),
-            skeletonIndex,
-            skeleton->mNumBones));
-
-        for (size_t boneIndex = 0; boneIndex < skeleton->mNumBones; ++boneIndex)
-        {
-            processSkeletonBone(
-                animContainer,
-                modelMesh,
-                skeletonIndex,
-                boneIndex,
-                scene,
-                skeleton,
-                skeleton->mBones[boneIndex]);
-        }
-    }
-
-    void AssimpLoader::processSkeletonBone(
-        animation::AnimationContainer& animContainer,
-        ModelMesh& modelMesh,
-        size_t skeletonIndex,
-        size_t boneIndex,
-        const aiScene* scene,
-        const aiSkeleton* skeleton,
-        const aiSkeletonBone* bone)
-    {
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: SKELETON bone={}, parent={}, bone={}, node={}, mesh={}",
-            skeletonIndex,
-            bone->mParent,
-            boneIndex,
-            bone->mNode->mName.C_Str(),
-            bone->mMeshId->mName.C_Str()));
     }
 
     void AssimpLoader::processAnimation(
