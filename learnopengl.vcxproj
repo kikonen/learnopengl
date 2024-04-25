@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -184,7 +184,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\animation\AnimationContainer.cpp" />
+    <ClCompile Include="src\animation\Animation.cpp" />
+    <ClCompile Include="src\animation\AnimationLoader.cpp" />
+    <ClCompile Include="src\animation\BoneChannel.cpp" />
+    <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
@@ -202,7 +205,7 @@
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
-    <ClCompile Include="src\animation\AnimationNode.cpp" />
+    <ClCompile Include="src\animation\RigNode.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp" />
@@ -407,7 +410,10 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\animation\AnimationContainer.h" />
+    <ClInclude Include="src\animation\AnimationLoader.h" />
+    <ClInclude Include="src\animation\BoneChannel.h" />
+    <ClInclude Include="src\animation\NodeAnimation.h" />
+    <ClInclude Include="src\animation\RigContainer.h" />
     <ClInclude Include="src\animation\BoneContainer.h" />
     <ClInclude Include="src\animation\VertexBone.h" />
     <ClInclude Include="src\asset\AABB.h" />
@@ -435,8 +441,8 @@
     <ClInclude Include="src\loader\ResolvedEntity.h" />
     <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
-    <ClInclude Include="src\animation\AnimationNode.h" />
-    <ClInclude Include="src\animation\Animator.h" />
+    <ClInclude Include="src\animation\RigNode.h" />
+    <ClInclude Include="src\animation\Animation.h" />
     <ClInclude Include="src\mesh\AssimpLoader.h" />
     <ClInclude Include="src\animation\BoneTransform.h" />
     <ClInclude Include="src\mesh\vao\SkinnedVAO.h" />

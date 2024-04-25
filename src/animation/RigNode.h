@@ -7,8 +7,8 @@
 struct aiNode;
 
 namespace animation {
-    struct AnimationNode {
-        AnimationNode(const aiNode* node);
+    struct RigNode {
+        RigNode(const aiNode* node);
 
         const aiNode* m_node;
 

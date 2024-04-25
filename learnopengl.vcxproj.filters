@@ -657,7 +657,7 @@
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\AnimationNode.cpp">
+    <ClCompile Include="src\animation\RigNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp">
@@ -672,10 +672,19 @@
     <ClCompile Include="src\util\assimp_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\AnimationContainer.cpp">
+    <ClCompile Include="src\animation\RigContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\BoneChannel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimationLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1613,10 +1622,10 @@
     <ClInclude Include="src\mesh\vao\VertexIndexEBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\AnimationNode.h">
+    <ClInclude Include="src\animation\RigNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\Animator.h">
+    <ClInclude Include="src\animation\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\VertexBoneVBO.h">
@@ -1631,10 +1640,19 @@
     <ClInclude Include="src\animation\VertexBone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\AnimationContainer.h">
+    <ClInclude Include="src\animation\RigContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\SkinnedVAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\NodeAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneChannel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\AnimationLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

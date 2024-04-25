@@ -2,10 +2,6 @@
 
 #include "assimp_util.h"
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
-
 namespace assimp_util {
     glm::vec4 toVec4(const aiColor4D& v) {
         return { v.r, v.g, v.b, v.a };
@@ -26,5 +22,9 @@ namespace assimp_util {
             v.a3, v.b3, v.c3, v.d3,
             v.a4, v.b4, v.c4, v.d4,
         };
+    }
+
+    glm::quat toQuat(const aiQuaternion& v) {
+        return { v.w, v.x, v.y, v.z };
     }
 }

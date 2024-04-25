@@ -15,12 +15,11 @@ struct aiFace;
 struct aiBone;
 struct aiSkeleton;
 struct aiSkeletonBone;
-struct aiAnimation;
 struct aiMaterial;
 
 namespace animation {
-    struct AnimationContainer;
-    struct AnimationNode;
+    struct RigContainer;
+    struct RigNode;
 }
 
 namespace mesh {
@@ -39,35 +38,28 @@ namespace mesh {
             ModelMesh& modelMesh);
 
     private:
-        void processAnimation(
-            animation::AnimationContainer& animContainer,
-            ModelMesh& mesh,
-            size_t animIndex,
-            const aiScene* scene,
-            const aiAnimation* animation);
-
         void collectNodes(
-            animation::AnimationContainer& animContainer,
+            animation::RigContainer& rig,
             const aiScene* scene,
             const aiNode* node,
             int16_t parentId,
             const glm::mat4& parentTransform);
 
         void processMeshes(
-            animation::AnimationContainer& animContainer,
+            animation::RigContainer& rig,
             ModelMesh& mesh,
             const aiScene* scene);
 
         void processMesh(
-            animation::AnimationContainer& animContainer,
-            animation::AnimationNode& animNode,
+            animation::RigContainer& rig,
+            animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh);
 
         void processMeshFace(
-            animation::AnimationContainer& animContainer,
-            animation::AnimationNode& animNode,
+            animation::RigContainer& rig,
+            animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t faceIndex,
@@ -76,8 +68,8 @@ namespace mesh {
             const aiFace* face);
 
         void processMeshBone(
-            animation::AnimationContainer& animContainer,
-            animation::AnimationNode& animNode,
+            animation::RigContainer& rig,
+            animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t boneIndex,
