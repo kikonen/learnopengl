@@ -13,4 +13,11 @@ namespace animation {
     {}
 
     Animation::~Animation() = default;
+
+    uint16_t Animation::addChannel(const aiNodeAnim* nodeAnim)
+    {
+        auto& channel = m_channels.emplace_back(nodeAnim);
+        channel.m_id = static_cast<uint16_t>(m_channels.size() - 1);
+        return channel.m_id;
+    }
 }

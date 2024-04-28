@@ -18,8 +18,9 @@ namespace animation {
         }
 
         std::vector<animation::BoneTransform> m_bones;
-        std::map<std::string, uint16_t> m_boneNameToIndex;
 
         uint16_t getBoneId(const aiBone* bone) noexcept;
+
+        std::map<std::string, uint16_t> m_boneNameToIndex;
     };
 }

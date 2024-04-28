@@ -22,6 +22,7 @@
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
+#include "animation/RigContainer.h"
 
 namespace {
 }
@@ -91,7 +92,7 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        if (m_boneContainer.valid()) {
+        if (m_rig && m_rig->m_bones.valid()) {
             m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
         }
         else {

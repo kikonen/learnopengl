@@ -121,7 +121,8 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        animation::RigContainer rig;
+        modelMesh.m_rig = std::make_unique<animation::RigContainer>();
+        auto& rig = *modelMesh.m_rig;
 
         processMaterials(rig.m_materialMapping, modelMesh, scene);
 
@@ -320,9 +321,9 @@ namespace mesh
             bone->mNumWeights,
             offsetMatrix))
 
-        auto boneId = modelMesh.m_boneContainer.getBoneId(bone);
+        auto boneId = rig.m_bones.getBoneId(bone);
 
-        auto& vertexBones = modelMesh.m_vertexBones;
+        auto& vertexBones = rig.m_vertexBones;
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)

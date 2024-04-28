@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
@@ -11,6 +13,8 @@ namespace animation {
         RigNode(const aiNode* node);
 
         const aiNode* m_node;
+
+        const std::string m_name;
 
         int16_t m_id;
         int16_t m_parentId;

@@ -8,6 +8,7 @@
 #include "util/Util.h"
 #include "util/Log.h"
 
+#include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
 
@@ -49,6 +50,7 @@ namespace animation {
 
         auto animation = std::make_unique<animation::Animation>(anim);
 
+        animation->m_channels.reserve(anim->mNumChannels);
         for (size_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx)
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
@@ -61,21 +63,24 @@ namespace animation {
                 channel->mNumRotationKeys,
                 channel->mNumScalingKeys));
 
-            BoneChannel bc{ channel };
+            auto channelId = animation->addChannel(channel);
+            auto& bc = animation->getChannel(channelId);
+            bc.m_nodeId = rig.findNodeId(bc.m_nodeName);
 
+            bc.m_positionKeys.reserve(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumPositionKeys; i++) {
                 bc.m_positionKeys.emplace_back(channel->mPositionKeys[i]);
             }
 
+            bc.m_rotationKeys.reserve(channel->mNumRotationKeys);
             for (size_t i = 0; i < channel->mNumRotationKeys; i++) {
                 bc.m_rotationKeys.emplace_back(channel->mRotationKeys[i]);
             }
 
+            bc.m_scaleKeys.reserve(channel->mNumScalingKeys);
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
-                bc.m_scalingKeys.emplace_back(channel->mScalingKeys[i]);
+                bc.m_scaleKeys.emplace_back(channel->mScalingKeys[i]);
             }
-
-            animation->m_channels.push_back(bc);
         }
 
         return animation;
