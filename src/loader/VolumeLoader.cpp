@@ -44,8 +44,8 @@ namespace loader {
         if (!assets.showVolume) return;
 
         auto future = ModelRegistry::get().getMesh(
-            "ball_volume",
-            assets.modelsDir);
+            assets.modelsDir,
+            "ball_volume");
         auto* mesh = future.get();
 
         if (!mesh) {

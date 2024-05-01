@@ -6,9 +6,9 @@
 
 #include <fmt/format.h>
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "util/glm_format.h"
 #include "util/Util.h"
@@ -18,6 +18,7 @@
 #include "animation/Animation.h"
 #include "animation/BoneChannel.h"
 #include "animation/BoneContainer.h"
+#include "animation/AnimationLoader.h"
 
 #include "mesh/ModelMesh.h"
 
@@ -25,13 +26,6 @@
 
 namespace {
     std::mutex m_lock;
-
-    const std::string SUPPORTED_TYPES[] {
-        ".glb",
-        ".fbx",
-        ".dae",
-        ".obj",
-    };
 }
 
 namespace mesh
@@ -47,34 +41,14 @@ namespace mesh
     void AssimpLoader::loadData(
         ModelMesh& modelMesh)
     {
-        {
-            std::string filePath = util::joinPathExt(
-                modelMesh.m_rootDir,
-                modelMesh.m_meshPath,
-                modelMesh.m_meshName, "");
+        std::string filePath = assimp_util::resolvePath(
+            modelMesh.m_rootDir,
+            modelMesh.m_meshPath);
 
-            if (util::fileExists(filePath)) {
-                modelMesh.m_filePath = filePath;
-                modelMesh.m_fileExt = "";
-                loadResolvedPath(modelMesh);
-                return;
-            }
-        }
+        if (filePath.empty()) return;
 
-        // NOTE KI process in priority order; stop at first match
-        for (const auto& ext : SUPPORTED_TYPES) {
-            std::string filePath = util::joinPathExt(
-                modelMesh.m_rootDir,
-                modelMesh.m_meshPath,
-                modelMesh.m_meshName, ext);
-
-            if (util::fileExists(filePath)) {
-                modelMesh.m_filePath = filePath;
-                modelMesh.m_fileExt = ext;
-                loadResolvedPath(modelMesh);
-                return;
-            }
-        }
+        modelMesh.m_filePath = filePath;
+        loadResolvedPath(modelMesh);
     }
 
     void AssimpLoader::loadResolvedPath(
@@ -113,11 +87,10 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: SCENE scene={}, meshes={}, anims={}, skeletons={}, materials={}, textures={}",
+            "ASSIMP: SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
             modelMesh.m_filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
-            scene->mNumSkeletons,
             scene->mNumMaterials,
             scene->mNumTextures));
 
@@ -132,6 +105,8 @@ namespace mesh
             rig,
             modelMesh,
             scene);
+
+        loadAnimations(rig, scene);
 
         if (m_defaultMaterial.m_used) {
             modelMesh.m_materials.push_back(m_defaultMaterial);
@@ -165,6 +140,17 @@ namespace mesh
         {
             collectNodes(rig, scene, node->mChildren[n], animId, transform);
         }
+    }
+
+    void AssimpLoader::loadAnimations(
+        animation::RigContainer& rig,
+        const aiScene* scene)
+    {
+        animation::AnimationLoader loader{};
+
+        loader.loadAnimations(
+            rig,
+            scene);
     }
 
     void AssimpLoader::processMeshes(
@@ -435,8 +421,6 @@ namespace mesh
     {
         std::filesystem::path meshPath{ modelMesh.m_meshName };
         const auto parentPath = meshPath.parent_path();
-
-        //std::filesystem::path path{ modelMesh.m_filePath };
 
         std::string filePath = util::joinPathExt(
             modelMesh.m_rootDir,

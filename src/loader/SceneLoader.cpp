@@ -41,6 +41,9 @@
 
 #include "model/Node.h"
 
+#include "animation/AnimationLoader.h"
+#include "animation/RigContainer.h"
+
 //#include "generator/GridGenerator.h"
 //#include "generator/AsteroidBeltGenerator.h"
 #include "generator/TextGenerator.h"
@@ -706,7 +709,6 @@ namespace loader {
 
             for (auto& lodData : data.lods) {
                 auto future = ModelRegistry::get().getMesh(
-                    lodData.meshName,
                     assets.modelsDir,
                     lodData.meshPath);
 
@@ -717,11 +719,15 @@ namespace loader {
                     "SCENE_FILE ATTACH: id={}, desc={}, type={}",
                     data.baseId, data.desc, type->str()));
             }
+
+            for (auto& animationData : data.animations) {
+                resolveAnimation(typeHandle, animationData);
+            }
         }
         else if (data.type == mesh::EntityType::sprite) {
             auto future = ModelRegistry::get().getMesh(
-                QUAD_MESH_NAME,
-                assets.modelsDir);
+                assets.modelsDir,
+                QUAD_MESH_NAME);
             type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::sprite;
         }
@@ -746,6 +752,31 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
             type->m_flags.invisible = true;
         }
+    }
+
+    void SceneLoader::resolveAnimation(
+        pool::TypeHandle typeHandle,
+        const AnimationData& data)
+    {
+        const auto& assets = Assets::get();
+
+        auto* type = typeHandle.toType();
+
+        auto* mesh = type->modifyLod(0)->getMesh<mesh::ModelMesh>();
+
+        if (!mesh->m_rig) return;
+        if (!mesh->m_rig->m_bones.valid()) return;
+
+        animation::AnimationLoader loader{};
+
+        std::string filePath = util::joinPath(
+            mesh->m_rootDir,
+            data.path);
+
+        loader.loadAnimations(
+            *mesh->m_rig,
+            data.name,
+            filePath);
     }
 
     pool::NodeHandle SceneLoader::createNode(

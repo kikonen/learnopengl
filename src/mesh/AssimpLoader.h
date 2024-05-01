@@ -45,6 +45,10 @@ namespace mesh {
             int16_t parentId,
             const glm::mat4& parentTransform);
 
+        void loadAnimations(
+            animation::RigContainer& rig,
+            const aiScene* scene);
+
         void processMeshes(
             animation::RigContainer& rig,
             ModelMesh& mesh,

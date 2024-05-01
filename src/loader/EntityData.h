@@ -25,6 +25,7 @@
 #include "ScriptData.h"
 #include "TextData.h"
 #include "LodData.h"
+#include "AnimationData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -87,6 +88,8 @@ namespace loader {
         LightData light;
         AudioData audio;
         TextData text;
+
+        std::vector<AnimationData> animations;
 
         GeneratorData generator;
 

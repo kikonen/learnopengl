@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -15,4 +17,8 @@ namespace assimp_util {
     glm::mat4 toMat4(const aiMatrix4x4& v);
 
     glm::quat toQuat(const aiQuaternion& v);
+
+    std::string resolvePath(
+        std::string rootDir,
+        std::string meshPath);
 }

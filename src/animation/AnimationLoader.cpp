@@ -2,7 +2,9 @@
 
 #include <fmt/format.h>
 
+#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "util/glm_format.h"
 #include "util/Util.h"
@@ -15,25 +17,69 @@
 #include "util/assimp_util.h"
 
 namespace animation {
+    AnimationLoader::AnimationLoader() = default;
     AnimationLoader::~AnimationLoader() = default;
 
-    std::vector<std::unique_ptr<animation::Animation>> AnimationLoader::loadAnimations(
+    void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        aiScene* scene)
+        const std::string& name,
+        const std::string& filePath)
     {
-        if (scene->mNumAnimations == 0) return {};
+        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
 
-        std::vector<std::unique_ptr<animation::Animation>> animations;
+        if (!util::fileExists(filePath)) {
+            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+        }
+
+        Assimp::Importer importer;
+
+        const aiScene* scene = importer.ReadFile(
+            filePath,
+            //aiProcess_GenNormals |
+            aiProcess_GenSmoothNormals |
+            aiProcess_ForceGenNormals |
+            //aiProcess_FixInfacingNormals |
+            aiProcess_CalcTangentSpace |
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            //aiProcess_ImproveCacheLocality |
+            aiProcess_LimitBoneWeights |
+            aiProcess_RemoveRedundantMaterials |
+            aiProcess_GenUVCoords |
+            aiProcess_SortByPType |
+            0);
+
+        // If the import failed, report it
+        if (!scene) {
+            KI_ERROR(importer.GetErrorString());
+            return;
+        }
+
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
+            filePath,
+            scene->mNumMeshes,
+            scene->mNumAnimations,
+            scene->mNumSkeletons,
+            scene->mNumMaterials,
+            scene->mNumTextures))
+
+        loadAnimations(rig, scene);
+    }
+
+    void AnimationLoader::loadAnimations(
+        animation::RigContainer& rig,
+        const aiScene* scene)
+    {
+        if (scene->mNumAnimations == 0) return;
 
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
                 scene,
                 scene->mAnimations[index]);
-            animations.push_back(std::move(animation));
+            rig.addAnimation(std::move(animation));
         }
-
-        return animations;
     }
 
     std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(

@@ -25,24 +25,20 @@
 #include "animation/RigContainer.h"
 
 namespace {
+    std::string extractName(std::string_view meshPath) {
+        auto filePath = util::joinPath("", meshPath);
+        return util::baseName(filePath);
+    }
 }
 
 namespace mesh {
     ModelMesh::ModelMesh(
-        std::string_view meshName,
-        std::string_view rootDir)
-        : ModelMesh(meshName, rootDir, "")
-    {
-    }
-
-    ModelMesh::ModelMesh(
-        std::string_view meshName,
         std::string_view rootDir,
         std::string_view meshPath)
         : Mesh(),
-        m_meshName{ meshName },
         m_rootDir{ rootDir },
-        m_meshPath{ meshPath }
+        m_meshPath{ meshPath },
+        m_meshName{ extractName(meshPath) }
     {
     }
 

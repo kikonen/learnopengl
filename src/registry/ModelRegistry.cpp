@@ -45,14 +45,6 @@ void ModelRegistry::updateRT(const UpdateContext& ctx)
 }
 
 std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
-    std::string_view meshName,
-    std::string_view rootDir)
-{
-    return getMesh(meshName, rootDir, "");
-}
-
-std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
-    std::string_view meshName,
     std::string_view rootDir,
     std::string_view meshPath)
 {
@@ -61,10 +53,9 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     std::lock_guard lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-    std::string key = util::joinPathExt(
+    std::string key = util::joinPath(
         rootDir,
-        meshPath,
-        meshName, "");
+        meshPath);
 
     {
         auto e = m_meshes.find(key);
@@ -73,7 +64,6 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     }
 
     auto mesh = new mesh::ModelMesh(
-        meshName,
         rootDir,
         meshPath);
 

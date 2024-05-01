@@ -140,6 +140,10 @@ namespace loader {
             const EntityCloneData& data,
             const glm::uvec3& tile);
 
+        void resolveAnimation(
+            pool::TypeHandle typeHandle,
+            const AnimationData& data);
+
         pool::NodeHandle createNode(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -11,11 +12,18 @@ namespace animation {
     struct Animation;
 
     class AnimationLoader {
+    public:
+        AnimationLoader();
         ~AnimationLoader();
 
-        std::vector<std::unique_ptr<animation::Animation>> loadAnimations(
+        void loadAnimations(
             animation::RigContainer& rig,
-            aiScene* scene);
+            const std::string& name,
+            const std::string& filePath);
+
+        void loadAnimations(
+            animation::RigContainer& rig,
+            const aiScene* scene);
 
     private:
         std::unique_ptr<animation::Animation> loadAnimation(

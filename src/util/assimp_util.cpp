@@ -1,6 +1,17 @@
 #pragma once
 
 #include "assimp_util.h"
+#include <util/Util.h>
+
+namespace {
+    const std::string SUPPORTED_TYPES[]{
+        "",
+        ".glb",
+        ".fbx",
+        ".dae",
+        ".obj",
+    };
+}
 
 namespace assimp_util {
     glm::vec4 toVec4(const aiColor4D& v) {
@@ -26,5 +37,24 @@ namespace assimp_util {
 
     glm::quat toQuat(const aiQuaternion& v) {
         return { v.w, v.x, v.y, v.z };
+    }
+
+    std::string resolvePath(
+        std::string rootDir,
+        std::string meshPath)
+    {
+        // NOTE KI process in priority order; stop at first match
+        for (const auto& ext : SUPPORTED_TYPES) {
+            std::string filePath = util::joinPathExt(
+                rootDir,
+                meshPath,
+                ext);
+
+            if (util::fileExists(filePath)) {
+                return filePath;
+            }
+        }
+
+        return {};
     }
 }

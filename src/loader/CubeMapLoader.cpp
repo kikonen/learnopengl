@@ -40,8 +40,8 @@ namespace loader {
         if (!assets.showCubeMapCenter) return;
 
         auto future = ModelRegistry::get().getMesh(
-            "ball_volume",
-            assets.modelsDir);
+            assets.modelsDir,
+            "ball_volume");
 
         auto* mesh = future.get();
 

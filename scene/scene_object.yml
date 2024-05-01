@@ -40,6 +40,9 @@ entities:
       xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
+    animations:
+      - name: jump
+        path: fbx/anim/Lion@Jump.FBX
     audio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav

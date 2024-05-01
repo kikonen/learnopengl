@@ -269,8 +269,8 @@ namespace terrain {
         auto typeHandle = createType(registry, container.m_typeHandle);
         {
             auto future = ModelRegistry::get().getMesh(
-                TERRAIN_QUAD_MESH_NAME,
-                m_modelsDir);
+                m_modelsDir,
+                TERRAIN_QUAD_MESH_NAME);
             auto* mesh = future.get();
             mesh->setAABB(aabb);
 

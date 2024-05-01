@@ -27,13 +27,8 @@ namespace mesh {
 
     public:
         ModelMesh(
-            std::string_view meshName,
+            std::string_view meshPath,
             std::string_view rootDir);
-
-        ModelMesh(
-            std::string_view meshName,
-            std::string_view rootDir,
-            std::string_view meshPath);
 
         virtual ~ModelMesh();
 
@@ -70,12 +65,11 @@ namespace mesh {
         }
 
     public:
-        const std::string m_meshName;
         const std::string m_rootDir;
         const std::string m_meshPath;
+        const std::string m_meshName;
 
         std::string m_filePath;
-        std::string m_fileExt;
 
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;

@@ -44,11 +44,6 @@ public:
     }
 
     std::shared_future<mesh::ModelMesh*> getMesh(
-        std::string_view meshName,
-        std::string_view rootDir);
-
-    std::shared_future<mesh::ModelMesh*> getMesh(
-        std::string_view meshName,
         std::string_view rootDir,
         std::string_view meshPath);
 

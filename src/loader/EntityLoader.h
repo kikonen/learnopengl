@@ -84,5 +84,13 @@ namespace loader {
             const YAML::Node& node,
             LodData& data,
             MaterialLoader& materialLoader) const;
+
+        void loadAnimations(
+            const YAML::Node& node,
+            std::vector<AnimationData>& animations) const;
+
+        void loadAnimation(
+            const YAML::Node& node,
+            AnimationData& data) const;
     };
 }

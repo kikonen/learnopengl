@@ -108,8 +108,8 @@ namespace loader {
         const auto& assets = Assets::get();
 
         auto future = ModelRegistry::get().getMesh(
-            SKYBOX_MESH_NAME,
-            assets.modelsDir);
+            assets.modelsDir,
+            SKYBOX_MESH_NAME);
         auto* mesh = future.get();
 
         if (!mesh) {
