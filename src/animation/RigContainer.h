@@ -29,9 +29,11 @@ namespace animation {
 
         int16_t findNodeId(const std::string& name) const noexcept;
 
+        bool hasBones();
+
         std::vector<animation::RigNode> m_nodes;
 
-        BoneContainer m_bones;
+        BoneContainer m_boneContainer;
         std::vector<animation::VertexBone> m_vertexBones;
 
         std::vector<std::unique_ptr<animation::Animation>> m_animations;

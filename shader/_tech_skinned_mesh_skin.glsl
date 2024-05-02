@@ -5,7 +5,7 @@
 // - a_boneIndex
 // - a_boneWeight
 // - u_boneTransforms
-// - instance
+// - entity
 // - pos
 // - normal
 // - tangent
@@ -15,7 +15,7 @@
 // - tangent
 #ifdef USE_BONES
 {
-  const uvec4 boneIndex = a_boneIndex + instance.u_boneIndex;
+  const uvec4 boneIndex = a_boneIndex + entity.u_boneIndex;
   const vec4 boneWeight = a_boneWeight;
 
   const mat4 b1 = u_boneTransforms[boneIndex.x].u_transform;

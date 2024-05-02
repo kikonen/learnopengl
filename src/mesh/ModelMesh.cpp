@@ -88,7 +88,7 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        if (m_rig && m_rig->m_bones.valid()) {
+        if (m_rig && m_rig->hasBones()) {
             m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
         }
         else {

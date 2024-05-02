@@ -307,7 +307,7 @@ namespace mesh
             bone->mNumWeights,
             offsetMatrix))
 
-        auto boneId = rig.m_bones.getBoneId(bone);
+        auto boneId = rig.m_boneContainer.getBoneId(bone);
 
         auto& vertexBones = rig.m_vertexBones;
 

@@ -28,4 +28,9 @@ namespace animation {
             [&name](const RigNode& m) { return m.m_name == name; });
         return it != m_nodes.end() ? it->m_id : -1;
     }
+
+    bool RigContainer::hasBones()
+    {
+        return m_boneContainer.hasBones();
+    }
 }

@@ -1,0 +1,43 @@
+#pragma once
+
+#include <string>
+#include <memory>
+
+struct UpdateContext;
+class Registry;
+
+class Updater
+{
+public:
+    Updater(
+        std::string_view prefix,
+        size_t delay,
+        std::shared_ptr<Registry> registry,
+        std::shared_ptr<std::atomic<bool>> alive);
+
+    virtual ~Updater();
+
+    void destroy();
+
+    bool isRunning() const;
+
+    void prepare();
+
+    void start();
+    void run();
+
+    virtual uint32_t getActiveCount() const noexcept = 0;
+    virtual void update(const UpdateContext& ctx) = 0;
+
+
+protected:
+    bool m_loaded{ false };
+
+    const std::string m_prefix;
+    const size_t m_delay;
+
+    std::atomic<bool> m_running;
+    std::shared_ptr<std::atomic<bool>> m_alive;
+
+    std::shared_ptr<Registry> m_registry;
+};

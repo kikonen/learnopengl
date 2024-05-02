@@ -50,6 +50,7 @@ struct NodeTransform {
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
     int m_shapeIndex{ 0 };
+    int m_boneIndex{ 0 };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 

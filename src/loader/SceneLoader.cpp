@@ -765,7 +765,7 @@ namespace loader {
         auto* mesh = type->modifyLod(0)->getMesh<mesh::ModelMesh>();
 
         if (!mesh->m_rig) return;
-        if (!mesh->m_rig->m_bones.valid()) return;
+        if (!mesh->m_rig->hasBones()) return;
 
         animation::AnimationLoader loader{};
 

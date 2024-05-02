@@ -14,9 +14,9 @@ namespace animation {
             index = it->second;
         }
         else {
-            index = static_cast<uint16_t>(m_bones.size());
+            index = static_cast<uint16_t>(m_boneNameToIndex.size());
             m_boneNameToIndex.insert({ bone->mName.C_Str(), index });
-            m_bones.emplace_back(assimp_util::toMat4(bone->mOffsetMatrix));
+            m_offsetMatrices.emplace_back(assimp_util::toMat4(bone->mOffsetMatrix));
         }
         return index;
     }

@@ -33,6 +33,7 @@
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/BoneRegistry.h"
 
 Registry::Registry(
     std::shared_ptr<std::atomic<bool>> alive)
@@ -79,6 +80,8 @@ void Registry::prepareShared()
     physics::PhysicsEngine::get().prepare(m_alive);
 
     particle::ParticleSystem::get().prepare();
+    BoneRegistry::get().prepare();
+
     terrain::TerrrainTileRegistry::get().prepare();
 }
 
@@ -117,6 +120,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
     particle::ParticleSystem::get().updateRT(ctx);
+    BoneRegistry::get().updateRT(ctx);
     terrain::TerrrainTileRegistry::get().updateRT(ctx);
 }
 

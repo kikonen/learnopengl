@@ -6,6 +6,14 @@
 
 namespace animation {
     struct BoneTransform {
-        glm::mat4 m_offsetMatrix;
+        BoneTransform()
+            : m_transform{ 1.f }
+        {}
+
+        BoneTransform(const glm::mat4& transform)
+            : m_transform{ transform }
+        {}
+
+        glm::mat4 m_transform;
     };
 }

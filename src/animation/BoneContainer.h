@@ -13,14 +13,18 @@ struct aiBone;
 namespace animation {
     // Manage bones shared based into their name
     struct BoneContainer {
-        bool valid() const noexcept {
-            return !m_bones.empty();
+        inline bool hasBones() const noexcept {
+            return !m_offsetMatrices.empty();
         }
 
-        std::vector<animation::BoneTransform> m_bones;
+        inline uint16_t size() const noexcept {
+            return static_cast<uint16_t>(m_boneNameToIndex.size());
+        }
+
 
         uint16_t getBoneId(const aiBone* bone) noexcept;
 
+        std::vector<glm::mat4> m_offsetMatrices;
         std::map<std::string, uint16_t> m_boneNameToIndex;
     };
 }

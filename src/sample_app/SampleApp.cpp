@@ -47,6 +47,7 @@
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
 #include "scene/ParticleUpdater.h"
+#include "scene/AnimationUpdater.h"
 
 #include "TestSceneSetup.h"
 
@@ -82,6 +83,7 @@ int SampleApp::onSetup()
     const auto& assets = Assets::get();
 
     m_currentScene = loadScene();
+
     m_sceneUpdater = std::make_shared<SceneUpdater>(
         m_registry,
         m_alive);
@@ -90,8 +92,13 @@ int SampleApp::onSetup()
         m_registry,
         m_alive);
 
+    m_animationUpdater = std::make_shared<AnimationUpdater>(
+        m_registry,
+        m_alive);
+
     m_sceneUpdater->start();
     m_particleUpdater->start();
+    m_animationUpdater->start();
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -346,6 +353,7 @@ void SampleApp::onDestroy()
     {
         m_sceneUpdater->destroy();
         m_particleUpdater->destroy();
+        m_animationUpdater->destroy();
     }
 
     if (m_sceneUpdater) {
@@ -366,6 +374,16 @@ void SampleApp::onDestroy()
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         KI_INFO_OUT("APP: PS stopped!");
+    }
+
+    if (m_animationUpdater) {
+        KI_INFO_OUT("APP: stopping AS...");
+
+        // NOTE KI wait for worker threads to shutdown
+        while (m_animationUpdater->isRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        KI_INFO_OUT("APP: AS stopped!");
     }
 
     if (m_currentScene) {

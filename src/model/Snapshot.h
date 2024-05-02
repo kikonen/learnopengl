@@ -39,6 +39,7 @@ struct Snapshot {
     glm::vec3 m_modelScale{ 1.f };
 
     int m_shapeIndex{ 0 };
+    int m_boneIndex{ 0 };
 
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
@@ -73,6 +74,7 @@ struct Snapshot {
         m_flags = o.m_flags;
 
         m_shapeIndex = o.m_shapeIndex;
+        m_boneIndex = o.m_boneIndex;
 
         m_volume = o.m_volume;
 
