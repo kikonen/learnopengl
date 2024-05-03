@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <mutex>
 
 struct UpdateContext;
 class Registry;
@@ -21,7 +22,12 @@ public:
 
     bool isRunning() const;
 
-    void prepare();
+    virtual void prepare();
+
+    bool isPrepared() const noexcept {
+        std::lock_guard lock(m_prepareLock);
+        return m_prepared;
+    }
 
     void start();
     void run();
@@ -35,6 +41,9 @@ protected:
 
     const std::string m_prefix;
     const size_t m_delay;
+
+    mutable std::mutex m_prepareLock;
+    bool m_prepared{ false };
 
     std::atomic<bool> m_running;
     std::shared_ptr<std::atomic<bool>> m_alive;

@@ -49,6 +49,8 @@ bool Updater::isRunning() const
 
 void Updater::prepare()
 {
+    std::lock_guard lock(m_prepareLock);
+    m_prepared = true;
 }
 
 void Updater::start()
@@ -76,7 +78,7 @@ void Updater::run()
 {
     ki::RenderClock clock;
 
-    KI_INFO(fmt::format("AS: started - worker={}", util::isWorkerThread()));
+    KI_INFO(fmt::format("{}: started - worker={}", m_prefix, util::isWorkerThread()));
     prepare();
 
     //const int delay = (int)(1000.f / 60.f);
