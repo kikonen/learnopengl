@@ -1,22 +1,24 @@
 #pragma once
 
+#include <span>
+
 #include "ki/size.h"
 
 struct UpdateContext;
-class Node;
 
 namespace animation {
     struct RigContainer;
-    struct MatrixPalette;
+    struct BoneTransform;
 
     class Animator {
     public:
         // Update single palette with animationIndex animation
-        void animate(
+        // @return true if palette was changed
+        bool animate(
             const UpdateContext& ctx,
             const animation::RigContainer& rig,
+            std::span<animation::BoneTransform>& palette,
             uint16_t animationIndex,
-            MatrixPalette& palette,
-            const Node& node);
+            float animationStartTime);
     };
 }

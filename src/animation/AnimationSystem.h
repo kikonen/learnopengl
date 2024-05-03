@@ -7,8 +7,13 @@
 
 #include "kigl/GLBuffer.h"
 
+namespace pool {
+    class NodeHandle;
+}
+
 struct UpdateContext;
 class RenderContext;
+class Node;
 
 namespace animation {
     struct RigContainer;
@@ -37,7 +42,16 @@ namespace animation {
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);
 
+        void handleNodeAdded(Node* node);
+
     private:
+        // @return true if bone palette was updated
+        bool animateNode(
+            const UpdateContext& ctx,
+            Node* node);
+
+        void prepareNodes();
+
         void snapshotBones();
         void updateBuffer();
 
@@ -46,6 +60,12 @@ namespace animation {
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
+
+        bool m_needSnapshot{ false };
+
+        std::mutex m_pendingLock{};
+        std::vector<pool::NodeHandle> m_animationNodes;
+        std::vector<pool::NodeHandle> m_pendingNodes;
 
         size_t m_lastSize{ 0 };
 

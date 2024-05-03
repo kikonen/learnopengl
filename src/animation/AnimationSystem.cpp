@@ -2,8 +2,16 @@
 
 #include "asset/SSBO.h"
 
+#include "model/Node.h"
+
+#include "mesh/MeshType.h"
+#include "mesh/ModelMesh.h"
+
+#include "pool/NodeHandle.h"
+
 #include "animation/RigContainer.h"
 #include "animation/BoneTransform.h"
+#include "animation/Animator.h"
 
 #include "animation/BoneTransformSSBO.h"
 
@@ -37,15 +45,23 @@ namespace animation
     uint32_t AnimationSystem::registerInstance(animation::RigContainer& rig)
     {
         if (!rig.hasBones()) return 0;
-        auto index = m_transforms.size();
-        m_transforms.resize(m_transforms.size() + rig.m_boneContainer.size());
 
-        snapshotBones();
+        size_t index;
+        {
+            std::lock_guard lock(m_pendingLock);
+
+            index = m_transforms.size();
+            m_transforms.resize(m_transforms.size() + rig.m_boneContainer.size());
+
+            m_needSnapshot = true;
+        }
 
         return static_cast<uint32_t>(index);
     }
 
-    inline std::span<animation::BoneTransform> AnimationSystem::modifyRange(uint32_t start, uint32_t count) noexcept
+    inline std::span<animation::BoneTransform> AnimationSystem::modifyRange(
+        uint32_t start,
+        uint32_t count) noexcept
     {
         return std::span{ m_transforms }.subspan(start, count);
     }
@@ -57,6 +73,43 @@ namespace animation
 
     void AnimationSystem::updateWT(const UpdateContext& ctx)
     {
+        prepareNodes();
+
+        {
+            std::lock_guard lock(m_pendingLock);
+
+            for (auto& handle : m_animationNodes) {
+                m_needSnapshot |= animateNode(ctx, handle.toNode());
+            }
+
+            if (m_needSnapshot) {
+                snapshotBones();
+                m_needSnapshot = false;
+            }
+        }
+    }
+
+    bool AnimationSystem::animateNode(
+        const UpdateContext& ctx,
+        Node* node)
+    {
+        if (!node) return false;
+
+        auto* type = node->m_typeHandle.toType();
+        const auto* lod = type->getLod(0);
+        const auto* mesh = lod->getMesh<mesh::ModelMesh>();
+        const auto& transform = node->getTransform();
+
+        auto& rig = *mesh->m_rig;
+        auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+
+        animation::Animator animator;
+        return animator.animate(
+            ctx,
+            rig,
+            palette,
+            transform.m_animationIndex,
+            transform.m_animationStartTime);
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
@@ -66,11 +119,31 @@ namespace animation
         updateBuffer();
     }
 
+    void AnimationSystem::prepareNodes()
+    {
+        std::lock_guard lock(m_pendingLock);
+        if (m_pendingNodes.empty()) return;
+
+        for (auto& handle : m_pendingNodes) {
+            m_animationNodes.push_back(handle);
+        }
+        m_pendingNodes.clear();
+    }
+
+    void AnimationSystem::handleNodeAdded(Node* node)
+    {
+        auto* type = node->m_typeHandle.toType();
+        if (!type->m_flags.useAnimation) return;
+
+        std::lock_guard lock(m_pendingLock);
+        m_pendingNodes.push_back(node->toHandle());
+    }
+
     void AnimationSystem::snapshotBones()
     {
         std::lock_guard lock(m_snapshotLock);
 
-        if (m_transforms.empty()) {
+        if (m_transforms.empty() || !m_needSnapshot) {
             return;
         }
 

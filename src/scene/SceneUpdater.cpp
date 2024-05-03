@@ -12,6 +12,8 @@
 
 #include "audio/AudioEngine.h"
 
+#include "animation/AnimationSystem.h"
+
 #include "engine/UpdateContext.h"
 
 #include "physics/PhysicsEngine.h"
@@ -153,4 +155,5 @@ void SceneUpdater::handleNodeAdded(Node* node)
     if (!node) return;
 
     physics::PhysicsEngine::get().handleNodeAdded(node);
+    animation::AnimationSystem::get().handleNodeAdded(node);
 }

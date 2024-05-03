@@ -2,21 +2,21 @@
 
 #include "engine/UpdateContext.h"
 
-#include "model/Node.h"
-
 #include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
-#include "MatrixPalette.h"
+#include "BoneTransform.h"
 
 namespace animation {
-    void Animator::animate(
+    bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
+        std::span<animation::BoneTransform>& palette,
         uint16_t animationIndex,
-        MatrixPalette& palette,
-        const Node& node)
+        float animationStartTime)
     {
+        if (animationStartTime < 0) return false;
+
         auto* animation = rig.m_animations[animationIndex].get();
 
         for (auto& channel : animation->m_channels) {

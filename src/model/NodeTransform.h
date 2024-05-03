@@ -53,6 +53,7 @@ struct NodeTransform {
     uint32_t m_boneIndex{ 0 };
 
     uint16_t m_animationIndex{ 0 };
+    float m_animationStartTime{ -1.f };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
