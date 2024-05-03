@@ -2,6 +2,8 @@
 
 #include "asset/SSBO.h"
 
+#include "engine/UpdateContext.h"
+
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
@@ -98,10 +100,14 @@ namespace animation
         auto* type = node->m_typeHandle.toType();
         const auto* lod = type->getLod(0);
         const auto* mesh = lod->getMesh<mesh::ModelMesh>();
-        const auto& transform = node->getTransform();
+        auto& transform = node->modifyTransform();
 
         auto& rig = *mesh->m_rig;
         auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+
+        if (transform.m_animationStartTime < 0) {
+            transform.m_animationStartTime = ctx.m_clock.ts;
+        }
 
         animation::Animator animator;
         return animator.animate(
@@ -109,7 +115,8 @@ namespace animation
             rig,
             palette,
             transform.m_animationIndex,
-            transform.m_animationStartTime);
+            transform.m_animationStartTime,
+            ctx.m_clock.ts);
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)

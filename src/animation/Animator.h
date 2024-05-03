@@ -19,6 +19,7 @@ namespace animation {
             const animation::RigContainer& rig,
             std::span<animation::BoneTransform>& palette,
             uint16_t animationIndex,
-            float animationStartTime);
+            float animationStartTime,
+            float currentTime);
     };
 }
