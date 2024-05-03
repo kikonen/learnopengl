@@ -94,6 +94,17 @@ namespace loader {
         GeneratorData generator;
 
         ParticleData particle;
+
+        bool findRenderFlag(
+            const std::string& flag,
+            bool defaultValue) const noexcept
+        {
+            const auto& e = renderFlags.find(flag);
+            if (e != renderFlags.end()) {
+                return e->second;
+            }
+            return defaultValue;
+        }
     };
 
     struct EntityData {

@@ -886,36 +886,13 @@ namespace loader {
 
         flags.gbuffer = data.programName.starts_with("g_");
 
-        {
-            const auto& e = data.renderFlags.find("use_bones");
-            if (e != data.renderFlags.end()) {
-                flags.useBones = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("use_bones_debug");
-            if (e != data.renderFlags.end()) {
-                flags.useBonesDebug = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("pre_depth");
-            if (e != data.renderFlags.end()) {
-                flags.preDepth = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("gbuffer");
-            if (e != data.renderFlags.end()) {
-                flags.gbuffer = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("alpha");
-            if (e != data.renderFlags.end()) {
-                flags.alpha = e->second;
-            }
-        }
+        flags.useBones = data.findRenderFlag("use_bones", flags.useBones);
+        flags.useBonesDebug = data.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+
+        flags.preDepth = data.findRenderFlag("pre_depth", flags.preDepth);
+        flags.gbuffer = data.findRenderFlag("gbuffer", flags.gbuffer);
+        flags.alpha = data.findRenderFlag("alpha", flags.alpha);
+
         {
             const auto& e = data.renderFlags.find("blend");
             if (e != data.renderFlags.end()) {
@@ -944,84 +921,21 @@ namespace loader {
                 }
             }
         }
-        {
-            const auto& e = data.renderFlags.find("render_back");
-            if (e != data.renderFlags.end()) {
-                flags.renderBack = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_frustum");
-            if (e != data.renderFlags.end()) {
-                flags.noFrustum = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_shadow");
-            if (e != data.renderFlags.end()) {
-                flags.noShadow = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_select");
-            if (e != data.renderFlags.end()) {
-                flags.noSelect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_reflect");
-            if (e != data.renderFlags.end()) {
-                flags.noReflect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_refract");
-            if (e != data.renderFlags.end()) {
-                flags.noRefract = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("mirror");
-            if (e != data.renderFlags.end()) {
-                flags.mirror = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("water");
-            if (e != data.renderFlags.end()) {
-                flags.water = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("wireframe");
-            if (e != data.renderFlags.end()) {
-                flags.wireframe = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("cube_map");
-            if (e != data.renderFlags.end()) {
-                flags.cubeMap = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("effect");
-            if (e != data.renderFlags.end()) {
-                flags.effect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("billboard");
-            if (e != data.renderFlags.end()) {
-                flags.billboard = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("tessellation");
-            if (e != data.renderFlags.end()) {
-                flags.tessellation = e->second;
-            }
-        }
+
+        flags.renderBack = data.findRenderFlag("render_back", flags.renderBack);
+        flags.noFrustum = data.findRenderFlag("no_frustum", flags.noFrustum);
+        flags.noShadow = data.findRenderFlag("no_shadow", flags.noShadow);
+        flags.noSelect = data.findRenderFlag("no_select", flags.noSelect);
+        flags.noReflect = data.findRenderFlag("no_reflect", flags.noReflect);
+        flags.noRefract = data.findRenderFlag("no_refract", flags.noRefract);
+        flags.mirror = data.findRenderFlag("mirror", flags.mirror);
+        flags.water = data.findRenderFlag("water", flags.water);
+        flags.wireframe = data.findRenderFlag("wireframe", flags.wireframe);
+        flags.cubeMap = data.findRenderFlag("cube_map", flags.cubeMap);
+        flags.effect = data.findRenderFlag("effect", flags.effect);
+        flags.billboard = data.findRenderFlag("billboard", flags.billboard);
+        flags.tessellation = data.findRenderFlag("tessellation", flags.tessellation);
+
         {
             const auto& e = data.renderFlags.find("static_bounds");
             if (e != data.renderFlags.end()) {

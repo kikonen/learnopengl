@@ -38,8 +38,8 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    int m_shapeIndex{ 0 };
-    int m_boneIndex{ 0 };
+    uint32_t m_shapeIndex{ 0 };
+    uint32_t m_boneIndex{ 0 };
 
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
