@@ -52,6 +52,8 @@ struct NodeTransform {
     uint32_t m_shapeIndex{ 0 };
     uint32_t m_boneIndex{ 0 };
 
+    uint16_t m_animationIndex{ 0 };
+
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     ki::level_id m_parentMatrixLevel{ 0 };

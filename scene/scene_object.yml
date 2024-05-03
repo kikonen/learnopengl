@@ -38,8 +38,9 @@ entities:
     render_flags:
       xrender_back: true
       xwireframe: true
-      xuse_bones: true
+      use_bones: true
       xuse_bones_debug: true
+      use_animation: true
     animations:
       - name: jump
         path: fbx/anim/Lion@Jump.FBX

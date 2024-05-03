@@ -888,6 +888,7 @@ namespace loader {
 
         flags.useBones = data.findRenderFlag("use_bones", flags.useBones);
         flags.useBonesDebug = data.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+        flags.useAnimation = data.findRenderFlag("use_animation", flags.useAnimation);
 
         flags.preDepth = data.findRenderFlag("pre_depth", flags.preDepth);
         flags.gbuffer = data.findRenderFlag("gbuffer", flags.gbuffer);

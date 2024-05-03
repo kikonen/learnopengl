@@ -12,6 +12,7 @@ namespace mesh {
         bool preDepth : 1 {false};
         bool useBones : 1 {false};
         bool useBonesDebug : 1 {false};
+        bool useAnimation : 1 {false};
 
         // NOTE KI contained node is in the context of container, managing
         // list of transforms rooted into container
