@@ -690,7 +690,7 @@
     <ClCompile Include="src\animation\Animator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\BoneRegistry.cpp">
+    <ClCompile Include="src\animation\AnimationSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\AnimationUpdater.cpp">
@@ -1676,10 +1676,10 @@
     <ClInclude Include="src\loader\AnimationData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\BoneRegistry.h">
+    <ClInclude Include="src\animation\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\BoneTransformSSBO.h">
+    <ClInclude Include="src\animation\BoneTransformSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\AnimationUpdater.h">

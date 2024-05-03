@@ -21,6 +21,7 @@
 #include "generator/NodeGenerator.h"
 
 #include "animation/RigContainer.h"
+#include "animation/AnimationSystem.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
@@ -28,11 +29,11 @@
 
 #include "model/EntityFlags.h"
 
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/BoneRegistry.h"
 
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
@@ -108,7 +109,8 @@ void Node::prepareWT(
         auto* lod = type->getLod(0);
         auto* mesh = lod ? lod->getMesh<mesh::ModelMesh>() : nullptr;
         if (mesh) {
-            m_transform.m_boneIndex = BoneRegistry::get().registerInstance(*mesh->m_rig);
+            m_transform.m_boneIndex = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            m_transform.m_animationIndex = 0;
         }
     }
 

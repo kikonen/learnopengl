@@ -5,7 +5,8 @@
 #include "animation/Animator.h"
 
 #include "registry/Registry.h"
-#include "registry/BoneRegistry.h"
+
+#include "animation/AnimationSystem.h"
 
 
 #define KI_TIMER(x)
@@ -21,10 +22,10 @@ AnimationUpdater::AnimationUpdater(
 
 uint32_t AnimationUpdater::getActiveCount() const noexcept
 {
-    return BoneRegistry::get().getActiveBoneCount();
+    return animation::AnimationSystem::get().getActiveBoneCount();
 }
 
 void AnimationUpdater::update(const UpdateContext& ctx)
 {
-    BoneRegistry::get().updateWT(ctx);
+    animation::AnimationSystem::get().updateWT(ctx);
 }

@@ -214,7 +214,7 @@
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
-    <ClCompile Include="src\registry\BoneRegistry.cpp" />
+    <ClCompile Include="src\animation\AnimationSystem.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp" />
@@ -454,8 +454,8 @@
     <ClInclude Include="src\mesh\AssimpLoader.h" />
     <ClInclude Include="src\animation\BoneTransform.h" />
     <ClInclude Include="src\mesh\vao\SkinnedVAO.h" />
-    <ClInclude Include="src\registry\BoneRegistry.h" />
-    <ClInclude Include="src\registry\BoneTransformSSBO.h" />
+    <ClInclude Include="src\animation\AnimationSystem.h" />
+    <ClInclude Include="src\animation\BoneTransformSSBO.h" />
     <ClInclude Include="src\scene\Updater.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\vao\BoneEntry.h" />
