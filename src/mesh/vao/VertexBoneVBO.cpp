@@ -41,7 +41,7 @@ namespace mesh {
                 //
 
                 // boneId attr
-                glVertexArrayAttribFormat(vao, m_attr, 4, GL_UNSIGNED_INT, GL_FALSE, offsetof(BoneEntry, m_boneIds));
+                glVertexArrayAttribIFormat(vao, m_attr, 4, GL_UNSIGNED_INT, offsetof(BoneEntry, m_boneIds));
 
                 // weight attr
                 glVertexArrayAttribFormat(vao, m_weightAttr, 4, GL_FLOAT, GL_FALSE, offsetof(BoneEntry, m_weights));

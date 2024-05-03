@@ -49,6 +49,7 @@ out VS_OUT {
 
 #ifdef USE_BONES
 #ifdef USE_BONES_DEBUG
+  uvec4 boneIndex;
   vec4 boneWeights;
 #endif
 #endif
@@ -144,6 +145,7 @@ void main() {
 
 #ifdef USE_BONES
 #ifdef USE_BONES_DEBUG
+  vs_out.boneIndex = a_boneIndex;
   vs_out.boneWeights = a_boneWeight;
 #endif
 #endif

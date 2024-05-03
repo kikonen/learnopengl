@@ -296,18 +296,18 @@ namespace mesh
         const aiBone* bone)
     {
         const auto offsetMatrix = assimp_util::toMat4(bone->mOffsetMatrix);
+        auto boneId = rig.m_boneContainer.getBoneId(bone);
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, offset={}, weights={}, offsetMatrix={}",
+            "ASSIMP: BONE node={}, bone={}, boneId={}, name={}, mesh={}, offset={}, weights={}",
             rigNode.m_id,
             boneIndex,
+            boneId,
             bone->mName.C_Str(),
             meshIndex,
             vertexOffset,
-            bone->mNumWeights,
-            offsetMatrix))
+            bone->mNumWeights))
 
-        auto boneId = rig.m_boneContainer.getBoneId(bone);
 
         auto& vertexBones = rig.m_vertexBones;
 
@@ -318,9 +318,11 @@ namespace mesh
             const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
             //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}, mat={}",
-            //    meshIndex, boneIndex,
-            //    weight->mVertexId, weight->mWeight, mat));
+            //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}",
+            //    meshIndex,
+            //    boneIndex,
+            //    weight->mVertexId,
+            //    weight->mWeight));
 
             auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
 

@@ -40,6 +40,7 @@ in VS_OUT {
 
 #ifdef USE_BONES
 #ifdef USE_BONES_DEBUG
+  uvec4 boneIndex;
   vec4 boneWeights;
 #endif
 #endif
@@ -108,6 +109,11 @@ void main() {
   o_fragEmission = material.emission.rgb;
 
 #ifdef USE_BONES
+  // o_fragColor = vec3(1.0, 0.0, 0.0);
+
+  // if (fs_in.boneIndex.x > 150) {
+  //   o_fragColor = vec3(0.0, 0.0, 1.0);
+  // }
 #ifdef USE_BONES_DEBUG
   o_fragColor = fs_in.boneWeights.rgb;
 #endif

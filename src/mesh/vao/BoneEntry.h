@@ -5,6 +5,7 @@
 #include "animation/VertexBone.h"
 
 namespace mesh {
+#pragma pack(push, 1)
     struct BoneEntry {
         BoneEntry()
             : m_boneIds{ 0 },
@@ -20,4 +21,5 @@ namespace mesh {
         glm::uvec4 m_boneIds;
         glm::vec4 m_weights;
     };
+#pragma pack(pop)
 }
