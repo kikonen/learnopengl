@@ -1,5 +1,7 @@
 #version 460 core
 
+#define USE_BONES_NORMAL 1
+
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_TBN

@@ -5,6 +5,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
+#include tech_skinned_mesh_data.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
@@ -45,6 +47,7 @@ void main()
 
   #include var_entity_model_matrix.glsl
 
+  vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
@@ -54,17 +57,19 @@ void main()
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_mainViewRight * a_pos.x * entityScale.x
-                    + UP * a_pos.y * entityScale.y,
+                    + u_mainViewRight * pos.x * entityScale.x
+                    + UP * pos.y * entityScale.y,
                     1.0);
   } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_mainViewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
+    pos = vec4(u_mainViewRight * pos.x
+	       + UP * pos.y,
+	       1.0);
 
     worldPos = modelMatrix * pos;
   } else {
-    worldPos = modelMatrix * vec4(a_pos, 1.0);
+    #include tech_skinned_mesh_skin.glsl
+
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;

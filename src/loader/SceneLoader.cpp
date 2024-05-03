@@ -550,6 +550,8 @@ namespace loader {
 
         if (!data.programName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
+            std::map<std::string, std::string, std::less<>> shadowDefinitions;
+
             for (const auto& [k, v] : data.programDefinitions) {
                 definitions[k] = v;
             }
@@ -561,6 +563,7 @@ namespace loader {
 
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
+                shadowDefinitions[DEF_USE_ALPHA] = "1";
                 usePreDepth = false;
             }
             if (type->m_flags.blend) {
@@ -602,6 +605,7 @@ namespace loader {
             }
             if (useBones) {
                 definitions[DEF_USE_BONES] = "1";
+                shadowDefinitions[DEF_USE_BONES] = "1";
             }
             if (useBonesDebug) {
                 definitions[DEF_USE_BONES_DEBUG] = "1";
@@ -618,7 +622,7 @@ namespace loader {
                     data.shadowProgramName,
                     false,
                     "",
-                    {});
+                    shadowDefinitions);
             }
 
             if (usePreDepth) {

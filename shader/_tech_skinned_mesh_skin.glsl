@@ -35,6 +35,7 @@
     + (b4 * pos) * boneWeight.w;
   pos = skinPos;
 
+#ifdef USE_BONES_NORMAL
   // Skin the normal
   // NOTE KI w = 0.0 for w for normal
   vec4 skinNormal = vec4(normal, 0.f);
@@ -43,6 +44,7 @@
     + (b3 * skinNormal) * boneWeight.z
     + (b4 * skinNormal) * boneWeight.w;
   normal = skinNormal.xyz;
+#endif
 
 #ifdef USE_TBN
   // Skin the tangent
