@@ -25,10 +25,11 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - id: object
+  - id: object_{t}
     #model: texture_cube_4/texture_cube_4.fbx
     model: fbx/SK_Character_PunkGuy.fbx
     model: fbx/SK_Lion.FBX
+    xmodel: fbx/SK_Character_Grandpa.fbx
     material: skin_2
     program: g_tex
     shadow_program: simple_depth
@@ -43,22 +44,24 @@ entities:
       xuse_bones_debug: true
       use_animation: true
     animations:
-      - name: walk
-        path: fbx/anim/Lion@Walk.FBX
       - name: idle
         path: fbx/anim/Lion@IdleBreathe.FBX
+      - name: walk
+        path: fbx/anim/Lion@Walk.FBX
       - name: roar
         path: fbx/anim/Lion@Roar.FBX
       - name: jump
         path: fbx/anim/Lion@Jump.FBX
-    audio:
+    xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5
-    repeat:
-      x_count: 1
-      x_step: 2
+    xrepeat:
+      x_count: 10
+      z_count: 2
+      x_step: 4
+      z_step: -7
     script_file: scripts/cow_audio
   - xid: object_anim
     model: fbx/anim/Lion@Jump.FBX
