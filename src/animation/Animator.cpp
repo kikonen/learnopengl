@@ -1,8 +1,12 @@
 #include "Animator.h"
 
+#include <iostream>
+
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+
+#include <fmt/format.h>
 
 #include "engine/UpdateContext.h"
 
@@ -39,12 +43,15 @@ namespace animation {
         float animationTimeTicks;
         {
             float animationTimeSecs = (float)(currentTime - animationStartTime);
-
-            float ticksPerSecond = (float)(animation->m_ticksPerSecond != 0 ? animation->m_ticksPerSecond : 25.0f);
-            ticksPerSecond = 22.f;
+            float ticksPerSecond = animation->m_ticksPerSecond != 0.f ? animation->m_ticksPerSecond : 25.f;
             float timeInTicks = animationTimeSecs * ticksPerSecond;
-            animationTimeTicks = fmod(timeInTicks, (float)animation->m_duration);
+            animationTimeTicks = fmod(timeInTicks, animation->m_duration);
+
+            //std::cout << fmt::format(
+            //    "time={}, secs={}, ticksSec={}, ticks={}, duration={}\n",
+            //    currentTime, animationTimeSecs, ticksPerSecond, timeInTicks, animation->m_duration);
         }
+
 
         const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_localTransform);
 

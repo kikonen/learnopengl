@@ -43,6 +43,12 @@ entities:
       xuse_bones_debug: true
       use_animation: true
     animations:
+      - name: walk
+        path: fbx/anim/Lion@Walk.FBX
+      - name: idle
+        path: fbx/anim/Lion@IdleBreathe.FBX
+      - name: roar
+        path: fbx/anim/Lion@Roar.FBX
       - name: jump
         path: fbx/anim/Lion@Jump.FBX
     audio:
@@ -50,6 +56,9 @@ entities:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5
+    repeat:
+      x_count: 1
+      x_step: 2
     script_file: scripts/cow_audio
   - xid: object_anim
     model: fbx/anim/Lion@Jump.FBX
@@ -80,7 +89,7 @@ entities:
     material: wood_floor
     force_material: true
     program: g_tex
-    position: [0, -3, 0]
+    position: [0, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
