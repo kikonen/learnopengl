@@ -100,7 +100,7 @@ void Updater::run()
         auto ts = duration_cast<std::chrono::seconds>(
             std::chrono::system_clock::now().time_since_epoch()
         );
-        clock.ts = static_cast<float>(ts.count());
+        clock.ts = static_cast<double>(ts.count());
         clock.elapsedSecs = elapsedDuration.count();
 
         UpdateContext ctx(

@@ -42,11 +42,12 @@ namespace mesh {
             animation::RigContainer& rig,
             const aiScene* scene,
             const aiNode* node,
-            int16_t parentId,
+            int16_t parentIndex,
             const glm::mat4& parentTransform);
 
         void loadAnimations(
             animation::RigContainer& rig,
+            const std::string& namePrefix,
             const aiScene* scene);
 
         void processMeshes(
@@ -63,7 +64,6 @@ namespace mesh {
 
         void processMeshFace(
             animation::RigContainer& rig,
-            animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t faceIndex,
@@ -73,10 +73,8 @@ namespace mesh {
 
         void processMeshBone(
             animation::RigContainer& rig,
-            animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
-            size_t boneIndex,
             size_t vertexOffset,
             const aiMesh* mesh,
             const aiBone* bone);

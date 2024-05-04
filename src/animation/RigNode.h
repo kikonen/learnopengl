@@ -16,9 +16,10 @@ namespace animation {
 
         const std::string m_name;
 
-        int16_t m_id;
-        int16_t m_parentId;
+        int16_t m_index;
+        int16_t m_parentIndex;
 
         glm::mat4 m_transform;
+        glm::mat4 m_localTransform;
     };
 }

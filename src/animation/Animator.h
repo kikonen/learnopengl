@@ -2,6 +2,8 @@
 
 #include <span>
 
+#include <glm/glm.hpp>
+
 #include "ki/size.h"
 
 struct UpdateContext;
@@ -19,7 +21,16 @@ namespace animation {
             const animation::RigContainer& rig,
             std::span<animation::BoneTransform>& palette,
             uint16_t animationIndex,
-            float animationStartTime,
-            float currentTime);
+            double animationStartTime,
+            double currentTime);
+
+        //void animateHierarchy(
+        //    const animation::RigContainer& rig,
+        //    std::span<animation::BoneTransform>& palette,
+        //    float animationTimeTicks,
+        //    int16_t nodeIndex,
+        //    const glm::mat4& parentTransform);
+
+        //glm::mat4 m_globalInverseTransform;
     };
 }

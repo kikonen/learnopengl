@@ -31,29 +31,31 @@ namespace animation {
     struct BoneChannel {
         BoneChannel(const aiNodeAnim* channel);
 
-        glm::vec3 interpolatePosition(float animationTimeTicks);
-        glm::quat interpolateRotation(float animationTimeTicks);
-        glm::vec3 interpolateScale(float animationTimeTicks);
+        glm::mat4 interpolate(float animationTimeTicks) const noexcept;
+
+        glm::vec3 interpolatePosition(float animationTimeTicks) const noexcept;
+        glm::quat interpolateRotation(float animationTimeTicks) const noexcept;
+        glm::vec3 interpolateScale(float animationTimeTicks) const noexcept;
 
         glm::vec3 interpolateVector(
             float animationTimeTicks,
             const VectorKey& a,
-            const VectorKey& b);
+            const VectorKey& b) const noexcept;
 
         glm::quat interpolateQuaternion(
             float animationTimeTicks,
             const QuaternionKey& a,
-            const QuaternionKey& b);
+            const QuaternionKey& b) const noexcept;
 
-        uint16_t findPosition(float animationTimeTicks);
-        uint16_t findRotation(float animationTimeTicks);
-        uint16_t findScale(float animationTimeTicks);
+        uint16_t findPosition(float animationTimeTicks) const noexcept;
+        uint16_t findRotation(float animationTimeTicks) const noexcept;
+        uint16_t findScale(float animationTimeTicks) const noexcept;
 
         const std::string m_nodeName;
         //const aiNodeAnim* m_channel;
 
-        uint16_t m_id;
-        int16_t m_nodeId;
+        uint16_t m_index{ 0 };
+        int16_t m_nodeIndex;
 
         std::vector<VectorKey> m_positionKeys;
         std::vector<QuaternionKey> m_rotationKeys;

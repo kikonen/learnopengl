@@ -18,6 +18,7 @@
 #include "animation/Animation.h"
 #include "animation/BoneChannel.h"
 #include "animation/BoneContainer.h"
+#include "animation/BoneInfo.h"
 #include "animation/AnimationLoader.h"
 
 #include "mesh/ModelMesh.h"
@@ -106,7 +107,7 @@ namespace mesh
             modelMesh,
             scene);
 
-        loadAnimations(rig, scene);
+        loadAnimations(rig, modelMesh.m_meshName, scene);
 
         if (m_defaultMaterial.m_used) {
             modelMesh.m_materials.push_back(m_defaultMaterial);
@@ -117,39 +118,44 @@ namespace mesh
         animation::RigContainer& rig,
         const aiScene* scene,
         const aiNode* node,
-        int16_t parentId,
+        int16_t parentIndex,
         const glm::mat4& parentTransform)
     {
-        const auto transform = parentTransform * assimp_util::toMat4(node->mTransformation);
-        uint16_t animId;
+        glm::mat4 transform;
+        uint16_t nodeIndex;
         {
             auto& rigNode = rig.addNode(node);
-            rigNode.m_transform = transform;
-            rigNode.m_parentId = parentId;
-            animId = rigNode.m_id;
+            rigNode.m_localTransform = assimp_util::toMat4(node->mTransformation);
+            rigNode.m_transform = parentTransform * rigNode.m_localTransform;
+            rigNode.m_parentIndex = parentIndex;
+            nodeIndex = rigNode.m_index;
+
+            transform = rigNode.m_transform;
         }
 
         KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
-            parentId,
-            animId,
+            parentIndex,
+            nodeIndex,
             node->mName.C_Str(),
             node->mNumChildren,
             node->mNumMeshes));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(rig, scene, node->mChildren[n], animId, transform);
+            collectNodes(rig, scene, node->mChildren[n], nodeIndex, transform);
         }
     }
 
     void AssimpLoader::loadAnimations(
         animation::RigContainer& rig,
+        const std::string& namePrefix,
         const aiScene* scene)
     {
         animation::AnimationLoader loader{};
 
         loader.loadAnimations(
             rig,
+            namePrefix,
             scene);
     }
 
@@ -169,7 +175,7 @@ namespace mesh
             // - lion = multiple LOD meshes, but for each LOD extra material mesh (which can be ignored likely)
             if (false && !modelMesh.m_vertices.empty()) {
                 KI_INFO_OUT(fmt::format("ASSIMP: SKIP node={}, meshes={}",
-                    rigNode.m_id,
+                    rigNode.m_index,
                     node->mNumMeshes));
                 continue;
             }
@@ -217,7 +223,7 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
-            rigNode.m_id,
+            rigNode.m_index,
             mesh->mName.C_Str(),
             vertexOffset,
             mat ? mat->m_name : fmt::format("{}", mesh->mMaterialIndex),
@@ -250,17 +256,16 @@ namespace mesh
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(rig, rigNode, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
+            processMeshFace(rig, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(rig, rigNode, modelMesh, meshIndex, boneIdx, vertexOffset, mesh, mesh->mBones[boneIdx]);
+            processMeshBone(rig, modelMesh, meshIndex, vertexOffset, mesh, mesh->mBones[boneIdx]);
         }
     }
 
     void AssimpLoader::processMeshFace(
         animation::RigContainer& rig,
-        animation::RigNode& rigNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
@@ -269,7 +274,7 @@ namespace mesh
         const aiFace* face)
     {
         Index index{ 0, 0, 0 };
-        for (size_t i = 0; i < face->mNumIndices; i++)
+        for (uint32_t i = 0; i < face->mNumIndices; i++)
         {
             // NOTE KI multi material models are split by *material* into meshes
             // vertices and thus indeces areare per mesh, but they are *combined*
@@ -287,23 +292,23 @@ namespace mesh
 
     void AssimpLoader::processMeshBone(
         animation::RigContainer& rig,
-        animation::RigNode& rigNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
-        size_t boneIndex,
         size_t vertexOffset,
         const aiMesh* mesh,
         const aiBone* bone)
     {
-        const auto offsetMatrix = assimp_util::toMat4(bone->mOffsetMatrix);
-        auto boneId = rig.m_boneContainer.getBoneId(bone);
+        auto& bi = rig.m_boneContainer.registerBone(bone);
+        auto* rigNode = rig.findNode(bi.m_nodeName);
+        if (rigNode) {
+            rig.m_boneContainer.bindNode(bi.m_index, rigNode->m_index);
+        }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, boneId={}, name={}, mesh={}, offset={}, weights={}",
-            rigNode.m_id,
-            boneIndex,
-            boneId,
-            bone->mName.C_Str(),
+            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, offset={}, weights={}",
+            bi.m_nodeIndex,
+            bi.m_index,
+            bi.m_nodeName,
             meshIndex,
             vertexOffset,
             bone->mNumWeights))
@@ -327,7 +332,7 @@ namespace mesh
             auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
 
             vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
-            vertexBones[vertexIndex].addBone(boneId, vw.mWeight);
+            vertexBones[vertexIndex].addBone(bi.m_index, vw.mWeight);
         }
     }
 

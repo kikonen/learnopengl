@@ -18,16 +18,18 @@ namespace animation {
 
         void loadAnimations(
             animation::RigContainer& rig,
-            const std::string& name,
+            const std::string& namePrefix,
             const std::string& filePath);
 
         void loadAnimations(
             animation::RigContainer& rig,
+            const std::string& namePrefix,
             const aiScene* scene);
 
     private:
         std::unique_ptr<animation::Animation> loadAnimation(
             animation::RigContainer& rig,
+            const std::string& namePrefix,
             const aiScene* scene,
             const aiAnimation* anim);
     };

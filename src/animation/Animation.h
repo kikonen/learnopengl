@@ -2,21 +2,34 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "BoneChannel.h"
 
 struct aiAnimation;
-struct aiNodeAnim;
 
 namespace animation {
     struct Animation {
-        Animation(const aiAnimation* anim);
+        Animation(
+            const aiAnimation* anim,
+            const std::string& namePrefix);
+
         ~Animation();
 
-        uint16_t addChannel(const aiNodeAnim* nodeAnim);
+        // @return channel index
+        animation::BoneChannel& addChannel(const animation::BoneChannel& src);
 
-        animation::BoneChannel& getChannel(uint16_t index) noexcept {
+        void bindNode(uint16_t channelIndex, uint16_t nodeIndex);
+
+        const animation::BoneChannel& getChannel(uint16_t index) const noexcept
+        {
             return m_channels[index];
+        }
+
+        inline const animation::BoneChannel* findByNodeIndex(uint16_t nodeIndex) const noexcept
+        {
+            const auto& it = mNodeToChannel.find(nodeIndex);
+            return it != mNodeToChannel.end() ? &m_channels[it->second] : nullptr;
         }
 
         const std::string m_name;
@@ -26,5 +39,6 @@ namespace animation {
         const float m_ticksPerSecond;
 
         std::vector<animation::BoneChannel> m_channels;
+        std::map<uint16_t, uint16_t> mNodeToChannel;
     };
 }

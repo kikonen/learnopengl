@@ -4,6 +4,9 @@
 
 #include "util/assimp_util.h"
 
+namespace {
+}
+
 namespace animation {
     VectorKey::VectorKey(const aiVectorKey& key)
         : m_time{ static_cast<float>(key.mTime) },
@@ -17,10 +20,22 @@ namespace animation {
 
     BoneChannel::BoneChannel(const aiNodeAnim* channel)
         : m_nodeName{ channel->mNodeName.C_Str() },
-        m_nodeId{ -1 }
+        m_nodeIndex{ -1 }
     {}
 
-    glm::vec3 BoneChannel::interpolatePosition(float animationTimeTicks)
+    // @return interpolated transform matrix
+    glm::mat4 BoneChannel::interpolate(float animationTimeTicks) const noexcept
+    {
+        const glm::mat4 ID_MAT{ 1.f };
+
+        auto scaleMat = glm::scale(ID_MAT, interpolateScale(animationTimeTicks));
+        auto rotateMat = glm::toMat4(interpolateRotation(animationTimeTicks));
+        auto translateMat = glm::translate(ID_MAT, interpolatePosition(animationTimeTicks));
+
+        return translateMat * rotateMat * scaleMat;
+    }
+
+    glm::vec3 BoneChannel::interpolatePosition(float animationTimeTicks) const noexcept
     {
         if (m_positionKeys.size() == 1) {
             return m_positionKeys[0].m_value;
@@ -37,7 +52,7 @@ namespace animation {
             m_positionKeys[nextIndex]);
     }
 
-    glm::quat BoneChannel::interpolateRotation(float animationTimeTicks)
+    glm::quat BoneChannel::interpolateRotation(float animationTimeTicks) const noexcept
     {
         if (m_rotationKeys.size() == 1) {
             return m_rotationKeys[0].m_value;
@@ -54,7 +69,7 @@ namespace animation {
             m_rotationKeys[nextIndex]);
     }
 
-    glm::vec3 BoneChannel::interpolateScale(float animationTimeTicks)
+    glm::vec3 BoneChannel::interpolateScale(float animationTimeTicks) const noexcept
     {
         if (m_scaleKeys.size() == 1) {
             return m_scaleKeys[0].m_value;
@@ -74,7 +89,7 @@ namespace animation {
     glm::vec3 BoneChannel::interpolateVector(
         float animationTimeTicks,
         const VectorKey& a,
-        const VectorKey& b)
+        const VectorKey& b) const noexcept
     {
         const float t1 = (float)a.m_time;
         const float t2 = (float)b.m_time;
@@ -93,7 +108,7 @@ namespace animation {
     glm::quat BoneChannel::interpolateQuaternion(
         float animationTimeTicks,
         const QuaternionKey& a,
-        const QuaternionKey& b)
+        const QuaternionKey& b) const noexcept
     {
         const float t1 = (float)a.m_time;
         const float t2 = (float)b.m_time;
@@ -105,7 +120,7 @@ namespace animation {
         return glm::slerp(a.m_value, b.m_value, factor);
     }
 
-    uint16_t BoneChannel::findPosition(float animationTimeTicks)
+    uint16_t BoneChannel::findPosition(float animationTimeTicks) const noexcept
     {
         for (uint16_t i = 0; i < m_positionKeys.size() - 1; i++) {
             float t = (float)m_positionKeys[i + 1].m_time;
@@ -116,7 +131,7 @@ namespace animation {
         return 0;
     }
 
-    uint16_t BoneChannel::findRotation(float animationTimeTicks)
+    uint16_t BoneChannel::findRotation(float animationTimeTicks) const noexcept
     {
         for (uint16_t i = 0; i < m_rotationKeys.size() - 1; i++) {
             float t = (float)m_rotationKeys[i + 1].m_time;
@@ -127,7 +142,7 @@ namespace animation {
         return 0;
     }
 
-    uint16_t BoneChannel::findScale(float animationTimeTicks)
+    uint16_t BoneChannel::findScale(float animationTimeTicks) const noexcept
     {
         for (uint16_t i = 0; i < m_scaleKeys.size() - 1; i++) {
             float t = (float)m_scaleKeys[i + 1].m_time;

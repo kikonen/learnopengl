@@ -22,7 +22,7 @@ namespace animation {
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        const std::string& name,
+        const std::string& namePrefix,
         const std::string& filePath)
     {
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
@@ -64,11 +64,12 @@ namespace animation {
             scene->mNumMaterials,
             scene->mNumTextures))
 
-        loadAnimations(rig, scene);
+        loadAnimations(rig, namePrefix, scene);
     }
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
+        const std::string& namePrefix,
         const aiScene* scene)
     {
         if (scene->mNumAnimations == 0) return;
@@ -76,6 +77,7 @@ namespace animation {
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
+                namePrefix,
                 scene,
                 scene->mAnimations[index]);
             rig.addAnimation(std::move(animation));
@@ -84,6 +86,7 @@ namespace animation {
 
     std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(
         animation::RigContainer& rig,
+        const std::string& namePrefix,
         const aiScene* scene,
         const aiAnimation* anim)
     {
@@ -94,7 +97,9 @@ namespace animation {
             anim->mTicksPerSecond,
             anim->mNumChannels));
 
-        auto animation = std::make_unique<animation::Animation>(anim);
+        auto animation = std::make_unique<animation::Animation>(
+            anim,
+            namePrefix);
 
         animation->m_channels.reserve(anim->mNumChannels);
         for (size_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx)
@@ -109,9 +114,11 @@ namespace animation {
                 channel->mNumRotationKeys,
                 channel->mNumScalingKeys));
 
-            auto channelId = animation->addChannel(channel);
-            auto& bc = animation->getChannel(channelId);
-            bc.m_nodeId = rig.findNodeId(bc.m_nodeName);
+            auto& bc = animation->addChannel({ channel });
+            auto* rigNode = rig.findNode(bc.m_nodeName);
+            if (rigNode) {
+                animation->bindNode(bc.m_index, rigNode->m_index);
+            }
 
             bc.m_positionKeys.reserve(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumPositionKeys; i++) {

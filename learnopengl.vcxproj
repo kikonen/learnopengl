@@ -188,6 +188,7 @@
     <ClCompile Include="src\animation\AnimationLoader.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\BoneChannel.cpp" />
+    <ClCompile Include="src\animation\BoneInfo.cpp" />
     <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
@@ -415,6 +416,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
+    <ClInclude Include="src\animation\BoneInfo.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />

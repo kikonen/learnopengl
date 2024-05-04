@@ -63,7 +63,7 @@ protected:
 
     float m_elapsedSecs = -1;
 
-    float m_lastHitTime = 0.f;
+    double m_lastHitTime{ 0.f };
     unsigned long m_lastHitFrame = 0;
 
     bool m_rendered = false;

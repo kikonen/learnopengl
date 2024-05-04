@@ -9,27 +9,27 @@
 
 #include "RigNode.h"
 #include "BoneContainer.h"
-#include "VertexBone.h"
 
 struct aiNode;
 
 namespace animation {
     struct Animation;
+    struct RigNode;
+    struct VertexBone;
 
     struct RigContainer {
         ~RigContainer();
 
         animation::RigNode& addNode(const aiNode* node);
+
         void addAnimation(std::unique_ptr<animation::Animation> animation);
 
-        inline const animation::RigNode* getNode(int16_t id) const noexcept
-        {
-            return &m_nodes[id];
-        }
+        const animation::RigNode* getNode(int16_t index) const noexcept;
 
-        int16_t findNodeId(const std::string& name) const noexcept;
+        // @return nullptr if not found
+        const animation::RigNode* findNode(const std::string& name) const noexcept;
 
-        bool hasBones();
+        bool hasBones() const noexcept;
 
         std::vector<animation::RigNode> m_nodes;
 

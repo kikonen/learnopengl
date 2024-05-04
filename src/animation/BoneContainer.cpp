@@ -4,20 +4,38 @@
 
 #include "util/assimp_util.h"
 
-namespace animation {
-    uint16_t BoneContainer::getBoneId(const aiBone* bone) noexcept
-    {
-        uint16_t index;
+#include "BoneInfo.h"
 
-        const auto& it = m_boneNameToIndex.find(bone->mName.C_Str());
-        if (it != m_boneNameToIndex.end()) {
+namespace animation {
+    BoneInfo& BoneContainer::registerBone(const aiBone* bone) noexcept
+    {
+        int16_t index;
+
+        const auto& it = m_nodeNameToIndex.find(bone->mName.C_Str());
+        if (it != m_nodeNameToIndex.end()) {
             index = it->second;
         }
         else {
-            index = static_cast<uint16_t>(m_boneNameToIndex.size());
-            m_boneNameToIndex.insert({ bone->mName.C_Str(), index });
-            m_offsetMatrices.emplace_back(assimp_util::toMat4(bone->mOffsetMatrix));
+            index = static_cast<int16_t>(m_nodeNameToIndex.size());
+            auto& bi = m_boneInfos.emplace_back(bone);
+            bi.m_index = index;
+            m_nodeNameToIndex.insert({ bi.m_nodeName, index });
         }
-        return index;
+
+        return m_boneInfos[index];
     }
+
+    void BoneContainer::bindNode(int16_t boneIndex, int16_t nodeIndex) noexcept
+    {
+        auto& bi = m_boneInfos[boneIndex];
+        bi.m_nodeIndex = nodeIndex;
+        m_nodeToBone.insert({ nodeIndex, boneIndex});
+    }
+
+    const animation::BoneInfo* BoneContainer::findByNodeIndex(int16_t nodeIndex) const noexcept
+    {
+        const auto& it = m_nodeToBone.find(nodeIndex);
+        return it != m_nodeToBone.end() ? &m_boneInfos[it->second] : nullptr;
+    }
+
 }
