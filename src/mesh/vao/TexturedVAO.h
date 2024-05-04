@@ -42,6 +42,8 @@ namespace mesh {
         virtual void prepareVAO();
 
     public:
+        const std::string m_name;
+
         VertexPositionVBO m_positionVbo;
         VertexNormalVBO m_normalVbo;
         VertexTextureVBO m_textureVbo;
@@ -49,7 +51,6 @@ namespace mesh {
 
     protected:
         bool m_prepared{ false };
-        std::string m_name;
 
         std::unique_ptr<kigl::GLVertexArray> m_vao;
     };
