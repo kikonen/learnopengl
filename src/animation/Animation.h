@@ -33,10 +33,11 @@ namespace animation {
         }
 
         const std::string m_name;
-        const aiAnimation* m_anim;
 
         const float m_duration;
         const float m_ticksPerSecond;
+
+        int16_t m_index;
 
         std::vector<animation::BoneChannel> m_channels;
         std::map<uint16_t, uint16_t> mNodeToChannel;

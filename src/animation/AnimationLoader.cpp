@@ -74,9 +74,11 @@ namespace animation {
     {
         if (scene->mNumAnimations == 0) return;
 
+
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
+                rig.m_animations.size(),
                 namePrefix,
                 scene,
                 scene->mAnimations[index]);
@@ -86,20 +88,23 @@ namespace animation {
 
     std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(
         animation::RigContainer& rig,
+        int16_t animIndex,
         const std::string& namePrefix,
         const aiScene* scene,
         const aiAnimation* anim)
     {
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: ANIM anim={}, duration={}, ticksPerSec={}, channels={}",
-            anim->mName.C_Str(),
-            anim->mDuration,
-            anim->mTicksPerSecond,
-            anim->mNumChannels));
-
         auto animation = std::make_unique<animation::Animation>(
             anim,
             namePrefix);
+        animation->m_index = animIndex;
+
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: ANIM anim={}, name={}, duration={}, ticksPerSec={}, channels={}",
+            animation->m_index,
+            animation->m_name,
+            animation->m_duration,
+            animation->m_ticksPerSecond,
+            anim->mNumChannels));
 
         animation->m_channels.reserve(anim->mNumChannels);
         for (size_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx)
@@ -107,7 +112,7 @@ namespace animation {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
                 "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
-                anim->mName.C_Str(),
+                animation->m_index,
                 channelIdx,
                 channel->mNodeName.C_Str(),
                 channel->mNumPositionKeys,

@@ -52,7 +52,6 @@ namespace animation {
         uint16_t findScale(float animationTimeTicks) const noexcept;
 
         const std::string m_nodeName;
-        //const aiNodeAnim* m_channel;
 
         uint16_t m_index{ 0 };
         int16_t m_nodeIndex;

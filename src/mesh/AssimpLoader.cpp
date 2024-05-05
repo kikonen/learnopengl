@@ -100,10 +100,12 @@ namespace mesh
 
         processMaterials(rig.m_materialMapping, modelMesh, scene);
 
-        collectNodes(rig, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+        std::vector<const aiNode*> assimpNodes;
+        collectNodes(rig, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
 
         processMeshes(
             rig,
+            assimpNodes,
             modelMesh,
             scene);
 
@@ -116,6 +118,7 @@ namespace mesh
 
     void AssimpLoader::collectNodes(
         animation::RigContainer& rig,
+        std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
         int16_t parentIndex,
@@ -124,13 +127,14 @@ namespace mesh
         glm::mat4 transform;
         uint16_t nodeIndex;
         {
+            assimpNodes.push_back(node);
+
             auto& rigNode = rig.addNode(node);
-            rigNode.m_localTransform = assimp_util::toMat4(node->mTransformation);
-            rigNode.m_transform = parentTransform * rigNode.m_localTransform;
+            rigNode.m_globalTransform = parentTransform * rigNode.m_localTransform;
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            transform = rigNode.m_transform;
+            transform = rigNode.m_globalTransform;
         }
 
         KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
@@ -142,7 +146,7 @@ namespace mesh
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(rig, scene, node->mChildren[n], nodeIndex, transform);
+            collectNodes(rig, assimpNodes, scene, node->mChildren[n], nodeIndex, transform);
         }
     }
 
@@ -161,11 +165,12 @@ namespace mesh
 
     void AssimpLoader::processMeshes(
         animation::RigContainer& rig,
+        const std::vector<const aiNode*>& assimpNodes,
         ModelMesh& modelMesh,
         const aiScene* scene)
     {
         for (auto& rigNode : rig.m_nodes) {
-            auto& node = rigNode.m_node;
+            auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
 
             // TODO KI *HOW* logic when meshes are for LODs and when they are

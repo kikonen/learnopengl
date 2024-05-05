@@ -29,6 +29,7 @@ namespace animation {
     private:
         std::unique_ptr<animation::Animation> loadAnimation(
             animation::RigContainer& rig,
+            int16_t animIndex,
             const std::string& namePrefix,
             const aiScene* scene,
             const aiAnimation* anim);

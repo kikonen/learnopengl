@@ -8,10 +8,10 @@ namespace animation {
     Animation::Animation(
         const aiAnimation* anim,
         const std::string& namePrefix)
-        : m_anim{ anim },
-        m_name{ namePrefix + "_" + anim->mName.C_Str()},
+        : m_name{ namePrefix + "_" + anim->mName.C_Str()},
         m_duration{ static_cast<float>(anim->mDuration) },
-        m_ticksPerSecond{ static_cast<float>(anim->mTicksPerSecond) }
+        m_ticksPerSecond{ static_cast<float>(anim->mTicksPerSecond) },
+        m_index{ -1 }
     {}
 
     Animation::~Animation() = default;

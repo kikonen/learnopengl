@@ -40,6 +40,7 @@ namespace mesh {
     private:
         void collectNodes(
             animation::RigContainer& rig,
+            std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
             const aiNode* node,
             int16_t parentIndex,
@@ -52,6 +53,7 @@ namespace mesh {
 
         void processMeshes(
             animation::RigContainer& rig,
+            const std::vector<const aiNode*>& assimpNodes,
             ModelMesh& mesh,
             const aiScene* scene);
 

@@ -58,7 +58,7 @@ namespace animation {
             return m_rotationKeys[0].m_value;
         }
 
-        uint16_t currIndex = findScale(animationTimeTicks);
+        uint16_t currIndex = findRotation(animationTimeTicks);
         uint16_t nextIndex = currIndex + 1;
 
         assert(nextIndex < m_rotationKeys.size());

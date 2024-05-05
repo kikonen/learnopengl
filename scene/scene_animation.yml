@@ -86,12 +86,12 @@ entities:
       xuse_bones_debug: true
       use_animation: true
     animations:
+      - name: walk
+        path: fbx/lion/anim/Lion@Walk.FBX
       - name: jump
         path: fbx/lion/anim/Lion@Jump.FBX
       - name: idle
         path: fbx/lion/anim/Lion@IdleBreathe.FBX
-      - name: walk
-        path: fbx/lion/nim/Lion@Walk.FBX
       - name: roar
         path: fbx/lion/anim/Lion@Roar.FBX
     xaudio:
@@ -100,8 +100,8 @@ entities:
         reference_distance: 3
         gain: 0.5
     repeat:
-      x_count: 100
-      z_count: 20
+      x_count: 2
+      z_count: 2
       x_step: 4
       z_step: -7
     xscript_file: scripts/cow_audio
@@ -176,15 +176,15 @@ entities:
       z_count: 2
       x_step: 5
       z_step: -5
-  - id: skeleton_{t}
+  - xid: skeleton_{t}
     model: fbx/skeleton/skeleton_animated.FBX
     material: skeleton_pbr
     program: g_tex
     shadow_program: simple_depth
-    pos: [0.0, 0.0, 0.0]
+    pos: [0.0, 2.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [90, 0, 0]
-    scale: 0.025
+    base_rotation: [0, 0, 0]
+    scale: 0.035
     render_flags:
       xrender_back: true
       xwireframe: true
