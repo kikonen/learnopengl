@@ -948,6 +948,36 @@ entities:
         type: capsule
         size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
+  - xid: skeleton_army_2_{t}
+    model: fbx/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    priority: 1
+    pos: [15, 11.5, 60.0]
+    render_flags:
+      dynamic_bounds: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    scale: 0.1
+    base_rotation: [90, 0, 0]
+    repeat:
+      x_count: 20
+      z_count: 101
+      x_step: -3
+      z_step: 3
+    physics:
+      update: true
+      body:
+        type: capsule
+        density: 0.01
+        rot: [90, 0, 0]
+      geom:
+        type: capsule
+        size: [0.9, 4, 0]
+    script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{c}
     model: quad
     xxmodel: woodwall
@@ -1130,6 +1160,10 @@ materials:
     map_kd: sprites/skeleton.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: skeleton_pbr
+    map_pbr: fbx/skeleton/skeleton_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
   - name: pool_surface
     kd: [0.55, 0.55, 0.95, 1.0]
     map_bump: textures/water_surface_512_normal.png

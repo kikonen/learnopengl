@@ -108,7 +108,7 @@ namespace animation
         if (transform.m_animationStartTime < 0) {
             transform.m_animationStartTime = ctx.m_clock.ts;
         }
-        transform.m_animationIndex = 1;
+        transform.m_animationIndex = 0;
 
         animation::Animator animator;
         return animator.animate(

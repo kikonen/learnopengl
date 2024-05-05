@@ -28,7 +28,7 @@ namespace animation {
         double currentTime)
     {
         if (animationStartTime < 0) return false;
-        if (animationIndex <= 0 || animationIndex >= rig.m_animations.size()) return false;
+        if (animationIndex < 0 || animationIndex >= rig.m_animations.size()) return false;
 
         auto* animation = rig.m_animations[animationIndex].get();
 
