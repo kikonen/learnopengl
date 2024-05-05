@@ -120,6 +120,7 @@ namespace backend {
 
         //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
         m_indexBuffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
     void DrawBuffer::bind()
@@ -289,6 +290,7 @@ namespace backend {
                 size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
                 size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
                 m_indexBuffer.resizeBuffer(bufferSize);
+                m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
             }
 
             m_indexBuffer.invalidateRange(
@@ -300,8 +302,6 @@ namespace backend {
                 totalCount * sz,
                 indeces.data());
         }
-
-        m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
     void DrawBuffer::drawPending(bool drawCurrent)

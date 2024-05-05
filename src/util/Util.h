@@ -66,6 +66,12 @@ namespace util
         std::string_view baseName,
         std::string_view fileExt);
 
+    // Join path and fileExt into end
+    std::string joinPathExt(
+        std::string_view rootDir,
+        std::string_view basePath,
+        std::string_view fileExt);
+
     std::string joinPath(
         std::string_view rootDir,
         std::string_view baseName);

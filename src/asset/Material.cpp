@@ -27,6 +27,7 @@ namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
 
     const glm::vec4 WHITE_RGBA{ 1.f };
+    const glm::vec4 BLACK_RGBA{ 0.f };
 
     float calculateAmbient(glm::vec3 ambient) {
         return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -154,6 +155,9 @@ void Material::loadTextures()
     if (m_loaded) return;
     m_loaded = true;
 
+    const auto& assets = Assets::get();
+    auto compressed = assets.compressedTexturesEnabled;
+
     loadTexture(MATERIAL_DIFFUSE_IDX, map_kd, true, true);
     loadTexture(MATERIAL_EMISSION_IDX, map_ke, true, false);
     loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
@@ -226,7 +230,12 @@ void Material::loadTexture(
     }
 
     if (usePlaceholder && !texture->isValid()) {
-        future = ImageTexture::getTexture("tex-placeholder", placeholderPath, gammaCorrect, textureSpec);
+        future = ImageTexture::getTexture(
+            "tex-placeholder",
+            placeholderPath,
+            gammaCorrect,
+            textureSpec);
+
         future.wait();
         if (future.valid()) {
             texture = future.get();
@@ -337,7 +346,7 @@ const MaterialSSBO Material::toSSBO() const
 
     return {
         kd,
-        ke,
+        m_textures[MATERIAL_EMISSION_IDX].m_handle ? WHITE_RGBA : ke,
 
         m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? WHITE_RGBA : metal,
 

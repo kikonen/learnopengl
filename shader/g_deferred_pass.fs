@@ -85,7 +85,6 @@ void main()
     material.diffuse = textureLod(g_albedo, texCoord, 0);
     material.diffuse.a = 1.0;
 
-    material.metal = textureLod(g_metal, texCoord, 0);
     material.emission = textureLod(g_emission, texCoord, 0);
     material.emission.a = 1.0;
 
@@ -107,12 +106,12 @@ void main()
   }
 
   const vec3 T = vec3(0.2126, 0.7152, 0.0722);
-  const float brightness = 0;//dot(color.xyz, T);
+  const float brightness = dot(color.xyz, T);
 
   if (emission) {
-    o_fragBright = vec4(material.emission.xyz, 1.0);
+    o_fragBright = vec4(material.emission.rgb, 1.0);
   } else if (brightness > 1.0) {
-    o_fragBright = vec4(color.xyz, 1.0);
+    o_fragBright = vec4(color.rgb, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
   }

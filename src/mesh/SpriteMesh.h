@@ -20,7 +20,7 @@ namespace mesh {
 
         const std::vector<Material>& getMaterials() const override;
 
-        virtual kigl::GLVertexArray* prepareRT(
+        virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
         virtual void prepareLod(

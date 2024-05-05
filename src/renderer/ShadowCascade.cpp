@@ -263,7 +263,9 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) { return m_solidShadowProgram; },
+            [this](const mesh::MeshType* type) {
+                return type->m_shadowProgram ? type->m_shadowProgram : m_solidShadowProgram;
+            },
             typeFilter,
             nodeFilter,
             render::NodeDraw::KIND_SOLID);

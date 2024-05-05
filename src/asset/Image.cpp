@@ -1,8 +1,9 @@
 #include "Image.h"
 
 #include <map>
+#include <fstream>
 
-#include "fmt/format.h"
+#include <fmt/format.h>
 
 #include <codeanalysis/warnings.h>
 
@@ -17,10 +18,15 @@
 
 #include "util/Log.h"
 
+namespace {
+    const std::string KTX_EXT = ".ktx";
+}
+
 Image::Image(Image&& o) noexcept
     : m_path{ o.m_path },
     m_flipped{ o.m_flipped },
     m_hdri{ o.m_hdri },
+    m_ktx{ o.m_ktx },
     m_width{ o.m_width },
     m_height{ o.m_height },
     m_channels{ o.m_channels },
@@ -44,7 +50,8 @@ Image::Image(
     bool hdri)
     : m_path{ path },
     m_flipped{ flipped },
-    m_hdri{ hdri }
+    m_hdri{ hdri },
+    m_ktx{ path.ends_with(KTX_EXT) }
 {
 }
 
@@ -62,6 +69,11 @@ int Image::load() {
     }
     m_loaded = true;
 
+    if (m_ktx) return loadKtx();
+    return loadNormal();
+}
+
+int Image::loadNormal() {
     stbi_set_flip_vertically_on_load_thread(m_flipped);
     //stbi_set_flip_vertically_on_load(flip);
 
@@ -102,4 +114,24 @@ int Image::load() {
 
     m_res = m_data ? 0 : -1;
     return m_res;
+}
+
+int Image::loadKtx()
+{
+    //std::ifstream f{ m_path, std::ios::in | std::ios::binary | std::ios::ate };
+
+    //if (!f.is_open()) {
+    //    return -1;
+    //}
+
+    //if (f.is_open())
+    //{
+    //    std::streampos size = f.tellg();
+    //    m_data = new unsigned char[size];
+    //    f.seekg(0, std::ios::beg);
+    //    f.read((char*)m_data, size);
+    //    f.close();
+    //}
+
+    return 0;
 }

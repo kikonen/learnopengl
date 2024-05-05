@@ -7,8 +7,7 @@
 #include "text/size.h"
 
 namespace mesh {
-    class ModelVBO;
-    class TextureVBO;
+    class TextMesh;
 }
 
 struct PrepareContext;
@@ -34,8 +33,7 @@ namespace text
             text::font_id fontId,
             std::string_view text,
             glm::vec2& pen,
-            mesh::ModelVBO& vbo,
-            mesh::TextureVBO& atlasVbo);
+            mesh::TextMesh* mesh);
 
         void clear();
 

@@ -25,6 +25,7 @@
 #include "ScriptData.h"
 #include "TextData.h"
 #include "LodData.h"
+#include "AnimationData.h"
 
 namespace loader {
     struct EntityCloneData {
@@ -88,9 +89,22 @@ namespace loader {
         AudioData audio;
         TextData text;
 
+        std::vector<AnimationData> animations;
+
         GeneratorData generator;
 
         ParticleData particle;
+
+        bool findRenderFlag(
+            const std::string& flag,
+            bool defaultValue) const noexcept
+        {
+            const auto& e = renderFlags.find(flag);
+            if (e != renderFlags.end()) {
+                return e->second;
+            }
+            return defaultValue;
+        }
     };
 
     struct EntityData {

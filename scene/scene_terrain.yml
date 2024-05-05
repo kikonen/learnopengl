@@ -132,14 +132,36 @@ entities:
     render_flags:
       billboard: true
       alpha: true
-      render_back: true
       dynamic_bounds: true
+      render_back: true
     scale: [1.5, 3, 1]
     repeat:
       x_count: 20
       z_count: 101
       x_step: 3
       z_step: -2
+  - xid: skeleton_army_2_{t}
+    model: fbx/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    priority: 1
+    program: g_tex
+    pos: [0, 11.5, 0.0]
+    scale: 0.1
+    base_rotation: [90, 0, 0]
+    render_flags:
+      dynamic_bounds: true
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    repeat:
+      x_count: 20
+      z_count: 101
+      x_step: 3
+      z_step: -3
 materials:
   - name: terrain_grass_2
     map_kd: textures/terrain_2/terrain_2_TX.jpg
@@ -164,3 +186,7 @@ materials:
     map_kd: sprites/Skeleton.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: skeleton_pbr
+    map_pbr: fbx/skeleton/skeleton_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60

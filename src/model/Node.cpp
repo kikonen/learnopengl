@@ -20,10 +20,15 @@
 
 #include "generator/NodeGenerator.h"
 
+#include "animation/RigContainer.h"
+#include "animation/AnimationSystem.h"
+
 #include "mesh/LodMesh.h"
+#include "mesh/ModelMesh.h"
 #include "mesh/MeshType.h"
 
 #include "model/EntityFlags.h"
+
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -98,6 +103,15 @@ void Node::prepareWT(
         m_snapshotIndex = snapshotRegistry.registerSnapshot();
         auto& snapshot = snapshotRegistry.modifySnapshot(m_snapshotIndex);
         snapshot.m_handle = toHandle();
+    }
+
+    {
+        auto* lod = type->getLod(0);
+        auto* mesh = lod ? lod->getMesh<mesh::ModelMesh>() : nullptr;
+        if (mesh) {
+            m_transform.m_boneIndex = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            m_transform.m_animationIndex = 0;
+        }
     }
 
     if (m_generator) {

@@ -52,6 +52,7 @@
 #define SSBO_INSTANCE_INDECES 9
 #define SSBO_PARTICLES 10
 #define SSBO_TERRAIN_TILES 11
+#define SSBO_BONE_TRANSFORMS 12
 
 #define UNIFORM_PROJECTION_MATRIX 1
 #define UNIFORM_VIEW_MATRIX 2
@@ -111,7 +112,9 @@
 #define ATTR_NORMAL 1
 #define ATTR_TANGENT 2
 #define ATTR_TEX 3
-#define ATTR_FONT_TEX 4
+#define ATTR_FONT_ATLAS_TEX 4
+#define ATTR_BONE_INDEX 5
+#define ATTR_BONE_WEIGHT 6
 
 #define DRAW_TYPE_NONE 0
 #define DRAW_TYPE_ELEMENTS 1
@@ -135,9 +138,9 @@
   color.b = clamp(color.b, MIN_CLAMP_COL_VALUE, MAX_CLAMP_COL_VALUE);
 
 #define LAYOUT_G_BUFFER_OUT\
- layout (location = 0) out vec4 o_fragColor;\
+ layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
- layout (location = 2) out vec3 o_fragNormal;\
+ layout (location = 2) out vec2 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMetal;
 // layout (location = 1) out vec4 o_fragSpecular;\
 // layout (location = 3) out vec3 o_fragPosition;\

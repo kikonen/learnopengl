@@ -37,19 +37,25 @@ namespace kigl {
             initEmpty(size, flags);
         }
 
-        void resizeBuffer(size_t size)
+        // NOTE KI discards current buffer and re-creates it
+        // => *MUST* rebind all relevant bindings
+        //
+        // @return true if recreate was done
+        //
+        bool resizeBuffer(size_t size)
         {
             KI_DEBUG(fmt::format(
                 "BUFFER: resize - name={}, id={}, oldSize={}, newSize={}",
                 m_name, m_id,
                 m_size, size));
-            if (size == m_size) return;
+            if (size == m_size) return false;
             unmap();
             if (m_created) {
                 glDeleteBuffers(1, &m_id);
                 m_created = false;
             }
             createEmpty(size, m_flags);
+            return true;
         }
 
         // For mapped buffer

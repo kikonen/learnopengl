@@ -10,11 +10,6 @@
 #include "text/TextDraw.h"
 
 namespace {
-    // NOTE KI plane, only xy
-    const AABB QUAD_AABB = {
-        glm::vec3{ -1.f, -1.f, 0.f },
-        glm::vec3{ 1.f, 1.f, 0.f },
-        true };
 }
 
 namespace mesh {
@@ -32,9 +27,31 @@ namespace mesh {
         return fmt::format("<TEXT: id={}>", m_id);
     }
 
+    void TextMesh::clear() {
+        m_positions.clear();
+        m_normals.clear();
+        m_texCoords.clear();
+        m_atlasCoords.clear();
+        m_indeces.clear();
+    }
+
     const AABB TextMesh::calculateAABB() const
     {
-        return QUAD_AABB;
+        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+
+        for (auto&& vertex : m_positions)
+        {
+            minAABB.x = std::min(minAABB.x, vertex.x);
+            minAABB.y = std::min(minAABB.y, vertex.y);
+            minAABB.z = std::min(minAABB.z, vertex.z);
+
+            maxAABB.x = std::max(maxAABB.x, vertex.x);
+            maxAABB.y = std::max(maxAABB.y, vertex.y);
+            maxAABB.z = std::max(maxAABB.z, vertex.z);
+        }
+
+        return { minAABB, maxAABB, false };
     }
 
     const std::vector<Material>& TextMesh::getMaterials() const
@@ -42,7 +59,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* TextMesh::prepareRT(
+    const kigl::GLVertexArray* TextMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

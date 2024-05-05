@@ -1,18 +1,9 @@
 #include "SceneUpdater.h"
 
-#include <iostream>
-#include <thread>
-#include <chrono>
-
-#include "ki/RenderClock.h"
-#include "ki/Timer.h"
-#include "ki/FpsCounter.h"
-
 #include "model/Node.h"
 
 #include "pool/NodeHandle.h"
 
-#include "util/thread.h"
 #include "util/Log.h"
 
 #include "event/Dispatcher.h"
@@ -20,6 +11,8 @@
 #include "script/CommandEngine.h"
 
 #include "audio/AudioEngine.h"
+
+#include "animation/AnimationSystem.h"
 
 #include "engine/UpdateContext.h"
 
@@ -41,26 +34,14 @@ namespace {
 SceneUpdater::SceneUpdater(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_registry(registry),
-    m_alive(alive)
+    : Updater("WT", 5, registry, alive)
 {}
-
-SceneUpdater::~SceneUpdater()
-{
-    KI_INFO("SCENE_UPDATER: destroy");
-}
-
-void SceneUpdater::destroy()
-{
-}
-
-bool SceneUpdater::isRunning() const
-{
-    return m_running;
-}
 
 void SceneUpdater::prepare()
 {
+    if (m_prepared) return;
+    Updater::prepare();
+
     std::lock_guard lock(m_prepareLock);
 
     m_registry->prepareWT();
@@ -115,81 +96,9 @@ void SceneUpdater::prepare()
     m_prepared = true;
 }
 
-void SceneUpdater::start()
+uint32_t SceneUpdater::getActiveCount() const noexcept
 {
-    auto th = std::thread{
-        [this]() mutable {
-            try {
-                m_running = true;
-                util::markWorkerThread();
-                run();
-                m_running = false;
-            }
-            catch (const std::exception& ex) {
-                KI_CRITICAL(ex.what());
-            }
-            catch (...) {
-                m_running = false;
-            }
-        }
-    };
-    th.detach();
-}
-
-void SceneUpdater::run()
-{
-    ki::RenderClock clock;
-
-    KI_INFO(fmt::format("WT: started - worker={}", util::isWorkerThread()));
-
-    prepare();
-
-    //const int delay = (int)(1000.f / 60.f);
-    const int delay = 5;
-
-    ki::FpsCounter fpsCounter;
-
-    auto prevLoopTime = std::chrono::system_clock::now();
-    auto loopTime = std::chrono::system_clock::now();
-    std::chrono::duration<float> elapsedDuration;
-
-    while (*m_alive) {
-        fpsCounter.startFame();
-
-        loopTime = std::chrono::system_clock::now();
-        elapsedDuration = loopTime - prevLoopTime;
-        prevLoopTime = loopTime;
-
-        auto ts = duration_cast<std::chrono::seconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-        );
-        clock.ts = static_cast<float>(ts.count());
-        clock.elapsedSecs = elapsedDuration.count();
-
-        //std::cout << "elapsed=" << clock.elapsedSecs << '\n';
-
-        UpdateContext ctx(
-            clock,
-            m_registry.get());
-
-        update(ctx);
-
-        fpsCounter.endFame(clock.elapsedSecs);
-
-        if (fpsCounter.isUpdate())
-        {
-            KI_INFO(fmt::format(
-                "{} - nodes={}",
-                fpsCounter.formatSummary("WT"),
-                ctx.m_registry->m_nodeRegistry->getNodeCount()));
-        }
-
-        if (!script::CommandEngine::get().hasPending()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        }
-    }
-
-    KI_INFO(fmt::format("WT: stopped - worker={}", util::isWorkerThread()));
+    return m_registry->m_nodeRegistry->getNodeCount();
 }
 
 void SceneUpdater::update(const UpdateContext& ctx)
@@ -246,4 +155,5 @@ void SceneUpdater::handleNodeAdded(Node* node)
     if (!node) return;
 
     physics::PhysicsEngine::get().handleNodeAdded(node);
+    animation::AnimationSystem::get().handleNodeAdded(node);
 }

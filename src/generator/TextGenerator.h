@@ -8,11 +8,15 @@
 
 #include "backend/DrawOptions.h"
 
-#include "mesh/ModelVBO.h"
-#include "mesh/TextureVBO.h"
-#include "mesh/ModelVAO.h"
+#include "mesh/vao/TexturedVAO.h"
+
+#include "text/vao/AtlasTextureVBO.h"
 
 #include "text/size.h"
+
+namespace mesh {
+    class TextMesh;
+}
 
 namespace text {
     class TextDraw;
@@ -75,9 +79,8 @@ private:
 
     AABB m_aabb;
 
-    mesh::ModelVAO m_vao{ "text" };
-    mesh::ModelVBO m_vbo;
-    mesh::TextureVBO m_vboAtlasTex;
+    mesh::AtlasTextureVBO m_vboAtlasTex;
+    mesh::TexturedVAO m_vao{ "text" };
 
     std::unique_ptr<text::TextDraw> m_draw;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <filesystem>
 
 #include "BaseLoader.h"
 #include "MaterialData.h"
@@ -26,6 +27,11 @@ namespace loader {
 
         void loadMaterialPbr(
             const std::string& pbrName,
+            MaterialData& data) const;
+
+        void handlePbrEntry(
+            const std::string& pbrName,
+            const std::filesystem::directory_entry& dirEntry,
             MaterialData& data) const;
 
         void loadTextureSpec(

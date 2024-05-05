@@ -114,7 +114,7 @@ entities:
     material_modifier:
       xmap_pbr: textures\Tiles004_1K-PNG
       metal: [1.0, 0.0, 0, 1]
-      map_pbr: textures\planks_metal
+      map_pbr: textures\Planks 09 [8K]_metal
       tiling_x: 30
       tiling_y: 4
     clones:
@@ -221,7 +221,7 @@ entities:
     material_modifier:
       xmap_pbr: textures\Tiles004_1K-PNG
       metal: [1.0, 0.0, 0, 1]
-      map_pbr: textures\planks_metal
+      map_pbr: textures\Planks 09 [8K]_metal
       tiling_x: 30
       tiling_y: 4
     clones:

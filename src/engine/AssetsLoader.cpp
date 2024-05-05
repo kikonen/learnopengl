@@ -172,6 +172,10 @@ void AssetsLoader::loadAssets(
                 data.glUseFinish = readBool(v);
                 continue;
             }
+            if (k == "compressed_textures_enabled") {
+                data.compressedTexturesEnabled = readBool(v);
+                continue;
+            }
             if (k == "prepass_depth_enabled") {
                 data.prepassDepthEnabled = readBool(v);
                 continue;
@@ -220,6 +224,10 @@ void AssetsLoader::loadAssets(
                 data.asyncLoaderDelay = readInt(v);
                 continue;
             }
+            if (k == "use_assimp_loader") {
+                data.useAssimpLoader = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "assets_dir") {
@@ -265,15 +273,11 @@ void AssetsLoader::loadAssets(
                 continue;
             }
             if (k == "imgui_font_size") {
-                data.imGuiFontSize = readInt(v);
+                data.imGuiFontSize = readFloat(v);
                 continue;
             }
             if (k == "imgui_font_path") {
                 data.imGuiFontPath = readString(v);
-                continue;
-            }
-            if (k == "use_imgui") {
-                data.useImGui = readBool(v);
                 continue;
             }
             if (k == "use_script") {

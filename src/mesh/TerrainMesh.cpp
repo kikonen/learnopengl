@@ -7,7 +7,7 @@
 #include "asset/Sphere.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/TerrainVAO.h"
+#include "mesh/vao/TerrainVAO.h"
 
 namespace {
 
@@ -42,7 +42,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* TerrainMesh::prepareRT(
+    const kigl::GLVertexArray* TerrainMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

@@ -18,7 +18,7 @@ out VS_OUT {
   flat uint materialIndex;
 
   vec2 texCoord;
-  vec3 worldPos;
+  vec3 viewPos;
   vec3 normal;
 } vs_out;
 
@@ -54,7 +54,7 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
 
-  vs_out.worldPos = worldPos.xyz;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normalMatrix * a_normal;

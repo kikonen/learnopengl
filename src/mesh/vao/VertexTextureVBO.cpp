@@ -1,23 +1,22 @@
-#include "TextureVBO.h"
+#include "VertexTextureVBO.h"
 
 #include "VBO_impl.h"
 
-namespace {
-    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
-    constexpr size_t VERTEX_BLOCK_COUNT = 10000;
-
-    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
-}
-
 namespace mesh {
-    TextureVBO::TextureVBO(
+    VertexTextureVBO::VertexTextureVBO(
+        std::string_view name,
         int attr,
-        int binding,
-        std::string_view name)
-        : VBO(attr, binding, name)
+        int binding)
+        : VBO(name, attr, binding)
     {}
 
-    void TextureVBO::prepareVAO(kigl::GLVertexArray& vao)
+    TextureEntry VertexTextureVBO::convertVertex(
+        const Vertex& vertex)
+    {
+        return { vertex.texture };
+    }
+
+    void VertexTextureVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
         constexpr size_t sz = sizeof(TextureEntry);
         {
@@ -37,7 +36,8 @@ namespace mesh {
                 // https://stackoverflow.com/questions/37972229/glvertexattribpointer-and-glvertexattribformat-whats-the-difference
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
-                // vertex attr
+
+                // texture attr
                 glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(TextureEntry, texCoord));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);

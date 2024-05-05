@@ -191,6 +191,31 @@ namespace util {
         return filePath.string();
     }
 
+    std::string joinPathExt(
+        std::string_view rootDir,
+        std::string_view basePath,
+        std::string_view fileExt)
+    {
+        std::filesystem::path filePath;
+
+        if (!rootDir.empty()) {
+            std::string path{ rootDir };
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!basePath.empty()) {
+            std::string path{ basePath };
+            if (!fileExt.empty()) {
+                path += fileExt;
+            }
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        return filePath.string();
+    }
+
     std::string joinPath(
         std::string_view rootDir,
         std::string_view baseName)

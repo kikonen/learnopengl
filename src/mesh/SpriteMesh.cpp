@@ -9,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/SpriteVAO.h"
+#include "mesh/vao/SpriteVAO.h"
 
 
 namespace {
@@ -48,7 +48,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* SpriteMesh::prepareRT(
+    const kigl::GLVertexArray* SpriteMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

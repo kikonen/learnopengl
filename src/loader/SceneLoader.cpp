@@ -41,6 +41,9 @@
 
 #include "model/Node.h"
 
+#include "animation/AnimationLoader.h"
+#include "animation/RigContainer.h"
+
 //#include "generator/GridGenerator.h"
 //#include "generator/AsteroidBeltGenerator.h"
 #include "generator/TextGenerator.h"
@@ -547,15 +550,20 @@ namespace loader {
 
         if (!data.programName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
+            std::map<std::string, std::string, std::less<>> shadowDefinitions;
+
             for (const auto& [k, v] : data.programDefinitions) {
                 definitions[k] = v;
             }
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
             bool usePreDepth = type->m_flags.preDepth;
+            bool useBones = type->m_flags.useBones;
+            bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
 
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
+                shadowDefinitions[DEF_USE_ALPHA] = "1";
                 usePreDepth = false;
             }
             if (type->m_flags.blend) {
@@ -595,6 +603,13 @@ namespace loader {
             if (useNormalPattern) {
                 definitions[DEF_USE_NORMAL_PATTERN] = "1";
             }
+            if (useBones) {
+                definitions[DEF_USE_BONES] = "1";
+                shadowDefinitions[DEF_USE_BONES] = "1";
+            }
+            if (useBonesDebug) {
+                definitions[DEF_USE_BONES_DEBUG] = "1";
+            }
 
             type->m_program = ProgramRegistry::get().getProgram(
                 data.programName,
@@ -607,7 +622,7 @@ namespace loader {
                     data.shadowProgramName,
                     false,
                     "",
-                    {});
+                    shadowDefinitions);
             }
 
             if (usePreDepth) {
@@ -698,7 +713,6 @@ namespace loader {
 
             for (auto& lodData : data.lods) {
                 auto future = ModelRegistry::get().getMesh(
-                    lodData.meshName,
                     assets.modelsDir,
                     lodData.meshPath);
 
@@ -709,11 +723,15 @@ namespace loader {
                     "SCENE_FILE ATTACH: id={}, desc={}, type={}",
                     data.baseId, data.desc, type->str()));
             }
+
+            for (auto& animationData : data.animations) {
+                resolveAnimation(typeHandle, animationData);
+            }
         }
         else if (data.type == mesh::EntityType::sprite) {
             auto future = ModelRegistry::get().getMesh(
-                QUAD_MESH_NAME,
-                assets.modelsDir);
+                assets.modelsDir,
+                QUAD_MESH_NAME);
             type->addLod({ future.get() });
             type->m_entityType = mesh::EntityType::sprite;
         }
@@ -738,6 +756,31 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
             type->m_flags.invisible = true;
         }
+    }
+
+    void SceneLoader::resolveAnimation(
+        pool::TypeHandle typeHandle,
+        const AnimationData& data)
+    {
+        const auto& assets = Assets::get();
+
+        auto* type = typeHandle.toType();
+
+        auto* mesh = type->modifyLod(0)->getMesh<mesh::ModelMesh>();
+
+        if (!mesh->m_rig) return;
+        if (!mesh->m_rig->hasBones()) return;
+
+        animation::AnimationLoader loader{};
+
+        std::string filePath = util::joinPath(
+            mesh->m_rootDir,
+            data.path);
+
+        loader.loadAnimations(
+            *mesh->m_rig,
+            data.name,
+            filePath);
     }
 
     pool::NodeHandle SceneLoader::createNode(
@@ -783,18 +826,23 @@ namespace loader {
 
         auto& transform = node->modifyTransform();
         transform.setPosition(pos);
-        transform.setBaseRotation(util::degreesToQuat(data.baseRotation));
+
         transform.setQuatRotation(util::degreesToQuat(data.rotation));
         transform.setScale(data.scale);
         transform.setFront(data.front);
+
+        auto baseTransform = glm::toMat4(util::degreesToQuat(data.baseRotation));
 
         auto* lod = type->getLod(0);
         if (lod) {
             auto* mesh = lod->m_mesh;
             if (mesh) {
                 transform.setVolume(mesh->getAABB().getVolume());
+                baseTransform = baseTransform * mesh->m_transform;
             }
         }
+
+        transform.setBaseTransform(baseTransform);
 
         node->m_camera = m_cameraLoader.createCamera(data.camera);
         node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
@@ -842,24 +890,14 @@ namespace loader {
 
         flags.gbuffer = data.programName.starts_with("g_");
 
-        {
-            const auto& e = data.renderFlags.find("pre_depth");
-            if (e != data.renderFlags.end()) {
-                flags.preDepth = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("gbuffer");
-            if (e != data.renderFlags.end()) {
-                flags.gbuffer = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("alpha");
-            if (e != data.renderFlags.end()) {
-                flags.alpha = e->second;
-            }
-        }
+        flags.useBones = data.findRenderFlag("use_bones", flags.useBones);
+        flags.useBonesDebug = data.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+        flags.useAnimation = data.findRenderFlag("use_animation", flags.useAnimation);
+
+        flags.preDepth = data.findRenderFlag("pre_depth", flags.preDepth);
+        flags.gbuffer = data.findRenderFlag("gbuffer", flags.gbuffer);
+        flags.alpha = data.findRenderFlag("alpha", flags.alpha);
+
         {
             const auto& e = data.renderFlags.find("blend");
             if (e != data.renderFlags.end()) {
@@ -888,84 +926,21 @@ namespace loader {
                 }
             }
         }
-        {
-            const auto& e = data.renderFlags.find("render_back");
-            if (e != data.renderFlags.end()) {
-                flags.renderBack = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_frustum");
-            if (e != data.renderFlags.end()) {
-                flags.noFrustum = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_shadow");
-            if (e != data.renderFlags.end()) {
-                flags.noShadow = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_select");
-            if (e != data.renderFlags.end()) {
-                flags.noSelect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_reflect");
-            if (e != data.renderFlags.end()) {
-                flags.noReflect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("no_refract");
-            if (e != data.renderFlags.end()) {
-                flags.noRefract = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("mirror");
-            if (e != data.renderFlags.end()) {
-                flags.mirror = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("water");
-            if (e != data.renderFlags.end()) {
-                flags.water = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("wireframe");
-            if (e != data.renderFlags.end()) {
-                flags.wireframe = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("cube_map");
-            if (e != data.renderFlags.end()) {
-                flags.cubeMap = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("effect");
-            if (e != data.renderFlags.end()) {
-                flags.effect = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("billboard");
-            if (e != data.renderFlags.end()) {
-                flags.billboard = e->second;
-            }
-        }
-        {
-            const auto& e = data.renderFlags.find("tessellation");
-            if (e != data.renderFlags.end()) {
-                flags.tessellation = e->second;
-            }
-        }
+
+        flags.renderBack = data.findRenderFlag("render_back", flags.renderBack);
+        flags.noFrustum = data.findRenderFlag("no_frustum", flags.noFrustum);
+        flags.noShadow = data.findRenderFlag("no_shadow", flags.noShadow);
+        flags.noSelect = data.findRenderFlag("no_select", flags.noSelect);
+        flags.noReflect = data.findRenderFlag("no_reflect", flags.noReflect);
+        flags.noRefract = data.findRenderFlag("no_refract", flags.noRefract);
+        flags.mirror = data.findRenderFlag("mirror", flags.mirror);
+        flags.water = data.findRenderFlag("water", flags.water);
+        flags.wireframe = data.findRenderFlag("wireframe", flags.wireframe);
+        flags.cubeMap = data.findRenderFlag("cube_map", flags.cubeMap);
+        flags.effect = data.findRenderFlag("effect", flags.effect);
+        flags.billboard = data.findRenderFlag("billboard", flags.billboard);
+        flags.tessellation = data.findRenderFlag("tessellation", flags.tessellation);
+
         {
             const auto& e = data.renderFlags.find("static_bounds");
             if (e != data.renderFlags.end()) {

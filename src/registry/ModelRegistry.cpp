@@ -2,9 +2,14 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "mesh/ModelMesh.h"
-#include "mesh/ModelVBO.h"
-#include "mesh/ModelLoader.h"
+#include "mesh/vao/TexturedVAO.h"
+#include "mesh/vao/SkinnedVAO.h"
+
+#include "mesh/ObjectLoader.h"
+#include "mesh/AssimpLoader.h"
 
 #include "render/RenderContext.h"
 
@@ -18,6 +23,8 @@ ModelRegistry& ModelRegistry::get() noexcept
 }
 
 ModelRegistry::ModelRegistry()
+    : m_texturedVao{ std::make_unique<mesh::TexturedVAO>("mesh_textured") },
+    m_skinnedVao{ std::make_unique<mesh::SkinnedVAO>("mesh_skinned") }
 {
 }
 
@@ -27,28 +34,17 @@ ModelRegistry::~ModelRegistry() {
 void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 {
     m_alive = alive;
-    m_vao.prepare("model");
-}
-
-kigl::GLVertexArray* ModelRegistry::registerModelVBO(mesh::ModelVBO& modelVBO)
-{
-    return m_vao.registerModel(modelVBO);
+    m_texturedVao->prepare();
+    m_skinnedVao->prepare();
 }
 
 void ModelRegistry::updateRT(const UpdateContext& ctx)
 {
-    m_vao.updateRT();
+    m_texturedVao->updateRT();
+    m_skinnedVao->updateRT();
 }
 
 std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
-    std::string_view meshName,
-    std::string_view rootDir)
-{
-    return getMesh(meshName, rootDir, "");
-}
-
-std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
-    std::string_view meshName,
     std::string_view rootDir,
     std::string_view meshPath)
 {
@@ -57,10 +53,9 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     std::lock_guard lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-    std::string key = util::joinPathExt(
+    std::string key = util::joinPath(
         rootDir,
-        meshPath,
-        meshName, "");
+        meshPath);
 
     {
         auto e = m_meshes.find(key);
@@ -69,7 +64,6 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
     }
 
     auto mesh = new mesh::ModelMesh(
-        meshName,
         rootDir,
         meshPath);
 
@@ -89,12 +83,22 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
     auto th = std::thread{
         [this, mesh, p = std::move(promise)]() mutable {
             try {
+                const auto assets = Assets::get();
+
                 std::string info = mesh->str();
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", info));
 
-                mesh::ModelLoader loader(m_alive);
-                auto loaded = loader.load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
+                std::unique_ptr<mesh::ModelLoader> loader;
+
+                if (assets.useAssimpLoader) {
+                    loader = std::make_unique<mesh::AssimpLoader>(m_alive);
+                }
+                else {
+                    loader = std::make_unique<mesh::ObjectLoader>(m_alive);
+                }
+
+                auto loaded = loader->load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 if (loaded) {
                     loaded->prepareVolume();

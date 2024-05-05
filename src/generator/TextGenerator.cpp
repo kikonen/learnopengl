@@ -9,11 +9,11 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+#include "mesh/TextMesh.h"
+
+#include "mesh/vao/VBO_impl.h"
 
 #include "render/Batch.h"
-
-#include "text/TextDraw.h"
-#include "text/FontAtlas.h"
 
 #include "render/RenderContext.h"
 
@@ -22,13 +22,15 @@
 #include "registry/EntityRegistry.h"
 #include "registry/FontRegistry.h"
 
-#include "mesh/VBO_impl.h"
+
+#include "text/TextDraw.h"
+#include "text/FontAtlas.h"
 
 namespace {
 }
 
 TextGenerator::TextGenerator()
-    : m_vboAtlasTex{ ATTR_FONT_TEX, VBO_FONT_BINDING, "vbo_font" }
+    : m_vboAtlasTex{ "vbo_font", ATTR_FONT_ATLAS_TEX, VBO_FONT_ATLAS_BINDING }
 {}
 
 void TextGenerator::prepare(
@@ -44,7 +46,7 @@ void TextGenerator::prepareRT(
 {
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
-    m_vao.prepare("text");
+    m_vao.prepare();
 
     m_vboAtlasTex.prepareVAO(*m_vao.modifyVAO());
 }
@@ -78,7 +80,14 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    m_vbo.clear();
+    auto* type = container.m_typeHandle.toType();
+
+    auto* lodMesh = type->modifyLod(0);
+    auto& lod = lodMesh->m_lod;
+    auto* mesh = lodMesh->getMesh<mesh::TextMesh>();
+
+    mesh->clear();
+
     m_vboAtlasTex.clear();
 
     glm::vec2 pen{ 0.f };
@@ -88,25 +97,29 @@ void TextGenerator::updateVAO(
         m_fontId,
         m_text,
         pen,
-        m_vbo,
-        m_vboAtlasTex);
+        mesh);
 
-    m_aabb = m_vbo.calculateAABB();
-
-    m_vbo.m_meshPositionOffset = -m_aabb.getVolume();
+    m_aabb = mesh->calculateAABB();
 
     m_vao.clear();
-    m_vao.registerModel(m_vbo);
-    m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
-    m_vao.updateRT();
 
-    auto* type = container.m_typeHandle.toType();
+    {
+        m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
+        mesh->m_positionVboOffset = m_vao.m_positionVbo.addEntries(mesh->m_positions);
+        mesh->m_indexEboOffset = m_vao.m_indexEbo.addIndeces(mesh->m_indeces);
 
-    auto* lodMesh = type->modifyLod(0);
-    auto& lod = lodMesh->m_lod;
-    lod.m_baseVertex = m_vbo.getBaseVertex();
-    lod.m_baseIndex = m_vbo.getBaseIndex();
-    lod.m_indexCount = m_vbo.getIndexCount();
+        m_vao.m_normalVbo.addEntries(mesh->m_normals);
+        m_vao.m_textureVbo.addEntries(mesh->m_texCoords);
+
+        m_vboAtlasTex.addEntries(mesh->m_atlasCoords);
+        m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
+
+        m_vao.updateRT();
+    }
+
+    lod.m_baseVertex = mesh->getBaseVertex();
+    lod.m_baseIndex = mesh->getBaseIndex();
+    lod.m_indexCount = mesh->getIndexCount();
 }
 
 const kigl::GLVertexArray* TextGenerator::getVAO(
@@ -140,7 +153,8 @@ GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 
 void TextGenerator::clear()
 {
-    m_vao.clear();
-    m_vbo.clear();
-    m_vboAtlasTex.clear();
+    //auto* mesh = m_mesh.get();
+    //mesh->clear();
+    //m_vboAtlasTex.clear();
+    //m_vao.clear();
 }

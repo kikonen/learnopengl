@@ -34,7 +34,7 @@ namespace particle {
 
     ParticleSystem::ParticleSystem()
     {
-        m_particles.resize(MAX_BLOCK_COUNT * BLOCK_SIZE);
+        m_particles.resize(1 * BLOCK_SIZE);
     }
 
     void ParticleSystem::addParticle(const Particle& particle)
@@ -63,7 +63,7 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        m_ssbo.createEmpty(MAX_BLOCK_COUNT * BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
@@ -139,7 +139,9 @@ namespace particle {
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            m_ssbo.resizeBuffer(bufferSize);
+            if (m_ssbo.resizeBuffer(bufferSize)) {
+                m_ssbo.bindSSBO(SSBO_PARTICLES);
+            }
         }
 
         //m_ssbo.invalidateRange(

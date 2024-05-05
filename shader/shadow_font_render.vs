@@ -9,7 +9,7 @@
 #include uniform_matrices.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_FONT_TEX) in vec2 a_atlasCoord;
+layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
 out VS_OUT {
   vec2 atlasCoord;

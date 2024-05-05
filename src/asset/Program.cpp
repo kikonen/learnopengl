@@ -37,6 +37,22 @@ namespace {
     const std::string GEOM_NONE{ "" };
 
     IdGenerator<ki::program_id> ID_GENERATOR;
+
+    std::string appendLineNumbers(const std::string& src)
+    {
+        std::stringstream sb;
+
+        std::istringstream f{ src };
+
+        int lineNumber = 1;
+        std::string line;
+        while (std::getline(f, line)) {
+            sb << fmt::format("{:<4}: ", lineNumber) << line << "\n";
+            lineNumber++;
+        }
+
+        return sb.str();
+    }
 }
 
 Program::Program(
@@ -216,7 +232,7 @@ int Program::compileSource(
                 shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
-                source));
+                appendLineNumbers(source)));
 
             glDeleteShader(shaderId);
             shaderId = -1;
@@ -460,12 +476,12 @@ std::vector<std::string> Program::loadSourceLines(
                 for (auto& l : processInclude(INC_GLOBALS, lineNumber)) {
                     lines.push_back(l);
                 }
-                lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
+                //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             } else if (k == "#include") {
                 for (auto& l : processInclude(v1, lineNumber)) {
                     lines.push_back(l);
                 }
-                lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
+                //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else {
                 lines.push_back(line);
@@ -518,10 +534,12 @@ std::vector<std::string> Program::processInclude(
     std::vector<std::string> lines = loadSourceLines(path, false);
 
     std::vector<std::string> result;
-    result.push_back("#line 1 " + std::to_string(lineNumber));
+    //result.push_back("#line 1 " + std::to_string(lineNumber));
+    result.push_back("// [START " + simplifiedPath + "]");
     for (auto& line : lines) {
         result.push_back(line);
     }
+    result.push_back("// [END " + simplifiedPath + "]");
 
     return result;
 }

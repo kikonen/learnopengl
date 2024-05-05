@@ -12,12 +12,12 @@ namespace mesh {
 
     template<typename T_Vertex, typename T_Entry>
     VBO<T_Vertex, T_Entry>::VBO(
+        std::string_view name,
         int attr,
-        int binding,
-        std::string_view name)
-        : m_attr{ attr },
-        m_binding{ binding },
-        m_vbo{ name }
+        int binding)
+        : m_vbo{ name },
+        m_attr{ attr },
+        m_binding{ binding }
     {}
 
     template<typename T_Vertex, typename T_Entry>
@@ -26,7 +26,7 @@ namespace mesh {
 
     template<typename T_Vertex, typename T_Entry>
     size_t VBO<T_Vertex, T_Entry>::addVertices(
-        const std::vector<T_Entry>& vertices)
+        const std::vector<T_Vertex>& vertices)
     {
         constexpr size_t sz = sizeof(T_Entry);
 
@@ -35,7 +35,7 @@ namespace mesh {
 
         reserveSize(vertices.size());
         for (const auto& vertex : vertices) {
-            addEntry({ vertex });
+            addEntry(convertVertex(vertex));
         }
 
         return baseOffset;
@@ -43,9 +43,26 @@ namespace mesh {
 
     template<typename T_Vertex, typename T_Entry>
     size_t VBO<T_Vertex, T_Entry>::addVertex(
-        const T_Entry& vertex)
+        const T_Vertex& vertex)
     {
-        return addEntry({ vertex });
+        return addEntry(convertVertex(vertex));
+    }
+
+    template<typename T_Vertex, typename T_Entry>
+    size_t VBO<T_Vertex, T_Entry>::addEntries(
+        const std::vector<T_Entry>& entries)
+    {
+        constexpr size_t sz = sizeof(T_Entry);
+
+        const size_t baseIndex = m_entries.size();
+        const size_t baseOffset = baseIndex * sz;
+
+        reserveSize(entries.size());
+        for (const auto& entry: entries) {
+            addEntry(entry);
+        }
+
+        return baseOffset;
     }
 
     template<typename T_Vertex, typename T_Entry>

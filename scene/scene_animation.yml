@@ -1,0 +1,241 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+entities:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    pos: [-25, 25, 25]
+    model: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    force_material: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - name: wooden floor
+    model: plane
+    xxmodel: woodwall
+    material: wood_floor
+    force_material: true
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: 100
+  - xid: object
+    #model: texture_cube_4/texture_cube_4.fbx
+    model: fbx/SK_Character_PunkGuy.fbx
+    xmodel: fbx/SK_Character_Grandpa.fbx
+    material: skin_2
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [180, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+  - id: lion_{t}
+    model: fbx/lion/SK_Lion.FBX
+    material: lion_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-20.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    animations:
+      - name: walk
+        path: fbx/lion/anim/Lion@Walk.FBX
+      - name: jump
+        path: fbx/lion/anim/Lion@Jump.FBX
+      - name: idle
+        path: fbx/lion/anim/Lion@IdleBreathe.FBX
+      - name: roar
+        path: fbx/lion/anim/Lion@Roar.FBX
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    xscript_file: scripts/cow_audio
+  - id: deinodonte_{t}
+    model: fbx/deinodonte/Deinodonte.FBX
+    material: deinodonte_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-10.0, 8.0, -10.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    animations:
+      - name: idle
+        path: fbx/deinodonte/anim/Deinodonte@IdleBreathe.FBX
+      - name: walk
+        path: fbx/deinodonte/anim/Deinodonte@Walk_RM.FBX
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 20
+      z_step: -20
+  - id: elf_{t}
+    model: fbx/elf/Elf Female.fbx
+    material: elf_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    animations:
+      - name: walk
+        path: fbx/elf/anim/Elf Animations.FBX
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - id: human_{t}
+    model: fbx/human/Scavenger.fbx
+    material: human_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [10.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    animations:
+      - name: walk
+        path: fbx/human/Scavenger.fbx
+        xpath: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - id: skeleton_{t}
+    model: fbx/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [20.0, 2.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 0.05
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    xanimations:
+      - name: walk
+        path: fbx/skeleton/anim/Humanoid@WalkForwardUnarmed2.fbx
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - xid: object_anim
+    model: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    base_rotation: [0, 0, 0]
+    scale: 0.025
+materials:
+  - name: wood_floor
+    map_pbr: textures\Planks 09 [8K]
+    tiling: 60
+  - name: skin
+    xmap_kd: fbx/skaterMaleA.png
+    map_kd: fbx/Polygon_City_Characters_Texture_01_C.png
+    metal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: skin_2
+    map_kd: fbx/skaterMaleA.png
+    metal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: lion_pbr
+    map_pbr: fbx/lion/lion_skin_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: deinodonte_pbr
+    map_pbr: fbx/deinodonte/deinodonte_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: elf_pbr
+    map_pbr: fbx/elf/elf_female_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: human_pbr
+    map_pbr: fbx/human/human_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: skeleton_pbr
+    map_pbr: fbx/skeleton/skeleton_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60

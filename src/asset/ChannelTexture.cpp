@@ -13,10 +13,6 @@
 namespace {
     std::unordered_map<std::string, std::shared_future<ChannelTexture*>> textures;
 
-    bool preparedTexturesReady = false;
-    int preparedTexturesLevel = 0;
-    std::vector<const ChannelTexture*> preparedTextures;
-
     std::mutex textures_lock{};
 
     std::shared_future<ChannelTexture*> startLoad(ChannelTexture* texture)
@@ -79,24 +75,6 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, is16Bbit, spec));
     textures.insert({ cacheKey, future });
     return future;
-}
-
-const std::pair<int, const std::vector<const ChannelTexture*>&> ChannelTexture::getPreparedTextures()
-{
-    std::lock_guard lock(textures_lock);
-
-    if (!preparedTexturesReady) {
-        preparedTexturesReady = true;
-        preparedTexturesLevel++;
-        preparedTextures.clear();
-
-        for (const auto& [name, future] : textures) {
-            auto* texture = future.get();
-            if (!texture || !texture->m_handle) continue;
-            preparedTextures.emplace_back(texture);
-        }
-    }
-    return { preparedTexturesLevel, preparedTextures };
 }
 
 ChannelTexture::ChannelTexture(

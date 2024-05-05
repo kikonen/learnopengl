@@ -25,11 +25,6 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - name: Object
-    model: texture_cube_4
-    program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    rotation: [0, 180, 0]
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
@@ -48,16 +43,30 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: quad
+    model: plane
     xxmodel: woodwall
     material: wood_floor
+    force_material: true
     program: g_tex
-    position: [0, -3, 0]
-    rot: [270, 0, 0]
+    position: [0, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
     scale: 100
+  - id: object
+    model: texture_cube_4/texture_cube_4.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 0.01
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]

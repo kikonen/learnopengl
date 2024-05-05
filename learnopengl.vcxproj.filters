@@ -522,22 +522,19 @@
     <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ModelVBO.cpp">
+    <ClCompile Include="src\mesh\vao\TexturedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ModelVAO.cpp">
+    <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\QuadVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\SpriteVAO.cpp">
+    <ClCompile Include="src\mesh\vao\SpriteVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\TerrainVAO.cpp">
+    <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\SpriteMesh.cpp">
@@ -582,7 +579,7 @@
     <ClCompile Include="src\kigl\GLFence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\PositionVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexPositionVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp">
@@ -624,7 +621,7 @@
     <ClCompile Include="src\render\BatchCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\TextureVBO.cpp">
+    <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\SetTextNode.cpp">
@@ -643,6 +640,66 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\ColorTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\AssimpLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\ObjectLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\VertexTextureVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\RigNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\BoneContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\BoneTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\assimp_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\RigContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\BoneChannel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimationLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Animator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimationSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\AnimationUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Updater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\BoneInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1334,7 +1391,7 @@
     <ClInclude Include="src\mesh\NodeRenderFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\PositionEntry.h">
+    <ClInclude Include="src\mesh\vao\PositionEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\AtlasHandle.h">
@@ -1346,22 +1403,22 @@
     <ClInclude Include="src\text\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\IndexEntry.h">
+    <ClInclude Include="src\mesh\vao\IndexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ModelVAO.h">
+    <ClInclude Include="src\mesh\vao\TexturedVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\SpriteVAO.h">
+    <ClInclude Include="src\mesh\vao\SpriteVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\TerrainMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TerrainVAO.h">
+    <ClInclude Include="src\mesh\vao\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\NormalEntry.h">
+    <ClInclude Include="src\mesh\vao\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MaterialSet.h">
@@ -1370,10 +1427,7 @@
     <ClInclude Include="src\mesh\ModelMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ModelVBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\QuadVAO.h">
+    <ClInclude Include="src\mesh\vao\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\EntityType.h">
@@ -1424,13 +1478,10 @@
     <ClInclude Include="src\asset\ViewportEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\PositionVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexPositionVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TextureEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\BaseBVO.h">
+    <ClInclude Include="src\mesh\vao\TextureEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLSyncQueue_impl.h">
@@ -1505,13 +1556,13 @@
     <ClInclude Include="src\loader\LodData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TextureVBO.h">
+    <ClInclude Include="src\text\vao\AtlasTextureVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VBO.h">
+    <ClInclude Include="src\mesh\vao\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\VBO_impl.h">
+    <ClInclude Include="src\mesh\vao\VBO_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\SetTextNode.h">
@@ -1563,6 +1614,84 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ColorTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\AssimpLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\ObjectLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\BoneEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexNormalVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexTextureVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexIndexEBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\RigNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexBoneVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\assimp_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\VertexBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\RigContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\SkinnedVAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\NodeAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneChannel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\AnimationLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\MatrixPalette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\AnimationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\AnimationSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneTransformSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\AnimationUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Updater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\BoneInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,8 +17,6 @@ public:
         bool gammaCorrect,
         const TextureSpec& spec);
 
-    static const std::pair<int, const std::vector<const ImageTexture*>&> getPreparedTextures();
-
     ImageTexture(
         std::string_view name,
         std::string_view path,
@@ -28,6 +26,9 @@ public:
     virtual ~ImageTexture();
 
     void prepare() override;
+
+    void prepareNormal();
+    void prepareKtx();
 
     bool isValid() { return m_valid; }
 

@@ -64,6 +64,7 @@ entities:
       billboard: true
       alpha: true
       dynamic_bounds: true
+      render_back: true
     scale: [0.8, 1.8, 1]
   - name: Object right
     model: quad

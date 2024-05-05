@@ -9,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/QuadVAO.h"
+#include "mesh/vao/QuadVAO.h"
 
 
 namespace {
@@ -49,7 +49,7 @@ namespace mesh {
         return m_material;
     }
 
-    kigl::GLVertexArray* QuadMesh::prepareRT(
+    const kigl::GLVertexArray* QuadMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;

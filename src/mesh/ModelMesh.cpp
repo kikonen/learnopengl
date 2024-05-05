@@ -14,29 +14,31 @@
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMaterialInit.h"
 
+#include "mesh/vao/TexturedVAO.h"
+#include "mesh/vao/SkinnedVAO.h"
+
+#include "mesh/vao/PositionEntry.h"
+
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
+#include "animation/RigContainer.h"
 
 namespace {
+    std::string extractName(std::string_view meshPath) {
+        auto filePath = util::joinPath("", meshPath);
+        return util::baseName(filePath);
+    }
 }
 
 namespace mesh {
     ModelMesh::ModelMesh(
-        std::string_view meshName,
-        std::string_view rootDir)
-        : ModelMesh(meshName, rootDir, "")
-    {
-    }
-
-    ModelMesh::ModelMesh(
-        std::string_view meshName,
         std::string_view rootDir,
         std::string_view meshPath)
         : Mesh(),
-        m_meshName{ meshName },
         m_rootDir{ rootDir },
-        m_meshPath{ meshPath }
+        m_meshPath{ meshPath },
+        m_meshName{ extractName(meshPath) }
     {
     }
 
@@ -51,6 +53,10 @@ namespace mesh {
         return fmt::format(
             "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
             m_id, m_rootDir, m_meshPath, m_meshName);
+    }
+
+    uint32_t ModelMesh::getBaseVertex() const noexcept {
+        return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
     }
 
     const AABB ModelMesh::calculateAABB() const {
@@ -76,21 +82,19 @@ namespace mesh {
         return m_materials;
     }
 
-    kigl::GLVertexArray* ModelMesh::prepareRT(
+    const kigl::GLVertexArray* ModelMesh::prepareRT(
         const PrepareContext& ctx)
     {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
-        m_vertexVBO.prepare(*this);
+        if (m_rig && m_rig->hasBones()) {
+            m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
+        }
+        else {
+            m_vao = ModelRegistry::get().getTexturedVao()->registerModel(this);
+        }
 
-        // NOTE KI no need for thexe any longer (they are in buffers now)
-        // NOTE KI CANNOT clear vertices due to mesh sharing via ModelRegistry
-        m_indexCount = static_cast<uint32_t>(m_indeces.size());
-        m_indeces.clear();
-        //m_vertices.clear();
-
-        m_vao = ModelRegistry::get().registerModelVBO(m_vertexVBO);
         return m_vao;
     }
 
@@ -104,9 +108,11 @@ namespace mesh {
     void ModelMesh::prepareLod(
         mesh::LodMesh& lodMesh)
     {
-        lodMesh.m_lod.m_baseVertex = m_vertexVBO.getBaseVertex();
-        lodMesh.m_lod.m_baseIndex = m_vertexVBO.getBaseIndex();
-        lodMesh.m_lod.m_indexCount = m_vertexVBO.getIndexCount();
+        auto& lod = lodMesh.m_lod;
+
+        lod.m_baseVertex = getBaseVertex();
+        lod.m_baseIndex = getBaseIndex();
+        lod.m_indexCount = getIndexCount();
     }
 
     void ModelMesh::prepareDrawOptions(

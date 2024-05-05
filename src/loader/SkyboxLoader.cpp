@@ -107,16 +107,22 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
+        auto future = ModelRegistry::get().getMesh(
+            assets.modelsDir,
+            SKYBOX_MESH_NAME);
+        auto* mesh = future.get();
+
+        if (!mesh) {
+            KI_ERROR("Failed to load skybox mesh");
+            return;
+        }
+
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<skybox>");
 
         type->m_priority = data.priority;
 
-        auto future = ModelRegistry::get().getMesh(
-            SKYBOX_MESH_NAME,
-            assets.modelsDir);
-        auto* mesh = future.get();
         type->addLod({ mesh });
 
         type->m_entityType = mesh::EntityType::skybox;

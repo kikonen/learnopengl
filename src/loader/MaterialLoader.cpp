@@ -28,10 +28,14 @@ namespace {
         std::regex(".*normaldx.*"),
     };
 
-    const std::vector<std::regex> validMatchers{
+    const std::vector<std::regex> imageMatchers{
         std::regex(".*[\\.]hdr"),
         std::regex(".*[\\.]png"),
         std::regex(".*[\\.]jpg"),
+    };
+
+    const std::vector<std::regex> ktxMatchers{
+        std::regex(".*[\\.]ktx"),
     };
 
     const std::vector<std::regex> colorMatchers{
@@ -39,6 +43,9 @@ namespace {
         std::regex(".*[-_ ]col[-_ \\.].*"),
         std::regex(".*[-_ ]basecolor[-_ \\.].*"),
         std::regex(".*[-_ ]diff[-_ \\.].*"),
+        std::regex(".*[-_ ]albedo[-_ \\.].*"),
+        std::regex(".*[-_ ]albedoopacity[-_ \\.].*"),
+        std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
     };
 
     const std::vector<std::regex> emissionMatchers{
@@ -57,6 +64,7 @@ namespace {
         std::regex(".*[-_ ]metalness[-_ \\.].*"),
         std::regex(".*[-_ ]met[-_ \\.].*"),
         std::regex(".*[-_ ]metallic[-_ \\.].*"),
+        std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{
@@ -182,22 +190,22 @@ namespace loader {
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
-                material.map_kd = resolveTexturePath(line);
+                material.map_kd = resolveTexturePath(line, true);
                 fields.map_kd = true;
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
-                material.map_ke = resolveTexturePath(line);
+                material.map_ke = resolveTexturePath(line, true);
                 fields.map_ke = true;
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
-                material.map_ks = resolveTexturePath(line);
+                material.map_ks = resolveTexturePath(line, true);
                 fields.map_ks = true;
             }
             else if (k == "map_bump" || k == "bump") {
                 std::string line = readString(v);
-                material.map_bump = resolveTexturePath(line);
+                material.map_bump = resolveTexturePath(line, true);
                 fields.map_bump = true;
             }
             else if (k == "map_bump_strength") {
@@ -206,37 +214,37 @@ namespace loader {
             }
             else if (k == "map_dudv") {
                 std::string line = readString(v);
-                material.map_dudv = resolveTexturePath(line);
+                material.map_dudv = resolveTexturePath(line, true);
                 fields.map_dudv = true;
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
-                material.map_noise = resolveTexturePath(line);
+                material.map_noise = resolveTexturePath(line, true);
                 fields.map_noise = true;
             }
             else if (k == "map_roughness") {
                 std::string line = readString(v);
-                material.map_roughness = resolveTexturePath(line);
+                material.map_roughness = resolveTexturePath(line, false);
                 fields.map_roughness = true;
             }
             else if (k == "map_metalness") {
                 std::string line = readString(v);
-                material.map_metalness = resolveTexturePath(line);
+                material.map_metalness = resolveTexturePath(line, false);
                 fields.map_metalness = true;
             }
             else if (k == "map_occlusion") {
                 std::string line = readString(v);
-                material.map_occlusion = resolveTexturePath(line);
+                material.map_occlusion = resolveTexturePath(line, false);
                 fields.map_occlusion = true;
             }
             else if (k == "map_displacement") {
                 std::string line = readString(v);
-                material.map_displacement = resolveTexturePath(line);
+                material.map_displacement = resolveTexturePath(line, false);
                 fields.map_displacement = true;
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
-                material.map_opacity = resolveTexturePath(line);
+                material.map_opacity = resolveTexturePath(line, true);
                 fields.map_opacity = true;
             }
             else if (k == "metal") {
@@ -316,17 +324,15 @@ namespace loader {
     {
         const auto& assets = Assets::get();
 
-        Material& material = data.material;
-        MaterialField& fields = data.fields;
-
         const std::string basePath = util::joinPath(
             assets.assetsDir,
             pbrName);
 
+        std::vector<std::filesystem::directory_entry> normalEntries;
+        std::vector<std::filesystem::directory_entry> ktxEntries;
+
         for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
             std::string fileName = dirEntry.path().filename().string();
-            std::string assetPath = util::joinPath(pbrName, fileName);
-
             std::string matchName{ util::toLower(fileName) };
 
             if (util::matchAny(texturesMatchers, matchName)) {
@@ -338,63 +344,92 @@ namespace loader {
                 continue;
             }
 
-            if (!util::matchAny(validMatchers, matchName)) {
-                continue;
+            if (util::matchAny(ktxMatchers, matchName)) {
+                ktxEntries.push_back(dirEntry);
             }
-
-            bool found = false;
-
-            if (!found && util::matchAny(colorMatchers, matchName)) {
-                fields.map_kd = true;
-                material.map_kd = assetPath;
-                found = true;
+            else if (util::matchAny(imageMatchers, matchName)) {
+                normalEntries.push_back(dirEntry);
             }
+        }
 
-            if (!found && util::matchAny(emissionMatchers, matchName)) {
-                fields.map_ke = true;
-                material.map_ke = assetPath;
-                found = true;
-            }
+        for (const auto& dirEntry : normalEntries) {
+            handlePbrEntry(pbrName, dirEntry, data);
+        }
 
-            if (!found && util::matchAny(normalMatchers, matchName)) {
-                fields.map_bump = true;
-                material.map_bump = assetPath;
-                found = true;
+        if (assets.compressedTexturesEnabled) {
+            for (const auto& dirEntry : ktxEntries) {
+                handlePbrEntry(pbrName, dirEntry, data);
             }
+        }
+    }
 
-            if (!found && util::matchAny(metalnessMatchers, matchName)) {
-                fields.map_metalness = true;
-                material.map_metalness = assetPath;
-                found = true;
-            }
+    void MaterialLoader::handlePbrEntry(
+        const std::string& pbrName,
+        const std::filesystem::directory_entry& dirEntry,
+        MaterialData& data) const
+    {
+        const auto& assets = Assets::get();
 
-            if (!found && util::matchAny(roughnessMatchers, matchName)) {
-                fields.map_roughness = true;
-                material.map_roughness = assetPath;
-                found = true;
-            }
+        Material& material = data.material;
+        MaterialField& fields = data.fields;
 
-            if (!found && util::matchAny(occlusionMatchers, matchName)) {
-                fields.map_occlusion = true;
-                material.map_occlusion = assetPath;
-                found = true;
-            }
+        const std::string fileName = dirEntry.path().filename().string();
+        const std::string assetPath = util::joinPath(pbrName, fileName);
 
-            if (!found && util::matchAny(displacementMatchers, matchName)) {
-                fields.map_displacement = true;
-                material.map_displacement = assetPath;
-                found = true;
-            }
+        std::string matchName{ util::toLower(fileName) };
 
-            if (!found && util::matchAny(opacityMatchers, matchName)) {
-                fields.map_opacity = true;
-                material.map_opacity = assetPath;
-                found = true;
-            }
+        bool found = false;
 
-            if (!found) {
-                throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
-            }
+        if (!found && util::matchAny(colorMatchers, matchName)) {
+            fields.map_kd = true;
+            material.map_kd = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(emissionMatchers, matchName)) {
+            fields.map_ke = true;
+            material.map_ke = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(normalMatchers, matchName)) {
+            fields.map_bump = true;
+            material.map_bump = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(metalnessMatchers, matchName)) {
+            fields.map_metalness = true;
+            material.map_metalness = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(roughnessMatchers, matchName)) {
+            fields.map_roughness = true;
+            material.map_roughness = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(occlusionMatchers, matchName)) {
+            fields.map_occlusion = true;
+            material.map_occlusion = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(displacementMatchers, matchName)) {
+            fields.map_displacement = true;
+            material.map_displacement = assetPath;
+            found = true;
+        }
+
+        if (!found && util::matchAny(opacityMatchers, matchName)) {
+            fields.map_opacity = true;
+            material.map_opacity = assetPath;
+            found = true;
+        }
+
+        if (!found) {
+            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
         }
     }
 

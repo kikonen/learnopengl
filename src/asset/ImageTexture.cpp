@@ -4,21 +4,22 @@
 #include <mutex>
 #include <regex>
 
+#include <iostream>
+
 #include <regex>
-#include "fmt/format.h"
+#include <fmt/format.h>
+
+#include <ktx.h>
 
 #include "asset/Image.h"
 
 #include "util/Util.h"
+#include "util/Log.h"
 
 #include "kigl/kigl.h"
 
 namespace {
     std::unordered_map<std::string, std::shared_future<ImageTexture*>> textures;
-
-    bool preparedTexturesReady{ false };
-    int preparedTexturesLevel{ 0 };
-    std::vector<const ImageTexture*> preparedTextures;
 
     std::mutex textures_lock{};
 
@@ -67,7 +68,7 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}_{}-{}_{}_{}_{}",
+        "{}_{}-{}_{}-{}_{}_{}",
         path, gammaCorrect,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
@@ -84,29 +85,13 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     return future;
 }
 
-const std::pair<int, const std::vector<const ImageTexture*>&> ImageTexture::getPreparedTextures()
-{
-    if (!preparedTexturesReady) {
-        preparedTexturesReady = true;
-        preparedTexturesLevel++;
-        preparedTextures.clear();
-
-        for (const auto& [name, future] : textures) {
-            auto* texture = future.get();
-            if (!texture || !texture->m_handle) continue;
-            preparedTextures.emplace_back(texture);
-        }
-    }
-    return { preparedTexturesLevel, preparedTextures };
-}
-
 ImageTexture::ImageTexture(
     std::string_view name,
     std::string_view path,
     bool gammaCorrect,
     const TextureSpec& spec)
-    : Texture(name, gammaCorrect, spec),
-    m_path(path)
+    : Texture{ name, gammaCorrect, spec },
+    m_path{ path }
 {
 }
 
@@ -121,6 +106,16 @@ void ImageTexture::prepare()
 
     if (!m_valid) return;
 
+    if (m_image->m_ktx) {
+        prepareKtx();
+    }
+    else {
+        prepareNormal();
+    }
+}
+
+void ImageTexture::prepareNormal()
+{
     m_pixelFormat = GL_UNSIGNED_BYTE;
 
     // NOTE KI 1 & 2 channels have issues
@@ -211,13 +206,58 @@ void ImageTexture::prepare()
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
 
+        GLint compFlag;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
+        KI_INFO_OUT(fmt::format("{}: compressed={}", m_image->m_path, compFlag));
+
         m_handle = glGetTextureHandleARB(m_textureID);
         glMakeTextureHandleResidentARB(m_handle);
     }
 
     //m_texIndex = Texture::nextIndex();
 
-    preparedTexturesReady = false;
+    m_image.reset();
+}
+
+void ImageTexture::prepareKtx()
+{
+    ktxTexture* kTexture;
+    KTX_error_code result;
+    //ktx_size_t offset;
+    //ktx_uint8_t* image;
+    //ktx_uint32_t level, layer, faceSlice;
+    GLenum target, glerror;
+
+    result = ktxTexture_CreateFromNamedFile(
+        m_image->m_path.c_str(),
+        KTX_TEXTURE_CREATE_NO_FLAGS,
+        &kTexture);
+
+    if (result) {
+        KI_ERROR(fmt::format("Failed to open ktx: {}", m_image->m_path));
+        m_image.reset();
+        return;
+    }
+
+    // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+    kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
+
+    result = ktxTexture_GLUpload(kTexture, &m_textureID, &target, &glerror);
+    ktxTexture_Destroy(kTexture);
+
+    if (result) {
+        KI_ERROR(fmt::format("Failed to upload ktx: {}", m_image->m_path));
+        m_image.reset();
+        return;
+    }
+
+    GLint compFlag;
+    glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
+    KI_INFO_OUT(fmt::format("{}: compressed={}", m_image->m_path, compFlag));
+
+    m_handle = glGetTextureHandleARB(m_textureID);
+    glMakeTextureHandleResidentARB(m_handle);
 
     m_image.reset();
 }

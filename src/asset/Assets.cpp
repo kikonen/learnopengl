@@ -52,6 +52,7 @@ Assets::Assets()
     glUseDebugFence = false;
     glUseFinish = false;
 
+    compressedTexturesEnabled = false;
     prepassDepthEnabled = false;
 
     gBufferScale = 0.5f;
@@ -73,6 +74,8 @@ Assets::Assets()
 
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
+
+    useAssimpLoader = false;
 
     logFile = "log/development.log";
 

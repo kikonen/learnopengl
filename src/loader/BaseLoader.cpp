@@ -3,6 +3,8 @@
 #include <mutex>
 #include <fstream>
 #include <regex>
+#include <filesystem>
+#include <iomanip>
 
 #include <fmt/format.h>
 
@@ -511,9 +513,28 @@ namespace loader
         return baseId;
     }
 
-    std::string BaseLoader::resolveTexturePath(std::string_view path) const
+    std::string BaseLoader::resolveTexturePath(
+        std::string_view pathName,
+        bool useCompressed) const
     {
-        return std::string{ path };
+        const auto& assets = Assets::get();
+
+        std::filesystem::path filePath{ pathName };
+
+        if (useCompressed && assets.compressedTexturesEnabled) {
+            std::filesystem::path ktxPath{ pathName };
+            ktxPath.replace_extension(".ktx");
+
+            const auto fullPath = util::joinPath(
+                assets.assetsDir,
+                ktxPath.string());
+
+            if (util::fileExists(fullPath)) {
+                filePath = ktxPath;
+            }
+        }
+
+        return filePath.string();
     }
 
     std::string BaseLoader::readFile(std::string_view filename) const

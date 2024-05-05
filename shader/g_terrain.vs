@@ -26,7 +26,10 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 out VS_OUT {
   flat uint entityIndex;
 
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
   vec3 vertexPos;
@@ -99,7 +102,11 @@ void main() {
     vs_out.tilingX = tilingX;
   }
 
+#ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
+#endif
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
+
   vs_out.vertexPos = a_pos;
 
   // NOTE KI pointless to normalize vs side

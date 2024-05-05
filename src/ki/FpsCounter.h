@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <array>
 #include <chrono>
 
@@ -29,7 +30,7 @@ namespace ki {
             return m_avgIndex == 0;
         }
 
-        std::string formatSummary(const char* title) const noexcept;
+        std::string formatSummary(std::string_view title) const noexcept;
 
     private:
         void updateAvg();
@@ -45,7 +46,5 @@ namespace ki {
 
         float m_fpsAvg;
         float m_millisAvg;
-
-        mutable char m_formatBuffer[256];
     };
 }

@@ -48,6 +48,7 @@ public:
     bool glUseDebugFence;
     bool glUseFinish;
 
+    bool compressedTexturesEnabled;
     bool prepassDepthEnabled;
 
     float gBufferScale;
@@ -70,6 +71,8 @@ public:
     bool asyncLoaderEnabled;
     int asyncLoaderDelay;
 
+    bool useAssimpLoader;
+
     std::string logFile;
 
     std::string sceneDir;
@@ -90,7 +93,7 @@ public:
 
     bool useImGui;
     bool imGuiDemo;
-    int imGuiFontSize;
+    float imGuiFontSize;
     std::string imGuiFontPath;
 
     bool useScript;

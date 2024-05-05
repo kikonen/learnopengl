@@ -23,7 +23,7 @@ FrameInit::FrameInit(Window& window)
     ImGui_ImplGlfw_InitForOpenGL(window.m_glfwWindow, true);
     ImGui_ImplOpenGL3_Init(assets.glsl_version_str.c_str());
     // Setup Dear ImGui style
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsClassic();
 }
 
 FrameInit::~FrameInit()

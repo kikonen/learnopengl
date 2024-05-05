@@ -17,7 +17,10 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
 #ifdef USE_NORMAL_PATTERN
@@ -33,6 +36,13 @@ in VS_OUT {
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;
   vec3 tangentPos;
+#endif
+
+#ifdef USE_BONES
+#ifdef USE_BONES_DEBUG
+  uvec4 boneIndex;
+  vec4 boneWeights;
+#endif
 #endif
 } fs_in;
 
@@ -58,8 +68,6 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
-
 #ifdef USE_ALPHA
 #ifdef USE_BLEND_OIT
   if (material.diffuse.a < 0.95)
@@ -81,6 +89,8 @@ void main() {
   }
 
 #ifdef USE_CUBE_MAP
+  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
@@ -94,10 +104,21 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  o_fragColor = vec4(color.xyz, 1.0);
+  o_fragColor = color.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.xyz;
+  o_fragEmission = material.emission.rgb;
+
+#ifdef USE_BONES
+  // o_fragColor = vec3(1.0, 0.0, 0.0);
+
+  // if (fs_in.boneIndex.x > 150) {
+  //   o_fragColor = vec3(0.0, 0.0, 1.0);
+  // }
+#ifdef USE_BONES_DEBUG
+  o_fragColor = fs_in.boneWeights.rgb;
+#endif
+#endif
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormal(normal);
+  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
 }

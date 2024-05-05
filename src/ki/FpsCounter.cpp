@@ -1,5 +1,7 @@
 #include "FpsCounter.h"
 
+#include <fmt/format.h>
+
 namespace ki {
     FpsCounter::FpsCounter()
     {
@@ -41,15 +43,12 @@ namespace ki {
         m_millisAvg = renderTotal * 1000.f / (float)FPS_FRAMES;
     }
 
-    std::string FpsCounter::formatSummary(const char* title) const noexcept
+    std::string FpsCounter::formatSummary(std::string_view title) const noexcept
     {
-        sprintf_s(
-            m_formatBuffer,
-            sizeof(m_formatBuffer),
-            "%s - FPS: %-5.0f - RENDER: %-6.1fms",
+        return fmt::format(
+            "{} - FPS: {} - RENDER: {:.1}ms",
             title,
             round(m_fpsAvg),
             m_millisAvg);
-        return m_formatBuffer;
     }
 }

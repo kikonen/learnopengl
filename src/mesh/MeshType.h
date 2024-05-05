@@ -134,7 +134,7 @@ namespace mesh {
 
         std::unique_ptr<Sprite> m_sprite{ nullptr };
 
-        kigl::GLVertexArray* m_vao{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
 
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 

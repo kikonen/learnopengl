@@ -25,6 +25,7 @@ out VS_OUT {
   vec4 glp;
 
   vec3 worldPos;
+  vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
 
@@ -67,6 +68,7 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   vs_out.worldPos = worldPos.xyz;
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normal;
 

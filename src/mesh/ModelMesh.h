@@ -7,26 +7,28 @@
 
 #include "asset/Material.h"
 
+#include "animation/VertexBone.h"
+
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
 #include "mesh/Mesh.h"
-#include "mesh/ModelVBO.h"
+
+namespace animation {
+    struct RigContainer;
+}
 
 namespace mesh {
     class ModelMesh final : public Mesh {
         friend class ModelLoader;
-        friend class ModelVBO;
+        friend class AssimpLoader;
+        friend class ObjectLoader;
+
         friend class ModelMaterialInit;
 
     public:
         ModelMesh(
-            std::string_view meshName,
+            std::string_view meshPath,
             std::string_view rootDir);
-
-        ModelMesh(
-            std::string_view meshName,
-            std::string_view rootDir,
-            std::string_view meshPath);
 
         virtual ~ModelMesh();
 
@@ -40,7 +42,7 @@ namespace mesh {
 
         virtual const std::vector<Material>& getMaterials() const override;
 
-        virtual kigl::GLVertexArray* prepareRT(
+        virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
         virtual void prepareMaterials(
@@ -52,21 +54,39 @@ namespace mesh {
         virtual void prepareDrawOptions(
             backend::DrawOptions& drawOptions) override;
 
+        uint32_t getBaseVertex() const noexcept;
+
+        inline uint32_t getBaseIndex() const noexcept {
+            return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));
+        }
+
+        inline uint32_t getIndexCount() const noexcept {
+            return static_cast<uint32_t>(m_indeces.size() * 3);
+        }
+
     public:
-        const std::string m_meshName;
         const std::string m_rootDir;
         const std::string m_meshPath;
+        const std::string m_meshName;
 
-    protected:
-        uint32_t m_indexCount{ 0 };
+        std::string m_filePath;
+
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
+
+        std::unique_ptr<animation::RigContainer> m_rig;
+
+        // NOTE KI absolute offset into position VBO
+        size_t m_positionVboOffset{ 0 };
+
+        // NOTE KI absolute offset into EBO
+        size_t m_indexEboOffset{ 0 };
+
+    protected:
         std::vector<Material> m_materials;
 
     private:
         bool m_loaded{ false };
         bool m_valid{ false };
-
-        ModelVBO m_vertexVBO;
     };
 }

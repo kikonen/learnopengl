@@ -49,6 +49,12 @@ namespace mesh {
         void registerMaterials();
         void prepareRT(const PrepareContext& ctx);
 
+        template<typename T>
+        inline T* getMesh() const noexcept
+        {
+            return dynamic_cast<T*>(m_mesh);
+        }
+
         /////////////////////
 
         Mesh* m_mesh{ nullptr };
@@ -58,6 +64,6 @@ namespace mesh {
         std::unique_ptr<Mesh> m_deleter;
         MaterialSet m_materialSet;
 
-        kigl::GLVertexArray* m_vao{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
     };
 }

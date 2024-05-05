@@ -223,6 +223,7 @@ namespace loader {
                 loadText(v, data.text);
             }
             else if (k == "material") {
+                data.forceMaterial = true;
                 needLod = true;
             }
             else if (k == "material_modifier") {
@@ -311,6 +312,9 @@ namespace loader {
             }
             else if (k == "lods") {
                 loadLods(v, data.lods, materialLoader);
+            }
+            else if (k == "animations") {
+                loadAnimations(v, data.animations);
             }
             else {
                 reportUnknown("entity_entry", k, v);
@@ -403,11 +407,10 @@ namespace loader {
             }
             else if (k == "model") {
                 if (v.Type() == YAML::NodeType::Sequence) {
-                    data.meshPath = v[0].as<std::string>();
-                    data.meshName = v[1].as<std::string>();
+                    data.meshPath = util::joinPath(readString(v[0]), readString(v[1]));
                 }
                 else {
-                    data.meshName = readString(v);
+                    data.meshPath = readString(v);
                 }
             }
             else if (k == "material") {
@@ -415,6 +418,39 @@ namespace loader {
             }
             else if (k == "material_modifier") {
                 materialLoader.loadMaterialModifiers(v, data.materialModifiers);
+            } else {
+                reportUnknown("lod_entry", k, v);
+            }
+        }
+    }
+
+    void EntityLoader::loadAnimations(
+        const YAML::Node& node,
+        std::vector<AnimationData>& animations) const
+    {
+        for (const auto& entry : node) {
+            AnimationData& data = animations.emplace_back();
+            loadAnimation(entry, data);
+        }
+    }
+
+    void EntityLoader::loadAnimation(
+        const YAML::Node& node,
+        AnimationData& data) const
+    {
+        for (const auto& pair : node) {
+            const auto& key = pair.first.as<std::string>();
+            const auto& v = pair.second;
+            const auto k = util::toLower(key);
+
+            if (k == "name") {
+                data.name = readString(v);
+            }
+            else if (k == "path") {
+                data.path = readString(v);
+            }
+            else {
+                reportUnknown("animation_entry", k, v);
             }
         }
     }

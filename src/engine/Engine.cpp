@@ -160,7 +160,10 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             elapsedDuration = loopTime - prevLoopTime;
 
             clock.frameCount += 1;
-            clock.ts = static_cast<float>(glfwGetTime());
+            auto ts = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+            );
+            clock.ts = static_cast<double>(ts.count()) / (1000.0 * 1000.0);
             clock.elapsedSecs = elapsedDuration.count();
 
             if (m_registry->m_pendingSnapshotRegistry->isDirty()) {
@@ -245,9 +248,9 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
     auto summary = fpsCounter.formatSummary(m_title.c_str());
     m_window->setTitle(summary);
 
-    if (m_window->isFullScreen() && !assets.glVendorNvidia) {
-        std::cout << summary << '\n';
-    }
+    //if (m_window->isFullScreen() && !assets.glVendorNvidia) {
+    //    std::cout << summary << '\n';
+    //}
 }
 
 void Engine::onDestroy()

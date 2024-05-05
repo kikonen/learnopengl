@@ -85,10 +85,10 @@ void ColorTexture::prepare()
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, 1, 1);
 
         unsigned char data[] {
-            m_color[0] * 255,
-            m_color[1] * 255,
-            m_color[2] * 255,
-            m_color[3] * 255,
+            static_cast<unsigned char>(m_color[0] * 255),
+            static_cast<unsigned char>(m_color[1] * 255),
+            static_cast<unsigned char>(m_color[2] * 255),
+            static_cast<unsigned char>(m_color[3] * 255),
         };
 
         glTextureSubImage2D(m_textureID, 0, 0, 0, 1, 1, m_format, m_pixelFormat, data);
