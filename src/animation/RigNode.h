@@ -19,5 +19,6 @@ namespace animation {
 
         glm::mat4 m_localTransform;
         glm::mat4 m_globalTransform;
+        glm::mat4 m_globalInvTransform;
     };
 }

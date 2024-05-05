@@ -96,6 +96,11 @@ namespace animation {
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
 
+        // NOTE KI noticed strange negative -90 as time for some models
+        // i.e. fbx/deinodonte/Deinodonte.FBX
+        if (factor < 0.0f) return a.m_value;
+        if (factor > 1.0f) return b.m_value;
+
         assert(factor >= 0.0f && factor <= 1.0f);
 
         const auto& start = a.m_value;
@@ -114,6 +119,11 @@ namespace animation {
         const float t2 = (float)b.m_time;
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
+
+        // NOTE KI noticed strange negative -90 as time for some models
+        // i.e. fbx/deinodonte/Deinodonte.FBX
+        if (factor < 0.0f) return a.m_value;
+        if (factor > 1.0f) return b.m_value;
 
         assert(factor >= 0.0f && factor <= 1.0f);
 

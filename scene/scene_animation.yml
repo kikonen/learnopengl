@@ -70,14 +70,14 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - xid: lion_{t}
+  - id: lion_{t}
     model: fbx/lion/SK_Lion.FBX
     material: lion_pbr
     program: g_tex
     shadow_program: simple_depth
-    pos: [0.0, 0.0, 0.0]
+    pos: [-20.0, 0.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [180, 0, 0]
+    base_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -99,20 +99,20 @@ entities:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5
-    repeat:
+    xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
     xscript_file: scripts/cow_audio
-  - xid: deinodonte_{t}
+  - id: deinodonte_{t}
     model: fbx/deinodonte/Deinodonte.FBX
     material: deinodonte_pbr
     program: g_tex
     shadow_program: simple_depth
-    pos: [0.0, 8.0, 0.0]
+    pos: [-10.0, 8.0, -10.0]
     rotation: [0, 0, 0]
-    base_rotation: [180, 0, 0]
+    base_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -125,18 +125,18 @@ entities:
         path: fbx/deinodonte/anim/Deinodonte@IdleBreathe.FBX
       - name: walk
         path: fbx/deinodonte/anim/Deinodonte@Walk_RM.FBX
-    repeat:
+    xrepeat:
       x_count: 2
       z_count: 2
       x_step: 20
       z_step: -20
-  - xid: elf_{t}
+  - id: elf_{t}
     model: fbx/elf/Elf Female.fbx
     material: elf_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
-    rotation: [180, 0, 0]
+    rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
@@ -148,19 +148,19 @@ entities:
     animations:
       - name: walk
         path: fbx/elf/anim/Elf Animations.FBX
-    repeat:
+    xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
-  - xid: human_{t}
+  - id: human_{t}
     model: fbx/human/Scavenger.fbx
     material: human_pbr
     program: g_tex
     shadow_program: simple_depth
-    pos: [0.0, 3.0, 0.0]
+    pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -168,23 +168,24 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    xanimations:
+    animations:
       - name: walk
-        path: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
-    repeat:
+        path: fbx/human/Scavenger.fbx
+        xpath: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
+    xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
-  - xid: skeleton_{t}
+  - id: skeleton_{t}
     model: fbx/skeleton/skeleton_animated.FBX
     material: skeleton_pbr
     program: g_tex
     shadow_program: simple_depth
-    pos: [0.0, 2.0, 0.0]
+    pos: [20.0, 2.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
-    scale: 0.035
+    scale: 0.05
     render_flags:
       xrender_back: true
       xwireframe: true
@@ -194,7 +195,7 @@ entities:
     xanimations:
       - name: walk
         path: fbx/skeleton/anim/Humanoid@WalkForwardUnarmed2.fbx
-    repeat:
+    xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5

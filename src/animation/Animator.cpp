@@ -53,7 +53,7 @@ namespace animation {
         }
 
 
-        const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_localTransform);
+        const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_globalTransform);
 
         //for (int16_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++) {
         //}
@@ -66,14 +66,16 @@ namespace animation {
             const auto* channel = animation->findByNodeIndex(rigNode.m_index);
             const glm::mat4& nodeTransform = channel
                 ? channel->interpolate(animationTimeTicks)
-                : rigNode.m_localTransform;
+                //: rigNode.m_localTransform;
+                : glm::mat4{ 1.f };
 
             auto globalTransform = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
 
             auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
-                //palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
                 palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
+                //palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
+                //palette[bone->m_index] = rigNode.m_globalInvTransform * nodeTransform * bone->m_offsetMatrix;
             }
 
             parentTransforms[rigNode.m_index + 1] = globalTransform;

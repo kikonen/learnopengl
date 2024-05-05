@@ -40,4 +40,11 @@ namespace animation {
     {
         return m_boneContainer.hasBones();
     }
+
+    void RigContainer::calculateInvTransforms() noexcept
+    {
+        for (auto& rigNode : m_nodes) {
+            rigNode.m_globalInvTransform = glm::inverse(rigNode.m_globalTransform);
+        }
+    }
 }

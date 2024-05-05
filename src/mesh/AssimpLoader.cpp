@@ -102,6 +102,7 @@ namespace mesh
 
         std::vector<const aiNode*> assimpNodes;
         collectNodes(rig, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+        rig.calculateInvTransforms();
 
         processMeshes(
             rig,
@@ -186,7 +187,7 @@ namespace mesh
             }
 
             {
-                modelMesh.m_transform = rigNode.m_transform;
+                //modelMesh.m_transform = rigNode.m_globalTransform;
 
                 auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
                 auto count = std::min((unsigned int)10, node->mNumMeshes - from);
