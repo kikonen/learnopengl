@@ -125,6 +125,8 @@ entities:
         path: fbx/deinodonte/anim/Deinodonte@IdleBreathe.FBX
       - name: walk
         path: fbx/deinodonte/anim/Deinodonte@Walk_RM.FBX
+      - name: attack_claw_left
+        path: fbx/deinodonte/anim/Deinodonte@ClawsAttackLeft.FBX
     xrepeat:
       x_count: 2
       z_count: 2
