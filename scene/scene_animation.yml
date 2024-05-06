@@ -153,14 +153,14 @@ entities:
       z_count: 2
       x_step: 5
       z_step: -5
-  - id: human_{t}
+  - id: scavenger_{t}
     model: fbx/human/Scavenger.fbx
     material: human_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [-90, 0, 0]
+    base_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true

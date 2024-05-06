@@ -116,6 +116,7 @@ namespace animation
         return animator.animate(
             ctx,
             rig,
+            mesh->m_transform,
             palette,
             transform.m_animationIndex,
             transform.m_animationStartTime,

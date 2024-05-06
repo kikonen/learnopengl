@@ -22,6 +22,7 @@ namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
+        const glm::mat4& meshTransform,
         std::span<animation::BoneTransform>& palette,
         uint16_t animationIndex,
         double animationStartTime,
@@ -53,7 +54,8 @@ namespace animation {
         }
 
 
-        const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_globalTransform);
+        //const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_globalTransform);
+        const auto globalInverseTransform = glm::inverse(meshTransform);
 
         //for (int16_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++) {
         //}
@@ -73,8 +75,8 @@ namespace animation {
 
             auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
-                palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
-                //palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
+                //palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
+                palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
                 //palette[bone->m_index] = rigNode.m_globalInvTransform * nodeTransform * bone->m_offsetMatrix;
             }
 

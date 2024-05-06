@@ -102,7 +102,7 @@ namespace mesh
 
         std::vector<const aiNode*> assimpNodes;
         collectNodes(rig, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
-        rig.calculateInvTransforms();
+        //rig.calculateInvTransforms();
 
         processMeshes(
             rig,
@@ -125,17 +125,17 @@ namespace mesh
         int16_t parentIndex,
         const glm::mat4& parentTransform)
     {
-        glm::mat4 transform;
+        //glm::mat4 transform;
         uint16_t nodeIndex;
         {
             assimpNodes.push_back(node);
 
             auto& rigNode = rig.addNode(node);
-            rigNode.m_globalTransform = parentTransform * rigNode.m_localTransform;
+            //rigNode.m_globalTransform = parentTransform * rigNode.m_localTransform;
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            transform = rigNode.m_globalTransform;
+            //transform = rigNode.m_globalTransform;
         }
 
         KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
@@ -147,7 +147,7 @@ namespace mesh
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(rig, assimpNodes, scene, node->mChildren[n], nodeIndex, transform);
+            collectNodes(rig, assimpNodes, scene, node->mChildren[n], nodeIndex, glm::mat4{ 1.f });
         }
     }
 
@@ -170,7 +170,13 @@ namespace mesh
         ModelMesh& modelMesh,
         const aiScene* scene)
     {
+        std::vector<glm::mat4> globalTransforms;
+        globalTransforms.resize(rig.m_nodes.size());
+
         for (auto& rigNode : rig.m_nodes) {
+            const glm::mat4& parentTransform = rigNode.m_parentIndex >= 0 ? globalTransforms[rigNode.m_parentIndex] : glm::mat4(1.f);
+            globalTransforms[rigNode.m_index] = parentTransform * rigNode.m_localTransform;
+
             auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
 
@@ -187,7 +193,7 @@ namespace mesh
             }
 
             {
-                //modelMesh.m_transform = rigNode.m_globalTransform;
+                modelMesh.m_transform = globalTransforms[rigNode.m_index];
 
                 auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
                 auto count = std::min((unsigned int)10, node->mNumMeshes - from);

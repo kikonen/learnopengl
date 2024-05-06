@@ -890,9 +890,22 @@ namespace loader {
 
         flags.gbuffer = data.programName.starts_with("g_");
 
-        flags.useBones = data.findRenderFlag("use_bones", flags.useBones);
-        flags.useBonesDebug = data.findRenderFlag("use_bones_debug", flags.useBonesDebug);
-        flags.useAnimation = data.findRenderFlag("use_animation", flags.useAnimation);
+        // Rigged model
+        {
+            flags.useBones = data.findRenderFlag("use_bones", flags.useBones);
+
+            // NOTE KI bones are *required* if using animation
+            flags.useAnimation = data.findRenderFlag("use_animation", flags.useAnimation);
+            if (flags.useAnimation) {
+                flags.useBones = true;
+            }
+
+            // NOTE KI no bones debug if no bones
+            flags.useBonesDebug = data.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+            if (!flags.useBones) {
+                flags.useBonesDebug = false;
+            }
+        }
 
         flags.preDepth = data.findRenderFlag("pre_depth", flags.preDepth);
         flags.gbuffer = data.findRenderFlag("gbuffer", flags.gbuffer);
