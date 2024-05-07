@@ -37,7 +37,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -88,7 +87,6 @@ entities:
     rotation: [0, 0, 0]
     scale: 4
     xmaterial: gold_ball
-    xforce_material: true
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal007_1K-PNG

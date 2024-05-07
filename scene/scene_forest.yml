@@ -32,7 +32,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -43,13 +42,11 @@ entities:
     type: model
     program: g_tex
     pos: [-1000, 10.0, 0.0]
-    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
       static_bounds: true
       render_back: true
-    force_material: true
     xscale: [7, 10, 1]
     scale: 10
     lods:

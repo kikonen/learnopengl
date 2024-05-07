@@ -62,7 +62,6 @@ entities:
   - id: asteroid_belt
     parent_id: planet-origo
     program: g_tex
-    force_material: true
     render_flags:
       render_back: true
     pos: [0, 0, 0]
@@ -113,7 +112,6 @@ entities:
     program: g_tex
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:

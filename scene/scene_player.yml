@@ -45,7 +45,6 @@ entities:
       - pos: [5.0, 2.0, 5.0]
   - id: rock
     program: g_tex
-    force_material: true
     render_flags:
       render_back: true
     lods:
@@ -101,7 +100,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:

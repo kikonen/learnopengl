@@ -75,7 +75,6 @@ entities:
   - name: Plasma ball
     model: ball_volume
     material: plasma_ball
-    force_material: true
     program: ball_effect
     program_definitions:
       effect_plasma: 1
@@ -110,7 +109,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:

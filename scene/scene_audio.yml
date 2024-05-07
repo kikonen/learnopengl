@@ -40,7 +40,6 @@ entities:
     pos: [0.0, 0.0, 0.0]
     scale: 1
     material: default_ball
-    force_material: true
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
     audio:

@@ -59,7 +59,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.3, 1.0]
     light:
@@ -75,7 +74,6 @@ entities:
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
     material: linden_tree
-    force_material: true
     render_flags:
       alpha: true
       no_frustum: true

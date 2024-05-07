@@ -32,7 +32,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -46,7 +45,6 @@ entities:
     model: plane
     xxmodel: woodwall
     material: wood_floor
-    force_material: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:

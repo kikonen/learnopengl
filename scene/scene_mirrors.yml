@@ -32,7 +32,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -42,7 +41,6 @@ entities:
   - name: Silver ball
     model: water_ball
     material: silver_ball
-    force_material: true
     program: g_tex
     pos: [0, -1, 0]
     scale: 1.3
@@ -52,7 +50,6 @@ entities:
     model: texture_cube
     program: g_tex
     material: woodwall
-    force_material: true
     pos: [5.0, 5.0, -5.0]
     scale: 1
   - name: Four cubes

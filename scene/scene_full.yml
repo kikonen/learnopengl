@@ -109,7 +109,6 @@ entities:
     render_flags:
       effect: true
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.0, 0.7, 0.0, 1.0]
     light:
@@ -416,7 +415,7 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - name: Shuttle
+  - id: shuttle
     model: [opengl_book/NasaShuttle, shuttle]
     program: g_tex
     material_modifier:
@@ -473,7 +472,6 @@ entities:
     rotation: [0, 180, 0]
     scale: 0.8
     material: cow_fur
-    force_material: true
     render_flags:
       alpha: true
   - name: Cow 2
@@ -538,7 +536,6 @@ entities:
     pos: [5.0, 30.0, 5.0]
     scale: 1.3
     material: default_ball
-    force_material: true
     material_modifier:
       metal: [0.6, 0.3, 0, 1]
   - name: Gold ball
@@ -546,7 +543,6 @@ entities:
     program: g_tex
     pos: [5.0, 30.0, 10.0]
     scale: 1.3
-    force_material: true
     material: gold_ball
     material_modifier:
       map_pbr: textures\Metal007_1K-PNG
@@ -559,7 +555,6 @@ entities:
     program: g_tex
     pos: [5.0, 30.0, 15.0]
     scale: 1.3
-    force_material: true
     material: silver_ball
     material_modifier:
       metal: [1, 0.3, 0, 1]
@@ -575,7 +570,6 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-    force_material: true
     material: bronze_ball
     material_modifier:
       metal: [1, 0.3, 0, 1]
@@ -585,7 +579,6 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-    force_material: true
     material: copper
     material_modifier:
       metal: [1, 0.3, 0, 1]
@@ -593,7 +586,6 @@ entities:
     parent_id: cube-3
     model: ball_volume
     material: plasma_ball
-    force_material: true
     program: ball_effect
     program_definitions:
       effect_plasma: 1
@@ -738,7 +730,6 @@ entities:
     pos: [-1024, 150, -1024]
     scale: 5.0
     material: sea_floor
-    force_material: true
     material_modifier:
       ke: [0, 0.2, 0]
     light:
@@ -817,7 +808,6 @@ entities:
     program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
-    force_material: true
     material_modifier:
       metal: [0.5, 0.0, 0, 1]
       map_pbr: textures\Rock002_1K-PNG
@@ -825,7 +815,6 @@ entities:
   - name: Asteroid belt
     parent_id: planet-origo
     program: g_tex
-    force_material: true
     pos: [0, 0, 0]
     lods:
       - model: [rock2, rock]
@@ -899,7 +888,6 @@ entities:
     program: g_tex
     pos: [250, 10.0, 150.0]
     material: linden_tree
-    force_material: true
     render_flags:
       alpha: true
       no_frustum: true

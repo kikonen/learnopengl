@@ -29,7 +29,6 @@ entities:
     model: cow
     xxmodel: cube
     xxmaterial: fur_base
-    xxforce_material: true
     program: g_tex
     render_flags:
       xxwireframe: true
@@ -49,7 +48,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
