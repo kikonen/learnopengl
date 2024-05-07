@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
-#include "MaterialData.h"
+#include "MaterialReference.h"
 
 namespace loader {
     struct LodData {
@@ -10,7 +11,6 @@ namespace loader {
 
         std::string meshPath;
 
-        std::string materialName;
-        MaterialData materialModifiers;
+        std::vector<MaterialReference> materialReferences;
     };
 }

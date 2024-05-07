@@ -121,10 +121,6 @@ namespace loader {
             pool::TypeHandle typeHandle,
             const TextData& data) const;
 
-        Material resolveDefaultMaterial(
-            const EntityCloneData& entityData,
-            const LodData& data);
-
         void resolveMaterials(
             pool::TypeHandle typeHandle,
             const EntityCloneData& entityData,

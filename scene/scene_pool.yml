@@ -37,7 +37,6 @@ entities:
     program: g_tex
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -126,14 +125,13 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-  - id: linden_tree_forest_1
+  - xid: linden_tree_forest_1_{t}
     type: model
     model: linden_tree
     program: g_tex
     instanced: true
-    pos: [-40.0, 4, 40]
+    pos: [-40.0, 4, 70]
     material: linden_tree
-    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
@@ -144,10 +142,34 @@ entities:
       type: grid
       repeat:
         x_count: 1
-        z_count: 3
+        z_count: 4
         x_step: 20
         z_step: -40
-  - name: Skeleton army
+  - id: palm_tree_forest_1_{t}
+    type: model
+    model: fbx/scenery/trees/Palm_01.fbx
+    program: g_tex
+    instanced: true
+    pos: [-40.0, 4, 70]
+    materials:
+      - name: palm_trunk
+        alias: Tree_0Mat
+      - name: palm_leaf
+        alias: Tree_1Mat
+      - name: palm_trunk
+        alias: Tree_2Mat
+    render_flags:
+      render_back: true
+      static_bounds: true
+    scale: 0.05
+    generator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - xid: skeleton_army_{t}
     model: quad
     priority: 1
     program: g_tex
@@ -158,7 +180,24 @@ entities:
       render_back: true
     scale: [1.5, 3, 1]
     repeat:
-      x_count: 30
+      x_count: 25
+      z_count: 1
+      x_step: 10
+      z_step: 0
+  - id: skeleton_army_2_{t}
+    model: fbx/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    priority: 1
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-20, 10, 80]
+    base_rot: [0, 180, 0]
+    render_flags:
+      use_bones: true
+      xuse_animation: true
+    scale: 0.1
+    repeat:
+      x_count: 25
       z_count: 1
       x_step: 10
       z_step: 0
@@ -233,14 +272,13 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
-  - id: linden_tree_forest_2
+  - xid: linden_tree_forest_2_{t}
     type: model
     model: linden_tree
     program: g_tex
     instanced: true
-    pos: [240.0, 14, 40]
+    pos: [240.0, 14, 70]
     material: linden_tree
-    force_material: true
     render_flags:
       alpha: true
       no_frustum: true
@@ -251,7 +289,31 @@ entities:
       type: grid
       repeat:
         x_count: 1
-        z_count: 3
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - id: palm_tree_forest_2_{t}
+    type: model
+    model: fbx/scenery/trees/Palm_01.fbx
+    program: g_tex
+    instanced: true
+    pos: [240.0, 14, 70]
+    materials:
+      - name: palm_trunk
+        alias: Tree_0Mat
+      - name: palm_leaf
+        alias: Tree_1Mat
+      - name: palm_trunk
+        alias: Tree_2Mat
+    render_flags:
+      render_back: true
+      static_bounds: true
+    scale: 0.05
+    generator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
         x_step: 20
         z_step: -40
 materials:
@@ -283,3 +345,13 @@ materials:
     map_kd: sprites/skeleton.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: skeleton_pbr
+    map_pbr: fbx/skeleton/skeleton_pbr
+    xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
+  - name: palm_trunk
+    map_kd: fbx/scenery/trees/textures/palm02.png
+    map_bump: fbx/scenery/trees/textures/palm02_normal.png
+  - name: palm_leaf
+    map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+    map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png

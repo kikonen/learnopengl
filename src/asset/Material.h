@@ -85,6 +85,11 @@ public:
     Material& operator=(const Material& o) = default;
     Material& operator=(Material&& o) = default;
 
+    // assign data from other material, but keep local ID
+    // NOTE KI *MUST* keep original materialId
+    // => it's referred by verteces
+    void assign(const Material& o);
+
     void loadTextures();
 
     bool hasTex(int index) const;

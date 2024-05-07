@@ -71,9 +71,6 @@ namespace loader {
 
         glm::vec3 clonePositionOffset{ 0.f };
 
-        // NOTE KI overrides *ALL* materials with defaultMaterial
-        bool forceMaterial{ false };
-
         CustomMaterialData customMaterial;
         PhysicsData physics;
 

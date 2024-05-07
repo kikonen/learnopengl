@@ -150,6 +150,13 @@ Material::~Material()
     //    m_id, m_name, m_registeredIndex));
 }
 
+void Material::assign(const Material& o)
+{
+    auto oldId = m_id;
+    *this = o;
+    m_id = oldId;
+}
+
 void Material::loadTextures()
 {
     if (m_loaded) return;

@@ -643,23 +643,6 @@ namespace loader {
         return font ? font->id : 0;
     }
 
-    Material SceneLoader::resolveDefaultMaterial(
-        const EntityCloneData& entityData,
-        const LodData& data)
-    {
-        const Material* material = nullptr;
-
-        if (!data.materialName.empty()) {
-            material = findMaterial(data.materialName, m_materials);
-        }
-
-        if (!material) {
-            material = &m_defaultMaterial;
-        }
-
-        return *material;
-    }
-
     void SceneLoader::resolveMaterials(
         pool::TypeHandle typeHandle,
         const EntityCloneData& entityData,
@@ -668,14 +651,25 @@ namespace loader {
     {
         auto* type = typeHandle.toType();
 
-        Material defaultMaterial = resolveDefaultMaterial(entityData, data);
-
         auto* lodMesh = type->modifyLod(lodIndex);
         if (lodMesh) {
-            lodMesh->setupMeshMaterials(defaultMaterial, true, entityData.forceMaterial);
+            lodMesh->setupMeshMaterials(m_defaultMaterial, true, false);
 
             for (auto& m : lodMesh->m_materialSet.modifyMaterials()) {
-                m_materialLoader.modifyMaterial(m, data.materialModifiers);
+                for (auto& ref : data.materialReferences) {
+                    const auto& alias = ref.modifiers.aliasName;
+                    const auto& name = ref.modifiers.materialName;
+                    if (alias == m.m_name || alias.empty() || alias == "*")
+                    {
+                        if (!ref.modifiers.modify && !name.empty() && !alias.empty()) {
+                            const auto* overrideMaterial = findMaterial(name, m_materials);
+                            if (overrideMaterial) {
+                                m.assign(*overrideMaterial);
+                            }
+                        }
+                        m_materialLoader.modifyMaterial(m, ref.modifiers);
+                    }
+                }
                 m.loadTextures();
             };
         }

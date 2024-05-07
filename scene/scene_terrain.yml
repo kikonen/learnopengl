@@ -30,7 +30,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -95,13 +94,13 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-  - id: linden_tree_forest
+  - xid: linden_tree_forest
     type: model
     model: linden_tree
     priority: 1
     program: g_tex
     pos: [150, 15.0, 150.0]
-    force_material: true
+    material: linden_tree
     render_flags:
       alpha: true
       no_frustum: true
@@ -115,6 +114,31 @@ entities:
       - model: linden_tree_lod_1
         material: linden_tree
         distance: 99999
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: -20
+        z_step: 20
+  - id: palm_tree_forest_{t}
+    type: model
+    model: fbx/scenery/trees/Palm_01.fbx
+    priority: 1
+    program: g_tex
+    pos: [150, 15.0, 150.0]
+    materials:
+      - name: palm_trunk
+        alias: Tree_0Mat
+      - name: palm_leaf
+        alias: Tree_1Mat
+      - name: palm_trunk
+        alias: Tree_2Mat
+    render_flags:
+      render_back: true
+      static_bounds: true
+    scale: 0.05
     instanced: true
     generator:
       type: grid
@@ -190,3 +214,9 @@ materials:
     map_pbr: fbx/skeleton/skeleton_pbr
     xmetal: [0.3, 0.4, 0, 1]
     xtiling: 60
+  - name: palm_trunk
+    map_kd: fbx/scenery/trees/textures/palm02.png
+    map_bump: fbx/scenery/trees/textures/palm02_normal.png
+  - name: palm_leaf
+    map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+    map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png

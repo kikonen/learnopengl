@@ -150,6 +150,12 @@ namespace loader {
                     reportUnknown("material_type", k, v);
                 }
             }
+            else if (k == "alias") {
+                data.aliasName = readString(v);
+            }
+            else if (k == "modify") {
+                data.modify = readBool(v);
+            }
             else if (k == "ns") {
                 material.ns = readFloat(v);
                 fields.ns = true;

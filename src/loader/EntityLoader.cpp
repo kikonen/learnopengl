@@ -223,14 +223,10 @@ namespace loader {
                 loadText(v, data.text);
             }
             else if (k == "material") {
-                data.forceMaterial = true;
                 needLod = true;
             }
             else if (k == "material_modifier") {
                 needLod = true;
-            }
-            else if (k == "force_material") {
-                data.forceMaterial = readBool(v);
             }
             else if (k == "sprite") {
                 data.spriteName = readString(v);
@@ -413,15 +409,49 @@ namespace loader {
                     data.meshPath = readString(v);
                 }
             }
+            else if (k == "materials") {
+                loadMaterialReferences(v, data.materialReferences, materialLoader);
+            }
             else if (k == "material") {
-                data.materialName = readString(v);
+                if (data.materialReferences.empty()) {
+                    data.materialReferences.emplace_back();
+                }
+                auto& materialData = data.materialReferences[0];
+                materialData.modifiers.materialName = readString(v);
+                materialData.modifiers.aliasName = "*";
             }
             else if (k == "material_modifier") {
-                materialLoader.loadMaterialModifiers(v, data.materialModifiers);
+                if (data.materialReferences.empty()) {
+                    data.materialReferences.emplace_back();
+                }
+                auto& materialData = data.materialReferences[0];
+                materialData.modifiers.aliasName = "*";
+                materialData.modifiers.modify = true;
+                loadMaterialReference(v, materialData, materialLoader);
             } else {
                 reportUnknown("lod_entry", k, v);
             }
         }
+    }
+
+    void EntityLoader::loadMaterialReferences(
+        const YAML::Node& node,
+        std::vector<MaterialReference>& references,
+        MaterialLoader& materialLoader) const
+    {
+        for (const auto& entry : node) {
+            MaterialReference& data = references.emplace_back();
+            loadMaterialReference(entry, data, materialLoader);
+        }
+    }
+
+    void EntityLoader::loadMaterialReference(
+        const YAML::Node& node,
+        MaterialReference& data,
+        MaterialLoader& materialLoader) const
+    {
+        materialLoader.loadMaterialModifiers(node, data.modifiers);
+        data.modifiers.materialName = data.modifiers.material.m_name;
     }
 
     void EntityLoader::loadAnimations(

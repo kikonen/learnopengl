@@ -366,14 +366,16 @@ namespace mesh
     Material AssimpLoader::processMaterial(
         ModelMesh& modelMesh,
         const aiScene* scene,
-        const aiMaterial* material)
+        const aiMaterial* src)
     {
-        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
-            material->GetName().C_Str(),
-            material->mNumProperties,
-            material->mNumAllocated));
+        const auto name = src->GetName().C_Str();
 
-        Material result;
+        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
+            name,
+            src->mNumProperties,
+            src->mNumAllocated));
+
+        Material material;
         std::map<std::string, GLuint*> textureIdMap;
 
         int ret1, ret2;
@@ -393,53 +395,57 @@ namespace mesh
         aiString normalPath;
         aiString emissionPath;
 
-        auto diffuseTexValid = material->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
-        auto bumpTexValid = material->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath);
-        auto normalTexValid = material->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
-        auto emissionTexValid = material->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath);
+        auto diffuseTexValid = src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
+        auto bumpTexValid = src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath);
+        auto normalTexValid = src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
+        auto emissionTexValid = src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath);
 
-        auto diffuseValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
-        auto specularValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular);
-        auto ambientValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient);
-        auto emissionValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emission);
+        auto diffuseValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+        auto specularValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular);
+        auto ambientValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient);
+        auto emissionValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission);
 
         max = 1;
-        ret1 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS, &shininess, &max);
+        ret1 = aiGetMaterialFloatArray(src, AI_MATKEY_SHININESS, &shininess, &max);
         max = 1;
-        ret2 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
+        ret2 = aiGetMaterialFloatArray(src, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
 
         if (diffuseTexValid == AI_SUCCESS) {
             //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-            result.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
+            material.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
         }
         if (bumpTexValid == AI_SUCCESS) {
-            result.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
+            material.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
         }
         if (normalTexValid == AI_SUCCESS) {
-            result.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
+            material.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
         }
         if (emissionTexValid == AI_SUCCESS) {
-            result.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
+            material.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
         }
 
-        result.kd = assimp_util::toVec4(diffuse);
-        result.ks = assimp_util::toVec4(specular);
-        result.ka = assimp_util::toVec4(ambient);
-        result.ke = assimp_util::toVec4(emission);
+        material.kd = assimp_util::toVec4(diffuse);
+        material.ks = assimp_util::toVec4(specular);
+        material.ka = assimp_util::toVec4(ambient);
+        material.ke = assimp_util::toVec4(emission);
 
-        result.ns = shininess;
+        material.ns = shininess;
 
-        result.m_name = material->GetName().C_Str();
+        material.m_name = name;
 
-        return result;
+        return material;
     }
 
     std::string AssimpLoader::findTexturePath(
         ModelMesh& modelMesh,
-        std::string assetPath)
+        std::string origPath)
     {
+        std::string assetPath = origPath;
         std::filesystem::path meshPath{ modelMesh.m_meshName };
         const auto parentPath = meshPath.parent_path();
+
+        std::filesystem::path fsPath{ assetPath };
+        std::string assetPath2 = std::filesystem::weakly_canonical(fsPath).string();
 
         std::string filePath = util::joinPathExt(
             modelMesh.m_rootDir,
@@ -452,7 +458,7 @@ namespace mesh
                 assetPath);
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}", assetPath));
+        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}, was={}", assetPath, origPath));
 
         return assetPath;
     }
