@@ -882,7 +882,7 @@ entities:
     render_flags:
       render_back: true
     enabled: false
-  - id: linden_tree_forest
+  - xid: linden_tree_forest
     type: model
     priority: 1
     program: g_tex
@@ -901,6 +901,31 @@ entities:
       - model: linden_tree_lod_1
         material: linden_tree
         distance: 99999
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
+  - id: palm_tree_forest_{t}
+    type: model
+    model: fbx/scenery/trees/Palm_01.fbx
+    priority: 1
+    program: g_tex
+    pos: [250, 10.0, 150.0]
+    materials:
+      - name: palm_trunk
+        alias: Tree_0Mat
+      - name: palm_leaf
+        alias: Tree_1Mat
+      - name: palm_trunk
+        alias: Tree_2Mat
+    render_flags:
+      render_back: true
+      static_bounds: true
+    scale: 0.05
     instanced: true
     generator:
       type: grid
@@ -1144,6 +1169,18 @@ materials:
     map_bump: sprites/linden_tree_512_normal.png
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: palm_trunk
+    map_kd: fbx/scenery/trees/textures/palm02.png
+    map_bump: fbx/scenery/trees/textures/palm02_normal.png
+  - name: palm_leaf
+    map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+    map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
+  - name: maple_trunk
+    map_kd: fbx/scenery/trees/textures/bark02.png
+    map_bump: fbx/scenery/trees/textures/bark02_normal.png
+  - name: maple_leaf
+    map_kd: fbx/scenery/trees/textures/leaf maple.png
+    map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
   - name: skeleton
     map_kd: sprites/skeleton.png
     texture_spec:

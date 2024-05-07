@@ -64,7 +64,7 @@ entities:
         z_count: 200
         x_step: 20
         z_step: -20
-  - xid: palm_tree_forest_{t}
+  - id: palm_tree_forest_{t}
     type: model
     model: fbx/scenery/trees/Palm_01.fbx
     program: g_tex
@@ -88,7 +88,7 @@ entities:
         z_count: 200
         x_step: 20
         z_step: -20
-  - id: maple_tree_forest_{t}
+  - xid: maple_tree_forest_{t}
     type: model
     model: fbx/scenery/trees/Maple_02.fbx
     program: g_tex
