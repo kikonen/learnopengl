@@ -791,7 +791,7 @@ entities:
     model: [planet, planet]
     program: g_tex
     material_modifier:
-      map_bump: mars_normal.png
+      map_bump: planet/mars_normal.png
     pos: [0, 0, 0]
     scale: 10
     script_file: scripts/anim_planet
