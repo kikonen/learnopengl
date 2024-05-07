@@ -453,9 +453,12 @@ namespace mesh
             assetPath, "");
 
         if (util::fileExists(filePath)) {
-            assetPath = util::joinPath(
-                parentPath.filename().string(),
-                assetPath);
+            //assetPath = util::joinPath(
+            //    parentPath.filename().string(),
+            //    assetPath);
+            assetPath = filePath.substr(
+                modelMesh.m_rootDir.length() + 1,
+                filePath.length() - modelMesh.m_rootDir.length() - 1);
         }
 
         KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}, was={}", assetPath, origPath));

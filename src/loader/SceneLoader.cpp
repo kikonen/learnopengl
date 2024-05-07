@@ -659,9 +659,10 @@ namespace loader {
                 for (auto& ref : data.materialReferences) {
                     const auto& alias = ref.modifiers.aliasName;
                     const auto& name = ref.modifiers.materialName;
+                    KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
                     if (alias == m.m_name || alias.empty() || alias == "*")
                     {
-                        if (!ref.modifiers.modify && !name.empty() && !alias.empty()) {
+                        if (!name.empty() && !alias.empty()) {
                             const auto* overrideMaterial = findMaterial(name, m_materials);
                             if (overrideMaterial) {
                                 m.assign(*overrideMaterial);

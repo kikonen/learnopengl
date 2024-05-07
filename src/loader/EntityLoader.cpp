@@ -451,7 +451,10 @@ namespace loader {
         MaterialLoader& materialLoader) const
     {
         materialLoader.loadMaterialModifiers(node, data.modifiers);
-        data.modifiers.materialName = data.modifiers.material.m_name;
+        // NOTE KI don't override material name with "<modifier>"
+        if (data.modifiers.materialName.empty()) {
+            data.modifiers.materialName = data.modifiers.material.m_name;
+        }
     }
 
     void EntityLoader::loadAnimations(
