@@ -30,7 +30,7 @@
 #include "AnimationData.h"
 
 namespace loader {
-    struct EntityCloneData {
+    struct EntityData {
         bool valid{ false };
 
         bool enabled{ false };

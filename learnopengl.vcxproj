@@ -419,7 +419,7 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
-    <ClInclude Include="src\loader\EntityCloneData.h" />
+    <ClInclude Include="src\loader\EntityData.h" />
     <ClInclude Include="src\loader\Flags.h" />
     <ClInclude Include="src\loader\Loaders.h" />
     <ClInclude Include="src\loader\MaterialReference.h" />

@@ -1715,7 +1715,7 @@
     <ClInclude Include="src\loader\Flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityCloneData.h">
+    <ClInclude Include="src\loader\EntityData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

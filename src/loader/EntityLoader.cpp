@@ -58,8 +58,8 @@ namespace loader {
 
     void EntityLoader::loadEntityClone(
         const YAML::Node& node,
-        EntityCloneData& data,
-        std::vector<EntityCloneData>& clones,
+        EntityData& data,
+        std::vector<EntityData>& clones,
         bool recurse,
         Loaders& loaders) const
     {
@@ -275,8 +275,8 @@ namespace loader {
                 if (k == "clones") {
                     for (const auto& node : v) {
                         // NOTE KI intialize with current data
-                        EntityCloneData clone = data;
-                        std::vector<EntityCloneData> dummy{};
+                        EntityData clone = data;
+                        std::vector<EntityData> dummy{};
                         loadEntityClone(
                             node,
                             clone,

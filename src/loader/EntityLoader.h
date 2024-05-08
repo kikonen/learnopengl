@@ -24,8 +24,8 @@ namespace loader {
 
         void loadEntityClone(
             const YAML::Node& node,
-            EntityCloneData& data,
-            std::vector<EntityCloneData>& clones,
+            EntityData& entityData,
+            std::vector<EntityData>& clones,
             bool recurse,
             Loaders& loaders) const;
 

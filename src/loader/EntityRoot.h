@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include "EntityCloneData.h"
+#include "EntityData.h"
 
 namespace loader {
     struct EntityRoot {
-        EntityCloneData base;
-        std::vector<EntityCloneData> clones;
+        EntityData base;
+        std::vector<EntityData> clones;
     };
 }

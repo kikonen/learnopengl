@@ -31,7 +31,7 @@ namespace loader {
     struct SpriteData;
     struct ScriptEngineData;
     struct EntityRoot;
-    struct EntityCloneData;
+    struct EntityData;
     struct TextData;
     struct LodData;
     struct AnimationData;
@@ -89,7 +89,7 @@ namespace loader {
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const EntityRoot& entityRoot,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             bool cloned,
             int cloneIndex);
 
@@ -97,23 +97,23 @@ namespace loader {
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const EntityRoot& entityRoot,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
         void assignFlags(
-            const EntityCloneData& data,
+            const EntityData& entityData,
             pool::TypeHandle typeHandle);
 
         const pool::TypeHandle createType(
-            const EntityCloneData& data,
+            const EntityData& entityData,
             const glm::uvec3& tile);
 
         void resolveProgram(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& data);
+            const EntityData& entityData);
 
         text::font_id resolveFont(
             pool::TypeHandle typeHandle,
@@ -121,17 +121,17 @@ namespace loader {
 
         void resolveMaterials(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& entityData,
+            const EntityData& entityData,
             const LodData& data,
             int lodIndex);
 
         void resolveSprite(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& data);
+            const EntityData& entityData);
 
         void resolveMesh(
             pool::TypeHandle typeHandle,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             const glm::uvec3& tile);
 
         void resolveAnimation(
@@ -141,7 +141,7 @@ namespace loader {
         pool::NodeHandle createNode(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             const bool cloned,
             const int cloneIndex,
             const glm::uvec3& tile,
@@ -165,7 +165,7 @@ namespace loader {
         void validateEntityClone(
             const ki::node_id rootId,
             const EntityRoot& entityRoot,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             bool cloned,
             int cloneIndex,
             int pass,
@@ -175,7 +175,7 @@ namespace loader {
         void validateEntityCloneRepeat(
             const ki::node_id rootId,
             const EntityRoot& entityRoot,
-            const EntityCloneData& data,
+            const EntityData& entityData,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
