@@ -65,6 +65,7 @@
 #include "DagSort.h"
 
 #include "Loaders.h"
+#include "EntityRoot.h"
 #include "ResolvedEntity.h"
 
 namespace {
@@ -156,7 +157,7 @@ namespace loader {
     }
 
     void SceneLoader::loadedEntity(
-        const EntityData& data,
+        const EntityRoot& entityRoot,
         bool success)
     {
         std::lock_guard lock(m_ready_lock);
@@ -165,7 +166,7 @@ namespace loader {
 
         KI_INFO_OUT(fmt::format(
             "LOADED: entity={}, success={}, pending={}",
-            data.base.name, success, m_pendingCount));
+            entityRoot.base.name, success, m_pendingCount));
 
         if (m_pendingCount > 0) return;
 
@@ -319,35 +320,35 @@ namespace loader {
 
     bool SceneLoader::resolveEntity(
         const ki::node_id rootId,
-        const EntityData& data)
+        const EntityRoot& entityRoot)
     {
-        if (!data.base.enabled) {
+        if (!entityRoot.base.enabled) {
             return false;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &data]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &entityRoot]() {
             try {
-                if (data.clones.empty()) {
+                if (entityRoot.clones.empty()) {
                     pool::TypeHandle typeHandle{};
-                    resolveEntityClone(typeHandle, rootId, data, data.base, false, 0);
+                    resolveEntityClone(typeHandle, rootId, entityRoot, entityRoot.base, false, 0);
                 }
                 else {
                     pool::TypeHandle typeHandle{};
 
                     int cloneIndex = 0;
-                    for (auto& cloneData : data.clones) {
+                    for (auto& cloneData : entityRoot.clones) {
                         if (!*m_ctx.m_alive) return;
-                        typeHandle = resolveEntityClone(typeHandle, rootId, data, cloneData, true, cloneIndex);
-                        if (!data.base.cloneMesh) {
+                        typeHandle = resolveEntityClone(typeHandle, rootId, entityRoot, cloneData, true, cloneIndex);
+                        if (!entityRoot.base.cloneMesh) {
                             typeHandle = pool::TypeHandle::NULL_HANDLE;
                         }
                         cloneIndex++;
                     }
                 }
-                loadedEntity(data, true);
+                loadedEntity(entityRoot, true);
             }
             catch (const std::runtime_error& ex) {
-                loadedEntity(data, false);
+                loadedEntity(entityRoot, false);
                 throw ex;
             }
         });
@@ -358,7 +359,7 @@ namespace loader {
     pool::TypeHandle SceneLoader::resolveEntityClone(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
-        const EntityData& entity,
+        const EntityRoot& entityRoot,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex)
@@ -382,14 +383,14 @@ namespace loader {
                     typeHandle = resolveEntityCloneRepeat(
                         typeHandle,
                         rootId,
-                        entity,
+                        entityRoot,
                         data,
                         cloned,
                         cloneIndex,
                         tile,
                         tilePositionOffset);
 
-                    if (!entity.base.cloneMesh)
+                    if (!entityRoot.base.cloneMesh)
                         typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
@@ -401,7 +402,7 @@ namespace loader {
     pool::TypeHandle SceneLoader::resolveEntityCloneRepeat(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
-        const EntityData& entity,
+        const EntityRoot& entityRoot,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex,
@@ -1001,18 +1002,18 @@ namespace loader {
 
     void SceneLoader::validateEntity(
         const ki::node_id rootId,
-        const EntityData& data,
+        const EntityRoot& entityRoot,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (data.clones.empty()) {
-            validateEntityClone(rootId, data, data.base, false, 0, pass, errorCount, collectedIds);
+        if (entityRoot.clones.empty()) {
+            validateEntityClone(rootId, entityRoot, entityRoot.base, false, 0, pass, errorCount, collectedIds);
         }
         else {
             int cloneIndex = 0;
-            for (auto& cloneData : data.clones) {
-                validateEntityClone(rootId, data, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
+            for (auto& cloneData : entityRoot.clones) {
+                validateEntityClone(rootId, entityRoot, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
                 cloneIndex++;
             }
         }
@@ -1020,7 +1021,7 @@ namespace loader {
 
     void SceneLoader::validateEntityClone(
         const ki::node_id rootId,
-        const EntityData& entity,
+        const EntityRoot& entityRoot,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex,
@@ -1040,7 +1041,7 @@ namespace loader {
 
                     validateEntityCloneRepeat(
                         rootId,
-                        entity,
+                        entityRoot,
                         data,
                         cloned,
                         cloneIndex,
@@ -1056,7 +1057,7 @@ namespace loader {
 
     void SceneLoader::validateEntityCloneRepeat(
         const ki::node_id rootId,
-        const EntityData& entity,
+        const EntityRoot& entityRoot,
         const EntityCloneData& data,
         bool cloned,
         int cloneIndex,
@@ -1078,7 +1079,7 @@ namespace loader {
                 auto [k, v] = resolveId(
                     data.baseId,
                     cloneIndex, tile,
-                    data.baseId.m_path == entity.base.baseId.m_path);
+                    data.baseId.m_path == entityRoot.base.baseId.m_path);
                 sid = k;
                 resolvedSID = v;
 

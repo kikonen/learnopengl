@@ -1175,7 +1175,7 @@
     <ClInclude Include="src\render\BrdfLutTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialField.h">
+    <ClInclude Include="src\loader\MaterialField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\query\Query.h">
@@ -1277,7 +1277,7 @@
     <ClInclude Include="src\loader\BaseData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityData.h">
+    <ClInclude Include="src\loader\EntityRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\ControllerData.h">
@@ -1710,6 +1710,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\Loaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Flags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\EntityCloneData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

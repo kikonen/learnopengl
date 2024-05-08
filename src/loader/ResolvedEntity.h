@@ -4,7 +4,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "EntityData.h"
+#include "EntityCloneData.h"
 
 namespace loader {
     struct ResolvedEntity {

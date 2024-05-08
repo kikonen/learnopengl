@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
 
 #include <glm/glm.hpp>
@@ -13,6 +14,7 @@
 
 #include "BaseId.h"
 #include "BaseData.h"
+#include "Flags.h"
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
 #include "CameraData.h"
@@ -95,6 +97,8 @@ namespace loader {
 
         ParticleData particle;
 
+        Flags fields;
+
         bool findRenderFlag(
             const std::string& flag,
             bool defaultValue) const noexcept
@@ -105,10 +109,5 @@ namespace loader {
             }
             return defaultValue;
         }
-    };
-
-    struct EntityData {
-        EntityCloneData base;
-        std::vector<EntityCloneData> clones;
     };
 }

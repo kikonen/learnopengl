@@ -1,7 +1,7 @@
 #pragma once
 
 #include "asset/Material.h"
-#include "asset/MaterialField.h"
+#include "MaterialField.h"
 
 namespace loader {
     struct MaterialData

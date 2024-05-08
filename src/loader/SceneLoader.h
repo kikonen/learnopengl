@@ -30,7 +30,7 @@ namespace loader {
     struct MaterialData;
     struct SpriteData;
     struct ScriptEngineData;
-    struct EntityData;
+    struct EntityRoot;
     struct EntityCloneData;
     struct TextData;
     struct LodData;
@@ -64,7 +64,7 @@ namespace loader {
 
     private:
         void loadedEntity(
-            const EntityData& data,
+            const EntityRoot& entityRoot,
             bool success);
 
         void attach(
@@ -83,12 +83,12 @@ namespace loader {
 
         bool resolveEntity(
             const ki::node_id rootId,
-            const EntityData& data);
+            const EntityRoot& entityRoot);
 
         pool::TypeHandle resolveEntityClone(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityData& entity,
+            const EntityRoot& entityRoot,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex);
@@ -96,7 +96,7 @@ namespace loader {
         pool::TypeHandle resolveEntityCloneRepeat(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityData& entity,
+            const EntityRoot& entityRoot,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex,
@@ -157,14 +157,14 @@ namespace loader {
 
         void validateEntity(
             const ki::node_id rootId,
-            const EntityData& data,
+            const EntityRoot& entityRoot,
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
         void validateEntityClone(
             const ki::node_id rootId,
-            const EntityData& entity,
+            const EntityRoot& entityRoot,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex,
@@ -174,7 +174,7 @@ namespace loader {
 
         void validateEntityCloneRepeat(
             const ki::node_id rootId,
-            const EntityData& entity,
+            const EntityRoot& entityRoot,
             const EntityCloneData& data,
             bool cloned,
             int cloneIndex,
@@ -202,7 +202,7 @@ namespace loader {
         std::unique_ptr<RootData> m_root;
         std::unique_ptr<ScriptEngineData> m_scriptEngineData;
 
-        std::vector<EntityData> m_entities;
+        std::vector<EntityRoot> m_entities;
 
         std::vector<ResolvedEntity> m_resolvedEntities;
 

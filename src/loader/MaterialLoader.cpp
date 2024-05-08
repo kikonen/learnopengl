@@ -122,7 +122,7 @@ namespace loader {
         MaterialData& data) const
     {
         Material& material = data.material;
-        MaterialField& fields = data.fields;
+        auto& fields = data.fields;
 
         for (const auto& pair : node) {
             const auto& key = pair.first.as<std::string>();

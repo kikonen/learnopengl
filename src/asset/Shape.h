@@ -2,8 +2,7 @@
 
 #include "ShapeSSBO.h"
 
-#include "asset/Material.h"
-#include "asset/MaterialField.h"
+//#include "asset/Material.h"
 
 //
 // Extra data for sprite shape
@@ -29,6 +28,5 @@ public:
 
     float m_rotation{ 0.f };
 
-    MaterialField m_materialFields;
-    Material m_material;
+    //Material m_material;
 };

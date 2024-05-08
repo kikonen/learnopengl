@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntityData.h"
+#include "EntityCloneData.h"
 #include "MaterialData.h"
 
 namespace loader {

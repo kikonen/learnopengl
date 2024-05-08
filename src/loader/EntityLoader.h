@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BaseLoader.h"
-#include "EntityData.h"
+#include "EntityRoot.h"
 
 namespace loader {
     class EntityLoader : public BaseLoader
@@ -14,12 +14,12 @@ namespace loader {
 
         void loadEntities(
             const YAML::Node& node,
-            std::vector<EntityData>& entities,
+            std::vector<EntityRoot>& entities,
             Loaders& loaders) const;
 
         void loadEntity(
             const YAML::Node& node,
-            EntityData& data,
+            EntityRoot& entityRoot,
             Loaders& loaders) const;
 
         void loadEntityClone(

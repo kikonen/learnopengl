@@ -419,6 +419,8 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
+    <ClInclude Include="src\loader\EntityCloneData.h" />
+    <ClInclude Include="src\loader\Flags.h" />
     <ClInclude Include="src\loader\Loaders.h" />
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
@@ -437,7 +439,7 @@
     <ClInclude Include="src\asset\ClipPlaneUBO.h" />
     <ClInclude Include="src\asset\ColorTexture.h" />
     <ClInclude Include="src\asset\CustomMaterial.h" />
-    <ClInclude Include="src\asset\MaterialField.h" />
+    <ClInclude Include="src\loader\MaterialField.h" />
     <ClInclude Include="src\asset\ProgramUniforms.h" />
     <ClInclude Include="src\asset\ViewportEffect.h" />
     <ClInclude Include="src\backend\Lod.h" />
@@ -547,7 +549,7 @@
     <ClInclude Include="src\loader\CubeMapLoader.h" />
     <ClInclude Include="src\loader\CustomMaterialData.h" />
     <ClInclude Include="src\loader\CustomMaterialLoader.h" />
-    <ClInclude Include="src\loader\EntityData.h" />
+    <ClInclude Include="src\loader\EntityRoot.h" />
     <ClInclude Include="src\loader\EntityLoader.h" />
     <ClInclude Include="src\loader\GeneratorData.h" />
     <ClInclude Include="src\loader\GeneratorLoader.h" />

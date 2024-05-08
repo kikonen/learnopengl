@@ -31,27 +31,27 @@ namespace loader {
 
     void EntityLoader::loadEntities(
         const YAML::Node& node,
-        std::vector<EntityData>& entities,
+        std::vector<EntityRoot>& entities,
         Loaders& loaders) const
     {
         for (const auto& entry : node) {
-            auto& data = entities.emplace_back();
+            auto& entityRoot = entities.emplace_back();
             loadEntity(
                 entry,
-                data,
+                entityRoot,
                 loaders);
         }
     }
 
     void EntityLoader::loadEntity(
         const YAML::Node& node,
-        EntityData& data,
+        EntityRoot& entityRoot,
         Loaders& loaders) const
     {
         loadEntityClone(
             node,
-            data.base,
-            data.clones,
+            entityRoot.base,
+            entityRoot.clones,
             true,
             loaders);
     }
