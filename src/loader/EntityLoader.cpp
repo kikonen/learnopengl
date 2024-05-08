@@ -20,17 +20,7 @@
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
 
-#include "MaterialLoader.h"
-#include "CustomMaterialLoader.h"
-#include "SpriteLoader.h"
-#include "CameraLoader.h"
-#include "LightLoader.h"
-#include "AudioLoader.h"
-#include "ControllerLoader.h"
-#include "GeneratorLoader.h"
-#include "ParticleLoader.h"
-#include "PhysicsLoader.h"
-#include "ScriptLoader.h"
+#include "Loaders.h"
 
 namespace loader {
     EntityLoader::EntityLoader(
@@ -42,68 +32,28 @@ namespace loader {
     void EntityLoader::loadEntities(
         const YAML::Node& node,
         std::vector<EntityData>& entities,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        Loaders& loaders) const
     {
         for (const auto& entry : node) {
             auto& data = entities.emplace_back();
             loadEntity(
                 entry,
                 data,
-                materialLoader,
-                customMaterialLoader,
-                spriteLoader,
-                cameraLoader,
-                lightLoader,
-                audioLoader,
-                controllerLoader,
-                generatorLoader,
-                particleLoader,
-                physicsLoader,
-                scriptLoader);
+                loaders);
         }
     }
 
     void EntityLoader::loadEntity(
         const YAML::Node& node,
         EntityData& data,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        Loaders& loaders) const
     {
         loadEntityClone(
             node,
             data.base,
             data.clones,
             true,
-            materialLoader,
-            customMaterialLoader,
-            spriteLoader,
-            cameraLoader,
-            lightLoader,
-            audioLoader,
-            controllerLoader,
-            generatorLoader,
-            particleLoader,
-            physicsLoader,
-            scriptLoader);
+            loaders);
     }
 
     void EntityLoader::loadEntityClone(
@@ -111,17 +61,7 @@ namespace loader {
         EntityCloneData& data,
         std::vector<EntityCloneData>& clones,
         bool recurse,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        Loaders& loaders) const
     {
         bool hasClones = false;
 
@@ -243,6 +183,9 @@ namespace loader {
             else if (k == "scale") {
                 data.scale = readScale3(v);
             }
+            else if (k == "base_scale") {
+                data.baseScale = readScale3(v);
+            }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);
             }
@@ -250,32 +193,32 @@ namespace loader {
                 loadTiling(v, data.tiling);
             }
             else if (k == "camera") {
-                cameraLoader.loadCamera(v, data.camera);
+                loaders.m_cameraLoader.loadCamera(v, data.camera);
             }
             else if (k == "light") {
-                lightLoader.loadLight(v, data.light);
+                loaders.m_lightLoader.loadLight(v, data.light);
             }
             else if (k == "audio") {
-                audioLoader.loadAudio(v, data.audio);
+                loaders.m_audioLoader.loadAudio(v, data.audio);
             }
             else if (k == "custom_material") {
-                customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
+                loaders.m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
             }
             else if (k == "physics") {
-                physicsLoader.loadPhysics(v, data.physics);
+                loaders.m_physicsLoader.loadPhysics(v, data.physics);
             }
             else if (k == "controllers") {
-                controllerLoader.loadControllers(v, data.controllers);
+                loaders.m_controllerLoader.loadControllers(v, data.controllers);
             }
             else if (k == "controller") {
                 auto& controllerDaata = data.controllers.emplace_back();
-                controllerLoader.loadController(v, controllerDaata);
+                loaders.m_controllerLoader.loadController(v, controllerDaata);
             }
             else if (k == "generator") {
-                generatorLoader.loadGenerator(v, data.generator);
+                loaders.m_generatorLoader.loadGenerator(v, data.generator);
             }
             else if (k == "particle") {
-                particleLoader.loadParticle(v, data.particle);
+                loaders.m_particleLoader.loadParticle(v, data.particle);
             }
             else if (k == "selected") {
                 data.selected = readBool(v);
@@ -301,13 +244,13 @@ namespace loader {
                     hasClones = true;
             }
             else if (k == "script") {
-                scriptLoader.loadScript(v, data.script);
+                loaders.m_scriptLoader.loadScript(v, data.script);
             }
             else if (k == "script_file") {
-                scriptLoader.loadScript(v, data.script);
+                loaders.m_scriptLoader.loadScript(v, data.script);
             }
             else if (k == "lods") {
-                loadLods(v, data.lods, materialLoader);
+                loadLods(v, data.lods, loaders);
             }
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
@@ -321,7 +264,7 @@ namespace loader {
             if (data.lods.empty()) {
                 data.lods.emplace_back();
             }
-            loadLod(node, data.lods[0], materialLoader);
+            loadLod(node, data.lods[0], loaders);
         }
 
         if (hasClones) {
@@ -339,17 +282,7 @@ namespace loader {
                             clone,
                             dummy,
                             false,
-                            materialLoader,
-                            customMaterialLoader,
-                            spriteLoader,
-                            cameraLoader,
-                            lightLoader,
-                            audioLoader,
-                            controllerLoader,
-                            generatorLoader,
-                            particleLoader,
-                            physicsLoader,
-                            scriptLoader);
+                            loaders);
                         clones.push_back(clone);
                     }
                 }
@@ -380,18 +313,18 @@ namespace loader {
     void EntityLoader::loadLods(
         const YAML::Node& node,
         std::vector<LodData>& lods,
-        MaterialLoader& materialLoader) const
+        Loaders& loaders) const
     {
         for (const auto& entry : node) {
             LodData& data = lods.emplace_back();
-            loadLod(entry, data, materialLoader);
+            loadLod(entry, data, loaders);
         }
     }
 
     void EntityLoader::loadLod(
         const YAML::Node& node,
         LodData& data,
-        MaterialLoader& materialLoader) const
+        Loaders& loaders) const
     {
         for (const auto& pair : node) {
             const auto& key = pair.first.as<std::string>();
@@ -410,7 +343,7 @@ namespace loader {
                 }
             }
             else if (k == "materials") {
-                loadMaterialReferences(v, data.materialReferences, materialLoader);
+                loadMaterialReferences(v, data.materialReferences, loaders);
             }
             else if (k == "material") {
                 if (data.materialReferences.empty()) {
@@ -427,7 +360,7 @@ namespace loader {
                 auto& materialData = data.materialReferences[0];
                 materialData.modifiers.aliasName = "*";
                 materialData.modifiers.modify = true;
-                loadMaterialReference(v, materialData, materialLoader);
+                loadMaterialReference(v, materialData, loaders);
             } else {
                 reportUnknown("lod_entry", k, v);
             }
@@ -437,20 +370,20 @@ namespace loader {
     void EntityLoader::loadMaterialReferences(
         const YAML::Node& node,
         std::vector<MaterialReference>& references,
-        MaterialLoader& materialLoader) const
+        Loaders& loaders) const
     {
         for (const auto& entry : node) {
             MaterialReference& data = references.emplace_back();
-            loadMaterialReference(entry, data, materialLoader);
+            loadMaterialReference(entry, data, loaders);
         }
     }
 
     void EntityLoader::loadMaterialReference(
         const YAML::Node& node,
         MaterialReference& data,
-        MaterialLoader& materialLoader) const
+        Loaders& loaders) const
     {
-        materialLoader.loadMaterialModifiers(node, data.modifiers);
+        loaders.m_materialLoader.loadMaterialModifiers(node, data.modifiers);
         // NOTE KI don't override material name with "<modifier>"
         if (data.modifiers.materialName.empty()) {
             data.modifiers.materialName = data.modifiers.material.m_name;

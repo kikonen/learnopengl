@@ -24,6 +24,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "mesh/EntityType.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -62,6 +64,9 @@
 
 #include "DagSort.h"
 
+#include "Loaders.h"
+#include "ResolvedEntity.h"
+
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
 }
@@ -70,26 +75,14 @@ namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
-        m_rootLoader(ctx),
-        m_scriptLoader(ctx),
-        m_skyboxLoader(ctx),
-        m_volumeLoader(ctx),
-        m_cubeMapLoader(ctx),
-        m_fontLoader(ctx),
-        m_materialLoader(ctx),
-        m_customMaterialLoader(ctx),
-        m_spriteLoader(ctx),
-        m_cameraLoader(ctx),
-        m_lightLoader(ctx),
-        m_audioLoader(ctx),
-        m_controllerLoader(ctx),
-        m_generatorLoader(ctx),
-        m_particleLoader(ctx),
-        m_physicsLoader(ctx),
-        m_entityLoader(ctx)
+        m_loaders{ std::make_unique<Loaders>(ctx) },
+        m_meta{ std::make_unique<MetaData>() },
+        m_root{ std::make_unique<RootData>() },
+        m_skybox{ std::make_unique<SkyboxData>() },
+        m_scriptEngineData{ std::make_unique<ScriptEngineData>() }
     {
         // NOTE KI white causes least unexpectedly tinted results
-        m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
+        m_defaultMaterial = std::make_unique<Material>(Material::createMaterial(BasicMaterial::white));
     }
 
     SceneLoader::~SceneLoader()
@@ -112,18 +105,7 @@ namespace loader {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcherWorker;
 
-        m_fontLoader.setRegistry(registry);
-        m_materialLoader.setRegistry(registry);
-        m_rootLoader.setRegistry(registry);
-        m_scriptLoader.setRegistry(registry);
-        m_skyboxLoader.setRegistry(registry);
-        m_volumeLoader.setRegistry(registry);
-        m_cubeMapLoader.setRegistry(registry);
-        m_audioLoader.setRegistry(registry);
-        m_generatorLoader.setRegistry(registry);
-        m_particleLoader.setRegistry(registry);
-        m_physicsLoader.setRegistry(registry);
-        m_entityLoader.setRegistry(registry);
+        m_loaders->prepare(registry);
     }
 
     void SceneLoader::load()
@@ -140,34 +122,26 @@ namespace loader {
                 std::ifstream fin(this->m_ctx.m_fullPath);
                 YAML::Node doc = YAML::Load(fin);
 
-                loadMeta(doc["meta"], m_meta);
+                loadMeta(doc["meta"], *m_meta);
 
-                m_skyboxLoader.loadSkybox(doc["skybox"], m_skybox);
+                auto& l = *m_loaders;
 
-                m_fontLoader.loadFonts(doc["fonts"], m_fonts);
-                m_materialLoader.loadMaterials(doc["materials"], m_materials);
-                m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
+                l.m_skyboxLoader.loadSkybox(doc["skybox"], *m_skybox);
 
-                m_rootLoader.loadRoot(doc["root"], m_root);
-                m_scriptLoader.loadScriptEngine(doc["script"], m_scriptEngineData);
+                l.m_fontLoader.loadFonts(doc["fonts"], m_fonts);
+                l.m_materialLoader.loadMaterials(doc["materials"], m_materials);
+                l.m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
 
-                m_entityLoader.loadEntities(
+                l.m_rootLoader.loadRoot(doc["root"], *m_root);
+                l.m_scriptLoader.loadScriptEngine(doc["script"], *m_scriptEngineData);
+
+                l.m_entityLoader.loadEntities(
                     doc["entities"],
                     m_entities,
-                    m_materialLoader,
-                    m_customMaterialLoader,
-                    m_spriteLoader,
-                    m_cameraLoader,
-                    m_lightLoader,
-                    m_audioLoader,
-                    m_controllerLoader,
-                    m_generatorLoader,
-                    m_particleLoader,
-                    m_physicsLoader,
-                    m_scriptLoader);
+                    l);
 
-                validate(m_root);
-                attach(m_root);
+                validate(*m_root);
+                attach(*m_root);
 
                 std::lock_guard lock(m_ready_lock);
                 m_runningCount--;
@@ -221,14 +195,16 @@ namespace loader {
     void SceneLoader::attach(
         const RootData& root)
     {
-        m_rootLoader.attachRoot(root);
-        m_scriptLoader.createScriptEngine(root.rootId, m_scriptEngineData);
+        auto& l = *m_loaders;
 
-        m_skyboxLoader.attachSkybox(root.rootId, m_skybox);
-        m_volumeLoader.attachVolume(root.rootId);
-        m_cubeMapLoader.attachCubeMap(root.rootId);
+        l.m_rootLoader.attachRoot(root);
+        l.m_scriptLoader.createScriptEngine(root.rootId, *m_scriptEngineData);
 
-        m_fontLoader.createFonts(m_fonts);
+        l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
+        l.m_volumeLoader.attachVolume(root.rootId);
+        l.m_cubeMapLoader.attachCubeMap(root.rootId);
+
+        l.m_fontLoader.createFonts(m_fonts);
 
         {
             std::lock_guard lock(m_ready_lock);
@@ -248,6 +224,8 @@ namespace loader {
     void SceneLoader::attachResolvedEntities(
         std::vector<ResolvedEntity>& resolvedEntities)
     {
+        auto& l = *m_loaders;
+
         DagSort sorter;
         auto sorted = sorter.sort(resolvedEntities);
 
@@ -260,6 +238,7 @@ namespace loader {
     void SceneLoader::attachResolvedEntity(
         const ResolvedEntity& resolved)
     {
+        auto& l = *m_loaders;
         auto& handle = resolved.handle;
         auto& data = resolved.data;
 
@@ -299,7 +278,7 @@ namespace loader {
         for (auto& controllerData : data.controllers) {
             if (!controllerData.enabled) continue;
 
-            auto* controller = m_controllerLoader.createController(controllerData, handle);
+            auto* controller = l.m_controllerLoader.createController(controllerData, handle);
 
             event::Event evt { event::Type::controller_add };
             evt.body.control = {
@@ -324,8 +303,8 @@ namespace loader {
         }
 
         {
-            m_audioLoader.createAudio(data.audio, handle.toId());
-            m_physicsLoader.createObject(data.physics, handle.toId());
+            l.m_audioLoader.createAudio(data.audio, handle.toId());
+            l.m_physicsLoader.createObject(data.physics, handle.toId());
         }
     }
 
@@ -649,11 +628,12 @@ namespace loader {
         const LodData& data,
         int lodIndex)
     {
+        auto& l = *m_loaders;
         auto* type = typeHandle.toType();
 
         auto* lodMesh = type->modifyLod(lodIndex);
         if (lodMesh) {
-            lodMesh->setupMeshMaterials(m_defaultMaterial, true, false);
+            lodMesh->setupMeshMaterials(*m_defaultMaterial, true, false);
 
             for (auto& m : lodMesh->m_materialSet.modifyMaterials()) {
                 for (auto& ref : data.materialReferences) {
@@ -668,7 +648,7 @@ namespace loader {
                                 m.assign(*overrideMaterial);
                             }
                         }
-                        m_materialLoader.modifyMaterial(m, ref.modifiers);
+                        l.m_materialLoader.modifyMaterial(m, ref.modifiers);
                     }
                 }
                 m.loadTextures();
@@ -788,6 +768,7 @@ namespace loader {
         const glm::vec3& clonePositionOffset,
         const glm::vec3& tilePositionOffset)
     {
+        auto& l = *m_loaders;
         auto* type = typeHandle.toType();
 
         ki::node_id nodeId{ 0 };
@@ -823,6 +804,7 @@ namespace loader {
         transform.setPosition(pos);
 
         transform.setQuatRotation(util::degreesToQuat(data.rotation));
+        transform.setBaseScale(data.baseScale);
         transform.setScale(data.scale);
         transform.setFront(data.front);
 
@@ -839,14 +821,14 @@ namespace loader {
 
         transform.setBaseTransform(baseTransform);
 
-        node->m_camera = m_cameraLoader.createCamera(data.camera);
-        node->m_light = m_lightLoader.createLight(data.light, cloneIndex, tile);
-        node->m_generator = m_generatorLoader.createGenerator(
+        node->m_camera = l.m_cameraLoader.createCamera(data.camera);
+        node->m_light = l.m_lightLoader.createLight(data.light, cloneIndex, tile);
+        node->m_generator = l.m_generatorLoader.createGenerator(
             data.generator,
             m_materials,
             type);
 
-        node->m_particleGenerator = m_particleLoader.createParticle(
+        node->m_particleGenerator = l.m_particleLoader.createParticle(
             data.particle,
             m_materials);
 
@@ -858,14 +840,14 @@ namespace loader {
             node->m_generator = std::move(generator);
         }
 
-        m_scriptLoader.createScript(
+        l.m_scriptLoader.createScript(
             rootId,
             node->getId(),
             data.script);
 
         {
             type->setCustomMaterial(
-                m_customMaterialLoader.createCustomMaterial(
+                l.m_customMaterialLoader.createCustomMaterial(
                     data.customMaterial,
                     cloneIndex,
                     tile));

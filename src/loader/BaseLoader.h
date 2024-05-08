@@ -21,6 +21,7 @@ class Registry;
 
 namespace loader
 {
+    class Loaders;
     struct MaterialData;
 
     static const float DEF_ALPHA = 1.0;

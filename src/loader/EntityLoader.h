@@ -6,18 +6,6 @@
 #include "EntityData.h"
 
 namespace loader {
-    class MaterialLoader;
-    class CustomMaterialLoader;
-    class SpriteLoader;
-    class CameraLoader;
-    class LightLoader;
-    class AudioLoader;
-    class ControllerLoader;
-    class GeneratorLoader;
-    class ParticleLoader;
-    class PhysicsLoader;
-    class ScriptLoader;
-
     class EntityLoader : public BaseLoader
     {
     public:
@@ -27,49 +15,19 @@ namespace loader {
         void loadEntities(
             const YAML::Node& node,
             std::vector<EntityData>& entities,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            Loaders& loaders) const;
 
         void loadEntity(
             const YAML::Node& node,
             EntityData& data,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            Loaders& loaders) const;
 
         void loadEntityClone(
             const YAML::Node& node,
             EntityCloneData& data,
             std::vector<EntityCloneData>& clones,
             bool recurse,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            Loaders& loaders) const;
 
         void loadText(
             const YAML::Node& node,
@@ -78,22 +36,22 @@ namespace loader {
         void loadLods(
             const YAML::Node& node,
             std::vector<LodData>& lods,
-            MaterialLoader& materialLoader) const;
+            Loaders& loaders) const;
 
         void loadLod(
             const YAML::Node& node,
             LodData& data,
-            MaterialLoader& materialLoader) const;
+            Loaders& loaders) const;
 
         void loadMaterialReferences(
             const YAML::Node& node,
             std::vector<MaterialReference>& references,
-            MaterialLoader& materialLoader) const;
+            Loaders& loaders) const;
 
         void loadMaterialReference(
             const YAML::Node& node,
             MaterialReference& data,
-            MaterialLoader& materialLoader) const;
+            Loaders& loaders) const;
 
         void loadAnimations(
             const YAML::Node& node,

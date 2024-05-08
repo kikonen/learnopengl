@@ -7,32 +7,16 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Shader.h"
-
-#include "mesh/EntityType.h"
-
-#include "ResolvedEntity.h"
+#include "text/size.h"
 
 #include "BaseLoader.h"
-#include "RootLoader.h"
-#include "ScriptLoader.h"
-#include "SkyboxLoader.h"
-#include "VolumeLoader.h"
-#include "CubeMapLoader.h"
-#include "FontLoader.h"
-#include "MaterialLoader.h"
-#include "CustomMaterialLoader.h"
-#include "SpriteLoader.h"
-#include "CameraLoader.h"
-#include "LightLoader.h"
-#include "ControllerLoader.h"
-#include "AudioLoader.h"
-#include "GeneratorLoader.h"
-#include "ParticleLoader.h"
-#include "PhysicsLoader.h"
-#include "EntityLoader.h"
 
+struct Material;
+class Sprite;
 class Registry;
+
+namespace text {
+}
 
 namespace pool {
     class NodeHandle;
@@ -40,6 +24,20 @@ namespace pool {
 }
 
 namespace loader {
+    struct RootData;
+    struct SkyboxData;
+    struct FontData;
+    struct MaterialData;
+    struct SpriteData;
+    struct ScriptEngineData;
+    struct EntityData;
+    struct EntityCloneData;
+    struct TextData;
+    struct LodData;
+    struct AnimationData;
+    struct ResolvedEntity;
+    struct MaterialData;
+
     struct MetaData {
         std::string name;
 
@@ -198,11 +196,11 @@ namespace loader {
 
         std::atomic<size_t> m_runningCount;
 
-        MetaData m_meta;
-        SkyboxData m_skybox;
+        std::unique_ptr<MetaData> m_meta;
+        std::unique_ptr<SkyboxData> m_skybox;
 
-        RootData m_root;
-        ScriptEngineData m_scriptEngineData;
+        std::unique_ptr<RootData> m_root;
+        std::unique_ptr<ScriptEngineData> m_scriptEngineData;
 
         std::vector<EntityData> m_entities;
 
@@ -210,32 +208,11 @@ namespace loader {
 
         std::vector<FontData> m_fonts;
 
-        Material m_defaultMaterial;
+        std::unique_ptr<Material> m_defaultMaterial;
         std::vector<MaterialData> m_materials;
 
         std::vector<SpriteData> m_sprites;
 
-        RootLoader m_rootLoader;
-
-        ScriptLoader m_scriptLoader;
-
-        SkyboxLoader m_skyboxLoader;
-        VolumeLoader m_volumeLoader;
-        CubeMapLoader m_cubeMapLoader;
-
-        EntityLoader m_entityLoader;
-
-        FontLoader m_fontLoader;
-        MaterialLoader m_materialLoader;
-        CustomMaterialLoader m_customMaterialLoader;
-        SpriteLoader m_spriteLoader;
-
-        CameraLoader m_cameraLoader;
-        LightLoader m_lightLoader;
-        ControllerLoader m_controllerLoader;
-        AudioLoader m_audioLoader;
-        GeneratorLoader m_generatorLoader;
-        ParticleLoader m_particleLoader;
-        PhysicsLoader m_physicsLoader;
+        std::unique_ptr<Loaders> m_loaders;
     };
 }

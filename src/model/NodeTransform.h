@@ -27,6 +27,8 @@ struct NodeTransform {
 
     glm::vec3 m_position{ 0.f };
     glm::vec3 m_scale{ 1.f };
+    // Basescale, normalizes scale
+    glm::vec3 m_baseScale{ 1.f };
 
     glm::vec3 m_worldPos{ 0.f };
 
@@ -103,6 +105,11 @@ struct NodeTransform {
         return m_scale;
     }
 
+    inline const glm::vec3& getBaseeScale() const noexcept
+    {
+        return m_baseScale;
+    }
+
     inline const glm::quat& getQuatRotation() const noexcept
     {
         return m_quatRotation;
@@ -125,15 +132,12 @@ struct NodeTransform {
 
     inline void setScale(float scale) noexcept
     {
-        assert(scale >= 0);
-        if (m_scale.x != scale || m_scale.y != scale || m_scale.z != scale) {
-            m_scale.x = scale;
-            m_scale.y = scale;
-            m_scale.z = scale;
+        setScale({ scale, scale, scale });
+    }
 
-            m_dirty = true;
-            m_dirtyNormal = true;
-        }
+    inline void setBaseScale(float scale) noexcept
+    {
+        setBaseScale({ scale, scale, scale });
     }
 
     inline void setScale(const glm::vec3& scale) noexcept
@@ -145,6 +149,21 @@ struct NodeTransform {
             m_scale.x = scale.x;
             m_scale.y = scale.y;
             m_scale.z = scale.z;
+
+            m_dirty = true;
+            m_dirtyNormal = true;
+        }
+    }
+
+    inline void setBaseScale(const glm::vec3& scale) noexcept
+    {
+        assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
+
+        if (m_baseScale != scale)
+        {
+            m_baseScale.x = scale.x;
+            m_baseScale.y = scale.y;
+            m_baseScale.z = scale.z;
 
             m_dirty = true;
             m_dirtyNormal = true;

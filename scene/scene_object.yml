@@ -58,7 +58,8 @@ entities:
     pos: [0.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
-    scale: 0.01
+    scale: 1
+    base_scale: 0.01
     render_flags:
       xrender_back: true
       xwireframe: true

@@ -702,6 +702,12 @@
     <ClCompile Include="src\animation\BoneInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\PrefabLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\Loaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1695,6 +1701,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MaterialReference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\PrefabData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\PrefabLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Loaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

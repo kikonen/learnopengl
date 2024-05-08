@@ -42,6 +42,8 @@ namespace loader {
         std::string name;
         std::string desc;
 
+        std::string prefab;
+
         int priority{ 0 };
 
         std::vector<LodData> lods;
@@ -62,6 +64,7 @@ namespace loader {
         // NOTE KI default == positive Z dir
         glm::vec3 front{ 0.f, 0.f, 1.f };
         glm::vec3 scale{ 1.f };
+        glm::vec3 baseScale{ 1.f };
 
         bool selected{ false };
         bool cloneMesh{ true };
