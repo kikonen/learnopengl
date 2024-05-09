@@ -58,6 +58,7 @@ namespace {
 
     const std::vector<std::regex> normalMatchers{
         std::regex(".*[-_ ]normal[-_ \\.].*"),
+        std::regex(".*[-_ ]normals[-_ \\.].*"),
         std::regex(".*[-_ ]normalgl[-_ \\.].*"),
         std::regex(".*[-_ ]nrm[-_ \\.].*"),
         std::regex(".*[-_ ]nor[-_ \\.].*"),
