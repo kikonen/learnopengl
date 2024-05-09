@@ -9,11 +9,28 @@
 
 #include <fmt/format.h>
 
+namespace {
+    const std::vector<std::regex> BOOL_MATCHERS{
+        std::regex("true"),
+        std::regex("false"),
+        std::regex("yes"),
+        std::regex("no"),
+        std::regex("1"),
+        std::regex("0"),
+    };
+
+    const std::vector<std::regex> BOOL_TRUE_MATCHERS{
+        std::regex("true"),
+        std::regex("yes"),
+        std::regex("1"),
+    };
+}
+
 namespace util {
     bool isBool(std::string_view s)
     {
-        // TODO KI ...
-        return true;
+        std::string str{ s };
+        return matchAny(BOOL_MATCHERS, str);
     }
 
     // https://stackoverflow.com/questions/447206/c-isfloat-function
@@ -30,6 +47,13 @@ namespace util {
         double val;
         auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
         return ec == std::errc() && p == s.data() + s.size();
+    }
+
+    bool readBool(std::string_view s, bool defaultValue)
+    {
+        std::string str{ s };
+        if (!matchAny(BOOL_MATCHERS, str)) return defaultValue;
+        return matchAny(BOOL_TRUE_MATCHERS, str);
     }
 
     std::string toUpper(std::string_view str)

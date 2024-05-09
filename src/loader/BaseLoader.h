@@ -4,13 +4,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "converter/base.h"
+
 #include "Context.h"
 #include "BaseId.h"
 #include "BaseData.h"
-
-namespace YAML {
-    class Node;
-}
 
 namespace event {
     class Dispatcher;
@@ -43,39 +41,39 @@ namespace loader
         void setRegistry(std::shared_ptr<Registry> registry);
 
         void loadRepeat(
-            const YAML::Node& node,
+            const loader::Node& node,
             Repeat& data) const;
 
         void loadTiling(
-            const YAML::Node& node,
+            const loader::Node& node,
             Tiling& data) const;
 
-        std::string readString(const YAML::Node& node) const;
-        bool readBool(const YAML::Node& node) const;
-        int readInt(const YAML::Node& node) const;
-        float readFloat(const YAML::Node& node) const;
+        const std::string& readString(const loader::Node& node) const;
+        bool readBool(const loader::Node& node) const;
+        int readInt(const loader::Node& node) const;
+        float readFloat(const loader::Node& node) const;
 
-        std::vector<int> readIntVector(const YAML::Node& node, int reserve) const;
-        std::vector<float> readFloatVector(const YAML::Node& node, int reserve) const;
+        std::vector<int> readIntVector(const loader::Node& node, int reserve) const;
+        std::vector<float> readFloatVector(const loader::Node& node, int reserve) const;
 
-        glm::vec2 readVec2(const YAML::Node& node) const;
-        glm::vec3 readVec3(const YAML::Node& node) const;
-        glm::vec4 readVec4(const YAML::Node& node) const;
+        glm::vec2 readVec2(const loader::Node& node) const;
+        glm::vec3 readVec3(const loader::Node& node) const;
+        glm::vec4 readVec4(const loader::Node& node) const;
 
-        glm::uvec3 readUVec3(const YAML::Node& node) const;
+        glm::uvec3 readUVec3(const loader::Node& node) const;
 
-        glm::vec3 readScale3(const YAML::Node& node) const;
+        glm::vec3 readScale3(const loader::Node& node) const;
 
-        glm::vec3 readRGB(const YAML::Node& node) const;
-        glm::vec4 readRGBA(const YAML::Node& node) const;
+        glm::vec3 readRGB(const loader::Node& node) const;
+        glm::vec4 readRGBA(const loader::Node& node) const;
 
         // SPEC: [w, x, y, z]
-        glm::quat readQuat(const YAML::Node& node) const;
+        glm::quat readQuat(const loader::Node& node) const;
 
-        glm::vec3 readDegreesRotation(const YAML::Node& node) const;
+        glm::vec3 readDegreesRotation(const loader::Node& node) const;
 
-        float readFractional(const YAML::Node& node) const;
-        glm::vec2 readRefractionRatio(const YAML::Node& node) const;
+        float readFractional(const loader::Node& node) const;
+        glm::vec2 readRefractionRatio(const loader::Node& node) const;
         float convertRefractionRatio(const glm::vec2 ratio) const noexcept;
 
         std::tuple<ki::node_id, std::string> resolveId(
@@ -90,7 +88,7 @@ namespace loader
             const glm::uvec3& tile,
             bool automatic);
 
-        BaseId readId(const YAML::Node& node) const;
+        BaseId readId(const loader::Node& node) const;
 
         std::string readFile(std::string_view filename) const;
 
@@ -105,10 +103,10 @@ namespace loader
         void reportUnknown(
             std::string_view scope,
             std::string_view k,
-            const YAML::Node&) const;
+            const loader::Node&) const;
 
         std::string renderNode(
-            const YAML::Node& v) const;
+            const loader::Node& v) const;
 
     public:
         Context m_ctx;

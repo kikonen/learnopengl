@@ -1,6 +1,5 @@
 #include "GeneratorLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -17,6 +16,8 @@
 #include "generator/AsteroidBeltGenerator.h"
 #include "terrain/TerrainGenerator.h"
 
+#include "loader/document.h"
+
 namespace loader {
     GeneratorLoader::GeneratorLoader(
         Context ctx)
@@ -25,14 +26,14 @@ namespace loader {
     }
 
     void GeneratorLoader::loadGenerator(
-        const YAML::Node& node,
+        const loader::Node& node,
         GeneratorData& data) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -87,12 +88,12 @@ namespace loader {
     }
 
     void GeneratorLoader::loadTerrain(
-        const YAML::Node& node,
+        const loader::Node& node,
         TerrainData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
             }

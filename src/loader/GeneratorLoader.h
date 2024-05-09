@@ -20,11 +20,11 @@ namespace loader {
             Context ctx);
 
         void loadGenerator(
-            const YAML::Node& node,
+            const loader::Node& node,
             GeneratorData& data) const;
 
         void loadTerrain(
-            const YAML::Node& node,
+            const loader::Node& node,
             TerrainData& data) const;
 
         std::unique_ptr<NodeGenerator> createGenerator(

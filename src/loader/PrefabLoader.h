@@ -16,7 +16,7 @@ namespace loader {
             Context ctx);
 
         void loadPrefab(
-            const YAML::Node& node,
+            const loader::Node& node,
             PrefabData& data) const;
     };
 }

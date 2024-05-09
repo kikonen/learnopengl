@@ -1,9 +1,10 @@
 #include "LightLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "component/Light.h"
+
+#include "loader/document.h"
 
 namespace loader{
     LightLoader::LightLoader(
@@ -13,7 +14,7 @@ namespace loader{
     }
 
     void LightLoader::loadLight(
-        const YAML::Node& node,
+        const loader::Node& node,
         LightData& data) const
     {
         // Default to center
@@ -22,9 +23,9 @@ namespace loader{
         data.enabled = true;
 
         // pos relative to owning node
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

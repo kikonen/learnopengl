@@ -14,7 +14,7 @@
 
 #include "BaseId.h"
 #include "BaseData.h"
-#include "Flags.h"
+
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
 #include "CameraData.h"
@@ -31,8 +31,6 @@
 
 namespace loader {
     struct EntityData {
-        bool valid{ false };
-
         bool enabled{ false };
         bool active{ false };
 
@@ -44,7 +42,7 @@ namespace loader {
         std::string name;
         std::string desc;
 
-        std::string prefab;
+        std::string prefabName;
 
         int priority{ 0 };
 
@@ -96,8 +94,6 @@ namespace loader {
         GeneratorData generator;
 
         ParticleData particle;
-
-        Flags fields;
 
         bool findRenderFlag(
             const std::string& flag,

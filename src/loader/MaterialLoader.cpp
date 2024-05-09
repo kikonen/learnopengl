@@ -4,8 +4,9 @@
 
 #include "asset/Assets.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
+
+#include "loader/document.h"
 
 namespace {
     const float DEF_ALPHA = 1.0;
@@ -98,7 +99,7 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterialModifiers(
-        const YAML::Node& node,
+        const loader::Node& node,
         MaterialData& data) const
     {
         data.enabled = true;
@@ -108,25 +109,26 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterials(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<MaterialData>& materials) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data);
         }
     }
 
     void MaterialLoader::loadMaterial(
-        const YAML::Node& node,
+        const loader::Node& node,
         MaterialData& data) const
     {
         Material& material = data.material;
         auto& fields = data.fields;
 
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
             if (k == "name") {
@@ -440,12 +442,12 @@ namespace loader {
     }
 
     void MaterialLoader::loadTextureSpec(
-        const YAML::Node& node,
+        const loader::Node& node,
         TextureSpec& textureSpec) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "wrap") {
                 loadTextureWrap(k, v, textureSpec.wrapS);
@@ -465,7 +467,7 @@ namespace loader {
 
     void MaterialLoader::loadTextureWrap(
         const std::string& k,
-        const YAML::Node& v,
+        const loader::Node& v,
         GLint& wrapMode) const
     {
         const std::string& wrap = readString(v);

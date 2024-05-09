@@ -1,7 +1,5 @@
 #include "RootLoader.h"
 
-#include "ki/yaml.h"
-
 #include "asset/Assets.h"
 
 #include "pool/NodeHandle.h"
@@ -15,6 +13,8 @@
 
 #include "registry/Registry.h"
 
+#include "loader/document.h"
+
 namespace loader
 {
     RootLoader::RootLoader(
@@ -24,16 +24,16 @@ namespace loader
     }
 
     void RootLoader::loadRoot(
-        const YAML::Node& node,
+        const loader::Node& node,
         RootData& data) const
     {
         const auto& assets = Assets::get();
 
         data.rootId = assets.rootId;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "pos") {
                 data.pos = readVec3(v);

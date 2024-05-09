@@ -11,7 +11,6 @@
 #include "util/glm_format.h"
 #include "util/glm_util.h"
 
-#include "ki/yaml.h"
 #include "ki/sid.h"
 
 #include "pool/NodeHandle.h"
@@ -68,6 +67,10 @@
 #include "EntityRoot.h"
 #include "ResolvedEntity.h"
 
+#include "converter/YamlConverter.h"
+
+#include "loader/document.h"
+
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
 }
@@ -120,24 +123,24 @@ namespace loader {
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
             try {
-                std::ifstream fin(this->m_ctx.m_fullPath);
-                YAML::Node doc = YAML::Load(fin);
-
-                loadMeta(doc["meta"], *m_meta);
-
                 auto& l = *m_loaders;
 
-                l.m_skyboxLoader.loadSkybox(doc["skybox"], *m_skybox);
+                YamlConverter converter;
+                auto doc = converter.load(m_ctx.m_fullPath);
 
-                l.m_fontLoader.loadFonts(doc["fonts"], m_fonts);
-                l.m_materialLoader.loadMaterials(doc["materials"], m_materials);
-                l.m_spriteLoader.loadSprites(doc["sprites"], m_sprites);
+                loadMeta(doc.findNode("meta"), *m_meta);
 
-                l.m_rootLoader.loadRoot(doc["root"], *m_root);
-                l.m_scriptLoader.loadScriptEngine(doc["script"], *m_scriptEngineData);
+                l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
+
+                l.m_fontLoader.loadFonts(doc.findNode("fonts"), m_fonts);
+                l.m_materialLoader.loadMaterials(doc.findNode("materials"), m_materials);
+                l.m_spriteLoader.loadSprites(doc.findNode("sprites"), m_sprites);
+
+                l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
+                l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
 
                 l.m_entityLoader.loadEntities(
-                    doc["entities"],
+                    doc.findNode("entities"),
                     m_entities,
                     l);
 
@@ -953,18 +956,18 @@ namespace loader {
     }
 
     void SceneLoader::loadMeta(
-        const YAML::Node& node,
+        const loader::Node& node,
         MetaData& data) const
     {
         data.name = "<noname>";
         //data.modelsDir = assets.modelsDir;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "name") {
-                data.name= readString(v);
+                data.name = "";// readString(v);
             }
             //else if (k == "assetsDir") {
             //    data.assetsDir = readString(v);

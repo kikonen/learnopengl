@@ -10,8 +10,6 @@
 #include "util/Util.h"
 #include "util/glm_format.h"
 
-#include "ki/yaml.h"
-
 #include "asset/Shader.h"
 
 #include "mesh/LodMesh.h"
@@ -22,6 +20,8 @@
 
 #include "Loaders.h"
 
+#include "loader/document.h"
+
 namespace loader {
     EntityLoader::EntityLoader(
         Context ctx)
@@ -30,11 +30,11 @@ namespace loader {
     }
 
     void EntityLoader::loadEntities(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<EntityRoot>& entities,
         Loaders& loaders) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             auto& entityRoot = entities.emplace_back();
             loadEntity(
                 entry,
@@ -44,7 +44,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntity(
-        const YAML::Node& node,
+        const loader::Node& node,
         EntityRoot& entityRoot,
         Loaders& loaders) const
     {
@@ -57,7 +57,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntityClone(
-        const YAML::Node& node,
+        const loader::Node& node,
         EntityData& data,
         std::vector<EntityData>& clones,
         bool recurse,
@@ -69,9 +69,9 @@ namespace loader {
 
         bool needLod = false;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);
@@ -118,6 +118,9 @@ namespace loader {
             else if (k == "desc") {
                 data.desc = readString(v);
             }
+            else if (k == "prefab") {
+                data.prefabName = readString(v);
+            }
             else if (k == "active") {
                 data.active = readBool(v);
             }
@@ -143,16 +146,16 @@ namespace loader {
                 data.geometryType = readString(v);
             }
             else if (k == "program_definitions" || k == "shader_definitions") {
-                for (const auto& defNode : v) {
-                    const auto& defName = defNode.first.as<std::string>();
-                    const auto& defValue = defNode.second.as<std::string>();
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
                     data.programDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
             else if (k == "render_flags") {
-                for (const auto& flagNode : v) {
-                    auto flagName = flagNode.first.as<std::string>();
-                    const auto flagValue = readBool(flagNode.second);
+                for (const auto& flagNode : v.getNodes()) {
+                    const auto& flagName = flagNode.getName();
+                    const auto& flagValue = readBool(flagNode.getNode());
                     data.renderFlags[util::toLower(flagName)] = flagValue;
                 }
             }
@@ -268,12 +271,12 @@ namespace loader {
         }
 
         if (hasClones) {
-            for (const auto& pair : node) {
-                const std::string& k = pair.first.as<std::string>();
-                const YAML::Node& v = pair.second;
+            for (const auto& pair : node.getNodes()) {
+                const std::string& k = pair.getName();
+                const loader::Node& v = pair.getNode();
 
                 if (k == "clones") {
-                    for (const auto& node : v) {
+                    for (const auto& node : v.getNodes()) {
                         // NOTE KI intialize with current data
                         EntityData clone = data;
                         std::vector<EntityData> dummy{};
@@ -291,12 +294,12 @@ namespace loader {
     }
 
     void EntityLoader::loadText(
-        const YAML::Node& node,
+        const loader::Node& node,
         TextData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "text") {
                 data.text = readString(v);
@@ -311,32 +314,34 @@ namespace loader {
     }
 
     void EntityLoader::loadLods(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<LodData>& lods,
         Loaders& loaders) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
             loadLod(entry, data, loaders);
         }
     }
 
     void EntityLoader::loadLod(
-        const YAML::Node& node,
+        const loader::Node& node,
         LodData& data,
         Loaders& loaders) const
     {
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
             if (k == "distance") {
                 data.distance = readFloat(v);
             }
             else if (k == "model") {
-                if (v.Type() == YAML::NodeType::Sequence) {
-                    data.meshPath = util::joinPath(readString(v[0]), readString(v[1]));
+                if (v.isSequence()) {
+                    auto& nodes = v.getNodes();
+                    data.meshPath = util::joinPath(readString(nodes[0]), readString(nodes[1]));
                 }
                 else {
                     data.meshPath = readString(v);
@@ -368,18 +373,18 @@ namespace loader {
     }
 
     void EntityLoader::loadMaterialReferences(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<MaterialReference>& references,
         Loaders& loaders) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             MaterialReference& data = references.emplace_back();
             loadMaterialReference(entry, data, loaders);
         }
     }
 
     void EntityLoader::loadMaterialReference(
-        const YAML::Node& node,
+        const loader::Node& node,
         MaterialReference& data,
         Loaders& loaders) const
     {
@@ -391,22 +396,23 @@ namespace loader {
     }
 
     void EntityLoader::loadAnimations(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<AnimationData>& animations) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             AnimationData& data = animations.emplace_back();
             loadAnimation(entry, data);
         }
     }
 
     void EntityLoader::loadAnimation(
-        const YAML::Node& node,
+        const loader::Node& node,
         AnimationData& data) const
     {
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
             if (k == "name") {

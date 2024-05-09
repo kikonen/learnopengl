@@ -1,6 +1,5 @@
 #include "VolumeLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -25,6 +24,8 @@
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
+
+#include "loader/document.h"
 
 namespace {
 }

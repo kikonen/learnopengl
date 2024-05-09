@@ -1,6 +1,5 @@
 #include "SkyboxLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -23,6 +22,8 @@
 
 #include "scene/SkyboxMaterial.h"
 
+#include "loader/document.h"
+
 namespace {
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
 
@@ -39,12 +40,12 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkybox(
-        const YAML::Node& node,
+        const loader::Node& node,
         SkyboxData& data)
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -83,16 +84,16 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkyboxFaces(
-        const YAML::Node& node,
+        const loader::Node& node,
         SkyboxData& data)
     {
-        if (!node.IsSequence()) {
+        if (!node.isSequence()) {
             return;
         }
 
         int idx = 0;
-        for (const auto& e : node) {
-            data.faces[idx] = e.as<std::string>();
+        for (const auto& e : node.getNodes()) {
+            data.faces[idx] = readString(e);
             idx++;
         }
 

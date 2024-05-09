@@ -1,6 +1,5 @@
 #include "CubeMapLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "pool/NodeHandle.h"
@@ -22,8 +21,8 @@
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
-namespace {
-}
+#include "loader/document.h"
+
 
 namespace loader {
     CubeMapLoader::CubeMapLoader(

@@ -16,15 +16,15 @@ namespace loader {
             Context ctx);
 
         void loadPhysics(
-            const YAML::Node& node,
+            const loader::Node& node,
             PhysicsData& data) const;
 
         void loadBody(
-            const YAML::Node& node,
+            const loader::Node& node,
             physics::Body& data) const;
 
         void loadGeom(
-            const YAML::Node& node,
+            const loader::Node& node,
             physics::Geom& data) const;
 
         void createObject(

@@ -19,16 +19,16 @@ namespace loader {
             Context ctx);
 
         void loadScriptEngine(
-            const YAML::Node& node,
+            const loader::Node& node,
             ScriptEngineData& data) const;
 
         void loadScripts(
-            const YAML::Node& node,
+            const loader::Node& node,
             std::vector<ScriptData>& scripts) const;
 
         void loadScript(
 
-            const YAML::Node& node,
+            const loader::Node& node,
             ScriptData& data) const;
 
         void createScriptEngine(

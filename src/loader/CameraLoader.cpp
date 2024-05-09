@@ -2,10 +2,11 @@
 
 #include "asset/Assets.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "component/Camera.h"
+
+#include "loader/document.h"
 
 namespace loader
 {
@@ -16,7 +17,7 @@ namespace loader
     }
 
     void CameraLoader::loadCamera(
-        const YAML::Node& node,
+        const loader::Node& node,
         CameraData& data) const
     {
         const auto& assets = Assets::get();
@@ -25,9 +26,9 @@ namespace loader
 
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

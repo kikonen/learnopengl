@@ -13,6 +13,8 @@ namespace util
     bool isInt(std::string_view s);
     bool isFloat(std::string_view s);
 
+    bool readBool(std::string_view s, bool defaultValue);
+
     //
     // modify str param to upper case
     //

@@ -19,7 +19,7 @@ namespace loader {
             Context ctx);
 
         void loadParticle(
-            const YAML::Node& node,
+            const loader::Node& node,
             ParticleData& data) const;
 
         std::unique_ptr<particle::ParticleGenerator> createParticle(

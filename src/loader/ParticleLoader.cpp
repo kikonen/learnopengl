@@ -1,6 +1,5 @@
 #include "ParticleLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Material.h"
@@ -8,6 +7,8 @@
 #include "particle/ParticleGenerator.h"
 
 #include "registry/MaterialRegistry.h"
+
+#include "loader/document.h"
 
 namespace loader
 {
@@ -17,14 +18,14 @@ namespace loader
     {}
 
     void ParticleLoader::loadParticle(
-        const YAML::Node& node,
+        const loader::Node& node,
         ParticleData& data) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "xname" || k == "xxname" || k == "xenabled" || k == "xxenabled") {
                 data.enabled = false;
