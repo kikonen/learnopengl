@@ -68,6 +68,29 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
+  - id: wolf_{t}
+    model: fbx/wolf/SK_Wolf.FBX
+    material: wolf_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-30.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    animations:
+      - name: walk
+        path: fbx/wolf/anim/ANIM_Wolf_Walk_RM.FBX
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
   - id: lion_{t}
     model: fbx/lion/SK_Lion.FBX
     material: lion_pbr
@@ -239,3 +262,5 @@ materials:
     map_pbr: fbx/skeleton/skeleton_pbr
     xmetal: [0.3, 0.4, 0, 1]
     xtiling: 60
+  - name: wolf_pbr
+    map_pbr: fbx/wolf/wolf_pbr
