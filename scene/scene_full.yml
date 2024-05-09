@@ -934,6 +934,30 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
+  - xid: maple_tree_forest_{t}
+    type: model
+    model: fbx/scenery/trees/Maple_01.fbx
+    priority: 1
+    program: g_tex
+    pos: [250, 10.0, 150.0]
+    materials:
+      - name: maple_trunk
+        alias: Tree_0Mat
+      - name: maple_leaf
+        alias: Tree_1Mat
+    render_flags:
+      alpha: true
+      render_back: true
+      static_bounds: true
+    scale: 0.05
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
   - id: skeleton_army_{t}
     model: quad
     priority: 1

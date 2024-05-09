@@ -66,6 +66,12 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
+  - xid: maple_tree_forest_{t}
+    prefab: prefabs/scenery/maple_tree_1
+    pos: [0, 0.0, 0.0]
+    render_flags:
+      static_bounds: true
+    scale: 1
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
