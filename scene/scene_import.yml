@@ -27,7 +27,7 @@ entities:
       - type: camera_zoom
   - name: Directional light
     type: origo
-    pos: [-25, 25, 25]
+    pos: [-15, 25, 25]
     model: light
     program: g_light
     render_flags:
@@ -66,16 +66,21 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - id: object
+  - id: object_{t}
     model: fbx/viking/SK_Viking_M01_Warrior_Compiled.FBX
+    model: fbx/scenery/trees/SM_TreePine_01b.FBX
     program: g_tex
     shadow_program: simple_depth
-    material: pine_trunk_pbr
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [-90, 0, 0]
     scale: 1
     base_scale: 0.01
+    materials:
+      - name: pine_trunk_pbr
+        alias: MI_TreeBarkPine_01a
+      - name: pine_leaf_pbr
+        alias: MI_PineTree_01a
     render_flags:
       alpha: true
       render_back: true
@@ -83,6 +88,11 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 7
+      z_step: -7
 materials:
   - name: wood_floor
     map_pbr: textures\Planks 09 [8K]
