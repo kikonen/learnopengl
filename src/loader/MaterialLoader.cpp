@@ -27,6 +27,7 @@ namespace {
         std::regex(".*[\\.]usda"),
         std::regex(".*preview.*"),
         std::regex(".*normaldx.*"),
+        std::regex(".*bc_neutral.*"),
     };
 
     const std::vector<std::regex> imageMatchers{
@@ -49,6 +50,7 @@ namespace {
         std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
         std::regex(".*[-_ ]basecoloralpha[-_ \\.].*"),
         std::regex(".*[-_ ]a[\\.].*"),
+        std::regex(".*[-_ ]bc[\\.].*"),
     };
 
     const std::vector<std::regex> emissionMatchers{
@@ -73,6 +75,7 @@ namespace {
         std::regex(".*[-_ ]metallic[-_ \\.].*"),
         std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
         std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
+        std::regex(".*[-_ ]aorm[\\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{
@@ -90,11 +93,13 @@ namespace {
     const std::vector<std::regex> displacementMatchers{
         std::regex(".*[-_ ]displacement[-_ \\.].*"),
         std::regex(".*[-_ ]disp[-_ \\.].*"),
+        std::regex(".*[-_ ]depth[-_ \\.].*"),
     };
 
     const std::vector<std::regex> opacityMatchers{
         std::regex(".*[-_ ]opacity[-_ \\.].*"),
         std::regex(".*[-_ ]ops[-_ \\.].*"),
+        std::regex(".*[-_ ]alpha[-_ \\.].*"),
     };
 }
 
