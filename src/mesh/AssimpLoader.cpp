@@ -376,62 +376,83 @@ namespace mesh
             src->mNumAllocated));
 
         Material material;
-        std::map<std::string, GLuint*> textureIdMap;
-
-        int ret1, ret2;
-        aiColor4D diffuse;
-        aiColor4D specular;
-        aiColor4D ambient;
-        aiColor4D emission;
-        ai_real shininess, strength;
-        unsigned int max;
-
-        int diffuseIndex = 0;
-        int bumpIndex = 0;
-        int normalIndex = 0;
-        int emissionIndex = 0;
-        aiString diffusePath;
-        aiString bumpPath;
-        aiString normalPath;
-        aiString emissionPath;
-
-        auto diffuseTexValid = src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
-        auto bumpTexValid = src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath);
-        auto normalTexValid = src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
-        auto emissionTexValid = src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath);
-
-        auto diffuseValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
-        auto specularValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular);
-        auto ambientValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient);
-        auto emissionValid = aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission);
-
-        max = 1;
-        ret1 = aiGetMaterialFloatArray(src, AI_MATKEY_SHININESS, &shininess, &max);
-        max = 1;
-        ret2 = aiGetMaterialFloatArray(src, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
-
-        if (diffuseTexValid == AI_SUCCESS) {
-            //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-            material.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
-        }
-        if (bumpTexValid == AI_SUCCESS) {
-            material.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
-        }
-        if (normalTexValid == AI_SUCCESS) {
-            material.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
-        }
-        if (emissionTexValid == AI_SUCCESS) {
-            material.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
-        }
-
-        material.kd = assimp_util::toVec4(diffuse);
-        material.ks = assimp_util::toVec4(specular);
-        material.ka = assimp_util::toVec4(ambient);
-        material.ke = assimp_util::toVec4(emission);
-
-        material.ns = shininess;
-
         material.m_name = name;
+
+        {
+            aiColor4D diffuse;
+
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_DIFFUSE, &diffuse) == AI_SUCCESS)
+            {
+                material.kd = assimp_util::toVec4(diffuse);
+
+                float diffuseAlpha;
+                if (aiGetMaterialFloat(src, AI_MATKEY_OPACITY, &diffuseAlpha) == AI_SUCCESS) {
+                    material.kd.a = diffuseAlpha;
+                }
+            }
+        }
+        {
+            aiColor4D specular;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
+                material.ks = assimp_util::toVec4(specular);
+            }
+        }
+
+        {
+            aiColor4D ambient;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient) == AI_SUCCESS) {
+                material.ka = assimp_util::toVec4(ambient);
+            }
+        }
+        {
+            aiColor4D emission;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission) == AI_SUCCESS) {
+                material.ke = assimp_util::toVec4(emission);
+            }
+        }
+
+        {
+            ai_real shininess;
+            if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS) {
+                material.ns = shininess;
+            }
+
+            ai_real strength;
+            if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS_STRENGTH, &strength) == AI_SUCCESS) {
+                //material.ns = shininess;
+            }
+        }
+
+        {
+            int diffuseIndex = 0;
+            aiString diffusePath;
+
+            if (src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath) == AI_SUCCESS) {
+                //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
+                material.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
+            }
+        }
+        {
+            int bumpIndex = 0;
+            aiString bumpPath;
+            if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
+                material.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
+            }
+        }
+        {
+            int normalIndex = 0;
+            aiString normalPath;
+            if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
+                material.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
+            }
+        }
+        {
+            int emissionIndex = 0;
+            aiString emissionPath;
+            if (src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath) == AI_SUCCESS) {
+                material.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
+            }
+        }
 
         return material;
     }

@@ -62,13 +62,14 @@ entities:
       alpha: true
       blend_oit: true
   - name: Blend cubes
-    model: rubik_cube
+    model: rubik_cube.fbx
     program: g_tex
     render_flags:
       alpha: true
       blend_oit: true
       render_back: true
     scale: 1
+    base_scale: 0.01
     pos: [-4, 0, -6]
     repeat:
       x_count: 2
