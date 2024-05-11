@@ -67,7 +67,7 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: object_{t}
-    model: fbx/viking/SK_Viking_M01_Warrior_Compiled.FBX
+    model: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
     model: fbx/scenery/trees/SM_TreePine_01b.FBX
     program: g_tex
     shadow_program: simple_depth

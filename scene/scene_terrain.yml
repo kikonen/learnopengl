@@ -165,7 +165,7 @@ entities:
       x_step: 3
       z_step: -2
   - xid: skeleton_army_2_{t}
-    model: fbx/skeleton/skeleton_animated.FBX
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
     material: skeleton_pbr
     program: g_tex
     shadow_program: simple_depth
@@ -211,7 +211,7 @@ materials:
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
   - name: skeleton_pbr
-    map_pbr: fbx/skeleton/skeleton_pbr
+    map_pbr: fbx/creatures/skeleton/skeleton_pbr
     xmetal: [0.3, 0.4, 0, 1]
     xtiling: 60
   - name: palm_trunk

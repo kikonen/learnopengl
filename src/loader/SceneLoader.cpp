@@ -747,6 +747,7 @@ namespace loader {
 
         auto* mesh = type->modifyLod(0)->getMesh<mesh::ModelMesh>();
 
+        if (!mesh) return;
         if (!mesh->m_rig) return;
         if (!mesh->m_rig->hasBones()) return;
 

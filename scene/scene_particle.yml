@@ -76,7 +76,7 @@ entities:
       - pos: [5.0, 2.0, 5.0]
         particle:
           material: particle_casting
-  - name: Skeleton army - grid
+  - xid: skeleton_army_{t}
     model: quad
     priority: 1
     program: g_tex
@@ -96,6 +96,25 @@ entities:
         z_count: 2
         x_step: 10
         z_step: -10
+  - id: skeleton_army_2_{t}
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    priority: 1
+    pos: [20, 0.0, 20]
+    base_rotation: [0, -90, 0]
+    render_flags:
+      xdynamic_bounds: true
+      use_bones: true
+      xuse_animation: true
+    scale: 3
+    base_scale: 0.028
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
   - id: rock
     program: g_tex
     render_flags:
@@ -176,6 +195,9 @@ materials:
     metal: [0.7, 0.2, 0, 1]
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: skeleton_pbr
+    map_pbr: fbx/creatures/skeleton/skeleton_pbr
+    metal: [0.3, 0.4, 0, 1]
   - name: particle_firespin
     kd: [1, 1, 1, 1]
     xkd: [0.5, 1.5, 0.2, 0.2]
