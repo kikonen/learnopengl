@@ -120,5 +120,5 @@ void main() {
 #endif
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
+  o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
 }

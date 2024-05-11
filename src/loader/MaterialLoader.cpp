@@ -50,6 +50,7 @@ namespace {
         std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
         std::regex(".*[-_ ]basecoloralpha[-_ \\.].*"),
         std::regex(".*[-_ ]a[\\.].*"),
+        std::regex(".*[-_ ]c[\\.].*"),
         std::regex(".*[-_ ]bc[\\.].*"),
     };
 
@@ -73,9 +74,11 @@ namespace {
         std::regex(".*[-_ ]metalness[-_ \\.].*"),
         std::regex(".*[-_ ]met[-_ \\.].*"),
         std::regex(".*[-_ ]metallic[-_ \\.].*"),
+        // TODO KI logic various random combined texture formats
         std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
-        std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
-        std::regex(".*[-_ ]aorm[\\.].*"),
+        //std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
+        //std::regex(".*[-_ ]aorm[\\.].*"),
+        //std::regex(".*[-_ ]rom[\\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{

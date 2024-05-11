@@ -71,5 +71,5 @@ void main() {
   o_fragEmission = material.emission.rgb;
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
+  o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
 }
