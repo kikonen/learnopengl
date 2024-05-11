@@ -57,7 +57,7 @@ entities:
     active: true
     render_flags:
       allow_normals: false
-      xdynamic_bounds: true
+      dynamic_bounds: true
     audio:
       listener:
         default: true
@@ -81,6 +81,7 @@ entities:
   - name: Player Camera
     parent_id: player
     type: origo
+    pos: [0, 5.25, 0.25]
     camera:
       default: true
     controllers:
@@ -627,8 +628,9 @@ entities:
       - pos: [5.0, 20.0, 5.0]
         id: cube-4
   - id: blend_cubes_{c}
-    model: rubik_cube
+    model: rubik_cube.fbx
     program: g_tex
+    base_scale: 0.01
     render_flags:
       alpha: true
       blend_oit: true
@@ -961,7 +963,7 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
-  - id: skeleton_army_{t}
+  - xid: skeleton_army_{t}
     model: quad
     priority: 1
     program: g_tex
@@ -988,7 +990,7 @@ entities:
         type: capsule
         size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
-  - xid: skeleton_army_2_{t}
+  - id: skeleton_army_2_{t}
     model: fbx/creatures/skeleton/skeleton_animated.FBX
     material: skeleton_pbr
     program: g_tex
@@ -1001,13 +1003,14 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    scale: 0.1
-    base_rotation: [90, 0, 0]
+    scale: 3
+    base_scale: 0.05
+    base_rotation: [0, -180, 0]
     repeat:
-      x_count: 20
-      z_count: 101
-      x_step: -3
-      z_step: 3
+      x_count: 15
+      z_count: 30
+      x_step: -4
+      z_step: 5
     physics:
       update: true
       body:

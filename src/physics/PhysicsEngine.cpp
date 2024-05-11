@@ -324,6 +324,7 @@ namespace physics
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
         transform.setPosition(pos);
+        //transform.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
         if (transform.m_dirty) {
             transform.updateModelMatrix(parent->getTransform());
