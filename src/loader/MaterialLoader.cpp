@@ -45,6 +45,7 @@ namespace {
         std::regex(".*[-_ ]col[-_ \\.].*"),
         std::regex(".*[-_ ]basecolor[-_ \\.].*"),
         std::regex(".*[-_ ]diff[-_ \\.].*"),
+        std::regex(".*[-_ ]alb[-_ \\.].*"),
         std::regex(".*[-_ ]albedo[-_ \\.].*"),
         std::regex(".*[-_ ]albedoopacity[-_ \\.].*"),
         std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
