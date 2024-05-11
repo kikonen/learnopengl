@@ -255,50 +255,53 @@ entities:
       y_step: 0
       z_step: 3
   - name: Window 1
-    model: quad
-    material: window_1
+    model: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
     program: g_tex
-    pos: [5.0, 14.0, -5.0]
-    rotation: [0.0, 180.0, 0.0]
-    scale: [1, 1.3, 0]
+    shadow_program: simple_depth
+    material: door_glass_1_pbr
+    pos: [5.0, 10.0, -5.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 2
+    base_scale: 0.01
     render_flags:
       alpha: true
       blend_oit: true
-      render_back: true
   - name: Window 1_1
-    model: quad
-    material: window_1
+    model: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
     program: g_tex
-    pos: [5.0, 12.0, 0.0]
-    rotation: [0.0, 180.0, 0.0]
-    scale: [2.5, 4, 0]
+    shadow_program: simple_depth
+    material: door_glass_2_pbr
+    pos: [5.0, 8.0, 0.0]
+    base_rotation: [-90.0, -45.0, 0.0]
+    scale: 4
+    base_scale: 0.01
     render_flags:
-      billboard: true
       alpha: true
       blend_oit: true
-      render_back: true
   - name: Window 2
-    model: quad
-    material: window_2
+    model: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
     program: g_tex
+    shadow_program: simple_depth
+    material: door_glass_1_pbr
     pos: [7.0, 14.0, -8.0]
-    rotation: [0.0, 180.0, 0.0]
-    scale: [1, 1.2, 0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 2
+    base_scale: 0.01
     render_flags:
       alpha: true
       blend_oit: true
-      render_back: true
   - id: stained_windows_{t}
-    model: quad
-    material: window_2
+    model: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
     program: g_tex
+    shadow_program: simple_depth
+    material: door_glass_1_pbr
     pos: [-10.0, 20.0, 10.0]
-    rotation: [0.0, 180.0, 0.0]
-    scale: [1, 1.3, 0]
+    rotation: [-90.0, 0.0, 0.0]
+    scale: 2
+    base_scale: 0.01
     render_flags:
       alpha: true
       blend_oit: true
-      render_back: true
     repeat:
       x_count: 10
       x_step: 2
@@ -1239,6 +1242,12 @@ materials:
     tiling: 2
   - name: plasma_ball
     map_kd: textures/noise_256.png
+  - name: door_1_pbr
+    map_pbr: fbx\scenery\structures\doors\door_1_pbr
+  - name: door_glass_1_pbr
+    map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
+  - name: door_glass_2_pbr
+    map_pbr: fbx\scenery\structures\doors\door_glass_2_pbr
   - name: particle_casting
     kd: [1, 1, 1, 1]
     map_kd: particles/4_casting_spritesheet.png

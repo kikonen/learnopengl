@@ -49,7 +49,7 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: linden_tree_forest_1
+  - xid: linden_tree_forest_1
     type: model
     model: linden_tree
     priority: 1
@@ -71,7 +71,29 @@ entities:
         z_count: 2
         x_step: 20
         z_step: -20
-  - name: Skeleton army - grid
+  - id: maple_tree_forest_{t}
+    type: model
+    model: fbx/scenery/trees/Maple_02.fbx
+    program: g_tex
+    priority: 1
+    pos: [20, 0.0, 0]
+    rotation: [0, 279, 0]
+    materials:
+      - name: maple_trunk
+        alias: Tree_0Mat
+      - name: maple_leaf
+        alias: Tree_1Mat
+    render_flags:
+      alpha: true
+      render_back: true
+      static_bounds: true
+    scale: 0.02
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 20
+      z_step: -20
+  - xid: skeleton_army_grid_{t}
     model: quad
     priority: 1
     program: g_tex
@@ -91,7 +113,26 @@ entities:
         z_count: 2
         x_step: 10
         z_step: -10
-  - name: Skeleton army
+  - id: skeleton_army_grid_2_{t}
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    priority: 1
+    pos: [20, 0.0, 20]
+    rotation: [0, -135, 0]
+    render_flags:
+      xdynamic_bounds: true
+      use_bones: true
+      xuse_animation: true
+    scale: 3
+    base_scale: 0.028
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - xid: skeleton_army_{t}
     model: quad
     priority: 1
     program: g_tex
@@ -103,6 +144,25 @@ entities:
       dynamic_bounds: true
       render_back: true
     scale: [1.5, 3, 1]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - id: skeleton_army_2_{t}
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
+    material: skeleton_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    priority: 1
+    pos: [20, 0.0, 50]
+    base_rotation: [0, -90, 0]
+    render_flags:
+      xdynamic_bounds: true
+      use_bones: true
+      xuse_animation: true
+    scale: 3
+    base_scale: 0.028
     repeat:
       x_count: 2
       z_count: 2
@@ -178,3 +238,13 @@ materials:
     metal: [0.7, 0.2, 0, 1]
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE
+  - name: skeleton_pbr
+    map_pbr: fbx/creatures/skeleton/skeleton_pbr
+    metal: [0.3, 0.4, 0, 1]
+    ke: [0.0, 0.1, 0.0]
+  - name: maple_trunk
+    map_kd: fbx/scenery/trees/textures/bark02.png
+    map_bump: fbx/scenery/trees/textures/bark02_normal.png
+  - name: maple_leaf
+    map_kd: fbx/scenery/trees/textures/leaf maple.png
+    map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
