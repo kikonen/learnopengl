@@ -75,11 +75,18 @@ struct NodeTransform {
 
     void setBaseTransform(const glm::mat4& transform) noexcept
     {
-        m_baseTransform = transform;
-        m_dirty = true;
-        m_dirtyRotation = true;
-        m_dirtyNormal = true;
-        m_dirtySnapshot = true;
+        if (m_baseTransform != transform) {
+            m_baseTransform = transform;
+            m_dirty = true;
+            m_dirtyRotation = true;
+            m_dirtyNormal = true;
+            m_dirtySnapshot = true;
+        }
+    }
+
+    inline const glm::mat4& getBaseTransform() const noexcept
+    {
+        return m_baseTransform;
     }
 
     inline const glm::vec4 getVolume() const noexcept
@@ -105,7 +112,7 @@ struct NodeTransform {
         return m_scale;
     }
 
-    inline const glm::vec3& getBaseeScale() const noexcept
+    inline const glm::vec3& getBaseScale() const noexcept
     {
         return m_baseScale;
     }

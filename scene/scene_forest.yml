@@ -111,6 +111,33 @@ entities:
         z_count: 200
         x_step: 20
         z_step: -20
+  - xid: pine_tree_forest_{t}
+    type: model
+    model: fbx/scenery/trees/SM_TreePine_01b.FBX
+    program: g_tex
+    pos: [-1000, 0.0, 0.0]
+    materials:
+      - name: pine_trunk_pbr
+        alias: MI_TreeBarkPine_01a
+      - name: pine_leaf_pbr
+        alias: MI_PineTree_01a
+      - xname: MI_TreeBarkPine_01a
+        xalias: DefaultMaterial
+    render_flags:
+      alpha: true
+      render_back: true
+      xstatic_bounds: true
+    base_rotation: [-90, 0, 0]
+    scale: 2
+    base_scale: 0.01
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
   - name: wooden floor
     model: plane
     material: wood_floor
@@ -141,3 +168,7 @@ materials:
   - name: maple_leaf
     map_kd: fbx/scenery/trees/textures/leaf maple.png
     map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+  - name: pine_trunk_pbr
+    map_pbr: fbx\scenery\trees\pine_trunk_pbr
+  - name: pine_leaf_pbr
+    map_pbr: fbx\scenery\trees\pine_leaf_pbr
