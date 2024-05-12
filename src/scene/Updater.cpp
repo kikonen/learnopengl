@@ -118,7 +118,9 @@ void Updater::run()
                 getActiveCount()));
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        if (delay > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        }
     }
 
     KI_INFO(fmt::format("{}: stopped - worker={}", m_prefix, util::isWorkerThread()));

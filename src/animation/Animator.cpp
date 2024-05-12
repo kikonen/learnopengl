@@ -28,6 +28,8 @@ namespace animation {
         double animationStartTime,
         double currentTime)
     {
+        static const glm::mat4 ID_MAT{ 1.f };
+
         if (animationStartTime < 0) return false;
         if (animationIndex < 0 || animationIndex >= rig.m_animations.size()) return false;
 
@@ -36,9 +38,11 @@ namespace animation {
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);
 
-        for (auto i = 0; i < rig.m_boneContainer.size(); i++) {
-            //palette[i].m_transform = palette[i].m_transform * rotationMatrix;
-            palette[i].m_transform = glm::mat4{ 1.f };
+        {
+            for (auto i = 0; i < rig.m_boneContainer.size(); i++) {
+                //palette[i].m_transform = palette[i].m_transform * rotationMatrix;
+                palette[i].m_transform = ID_MAT;
+            }
         }
 
         float animationTimeTicks;
@@ -61,15 +65,15 @@ namespace animation {
         //}
 
         std::vector<glm::mat4> parentTransforms;
-        parentTransforms.resize(rig.m_nodes.size() + 1);
-        parentTransforms[0] = glm::mat4(1.f);
+        parentTransforms.reserve(rig.m_nodes.size() + 1);
+        parentTransforms.push_back(ID_MAT);
 
         for (const auto& rigNode : rig.m_nodes) {
             const auto* channel = animation->findByNodeIndex(rigNode.m_index);
             const glm::mat4& nodeTransform = channel
                 ? channel->interpolate(animationTimeTicks)
                 //: rigNode.m_localTransform;
-                : glm::mat4{ 1.f };
+                : ID_MAT;
 
             auto globalTransform = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
 
@@ -80,7 +84,7 @@ namespace animation {
                 //palette[bone->m_index] = rigNode.m_globalInvTransform * nodeTransform * bone->m_offsetMatrix;
             }
 
-            parentTransforms[rigNode.m_index + 1] = globalTransform;
+            parentTransforms.push_back(globalTransform);
         }
 
         return true;

@@ -57,7 +57,7 @@ entities:
     active: true
     render_flags:
       allow_normals: false
-      dynamic_bounds: true
+      xdynamic_bounds: true
     audio:
       listener:
         default: true
@@ -919,7 +919,7 @@ entities:
     model: fbx/scenery/trees/Palm_01.fbx
     priority: 1
     program: g_tex
-    pos: [250, 10.0, 150.0]
+    pos: [350, 10.0, 150.0]
     materials:
       - name: palm_trunk
         alias: Tree_0Mat
@@ -937,8 +937,8 @@ entities:
       repeat:
         x_count: 40
         z_count: 40
-        x_step: -20
-        z_step: 20
+        x_step: -25
+        z_step: 25
   - xid: maple_tree_forest_{t}
     type: model
     model: fbx/scenery/trees/Maple_01.fbx
@@ -996,7 +996,7 @@ entities:
     program: g_tex
     shadow_program: simple_depth
     priority: 1
-    pos: [15, 11.5, 60.0]
+    pos: [35, 11.5, 60.0]
     render_flags:
       dynamic_bounds: true
       xwireframe: true
@@ -1007,10 +1007,10 @@ entities:
     base_scale: 0.05
     base_rotation: [0, -180, 0]
     repeat:
-      x_count: 15
-      z_count: 30
-      x_step: -4
-      z_step: 5
+      x_count: 10
+      z_count: 50
+      x_step: -10
+      z_step: 10
     physics:
       update: true
       body:

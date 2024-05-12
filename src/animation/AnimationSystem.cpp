@@ -1,5 +1,9 @@
 #include "AnimationSystem.h"
 
+#include <tuple>
+#include <algorithm>
+#include <execution>
+
 #include "asset/SSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -77,11 +81,42 @@ namespace animation
     {
         prepareNodes();
 
+        static std::vector<std::pair<Node*, mesh::MeshType*>> s_activeNodes;
+
+        // prepare
+        {
+            s_activeNodes.clear();
+            s_activeNodes.reserve(m_animationNodes.size());
+
+            for (auto& handle : m_animationNodes) {
+                auto* node = handle.toNode();
+                if (!node) continue;
+                auto* type = node->m_typeHandle.toType();
+
+                s_activeNodes.push_back({ node, type });
+            }
+        }
+
+        // execute
         {
             std::lock_guard lock(m_pendingLock);
 
-            for (auto& handle : m_animationNodes) {
-                m_needSnapshot |= animateNode(ctx, handle.toNode());
+            if (true) {
+                std::for_each(
+                    std::execution::par_unseq,
+                    s_activeNodes.begin(),
+                    s_activeNodes.end(),
+                    [this, &ctx](auto& pair) {
+                        animateNode(ctx, pair.first, pair.second);
+                    });
+                m_needSnapshot |= true;
+            }
+            else {
+                bool needSnapshot = false;
+                for (auto& pair : s_activeNodes) {
+                    needSnapshot |= animateNode(ctx, pair.first, pair.second);
+                }
+                m_needSnapshot |= needSnapshot;
             }
 
             if (m_needSnapshot) {
@@ -93,11 +128,9 @@ namespace animation
 
     bool AnimationSystem::animateNode(
         const UpdateContext& ctx,
-        Node* node)
+        Node* node,
+        mesh::MeshType* type)
     {
-        if (!node) return false;
-
-        auto* type = node->m_typeHandle.toType();
         const auto* lod = type->getLod(0);
         const auto* mesh = lod->getMesh<mesh::ModelMesh>();
         auto& transform = node->modifyTransform();
@@ -106,7 +139,7 @@ namespace animation
         auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
 
         if (transform.m_animationStartTime < 0) {
-            transform.m_animationStartTime = ctx.m_clock.ts;
+            transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
         }
         if (rig.m_animations.size() > 1) {
             transform.m_animationIndex = 1;

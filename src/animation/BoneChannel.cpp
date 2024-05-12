@@ -23,22 +23,71 @@ namespace animation {
         m_nodeIndex{ -1 }
     {}
 
+    void BoneChannel::reservePositionKeys(uint16_t size)
+    {
+        m_positionKeyValues.reserve(size);
+        m_positionKeyTimes.reserve(size);
+    }
+
+    void BoneChannel::reserveRotationKeys(uint16_t size)
+    {
+        m_rotationKeyValues.reserve(size);
+        m_rotationKeyTimes.reserve(size);
+    }
+
+    void BoneChannel::reserveScaleKeys(uint16_t size)
+    {
+        m_scaleKeyValues.reserve(size);
+        m_scaleKeyTimes.reserve(size);
+    }
+
+    void BoneChannel::addPositionKey(const aiVectorKey& key)
+    {
+        m_positionKeyValues.push_back(assimp_util::toVec3(key.mValue));
+        m_positionKeyTimes.push_back(static_cast<float>(key.mTime));
+    }
+
+    void BoneChannel::addeRotationKey(const aiQuatKey& key)
+    {
+        m_rotationKeyValues.push_back(assimp_util::toQuat(key.mValue));
+        m_rotationKeyTimes.push_back(static_cast<float>(key.mTime));
+    }
+
+    void BoneChannel::addeScaleKey(const aiVectorKey& key)
+    {
+        m_scaleKeyValues.push_back(assimp_util::toVec3(key.mValue));
+        m_scaleKeyTimes.push_back(static_cast<float>(key.mTime));
+    }
+
     // @return interpolated transform matrix
     glm::mat4 BoneChannel::interpolate(float animationTimeTicks) const noexcept
     {
-        const glm::mat4 ID_MAT{ 1.f };
+        //static const glm::mat4 ID_MAT{ 1.f };
+        glm::mat4 s_translateMatrix{ 1.f };
+        glm::mat4 s_scaleMatrix{ 1.f };
 
-        auto scaleMat = glm::scale(ID_MAT, interpolateScale(animationTimeTicks));
-        auto rotateMat = glm::toMat4(interpolateRotation(animationTimeTicks));
-        auto translateMat = glm::translate(ID_MAT, interpolatePosition(animationTimeTicks));
+        {
+            const auto& scale = interpolateScale(animationTimeTicks);
+            s_scaleMatrix[0].x = scale.x;
+            s_scaleMatrix[1].y = scale.y;
+            s_scaleMatrix[2].z = scale.z;
+        }
+        {
+            const auto& translate = interpolatePosition(animationTimeTicks);
+            s_translateMatrix[3].x = translate.x;
+            s_translateMatrix[3].y = translate.y;
+            s_translateMatrix[3].z = translate.z;
+        }
 
-        return translateMat * rotateMat * scaleMat;
+        auto rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks));
+
+        return s_translateMatrix * rotateMatrix * s_scaleMatrix;
     }
 
     glm::vec3 BoneChannel::interpolatePosition(float animationTimeTicks) const noexcept
     {
-        if (m_positionKeys.size() == 1) {
-            return m_positionKeys[0].m_value;
+        if (m_positionKeyValues.size() == 1) {
+            return m_positionKeyValues[0];
         }
 
         uint16_t currIndex = findPosition(animationTimeTicks);
@@ -48,14 +97,16 @@ namespace animation {
 
         return interpolateVector(
             animationTimeTicks,
-            m_positionKeys[currIndex],
-            m_positionKeys[nextIndex]);
+            m_positionKeyValues[currIndex],
+            m_positionKeyValues[nextIndex],
+            m_positionKeyTimes[currIndex],
+            m_positionKeyTimes[nextIndex]);
     }
 
     glm::quat BoneChannel::interpolateRotation(float animationTimeTicks) const noexcept
     {
-        if (m_rotationKeys.size() == 1) {
-            return m_rotationKeys[0].m_value;
+        if (m_rotationKeyValues.size() == 1) {
+            return m_rotationKeyValues[0];
         }
 
         uint16_t currIndex = findRotation(animationTimeTicks);
@@ -65,14 +116,16 @@ namespace animation {
 
         return interpolateQuaternion(
             animationTimeTicks,
-            m_rotationKeys[currIndex],
-            m_rotationKeys[nextIndex]);
+            m_rotationKeyValues[currIndex],
+            m_rotationKeyValues[nextIndex],
+            m_rotationKeyTimes[currIndex],
+            m_rotationKeyTimes[nextIndex]);
     }
 
     glm::vec3 BoneChannel::interpolateScale(float animationTimeTicks) const noexcept
     {
-        if (m_scaleKeys.size() == 1) {
-            return m_scaleKeys[0].m_value;
+        if (m_scaleKeyValues.size() == 1) {
+            return m_scaleKeyValues[0];
         }
 
         uint16_t currIndex = findScale(animationTimeTicks);
@@ -82,29 +135,33 @@ namespace animation {
 
         return interpolateVector(
             animationTimeTicks,
-            m_scaleKeys[currIndex],
-            m_scaleKeys[nextIndex]);
+            m_scaleKeyValues[currIndex],
+            m_scaleKeyValues[nextIndex],
+            m_scaleKeyTimes[currIndex],
+            m_scaleKeyTimes[nextIndex]);
     }
 
     glm::vec3 BoneChannel::interpolateVector(
         float animationTimeTicks,
-        const VectorKey& a,
-        const VectorKey& b) const noexcept
+        const glm::vec3& aValue,
+        const glm::vec3& bValue,
+        float aTime,
+        float bTime) const noexcept
     {
-        const float t1 = (float)a.m_time;
-        const float t2 = (float)b.m_time;
+        const float t1 = (float)aTime;
+        const float t2 = (float)bTime;
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
 
         // NOTE KI noticed strange negative -90 as time for some models
         // i.e. fbx/deinodonte/Deinodonte.FBX
-        if (factor < 0.0f) return a.m_value;
-        if (factor > 1.0f) return b.m_value;
+        if (factor < 0.0f) return aValue;
+        if (factor > 1.0f) return bValue;
 
         assert(factor >= 0.0f && factor <= 1.0f);
 
-        const auto& start = a.m_value;
-        const auto& end = b.m_value;
+        const auto& start = aValue;
+        const auto& end = bValue;
 
         auto delta = end - start;
         return start + factor * delta;
@@ -112,51 +169,47 @@ namespace animation {
 
     glm::quat BoneChannel::interpolateQuaternion(
         float animationTimeTicks,
-        const QuaternionKey& a,
-        const QuaternionKey& b) const noexcept
+        const glm::quat& aValue,
+        const glm::quat& bValue,
+        float aTime,
+        float bTime) const noexcept
     {
-        const float t1 = (float)a.m_time;
-        const float t2 = (float)b.m_time;
+        const float t1 = (float)aTime;
+        const float t2 = (float)bTime;
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
 
         // NOTE KI noticed strange negative -90 as time for some models
         // i.e. fbx/deinodonte/Deinodonte.FBX
-        if (factor < 0.0f) return a.m_value;
-        if (factor > 1.0f) return b.m_value;
+        if (factor < 0.0f) return aValue;
+        if (factor > 1.0f) return bValue;
 
         assert(factor >= 0.0f && factor <= 1.0f);
 
-        return glm::slerp(a.m_value, b.m_value, factor);
+        return glm::slerp(aValue, bValue, factor);
     }
 
     uint16_t BoneChannel::findPosition(float animationTimeTicks) const noexcept
     {
-        for (uint16_t i = 0; i < m_positionKeys.size() - 1; i++) {
-            float t = (float)m_positionKeys[i + 1].m_time;
-            if (animationTimeTicks < t) {
-                return i;
-            }
-        }
-        return 0;
+        return findIndex(m_positionKeyTimes, animationTimeTicks);
     }
 
     uint16_t BoneChannel::findRotation(float animationTimeTicks) const noexcept
     {
-        for (uint16_t i = 0; i < m_rotationKeys.size() - 1; i++) {
-            float t = (float)m_rotationKeys[i + 1].m_time;
-            if (animationTimeTicks < t) {
-                return i;
-            }
-        }
-        return 0;
+        return findIndex(m_rotationKeyTimes, animationTimeTicks);
     }
 
     uint16_t BoneChannel::findScale(float animationTimeTicks) const noexcept
     {
-        for (uint16_t i = 0; i < m_scaleKeys.size() - 1; i++) {
-            float t = (float)m_scaleKeys[i + 1].m_time;
-            if (animationTimeTicks < t) {
+        return findIndex(m_scaleKeyTimes, animationTimeTicks);
+    }
+
+    uint16_t BoneChannel::findIndex(
+        const std::vector<float>& times,
+        float animationTimeTicks) const noexcept
+    {
+        for (uint16_t i = 0; i < times.size() - 1; i++) {
+            if (animationTimeTicks < times[i + 1]) {
                 return i;
             }
         }

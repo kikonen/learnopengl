@@ -11,6 +11,10 @@ namespace pool {
     class NodeHandle;
 }
 
+namespace mesh {
+    class MeshType;
+}
+
 struct UpdateContext;
 class RenderContext;
 class Node;
@@ -48,7 +52,8 @@ namespace animation {
         // @return true if bone palette was updated
         bool animateNode(
             const UpdateContext& ctx,
-            Node* node);
+            Node* node,
+            mesh::MeshType* type);
 
         void prepareNodes();
 

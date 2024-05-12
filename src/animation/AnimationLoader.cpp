@@ -125,19 +125,19 @@ namespace animation {
                 animation->bindNode(bc.m_index, rigNode->m_index);
             }
 
-            bc.m_positionKeys.reserve(channel->mNumPositionKeys);
+            bc.reservePositionKeys(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumPositionKeys; i++) {
-                bc.m_positionKeys.emplace_back(channel->mPositionKeys[i]);
+                bc.addPositionKey(channel->mPositionKeys[i]);
             }
 
-            bc.m_rotationKeys.reserve(channel->mNumRotationKeys);
+            bc.reserveRotationKeys(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumRotationKeys; i++) {
-                bc.m_rotationKeys.emplace_back(channel->mRotationKeys[i]);
+                bc.addeRotationKey(channel->mRotationKeys[i]);
             }
 
-            bc.m_scaleKeys.reserve(channel->mNumScalingKeys);
+            bc.reserveScaleKeys(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
-                bc.m_scaleKeys.emplace_back(channel->mScalingKeys[i]);
+                bc.addeScaleKey(channel->mScalingKeys[i]);
             }
         }
 
