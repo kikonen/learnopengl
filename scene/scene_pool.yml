@@ -113,7 +113,7 @@ entities:
     material_modifier:
       xmap_pbr: textures\Tiles004_1K-PNG
       metal: [1.0, 0.0, 0, 1]
-      map_pbr: textures\Planks 09 [8K]_metal
+      map_pbr: textures\Planks 09 [8K]
       tiling_x: 30
       tiling_y: 4
     clones:
@@ -147,7 +147,7 @@ entities:
         z_step: -40
   - id: maple_tree_forest_1_{t}
     type: model
-    model: fbx/scenery/trees/Maple_01.fbx
+    model: fbx/scenery/trees/Maple_02.fbx
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 70]
@@ -259,7 +259,7 @@ entities:
     material_modifier:
       xmap_pbr: textures\Tiles004_1K-PNG
       metal: [1.0, 0.0, 0, 1]
-      map_pbr: textures\Planks 09 [8K]_metal
+      map_pbr: textures\Planks 09 [8K]
       tiling_x: 30
       tiling_y: 4
     clones:
