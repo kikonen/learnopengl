@@ -29,7 +29,7 @@ namespace loader {
             const std::string& pbrName,
             MaterialData& data) const;
 
-        void handlePbrEntry(
+        bool handlePbrEntry(
             const std::string& pbrName,
             const std::filesystem::directory_entry& dirEntry,
             MaterialData& data) const;

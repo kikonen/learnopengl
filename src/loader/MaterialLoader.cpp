@@ -28,6 +28,13 @@ namespace {
         std::regex(".*preview.*"),
         std::regex(".*normaldx.*"),
         std::regex(".*bc_neutral.*"),
+
+        std::regex(".*_micron[\\.].*"),
+        std::regex(".*_micronmask[\\.].*"),
+        std::regex(".*_resourcemap_position[\\.].*"),
+        std::regex(".*_resourcemap_wsnormal[\\.].*"),
+        std::regex(".*_sssmap[\\.].*"),
+        std::regex(".*_transmap[\\.].*"),
     };
 
     const std::vector<std::regex> imageMatchers{
@@ -361,18 +368,27 @@ namespace loader {
             }
         }
 
+        std::vector<std::string> failedEntries;
         for (const auto& dirEntry : normalEntries) {
-            handlePbrEntry(pbrName, dirEntry, data);
+            if (!handlePbrEntry(pbrName, dirEntry, data)) {
+                failedEntries.push_back(dirEntry.path().filename().string());
+            }
         }
 
         if (assets.compressedTexturesEnabled) {
             for (const auto& dirEntry : ktxEntries) {
-                handlePbrEntry(pbrName, dirEntry, data);
+                if (!handlePbrEntry(pbrName, dirEntry, data)) {
+                    failedEntries.push_back(dirEntry.path().filename().string());
+                }
             }
+        }
+
+        if (!failedEntries.empty()) {
+            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", util::join(failedEntries, "\nUNKNOWN_PBR_FILE: ")) };
         }
     }
 
-    void MaterialLoader::handlePbrEntry(
+    bool MaterialLoader::handlePbrEntry(
         const std::string& pbrName,
         const std::filesystem::directory_entry& dirEntry,
         MaterialData& data) const
@@ -437,9 +453,7 @@ namespace loader {
             found = true;
         }
 
-        if (!found) {
-            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
-        }
+        return found;
     }
 
     void MaterialLoader::loadTextureSpec(

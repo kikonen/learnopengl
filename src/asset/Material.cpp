@@ -203,7 +203,7 @@ void Material::loadTexture(
 
     KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
-    const std::string& placeholderPath = assets.placeholderTexture;
+    const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
 
     auto future = ImageTexture::getTexture(
         textureName,
