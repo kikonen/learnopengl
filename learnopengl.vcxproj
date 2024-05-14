@@ -221,6 +221,7 @@
     <ClCompile Include="src\mesh\vao\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\animation\AnimationSystem.cpp" />
+    <ClCompile Include="src\mesh\MeshSet.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp" />
@@ -233,7 +234,6 @@
     <ClCompile Include="src\registry\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp" />
-    <ClCompile Include="src\mesh\ObjectLoader.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
     <ClCompile Include="src\scene\ParticleUpdater.cpp" />
     <ClCompile Include="src\script\api\SetTextNode.cpp" />
@@ -288,12 +288,9 @@
     <ClCompile Include="src\event\Dispatcher.cpp" />
     <ClCompile Include="src\engine\AssetsLoader.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
-    <ClCompile Include="src\mesh\MaterialSet.cpp" />
-    <ClCompile Include="src\mesh\ModelMaterialInit.cpp" />
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\QuadVAO.cpp" />
     <ClCompile Include="src\mesh\vao\SpriteVAO.cpp" />
-    <ClCompile Include="src\mesh\TerrainMesh.cpp" />
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp" />
     <ClCompile Include="src\asset\Uniform.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
@@ -422,6 +419,7 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
+    <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\DocNode_impl.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
     <ClInclude Include="src\loader\converter\DocNode.h" />
@@ -437,6 +435,7 @@
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
+    <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />
@@ -507,7 +506,6 @@
     <ClInclude Include="src\pool\NodeHandle.h" />
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\NodeSnapshotRegistry.h" />
-    <ClInclude Include="src\mesh\ObjectLoader.h" />
     <ClInclude Include="src\registry\SnapshotRegistry.h" />
     <ClInclude Include="src\registry\SnapshotRegistry_impl.h" />
     <ClInclude Include="src\registry\TerrainTileSSBO.h" />
@@ -597,14 +595,11 @@
     <ClInclude Include="src\asset\Sprite.h" />
     <ClInclude Include="src\asset\ShapeSSBO.h" />
     <ClInclude Include="src\mesh\vao\SpriteVAO.h" />
-    <ClInclude Include="src\mesh\TerrainMesh.h" />
     <ClInclude Include="src\mesh\vao\TerrainVAO.h" />
     <ClInclude Include="src\asset\TextureSpec.h" />
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\Uniform.h" />
     <ClInclude Include="src\mesh\vao\NormalEntry.h" />
-    <ClInclude Include="src\mesh\MaterialSet.h" />
-    <ClInclude Include="src\mesh\ModelMaterialInit.h" />
     <ClInclude Include="src\mesh\vao\QuadVAO.h" />
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />

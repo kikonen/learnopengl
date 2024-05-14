@@ -9,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
 
 #include "event/Dispatcher.h"
 
@@ -108,12 +108,12 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        auto future = ModelRegistry::get().getMesh(
+        auto future = ModelRegistry::get().getMeshSet(
             assets.modelsDir,
             SKYBOX_MESH_NAME);
-        auto* mesh = future.get();
+        auto* meshSet = future.get();
 
-        if (!mesh) {
+        if (!meshSet) {
             KI_ERROR("Failed to load skybox mesh");
             return;
         }
@@ -124,7 +124,7 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        type->addLod({ mesh });
+        type->addMeshSet(*meshSet, 0.f);
 
         type->m_entityType = mesh::EntityType::skybox;
 

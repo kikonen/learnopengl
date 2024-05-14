@@ -81,7 +81,7 @@ namespace loader {
                 else if (type == "container") {
                     data.type = mesh::EntityType::container;
                 }
-                else if (type == "model") {
+                else if (type == "mesh" || type == "model") {
                     data.type = mesh::EntityType::model;
                 }
                 else if (type == "sprite") {
@@ -252,7 +252,7 @@ namespace loader {
             else if (k == "script_file") {
                 loaders.m_scriptLoader.loadScript(v, data.script);
             }
-            else if (k == "lods") {
+            else if (k == "lods" || k == "meshes") {
                 loadLods(v, data.lods, loaders);
             }
             else if (k == "animations") {

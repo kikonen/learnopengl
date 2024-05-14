@@ -18,7 +18,6 @@
 struct PrepareContext;
 
 namespace mesh {
-    class MaterialSet;
     struct LodMesh;
 
     class Mesh
@@ -33,14 +32,19 @@ namespace mesh {
         virtual void prepareVolume();
         virtual const AABB calculateAABB() const = 0;
 
-        virtual const std::vector<Material>& getMaterials() const = 0;
+        void setMaterial(const Material& material) noexcept
+        {
+            m_material = material;
+        }
+
+        const Material& getMaterial() const noexcept
+        {
+            return m_material;
+        }
 
         // @return VAO for mesh
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
-
-        virtual void prepareMaterials(
-            MaterialSet& materialSet) {}
 
         virtual void prepareLod(
             mesh::LodMesh& lodMesh) = 0;
@@ -62,9 +66,11 @@ namespace mesh {
         glm::mat4 m_transform{ 1.f };
 
     protected:
-        bool m_prepared = false;
+        bool m_prepared{ false };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
+
+        Material m_material;
 
     private:
         AABB m_aabb{};

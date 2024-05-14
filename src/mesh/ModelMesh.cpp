@@ -12,7 +12,6 @@
 #include "asset/Sphere.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/ModelMaterialInit.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
@@ -24,21 +23,11 @@
 
 #include "animation/RigContainer.h"
 
-namespace {
-    std::string extractName(std::string_view meshPath) {
-        auto filePath = util::joinPath("", meshPath);
-        return util::baseName(filePath);
-    }
-}
-
 namespace mesh {
     ModelMesh::ModelMesh(
-        std::string_view rootDir,
-        std::string_view meshPath)
+        std::string_view name)
         : Mesh(),
-        m_rootDir{ rootDir },
-        m_meshPath{ meshPath },
-        m_meshName{ extractName(meshPath) }
+        m_name{ name }
     {
     }
 
@@ -51,8 +40,8 @@ namespace mesh {
     std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
-            "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
-            m_id, m_rootDir, m_meshPath, m_meshName);
+            "<MODEL: id={}, name={}>",
+            m_id, m_name);
     }
 
     uint32_t ModelMesh::getBaseVertex() const noexcept {
@@ -77,11 +66,6 @@ namespace mesh {
         return { minAABB, maxAABB, false };
     }
 
-    const std::vector<Material>& ModelMesh::getMaterials() const
-    {
-        return m_materials;
-    }
-
     const kigl::GLVertexArray* ModelMesh::prepareRT(
         const PrepareContext& ctx)
     {
@@ -96,13 +80,6 @@ namespace mesh {
         }
 
         return m_vao;
-    }
-
-    void ModelMesh::prepareMaterials(
-        MaterialSet& materialSet)
-    {
-        ModelMaterialInit init;
-        init.prepare(*this, materialSet);
     }
 
     void ModelMesh::prepareLod(

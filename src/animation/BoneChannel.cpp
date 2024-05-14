@@ -93,7 +93,7 @@ namespace animation {
         uint16_t currIndex = findPosition(animationTimeTicks);
         uint16_t nextIndex = currIndex  + 1;
 
-        assert(nextIndex < m_positionKeys.size());
+        assert(nextIndex < m_positionKeyValues.size());
 
         return interpolateVector(
             animationTimeTicks,
@@ -112,7 +112,7 @@ namespace animation {
         uint16_t currIndex = findRotation(animationTimeTicks);
         uint16_t nextIndex = currIndex + 1;
 
-        assert(nextIndex < m_rotationKeys.size());
+        assert(nextIndex < m_rotationKeyValues.size());
 
         return interpolateQuaternion(
             animationTimeTicks,
@@ -131,7 +131,7 @@ namespace animation {
         uint16_t currIndex = findScale(animationTimeTicks);
         uint16_t nextIndex = currIndex + 1;
 
-        assert(nextIndex < m_scaleKeys.size());
+        assert(nextIndex < m_scaleKeyValues.size());
 
         return interpolateVector(
             animationTimeTicks,

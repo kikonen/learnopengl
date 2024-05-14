@@ -516,12 +516,6 @@
     <ClCompile Include="src\text\FontAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\MaterialSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -529,9 +523,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\SpriteVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
@@ -645,9 +636,6 @@
     <ClCompile Include="src\mesh\AssimpLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ObjectLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -715,6 +703,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\converter\NodeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\MeshSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1427,19 +1418,10 @@
     <ClInclude Include="src\mesh\vao\SpriteVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TerrainMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\vao\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\NormalEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\MaterialSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\ModelMaterialInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\QuadVAO.h">
@@ -1634,9 +1616,6 @@
     <ClInclude Include="src\mesh\AssimpLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ObjectLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\animation\BoneTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1752,6 +1731,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\converter\DocNode_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\MeshSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\LoadContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

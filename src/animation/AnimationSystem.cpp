@@ -131,8 +131,8 @@ namespace animation
         Node* node,
         mesh::MeshType* type)
     {
-        const auto* lod = type->getLod(0);
-        const auto* mesh = lod->getMesh<mesh::ModelMesh>();
+        const auto* lodMesh = type->getLodMesh(0);
+        const auto* mesh = lodMesh->getMesh<mesh::ModelMesh>();
         auto& transform = node->modifyTransform();
 
         auto& rig = *mesh->m_rig;

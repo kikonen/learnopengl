@@ -23,6 +23,12 @@ namespace pool {
     class TypeHandle;
 }
 
+namespace mesh {
+    class MeshSet;
+    class MeshType;
+    struct LodMesh;
+}
+
 namespace loader {
     struct RootData;
     struct SkyboxData;
@@ -120,10 +126,10 @@ namespace loader {
             const TextData& data) const;
 
         void resolveMaterials(
-            pool::TypeHandle typeHandle,
+            mesh::MeshType* type,
+            mesh::LodMesh& lodMesh,
             const EntityData& entityData,
-            const LodData& data,
-            int lodIndex);
+            const LodData& data);
 
         void resolveSprite(
             pool::TypeHandle typeHandle,
@@ -134,8 +140,8 @@ namespace loader {
             const EntityData& entityData,
             const glm::uvec3& tile);
 
-        void resolveAnimation(
-            pool::TypeHandle typeHandle,
+        void loadAnimation(
+            mesh::MeshSet& meshSet,
             const AnimationData& data);
 
         pool::NodeHandle createNode(

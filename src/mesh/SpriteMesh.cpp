@@ -43,11 +43,6 @@ namespace mesh {
         return QUAD_AABB;
     }
 
-    const std::vector<Material>& SpriteMesh::getMaterials() const
-    {
-        return m_material;
-    }
-
     const kigl::GLVertexArray* SpriteMesh::prepareRT(
         const PrepareContext& ctx)
     {

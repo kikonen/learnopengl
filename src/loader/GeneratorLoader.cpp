@@ -10,8 +10,6 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/MaterialSet.h"
-
 #include "generator/GridGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
 #include "terrain/TerrainGenerator.h"

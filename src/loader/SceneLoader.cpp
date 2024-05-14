@@ -28,6 +28,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/QuadMesh.h"
 #include "mesh/SpriteMesh.h"
@@ -43,7 +44,6 @@
 #include "model/Node.h"
 
 #include "animation/AnimationLoader.h"
-#include "animation/RigContainer.h"
 
 //#include "generator/GridGenerator.h"
 //#include "generator/AsteroidBeltGenerator.h"
@@ -489,9 +489,9 @@ namespace loader {
                 }
             }
 
-            int lodIndex = 0;
-            for (auto& lodData : entityData.lods) {
-                resolveMaterials(typeHandle, entityData, lodData, lodIndex++);
+            for (auto& lodMesh : type->modifyLodMeshes()) {
+                auto& lodData = entityData.lods[0];
+                resolveMaterials(type, lodMesh, entityData, lodData);
             }
 
             // NOTE KI DEP: program after materials
@@ -515,16 +515,18 @@ namespace loader {
         bool useCubeMap = false;
         bool useNormalPattern = false;
 
-        for (auto& lod : type->modifyLods()) {
-            for (auto& m : lod.m_materialSet.modifyMaterials()) {
-                useDudvTex |= m.hasTex(MATERIAL_DUDV_MAP_IDX);
-                useDisplacementTex |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
-                useNormalTex |= m.hasTex(MATERIAL_NORMAL_MAP_IDX);
-                useCubeMap |= 1.0 - m.reflection - m.refraction < 1.0;
-                useNormalPattern |= m.pattern > 0;
-                useParallax |= m.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && m.parallaxDepth > 0;
+        for (auto& lodMesh : type->modifyLodMeshes()) {
+            auto& material = lodMesh.m_material;
+
+            {
+                useDudvTex |= material.hasTex(MATERIAL_DUDV_MAP_IDX);
+                useDisplacementTex |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
+                useNormalTex |= material.hasTex(MATERIAL_NORMAL_MAP_IDX);
+                useCubeMap |= 1.0 - material.reflection - material.refraction < 1.0;
+                useNormalPattern |= material.pattern > 0;
+                useParallax |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && material.parallaxDepth > 0;
                 if (!useParallax) {
-                    m.parallaxDepth = 0.f;
+                    material.parallaxDepth = 0.f;
                 }
             }
         }
@@ -627,37 +629,32 @@ namespace loader {
     }
 
     void SceneLoader::resolveMaterials(
-        pool::TypeHandle typeHandle,
+        mesh::MeshType* type,
+        mesh::LodMesh& lodMesh,
         const EntityData& entityData,
-        const LodData& data,
-        int lodIndex)
+        const LodData& lodData)
     {
         auto& l = *m_loaders;
-        auto* type = typeHandle.toType();
 
-        auto* lodMesh = type->modifyLod(lodIndex);
-        if (lodMesh) {
-            lodMesh->setupMeshMaterials(*m_defaultMaterial, true, false);
-
-            for (auto& m : lodMesh->m_materialSet.modifyMaterials()) {
-                for (auto& ref : data.materialReferences) {
-                    const auto& alias = ref.modifiers.aliasName;
-                    const auto& name = ref.modifiers.materialName;
-                    KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
-                    if (alias == m.m_name || alias.empty() || alias == "*")
-                    {
-                        if (!name.empty() && !alias.empty()) {
-                            const auto* overrideMaterial = findMaterial(name, m_materials);
-                            if (overrideMaterial) {
-                                m.assign(*overrideMaterial);
-                            }
+        auto& material = lodMesh.m_material;
+        {
+            for (auto& ref : lodData.materialReferences) {
+                const auto& alias = ref.modifiers.aliasName;
+                const auto& name = ref.modifiers.materialName;
+                KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
+                if (alias == material.m_name || alias.empty() || alias == "*")
+                {
+                    if (!name.empty() && !alias.empty()) {
+                        const auto* overrideMaterial = findMaterial(name, m_materials);
+                        if (overrideMaterial) {
+                            material.assign(*overrideMaterial);
                         }
-                        l.m_materialLoader.modifyMaterial(m, ref.modifiers);
                     }
+                    l.m_materialLoader.modifyMaterial(material, ref.modifiers);
                 }
-                m.loadTextures();
-            };
-        }
+            }
+            material.loadTextures();
+        };
     }
 
     void SceneLoader::resolveSprite(
@@ -691,36 +688,40 @@ namespace loader {
             type->m_entityType = mesh::EntityType::model;
 
             for (auto& lodData : entityData.lods) {
-                auto future = ModelRegistry::get().getMesh(
+                auto future = ModelRegistry::get().getMeshSet(
                     assets.modelsDir,
                     lodData.meshPath);
 
-                auto* lod = type->addLod({ future.get() });
-                lod->m_lod.setDistance(lodData.distance);
+                auto meshSet = future.get();
+
+                if (meshSet) {
+                    for (auto& animationData : entityData.animations) {
+                        loadAnimation(*meshSet, animationData);
+                    }
+
+                    type->addMeshSet(*meshSet, lodData.distance);
+                }
 
                 KI_INFO(fmt::format(
-                    "SCENE_FILE ATTACH: id={}, desc={}, type={}",
+                    "SCENE_FILE MESH: id={}, desc={}, type={}",
                     entityData.baseId, entityData.desc, type->str()));
-            }
-
-            for (auto& animationData : entityData.animations) {
-                resolveAnimation(typeHandle, animationData);
             }
         }
         else if (entityData.type == mesh::EntityType::sprite) {
-            auto future = ModelRegistry::get().getMesh(
-                assets.modelsDir,
-                QUAD_MESH_NAME);
-            type->addLod({ future.get() });
-            type->m_entityType = mesh::EntityType::sprite;
+            //auto future = ModelRegistry::get().getMeshSet(
+            //    assets.modelsDir,
+            //    QUAD_MESH_NAME);
+            //type->addLod({ future.get() });
+            //type->m_entityType = mesh::EntityType::sprite;
+            throw "Sprite not supported currently";
         }
         else if (entityData.type == mesh::EntityType::text) {
             type->m_entityType = mesh::EntityType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
-            mesh::LodMesh lod;
-            lod.setMesh(std::move(mesh), true);
-            type->addLod(std::move(lod));
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(std::move(mesh), true);
+            type->addLodMesh(std::move(lodMesh));
         }
         else if (entityData.type == mesh::EntityType::terrain) {
             type->m_entityType = mesh::EntityType::terrain;
@@ -737,28 +738,22 @@ namespace loader {
         }
     }
 
-    void SceneLoader::resolveAnimation(
-        pool::TypeHandle typeHandle,
+    void SceneLoader::loadAnimation(
+        mesh::MeshSet& meshSet,
         const AnimationData& data)
     {
+        if (!meshSet.isRigged()) return;
+
         const auto& assets = Assets::get();
-
-        auto* type = typeHandle.toType();
-
-        auto* mesh = type->modifyLod(0)->getMesh<mesh::ModelMesh>();
-
-        if (!mesh) return;
-        if (!mesh->m_rig) return;
-        if (!mesh->m_rig->hasBones()) return;
 
         animation::AnimationLoader loader{};
 
         std::string filePath = util::joinPath(
-            mesh->m_rootDir,
+            meshSet.m_rootDir,
             data.path);
 
         loader.loadAnimations(
-            *mesh->m_rig,
+            *meshSet.m_rig,
             data.name,
             filePath);
     }
@@ -815,9 +810,9 @@ namespace loader {
 
         auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
 
-        auto* lod = type->getLod(0);
-        if (lod) {
-            auto* mesh = lod->m_mesh;
+        auto* lodMesh = type->getLodMesh(0);
+        if (lodMesh) {
+            auto* mesh = lodMesh->m_mesh;
             if (mesh) {
                 transform.setVolume(mesh->getAABB().getVolume());
                 baseTransform = baseTransform * mesh->m_transform;

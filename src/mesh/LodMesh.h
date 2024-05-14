@@ -6,9 +6,9 @@
 #include <memory>
 #include <functional>
 
-#include "backend/Lod.h"
+#include "asset/Material.h"
 
-#include "MaterialSet.h"
+#include "backend/Lod.h"
 
 namespace kigl {
     struct GLVertexArray;
@@ -21,7 +21,11 @@ struct Material;
 namespace mesh {
     class Mesh;
 
+    // Wrap mesh into "LODable" form.
+    // - is not necessarily LOD
+    // - can be also "part of node" mesh
     // REQ: All Lods of Node use *SAME* VAO
+    // TODO KI *REMOVE* "same VAO" req!
     struct LodMesh {
         LodMesh();
         LodMesh(Mesh* mesh);
@@ -41,11 +45,6 @@ namespace mesh {
 
         void setMesh(Mesh* mesh) noexcept;
 
-        void setupMeshMaterials(
-            const Material& defaultMaterial,
-            bool useDefaultMaterial,
-            bool forceDefaultMaterial);
-
         void registerMaterials();
         void prepareRT(const PrepareContext& ctx);
 
@@ -59,10 +58,11 @@ namespace mesh {
 
         Mesh* m_mesh{ nullptr };
 
+        Material m_material;
+
         backend::Lod m_lod;
 
         std::unique_ptr<Mesh> m_deleter;
-        MaterialSet m_materialSet;
 
         const kigl::GLVertexArray* m_vao{ nullptr };
     };

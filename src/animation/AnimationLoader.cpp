@@ -78,7 +78,7 @@ namespace animation {
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
-                rig.m_animations.size(),
+                static_cast<int16_t>(rig.m_animations.size()),
                 namePrefix,
                 scene,
                 scene->mAnimations[index]);

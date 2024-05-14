@@ -2,10 +2,7 @@
 
 #include "util/Util.h"
 
-#include "asset/Assets.h"
-
-#include "mesh/MeshType.h"
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
 
 
 namespace mesh {
@@ -19,8 +16,8 @@ namespace mesh {
     {
     }
 
-    ModelMesh* ModelLoader::load(
-        ModelMesh& mesh,
+    bool ModelLoader::load(
+        mesh::MeshSet& meshSet,
         Material* defaultMaterial,
         bool forceDefaultMaterial)
     {
@@ -40,12 +37,8 @@ namespace mesh {
 
         m_forceDefaultMaterial = forceDefaultMaterial;
 
-        if (!mesh.m_loaded) {
-            loadData(mesh);
-            mesh.m_loaded = true;
-            mesh.m_valid = !mesh.m_indeces.empty();
-        }
+        loadData(meshSet);
 
-        return mesh.m_valid ? &mesh : nullptr;
+        return !meshSet.isEmpty();
     }
 }

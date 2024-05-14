@@ -23,8 +23,6 @@ namespace mesh {
 
         virtual const AABB calculateAABB() const override;
 
-        const std::vector<Material>& getMaterials() const override;
-
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
@@ -59,9 +57,6 @@ namespace mesh {
 
         // NOTE KI absolute offset into EBO
         size_t m_indexEboOffset{ 0 };
-
-    protected:
-        std::vector<Material> m_material;
 
     };
 }

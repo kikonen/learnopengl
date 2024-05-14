@@ -54,11 +54,6 @@ namespace mesh {
         return { minAABB, maxAABB, false };
     }
 
-    const std::vector<Material>& TextMesh::getMaterials() const
-    {
-        return m_material;
-    }
-
     const kigl::GLVertexArray* TextMesh::prepareRT(
         const PrepareContext& ctx)
     {

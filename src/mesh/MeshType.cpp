@@ -11,6 +11,7 @@
 
 #include "pool/TypeHandle.h"
 
+#include "mesh/MeshSet.h"
 #include "mesh/LodMesh.h"
 #include "mesh/Mesh.h"
 
@@ -59,11 +60,11 @@ namespace mesh {
 
     std::string MeshType::str() const noexcept
     {
-        auto* lod = getLod(0);
+        auto* lodMesh = getLodMesh(0);
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, vao={}, lod={}>",
-            m_id, m_name, m_vao ? *m_vao : -1, lod ? lod->str() : "N/A");
+            m_id, m_name, m_vao ? *m_vao : -1, lodMesh ? lodMesh->str() : "N/A");
     }
 
     pool::TypeHandle MeshType::toHandle() const noexcept
@@ -71,10 +72,20 @@ namespace mesh {
         return { m_handleIndex, m_id };
     }
 
-    LodMesh* MeshType::addLod(
-        LodMesh&& lod)
+    void MeshType::addMeshSet(
+        mesh::MeshSet& meshSet,
+        float lodDistance)
     {
-        m_lodMeshes->push_back(std::move(lod));
+        for (auto& mesh : meshSet.getMeshes()) {
+            auto* lodMesh = addLodMesh({ mesh.get() });
+            lodMesh->m_lod.setDistance(lodDistance);
+        }
+    }
+
+    LodMesh* MeshType::addLodMesh(
+        LodMesh&& lodmesh)
+    {
+        m_lodMeshes->push_back(std::move(lodmesh));
         return &(*m_lodMeshes)[m_lodMeshes->size() - 1];
     }
 
@@ -170,6 +181,7 @@ namespace mesh {
             }
 
             lod = &meshLods[lodIndex].m_lod;
+            lod = &meshLods[std::min((size_t)0, meshLods.size() -1)].m_lod;
         }
         return lod;
     }

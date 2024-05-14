@@ -40,6 +40,7 @@ class RenderContext;
 class MeshTypeRegistry;
 
 namespace mesh {
+    class MeshSet;
     class Mesh;
     struct LodMesh;
 
@@ -72,21 +73,25 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        LodMesh* addLod(LodMesh&& lodMesh);
+        void addMeshSet(
+            mesh::MeshSet& meshSet,
+            float lodDistance);
 
-        inline const LodMesh* getLod(uint8_t lodIndex) const noexcept {
+        LodMesh* addLodMesh(LodMesh&& lodMesh);
+
+        inline const LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
             return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
-        inline const std::vector<LodMesh>& getLods() const noexcept {
+        inline const std::vector<LodMesh>& getLodMeshes() const noexcept {
             return *m_lodMeshes;
         }
 
-        inline LodMesh* modifyLod(uint8_t lodIndex) noexcept {
+        inline LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
             return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
-        inline std::vector<LodMesh>& modifyLods() noexcept {
+        inline std::vector<LodMesh>& modifyLodMeshes() noexcept {
             return *m_lodMeshes;
         }
 
@@ -121,7 +126,7 @@ namespace mesh {
             return m_drawOptions;
         }
 
-        const backend::Lod* getLod(
+        const backend::Lod* getLod (
             const glm::vec3& cameraPos,
             const Snapshot& snapshot) const;
 

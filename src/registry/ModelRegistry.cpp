@@ -4,11 +4,11 @@
 
 #include "asset/Assets.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
+
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
-#include "mesh/ObjectLoader.h"
 #include "mesh/AssimpLoader.h"
 
 #include "render/RenderContext.h"
@@ -44,7 +44,7 @@ void ModelRegistry::updateRT(const UpdateContext& ctx)
     m_skinnedVao->updateRT();
 }
 
-std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
+std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
     std::string_view rootDir,
     std::string_view meshPath)
 {
@@ -63,31 +63,29 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::getMesh(
             return e->second;
     }
 
-    auto mesh = new mesh::ModelMesh(
+    auto meshSet = new mesh::MeshSet(
         rootDir,
         meshPath);
 
-    auto future = startLoad(mesh);
+    auto future = startLoad(meshSet);
     m_meshes[key] = future;
 
     return future;
 }
 
-std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* mesh)
+std::shared_future<mesh::MeshSet*> ModelRegistry::startLoad(mesh::MeshSet* meshSet)
 {
-    std::promise<mesh::ModelMesh*> promise;
+    std::promise<mesh::MeshSet*> promise;
     auto future = promise.get_future().share();
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
     // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
     auto th = std::thread{
-        [this, mesh, p = std::move(promise)]() mutable {
+        [this, meshSet, p = std::move(promise)]() mutable {
             try {
                 const auto assets = Assets::get();
 
-                std::string info = mesh->str();
-
-                KI_DEBUG(fmt::format("START_LOADER: {}", info));
+                KI_DEBUG(fmt::format("START_LOADER: {}", meshSet->str()));
 
                 std::unique_ptr<mesh::ModelLoader> loader;
 
@@ -95,21 +93,18 @@ std::shared_future<mesh::ModelMesh*> ModelRegistry::startLoad(mesh::ModelMesh* m
                     loader = std::make_unique<mesh::AssimpLoader>(m_alive);
                 }
                 else {
-                    loader = std::make_unique<mesh::ObjectLoader>(m_alive);
+                    throw "no loader";
                 }
 
-                auto loaded = loader->load(*mesh, m_defaultMaterial.get(), m_forceDefaultMaterial);
-
-                if (loaded) {
-                    loaded->prepareVolume();
-                }
+                auto loaded = loader->load(*meshSet, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 // NOTE KI if not valid then null; avoids internal errors in render logic
                 if (loaded) {
-                    p.set_value(mesh);
+                    meshSet->prepareVolume();
+                    p.set_value(meshSet);
                 }
                 else {
-                    KI_CRITICAL(fmt::format("FAIL_LOADER: Invalid mesh: {}", info));
+                    KI_CRITICAL(fmt::format("FAIL_LOADER: Invalid mesh: {}", meshSet->str()));
                     p.set_value(nullptr);
                 }
              } catch (const std::exception& ex) {
