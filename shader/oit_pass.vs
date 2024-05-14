@@ -13,7 +13,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
-#include ssbo_material_indeces.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -48,11 +47,7 @@ void main() {
 
   #include var_entity_model_matrix.glsl
 
-  int materialIndex = instance.u_materialIndex;
-
-  if (materialIndex < 0) {
-    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
-  }
+  const uint materialIndex = instance.u_materialIndex;
 
   vec4 worldPos;
 

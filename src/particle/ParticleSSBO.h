@@ -13,7 +13,7 @@ struct ParticleSSBO {
     // xyz = pos, a = scale
     glm::vec4 u_pos_scale{ 0.f };
 
-    GLint u_materialIndex{ 0 };
+    GLuint u_materialIndex{ 0 };
     GLuint u_spriteIndex{ 0 };
 
     int pad1;

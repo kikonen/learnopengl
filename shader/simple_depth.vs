@@ -12,9 +12,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
-#ifdef USE_ALPHA
-#include ssbo_material_indeces.glsl
-#endif
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -75,10 +72,7 @@ void main()
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  int materialIndex = instance.u_materialIndex;
-  if (materialIndex < 0) {
-    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
-  }
+  const uint materialIndex = instance.u_materialIndex;
 
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;

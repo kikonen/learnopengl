@@ -4,6 +4,6 @@
 struct Particle {
   vec4 u_pos_scale;
 
-  int u_materialIndex;
+  uint u_materialIndex;
   uint u_spriteIndex;
 };

@@ -10,7 +10,6 @@ layout(vertices=3) out;
 #include uniform_matrices.glsl
 #include ssbo_materials.glsl
 #include uniform_clip_planes.glsl
-#include ssbo_material_indeces.glsl
 
 in VS_OUT {
   flat uint entityIndex;
@@ -67,7 +66,7 @@ void main()
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
-  int materialIndex = entity.u_materialIndex;
+  const uint materialIndex = instance.u_materialIndex;
 
   //calculateClipping(tcs_in[gl_InvocationID].worldPos);
 

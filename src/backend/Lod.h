@@ -20,7 +20,7 @@ namespace backend {
         // Squared Distance upto lod is applied
         float m_distance2{ 0.f };
 
-        int32_t m_materialIndex{ 0 };
+        uint32_t m_materialIndex{ 0 };
 
         void setDistance(float dist) {
             m_distance = dist;
