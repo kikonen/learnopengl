@@ -161,29 +161,31 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    const backend::Lod* MeshType::getLod(
+    std::span<mesh::LodMesh> MeshType::findMeshBatch(
         const glm::vec3& cameraPos,
         const Snapshot& snapshot) const
     {
-        const backend::Lod* lod;
-        {
-            auto& meshLods = *m_lodMeshes.get();
+        auto& lodMeshes = *m_lodMeshes.get();
 
+        size_t index = 0;
+        size_t count = lodMeshes.size();
+        {
             auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
             int lodIndex = 0;
-            for (; lodIndex < meshLods.size(); lodIndex++) {
-                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
+            for (; lodIndex < lodMeshes.size(); lodIndex++) {
+                if (dist2 < lodMeshes[lodIndex].m_lod.m_distance2)
                     break;
             }
-            if (lodIndex >= meshLods.size()) {
+            if (lodIndex >= lodMeshes.size()) {
                 lodIndex--;
             }
 
-            lod = &meshLods[lodIndex].m_lod;
-            lod = &meshLods[std::min((size_t)0, meshLods.size() -1)].m_lod;
+            auto lod = &lodMeshes[lodIndex].m_lod;
+            lod = &lodMeshes[std::min((size_t)2, lodMeshes.size() -1)].m_lod;
         }
-        return lod;
+
+        return std::span{ lodMeshes }.subspan(index, count);
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

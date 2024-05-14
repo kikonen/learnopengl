@@ -178,20 +178,27 @@ entities:
       z_step: -5
   - id: scavenger_{t}
     model: fbx/characters/scavenger/Scavenger.fbx
-    material: human_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
     scale: 0.025
+    materials:
+      - name: scavenger_body_pbr
+        alias: "Material #13"
+      - name: scavenger_hair_pbr
+        alias: "Material #11"
+      - name: scavenger_backback_pbr
+        alias: 01 - Default
     render_flags:
-      xrender_back: true
+      alpha: true
+      render_back: true
       xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    animations:
+    xanimations:
       - name: walk
         path: fbx/characters/scavenger/Scavenger.fbx
         xpath: fbx/characters/scavenger/anim/Humanoid@WalkForwardUnarmed.FBX
@@ -255,10 +262,12 @@ materials:
     map_pbr: fbx/characters/elf/elf_female_pbr
     xmetal: [0.3, 0.4, 0, 1]
     xtiling: 60
-  - name: human_pbr
-    map_pbr: fbx/characters/scavenger/human_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
+  - name: scavenger_body_pbr
+    map_pbr: fbx/characters/scavenger/scavenger_body_pbr
+  - name: scavenger_hair_pbr
+    map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
+  - name: scavenger_backback_pbr
+    map_pbr: fbx/characters/scavenger/scavenger_body_pbr
   - name: skeleton_pbr
     map_pbr: fbx/creatures/skeleton/skeleton_pbr
     xmetal: [0.3, 0.4, 0, 1]

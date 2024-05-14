@@ -24,6 +24,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+#include "mesh/LodMesh.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -87,11 +88,13 @@ namespace render {
         top.m_instanceCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto* lod = type->getLod(cameraPos, snapshot);
+        const auto meshBatch = type->findMeshBatch(cameraPos, snapshot);
 
-        LodKey key{ lod };
-        auto& lodInstances = top.m_lodInstances[key];
-        lodInstances.push_back(entityIndex);
+        for (const auto& lodMesh : meshBatch) {
+            LodKey key{ &lodMesh.m_lod };
+            auto& lodInstances = top.m_lodInstances[key];
+            lodInstances.push_back(entityIndex);
+        }
     }
 
     //void Batch::addSnapshots(
@@ -166,11 +169,14 @@ namespace render {
                     continue;
                 }
 
-                const auto* lod = type->getLod(cameraPos, snapshots[i]);
+                const auto meshBatch = type->findMeshBatch(cameraPos, snapshots[i]);
 
-                LodKey key{ lod };
-                auto& lodInstances = top.m_lodInstances[key];
-                lodInstances.push_back(entityBase + i);
+                for (const auto& lodMesh : meshBatch) {
+                    LodKey key{ &lodMesh.m_lod };
+
+                    auto& lodInstances = top.m_lodInstances[key];
+                    lodInstances.push_back(entityBase + i);
+                }
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
@@ -189,10 +195,13 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                const auto* lod = type->getLod(cameraPos, snapshots[i]);
-                LodKey key{ lod };
-                auto& lodInstances = top.m_lodInstances[key];
-                lodInstances.push_back(entityBase + i);
+                const auto meshBatch = type->findMeshBatch(cameraPos, snapshots[i]);
+
+                for (const auto& lodMesh : meshBatch) {
+                    LodKey key{ &lodMesh.m_lod };
+                    auto& lodInstances = top.m_lodInstances[key];
+                    lodInstances.push_back(entityBase + i);
+                }
             }
 
             m_drawCount += count;

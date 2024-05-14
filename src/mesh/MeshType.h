@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include <span>
 
 #include "backend/DrawOptions.h"
 
@@ -126,7 +127,7 @@ namespace mesh {
             return m_drawOptions;
         }
 
-        const backend::Lod* getLod (
+        std::span<mesh::LodMesh> findMeshBatch(
             const glm::vec3& cameraPos,
             const Snapshot& snapshot) const;
 
