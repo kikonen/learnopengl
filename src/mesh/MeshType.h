@@ -137,6 +137,8 @@ namespace mesh {
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };
         Program* m_preDepthProgram{ nullptr };
+        Program* m_selectionProgram{ nullptr };
+        Program* m_idProgram{ nullptr };
 
         std::unique_ptr<Sprite> m_sprite{ nullptr };
 

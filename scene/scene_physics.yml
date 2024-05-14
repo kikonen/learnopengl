@@ -251,7 +251,6 @@ entities:
       parallax_depth: 0.0
   - name: wooden floor
     model: plane
-    xxmodel: woodwall
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]

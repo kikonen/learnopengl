@@ -5,6 +5,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
+#include tech_skinned_mesh_data.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
@@ -50,7 +52,7 @@ void main() {
 
   #include var_entity_model_matrix.glsl
 
-  const vec4 pos = vec4(a_pos, 1.0);
+  vec4 pos = vec4(a_pos, 1.0);
 
   vec4 worldPos;
 
@@ -71,6 +73,8 @@ void main() {
 
     worldPos = modelMatrix * pos;
   } else {
+    #include tech_skinned_mesh_skin.glsl
+
     worldPos = modelMatrix * pos;
   }
 

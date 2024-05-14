@@ -142,6 +142,12 @@ namespace loader {
             else if (k == "pre_depth_program") {
                 data.preDepthProgramName = readString(v);
             }
+            else if (k == "selection_program") {
+                data.selectionProgramName = readString(v);
+            }
+            else if (k == "id_program") {
+                data.idProgramName = readString(v);
+            }
             else if (k == "geometry_type") {
                 data.geometryType = readString(v);
             }

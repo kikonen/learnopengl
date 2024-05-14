@@ -53,6 +53,8 @@ namespace loader {
 
         std::string shadowProgramName;
         std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
+        std::string selectionProgramName{ SHADER_SELECTION };
+        std::string idProgramName{ SHADER_OBJECT_ID };
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};

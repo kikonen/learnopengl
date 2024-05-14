@@ -43,7 +43,6 @@ entities:
       cube_map: true
   - name: wooden floor
     model: plane
-    xxmodel: woodwall
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]

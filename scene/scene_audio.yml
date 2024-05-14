@@ -84,11 +84,9 @@ entities:
         gain: 1.0
     script_file: scripts/cow_audio
   - name: wooden floor
-    model: quad
-    xxmodel: woodwall
+    model: plane
     material: wood_floor
     program: g_tex
-    base_rot: [270, 0, 0]
     front: [0, 1, 0]
     render_flags:
       no_shadow: true

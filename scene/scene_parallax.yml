@@ -155,11 +155,10 @@ entities:
       y_count: 2
       y_step: 5
   - name: wooden floor
-    model: quad
+    model: plane
     material: wood_floor
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true

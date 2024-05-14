@@ -148,12 +148,10 @@ entities:
       tiling: 3
       parallax_depth: 0.0
   - name: wooden floor
-    model: quad
-    xxmodel: woodwall
+    model: plane
     material: wood_floor
     program: g_tex
     pos: [0.0, 20.0, 0.0]
-    rot: [270, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true

@@ -210,12 +210,10 @@ entities:
       x_count: 1
       x_step: 1
   - name: wooden floor
-    model: quad
-    xxmodel: woodwall
+    model: plane
     material: wood_floor
     program: g_tex
     position: [0, 0, 0]
-    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true

@@ -43,6 +43,8 @@ namespace mesh {
         m_program{ o.m_program },
         m_shadowProgram{ o.m_shadowProgram },
         m_preDepthProgram{ o.m_preDepthProgram },
+        m_selectionProgram{ o.m_selectionProgram },
+        m_idProgram{ o.m_idProgram },
         m_sprite{ std::move(o.m_sprite) },
         m_drawOptions{ o.m_drawOptions },
         m_vao{ o.m_vao },
@@ -140,6 +142,14 @@ namespace mesh {
 
         if (m_preDepthProgram) {
             m_preDepthProgram->prepareRT();
+        }
+
+        if (m_selectionProgram) {
+            m_selectionProgram->prepareRT();
+        }
+
+        if (m_idProgram) {
+            m_idProgram->prepareRT();
         }
 
         if (m_customMaterial) {

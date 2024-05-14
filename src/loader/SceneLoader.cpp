@@ -536,6 +536,8 @@ namespace loader {
         if (!entityData.programName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
             std::map<std::string, std::string, std::less<>> shadowDefinitions;
+            std::map<std::string, std::string, std::less<>> selectionDefinitions;
+            std::map<std::string, std::string, std::less<>> idDefinitions;
 
             for (const auto& [k, v] : entityData.programDefinitions) {
                 definitions[k] = v;
@@ -549,6 +551,8 @@ namespace loader {
             if (type->m_flags.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
                 shadowDefinitions[DEF_USE_ALPHA] = "1";
+                selectionDefinitions[DEF_USE_ALPHA] = "1";
+                idDefinitions[DEF_USE_ALPHA] = "1";
                 usePreDepth = false;
             }
             if (type->m_flags.blend) {
@@ -591,6 +595,8 @@ namespace loader {
             if (useBones) {
                 definitions[DEF_USE_BONES] = "1";
                 shadowDefinitions[DEF_USE_BONES] = "1";
+                selectionDefinitions[DEF_USE_BONES] = "1";
+                idDefinitions[DEF_USE_BONES] = "1";
             }
             if (useBonesDebug) {
                 definitions[DEF_USE_BONES_DEBUG] = "1";
@@ -616,6 +622,22 @@ namespace loader {
                     false,
                     "",
                     preDepthDefinitions);
+            }
+
+            if (!entityData.selectionProgramName.empty()) {
+                type->m_selectionProgram = ProgramRegistry::get().getProgram(
+                    entityData.selectionProgramName,
+                    false,
+                    "",
+                    selectionDefinitions);
+            }
+
+            if (!entityData.idProgramName.empty()) {
+                type->m_idProgram = ProgramRegistry::get().getProgram(
+                    entityData.idProgramName,
+                    false,
+                    "",
+                    idDefinitions);
             }
         }
     }
