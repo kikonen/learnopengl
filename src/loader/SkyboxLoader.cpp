@@ -124,7 +124,7 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        type->addMeshSet(*meshSet, 0.f);
+        type->addMeshSet(*meshSet, 0, 0.f);
 
         type->m_entityType = mesh::EntityType::skybox;
 

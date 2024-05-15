@@ -26,8 +26,7 @@
 namespace mesh {
     ModelMesh::ModelMesh(
         std::string_view name)
-        : Mesh(),
-        m_name{ name }
+        : Mesh{ name }
     {
     }
 

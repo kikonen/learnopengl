@@ -14,7 +14,7 @@ namespace {
 
 namespace mesh {
     TextMesh::TextMesh()
-        : Mesh()
+        : Mesh("text")
     {
     }
 

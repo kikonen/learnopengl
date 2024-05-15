@@ -76,6 +76,7 @@ namespace mesh {
 
         void addMeshSet(
             mesh::MeshSet& meshSet,
+            uint16_t lodLevel,
             float lodDistance);
 
         LodMesh* addLodMesh(LodMesh&& lodMesh);

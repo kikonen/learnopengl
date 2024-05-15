@@ -9,8 +9,9 @@ namespace {
 }
 
 namespace mesh {
-    Mesh::Mesh()
-        : m_id(ID_GENERATOR.nextId())
+    Mesh::Mesh(std::string_view name)
+        : m_id{ ID_GENERATOR.nextId() },
+        m_name{ name }
     {
     }
 

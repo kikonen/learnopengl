@@ -39,12 +39,6 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        void setMesh(
-            std::unique_ptr<Mesh> mesh,
-            bool umique) noexcept;
-
-        void setMesh(Mesh* mesh) noexcept;
-
         void registerMaterials();
         void prepareRT(const PrepareContext& ctx);
 
@@ -54,10 +48,16 @@ namespace mesh {
             return dynamic_cast<T*>(m_mesh);
         }
 
+        void setMesh(
+            std::unique_ptr<Mesh> mesh,
+            bool umique) noexcept;
+
+    private:
+        void setMesh(Mesh* mesh) noexcept;
+
         /////////////////////
 
-        Mesh* m_mesh{ nullptr };
-
+    public:
         Material m_material;
 
         backend::Lod m_lod;
@@ -65,5 +65,8 @@ namespace mesh {
         std::unique_ptr<Mesh> m_deleter;
 
         const kigl::GLVertexArray* m_vao{ nullptr };
+
+        Mesh* m_mesh{ nullptr };
+        int16_t m_lodLevel{ -1 };
     };
 }

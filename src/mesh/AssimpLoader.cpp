@@ -232,7 +232,7 @@ namespace mesh
 
         KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
             rigNode.m_index,
-            mesh->mName.C_Str(),
+            modelMesh.m_name,
             vertexOffset,
             material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,

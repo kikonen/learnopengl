@@ -76,11 +76,15 @@ namespace mesh {
 
     void MeshType::addMeshSet(
         mesh::MeshSet& meshSet,
+        uint16_t lodLevel,
         float lodDistance)
     {
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
-            lodMesh->m_lod.setDistance(lodDistance);
+            if (lodMesh->m_lodLevel < 0) {
+                lodMesh->m_lodLevel = lodLevel;
+                lodMesh->m_lod.setDistance(lodDistance);
+            }
         }
     }
 
@@ -176,26 +180,41 @@ namespace mesh {
         const Snapshot& snapshot) const
     {
         auto& lodMeshes = *m_lodMeshes.get();
+        const auto sz = lodMeshes.size();
 
-        size_t index = 0;
-        size_t count = lodMeshes.size();
+        if (sz == 1) return { lodMeshes };
+
+        size_t lodIndex = 0;
+        size_t count = sz;
         {
             auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
-            int lodIndex = 0;
-            for (; lodIndex < lodMeshes.size(); lodIndex++) {
+            lodIndex = 0;
+            for (; lodIndex < sz - 1; lodIndex++) {
                 if (dist2 < lodMeshes[lodIndex].m_lod.m_distance2)
                     break;
             }
-            if (lodIndex >= lodMeshes.size()) {
+
+            const auto level = lodMeshes[lodIndex].m_lodLevel;
+
+            while (lodIndex > 0) {
+                if (lodMeshes[lodIndex - 1].m_lodLevel != level)
+                    break;
                 lodIndex--;
             }
 
-            auto lod = &lodMeshes[lodIndex].m_lod;
-            lod = &lodMeshes[std::min((size_t)2, lodMeshes.size() -1)].m_lod;
+            //auto lod = &lodMeshes[lodIndex].m_lod;
+            //lod = &lodMeshes[std::min((size_t)2, lodMeshes.size() -1)].m_lod;
+
+            count = 0;
+            while (lodIndex + count < sz) {
+                if (lodMeshes[lodIndex + count].m_lodLevel != level)
+                    break;
+                count++;
+            }
         }
 
-        return std::span{ lodMeshes }.subspan(index, count);
+        return std::span{ lodMeshes }.subspan(lodIndex, count);
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

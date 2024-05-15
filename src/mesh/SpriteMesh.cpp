@@ -25,7 +25,7 @@ namespace {
 
 namespace mesh {
     SpriteMesh::SpriteMesh()
-        : Mesh()
+        : Mesh("sprite")
     {
     }
 

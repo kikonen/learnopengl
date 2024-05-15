@@ -56,8 +56,6 @@ namespace mesh {
         }
 
     public:
-        const std::string m_name;
-
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
 

@@ -26,7 +26,7 @@ namespace {
 
 namespace mesh {
     QuadMesh::QuadMesh()
-        : Mesh()
+        : Mesh("quad")
     {
     }
 

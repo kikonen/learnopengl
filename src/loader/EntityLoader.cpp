@@ -324,9 +324,12 @@ namespace loader {
         std::vector<LodData>& lods,
         Loaders& loaders) const
     {
+        int level = 0;
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
+            data.level = level;
             loadLod(entry, data, loaders);
+            level++;
         }
     }
 
@@ -341,7 +344,10 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "distance") {
+            if (k == "level") {
+                data.level = readInt(v);
+            }
+            else if (k == "distance") {
                 data.distance = readFloat(v);
             }
             else if (k == "model") {

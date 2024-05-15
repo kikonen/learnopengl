@@ -721,7 +721,10 @@ namespace loader {
                         loadAnimation(*meshSet, animationData);
                     }
 
-                    type->addMeshSet(*meshSet, lodData.distance);
+                    type->addMeshSet(
+                        *meshSet,
+                        lodData.level,
+                        lodData.distance);
                 }
 
                 KI_INFO(fmt::format(

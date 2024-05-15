@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <functional>
 
@@ -23,7 +24,7 @@ namespace mesh {
     class Mesh
     {
     public:
-        Mesh();
+        Mesh(std::string_view name);
         virtual ~Mesh();
 
         virtual std::string str() const noexcept;
@@ -62,6 +63,8 @@ namespace mesh {
 
     public:
         const ki::mesh_id m_id;
+
+        const std::string m_name;
 
         glm::mat4 m_transform{ 1.f };
 

@@ -7,6 +7,7 @@
 
 namespace loader {
     struct LodData {
+        uint16_t level{ 0 };
         float distance{ 0 };
 
         std::string meshPath;
