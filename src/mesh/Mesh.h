@@ -65,6 +65,7 @@ namespace mesh {
         const ki::mesh_id m_id;
 
         const std::string m_name;
+        std::string m_nodeName;
 
         glm::mat4 m_transform{ 1.f };
 

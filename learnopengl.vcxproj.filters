@@ -1739,6 +1739,9 @@
     <ClInclude Include="src\mesh\LoadContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\loader\MeshData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

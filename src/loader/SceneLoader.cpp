@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <span>
 
 #include <fmt/format.h>
 
@@ -476,7 +477,8 @@ namespace loader {
         } else
         {
             resolveSprite(typeHandle, entityData);
-            resolveMesh(typeHandle, entityData, tile);
+            resolveMeshes(type, entityData, tile);
+            resolveLods(type, entityData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
@@ -487,11 +489,6 @@ namespace loader {
                         entityData.baseId, entityData.desc));
                     return pool::TypeHandle::NULL_HANDLE;
                 }
-            }
-
-            for (auto& lodMesh : type->modifyLodMeshes()) {
-                auto& lodData = entityData.lods[0];
-                resolveMaterials(type, lodMesh, entityData, lodData);
             }
 
             // NOTE KI DEP: program after materials
@@ -653,30 +650,27 @@ namespace loader {
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
-        const EntityData& entityData,
-        const LodData& lodData)
+        const MeshData& meshData)
     {
         auto& l = *m_loaders;
-
         auto& material = lodMesh.m_material;
-        {
-            for (auto& ref : lodData.materialReferences) {
-                const auto& alias = ref.modifiers.aliasName;
-                const auto& name = ref.modifiers.materialName;
-                KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
-                if (alias == material.m_name || alias.empty() || alias == "*")
-                {
-                    if (!name.empty() && !alias.empty()) {
-                        const auto* overrideMaterial = findMaterial(name, m_materials);
-                        if (overrideMaterial) {
-                            material.assign(*overrideMaterial);
-                        }
+
+        for (auto& ref : meshData.materialReferences) {
+            const auto& alias = ref.modifiers.aliasName;
+            const auto& name = ref.modifiers.materialName;
+            KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
+            if (alias == material.m_name || alias.empty() || alias == "*")
+            {
+                if (!name.empty() && !alias.empty()) {
+                    const auto* overrideMaterial = findMaterial(name, m_materials);
+                    if (overrideMaterial) {
+                        material.assign(*overrideMaterial);
                     }
-                    l.m_materialLoader.modifyMaterial(material, ref.modifiers);
                 }
+                l.m_materialLoader.modifyMaterial(material, ref.modifiers);
             }
-            material.loadTextures();
-        };
+        }
+        material.loadTextures();
     }
 
     void SceneLoader::resolveSprite(
@@ -696,41 +690,53 @@ namespace loader {
         }
     }
 
-    void SceneLoader::resolveMesh(
-        pool::TypeHandle typeHandle,
+    void SceneLoader::resolveMeshes(
+        mesh::MeshType* type,
         const EntityData& entityData,
         const glm::uvec3& tile)
     {
+        uint16_t index = 0;
+        for (const auto& meshData : entityData.meshes) {
+            resolveMesh(type, entityData, meshData, tile, index);
+            index++;
+        }
+    }
+
+    void SceneLoader::resolveMesh(
+        mesh::MeshType* type,
+        const EntityData& entityData,
+        const MeshData& meshData,
+        const glm::uvec3& tile,
+        int index)
+    {
         const auto& assets = Assets::get();
 
-        auto* type = typeHandle.toType();
+        size_t startIndex = type->m_lodMeshes->size();
+        size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (entityData.type == mesh::EntityType::model) {
             type->m_entityType = mesh::EntityType::model;
 
-            for (auto& lodData : entityData.lods) {
-                auto future = ModelRegistry::get().getMeshSet(
-                    assets.modelsDir,
-                    lodData.meshPath);
+            auto future = ModelRegistry::get().getMeshSet(
+                assets.modelsDir,
+                meshData.meshPath);
 
-                auto meshSet = future.get();
+            auto meshSet = future.get();
 
-                if (meshSet) {
-                    for (auto& animationData : entityData.animations) {
-                        loadAnimation(*meshSet, animationData);
-                    }
-
-                    type->addMeshSet(
-                        *meshSet,
-                        lodData.level,
-                        lodData.distance);
+            if (meshSet) {
+                for (auto& animationData : meshData.animations) {
+                    loadAnimation(*meshSet, animationData);
                 }
 
-                KI_INFO(fmt::format(
-                    "SCENE_FILE MESH: id={}, desc={}, type={}",
-                    entityData.baseId, entityData.desc, type->str()));
+                meshCount += type->addMeshSet(
+                    *meshSet,
+                    meshData.level);
             }
+
+            KI_INFO(fmt::format(
+                "SCENE_FILE MESH: id={}, desc={}, type={}",
+                entityData.baseId, entityData.desc, type->str()));
         }
         else if (entityData.type == mesh::EntityType::sprite) {
             //auto future = ModelRegistry::get().getMeshSet(
@@ -747,9 +753,12 @@ namespace loader {
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(std::move(mesh), true);
             type->addLodMesh(std::move(lodMesh));
+            meshCount++;
         }
         else if (entityData.type == mesh::EntityType::terrain) {
+            // NOTE KI handled via container + generator
             type->m_entityType = mesh::EntityType::terrain;
+            throw "Terrain not supported currently";
         }
         else if (entityData.type == mesh::EntityType::container) {
             // NOTE KI generator takes care of actual work
@@ -760,6 +769,34 @@ namespace loader {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
             type->m_entityType = mesh::EntityType::origo;
             type->m_flags.invisible = true;
+        }
+
+        // Resolve materials for newly added meshes
+        if (meshCount > 0) {
+            const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
+            for (auto& lodMesh : span) {
+                resolveMaterials(type, lodMesh, meshData);
+            }
+        }
+    }
+
+    void SceneLoader::resolveLods(
+        mesh::MeshType* type,
+        const EntityData& entityData)
+    {
+        for (const auto& lodData : entityData.lods) {
+            resolveLod(type, lodData);
+        }
+    }
+
+    void SceneLoader::resolveLod(
+        mesh::MeshType* type,
+        const LodData& lodData)
+    {
+        for (auto& lodMesh : *type->m_lodMeshes) {
+            if (lodMesh.m_lodLevel == lodData.level) {
+                lodMesh.m_lod.setDistance(lodData.distance);
+            }
         }
     }
 

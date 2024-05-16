@@ -33,15 +33,23 @@ namespace loader {
             const loader::Node& node,
             TextData& data) const;
 
+        void loadMeshes(
+            const loader::Node& node,
+            std::vector<MeshData>& meshes,
+            Loaders& loaders) const;
+
+        void loadMesh(
+            const loader::Node& node,
+            MeshData& data,
+            Loaders& loaders) const;
+
         void loadLods(
             const loader::Node& node,
-            std::vector<LodData>& lods,
-            Loaders& loaders) const;
+            std::vector<LodData>& lods) const;
 
         void loadLod(
             const loader::Node& node,
-            LodData& data,
-            Loaders& loaders) const;
+            LodData& data) const;
 
         void loadMaterialReferences(
             const loader::Node& node,

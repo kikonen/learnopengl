@@ -74,18 +74,19 @@ namespace mesh {
         return { m_handleIndex, m_id };
     }
 
-    void MeshType::addMeshSet(
+    uint16_t MeshType::addMeshSet(
         mesh::MeshSet& meshSet,
-        uint16_t lodLevel,
-        float lodDistance)
+        uint16_t lodLevel)
     {
+        uint16_t count = 0;
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
             if (lodMesh->m_lodLevel < 0) {
                 lodMesh->m_lodLevel = lodLevel;
-                lodMesh->m_lod.setDistance(lodDistance);
             }
+            count++;
         }
+        return count;
     }
 
     LodMesh* MeshType::addLodMesh(

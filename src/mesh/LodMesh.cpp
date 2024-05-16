@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
 #include "asset/Material.h"
 
 #include "util/Util.h"
@@ -14,16 +15,17 @@
 
 namespace {
     const std::vector<std::regex> lodMatchers{
-        std::regex(".*lod[0-9]"),
+        std::regex(".*lod[0-9]+"),
     };
 
     int16_t resolveLodLevel(const std::string& name)
     {
-        if (!util::matchAny(lodMatchers, util::toLower(name))) return -1;
+        const auto& str = util::toLower(name);
+        if (!util::matchAny(lodMatchers, str)) return -1;
 
         std::string output = std::regex_replace(
-            name,
-            std::regex("[^0-9]*([0-9]+).*"),
+            str,
+            std::regex(".*lod([0-9]+)"),
             std::string("$1")
         );
 
@@ -92,6 +94,10 @@ namespace mesh {
         if (!m_mesh) return;
 
         auto level = resolveLodLevel(mesh->m_name);
+        if (level == -1) {
+            level = resolveLodLevel(mesh->m_nodeName);
+        }
+
         if (level >= 0) {
             m_lodLevel = level;
             m_lod.setDistance((m_lodLevel + 1) * 20.f);
@@ -107,12 +113,16 @@ namespace mesh {
     {
         if (!m_mesh) return;
 
-        if (m_lodLevel > 0)
-            m_material.kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-        if (m_lodLevel > 1)
-            m_material.kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
-        if (m_lodLevel > 2)
-            m_material.kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+        const auto& assets = Assets::get();
+
+        if (assets.useLodDebug) {
+            if (m_lodLevel > 0)
+                m_material.kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
+            if (m_lodLevel > 1)
+                m_material.kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
+            if (m_lodLevel > 2)
+                m_material.kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+        }
 
         MaterialRegistry::get().registerMaterial(m_material);
 

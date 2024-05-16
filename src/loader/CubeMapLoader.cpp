@@ -53,7 +53,7 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<cube_map>");
 
-        type->addMeshSet(*meshSet, 0, 0.f);
+        type->addMeshSet(*meshSet, 0);
 
         auto* loadMesh = type->modifyLodMesh (0);
         {

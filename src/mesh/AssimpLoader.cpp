@@ -192,6 +192,7 @@ namespace mesh
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
                     modelMesh->m_transform = globalTransforms[rigNode.m_index];
                     modelMesh->m_rig = ctx.m_rig;
+                    modelMesh->m_nodeName = rigNode.m_name;
 
                     processMesh(
                         ctx,

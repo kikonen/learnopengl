@@ -120,6 +120,8 @@ public:
 
     bool useDebugColor;
 
+    bool useLodDebug;
+
     bool frustumEnabled;
     bool frustumCPU;
     bool frustumGPU;

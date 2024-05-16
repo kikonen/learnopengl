@@ -369,6 +369,10 @@ void AssetsLoader::loadAssets(
             data.useDebugColor = readBool(v);
             continue;
         }
+        if (k == "use_lod_debug") {
+            data.useLodDebug = readBool(v);
+            continue;
+        }
         {
             if (k == "frustum_enabled") {
                 data.frustumEnabled = readBool(v);

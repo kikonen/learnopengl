@@ -124,6 +124,8 @@ Assets::Assets()
 
     useDebugColor = false;
 
+    useLodDebug = false;
+
     frustumEnabled = true;
     frustumGPU = false;
     frustumCPU = true;

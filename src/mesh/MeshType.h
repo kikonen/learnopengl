@@ -74,10 +74,10 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        void addMeshSet(
+        // @return count of meshes added
+        uint16_t addMeshSet(
             mesh::MeshSet& meshSet,
-            uint16_t lodLevel,
-            float lodDistance);
+            uint16_t lodLevel);
 
         LodMesh* addLodMesh(LodMesh&& lodMesh);
 

@@ -39,6 +39,7 @@ namespace loader {
     struct EntityRoot;
     struct EntityData;
     struct TextData;
+    struct MeshData;
     struct LodData;
     struct AnimationData;
     struct ResolvedEntity;
@@ -128,17 +129,31 @@ namespace loader {
         void resolveMaterials(
             mesh::MeshType* type,
             mesh::LodMesh& lodMesh,
-            const EntityData& entityData,
-            const LodData& data);
+            const MeshData& meshData);
 
         void resolveSprite(
             pool::TypeHandle typeHandle,
             const EntityData& entityData);
 
-        void resolveMesh(
-            pool::TypeHandle typeHandle,
+        void resolveMeshes(
+            mesh::MeshType* type,
             const EntityData& entityData,
             const glm::uvec3& tile);
+
+        void resolveMesh(
+            mesh::MeshType* type,
+            const EntityData& entityData,
+            const MeshData& meshData,
+            const glm::uvec3& tile,
+            int index);
+
+        void resolveLods(
+            mesh::MeshType* type,
+            const EntityData& entityData);
+
+        void resolveLod(
+            mesh::MeshType* type,
+            const LodData& lodData);
 
         void loadAnimation(
             mesh::MeshSet& meshSet,

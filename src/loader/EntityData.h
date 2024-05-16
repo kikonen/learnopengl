@@ -26,8 +26,8 @@
 #include "PhysicsData.h"
 #include "ScriptData.h"
 #include "TextData.h"
+#include "MeshData.h"
 #include "LodData.h"
-#include "AnimationData.h"
 
 namespace loader {
     struct EntityData {
@@ -46,6 +46,7 @@ namespace loader {
 
         int priority{ 0 };
 
+        std::vector<MeshData> meshes;
         std::vector<LodData> lods;
 
         std::string programName{};
@@ -90,8 +91,6 @@ namespace loader {
         LightData light;
         AudioData audio;
         TextData text;
-
-        std::vector<AnimationData> animations;
 
         GeneratorData generator;
 

@@ -72,6 +72,8 @@ assets:
 
   use_debug_color: true
 
+  use_lod_debug: false
+
   frustum_enabled: true
   frustum_cpu: true
   frustum_gpu: false

@@ -281,7 +281,7 @@ namespace terrain {
             {
                 auto* type = typeHandle.toType();
 
-                type->addMeshSet(*meshSet, 0, 0.f);
+                type->addMeshSet(*meshSet, 0);
 
                 auto* lodMesh = type->modifyLodMesh(0);
                 lodMesh->m_material = m_material;

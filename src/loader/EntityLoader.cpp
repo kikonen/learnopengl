@@ -67,7 +67,7 @@ namespace loader {
 
         data.enabled = true;
 
-        bool needLod = false;
+        bool needSingleMesh = false;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -128,7 +128,7 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                needLod = true;
+                needSingleMesh = true;
             }
             else if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -172,10 +172,10 @@ namespace loader {
                 loadText(v, data.text);
             }
             else if (k == "material") {
-                needLod = true;
+                needSingleMesh = true;
             }
             else if (k == "material_modifier") {
-                needLod = true;
+                needSingleMesh = true;
             }
             else if (k == "sprite") {
                 data.spriteName = readString(v);
@@ -258,22 +258,20 @@ namespace loader {
             else if (k == "script_file") {
                 loaders.m_scriptLoader.loadScript(v, data.script);
             }
-            else if (k == "lods" || k == "meshes") {
-                loadLods(v, data.lods, loaders);
+            else if (k == "meshes") {
+                loadMeshes(v, data.meshes, loaders);
             }
-            else if (k == "animations") {
-                loadAnimations(v, data.animations);
+            else if (k == "lods") {
+                loadLods(v, data.lods);
             }
             else {
                 reportUnknown("entity_entry", k, v);
             }
         }
 
-        if (needLod && data.lods.empty()) {
-            if (data.lods.empty()) {
-                data.lods.emplace_back();
-            }
-            loadLod(node, data.lods[0], loaders);
+        if (needSingleMesh && data.meshes.empty()) {
+            auto& meshData = data.meshes.emplace_back();
+            loadMesh(node, meshData, loaders);
         }
 
         if (hasClones) {
@@ -319,23 +317,23 @@ namespace loader {
         }
     }
 
-    void EntityLoader::loadLods(
+    void EntityLoader::loadMeshes(
         const loader::Node& node,
-        std::vector<LodData>& lods,
+        std::vector<MeshData>& meshes,
         Loaders& loaders) const
     {
         int level = 0;
         for (const auto& entry : node.getNodes()) {
-            LodData& data = lods.emplace_back();
+            auto& data = meshes.emplace_back();
             data.level = level;
-            loadLod(entry, data, loaders);
+            loadMesh(entry, data, loaders);
             level++;
         }
     }
 
-    void EntityLoader::loadLod(
+    void EntityLoader::loadMesh(
         const loader::Node& node,
-        LodData& data,
+        MeshData& data,
         Loaders& loaders) const
     {
         for (const auto& pair : node.getNodes()) {
@@ -347,9 +345,6 @@ namespace loader {
             if (k == "level") {
                 data.level = readInt(v);
             }
-            else if (k == "distance") {
-                data.distance = readFloat(v);
-            }
             else if (k == "model") {
                 if (v.isSequence()) {
                     auto& nodes = v.getNodes();
@@ -358,6 +353,9 @@ namespace loader {
                 else {
                     data.meshPath = readString(v);
                 }
+            }
+            else if (k == "animations") {
+                loadAnimations(v, data.animations);
             }
             else if (k == "materials") {
                 loadMaterialReferences(v, data.materialReferences, loaders);
@@ -379,6 +377,41 @@ namespace loader {
                 materialData.modifiers.modify = true;
                 loadMaterialReference(v, materialData, loaders);
             } else {
+                reportUnknown("lod_entry", k, v);
+            }
+        }
+    }
+
+    void EntityLoader::loadLods(
+        const loader::Node& node,
+        std::vector<LodData>& lods) const
+    {
+        int level = 0;
+        for (const auto& entry : node.getNodes()) {
+            LodData& data = lods.emplace_back();
+            data.level = level;
+            loadLod(entry, data);
+            level++;
+        }
+    }
+
+    void EntityLoader::loadLod(
+        const loader::Node& node,
+        LodData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "level") {
+                data.level = readInt(v);
+            }
+            else if (k == "distance") {
+                data.distance = readFloat(v);
+            }
+            else {
                 reportUnknown("lod_entry", k, v);
             }
         }
