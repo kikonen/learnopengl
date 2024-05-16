@@ -58,6 +58,7 @@ namespace {
     const std::vector<std::regex> emissionMatchers{
         std::regex(".*[-_ ]emission[-_ \\.].*"),
         std::regex(".*[-_ ]emi[-_ \\.].*"),
+        std::regex(".*[-_ ]emissive[-_ \\.].*"),
     };
 
     const std::vector<std::regex> normalMatchers{

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><XnView_script version="1.0" name="converter">
+    <Extract_channel channel="3"/>
+    <Change_color_depth method="2" dither="1" ncompo="256" alpha="255" replace_alpha="false" back_color="#ffffff"/>
+    <Output folder="" filename="{Filename}_{DstHeight}" case="0" startIndex="1" format="PNG">
+        <Options overwrite="1" orgDate="false" keepMeta="true" keepICC="false" keepFolder="false" keepParentFolder="false" keepExtension="false" delOrg="false" multipage="false" allPages="false" openExplorer="false" beep="true" openBrowser="false" clearItems="false"/>
+        <PNG level="6" interlaced="false" filter="0"/>
+    </Output>
+</XnView_script>

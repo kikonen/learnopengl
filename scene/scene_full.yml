@@ -386,14 +386,43 @@ entities:
     program: g_tex
     pos: [6.0, 19.0, 22.0]
     scale: 0.5
-  - name: Spyro
+  - xid: spyro
     model: spyro2
     program: g_tex
-    pos: [0.0, 35.0, 30.0]
+    pos: [0.0, 15.0, 30.0]
     material_modifier:
       map_pbr: textures/Lava 05 [8K]
       tiling: 6
     scale: 0.06
+  - id: wyvern_{t}
+    model: fbx/creatures/wyvern/SK_Wyvern.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 35.0, 30.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 2
+    base_scale: 0.01
+    materials:
+      - name: wyvern_pbr
+        alias: M_Wyvern
+    animations:
+      - name: fire
+        path: fbx/creatures/wyvern/anim/Wyvern@FlyStationarySpreadFire.FBX
+      - name: fly
+        path: fbx/creatures/wyvern/anim/Wyvern@FlyStationary.FBX
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 100
+      z_step: -100
   - name: Backback
     desc: TODO not showing up
     model: [backpack, backpack]
@@ -1251,6 +1280,8 @@ materials:
     map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
   - name: door_glass_2_pbr
     map_pbr: fbx\scenery\structures\doors\door_glass_2_pbr
+  - name: wyvern_pbr
+    map_pbr: fbx/creatures/wyvern/wyvern_pbr
   - name: particle_casting
     kd: [1, 1, 1, 1]
     map_kd: particles/4_casting_spritesheet.png
