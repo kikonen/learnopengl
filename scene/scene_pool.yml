@@ -226,6 +226,27 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
+  - id: grass_{t}
+    model: fbx/scenery/foliage/SM_grass_bush_01.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-100.0, 0.0, 140.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.01
+    materials:
+      - name: grass_bush_01_pbr
+        alias: M_atlas_grass_01
+    render_flags:
+      alpha: true
+      render_back: true
+      static_bounds: true
+    repeat:
+      x_count: 30
+      z_count: 20
+      x_step: 12
+      z_step: -12
   - id: cube_2
     model: texture_cube
     program: g_tex
@@ -360,3 +381,5 @@ materials:
   - name: maple_leaf
     map_kd: fbx/scenery/trees/textures/leaf maple.png
     map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+  - name: grass_bush_01_pbr
+    map_pbr: fbx/scenery/foliage/grass_01_pbr

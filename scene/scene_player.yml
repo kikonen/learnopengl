@@ -47,42 +47,48 @@ entities:
     program: g_tex
     render_flags:
       render_back: true
-    lods:
+    meshes:
       - model: [rock2, rock]
+        level: 0
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [1, 1, 0]
           tiling: 4
-        distance: 20
       - model: [rock2, rock_lod_1]
+        level: 1
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [0, 1, 1]
           tiling: 4
-        distance: 40
       - model: [rock2, rock_lod_2]
+        level: 2
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 0, 1]
           tiling: 4
-        distance: 60
       - model: [rock2, rock_lod_3]
+        level: 3
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 1, 0]
           tiling: 4
-        distance: 80
       - model: [rock2, rock_lod_4]
+        level: 4
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [1, 0, 0]
           tiling: 4
-        distance: 100
+    lods:
+      - distance: 20
+      - distance: 40
+      - distance: 60
+      - distance: 80
+      - distance: 100
     pos: [0, 2, -10]
   - id: wooden_floor
     model: plane
