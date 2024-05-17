@@ -128,7 +128,7 @@ namespace mesh {
             return m_drawOptions;
         }
 
-        std::span<mesh::LodMesh> findMeshBatch(
+        uint16_t getLodLevel(
             const glm::vec3& cameraPos,
             const Snapshot& snapshot) const;
 

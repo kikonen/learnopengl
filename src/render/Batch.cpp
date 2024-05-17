@@ -88,9 +88,10 @@ namespace render {
         top.m_instanceCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto meshBatch = type->findMeshBatch(cameraPos, snapshot);
+        const auto lodLevel = type->getLodLevel(cameraPos, snapshot);
 
-        for (const auto& lodMesh : meshBatch) {
+        for (const auto& lodMesh : *type->m_lodMeshes) {
+            if (lodMesh.m_lodLevel != lodLevel) continue;
             LodKey key{ &lodMesh.m_lod };
             auto& lodInstances = top.m_lodInstances[key];
             lodInstances.push_back(entityIndex);
@@ -169,9 +170,10 @@ namespace render {
                     continue;
                 }
 
-                const auto meshBatch = type->findMeshBatch(cameraPos, snapshots[i]);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i]);
 
-                for (const auto& lodMesh : meshBatch) {
+                for (const auto& lodMesh : *type->m_lodMeshes) {
+                    if (lodMesh.m_lodLevel != lodLevel) continue;
                     LodKey key{ &lodMesh.m_lod };
 
                     auto& lodInstances = top.m_lodInstances[key];
@@ -195,9 +197,10 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                const auto meshBatch = type->findMeshBatch(cameraPos, snapshots[i]);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i]);
 
-                for (const auto& lodMesh : meshBatch) {
+                for (const auto& lodMesh : *type->m_lodMeshes) {
+                    if (lodMesh.m_lodLevel != lodLevel) continue;
                     LodKey key{ &lodMesh.m_lod };
                     auto& lodInstances = top.m_lodInstances[key];
                     lodInstances.push_back(entityBase + i);

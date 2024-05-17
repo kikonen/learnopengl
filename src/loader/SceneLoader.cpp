@@ -795,7 +795,7 @@ namespace loader {
     {
         for (auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_lodLevel == lodData.level) {
-                lodMesh.m_lod.setDistance(lodData.distance);
+                lodMesh.setDistance(lodData.distance);
             }
         }
     }

@@ -100,7 +100,7 @@ namespace mesh {
 
         if (level >= 0) {
             m_lodLevel = level;
-            m_lod.setDistance((m_lodLevel + 1) * 20.f);
+            setDistance((m_lodLevel + 1) * 20.f);
         }
 
         // NOTE KI copy of material for isntance

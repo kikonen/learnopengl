@@ -14,18 +14,7 @@ namespace backend {
         uint32_t m_baseIndex{ 0 };
         uint32_t m_indexCount{ 0 };
 
-        // Distance upto lod is applied
-        float m_distance{ 0.f };
-
-        // Squared Distance upto lod is applied
-        float m_distance2{ 0.f };
-
         uint32_t m_materialIndex{ 0 };
-
-        void setDistance(float dist) {
-            m_distance = dist;
-            m_distance2 = dist * dist;
-        }
 
         inline bool operator==(const Lod& o) const noexcept
         {

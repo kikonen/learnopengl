@@ -176,46 +176,22 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    std::span<mesh::LodMesh> MeshType::findMeshBatch(
+    uint16_t MeshType::getLodLevel(
         const glm::vec3& cameraPos,
         const Snapshot& snapshot) const
     {
         auto& lodMeshes = *m_lodMeshes.get();
-        const auto sz = lodMeshes.size();
 
-        if (sz == 1) return { lodMeshes };
-
-        size_t lodIndex = 0;
-        size_t count = sz;
         {
             auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
-            lodIndex = 0;
-            for (; lodIndex < sz - 1; lodIndex++) {
-                if (dist2 < lodMeshes[lodIndex].m_lod.m_distance2)
-                    break;
-            }
-
-            const auto level = lodMeshes[lodIndex].m_lodLevel;
-
-            while (lodIndex > 0) {
-                if (lodMeshes[lodIndex - 1].m_lodLevel != level)
-                    break;
-                lodIndex--;
-            }
-
-            //auto lod = &lodMeshes[lodIndex].m_lod;
-            //lod = &lodMeshes[std::min((size_t)2, lodMeshes.size() -1)].m_lod;
-
-            count = 0;
-            while (lodIndex + count < sz) {
-                if (lodMeshes[lodIndex + count].m_lodLevel != level)
-                    break;
-                count++;
+            for (const auto& lodMesh : lodMeshes) {
+                if (dist2 < lodMesh.m_distance2)
+                    return lodMesh.m_lodLevel;
             }
         }
 
-        return std::span{ lodMeshes }.subspan(lodIndex, count);
+        return lodMeshes[lodMeshes.size() - 1].m_lodLevel;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

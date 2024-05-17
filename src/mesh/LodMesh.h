@@ -52,6 +52,11 @@ namespace mesh {
             std::unique_ptr<Mesh> mesh,
             bool umique) noexcept;
 
+        void setDistance(float dist) {
+            m_distance = dist;
+            m_distance2 = dist * dist;
+        }
+
     private:
         void setMesh(Mesh* mesh) noexcept;
 
@@ -67,6 +72,13 @@ namespace mesh {
         const kigl::GLVertexArray* m_vao{ nullptr };
 
         Mesh* m_mesh{ nullptr };
+
         int16_t m_lodLevel{ -1 };
+
+        // Distance upto lod is applied
+        float m_distance{ 0.f };
+
+        // Squared Distance upto lod is applied
+        float m_distance2{ 0.f };
     };
 }
