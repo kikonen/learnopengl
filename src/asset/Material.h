@@ -21,12 +21,6 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
     selection
 };
 
-enum class MaterialType : std::underlying_type_t<std::byte> {
-    asset,
-    model,
-    texture,
-};
-
 constexpr int MATERIAL_DIFFUSE_IDX = 0;
 constexpr int MATERIAL_EMISSION_IDX = 1;
 constexpr int MATERIAL_SPECULAR_IDX = 2;
@@ -119,8 +113,6 @@ public:
         std::string_view textureName);
 
 private:
-    std::string resolveBaseDir();
-
     void loadTexture(
         int idx,
         std::string_view name,
@@ -225,8 +217,6 @@ public:
     uint8_t spriteCount = 1;
     uint8_t spritesX = 1;
     uint8_t spritesY = 1;
-
-    MaterialType m_type{ MaterialType::asset };
 
     bool m_default : 1 {false};
     bool m_used : 1 {false};

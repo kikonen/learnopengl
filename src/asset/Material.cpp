@@ -189,22 +189,6 @@ void Material::loadTextures()
         metal);
 }
 
-std::string Material::resolveBaseDir()
-{
-    const auto& assets = Assets::get();
-
-    std::string baseDir;
-    switch (m_type) {
-    case MaterialType::asset:
-        return assets.assetsDir;
-    case MaterialType::model:
-        return assets.modelsDir;
-    case MaterialType::texture:
-        return assets.texturesDir;
-    }
-    return assets.assetsDir;
-}
-
 void Material::loadTexture(
     int idx,
     std::string_view textureName,
@@ -309,9 +293,11 @@ std::string Material::getTexturePath(
 
     std::string texturePath;
     {
+        const auto& assets = Assets::get();
+
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
-            resolveBaseDir(),
+            assets.assetsDir,
             m_path,
             textureName, "");
     }

@@ -152,20 +152,6 @@ namespace loader {
             if (k == "name") {
                 material.m_name = readString(v);
             }
-            else if (k == "type") {
-                std::string type = readString(v);
-                if (type == "model") {
-                    material.m_type = MaterialType::model;
-                    fields.type = true;
-                }
-                else if (type == "texture") {
-                    material.m_type = MaterialType::texture;
-                    fields.type = true;
-                }
-                else {
-                    reportUnknown("material_type", k, v);
-                }
-            }
             else if (k == "alias") {
                 data.aliasName = readString(v);
             }
@@ -508,8 +494,6 @@ namespace loader {
 
         const MaterialField& f = data.fields;
         const Material & mod = data.material;
-
-        if (f.type) m.m_type = mod.m_type;
 
         if (f.textureSpec) m.textureSpec = mod.textureSpec;
 

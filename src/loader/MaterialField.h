@@ -2,8 +2,6 @@
 
 namespace loader {
     struct MaterialField {
-        bool type = false;
-
         bool textureSpec = false;
 
         bool pattern = false;
