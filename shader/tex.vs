@@ -90,17 +90,6 @@ void main() {
 #ifdef USE_TBN
     tangent = u_viewRight;
 #endif
-  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_viewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
-
-    worldPos = modelMatrix * pos;
-
-    normal = -u_viewFront;
-#ifdef USE_TBN
-    tangent = u_viewRight;
-#endif
   } else {
     worldPos = modelMatrix * pos;
 

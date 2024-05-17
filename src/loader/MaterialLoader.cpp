@@ -162,10 +162,6 @@ namespace loader {
                     material.m_type = MaterialType::texture;
                     fields.type = true;
                 }
-                else if (type == "sprite") {
-                    material.m_type = MaterialType::sprite;
-                    fields.type = true;
-                }
                 else {
                     reportUnknown("material_type", k, v);
                 }

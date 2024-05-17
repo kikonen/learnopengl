@@ -61,12 +61,6 @@ void main() {
                     + u_viewRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
-  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_viewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
-
-    worldPos = modelMatrix * pos;
   } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
   }

@@ -12,7 +12,6 @@
 #include "BaseLoader.h"
 
 struct Material;
-class Sprite;
 class Registry;
 
 namespace text {
@@ -34,7 +33,6 @@ namespace loader {
     struct SkyboxData;
     struct FontData;
     struct MaterialData;
-    struct SpriteData;
     struct ScriptEngineData;
     struct EntityRoot;
     struct EntityData;
@@ -131,10 +129,6 @@ namespace loader {
             mesh::LodMesh& lodMesh,
             const MeshData& meshData);
 
-        void resolveSprite(
-            pool::TypeHandle typeHandle,
-            const EntityData& entityData);
-
         void resolveMeshes(
             mesh::MeshType* type,
             const EntityData& entityData,
@@ -205,9 +199,6 @@ namespace loader {
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
-        const Sprite* findSprite(
-            std::string_view name) const;
-
         const FontData* findFont(
             std::string_view name) const;
 
@@ -231,8 +222,6 @@ namespace loader {
 
         std::unique_ptr<Material> m_defaultMaterial;
         std::vector<MaterialData> m_materials;
-
-        std::vector<SpriteData> m_sprites;
 
         std::unique_ptr<Loaders> m_loaders;
     };

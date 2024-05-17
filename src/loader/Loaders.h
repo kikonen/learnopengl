@@ -11,7 +11,6 @@
 #include "FontLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
-#include "SpriteLoader.h"
 #include "CameraLoader.h"
 #include "LightLoader.h"
 #include "ControllerLoader.h"
@@ -46,7 +45,6 @@ namespace loader {
         FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;
         CustomMaterialLoader m_customMaterialLoader;
-        SpriteLoader m_spriteLoader;
 
         CameraLoader m_cameraLoader;
         LightLoader m_lightLoader;

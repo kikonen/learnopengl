@@ -11,8 +11,6 @@
 
 #include "pool/NodeHandle.h"
 
-#include "asset/Sprite.h"
-
 #include "component/Light.h"
 #include "component/Camera.h"
 
@@ -89,13 +87,7 @@ void Node::prepareWT(
 
         {
             m_transform.m_flags = type->resolveEntityFlags();
-
-            if (type->m_entityType == mesh::EntityType::sprite) {
-                auto& shape = type->m_sprite->m_shapes[type->m_sprite->m_shapes.size() - 1];
-                m_transform.m_shapeIndex = shape.m_registeredIndex;
-            }
         }
-
     }
 
     {

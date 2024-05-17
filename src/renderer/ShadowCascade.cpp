@@ -247,10 +247,8 @@ void ShadowCascade::drawNodes(
     // NOTE KI *NO* G-buffer in shadow
     const auto typeFilter = [](const mesh::MeshType* type) {
         // NOTE KI tessellation not suppported
-        // NOTE KI point sprite currently not supported
         return !type->m_flags.noShadow &&
-            !type->m_flags.tessellation &&
-            type->m_entityType != mesh::EntityType::point_sprite;
+            !type->m_flags.tessellation;
     };
 
     const auto nodeFilter = [](const Node* node) {
@@ -282,7 +280,7 @@ void ShadowCascade::drawNodes(
             },
             typeFilter,
             nodeFilter,
-            render::NodeDraw::KIND_SPRITE | render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);
+            render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);
     }
 
     ctx.m_batch->flush(ctx);

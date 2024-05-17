@@ -47,9 +47,6 @@ void NodeRenderer::prepareRT(
 
     m_selectionProgram = ProgramRegistry::get().getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
     m_selectionProgram->prepareRT();
-
-    //m_selectionProgramPointSprite = ProgramRegistry::get().getProgram(SHADER_SELECTION_POINT_SPRITE, { { DEF_USE_ALPHA, "1" } });
-    //m_selectionProgramPointSprite->prepare(assets);
 }
 
 void NodeRenderer::updateRT(const UpdateViewContext& ctx)
@@ -139,9 +136,6 @@ void NodeRenderer::fillHighlightMask(
 
     // draw entity data mask
     {
-        //m_selectionProgramPointSprite->bind();
-        //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_MASK);
-
         auto* program = m_selectionProgram;
         program->bind();
         program->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
@@ -182,9 +176,6 @@ void NodeRenderer::renderHighlight(
 
     // draw selection color (scaled a bit bigger)
     {
-        //m_selectionProgramPointSprite->bind();
-        //m_selectionProgramPointSprite->u_stencilMode->set(STENCIL_MODE_HIGHLIGHT);
-
         auto* program = m_selectionProgram;
         program->bind();
         program->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);

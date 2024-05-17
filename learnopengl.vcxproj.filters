@@ -345,15 +345,6 @@
     <ClCompile Include="src\render\TextureQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\asset\Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\registry\SpriteRegistry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\EffectBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -418,9 +409,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\GeneratorLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\SpriteLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp">
@@ -522,13 +510,7 @@
     <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\SpriteVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\SpriteMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\text\FontHandle.cpp">
@@ -1133,18 +1115,6 @@
     <ClInclude Include="src\render\TextureQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\ShapeSSBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\registry\SpriteRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\render\EffectBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1235,9 +1205,6 @@
     <ClInclude Include="src\loader\GeneratorLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\SpriteLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\loader\CustomMaterialLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1254,9 +1221,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\EntityLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\SpriteData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SkyboxData.h">
@@ -1415,9 +1379,6 @@
     <ClInclude Include="src\mesh\vao\TexturedVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\SpriteVAO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\vao\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1428,9 +1389,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\EntityType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\SpriteMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\FontHandle.h">

@@ -57,12 +57,6 @@ void main()
                     + u_mainViewRight * pos.x * entityScale.x
                     + UP * pos.y * entityScale.y,
                     1.0);
-  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    pos = vec4(u_mainViewRight * pos.x
-	       + UP * pos.y,
-	       1.0);
-
-    worldPos = modelMatrix * pos;
   } else {
     #include tech_skinned_mesh_skin.glsl
 

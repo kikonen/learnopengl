@@ -28,8 +28,6 @@ namespace render {
     class Batch;
 }
 
-class Sprite;
-
 struct PrepareContext;
 
 struct Snapshot;
@@ -140,8 +138,6 @@ namespace mesh {
         Program* m_preDepthProgram{ nullptr };
         Program* m_selectionProgram{ nullptr };
         Program* m_idProgram{ nullptr };
-
-        std::unique_ptr<Sprite> m_sprite{ nullptr };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 

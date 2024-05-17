@@ -25,7 +25,6 @@ enum class MaterialType : std::underlying_type_t<std::byte> {
     asset,
     model,
     texture,
-    sprite
 };
 
 constexpr int MATERIAL_DIFFUSE_IDX = 0;

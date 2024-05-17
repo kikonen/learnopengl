@@ -5,7 +5,6 @@
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 #include "asset/Material.h"
-#include "asset/Sprite.h"
 
 #include "backend/DrawOptions.h"
 
@@ -23,7 +22,6 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/SpriteRegistry.h"
 
 
 namespace {
@@ -45,7 +43,6 @@ namespace mesh {
         m_preDepthProgram{ o.m_preDepthProgram },
         m_selectionProgram{ o.m_selectionProgram },
         m_idProgram{ o.m_idProgram },
-        m_sprite{ std::move(o.m_sprite) },
         m_drawOptions{ o.m_drawOptions },
         m_vao{ o.m_vao },
         m_preparedWT{ o.m_preparedWT },
@@ -106,10 +103,6 @@ namespace mesh {
 
         for (auto& lodMesh : *m_lodMeshes) {
             lodMesh.registerMaterials();
-        }
-
-        if (m_entityType == EntityType::sprite && m_sprite) {
-            SpriteRegistry::get().registerSprite(*m_sprite);
         }
     }
 
@@ -199,9 +192,6 @@ namespace mesh {
 
         if (m_flags.billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
-        }
-        if (m_entityType == mesh::EntityType::sprite) {
-            flags |= ENTITY_SPRITE_BIT;
         }
         if (m_flags.noFrustum) {
             flags |= ENTITY_NO_FRUSTUM_BIT;

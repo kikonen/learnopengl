@@ -82,7 +82,6 @@ public:
 
     std::string assetsDir;
     std::string modelsDir;
-    std::string spritesDir;
     std::string texturesDir;
     std::string fontsDir;
 

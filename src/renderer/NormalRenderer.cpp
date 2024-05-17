@@ -45,8 +45,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
             [this](const mesh::MeshType* type) { return m_normalProgram; },
             [](const mesh::MeshType* type) {
                 return type->m_flags.noNormals &&
-                    !type->m_flags.tessellation &&
-                    type->m_entityType != mesh::EntityType::point_sprite;
+                    !type->m_flags.tessellation;
             },
             [](const Node* node) { return true; },
             render::NodeDraw::KIND_ALL);

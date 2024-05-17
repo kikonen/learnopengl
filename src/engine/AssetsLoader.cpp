@@ -74,7 +74,6 @@ void AssetsLoader::resolveDirs(
 
             data.texturesDir = util::replace(data.texturesDir, from, to);
             data.modelsDir = util::replace(data.modelsDir, from, to);
-            data.spritesDir = util::replace(data.spritesDir, from, to);
             data.fontsDir = util::replace(data.fontsDir, from, to);
             data.shadersDir = util::replace(data.shadersDir, from, to);
         }
@@ -236,10 +235,6 @@ void AssetsLoader::loadAssets(
             }
             if (k == "models_dir") {
                 data.modelsDir = readString(v);
-                continue;
-            }
-            if (k == "sprites_dir") {
-                data.spritesDir = readString(v);
                 continue;
             }
             if (k == "textures_dir") {

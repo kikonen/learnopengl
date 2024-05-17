@@ -84,9 +84,6 @@ namespace loader {
                 else if (type == "mesh" || type == "model") {
                     data.type = mesh::EntityType::model;
                 }
-                else if (type == "sprite") {
-                    data.type = mesh::EntityType::sprite;
-                }
                 else if (type == "text") {
                     data.type = mesh::EntityType::text;
                 }
@@ -176,9 +173,6 @@ namespace loader {
             }
             else if (k == "material_modifier") {
                 needSingleMesh = true;
-            }
-            else if (k == "sprite") {
-                data.spriteName = readString(v);
             }
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);

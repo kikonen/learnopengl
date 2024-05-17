@@ -26,7 +26,6 @@
 
 #include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
-#include "registry/SpriteRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -70,7 +69,6 @@ void Registry::prepareShared()
     m_dispatcherView->prepare();
 
     MaterialRegistry::get().prepare();
-    SpriteRegistry::get().prepare();
     EntityRegistry::get().prepare();
     ModelRegistry::get().prepare(m_alive);
 
@@ -116,7 +114,6 @@ void Registry::updateRT(const UpdateContext& ctx)
     ASSERT_RT();
     FontRegistry::get().updateRT(ctx);
     MaterialRegistry::get().updateRT(ctx);
-    SpriteRegistry::get().updateRT(ctx);
     ModelRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);

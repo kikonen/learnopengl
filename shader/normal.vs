@@ -60,15 +60,6 @@ void main() {
 
     normal = -u_viewFront;
     tangent = u_viewRight;
-  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_viewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
-
-    worldPos = modelMatrix * pos;
-
-    normal = -u_viewFront;
-    tangent = u_viewRight;
   } else {
     worldPos = modelMatrix * pos;
 

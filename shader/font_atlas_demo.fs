@@ -5,13 +5,10 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#include struct_shape.glsl
-
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_lights.glsl
 #include ssbo_materials.glsl
-#include ssbo_shapes.glsl
 
 in VS_OUT {
   vec2 texCoord;

@@ -51,8 +51,6 @@ namespace loader {
         bool customMaterial{ false };
         bool physics{ false };
 
-        bool spriteName{ false };
-
         bool repeat{ false };
 
         bool script{ false };

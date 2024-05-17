@@ -104,9 +104,6 @@ void ObjectIdRenderer::prepareRT(
     m_idProgram = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepareRT();
 
-    //m_idProgramPointSprite = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
-    //m_idProgramPointSprite->prepare(assets);
-
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",
         glm::vec3(-1.0, 1.0, 0),

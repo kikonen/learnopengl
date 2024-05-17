@@ -9,7 +9,7 @@
 
 
 namespace {
-    constexpr ki::size_t_entity_flags PLANE_BITS = ENTITY_BILLBOARD_BIT | ENTITY_SPRITE_BIT;
+    constexpr ki::size_t_entity_flags PLANE_BITS = ENTITY_BILLBOARD_BIT;
 }
 
 Snapshot::Snapshot(const NodeTransform& o)

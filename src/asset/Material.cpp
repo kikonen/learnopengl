@@ -201,8 +201,6 @@ std::string Material::resolveBaseDir()
         return assets.modelsDir;
     case MaterialType::texture:
         return assets.texturesDir;
-    case MaterialType::sprite:
-        return assets.spritesDir;
     }
     return assets.assetsDir;
 }

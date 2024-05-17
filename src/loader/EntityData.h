@@ -80,8 +80,6 @@ namespace loader {
         CustomMaterialData customMaterial;
         PhysicsData physics;
 
-        std::string spriteName;
-
         Repeat repeat;
 
         ScriptData script;

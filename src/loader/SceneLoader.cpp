@@ -19,8 +19,6 @@
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
-#include "asset/Sprite.h"
-#include "asset/Shape.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
@@ -32,7 +30,6 @@
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/QuadMesh.h"
-#include "mesh/SpriteMesh.h"
 #include "mesh/TextMesh.h"
 
 #include "text/TextDraw.h"
@@ -135,7 +132,6 @@ namespace loader {
 
                 l.m_fontLoader.loadFonts(doc.findNode("fonts"), m_fonts);
                 l.m_materialLoader.loadMaterials(doc.findNode("materials"), m_materials);
-                l.m_spriteLoader.loadSprites(doc.findNode("sprites"), m_sprites);
 
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
@@ -476,7 +472,6 @@ namespace loader {
             type->m_entityType = mesh::EntityType::origo;
         } else
         {
-            resolveSprite(typeHandle, entityData);
             resolveMeshes(type, entityData, tile);
             resolveLods(type, entityData);
 
@@ -563,9 +558,6 @@ namespace loader {
 
             //if (type->m_entityType == EntityType::billboard) {
             //    definitions[DEF_USE_BILLBOARD] = "1";
-            //}
-            //if (type->m_entityType == EntityType::sprite) {
-            //    definitions[DEF_USE_SPRITE] = "1";
             //}
 
             if (useTBN) {
@@ -673,23 +665,6 @@ namespace loader {
         material.loadTextures();
     }
 
-    void SceneLoader::resolveSprite(
-        pool::TypeHandle typeHandle,
-        const EntityData& entityData)
-    {
-        auto* type = typeHandle.toType();
-
-        const Sprite* sprite{ nullptr };
-
-        if (!entityData.spriteName.empty()) {
-            sprite = findSprite(entityData.spriteName);
-        }
-
-        if (sprite) {
-            type->m_sprite = std::make_unique<Sprite>(*sprite);
-        }
-    }
-
     void SceneLoader::resolveMeshes(
         mesh::MeshType* type,
         const EntityData& entityData,
@@ -737,14 +712,6 @@ namespace loader {
             KI_INFO(fmt::format(
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
                 entityData.baseId, entityData.desc, type->str()));
-        }
-        else if (entityData.type == mesh::EntityType::sprite) {
-            //auto future = ModelRegistry::get().getMeshSet(
-            //    assets.modelsDir,
-            //    QUAD_MESH_NAME);
-            //type->addLod({ future.get() });
-            //type->m_entityType = mesh::EntityType::sprite;
-            throw "Sprite not supported currently";
         }
         else if (entityData.type == mesh::EntityType::text) {
             type->m_entityType = mesh::EntityType::text;
@@ -1180,16 +1147,6 @@ namespace loader {
                 }
             }
         }
-    }
-
-    const Sprite* SceneLoader::findSprite(
-        std::string_view name) const
-    {
-        const auto& it = std::find_if(
-            m_sprites.cbegin(),
-            m_sprites.cend(),
-            [&name](const auto& m) { return m.sprite.m_name == name; });
-        return it != m_sprites.end() ? &(it->sprite) : nullptr;
     }
 
     const FontData* SceneLoader::findFont(

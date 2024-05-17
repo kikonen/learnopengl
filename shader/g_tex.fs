@@ -3,12 +3,9 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#include struct_shape.glsl
-
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include ssbo_materials.glsl
-#include ssbo_shapes.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

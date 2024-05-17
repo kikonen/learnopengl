@@ -86,7 +86,6 @@ Assets::Assets()
 
     assetsDir = "resources/assets";
     modelsDir = "{{assets_dir}}";
-    spritesDir = "{{assets_dir}}/sprites";
     texturesDir = "{{assets_dir}}/textures";
     fontsDir = "{{assets_dir}}/fonts";
 

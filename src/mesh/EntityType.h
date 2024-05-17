@@ -6,8 +6,6 @@ namespace mesh {
         marker,
         container,
         model,
-        sprite,
-        point_sprite,
         text,
         terrain,
         skybox,

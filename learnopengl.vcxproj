@@ -196,8 +196,6 @@
     <ClCompile Include="src\asset\ColorTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
     <ClCompile Include="src\asset\ProgramUniforms.cpp" />
-    <ClCompile Include="src\asset\Shape.cpp" />
-    <ClCompile Include="src\asset\Sprite.cpp" />
     <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
@@ -274,10 +272,8 @@
     <ClCompile Include="src\loader\RootLoader.cpp" />
     <ClCompile Include="src\loader\ScriptLoader.cpp" />
     <ClCompile Include="src\loader\SkyboxLoader.cpp" />
-    <ClCompile Include="src\loader\SpriteLoader.cpp" />
     <ClCompile Include="src\loader\VolumeLoader.cpp" />
     <ClCompile Include="src\physics\Object.cpp" />
-    <ClCompile Include="src\registry\SpriteRegistry.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
     <ClCompile Include="src\render\CubeRender.h" />
@@ -290,7 +286,6 @@
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\QuadVAO.cpp" />
-    <ClCompile Include="src\mesh\vao\SpriteVAO.cpp" />
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp" />
     <ClCompile Include="src\asset\Uniform.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
@@ -316,7 +311,6 @@
     <ClCompile Include="src\registry\ProgramRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
-    <ClCompile Include="src\mesh\SpriteMesh.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\script\api\CancelCommand.cpp" />
     <ClCompile Include="src\script\api\Command.cpp" />
@@ -576,8 +570,6 @@
     <ClInclude Include="src\loader\ScriptLoader.h" />
     <ClInclude Include="src\loader\SkyboxData.h" />
     <ClInclude Include="src\loader\SkyboxLoader.h" />
-    <ClInclude Include="src\loader\SpriteData.h" />
-    <ClInclude Include="src\loader\SpriteLoader.h" />
     <ClInclude Include="src\loader\VolumeLoader.h" />
     <ClInclude Include="src\physics\Geom.h" />
     <ClInclude Include="src\physics\Object.h" />
@@ -592,10 +584,6 @@
     <ClInclude Include="src\asset\MatricesUBO.h" />
     <ClInclude Include="src\mesh\vao\TexturedVAO.h" />
     <ClInclude Include="src\asset\Shader.h" />
-    <ClInclude Include="src\asset\Shape.h" />
-    <ClInclude Include="src\asset\Sprite.h" />
-    <ClInclude Include="src\asset\ShapeSSBO.h" />
-    <ClInclude Include="src\mesh\vao\SpriteVAO.h" />
     <ClInclude Include="src\mesh\vao\TerrainVAO.h" />
     <ClInclude Include="src\asset\TextureSpec.h" />
     <ClInclude Include="src\asset\TextureUBO.h" />
@@ -642,7 +630,6 @@
     <ClInclude Include="src\asset\OBB.h" />
     <ClInclude Include="src\asset\Sphere.h" />
     <ClInclude Include="src\asset\Plane.h" />
-    <ClInclude Include="src\mesh\SpriteMesh.h" />
     <ClInclude Include="src\asset\Volume.h" />
     <ClInclude Include="src\asset\ProgramBind.h" />
     <ClInclude Include="src\engine\AssetsLoader.h" />
@@ -667,7 +654,6 @@
     <ClInclude Include="src\controller\VolumeController.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\model\Group.h" />
-    <ClInclude Include="src\registry\SpriteRegistry.h" />
     <ClInclude Include="src\render\BrdfLutTexture.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />
     <ClInclude Include="src\render\EnvironmentMap.h" />

@@ -10,7 +10,6 @@ namespace loader {
         m_fontLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
-        m_spriteLoader(ctx),
         m_cameraLoader(ctx),
         m_lightLoader(ctx),
         m_audioLoader(ctx),
