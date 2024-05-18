@@ -67,9 +67,9 @@ namespace animation {
         uint16_t findRotation(float animationTimeTicks) const noexcept;
         uint16_t findScale(float animationTimeTicks) const noexcept;
 
-        uint16_t findIndex(
-            const std::vector<float>& times,
-            float animationTimeTicks) const noexcept;
+        //uint16_t findIndex(
+        //    const std::vector<float>& times,
+        //    float animationTimeTicks) const noexcept;
 
         const std::string m_nodeName;
 

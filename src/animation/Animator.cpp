@@ -38,12 +38,12 @@ namespace animation {
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);
 
-        {
-            for (auto i = 0; i < rig.m_boneContainer.size(); i++) {
-                //palette[i].m_transform = palette[i].m_transform * rotationMatrix;
-                palette[i].m_transform = ID_MAT;
-            }
-        }
+        //{
+        //    for (auto i = 0; i < rig.m_boneContainer.size(); i++) {
+        //        //palette[i].m_transform = palette[i].m_transform * rotationMatrix;
+        //        palette[i].m_transform = ID_MAT;
+        //    }
+        //}
 
         float animationTimeTicks;
         {

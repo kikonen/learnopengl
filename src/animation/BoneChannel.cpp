@@ -5,6 +5,27 @@
 #include "util/assimp_util.h"
 
 namespace {
+    uint16_t findIndex(
+        const std::vector<float>& times,
+        float animationTimeTicks) noexcept
+    {
+        uint16_t min = 0;
+        uint16_t max = static_cast<uint16_t>(times.size() - 1);
+
+        // NOTE KI binary zearch
+        while (min + 1 < max) {
+            const auto curr = min + (max - min) / 2;
+
+            if (animationTimeTicks < times[curr]) {
+                max = curr;
+            }
+            else {
+                min = curr;
+            }
+        }
+        return min;
+    }
+
 }
 
 namespace animation {
@@ -204,15 +225,15 @@ namespace animation {
         return findIndex(m_scaleKeyTimes, animationTimeTicks);
     }
 
-    uint16_t BoneChannel::findIndex(
-        const std::vector<float>& times,
-        float animationTimeTicks) const noexcept
-    {
-        for (uint16_t i = 0; i < times.size() - 1; i++) {
-            if (animationTimeTicks < times[i + 1]) {
-                return i;
-            }
-        }
-        return 0;
-    }
+    //uint16_t BoneChannel::findIndex2(
+    //    const std::vector<float>& times,
+    //    float animationTimeTicks) const noexcept
+    //{
+    //    for (uint16_t i = 0; i < times.size() - 1; i++) {
+    //        if (animationTimeTicks < times[i + 1]) {
+    //            return i;
+    //        }
+    //    }
+    //    return 0;
+    //}
 }
