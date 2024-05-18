@@ -594,7 +594,7 @@ entities:
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    material: cow
+    material:
     material_modifier:
       xreflection: 0.1
       map_pbr: textures/Plastic 01 [4K]

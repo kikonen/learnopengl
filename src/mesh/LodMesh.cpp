@@ -134,6 +134,10 @@ namespace mesh {
 
         auto* material = m_material.get();
 
+        if (!material) {
+            throw "missing material";
+        }
+
         if (material) {
             if (assets.useLodDebug) {
                 if (m_lodLevel > 0)

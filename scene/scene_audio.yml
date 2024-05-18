@@ -39,7 +39,6 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
     audio:

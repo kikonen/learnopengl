@@ -1,8 +1,9 @@
 ---
 name: Basic materials
 skybox:
-  program: g_skybox
-  material: skybox
+  xprogram: g_skybox
+  xmaterial: skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
 script:
   scripts:
     - path: lib/common

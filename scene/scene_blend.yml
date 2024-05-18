@@ -83,7 +83,9 @@ entities:
     script_file: scripts/anim_rotate_object
   - name: Plasma ball
     model: ball_volume
-    material: plasma_ball
+    material:
+      name: plasma_ball
+      map_kd: textures/noise_256.png
     program: ball_effect
     program_definitions:
       effect_plasma: 1

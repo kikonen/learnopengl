@@ -1,6 +1,7 @@
 assets:
   log_file: log/development.log
-  scene_file: scene_full.yml
+  scene_file: scene_physics.yml
+  xscene_file: scene_particle.yml
 
   glfw_swap_interval: 1
   gl_debug: true

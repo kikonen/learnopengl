@@ -57,7 +57,13 @@ entities:
     #model: texture_cube_4/texture_cube_4.fbx
     model: fbx/chracters/SK_Character_PunkGuy.fbx
     xmodel: fbx/chracters/SK_Character_Grandpa.fbx
-    material: skin_2
+    material:
+      name: skin
+      xmap_kd: fbx/characters/skaterMaleA.png
+      map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
+      map_kd: fbx/characters/skaterMaleA.png
+      metal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -260,13 +266,3 @@ entities:
     pos: [0.0, 0.0, 0.0]
     base_rotation: [0, 0, 0]
     scale: 0.025
-xmaterials:
-  - name: skin
-    xmap_kd: fbx/characters/skaterMaleA.png
-    map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
-    metal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: skin_2
-    map_kd: fbx/characters/skaterMaleA.png
-    metal: [0.3, 0.4, 0, 1]
-    xtiling: 60
