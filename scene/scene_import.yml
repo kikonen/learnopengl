@@ -43,8 +43,10 @@ entities:
       cube_map: true
   - name: wooden floor
     model: plane
-    xxmodel: woodwall
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -79,8 +81,10 @@ entities:
     materials:
       - name: pine_trunk_pbr
         alias: MI_TreeBarkPine_01a
+        map_pbr: fbx\scenery\trees\pine_trunk_pbr
       - name: pine_leaf_pbr
         alias: MI_PineTree_01a
+        map_pbr: fbx\scenery\trees\pine_leaf_pbr
     render_flags:
       alpha: true
       render_back: true
@@ -93,11 +97,3 @@ entities:
       z_count: 10
       x_step: 7
       z_step: -7
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    tiling: 60
-  - name: pine_trunk_pbr
-    map_pbr: fbx\scenery\trees\pine_trunk_pbr
-  - name: pine_leaf_pbr
-    map_pbr: fbx\scenery\trees\pine_leaf_pbr

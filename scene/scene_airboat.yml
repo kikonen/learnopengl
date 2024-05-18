@@ -54,7 +54,10 @@ entities:
   - name: Giant wooden box
     model: quad
     xxmodel: woodwall
-    material: giant_woodbox
+    material:
+      name: giant_woodbox
+      map_kd: textures/wood_1024.png
+      xreflection: 0.1
     program: g_tex
     clone_position_offset: [0, 60, 80]
     render_flags:
@@ -74,7 +77,3 @@ entities:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
-materials:
-  - name: giant_woodbox
-    map_kd: textures/wood_1024.png
-    xreflection: 0.1

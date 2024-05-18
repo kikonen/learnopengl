@@ -11,7 +11,9 @@ entities:
     id: player
     type: origo
     model: water_ball
-    material: silver_ball
+    material:
+      name: silver_ball
+      kd: [0.5075, 0.5075, 0.5075, 1.0]
     program: g_tex
     pos: [10, 0, 20]
     front: [0, 0, -1]
@@ -55,7 +57,10 @@ entities:
   - name: Woodcube
     model: texture_cube
     program: g_tex
-    material: woodwall
+    material:
+      name: woodwall
+      map_kd: textures/wood_1024.png
+      reflection: 0.4
     pos: [5.0, 5.0, -5.0]
     scale: 1
     enabled: false
@@ -73,16 +78,20 @@ entities:
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
         rotation: [0, 180, 0]
-  - name: Skeleton army
-    model: quad
+  - id: skeleton_army_2_{t}
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
     program: g_tex
+    shadow_program: simple_depth
     pos: [15, 6.5, -20.0]
-    material: skeleton
+    scale: 3
+    base_scale: 0.05
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      xmetal: [0.3, 0.4, 0, 1]
     render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
-    scale: [1.5, 3, 1]
+      use_bones: true
+      use_animation: true
     repeat:
       x_count: 10
       z_count: 101
@@ -105,7 +114,11 @@ entities:
       refraction_ratio: [1.0, 1.52]
   - name: Brick wall
     model: quad
-    material: brickwall
+    material:
+      name: brickwall
+      map_kd: textures/brickwall_1024.png
+      map_bump: textures/brickwall_1024_normal.png
+      reflection: 0.2
     program: g_tex
     pos: [-5.0, 8.5, -14.0]
     render_flags:
@@ -116,7 +129,10 @@ entities:
     enabled: false
   - name: Wood wall
     model: quad
-    material: woodwall
+    material:
+      name: woodwall
+      map_kd: textures/wood_1024.png
+      reflection: 0.4
     program: g_tex
     pos: [-3.0, 8.5, -14.0]
     render_flags:
@@ -127,8 +143,10 @@ entities:
     enabled: false
   - name: Giant wooden box
     model: quad
-    xmodel: woodwall
-    material: giant_woodbox
+    material:
+      name: giant_woodbox
+      map_kd: textures/wood_1024.png
+      reflection: 0.1
     program: g_tex
     clone_position_offset: [0, 40, 0]
     render_flags:
@@ -151,7 +169,12 @@ entities:
         rot: [0, 0, 0]
   - name: Big mirror 1
     model: quad
-    material: mirror
+    material:
+    - name:
+      map_kd: textures/Marble White_VH_512.PNG
+      reflection: 0.9
+      refraction: 0.1
+      refraction_ratio: [1.0, 1.52]
     program: g_mirror
     pos: [-40.0, 10.0, -10.0]
     xxrotation: [0.0, 90.0, 0.0]
@@ -162,25 +185,3 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-materials:
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-  - name: skeleton
-    map_kd: sprites/skeleton.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: brickwall
-    map_kd: textures/brickwall_1024.png
-    map_bump: textures/brickwall_1024_normal.png
-    reflection: 0.2
-  - name: woodwall
-    map_kd: textures/wood_1024.png
-    reflection: 0.4
-  - name: giant_woodbox
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
-  - name: mirror
-    map_kd: textures/Marble White_VH_512.PNG
-    reflection: 0.9
-    refraction: 0.1
-    refraction_ratio: [1.0, 1.52]

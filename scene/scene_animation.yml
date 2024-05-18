@@ -43,8 +43,10 @@ entities:
       cube_map: true
   - name: wooden floor
     model: plane
-    xxmodel: woodwall
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -70,7 +72,9 @@ entities:
       xuse_animation: true
   - id: wolf_{t}
     model: fbx/creatures/wolf/SK_Wolf.FBX
-    material: wolf_pbr
+    material:
+      name: wolf_pbr
+      map_pbr: fbx/creatures/wolf/wolf_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [-30.0, 0.0, 0.0]
@@ -93,7 +97,11 @@ entities:
       z_step: -7
   - id: lion_{t}
     model: fbx/creatures/lion/SK_Lion.FBX
-    material: lion_pbr
+    material:
+      name: lion_pbr
+      map_pbr: fbx/creatures/lion/lion_skin_pbr
+      xmetal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [-20.0, 0.0, 0.0]
@@ -128,7 +136,11 @@ entities:
     xscript_file: scripts/cow_audio
   - id: deinodonte_{t}
     model: fbx/creatures/deinodonte/Deinodonte.FBX
-    material: deinodonte_pbr
+    material:
+      name: deinodonte_pbr
+      map_pbr: fbx/creatures/deinodonte/deinodonte_pbr
+      xmetal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 8.0, -10.0]
@@ -155,7 +167,11 @@ entities:
       z_step: -20
   - id: elf_{t}
     model: fbx/characters/elf/Elf Female.fbx
-    material: elf_pbr
+    material:
+      name: elf_pbr
+      map_pbr: fbx/characters/elf/elf_female_pbr
+      xmetal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -187,10 +203,13 @@ entities:
     materials:
       - name: scavenger_body_pbr
         alias: "Material #13"
+        map_pbr: fbx/characters/scavenger/scavenger_body_pbr
       - name: scavenger_hair_pbr
         alias: "Material #11"
+        map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
       - name: scavenger_backback_pbr
         alias: 01 - Default
+        map_pbr: fbx/characters/scavenger/scavenger_body_pbr
     render_flags:
       alpha: true
       render_back: true
@@ -209,7 +228,11 @@ entities:
       z_step: -5
   - id: skeleton_{t}
     model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material: skeleton_pbr
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      xmetal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [20.0, 2.0, 0.0]
@@ -237,10 +260,7 @@ entities:
     pos: [0.0, 0.0, 0.0]
     base_rotation: [0, 0, 0]
     scale: 0.025
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    tiling: 60
+xmaterials:
   - name: skin
     xmap_kd: fbx/characters/skaterMaleA.png
     map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
@@ -250,27 +270,3 @@ materials:
     map_kd: fbx/characters/skaterMaleA.png
     metal: [0.3, 0.4, 0, 1]
     xtiling: 60
-  - name: lion_pbr
-    map_pbr: fbx/creatures/lion/lion_skin_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: deinodonte_pbr
-    map_pbr: fbx/creatures/deinodonte/deinodonte_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: elf_pbr
-    map_pbr: fbx/characters/elf/elf_female_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: scavenger_body_pbr
-    map_pbr: fbx/characters/scavenger/scavenger_body_pbr
-  - name: scavenger_hair_pbr
-    map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
-  - name: scavenger_backback_pbr
-    map_pbr: fbx/characters/scavenger/scavenger_body_pbr
-  - name: skeleton_pbr
-    map_pbr: fbx/creatures/skeleton/skeleton_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: wolf_pbr
-    map_pbr: fbx/creatures/wolf/wolf_pbr

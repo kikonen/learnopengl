@@ -92,8 +92,11 @@ entities:
     pos: [0, 2, -10]
   - id: wooden_floor
     model: plane
-    xxmodel: woodwall
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      parallax_depth: 0.0
+      tiling: 10
     program: g_tex
     render_flags:
       no_shadow: true
@@ -112,8 +115,3 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10

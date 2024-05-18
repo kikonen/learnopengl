@@ -64,22 +64,32 @@ entities:
       reflection: 0.8
   - name: Big mirror 2
     model: quad
-    material: mirror
     program: g_mirror
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     scale: 10.0
     front: [0, 0, 1]
+    materials:
+      - name: mirror
+        alias: "*"
+        map_kd: textures/Marble White_VH_512.PNG
+        reflection: 0.5
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
     render_flags:
       render_back: true
       mirror: true
   - name: Pool floor
     model: quad
-    material: pool_floor
     program: g_tex
     pos: [0.0, 3.2, -10.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
+    materials:
+      - name: pool_floor
+        alias: "*"
+        map_kd: textures/tiles_1024.png
+        tiling: 8
     render_flags:
       no_shadow: true
     repeat:
@@ -91,10 +101,16 @@ entities:
       z_step: 60
   - name: Pool surface
     model: plane
-    material: pool_surface
     program: g_water
     pos: [0, 9.0, -10]
     scale: 30
+    materials:
+      - name: pool_surface
+        alias: "*"
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     render_flags:
       no_shadow: true
       render_back: true
@@ -125,26 +141,6 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
-  - xid: linden_tree_forest_1_{t}
-    type: model
-    model: linden_tree
-    program: g_tex
-    instanced: true
-    pos: [-40.0, 4, 70]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_bounds: true
-      render_back: true
-    scale: 20
-    generator:
-      type: grid
-      repeat:
-        x_count: 1
-        z_count: 4
-        x_step: 20
-        z_step: -40
   - id: maple_tree_forest_1_{t}
     type: model
     model: fbx/scenery/trees/Maple_02.fbx
@@ -154,8 +150,12 @@ entities:
     materials:
       - name: maple_trunk
         alias: Tree_0Mat
+        map_kd: fbx/scenery/trees/textures/bark02.png
+        map_bump: fbx/scenery/trees/textures/bark02_normal.png
       - name: maple_leaf
         alias: Tree_1Mat
+        map_kd: fbx/scenery/trees/textures/leaf maple.png
+        map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
     render_flags:
       alpha: true
       render_back: true
@@ -168,29 +168,19 @@ entities:
         z_count: 4
         x_step: 20
         z_step: -40
-  - xid: skeleton_army_{t}
-    model: quad
-    priority: 1
-    program: g_tex
-    pos: [-20, 12.5, 80]
-    material: skeleton
-    render_flags:
-      alpha: true
-      render_back: true
-    scale: [1.5, 3, 1]
-    repeat:
-      x_count: 25
-      z_count: 1
-      x_step: 10
-      z_step: 0
   - id: skeleton_army_2_{t}
     model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material: skeleton_pbr
     priority: 1
     program: g_tex
     shadow_program: simple_depth
     pos: [-20, 10, 80]
     base_rot: [0, 180, 0]
+    materials:
+      - name: skeleton_pbr
+        alias: "*"
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+    xtiling: 60
     render_flags:
       use_bones: true
       xuse_animation: true
@@ -218,7 +208,13 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
-      material: terrain_grass_2
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -238,6 +234,7 @@ entities:
     materials:
       - name: grass_bush_01_pbr
         alias: M_atlas_grass_01
+        map_pbr: fbx/scenery/foliage/grass_01_pbr
     render_flags:
       alpha: true
       render_back: true
@@ -256,19 +253,29 @@ entities:
     scale: 2.5
   - name: Pool floor - SINGLE
     model: quad
-    material: pool_floor
     program: g_tex
     pos: [160.0, 3.2, 20.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 60
+    materials:
+      - name: pool_floor
+        alias: "*"
+        map_kd: textures/tiles_1024.png
+        tiling: 8
     render_flags:
       no_shadow: true
   - name: Pool surface - SINGLE
     model: plane
-    material: pool_surface
     program: g_water
     pos: [160, 9.0, 20]
     scale: 60
+    materials:
+      - name: pool_surface
+        alias: "*"
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     render_flags:
       no_shadow: true
       render_back: true
@@ -292,26 +299,6 @@ entities:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
-  - xid: linden_tree_forest_2_{t}
-    type: model
-    model: linden_tree
-    program: g_tex
-    instanced: true
-    pos: [240.0, 14, 70]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_bounds: true
-      render_back: true
-    scale: 20
-    generator:
-      type: grid
-      repeat:
-        x_count: 1
-        z_count: 4
-        x_step: 20
-        z_step: -40
   - id: palm_tree_forest_2_{t}
     type: model
     model: fbx/scenery/trees/Palm_01.fbx
@@ -321,10 +308,16 @@ entities:
     materials:
       - name: palm_trunk
         alias: Tree_0Mat
+        map_kd: fbx/scenery/trees/textures/palm02.png
+        map_bump: fbx/scenery/trees/textures/palm02_normal.png
       - name: palm_leaf
         alias: Tree_1Mat
+        map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+        map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
       - name: palm_trunk
         alias: Tree_2Mat
+        map_kd: fbx/scenery/trees/textures/palm02.png
+        map_bump: fbx/scenery/trees/textures/palm02_normal.png
     render_flags:
       render_back: true
       static_bounds: true
@@ -336,50 +329,3 @@ entities:
         z_count: 4
         x_step: 20
         z_step: -40
-materials:
-  - name: pool_surface
-    kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: textures/water_surface_512_normal.png
-    map_dudv: textures/waterDUDV_512.png
-    tiling: 2
-  - name: pool_floor
-    map_kd: textures/tiles_1024.png
-    tiling: 8
-  - name: terrain_grass_2
-    map_kd: textures/terrain_2/terrain_2_TX.jpg
-    map_ks: textures/terrain_2/terrain_2_SpecLM.png
-    map_bump: textures/terrain_2/terrain_2_TN.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: linden_tree
-    map_kd: sprites/linden_tree_512.png
-    map_bump: sprites/linden_tree_512_normal.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: mirror
-    map_kd: textures/Marble White_VH_512.PNG
-    reflection: 0.5
-    refraction: 0.05
-    refraction_ratio: [1.0, 1.52]
-  - name: skeleton
-    map_kd: sprites/skeleton.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton_pbr
-    map_pbr: fbx/creatures/skeleton/skeleton_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: palm_trunk
-    map_kd: fbx/scenery/trees/textures/palm02.png
-    map_bump: fbx/scenery/trees/textures/palm02_normal.png
-  - name: palm_leaf
-    map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-    map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
-  - name: maple_trunk
-    map_kd: fbx/scenery/trees/textures/bark02.png
-    map_bump: fbx/scenery/trees/textures/bark02_normal.png
-  - name: maple_leaf
-    map_kd: fbx/scenery/trees/textures/leaf maple.png
-    map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
-  - name: grass_bush_01_pbr
-    map_pbr: fbx/scenery/foliage/grass_01_pbr

@@ -57,7 +57,13 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
-      material: terrain_grass_2
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -67,7 +73,12 @@ entities:
         horiz_scale: 2
   - name: Water surface - SINGLE
     model: plane
-    material: water_surface
+    material:
+      name: water_surface
+      kd: [0.55, 0.55, 0.95, 1.0]
+      map_bump: textures/water_surface_512_normal.png
+      map_dudv: textures/waterDUDV_512.png
+      tiling: 2
     program: g_water
     pos: [-50, 14.5, -20]
     scale: 70
@@ -89,7 +100,10 @@ entities:
     script_file: scripts/anim_water
   - name: Sea floor
     model: quad
-    material: sea_floor
+    material:
+      name: sea_floor
+      map_kd: textures/tiles_1024.png
+      tiling: 8
     program: g_tex
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]
@@ -97,18 +111,3 @@ entities:
     render_flags:
       no_shadow: true
       render_back: true
-materials:
-  - name: terrain_grass_2
-    map_kd: textures/terrain_2/terrain_2_TX.jpg
-    map_ks: textures/terrain_2/terrain_2_SpecLM.png
-    map_bump: textures/terrain_2/terrain_2_TN.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: water_surface
-    kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: textures/water_surface_512_normal.png
-    map_dudv: textures/waterDUDV_512.png
-    tiling: 2
-  - name: sea_floor
-    map_kd: textures/tiles_1024.png
-    tiling: 8

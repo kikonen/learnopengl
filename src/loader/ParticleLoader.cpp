@@ -9,6 +9,7 @@
 #include "registry/MaterialRegistry.h"
 
 #include "loader/document.h"
+#include "loader/Loaders.h"
 
 namespace loader
 {
@@ -19,7 +20,8 @@ namespace loader
 
     void ParticleLoader::loadParticle(
         const loader::Node& node,
-        ParticleData& data) const
+        ParticleData& data,
+        Loaders& loaders) const
     {
         data.enabled = true;
 
@@ -37,7 +39,7 @@ namespace loader
                 data.enabled = readBool(v);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
             //else if (k == "size") {
             //    data.size = readFloat(v);
@@ -52,18 +54,14 @@ namespace loader
     }
 
     std::unique_ptr<particle::ParticleGenerator> ParticleLoader::createParticle(
-        const ParticleData& data,
-        const std::vector<MaterialData>& materials) const
+        const ParticleData& data) const
     {
         if (!data.enabled) return nullptr;
 
         auto generator = std::make_unique<particle::ParticleGenerator>();
 
-        auto* material = findMaterial(data.materialName, materials);
-        if (material) {
-            generator->setMaterial(*material);
-            generator->getMaterial().loadTextures();
-        }
+        generator->setMaterial(data.materialData.material);
+        generator->getMaterial().loadTextures();
 
         return generator;
     }

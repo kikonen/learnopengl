@@ -51,16 +51,6 @@ namespace loader {
             const loader::Node& node,
             LodData& data) const;
 
-        void loadMaterialReferences(
-            const loader::Node& node,
-            std::vector<MaterialReference>& references,
-            Loaders& loaders) const;
-
-        void loadMaterialReference(
-            const loader::Node& node,
-            MaterialReference& data,
-            Loaders& loaders) const;
-
         void loadAnimations(
             const loader::Node& node,
             std::vector<AnimationData>& animations) const;

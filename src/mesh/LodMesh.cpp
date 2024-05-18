@@ -45,6 +45,8 @@ namespace mesh {
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
         m_lodLevel = o.m_lodLevel;
+        m_distance = o.m_distance;
+        m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = o.m_material;
         m_lod = o.m_lod;
@@ -60,6 +62,8 @@ namespace mesh {
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
         m_lodLevel = o.m_lodLevel;
+        m_distance = o.m_distance;
+        m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = o.m_material;
         m_lod = o.m_lod;

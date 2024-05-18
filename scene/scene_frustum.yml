@@ -28,7 +28,11 @@ entities:
   - name: Base
     model: cow
     xxmodel: cube
-    xxmaterial: fur_base
+    xxmaterial:
+      name: fur_base
+      kd: [0.5075, 0.5075, 0.5075, 1.0]
+      map_kd: textures/Dirt_vh_1024.png
+      tiling: 1
     program: g_tex
     render_flags:
       xxwireframe: true
@@ -54,8 +58,3 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-materials:
-  - name: fur_base
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-    map_kd: textures/Dirt_vh_1024.png
-    tiling: 1

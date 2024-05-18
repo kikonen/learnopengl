@@ -131,7 +131,6 @@ namespace loader {
                 l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
 
                 l.m_fontLoader.loadFonts(doc.findNode("fonts"), m_fonts);
-                l.m_materialLoader.loadMaterials(doc.findNode("materials"), m_materials);
 
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
@@ -647,19 +646,16 @@ namespace loader {
         auto& l = *m_loaders;
         auto& material = lodMesh.m_material;
 
-        for (auto& ref : meshData.materialReferences) {
-            const auto& alias = ref.modifiers.aliasName;
-            const auto& name = ref.modifiers.materialName;
+        for (auto& materialData : meshData.materials) {
+            const auto& alias = materialData.aliasName;
+            const auto& name = materialData.materialName;
             KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
             if (alias == material.m_name || alias.empty() || alias == "*")
             {
                 if (!name.empty() && !alias.empty()) {
-                    const auto* overrideMaterial = findMaterial(name, m_materials);
-                    if (overrideMaterial) {
-                        material.assign(*overrideMaterial);
-                    }
+                    material.assign(materialData.material);
                 }
-                l.m_materialLoader.modifyMaterial(material, ref.modifiers);
+                l.m_materialLoader.modifyMaterial(material, materialData);
             }
         }
         material.loadTextures();
@@ -854,12 +850,10 @@ namespace loader {
         node->m_light = l.m_lightLoader.createLight(entityData.light, cloneIndex, tile);
         node->m_generator = l.m_generatorLoader.createGenerator(
             entityData.generator,
-            m_materials,
             type);
 
         node->m_particleGenerator = l.m_particleLoader.createParticle(
-            entityData.particle,
-            m_materials);
+            entityData.particle);
 
         if (type->m_entityType == mesh::EntityType::text) {
             auto fontId = resolveFont(typeHandle, entityData.text);

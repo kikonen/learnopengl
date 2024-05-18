@@ -85,14 +85,13 @@ entities:
     script_file: scripts/cow_audio
   - name: wooden floor
     model: plane
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      parallax_depth: 0.0
+      tiling: 10
     program: g_tex
     front: [0, 1, 0]
     render_flags:
       no_shadow: true
     scale: 100
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10

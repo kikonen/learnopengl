@@ -221,7 +221,6 @@ namespace loader {
         std::vector<FontData> m_fonts;
 
         std::unique_ptr<Material> m_defaultMaterial;
-        std::vector<MaterialData> m_materials;
 
         std::unique_ptr<Loaders> m_loaders;
     };

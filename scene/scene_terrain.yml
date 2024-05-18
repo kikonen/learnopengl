@@ -51,7 +51,13 @@ entities:
       #tessellation: false
     generator:
       type: terrain
-      material: terrain_grass_2
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -65,7 +71,6 @@ entities:
     pos: [-1024, 150, -1024]
     xxpos: [0, 150, 0]
     scale: 5.0
-    xxmaterial: glass_ball
     repeat:
       x_count: 9
       y_count: 1
@@ -76,7 +81,12 @@ entities:
   - id: sea_surface
     model: plane
     priority: -20
-    material: sea_surface
+    material:
+      name: sea_surface
+      kd: [0.55, 0.55, 0.95, 1.0]
+      map_bump: textures/water_surface_512_normal.png
+      map_dudv: textures/waterDUDV_512.png
+      tiling: 2
     program: g_water
     pos: [0, 30.0, 0]
     scale: 1024
@@ -87,41 +97,16 @@ entities:
   - id: sea_floor
     model: plane
     priority: -225
-    material: sea_floor
+    material:
+      name: sea_floor
+      map_kd: textures/tiles_1024.png
+      tiling: 8
     program: g_tex
     pos: [0, -70, 0]
     scale: 1024
     render_flags:
       no_shadow: true
       render_back: true
-  - xid: linden_tree_forest
-    type: model
-    model: linden_tree
-    priority: 1
-    program: g_tex
-    pos: [150, 15.0, 150.0]
-    material: linden_tree
-    render_flags:
-      alpha: true
-      no_frustum: true
-      static_bounds: true
-      render_back: true
-    scale: 10
-    lods:
-      - model: linden_tree
-        material: linden_tree
-        distance: 450
-      - model: linden_tree_lod_1
-        material: linden_tree
-        distance: 99999
-    instanced: true
-    generator:
-      type: grid
-      repeat:
-        x_count: 20
-        z_count: 20
-        x_step: -20
-        z_step: 20
   - id: palm_tree_forest_{t}
     type: model
     model: fbx/scenery/trees/Palm_01.fbx
@@ -131,10 +116,16 @@ entities:
     materials:
       - name: palm_trunk
         alias: Tree_0Mat
+        map_kd: fbx/scenery/trees/textures/palm02.png
+        map_bump: fbx/scenery/trees/textures/palm02_normal.png
       - name: palm_leaf
         alias: Tree_1Mat
+        map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+        map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
       - name: palm_trunk
         alias: Tree_2Mat
+        map_kd: fbx/scenery/trees/textures/palm02.png
+        map_bump: fbx/scenery/trees/textures/palm02_normal.png
     render_flags:
       render_back: true
       static_bounds: true
@@ -147,26 +138,13 @@ entities:
         z_count: 20
         x_step: -20
         z_step: 20
-  - id: skeleton_army_{t}
-    model: quad
-    priority: 1
-    program: g_tex
-    pos: [0, 11.5, 0.0]
-    material: skeleton
-    render_flags:
-      billboard: true
-      alpha: true
-      dynamic_bounds: true
-      render_back: true
-    scale: [1.5, 3, 1]
-    repeat:
-      x_count: 20
-      z_count: 101
-      x_step: 3
-      z_step: -2
-  - xid: skeleton_army_2_{t}
+  - id: skeleton_army_2_{t}
     model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material: skeleton_pbr
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      xmetal: [0.3, 0.4, 0, 1]
+      xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -180,43 +158,9 @@ entities:
       xwireframe: true
       use_bones: true
       xuse_bones_debug: true
-      use_animation: true
+      xuse_animation: true
     repeat:
       x_count: 20
       z_count: 101
       x_step: 3
       z_step: -3
-materials:
-  - name: terrain_grass_2
-    map_kd: textures/terrain_2/terrain_2_TX.jpg
-    map_ks: textures/terrain_2/terrain_2_SpecLM.png
-    map_bump: textures/terrain_2/terrain_2_TN.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: sea_surface
-    kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: textures/water_surface_512_normal.png
-    map_dudv: textures/waterDUDV_512.png
-    tiling: 2
-  - name: sea_floor
-    map_kd: textures/tiles_1024.png
-    tiling: 8
-  - name: linden_tree
-    map_kd: sprites/linden_tree_512.png
-    map_bump: sprites/linden_tree_512_normal.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton
-    map_kd: sprites/Skeleton.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton_pbr
-    map_pbr: fbx/creatures/skeleton/skeleton_pbr
-    xmetal: [0.3, 0.4, 0, 1]
-    xtiling: 60
-  - name: palm_trunk
-    map_kd: fbx/scenery/trees/textures/palm02.png
-    map_bump: fbx/scenery/trees/textures/palm02_normal.png
-  - name: palm_leaf
-    map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-    map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png

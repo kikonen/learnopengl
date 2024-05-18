@@ -41,7 +41,9 @@ entities:
     model: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
     program: g_tex
     shadow_program: simple_depth
-    material: door_glass_1_pbr
+    material:
+      name: door_glass_1_pbr
+      map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
     pos: [0.0, -1.0, -8.0]
     rotation: [-90.0, 0.0, 0.0]
     scale: 1
@@ -53,7 +55,9 @@ entities:
     model: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
     program: g_tex
     shadow_program: simple_depth
-    material: door_glass_2_pbr
+    material:
+      name: door_glass_2_pbr
+      map_pbr: fbx\scenery\structures\doors\door_glass_2_pbr
     pos: [0.5, -1.0, -10.0]
     rotation: [-90.0, 0.0, 0.0]
     scale: 1
@@ -124,14 +128,3 @@ fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
     size: 72
-materials:
-  - name: window_1
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/Window_Open_lg_HI_256.PNG
-  - name: window_2
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG
-  - name: door_glass_1_pbr
-    map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
-  - name: door_glass_2_pbr
-    map_pbr: fbx\scenery\structures\doors\door_glass_2_pbr

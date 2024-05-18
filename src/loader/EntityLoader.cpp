@@ -218,10 +218,10 @@ namespace loader {
                 loaders.m_controllerLoader.loadController(v, controllerDaata);
             }
             else if (k == "generator") {
-                loaders.m_generatorLoader.loadGenerator(v, data.generator);
+                loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);
             }
             else if (k == "particle") {
-                loaders.m_particleLoader.loadParticle(v, data.particle);
+                loaders.m_particleLoader.loadParticle(v, data.particle, loaders);
             }
             else if (k == "selected") {
                 data.selected = readBool(v);
@@ -352,24 +352,25 @@ namespace loader {
                 loadAnimations(v, data.animations);
             }
             else if (k == "materials") {
-                loadMaterialReferences(v, data.materialReferences, loaders);
+                loaders.m_materialLoader.loadMaterials(v, data.materials);
             }
             else if (k == "material") {
-                if (data.materialReferences.empty()) {
-                    data.materialReferences.emplace_back();
+                if (data.materials.empty()) {
+                    data.materials.emplace_back();
                 }
-                auto& materialData = data.materialReferences[0];
-                materialData.modifiers.materialName = readString(v);
-                materialData.modifiers.aliasName = "*";
+                auto& materialData = data.materials[0];
+                materialData.aliasName = "*";
+                loaders.m_materialLoader.loadMaterial(v, materialData);
+                materialData.materialName = materialData.material.m_name;
             }
             else if (k == "material_modifier") {
-                if (data.materialReferences.empty()) {
-                    data.materialReferences.emplace_back();
+                if (data.materials.empty()) {
+                    data.materials.emplace_back();
                 }
-                auto& materialData = data.materialReferences[0];
-                materialData.modifiers.aliasName = "*";
-                materialData.modifiers.modify = true;
-                loadMaterialReference(v, materialData, loaders);
+                auto& materialData = data.materials[0];
+                materialData.aliasName = "*";
+                materialData.modify = true;
+                loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
             } else {
                 reportUnknown("lod_entry", k, v);
             }
@@ -408,29 +409,6 @@ namespace loader {
             else {
                 reportUnknown("lod_entry", k, v);
             }
-        }
-    }
-
-    void EntityLoader::loadMaterialReferences(
-        const loader::Node& node,
-        std::vector<MaterialReference>& references,
-        Loaders& loaders) const
-    {
-        for (const auto& entry : node.getNodes()) {
-            MaterialReference& data = references.emplace_back();
-            loadMaterialReference(entry, data, loaders);
-        }
-    }
-
-    void EntityLoader::loadMaterialReference(
-        const loader::Node& node,
-        MaterialReference& data,
-        Loaders& loaders) const
-    {
-        loaders.m_materialLoader.loadMaterialModifiers(node, data.modifiers);
-        // NOTE KI don't override material name with "<modifier>"
-        if (data.modifiers.materialName.empty()) {
-            data.modifiers.materialName = data.modifiers.material.m_name;
         }
     }
 

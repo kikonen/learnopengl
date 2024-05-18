@@ -80,8 +80,9 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
-    material: default_ball
-    material_modifier:
+    material:
+      name: default_ball
+      kd: [0.8, 0.8, 0.0, 1.0]
       xreflection: 0.05
       metal: [0.2, 0.1, 0.0, 1.0]
   - name: Gold ball
@@ -90,11 +91,12 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-    material: gold_ball
-    material_modifier:
-      xreflection: 0.05
+    material:
+      name: gold_ball
+      kd: [0.7516, 0.6065, 0.2265, 1.0]
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
+      xreflection: 0.05
       parallax_depth: 0.0
   - name: Silver ball
     parent_id: origo
@@ -102,26 +104,28 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-    material: silver_ball
+    material:
+      name: silver_ball
+      kd: [0.5075, 0.5075, 0.5075, 1.0]
+      map_pbr: textures\Fence007A_4K-JPG
+      xreflection: 0.05
+      parallax_depth: 0.0
     render_flags:
       xblend_oit: true
       alpha: true
       xblend: true
       render_back: true
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Fence007A_4K-JPG
-      parallax_depth: 0.0
   - name: Bronze ball
     parent_id: origo
     model: water_ball
     program: g_tex
     pos: [0.0, 0.0, 15.0]
     scale: 1.3
-    material: bronze_ball
-    material_modifier:
-      xreflection: 0.05
+    material:
+      name: bronze_ball
+      kd: [0.7140, 0.4284, 0.1814, 1.0]
       map_pbr: textures\Plastic 01 [4K]
+      xreflection: 0.05
       parallax_depth: 0.0
   - name: Rusted iron ball
     parent_id: origo
@@ -149,7 +153,11 @@ entities:
       parallax_depth: 0.0
   - name: wooden floor
     model: plane
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      parallax_depth: 0.0
+      tiling: 10
     program: g_tex
     pos: [0.0, 20.0, 0.0]
     render_flags:
@@ -158,7 +166,12 @@ entities:
     scale: 100
   - name: Fence
     model: quad
-    material: fence
+    material:
+      name: fence
+      kd: [0.800000, 0.800000, 0.800000, 1.0]
+      map_pbr: textures\Fence007A_4K-JPG
+      parallax_depth: 0.0
+      tiling: 1
     program: g_tex
     pos: [20.0, 25, -25]
     scale: 5
@@ -170,21 +183,3 @@ entities:
     repeat:
       z_count: 5
       z_step: 10
-materials:
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-  - name: gold_ball
-    kd: [0.7516, 0.6065, 0.2265, 1.0]
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-  - name: bronze_ball
-    kd: [0.7140, 0.4284, 0.1814, 1.0]
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10
-  - name: fence
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_pbr: textures\Fence007A_4K-JPG
-    parallax_depth: 0.0
-    tiling: 1

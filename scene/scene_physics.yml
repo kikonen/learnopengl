@@ -20,9 +20,10 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
-    material_modifier:
+    material:
+      name: default_ball
       kd: [0.0, 0.2, 0.8, 1.0]
+      metal: [0.2, 0.1, 0.0, 1.0]
   - name: Player
     id: player
     Xtype: origo
@@ -55,16 +56,20 @@ entities:
       type: camera_zoom
     camera:
       default: true
-  - name: Pawn
-    id: pawn
-    xtype: origo
-    model: quad
+  - id: pawn
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
     program: g_tex
-    material: skeleton_back
+    shadow_program: simple_depth
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      metal: [0.3, 0.4, 0, 1]
+      ke: [0.0, 0.1, 0.0]
     pos: [5, 24, 28]
     front: [0, 0, -1]
-    scale: [1, 2, 1]
-    base_rot: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.028
     render_flags:
       alpha: true
       render_back: true
@@ -136,7 +141,11 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
-    material: default_ball
+    material:
+      name: default_ball
+      kd: [0.8, 0.8, 0.0, 1.0]
+      xreflection: 0.05
+      metal: [0.2, 0.1, 0.0, 1.0]
     material_modifier:
       xreflection: 0.05
       metal: [0.2, 0.1, 0.0, 1.0]
@@ -153,11 +162,12 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-    material: gold_ball
-    material_modifier:
-      xreflection: 0.05
+    material:
+      name: gold_ball
+      kd: [0.7516, 0.6065, 0.2265, 1.0]
       xmap_pbr: textures\Planks 09 [8K]
       map_pbr: textures\Metal007_1K-PNG
+      xreflection: 0.05
       parallax_depth: 0.0
     controller:
       type: pawn
@@ -174,16 +184,17 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-    material: silver_ball
+    material:
+      name: silver_ball
+      kd: [0.5075, 0.5075, 0.5075, 1.0]
+      map_pbr: textures\Fence007A_4K-JPG
+      xreflection: 0.05
+      parallax_depth: 0.0
     render_flags:
       xblend_oit: true
       alpha: true
       xblend: true
       render_back: true
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Fence007A_4K-JPG
-      parallax_depth: 0.0
     xphysics:
       body:
         type: sphere
@@ -197,10 +208,11 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 15.0]
     scale: 1.3
-    material: bronze_ball
-    material_modifier:
-      xreflection: 0.05
+    material:
+      name: bronze_ball
+      kd: [0.7140, 0.4284, 0.1814, 1.0]
       map_pbr: textures\Plastic 01 [4K]
+      xreflection: 0.05
       parallax_depth: 0.0
     xphysics:
       body:
@@ -251,7 +263,11 @@ entities:
       parallax_depth: 0.0
   - name: wooden floor
     model: plane
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      parallax_depth: 0.0
+      tiling: 20
     program: g_tex
     pos: [0.0, 20.0, 0.0]
     rot: [0, 0, 5]
@@ -287,7 +303,12 @@ entities:
         size: [2, 2, 2]
   - name: Fence
     model: quad
-    material: fence
+    material:
+      name: fence
+      kd: [0.800000, 0.800000, 0.800000, 1.0]
+      map_pbr: textures\Fence007A_4K-JPG
+      parallax_depth: 0.0
+      tiling: 1
     program: g_tex
     pos: [-30.0, 0, -50]
     scale: 5
@@ -306,13 +327,18 @@ entities:
         type: plane
         rot: [0, 0, 270]
   - name: Skeleton
-    type: sprite
+    model: fbx/creatures/skeleton/skeleton_animated.FBX
     program: g_tex
+    shadow_program: simple_depth
     pos: [3, 25, 25]
-    scale: [1, 2, 1]
-    material: skeleton_front
-    sprite: skeleton
-    base_rot: [0, 0, 0]
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      metal: [0.3, 0.4, 0, 1]
+      ke: [0.0, 0.1, 0.0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.028
     render_flags:
       alpha: true
       render_back: true
@@ -328,7 +354,10 @@ entities:
     xtype: origo
     model: quad
     program: g_tex
-    material: world_barrier
+    material:
+      name: world_barrier
+      map_pbr: textures\Fence007A_4K-JPG
+      tiling: 4
     scale: 100
     render_flags:
       alpha: true
@@ -414,42 +443,3 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
-materials:
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-  - name: gold_ball
-    kd: [0.7516, 0.6065, 0.2265, 1.0]
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-  - name: bronze_ball
-    kd: [0.7140, 0.4284, 0.1814, 1.0]
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 20
-  - name: fence
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_pbr: textures\Fence007A_4K-JPG
-    parallax_depth: 0.0
-    tiling: 1
-  - name: world_barrier
-    map_pbr: textures\Fence007A_4K-JPG
-    tiling: 4
-  - name: skeleton_front
-    map_kd: sprites/skeleton/skeleton_front.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton_back
-    map_kd: sprites/skeleton/skeleton_back.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: pool_floor
-    kd: [0.8, 0.8, 0.8, 1.0]
-    map_kd: textures/tiles_1024.png
-    tiling: 8
-sprites:
-  - name: skeleton
-    shapes:
-      - rotation: 0
-        material:
-          map_kd: sprites/skeleton/skeleton_front.png

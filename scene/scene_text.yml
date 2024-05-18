@@ -26,7 +26,10 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    material: fps_text
+    material:
+      name: fps_text
+      kd: [0.0, 0.8, 0.0, 1.0]
+      xmetal: [1.0, 0.0, 0, 1]
     text:
       font: fps_font
       text: "- fps"
@@ -49,7 +52,10 @@ entities:
       default: true
   - id: font_atlas
     model: quad
-    material: metal
+    material:
+      name: metal
+      kd: [0.8, 0.0, 0.0, 1.0]
+      metal: [1.0, 0.0, 0, 1]
     custom_material:
       type: text
       font: hello_font
@@ -63,7 +69,12 @@ entities:
       render_back: true
   - id: hello_world
     type: text
-    material: hello
+    material:
+      name: hello
+      map_pbr: textures\Plastic 01 [4K]
+      xmap_pbr: textures\Fence007A_4K-JPG
+      map_pbr: textures\Metal007_1K-PNG
+      tiling: 1
     text:
       font: hello_font
       text: ÄÅÖ äåö - Hello world
@@ -79,7 +90,10 @@ entities:
     script_file: scripts/seq_hello_text
   - id: another_text
     type: text
-    material: another_text
+    material:
+      name: another_text
+      map_pbr: textures\Leather037_1K
+      tiling: 1
     text:
       font: another_font
       text: Look at ME
@@ -107,7 +121,13 @@ entities:
       intensity: 30000
   - id: wooden_wall
     model: quad
-    material: wood_floor
+    material:
+      name: wood_floor
+      kd: [0.8, 0.8, 0.0, 1.0]
+      map_pbr: textures\Planks 09 [8K]
+      xmetal: [1.0, 0.0, 0, 1]
+      xmap_pbr: textures\planks_metal
+      tiling: 20
     program: g_tex
     render_flags:
       render_back: true
@@ -116,7 +136,13 @@ entities:
     scale: 0.5
   - id: wooden_floor
     model: plane
-    material: wood_floor
+    material:
+      name: wood_floor
+      kd: [0.8, 0.8, 0.0, 1.0]
+      map_pbr: textures\Planks 09 [8K]
+      xmetal: [1.0, 0.0, 0, 1]
+      xmap_pbr: textures\planks_metal
+      tiling: 20
     program: g_tex
     render_flags:
       no_shadow: true
@@ -153,26 +179,3 @@ fonts:
   - name: fps_font
     path: fonts/Vera.ttf
     size: 36
-materials:
-  - name: default
-    kd: [0.8, 0.8, 0.0, 1.0]
-  - name: metal
-    kd: [0.8, 0.0, 0.0, 1.0]
-    metal: [1.0, 0.0, 0, 1]
-  - name: hello
-    map_pbr: textures\Plastic 01 [4K]
-    xmap_pbr: textures\Fence007A_4K-JPG
-    map_pbr: textures\Metal007_1K-PNG
-    tiling: 1
-  - name: another_text
-    map_pbr: textures\Leather037_1K
-    tiling: 1
-  - name: fps_text
-    kd: [0.0, 0.8, 0.0, 1.0]
-    xmetal: [1.0, 0.0, 0, 1]
-  - name: wood_floor
-    kd: [0.8, 0.8, 0.0, 1.0]
-    map_pbr: textures\Planks 09 [8K]
-    xmetal: [1.0, 0.0, 0, 1]
-    xmap_pbr: textures\planks_metal
-    tiling: 20

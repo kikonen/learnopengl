@@ -174,6 +174,7 @@ namespace mesh {
         const Snapshot& snapshot) const
     {
         auto& lodMeshes = *m_lodMeshes.get();
+        if (lodMeshes.size() == 1) return lodMeshes[0].m_lodLevel;
 
         {
             auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);

@@ -22,7 +22,10 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    material: fps_text
+    material:
+      name: fps_text
+      kd: [0.0, 0.8, 0.0, 1.0]
+      xmetal: [1.0, 0.0, 0, 1]
     text:
       font: fps_font
       text: "- fps"
@@ -58,7 +61,14 @@ entities:
     pos: [0, 0, 0]
     scale: 1
     particle:
-      material: particle_firespin
+      material:
+        name: particle_firespin
+        kd: [1, 1, 1, 1]
+        map_kd: particles/7_firespin_spritesheet.png
+        sprites: 61
+        sprites_x: 8
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: asteroid_belt
     parent_id: planet-origo
     program: g_tex
@@ -128,16 +138,3 @@ fonts:
   - name: fps_font
     path: fonts/Vera.ttf
     size: 36
-materials:
-  - name: default
-    kd: [0.8, 0.8, 0.0, 1.0]
-  - name: fps_text
-    kd: [0.0, 0.8, 0.0, 1.0]
-    xmetal: [1.0, 0.0, 0, 1]
-  - name: particle_firespin
-    kd: [1, 1, 1, 1]
-    map_kd: particles/7_firespin_spritesheet.png
-    sprites: 61
-    sprites_x: 8
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE

@@ -43,7 +43,10 @@ entities:
       cube_map: true
   - name: wooden floor
     model: plane
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -71,7 +74,3 @@ entities:
     render_flags:
       static_bounds: true
     scale: 1
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    tiling: 60

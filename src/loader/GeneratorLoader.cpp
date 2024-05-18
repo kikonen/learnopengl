@@ -15,6 +15,7 @@
 #include "terrain/TerrainGenerator.h"
 
 #include "loader/document.h"
+#include "loader/Loaders.h"
 
 namespace loader {
     GeneratorLoader::GeneratorLoader(
@@ -25,7 +26,8 @@ namespace loader {
 
     void GeneratorLoader::loadGenerator(
         const loader::Node& node,
-        GeneratorData& data) const
+        GeneratorData& data,
+        Loaders& loaders) const
     {
         data.enabled = true;
 
@@ -74,7 +76,7 @@ namespace loader {
                 loadTiling(v, data.tiling);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
             else if (k == "terrain") {
                 loadTerrain(v, data.terrainData);
@@ -107,7 +109,6 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        const std::vector<MaterialData>& materials,
         mesh::MeshType* type)
     {
         if (!data.enabled) return nullptr;
@@ -129,11 +130,8 @@ namespace loader {
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
 
-            auto* material = findMaterial(data.materialName, materials);
-            if (material) {
-                generator->m_material = *material;
-                generator->m_material.loadTextures();
-            }
+            generator->m_material = data.materialData.material;
+            generator->m_material.loadTextures();
 
             return generator;
         }

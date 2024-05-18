@@ -47,4 +47,3 @@ entities:
       target_pos: [0, 0, 0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       intensity: 2a000
-materials:

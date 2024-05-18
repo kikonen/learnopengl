@@ -27,7 +27,6 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    material: fps_text
     text:
       font: fps_font
       text: "- fps"
@@ -35,6 +34,10 @@ entities:
     shadow_program: shadow_font_render
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
+    material:
+      - name: fps_text
+        kd: [0.0, 0.8, 0.0, 1.0]
+        xmetal: [1.0, 0.0, 0, 1]
     render_flags:
       billboard: true
       alpha: true
@@ -53,11 +56,18 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
     material_modifier:
       kd: [0.0, 0.2, 0.8, 1.0]
     particle:
-      material: particle_firespin
+      material:
+        name: particle_firespin
+        kd: [1, 1, 1, 1]
+        xkd: [0.5, 1.5, 0.2, 0.2]
+        map_kd: particles/7_firespin_spritesheet.png
+        sprites: 61
+        sprites_x: 8
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: four_cubes_{c}
     model: texture_cube_3
     program: g_tex
@@ -66,39 +76,50 @@ entities:
     clones:
       - pos: [-5.0, 2.0, -5.0]
         particle:
-          material: particle_bones_1
+          material:
+            name: particle_bones_1
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_1_spritesheet.png
+            sprites: 28
+            sprites_x: 4
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [5.0, 2.0, -5.0]
         particle:
-          material: particle_bones_2
+          material:
+            name: particle_bones_2
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_2_spritesheet.png
+            sprites: 29
+            sprites_x: 4
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [-5.0, 2.0, 5.0]
         particle:
-          material: particle_bones_3
+          material:
+            name: particle_bones_3
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_3_spritesheet.png
+            sprites: 28
+            sprites_x: 5
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [5.0, 2.0, 5.0]
         particle:
-          material: particle_casting
-  - xid: skeleton_army_{t}
-    model: quad
-    priority: 1
-    program: g_tex
-    instanced: true
-    pos: [20, 0.0, 20]
-    material: skeleton
-    render_flags:
-      billboard: true
-      alpha: true
-      dynamic_bounds: true
-      render_back: true
-    scale: [1.5, 3, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 10
-        z_step: -10
+          material:
+            name: particle_casting
+            kd: [1, 1, 1, 1]
+            map_kd: particles/4_casting_spritesheet.png
+            sprites: 73
+            sprites_x: 9
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
   - id: skeleton_army_2_{t}
     model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material: skeleton_pbr
+    material:
+      name: skeleton_pbr
+      map_pbr: fbx/creatures/skeleton/skeleton_pbr
+      metal: [0.3, 0.4, 0, 1]
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -165,7 +186,11 @@ entities:
   - id: wooden_floor
     model: plane
     xxmodel: woodwall
-    material: wood_floor
+    material:
+      name: wood_floor
+      map_pbr: textures\Planks 09 [8K]
+      parallax_depth: 0.0
+      tiling: 10
     program: g_tex
     render_flags:
       no_shadow: true
@@ -188,55 +213,3 @@ fonts:
   - name: fps_font
     path: fonts/Vera.ttf
     size: 36
-materials:
-  - name: fps_text
-    kd: [0.0, 0.8, 0.0, 1.0]
-    xmetal: [1.0, 0.0, 0, 1]
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10
-  - name: skeleton
-    map_kd: sprites/skeleton.png
-    metal: [0.7, 0.2, 0, 1]
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton_pbr
-    map_pbr: fbx/creatures/skeleton/skeleton_pbr
-    metal: [0.3, 0.4, 0, 1]
-  - name: particle_firespin
-    kd: [1, 1, 1, 1]
-    xkd: [0.5, 1.5, 0.2, 0.2]
-    map_kd: particles/7_firespin_spritesheet.png
-    sprites: 61
-    sprites_x: 8
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_casting
-    kd: [1, 1, 1, 1]
-    map_kd: particles/4_casting_spritesheet.png
-    sprites: 73
-    sprites_x: 9
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_1
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_1_spritesheet.png
-    sprites: 28
-    sprites_x: 4
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_2
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_2_spritesheet.png
-    sprites: 29
-    sprites_x: 4
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_3
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_3_spritesheet.png
-    sprites: 28
-    sprites_x: 5
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE

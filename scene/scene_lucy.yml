@@ -45,7 +45,13 @@ entities:
       intensity: 50000
   - name: Pool floor
     model: quad
-    material: pool_floor
+    material:
+      name: pool_floor
+      kd: [0.8, 0.8, 0.8, 1.0]
+      xxmap_kd: textures/Marble White_VH_512.PNG
+      xmap_kd: textures/tiles_1024.png
+      map_pbr: textures\Tiles074_1K-PNG
+      tiling: 16
     program: g_tex
     pos: [0.0, 0.1, 0]
     rotation: [270.0, 0.0, 0.0]
@@ -54,7 +60,12 @@ entities:
       no_shadow: true
   - name: Pool surface
     model: plane
-    material: pool_surface
+    material:
+      name: pool_surface
+      kd: [0.55, 0.55, 0.95, 1.0]
+      map_bump: textures/water_surface_512_normal.png
+      map_dudv: textures/waterDUDV_512.png
+      tiling: 2
     program: g_water
     pos: [0, 3.1, 0]
     scale: 100
@@ -86,7 +97,10 @@ entities:
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     scale: 4
-    xmaterial: gold_ball
+    xmaterial:
+      name: gold_ball
+      kd: [0.7516, 0.6065, 0.2265, 1.0]
+      reflection: 0.05
     material_modifier:
       xreflection: 0.05
       map_pbr: textures\Metal007_1K-PNG
@@ -110,7 +124,13 @@ entities:
     script_file: scripts/anim_lucy
   - name: Big mirror 2
     model: quad
-    material: mirror
+    material:
+      name: mirror
+      kd: [0.800000, 0.800000, 0.800000, 1.0]
+      map_kd: textures/Marble White_VH_512.PNG
+      reflection: 0.5
+      refraction: 0.05
+      refraction_ratio: [1.0, 1.52]
     program: g_mirror
     pos: [30.0, 25.0, -40.0]
     rotation: [0.0, -45.0, 0.0]
@@ -118,45 +138,3 @@ entities:
     render_flags:
       render_back: true
       mirror: true
-materials:
-  - name: default
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: teapot
-    kd: [0.578, 0.578, 0.168, 1.0]
-    reflection: 0.05
-  - name: cow
-    kd: [0.160, 0.578, 0.168, 1.0]
-    reflection: 0.05
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: gold_ball
-    kd: [0.7516, 0.6065, 0.2265, 1.0]
-    reflection: 0.05
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-    reflection: 0.05
-  - name: bronze_ball
-    kd: [0.7140, 0.4284, 0.1814, 1.0]
-    reflection: 0.05
-  - name: pool_surface
-    kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: textures/water_surface_512_normal.png
-    map_dudv: textures/waterDUDV_512.png
-    tiling: 2
-  - name: pool_floor
-    kd: [0.8, 0.8, 0.8, 1.0]
-    xxmap_kd: textures/Marble White_VH_512.PNG
-    xmap_kd: textures/tiles_1024.png
-    map_pbr: textures\Tiles074_1K-PNG
-    tiling: 16
-  - name: mirror
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/Marble White_VH_512.PNG
-    reflection: 0.5
-    refraction: 0.05
-    refraction_ratio: [1.0, 1.52]

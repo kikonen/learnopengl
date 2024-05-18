@@ -3,6 +3,7 @@
 #include "BaseData.h"
 
 #include "TerrainData.h"
+#include "MaterialData.h"
 
 class Node;
 class NodeGenerator;
@@ -29,6 +30,6 @@ namespace loader {
 
         TerrainData terrainData;
 
-        std::string materialName;
+        MaterialData materialData;
     };
 }

@@ -13,6 +13,8 @@ namespace mesh {
 }
 
 namespace loader {
+    class Loaders;
+
     class GeneratorLoader : public BaseLoader
     {
     public:
@@ -21,7 +23,8 @@ namespace loader {
 
         void loadGenerator(
             const loader::Node& node,
-            GeneratorData& data) const;
+            GeneratorData& data,
+            Loaders& loaders) const;
 
         void loadTerrain(
             const loader::Node& node,
@@ -29,7 +32,6 @@ namespace loader {
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            const std::vector<MaterialData>& materials,
             mesh::MeshType* type);
     };
 }

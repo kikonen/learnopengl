@@ -133,6 +133,7 @@ namespace loader {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data);
+            data.materialName = data.material.m_name;
         }
     }
 
