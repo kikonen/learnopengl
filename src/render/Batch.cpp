@@ -48,10 +48,10 @@ namespace {
 
     inline bool inFrustum(
         const Frustum& frustum,
-        const Snapshot& snapshot) noexcept
+        const glm::vec4& volume) noexcept
     {
-        const Sphere& volume{ snapshot.m_volume };
-        return volume.isOnFrustum(frustum);
+        const Sphere& sphere{ volume };
+        return sphere.isOnFrustum(frustum);
     }
 }
 
@@ -77,7 +77,7 @@ namespace render {
 
         const auto& frustum = ctx.m_camera->getFrustum();
 
-        if (m_frustumCPU && !inFrustum(frustum, snapshot)) {
+        if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
             m_skipCount++;
             return;
         }
@@ -88,7 +88,7 @@ namespace render {
         top.m_instanceCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto lodLevel = type->getLodLevel(cameraPos, snapshot);
+        const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_lodLevel != lodLevel) continue;
@@ -147,7 +147,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx]))
+                        if (!inFrustum(frustum, snapshots[idx].m_volume))
                             idx = -1;
                     });
             }
@@ -157,7 +157,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx]))
+                        if (!inFrustum(frustum, snapshots[idx].m_volume))
                             idx = -1;
                     });
             }
@@ -170,7 +170,7 @@ namespace render {
                     continue;
                 }
 
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i]);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
@@ -197,7 +197,7 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i]);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;

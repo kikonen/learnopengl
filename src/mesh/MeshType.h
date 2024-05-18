@@ -128,7 +128,7 @@ namespace mesh {
 
         uint16_t getLodLevel(
             const glm::vec3& cameraPos,
-            const Snapshot& snapshot) const;
+            const glm::vec3& worldPos) const;
 
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 

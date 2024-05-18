@@ -284,8 +284,7 @@ namespace terrain {
                 type->addMeshSet(*meshSet, 0);
 
                 auto* lodMesh = type->modifyLodMesh(0);
-                lodMesh->m_material = m_material;
-
+                lodMesh->setMaterial(m_material);
                 lodMesh->registerMaterials();
             }
         }

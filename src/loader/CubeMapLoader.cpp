@@ -55,14 +55,14 @@ namespace loader {
 
         type->addMeshSet(*meshSet, 0);
 
-        auto* loadMesh = type->modifyLodMesh (0);
+        auto* lodMesh = type->modifyLodMesh (0);
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
             material.m_name = "cube_map";
             //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
-            loadMesh->m_material = material;
+            lodMesh->setMaterial(material);
         }
 
 

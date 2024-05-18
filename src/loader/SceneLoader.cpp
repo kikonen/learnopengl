@@ -507,9 +507,11 @@ namespace loader {
         bool useNormalPattern = false;
 
         for (auto& lodMesh : type->modifyLodMeshes()) {
-            auto& material = lodMesh.m_material;
+            auto* lodMaterial = lodMesh.getMaterial();
 
-            {
+            if (lodMaterial) {
+                auto& material = *lodMaterial;
+
                 useDudvTex |= material.hasTex(MATERIAL_DUDV_MAP_IDX);
                 useDisplacementTex |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
                 useNormalTex |= material.hasTex(MATERIAL_NORMAL_MAP_IDX);
@@ -643,8 +645,11 @@ namespace loader {
         mesh::LodMesh& lodMesh,
         const MeshData& meshData)
     {
+        auto* lodMaterial = lodMesh.getMaterial();
+        if (!lodMaterial) return;
+
+        auto& material = *lodMaterial;
         auto& l = *m_loaders;
-        auto& material = lodMesh.m_material;
 
         for (auto& materialData : meshData.materials) {
             const auto& alias = materialData.aliasName;

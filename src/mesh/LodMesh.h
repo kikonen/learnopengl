@@ -6,14 +6,13 @@
 #include <memory>
 #include <functional>
 
-#include "asset/Material.h"
-
 #include "backend/Lod.h"
 
 namespace kigl {
     struct GLVertexArray;
 };
 
+struct Material;
 struct PrepareContext;
 struct UpdateContext;
 struct Material;
@@ -53,9 +52,11 @@ namespace mesh {
             bool umique) noexcept;
 
         void setDistance(float dist) {
-            m_distance = dist;
             m_distance2 = dist * dist;
         }
+
+        Material* getMaterial() noexcept;
+        void setMaterial(const Material& material) noexcept;
 
     private:
         void setMesh(Mesh* mesh) noexcept;
@@ -63,22 +64,18 @@ namespace mesh {
         /////////////////////
 
     public:
-        Material m_material;
-
         backend::Lod m_lod;
-
-        std::unique_ptr<Mesh> m_deleter;
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
         Mesh* m_mesh{ nullptr };
+        std::unique_ptr<Mesh> m_deleter;
 
-        int16_t m_lodLevel{ -1 };
-
-        // Distance upto lod is applied
-        float m_distance{ 0.f };
+        std::unique_ptr<Material> m_material;
 
         // Squared Distance upto lod is applied
         float m_distance2{ 0.f };
+
+        int16_t m_lodLevel{ -1 };
     };
 }

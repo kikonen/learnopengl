@@ -66,7 +66,7 @@ namespace loader {
             material.m_name = "volume";
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
-            lodMesh->m_material = material;
+            lodMesh->setMaterial(material);
         }
 
         type->m_entityType = mesh::EntityType::marker;

@@ -45,15 +45,15 @@ namespace mesh {
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
         m_lodLevel = o.m_lodLevel;
-        m_distance = o.m_distance;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
-        m_material = o.m_material;
+        m_material = std::move(o.m_material);
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
 
         o.m_mesh = nullptr;
+        o.m_material = nullptr;
     }
 
     LodMesh::~LodMesh()
@@ -62,15 +62,15 @@ namespace mesh {
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
         m_lodLevel = o.m_lodLevel;
-        m_distance = o.m_distance;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
-        m_material = o.m_material;
+        m_material = std::move(o.m_material);
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
 
         o.m_mesh = nullptr;
+        o.m_material = nullptr;
 
         return *this;
     }
@@ -82,6 +82,22 @@ namespace mesh {
             m_lodLevel,
             m_mesh ? m_mesh->str() : "N/A",
             m_lod.m_materialIndex);
+    }
+
+    Material* LodMesh::getMaterial() noexcept
+    {
+        return m_material.get();
+    }
+
+    void LodMesh::setMaterial(const Material& material) noexcept
+    {
+        // NOTE KI copy of material for isntance
+        // => material *is* per mesh type
+        // => Sharing *might* be sometims possible, in practice tricky
+        if (!m_material) {
+            m_material = std::make_unique<Material>();
+        }
+        *m_material = material;
     }
 
     void LodMesh::setMesh(
@@ -107,10 +123,7 @@ namespace mesh {
             setDistance((m_lodLevel + 1) * 20.f);
         }
 
-        // NOTE KI copy of material for isntance
-        // => material *is* per mesh type
-        // => Sharing *might* be sometims possible, in practice tricky
-        m_material = mesh->getMaterial();
+        setMaterial(mesh->getMaterial());
     }
 
     void LodMesh::registerMaterials()
@@ -119,18 +132,22 @@ namespace mesh {
 
         const auto& assets = Assets::get();
 
-        if (assets.useLodDebug) {
-            if (m_lodLevel > 0)
-                m_material.kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-            if (m_lodLevel > 1)
-                m_material.kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
-            if (m_lodLevel > 2)
-                m_material.kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+        auto* material = m_material.get();
+
+        if (material) {
+            if (assets.useLodDebug) {
+                if (m_lodLevel > 0)
+                    material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
+                if (m_lodLevel > 1)
+                    material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
+                if (m_lodLevel > 2)
+                    material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+            }
+
+            MaterialRegistry::get().registerMaterial(*material);
+
+            m_lod.m_materialIndex = material->m_registeredIndex;
         }
-
-        MaterialRegistry::get().registerMaterial(m_material);
-
-        m_lod.m_materialIndex = m_material.m_registeredIndex;
     }
 
     void LodMesh::prepareRT(const PrepareContext& ctx)

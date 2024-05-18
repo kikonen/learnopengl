@@ -171,13 +171,13 @@ namespace mesh {
 
     uint16_t MeshType::getLodLevel(
         const glm::vec3& cameraPos,
-        const Snapshot& snapshot) const
+        const glm::vec3& worldPos) const
     {
         auto& lodMeshes = *m_lodMeshes.get();
         if (lodMeshes.size() == 1) return lodMeshes[0].m_lodLevel;
 
         {
-            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+            auto dist2 = glm::distance2(worldPos, cameraPos);
 
             for (const auto& lodMesh : lodMeshes) {
                 if (dist2 < lodMesh.m_distance2)
