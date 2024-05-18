@@ -38,6 +38,8 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
+    pool::NodeHandle m_handle;
+
     uint32_t m_shapeIndex{ 0 };
     uint32_t m_boneIndex{ 0 };
 
@@ -49,8 +51,6 @@ struct Snapshot {
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     ki::level_id m_matrixLevel{ 0 };
-
-    pool::NodeHandle m_handle;
 
     mutable bool m_dirty : 1 { true };
     mutable bool m_dirtyNormal : 1 { true };
