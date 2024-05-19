@@ -4,6 +4,7 @@
 
 #include "asset/Assets.h"
 
+#include "util/Log.h"
 #include "util/Util.h"
 
 #include "loader/document.h"
@@ -357,6 +358,7 @@ namespace loader {
             }
 
             if (util::matchAny(ignoreMatchers, matchName)) {
+                KI_INFO_OUT(fmt::format("IGNORE_PBR_FILE: {} - {}", basePath, fileName));
                 continue;
             }
 
