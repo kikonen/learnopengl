@@ -48,8 +48,6 @@ private:
     std::atomic<bool> m_dirtyFlag;
     std::mutex m_lock{};
 
-    Material m_zero;
-
     std::vector<Material> m_materials;
 
     std::vector<MaterialSSBO> m_materialsSSBO;

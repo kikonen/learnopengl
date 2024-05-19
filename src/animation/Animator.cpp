@@ -18,6 +18,10 @@
 #include "BoneTransform.h"
 #include "BoneInfo.h"
 
+namespace {
+   static const glm::mat4 ID_MAT{ 1.f };
+}
+
 namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
@@ -28,8 +32,6 @@ namespace animation {
         double animationStartTime,
         double currentTime)
     {
-        static const glm::mat4 ID_MAT{ 1.f };
-
         if (animationStartTime < 0) return false;
         if (animationIndex < 0 || animationIndex >= rig.m_animations.size()) return false;
 

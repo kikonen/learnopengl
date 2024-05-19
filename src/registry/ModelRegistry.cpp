@@ -14,11 +14,11 @@
 #include "render/RenderContext.h"
 
 namespace {
+    static ModelRegistry s_registry;
 }
 
 ModelRegistry& ModelRegistry::get() noexcept
 {
-    static ModelRegistry s_registry;
     return s_registry;
 }
 

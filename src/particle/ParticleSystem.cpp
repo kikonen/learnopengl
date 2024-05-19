@@ -23,12 +23,13 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    static particle::ParticleSystem s_system;
 }
 
 namespace particle {
     ParticleSystem& ParticleSystem::get() noexcept
     {
-        static ParticleSystem s_system;
         return s_system;
     }
 

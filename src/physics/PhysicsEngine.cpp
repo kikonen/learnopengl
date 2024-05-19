@@ -26,6 +26,8 @@ namespace {
 
     constexpr int MAX_CONTACTS = 8;
     constexpr int CONTACT_GROUP_ID = 0;
+
+    static physics::PhysicsEngine s_engine;
 }
 
 namespace physics
@@ -80,7 +82,6 @@ namespace physics
 
     PhysicsEngine& PhysicsEngine::get() noexcept
     {
-        static PhysicsEngine s_engine;
         return s_engine;
     }
 

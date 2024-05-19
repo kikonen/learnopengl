@@ -12,6 +12,7 @@ namespace {
     constexpr size_t MATERIAL_BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_MATERIAL_COUNT = MATERIAL_BLOCK_SIZE * MATERIAL_BLOCK_COUNT;
+
 }
 
 MaterialRegistry& MaterialRegistry::get() noexcept
@@ -28,8 +29,8 @@ MaterialRegistry::MaterialRegistry()
 
     // NOTE KI *reserve* index 0
     // => multi-material needs to do "-index" trick, does not work for zero
-    m_zero = Material::createMaterial(BasicMaterial::basic);
-    registerMaterial(m_zero);
+    Material zero = Material::createMaterial(BasicMaterial::basic);
+    registerMaterial(zero);
 }
 
 MaterialRegistry::~MaterialRegistry() = default;

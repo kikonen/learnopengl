@@ -54,11 +54,12 @@ namespace {
     const ki::program_id NULL_PROGRAM_ID = 0;
 
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
+
+    static NodeRegistry s_registry;
 }
 
 NodeRegistry& NodeRegistry::get() noexcept
 {
-    static NodeRegistry s_registry;
     return s_registry;
 }
 

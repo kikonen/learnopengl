@@ -16,12 +16,13 @@ namespace {
         {}
     };
 #pragma pack(pop)
+
+    static render::TextureQuad s_instance;
 }
 
 namespace render {
     TextureQuad& TextureQuad::get() noexcept
     {
-        static TextureQuad s_instance;
         return s_instance;
     }
 

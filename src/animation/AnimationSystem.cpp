@@ -24,13 +24,14 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    static animation::AnimationSystem s_registry;
 }
 
 namespace animation
 {
     animation::AnimationSystem& AnimationSystem::get() noexcept
     {
-        static AnimationSystem s_registry;
         return s_registry;
     }
 

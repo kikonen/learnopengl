@@ -13,9 +13,12 @@
 
 class Node;
 
+namespace {
+    static ControllerRegistry s_registry;
+}
+
 ControllerRegistry& ControllerRegistry::get() noexcept
 {
-    static ControllerRegistry s_registry;
     return s_registry;
 }
 
