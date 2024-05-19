@@ -76,6 +76,7 @@ entities:
     program: g_tex
     render_flags:
       render_back: true
+      no_shadow: true
     pos: [0, 0, 0]
     models:
       - mesh: [rock2, rock]
