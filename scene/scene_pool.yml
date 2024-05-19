@@ -150,7 +150,6 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: maple_tree_forest_1_{t}
-    type: model
     model:
       mesh: fbx/scenery/trees/Maple_02.fbx
       materials:
@@ -315,7 +314,6 @@ entities:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: palm_tree_forest_2_{t}
-    type: model
     model:
       mesh: fbx/scenery/trees/Palm_01.fbx
       materials:

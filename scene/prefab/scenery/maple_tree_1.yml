@@ -2,7 +2,6 @@
 prefab:
   name: Maple tree
   base_dir: fbx/scenery/trees
-  type: model
   model:
     mesh: Maple_02.fbx
     materials:

@@ -27,7 +27,8 @@ entities:
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
-    model: light
+    xmodel:
+      mesh: light
     program: g_light
     render_flags:
       no_shadow: true
