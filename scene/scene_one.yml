@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 30, 0]
     front: [0, 0, -1]
@@ -26,11 +25,12 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Mountains
-    model: texture_mountains
+    model:
+      mesh: texture_mountains
+      material_modifier:
+        map_pbr: textures/Fence007A_4K-JPG
+        tiling: 6
     program: g_tex
-    material_modifier:
-      map_pbr: textures/Fence007A_4K-JPG
-      tiling: 6
     render_flags:
       alpha: true
       render_back: true

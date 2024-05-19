@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -28,7 +27,8 @@ entities:
   - name: Directional light
     type: origo
     pos: [-20, 25, 25]
-    model: light
+    model:
+      mesh: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -42,11 +42,12 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: plane
-    material:
-      name: wood_floor
-      map_pbr: textures\Planks 09 [8K]
-      tiling: 60
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -54,16 +55,17 @@ entities:
       no_shadow: true
     scale: 100
   - xid: object
-    #model: texture_cube_4/texture_cube_4.fbx
-    model: fbx/chracters/SK_Character_PunkGuy.fbx
-    xmodel: fbx/chracters/SK_Character_Grandpa.fbx
-    material:
-      name: skin
-      xmap_kd: fbx/characters/skaterMaleA.png
-      map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
-      map_kd: fbx/characters/skaterMaleA.png
-      metal: [0.3, 0.4, 0, 1]
-      xtiling: 60
+    model:
+      #mesh: texture_cube_4/texture_cube_4.fbx
+      #mesh: fbx/chracters/SK_Character_Grandpa.fbx
+      mesh: fbx/chracters/SK_Character_PunkGuy.fbx
+      material:
+        name: skin
+        xmap_kd: fbx/characters/skaterMaleA.png
+        map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
+        map_kd: fbx/characters/skaterMaleA.png
+        metal: [0.3, 0.4, 0, 1]
+        xtiling: 60
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -77,10 +79,14 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: wolf_{t}
-    model: fbx/creatures/wolf/SK_Wolf.FBX
-    material:
-      name: wolf_pbr
-      map_pbr: fbx/creatures/wolf/wolf_pbr
+    model:
+      mesh: fbx/creatures/wolf/SK_Wolf.FBX
+      material:
+        name: wolf_pbr
+        map_pbr: fbx/creatures/wolf/wolf_pbr
+      animations:
+        - name: walk
+          path: fbx/creatures/wolf/anim/ANIM_Wolf_Walk_RM.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-30.0, 0.0, 0.0]
@@ -93,21 +99,28 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    animations:
-      - name: walk
-        path: fbx/creatures/wolf/anim/ANIM_Wolf_Walk_RM.FBX
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
   - id: lion_{t}
-    model: fbx/creatures/lion/SK_Lion.FBX
-    material:
-      name: lion_pbr
-      map_pbr: fbx/creatures/lion/lion_skin_pbr
-      xmetal: [0.3, 0.4, 0, 1]
-      xtiling: 60
+    model:
+      mesh: fbx/creatures/lion/SK_Lion.FBX
+      material:
+        name: lion_pbr
+        map_pbr: fbx/creatures/lion/lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: walk
+          path: fbx/creatures/lion/anim/Lion@Walk.FBX
+        - name: jump
+          path: fbx/creatures/lion/anim/Lion@Jump.FBX
+        - name: idle
+          path: fbx/creatures/lion/anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: fbx/creatures/lion/anim/Lion@Roar.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-20.0, 0.0, 0.0]
@@ -120,15 +133,6 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    animations:
-      - name: walk
-        path: fbx/creatures/lion/anim/Lion@Walk.FBX
-      - name: jump
-        path: fbx/creatures/lion/anim/Lion@Jump.FBX
-      - name: idle
-        path: fbx/creatures/lion/anim/Lion@IdleBreathe.FBX
-      - name: roar
-        path: fbx/creatures/lion/anim/Lion@Roar.FBX
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
@@ -141,12 +145,20 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: deinodonte_{t}
-    model: fbx/creatures/deinodonte/Deinodonte.FBX
-    material:
-      name: deinodonte_pbr
-      map_pbr: fbx/creatures/deinodonte/deinodonte_pbr
-      xmetal: [0.3, 0.4, 0, 1]
-      xtiling: 60
+    model:
+      mesh: fbx/creatures/deinodonte/Deinodonte.FBX
+      material:
+        name: deinodonte_pbr
+        map_pbr: fbx/creatures/deinodonte/deinodonte_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: idle
+          path: fbx/creatures/deinodonte/anim/Deinodonte@IdleBreathe.FBX
+        - name: walk
+          path: fbx/creatures/deinodonte/anim/Deinodonte@Walk_RM.FBX
+        - name: attack_claw_left
+          path: fbx/creatures/deinodonte/anim/Deinodonte@ClawsAttackLeft.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 8.0, -10.0]
@@ -159,25 +171,22 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    animations:
-      - name: idle
-        path: fbx/creatures/deinodonte/anim/Deinodonte@IdleBreathe.FBX
-      - name: walk
-        path: fbx/creatures/deinodonte/anim/Deinodonte@Walk_RM.FBX
-      - name: attack_claw_left
-        path: fbx/creatures/deinodonte/anim/Deinodonte@ClawsAttackLeft.FBX
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 20
       z_step: -20
   - id: elf_{t}
-    model: fbx/characters/elf/Elf Female.fbx
-    material:
-      name: elf_pbr
-      map_pbr: fbx/characters/elf/elf_female_pbr
-      xmetal: [0.3, 0.4, 0, 1]
-      xtiling: 60
+    model:
+      mesh: fbx/characters/elf/Elf Female.fbx
+      material:
+        name: elf_pbr
+        map_pbr: fbx/characters/elf/elf_female_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: walk
+          path: fbx/characters/elf/anim/Elf Animations.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -190,32 +199,34 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    animations:
-      - name: walk
-        path: fbx/characters/elf/anim/Elf Animations.FBX
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
   - id: scavenger_{t}
-    model: fbx/characters/scavenger/Scavenger.fbx
+    model:
+      mesh: fbx/characters/scavenger/Scavenger.fbx
+      materials:
+        - name: scavenger_body_pbr
+          alias: "Material #13"
+          map_pbr: fbx/characters/scavenger/scavenger_body_pbr
+        - name: scavenger_hair_pbr
+          alias: "Material #11"
+          map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
+        - name: scavenger_backback_pbr
+          alias: 01 - Default
+          map_pbr: fbx/characters/scavenger/scavenger_body_pbr
+      xanimations:
+        - name: walk
+          path: fbx/characters/scavenger/Scavenger.fbx
+          xpath: fbx/characters/scavenger/anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [-90, 0, 0]
     scale: 0.025
-    materials:
-      - name: scavenger_body_pbr
-        alias: "Material #13"
-        map_pbr: fbx/characters/scavenger/scavenger_body_pbr
-      - name: scavenger_hair_pbr
-        alias: "Material #11"
-        map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
-      - name: scavenger_backback_pbr
-        alias: 01 - Default
-        map_pbr: fbx/characters/scavenger/scavenger_body_pbr
     render_flags:
       alpha: true
       render_back: true
@@ -223,22 +234,22 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    xanimations:
-      - name: walk
-        path: fbx/characters/scavenger/Scavenger.fbx
-        xpath: fbx/characters/scavenger/anim/Humanoid@WalkForwardUnarmed.FBX
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
   - id: skeleton_{t}
-    model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material:
-      name: skeleton_pbr
-      map_pbr: fbx/creatures/skeleton/skeleton_pbr
-      xmetal: [0.3, 0.4, 0, 1]
-      xtiling: 60
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      xanimations:
+        - name: walk
+          path: fbx/creatures/skeleton/anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [20.0, 2.0, 0.0]
@@ -252,16 +263,16 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
-    xanimations:
-      - name: walk
-        path: fbx/creatures/skeleton/anim/Humanoid@WalkForwardUnarmed2.fbx
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
   - xid: object_anim
-    model: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
+    model:
+      xanimations:
+        - name: walk
+          path: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     base_rotation: [0, 0, 0]

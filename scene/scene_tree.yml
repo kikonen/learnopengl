@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -42,11 +41,12 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: plane
-    material:
-      name: wood_floor
-      map_pbr: textures\Planks 09 [8K]
-      tiling: 60
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -54,7 +54,8 @@ entities:
       no_shadow: true
     scale: 100
   - xid: object
-    model: texture_cube_4/texture_cube_4.fbx
+    model:
+      mesh: texture_cube_4/texture_cube_4.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]
@@ -69,7 +70,15 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: object
-    model: fbx/scenery/trees/SM_TreePine_01b.FBX
+    model:
+      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: fbx\scenery\trees\pine_leaf_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -77,13 +86,6 @@ entities:
     base_rotation: [-90, 0, 0]
     scale: [1.3, 1, 1.3]
     base_scale: 0.01
-    materials:
-      - name: pine_trunk_pbr
-        alias: MI_TreeBarkPine_01a
-        map_pbr: fbx\scenery\trees\pine_trunk_pbr
-      - name: pine_leaf_pbr
-        alias: MI_PineTree_01a
-        map_pbr: fbx\scenery\trees\pine_leaf_pbr
     render_flags:
       alpha: true
       render_back: true

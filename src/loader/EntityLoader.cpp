@@ -67,8 +67,6 @@ namespace loader {
 
         data.enabled = true;
 
-        bool needSingleMesh = false;
-
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::Node& v = pair.getNode();
@@ -81,7 +79,7 @@ namespace loader {
                 else if (type == "container") {
                     data.type = mesh::EntityType::container;
                 }
-                else if (type == "mesh" || type == "model") {
+                else if (type == "model") {
                     data.type = mesh::EntityType::model;
                 }
                 else if (type == "text") {
@@ -125,7 +123,9 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                needSingleMesh = true;
+                data.type = mesh::EntityType::model;
+                auto& meshData = data.meshes.emplace_back();
+                loadMesh(v, meshData, loaders);
             }
             else if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -167,12 +167,6 @@ namespace loader {
             }
             else if (k == "text") {
                 loadText(v, data.text);
-            }
-            else if (k == "material") {
-                needSingleMesh = true;
-            }
-            else if (k == "material_modifier") {
-                needSingleMesh = true;
             }
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);
@@ -252,7 +246,7 @@ namespace loader {
             else if (k == "script_file") {
                 loaders.m_scriptLoader.loadScript(v, data.script);
             }
-            else if (k == "meshes") {
+            else if (k == "models" || k == "meshes") {
                 loadMeshes(v, data.meshes, loaders);
             }
             else if (k == "lods") {
@@ -261,11 +255,6 @@ namespace loader {
             else {
                 reportUnknown("entity_entry", k, v);
             }
-        }
-
-        if (needSingleMesh && data.meshes.empty()) {
-            auto& meshData = data.meshes.emplace_back();
-            loadMesh(node, meshData, loaders);
         }
 
         if (hasClones) {
@@ -339,7 +328,7 @@ namespace loader {
             if (k == "level") {
                 data.level = readInt(v);
             }
-            else if (k == "model") {
+            else if (k == "mesh") {
                 if (v.isSequence()) {
                     auto& nodes = v.getNodes();
                     data.meshPath = util::joinPath(readString(nodes[0]), readString(nodes[1]));
@@ -347,6 +336,9 @@ namespace loader {
                 else {
                     data.meshPath = readString(v);
                 }
+            }
+            else if (k == "base_dir") {
+                data.baseDir = readString(v);
             }
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
@@ -372,7 +364,7 @@ namespace loader {
                 materialData.modify = true;
                 loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
             } else {
-                reportUnknown("lod_entry", k, v);
+                reportUnknown("model_entry", k, v);
             }
         }
     }

@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 100, 50]
     front: [0, 0, -1]
@@ -26,14 +25,15 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Directional light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-300, 200, -400]
     scale: 2.5
-    model: light
     program: g_Tex
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
@@ -72,13 +72,14 @@ entities:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - name: Water surface - SINGLE
-    model: plane
-    material:
-      name: water_surface
-      kd: [0.55, 0.55, 0.95, 1.0]
-      map_bump: textures/water_surface_512_normal.png
-      map_dudv: textures/waterDUDV_512.png
-      tiling: 2
+    model:
+      mesh: plane
+      material:
+        name: water_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     program: g_water
     pos: [-50, 14.5, -20]
     scale: 70
@@ -88,8 +89,13 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea
-    model: plane
-    material: water_surface
+    model:
+      mesh: plane
+      material:
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     program: g_water
     pos: [0, 14.0, 0]
     scale: 800
@@ -99,11 +105,12 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea floor
-    model: quad
-    material:
-      name: sea_floor
-      map_kd: textures/tiles_1024.png
-      tiling: 8
+    model:
+      mesh: quad
+      material:
+        name: sea_floor
+        map_kd: textures/tiles_1024.png
+        tiling: 8
     program: g_tex
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]

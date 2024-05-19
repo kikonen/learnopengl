@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [9.95, 0, 10]
     front: [0, 0, -1]
@@ -26,13 +25,14 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Base
-    model: cow
-    xxmodel: cube
-    xxmaterial:
-      name: fur_base
-      kd: [0.5075, 0.5075, 0.5075, 1.0]
-      map_kd: textures/Dirt_vh_1024.png
-      tiling: 1
+    model:
+      mesh: cow
+      xmesh: cube
+      xxmaterial:
+        name: fur_base
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        map_kd: textures/Dirt_vh_1024.png
+        tiling: 1
     program: g_tex
     render_flags:
       xxwireframe: true
@@ -46,14 +46,15 @@ entities:
       z_step: -15
   - name: Directional light
     type: origo
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]

@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 20, 60]
     front: [0, 0, -1]
@@ -31,27 +30,29 @@ entities:
     render_flags:
       cube_map: true
   - name: Directional light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 55, 60]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 50000
   - name: Pool floor
-    model: quad
-    material:
-      name: pool_floor
-      kd: [0.8, 0.8, 0.8, 1.0]
-      xxmap_kd: textures/Marble White_VH_512.PNG
-      xmap_kd: textures/tiles_1024.png
-      map_pbr: textures\Tiles074_1K-PNG
-      tiling: 16
+    model:
+      mesh: quad
+      material:
+        name: pool_floor
+        kd: [0.8, 0.8, 0.8, 1.0]
+        xxmap_kd: textures/Marble White_VH_512.PNG
+        xmap_kd: textures/tiles_1024.png
+        map_pbr: textures\Tiles074_1K-PNG
+        tiling: 16
     program: g_tex
     pos: [0.0, 0.1, 0]
     rotation: [270.0, 0.0, 0.0]
@@ -59,13 +60,14 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface
-    model: plane
-    material:
-      name: pool_surface
-      kd: [0.55, 0.55, 0.95, 1.0]
-      map_bump: textures/water_surface_512_normal.png
-      map_dudv: textures/waterDUDV_512.png
-      tiling: 2
+    model:
+      mesh: plane
+      material:
+        name: pool_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     program: g_water
     pos: [0, 3.1, 0]
     scale: 100
@@ -75,12 +77,13 @@ entities:
       water: true
     script_file: scripts/anim_water_lucy
   - name: Pool side
-    model: pool_brick
+    model:
+      mesh: pool_brick
+      material_modifier:
+        map_pbr: textures\Tiles004_1K-PNG
+        tiling_x: 90
+        tiling_y: 6
     program: g_tex
-    material_modifier:
-      map_pbr: textures\Tiles004_1K-PNG
-      tiling_x: 90
-      tiling_y: 6
     clones:
       - pos: [-100.0, -1, 0]
         scale: [0.3, 6, 100]
@@ -91,22 +94,23 @@ entities:
       - pos: [0.0, -1, 100]
         scale: [100, 6, 0.3]
   - name: Lucy statue
-    model: lucy
+    model:
+      mesh: lucy
+      xmaterial:
+        name: gold_ball
+        kd: [0.7516, 0.6065, 0.2265, 1.0]
+        reflection: 0.05
+      material_modifier:
+        xreflection: 0.05
+        map_pbr: textures\Metal007_1K-PNG
+        xmap_pbr: textures\Graffiti
+        tiling: 9
+        parallax_depth: 0.0
     xmodel: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     scale: 4
-    xmaterial:
-      name: gold_ball
-      kd: [0.7516, 0.6065, 0.2265, 1.0]
-      reflection: 0.05
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Metal007_1K-PNG
-      xmap_pbr: textures\Graffiti
-      tiling: 9
-      parallax_depth: 0.0
     xxrender_flags:
       render_back: true
     audio:
@@ -123,14 +127,15 @@ entities:
           loop: true
     script_file: scripts/anim_lucy
   - name: Big mirror 2
-    model: quad
-    material:
-      name: mirror
-      kd: [0.800000, 0.800000, 0.800000, 1.0]
-      map_kd: textures/Marble White_VH_512.PNG
-      reflection: 0.5
-      refraction: 0.05
-      refraction_ratio: [1.0, 1.52]
+    model:
+      mesh: quad
+      material:
+        name: mirror
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512.PNG
+        reflection: 0.5
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
     program: g_mirror
     pos: [30.0, 25.0, -40.0]
     rotation: [0.0, -45.0, 0.0]

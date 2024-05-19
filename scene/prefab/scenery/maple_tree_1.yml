@@ -1,0 +1,22 @@
+--
+prefab:
+  name: Maple tree
+  base_dir: fbx/scenery/trees
+  type: model
+  model:
+    mesh: Maple_02.fbx
+    materials:
+      - name: maple_trunk
+        alias: Tree_0Mat
+        map_kd: textures/bark02.png
+        map_bump: textures/bark02_normal.png
+        - name: maple_leaf
+          alias: Tree_1Mat
+          map_kd: textures/leaf maple.png
+          map_bump: textures/leaf maple_Normal.png
+  program: g_tex
+  pos: [0, 0, 0]
+  base_scale: 0.05
+  render_flags:
+    alpha: true
+    render_back: true

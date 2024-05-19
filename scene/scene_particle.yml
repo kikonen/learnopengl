@@ -8,14 +8,15 @@ script:
     - path: lib/common
 entities:
   - id: player
-    model: water_ball
+    model:
+      mesh: water_ball
+      material_modifier:
+        tiling: 5
     program: g_tex
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 1.0
-    material_modifier:
-      tiling: 5
     render_flags:
       allow_normals: false
     active: true
@@ -27,6 +28,11 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
+    model:
+      material:
+        - name: fps_text
+          kd: [0.0, 0.8, 0.0, 1.0]
+          xmetal: [1.0, 0.0, 0, 1]
     text:
       font: fps_font
       text: "- fps"
@@ -34,10 +40,6 @@ entities:
     shadow_program: shadow_font_render
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
-    material:
-      - name: fps_text
-        kd: [0.0, 0.8, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
     render_flags:
       billboard: true
       alpha: true
@@ -52,12 +54,13 @@ entities:
     camera:
       default: true
   - name: origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material_modifier:
-      kd: [0.0, 0.2, 0.8, 1.0]
     particle:
       material:
         name: particle_firespin
@@ -69,7 +72,8 @@ entities:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
   - id: four_cubes_{c}
-    model: texture_cube_3
+    model:
+      mesh: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
@@ -115,11 +119,12 @@ entities:
             texture_spec:
               wrap: GL_CLAMP_TO_EDGE
   - id: skeleton_army_2_{t}
-    model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material:
-      name: skeleton_pbr
-      map_pbr: fbx/creatures/skeleton/skeleton_pbr
-      metal: [0.3, 0.4, 0, 1]
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -140,36 +145,36 @@ entities:
     program: g_tex
     render_flags:
       render_back: true
-    meshes:
-      - model: [rock2, rock]
+    models:
+      - mesh: [rock2, rock]
         level: 0
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [1, 1, 0]
           tiling: 4
-      - model: [rock2, rock_lod_1]
+      - mesh: [rock2, rock_lod_1]
         level: 1
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [0, 1, 1]
           tiling: 4
-      - model: [rock2, rock_lod_2]
+      - mesh: [rock2, rock_lod_2]
         level: 2
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 0, 1]
           tiling: 4
-      - model: [rock2, rock_lod_3]
+      - mesh: [rock2, rock_lod_3]
         level: 3
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 1, 0]
           tiling: 4
-      - model: [rock2, rock_lod_4]
+      - mesh: [rock2, rock_lod_4]
         level: 4
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
@@ -184,27 +189,27 @@ entities:
       - distance: 100
     pos: [0, 2, -10]
   - id: wooden_floor
-    model: plane
-    xxmodel: woodwall
-    material:
-      name: wood_floor
-      map_pbr: textures\Planks 09 [8K]
-      parallax_depth: 0.0
-      tiling: 10
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        parallax_depth: 0.0
+        tiling: 10
     program: g_tex
     render_flags:
       no_shadow: true
     scale: 100
   - name: Directional light
-    type: model
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-25, 45, 0]
     scale: 1.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]

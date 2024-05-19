@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -27,8 +26,9 @@ entities:
       - type: camera_zoom
   - name: Directional light
     type: origo
+    model:
+      mesh: light
     pos: [-15, 25, 25]
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -42,11 +42,12 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: plane
-    material:
-      name: wood_floor
-      map_pbr: textures\Planks 09 [8K]
-      tiling: 60
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -54,7 +55,8 @@ entities:
       no_shadow: true
     scale: 100
   - id: object
-    model: texture_cube_4/texture_cube_4.fbx
+    model:
+      mesh: texture_cube_4/texture_cube_4.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]

@@ -3,14 +3,11 @@ name: Terrain
 viewports:
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
 entities:
-  - name: Plauer
-    id: player
+  - id: player
     type: origo
     pos: [0, 200, 100]
     front: [0, 0, -1]

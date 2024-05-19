@@ -25,46 +25,46 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Other
-    model: texture_cube
+    model:
+      mesh: texture_cube
+      material_modifier:
+        tiling: 3
+        map_pbr: textures\Bricks007_1K-PNG
     program: g_tex
-    material_modifier:
-      tiling: 3
-      map_pbr: textures\Bricks007_1K-PNG
     pos: [0.0, 2.0, 0.0]
     repeat:
       z_count: 20
       z_step: -10
   - name: Directional light
-    type: model
-    xxpos: [0, 25, 25]
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-25, 25, 0]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
   - id: maple_tree_forest_{t}
-    type: model
-    model: fbx/scenery/trees/Maple_02.fbx
+    model:
+      mesh: fbx/scenery/trees/Maple_02.fbx
+      materials:
+        - name: maple_trunk
+          alias: Tree_0Mat
+          map_kd: fbx/scenery/trees/textures/bark02.png
+          map_bump: fbx/scenery/trees/textures/bark02_normal.png
+        - name: maple_leaf
+          alias: Tree_1Mat
+          map_kd: fbx/scenery/trees/textures/leaf maple.png
+          map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
     program: g_tex
     priority: 1
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
-    materials:
-      - name: maple_trunk
-        alias: Tree_0Mat
-        map_kd: fbx/scenery/trees/textures/bark02.png
-        map_bump: fbx/scenery/trees/textures/bark02_normal.png
-      - name: maple_leaf
-        alias: Tree_1Mat
-        map_kd: fbx/scenery/trees/textures/leaf maple.png
-        map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
     render_flags:
       alpha: true
       render_back: true
@@ -76,12 +76,13 @@ entities:
       x_step: 20
       z_step: -20
   - id: skeleton_army_grid_2_{t}
-    model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material:
-      name: skeleton_pbr
-      map_pbr: fbx/creatures/skeleton/skeleton_pbr
-      metal: [0.3, 0.4, 0, 1]
-      ke: [0.0, 0.1, 0.0]
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
+        ke: [0.0, 0.1, 0.0]
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -99,12 +100,13 @@ entities:
       x_step: 10
       z_step: -10
   - id: skeleton_army_2_{t}
-    model: fbx/creatures/skeleton/skeleton_animated.FBX
-    material:
-      name: skeleton_pbr
-      map_pbr: fbx/creatures/skeleton/skeleton_pbr
-      metal: [0.3, 0.4, 0, 1]
-      ke: [0.0, 0.1, 0.0]
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
+        ke: [0.0, 0.1, 0.0]
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -127,23 +129,26 @@ entities:
     render_flags:
       cube_map: true
   - name: Mirror ball
-    model: glass_ball
+    model:
+      mesh: glass_ball
+      material_modifier:
+        reflection: 0.8
     program: g_tex
     pos: [0, 5, 10]
     scale: 1
-    material_modifier:
-      reflection: 0.8
   - name: Planet 1
-    model: [planet, planet]
+    model:
+      mesh: planet/planet
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
-    model: [planet, planet]
+    model:
+      mesh: planet/planet
+      material_modifier:
+        map_bump: mars_normal.png
     program: g_tex
     pos: [0, 3.5, 30]
-    material_modifier:
-      map_bump: mars_normal.png
     scale: 1
   - name: Cube map - wood_wall
     type: origo
@@ -151,12 +156,13 @@ entities:
     render_flags:
       cube_map: true
   - name: Wood wall
-    model: quad
-    material:
-      name: woodwall
-      map_kd: textures/wood_1024.png
-      xreflection: 0.4
-      metal: [1, 0, 0, 1]
+    model:
+      mesh: quad
+      material:
+        name: woodwall
+        map_kd: textures/wood_1024.png
+        xreflection: 0.4
+        metal: [1, 0, 0, 1]
     program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
@@ -167,11 +173,12 @@ entities:
       x_count: 1
       x_step: 1
   - name: wooden floor
-    model: plane
-    material:
-      name: wood_floor
-      map_pbr: textures\Planks 09 [8K]
-      tiling: 60
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:

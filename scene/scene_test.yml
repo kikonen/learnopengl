@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 0]
     front: [0, 0, -1]
@@ -26,47 +25,30 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Window 1
-    model: window1
+    model:
+      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+      material:
+        name: door_glass_1_pbr
+        map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
     program: g_tex
     pos: [0.0, 0.0, -8.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 2
+    base_scale: 0.01
     render_flags:
       blend_oit: true
       render_back: true
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
-    model: light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     program: g_light
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-materials:
-  - name: default
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: teapot
-    kd: [0.578, 0.578, 0.168, 1.0]
-    reflection: 0.05
-  - name: cow
-    kd: [0.160, 0.578, 0.168, 1.0]
-    reflection: 0.05
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-    reflection: 0.05
-  - name: gold_ball
-    kd: [0.7516, 0.6065, 0.2265, 1.0]
-    reflection: 0.05
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-    reflection: 0.05
-  - name: bronze_ball
-    kd: [0.7140, 0.4284, 0.1814, 1.0]
-    reflection: 0.05

@@ -21,11 +21,12 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Pool side
-    model: pool_brick
+    model:
+      mesh: pool_brick
+      material_modifier:
+        tiling_x: 30
+        tiling_y: 2
     program: g_tex
-    material_modifier:
-      tiling_x: 30
-      tiling_y: 2
     clones:
       - pos: [0.0, 0, -40]
         scale: [60, 6, 0.3]

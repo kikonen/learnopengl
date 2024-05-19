@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 0]
     front: [0, 0, -1]
@@ -26,10 +25,11 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Spyro
-    model: spyro2
+    model:
+      mesh: spyro2
+      material_modifier:
+        map_pbr: textures/Lava 05 [8K]
+        tiling: 6
     program: g_tex
-    material_modifier:
-      map_pbr: textures/Lava 05 [8K]
-      tiling: 6
     pos: [0.0, 0.0, -30.0]
     scale: 0.06
