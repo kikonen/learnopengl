@@ -62,6 +62,7 @@ namespace {
         std::regex(".*[-_ ]c[\\.].*"),
         std::regex(".*[-_ ]bc[\\.].*"),
         std::regex(".*[-_ ]a_m[\\.].*"),
+        std::regex(".*[-_ ]b[\\.].*"),
     };
 
     const std::vector<std::regex> emissionMatchers{
