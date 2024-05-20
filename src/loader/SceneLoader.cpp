@@ -702,7 +702,10 @@ namespace loader {
 
             if (meshSet) {
                 for (auto& animationData : meshData.animations) {
-                    loadAnimation(*meshSet, animationData);
+                    loadAnimation(
+                        meshData.baseDir,
+                        animationData,
+                        *meshSet);
                 }
 
                 meshCount += type->addMeshSet(
@@ -769,8 +772,9 @@ namespace loader {
     }
 
     void SceneLoader::loadAnimation(
-        mesh::MeshSet& meshSet,
-        const AnimationData& data)
+        const std::string& baseDir,
+        const AnimationData& data,
+        mesh::MeshSet& meshSet)
     {
         if (!meshSet.isRigged()) return;
 
@@ -778,9 +782,19 @@ namespace loader {
 
         animation::AnimationLoader loader{};
 
-        std::string filePath = util::joinPath(
-            meshSet.m_rootDir,
-            data.path);
+        std::string filePath;
+        {
+            filePath = util::joinPathExt(
+                meshSet.m_rootDir,
+                baseDir,
+                data.path, "");
+        }
+
+        if (!util::fileExists(filePath)) {
+            filePath = util::joinPath(
+                meshSet.m_rootDir,
+                data.path);
+        }
 
         loader.loadAnimations(
             *meshSet.m_rig,

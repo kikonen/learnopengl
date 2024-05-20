@@ -61,9 +61,9 @@ entities:
       mesh: fbx/chracters/SK_Character_PunkGuy.fbx
       material:
         name: skin
-        xmap_kd: fbx/characters/skaterMaleA.png
-        map_kd: fbx/characters/Polygon_City_Characters_Texture_01_C.png
-        map_kd: fbx/characters/skaterMaleA.png
+        xmap_kd: skaterMaleA.png
+        map_kd: Polygon_City_Characters_Texture_01_C.png
+        map_kd: skaterMaleA.png
         metal: [0.3, 0.4, 0, 1]
         xtiling: 60
     program: g_tex
@@ -83,10 +83,10 @@ entities:
       mesh: fbx/creatures/wolf/SK_Wolf.FBX
       material:
         name: wolf_pbr
-        map_pbr: fbx/creatures/wolf/wolf_pbr
+        map_pbr: wolf_pbr
       animations:
         - name: walk
-          path: fbx/creatures/wolf/anim/ANIM_Wolf_Walk_RM.FBX
+          path: anim/ANIM_Wolf_Walk_RM.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-30.0, 0.0, 0.0]
@@ -109,18 +109,18 @@ entities:
       mesh: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
-        map_pbr: fbx/creatures/lion/lion_skin_pbr
+        map_pbr: lion_skin_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
       animations:
         - name: walk
-          path: fbx/creatures/lion/anim/Lion@Walk.FBX
+          path: anim/Lion@Walk.FBX
         - name: jump
-          path: fbx/creatures/lion/anim/Lion@Jump.FBX
+          path: anim/Lion@Jump.FBX
         - name: idle
-          path: fbx/creatures/lion/anim/Lion@IdleBreathe.FBX
+          path: anim/Lion@IdleBreathe.FBX
         - name: roar
-          path: fbx/creatures/lion/anim/Lion@Roar.FBX
+          path: anim/Lion@Roar.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-20.0, 0.0, 0.0]
@@ -149,16 +149,16 @@ entities:
       mesh: fbx/creatures/deinodonte/Deinodonte.FBX
       material:
         name: deinodonte_pbr
-        map_pbr: fbx/creatures/deinodonte/deinodonte_pbr
+        map_pbr: deinodonte_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
       animations:
         - name: idle
-          path: fbx/creatures/deinodonte/anim/Deinodonte@IdleBreathe.FBX
+          path: anim/Deinodonte@IdleBreathe.FBX
         - name: walk
-          path: fbx/creatures/deinodonte/anim/Deinodonte@Walk_RM.FBX
+          path: anim/Deinodonte@Walk_RM.FBX
         - name: attack_claw_left
-          path: fbx/creatures/deinodonte/anim/Deinodonte@ClawsAttackLeft.FBX
+          path: anim/Deinodonte@ClawsAttackLeft.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 8.0, -10.0]
@@ -181,12 +181,12 @@ entities:
       mesh: fbx/characters/elf/Elf Female.fbx
       material:
         name: elf_pbr
-        map_pbr: fbx/characters/elf/elf_female_pbr
+        map_pbr: elf_female_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
       animations:
         - name: walk
-          path: fbx/characters/elf/anim/Elf Animations.FBX
+          path: anim/Elf Animations.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -210,17 +210,17 @@ entities:
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
-          map_pbr: fbx/characters/scavenger/scavenger_body_pbr
+          map_pbr: scavenger_body_pbr
         - name: scavenger_hair_pbr
           alias: "Material #11"
-          map_pbr: fbx/characters/scavenger/scavenger_hair_pbr
+          map_pbr: scavenger_hair_pbr
         - name: scavenger_backback_pbr
           alias: 01 - Default
-          map_pbr: fbx/characters/scavenger/scavenger_body_pbr
+          map_pbr: scavenger_body_pbr
       xanimations:
         - name: walk
-          path: fbx/characters/scavenger/Scavenger.fbx
-          xpath: fbx/characters/scavenger/anim/Humanoid@WalkForwardUnarmed.FBX
+          path: Scavenger.fbx
+          xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
@@ -244,12 +244,12 @@ entities:
       mesh: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
-        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
       xanimations:
         - name: walk
-          path: fbx/creatures/skeleton/anim/Humanoid@WalkForwardUnarmed2.fbx
+          path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [20.0, 2.0, 0.0]

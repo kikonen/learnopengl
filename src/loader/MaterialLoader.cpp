@@ -200,10 +200,7 @@ namespace loader {
                 fields.illum = true;
             }
             else if (k == "map_pbr") {
-                std::string line = readString(v);
-                loadMaterialPbr(
-                    line,
-                    data);
+                data.materialPbr = readString(v);
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
@@ -335,15 +332,30 @@ namespace loader {
         }
     }
 
+    void MaterialLoader::resolveMaterialPbr(
+        const std::string& baseDir,
+        MaterialData& data) const
+    {
+        if (data.materialPbr.empty()) return;
+        loadMaterialPbr("", data.materialPbr, data);
+        loadMaterialPbr(baseDir, data.materialPbr, data);
+    }
+
     void MaterialLoader::loadMaterialPbr(
+        const std::string& baseDir,
         const std::string& pbrName,
         MaterialData& data) const
     {
+        if (data.materialPbr.empty()) return;
+
         const auto& assets = Assets::get();
 
-        const std::string basePath = util::joinPath(
+        const std::string basePath = util::joinPathExt(
             assets.assetsDir,
-            pbrName);
+            baseDir,
+            pbrName, "");
+
+        if (!util::dirExists(basePath)) return;
 
         std::vector<std::filesystem::directory_entry> normalEntries;
         std::vector<std::filesystem::directory_entry> ktxEntries;
@@ -353,7 +365,7 @@ namespace loader {
             std::string matchName{ util::toLower(fileName) };
 
             if (util::matchAny(texturesMatchers, matchName)) {
-                loadMaterialPbr(pbrName + "\\" + fileName, data);
+                loadMaterialPbr(baseDir, pbrName + "\\" + fileName, data);
                 return;
             }
 
@@ -372,14 +384,14 @@ namespace loader {
 
         std::vector<std::string> failedEntries;
         for (const auto& dirEntry : normalEntries) {
-            if (!handlePbrEntry(pbrName, dirEntry, data)) {
+            if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
                 failedEntries.push_back(dirEntry.path().filename().string());
             }
         }
 
         if (assets.compressedTexturesEnabled) {
             for (const auto& dirEntry : ktxEntries) {
-                if (!handlePbrEntry(pbrName, dirEntry, data)) {
+                if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
                     failedEntries.push_back(dirEntry.path().filename().string());
                 }
             }
@@ -391,6 +403,7 @@ namespace loader {
     }
 
     bool MaterialLoader::handlePbrEntry(
+        const std::string& baseDir,
         const std::string& pbrName,
         const std::filesystem::directory_entry& dirEntry,
         MaterialData& data) const
@@ -401,7 +414,10 @@ namespace loader {
         MaterialField& fields = data.fields;
 
         const std::string fileName = dirEntry.path().filename().string();
-        const std::string assetPath = util::joinPath(pbrName, fileName);
+        const std::string assetPath = util::joinPathExt(
+            baseDir,
+            pbrName,
+            fileName, "");
 
         std::string matchName{ util::toLower(fileName) };
 

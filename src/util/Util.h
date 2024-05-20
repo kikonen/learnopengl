@@ -52,6 +52,7 @@ namespace util
         const std::string& str);
 
     bool fileExists(std::string_view filePath);
+    bool dirExists(std::string_view filePath);
 
     std::string readFile(
         std::string_view basePath,

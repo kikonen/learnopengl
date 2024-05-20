@@ -150,8 +150,9 @@ namespace loader {
             const LodData& lodData);
 
         void loadAnimation(
-            mesh::MeshSet& meshSet,
-            const AnimationData& data);
+            const std::string& baseDir,
+            const AnimationData& data,
+            mesh::MeshSet& meshSet);
 
         pool::NodeHandle createNode(
             pool::TypeHandle typeHandle,

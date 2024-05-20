@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <functional>
 #include <ranges>
+#include <sys/stat.h>
 
 #include <fmt/format.h>
 
@@ -133,6 +134,13 @@ namespace util {
     {
         std::ifstream f(std::string{ filePath });
         return f.good();
+    }
+
+    bool dirExists(std::string_view filePath)
+    {
+        // https://www.geeksforgeeks.org/how-to-check-a-file-or-directory-exists-in-cpp/
+        // https://stackoverflow.com/questions/18100097/portable-way-to-check-if-directory-exists-windows-linux-c
+        return std::filesystem::is_directory(filePath);
     }
 
     std::string readFile(std::string_view basePath, std::string_view filename)

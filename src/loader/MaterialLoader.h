@@ -25,11 +25,17 @@ namespace loader {
             const loader::Node& node,
             MaterialData& data) const;
 
+        void resolveMaterialPbr(
+            const std::string& baseDir,
+            MaterialData& data) const;
+
         void loadMaterialPbr(
+            const std::string& baseDir,
             const std::string& pbrName,
             MaterialData& data) const;
 
         bool handlePbrEntry(
+            const std::string& baseDir,
             const std::string& pbrName,
             const std::filesystem::directory_entry& dirEntry,
             MaterialData& data) const;

@@ -336,6 +336,11 @@ namespace loader {
                 else {
                     data.meshPath = readString(v);
                 }
+
+                if (data.baseDir.empty()) {
+                    std::filesystem::path path{ data.meshPath };
+                    data.baseDir = path.parent_path().string();
+                }
             }
             else if (k == "base_dir") {
                 data.baseDir = readString(v);
@@ -366,6 +371,10 @@ namespace loader {
             } else {
                 reportUnknown("model_entry", k, v);
             }
+        }
+
+        for (auto& materialData : data.materials) {
+            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
         }
     }
 

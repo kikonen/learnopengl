@@ -29,7 +29,7 @@ entities:
       mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
-        map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
+        map_pbr: door_glass_1_pbr
     program: g_tex
     pos: [0.0, 0.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
