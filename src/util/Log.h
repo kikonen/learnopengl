@@ -27,6 +27,7 @@ class Log
 {
 public:
     static void init();
+    static void shutdown();
     static void flush() noexcept;
 
     static void critical(std::string_view msg) noexcept;
