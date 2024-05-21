@@ -24,20 +24,6 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - name: Window 1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-    program: g_tex
-    pos: [0.0, 0.0, -8.0]
-    base_rotation: [-90.0, 0.0, 0.0]
-    scale: 2
-    base_scale: 0.01
-    render_flags:
-      blend_oit: true
-      render_back: true
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
@@ -52,3 +38,17 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
+  - id: object_{t}
+    model:
+      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+      material:
+        name: door_glass_1_pbr
+        map_pbr: door_glass_1_pbr
+    program: g_tex
+    pos: [0.0, 0.0, -8.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 2
+    base_scale: 0.01
+    render_flags:
+      blend_oit: true
+      render_back: true
