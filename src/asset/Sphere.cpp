@@ -92,7 +92,7 @@ void Sphere::updateVolume(
         return;
     }
 
-    if (m_center == ZERO) {
+    if (false && m_center == ZERO) {
         m_worldCenter = worldPos;
     }
     else {

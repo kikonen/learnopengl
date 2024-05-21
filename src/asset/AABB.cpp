@@ -37,11 +37,11 @@ void AABB::merge(const AABB& o)
 
 void AABB::updateVolume()
 {
-    //const glm::vec3 center2 = (m_max + m_min) * 0.5f;
-    //const float radius2 = glm::length(m_min - m_max) * 0.5f;
+    const glm::vec3 center = (m_max + m_min) * 0.5f;
+    const float radius = glm::length(m_min - m_max) * 0.5f;
 
-    const glm::vec3 center{ 0.f };
-    const float radius = std::max(glm::length(m_min), glm::length(m_max));
+    //const glm::vec3 center{ 0.f };
+    //const float radius = std::max(glm::length(m_min), glm::length(m_max));
 
     //std::cout << fmt::format("avg_center={}, avg_radius={}, max_radius={}\n", center2, radius2, radius);
 
