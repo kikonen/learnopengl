@@ -76,6 +76,7 @@ namespace mesh {
         uint16_t lodLevel)
     {
         uint16_t count = 0;
+
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
             if (lodMesh->m_lodLevel < 0) {
@@ -83,6 +84,10 @@ namespace mesh {
             }
             count++;
         }
+
+        // NOTE KI ensure volume is containing all meshes
+        prepareVolume();
+
         return count;
     }
 
@@ -198,5 +203,23 @@ namespace mesh {
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }
         return flags;
+    }
+
+    void MeshType::prepareVolume() noexcept {
+        m_aabb = calculateAABB();
+    }
+
+    AABB MeshType::calculateAABB() const noexcept
+    {
+        AABB aabb{ true };
+
+        for (auto& lodMesh : *m_lodMeshes) {
+            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+            if (!mesh) continue;
+            mesh->prepareVolume();
+            aabb.merge(mesh->getAABB());
+        }
+
+        return aabb;
     }
 }

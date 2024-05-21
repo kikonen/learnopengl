@@ -201,7 +201,7 @@ namespace mesh
                         meshIndex,
                         mesh);
 
-                    meshSet.m_meshes.push_back(std::move(modelMesh));
+                    meshSet.addMesh(std::move(modelMesh));
                 }
             }
         }

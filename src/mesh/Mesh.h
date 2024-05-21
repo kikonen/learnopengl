@@ -31,7 +31,7 @@ namespace mesh {
 
         virtual bool isValid() const noexcept { return true; }
         virtual void prepareVolume();
-        virtual const AABB calculateAABB() const = 0;
+        virtual AABB calculateAABB() const noexcept = 0;
 
         void setMaterial(const Material& material) noexcept
         {

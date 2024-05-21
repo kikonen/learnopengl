@@ -47,22 +47,15 @@ namespace mesh {
         return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
     }
 
-    const AABB ModelMesh::calculateAABB() const {
-        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
-        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+    AABB ModelMesh::calculateAABB() const noexcept {
+        AABB aabb{ true };
 
         for (auto&& vertex : m_vertices)
         {
-            minAABB.x = std::min(minAABB.x, vertex.pos.x);
-            minAABB.y = std::min(minAABB.y, vertex.pos.y);
-            minAABB.z = std::min(minAABB.z, vertex.pos.z);
-
-            maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
-            maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
-            maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+            aabb.minmax(vertex.pos);
         }
 
-        return { minAABB, maxAABB, false };
+        return aabb;
     }
 
     const kigl::GLVertexArray* ModelMesh::prepareRT(

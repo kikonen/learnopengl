@@ -30,13 +30,20 @@ namespace mesh {
         bool isEmpty() const noexcept;
         bool isRigged() const noexcept;
 
-        const AABB& getAABB() const {
+        const AABB& getAABB() const noexcept
+        {
             return m_aabb;
         }
 
-        void prepareVolume();
+        // Take ownership of mesh
+        mesh::Mesh* addMesh(std::unique_ptr<mesh::Mesh>&& mesh) noexcept;
 
         std::vector<std::unique_ptr<mesh::Mesh>>& getMeshes() noexcept;
+
+        void prepareVolume() noexcept;
+
+    private:
+        AABB calculateAABB() const noexcept;
 
     public:
         const std::string m_rootDir;

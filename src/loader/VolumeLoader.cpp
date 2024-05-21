@@ -95,11 +95,11 @@ namespace loader {
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
-        meshSet->prepareVolume();
+        {
+            auto& transform = node->modifyTransform();
 
-        auto& transform = node->modifyTransform();
-
-        transform.setVolume(meshSet->getAABB().getVolume());
+            transform.setVolume(meshSet->getAABB().getVolume());
+        }
 
         {
             event::Event evt { event::Type::node_add };

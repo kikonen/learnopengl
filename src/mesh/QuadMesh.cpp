@@ -39,7 +39,7 @@ namespace mesh {
         return fmt::format("<QUAD: id={}>", m_id);
     }
 
-    const AABB QuadMesh::calculateAABB() const
+    AABB QuadMesh::calculateAABB() const noexcept
     {
         return QUAD_AABB;
     }

@@ -106,7 +106,7 @@ protected:
         m_activeCount = count;
     }
 
-    const glm::vec4 calculateVolume();
+    glm::vec4 calculateVolume() const noexcept;
 
 protected:
     uint32_t m_poolSize = 0;

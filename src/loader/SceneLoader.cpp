@@ -854,12 +854,16 @@ namespace loader {
 
         auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
 
-        auto* lodMesh = type->getLodMesh(0);
-        if (lodMesh) {
-            auto* mesh = lodMesh->m_mesh;
-            if (mesh) {
-                transform.setVolume(mesh->getAABB().getVolume());
-                baseTransform = baseTransform * mesh->m_transform;
+        {
+            transform.setVolume(type->getAABB().getVolume());
+
+            // TODO KI basetransform goes *PER* mesh now
+            auto* lodMesh = type->getLodMesh(0);
+            if (lodMesh) {
+                auto* mesh = lodMesh->m_mesh;
+                if (mesh) {
+                    baseTransform = baseTransform * mesh->m_transform;
+                }
             }
         }
 

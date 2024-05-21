@@ -7,6 +7,7 @@
 #include "backend/DrawOptions.h"
 
 #include "asset/Material.h"
+#include "asset/AABB.h"
 
 #include "ki/limits.h"
 
@@ -132,6 +133,16 @@ namespace mesh {
 
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 
+        const AABB& getAABB() const noexcept
+        {
+            return m_aabb;
+        }
+
+        void prepareVolume() noexcept;
+
+    private:
+        AABB calculateAABB() const noexcept;
+
     public:
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };
@@ -141,6 +152,7 @@ namespace mesh {
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
+        AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };

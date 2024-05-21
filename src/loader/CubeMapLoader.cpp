@@ -91,14 +91,15 @@ namespace loader {
 
         node->m_visible = false;
 
-        auto& transform = node->modifyTransform();
+        {
+            auto& transform = node->modifyTransform();
 
-        //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-        transform.setScale(4.f);
+            //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
+            transform.setScale(4.f);
 
-        // NOTE KI m_radius = 1.73205078
-        meshSet->prepareVolume();
-        transform.setVolume(meshSet->getAABB().getVolume());
+            // NOTE KI m_radius = 1.73205078
+            transform.setVolume(meshSet->getAABB().getVolume());
+        }
 
         {
             event::Event evt { event::Type::node_add };

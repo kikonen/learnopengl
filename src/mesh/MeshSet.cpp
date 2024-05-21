@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "util/glm_format.h"
+#include "util/Log.h"
 #include "util/Util.h"
 
 #include "animation/RigContainer.h"
@@ -44,12 +46,26 @@ namespace mesh {
         return m_rig->hasBones();
     }
 
-    void MeshSet::prepareVolume()
+    void MeshSet::prepareVolume() noexcept {
+        m_aabb = calculateAABB();
+    }
+
+    AABB MeshSet::calculateAABB() const noexcept
     {
+        AABB aabb{ true };
+
         for (auto& mesh : m_meshes) {
             mesh->prepareVolume();
+            aabb.merge(mesh->getAABB());
         }
-        m_aabb = m_meshes[0]->getAABB();
+
+        return aabb;
+    }
+
+    mesh::Mesh* MeshSet::addMesh(std::unique_ptr<mesh::Mesh>&& mesh) noexcept
+    {
+        m_meshes.push_back(std::move(mesh));
+        return m_meshes[m_meshes.size() - 1].get();
     }
 
     std::vector<std::unique_ptr<mesh::Mesh>>& MeshSet::getMeshes() noexcept
