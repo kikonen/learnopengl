@@ -80,7 +80,7 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
     bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
     m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix * m_baseTransform;
-    m_modelScale = parent.m_modelScale * m_baseScale * m_scale;
+    m_modelScale = glm::mat3{ s_scaleMatrix * m_baseTransform } * parent.m_modelScale;
 
     {
         const auto& wp = m_modelMatrix[3];
