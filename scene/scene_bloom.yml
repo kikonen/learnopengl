@@ -168,7 +168,7 @@ entities:
     model:
       mesh: planet/planet
       material_modifier:
-        map_bump: mars_normal.png
+        map_bump: planet/mars_normal.png
     program: g_tex
     pos: [0, 3.5, 30]
     scale: 1

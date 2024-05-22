@@ -22,7 +22,7 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } fs_in;
 
@@ -100,13 +100,8 @@ void main() {
   if (u_materials[materialIndex].normalMapTex.x > 0) {
     sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
 
-    const vec3 N = normalize(fs_in.normal);
-    const vec3 T = normalize(fs_in.tangent);
-    const vec3 B = cross(N, T);
-    const mat3 TBN = mat3(T, B, N);
-
     normal = texture(sampler, distortedTexCoord).rgb;
-    normal = normalize(TBN * normal);
+    normal = normalize(fs_in.tbn * normal);
   } else {
     // NOTE KI model *can* have multiple materials; some with normalTex
     normal = normalize(fs_in.normal);

@@ -32,7 +32,7 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } vs_out;
 
@@ -73,19 +73,14 @@ void main() {
   vs_out.normal = normal;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
-    const vec3 N = normal;
-    vec3 T = normalize(normalMatrix * a_tangent);
+  if (u_materials[materialIndex].normalMapTex.x > 0)
+  {
+    vec3 tangent = a_tangent;
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    // NOTE KI Gram-Schmidt process to re-orthogonalize
-    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    const vec3 bitangent = cross(normal, tangent);
 
-    //const vec3 B = cross(N, T);
-
-    vs_out.tangent = T;
-  } else {
-    vs_out.tangent = a_tangent;
+    vs_out.tbn = mat3(tangent, bitangent, normal);
   }
 #endif
 }
