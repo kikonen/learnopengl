@@ -100,7 +100,7 @@ namespace animation {
             s_translateMatrix[3].z = translate.z;
         }
 
-        auto rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks));
+        const auto& rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks));
 
         return s_translateMatrix * rotateMatrix * s_scaleMatrix;
     }

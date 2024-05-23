@@ -66,18 +66,20 @@ namespace animation {
         //for (int16_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++) {
         //}
 
-        std::vector<glm::mat4> parentTransforms;
-        parentTransforms.reserve(rig.m_nodes.size() + 1);
-        parentTransforms.push_back(ID_MAT);
+        constexpr size_t MAX_NODES = 200;
+        glm::mat4 parentTransforms[MAX_NODES + 1];
+        parentTransforms[0] = ID_MAT;
 
         for (const auto& rigNode : rig.m_nodes) {
+            if (rigNode.m_index >= MAX_NODES) throw "too many bones";
             const auto* channel = animation->findByNodeIndex(rigNode.m_index);
             const glm::mat4& nodeTransform = channel
                 ? channel->interpolate(animationTimeTicks)
                 //: rigNode.m_localTransform;
                 : ID_MAT;
 
-            auto globalTransform = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
+            parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
+            const auto& globalTransform = parentTransforms[rigNode.m_index + 1];
 
             auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
@@ -85,8 +87,6 @@ namespace animation {
                 palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
                 //palette[bone->m_index] = rigNode.m_globalInvTransform * nodeTransform * bone->m_offsetMatrix;
             }
-
-            parentTransforms.push_back(globalTransform);
         }
 
         return true;
