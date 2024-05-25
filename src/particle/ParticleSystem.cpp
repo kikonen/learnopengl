@@ -98,6 +98,12 @@ namespace particle {
         if (!isEnabled()) return;
         if (!m_updateReady) return;
 
+        m_frameSkipCount++;
+        if (m_frameSkipCount < 2) {
+            return;
+        }
+        m_frameSkipCount = 0;
+
         updateParticleBuffer();
     }
 

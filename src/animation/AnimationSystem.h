@@ -65,6 +65,7 @@ namespace animation {
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
+        size_t m_frameSkipCount{ 0 };
 
         bool m_needSnapshot{ false };
 

@@ -53,6 +53,8 @@ namespace animation
         m_useFence = assets.glUseFence;
         m_useDebugFence = assets.glUseDebugFence;
 
+        m_frameSkipCount = 1;
+
         m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(BoneTransformSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
     }
@@ -168,6 +170,12 @@ namespace animation
     void AnimationSystem::updateRT(const UpdateContext& ctx)
     {
         if (!m_updateReady) return;
+
+        m_frameSkipCount++;
+        if (m_frameSkipCount < 2) {
+            return;
+        }
+        m_frameSkipCount = 0;
 
         updateBuffer();
     }
