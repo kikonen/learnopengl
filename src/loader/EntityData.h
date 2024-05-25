@@ -44,7 +44,7 @@ namespace loader {
 
         std::string prefabName;
 
-        int priority{ 0 };
+        int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
         std::vector<LodData> lods;
