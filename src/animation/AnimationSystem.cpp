@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <execution>
 
+#include "asset/Assets.h"
 #include "asset/SSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -45,6 +46,13 @@ namespace animation
 
     void AnimationSystem::prepare()
     {
+        const auto& assets = Assets::get();
+
+        m_useMapped = assets.glUseMapped;
+        m_useInvalidate = assets.glUseInvalidate;
+        m_useFence = assets.glUseFence;
+        m_useDebugFence = assets.glUseDebugFence;
+
         m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(BoneTransformSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
     }
@@ -223,6 +231,10 @@ namespace animation
         //m_ssbo.invalidateRange(
         //    0,
         //    totalCount * sz);
+
+        if (m_useInvalidate) {
+            m_ssbo.invalidateRange(0, totalCount * sz);
+        }
 
         m_ssbo.update(
             0,

@@ -79,5 +79,10 @@ namespace animation {
         std::vector<BoneTransformSSBO> m_snapshot;
 
         kigl::GLBuffer m_ssbo{ "bone_transforms_ssbo" };
+
+        bool m_useMapped{ false };
+        bool m_useInvalidate{ false };
+        bool m_useFence{ false };
+        bool m_useDebugFence{ false };
     };
 }
