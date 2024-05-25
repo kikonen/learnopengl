@@ -760,6 +760,7 @@ entities:
       blend: true
       effect: true
       no_select: true
+      no_shadow: true
   - name: Brickcube
     model:
       mesh: texture_cube
@@ -1130,7 +1131,7 @@ entities:
           alias: Tree_2Mat
           map_kd: fbx/scenery/trees/textures/palm02.png
           map_bump: fbx/scenery/trees/textures/palm02_normal.png
-    priority: 1
+    priority: -17
     program: g_tex
     pos: [350, 10.0, 150.0]
     render_flags:
@@ -1157,7 +1158,7 @@ entities:
           alias: Tree_1Mat
           map_kd: fbx/scenery/trees/textures/leaf maple.png
           map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
-    priority: 1
+    priority: -17
     program: g_tex
     pos: [250, 10.0, 150.0]
     render_flags:
@@ -1182,7 +1183,7 @@ entities:
         xmetal: [0.3, 0.4, 0, 1]
     program: g_tex
     shadow_program: simple_depth
-    priority: 1
+    priority: -15
     pos: [35, 11.5, 60.0]
     render_flags:
       dynamic_bounds: true
