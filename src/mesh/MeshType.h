@@ -169,7 +169,8 @@ namespace mesh {
         EntityType m_entityType{ EntityType::origo };
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
-        uint8_t m_priority{ 0 };
+        // range -254 .. 255
+        int8_t m_priority{ 0 };
 
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

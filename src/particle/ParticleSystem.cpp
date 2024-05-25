@@ -98,6 +98,12 @@ namespace particle {
         if (!isEnabled()) return;
         if (!m_updateReady) return;
 
+        m_frameSkipCount++;
+        if (m_frameSkipCount < 2) {
+            return;
+        }
+        m_frameSkipCount = 0;
+
         updateParticleBuffer();
     }
 
@@ -148,6 +154,10 @@ namespace particle {
         //m_ssbo.invalidateRange(
         //    0,
         //    totalCount * sz);
+
+        if (m_useInvalidate) {
+            m_ssbo.invalidateRange(0, totalCount * sz);
+        }
 
         m_ssbo.update(
             0,
