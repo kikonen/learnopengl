@@ -44,16 +44,16 @@ entities:
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
         - name: palm_leaf
           alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-          map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
+          map_kd: textures/coconut palm leaf.png
+          map_bump: textures/coconut palm leaf_Normal.png
         - name: palm_trunk
           alias: Tree_2Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
@@ -74,12 +74,12 @@ entities:
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/bark02.png
-          map_bump: fbx/scenery/trees/textures/bark02_normal.png
+          map_kd: textures/bark02.png
+          map_bump: textures/bark02_normal.png
         - name: maple_leaf
           alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/leaf maple.png
-          map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+          map_kd: textures/leaf maple.png
+          map_bump: textures/leaf maple_Normal.png
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
@@ -101,10 +101,10 @@ entities:
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+          map_pbr: pine_trunk_pbr
         - name: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_pbr: fbx\scenery\trees\pine_leaf_pbr
+          map_pbr: pine_leaf_pbr
     program: g_tex
     pos: [-1000, 0.0, 0.0]
     render_flags:

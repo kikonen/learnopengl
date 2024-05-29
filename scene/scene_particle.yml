@@ -123,7 +123,7 @@ entities:
       mesh: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
-        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        map_pbr: skeleton_pbr
         metal: [0.3, 0.4, 0, 1]
     program: g_tex
     shadow_program: simple_depth

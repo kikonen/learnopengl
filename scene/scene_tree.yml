@@ -76,10 +76,10 @@ entities:
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+          map_pbr: pine_trunk_pbr
         - name: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_pbr: fbx\scenery\trees\pine_leaf_pbr
+          map_pbr: pine_leaf_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]

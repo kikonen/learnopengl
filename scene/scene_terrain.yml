@@ -115,16 +115,16 @@ entities:
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
         - name: palm_leaf
           alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-          map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
+          map_kd: textures/coconut palm leaf.png
+          map_bump: textures/coconut palm leaf_Normal.png
         - name: palm_trunk
           alias: Tree_2Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
     priority: 1
     program: g_tex
     pos: [150, 15.0, 150.0]
@@ -145,7 +145,7 @@ entities:
       mesh: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
-        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
     program: g_tex

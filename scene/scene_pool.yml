@@ -155,12 +155,12 @@ entities:
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/bark02.png
-          map_bump: fbx/scenery/trees/textures/bark02_normal.png
+          map_kd: textures/bark02.png
+          map_bump: textures/bark02_normal.png
         - name: maple_leaf
           alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/leaf maple.png
-          map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+          map_kd: textures/leaf maple.png
+          map_bump: textures/leaf maple_Normal.png
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 70]
@@ -182,7 +182,7 @@ entities:
       materials:
         - name: skeleton_pbr
           alias: "*"
-          map_pbr: fbx/creatures/skeleton/skeleton_pbr
+          map_pbr: skeleton_pbr
           xmetal: [0.3, 0.4, 0, 1]
           xtiling: 60
     priority: 1
@@ -237,7 +237,7 @@ entities:
       materials:
         - name: grass_bush_01_pbr
           alias: M_atlas_grass_01
-          map_pbr: fbx/scenery/foliage/grass_01_pbr
+          map_pbr: grass_01_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [-100.0, 0.0, 140.0]
@@ -319,16 +319,16 @@ entities:
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
         - name: palm_leaf
           alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-          map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
+          map_kd: textures/coconut palm leaf.png
+          map_bump: textures/coconut palm leaf_Normal.png
         - name: palm_trunk
           alias: Tree_2Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
     program: g_tex
     instanced: true
     pos: [240.0, 14, 70]

@@ -33,9 +33,9 @@ entities:
           map_pbr: wyvern_pbr
       animations:
         - name: fire
-          path: fbx/creatures/wyvern/anim/Wyvern@FlyStationarySpreadFire.FBX
+          path: anim/Wyvern@FlyStationarySpreadFire.FBX
         - name: fly
-          path: fbx/creatures/wyvern/anim/Wyvern@FlyStationary.FBX
+          path: anim/Wyvern@FlyStationary.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0, 0]
