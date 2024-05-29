@@ -52,38 +52,51 @@ void Log::init()
     }
 }
 
+void Log::shutdown()
+{
+    flush();
+    g_logger.reset();
+}
+
 void Log::flush() noexcept
 {
+    if (!g_logger) return;
     g_logger->flush();
 }
 
 void Log::critical(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->critical(msg);
 }
 
 void Log::error(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->error(msg);
 }
 
 void Log::warn(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->warn(msg);
 }
 
 void Log::info(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->info(msg);
 }
 
 void Log::debug(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->debug(msg);
 }
 
 void Log::trace(std::string_view msg) noexcept
 {
+    if (!g_logger) return;
     g_logger->trace(msg);
 }
 

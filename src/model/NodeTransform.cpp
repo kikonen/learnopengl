@@ -30,13 +30,13 @@ void NodeTransform::updateRootMatrix() noexcept
         s_translateMatrix[3].y = m_position.y;
         s_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_scale.x;
-        s_scaleMatrix[1].y = m_scale.y;
-        s_scaleMatrix[2].z = m_scale.z;
+        s_scaleMatrix[0].x = m_baseScale.x * m_scale.x;
+        s_scaleMatrix[1].y = m_baseScale.y * m_scale.y;
+        s_scaleMatrix[2].z = m_baseScale.z * m_scale.z;
     }
 
     m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
-    m_modelScale = m_scale;
+    m_modelScale = m_baseScale * m_scale;
 
     {
         const auto& wp = m_modelMatrix[3];
@@ -72,15 +72,15 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
         s_translateMatrix[3].y = m_position.y;
         s_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_scale.x;
-        s_scaleMatrix[1].y = m_scale.y;
-        s_scaleMatrix[2].z = m_scale.z;
+        s_scaleMatrix[0].x = m_baseScale.x * m_scale.x;
+        s_scaleMatrix[1].y = m_baseScale.y * m_scale.y;
+        s_scaleMatrix[2].z = m_baseScale.z * m_scale.z;
     }
 
     bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
     m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix * m_baseTransform;
-    m_modelScale = parent.m_modelScale * m_scale;
+    m_modelScale = glm::mat3{ s_scaleMatrix * m_baseTransform } * parent.m_modelScale;
 
     {
         const auto& wp = m_modelMatrix[3];

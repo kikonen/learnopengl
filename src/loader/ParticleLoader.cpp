@@ -1,6 +1,5 @@
 #include "ParticleLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Material.h"
@@ -8,6 +7,9 @@
 #include "particle/ParticleGenerator.h"
 
 #include "registry/MaterialRegistry.h"
+
+#include "loader/document.h"
+#include "loader/Loaders.h"
 
 namespace loader
 {
@@ -17,14 +19,15 @@ namespace loader
     {}
 
     void ParticleLoader::loadParticle(
-        const YAML::Node& node,
-        ParticleData& data) const
+        const loader::Node& node,
+        ParticleData& data,
+        Loaders& loaders) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "xname" || k == "xxname" || k == "xenabled" || k == "xxenabled") {
                 data.enabled = false;
@@ -36,7 +39,7 @@ namespace loader
                 data.enabled = readBool(v);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
             //else if (k == "size") {
             //    data.size = readFloat(v);
@@ -51,18 +54,14 @@ namespace loader
     }
 
     std::unique_ptr<particle::ParticleGenerator> ParticleLoader::createParticle(
-        const ParticleData& data,
-        const std::vector<MaterialData>& materials) const
+        const ParticleData& data) const
     {
         if (!data.enabled) return nullptr;
 
         auto generator = std::make_unique<particle::ParticleGenerator>();
 
-        auto* material = findMaterial(data.materialName, materials);
-        if (material) {
-            generator->setMaterial(*material);
-            generator->getMaterial().loadTextures();
-        }
+        generator->setMaterial(data.materialData.material);
+        generator->getMaterial().loadTextures();
 
         return generator;
     }

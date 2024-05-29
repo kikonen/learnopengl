@@ -7,6 +7,8 @@
 
 #include "ki/size.h"
 
+#include "asset/Material.h"
+
 #include "RigNode.h"
 #include "BoneContainer.h"
 
@@ -15,7 +17,6 @@ struct aiNode;
 namespace animation {
     struct Animation;
     struct RigNode;
-    struct VertexBone;
 
     struct RigContainer {
         ~RigContainer();
@@ -31,15 +32,12 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
-        void calculateInvTransforms() noexcept;
+        //void calculateInvTransforms() noexcept;
 
         std::vector<animation::RigNode> m_nodes;
 
         BoneContainer m_boneContainer;
-        std::vector<animation::VertexBone> m_vertexBones;
 
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
-
-        std::map<size_t, ki::material_id> m_materialMapping;
     };
 }

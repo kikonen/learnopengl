@@ -4,8 +4,10 @@
 
 #include "asset/Assets.h"
 
-#include "ki/yaml.h"
+#include "util/Log.h"
 #include "util/Util.h"
+
+#include "loader/document.h"
 
 namespace {
     const float DEF_ALPHA = 1.0;
@@ -26,6 +28,14 @@ namespace {
         std::regex(".*[\\.]usda"),
         std::regex(".*preview.*"),
         std::regex(".*normaldx.*"),
+        std::regex(".*bc_neutral.*"),
+
+        std::regex(".*_micron[\\.].*"),
+        std::regex(".*_micronmask[\\.].*"),
+        std::regex(".*_resourcemap_position[\\.].*"),
+        std::regex(".*_resourcemap_wsnormal[\\.].*"),
+        std::regex(".*_sssmap[\\.].*"),
+        std::regex(".*_transmap[\\.].*"),
     };
 
     const std::vector<std::regex> imageMatchers{
@@ -43,28 +53,44 @@ namespace {
         std::regex(".*[-_ ]col[-_ \\.].*"),
         std::regex(".*[-_ ]basecolor[-_ \\.].*"),
         std::regex(".*[-_ ]diff[-_ \\.].*"),
+        std::regex(".*[-_ ]alb[-_ \\.].*"),
         std::regex(".*[-_ ]albedo[-_ \\.].*"),
         std::regex(".*[-_ ]albedoopacity[-_ \\.].*"),
         std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
+        std::regex(".*[-_ ]basecoloralpha[-_ \\.].*"),
+        std::regex(".*[-_ ]a[\\.].*"),
+        std::regex(".*[-_ ]c[\\.].*"),
+        std::regex(".*[-_ ]bc[\\.].*"),
+        std::regex(".*[-_ ]a_m[\\.].*"),
+        std::regex(".*[-_ ]b[\\.].*"),
     };
 
     const std::vector<std::regex> emissionMatchers{
         std::regex(".*[-_ ]emission[-_ \\.].*"),
         std::regex(".*[-_ ]emi[-_ \\.].*"),
+        std::regex(".*[-_ ]emissive[-_ \\.].*"),
     };
 
     const std::vector<std::regex> normalMatchers{
         std::regex(".*[-_ ]normal[-_ \\.].*"),
+        std::regex(".*[-_ ]normals[-_ \\.].*"),
         std::regex(".*[-_ ]normalgl[-_ \\.].*"),
         std::regex(".*[-_ ]nrm[-_ \\.].*"),
         std::regex(".*[-_ ]nor[-_ \\.].*"),
+        std::regex(".*[-_ ]nor[-_ \\.].*"),
+        std::regex(".*[-_ ]nml[-_ \\.].*"),
+        std::regex(".*[-_ ]n[\\.].*"),
     };
 
     const std::vector<std::regex> metalnessMatchers{
         std::regex(".*[-_ ]metalness[-_ \\.].*"),
         std::regex(".*[-_ ]met[-_ \\.].*"),
         std::regex(".*[-_ ]metallic[-_ \\.].*"),
+        // TODO KI logic various random combined texture formats
         std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
+        //std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
+        //std::regex(".*[-_ ]aorm[\\.].*"),
+        //std::regex(".*[-_ ]rom[\\.].*"),
     };
 
     const std::vector<std::regex> roughnessMatchers{
@@ -82,11 +108,13 @@ namespace {
     const std::vector<std::regex> displacementMatchers{
         std::regex(".*[-_ ]displacement[-_ \\.].*"),
         std::regex(".*[-_ ]disp[-_ \\.].*"),
+        std::regex(".*[-_ ]depth[-_ \\.].*"),
     };
 
     const std::vector<std::regex> opacityMatchers{
         std::regex(".*[-_ ]opacity[-_ \\.].*"),
         std::regex(".*[-_ ]ops[-_ \\.].*"),
+        std::regex(".*[-_ ]alpha[-_ \\.].*"),
     };
 }
 
@@ -98,7 +126,7 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterialModifiers(
-        const YAML::Node& node,
+        const loader::Node& node,
         MaterialData& data) const
     {
         data.enabled = true;
@@ -108,47 +136,37 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterials(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<MaterialData>& materials) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data);
+            data.materialName = data.material.m_name;
         }
     }
 
     void MaterialLoader::loadMaterial(
-        const YAML::Node& node,
+        const loader::Node& node,
         MaterialData& data) const
     {
         Material& material = data.material;
-        MaterialField& fields = data.fields;
+        auto& fields = data.fields;
 
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
             if (k == "name") {
                 material.m_name = readString(v);
             }
-            else if (k == "type") {
-                std::string type = readString(v);
-                if (type == "model") {
-                    material.m_type = MaterialType::model;
-                    fields.type = true;
-                }
-                else if (type == "texture") {
-                    material.m_type = MaterialType::texture;
-                    fields.type = true;
-                }
-                else if (type == "sprite") {
-                    material.m_type = MaterialType::sprite;
-                    fields.type = true;
-                }
-                else {
-                    reportUnknown("material_type", k, v);
-                }
+            else if (k == "alias") {
+                data.aliasName = readString(v);
+            }
+            else if (k == "modify") {
+                data.modify = readBool(v);
             }
             else if (k == "ns") {
                 material.ns = readFloat(v);
@@ -183,10 +201,7 @@ namespace loader {
                 fields.illum = true;
             }
             else if (k == "map_pbr") {
-                std::string line = readString(v);
-                loadMaterialPbr(
-                    line,
-                    data);
+                data.materialPbr = readString(v);
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
@@ -318,15 +333,30 @@ namespace loader {
         }
     }
 
+    void MaterialLoader::resolveMaterialPbr(
+        const std::string& baseDir,
+        MaterialData& data) const
+    {
+        if (data.materialPbr.empty()) return;
+        loadMaterialPbr("", data.materialPbr, data);
+        loadMaterialPbr(baseDir, data.materialPbr, data);
+    }
+
     void MaterialLoader::loadMaterialPbr(
+        const std::string& baseDir,
         const std::string& pbrName,
         MaterialData& data) const
     {
+        if (data.materialPbr.empty()) return;
+
         const auto& assets = Assets::get();
 
-        const std::string basePath = util::joinPath(
+        const std::string basePath = util::joinPathExt(
             assets.assetsDir,
-            pbrName);
+            baseDir,
+            pbrName, "");
+
+        if (!util::dirExists(basePath)) return;
 
         std::vector<std::filesystem::directory_entry> normalEntries;
         std::vector<std::filesystem::directory_entry> ktxEntries;
@@ -336,11 +366,12 @@ namespace loader {
             std::string matchName{ util::toLower(fileName) };
 
             if (util::matchAny(texturesMatchers, matchName)) {
-                loadMaterialPbr(pbrName + "\\" + fileName, data);
+                loadMaterialPbr(baseDir, pbrName + "\\" + fileName, data);
                 return;
             }
 
             if (util::matchAny(ignoreMatchers, matchName)) {
+                KI_INFO_OUT(fmt::format("IGNORE_PBR_FILE: {} - {}", basePath, fileName));
                 continue;
             }
 
@@ -352,18 +383,28 @@ namespace loader {
             }
         }
 
+        std::vector<std::string> failedEntries;
         for (const auto& dirEntry : normalEntries) {
-            handlePbrEntry(pbrName, dirEntry, data);
+            if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
+                failedEntries.push_back(dirEntry.path().filename().string());
+            }
         }
 
         if (assets.compressedTexturesEnabled) {
             for (const auto& dirEntry : ktxEntries) {
-                handlePbrEntry(pbrName, dirEntry, data);
+                if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
+                    failedEntries.push_back(dirEntry.path().filename().string());
+                }
             }
+        }
+
+        if (!failedEntries.empty()) {
+            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", util::join(failedEntries, "\nUNKNOWN_PBR_FILE: ")) };
         }
     }
 
-    void MaterialLoader::handlePbrEntry(
+    bool MaterialLoader::handlePbrEntry(
+        const std::string& baseDir,
         const std::string& pbrName,
         const std::filesystem::directory_entry& dirEntry,
         MaterialData& data) const
@@ -374,7 +415,10 @@ namespace loader {
         MaterialField& fields = data.fields;
 
         const std::string fileName = dirEntry.path().filename().string();
-        const std::string assetPath = util::joinPath(pbrName, fileName);
+        const std::string assetPath = util::joinPathExt(
+            baseDir,
+            pbrName,
+            fileName, "");
 
         std::string matchName{ util::toLower(fileName) };
 
@@ -428,18 +472,16 @@ namespace loader {
             found = true;
         }
 
-        if (!found) {
-            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", assetPath) };
-        }
+        return found;
     }
 
     void MaterialLoader::loadTextureSpec(
-        const YAML::Node& node,
+        const loader::Node& node,
         TextureSpec& textureSpec) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "wrap") {
                 loadTextureWrap(k, v, textureSpec.wrapS);
@@ -459,7 +501,7 @@ namespace loader {
 
     void MaterialLoader::loadTextureWrap(
         const std::string& k,
-        const YAML::Node& v,
+        const loader::Node& v,
         GLint& wrapMode) const
     {
         const std::string& wrap = readString(v);
@@ -486,8 +528,6 @@ namespace loader {
 
         const MaterialField& f = data.fields;
         const Material & mod = data.material;
-
-        if (f.type) m.m_type = mod.m_type;
 
         if (f.textureSpec) m.textureSpec = mod.textureSpec;
 

@@ -86,7 +86,6 @@ Assets::Assets()
 
     assetsDir = "resources/assets";
     modelsDir = "{{assets_dir}}";
-    spritesDir = "{{assets_dir}}/sprites";
     texturesDir = "{{assets_dir}}/textures";
     fontsDir = "{{assets_dir}}/fonts";
 
@@ -123,6 +122,8 @@ Assets::Assets()
     showTagged = false;
 
     useDebugColor = false;
+
+    useLodDebug = false;
 
     frustumEnabled = true;
     frustumGPU = false;
@@ -180,6 +181,10 @@ Assets::Assets()
     fogStart = 50.0;
     fogEnd = 700.0;
     fogDensity = 1.0;
+
+    animationEnabled = true;
+    animationFirstFrameOnly = true;
+    animationMaxCount = 1000;
 
     particleEnabled = true;
     particleMaxCount = 100000;

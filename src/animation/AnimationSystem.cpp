@@ -1,5 +1,10 @@
 #include "AnimationSystem.h"
 
+#include <tuple>
+#include <algorithm>
+#include <execution>
+
+#include "asset/Assets.h"
 #include "asset/SSBO.h"
 
 #include "engine/UpdateContext.h"
@@ -20,13 +25,14 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    static animation::AnimationSystem s_registry;
 }
 
 namespace animation
 {
     animation::AnimationSystem& AnimationSystem::get() noexcept
     {
-        static AnimationSystem s_registry;
         return s_registry;
     }
 
@@ -40,6 +46,19 @@ namespace animation
 
     void AnimationSystem::prepare()
     {
+        const auto& assets = Assets::get();
+
+        m_enabled = assets.animationEnabled;
+        m_firstFrameOnly = assets.animationFirstFrameOnly;
+        m_maxCount = assets.animationMaxCount;
+
+        m_useMapped = assets.glUseMapped;
+        m_useInvalidate = assets.glUseInvalidate;
+        m_useFence = assets.glUseFence;
+        m_useDebugFence = assets.glUseDebugFence;
+
+        m_frameSkipCount = 1;
+
         m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(BoneTransformSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
     }
@@ -77,11 +96,44 @@ namespace animation
     {
         prepareNodes();
 
+        static std::vector<std::pair<Node*, mesh::MeshType*>> s_activeNodes;
+
+        // prepare
+        {
+            s_activeNodes.clear();
+            s_activeNodes.reserve(m_animationNodes.size());
+
+            for (auto& handle : m_animationNodes) {
+                auto* node = handle.toNode();
+                if (!node) continue;
+                auto* type = node->m_typeHandle.toType();
+
+                s_activeNodes.push_back({ node, type });
+            }
+        }
+
+        // execute
         {
             std::lock_guard lock(m_pendingLock);
 
-            for (auto& handle : m_animationNodes) {
-                m_needSnapshot |= animateNode(ctx, handle.toNode());
+            if (m_enabled) {
+                if (true) {
+                    std::for_each(
+                        std::execution::par_unseq,
+                        s_activeNodes.begin(),
+                        s_activeNodes.end(),
+                        [this, &ctx](auto& pair) {
+                            animateNode(ctx, pair.first, pair.second);
+                        });
+                    m_needSnapshot |= true;
+                }
+                else {
+                    bool needSnapshot = false;
+                    for (auto& pair : s_activeNodes) {
+                        needSnapshot |= animateNode(ctx, pair.first, pair.second);
+                    }
+                    m_needSnapshot |= needSnapshot;
+                }
             }
 
             if (m_needSnapshot) {
@@ -93,20 +145,18 @@ namespace animation
 
     bool AnimationSystem::animateNode(
         const UpdateContext& ctx,
-        Node* node)
+        Node* node,
+        mesh::MeshType* type)
     {
-        if (!node) return false;
-
-        auto* type = node->m_typeHandle.toType();
-        const auto* lod = type->getLod(0);
-        const auto* mesh = lod->getMesh<mesh::ModelMesh>();
+        const auto* lodMesh = type->getLodMesh(0);
+        const auto* mesh = lodMesh->getMesh<mesh::ModelMesh>();
         auto& transform = node->modifyTransform();
 
         auto& rig = *mesh->m_rig;
         auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
 
         if (transform.m_animationStartTime < 0) {
-            transform.m_animationStartTime = ctx.m_clock.ts;
+            transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
         }
         if (rig.m_animations.size() > 1) {
             transform.m_animationIndex = 1;
@@ -116,15 +166,23 @@ namespace animation
         return animator.animate(
             ctx,
             rig,
+            mesh->m_animationBaseTransform,
+            mesh->m_inverseBaseTransform,
             palette,
             transform.m_animationIndex,
             transform.m_animationStartTime,
-            ctx.m_clock.ts);
+            m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
     {
         if (!m_updateReady) return;
+
+        m_frameSkipCount++;
+        if (m_frameSkipCount < 2) {
+            return;
+        }
+        m_frameSkipCount = 0;
 
         updateBuffer();
     }
@@ -142,6 +200,8 @@ namespace animation
 
     void AnimationSystem::handleNodeAdded(Node* node)
     {
+        if (!m_enabled) return;
+
         auto* type = node->m_typeHandle.toType();
         if (!type->m_flags.useAnimation) return;
 
@@ -188,6 +248,10 @@ namespace animation
         //m_ssbo.invalidateRange(
         //    0,
         //    totalCount * sz);
+
+        if (m_useInvalidate) {
+            m_ssbo.invalidateRange(0, totalCount * sz);
+        }
 
         m_ssbo.update(
             0,

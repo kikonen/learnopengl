@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 5]
     front: [0, 0, -1]
@@ -32,7 +31,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -40,23 +38,29 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - name: Silver ball
-    model: water_ball
-    material: silver_ball
-    force_material: true
+    model:
+      mesh: water_ball
+      material:
+        - name: silver_ball
+          kd: [0.5075, 0.5075, 0.5075, 1.0]
+      material_modifier:
+        reflection: 0.05
     program: g_tex
     pos: [0, -1, 0]
     scale: 1.3
-    material_modifier:
-      reflection: 0.05
   - name: Woodcube
-    model: texture_cube
+    model:
+      mesh: texture_cube
+      material:
+        name: woodwall
+        map_kd: textures/wood_1024.png
+        reflection: 0.4
     program: g_tex
-    material: woodwall
-    force_material: true
     pos: [5.0, 5.0, -5.0]
     scale: 1
   - name: Four cubes
-    model: texture_cube_3
+    model:
+      mesh: texture_cube_3
     program: g_tex
     scale: 1
     clones:
@@ -64,38 +68,52 @@ entities:
       - pos: [5.0, 0.0, -5.0]
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
-  - name: Skeleton army
-    type: sprite
+  - id: skeleton_army_2_{t}
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
     program: g_tex
+    shadow_program: simple_depth
     pos: [15, 6.5, -20.0]
-    material: skeleton
+    scale: 2
+    base_scale: 0.05
+    base_rotation: [0, -180, 0]
     render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
-    scale: [1.5, 3, 1]
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
     repeat:
-      x_count: 10
-      z_count: 101
-      x_step: -4
-      z_step: 1.5
+      x_count: 5
+      z_count: 20
+      x_step: -6
+      z_step: 3
   - name: Cube map 1
     type: origo
     pos: [5.0, 3.0, 0.0]
     render_flags:
       cube_map: true
   - name: Glass ball
-    model: glass_ball
+    model:
+      mesh: glass_ball
+      material_modifier:
+        reflection: 0.8
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
     program: g_tex
     pos: [5.0, 3.0, 0.0]
     scale: 1.3
-    material_modifier:
-      reflection: 0.8
-      refraction: 0.05
-      refraction_ratio: [1.0, 1.52]
   - name: Brick wall
-    model: quad
-    material: brickwall
+    model:
+      mesh: quad
+      material:
+        name: brickwall
+        map_kd: textures/brickwall_1024.png
+        map_bump: textures/brickwall_1024_normal.png
+        reflection: 0.2
     program: g_tex
     pos: [-5.0, 8.5, -14.0]
     render_flags:
@@ -104,8 +122,12 @@ entities:
       x_count: 3
       x_step: 4
   - name: Wood wall
-    model: quad
-    material: woodwall
+    model:
+      mesh: quad
+      material:
+        name: woodwall
+        map_kd: textures/wood_1024.png
+        reflection: 0.4
     program: g_tex
     pos: [-3.0, 8.5, -14.0]
     render_flags:
@@ -114,9 +136,12 @@ entities:
       x_count: 2
       x_step: 4
   - name: Giant wooden box
-    model: quad
-    xxmodel: woodwall
-    material: giant_woodbox
+    model:
+      mesh: quad
+      material:
+        name: giant_woodbox
+        map_kd: textures/wood_1024.png
+        reflection: 0.1
     program: g_tex
     clone_position_offset: [0, 40, 0]
     render_flags:
@@ -137,8 +162,14 @@ entities:
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
   - name: Big mirror 1
-    model: quad
-    material: mirror
+    model:
+      mesh: quad
+      material:
+        name: mirror
+        map_kd: textures/Marble White_VH_512.PNG
+        reflection: 0.9
+        refraction: 0.1
+        refraction_ratio: [1.0, 1.52]
     program: g_mirror
     pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
@@ -150,8 +181,14 @@ entities:
       no_reflect: true
       no_refract: true
   - name: Big mirror 2
-    model: quad
-    material: mirror
+    model:
+      mesh: quad
+      material:
+        name: mirror
+        map_kd: textures/Marble White_VH_512.PNG
+        reflection: 0.9
+        refraction: 0.1
+        refraction_ratio: [1.0, 1.52]
     program: g_mirror
     pos: [40.0, 10.0, -10.0]
     rotation: [0.0, 270.0, 0.0]
@@ -162,25 +199,3 @@ entities:
       mirror: true
       no_reflect: true
       no_refract: true
-materials:
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-  - name: skeleton
-    map_kd: sprites/skeleton.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: brickwall
-    map_kd: textures/brickwall_1024.png
-    map_bump: textures/brickwall_1024_normal.png
-    reflection: 0.2
-  - name: woodwall
-    map_kd: textures/wood_1024.png
-    reflection: 0.4
-  - name: giant_woodbox
-    map_kd: textures/wood_1024.png
-    reflection: 0.1
-  - name: mirror
-    map_kd: textures/Marble White_VH_512.PNG
-    reflection: 0.9
-    refraction: 0.1
-    refraction_ratio: [1.0, 1.52]

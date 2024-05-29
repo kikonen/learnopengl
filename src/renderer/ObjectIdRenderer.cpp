@@ -104,9 +104,6 @@ void ObjectIdRenderer::prepareRT(
     m_idProgram = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
     m_idProgram->prepareRT();
 
-    //m_idProgramPointSprite = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID_POINT_SPRITE, { { DEF_USE_ALPHA, "1"} });
-    //m_idProgramPointSprite->prepare(assets);
-
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",
         glm::vec3(-1.0, 1.0, 0),
@@ -177,7 +174,9 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) { return m_idProgram; },
+            [this](const mesh::MeshType* type) {
+                return type->m_idProgram ? type->m_idProgram : m_idProgram;
+            },
             [](const mesh::MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
             render::NodeDraw::KIND_ALL);

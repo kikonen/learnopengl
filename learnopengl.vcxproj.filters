@@ -345,15 +345,6 @@
     <ClCompile Include="src\render\TextureQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\asset\Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\registry\SpriteRegistry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\EffectBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -418,9 +409,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\GeneratorLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\SpriteLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp">
@@ -516,28 +504,13 @@
     <ClCompile Include="src\text\FontAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\MaterialSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\ModelMaterialInit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\SpriteVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\TerrainMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\SpriteMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\text\FontHandle.cpp">
@@ -645,9 +618,6 @@
     <ClCompile Include="src\mesh\AssimpLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ObjectLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -700,6 +670,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\BoneInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\PrefabLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\Loaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\converter\YamlConverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\converter\DocNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\converter\NodeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\MeshSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1127,18 +1115,6 @@
     <ClInclude Include="src\render\TextureQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\ShapeSSBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\registry\SpriteRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\render\EffectBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1169,7 +1145,7 @@
     <ClInclude Include="src\render\BrdfLutTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialField.h">
+    <ClInclude Include="src\loader\MaterialField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\query\Query.h">
@@ -1229,9 +1205,6 @@
     <ClInclude Include="src\loader\GeneratorLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\SpriteLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\loader\CustomMaterialLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1248,9 +1221,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\EntityLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\SpriteData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SkyboxData.h">
@@ -1271,7 +1241,7 @@
     <ClInclude Include="src\loader\BaseData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityData.h">
+    <ClInclude Include="src\loader\EntityRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\ControllerData.h">
@@ -1409,31 +1379,16 @@
     <ClInclude Include="src\mesh\vao\TexturedVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\SpriteVAO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\TerrainMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\vao\TerrainVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\MaterialSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\ModelMaterialInit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\vao\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\EntityType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\SpriteMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\FontHandle.h">
@@ -1619,9 +1574,6 @@
     <ClInclude Include="src\mesh\AssimpLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ObjectLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\animation\BoneTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1692,6 +1644,60 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\BoneInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\MaterialReference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\PrefabData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\PrefabLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Loaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Flags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\EntityData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\EntityField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\DocNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\YamlConverter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\Document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\NodeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\converter\DocNode_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\MeshSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\LoadContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\MeshData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

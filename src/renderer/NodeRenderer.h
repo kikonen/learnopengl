@@ -44,7 +44,6 @@ public:
 
 private:
     Program* m_selectionProgram{ nullptr };
-    //Program* m_selectionProgramPointSprite{ nullptr };
 
     int m_width{ -1 };
     int m_height{ -1 };

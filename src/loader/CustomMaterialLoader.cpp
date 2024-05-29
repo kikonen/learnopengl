@@ -1,7 +1,8 @@
 #include "CustomMaterialLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
+
+#include "loader/document.h"
 
 namespace loader {
     CustomMaterialLoader::CustomMaterialLoader(
@@ -11,12 +12,12 @@ namespace loader {
     }
 
     void CustomMaterialLoader::loadCustomMaterial(
-        const YAML::Node& node,
+        const loader::Node& node,
         CustomMaterialData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);

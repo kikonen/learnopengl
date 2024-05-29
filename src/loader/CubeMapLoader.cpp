@@ -1,6 +1,5 @@
 #include "CubeMapLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "pool/NodeHandle.h"
@@ -14,7 +13,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
 
 #include "model/Node.h"
 
@@ -22,8 +21,8 @@
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
 
-namespace {
-}
+#include "loader/document.h"
+
 
 namespace loader {
     CubeMapLoader::CubeMapLoader(
@@ -39,13 +38,13 @@ namespace loader {
 
         if (!assets.showCubeMapCenter) return;
 
-        auto future = ModelRegistry::get().getMesh(
+        auto future = ModelRegistry::get().getMeshSet(
             assets.modelsDir,
             "ball_volume");
 
-        auto* mesh = future.get();
+        auto* meshSet = future.get();
 
-        if (!mesh) {
+        if (!meshSet) {
             KI_ERROR("Failed to load cubemap mesh");
             return;
         }
@@ -54,18 +53,20 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<cube_map>");
 
-        auto* lod = type->addLod({ mesh });
+        type->addMeshSet(*meshSet, 0);
 
-        type->m_entityType = mesh::EntityType::marker;
-
+        auto* lodMesh = type->modifyLodMesh (0);
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
             material.m_name = "cube_map";
             //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
-            lod->m_materialSet.setMaterials({ material });
+            lodMesh->setMaterial(material);
         }
+
+
+        type->m_entityType = mesh::EntityType::marker;
 
         auto& flags = type->m_flags;
 
@@ -90,14 +91,15 @@ namespace loader {
 
         node->m_visible = false;
 
-        auto& transform = node->modifyTransform();
+        {
+            auto& transform = node->modifyTransform();
 
-        //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-        transform.setScale(4.f);
+            //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
+            transform.setScale(4.f);
 
-        // NOTE KI m_radius = 1.73205078
-        mesh->prepareVolume();
-        transform.setVolume(mesh->getAABB().getVolume());
+            // NOTE KI m_radius = 1.73205078
+            transform.setVolume(meshSet->getAABB().getVolume());
+        }
 
         {
             event::Event evt { event::Type::node_add };

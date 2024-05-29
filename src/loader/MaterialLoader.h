@@ -14,33 +14,39 @@ namespace loader {
             Context ctx);
 
         void loadMaterialModifiers(
-            const YAML::Node& node,
+            const loader::Node& node,
             MaterialData& data) const;
 
         void loadMaterials(
-            const YAML::Node& node,
+            const loader::Node& node,
             std::vector<MaterialData>& materials) const;
 
         void loadMaterial(
-            const YAML::Node& node,
+            const loader::Node& node,
+            MaterialData& data) const;
+
+        void resolveMaterialPbr(
+            const std::string& baseDir,
             MaterialData& data) const;
 
         void loadMaterialPbr(
+            const std::string& baseDir,
             const std::string& pbrName,
             MaterialData& data) const;
 
-        void handlePbrEntry(
+        bool handlePbrEntry(
+            const std::string& baseDir,
             const std::string& pbrName,
             const std::filesystem::directory_entry& dirEntry,
             MaterialData& data) const;
 
         void loadTextureSpec(
-            const YAML::Node& node,
+            const loader::Node& node,
             TextureSpec& textureSpec) const;
 
         void loadTextureWrap(
             const std::string& k,
-            const YAML::Node& v,
+            const loader::Node& v,
             GLint& wrapMode) const;
 
         void modifyMaterial(

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "particle/ParticleDefinition.h"
+#include "MaterialData.h"
 
 namespace loader {
     struct ParticleData {
@@ -21,6 +22,6 @@ namespace loader {
         float sizeVariation{ 1.f };
         float particlesPerSes{ 1.f };
 
-        std::string materialName;
+        MaterialData materialData;
     };
 }

@@ -10,6 +10,6 @@ namespace loader {
     struct ResolvedEntity {
         ki::node_id parentId;
         pool::NodeHandle handle;
-        const EntityCloneData& data;
+        const EntityData& data;
     };
 }

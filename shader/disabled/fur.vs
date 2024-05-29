@@ -11,7 +11,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include ssbo_materials.glsl
-#include ssbo_material_indeces.glsl
 
 out VS_OUT {
   flat mat4 modelMatrix;
@@ -40,10 +39,7 @@ void main() {
 
   vs_out.modelMatrix = modelMatrix;
 
-  int materialIndex = entity.u_materialIndex;
-  if (materialIndex < 0) {
-    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
-  }
+  const uint materialIndex = instance.u_materialIndex;
 
   vs_out.materialIndex = materialIndex;
 

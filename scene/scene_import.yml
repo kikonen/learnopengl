@@ -1,0 +1,102 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+entities:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    pos: [-15, 25, 25]
+    model:
+      mesh: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - name: wooden floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: 100
+  - xid: object
+    model:
+      mesh: texture_cube_4/texture_cube_4.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+  - id: object_{t}
+    model:
+      mesh: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
+      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: fbx\scenery\trees\pine_leaf_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 7
+      z_step: -7

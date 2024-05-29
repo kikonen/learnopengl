@@ -5,12 +5,12 @@
 #include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 #include "asset/Material.h"
-#include "asset/Sprite.h"
 
 #include "backend/DrawOptions.h"
 
 #include "pool/TypeHandle.h"
 
+#include "mesh/MeshSet.h"
 #include "mesh/LodMesh.h"
 #include "mesh/Mesh.h"
 
@@ -22,7 +22,6 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/SpriteRegistry.h"
 
 
 namespace {
@@ -42,7 +41,8 @@ namespace mesh {
         m_program{ o.m_program },
         m_shadowProgram{ o.m_shadowProgram },
         m_preDepthProgram{ o.m_preDepthProgram },
-        m_sprite{ std::move(o.m_sprite) },
+        m_selectionProgram{ o.m_selectionProgram },
+        m_idProgram{ o.m_idProgram },
         m_drawOptions{ o.m_drawOptions },
         m_vao{ o.m_vao },
         m_preparedWT{ o.m_preparedWT },
@@ -59,11 +59,11 @@ namespace mesh {
 
     std::string MeshType::str() const noexcept
     {
-        auto* lod = getLod(0);
+        auto* lodMesh = getLodMesh(0);
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, vao={}, lod={}>",
-            m_id, m_name, m_vao ? *m_vao : -1, lod ? lod->str() : "N/A");
+            m_id, m_name, m_vao ? *m_vao : -1, lodMesh ? lodMesh->str() : "N/A");
     }
 
     pool::TypeHandle MeshType::toHandle() const noexcept
@@ -71,10 +71,36 @@ namespace mesh {
         return { m_handleIndex, m_id };
     }
 
-    LodMesh* MeshType::addLod(
-        LodMesh&& lod)
+    uint16_t MeshType::addMeshSet(
+        mesh::MeshSet& meshSet,
+        uint16_t lodLevel)
     {
-        m_lodMeshes->push_back(std::move(lod));
+        uint16_t count = 0;
+
+        for (auto& mesh : meshSet.getMeshes()) {
+            auto* lodMesh = addLodMesh({ mesh.get() });
+
+            if (m_flags.zUp) {
+                const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
+                lodMesh->getMesh<mesh::Mesh>()->m_animationBaseTransform = glm::toMat4(rotateYUp);
+            }
+
+            if (lodMesh->m_lodLevel < 0) {
+                lodMesh->m_lodLevel = lodLevel;
+            }
+            count++;
+        }
+
+        // NOTE KI ensure volume is containing all meshes
+        prepareVolume();
+
+        return count;
+    }
+
+    LodMesh* MeshType::addLodMesh(
+        LodMesh&& lodmesh)
+    {
+        m_lodMeshes->push_back(std::move(lodmesh));
         return &(*m_lodMeshes)[m_lodMeshes->size() - 1];
     }
 
@@ -88,10 +114,6 @@ namespace mesh {
 
         for (auto& lodMesh : *m_lodMeshes) {
             lodMesh.registerMaterials();
-        }
-
-        if (m_entityType == EntityType::sprite && m_sprite) {
-            SpriteRegistry::get().registerSprite(*m_sprite);
         }
     }
 
@@ -131,6 +153,14 @@ namespace mesh {
             m_preDepthProgram->prepareRT();
         }
 
+        if (m_selectionProgram) {
+            m_selectionProgram->prepareRT();
+        }
+
+        if (m_idProgram) {
+            m_idProgram->prepareRT();
+        }
+
         if (m_customMaterial) {
             m_customMaterial->prepareRT(ctx);
         }
@@ -150,28 +180,23 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    const backend::Lod* MeshType::getLod(
+    uint16_t MeshType::getLodLevel(
         const glm::vec3& cameraPos,
-        const Snapshot& snapshot) const
+        const glm::vec3& worldPos) const
     {
-        const backend::Lod* lod;
+        auto& lodMeshes = *m_lodMeshes.get();
+        if (lodMeshes.size() == 1) return lodMeshes[0].m_lodLevel;
+
         {
-            auto& meshLods = *m_lodMeshes.get();
+            auto dist2 = glm::distance2(worldPos, cameraPos);
 
-            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
-
-            int lodIndex = 0;
-            for (; lodIndex < meshLods.size(); lodIndex++) {
-                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
-                    break;
+            for (const auto& lodMesh : lodMeshes) {
+                if (dist2 < lodMesh.m_distance2)
+                    return lodMesh.m_lodLevel;
             }
-            if (lodIndex >= meshLods.size()) {
-                lodIndex--;
-            }
-
-            lod = &meshLods[lodIndex].m_lod;
         }
-        return lod;
+
+        return lodMeshes[lodMeshes.size() - 1].m_lodLevel;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
@@ -180,12 +205,27 @@ namespace mesh {
         if (m_flags.billboard) {
             flags |= ENTITY_BILLBOARD_BIT;
         }
-        if (m_entityType == mesh::EntityType::sprite) {
-            flags |= ENTITY_SPRITE_BIT;
-        }
         if (m_flags.noFrustum) {
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }
         return flags;
+    }
+
+    void MeshType::prepareVolume() noexcept {
+        m_aabb = calculateAABB();
+    }
+
+    AABB MeshType::calculateAABB() const noexcept
+    {
+        AABB aabb{ true };
+
+        for (auto& lodMesh : *m_lodMeshes) {
+            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+            if (!mesh) continue;
+            mesh->prepareVolume();
+            aabb.merge(mesh->getAABB());
+        }
+
+        return aabb;
     }
 }

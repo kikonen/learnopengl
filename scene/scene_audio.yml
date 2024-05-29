@@ -7,16 +7,16 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
-    model: water_ball
+  - id: player
+    model:
+      mesh: water_ball
+      material_modifier:
+        tiling: 5
     program: g_tex
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 0.5
-    material_modifier:
-      tiling: 5
     render_flags:
       allow_normals: false
     active: true
@@ -35,14 +35,13 @@ entities:
     camera:
       default: true
   - name: origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
-    force_material: true
-    material_modifier:
-      kd: [0.0, 0.2, 0.8, 1.0]
     audio:
       source:
         path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
@@ -50,7 +49,8 @@ entities:
         xautoplay: true
         xlooping: true
   - name: Four cubes
-    model: texture_cube_3
+    model:
+      mesh: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
@@ -70,10 +70,11 @@ entities:
           source:
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
   - name: CowJump
-    model: cow
+    model:
+      mesh: cow
+      material_modifier:
+        map_pbr: textures/Plastic 01 [4K]
     program: g_tex
-    material_modifier:
-      map_pbr: textures/Plastic 01 [4K]
     pos: [0, 4, -10]
     rot: [-45, 180, 0]
     base_rot: [0, -90, 0]
@@ -85,17 +86,15 @@ entities:
         gain: 1.0
     script_file: scripts/cow_audio
   - name: wooden floor
-    model: quad
-    xxmodel: woodwall
-    material: wood_floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        parallax_depth: 0.0
+        tiling: 10
     program: g_tex
-    base_rot: [270, 0, 0]
     front: [0, 1, 0]
     render_flags:
       no_shadow: true
     scale: 100
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10

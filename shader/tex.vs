@@ -17,7 +17,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
-#include ssbo_material_indeces.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -39,7 +38,7 @@ out VS_OUT {
   vec4 shadowPos;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } vs_out;
 
@@ -67,11 +66,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  int materialIndex = instance.u_materialIndex;
-
-  if (materialIndex < 0) {
-    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
-  }
+  const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -90,17 +85,6 @@ void main() {
                     + u_viewRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
-
-    normal = -u_viewFront;
-#ifdef USE_TBN
-    tangent = u_viewRight;
-#endif
-  } else if ((entity.u_flags & ENTITY_SPRITE_BIT) != 0) {
-    vec4 pos = vec4(u_viewRight * a_pos.x
-		    + UP * a_pos.y,
-		    1.0);
-
-    worldPos = modelMatrix * pos;
 
     normal = -u_viewFront;
 #ifdef USE_TBN
@@ -140,19 +124,15 @@ void main() {
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = tangent;
-
+  if (u_materials[materialIndex].normalMapTex.x > 0)
+  {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    //const vec3 B = cross(N, T);
+    const vec3 bitangent = cross(normal, tangent);
 
-    vs_out.tangent = T;
-  } else {
-    vs_out.tangent = tangent;
+    vs_out.tbn = mat3(tangent, bitangent, normal);
   }
 #endif
 }

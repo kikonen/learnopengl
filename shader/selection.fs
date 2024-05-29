@@ -3,12 +3,6 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#ifdef USE_ALPHA
-#include struct_shape.glsl
-
-#include ssbo_shapes.glsl
-#endif
-
 #include ssbo_materials.glsl
 
 #ifndef USE_ALPHA

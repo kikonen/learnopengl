@@ -15,19 +15,19 @@ namespace loader {
             Context ctx);
 
         void loadAudio(
-            const YAML::Node& node,
+            const loader::Node& node,
             AudioData& data) const;
 
         void loadListener(
-            const YAML::Node& node,
+            const loader::Node& node,
             ListenerData& data) const;
 
         void loadSources(
-            const YAML::Node& node,
+            const loader::Node& node,
             std::vector<SourceData>& sources) const;
 
         void loadSource(
-            const YAML::Node& node,
+            const loader::Node& node,
             SourceData& data) const;
 
         void createAudio(

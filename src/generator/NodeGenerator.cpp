@@ -195,7 +195,7 @@ const kigl::GLVertexArray* NodeGenerator::getVAO(
     return container.m_typeHandle.toType()->getVAO();
 }
 
-const glm::vec4 NodeGenerator::calculateVolume()
+glm::vec4 NodeGenerator::calculateVolume() const noexcept
 {
     AABB minmax{ true };
 

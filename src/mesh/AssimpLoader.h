@@ -18,11 +18,13 @@ struct aiSkeletonBone;
 struct aiMaterial;
 
 namespace animation {
-    struct RigContainer;
     struct RigNode;
 }
 
 namespace mesh {
+    struct LoadContext;
+    class ModelMesh;
+
     class AssimpLoader : public ModelLoader {
     public:
         AssimpLoader(
@@ -32,14 +34,14 @@ namespace mesh {
 
     protected:
         void loadData(
-            ModelMesh& mesh);
+            mesh::MeshSet& meshSet);
 
         void loadResolvedPath(
-            ModelMesh& modelMesh);
+            mesh::MeshSet& meshSet);
 
     private:
         void collectNodes(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
             std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
             const aiNode* node,
@@ -47,25 +49,25 @@ namespace mesh {
             const glm::mat4& parentTransform);
 
         void loadAnimations(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
             const std::string& namePrefix,
             const aiScene* scene);
 
         void processMeshes(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
+            mesh::MeshSet& meshSet,
             const std::vector<const aiNode*>& assimpNodes,
-            ModelMesh& mesh,
             const aiScene* scene);
 
         void processMesh(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
             animation::RigNode& rigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh);
 
         void processMeshFace(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t faceIndex,
@@ -74,7 +76,7 @@ namespace mesh {
             const aiFace* face);
 
         void processMeshBone(
-            animation::RigContainer& rig,
+            mesh::LoadContext& ctx,
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t vertexOffset,
@@ -82,17 +84,18 @@ namespace mesh {
             const aiBone* bone);
 
         void processMaterials(
+            const MeshSet& meshSet,
+            std::vector<Material>& materials,
             std::map<size_t, ki::material_id>& materialMapping,
-            ModelMesh& modelMesh,
             const aiScene* scene);
 
         Material processMaterial(
-            ModelMesh& modelMesh,
+            const MeshSet& meshSet,
             const aiScene* scene,
             const aiMaterial* material);
 
         std::string findTexturePath(
-            ModelMesh& modelMesh,
-            std::string assetPath);
+            const MeshSet& meshSet,
+            const std::string& origPath);
     };
 }

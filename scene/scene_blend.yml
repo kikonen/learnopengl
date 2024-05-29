@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 0]
     front: [0, 0, -1]
@@ -26,45 +25,59 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Cube Gbuffer
-    model: texture_cube
+    model:
+      mesh: texture_cube
+      material_modifier:
+        tiling: 5
     program: g_tex
-    material_modifier:
-      tiling: 5
     pos: [0.0, 1.5, -14.0]
   - name: Cube Forward
-    model: texture_cube
+    model:
+      mesh: texture_cube
+      material_modifier:
+        tiling: 5
     program: tex
-    material_modifier:
-      tiling: 5
     pos: [0.0, -1.5, -14.0]
-  - name: Window 1
-    model: quad
-    material: window_1
+  - id: window_1
+    model:
+      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+      material:
+        name: door_glass_1_pbr
+        map_pbr: door_glass_1_pbr
     program: g_tex
-    pos: [0.0, 0.0, -8.0]
-    scale: [0.8, 1.0]
+    shadow_program: simple_depth
+    pos: [0.0, -1.0, -8.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 1
+    base_scale: 0.01
     render_flags:
-      blend_oit: true
       alpha: true
-      render_back: true
-  - name: Window 2
-    model: quad
-    material: window_2
+      blend_oit: true
+  - id: window_2
+    model:
+      mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
+      material:
+        name: door_glass_2_pbr
+        map_pbr: door_glass_2_pbr
     program: g_tex
-    pos: [0.5, 0.0, -10.0]
-    scale: [0.8, 1.0]
+    shadow_program: simple_depth
+    pos: [0.5, -1.0, -10.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    scale: 1
+    base_scale: 0.01
     render_flags:
-      blend_oit: true
       alpha: true
-      render_back: true
+      blend_oit: true
   - name: Blend cubes
-    model: rubik_cube
+    model:
+      mesh: rubik_cube.fbx
     program: g_tex
     render_flags:
       alpha: true
       blend_oit: true
       render_back: true
     scale: 1
+    base_scale: 0.01
     pos: [-4, 0, -6]
     repeat:
       x_count: 2
@@ -73,9 +86,11 @@ entities:
       z_step: -8
     script_file: scripts/anim_rotate_object
   - name: Plasma ball
-    model: ball_volume
-    material: plasma_ball
-    force_material: true
+    model:
+      mesh: ball_volume
+      material:
+        name: plasma_ball
+        map_kd: textures/noise_256.png
     program: ball_effect
     program_definitions:
       effect_plasma: 1
@@ -89,7 +104,9 @@ entities:
       no_select: true
   - name: Hello world
     type: text
-    material: metal
+    model:
+      material:
+        kd: [0.8, 0.8, 0.6, 1.0]
     text:
       font: hello_font
       text: Hello world
@@ -104,15 +121,15 @@ entities:
       render_back: true
     xscript_file: scripts/anim_rotate_object
   - name: Directional light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -121,10 +138,3 @@ fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf
     size: 72
-materials:
-  - name: window_1
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/Window_Open_lg_HI_256.PNG
-  - name: window_2
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/Window_Stained_Glass_lg_HI_256.PNG

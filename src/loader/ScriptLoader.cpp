@@ -1,6 +1,5 @@
 #include "ScriptLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "model/Node.h"
@@ -9,6 +8,7 @@
 #include "event/Dispatcher.h"
 #include "registry/Registry.h"
 
+#include "loader/document.h"
 
 namespace loader {
     ScriptLoader::ScriptLoader(
@@ -18,14 +18,14 @@ namespace loader {
     }
 
     void ScriptLoader::loadScriptEngine(
-        const YAML::Node& node,
+        const loader::Node& node,
         ScriptEngineData& data) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -44,30 +44,30 @@ namespace loader {
     }
 
     void ScriptLoader::loadScripts(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<ScriptData>& scripts) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             ScriptData& data = scripts.emplace_back();
             loadScript(entry, data);
         }
     }
 
     void ScriptLoader::loadScript(
-        const YAML::Node& node,
+        const loader::Node& node,
         ScriptData& data) const
     {
         data.enabled = true;
 
-        if (node.IsScalar()) {
+        if (node.isScalar()) {
             std::string filename = readString(node) + ".lua";
             data.script = readFile(filename);
             return;
         }
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -149,4 +149,3 @@ namespace loader {
         }
     }
 }
-

@@ -10,8 +10,6 @@
 #include "util/Util.h"
 #include "util/glm_format.h"
 
-#include "ki/yaml.h"
-
 #include "asset/Shader.h"
 
 #include "mesh/LodMesh.h"
@@ -20,17 +18,9 @@
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
 
-#include "MaterialLoader.h"
-#include "CustomMaterialLoader.h"
-#include "SpriteLoader.h"
-#include "CameraLoader.h"
-#include "LightLoader.h"
-#include "AudioLoader.h"
-#include "ControllerLoader.h"
-#include "GeneratorLoader.h"
-#include "ParticleLoader.h"
-#include "PhysicsLoader.h"
-#include "ScriptLoader.h"
+#include "Loaders.h"
+
+#include "loader/document.h"
 
 namespace loader {
     EntityLoader::EntityLoader(
@@ -40,98 +30,46 @@ namespace loader {
     }
 
     void EntityLoader::loadEntities(
-        const YAML::Node& node,
-        std::vector<EntityData>& entities,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        const loader::Node& node,
+        std::vector<EntityRoot>& entities,
+        Loaders& loaders) const
     {
-        for (const auto& entry : node) {
-            auto& data = entities.emplace_back();
+        for (const auto& entry : node.getNodes()) {
+            auto& entityRoot = entities.emplace_back();
             loadEntity(
                 entry,
-                data,
-                materialLoader,
-                customMaterialLoader,
-                spriteLoader,
-                cameraLoader,
-                lightLoader,
-                audioLoader,
-                controllerLoader,
-                generatorLoader,
-                particleLoader,
-                physicsLoader,
-                scriptLoader);
+                entityRoot,
+                loaders);
         }
     }
 
     void EntityLoader::loadEntity(
-        const YAML::Node& node,
-        EntityData& data,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        const loader::Node& node,
+        EntityRoot& entityRoot,
+        Loaders& loaders) const
     {
         loadEntityClone(
             node,
-            data.base,
-            data.clones,
+            entityRoot.base,
+            entityRoot.clones,
             true,
-            materialLoader,
-            customMaterialLoader,
-            spriteLoader,
-            cameraLoader,
-            lightLoader,
-            audioLoader,
-            controllerLoader,
-            generatorLoader,
-            particleLoader,
-            physicsLoader,
-            scriptLoader);
+            loaders);
     }
 
     void EntityLoader::loadEntityClone(
-        const YAML::Node& node,
-        EntityCloneData& data,
-        std::vector<EntityCloneData>& clones,
+        const loader::Node& node,
+        EntityData& data,
+        std::vector<EntityData>& clones,
         bool recurse,
-        MaterialLoader& materialLoader,
-        CustomMaterialLoader& customMaterialLoader,
-        SpriteLoader& spriteLoader,
-        CameraLoader& cameraLoader,
-        LightLoader& lightLoader,
-        AudioLoader& audioLoader,
-        ControllerLoader& controllerLoader,
-        GeneratorLoader& generatorLoader,
-        ParticleLoader& particleLoader,
-        PhysicsLoader& physicsLoader,
-        ScriptLoader& scriptLoader) const
+        Loaders& loaders) const
     {
         bool hasClones = false;
 
         data.enabled = true;
 
-        bool needLod = false;
-
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);
@@ -143,9 +81,6 @@ namespace loader {
                 }
                 else if (type == "model") {
                     data.type = mesh::EntityType::model;
-                }
-                else if (type == "sprite") {
-                    data.type = mesh::EntityType::sprite;
                 }
                 else if (type == "text") {
                     data.type = mesh::EntityType::text;
@@ -178,6 +113,9 @@ namespace loader {
             else if (k == "desc") {
                 data.desc = readString(v);
             }
+            else if (k == "prefab") {
+                data.prefabName = readString(v);
+            }
             else if (k == "active") {
                 data.active = readBool(v);
             }
@@ -185,7 +123,9 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                needLod = true;
+                data.type = mesh::EntityType::model;
+                auto& meshData = data.meshes.emplace_back();
+                loadMesh(v, meshData, loaders);
             }
             else if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -199,20 +139,26 @@ namespace loader {
             else if (k == "pre_depth_program") {
                 data.preDepthProgramName = readString(v);
             }
+            else if (k == "selection_program") {
+                data.selectionProgramName = readString(v);
+            }
+            else if (k == "id_program") {
+                data.idProgramName = readString(v);
+            }
             else if (k == "geometry_type") {
                 data.geometryType = readString(v);
             }
             else if (k == "program_definitions" || k == "shader_definitions") {
-                for (const auto& defNode : v) {
-                    const auto& defName = defNode.first.as<std::string>();
-                    const auto& defValue = defNode.second.as<std::string>();
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
                     data.programDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
             else if (k == "render_flags") {
-                for (const auto& flagNode : v) {
-                    auto flagName = flagNode.first.as<std::string>();
-                    const auto flagValue = readBool(flagNode.second);
+                for (const auto& flagNode : v.getNodes()) {
+                    const auto& flagName = flagNode.getName();
+                    const auto& flagValue = readBool(flagNode.getNode());
                     data.renderFlags[util::toLower(flagName)] = flagValue;
                 }
             }
@@ -221,19 +167,6 @@ namespace loader {
             }
             else if (k == "text") {
                 loadText(v, data.text);
-            }
-            else if (k == "material") {
-                data.forceMaterial = true;
-                needLod = true;
-            }
-            else if (k == "material_modifier") {
-                needLod = true;
-            }
-            else if (k == "force_material") {
-                data.forceMaterial = readBool(v);
-            }
-            else if (k == "sprite") {
-                data.spriteName = readString(v);
             }
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);
@@ -247,6 +180,9 @@ namespace loader {
             else if (k == "scale") {
                 data.scale = readScale3(v);
             }
+            else if (k == "base_scale") {
+                data.baseScale = readScale3(v);
+            }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);
             }
@@ -254,32 +190,32 @@ namespace loader {
                 loadTiling(v, data.tiling);
             }
             else if (k == "camera") {
-                cameraLoader.loadCamera(v, data.camera);
+                loaders.m_cameraLoader.loadCamera(v, data.camera);
             }
             else if (k == "light") {
-                lightLoader.loadLight(v, data.light);
+                loaders.m_lightLoader.loadLight(v, data.light);
             }
             else if (k == "audio") {
-                audioLoader.loadAudio(v, data.audio);
+                loaders.m_audioLoader.loadAudio(v, data.audio);
             }
             else if (k == "custom_material") {
-                customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
+                loaders.m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
             }
             else if (k == "physics") {
-                physicsLoader.loadPhysics(v, data.physics);
+                loaders.m_physicsLoader.loadPhysics(v, data.physics);
             }
             else if (k == "controllers") {
-                controllerLoader.loadControllers(v, data.controllers);
+                loaders.m_controllerLoader.loadControllers(v, data.controllers);
             }
             else if (k == "controller") {
                 auto& controllerDaata = data.controllers.emplace_back();
-                controllerLoader.loadController(v, controllerDaata);
+                loaders.m_controllerLoader.loadController(v, controllerDaata);
             }
             else if (k == "generator") {
-                generatorLoader.loadGenerator(v, data.generator);
+                loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);
             }
             else if (k == "particle") {
-                particleLoader.loadParticle(v, data.particle);
+                loaders.m_particleLoader.loadParticle(v, data.particle, loaders);
             }
             else if (k == "selected") {
                 data.selected = readBool(v);
@@ -305,55 +241,38 @@ namespace loader {
                     hasClones = true;
             }
             else if (k == "script") {
-                scriptLoader.loadScript(v, data.script);
+                loaders.m_scriptLoader.loadScript(v, data.script);
             }
             else if (k == "script_file") {
-                scriptLoader.loadScript(v, data.script);
+                loaders.m_scriptLoader.loadScript(v, data.script);
+            }
+            else if (k == "models" || k == "meshes") {
+                loadMeshes(v, data.meshes, loaders);
             }
             else if (k == "lods") {
-                loadLods(v, data.lods, materialLoader);
-            }
-            else if (k == "animations") {
-                loadAnimations(v, data.animations);
+                loadLods(v, data.lods);
             }
             else {
                 reportUnknown("entity_entry", k, v);
             }
         }
 
-        if (needLod && data.lods.empty()) {
-            if (data.lods.empty()) {
-                data.lods.emplace_back();
-            }
-            loadLod(node, data.lods[0], materialLoader);
-        }
-
         if (hasClones) {
-            for (const auto& pair : node) {
-                const std::string& k = pair.first.as<std::string>();
-                const YAML::Node& v = pair.second;
+            for (const auto& pair : node.getNodes()) {
+                const std::string& k = pair.getName();
+                const loader::Node& v = pair.getNode();
 
                 if (k == "clones") {
-                    for (const auto& node : v) {
+                    for (const auto& node : v.getNodes()) {
                         // NOTE KI intialize with current data
-                        EntityCloneData clone = data;
-                        std::vector<EntityCloneData> dummy{};
+                        EntityData clone = data;
+                        std::vector<EntityData> dummy{};
                         loadEntityClone(
                             node,
                             clone,
                             dummy,
                             false,
-                            materialLoader,
-                            customMaterialLoader,
-                            spriteLoader,
-                            cameraLoader,
-                            lightLoader,
-                            audioLoader,
-                            controllerLoader,
-                            generatorLoader,
-                            particleLoader,
-                            physicsLoader,
-                            scriptLoader);
+                            loaders);
                         clones.push_back(clone);
                     }
                 }
@@ -362,12 +281,12 @@ namespace loader {
     }
 
     void EntityLoader::loadText(
-        const YAML::Node& node,
+        const loader::Node& node,
         TextData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "text") {
                 data.text = readString(v);
@@ -381,66 +300,137 @@ namespace loader {
         }
     }
 
-    void EntityLoader::loadLods(
-        const YAML::Node& node,
-        std::vector<LodData>& lods,
-        MaterialLoader& materialLoader) const
+    void EntityLoader::loadMeshes(
+        const loader::Node& node,
+        std::vector<MeshData>& meshes,
+        Loaders& loaders) const
     {
-        for (const auto& entry : node) {
-            LodData& data = lods.emplace_back();
-            loadLod(entry, data, materialLoader);
+        int level = 0;
+        for (const auto& entry : node.getNodes()) {
+            auto& data = meshes.emplace_back();
+            data.level = level;
+            loadMesh(entry, data, loaders);
+            level++;
         }
     }
 
-    void EntityLoader::loadLod(
-        const YAML::Node& node,
-        LodData& data,
-        MaterialLoader& materialLoader) const
+    void EntityLoader::loadMesh(
+        const loader::Node& node,
+        MeshData& data,
+        Loaders& loaders) const
     {
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
-            if (k == "distance") {
-                data.distance = readFloat(v);
+            if (k == "level") {
+                data.level = readInt(v);
             }
-            else if (k == "model") {
-                if (v.Type() == YAML::NodeType::Sequence) {
-                    data.meshPath = util::joinPath(readString(v[0]), readString(v[1]));
+            else if (k == "mesh") {
+                if (v.isSequence()) {
+                    auto& nodes = v.getNodes();
+                    data.meshPath = util::joinPath(readString(nodes[0]), readString(nodes[1]));
                 }
                 else {
                     data.meshPath = readString(v);
                 }
+
+                if (data.baseDir.empty()) {
+                    std::filesystem::path path{ data.meshPath };
+                    data.baseDir = path.parent_path().string();
+                }
+            }
+            else if (k == "base_dir") {
+                data.baseDir = readString(v);
+            }
+            else if (k == "animations") {
+                loadAnimations(v, data.animations);
+            }
+            else if (k == "materials") {
+                loaders.m_materialLoader.loadMaterials(v, data.materials);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                if (data.materials.empty()) {
+                    data.materials.emplace_back();
+                }
+                auto& materialData = data.materials[0];
+                materialData.aliasName = "*";
+                loaders.m_materialLoader.loadMaterial(v, materialData);
+                materialData.materialName = materialData.material.m_name;
             }
             else if (k == "material_modifier") {
-                materialLoader.loadMaterialModifiers(v, data.materialModifiers);
+                if (data.materials.empty()) {
+                    data.materials.emplace_back();
+                }
+                auto& materialData = data.materials[0];
+                materialData.aliasName = "*";
+                materialData.modify = true;
+                loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
             } else {
+                reportUnknown("model_entry", k, v);
+            }
+        }
+
+        for (auto& materialData : data.materials) {
+            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
+        }
+    }
+
+    void EntityLoader::loadLods(
+        const loader::Node& node,
+        std::vector<LodData>& lods) const
+    {
+        int level = 0;
+        for (const auto& entry : node.getNodes()) {
+            LodData& data = lods.emplace_back();
+            data.level = level;
+            loadLod(entry, data);
+            level++;
+        }
+    }
+
+    void EntityLoader::loadLod(
+        const loader::Node& node,
+        LodData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "level") {
+                data.level = readInt(v);
+            }
+            else if (k == "distance") {
+                data.distance = readFloat(v);
+            }
+            else {
                 reportUnknown("lod_entry", k, v);
             }
         }
     }
 
     void EntityLoader::loadAnimations(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<AnimationData>& animations) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             AnimationData& data = animations.emplace_back();
             loadAnimation(entry, data);
         }
     }
 
     void EntityLoader::loadAnimation(
-        const YAML::Node& node,
+        const loader::Node& node,
         AnimationData& data) const
     {
-        for (const auto& pair : node) {
-            const auto& key = pair.first.as<std::string>();
-            const auto& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::Node& v = pair.getNode();
+
             const auto k = util::toLower(key);
 
             if (k == "name") {

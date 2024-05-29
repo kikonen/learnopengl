@@ -5,8 +5,6 @@
 #include <vector>
 #include <map>
 
-#include "asset/Material.h"
-
 #include "animation/VertexBone.h"
 
 #include "mesh/Index.h"
@@ -15,38 +13,31 @@
 
 namespace animation {
     struct RigContainer;
+    struct VertexBone;
 }
 
 namespace mesh {
     class ModelMesh final : public Mesh {
         friend class ModelLoader;
         friend class AssimpLoader;
-        friend class ObjectLoader;
-
-        friend class ModelMaterialInit;
 
     public:
         ModelMesh(
-            std::string_view meshPath,
-            std::string_view rootDir);
+            std::string_view name);
 
         virtual ~ModelMesh();
 
         virtual std::string str() const noexcept override;
+
         virtual bool isValid() const noexcept override
         {
             return !m_vertices.empty() && !m_indeces.empty();
         }
 
-        virtual const AABB calculateAABB() const override;
-
-        virtual const std::vector<Material>& getMaterials() const override;
+        virtual AABB calculateAABB() const noexcept override;
 
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
-
-        virtual void prepareMaterials(
-            MaterialSet& materialSet) override;
 
         virtual void prepareLod(
             mesh::LodMesh& lodMesh);
@@ -65,28 +56,17 @@ namespace mesh {
         }
 
     public:
-        const std::string m_rootDir;
-        const std::string m_meshPath;
-        const std::string m_meshName;
-
-        std::string m_filePath;
-
         std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
 
-        std::unique_ptr<animation::RigContainer> m_rig;
+        std::vector<animation::VertexBone> m_vertexBones;
+
+        animation::RigContainer* m_rig{ nullptr };
 
         // NOTE KI absolute offset into position VBO
         size_t m_positionVboOffset{ 0 };
 
         // NOTE KI absolute offset into EBO
         size_t m_indexEboOffset{ 0 };
-
-    protected:
-        std::vector<Material> m_materials;
-
-    private:
-        bool m_loaded{ false };
-        bool m_valid{ false };
     };
 }

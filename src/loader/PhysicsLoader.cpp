@@ -1,11 +1,11 @@
 #include "PhysicsLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 #include "util/glm_util.h"
 
 #include "event/Dispatcher.h"
 
+#include "loader/document.h"
 
 namespace loader {
     PhysicsLoader::PhysicsLoader(
@@ -15,15 +15,15 @@ namespace loader {
     }
 
     void PhysicsLoader::loadPhysics(
-        const YAML::Node& node,
+        const loader::Node& node,
         PhysicsData& data) const
     {
         bool explicitEnable = false;
         bool useExplicitEnable = false;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 explicitEnable = readBool(v);
@@ -57,14 +57,14 @@ namespace loader {
     }
 
     void PhysicsLoader::loadBody(
-        const YAML::Node& node,
+        const loader::Node& node,
         physics::Body& data) const
     {
         data.quat = glm::quat_identity<float, glm::packed_highp>();
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);
@@ -112,12 +112,12 @@ namespace loader {
     }
 
     void PhysicsLoader::loadGeom(
-        const YAML::Node& node,
+        const loader::Node& node,
         physics::Geom& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);

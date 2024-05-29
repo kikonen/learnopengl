@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
 
 #include <glm/glm.hpp>
@@ -13,6 +14,7 @@
 
 #include "BaseId.h"
 #include "BaseData.h"
+
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
 #include "CameraData.h"
@@ -24,13 +26,11 @@
 #include "PhysicsData.h"
 #include "ScriptData.h"
 #include "TextData.h"
+#include "MeshData.h"
 #include "LodData.h"
-#include "AnimationData.h"
 
 namespace loader {
-    struct EntityCloneData {
-        bool valid{ false };
-
+    struct EntityData {
         bool enabled{ false };
         bool active{ false };
 
@@ -42,8 +42,11 @@ namespace loader {
         std::string name;
         std::string desc;
 
-        int priority{ 0 };
+        std::string prefabName;
 
+        int8_t priority{ 0 };
+
+        std::vector<MeshData> meshes;
         std::vector<LodData> lods;
 
         std::string programName{};
@@ -51,6 +54,8 @@ namespace loader {
 
         std::string shadowProgramName;
         std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
+        std::string selectionProgramName{ SHADER_SELECTION };
+        std::string idProgramName{ SHADER_OBJECT_ID };
 
         std::map<std::string, std::string> programDefinitions{};
         std::unordered_map<std::string, bool> renderFlags{};
@@ -62,6 +67,7 @@ namespace loader {
         // NOTE KI default == positive Z dir
         glm::vec3 front{ 0.f, 0.f, 1.f };
         glm::vec3 scale{ 1.f };
+        glm::vec3 baseScale{ 1.f };
 
         bool selected{ false };
         bool cloneMesh{ true };
@@ -71,13 +77,8 @@ namespace loader {
 
         glm::vec3 clonePositionOffset{ 0.f };
 
-        // NOTE KI overrides *ALL* materials with defaultMaterial
-        bool forceMaterial{ false };
-
         CustomMaterialData customMaterial;
         PhysicsData physics;
-
-        std::string spriteName;
 
         Repeat repeat;
 
@@ -88,8 +89,6 @@ namespace loader {
         LightData light;
         AudioData audio;
         TextData text;
-
-        std::vector<AnimationData> animations;
 
         GeneratorData generator;
 
@@ -105,10 +104,5 @@ namespace loader {
             }
             return defaultValue;
         }
-    };
-
-    struct EntityData {
-        EntityCloneData base;
-        std::vector<EntityCloneData> clones;
     };
 }

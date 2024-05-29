@@ -9,7 +9,7 @@
 #include "asset/Material.h"
 
 namespace mesh {
-    class ModelMesh;
+    class MeshSet;
 
     class ModelLoader
     {
@@ -19,19 +19,19 @@ namespace mesh {
 
         virtual ~ModelLoader();
 
-        // @return pointer to mesh if load was success
-        ModelMesh* load(
-            ModelMesh& mesh,
+        // @return true if
+        bool load(
+            mesh::MeshSet& meshSet,
             Material* defaultMaterial,
             bool forceDefaultMaterial);
 
     protected:
         virtual void loadData(
-            ModelMesh& mesh) = 0;
+            mesh::MeshSet& meshSet) = 0;
 
     protected:
         Material m_defaultMaterial;
-        bool m_forceDefaultMaterial = false;
+        bool m_forceDefaultMaterial{ false };
 
         std::shared_ptr<std::atomic<bool>> m_alive;
     };

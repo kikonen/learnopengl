@@ -3,14 +3,11 @@ name: Terrain
 viewports:
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
 entities:
-  - name: Plauer
-    id: player
+  - id: player
     type: origo
     pos: [0, 200, 100]
     front: [0, 0, -1]
@@ -31,7 +28,6 @@ entities:
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
     light:
@@ -56,7 +52,13 @@ entities:
       xxno_frustum: true
     generator:
       type: terrain
-      material: terrain_grass_2
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -64,10 +66,3 @@ entities:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
-materials:
-  - name: terrain_grass_2
-    map_kd: textures/terrain_2/terrain_2_TX.jpg
-    map_ks: textures/terrain_2/terrain_2_SpecLM.png
-    map_bump: textures/terrain_2/terrain_2_TN.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE

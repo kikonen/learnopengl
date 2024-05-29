@@ -150,6 +150,13 @@ Material::~Material()
     //    m_id, m_name, m_registeredIndex));
 }
 
+void Material::assign(const Material& o)
+{
+    auto oldId = m_id;
+    *this = o;
+    m_id = oldId;
+}
+
 void Material::loadTextures()
 {
     if (m_loaded) return;
@@ -182,24 +189,6 @@ void Material::loadTextures()
         metal);
 }
 
-std::string Material::resolveBaseDir()
-{
-    const auto& assets = Assets::get();
-
-    std::string baseDir;
-    switch (m_type) {
-    case MaterialType::asset:
-        return assets.assetsDir;
-    case MaterialType::model:
-        return assets.modelsDir;
-    case MaterialType::texture:
-        return assets.texturesDir;
-    case MaterialType::sprite:
-        return assets.spritesDir;
-    }
-    return assets.assetsDir;
-}
-
 void Material::loadTexture(
     int idx,
     std::string_view textureName,
@@ -214,7 +203,7 @@ void Material::loadTexture(
 
     KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
-    const std::string& placeholderPath = assets.placeholderTexture;
+    const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
 
     auto future = ImageTexture::getTexture(
         textureName,
@@ -304,9 +293,11 @@ std::string Material::getTexturePath(
 
     std::string texturePath;
     {
+        const auto& assets = Assets::get();
+
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
-            resolveBaseDir(),
+            assets.assetsDir,
             m_path,
             textureName, "");
     }

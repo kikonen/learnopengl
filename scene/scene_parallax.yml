@@ -3,14 +3,11 @@ name: Origo
 viewports:
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -28,27 +25,27 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Other
-    model: texture_cube
+    model:
+      mesh: texture_cube
+      material_modifier:
+        tiling: 3
+        map_pbr: textures\Bricks007_1K-PNG
     program: g_tex
-    material_modifier:
-      tiling: 3
-      map_pbr: textures\Bricks007_1K-PNG
     pos: [0.0, 2.0, 0.0]
     repeat:
       z_count: 20
       z_step: -10
   - name: Directional light
-    type: model
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     xxpos: [0, 25, 25]
     pos: [-25, 25, 0]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -59,16 +56,18 @@ entities:
     render_flags:
       cube_map: true
   - name: Planet 1
-    model: [planet, planet]
+    model:
+      mesh: planet/planet
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
-    model: [planet, planet]
+    model:
+      mesh: planet/planet
+      material_modifier:
+        map_bump: mars_normal.png
     program: g_tex
     pos: [0, 3.5, 30]
-    material_modifier:
-      map_bump: mars_normal.png
     scale: 1
   - name: Cube map - wood_wall
     type: origo
@@ -76,10 +75,16 @@ entities:
     render_flags:
       cube_map: true
   - name: Brick wall 2 - plain
-    model: quad
-    material: brickwall2
-    material_modifier:
-      map_bump: ''
+    model:
+      mesh: quad
+      material:
+        name: brickwall2
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/bricks2.jpg
+        map_bump: textures/bricks2_normal.jpg
+        xreflection: 0.2
+        parallax_depth: 0.07
+        map_bump: ''
     program: g_tex
     pos: [20.0, 2.5, -5.0]
     scale: 2.5
@@ -90,8 +95,16 @@ entities:
       x_count: 1
       x_step: 1
   - name: Brick wall 2 - normal
-    model: quad
-    material: brickwall2
+    model:
+      mesh: quad
+      material:
+        name: brickwall2
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/bricks2.jpg
+        map_bump: textures/bricks2_normal.jpg
+        xreflection: 0.2
+        parallax_depth: 0.07
+        map_bump: ''
     program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
@@ -99,10 +112,17 @@ entities:
     render_flags:
       render_back: true
   - name: Brick wall 2 - parallax
-    model: quad
-    material: brickwall2
-    material_modifier:
-      map_displacement: bricks2_disp.jpg
+    model:
+      mesh: quad
+      material:
+        name: brickwall2
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/bricks2.jpg
+        map_bump: textures/bricks2_normal.jpg
+        xreflection: 0.2
+        parallax_depth: 0.07
+        map_bump: ''
+        map_displacement: bricks2_disp.jpg
     program: g_tex
     pos: [20.0, 2.5, 5.0]
     scale: 2.5
@@ -116,10 +136,13 @@ entities:
       y_count: 2
       y_step: 5
   - name: Brick wall 1 - plain
-    model: quad
-    material: brickwall
-    material_modifier:
-      map_bump: ''
+    model:
+      mesh: quad
+      material:
+        name: brickwall
+        map_pbr: textures\Bricks007_1K-PNG
+        parallax_depth: 0.02
+        map_bump: ''
     program: g_tex
     pos: [30.0, 2.5, -5.0]
     scale: 2.5
@@ -130,8 +153,12 @@ entities:
       x_count: 1
       x_step: 1
   - name: Brick wall 1 - normal
-    model: quad
-    material: brickwall
+    model:
+      mesh: quad
+      material:
+        name: brickwall
+        map_pbr: textures\Bricks007_1K-PNG
+        parallax_depth: 0.02
     program: g_tex
     pos: [30.0, 2.5, 0.0]
     scale: 2.5
@@ -139,10 +166,13 @@ entities:
     render_flags:
       render_back: true
   - name: Brick wall 1 - parallax
-    model: quad
-    material: brickwall
-    material_modifier:
-      map_displacement: textures/brickwall_1024_height.jpg
+    model:
+      mesh: quad
+      material:
+        name: brickwall
+        map_pbr: textures\Bricks007_1K-PNG
+        parallax_depth: 0.02
+        map_displacement: textures/brickwall_1024_height.jpg
     program: g_tex
     pos: [30.0, 2.5, 5.0]
     scale: 2.5
@@ -156,29 +186,16 @@ entities:
       y_count: 2
       y_step: 5
   - name: wooden floor
-    model: quad
-    material: wood_floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        parallax_depth: 0.0
+        tiling: 60
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    rot: [270, 90, 0]
     render_flags:
       render_back: true
       no_shadow: true
     scale: 100
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 60
-  - name: brickwall
-    map_pbr: textures\Bricks007_1K-PNG
-    parallax_depth: 0.02
-  - name: brickwall2
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_kd: textures/bricks2.jpg
-    map_bump: textures/bricks2_normal.jpg
-    xreflection: 0.2
-    parallax_depth: 0.07
-  - name: woodwall
-    map_kd: textures/wood_1024.png
-    reflection: 0.4

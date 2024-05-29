@@ -2,10 +2,12 @@
 
 #include <vector>
 #include <functional>
+#include <span>
 
 #include "backend/DrawOptions.h"
 
 #include "asset/Material.h"
+#include "asset/AABB.h"
 
 #include "ki/limits.h"
 
@@ -27,8 +29,6 @@ namespace render {
     class Batch;
 }
 
-class Sprite;
-
 struct PrepareContext;
 
 struct Snapshot;
@@ -40,6 +40,7 @@ class RenderContext;
 class MeshTypeRegistry;
 
 namespace mesh {
+    class MeshSet;
     class Mesh;
     struct LodMesh;
 
@@ -72,21 +73,26 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        LodMesh* addLod(LodMesh&& lodMesh);
+        // @return count of meshes added
+        uint16_t addMeshSet(
+            mesh::MeshSet& meshSet,
+            uint16_t lodLevel);
 
-        inline const LodMesh* getLod(uint8_t lodIndex) const noexcept {
+        LodMesh* addLodMesh(LodMesh&& lodMesh);
+
+        inline const LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
             return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
-        inline const std::vector<LodMesh>& getLods() const noexcept {
+        inline const std::vector<LodMesh>& getLodMeshes() const noexcept {
             return *m_lodMeshes;
         }
 
-        inline LodMesh* modifyLod(uint8_t lodIndex) noexcept {
+        inline LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
             return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
         }
 
-        inline std::vector<LodMesh>& modifyLods() noexcept {
+        inline std::vector<LodMesh>& modifyLodMeshes() noexcept {
             return *m_lodMeshes;
         }
 
@@ -121,21 +127,32 @@ namespace mesh {
             return m_drawOptions;
         }
 
-        const backend::Lod* getLod(
+        uint16_t getLodLevel(
             const glm::vec3& cameraPos,
-            const Snapshot& snapshot) const;
+            const glm::vec3& worldPos) const;
 
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
+
+        const AABB& getAABB() const noexcept
+        {
+            return m_aabb;
+        }
+
+        void prepareVolume() noexcept;
+
+    private:
+        AABB calculateAABB() const noexcept;
 
     public:
         Program* m_program{ nullptr };
         Program* m_shadowProgram{ nullptr };
         Program* m_preDepthProgram{ nullptr };
-
-        std::unique_ptr<Sprite> m_sprite{ nullptr };
+        Program* m_selectionProgram{ nullptr };
+        Program* m_idProgram{ nullptr };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
+        AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
@@ -152,7 +169,8 @@ namespace mesh {
         EntityType m_entityType{ EntityType::origo };
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
-        uint8_t m_priority{ 0 };
+        // range -254 .. 255
+        int8_t m_priority{ 0 };
 
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

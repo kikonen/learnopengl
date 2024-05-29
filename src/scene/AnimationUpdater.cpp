@@ -17,7 +17,7 @@ namespace {
 AnimationUpdater::AnimationUpdater(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : Updater("AS", 10, registry, alive)
+    : Updater("AS", 22, registry, alive)
 {}
 
 uint32_t AnimationUpdater::getActiveCount() const noexcept

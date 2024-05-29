@@ -8,8 +8,8 @@ namespace mesh {
 #pragma pack(push, 1)
     struct NormalEntry {
         NormalEntry()
-            : normal{ {0.f, 0.f, 0.f} },
-            tangent{ {0.f, 0.f, 0.f} }
+            : normal{ 0.f },
+            tangent{ 0.f }
         {}
 
         NormalEntry(

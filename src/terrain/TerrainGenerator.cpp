@@ -21,8 +21,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelMesh.h"
-#include "mesh/TerrainMesh.h"
+#include "mesh/MeshSet.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/HeightMap.h"
@@ -268,24 +267,25 @@ namespace terrain {
 
         auto typeHandle = createType(registry, container.m_typeHandle);
         {
-            auto future = ModelRegistry::get().getMesh(
+            auto future = ModelRegistry::get().getMeshSet(
                 m_modelsDir,
                 TERRAIN_QUAD_MESH_NAME);
-            auto* mesh = future.get();
-            mesh->setAABB(aabb);
+            auto* meshSet = future.get();
+            //meshSet->setAABB(aabb);
+
+            {
+                m_material.tilingX = (float)m_worldTilesU;
+                m_material.tilingY = (float)m_worldTilesV;
+            }
 
             {
                 auto* type = typeHandle.toType();
-                auto* lod = type->addLod({ mesh });
 
-                lod->setupMeshMaterials(m_material, true, true);
+                type->addMeshSet(*meshSet, 0);
 
-                for (auto& m : lod->m_materialSet.modifyMaterials()) {
-                    m.tilingX = (float)m_worldTilesU;
-                    m.tilingY = (float)m_worldTilesV;
-                }
-
-                lod->registerMaterials();
+                auto* lodMesh = type->modifyLodMesh(0);
+                lodMesh->setMaterial(m_material);
+                lodMesh->registerMaterials();
             }
         }
 

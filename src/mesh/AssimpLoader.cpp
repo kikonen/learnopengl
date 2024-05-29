@@ -21,6 +21,8 @@
 #include "animation/BoneInfo.h"
 #include "animation/AnimationLoader.h"
 
+#include "mesh/LoadContext.h"
+#include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 
 #include "util/assimp_util.h"
@@ -40,33 +42,33 @@ namespace mesh
     {}
 
     void AssimpLoader::loadData(
-        ModelMesh& modelMesh)
+        mesh::MeshSet& meshSet)
     {
         std::string filePath = assimp_util::resolvePath(
-            modelMesh.m_rootDir,
-            modelMesh.m_meshPath);
+            meshSet.m_rootDir,
+            meshSet.m_path);
 
         if (filePath.empty()) return;
 
-        modelMesh.m_filePath = filePath;
-        loadResolvedPath(modelMesh);
+        meshSet.m_filePath = filePath;
+        loadResolvedPath(meshSet);
     }
 
     void AssimpLoader::loadResolvedPath(
-        ModelMesh& modelMesh)
+        mesh::MeshSet& meshSet)
     {
         std::lock_guard lock(m_lock);
 
-        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", modelMesh.m_filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", meshSet.m_filePath));
 
-        if (!util::fileExists(modelMesh.m_filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", modelMesh.m_filePath) };
+        if (!util::fileExists(meshSet.m_filePath)) {
+            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", meshSet.m_filePath) };
         }
 
         Assimp::Importer importer;
 
         const aiScene* scene = importer.ReadFile(
-            modelMesh.m_filePath,
+            meshSet.m_filePath,
             //aiProcess_GenNormals |
             aiProcess_GenSmoothNormals |
             aiProcess_ForceGenNormals |
@@ -89,123 +91,121 @@ namespace mesh
 
         KI_INFO_OUT(fmt::format(
             "ASSIMP: SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
-            modelMesh.m_filePath,
+            meshSet.m_filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        modelMesh.m_rig = std::make_unique<animation::RigContainer>();
-        auto& rig = *modelMesh.m_rig;
+        meshSet.m_rig = std::make_unique<animation::RigContainer>();
+        mesh::LoadContext ctx{ meshSet.m_rig.get() };
 
-        processMaterials(rig.m_materialMapping, modelMesh, scene);
+        processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectNodes(rig, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
-        rig.calculateInvTransforms();
+        collectNodes(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+        //rig.calculateInvTransforms();
 
         processMeshes(
-            rig,
+            ctx,
+            meshSet,
             assimpNodes,
-            modelMesh,
             scene);
 
-        loadAnimations(rig, modelMesh.m_meshName, scene);
-
-        if (m_defaultMaterial.m_used) {
-            modelMesh.m_materials.push_back(m_defaultMaterial);
-        }
+        loadAnimations(ctx, meshSet.m_name, scene);
     }
 
     void AssimpLoader::collectNodes(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
         int16_t parentIndex,
         const glm::mat4& parentTransform)
     {
-        glm::mat4 transform;
+        auto& rig = *ctx.m_rig;
+
         uint16_t nodeIndex;
         {
             assimpNodes.push_back(node);
 
             auto& rigNode = rig.addNode(node);
-            rigNode.m_globalTransform = parentTransform * rigNode.m_localTransform;
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            transform = rigNode.m_globalTransform;
+            KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}\nT: {}",
+                parentIndex,
+                nodeIndex,
+                node->mName.C_Str(),
+                node->mNumChildren,
+                node->mNumMeshes,
+                rigNode.m_localTransform));
         }
-
-        KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
-            parentIndex,
-            nodeIndex,
-            node->mName.C_Str(),
-            node->mNumChildren,
-            node->mNumMeshes));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(rig, assimpNodes, scene, node->mChildren[n], nodeIndex, transform);
+            collectNodes(ctx, assimpNodes, scene, node->mChildren[n], nodeIndex, glm::mat4{ 1.f });
         }
     }
 
     void AssimpLoader::loadAnimations(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
         const std::string& namePrefix,
         const aiScene* scene)
     {
         animation::AnimationLoader loader{};
 
         loader.loadAnimations(
-            rig,
+            *ctx.m_rig,
             namePrefix,
             scene);
     }
 
     void AssimpLoader::processMeshes(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
+        MeshSet& meshSet,
         const std::vector<const aiNode*>& assimpNodes,
-        ModelMesh& modelMesh,
         const aiScene* scene)
     {
+        auto& rig = *ctx.m_rig;
+
+        std::vector<glm::mat4> globalTransforms;
+        globalTransforms.resize(rig.m_nodes.size());
+
         for (auto& rigNode : rig.m_nodes) {
+            const glm::mat4& parentTransform = rigNode.m_parentIndex >= 0 ? globalTransforms[rigNode.m_parentIndex] : glm::mat4(1.f);
+            globalTransforms[rigNode.m_index] = parentTransform * rigNode.m_localTransform;
+
             auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
 
-            // TODO KI *HOW* logic when meshes are for LODs and when they are
-            // required for model
-            // - linden_tree = multiple plane meshes with same material
-            // - texture_cube_4/airbnoat = separate meshes per material
-            // - lion = multiple LOD meshes, but for each LOD extra material mesh (which can be ignored likely)
-            if (false && !modelMesh.m_vertices.empty()) {
-                KI_INFO_OUT(fmt::format("ASSIMP: SKIP node={}, meshes={}",
-                    rigNode.m_index,
-                    node->mNumMeshes));
-                continue;
-            }
-
             {
-                //modelMesh.m_transform = rigNode.m_globalTransform;
-
                 auto from = std::min((unsigned int)0, node->mNumMeshes - 1);
                 auto count = std::min((unsigned int)10, node->mNumMeshes - from);
                 for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
                 {
+                    auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
+
+                    auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index]);
+                    modelMesh->m_rig = ctx.m_rig;
+                    modelMesh->m_nodeName = rigNode.m_name;
+
                     processMesh(
-                        rig,
+                        ctx,
                         rigNode,
-                        modelMesh,
+                        *modelMesh,
                         meshIndex,
-                        scene->mMeshes[node->mMeshes[meshIndex]]);
+                        mesh);
+
+                    meshSet.addMesh(std::move(modelMesh));
                 }
             }
         }
     }
 
     void AssimpLoader::processMesh(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
         animation::RigNode& rigNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
@@ -215,24 +215,24 @@ namespace mesh
         const auto vertexOffset = vertices.size();
         vertices.reserve(vertexOffset + mesh->mNumVertices);
 
-        Material* mat = nullptr;
-        ki::material_id materialId;
+        Material* material{ nullptr };
+
         {
-            const auto& it = rig.m_materialMapping.find(mesh->mMaterialIndex);
-            materialId = it != rig.m_materialMapping.end() ? it->second : 0;
-            mat = Material::findID(materialId, modelMesh.m_materials);
+            const auto& it = ctx.m_materialMapping.find(mesh->mMaterialIndex);
+            auto materialId = it != ctx.m_materialMapping.end() ? it->second : 0;
+            material = Material::findID(materialId, ctx.m_materials);
+            if (!material) {
+                material = &m_defaultMaterial;
+            }
+            modelMesh.setMaterial(*material);
         }
 
-        if (m_forceDefaultMaterial || !materialId) {
-            m_defaultMaterial.m_used = true;
-            materialId = m_defaultMaterial.m_id;
-        }
 
         KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
             rigNode.m_index,
-            mesh->mName.C_Str(),
+            modelMesh.m_name,
             vertexOffset,
-            mat ? mat->m_name : fmt::format("{}", mesh->mMaterialIndex),
+            material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
             mesh->mNumFaces,
             mesh->mNumBones));
@@ -258,20 +258,20 @@ namespace mesh
 
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
-            vertices.emplace_back(pos, texCoord, normal, tangent, materialId);
+            vertices.emplace_back(pos, texCoord, normal, tangent, 0);
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(rig, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
+            processMeshFace(ctx, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(rig, modelMesh, meshIndex, vertexOffset, mesh, mesh->mBones[boneIdx]);
+            processMeshBone(ctx, modelMesh, meshIndex, vertexOffset, mesh, mesh->mBones[boneIdx]);
         }
     }
 
     void AssimpLoader::processMeshFace(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
@@ -297,13 +297,14 @@ namespace mesh
     }
 
     void AssimpLoader::processMeshBone(
-        animation::RigContainer& rig,
+        mesh::LoadContext& ctx,
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t vertexOffset,
         const aiMesh* mesh,
         const aiBone* bone)
     {
+        auto& rig = *ctx.m_rig;
         auto& bi = rig.m_boneContainer.registerBone(bone);
         auto* rigNode = rig.findNode(bi.m_nodeName);
         if (rigNode) {
@@ -320,7 +321,7 @@ namespace mesh
             bone->mNumWeights))
 
 
-        auto& vertexBones = rig.m_vertexBones;
+        auto& vertexBones = modelMesh.m_vertexBones;
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
@@ -337,116 +338,150 @@ namespace mesh
 
             auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
 
+            assert(vertexIndex < modelMesh.m_vertices.size());
+
             vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
             vertexBones[vertexIndex].addBone(bi.m_index, vw.mWeight);
         }
     }
 
     void AssimpLoader::processMaterials(
+        const MeshSet& meshSet,
+        std::vector<Material>& materials,
         std::map<size_t, ki::material_id>& materialMapping,
-        ModelMesh& modelMesh,
         const aiScene* scene)
     {
-        auto& materials = modelMesh.m_materials;
-
         for (size_t n = 0; n < scene->mNumMaterials; ++n)
         {
-            auto material = processMaterial(modelMesh, scene, scene->mMaterials[n]);
+            auto material = processMaterial(meshSet, scene, scene->mMaterials[n]);
             materials.push_back(material);
             materialMapping.insert({ n, material.m_id });
         }
     }
 
     Material AssimpLoader::processMaterial(
-        ModelMesh& modelMesh,
+        const MeshSet& meshSet,
         const aiScene* scene,
-        const aiMaterial* material)
+        const aiMaterial* src)
     {
+        const auto name = src->GetName().C_Str();
+
         KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
-            material->GetName().C_Str(),
-            material->mNumProperties,
-            material->mNumAllocated));
+            name,
+            src->mNumProperties,
+            src->mNumAllocated));
 
-        Material result;
-        std::map<std::string, GLuint*> textureIdMap;
+        Material material;
+        material.m_name = name;
 
-        int ret1, ret2;
-        aiColor4D diffuse;
-        aiColor4D specular;
-        aiColor4D ambient;
-        aiColor4D emission;
-        ai_real shininess, strength;
-        unsigned int max;
+        {
+            aiColor4D diffuse;
 
-        int diffuseIndex = 0;
-        int bumpIndex = 0;
-        int normalIndex = 0;
-        int emissionIndex = 0;
-        aiString diffusePath;
-        aiString bumpPath;
-        aiString normalPath;
-        aiString emissionPath;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_DIFFUSE, &diffuse) == AI_SUCCESS)
+            {
+                material.kd = assimp_util::toVec4(diffuse);
 
-        auto diffuseTexValid = material->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath);
-        auto bumpTexValid = material->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath);
-        auto normalTexValid = material->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath);
-        auto emissionTexValid = material->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath);
-
-        auto diffuseValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
-        auto specularValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular);
-        auto ambientValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient);
-        auto emissionValid = aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emission);
-
-        max = 1;
-        ret1 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS, &shininess, &max);
-        max = 1;
-        ret2 = aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
-
-        if (diffuseTexValid == AI_SUCCESS) {
-            //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-            result.map_kd = findTexturePath(modelMesh, diffusePath.C_Str());
+                float diffuseAlpha;
+                if (aiGetMaterialFloat(src, AI_MATKEY_OPACITY, &diffuseAlpha) == AI_SUCCESS) {
+                    material.kd.a = diffuseAlpha;
+                }
+            }
         }
-        if (bumpTexValid == AI_SUCCESS) {
-            result.map_bump = findTexturePath(modelMesh, bumpPath.C_Str());
-        }
-        if (normalTexValid == AI_SUCCESS) {
-            result.map_bump = findTexturePath(modelMesh, normalPath.C_Str());
-        }
-        if (emissionTexValid == AI_SUCCESS) {
-            result.map_ke = findTexturePath(modelMesh, emissionPath.C_Str());
+        {
+            aiColor4D specular;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
+                material.ks = assimp_util::toVec4(specular);
+            }
         }
 
-        result.kd = assimp_util::toVec4(diffuse);
-        result.ks = assimp_util::toVec4(specular);
-        result.ka = assimp_util::toVec4(ambient);
-        result.ke = assimp_util::toVec4(emission);
+        {
+            aiColor4D ambient;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient) == AI_SUCCESS) {
+                material.ka = assimp_util::toVec4(ambient);
+            }
+        }
+        {
+            aiColor4D emission;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission) == AI_SUCCESS) {
+                material.ke = assimp_util::toVec4(emission);
+            }
+        }
 
-        result.ns = shininess;
+        {
+            ai_real shininess;
+            if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS) {
+                material.ns = shininess;
+            }
 
-        result.m_name = material->GetName().C_Str();
+            ai_real strength;
+            if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS_STRENGTH, &strength) == AI_SUCCESS) {
+                //material.ns = shininess;
+            }
+        }
 
-        return result;
+        {
+            int diffuseIndex = 0;
+            aiString diffusePath;
+
+            if (src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath) == AI_SUCCESS) {
+                //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
+                material.map_kd = findTexturePath(meshSet, diffusePath.C_Str());
+            }
+        }
+        {
+            int bumpIndex = 0;
+            aiString bumpPath;
+            if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
+                material.map_bump = findTexturePath(meshSet, bumpPath.C_Str());
+            }
+        }
+        {
+            int normalIndex = 0;
+            aiString normalPath;
+            if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
+                material.map_bump = findTexturePath(meshSet, normalPath.C_Str());
+            }
+        }
+        {
+            int emissionIndex = 0;
+            aiString emissionPath;
+            if (src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath) == AI_SUCCESS) {
+                material.map_ke = findTexturePath(meshSet, emissionPath.C_Str());
+            }
+        }
+
+        return material;
     }
 
     std::string AssimpLoader::findTexturePath(
-        ModelMesh& modelMesh,
-        std::string assetPath)
+        const MeshSet& meshSet,
+        const std::string& origPath)
     {
-        std::filesystem::path meshPath{ modelMesh.m_meshName };
+        const auto& rootDir = meshSet.m_rootDir;
+        const auto& meshName = meshSet.m_name;
+
+        std::string assetPath = origPath;
+        std::filesystem::path meshPath{ meshName };
         const auto parentPath = meshPath.parent_path();
 
+        std::filesystem::path fsPath{ assetPath };
+        std::string assetPath2 = std::filesystem::weakly_canonical(fsPath).string();
+
         std::string filePath = util::joinPathExt(
-            modelMesh.m_rootDir,
+            rootDir,
             parentPath.string(),
             assetPath, "");
 
         if (util::fileExists(filePath)) {
-            assetPath = util::joinPath(
-                parentPath.filename().string(),
-                assetPath);
+            //assetPath = util::joinPath(
+            //    parentPath.filename().string(),
+            //    assetPath);
+            assetPath = filePath.substr(
+                rootDir.length() + 1,
+                filePath.length() - rootDir.length() - 1);
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}", assetPath));
+        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}, was={}", assetPath, origPath));
 
         return assetPath;
     }

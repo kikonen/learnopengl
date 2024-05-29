@@ -12,7 +12,6 @@
 #include "asset/Sphere.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/ModelMaterialInit.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
@@ -24,21 +23,10 @@
 
 #include "animation/RigContainer.h"
 
-namespace {
-    std::string extractName(std::string_view meshPath) {
-        auto filePath = util::joinPath("", meshPath);
-        return util::baseName(filePath);
-    }
-}
-
 namespace mesh {
     ModelMesh::ModelMesh(
-        std::string_view rootDir,
-        std::string_view meshPath)
-        : Mesh(),
-        m_rootDir{ rootDir },
-        m_meshPath{ meshPath },
-        m_meshName{ extractName(meshPath) }
+        std::string_view name)
+        : Mesh{ name }
     {
     }
 
@@ -51,35 +39,23 @@ namespace mesh {
     std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
-            "<MODEL: id={}, rootDir={}, meshPath={}, name={}>",
-            m_id, m_rootDir, m_meshPath, m_meshName);
+            "<MODEL: id={}, name={}>",
+            m_id, m_name);
     }
 
     uint32_t ModelMesh::getBaseVertex() const noexcept {
         return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
     }
 
-    const AABB ModelMesh::calculateAABB() const {
-        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
-        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+    AABB ModelMesh::calculateAABB() const noexcept {
+        AABB aabb{ true };
 
         for (auto&& vertex : m_vertices)
         {
-            minAABB.x = std::min(minAABB.x, vertex.pos.x);
-            minAABB.y = std::min(minAABB.y, vertex.pos.y);
-            minAABB.z = std::min(minAABB.z, vertex.pos.z);
-
-            maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
-            maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
-            maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+            aabb.minmax(vertex.pos);
         }
 
-        return { minAABB, maxAABB, false };
-    }
-
-    const std::vector<Material>& ModelMesh::getMaterials() const
-    {
-        return m_materials;
+        return aabb;
     }
 
     const kigl::GLVertexArray* ModelMesh::prepareRT(
@@ -96,13 +72,6 @@ namespace mesh {
         }
 
         return m_vao;
-    }
-
-    void ModelMesh::prepareMaterials(
-        MaterialSet& materialSet)
-    {
-        ModelMaterialInit init;
-        init.prepare(*this, materialSet);
     }
 
     void ModelMesh::prepareLod(

@@ -13,6 +13,8 @@ namespace mesh {
 }
 
 namespace loader {
+    class Loaders;
+
     class GeneratorLoader : public BaseLoader
     {
     public:
@@ -20,16 +22,16 @@ namespace loader {
             Context ctx);
 
         void loadGenerator(
-            const YAML::Node& node,
-            GeneratorData& data) const;
+            const loader::Node& node,
+            GeneratorData& data,
+            Loaders& loaders) const;
 
         void loadTerrain(
-            const YAML::Node& node,
+            const loader::Node& node,
             TerrainData& data) const;
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            const std::vector<MaterialData>& materials,
             mesh::MeshType* type);
     };
 }

@@ -17,8 +17,8 @@ namespace animation {
         int16_t m_index;
         int16_t m_parentIndex;
 
-        glm::mat4 m_localTransform;
-        glm::mat4 m_globalTransform;
-        glm::mat4 m_globalInvTransform;
+        const glm::mat4 m_localTransform;
+        //glm::mat4 m_globalTransform;
+        //glm::mat4 m_globalInvTransform;
     };
 }

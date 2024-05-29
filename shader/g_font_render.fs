@@ -3,12 +3,9 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#include struct_shape.glsl
-
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include ssbo_materials.glsl
-#include ssbo_shapes.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -34,7 +31,7 @@ in VS_OUT {
   flat uint shapeIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat4 tbn;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;
@@ -131,5 +128,5 @@ void main()
   o_fragColor = rgb;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission.rgb;
-  o_fragNormal = encodeGNormalVec2(normal, fs_in.viewPos);
+  o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
 }

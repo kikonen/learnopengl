@@ -1,6 +1,5 @@
 #include "GeneratorLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -11,11 +10,12 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/MaterialSet.h"
-
 #include "generator/GridGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
 #include "terrain/TerrainGenerator.h"
+
+#include "loader/document.h"
+#include "loader/Loaders.h"
 
 namespace loader {
     GeneratorLoader::GeneratorLoader(
@@ -25,14 +25,15 @@ namespace loader {
     }
 
     void GeneratorLoader::loadGenerator(
-        const YAML::Node& node,
-        GeneratorData& data) const
+        const loader::Node& node,
+        GeneratorData& data,
+        Loaders& loaders) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -75,7 +76,7 @@ namespace loader {
                 loadTiling(v, data.tiling);
             }
             else if (k == "material") {
-                data.materialName = readString(v);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
             else if (k == "terrain") {
                 loadTerrain(v, data.terrainData);
@@ -87,12 +88,12 @@ namespace loader {
     }
 
     void GeneratorLoader::loadTerrain(
-        const YAML::Node& node,
+        const loader::Node& node,
         TerrainData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
             }
@@ -108,7 +109,6 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        const std::vector<MaterialData>& materials,
         mesh::MeshType* type)
     {
         if (!data.enabled) return nullptr;
@@ -130,11 +130,8 @@ namespace loader {
             generator->m_verticalRange = tiling.vertical_range;
             generator->m_horizontalScale = tiling.horizontal_scale;
 
-            auto* material = findMaterial(data.materialName, materials);
-            if (material) {
-                generator->m_material = *material;
-                generator->m_material.loadTextures();
-            }
+            generator->m_material = data.materialData.material;
+            generator->m_material.loadTextures();
 
             return generator;
         }

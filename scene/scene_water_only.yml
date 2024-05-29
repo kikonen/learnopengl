@@ -7,9 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
-    xmodel: player
+  - id: player
     type: origo
     pos: [0, 5, 5]
     front: [0, 0, -1]
@@ -31,8 +29,14 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Water surface
-    model: plane
-    material: water_surface
+    model:
+      mesh: plane
+      material:
+        name: water_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_bump: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
     program: g_water
     pos: [-30, 0, -30]
     scale: 30
@@ -48,8 +52,12 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool floor
-    model: quad
-    material: pool_floor
+    model:
+      mesh: quad
+      material:
+        name: pool_floor
+        map_kd: textures/tiles_1024.png
+        tiling: 8
     program: g_tex
     pos: [-30, -4, -30]
     rotation: [270.0, 0.0, 0.0]
@@ -63,12 +71,3 @@ entities:
       x_step: 60
       y_step: 0
       z_step: 60
-materials:
-  - name: water_surface
-    kd: [0.55, 0.55, 0.95, 1.0]
-    map_bump: textures/water_surface_512_normal.png
-    map_dudv: textures/waterDUDV_512.png
-    tiling: 2
-  - name: pool_floor
-    map_kd: textures/tiles_1024.png
-    tiling: 8

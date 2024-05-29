@@ -16,18 +16,19 @@ script:
     - path: lib/common
 entities:
   - name: origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
-    force_material: true
-    material_modifier:
-      kd: [0.0, 0.2, 0.8, 1.0]
-  - name: Player
-    id: player
+  - id: player
     Xtype: origo
-    model: water_ball
+    model:
+      mesh: water_ball
     program: g_tex
     pos: [0, 25, 40]
     front: [0, 0, -1]
@@ -56,16 +57,21 @@ entities:
       type: camera_zoom
     camera:
       default: true
-  - name: Pawn
-    id: pawn
-    xtype: origo
-    model: quad
+  - id: pawn
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
+        ke: [0.0, 0.1, 0.0]
     program: g_tex
-    material: skeleton_back
+    shadow_program: simple_depth
     pos: [5, 24, 28]
     front: [0, 0, -1]
-    scale: [1, 2, 1]
-    base_rot: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.028
     render_flags:
       alpha: true
       render_back: true
@@ -89,7 +95,8 @@ entities:
       type: camera_zoom
     camera:
   - name: Camera 2
-    model: water_ball
+    model:
+      mesh: water_ball
     program: g_tex
     pos: [25, 30, 40]
     rotation: [-15, 40, 0]
@@ -99,31 +106,29 @@ entities:
     controller:
       type: camera_zoom
   - name: Directional light
-    type: model
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-25, 45, 0]
     scale: 1.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
   - name: Point light
-    type: model
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [10, 30, 25]
     scale: 0.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: point
       linear: 0.14
@@ -134,16 +139,20 @@ entities:
     type: origo
     pos: [0.0, 25.0, 0.0]
   - name: Basic ball
-    model: water_ball
     parent_id: ball_origo
+    model:
+      mesh: water_ball
+      material:
+        name: default_ball
+        kd: [0.8, 0.8, 0.0, 1.0]
+        xreflection: 0.05
+        metal: [0.2, 0.1, 0.0, 1.0]
+      material_modifier:
+        xreflection: 0.05
+        metal: [0.2, 0.1, 0.0, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
-    material: default_ball
-    force_material: true
-    material_modifier:
-      xreflection: 0.05
-      metal: [0.2, 0.1, 0.0, 1.0]
     xphysics:
       body:
         type: sphere
@@ -153,17 +162,18 @@ entities:
         size: 1.3
   - name: Gold ball
     parent_id: ball_origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: gold_ball
+        kd: [0.7516, 0.6065, 0.2265, 1.0]
+        xmap_pbr: textures\Planks 09 [8K]
+        map_pbr: textures\Metal007_1K-PNG
+        xreflection: 0.05
+        parallax_depth: 0.0
     program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-    force_material: true
-    material: gold_ball
-    material_modifier:
-      xreflection: 0.05
-      xmap_pbr: textures\Planks 09 [8K]
-      map_pbr: textures\Metal007_1K-PNG
-      parallax_depth: 0.0
     controller:
       type: pawn
     xphysics:
@@ -175,21 +185,22 @@ entities:
         size: 1.3
   - name: Fence ball
     parent_id: ball_origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: silver_ball
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        map_pbr: textures\Fence007A_4K-JPG
+        xreflection: 0.05
+        parallax_depth: 0.0
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-    force_material: true
-    material: silver_ball
     render_flags:
       xblend_oit: true
       alpha: true
       xblend: true
       render_back: true
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Fence007A_4K-JPG
-      parallax_depth: 0.0
     xphysics:
       body:
         type: sphere
@@ -199,16 +210,17 @@ entities:
         size: 1.3
   - name: Plastic ball
     parent_id: ball_origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: bronze_ball
+        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        map_pbr: textures\Plastic 01 [4K]
+        xreflection: 0.05
+        parallax_depth: 0.0
     program: g_tex
     pos: [0.0, 0.0, 15.0]
     scale: 1.3
-    force_material: true
-    material: bronze_ball
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Plastic 01 [4K]
-      parallax_depth: 0.0
     xphysics:
       body:
         type: sphere
@@ -218,17 +230,22 @@ entities:
         size: 1.3
   - name: Rusted iron ball
     parent_id: ball_origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: bronze_ball
+        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        map_pbr: textures\Plastic 01 [4K]
+        xreflection: 0.05
+        parallax_depth: 0.0
+      material_modifier:
+        xreflection: 0.05
+        map_pbr: textures\Metal022_1K-PNG
+        tiling: 3
+        parallax_depth: 0.0
     program: g_tex
     pos: [-10.0, 0.0, 20.0]
     scale: 1.3
-    force_material: true
-    material: bronze_ball
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Metal022_1K-PNG
-      tiling: 3
-      parallax_depth: 0.0
     xphysics:
       body:
         type: sphere
@@ -238,13 +255,23 @@ entities:
         size: 1.3
   - name: Old gold ball
     parent_id: ball_origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material:
+        name: bronze_ball
+        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        map_pbr: textures\Plastic 01 [4K]
+        xreflection: 0.05
+        parallax_depth: 0.0
+      material_modifier:
+        xreflection: 0.05
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        parallax_depth: 0.0
     program: g_tex
     pos: [0.0, 0.0, 25.0]
     scale: [1, 1, 3]
     base_rot: [90, 0, 0]
-    force_material: true
-    material: bronze_ball
     physics:
       body:
         type: capsule
@@ -253,15 +280,14 @@ entities:
       geom:
         type: capsule
         size: [1, 4, 0]
-    material_modifier:
-      xreflection: 0.05
-      map_pbr: textures\Metal008_1K-PNG
-      tiling: 3
-      parallax_depth: 0.0
   - name: wooden floor
-    model: plane
-    xxmodel: woodwall
-    material: wood_floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        parallax_depth: 0.0
+        tiling: 20
     program: g_tex
     pos: [0.0, 20.0, 0.0]
     rot: [0, 0, 5]
@@ -278,7 +304,8 @@ entities:
     pos: [0.0, 30.0, 0.0]
   - name: Four cubes
     parent_id: cube_origo
-    model: texture_cube_3
+    model:
+      mesh: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
@@ -296,8 +323,14 @@ entities:
         type: box
         size: [2, 2, 2]
   - name: Fence
-    model: quad
-    material: fence
+    model:
+      mesh: quad
+      material:
+        name: fence
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_pbr: textures\Fence007A_4K-JPG
+        parallax_depth: 0.0
+        tiling: 1
     program: g_tex
     pos: [-30.0, 0, -50]
     scale: 5
@@ -316,13 +349,19 @@ entities:
         type: plane
         rot: [0, 0, 270]
   - name: Skeleton
-    type: sprite
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
+        ke: [0.0, 0.1, 0.0]
     program: g_tex
+    shadow_program: simple_depth
     pos: [3, 25, 25]
-    scale: [1, 2, 1]
-    material: skeleton_front
-    sprite: skeleton
-    base_rot: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.028
     render_flags:
       alpha: true
       render_back: true
@@ -336,9 +375,13 @@ entities:
         size: [0.3, 3.4, 0]
   - name: world_x_minus
     xtype: origo
-    model: quad
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     program: g_tex
-    material: world_barrier
     scale: 100
     render_flags:
       alpha: true
@@ -351,9 +394,13 @@ entities:
         rot: [0, 0, 270]
   - name: world_x_plus
     xtype: origo
-    model: quad
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     program: g_tex
-    material: world_barrier
     scale: 100
     render_flags:
       alpha: true
@@ -366,9 +413,13 @@ entities:
         rot: [0, 0, 90]
   - name: world_y_minus
     type: origo
-    model: quad
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     program: g_tex
-    material: world_barrier
     scale: 100
     render_flags:
       alpha: true
@@ -382,8 +433,12 @@ entities:
   - name: world_y_plus
     type: origo
     program: g_tex
-    model: quad
-    material: world_barrier
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     scale: 100
     render_flags:
       alpha: true
@@ -396,9 +451,13 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_minus
     xtype: origo
-    model: quad
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     program: g_tex
-    material: world_barrier
     scale: 100
     render_flags:
       alpha: true
@@ -411,9 +470,13 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_plus
     xtype: origo
+    model:
+      mesh: quad
+      material:
+        name: world_barrier
+        map_pbr: textures\Fence007A_4K-JPG
+        tiling: 4
     program: g_tex
-    model: quad
-    material: world_barrier
     scale: 100
     render_flags:
       alpha: true
@@ -424,42 +487,3 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
-materials:
-  - name: default_ball
-    kd: [0.8, 0.8, 0.0, 1.0]
-  - name: gold_ball
-    kd: [0.7516, 0.6065, 0.2265, 1.0]
-  - name: silver_ball
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-  - name: bronze_ball
-    kd: [0.7140, 0.4284, 0.1814, 1.0]
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 20
-  - name: fence
-    kd: [0.800000, 0.800000, 0.800000, 1.0]
-    map_pbr: textures\Fence007A_4K-JPG
-    parallax_depth: 0.0
-    tiling: 1
-  - name: world_barrier
-    map_pbr: textures\Fence007A_4K-JPG
-    tiling: 4
-  - name: skeleton_front
-    map_kd: sprites/skeleton/skeleton_front.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: skeleton_back
-    map_kd: sprites/skeleton/skeleton_back.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: pool_floor
-    kd: [0.8, 0.8, 0.8, 1.0]
-    map_kd: textures/tiles_1024.png
-    tiling: 8
-sprites:
-  - name: skeleton
-    shapes:
-      - rotation: 0
-        material:
-          map_kd: sprites/skeleton/skeleton_front.png

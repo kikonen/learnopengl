@@ -1,6 +1,5 @@
 #include "ControllerLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "model/Node.h"
@@ -9,6 +8,7 @@
 #include "controller/CameraZoomController.h"
 #include "controller/VolumeController.h"
 
+#include "loader/document.h"
 
 namespace loader {
     ControllerLoader::ControllerLoader(
@@ -18,25 +18,25 @@ namespace loader {
     }
 
     void ControllerLoader::loadControllers(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<ControllerData>& controllers) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             ControllerData& data = controllers.emplace_back();
             loadController(entry, data);
         }
     }
 
     void ControllerLoader::loadController(
-        const YAML::Node& node,
+        const loader::Node& node,
         ControllerData& data) const
     {
         data.enabled = true;
 
         // pos relative to owning node
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

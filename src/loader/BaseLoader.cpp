@@ -11,7 +11,6 @@
 #include "asset/Assets.h"
 
 #include "util/Log.h"
-#include "ki/yaml.h"
 #include "ki/sid.h"
 
 #include "util/Util.h"
@@ -22,6 +21,8 @@
 
 #include "MaterialData.h"
 
+#include "loader/document.h"
+#include "converter/DocNode_impl.h"
 
 namespace {
     //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
@@ -44,12 +45,12 @@ namespace loader
     }
 
     void BaseLoader::loadTiling(
-        const YAML::Node& node,
+        const loader::Node& node,
         Tiling& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "tiles") {
                 data.tiles = readUVec3(v);
@@ -73,12 +74,12 @@ namespace loader
     }
 
     void BaseLoader::loadRepeat(
-        const YAML::Node& node,
+        const loader::Node& node,
         Repeat& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "x_count") {
                 data.xCount = readInt(v);
@@ -104,68 +105,68 @@ namespace loader
         }
     }
 
-    std::string BaseLoader::readString(const YAML::Node& node) const
+    const std::string& BaseLoader::readString(const loader::Node& node) const
     {
-        return node.as<std::string>();
+        return node.asString();
     }
 
-    bool BaseLoader::readBool(const YAML::Node& node) const
+    bool BaseLoader::readBool(const loader::Node& node) const
     {
-        if (!util::isBool(node.as<std::string>())) {
+        if (!util::isBool(readString(node))) {
             KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
             return false;
         }
 
-        return node.as<bool>();
+        return node.asBool();
     }
 
-    int BaseLoader::readInt(const YAML::Node& node) const
+    int BaseLoader::readInt(const loader::Node& node) const
     {
-        if (!util::isInt(node.as<std::string>())) {
+        if (!util::isInt(readString(node))) {
             KI_WARN(fmt::format("invalid int{}", renderNode(node)));
             return 0;
         }
 
-        return node.as<int>();
+        return node.asInt();
     }
 
-    float BaseLoader::readFloat(const YAML::Node& node) const
+    float BaseLoader::readFloat(const loader::Node& node) const
     {
-        if (!util::isFloat(node.as<std::string>())) {
+        if (!util::isFloat(readString(node))) {
             KI_WARN(fmt::format("invalid float {}", renderNode(node)));
             return 0.f;
         }
 
-        return node.as<float>();
+        return node.asFloat();
     }
 
-    std::vector<int> BaseLoader::readIntVector(const YAML::Node& node, int reserve) const
+    std::vector<int> BaseLoader::readIntVector(const loader::Node& node, int reserve) const
     {
         std::vector<int> a;
         a.reserve(reserve);
 
-        for (const auto& e : node) {
+        for (const auto& e : node.getNodes()) {
             a.push_back(readInt(e));
         }
 
         return a;
     }
 
-    std::vector<float> BaseLoader::readFloatVector(const YAML::Node& node, int reserve) const
+    std::vector<float> BaseLoader::readFloatVector(const loader::Node& node, int reserve) const
     {
         std::vector<float> a;
         a.reserve(reserve);
 
-        for (const auto& e : node) {
+        for (const auto& e : node.getNodes()) {
             a.push_back(readFloat(e));
         }
 
         return a;
     }
 
-    glm::vec2 BaseLoader::readVec2(const YAML::Node& node) const
+    glm::vec2 BaseLoader::readVec2(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 2);
 
             if (a.size() == 0) {
@@ -184,9 +185,9 @@ namespace loader
         return glm::vec2{ v };
     }
 
-    glm::vec3 BaseLoader::readVec3(const YAML::Node& node) const
+    glm::vec3 BaseLoader::readVec3(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
 
             if (a.size() == 0) {
@@ -211,9 +212,9 @@ namespace loader
         return glm::vec3{ v };
     }
 
-    glm::vec4 BaseLoader::readVec4(const YAML::Node& node) const
+    glm::vec4 BaseLoader::readVec4(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
 
             if (a.size() == 0) {
@@ -246,9 +247,9 @@ namespace loader
         return glm::vec4{ v };
     }
 
-    glm::uvec3 BaseLoader::readUVec3(const YAML::Node& node) const
+    glm::uvec3 BaseLoader::readUVec3(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readIntVector(node, 3);
 
             if (a.size() == 0) {
@@ -270,13 +271,13 @@ namespace loader
             return glm::uvec3{ a[0], a[1], a[2] };
         }
 
-        auto v = node.as<unsigned int>();
+        auto v = static_cast<unsigned int>(readInt(node));
         return glm::uvec3{ v };
     }
 
-    glm::vec3 BaseLoader::readScale3(const YAML::Node& node) const
+    glm::vec3 BaseLoader::readScale3(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
 
             while (a.size() < 3) {
@@ -290,9 +291,9 @@ namespace loader
         return glm::vec3{ scale };
     }
 
-    glm::vec3 BaseLoader::readRGB(const YAML::Node& node) const
+    glm::vec3 BaseLoader::readRGB(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
 
             if (a.size() == 0) {
@@ -315,9 +316,9 @@ namespace loader
         return glm::vec3{ r, r, r };
     }
 
-    glm::vec4 BaseLoader::readRGBA(const YAML::Node& node) const
+    glm::vec4 BaseLoader::readRGBA(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
 
             if (a.size() == 0) {
@@ -345,9 +346,9 @@ namespace loader
         return glm::vec4{ r, r, r, DEF_ALPHA };
     }
 
-    glm::quat BaseLoader::readQuat(const YAML::Node& node) const
+    glm::quat BaseLoader::readQuat(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
 
             while (a.size() < 3) {
@@ -365,9 +366,9 @@ namespace loader
         return q;// glm::normalize(q);
     }
 
-    glm::vec3 BaseLoader::readDegreesRotation(const YAML::Node& node) const
+    glm::vec3 BaseLoader::readDegreesRotation(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
 
             if (a.size() == 0) {
@@ -391,9 +392,9 @@ namespace loader
         return { 0, a, 0 };
     }
 
-    float BaseLoader::readFractional(const YAML::Node& node) const
+    float BaseLoader::readFractional(const loader::Node& node) const
     {
-        if (node.IsSequence()) {
+        if (node.isSequence()) {
             auto a = readFloatVector(node, 2);
             if (a.size() < 1) {
                 a.push_back(1.0);
@@ -404,7 +405,7 @@ namespace loader
         return readFloat(node);
     }
 
-    glm::vec2 BaseLoader::readRefractionRatio(const YAML::Node& node) const
+    glm::vec2 BaseLoader::readRefractionRatio(const loader::Node& node) const
     {
         auto a = readFloatVector(node, 2);
 
@@ -504,11 +505,11 @@ namespace loader
         return out;
     }
 
-    BaseId BaseLoader::readId(const YAML::Node& node) const
+    BaseId BaseLoader::readId(const loader::Node& node) const
     {
         BaseId baseId;
 
-        baseId.m_path = node.as<std::string>();
+        baseId.m_path = readString(node);
 
         return baseId;
     }
@@ -556,17 +557,17 @@ namespace loader
     void BaseLoader::reportUnknown(
         std::string_view scope,
         std::string_view k,
-        const YAML::Node& v) const
+        const loader::Node& v) const
     {
         std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
         KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
     }
 
     std::string BaseLoader::renderNode(
-        const YAML::Node& v) const
+        const loader::Node& v) const
     {
         std::stringstream ss;
-        ss << v;
+        ss << v.str();
         return ss.str();
     }
 }

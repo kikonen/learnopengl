@@ -24,6 +24,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+#include "mesh/LodMesh.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -47,10 +48,10 @@ namespace {
 
     inline bool inFrustum(
         const Frustum& frustum,
-        const Snapshot& snapshot) noexcept
+        const glm::vec4& volume) noexcept
     {
-        const Sphere& volume{ snapshot.m_volume };
-        return volume.isOnFrustum(frustum);
+        const Sphere& sphere{ volume };
+        return sphere.isOnFrustum(frustum);
     }
 }
 
@@ -76,7 +77,7 @@ namespace render {
 
         const auto& frustum = ctx.m_camera->getFrustum();
 
-        if (m_frustumCPU && !inFrustum(frustum, snapshot)) {
+        if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
             m_skipCount++;
             return;
         }
@@ -87,11 +88,14 @@ namespace render {
         top.m_instanceCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto* lod = type->getLod(cameraPos, snapshot);
+        const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
 
-        LodKey key{ lod };
-        auto& lodInstances = top.m_lodInstances[key];
-        lodInstances.push_back(entityIndex);
+        for (const auto& lodMesh : *type->m_lodMeshes) {
+            if (lodMesh.m_lodLevel != lodLevel) continue;
+            LodKey key{ &lodMesh.m_lod };
+            auto& lodInstances = top.m_lodInstances[key];
+            lodInstances.push_back(entityIndex);
+        }
     }
 
     //void Batch::addSnapshots(
@@ -143,7 +147,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx]))
+                        if (!inFrustum(frustum, snapshots[idx].m_volume))
                             idx = -1;
                     });
             }
@@ -153,7 +157,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx]))
+                        if (!inFrustum(frustum, snapshots[idx].m_volume))
                             idx = -1;
                     });
             }
@@ -166,11 +170,15 @@ namespace render {
                     continue;
                 }
 
-                const auto* lod = type->getLod(cameraPos, snapshots[i]);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
-                LodKey key{ lod };
-                auto& lodInstances = top.m_lodInstances[key];
-                lodInstances.push_back(entityBase + i);
+                for (const auto& lodMesh : *type->m_lodMeshes) {
+                    if (lodMesh.m_lodLevel != lodLevel) continue;
+                    LodKey key{ &lodMesh.m_lod };
+
+                    auto& lodInstances = top.m_lodInstances[key];
+                    lodInstances.push_back(entityBase + i);
+                }
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
@@ -189,10 +197,14 @@ namespace render {
             top.m_instanceCount += static_cast<int>(count);
 
             for (uint32_t i = 0; i < count; i++) {
-                const auto* lod = type->getLod(cameraPos, snapshots[i]);
-                LodKey key{ lod };
-                auto& lodInstances = top.m_lodInstances[key];
-                lodInstances.push_back(entityBase + i);
+                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
+
+                for (const auto& lodMesh : *type->m_lodMeshes) {
+                    if (lodMesh.m_lodLevel != lodLevel) continue;
+                    LodKey key{ &lodMesh.m_lod };
+                    auto& lodInstances = top.m_lodInstances[key];
+                    lodInstances.push_back(entityBase + i);
+                }
             }
 
             m_drawCount += count;

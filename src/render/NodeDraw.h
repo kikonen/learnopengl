@@ -86,10 +86,9 @@ namespace render {
     class NodeDraw final {
     public:
         static const unsigned int KIND_SOLID{ 1 << 0 };
-        static const unsigned int KIND_SPRITE{ 1 << 1 };
         static const unsigned int KIND_ALPHA{ 1 << 2 };
         static const unsigned int KIND_BLEND{ 1 << 3 };
-        static const unsigned int KIND_ALL{ KIND_SOLID | KIND_SPRITE | KIND_ALPHA | KIND_BLEND };
+        static const unsigned int KIND_ALL{ KIND_SOLID | KIND_ALPHA | KIND_BLEND };
 
     public:
         NodeDraw();
@@ -165,8 +164,6 @@ namespace render {
         ProgramTypeMap m_solidNodes;
         // NodeDraw
         ProgramTypeMap m_alphaNodes;
-        // NodeDraw
-        ProgramTypeMap m_spriteNodes;
         // NodeDraw
         ProgramTypeMap m_blendedNodes;
         // OBSOLETTE

@@ -1,6 +1,5 @@
 #include "VolumeLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -13,7 +12,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
 
 #include "controller/VolumeController.h"
 
@@ -25,6 +24,8 @@
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ProgramRegistry.h"
+
+#include "loader/document.h"
 
 namespace {
 }
@@ -43,12 +44,12 @@ namespace loader {
 
         if (!assets.showVolume) return;
 
-        auto future = ModelRegistry::get().getMesh(
+        auto future = ModelRegistry::get().getMeshSet(
             assets.modelsDir,
             "ball_volume");
-        auto* mesh = future.get();
+        auto* meshSet = future.get();
 
-        if (!mesh) {
+        if (!meshSet) {
             KI_ERROR("Failed to load volume mesh");
             return;
         }
@@ -57,17 +58,18 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<volume>");
 
-        auto* lod = type->addLod({ mesh });
+        type->addMeshSet(*meshSet, 0);
 
-        type->m_entityType = mesh::EntityType::marker;
-
+        auto* lodMesh = type->modifyLodMesh(0);
         {
             auto material = Material::createMaterial(BasicMaterial::highlight);
             material.m_name = "volume";
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
-            lod->m_materialSet.setMaterials({ material });
+            lodMesh->setMaterial(material);
         }
+
+        type->m_entityType = mesh::EntityType::marker;
 
         auto& flags = type->m_flags;
 
@@ -93,11 +95,11 @@ namespace loader {
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
-        mesh->prepareVolume();
+        {
+            auto& transform = node->modifyTransform();
 
-        auto& transform = node->modifyTransform();
-
-        transform.setVolume(mesh->getAABB().getVolume());
+            transform.setVolume(meshSet->getAABB().getVolume());
+        }
 
         {
             event::Event evt { event::Type::node_add };

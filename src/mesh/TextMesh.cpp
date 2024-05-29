@@ -14,7 +14,7 @@ namespace {
 
 namespace mesh {
     TextMesh::TextMesh()
-        : Mesh()
+        : Mesh("text")
     {
     }
 
@@ -35,28 +35,16 @@ namespace mesh {
         m_indeces.clear();
     }
 
-    const AABB TextMesh::calculateAABB() const
+    AABB TextMesh::calculateAABB() const noexcept
     {
-        glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
-        glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+        AABB aabb{ true };
 
         for (auto&& vertex : m_positions)
         {
-            minAABB.x = std::min(minAABB.x, vertex.x);
-            minAABB.y = std::min(minAABB.y, vertex.y);
-            minAABB.z = std::min(minAABB.z, vertex.z);
-
-            maxAABB.x = std::max(maxAABB.x, vertex.x);
-            maxAABB.y = std::max(maxAABB.y, vertex.y);
-            maxAABB.z = std::max(maxAABB.z, vertex.z);
+            aabb.minmax({ vertex.x, vertex.y, vertex.z });
         }
 
-        return { minAABB, maxAABB, false };
-    }
-
-    const std::vector<Material>& TextMesh::getMaterials() const
-    {
-        return m_material;
+        return aabb;
     }
 
     const kigl::GLVertexArray* TextMesh::prepareRT(

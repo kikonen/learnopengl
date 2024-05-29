@@ -1,12 +1,18 @@
 #pragma once
 
 #include "asset/Material.h"
-#include "asset/MaterialField.h"
+#include "MaterialField.h"
 
 namespace loader {
     struct MaterialData
     {
         bool enabled{ false };
+        bool modify{ false };
+        std::string aliasName;
+        std::string materialName;
+
+        std::string materialPbr;
+
         MaterialField fields;
         Material material;
     };

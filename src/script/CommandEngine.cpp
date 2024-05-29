@@ -34,13 +34,14 @@
 
 namespace {
     constexpr size_t COMMANDS_SIZE = 10000;
+
+    static script::CommandEngine s_engine;
 }
 
 namespace script
 {
     CommandEngine& CommandEngine::get() noexcept
     {
-        static CommandEngine s_engine;
         return s_engine;
     }
 

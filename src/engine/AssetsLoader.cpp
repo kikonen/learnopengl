@@ -74,7 +74,6 @@ void AssetsLoader::resolveDirs(
 
             data.texturesDir = util::replace(data.texturesDir, from, to);
             data.modelsDir = util::replace(data.modelsDir, from, to);
-            data.spritesDir = util::replace(data.spritesDir, from, to);
             data.fontsDir = util::replace(data.fontsDir, from, to);
             data.shadersDir = util::replace(data.shadersDir, from, to);
         }
@@ -238,10 +237,6 @@ void AssetsLoader::loadAssets(
                 data.modelsDir = readString(v);
                 continue;
             }
-            if (k == "sprites_dir") {
-                data.spritesDir = readString(v);
-                continue;
-            }
             if (k == "textures_dir") {
                 data.texturesDir = readString(v);
                 continue;
@@ -367,6 +362,10 @@ void AssetsLoader::loadAssets(
         }
         if (k == "use_debug_color") {
             data.useDebugColor = readBool(v);
+            continue;
+        }
+        if (k == "use_lod_debug") {
+            data.useLodDebug = readBool(v);
             continue;
         }
         {
@@ -506,6 +505,20 @@ void AssetsLoader::loadAssets(
             }
             if (k == "fog_density") {
                 data.fogDensity = readFloat(v);
+                continue;
+            }
+        }
+        {
+            if (k == "animation_enabled") {
+                data.animationEnabled = readBool(v);
+                continue;
+            }
+            if (k == "animation_first_frame_only") {
+                data.animationFirstFrameOnly = readBool(v);
+                continue;
+            }
+            if (k == "animation_max_count") {
+                data.animationMaxCount = readInt(v);
                 continue;
             }
         }

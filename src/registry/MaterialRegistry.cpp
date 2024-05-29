@@ -7,20 +7,12 @@
 #include "asset/SSBO.h"
 #include "asset/MaterialSSBO.h"
 
-#include "mesh/MaterialSet.h"
-
-
 namespace {
     constexpr size_t MATERIAL_BLOCK_SIZE = 10;
     constexpr size_t MATERIAL_BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_MATERIAL_COUNT = MATERIAL_BLOCK_SIZE * MATERIAL_BLOCK_COUNT;
 
-    // scene_full = 91 109
-    constexpr size_t INDEX_BLOCK_SIZE = 100;
-    constexpr size_t INDEX_BLOCK_COUNT = 2000;
-
-    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 }
 
 MaterialRegistry& MaterialRegistry::get() noexcept
@@ -34,13 +26,11 @@ MaterialRegistry::MaterialRegistry()
     // HACK KI reserve nax to avoid memory alloc issue main vs. worker
     m_materials.reserve(MAX_MATERIAL_COUNT);
     m_materialsSSBO.reserve(MAX_MATERIAL_COUNT);
-    m_indeces.reserve(MAX_INDEX_COUNT);
 
     // NOTE KI *reserve* index 0
     // => multi-material needs to do "-index" trick, does not work for zero
-    m_zero = Material::createMaterial(BasicMaterial::basic);
-    registerMaterial(m_zero);
-    m_indeces.emplace_back(m_zero.m_registeredIndex);
+    Material zero = Material::createMaterial(BasicMaterial::basic);
+    registerMaterial(zero);
 }
 
 MaterialRegistry::~MaterialRegistry() = default;
@@ -68,37 +58,6 @@ void MaterialRegistry::registerMaterial(Material& material)
 
     material.m_registeredIndex = (int)m_materials.size();
     m_materials.emplace_back(material);
-}
-
-void MaterialRegistry::registerVertexMaterials(mesh::MaterialSet& materialSet)
-{
-    // NOTE KI *NO* indeces if single material
-    if (materialSet.isSingle()) return;
-
-    std::lock_guard lock(m_lock);
-
-    const auto& srcIndeces = materialSet.getIndeces();
-    const size_t count = srcIndeces.size();
-    const size_t index = m_indeces.size();
-    const size_t offset = index * sizeof(GLuint);
-
-    if (index + count > MAX_INDEX_COUNT)
-        throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
-
-    {
-        size_t size = m_indeces.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
-        size += INDEX_BLOCK_SIZE - size % INDEX_BLOCK_SIZE;
-        size = std::min(size, MAX_INDEX_COUNT);
-        m_indeces.reserve(size);
-    }
-
-    materialSet.m_bufferIndex = index;
-    //materialSet.m_buffer = &m_indexBuffer;
-
-    m_indeces.insert(
-        m_indeces.end(),
-        srcIndeces.begin(),
-        srcIndeces.end());
 }
 
 Material* MaterialRegistry::find(
@@ -131,20 +90,17 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
     std::lock_guard lock(m_lock);
 
     updateMaterialBuffer();
-    updateIndexBuffer();
 }
 
 void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(MATERIAL_BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
-    m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
 }
 
 void MaterialRegistry::bind(
     const RenderContext& ctx)
 {
     m_ssbo.bindSSBO(SSBO_MATERIALS);
-    m_indexBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
 }
 
 void MaterialRegistry::updateMaterialBuffer()
@@ -186,34 +142,4 @@ void MaterialRegistry::updateMaterialBuffer()
     }
 
     m_lastMaterialSize = totalCount;
-}
-
-void MaterialRegistry::updateIndexBuffer()
-{
-    const size_t index = m_lastIndexSize;
-    const size_t totalCount = m_indeces.size();
-
-    if (index == totalCount) return;
-    if (totalCount == 0) return;
-
-    {
-        constexpr size_t sz = sizeof(GLuint);
-        size_t updateIndex = index;
-
-        // NOTE KI *reallocate* SSBO if needed
-        if (m_indexBuffer.m_size < totalCount * sz) {
-            m_indexBuffer.resizeBuffer(m_indeces.capacity() * sz);
-            m_indexBuffer.bindSSBO(SSBO_MATERIAL_INDECES);
-            updateIndex = 0;
-        }
-
-        const size_t updateCount = totalCount - updateIndex;
-
-        m_indexBuffer.update(
-            updateIndex * sz,
-            updateCount * sz,
-            &m_indeces[updateIndex]);
-    }
-
-    m_lastIndexSize = totalCount;
 }

@@ -4,14 +4,11 @@ viewports:
 skybox:
   program: g_skybox
   material: skybox/polyhaven/circus_arena_2k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 10]
     front: [0, 0, -1]
@@ -29,33 +26,46 @@ entities:
     controllers:
       - type: camera_zoom
   - xname: Stacked Base
-    model: cow
-    force_material: true
+    model:
+      mesh: cow
     priority: 1
     pos: [0, 0, 0]
     scale: 1.3
     program_stack:
-      - material: fur_base
-        force_material: true
+      - material:
+          name: fur_base
+          kd: [0.5075, 0.5075, 0.5075, 1.0]
+          map_kd: textures/Dirt_vh_1024.png
+          tiling: 1
         program: g_tex
         render_flags:
           xxwireframe: true
           xxrender_back: true
-      - material: fur
-        force_material: true
+      - material:
+          name: fur
+          kd: [0.5075, 0.5075, 0.5075, 1.0]
+          map_kd: textures/Dirt_vh_1024.png
+          map_noise: textures/noise2_256.png
+          tiling: 1
+          layers: 25
+          layers_depth: 0.2
         program: g_fur
         render_flags:
           alpha: true
         layers: 10
   - name: Base
-    model: cow
-    xxmodel: cube
-    xxmaterial: fur_base
-    xxforce_material: true
+    model:
+      mesh: cow
+      xxmesh: cube
+      xxmaterial:
+        name: fur_base
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        map_kd: textures/Dirt_vh_1024.png
+        tiling: 1
+      material_modifier:
+        map_pbr: textures/Plastic 01 [4K]
+        map_pbr: textures\Metal007_1K-PNG
     program: g_tex
-    material_modifier:
-      map_pbr: textures/Plastic 01 [4K]
-      map_pbr: textures\Metal007_1K-PNG
     render_flags:
       xxwireframe: true
     priority: 1
@@ -72,10 +82,17 @@ entities:
       x_step: 15
       z_step: -15
   - xname: Fur
-    model: cow
-    xxmodel: quad
-    material: fur
-    force_material: true
+    model:
+      mesh: cow
+      xxmesh: quad
+      material:
+        name: fur
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        map_kd: textures/Dirt_vh_1024.png
+        map_noise: textures/noise2_256.png
+        tiling: 1
+        layers: 25
+        layers_depth: 0.2
     program: g_fur
     render_flags:
       xxalpha: true
@@ -87,21 +104,20 @@ entities:
       x_step: 15
       z_step: -15
   - name: Directional light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Point light origo 1
-    id: point-light-origo-1
+  - id: point-light-origo-1
     type: origo
     pos: [0.0, 4.0, 0.0]
     script_file: scripts/anim_rotate_light
@@ -109,12 +125,13 @@ entities:
     parent_id: point-light-origo-1
     pos: [-10, 0, 0]
     scale: 0.5
-    model: light
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.1, 0.9, 0.1, 1.0]
     program: g_tex
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.1, 0.9, 0.1, 1.0]
     light:
       type: point
       linear: 0.35
@@ -122,8 +139,7 @@ entities:
       target_id: ROOT
       diffuse: [0.1, 0.8, 0.1, 1.0]
       intensity: 2000
-  - name: Point light origo - quad
-    id: "point-light-origo-quad-{x}-{z}"
+  - id: "point-light-origo-quad-{x}-{z}"
     type: origo
     pos: [30.0, 4.0, -30.0]
     script_file: scripts/anim_rotate_light
@@ -134,14 +150,15 @@ entities:
       z_count: 2
   - name: Point light - quad
     parent_id: "point-light-origo-quad-{x}-{z}"
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.1, 0.1, 0.9, 1.0]
     pos: [10, 0, 0]
     scale: 0.5
-    model: light
     program: g_tex
     render_flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.1, 0.1, 0.9, 1.0]
     light:
       type: point
       linear: 0.35
@@ -155,15 +172,3 @@ entities:
       z_step: 0
       x_count: 2
       z_count: 2
-materials:
-  - name: fur_base
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-    map_kd: textures/Dirt_vh_1024.png
-    tiling: 1
-  - name: fur
-    kd: [0.5075, 0.5075, 0.5075, 1.0]
-    map_kd: textures/Dirt_vh_1024.png
-    map_noise: textures/noise2_256.png
-    tiling: 1
-    layers: 25
-    layers_depth: 0.2

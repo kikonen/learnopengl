@@ -7,12 +7,13 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 16;
     constexpr size_t MAX_BLOCK_COUNT = 100;
+
+    static terrain::TerrrainTileRegistry s_instance;
 }
 
 namespace terrain {
     TerrrainTileRegistry& TerrrainTileRegistry::get()
     {
-        static TerrrainTileRegistry s_instance;
         return s_instance;
     }
 

@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 10]
     front: [0, 0, -1]
@@ -32,9 +31,10 @@ entities:
     pos: [0, 0, 0]
   - name: light
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+    model:
+      mesh: light
     pos: [0, 0, 0]
     scale: 0.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -47,4 +47,3 @@ entities:
       target_pos: [0, 0, 0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
       intensity: 2a000
-materials:

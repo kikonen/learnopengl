@@ -12,6 +12,9 @@ namespace animation {
 
         void addBone(uint16_t boneId, float weight) {
             assert(index < 4);
+            // NOTE KI precaution avoid memory corruption in release mode
+            if (index == 4)
+                return;
             m_boneIds[index] = boneId;
             m_weights[index] = weight;
             index++;

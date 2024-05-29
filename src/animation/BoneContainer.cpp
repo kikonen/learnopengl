@@ -11,7 +11,8 @@ namespace animation {
     {
         int16_t index;
 
-        const auto& it = m_nodeNameToIndex.find(bone->mName.C_Str());
+        std::string nodeName{ bone->mName.C_Str() };
+        const auto& it = m_nodeNameToIndex.find(nodeName);
         if (it != m_nodeNameToIndex.end()) {
             index = it->second;
         }
@@ -19,7 +20,8 @@ namespace animation {
             index = static_cast<int16_t>(m_nodeNameToIndex.size());
             auto& bi = m_boneInfos.emplace_back(bone);
             bi.m_index = index;
-            m_nodeNameToIndex.insert({ bi.m_nodeName, index });
+
+            m_nodeNameToIndex.insert({ nodeName, index });
         }
 
         return m_boneInfos[index];

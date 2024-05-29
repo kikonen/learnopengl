@@ -26,6 +26,8 @@ namespace {
 
     constexpr int MAX_CONTACTS = 8;
     constexpr int CONTACT_GROUP_ID = 0;
+
+    static physics::PhysicsEngine s_engine;
 }
 
 namespace physics
@@ -80,7 +82,6 @@ namespace physics
 
     PhysicsEngine& PhysicsEngine::get() noexcept
     {
-        static PhysicsEngine s_engine;
         return s_engine;
     }
 
@@ -324,6 +325,7 @@ namespace physics
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
         transform.setPosition(pos);
+        //transform.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
         if (transform.m_dirty) {
             transform.updateModelMatrix(parent->getTransform());

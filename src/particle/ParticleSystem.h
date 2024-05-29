@@ -59,6 +59,7 @@ namespace particle {
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
+        size_t m_frameSkipCount{ 0 };
 
         size_t m_maxCount{ 0 };
         std::vector<Particle> m_particles;

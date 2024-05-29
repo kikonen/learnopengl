@@ -13,6 +13,8 @@ namespace util
     bool isInt(std::string_view s);
     bool isFloat(std::string_view s);
 
+    bool readBool(std::string_view s, bool defaultValue);
+
     //
     // modify str param to upper case
     //
@@ -50,6 +52,7 @@ namespace util
         const std::string& str);
 
     bool fileExists(std::string_view filePath);
+    bool dirExists(std::string_view filePath);
 
     std::string readFile(
         std::string_view basePath,

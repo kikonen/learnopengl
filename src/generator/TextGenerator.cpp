@@ -82,7 +82,7 @@ void TextGenerator::updateVAO(
 
     auto* type = container.m_typeHandle.toType();
 
-    auto* lodMesh = type->modifyLod(0);
+    auto* lodMesh = type->modifyLodMesh(0);
     auto& lod = lodMesh->m_lod;
     auto* mesh = lodMesh->getMesh<mesh::TextMesh>();
 
@@ -141,7 +141,7 @@ void TextGenerator::bindBatch(
     batch.addSnapshot(
         ctx,
         type,
-        &type->getLod(0)->m_lod,
+        &type->getLodMesh(0)->m_lod,
         snapshot,
         container.m_entityIndex);
 }

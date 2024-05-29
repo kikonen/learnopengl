@@ -91,8 +91,8 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto* type = container.m_typeHandle.toType();
 
-    auto* lod = type->getLod(0);
-    const auto* mesh = lod->m_mesh;
+    auto* lodMesh = type->getLodMesh(0);
+    const auto* mesh = lodMesh->m_mesh;
     const auto& volume = mesh->getAABB().getVolume();
 
     auto& containerTransform = container.modifyTransform();

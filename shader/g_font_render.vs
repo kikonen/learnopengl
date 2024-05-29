@@ -18,7 +18,6 @@ layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
-#include ssbo_material_indeces.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -42,7 +41,7 @@ out VS_OUT {
   flat uint shapeIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat4 tbn;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;
@@ -73,11 +72,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  int materialIndex = instance.u_materialIndex;
-
-  if (materialIndex < 0) {
-    materialIndex = u_materialIndeces[-materialIndex + gl_VertexID - gl_BaseVertex];
-  }
+  const uint materialIndex = instance.u_materialIndex;
 
   vec4 worldPos;
   vec3 normal;
@@ -136,19 +131,18 @@ void main() {
   calculateClipping(worldPos);
 
 #ifdef USE_TBN
-  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0) {
-    const vec3 N = normal;
-    vec3 T = tangent;
-
+  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
+  {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    vs_out.tangent = T;
+    const vec3 bitangent = cross(normal, tangent);
+
+    vs_out.tbn = mat3(tangent, bitangent, normal);
 
 #ifdef USE_PARALLAX
-    const vec3 B = cross(N, T);
-    const mat3 invTBN = transpose(mat3(T, B, N));
+    const mat3 invTBN = transpose(tbn);
     vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif

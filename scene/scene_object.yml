@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -27,12 +26,12 @@ entities:
       - type: camera_zoom
   - name: Directional light
     type: origo
-    pos: [-25, 25, 25]
-    model: light
+    model:
+      mesh: light
+    pos: [-15, 25, 25]
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -43,10 +42,12 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model: plane
-    xxmodel: woodwall
-    material: wood_floor
-    force_material: true
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
     program: g_tex
     position: [0, 0, 0]
     render_flags:
@@ -54,20 +55,24 @@ entities:
       no_shadow: true
     scale: 100
   - id: object
-    model: texture_cube_4/texture_cube_4.fbx
+    model:
+      mesh: texture_cube_4/texture_cube_4.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
-    scale: 0.01
+    scale: 1
+    base_scale: 0.01
     render_flags:
       xrender_back: true
       xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-materials:
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    tiling: 60
+  - xid: maple_tree_forest_{t}
+    prefab: prefabs/scenery/maple_tree_1
+    pos: [0, 0.0, 0.0]
+    render_flags:
+      static_bounds: true
+    scale: 1

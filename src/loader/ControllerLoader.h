@@ -18,11 +18,11 @@ namespace loader {
             Context ctx);
 
         void loadControllers(
-            const YAML::Node& node,
+            const loader::Node& node,
             std::vector<ControllerData>& controllers) const;
 
         void loadController(
-            const YAML::Node& node,
+            const loader::Node& node,
             ControllerData& data) const;
 
         NodeController* createController(

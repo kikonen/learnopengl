@@ -4,6 +4,10 @@
 //#include <glm/glm.hpp>
 //#include <glm/ext.hpp>
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
 #include "kigl/GLState.h"
 
 #include "asset/Assets.h"
@@ -170,9 +174,11 @@ RenderContext::RenderContext(
         // NOTE KI u_shadowPlanes not initialized
         assets.effectBloomExposure,
 
-        (float)m_clock.ts,
+        static_cast<float>(m_clock.ts),
         0, // shadowCount
     };
+
+    //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
 
     m_clipPlanes.u_clipCount = 0;
 }

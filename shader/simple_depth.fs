@@ -4,10 +4,7 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#include struct_shape.glsl
-
 #include ssbo_materials.glsl
-#include ssbo_shapes.glsl
 #endif
 
 #ifndef USE_ALPHA

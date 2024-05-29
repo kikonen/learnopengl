@@ -84,5 +84,7 @@ int main()
         std::cin.get();
     }
 
+    Log::shutdown();
+
     return 0;
 }

@@ -117,4 +117,5 @@ void main()
   }
 
   o_fragColor = color;
+  // o_fragColor = vec4(normal, 1.0);
 }

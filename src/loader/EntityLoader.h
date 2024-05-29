@@ -3,21 +3,9 @@
 #include <vector>
 
 #include "BaseLoader.h"
-#include "EntityData.h"
+#include "EntityRoot.h"
 
 namespace loader {
-    class MaterialLoader;
-    class CustomMaterialLoader;
-    class SpriteLoader;
-    class CameraLoader;
-    class LightLoader;
-    class AudioLoader;
-    class ControllerLoader;
-    class GeneratorLoader;
-    class ParticleLoader;
-    class PhysicsLoader;
-    class ScriptLoader;
-
     class EntityLoader : public BaseLoader
     {
     public:
@@ -25,72 +13,50 @@ namespace loader {
             Context ctx);
 
         void loadEntities(
-            const YAML::Node& node,
-            std::vector<EntityData>& entities,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            const loader::Node& node,
+            std::vector<EntityRoot>& entities,
+            Loaders& loaders) const;
 
         void loadEntity(
-            const YAML::Node& node,
-            EntityData& data,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            const loader::Node& node,
+            EntityRoot& entityRoot,
+            Loaders& loaders) const;
 
         void loadEntityClone(
-            const YAML::Node& node,
-            EntityCloneData& data,
-            std::vector<EntityCloneData>& clones,
+            const loader::Node& node,
+            EntityData& entityData,
+            std::vector<EntityData>& clones,
             bool recurse,
-            MaterialLoader& materialLoader,
-            CustomMaterialLoader& customMaterialLoader,
-            SpriteLoader& spriteLoader,
-            CameraLoader& cameraLoader,
-            LightLoader& lightLoader,
-            AudioLoader& audioLoader,
-            ControllerLoader& controllerLoader,
-            GeneratorLoader& generatorLoader,
-            ParticleLoader& particleLoader,
-            PhysicsLoader& physicsLoader,
-            ScriptLoader& scriptLoader) const;
+            Loaders& loaders) const;
 
         void loadText(
-            const YAML::Node& node,
+            const loader::Node& node,
             TextData& data) const;
 
+        void loadMeshes(
+            const loader::Node& node,
+            std::vector<MeshData>& meshes,
+            Loaders& loaders) const;
+
+        void loadMesh(
+            const loader::Node& node,
+            MeshData& data,
+            Loaders& loaders) const;
+
         void loadLods(
-            const YAML::Node& node,
-            std::vector<LodData>& lods,
-            MaterialLoader& materialLoader) const;
+            const loader::Node& node,
+            std::vector<LodData>& lods) const;
 
         void loadLod(
-            const YAML::Node& node,
-            LodData& data,
-            MaterialLoader& materialLoader) const;
+            const loader::Node& node,
+            LodData& data) const;
 
         void loadAnimations(
-            const YAML::Node& node,
+            const loader::Node& node,
             std::vector<AnimationData>& animations) const;
 
         void loadAnimation(
-            const YAML::Node& node,
+            const loader::Node& node,
             AnimationData& data) const;
     };
 }

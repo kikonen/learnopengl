@@ -20,7 +20,6 @@
 
 #include "registry/Registry.h"
 #include "registry/MaterialRegistry.h"
-#include "registry/SpriteRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
@@ -459,7 +458,6 @@ void Scene::drawScene(
     const auto& assets = ctx.m_assets;
 
     MaterialRegistry::get().bind(ctx);
-    SpriteRegistry::get().bind(ctx);
     EntityRegistry::get().bind(ctx);
 
     if (m_cubeMapRenderer->isEnabled()) {

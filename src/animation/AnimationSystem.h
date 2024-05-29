@@ -11,6 +11,10 @@ namespace pool {
     class NodeHandle;
 }
 
+namespace mesh {
+    class MeshType;
+}
+
 struct UpdateContext;
 class RenderContext;
 class Node;
@@ -48,7 +52,8 @@ namespace animation {
         // @return true if bone palette was updated
         bool animateNode(
             const UpdateContext& ctx,
-            Node* node);
+            Node* node,
+            mesh::MeshType* type);
 
         void prepareNodes();
 
@@ -56,10 +61,15 @@ namespace animation {
         void updateBuffer();
 
     private:
+        bool m_enabled{ false };
+        bool m_firstFrameOnly{ false };
+        size_t m_maxCount{ 0 };
+
         std::mutex m_lock{};
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
+        size_t m_frameSkipCount{ 0 };
 
         bool m_needSnapshot{ false };
 
@@ -74,5 +84,10 @@ namespace animation {
         std::vector<BoneTransformSSBO> m_snapshot;
 
         kigl::GLBuffer m_ssbo{ "bone_transforms_ssbo" };
+
+        bool m_useMapped{ false };
+        bool m_useInvalidate{ false };
+        bool m_useFence{ false };
+        bool m_useDebugFence{ false };
     };
 }

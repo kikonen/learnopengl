@@ -137,9 +137,6 @@ namespace render {
             if (type->m_flags.blend)
                 map = &m_blendedNodes;
 
-            if (type->m_entityType == mesh::EntityType::sprite)
-                map = &m_spriteNodes;
-
             if (type->m_flags.invisible)
                 map = &m_invisibleNodes;
 
@@ -667,12 +664,6 @@ namespace render {
             }
         }
 
-        if (kindBits & NodeDraw::KIND_SPRITE) {
-            for (const auto& all : m_spriteNodes) {
-                renderTypes(all.second);
-            }
-        }
-
         if (kindBits & NodeDraw::KIND_ALPHA) {
             for (const auto& all : m_alphaNodes) {
                 renderTypes(all.second);
@@ -757,12 +748,6 @@ namespace render {
 
         if (kindBits & NodeDraw::KIND_SOLID) {
             for (const auto& all : m_solidNodes) {
-                renderTypes(all.second);
-            }
-        }
-
-        if (kindBits & NodeDraw::KIND_SPRITE) {
-            for (const auto& all : m_spriteNodes) {
                 renderTypes(all.second);
             }
         }

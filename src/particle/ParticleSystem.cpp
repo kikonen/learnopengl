@@ -23,12 +23,13 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    static particle::ParticleSystem s_system;
 }
 
 namespace particle {
     ParticleSystem& ParticleSystem::get() noexcept
     {
-        static ParticleSystem s_system;
         return s_system;
     }
 
@@ -97,6 +98,12 @@ namespace particle {
         if (!isEnabled()) return;
         if (!m_updateReady) return;
 
+        m_frameSkipCount++;
+        if (m_frameSkipCount < 2) {
+            return;
+        }
+        m_frameSkipCount = 0;
+
         updateParticleBuffer();
     }
 
@@ -147,6 +154,10 @@ namespace particle {
         //m_ssbo.invalidateRange(
         //    0,
         //    totalCount * sz);
+
+        if (m_useInvalidate) {
+            m_ssbo.invalidateRange(0, totalCount * sz);
+        }
 
         m_ssbo.update(
             0,

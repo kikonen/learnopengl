@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <functional>
 
@@ -18,29 +19,33 @@
 struct PrepareContext;
 
 namespace mesh {
-    class MaterialSet;
     struct LodMesh;
 
     class Mesh
     {
     public:
-        Mesh();
+        Mesh(std::string_view name);
         virtual ~Mesh();
 
         virtual std::string str() const noexcept;
 
         virtual bool isValid() const noexcept { return true; }
         virtual void prepareVolume();
-        virtual const AABB calculateAABB() const = 0;
+        virtual AABB calculateAABB() const noexcept = 0;
 
-        virtual const std::vector<Material>& getMaterials() const = 0;
+        void setMaterial(const Material& material) noexcept
+        {
+            m_material = material;
+        }
+
+        const Material& getMaterial() const noexcept
+        {
+            return m_material;
+        }
 
         // @return VAO for mesh
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
-
-        virtual void prepareMaterials(
-            MaterialSet& materialSet) {}
 
         virtual void prepareLod(
             mesh::LodMesh& lodMesh) = 0;
@@ -56,15 +61,28 @@ namespace mesh {
             return m_aabb;
         }
 
+        void setBaseTransform(const glm::mat4& baseTransform) {
+            m_baseTransform = baseTransform;
+            m_inverseBaseTransform = glm::inverse(baseTransform);
+        }
+
     public:
         const ki::mesh_id m_id;
 
-        glm::mat4 m_transform{ 1.f };
+        const std::string m_name;
+        std::string m_nodeName;
+
+        glm::mat4 m_baseTransform{ 1.f };
+        glm::mat4 m_inverseBaseTransform{ 1.f };
+
+        glm::mat4 m_animationBaseTransform{ 1.f };
 
     protected:
-        bool m_prepared = false;
+        bool m_prepared{ false };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
+
+        Material m_material;
 
     private:
         AABB m_aabb{};

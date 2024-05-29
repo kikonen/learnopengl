@@ -21,7 +21,7 @@ namespace particle {
 
         float m_scale{ 1.f };
 
-        GLint m_materialIndex{ 0 };
+        GLuint m_materialIndex{ 0 };
 
         uint8_t m_spriteCount{ 1 };
         uint8_t m_spriteIndex{ 0 };

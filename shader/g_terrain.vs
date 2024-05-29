@@ -17,7 +17,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
-#include ssbo_material_indeces.glsl
 #include ssbo_terrain_tiles.glsl
 
 #include uniform_matrices.glsl

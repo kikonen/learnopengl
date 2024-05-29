@@ -1,6 +1,5 @@
 #include "FontLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "text/FontAtlas.h"
@@ -8,6 +7,7 @@
 #include "registry/Registry.h"
 #include "registry/FontRegistry.h"
 
+#include "loader/document.h"
 
 namespace loader {
     FontLoader::FontLoader(
@@ -17,22 +17,22 @@ namespace loader {
     }
 
     void FontLoader::loadFonts(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<FontData>& fonts) const
     {
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             FontData& data = fonts.emplace_back();
             loadFont(entry, data);
         }
     }
 
     void FontLoader::loadFont(
-        const YAML::Node& node,
+        const loader::Node& node,
         FontData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "name") {
                 data.name = readString(v);

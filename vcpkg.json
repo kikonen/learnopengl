@@ -30,12 +30,12 @@
     {
       "name": "fmt",
       "platform": "windows & x64",
-      "version>=": "10.2.1#1"
+      "version>=": "10.2.1#2"
     },
     {
       "name": "freetype",
       "platform": "windows & x64",
-      "version>=": "2.13.2"
+      "version>=": "2.13.2#1"
     },
     {
       "name": "freetype-gl",
@@ -50,7 +50,7 @@
     {
       "name": "glm",
       "platform": "windows & x64",
-      "version>=": "1.0.1#1"
+      "version>=": "1.0.1#2"
     },
     {
       "name": "imgui",
@@ -92,7 +92,7 @@
     {
       "name": "spdlog",
       "platform": "windows & x64",
-      "version>=": "1.13.0"
+      "version>=": "1.14.1"
     },
     {
       "name": "stduuid",
@@ -109,5 +109,11 @@
       "version>=": "0.8.0#1"
     }
   ],
-  "builtin-baseline": "0719a71389654b88d827501d88e37e58ea8cbd70"
+  "builtin-baseline": "326d8b43e365352ba3ccadf388d989082fe0f2a6",
+  "overrides": [
+    {
+      "name": "assimp",
+      "version": "5.3.1#4"
+    }
+  ]
 }

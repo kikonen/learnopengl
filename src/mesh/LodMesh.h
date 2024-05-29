@@ -8,12 +8,11 @@
 
 #include "backend/Lod.h"
 
-#include "MaterialSet.h"
-
 namespace kigl {
     struct GLVertexArray;
 };
 
+struct Material;
 struct PrepareContext;
 struct UpdateContext;
 struct Material;
@@ -21,7 +20,11 @@ struct Material;
 namespace mesh {
     class Mesh;
 
+    // Wrap mesh into "LODable" form.
+    // - is not necessarily LOD
+    // - can be also "part of node" mesh
     // REQ: All Lods of Node use *SAME* VAO
+    // TODO KI *REMOVE* "same VAO" req!
     struct LodMesh {
         LodMesh();
         LodMesh(Mesh* mesh);
@@ -35,17 +38,6 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        void setMesh(
-            std::unique_ptr<Mesh> mesh,
-            bool umique) noexcept;
-
-        void setMesh(Mesh* mesh) noexcept;
-
-        void setupMeshMaterials(
-            const Material& defaultMaterial,
-            bool useDefaultMaterial,
-            bool forceDefaultMaterial);
-
         void registerMaterials();
         void prepareRT(const PrepareContext& ctx);
 
@@ -55,15 +47,35 @@ namespace mesh {
             return dynamic_cast<T*>(m_mesh);
         }
 
+        void setMesh(
+            std::unique_ptr<Mesh> mesh,
+            bool umique) noexcept;
+
+        void setDistance(float dist) {
+            m_distance2 = dist * dist;
+        }
+
+        Material* getMaterial() noexcept;
+        void setMaterial(const Material& material) noexcept;
+
+    private:
+        void setMesh(Mesh* mesh) noexcept;
+
         /////////////////////
 
-        Mesh* m_mesh{ nullptr };
-
+    public:
         backend::Lod m_lod;
 
-        std::unique_ptr<Mesh> m_deleter;
-        MaterialSet m_materialSet;
-
         const kigl::GLVertexArray* m_vao{ nullptr };
+
+        Mesh* m_mesh{ nullptr };
+        std::unique_ptr<Mesh> m_deleter;
+
+        std::unique_ptr<Material> m_material;
+
+        // Squared Distance upto lod is applied
+        float m_distance2{ 0.f };
+
+        int16_t m_lodLevel{ -1 };
     };
 }

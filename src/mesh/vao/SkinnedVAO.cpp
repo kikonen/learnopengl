@@ -40,7 +40,7 @@ namespace mesh {
     {
         TexturedVAO::registerModel(mesh);
 
-        m_boneVbo.addVertices(mesh->m_rig->m_vertexBones);
+        m_boneVbo.addVertices(mesh->m_vertexBones);
 
         return m_vao.get();
     }

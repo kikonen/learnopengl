@@ -26,7 +26,7 @@ namespace {
 
 namespace mesh {
     QuadMesh::QuadMesh()
-        : Mesh()
+        : Mesh("quad")
     {
     }
 
@@ -39,14 +39,9 @@ namespace mesh {
         return fmt::format("<QUAD: id={}>", m_id);
     }
 
-    const AABB QuadMesh::calculateAABB() const
+    AABB QuadMesh::calculateAABB() const noexcept
     {
         return QUAD_AABB;
-    }
-
-    const std::vector<Material>& QuadMesh::getMaterials() const
-    {
-        return m_material;
     }
 
     const kigl::GLVertexArray* QuadMesh::prepareRT(

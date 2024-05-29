@@ -1,6 +1,5 @@
 #include "SkyboxLoader.h"
 
-#include "ki/yaml.h"
 #include "util/Util.h"
 
 #include "asset/Assets.h"
@@ -10,7 +9,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/MeshSet.h"
 
 #include "event/Dispatcher.h"
 
@@ -22,6 +21,8 @@
 #include "registry/MeshTypeRegistry.h"
 
 #include "scene/SkyboxMaterial.h"
+
+#include "loader/document.h"
 
 namespace {
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
@@ -39,12 +40,12 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkybox(
-        const YAML::Node& node,
+        const loader::Node& node,
         SkyboxData& data)
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -83,16 +84,16 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkyboxFaces(
-        const YAML::Node& node,
+        const loader::Node& node,
         SkyboxData& data)
     {
-        if (!node.IsSequence()) {
+        if (!node.isSequence()) {
             return;
         }
 
         int idx = 0;
-        for (const auto& e : node) {
-            data.faces[idx] = e.as<std::string>();
+        for (const auto& e : node.getNodes()) {
+            data.faces[idx] = readString(e);
             idx++;
         }
 
@@ -107,12 +108,12 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        auto future = ModelRegistry::get().getMesh(
+        auto future = ModelRegistry::get().getMeshSet(
             assets.modelsDir,
             SKYBOX_MESH_NAME);
-        auto* mesh = future.get();
+        auto* meshSet = future.get();
 
-        if (!mesh) {
+        if (!meshSet) {
             KI_ERROR("Failed to load skybox mesh");
             return;
         }
@@ -123,7 +124,7 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        type->addLod({ mesh });
+        type->addMeshSet(*meshSet, 0);
 
         type->m_entityType = mesh::EntityType::skybox;
 

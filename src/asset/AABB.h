@@ -39,6 +39,12 @@ struct AABB final
 
     ~AABB() noexcept = default;
 
+    void prepareMinMax() {
+        m_volume = { 0.f, 0.f, 0.f, 0.f };
+        m_min = glm::vec3(std::numeric_limits<float>::max());
+        m_max = glm::vec3(std::numeric_limits<float>::min());
+    }
+
     inline const glm::vec4& getVolume() const {
         return m_volume;
     }
@@ -46,6 +52,8 @@ struct AABB final
     void updateVolume();
 
     void minmax(const glm::vec3& pos);
+
+    void merge(const AABB& o);
 
 public:
     glm::vec4 m_volume{ 0.f };

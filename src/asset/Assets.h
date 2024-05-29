@@ -82,7 +82,6 @@ public:
 
     std::string assetsDir;
     std::string modelsDir;
-    std::string spritesDir;
     std::string texturesDir;
     std::string fontsDir;
 
@@ -119,6 +118,8 @@ public:
     bool rasterizerDiscard;
 
     bool useDebugColor;
+
+    bool useLodDebug;
 
     bool frustumEnabled;
     bool frustumCPU;
@@ -173,6 +174,10 @@ public:
     float fogStart;
     float fogEnd;
     float fogDensity;
+
+    bool animationEnabled;
+    bool animationFirstFrameOnly;
+    int animationMaxCount;
 
     bool particleEnabled;
     int particleMaxCount;

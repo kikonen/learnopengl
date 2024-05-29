@@ -10,6 +10,7 @@ namespace particle {
 }
 
 namespace loader {
+    class Loaders;
     struct MAterialData;
 
     class ParticleLoader : public BaseLoader
@@ -19,11 +20,11 @@ namespace loader {
             Context ctx);
 
         void loadParticle(
-            const YAML::Node& node,
-            ParticleData& data) const;
+            const loader::Node& node,
+            ParticleData& data,
+            Loaders& loaders) const;
 
         std::unique_ptr<particle::ParticleGenerator> createParticle(
-            const ParticleData& data,
-            const std::vector<MaterialData>& materials) const;
+            const ParticleData& data) const;
     };
 }

@@ -22,13 +22,13 @@
 
 
 namespace {
+    static script::ScriptEngine s_engine;
 }
 
 namespace script
 {
     ScriptEngine& ScriptEngine::get() noexcept
     {
-        static ScriptEngine s_engine;
         return s_engine;
     }
 

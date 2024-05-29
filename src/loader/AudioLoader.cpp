@@ -1,6 +1,5 @@
 #include "AudioLoader.h"
 
-#include "ki/yaml.h"
 #include "ki/limits.h"
 
 #include "asset/Assets.h"
@@ -14,6 +13,7 @@
 #include "event/Dispatcher.h"
 #include "registry/Registry.h"
 
+#include "loader/document.h"
 
 namespace loader
 {
@@ -24,12 +24,12 @@ namespace loader
     }
 
     void AudioLoader::loadAudio(
-        const YAML::Node& node,
+        const loader::Node& node,
         AudioData& data) const
     {
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "listener") {
                 loadListener(v, data.listener);
@@ -47,14 +47,14 @@ namespace loader
     }
 
     void AudioLoader::loadListener(
-        const YAML::Node& node,
+        const loader::Node& node,
         ListenerData& data) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -72,25 +72,25 @@ namespace loader
     }
 
     void AudioLoader::loadSources(
-        const YAML::Node& node,
+        const loader::Node& node,
         std::vector<SourceData>& sources) const
     {
         int index = 0;
-        for (const auto& entry : node) {
+        for (const auto& entry : node.getNodes()) {
             SourceData& data = sources.emplace_back();
             loadSource(entry, data);
         }
     }
 
     void AudioLoader::loadSource(
-        const YAML::Node& node,
+        const loader::Node& node,
         SourceData& data) const
     {
         data.enabled = true;
 
-        for (const auto& pair : node) {
-            const std::string& k = pair.first.as<std::string>();
-            const YAML::Node& v = pair.second;
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::Node& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

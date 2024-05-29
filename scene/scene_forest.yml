@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 entities:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 10, 20]
     front: [0, 0, -1]
@@ -26,39 +25,95 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Directional light
-    pos: [0, 25, 40]
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-10, 25, 40]
     scale: 2.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: linden_tree_forest
-    type: model
+  - id: palm_tree_forest_{t}
+    model:
+      mesh: fbx/scenery/trees/Palm_01.fbx
+      materials:
+        - name: palm_trunk
+          alias: Tree_0Mat
+          map_kd: fbx/scenery/trees/textures/palm02.png
+          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+        - name: palm_leaf
+          alias: Tree_1Mat
+          map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
+          map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
+        - name: palm_trunk
+          alias: Tree_2Mat
+          map_kd: fbx/scenery/trees/textures/palm02.png
+          map_bump: fbx/scenery/trees/textures/palm02_normal.png
     program: g_tex
     pos: [-1000, 10.0, 0.0]
-    force_material: true
+    render_flags:
+      render_back: true
+      static_bounds: true
+    scale: 0.05
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+  - xid: maple_tree_forest_{t}
+    model:
+      mesh: fbx/scenery/trees/Maple_02.fbx
+      materials:
+        - name: maple_trunk
+          alias: Tree_0Mat
+          map_kd: fbx/scenery/trees/textures/bark02.png
+          map_bump: fbx/scenery/trees/textures/bark02_normal.png
+        - name: maple_leaf
+          alias: Tree_1Mat
+          map_kd: fbx/scenery/trees/textures/leaf maple.png
+          map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+    program: g_tex
+    pos: [-1000, 10.0, 0.0]
     render_flags:
       alpha: true
-      no_frustum: true
-      static_bounds: true
       render_back: true
-    force_material: true
-    xscale: [7, 10, 1]
-    scale: 10
-    lods:
-      - model: linden_tree
-        material: linden_tree
-        distance: 450
-      - model: linden_tree_lod_1
-        material: linden_tree
-        distance: 99999
+      static_bounds: true
+    scale: 0.05
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+  - xid: pine_tree_forest_{t}
+    model:
+      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: fbx\scenery\trees\pine_leaf_pbr
+    program: g_tex
+    pos: [-1000, 0.0, 0.0]
+    render_flags:
+      alpha: true
+      render_back: true
+      xstatic_bounds: true
+    base_rotation: [-90, 0, 0]
+    scale: 2
+    base_scale: 0.01
     instanced: true
     generator:
       type: grid
@@ -68,20 +123,15 @@ entities:
         x_step: 20
         z_step: -20
   - name: wooden floor
-    model: plane
-    material: wood_floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 500
     program: g_tex
     position: [0, 0, 0]
     render_flags:
       render_back: true
       no_shadow: true
     scale: 4000
-materials:
-  - name: linden_tree
-    map_kd: sprites/linden_tree_512.png
-    map_bump: sprites/linden_tree_512_normal.png
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    tiling: 500

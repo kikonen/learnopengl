@@ -1,8 +1,11 @@
 #include "ViewportRegistry.h"
 
+namespace {
+    static ViewportRegistry s_registry;
+}
+
 ViewportRegistry& ViewportRegistry::get() noexcept
 {
-    static ViewportRegistry s_registry;
     return s_registry;
 }
 

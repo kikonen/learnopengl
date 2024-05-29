@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "asset/Material.h"
-
 #include "mesh/Mesh.h"
 
 namespace mesh {
@@ -17,9 +15,7 @@ namespace mesh {
 
         virtual std::string str() const noexcept override;
 
-        virtual const AABB calculateAABB() const override;
-
-        const std::vector<Material>& getMaterials() const override;
+        virtual AABB calculateAABB() const noexcept override;
 
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;

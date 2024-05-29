@@ -8,14 +8,15 @@ script:
     - path: lib/common
 entities:
   - id: player
-    model: water_ball
+    model:
+      mesh: water_ball
+      material_modifier:
+        tiling: 5
     program: g_tex
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 1.0
-    material_modifier:
-      tiling: 5
     render_flags:
       allow_normals: false
     active: true
@@ -27,7 +28,11 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    material: fps_text
+    model:
+      material:
+        - name: fps_text
+          kd: [0.0, 0.8, 0.0, 1.0]
+          xmetal: [1.0, 0.0, 0, 1]
     text:
       font: fps_font
       text: "- fps"
@@ -49,115 +54,162 @@ entities:
     camera:
       default: true
   - name: origo
-    model: water_ball
+    model:
+      mesh: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-    material: default_ball
-    force_material: true
-    material_modifier:
-      kd: [0.0, 0.2, 0.8, 1.0]
     particle:
-      material: particle_firespin
+      material:
+        name: particle_firespin
+        kd: [1, 1, 1, 1]
+        xkd: [0.5, 1.5, 0.2, 0.2]
+        map_kd: particles/7_firespin_spritesheet.png
+        sprites: 61
+        sprites_x: 8
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: four_cubes_{c}
-    model: texture_cube_3
+    model:
+      mesh: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
     clones:
       - pos: [-5.0, 2.0, -5.0]
         particle:
-          material: particle_bones_1
+          material:
+            name: particle_bones_1
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_1_spritesheet.png
+            sprites: 28
+            sprites_x: 4
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [5.0, 2.0, -5.0]
         particle:
-          material: particle_bones_2
+          material:
+            name: particle_bones_2
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_2_spritesheet.png
+            sprites: 29
+            sprites_x: 4
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [-5.0, 2.0, 5.0]
         particle:
-          material: particle_bones_3
+          material:
+            name: particle_bones_3
+            kd: [1, 1, 1, 1]
+            map_kd: particles/bones_3_spritesheet.png
+            sprites: 28
+            sprites_x: 5
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
       - pos: [5.0, 2.0, 5.0]
         particle:
-          material: particle_casting
-  - name: Skeleton army - grid
-    model: quad
-    priority: 1
+          material:
+            name: particle_casting
+            kd: [1, 1, 1, 1]
+            map_kd: particles/4_casting_spritesheet.png
+            sprites: 73
+            sprites_x: 9
+            texture_spec:
+              wrap: GL_CLAMP_TO_EDGE
+  - id: skeleton_army_2_{t}
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: fbx/creatures/skeleton/skeleton_pbr
+        metal: [0.3, 0.4, 0, 1]
     program: g_tex
-    instanced: true
+    shadow_program: simple_depth
+    priority: 1
     pos: [20, 0.0, 20]
-    material: skeleton
+    base_rotation: [0, -90, 0]
     render_flags:
-      billboard: true
-      alpha: true
-      dynamic_bounds: true
-      render_back: true
-    scale: [1.5, 3, 1]
-    generator:
-      type: grid
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 10
-        z_step: -10
+      xdynamic_bounds: true
+      use_bones: true
+      xuse_animation: true
+    scale: 3
+    base_scale: 0.028
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
   - id: rock
     program: g_tex
-    force_material: true
     render_flags:
       render_back: true
-    lods:
-      - model: [rock2, rock]
+    models:
+      - mesh: [rock2, rock]
+        level: 0
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [1, 1, 0]
           tiling: 4
-        distance: 20
-      - model: [rock2, rock_lod_1]
+      - mesh: [rock2, rock_lod_1]
+        level: 1
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [0, 1, 1]
           tiling: 4
-        distance: 40
-      - model: [rock2, rock_lod_2]
+      - mesh: [rock2, rock_lod_2]
+        level: 2
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 0, 1]
           tiling: 4
-        distance: 60
-      - model: [rock2, rock_lod_3]
+      - mesh: [rock2, rock_lod_3]
+        level: 3
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 1, 0]
           tiling: 4
-        distance: 80
-      - model: [rock2, rock_lod_4]
+      - mesh: [rock2, rock_lod_4]
+        level: 4
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [1, 0, 0]
           tiling: 4
-        distance: 100
+    lods:
+      - distance: 20
+      - distance: 40
+      - distance: 60
+      - distance: 80
+      - distance: 100
     pos: [0, 2, -10]
   - id: wooden_floor
-    model: plane
-    xxmodel: woodwall
-    material: wood_floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        parallax_depth: 0.0
+        tiling: 10
     program: g_tex
     render_flags:
       no_shadow: true
     scale: 100
   - name: Directional light
-    type: model
+    model:
+      mesh: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-25, 45, 0]
     scale: 1.5
-    model: light
     program: g_light
     render_flags:
       no_shadow: true
-    force_material: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
@@ -166,52 +218,3 @@ fonts:
   - name: fps_font
     path: fonts/Vera.ttf
     size: 36
-materials:
-  - name: fps_text
-    kd: [0.0, 0.8, 0.0, 1.0]
-    xmetal: [1.0, 0.0, 0, 1]
-  - name: wood_floor
-    map_pbr: textures\Planks 09 [8K]
-    parallax_depth: 0.0
-    tiling: 10
-  - name: skeleton
-    map_kd: sprites/skeleton.png
-    metal: [0.7, 0.2, 0, 1]
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_firespin
-    kd: [1, 1, 1, 1]
-    xkd: [0.5, 1.5, 0.2, 0.2]
-    map_kd: particles/7_firespin_spritesheet.png
-    sprites: 61
-    sprites_x: 8
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_casting
-    kd: [1, 1, 1, 1]
-    map_kd: particles/4_casting_spritesheet.png
-    sprites: 73
-    sprites_x: 9
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_1
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_1_spritesheet.png
-    sprites: 28
-    sprites_x: 4
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_2
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_2_spritesheet.png
-    sprites: 29
-    sprites_x: 4
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
-  - name: particle_bones_3
-    kd: [1, 1, 1, 1]
-    map_kd: particles/bones_3_spritesheet.png
-    sprites: 28
-    sprites_x: 5
-    texture_spec:
-      wrap: GL_CLAMP_TO_EDGE

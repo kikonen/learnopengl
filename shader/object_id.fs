@@ -5,10 +5,7 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
-#include struct_shape.glsl
-
 #include ssbo_materials.glsl
-#include ssbo_shapes.glsl
 
 in VS_OUT {
   flat vec4 objectID;
