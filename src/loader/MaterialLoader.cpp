@@ -116,6 +116,25 @@ namespace {
         std::regex(".*[-_ ]ops[-_ \\.].*"),
         std::regex(".*[-_ ]alpha[-_ \\.].*"),
     };
+
+
+    std::string resolvePath(
+        const std::string& assetsDir,
+        const std::string& baseDir,
+        const std::string assetPath)
+    {
+        if (assetPath.empty()) return assetPath;
+
+        const std::string& filePath = util::joinPathExt(
+            assetsDir,
+            baseDir,
+            assetPath, "");
+
+        if (util::fileExists(filePath)) {
+            return util::joinPath(baseDir, assetPath);
+        }
+        return assetPath;
+    }
 }
 
 namespace loader {
@@ -331,6 +350,27 @@ namespace loader {
         if (material.spriteCount % material.spritesX != 0) {
             material.spritesY++;
         }
+    }
+
+    void MaterialLoader::resolveMaterialPaths(
+        const std::string& baseDir,
+        MaterialData& data) const
+    {
+        const auto& assets = Assets::get();
+        const auto assetsDir = assets.assetsDir;
+        auto& material = data.material;
+
+        material.map_bump = resolvePath(assetsDir, baseDir, material.map_bump);
+        material.map_displacement = resolvePath(assetsDir, baseDir, material.map_displacement);
+        material.map_dudv = resolvePath(assetsDir, baseDir, material.map_dudv);
+        material.map_kd = resolvePath(assetsDir, baseDir, material.map_kd);
+        material.map_ke = resolvePath(assetsDir, baseDir, material.map_ke);
+        material.map_ks = resolvePath(assetsDir, baseDir, material.map_ks);
+        material.map_metalness = resolvePath(assetsDir, baseDir, material.map_metalness);
+        material.map_noise = resolvePath(assetsDir, baseDir, material.map_noise);
+        material.map_occlusion = resolvePath(assetsDir, baseDir, material.map_occlusion);
+        material.map_opacity = resolvePath(assetsDir, baseDir, material.map_opacity);
+        material.map_roughness = resolvePath(assetsDir, baseDir, material.map_roughness);
     }
 
     void MaterialLoader::resolveMaterialPbr(
