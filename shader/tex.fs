@@ -32,7 +32,7 @@ in VS_OUT {
   vec4 shadowPos;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } fs_in;
 

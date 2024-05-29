@@ -38,7 +38,7 @@ out VS_OUT {
   vec4 shadowPos;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } vs_out;
 
@@ -124,19 +124,15 @@ void main() {
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = tangent;
-
+  if (u_materials[materialIndex].normalMapTex.x > 0)
+  {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    //const vec3 B = cross(N, T);
+    const vec3 bitangent = cross(normal, tangent);
 
-    vs_out.tangent = T;
-  } else {
-    vs_out.tangent = tangent;
+    vs_out.tbn = mat3(tangent, bitangent, normal);
   }
 #endif
 }
