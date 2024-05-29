@@ -38,31 +38,31 @@ entities:
         tiling: 5
     program: tex
     pos: [0.0, -1.5, -14.0]
-  - name: Window 1
+  - id: window_1
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
-        map_pbr: fbx\scenery\structures\doors\door_glass_1_pbr
+        map_pbr: door_glass_1_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, -1.0, -8.0]
-    rotation: [-90.0, 0.0, 0.0]
+    base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
     render_flags:
       alpha: true
       blend_oit: true
-  - name: Window 2
+  - id: window_2
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
-        map_pbr: fbx\scenery\structures\doors\door_glass_2_pbr
+        map_pbr: door_glass_2_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.5, -1.0, -10.0]
-    rotation: [-90.0, 0.0, 0.0]
+    base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
     render_flags:
