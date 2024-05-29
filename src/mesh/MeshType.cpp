@@ -79,6 +79,12 @@ namespace mesh {
 
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
+
+            if (m_flags.zUp) {
+                const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
+                lodMesh->getMesh<mesh::Mesh>()->m_animationBaseTransform = glm::toMat4(rotateYUp);
+            }
+
             if (lodMesh->m_lodLevel < 0) {
                 lodMesh->m_lodLevel = lodLevel;
             }

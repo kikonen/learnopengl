@@ -144,6 +144,7 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
 - https://www.gamedev.net/forums/topic/688121-skeletal-animation-assimp-glm-and-me-in-between33/
 - https://realitymultiplied.wordpress.com/2016/04/12/assimp-skeletal-animation-tutorial-intro/
 - https://animcoding.com/post/animation-tech-intro-part-1-skinning
+- https://vladh.net/game-engine-skeletal-animation/
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html

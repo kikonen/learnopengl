@@ -182,6 +182,10 @@ Assets::Assets()
     fogEnd = 700.0;
     fogDensity = 1.0;
 
+    animationEnabled = true;
+    animationFirstFrameOnly = true;
+    animationMaxCount = 1000;
+
     particleEnabled = true;
     particleMaxCount = 100000;
 

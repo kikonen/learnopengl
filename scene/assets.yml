@@ -118,6 +118,10 @@ assets:
   fog_end: 2000.0
   fog_density: 1.1
 
+  animation_enabled: true
+  animation_first_frame_only: false
+  animation_max_count: 1000
+
   particle_enabled: true
   particle_max_count: 100000
 

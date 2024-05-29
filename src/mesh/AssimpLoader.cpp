@@ -125,25 +125,22 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        //glm::mat4 transform;
         uint16_t nodeIndex;
         {
             assimpNodes.push_back(node);
 
             auto& rigNode = rig.addNode(node);
-            //rigNode.m_globalTransform = parentTransform * rigNode.m_localTransform;
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            //transform = rigNode.m_globalTransform;
+            KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}\nT: {}",
+                parentIndex,
+                nodeIndex,
+                node->mName.C_Str(),
+                node->mNumChildren,
+                node->mNumMeshes,
+                rigNode.m_localTransform));
         }
-
-        KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}",
-            parentIndex,
-            nodeIndex,
-            node->mName.C_Str(),
-            node->mNumChildren,
-            node->mNumMeshes));
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
@@ -190,7 +187,7 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    modelMesh->m_transform = globalTransforms[rigNode.m_index];
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index]);
                     modelMesh->m_rig = ctx.m_rig;
                     modelMesh->m_nodeName = rigNode.m_name;
 

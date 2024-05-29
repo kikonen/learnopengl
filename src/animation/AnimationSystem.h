@@ -61,6 +61,10 @@ namespace animation {
         void updateBuffer();
 
     private:
+        bool m_enabled{ false };
+        bool m_firstFrameOnly{ false };
+        size_t m_maxCount{ 0 };
+
         std::mutex m_lock{};
         std::mutex m_snapshotLock{};
 

@@ -509,6 +509,20 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "animation_enabled") {
+                data.animationEnabled = readBool(v);
+                continue;
+            }
+            if (k == "animation_first_frame_only") {
+                data.animationFirstFrameOnly = readBool(v);
+                continue;
+            }
+            if (k == "animation_max_count") {
+                data.animationMaxCount = readInt(v);
+                continue;
+            }
+        }
+        {
             if (k == "particle_enabled") {
                 data.particleEnabled = readBool(v);
                 continue;

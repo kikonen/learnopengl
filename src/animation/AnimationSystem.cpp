@@ -48,6 +48,10 @@ namespace animation
     {
         const auto& assets = Assets::get();
 
+        m_enabled = assets.animationEnabled;
+        m_firstFrameOnly = assets.animationFirstFrameOnly;
+        m_maxCount = assets.animationMaxCount;
+
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
         m_useFence = assets.glUseFence;
@@ -112,22 +116,24 @@ namespace animation
         {
             std::lock_guard lock(m_pendingLock);
 
-            if (true) {
-                std::for_each(
-                    std::execution::par_unseq,
-                    s_activeNodes.begin(),
-                    s_activeNodes.end(),
-                    [this, &ctx](auto& pair) {
-                        animateNode(ctx, pair.first, pair.second);
-                    });
-                m_needSnapshot |= true;
-            }
-            else {
-                bool needSnapshot = false;
-                for (auto& pair : s_activeNodes) {
-                    needSnapshot |= animateNode(ctx, pair.first, pair.second);
+            if (m_enabled) {
+                if (true) {
+                    std::for_each(
+                        std::execution::par_unseq,
+                        s_activeNodes.begin(),
+                        s_activeNodes.end(),
+                        [this, &ctx](auto& pair) {
+                            animateNode(ctx, pair.first, pair.second);
+                        });
+                    m_needSnapshot |= true;
                 }
-                m_needSnapshot |= needSnapshot;
+                else {
+                    bool needSnapshot = false;
+                    for (auto& pair : s_activeNodes) {
+                        needSnapshot |= animateNode(ctx, pair.first, pair.second);
+                    }
+                    m_needSnapshot |= needSnapshot;
+                }
             }
 
             if (m_needSnapshot) {
@@ -160,11 +166,12 @@ namespace animation
         return animator.animate(
             ctx,
             rig,
-            mesh->m_transform,
+            mesh->m_animationBaseTransform,
+            mesh->m_inverseBaseTransform,
             palette,
             transform.m_animationIndex,
             transform.m_animationStartTime,
-            ctx.m_clock.ts);
+            m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
@@ -193,6 +200,8 @@ namespace animation
 
     void AnimationSystem::handleNodeAdded(Node* node)
     {
+        if (!m_enabled) return;
+
         auto* type = node->m_typeHandle.toType();
         if (!type->m_flags.useAnimation) return;
 

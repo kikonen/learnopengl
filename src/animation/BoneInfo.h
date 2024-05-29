@@ -19,6 +19,8 @@ namespace animation {
         std::string m_nodeName;
         int16_t m_nodeIndex{ -1 };
 
+        // It is sometimes called an inverse - bind matrix,
+        // or inverse bind pose matrix.
         glm::mat4 m_offsetMatrix;
     };
 }

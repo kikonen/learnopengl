@@ -175,6 +175,10 @@ public:
     float fogEnd;
     float fogDensity;
 
+    bool animationEnabled;
+    bool animationFirstFrameOnly;
+    int animationMaxCount;
+
     bool particleEnabled;
     int particleMaxCount;
 

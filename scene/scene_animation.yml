@@ -125,7 +125,7 @@ entities:
     shadow_program: simple_depth
     pos: [-20.0, 0.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -133,6 +133,7 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
+      z_up: true
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
@@ -163,7 +164,7 @@ entities:
     shadow_program: simple_depth
     pos: [-10.0, 8.0, -10.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -171,6 +172,7 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
+      z_up: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -191,7 +193,7 @@ entities:
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
       xrender_back: true
@@ -199,6 +201,7 @@ entities:
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
+      z_up: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -225,7 +228,7 @@ entities:
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [-90, 0, 0]
+    xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
       alpha: true
@@ -254,7 +257,7 @@ entities:
     shadow_program: simple_depth
     pos: [20.0, 2.0, 0.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
     scale: 1
     base_scale: 0.05
     render_flags:
@@ -275,5 +278,5 @@ entities:
           path: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    base_rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
     scale: 0.025

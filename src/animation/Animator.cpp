@@ -11,6 +11,7 @@
 #include "engine/UpdateContext.h"
 
 #include "util/glm_util.h"
+#include "util/Util.h"
 
 #include "RigContainer.h"
 #include "Animation.h"
@@ -26,7 +27,8 @@ namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
-        const glm::mat4& meshTransform,
+        const glm::mat4& inverseMeshBaseTransform,
+        const glm::mat4& animationBaseTransform,
         std::span<animation::BoneTransform>& palette,
         uint16_t animationIndex,
         double animationStartTime,
@@ -59,45 +61,66 @@ namespace animation {
             //    currentTime, animationTimeSecs, ticksPerSecond, timeInTicks, animation->m_duration);
         }
 
-
-        //const auto globalInverseTransform = glm::inverse(rig.m_nodes[0].m_globalTransform);
-        const auto globalInverseTransform = glm::inverse(meshTransform);
-
-        //for (int16_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++) {
-        //}
-
         constexpr size_t MAX_NODES = 200;
         glm::mat4 parentTransforms[MAX_NODES + 1];
-        parentTransforms[0] = ID_MAT;
 
-        for (const auto& rigNode : rig.m_nodes) {
+        // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
+        // => animation node hierarchy includes equivalent transforms (presumeably)
+        parentTransforms[0] = animationBaseTransform * inverseMeshBaseTransform;
+        //parentTransforms[0] = glm::mat4(1.f);
+        //parentTransforms[0] *= glm::translate(
+        //    glm::mat4(1.f),
+        //    glm::vec3{ 0.f, 24.5f, 0.f });
+
+        size_t hitCount = 0;
+        size_t missCount = 0;
+
+        std::vector<std::string> hitMiss;
+        //bool boneFound = false;
+
+        for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
+        {
+            const auto& rigNode = rig.m_nodes[nodeIndex];
             if (rigNode.m_index >= MAX_NODES) throw "too many bones";
+            auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            //if (bone) {
+            //    if (!boneFound) {
+            //        //parentTransforms[rigNode.m_parentIndex + 1] = glm::inverse(rigNode.m_localTransform);
+            //        parentTransforms[rigNode.m_parentIndex + 1] = glm::mat4(1.f);
+            //    }
+            //    boneFound |= true;
+            //}
+            //else {
+            //    if (!boneFound) continue;
+            //}
+
             const auto* channel = animation->findByNodeIndex(rigNode.m_index);
             const glm::mat4& nodeTransform = channel
                 ? channel->interpolate(animationTimeTicks)
-                //: rigNode.m_localTransform;
-                : ID_MAT;
+                : rigNode.m_localTransform;
 
             parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
             const auto& globalTransform = parentTransforms[rigNode.m_index + 1];
 
-            auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
-                //palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
-                palette[bone->m_index] = globalInverseTransform * globalTransform * bone->m_offsetMatrix;
-                //palette[bone->m_index] = rigNode.m_globalInvTransform * nodeTransform * bone->m_offsetMatrix;
+                //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
+                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                //hitCount++;
+                // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
+                palette[bone->m_index].m_transform = globalTransform * bone->m_offsetMatrix;
+            }
+            else {
+                //hitMiss.push_back(fmt::format("[-{}.{}.{}]",
+                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                //missCount++;
             }
         }
 
+        //KI_INFO_OUT(fmt::format("ANIM: nodes={}, bones={}, hit={}, miss={}, graph={}",
+        //    rig.m_nodes.size(), rig.m_boneContainer.m_boneInfos.size(), hitCount, missCount,
+        //    util::join(hitMiss, "")));
+
         return true;
     }
-
-    //void Animator::animateHierarchy(
-    //    const animation::RigContainer& rig,
-    //    std::span<animation::BoneTransform>& palette,
-    //    float animationTimeTicks,
-    //    int16_t nodeIndex,
-    //    const glm::mat4& parentTransform)
-    //{
-    //}
 }

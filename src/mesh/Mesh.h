@@ -61,13 +61,21 @@ namespace mesh {
             return m_aabb;
         }
 
+        void setBaseTransform(const glm::mat4& baseTransform) {
+            m_baseTransform = baseTransform;
+            m_inverseBaseTransform = glm::inverse(baseTransform);
+        }
+
     public:
         const ki::mesh_id m_id;
 
         const std::string m_name;
         std::string m_nodeName;
 
-        glm::mat4 m_transform{ 1.f };
+        glm::mat4 m_baseTransform{ 1.f };
+        glm::mat4 m_inverseBaseTransform{ 1.f };
+
+        glm::mat4 m_animationBaseTransform{ 1.f };
 
     protected:
         bool m_prepared{ false };

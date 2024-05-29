@@ -9,7 +9,7 @@ script:
 entities:
   - id: player
     type: origo
-    pos: [0, 0, 0]
+    pos: [0, 3, 7]
     front: [0, 0, -1]
     active: true
     audio:
@@ -38,7 +38,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: object_{t}
+  - xid: object_{t}
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
@@ -46,9 +46,309 @@ entities:
         map_pbr: door_glass_1_pbr
     program: g_tex
     pos: [0.0, 0.0, -8.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    xbase_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
     render_flags:
       blend_oit: true
       render_back: true
+  - id: skeleton_1_{t}
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      xanimations:
+        - name: walk
+          path: anim/Humanoid@WalkForwardUnarmed2.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-2.5, 2.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 1
+    base_scale: 0.05
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+  - id: skeleton_2_{t}
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      xanimations:
+        - name: walk
+          path: anim/Humanoid@WalkForwardUnarmed2.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 2.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 1
+    base_scale: 0.05
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+  - id: skeleton_3_{t}
+    model:
+      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+      material:
+        name: skeleton_pbr
+        map_pbr: skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      xanimations:
+        - name: walk
+          path: anim/Humanoid@WalkForwardUnarmed2.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [2.5, 2.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 1
+    base_scale: 0.05
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+  - id: scavenger_1_{t}
+    model:
+      mesh: fbx/characters/scavenger/Scavenger.fbx
+      materials:
+        - name: scavenger_body_pbr
+          alias: "Material #13"
+          map_pbr: scavenger_body_pbr
+        - name: scavenger_hair_pbr
+          alias: "Material #11"
+          map_pbr: scavenger_hair_pbr
+        - name: scavenger_backback_pbr
+          alias: 01 - Default
+          map_pbr: scavenger_body_pbr
+      xanimations:
+        - name: walk
+          path: Scavenger.fbx
+          xpath: anim/Humanoid@WalkForwardUnarmed.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [10.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [-90, 0, 0]
+    scale: 0.025
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - id: scavenger_2_{t}
+    model:
+      mesh: fbx/characters/scavenger/Scavenger.fbx
+      materials:
+        - name: scavenger_body_pbr
+          alias: "Material #13"
+          map_pbr: scavenger_body_pbr
+        - name: scavenger_hair_pbr
+          alias: "Material #11"
+          map_pbr: scavenger_hair_pbr
+        - name: scavenger_backback_pbr
+          alias: 01 - Default
+          map_pbr: scavenger_body_pbr
+      xanimations:
+        - name: walk
+          path: Scavenger.fbx
+          xpath: anim/Humanoid@WalkForwardUnarmed.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [15.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [-90, 0, 0]
+    scale: 0.025
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - id: scavenger_3_{t}
+    model:
+      mesh: fbx/characters/scavenger/Scavenger.fbx
+      materials:
+        - name: scavenger_body_pbr
+          alias: "Material #13"
+          map_pbr: scavenger_body_pbr
+        - name: scavenger_hair_pbr
+          alias: "Material #11"
+          map_pbr: scavenger_hair_pbr
+        - name: scavenger_backback_pbr
+          alias: 01 - Default
+          map_pbr: scavenger_body_pbr
+      xanimations:
+        - name: walk
+          path: Scavenger.fbx
+          xpath: anim/Humanoid@WalkForwardUnarmed.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [20.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [-90, 0, 0]
+    scale: 0.025
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
+  - id: lion_1_{t}
+    model:
+      mesh: fbx/creatures/lion/SK_Lion.FBX
+      material:
+        name: lion_pbr
+        map_pbr: lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: walk
+          path: anim/Lion@Walk.FBX
+        - name: jump
+          path: anim/Lion@Jump.FBX
+        - name: idle
+          path: anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: anim/Lion@Roar.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.0, -10.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+      z_up: true
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    xscript_file: scripts/cow_audio
+  - id: lion_2_{t}
+    model:
+      mesh: fbx/creatures/lion/SK_Lion.FBX
+      material:
+        name: lion_pbr
+        map_pbr: lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: walk
+          path: anim/Lion@Walk.FBX
+        - name: jump
+          path: anim/Lion@Jump.FBX
+        - name: idle
+          path: anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: anim/Lion@Roar.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [5.0, 0.0, -10.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+      z_up: true
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    xscript_file: scripts/cow_audio
+  - id: lion_3_{t}
+    model:
+      mesh: fbx/creatures/lion/SK_Lion.FBX
+      material:
+        name: lion_pbr
+        map_pbr: lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+      animations:
+        - name: walk
+          path: anim/Lion@Walk.FBX
+        - name: jump
+          path: anim/Lion@Jump.FBX
+        - name: idle
+          path: anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: anim/Lion@Roar.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [10.0, 0.0, -10.0]
+    rotation: [0, 0, 0]
+    xbase_rotation: [0, 0, 0]
+    scale: 0.025
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      use_bones: true
+      xuse_bones_debug: true
+      use_animation: true
+      z_up: true
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    xscript_file: scripts/cow_audio

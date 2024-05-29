@@ -19,19 +19,11 @@ namespace animation {
         bool animate(
             const UpdateContext& ctx,
             const animation::RigContainer& rig,
-            const glm::mat4& meshTransform,
+            const glm::mat4& inverseMeshBaseTransform,
+            const glm::mat4& animationBaseTransform,
             std::span<animation::BoneTransform>& palette,
             uint16_t animationIndex,
             double animationStartTime,
             double currentTime);
-
-        //void animateHierarchy(
-        //    const animation::RigContainer& rig,
-        //    std::span<animation::BoneTransform>& palette,
-        //    float animationTimeTicks,
-        //    int16_t nodeIndex,
-        //    const glm::mat4& parentTransform);
-
-        //glm::mat4 m_globalInverseTransform;
     };
 }

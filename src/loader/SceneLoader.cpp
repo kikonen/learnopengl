@@ -858,11 +858,12 @@ namespace loader {
             transform.setVolume(type->getAABB().getVolume());
 
             // TODO KI basetransform goes *PER* mesh now
+            // => thus THIS IS INCORRECT
             auto* lodMesh = type->getLodMesh(0);
             if (lodMesh) {
                 auto* mesh = lodMesh->m_mesh;
                 if (mesh) {
-                    baseTransform = baseTransform * mesh->m_transform;
+                    baseTransform = baseTransform * mesh->m_baseTransform;
                 }
             }
         }
@@ -963,6 +964,7 @@ namespace loader {
             }
         }
 
+        flags.zUp = entityData.findRenderFlag("z_up", flags.renderBack);
         flags.renderBack = entityData.findRenderFlag("render_back", flags.renderBack);
         flags.noFrustum = entityData.findRenderFlag("no_frustum", flags.noFrustum);
         flags.noShadow = entityData.findRenderFlag("no_shadow", flags.noShadow);
