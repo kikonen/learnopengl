@@ -25,12 +25,17 @@ namespace render {
         }
     };
 
+    struct LodEntry {
+        uint32_t m_entityIndex;
+        uint32_t m_meshIndex;
+    };
+
     struct BatchCommand {
         const Program* m_program{ nullptr };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
-        std::map<LodKey, std::vector<uint32_t>> m_lodInstances;
+        std::map<LodKey, std::vector<LodEntry>> m_lodInstances;
 
         int m_baseIndex{ 0 };
         int m_instanceCount{ 0 };

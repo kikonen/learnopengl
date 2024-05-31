@@ -28,12 +28,6 @@ public:
 
     size_t getBaseIndex() { return m_materials.size(); }
 
-    Material* find(
-        std::string_view);
-
-    Material* findById(
-        const int id);
-
     void prepare();
 
     void updateRT(const UpdateContext& ctx);
@@ -50,9 +44,9 @@ private:
 
     std::vector<Material> m_materials;
 
-    std::vector<MaterialSSBO> m_materialsSSBO;
+    std::vector<MaterialSSBO> m_materialEntries;
 
-    size_t m_lastMaterialSize = 0;
+    size_t m_lastSize = 0;
 
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };
 };

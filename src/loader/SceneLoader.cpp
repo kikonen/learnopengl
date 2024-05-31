@@ -655,9 +655,10 @@ namespace loader {
             const auto& alias = materialData.aliasName;
             const auto& name = materialData.materialName;
             KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
-            if (alias == material.m_name || alias.empty() || alias == "*")
+            if (alias == material.m_name || name == material.m_name || alias.empty() || alias == "*")
             {
-                if (!name.empty() && !alias.empty()) {
+                //if (!name.empty() && !alias.empty()) {
+                if (alias == material.m_name || name == material.m_name || alias == "*") {
                     material.assign(materialData.material);
                 }
                 l.m_materialLoader.modifyMaterial(material, materialData);
@@ -852,23 +853,11 @@ namespace loader {
         transform.setScale(entityData.scale);
         transform.setFront(entityData.front);
 
-        auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
-
         {
+            auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
             transform.setVolume(type->getAABB().getVolume());
-
-            // TODO KI basetransform goes *PER* mesh now
-            // => thus THIS IS INCORRECT
-            auto* lodMesh = type->getLodMesh(0);
-            if (lodMesh) {
-                auto* mesh = lodMesh->m_mesh;
-                if (mesh) {
-                    baseTransform = baseTransform * mesh->m_baseTransform;
-                }
-            }
+            transform.setBaseTransform(baseTransform);
         }
-
-        transform.setBaseTransform(baseTransform);
 
         node->m_camera = l.m_cameraLoader.createCamera(entityData.camera);
         node->m_light = l.m_lightLoader.createLight(entityData.light, cloneIndex, tile);

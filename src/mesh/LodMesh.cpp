@@ -51,6 +51,7 @@ namespace mesh {
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
+        m_meshIndex = o.m_meshIndex;
 
         o.m_mesh = nullptr;
         o.m_material = nullptr;
@@ -68,6 +69,7 @@ namespace mesh {
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
+        m_meshIndex = o.m_meshIndex;
 
         o.m_mesh = nullptr;
         o.m_material = nullptr;
@@ -78,8 +80,9 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: level={}, mesh={}, materialIndex={}>",
+            "<LOD_MESH: level={}, index={}, mesh={}, materialIndex={}>",
             m_lodLevel,
+            m_meshIndex,
             m_mesh ? m_mesh->str() : "N/A",
             m_lod.m_materialIndex);
     }
@@ -124,6 +127,8 @@ namespace mesh {
         }
 
         setMaterial(mesh->getMaterial());
+
+        m_meshIndex = mesh->m_registeredIndex;
     }
 
     void LodMesh::registerMaterials()

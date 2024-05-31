@@ -133,7 +133,7 @@ namespace mesh
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}\nT: {}",
+            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}, parent={}, name={}, children={}, meshes={}\nT: {}",
                 parentIndex,
                 nodeIndex,
                 node->mName.C_Str(),

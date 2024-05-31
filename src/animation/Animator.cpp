@@ -27,6 +27,7 @@ namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
+        const glm::mat4& meshBaseTransform,
         const glm::mat4& inverseMeshBaseTransform,
         const glm::mat4& animationBaseTransform,
         std::span<animation::BoneTransform>& palette,
@@ -67,6 +68,7 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation node hierarchy includes equivalent transforms (presumeably)
         parentTransforms[0] = animationBaseTransform * inverseMeshBaseTransform;
+        //parentTransforms[0] = animationBaseTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
         //    glm::mat4(1.f),

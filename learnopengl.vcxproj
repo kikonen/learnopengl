@@ -213,6 +213,7 @@
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
+    <ClCompile Include="src\mesh\TransformRegistry.cpp" />
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp" />
@@ -431,6 +432,8 @@
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
+    <ClInclude Include="src\mesh\TransformRegistry.h" />
+    <ClInclude Include="src\mesh\TransformSSBO.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />

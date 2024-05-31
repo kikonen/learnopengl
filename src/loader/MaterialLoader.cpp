@@ -42,6 +42,7 @@ namespace {
         std::regex(".*[\\.]hdr"),
         std::regex(".*[\\.]png"),
         std::regex(".*[\\.]jpg"),
+        std::regex(".*[\\.]tga"),
     };
 
     const std::vector<std::regex> ktxMatchers{

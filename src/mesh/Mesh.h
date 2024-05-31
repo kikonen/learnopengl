@@ -69,6 +69,8 @@ namespace mesh {
     public:
         const ki::mesh_id m_id;
 
+        uint32_t m_registeredIndex{ 0 };
+
         const std::string m_name;
         std::string m_nodeName;
 

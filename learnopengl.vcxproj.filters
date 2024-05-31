@@ -690,6 +690,9 @@
     <ClCompile Include="src\mesh\MeshSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\TransformRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1698,6 +1701,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MeshData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TransformRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\TransformSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

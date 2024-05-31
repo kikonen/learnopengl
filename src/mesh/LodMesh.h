@@ -68,6 +68,8 @@ namespace mesh {
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
+        uint32_t m_meshIndex{ 0 };
+
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
 

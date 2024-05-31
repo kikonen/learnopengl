@@ -94,7 +94,7 @@ namespace render {
             if (lodMesh.m_lodLevel != lodLevel) continue;
             LodKey key{ &lodMesh.m_lod };
             auto& lodInstances = top.m_lodInstances[key];
-            lodInstances.push_back(entityIndex);
+            lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex);
         }
     }
 
@@ -177,7 +177,7 @@ namespace render {
                     LodKey key{ &lodMesh.m_lod };
 
                     auto& lodInstances = top.m_lodInstances[key];
-                    lodInstances.push_back(entityBase + i);
+                    lodInstances.emplace_back(entityBase + i, lodMesh.m_meshIndex);
                 }
             }
 
@@ -203,7 +203,7 @@ namespace render {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
                     LodKey key{ &lodMesh.m_lod };
                     auto& lodInstances = top.m_lodInstances[key];
-                    lodInstances.push_back(entityBase + i);
+                    lodInstances.emplace_back(entityBase + i, lodMesh.m_meshIndex);
                 }
             }
 
@@ -335,13 +335,14 @@ namespace render {
 
                 auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
 
-                for (const auto& lodEntry : curr.m_lodInstances) {
-                    const auto* lod = lodEntry.first.m_lod;
+                for (const auto& lodInstance : curr.m_lodInstances) {
+                    const auto* lod = lodInstance.first.m_lod;
 
-                    lodBaseIndex[lodEntry.first] = static_cast<uint32_t>(m_entityIndeces.size());
-                    for (auto& entityIndex : lodEntry.second) {
+                    lodBaseIndex[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
+                    for (auto& lodEntry : lodInstance.second) {
                         auto& instance = m_entityIndeces.emplace_back();
-                        instance.u_entityIndex = entityIndex;
+                        instance.u_entityIndex = lodEntry.m_entityIndex;
+                        instance.u_meshIndex = lodEntry.m_meshIndex;
                         instance.u_materialIndex = lod->m_materialIndex;
                     }
                 }
