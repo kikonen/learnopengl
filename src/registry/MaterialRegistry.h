@@ -32,8 +32,8 @@ public:
 
     void updateRT(const UpdateContext& ctx);
 
-    void bind(
-        const RenderContext& ctx);
+    //void bind(
+    //    const RenderContext& ctx);
 
 private:
     void updateMaterialBuffer();

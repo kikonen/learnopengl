@@ -172,11 +172,12 @@ namespace mesh
         auto& rig = *ctx.m_rig;
 
         std::vector<glm::mat4> globalTransforms;
-        globalTransforms.resize(rig.m_nodes.size());
+        globalTransforms.resize(rig.m_nodes.size() + 1);
+        globalTransforms[0] = glm::mat4{ 1.f };
 
         for (auto& rigNode : rig.m_nodes) {
-            const glm::mat4& parentTransform = rigNode.m_parentIndex >= 0 ? globalTransforms[rigNode.m_parentIndex] : glm::mat4(1.f);
-            globalTransforms[rigNode.m_index] = parentTransform * rigNode.m_localTransform;
+            const glm::mat4& parentTransform = globalTransforms[rigNode.m_parentIndex + 1];
+            globalTransforms[rigNode.m_index + 1] = parentTransform * rigNode.m_localTransform;
 
             auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
@@ -189,7 +190,7 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index]);
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
                     modelMesh->m_rig = ctx.m_rig;
                     modelMesh->m_nodeName = rigNode.m_name;
 
@@ -239,7 +240,7 @@ namespace mesh
             mesh->mNumFaces,
             mesh->mNumBones));
 
-        for (size_t vertexIndex = 0; vertexIndex  < mesh->mNumVertices; vertexIndex++) {
+        for (size_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord;
 
             if (mesh->HasTextureCoords(0))
@@ -323,7 +324,7 @@ namespace mesh
             bone->mNumWeights))
 
 
-        auto& vertexBones = modelMesh.m_vertexBones;
+            auto& vertexBones = modelMesh.m_vertexBones;
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)

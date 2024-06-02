@@ -54,11 +54,6 @@ namespace mesh {
     void TransformRegistry::prepare()
     {
         m_ssbo.createEmpty(BLOCK_SIZE * sizeof(TransformSSBO), GL_DYNAMIC_STORAGE_BIT);
-    }
-
-    void TransformRegistry::bind(
-        const RenderContext& ctx)
-    {
         m_ssbo.bindSSBO(SSBO_MESH_TRANSFORMS);
     }
 

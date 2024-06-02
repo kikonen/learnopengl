@@ -123,9 +123,10 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                data.type = mesh::EntityType::model;
-                auto& meshData = data.meshes.emplace_back();
-                loadMesh(v, meshData, loaders);
+                if (data.type == mesh::EntityType::none) {
+                    auto& meshData = data.meshes.emplace_back();
+                    loadMesh(v, meshData, loaders);
+                }
             }
             else if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -254,6 +255,28 @@ namespace loader {
             }
             else {
                 reportUnknown("entity_entry", k, v);
+            }
+        }
+
+        if (data.type == mesh::EntityType::none) {
+            if (!data.meshes.empty()) {
+                data.type = mesh::EntityType::model;
+            }
+        }
+
+        if (data.enabled) {
+            if (!data.meshes.empty()) {
+                if (data.type != mesh::EntityType::model) {
+                    auto msg = fmt::format("INVALID: type is not model - id={}, name={}", data.baseId, data.name);
+                    KI_INFO_OUT(msg);
+                    throw msg;
+                }
+            }
+
+            if (data.type == mesh::EntityType::none) {
+                auto msg = fmt::format("INVALID: type missing - id={}, name={}", data.baseId, data.name);
+                KI_INFO_OUT(msg);
+                throw msg;
             }
         }
 

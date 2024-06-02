@@ -34,7 +34,7 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
-        mesh::EntityType type{ mesh::EntityType::model };
+        mesh::EntityType type{ mesh::EntityType::none };
 
         BaseId baseId;
         BaseId parentBaseId;

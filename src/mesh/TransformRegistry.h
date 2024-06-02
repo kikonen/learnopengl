@@ -33,9 +33,6 @@ namespace mesh {
 
         void updateRT(const UpdateContext& ctx);
 
-        void bind(
-            const RenderContext& ctx);
-
     private:
         void updateBuffer();
 
