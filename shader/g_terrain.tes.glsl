@@ -8,12 +8,14 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl
 
 in TCS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -90,6 +92,7 @@ float fetchHeight(
 
 void main()
 {
+  instance = u_instances[tes_in[0].instanceIndex];
   entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 

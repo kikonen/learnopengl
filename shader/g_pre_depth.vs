@@ -7,6 +7,7 @@ layout (location = ATTR_POS) in vec3 a_pos;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl

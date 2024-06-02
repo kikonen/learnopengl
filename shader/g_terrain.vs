@@ -25,6 +25,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 out VS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -60,7 +61,9 @@ ResolvedMaterial material;
 TerrainTile tile;
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint instanceIndex = gl_BaseInstance + gl_InstanceID;
+  instance = u_instances[instanceIndex];
+
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
   tile = u_terrainTiles[entity.u_shapeIndex];
@@ -79,6 +82,7 @@ void main() {
   gl_Position = pos;
 
   vs_out.entityIndex = entityIndex;
+  vs_out.instanceIndex = instanceIndex;
   vs_out.materialIndex = materialIndex;
 
   vs_out.rangeYmin = tile.u_rangeYmin;

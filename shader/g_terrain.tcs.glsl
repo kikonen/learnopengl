@@ -7,12 +7,14 @@ layout(vertices=3) out;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
 in VS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -36,6 +38,7 @@ in VS_OUT {
 
 out TCS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -68,12 +71,14 @@ Entity entity;
 
 void main()
 {
+  instance = u_instances[tcs_in[gl_InvocationID].instanceIndex];
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
   tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+  tcs_out[gl_InvocationID].instanceIndex = tcs_in[gl_InvocationID].instanceIndex;
 #ifdef USE_CUBE_MAP
   tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
 #endif
