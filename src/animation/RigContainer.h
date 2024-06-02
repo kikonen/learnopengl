@@ -32,6 +32,8 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
+        void validate() const;
+
         //void calculateInvTransforms() noexcept;
 
         std::vector<animation::RigNode> m_nodes;

@@ -2,6 +2,8 @@
 
 #include <assimp/scene.h>
 
+#include <fmt/format.h>
+
 #include "Animation.h"
 #include "RigNode.h"
 #include "BoneInfo.h"
@@ -39,6 +41,25 @@ namespace animation {
     bool RigContainer::hasBones() const noexcept
     {
         return m_boneContainer.hasBones();
+    }
+
+    void RigContainer::validate() const
+    {
+        // NOTE KI check that all bones are related to some Node
+        // - every bone has node
+        // - not every node has bone
+        for (const auto& it : m_boneContainer.m_nodeNameToIndex) {
+            const auto& name = it.first;
+
+            const auto& nodeIt = std::find_if(
+                m_nodes.begin(),
+                m_nodes.end(),
+                [&name](const auto& node) {
+                return node.m_name == name;
+            });
+
+            if (nodeIt == m_nodes.end()) throw fmt::format("missing: {}", name);
+        }
     }
 
     //void RigContainer::calculateInvTransforms() noexcept
