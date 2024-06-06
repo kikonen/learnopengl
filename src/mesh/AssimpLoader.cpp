@@ -214,9 +214,8 @@ namespace mesh
         size_t meshIndex,
         const aiMesh* mesh)
     {
-        auto& vertices = modelMesh.m_vertices;
-        const auto vertexOffset = vertices.size();
-        vertices.reserve(vertexOffset + mesh->mNumVertices);
+        modelMesh.m_vertices.reserve(mesh->mNumVertices);
+        modelMesh.m_indeces.reserve(mesh->mNumVertices);
 
         Material* material{ nullptr };
 
@@ -231,10 +230,9 @@ namespace mesh
         }
 
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, material={}, vertices={}, faces={}, bones={}",
             rigNode.m_index,
             modelMesh.m_name,
-            vertexOffset,
             material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
             mesh->mNumFaces,
@@ -261,15 +259,15 @@ namespace mesh
 
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
-            vertices.emplace_back(pos, texCoord, normal, tangent, 0);
+            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent, 0);
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(ctx, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
+            processMeshFace(ctx, modelMesh, meshIndex, faceIdx, mesh, &mesh->mFaces[faceIdx]);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(ctx, modelMesh, meshIndex, vertexOffset, mesh, mesh->mBones[boneIdx]);
+            processMeshBone(ctx, modelMesh, meshIndex, mesh, mesh->mBones[boneIdx]);
         }
     }
 
@@ -278,7 +276,6 @@ namespace mesh
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
-        size_t vertexOffset,
         const aiMesh* mesh,
         const aiFace* face)
     {
@@ -289,7 +286,7 @@ namespace mesh
             // vertices and thus indeces areare per mesh, but they are *combined*
             // back single mesh in load
             // => must apply vertex offset in index buffer to match that
-            index[i] = static_cast<glm::uint>(face->mIndices[i] + vertexOffset);
+            index[i] = static_cast<glm::uint>(face->mIndices[i]);
         }
         //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
         //    mesh->mName.C_Str(),
@@ -303,7 +300,6 @@ namespace mesh
         mesh::LoadContext& ctx,
         ModelMesh& modelMesh,
         size_t meshIndex,
-        size_t vertexOffset,
         const aiMesh* mesh,
         const aiBone* bone)
     {
@@ -315,16 +311,14 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, offset={}, weights={}",
+            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, weights={}",
             bi.m_nodeIndex,
             bi.m_index,
             bi.m_nodeName,
             meshIndex,
-            vertexOffset,
             bone->mNumWeights))
 
-
-            auto& vertexBones = modelMesh.m_vertexBones;
+        auto& vertexBones = modelMesh.m_vertexBones;
 
         Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
@@ -339,7 +333,7 @@ namespace mesh
             //    weight->mVertexId,
             //    weight->mWeight));
 
-            auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
+            size_t vertexIndex = bone->mWeights[i].mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 

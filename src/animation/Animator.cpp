@@ -11,6 +11,7 @@
 #include "engine/UpdateContext.h"
 
 #include "util/glm_util.h"
+#include "util/glm_format.h"
 #include "util/Util.h"
 
 #include "RigContainer.h"
