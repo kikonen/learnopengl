@@ -55,6 +55,7 @@ namespace animation {
             if (!bone) continue;
 
             rigNode.m_required = true;
+            rigNode.m_boneIndex = bone->m_index;
 
             for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
                 auto& parent = m_nodes[nodeIndex];

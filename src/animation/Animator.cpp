@@ -87,8 +87,11 @@ namespace animation {
 
             // NOTE KI skip nodes not affecting animation
             if (!rigNode.m_required) continue;
+
             if (rigNode.m_index >= MAX_NODES) throw "too many bones";
-            auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            const auto* bone = rig.m_boneContainer.getNode(rigNode.m_boneIndex);
+
             //if (bone) {
             //    if (!boneFound) {
             //        //parentTransforms[rigNode.m_parentIndex + 1] = glm::inverse(rigNode.m_localTransform);

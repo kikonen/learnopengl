@@ -34,6 +34,11 @@ namespace animation {
         m_nodeToBone.insert({ nodeIndex, boneIndex});
     }
 
+    const animation::BoneInfo* BoneContainer::getNode(int16_t boneIndex) const noexcept
+    {
+        return boneIndex >= 0 ? &m_boneInfos[boneIndex] : nullptr;
+    }
+
     const animation::BoneInfo* BoneContainer::findByNodeIndex(int16_t nodeIndex) const noexcept
     {
         const auto& it = m_nodeToBone.find(nodeIndex);
