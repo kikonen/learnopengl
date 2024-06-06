@@ -43,6 +43,28 @@ namespace animation {
         return m_boneContainer.hasBones();
     }
 
+    void RigContainer::prepare()
+    {
+        validate();
+
+        // Mark bones required for rigged animation
+        // - all nodes with bone
+        // - all parent nodes of bone
+        for (auto& rigNode : m_nodes) {
+            auto* bone = m_boneContainer.findByNodeIndex(rigNode.m_index);
+            if (!bone) continue;
+
+            rigNode.m_required = true;
+
+            for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                auto& parent = m_nodes[nodeIndex];
+                if (parent.m_required) break;
+                parent.m_required = true;
+                nodeIndex = parent.m_parentIndex;
+            }
+        }
+    }
+
     void RigContainer::validate() const
     {
         // NOTE KI check that all bones are related to some Node
@@ -55,8 +77,8 @@ namespace animation {
                 m_nodes.begin(),
                 m_nodes.end(),
                 [&name](const auto& node) {
-                return node.m_name == name;
-            });
+                    return node.m_name == name;
+                });
 
             if (nodeIt == m_nodes.end()) throw fmt::format("missing: {}", name);
         }

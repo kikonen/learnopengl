@@ -32,6 +32,7 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
+        void prepare();
         void validate() const;
 
         //void calculateInvTransforms() noexcept;

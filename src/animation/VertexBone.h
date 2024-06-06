@@ -5,19 +5,20 @@
 namespace animation {
     // Bone weights for single vertex
     struct VertexBone {
-        glm::uvec4 m_boneIds;
-        glm::vec4 m_weights;
+        glm::uvec4 m_boneIds{ 0 };
+        glm::vec4 m_weights{ 0.f };
 
-        uint8_t index{ 0 };
-
+        // Insert bone data into first free slot
+        // - free == weight not yet set
         void addBone(uint16_t boneId, float weight) {
-            assert(index < 4);
-            // NOTE KI precaution avoid memory corruption in release mode
-            if (index == 4)
-                return;
-            m_boneIds[index] = boneId;
-            m_weights[index] = weight;
-            index++;
+            for (int i = 0; i < 4; i++) {
+                if (m_weights[i] == 0.f) {
+                    m_boneIds[i] = boneId;
+                    m_weights[i] = weight;
+                    return;
+                }
+            }
+            assert(0);
         }
     };
 }

@@ -114,7 +114,7 @@ namespace mesh
 
         loadAnimations(ctx, meshSet.m_name, scene);
 
-        meshSet.m_rig->validate();
+        meshSet.m_rig->prepare();
     }
 
     void AssimpLoader::collectNodes(

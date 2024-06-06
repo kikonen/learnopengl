@@ -84,6 +84,9 @@ namespace animation {
         for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
         {
             const auto& rigNode = rig.m_nodes[nodeIndex];
+
+            // NOTE KI skip nodes not affecting animation
+            if (!rigNode.m_required) continue;
             if (rigNode.m_index >= MAX_NODES) throw "too many bones";
             auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             //if (bone) {
