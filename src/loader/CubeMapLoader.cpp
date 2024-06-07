@@ -66,7 +66,7 @@ namespace loader {
         }
 
 
-        type->m_entityType = mesh::EntityType::marker;
+        type->m_entityType = EntityType::marker;
 
         auto& flags = type->m_flags;
 

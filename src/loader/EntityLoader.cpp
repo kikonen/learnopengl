@@ -74,19 +74,19 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
-                    data.type = mesh::EntityType::origo;
+                    data.type = EntityType::origo;
                 }
                 else if (type == "container") {
-                    data.type = mesh::EntityType::container;
+                    data.type = EntityType::container;
                 }
                 else if (type == "model") {
-                    data.type = mesh::EntityType::model;
+                    data.type = EntityType::model;
                 }
                 else if (type == "text") {
-                    data.type = mesh::EntityType::text;
+                    data.type = EntityType::text;
                 }
                 else if (type == "terrain") {
-                    data.type = mesh::EntityType::terrain;
+                    data.type = EntityType::terrain;
                 }
                 else {
                     reportUnknown("entity_type", k, v);
@@ -123,7 +123,7 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "model") {
-                if (data.type == mesh::EntityType::none) {
+                if (data.type == EntityType::none) {
                     auto& meshData = data.meshes.emplace_back();
                     loadMesh(v, meshData, loaders);
                 }
@@ -160,7 +160,7 @@ namespace loader {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
                     const auto& flagValue = readBool(flagNode.getNode());
-                    data.renderFlags[util::toLower(flagName)] = flagValue;
+                    data.typeFlags.set(util::toLower(flagName), flagValue);
                 }
             }
             else if (k == "front") {
@@ -258,22 +258,22 @@ namespace loader {
             }
         }
 
-        if (data.type == mesh::EntityType::none) {
+        if (data.type == EntityType::none) {
             if (!data.meshes.empty()) {
-                data.type = mesh::EntityType::model;
+                data.type = EntityType::model;
             }
         }
 
         if (data.enabled) {
             if (!data.meshes.empty()) {
-                if (data.type != mesh::EntityType::model) {
+                if (data.type != EntityType::model) {
                     auto msg = fmt::format("INVALID: type is not model - id={}, name={}", data.baseId, data.name);
                     KI_INFO_OUT(msg);
                     throw msg;
                 }
             }
 
-            if (data.type == mesh::EntityType::none) {
+            if (data.type == EntityType::none) {
                 auto msg = fmt::format("INVALID: type missing - id={}, name={}", data.baseId, data.name);
                 KI_INFO_OUT(msg);
                 throw msg;

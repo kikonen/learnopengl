@@ -8,6 +8,8 @@
 
 #include "backend/Lod.h"
 
+#include "mesh/MeshFlags.h"
+
 namespace kigl {
     struct GLVertexArray;
 };
@@ -69,6 +71,8 @@ namespace mesh {
         const kigl::GLVertexArray* m_vao{ nullptr };
 
         uint32_t m_meshIndex{ 0 };
+
+        MeshFlags m_flags;
 
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;

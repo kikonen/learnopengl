@@ -1361,7 +1361,7 @@
     <ClInclude Include="src\mesh\Index.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\NodeRenderFlags.h">
+    <ClInclude Include="src\mesh\TypeFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\PositionEntry.h">
@@ -1391,7 +1391,7 @@
     <ClInclude Include="src\mesh\vao\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\EntityType.h">
+    <ClInclude Include="src\model\EntityType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\FontHandle.h">
@@ -1707,6 +1707,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\TransformSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\MeshFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\NodeFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\FlagContainer.h">

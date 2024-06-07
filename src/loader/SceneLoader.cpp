@@ -22,8 +22,6 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "mesh/EntityType.h"
-
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -40,6 +38,7 @@
 #include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
+#include "model/EntityType.h"
 
 #include "animation/AnimationLoader.h"
 
@@ -290,17 +289,17 @@ namespace loader {
 
         // try anim event
         //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
-        if (entityData.desc == "Cow")
-        {
-            event::Event evt { event::Type::animate_rotate };
-            evt.body.animate = {
-                .target = handle.toId(),
-                .duration = 20,
-                .data = { 0, 1.f, 0 },
-                .data2 = { 360.f, 0.f, 0.f },
-            };
-            m_dispatcher->send(evt);
-        }
+        //if (entityData.desc == "Cow")
+        //{
+        //    event::Event evt { event::Type::animate_rotate };
+        //    evt.body.animate = {
+        //        .target = handle.toId(),
+        //        .duration = 20,
+        //        .data = { 0, 1.f, 0 },
+        //        .data2 = { 360.f, 0.f, 0.f },
+        //    };
+        //    m_dispatcher->send(evt);
+        //}
 
         {
             l.m_audioLoader.createAudio(entityData.audio, handle.toId());
@@ -466,9 +465,9 @@ namespace loader {
 
         type->m_priority = entityData.priority;
 
-        if (entityData.type == mesh::EntityType::origo) {
+        if (entityData.type == EntityType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = mesh::EntityType::origo;
+            type->m_entityType = EntityType::origo;
         } else
         {
             resolveMeshes(type, entityData, tile);
@@ -476,7 +475,7 @@ namespace loader {
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (entityData.type != mesh::EntityType::container) {
+            if (entityData.type != EntityType::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -692,8 +691,8 @@ namespace loader {
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (entityData.type == mesh::EntityType::model) {
-            type->m_entityType = mesh::EntityType::model;
+        if (entityData.type == EntityType::model) {
+            type->m_entityType = EntityType::model;
 
             auto future = ModelRegistry::get().getMeshSet(
                 assets.modelsDir,
@@ -718,8 +717,8 @@ namespace loader {
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
                 entityData.baseId, entityData.desc, type->str()));
         }
-        else if (entityData.type == mesh::EntityType::text) {
-            type->m_entityType = mesh::EntityType::text;
+        else if (entityData.type == EntityType::text) {
+            type->m_entityType = EntityType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
             mesh::LodMesh lodMesh;
@@ -727,19 +726,19 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (entityData.type == mesh::EntityType::terrain) {
+        else if (entityData.type == EntityType::terrain) {
             // NOTE KI handled via container + generator
-            type->m_entityType = mesh::EntityType::terrain;
+            type->m_entityType = EntityType::terrain;
             throw "Terrain not supported currently";
         }
-        else if (entityData.type == mesh::EntityType::container) {
+        else if (entityData.type == EntityType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = mesh::EntityType::container;
+            type->m_entityType = EntityType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = mesh::EntityType::origo;
+            type->m_entityType = EntityType::origo;
             type->m_flags.invisible = true;
         }
 
@@ -868,7 +867,7 @@ namespace loader {
         node->m_particleGenerator = l.m_particleLoader.createParticle(
             entityData.particle);
 
-        if (type->m_entityType == mesh::EntityType::text) {
+        if (type->m_entityType == EntityType::text) {
             auto fontId = resolveFont(typeHandle, entityData.text);
             auto generator = std::make_unique<TextGenerator>();
             generator->setFontId(fontId);
@@ -899,35 +898,36 @@ namespace loader {
     {
         auto* type = typeHandle.toType();
 
-        mesh::NodeRenderFlags& flags = type->m_flags;
+        const auto& container = entityData.typeFlags;
+        mesh::TypeFlags& flags = type->m_flags;
 
         flags.gbuffer = entityData.programName.starts_with("g_");
 
         // Rigged model
         {
-            flags.useBones = entityData.findRenderFlag("use_bones", flags.useBones);
+            flags.useBones = container.getFlag("use_bones", flags.useBones);
 
             // NOTE KI bones are *required* if using animation
-            flags.useAnimation = entityData.findRenderFlag("use_animation", flags.useAnimation);
+            flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
             if (flags.useAnimation) {
                 flags.useBones = true;
             }
 
             // NOTE KI no bones debug if no bones
-            flags.useBonesDebug = entityData.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
             if (!flags.useBones) {
                 flags.useBonesDebug = false;
             }
         }
 
-        flags.preDepth = entityData.findRenderFlag("pre_depth", flags.preDepth);
-        flags.gbuffer = entityData.findRenderFlag("gbuffer", flags.gbuffer);
-        flags.alpha = entityData.findRenderFlag("alpha", flags.alpha);
+        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
+        flags.gbuffer = container.getFlag("gbuffer", flags.gbuffer);
+        flags.alpha = container.getFlag("alpha", flags.alpha);
 
         {
-            const auto& e = entityData.renderFlags.find("blend");
-            if (e != entityData.renderFlags.end()) {
-                flags.blend = e->second;
+            const auto* e = container.getOptional("blend");
+            if (e) {
+                flags.blend = e;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blend) {
                     KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
@@ -942,9 +942,9 @@ namespace loader {
             }
         }
         {
-            const auto& e = entityData.renderFlags.find("blend_oit");
-            if (e != entityData.renderFlags.end()) {
-                flags.blendOIT = e->second;
+            const auto* e = container.getOptional("blend_oit");
+            if (e) {
+                flags.blendOIT = e;
                 // NOTE KI alpha MUST BE true if blend
                 if (flags.blendOIT) {
                     KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
@@ -953,33 +953,33 @@ namespace loader {
             }
         }
 
-        flags.zUp = entityData.findRenderFlag("z_up", flags.renderBack);
-        flags.renderBack = entityData.findRenderFlag("render_back", flags.renderBack);
-        flags.noFrustum = entityData.findRenderFlag("no_frustum", flags.noFrustum);
-        flags.noShadow = entityData.findRenderFlag("no_shadow", flags.noShadow);
-        flags.noSelect = entityData.findRenderFlag("no_select", flags.noSelect);
-        flags.noReflect = entityData.findRenderFlag("no_reflect", flags.noReflect);
-        flags.noRefract = entityData.findRenderFlag("no_refract", flags.noRefract);
-        flags.mirror = entityData.findRenderFlag("mirror", flags.mirror);
-        flags.water = entityData.findRenderFlag("water", flags.water);
-        flags.wireframe = entityData.findRenderFlag("wireframe", flags.wireframe);
-        flags.cubeMap = entityData.findRenderFlag("cube_map", flags.cubeMap);
-        flags.effect = entityData.findRenderFlag("effect", flags.effect);
-        flags.billboard = entityData.findRenderFlag("billboard", flags.billboard);
-        flags.tessellation = entityData.findRenderFlag("tessellation", flags.tessellation);
+        flags.zUp = container.getFlag("z_up", flags.renderBack);
+        flags.renderBack = container.getFlag("render_back", flags.renderBack);
+        flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
+        flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
+        flags.noSelect = container.getFlag("no_select", flags.noSelect);
+        flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
+        flags.noRefract = container.getFlag("no_refract", flags.noRefract);
+        flags.mirror = container.getFlag("mirror", flags.mirror);
+        flags.water = container.getFlag("water", flags.water);
+        flags.wireframe = container.getFlag("wireframe", flags.wireframe);
+        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
+        flags.effect = container.getFlag("effect", flags.effect);
+        flags.billboard = container.getFlag("billboard", flags.billboard);
+        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
         {
-            const auto& e = entityData.renderFlags.find("static_bounds");
-            if (e != entityData.renderFlags.end()) {
-                flags.staticBounds = e->second;
-                flags.physics = e->second;
+            const auto* e = container.getOptional("static_bounds");
+            if (e) {
+                flags.staticBounds = e;
+                flags.physics = e;
             }
         }
         {
-            const auto& e = entityData.renderFlags.find("dynamic_bounds");
-            if (e != entityData.renderFlags.end()) {
-                flags.dynamicBounds = e->second;
-                flags.physics = e->second;
+            const auto* e = container.getOptional("dynamic_bounds");
+            if (e) {
+                flags.dynamicBounds = e;
+                flags.physics = e;
             }
         }
 

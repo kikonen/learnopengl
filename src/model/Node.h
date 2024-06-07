@@ -14,6 +14,7 @@
 
 #include "model/NodeTransform.h"
 #include "model/Snapshot.h"
+#include "model/NodeFlags.h"
 
 namespace backend {
     struct DrawOptions;
@@ -180,6 +181,8 @@ private:
 public:
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
+
+    NodeFlags m_flags;
 
 #ifdef _DEBUG
     std::string m_resolvedSID;

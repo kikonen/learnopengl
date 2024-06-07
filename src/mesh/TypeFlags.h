@@ -1,7 +1,7 @@
 #pragma once
 
 namespace mesh {
-    struct NodeRenderFlags {
+    struct TypeFlags {
         bool alpha : 1 {false};
         bool blend : 1 {false};
         bool renderBack : 1 {false};

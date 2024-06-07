@@ -328,7 +328,7 @@ namespace terrain {
 
         auto* type = typeHandle.toType();
         type->setName(containerType->getName());
-        type->m_entityType = mesh::EntityType::terrain;
+        type->m_entityType = EntityType::terrain;
 
         auto& flags = type->m_flags;
         flags = containerType->m_flags;

@@ -126,7 +126,7 @@ namespace loader {
 
         type->addMeshSet(*meshSet, 0);
 
-        type->m_entityType = mesh::EntityType::skybox;
+        type->m_entityType = EntityType::skybox;
 
         auto& flags = type->m_flags;
 

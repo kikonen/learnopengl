@@ -9,9 +9,12 @@
 
 #include "util/Util.h"
 
-#include "Mesh.h"
+#include "kigl/GLVertexArray.h"
 
 #include "registry/MaterialRegistry.h"
+
+#include "Mesh.h"
+
 
 namespace {
     const std::vector<std::regex> lodMatchers{

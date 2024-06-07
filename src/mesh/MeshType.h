@@ -6,18 +6,21 @@
 
 #include "backend/DrawOptions.h"
 
-#include "asset/Material.h"
 #include "asset/AABB.h"
 
 #include "ki/limits.h"
 
 #include "kigl/GLVertexArray.h"
 
-#include "EntityType.h"
+#include "model/EntityType.h"
 
-#include "NodeRenderFlags.h"
 
-#include "mesh/LodMesh.h"
+#include "LodMesh.h"
+#include "TypeFlags.h"
+
+namespace kigl {
+    struct GLVertexArray;
+};
 
 namespace pool {
     class TypeHandle;
@@ -159,7 +162,7 @@ namespace mesh {
 
         std::string m_name;
 
-        NodeRenderFlags m_flags;
+        TypeFlags m_flags;
 
         uint32_t m_handleIndex{ 0 };
         ki::type_id m_id{ 0 };

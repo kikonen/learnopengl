@@ -123,7 +123,7 @@ namespace render {
         auto* type = node->m_typeHandle.toType();
         auto* program = type->m_program;
 
-        if (type->m_entityType != mesh::EntityType::origo) {
+        if (type->m_entityType != EntityType::origo) {
             assert(program);
             if (!program) return;
         }

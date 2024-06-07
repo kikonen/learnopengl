@@ -432,9 +432,11 @@
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
+    <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\mesh\TransformRegistry.h" />
     <ClInclude Include="src\mesh\TransformSSBO.h" />
+    <ClInclude Include="src\model\NodeFlags.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />
@@ -485,7 +487,7 @@
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\InstanceSSBO.h" />
     <ClInclude Include="src\mesh\LodMesh.h" />
-    <ClInclude Include="src\mesh\NodeRenderFlags.h" />
+    <ClInclude Include="src\mesh\TypeFlags.h" />
     <ClInclude Include="src\mesh\vao\PositionEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexPositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
@@ -627,7 +629,7 @@
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
-    <ClInclude Include="src\mesh\EntityType.h" />
+    <ClInclude Include="src\model\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
