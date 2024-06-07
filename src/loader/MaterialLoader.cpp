@@ -146,7 +146,7 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterialModifiers(
-        const loader::Node& node,
+        const loader::DocNode& node,
         MaterialData& data) const
     {
         data.enabled = true;
@@ -156,7 +156,7 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterials(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<MaterialData>& materials) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -167,7 +167,7 @@ namespace loader {
     }
 
     void MaterialLoader::loadMaterial(
-        const loader::Node& node,
+        const loader::DocNode& node,
         MaterialData& data) const
     {
         Material& material = data.material;
@@ -175,7 +175,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             const auto k = util::toLower(key);
 
@@ -517,12 +517,12 @@ namespace loader {
     }
 
     void MaterialLoader::loadTextureSpec(
-        const loader::Node& node,
+        const loader::DocNode& node,
         TextureSpec& textureSpec) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "wrap") {
                 loadTextureWrap(k, v, textureSpec.wrapS);
@@ -542,7 +542,7 @@ namespace loader {
 
     void MaterialLoader::loadTextureWrap(
         const std::string& k,
-        const loader::Node& v,
+        const loader::DocNode& v,
         GLint& wrapMode) const
     {
         const std::string& wrap = readString(v);

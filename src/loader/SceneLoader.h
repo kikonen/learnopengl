@@ -165,7 +165,7 @@ namespace loader {
             const glm::vec3& tilePositionOffset);
 
         void loadMeta(
-            const loader::Node& node,
+            const loader::DocNode& node,
             MetaData& data) const;
 
         void validate(

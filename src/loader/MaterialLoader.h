@@ -14,15 +14,15 @@ namespace loader {
             Context ctx);
 
         void loadMaterialModifiers(
-            const loader::Node& node,
+            const loader::DocNode& node,
             MaterialData& data) const;
 
         void loadMaterials(
-            const loader::Node& node,
+            const loader::DocNode& node,
             std::vector<MaterialData>& materials) const;
 
         void loadMaterial(
-            const loader::Node& node,
+            const loader::DocNode& node,
             MaterialData& data) const;
 
         void resolveMaterialPaths(
@@ -45,12 +45,12 @@ namespace loader {
             MaterialData& data) const;
 
         void loadTextureSpec(
-            const loader::Node& node,
+            const loader::DocNode& node,
             TextureSpec& textureSpec) const;
 
         void loadTextureWrap(
             const std::string& k,
-            const loader::Node& v,
+            const loader::DocNode& v,
             GLint& wrapMode) const;
 
         void modifyMaterial(

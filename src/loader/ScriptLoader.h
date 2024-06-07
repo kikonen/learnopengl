@@ -19,16 +19,16 @@ namespace loader {
             Context ctx);
 
         void loadScriptEngine(
-            const loader::Node& node,
+            const loader::DocNode& node,
             ScriptEngineData& data) const;
 
         void loadScripts(
-            const loader::Node& node,
+            const loader::DocNode& node,
             std::vector<ScriptData>& scripts) const;
 
         void loadScript(
 
-            const loader::Node& node,
+            const loader::DocNode& node,
             ScriptData& data) const;
 
         void createScriptEngine(

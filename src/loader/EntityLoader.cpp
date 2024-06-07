@@ -30,7 +30,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntities(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<EntityRoot>& entities,
         Loaders& loaders) const
     {
@@ -44,7 +44,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntity(
-        const loader::Node& node,
+        const loader::DocNode& node,
         EntityRoot& entityRoot,
         Loaders& loaders) const
     {
@@ -57,7 +57,7 @@ namespace loader {
     }
 
     void EntityLoader::loadEntityClone(
-        const loader::Node& node,
+        const loader::DocNode& node,
         EntityData& data,
         std::vector<EntityData>& clones,
         bool recurse,
@@ -69,7 +69,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);
@@ -283,7 +283,7 @@ namespace loader {
         if (hasClones) {
             for (const auto& pair : node.getNodes()) {
                 const std::string& k = pair.getName();
-                const loader::Node& v = pair.getNode();
+                const loader::DocNode& v = pair.getNode();
 
                 if (k == "clones") {
                     for (const auto& node : v.getNodes()) {
@@ -304,12 +304,12 @@ namespace loader {
     }
 
     void EntityLoader::loadText(
-        const loader::Node& node,
+        const loader::DocNode& node,
         TextData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "text") {
                 data.text = readString(v);
@@ -324,7 +324,7 @@ namespace loader {
     }
 
     void EntityLoader::loadMeshes(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<MeshData>& meshes,
         Loaders& loaders) const
     {
@@ -338,13 +338,13 @@ namespace loader {
     }
 
     void EntityLoader::loadMesh(
-        const loader::Node& node,
+        const loader::DocNode& node,
         MeshData& data,
         Loaders& loaders) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             const auto k = util::toLower(key);
 
@@ -403,7 +403,7 @@ namespace loader {
     }
 
     void EntityLoader::loadLods(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<LodData>& lods) const
     {
         int level = 0;
@@ -416,12 +416,12 @@ namespace loader {
     }
 
     void EntityLoader::loadLod(
-        const loader::Node& node,
+        const loader::DocNode& node,
         LodData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             const auto k = util::toLower(key);
 
@@ -438,7 +438,7 @@ namespace loader {
     }
 
     void EntityLoader::loadAnimations(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<AnimationData>& animations) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -448,12 +448,12 @@ namespace loader {
     }
 
     void EntityLoader::loadAnimation(
-        const loader::Node& node,
+        const loader::DocNode& node,
         AnimationData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             const auto k = util::toLower(key);
 

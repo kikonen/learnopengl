@@ -45,12 +45,12 @@ namespace loader
     }
 
     void BaseLoader::loadTiling(
-        const loader::Node& node,
+        const loader::DocNode& node,
         Tiling& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "tiles") {
                 data.tiles = readUVec3(v);
@@ -74,12 +74,12 @@ namespace loader
     }
 
     void BaseLoader::loadRepeat(
-        const loader::Node& node,
+        const loader::DocNode& node,
         Repeat& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "x_count") {
                 data.xCount = readInt(v);
@@ -105,12 +105,12 @@ namespace loader
         }
     }
 
-    const std::string& BaseLoader::readString(const loader::Node& node) const
+    const std::string& BaseLoader::readString(const loader::DocNode& node) const
     {
         return node.asString();
     }
 
-    bool BaseLoader::readBool(const loader::Node& node) const
+    bool BaseLoader::readBool(const loader::DocNode& node) const
     {
         if (!util::isBool(readString(node))) {
             KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
@@ -120,7 +120,7 @@ namespace loader
         return node.asBool();
     }
 
-    int BaseLoader::readInt(const loader::Node& node) const
+    int BaseLoader::readInt(const loader::DocNode& node) const
     {
         if (!util::isInt(readString(node))) {
             KI_WARN(fmt::format("invalid int{}", renderNode(node)));
@@ -130,7 +130,7 @@ namespace loader
         return node.asInt();
     }
 
-    float BaseLoader::readFloat(const loader::Node& node) const
+    float BaseLoader::readFloat(const loader::DocNode& node) const
     {
         if (!util::isFloat(readString(node))) {
             KI_WARN(fmt::format("invalid float {}", renderNode(node)));
@@ -140,7 +140,7 @@ namespace loader
         return node.asFloat();
     }
 
-    std::vector<int> BaseLoader::readIntVector(const loader::Node& node, int reserve) const
+    std::vector<int> BaseLoader::readIntVector(const loader::DocNode& node, int reserve) const
     {
         std::vector<int> a;
         a.reserve(reserve);
@@ -152,7 +152,7 @@ namespace loader
         return a;
     }
 
-    std::vector<float> BaseLoader::readFloatVector(const loader::Node& node, int reserve) const
+    std::vector<float> BaseLoader::readFloatVector(const loader::DocNode& node, int reserve) const
     {
         std::vector<float> a;
         a.reserve(reserve);
@@ -164,7 +164,7 @@ namespace loader
         return a;
     }
 
-    glm::vec2 BaseLoader::readVec2(const loader::Node& node) const
+    glm::vec2 BaseLoader::readVec2(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 2);
@@ -185,7 +185,7 @@ namespace loader
         return glm::vec2{ v };
     }
 
-    glm::vec3 BaseLoader::readVec3(const loader::Node& node) const
+    glm::vec3 BaseLoader::readVec3(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
@@ -212,7 +212,7 @@ namespace loader
         return glm::vec3{ v };
     }
 
-    glm::vec4 BaseLoader::readVec4(const loader::Node& node) const
+    glm::vec4 BaseLoader::readVec4(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
@@ -247,7 +247,7 @@ namespace loader
         return glm::vec4{ v };
     }
 
-    glm::uvec3 BaseLoader::readUVec3(const loader::Node& node) const
+    glm::uvec3 BaseLoader::readUVec3(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readIntVector(node, 3);
@@ -275,7 +275,7 @@ namespace loader
         return glm::uvec3{ v };
     }
 
-    glm::vec3 BaseLoader::readScale3(const loader::Node& node) const
+    glm::vec3 BaseLoader::readScale3(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
@@ -291,7 +291,7 @@ namespace loader
         return glm::vec3{ scale };
     }
 
-    glm::vec3 BaseLoader::readRGB(const loader::Node& node) const
+    glm::vec3 BaseLoader::readRGB(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
@@ -316,7 +316,7 @@ namespace loader
         return glm::vec3{ r, r, r };
     }
 
-    glm::vec4 BaseLoader::readRGBA(const loader::Node& node) const
+    glm::vec4 BaseLoader::readRGBA(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
@@ -346,7 +346,7 @@ namespace loader
         return glm::vec4{ r, r, r, DEF_ALPHA };
     }
 
-    glm::quat BaseLoader::readQuat(const loader::Node& node) const
+    glm::quat BaseLoader::readQuat(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 4);
@@ -366,7 +366,7 @@ namespace loader
         return q;// glm::normalize(q);
     }
 
-    glm::vec3 BaseLoader::readDegreesRotation(const loader::Node& node) const
+    glm::vec3 BaseLoader::readDegreesRotation(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
@@ -392,7 +392,7 @@ namespace loader
         return { 0, a, 0 };
     }
 
-    float BaseLoader::readFractional(const loader::Node& node) const
+    float BaseLoader::readFractional(const loader::DocNode& node) const
     {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 2);
@@ -405,7 +405,7 @@ namespace loader
         return readFloat(node);
     }
 
-    glm::vec2 BaseLoader::readRefractionRatio(const loader::Node& node) const
+    glm::vec2 BaseLoader::readRefractionRatio(const loader::DocNode& node) const
     {
         auto a = readFloatVector(node, 2);
 
@@ -505,7 +505,7 @@ namespace loader
         return out;
     }
 
-    BaseId BaseLoader::readId(const loader::Node& node) const
+    BaseId BaseLoader::readId(const loader::DocNode& node) const
     {
         BaseId baseId;
 
@@ -557,14 +557,14 @@ namespace loader
     void BaseLoader::reportUnknown(
         std::string_view scope,
         std::string_view k,
-        const loader::Node& v) const
+        const loader::DocNode& v) const
     {
         std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
         KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
     }
 
     std::string BaseLoader::renderNode(
-        const loader::Node& v) const
+        const loader::DocNode& v) const
     {
         std::stringstream ss;
         ss << v.str();

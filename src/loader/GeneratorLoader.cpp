@@ -25,7 +25,7 @@ namespace loader {
     }
 
     void GeneratorLoader::loadGenerator(
-        const loader::Node& node,
+        const loader::DocNode& node,
         GeneratorData& data,
         Loaders& loaders) const
     {
@@ -33,7 +33,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -88,12 +88,12 @@ namespace loader {
     }
 
     void GeneratorLoader::loadTerrain(
-        const loader::Node& node,
+        const loader::DocNode& node,
         TerrainData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
             }

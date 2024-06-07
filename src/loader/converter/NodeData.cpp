@@ -9,7 +9,7 @@ namespace {
 }
 
 namespace loader {
-    const loader::Node& NodeData::findNode(const std::string& key) const noexcept
+    const loader::DocNode& NodeData::findNode(const std::string& key) const noexcept
     {
         const auto& it = std::find_if(
             m_nodes.cbegin(),

@@ -40,12 +40,12 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkybox(
-        const loader::Node& node,
+        const loader::DocNode& node,
         SkyboxData& data)
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -84,7 +84,7 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkyboxFaces(
-        const loader::Node& node,
+        const loader::DocNode& node,
         SkyboxData& data)
     {
         if (!node.isSequence()) {

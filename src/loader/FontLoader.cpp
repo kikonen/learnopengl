@@ -17,7 +17,7 @@ namespace loader {
     }
 
     void FontLoader::loadFonts(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<FontData>& fonts) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -27,12 +27,12 @@ namespace loader {
     }
 
     void FontLoader::loadFont(
-        const loader::Node& node,
+        const loader::DocNode& node,
         FontData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "name") {
                 data.name = readString(v);

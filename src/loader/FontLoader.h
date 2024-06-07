@@ -15,11 +15,11 @@ namespace loader {
             Context ctx);
 
         void loadFonts(
-            const loader::Node& node,
+            const loader::DocNode& node,
             std::vector<FontData>& fonts) const;
 
         void loadFont(
-            const loader::Node& node,
+            const loader::DocNode& node,
             FontData& data) const;
 
         void createFonts(

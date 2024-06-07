@@ -989,7 +989,7 @@ namespace loader {
     }
 
     void SceneLoader::loadMeta(
-        const loader::Node& node,
+        const loader::DocNode& node,
         MetaData& data) const
     {
         data.name = "<noname>";
@@ -997,7 +997,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "name") {
                 data.name = "";// readString(v);

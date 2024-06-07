@@ -18,14 +18,14 @@ namespace loader {
     }
 
     void ScriptLoader::loadScriptEngine(
-        const loader::Node& node,
+        const loader::DocNode& node,
         ScriptEngineData& data) const
     {
         data.enabled = true;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -44,7 +44,7 @@ namespace loader {
     }
 
     void ScriptLoader::loadScripts(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<ScriptData>& scripts) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -54,7 +54,7 @@ namespace loader {
     }
 
     void ScriptLoader::loadScript(
-        const loader::Node& node,
+        const loader::DocNode& node,
         ScriptData& data) const
     {
         data.enabled = true;
@@ -67,7 +67,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
