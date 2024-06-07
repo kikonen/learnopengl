@@ -461,7 +461,7 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName(entityData.baseId.m_path);
 
-        assignFlags(entityData, typeHandle);
+        assignTypeFlags(entityData, typeHandle);
 
         type->m_priority = entityData.priority;
 
@@ -839,6 +839,8 @@ namespace loader {
 #endif
         node->m_typeHandle = typeHandle;
 
+        assignNodeFlags(entityData, handle);
+
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
@@ -892,7 +894,7 @@ namespace loader {
         return handle;
     }
 
-    void SceneLoader::assignFlags(
+    void SceneLoader::assignTypeFlags(
         const EntityData& entityData,
         pool::TypeHandle typeHandle)
     {
@@ -986,6 +988,16 @@ namespace loader {
         if (entityData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
             flags.physics = true;
         }
+    }
+
+    void SceneLoader::assignNodeFlags(
+        const EntityData& entityData,
+        pool::NodeHandle nodeHandle)
+    {
+        auto* node = nodeHandle.toNode();
+
+        const auto& container = entityData.nodeFlags;
+        NodeFlags& flags = node->m_flags;
     }
 
     void SceneLoader::loadMeta(

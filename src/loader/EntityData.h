@@ -59,6 +59,7 @@ namespace loader {
 
         std::map<std::string, std::string> programDefinitions{};
 
+        loader::FlagContainer nodeFlags;
         loader::FlagContainer typeFlags;
 
         glm::vec3 baseRotation{ 0.f };

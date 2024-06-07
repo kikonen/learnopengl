@@ -108,9 +108,13 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
-        void assignFlags(
+        void assignTypeFlags(
             const EntityData& entityData,
             pool::TypeHandle typeHandle);
+
+        void assignNodeFlags(
+            const EntityData& entityData,
+            pool::NodeHandle nodeHandle);
 
         const pool::TypeHandle createType(
             const EntityData& entityData,

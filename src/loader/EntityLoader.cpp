@@ -156,11 +156,18 @@ namespace loader {
                     data.programDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
-            else if (k == "render_flags") {
+            else if (k == "type_flags" || k == "render_flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
                     const auto& flagValue = readBool(flagNode.getNode());
                     data.typeFlags.set(util::toLower(flagName), flagValue);
+                }
+            }
+            else if (k == "node_flags") {
+                for (const auto& flagNode : v.getNodes()) {
+                    const auto& flagName = flagNode.getName();
+                    const auto& flagValue = readBool(flagNode.getNode());
+                    data.nodeFlags.set(util::toLower(flagName), flagValue);
                 }
             }
             else if (k == "front") {
