@@ -414,6 +414,7 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
+    <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\DocNode_impl.h" />
