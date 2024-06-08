@@ -422,28 +422,36 @@ namespace mesh
 
             if (src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath) == AI_SUCCESS) {
                 //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-                material.map_kd = findTexturePath(meshSet, diffusePath.C_Str());
+                material.addTexPath(
+                    TextureType::diffuse,
+                    findTexturePath(meshSet, diffusePath.C_Str()));
             }
         }
         {
             int bumpIndex = 0;
             aiString bumpPath;
             if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
-                material.map_bump = findTexturePath(meshSet, bumpPath.C_Str());
+                material.addTexPath(
+                    TextureType::normal_map,
+                    findTexturePath(meshSet, bumpPath.C_Str()));
             }
         }
         {
             int normalIndex = 0;
             aiString normalPath;
             if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
-                material.map_bump = findTexturePath(meshSet, normalPath.C_Str());
+                material.addTexPath(
+                    TextureType::normal_map,
+                    findTexturePath(meshSet, normalPath.C_Str()));
             }
         }
         {
             int emissionIndex = 0;
             aiString emissionPath;
             if (src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath) == AI_SUCCESS) {
-                material.map_ke = findTexturePath(meshSet, emissionPath.C_Str());
+                material.addTexPath(
+                    TextureType::emission,
+                    findTexturePath(meshSet, emissionPath.C_Str()));
             }
         }
 

@@ -511,12 +511,12 @@ namespace loader {
             if (lodMaterial) {
                 auto& material = *lodMaterial;
 
-                useDudvTex |= material.hasTex(MATERIAL_DUDV_MAP_IDX);
-                useDisplacementTex |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
-                useNormalTex |= material.hasTex(MATERIAL_NORMAL_MAP_IDX);
+                useDudvTex |= material.hasBoundTex(TextureType::dudv_map);
+                useDisplacementTex |= material.hasBoundTex(TextureType::displacement_map);
+                useNormalTex |= material.hasBoundTex(TextureType::normal_map);
                 useCubeMap |= 1.0 - material.reflection - material.refraction < 1.0;
                 useNormalPattern |= material.pattern > 0;
-                useParallax |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && material.parallaxDepth > 0;
+                useParallax |= material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
                 if (!useParallax) {
                     material.parallaxDepth = 0.f;
                 }

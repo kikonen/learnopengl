@@ -225,23 +225,27 @@ namespace loader {
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
-                material.map_kd = resolveTexturePath(line, true);
-                fields.map_kd = true;
+                material.addTexPath(
+                    TextureType::diffuse,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
-                material.map_ke = resolveTexturePath(line, true);
-                fields.map_ke = true;
+                material.addTexPath(
+                    TextureType::emission,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
-                material.map_ks = resolveTexturePath(line, true);
-                fields.map_ks = true;
+                material.addTexPath(
+                    TextureType::specular,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_bump" || k == "bump") {
                 std::string line = readString(v);
-                material.map_bump = resolveTexturePath(line, true);
-                fields.map_bump = true;
+                material.addTexPath(
+                    TextureType::normal_map,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_bump_strength") {
                 material.map_bump_strength = readFloat(v);
@@ -249,38 +253,45 @@ namespace loader {
             }
             else if (k == "map_dudv") {
                 std::string line = readString(v);
-                material.map_dudv = resolveTexturePath(line, true);
-                fields.map_dudv = true;
+                material.addTexPath(
+                    TextureType::dudv_map,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
-                material.map_noise = resolveTexturePath(line, true);
-                fields.map_noise = true;
+                material.addTexPath(
+                    TextureType::noise_map,
+                    resolveTexturePath(line, true));
             }
             else if (k == "map_roughness") {
                 std::string line = readString(v);
-                material.map_roughness = resolveTexturePath(line, false);
-                fields.map_roughness = true;
+                material.addTexPath(
+                    TextureType::roughness_map,
+                    resolveTexturePath(line, false));
             }
             else if (k == "map_metalness") {
                 std::string line = readString(v);
-                material.map_metalness = resolveTexturePath(line, false);
-                fields.map_metalness = true;
+                material.addTexPath(
+                    TextureType::metallness_map,
+                    resolveTexturePath(line, false));
             }
             else if (k == "map_occlusion") {
                 std::string line = readString(v);
-                material.map_occlusion = resolveTexturePath(line, false);
-                fields.map_occlusion = true;
+                material.addTexPath(
+                    TextureType::occlusion_map,
+                    resolveTexturePath(line, false));
             }
             else if (k == "map_displacement") {
                 std::string line = readString(v);
-                material.map_displacement = resolveTexturePath(line, false);
-                fields.map_displacement = true;
+                material.addTexPath(
+                    TextureType::displacement_map,
+                    resolveTexturePath(line, false));
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
-                material.map_opacity = resolveTexturePath(line, true);
-                fields.map_opacity = true;
+                material.addTexPath(
+                    TextureType::opacity_map,
+                    resolveTexturePath(line, true));
             }
             else if (k == "metal") {
                 material.metal = readVec4(v);
@@ -361,17 +372,9 @@ namespace loader {
         const auto assetsDir = assets.assetsDir;
         auto& material = data.material;
 
-        material.map_bump = resolvePath(assetsDir, baseDir, material.map_bump);
-        material.map_displacement = resolvePath(assetsDir, baseDir, material.map_displacement);
-        material.map_dudv = resolvePath(assetsDir, baseDir, material.map_dudv);
-        material.map_kd = resolvePath(assetsDir, baseDir, material.map_kd);
-        material.map_ke = resolvePath(assetsDir, baseDir, material.map_ke);
-        material.map_ks = resolvePath(assetsDir, baseDir, material.map_ks);
-        material.map_metalness = resolvePath(assetsDir, baseDir, material.map_metalness);
-        material.map_noise = resolvePath(assetsDir, baseDir, material.map_noise);
-        material.map_occlusion = resolvePath(assetsDir, baseDir, material.map_occlusion);
-        material.map_opacity = resolvePath(assetsDir, baseDir, material.map_opacity);
-        material.map_roughness = resolvePath(assetsDir, baseDir, material.map_roughness);
+        for (auto& it : material.modifyTexturePaths()) {
+            it.second = resolvePath(assetsDir, baseDir, it.second);
+        }
     }
 
     void MaterialLoader::resolveMaterialPbr(
@@ -466,50 +469,58 @@ namespace loader {
         bool found = false;
 
         if (!found && util::matchAny(colorMatchers, matchName)) {
-            fields.map_kd = true;
-            material.map_kd = assetPath;
+            material.addTexPath(
+                TextureType::diffuse,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(emissionMatchers, matchName)) {
-            fields.map_ke = true;
-            material.map_ke = assetPath;
+            material.addTexPath(
+                TextureType::emission,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(normalMatchers, matchName)) {
-            fields.map_bump = true;
-            material.map_bump = assetPath;
+            material.addTexPath(
+                TextureType::normal_map,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(metalnessMatchers, matchName)) {
-            fields.map_metalness = true;
-            material.map_metalness = assetPath;
+            material.addTexPath(
+                TextureType::metallness_map,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(roughnessMatchers, matchName)) {
-            fields.map_roughness = true;
-            material.map_roughness = assetPath;
+            material.addTexPath(
+                TextureType::roughness_map,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(occlusionMatchers, matchName)) {
-            fields.map_occlusion = true;
-            material.map_occlusion = assetPath;
+            material.addTexPath(
+                TextureType::occlusion_map,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(displacementMatchers, matchName)) {
-            fields.map_displacement = true;
-            material.map_displacement = assetPath;
+            material.addTexPath(
+                TextureType::displacement_map,
+                assetPath);
             found = true;
         }
 
         if (!found && util::matchAny(opacityMatchers, matchName)) {
-            fields.map_opacity = true;
-            material.map_opacity = assetPath;
+            material.addTexPath(
+                TextureType::opacity_map,
+                assetPath);
             found = true;
         }
 
@@ -587,16 +598,12 @@ namespace loader {
         if (f.ns) m.ns = mod.ns;
 
         if (f.ka) m.ka = mod.ka;
-
         if (f.kd) m.kd = mod.kd;
-        if (f.map_kd) m.map_kd = mod.map_kd;
-
         if (f.ks) m.ks = mod.ks;
-        if (f.map_ks) m.map_ks = mod.map_ks;
         if (f.ke) m.ke = mod.ke;
-        if (f.map_ke) m.map_ke = mod.map_ke;
-        if (f.map_bump) m.map_bump = mod.map_bump;
+
         if (f.map_bump_strength) m.map_bump_strength = mod.map_bump_strength;
+
         if (f.ni) m.ni = mod.ni;
         if (f.d) m.d = mod.d;
         if (f.illum) m.illum = mod.illum;
@@ -605,14 +612,10 @@ namespace loader {
         if (f.layersDepth) m.layersDepth = mod.layersDepth;
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
-        if (f.map_dudv) m.map_dudv = mod.map_dudv;
-        if (f.map_noise) m.map_noise = mod.map_noise;
-
         if (f.metal) m.metal = mod.metal;
-        if (f.map_roughness) m.map_roughness = mod.map_roughness;
-        if (f.map_metalness) m.map_metalness = mod.map_metalness;
-        if (f.map_occlusion) m.map_occlusion = mod.map_occlusion;
-        if (f.map_displacement) m.map_displacement = mod.map_displacement;
-        if (f.map_opacity) m.map_opacity = mod.map_opacity;
+
+        for (const auto& it : mod.getTexturePaths()) {
+            m.addTexPath(it.first, it.second);
+        }
     }
 }

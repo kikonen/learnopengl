@@ -550,7 +550,7 @@ namespace loader
         const auto& it = std::find_if(
             materials.cbegin(),
             materials.cend(),
-            [&name](const auto& m) { return m.material.m_name == name && !m.material.m_default; });
+            [&name](const auto& m) { return m.material.m_name == name; });
         return it != materials.end() ? &(it->material) : nullptr;
     }
 
