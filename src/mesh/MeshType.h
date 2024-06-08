@@ -4,23 +4,14 @@
 #include <functional>
 #include <span>
 
-#include "backend/DrawOptions.h"
-
 #include "asset/AABB.h"
 
 #include "ki/limits.h"
 
-#include "kigl/GLVertexArray.h"
-
 #include "model/EntityType.h"
-
 
 #include "LodMesh.h"
 #include "TypeFlags.h"
-
-namespace kigl {
-    struct GLVertexArray;
-};
 
 namespace pool {
     class TypeHandle;
@@ -37,7 +28,6 @@ struct PrepareContext;
 struct Snapshot;
 
 class CustomMaterial;
-class Program;
 class Registry;
 class RenderContext;
 class MeshTypeRegistry;
@@ -118,18 +108,6 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        inline const kigl::GLVertexArray* getVAO() const noexcept {
-            return m_vao;
-        }
-
-        inline const backend::DrawOptions& getDrawOptions() const noexcept {
-            return m_drawOptions;
-        }
-
-        inline backend::DrawOptions& modifyDrawOptions() noexcept {
-            return m_drawOptions;
-        }
-
         uint16_t getLodLevel(
             const glm::vec3& cameraPos,
             const glm::vec3& worldPos) const;
@@ -147,14 +125,6 @@ namespace mesh {
         AABB calculateAABB() const noexcept;
 
     public:
-        Program* m_program{ nullptr };
-        Program* m_shadowProgram{ nullptr };
-        Program* m_preDepthProgram{ nullptr };
-        Program* m_selectionProgram{ nullptr };
-        Program* m_idProgram{ nullptr };
-
-        const kigl::GLVertexArray* m_vao{ nullptr };
-
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
@@ -166,8 +136,6 @@ namespace mesh {
 
         uint32_t m_handleIndex{ 0 };
         ki::type_id m_id{ 0 };
-
-        backend::DrawOptions m_drawOptions;
 
         EntityType m_entityType{ EntityType::origo };
 

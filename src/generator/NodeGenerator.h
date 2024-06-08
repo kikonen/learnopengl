@@ -1,6 +1,7 @@
 #pragma once
 
 #include <span>
+#include <functional>
 
 #include "model/NodeTransform.h"
 #include "model/InstancePhysics.h"
@@ -23,6 +24,11 @@ namespace render {
     class Batch;
 }
 
+namespace mesh {
+    struct LodMesh;
+}
+
+class Program;
 class Node;
 
 struct Snapshot;
@@ -67,15 +73,14 @@ public:
     virtual void bindBatch(
         const RenderContext& ctx,
         mesh::MeshType* type,
-        Node& container,
-        render::Batch& batch);
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        unsigned int kindBits,
+        render::Batch& batch,
+        Node& container);
 
     virtual void updateVAO(
         const RenderContext& ctx,
         const Node& container) {}
-
-    virtual const kigl::GLVertexArray* getVAO(
-        const Node& container) const noexcept;
 
     inline const std::vector<NodeTransform>& getTransforms() noexcept
     {

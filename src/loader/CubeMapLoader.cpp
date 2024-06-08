@@ -62,25 +62,24 @@ namespace loader {
             //material.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
             material.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
 
-            lodMesh->setMaterial(material);
-        }
+            material.renderBack = true;
+            material.wireframe = true;
+            material.gbuffer = SHADER_VOLUME.starts_with("g_");
 
+            lodMesh->setMaterial(material);
+            lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
+        }
 
         type->m_entityType = EntityType::marker;
 
         auto& flags = type->m_flags;
 
-        flags.wireframe = true;
-        flags.renderBack = true;
         flags.noShadow = true;
         flags.noFrustum = false;
         flags.noReflect = true;
         flags.noRefract = true;
         flags.noSelect = true;
         flags.noNormals = true;
-        flags.gbuffer = SHADER_VOLUME.starts_with("g_");
-
-        type->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 
         auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();

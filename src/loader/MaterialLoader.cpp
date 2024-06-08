@@ -353,6 +353,47 @@ namespace loader {
                 loadTextureSpec(v, material.textureSpec);
                 fields.textureSpec = true;
             }
+            else if (k == "alpha") {
+                material.alpha = readBool(v);
+                fields.alpha = true;
+            }
+            else if (k == "blend") {
+                material.blend = readBool(v);
+                fields.blend = true;
+            }
+            else if (k == "render_back") {
+                material.renderBack = readBool(v);
+                fields.renderBack = true;
+            }
+            else if (k == "wireframe") {
+                material.wireframe = readBool(v);
+                fields.wireframe = true;
+            }
+            else if (k == "program" || k == "shader") {
+                material.m_programs[MaterialProgramType::shader] = readString(v);
+            }
+            else if (k == "shadow_program") {
+                material.m_programs[MaterialProgramType::shadow] = readString(v);
+            }
+            else if (k == "pre_depth_program") {
+                material.m_programs[MaterialProgramType::pre_depth] = readString(v);
+            }
+            else if (k == "selection_program") {
+                material.m_programs[MaterialProgramType::selection] = readString(v);
+            }
+            else if (k == "id_program") {
+                material.m_programs[MaterialProgramType::object_id] = readString(v);
+            }
+            else if (k == "geometry_type") {
+                material.m_programs[MaterialProgramType::geometry] = readString(v);
+            }
+            else if (k == "program_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_programDefinitions[util::toUpper(defName)] = defValue;
+                }
+            }
             else {
                 reportUnknown("material_entry", k, v);
             }
@@ -613,6 +654,15 @@ namespace loader {
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
         if (f.metal) m.metal = mod.metal;
+
+        if (f.alpha) m.alpha = mod.alpha;
+        if (f.blend) m.blend = mod.blend;
+
+        if (f.gbuffer) m.gbuffer = mod.gbuffer;
+        if (f.blendOIT) m.blendOIT = mod.blendOIT;
+
+        if (f.renderBack) m.renderBack = mod.renderBack;
+        if (f.wireframe) m.wireframe = mod.wireframe;
 
         for (const auto& it : mod.getTexturePaths()) {
             m.addTexPath(it.first, it.second);

@@ -2,7 +2,6 @@
 
 #include <fmt/format.h>
 
-#include "asset/Program.h"
 #include "asset/CustomMaterial.h"
 #include "asset/Material.h"
 
@@ -38,13 +37,6 @@ namespace mesh {
         m_entityType{ o.m_entityType },
         m_flags{ o.m_flags },
         m_priority{ o.m_priority },
-        m_program{ o.m_program },
-        m_shadowProgram{ o.m_shadowProgram },
-        m_preDepthProgram{ o.m_preDepthProgram },
-        m_selectionProgram{ o.m_selectionProgram },
-        m_idProgram{ o.m_idProgram },
-        m_drawOptions{ o.m_drawOptions },
-        m_vao{ o.m_vao },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
@@ -62,8 +54,8 @@ namespace mesh {
         auto* lodMesh = getLodMesh(0);
 
         return fmt::format(
-            "<NODE_TYPE: id={}, name={}, vao={}, lod={}>",
-            m_id, m_name, m_vao ? *m_vao : -1, lodMesh ? lodMesh->str() : "N/A");
+            "<NODE_TYPE: id={}, name={}, lod={}>",
+            m_id, m_name, lodMesh ? lodMesh->str() : "N/A");
     }
 
     pool::TypeHandle MeshType::toHandle() const noexcept
@@ -113,7 +105,7 @@ namespace mesh {
         if (!hasMesh()) return;
 
         for (auto& lodMesh : *m_lodMeshes) {
-            lodMesh.registerMaterials();
+            lodMesh.registerMaterial();
         }
     }
 
@@ -123,42 +115,9 @@ namespace mesh {
         if (m_preparedRT) return;
         m_preparedRT = true;
 
-        //if (!hasMesh()) return;
-
         for (auto& lodMesh : *m_lodMeshes) {
+            lodMesh.m_drawOptions.m_tessellation = m_flags.tessellation;
             lodMesh.prepareRT(ctx);
-        }
-
-        if (!m_lodMeshes->empty()) {
-            auto& lodMesh = (*m_lodMeshes)[0];
-            m_vao = lodMesh.m_vao;
-            m_drawOptions.m_renderBack = m_flags.renderBack;
-            m_drawOptions.m_wireframe = m_flags.wireframe;
-            m_drawOptions.m_blend = m_flags.blend;
-            m_drawOptions.m_blendOIT = m_flags.blendOIT;
-            m_drawOptions.m_tessellation = m_flags.tessellation;
-
-            lodMesh.m_mesh->prepareDrawOptions(m_drawOptions);
-        }
-
-        if (m_program) {
-            m_program->prepareRT();
-        }
-
-        if (m_shadowProgram) {
-            m_shadowProgram->prepareRT();
-        }
-
-        if (m_preDepthProgram) {
-            m_preDepthProgram->prepareRT();
-        }
-
-        if (m_selectionProgram) {
-            m_selectionProgram->prepareRT();
-        }
-
-        if (m_idProgram) {
-            m_idProgram->prepareRT();
         }
 
         if (m_customMaterial) {

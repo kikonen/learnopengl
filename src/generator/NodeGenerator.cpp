@@ -127,8 +127,10 @@ void NodeGenerator::updateEntity(
 void NodeGenerator::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
-    Node& container,
-    render::Batch& batch)
+    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    unsigned int kindBits,
+    render::Batch& batch,
+    Node& container)
 {
     if (m_activeCount == 0) return;
 
@@ -179,20 +181,16 @@ void NodeGenerator::bindBatch(
     //    }
     //}
     //auto lodSpan = std::span<const backend::Lod*>{ m_lods };
-    auto lodSpan = std::span<const backend::Lod*>{};
+    //auto lodSpan = std::span<const backend::Lod*>{};
 
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     batch.addSnapshotsInstanced(
         ctx,
         type,
-        lodSpan,
-        snapshots, m_entityBase);
-}
-
-const kigl::GLVertexArray* NodeGenerator::getVAO(
-    const Node& container) const noexcept
-{
-    return container.m_typeHandle.toType()->getVAO();
+        programSelector,
+        kindBits,
+        snapshots,
+        m_entityBase);
 }
 
 glm::vec4 NodeGenerator::calculateVolume() const noexcept

@@ -49,14 +49,7 @@ namespace loader {
         std::vector<MeshData> meshes;
         std::vector<LodData> lods;
 
-        std::string programName{};
-        std::string geometryType;
-
-        std::string shadowProgramName;
-        std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
-        std::string selectionProgramName{ SHADER_SELECTION };
-        std::string idProgramName{ SHADER_OBJECT_ID };
-
+        std::unordered_map<MaterialProgramType, std::string> programs;
         std::map<std::string, std::string> programDefinitions{};
 
         loader::FlagContainer nodeFlags;

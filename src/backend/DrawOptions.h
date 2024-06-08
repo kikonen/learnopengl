@@ -22,12 +22,24 @@ namespace backend {
 
         Type m_type : 2 = Type::none;
 
-        bool m_renderBack : 1 {false};
-        bool m_wireframe : 1 {false};
+        bool m_alpha : 1 {false};
         bool m_blend : 1 {false};
+
+        bool m_gbuffer : 1 {false};
         bool m_blendOIT : 1 {false};
 
+        bool m_renderBack : 1 {false};
+        bool m_wireframe : 1 {false};
+
         bool m_tessellation : 1 {false};
+
+        unsigned int m_kindBits{ 0 };
+
+        inline bool isKind(
+            unsigned int kindBits) const noexcept
+        {
+            return m_kindBits & kindBits;
+        }
 
         inline bool isSameDrawCommand(
             const DrawOptions& o,
@@ -51,7 +63,7 @@ namespace backend {
                 m_tessellation == o.m_tessellation;
         }
 
-        // NOTE KI for MeshTypeKey/MeshTypeComparator
+        // NOTE KI for MeshTypeKey
         inline bool operator<(const DrawOptions& o) const noexcept {
             return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode) <
                 std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode);

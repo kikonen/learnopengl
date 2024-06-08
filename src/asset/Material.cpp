@@ -143,12 +143,19 @@ Material::Material()
 {
 }
 
-Material::~Material()
-{
-    //KI_INFO(fmt::format(
-    //    "MATERIAL: delete - ID={}, name={}, index={}",
-    //    m_id, m_name, m_registeredIndex));
-}
+Material::Material(Material& o) = default;
+Material::Material(const Material& o) = default;
+Material::Material(Material&& o) = default;
+
+Material::~Material() = default;
+//{
+//    //KI_INFO(fmt::format(
+//    //    "MATERIAL: delete - ID={}, name={}, index={}",
+//    //    m_id, m_name, m_registeredIndex));
+//}
+
+Material& Material::operator=(const Material& o) = default;
+Material& Material::operator=(Material&& o) = default;
 
 void Material::assign(const Material& o)
 {

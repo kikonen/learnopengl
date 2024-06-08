@@ -70,6 +70,29 @@
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
+
+    std::string selectProgram(
+        MaterialProgramType type,
+        const std::unordered_map<MaterialProgramType, std::string> programsA,
+        const std::unordered_map<MaterialProgramType, std::string> programsB,
+        const std::string& defaultValue = "")
+    {
+        std::string program;
+        bool found = false;
+        const auto& it = programsA.find(type);
+        if (it != programsA.end()) {
+            program = it->second;
+            found = true;
+        }
+        if (program.empty()) {
+            const auto& it = programsB.find(type);
+            if (it != programsB.end()) {
+                program = it->second;
+                found = true;
+            }
+        }
+        return found ? program : defaultValue;
+    }
 }
 
 namespace loader {
@@ -483,49 +506,66 @@ namespace loader {
                     return pool::TypeHandle::NULL_HANDLE;
                 }
             }
-
-            // NOTE KI DEP: program after materials
-            resolveProgram(typeHandle, entityData);
         }
 
         return typeHandle;
     }
 
     void SceneLoader::resolveProgram(
-        pool::TypeHandle typeHandle,
+        mesh::MeshType* type,
+        mesh::LodMesh& lodMesh,
         const EntityData& entityData)
     {
-        auto* type = typeHandle.toType();
+        if (!lodMesh.getMaterial()) return;
 
-        bool useTBN = false;
-        bool useParallax = false;
-        bool useDudvTex = false;
-        bool useDisplacementTex = false;
-        bool useNormalTex = false;
-        bool useCubeMap = false;
-        bool useNormalPattern = false;
+        auto& material = *lodMesh.getMaterial();
 
-        for (auto& lodMesh : type->modifyLodMeshes()) {
-            auto* lodMaterial = lodMesh.getMaterial();
-
-            if (lodMaterial) {
-                auto& material = *lodMaterial;
-
-                useDudvTex |= material.hasBoundTex(TextureType::dudv_map);
-                useDisplacementTex |= material.hasBoundTex(TextureType::displacement_map);
-                useNormalTex |= material.hasBoundTex(TextureType::normal_map);
-                useCubeMap |= 1.0 - material.reflection - material.refraction < 1.0;
-                useNormalPattern |= material.pattern > 0;
-                useParallax |= material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
-                if (!useParallax) {
-                    material.parallaxDepth = 0.f;
-                }
-            }
+        bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
+        bool useDisplacementTex = material.hasBoundTex(TextureType::displacement_map);
+        bool useNormalTex = material.hasBoundTex(TextureType::normal_map);
+        bool useCubeMap = 1.0 - material.reflection - material.refraction < 1.0;
+        bool useNormalPattern = material.pattern > 0;
+        bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+        if (!useParallax) {
+            material.parallaxDepth = 0.f;
         }
 
-        useTBN = useNormalTex || useDudvTex || useDisplacementTex;
+        bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
-        if (!entityData.programName.empty()) {
+        const auto& shaderName = selectProgram(
+            MaterialProgramType::shader,
+            material.m_programs,
+            entityData.programs);
+
+        const auto& geometryName = selectProgram(
+            MaterialProgramType::geometry,
+            material.m_programs,
+            entityData.programs);
+
+        auto preDepthName = selectProgram(
+            MaterialProgramType::pre_depth,
+            material.m_programs,
+            entityData.programs,
+            SHADER_PRE_DEPTH_PASS);
+
+        const auto& shadowName = selectProgram(
+            MaterialProgramType::shadow,
+            material.m_programs,
+            entityData.programs);
+
+        const auto& selectionName = selectProgram(
+            MaterialProgramType::selection,
+            material.m_programs,
+            entityData.programs,
+            SHADER_SELECTION);
+
+        const auto& objectIdName = selectProgram(
+            MaterialProgramType::object_id,
+            material.m_programs,
+            entityData.programs,
+            SHADER_OBJECT_ID);
+
+        if (!shaderName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
             std::map<std::string, std::string, std::less<>> shadowDefinitions;
             std::map<std::string, std::string, std::less<>> selectionDefinitions;
@@ -540,18 +580,18 @@ namespace loader {
             bool useBones = type->m_flags.useBones;
             bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
 
-            if (type->m_flags.alpha) {
+            if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
                 shadowDefinitions[DEF_USE_ALPHA] = "1";
                 selectionDefinitions[DEF_USE_ALPHA] = "1";
                 idDefinitions[DEF_USE_ALPHA] = "1";
                 usePreDepth = false;
             }
-            if (type->m_flags.blend) {
+            if (material.blend) {
                 definitions[DEF_USE_BLEND] = "1";
                 usePreDepth = false;
             }
-            if (type->m_flags.blendOIT) {
+            if (material.blendOIT) {
                 definitions[DEF_USE_BLEND_OIT] = "1";
                 usePreDepth = false;
             }
@@ -591,39 +631,39 @@ namespace loader {
                 definitions[DEF_USE_BONES_DEBUG] = "1";
             }
 
-            type->m_program = ProgramRegistry::get().getProgram(
-                entityData.programName,
+            lodMesh.m_program = ProgramRegistry::get().getProgram(
+                shaderName,
                 false,
-                entityData.geometryType,
+                geometryName,
                 definitions);
 
-            if (!entityData.shadowProgramName.empty()) {
-                type->m_shadowProgram = ProgramRegistry::get().getProgram(
-                    entityData.shadowProgramName,
+            if (!shadowName.empty()) {
+                lodMesh.m_shadowProgram = ProgramRegistry::get().getProgram(
+                    shadowName,
                     false,
                     "",
                     shadowDefinitions);
             }
 
             if (usePreDepth) {
-                type->m_preDepthProgram = ProgramRegistry::get().getProgram(
-                    entityData.preDepthProgramName,
+                lodMesh.m_preDepthProgram = ProgramRegistry::get().getProgram(
+                    preDepthName,
                     false,
                     "",
                     preDepthDefinitions);
             }
 
-            if (!entityData.selectionProgramName.empty()) {
-                type->m_selectionProgram = ProgramRegistry::get().getProgram(
-                    entityData.selectionProgramName,
+            if (!selectionName.empty()) {
+                lodMesh.m_selectionProgram = ProgramRegistry::get().getProgram(
+                    selectionName,
                     false,
                     "",
                     selectionDefinitions);
             }
 
-            if (!entityData.idProgramName.empty()) {
-                type->m_idProgram = ProgramRegistry::get().getProgram(
-                    entityData.idProgramName,
+            if (!objectIdName.empty()) {
+                lodMesh.m_idProgram = ProgramRegistry::get().getProgram(
+                    objectIdName,
                     false,
                     "",
                     idDefinitions);
@@ -642,6 +682,7 @@ namespace loader {
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
+        const EntityData& entityData,
         const MeshData& meshData)
     {
         auto* lodMaterial = lodMesh.getMaterial();
@@ -663,6 +704,43 @@ namespace loader {
                 l.m_materialLoader.modifyMaterial(material, materialData);
             }
         }
+
+        {
+            const auto& shaderName = selectProgram(
+                MaterialProgramType::shader,
+                material.m_programs,
+                entityData.programs);
+
+            if (shaderName.starts_with("g_")) {
+                material.gbuffer = true;
+            }
+
+            if (material.blend) {
+                // NOTE KI alpha MUST BE true if blend
+                if (!material.alpha) {
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha) name={}", material.m_name));
+                    material.alpha = true;
+                }
+
+                // NOTE KI blend CANNOT be gbuffer
+                if (material.gbuffer) {
+                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): name={}", material.m_name));
+                    // NOTE KI turning off blend; shader is designed for gbuffer
+                    material.blend = false;
+                }
+            }
+
+            if (material.blendOIT) {
+                // NOTE KI alpha MUST BE true if blend
+                if (!material.alpha) {
+                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): name={}", material.m_name));
+                    material.alpha = true;
+                }
+            }
+        }
+
+        lodMesh.setupDrawOptions();
+
         material.loadTextures();
     }
 
@@ -746,7 +824,8 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveMaterials(type, lodMesh, meshData);
+                resolveMaterials(type, lodMesh, entityData, meshData);
+                resolveProgram(type, lodMesh, entityData);
             }
         }
     }
@@ -905,7 +984,10 @@ namespace loader {
 
         //////////////////////////////////////////////////////////
         // LOD_MESH specific
-        flags.gbuffer = entityData.programName.starts_with("g_");
+        const auto& shaderName = selectProgram(
+            MaterialProgramType::shader,
+            {},
+            entityData.programs);
 
         // Rigged model
         {
@@ -925,47 +1007,14 @@ namespace loader {
         }
 
         flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
-        flags.gbuffer = container.getFlag("gbuffer", flags.gbuffer);
-        flags.alpha = container.getFlag("alpha", flags.alpha);
 
-        {
-            const auto* e = container.getOptional("blend");
-            if (e) {
-                flags.blend = e;
-                // NOTE KI alpha MUST BE true if blend
-                if (flags.blend) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
-                    flags.alpha = true;
-                }
-                // NOTE KI blend CANNOT be gbuffer
-                if (flags.blend && flags.gbuffer) {
-                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): id={}, desc={}", entityData.baseId, entityData.desc));
-                    // NOTE KI turning off blend; shader is designed for gbuffer
-                    flags.blend = false;
-                }
-            }
-        }
-        {
-            const auto* e = container.getOptional("blend_oit");
-            if (e) {
-                flags.blendOIT = e;
-                // NOTE KI alpha MUST BE true if blend
-                if (flags.blendOIT) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
-                    flags.alpha = true;
-                }
-            }
-        }
-
-        flags.renderBack = container.getFlag("render_back", flags.renderBack);
-        flags.wireframe = container.getFlag("wireframe", flags.wireframe);
         flags.effect = container.getFlag("effect", flags.effect);
         flags.billboard = container.getFlag("billboard", flags.billboard);
         flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
         //////////////////////////////////////////////////////////
         // MESH_TYPE specific (aka. Node shared logic)
-        flags.zUp = container.getFlag("z_up", flags.renderBack);
+        flags.zUp = container.getFlag("z_up", flags.zUp);
 
         flags.mirror = container.getFlag("mirror", flags.mirror);
         flags.water = container.getFlag("water", flags.water);

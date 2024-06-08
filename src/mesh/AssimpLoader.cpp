@@ -190,6 +190,14 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
+                    if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
+                    if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
+                    if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
+
                     modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
                     modelMesh->m_rig = ctx.m_rig;
                     modelMesh->m_nodeName = rigNode.m_name;

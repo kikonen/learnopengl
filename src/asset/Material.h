@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <map>
 #include <unordered_map>
 
 #include <glm/glm.hpp>
@@ -38,6 +39,15 @@ enum class TextureType : std::underlying_type_t<std::byte> {
     metal_channel_map
 };
 
+enum class MaterialProgramType : std::underlying_type_t<std::byte> {
+    shader,
+    geometry,
+    shadow,
+    pre_depth,
+    selection,
+    object_id
+};
+
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
@@ -67,13 +77,13 @@ public:
 
 public:
     Material();
-    Material(Material& o) = default;
-    Material(const Material& o) = default;
-    Material(Material&& o) = default;
+    Material(Material& o);
+    Material(const Material& o);
+    Material(Material&& o);
     ~Material();
 
-    Material& operator=(const Material& o) = default;
-    Material& operator=(Material&& o) = default;
+    Material& operator=(const Material& o);
+    Material& operator=(Material&& o);
 
     // assign data from other material, but keep local ID
     // NOTE KI *MUST* keep original materialId
@@ -256,11 +266,19 @@ public:
 
     bool alpha : 1 {false};
     bool blend : 1 {false};
+
+    bool gbuffer : 1 {false};
+    bool blendOIT : 1 {false};
+
     bool renderBack : 1 {false};
+    bool wireframe : 1 {false};
+
+    std::unordered_map<MaterialProgramType, std::string> m_programs{};
+    std::map<std::string, std::string> m_programDefinitions{};
 
 private:
-    std::unordered_map<TextureType, BoundTexture> m_boundTextures;
-    std::unordered_map<TextureType, std::string> m_texturePaths;
+    std::unordered_map<TextureType, BoundTexture> m_boundTextures{};
+    std::unordered_map<TextureType, std::string> m_texturePaths{};
 
     bool m_prepared : 1 {false};
     bool m_loaded : 1 {false};

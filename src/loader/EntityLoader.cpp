@@ -128,28 +128,25 @@ namespace loader {
                     loadMesh(v, meshData, loaders);
                 }
             }
-            else if (k == "program" || k == "shader") {
-                data.programName = readString(v);
-                if (data.programName == "texture") {
-                    data.programName = SHADER_TEXTURE;
-                }
+            else if (k == "program") {
+                data.programs[MaterialProgramType::shader] = readString(v);
             }
             else if (k == "shadow_program") {
-                data.shadowProgramName = readString(v);
+                data.programs[MaterialProgramType::shadow] = readString(v);
             }
             else if (k == "pre_depth_program") {
-                data.preDepthProgramName = readString(v);
+                data.programs[MaterialProgramType::pre_depth] = readString(v);
             }
             else if (k == "selection_program") {
-                data.selectionProgramName = readString(v);
+                data.programs[MaterialProgramType::selection] = readString(v);
             }
             else if (k == "id_program") {
-                data.idProgramName = readString(v);
+                data.programs[MaterialProgramType::object_id] = readString(v);
             }
             else if (k == "geometry_type") {
-                data.geometryType = readString(v);
+                data.programs[MaterialProgramType::geometry] = readString(v);
             }
-            else if (k == "program_definitions" || k == "shader_definitions") {
+            else if (k == "program_definitions") {
                 for (const auto& defNode : v.getNodes()) {
                     const auto& defName = defNode.getName();
                     const auto& defValue = readString(defNode.getNode());

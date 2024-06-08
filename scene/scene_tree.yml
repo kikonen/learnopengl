@@ -70,7 +70,7 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - id: object
+  - xid: object
     model:
       mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
       materials:
@@ -94,9 +94,43 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - xid: maple_tree_forest_{t}
-    prefab: prefabs/scenery/maple_tree_1
-    pos: [0, 0.0, 0.0]
+  - id: maple_tree_forest_1_{t}
+    model:
+      mesh: fbx/scenery/trees/Maple_02.fbx
+      materials:
+        - name: maple_trunk
+          alias: Tree_0Mat
+          map_kd: textures/bark02.png
+          map_bump: textures/bark02_normal.png
+        - name: maple_leaf
+          alias: Tree_1Mat
+          map_kd: textures/leaf maple.png
+          map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
+    program: g_tex
+    instanced: true
+    pos: [0, 0, 0]
+    type_flags:
+      static_bounds: true
+    scale: 0.05
+    xgenerator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - xid: maple_tree_forest_2_{t}
+    prefab: prefab/scenery/prefab_maple_tree_1.yml
+    pos: [10, 0, 0]
     render_flags:
       static_bounds: true
-    scale: 1
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40

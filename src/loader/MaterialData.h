@@ -1,5 +1,10 @@
 #pragma once
 
+#include <string>
+#include <map>
+
+#include "asset/Shader.h"
+
 #include "asset/Material.h"
 #include "MaterialField.h"
 

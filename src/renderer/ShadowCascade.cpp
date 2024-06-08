@@ -261,12 +261,12 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) {
-                return type->m_shadowProgram ? type->m_shadowProgram : m_solidShadowProgram;
+            [this](const mesh::LodMesh& lodMesh) {
+                return lodMesh.m_shadowProgram ? lodMesh.m_shadowProgram : m_solidShadowProgram;
             },
             typeFilter,
             nodeFilter,
-            render::NodeDraw::KIND_SOLID);
+            render::KIND_SOLID);
     }
 
     {
@@ -275,12 +275,12 @@ void ShadowCascade::drawNodes(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) {
-                return type->m_shadowProgram ? type->m_shadowProgram : m_alphaShadowProgram;
+            [this](const mesh::LodMesh& lodMesh) {
+                return lodMesh.m_shadowProgram ? lodMesh.m_shadowProgram : m_alphaShadowProgram;
             },
             typeFilter,
             nodeFilter,
-            render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);
+            render::KIND_ALPHA | render::KIND_BLEND);
     }
 
     ctx.m_batch->flush(ctx);

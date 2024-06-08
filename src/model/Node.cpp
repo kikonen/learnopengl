@@ -135,49 +135,23 @@ void Node::updateVAO(const RenderContext& ctx) noexcept
     }
 }
 
-const kigl::GLVertexArray* Node::getVAO() const noexcept
-{
-    if (m_instancer) {
-        return m_instancer->getVAO(*this);
-    }
-    else {
-        return m_typeHandle.toType()->getVAO();
-    }
-}
-
 void Node::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
+    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    unsigned int kindBits,
     render::Batch& batch) noexcept
 {
     if (m_instancer) {
-        m_instancer->bindBatch(ctx, type, *this, batch);
+        m_instancer->bindBatch(ctx, type, programSelector, kindBits, batch, *this);
     } else {
         const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
-
-        const backend::Lod* lod = nullptr;
-        //{
-        //    const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        //    auto& meshLods = type->getLods();
-
-        //    auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
-
-        //    int lodIndex = 0;
-        //    for (; lodIndex < meshLods.size(); lodIndex++) {
-        //        if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
-        //            break;
-        //    }
-        //    if (lodIndex >= meshLods.size()) {
-        //        lodIndex--;
-        //    }
-
-        //    lod = &meshLods[lodIndex].m_lod;
-        //}
 
         batch.addSnapshot(
             ctx,
             type,
-            lod,
+            programSelector,
+            kindBits,
             snapshot,
             m_entityIndex);
     }

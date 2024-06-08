@@ -285,7 +285,13 @@ namespace terrain {
 
                 auto* lodMesh = type->modifyLodMesh(0);
                 lodMesh->setMaterial(m_material);
-                lodMesh->registerMaterials();
+                lodMesh->registerMaterial();
+
+                //lodMesh->m_program = containerType->m_program;
+                //lodMesh->m_shadowProgram = containerType->m_shadowProgram;
+                //lodMesh->m_preDepthProgram = containerType->m_preDepthProgram;
+
+                lodMesh->m_drawOptions.m_patchVertices = 3;
             }
         }
 
@@ -337,12 +343,6 @@ namespace terrain {
         flags.contained = true;
 
         type->m_priority = containerType->m_priority;
-        type->m_program = containerType->m_program;
-        type->m_shadowProgram = containerType->m_shadowProgram;
-        type->m_preDepthProgram = containerType->m_preDepthProgram;
-
-        auto& drawOptions = type->modifyDrawOptions();
-        drawOptions.m_patchVertices = 3;
 
         return typeHandle;
     }

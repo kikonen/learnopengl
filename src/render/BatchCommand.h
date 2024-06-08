@@ -18,6 +18,40 @@ namespace backend {
 }
 
 namespace render {
+    struct BatchKey {
+        BatchKey(
+            int programId,
+            int vaoId,
+            int priority,
+            const backend::DrawOptions& drawOptions) noexcept
+            : m_programId(programId),
+            m_vaoId{ vaoId },
+            m_priority(priority),
+            m_renderBack(drawOptions.m_renderBack),
+            m_wireframe(drawOptions.m_wireframe)
+        {};
+
+        std::string str() const noexcept
+        {
+            return fmt::format(
+                "<PROGRAM_KEY: id={}, vao={}, pri={}, renderBack={}, wireframe={}>",
+                m_programId, m_vaoId, m_priority, m_renderBack, m_wireframe);
+        }
+
+        bool operator<(const BatchKey& o) const noexcept {
+            // NOTE KI renderBack & wireframe goes into separate render always due to GL state
+            // => reduce state changes via sorting
+            return std::tie(m_priority, m_programId, m_vaoId, m_renderBack, m_wireframe) <
+                std::tie(o.m_priority, o.m_programId, o.m_vaoId, o.m_renderBack, o.m_wireframe);
+        }
+
+        const int m_priority;
+        const int m_programId;
+        const int m_vaoId;
+        const bool m_renderBack;
+        const bool m_wireframe;
+    };
+
     struct LodKey {
         const backend::Lod* m_lod;
         bool operator<(const LodKey& o) const noexcept {
@@ -37,7 +71,7 @@ namespace render {
 
         std::map<LodKey, std::vector<LodEntry>> m_lodInstances;
 
-        int m_baseIndex{ 0 };
+        //int m_baseIndex{ 0 };
         int m_instanceCount{ 0 };
 
         backend::DrawOptions m_drawOptions;

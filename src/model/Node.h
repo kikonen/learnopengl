@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <array>
+#include <functional>
 
 #include <glm/glm.hpp>
 
@@ -28,10 +29,15 @@ namespace render {
     class Batch;
 }
 
+namespace mesh {
+    struct LodMesh;
+}
+
 namespace particle {
     class ParticleGenerator;
 }
 
+class Program;
 class Camera;
 class Light;
 class NodeGenerator;
@@ -75,11 +81,12 @@ public:
         const PrepareContext& ctx);
 
     void updateVAO(const RenderContext& ctx) noexcept;
-    const kigl::GLVertexArray* getVAO() const noexcept;
 
     void bindBatch(
         const RenderContext& ctx,
         mesh::MeshType* type,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        unsigned int kindBits,
         render::Batch& batch) noexcept;
 
     inline Node* getParent() const noexcept {

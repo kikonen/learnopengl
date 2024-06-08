@@ -50,11 +50,10 @@ public:
     virtual void bindBatch(
         const RenderContext& ctx,
         mesh::MeshType* type,
-        Node& container,
-        render::Batch& batch) override;
-
-    virtual const kigl::GLVertexArray* getVAO(
-        const Node& container) const noexcept override;
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        unsigned int kindBits,
+        render::Batch& batch,
+        Node& container) override;
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 

@@ -30,6 +30,8 @@
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 
+#include "size.h"
+
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
@@ -42,19 +44,14 @@ namespace render {
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeComparator {
         bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
-            if (a->m_drawOptions < b->m_drawOptions) return true;
-            else if (b->m_drawOptions < a->m_drawOptions) return false;
             return a->m_id < b->m_id;
         }
     };
-
 
     bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
         const auto& a = m_typeHandle.toType();
         const auto& b = o.m_typeHandle.toType();
 
-        if (a->m_drawOptions < b->m_drawOptions) return true;
-        else if (b->m_drawOptions < a->m_drawOptions) return false;
         return a->m_id < b->m_id;
     }
 
@@ -121,36 +118,29 @@ namespace render {
     void NodeDraw::handleNodeAdded(Node* node)
     {
         auto* type = node->m_typeHandle.toType();
-        auto* program = type->m_program;
-
-        if (type->m_entityType != EntityType::origo) {
-            assert(program);
-            if (!program) return;
-        }
 
         {
             auto* map = &m_solidNodes;
 
-            if (type->m_flags.alpha)
-                map = &m_alphaNodes;
+            //if (type->m_flags.alpha)
+            //    map = &m_alphaNodes;
 
-            if (type->m_flags.blend)
-                map = &m_blendedNodes;
+            //if (type->m_flags.blend)
+            //    map = &m_blendedNodes;
 
             if (type->m_flags.invisible)
                 map = &m_invisibleNodes;
 
             if (map) {
                 // NOTE KI more optimal to not switch between culling mode (=> group by it)
-                const ProgramKey programKey(
-                    program ? program->m_id : NULL_PROGRAM_ID,
+                const PiorityKey priorityKey{
                     // NOTE KI *NEGATE* for std::tie
                     -type->m_priority,
-                    type->getDrawOptions());
+                };
 
                 const MeshTypeKey typeKey(node->m_typeHandle);
 
-                auto& list = (*map)[programKey][typeKey];
+                auto& list = (*map)[priorityKey][typeKey];
                 list.reserve(100);
                 list.push_back(node->toHandle());
             }
@@ -196,15 +186,17 @@ namespace render {
                 {
                     ctx.m_nodeDraw->drawProgram(
                         ctx,
-                        [this](const mesh::MeshType* type) { return type->m_preDepthProgram; },
+                        [this](const mesh::LodMesh& lodMesh) {
+                            auto valid = lodMesh.m_drawOptions.m_gbuffer &&
+                                lodMesh.m_drawOptions.m_alpha;
+                            return valid ? lodMesh.m_preDepthProgram : nullptr;
+                        },
                         [&typeSelector](const mesh::MeshType* type) {
-                            return type->m_flags.gbuffer &&
-                                type->m_flags.preDepth &&
-                                !type->m_flags.alpha &&
+                            return type->m_flags.preDepth &&
                                 typeSelector(type);
                         },
                         nodeSelector,
-                        kindBits & NodeDraw::KIND_SOLID);
+                        kindBits & render::KIND_SOLID);
                 }
 
                 ctx.m_batch->flush(ctx);
@@ -219,9 +211,13 @@ namespace render {
 
                 drawNodesImpl(
                     ctx,
-                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [](const mesh::LodMesh& lodMesh) {
+                        return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
+                    },
+                    [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
                     nodeSelector,
-                    kindBits);
+                    // NOTE KI no blended
+                    kindBits & ~render::KIND_BLEND);
 
                 ctx.m_batch->flush(ctx);
 
@@ -274,9 +270,13 @@ namespace render {
 
             drawNodesImpl(
                 ctx,
-                [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+                [](const mesh::LodMesh& lodMesh) {
+                    return !lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
+                },
+                [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
                 nodeSelector,
-                kindBits);
+                // NOTE KI no blended
+                kindBits & ~render::KIND_BLEND);
 
             auto flushedCount = ctx.m_batch->flush(ctx);
             if (flushedCount > 0) {
@@ -314,10 +314,14 @@ namespace render {
                 // only "blend OIT" nodes
                 drawProgram(
                     ctx,
-                    [this](const mesh::MeshType* type) { return m_oitProgram; },
-                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+                    [this](const mesh::LodMesh& lodMesh) {
+                        return lodMesh.m_drawOptions.m_blendOIT ? m_oitProgram : nullptr;
+                    },
+                    [&typeSelector](const mesh::MeshType* type) {
+                        return typeSelector(type);
+                    },
                     nodeSelector,
-                    NodeDraw::KIND_ALL);
+                    render::KIND_ALL);
 
                 ctx.m_batch->flush(ctx);
 
@@ -353,8 +357,8 @@ namespace render {
             drawBlendedImpl(
                 ctx,
                 [&typeSelector](const mesh::MeshType* type) {
-                    return !type->m_flags.blendOIT &&
-                        type->m_flags.blend &&
+                    return //!type->m_flags.blendOIT &&
+                        //type->m_flags.blend &&
                         type->m_flags.effect &&
                         typeSelector(type);
                 },
@@ -626,8 +630,19 @@ namespace render {
         ctx.m_batch->flush(ctx);
     }
 
+    void NodeDraw::drawProgram(
+        const RenderContext& ctx,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector,
+        unsigned int kindBits)
+    {
+        drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
+    }
+
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         unsigned int kindBits)
@@ -636,9 +651,11 @@ namespace render {
 
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-        auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
+        auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector, &rendered](
+            const MeshTypeMap& typeMap,
+            unsigned int kindBit)
+        {
             auto* type = typeMap.begin()->first.m_typeHandle.toType();
-            auto* program = type->m_program;
 
             for (const auto& it : typeMap) {
                 auto* type = it.first.m_typeHandle.toType();
@@ -653,20 +670,26 @@ namespace render {
                     if (!node || !nodeSelector(node)) continue;
 
                     rendered = true;
-                    batch->draw(ctx, type, *node, program);
+                    batch->draw(ctx, type, programSelector, kindBit, *node);
                 }
             }
             };
 
-        if (kindBits & NodeDraw::KIND_SOLID) {
+        if (kindBits & render::KIND_SOLID) {
             for (const auto& all : m_solidNodes) {
-                renderTypes(all.second);
+                renderTypes(all.second, render::KIND_SOLID);
             }
         }
 
-        if (kindBits & NodeDraw::KIND_ALPHA) {
+        if (kindBits & render::KIND_ALPHA) {
             for (const auto& all : m_alphaNodes) {
-                renderTypes(all.second);
+                renderTypes(all.second, render::KIND_ALPHA);
+            }
+        }
+
+        if (kindBits & render::KIND_BLEND) {
+            for (const auto& all : m_blendedNodes) {
+                renderTypes(all.second, render::KIND_BLEND);
             }
         }
 
@@ -709,60 +732,17 @@ namespace render {
         for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
             auto* node = it->second;
             auto* type = node->m_typeHandle.toType();
-            auto* program = type->m_program;
 
-            ctx.m_batch->draw(ctx, type, *node, program);
+            ctx.m_batch->draw(
+                ctx,
+                type,
+                [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_program; },
+                render::KIND_BLEND,
+                *node);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect
         //ctx.m_batch->flush(ctx);
-    }
-
-    void NodeDraw::drawProgram(
-        const RenderContext& ctx,
-        const std::function<Program* (const mesh::MeshType*)>& programSelector,
-        const std::function<bool(const mesh::MeshType*)>& typeSelector,
-        const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits)
-    {
-        auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
-            for (const auto& it : typeMap) {
-                auto* type = it.first.m_typeHandle.toType();
-
-                if (!type->isReady()) continue;
-                if (!typeSelector(type)) continue;
-
-                auto activeProgram = programSelector(type);
-                if (!activeProgram) continue;
-
-                auto& batch = ctx.m_batch;
-
-                for (auto& handle : it.second) {
-                    auto* node = handle.toNode();
-                    if (!node || !nodeSelector(node)) continue;
-
-                    batch->draw(ctx, type, *node, activeProgram);
-                }
-            }
-            };
-
-        if (kindBits & NodeDraw::KIND_SOLID) {
-            for (const auto& all : m_solidNodes) {
-                renderTypes(all.second);
-            }
-        }
-
-        if (kindBits & NodeDraw::KIND_ALPHA) {
-            for (const auto& all : m_alphaNodes) {
-                renderTypes(all.second);
-            }
-        }
-
-        if (kindBits & NodeDraw::KIND_BLEND) {
-            for (const auto& all : m_blendedNodes) {
-                renderTypes(all.second);
-            }
-        }
     }
 
     void NodeDraw::drawSkybox(
@@ -779,7 +759,9 @@ namespace render {
         if (!type->isReady()) return;
 
         auto& batch = ctx.m_batch;
-        auto* program = type->m_program;
+
+        auto* lodMesh = type->getLodMesh(0);
+        auto* program = lodMesh->m_program;
 
         state.setDepthFunc(GL_LEQUAL);
         program->bind();

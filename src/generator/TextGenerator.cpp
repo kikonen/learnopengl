@@ -122,17 +122,13 @@ void TextGenerator::updateVAO(
     lod.m_indexCount = mesh->getIndexCount();
 }
 
-const kigl::GLVertexArray* TextGenerator::getVAO(
-    const Node& container) const noexcept
-{
-    return m_vao.getVAO();
-}
-
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
-    Node& container,
-    render::Batch& batch)
+    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    unsigned int kindBits,
+    render::Batch& batch,
+    Node& container)
 {
     m_draw->updateRT();
 
@@ -141,7 +137,8 @@ void TextGenerator::bindBatch(
     batch.addSnapshot(
         ctx,
         type,
-        &type->getLodMesh(0)->m_lod,
+        programSelector,
+        kindBits,
         snapshot,
         container.m_entityIndex);
 }

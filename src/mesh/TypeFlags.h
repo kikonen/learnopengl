@@ -2,13 +2,14 @@
 
 namespace mesh {
     struct TypeFlags {
-        bool alpha : 1 {false};
-        bool blend : 1 {false};
-        bool renderBack : 1 {false};
-        bool wireframe : 1 {false};
+        //bool alpha : 1 {false};
+        //bool blend : 1 {false};
+        //bool renderBack : 1 {false};
+        //bool wireframe : 1 {false};
 
-        bool gbuffer : 1 {false};
-        bool blendOIT : 1 {false};
+        //bool gbuffer : 1 {false};
+        //bool blendOIT : 1 {false};
+
         bool preDepth : 1 {false};
         bool useBones : 1 {false};
         bool useBonesDebug : 1 {false};
