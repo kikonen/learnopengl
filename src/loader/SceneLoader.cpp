@@ -903,6 +903,8 @@ namespace loader {
         const auto& container = entityData.typeFlags;
         mesh::TypeFlags& flags = type->m_flags;
 
+        //////////////////////////////////////////////////////////
+        // LOD_MESH specific
         flags.gbuffer = entityData.programName.starts_with("g_");
 
         // Rigged model
@@ -955,20 +957,25 @@ namespace loader {
             }
         }
 
-        flags.zUp = container.getFlag("z_up", flags.renderBack);
         flags.renderBack = container.getFlag("render_back", flags.renderBack);
+        flags.wireframe = container.getFlag("wireframe", flags.wireframe);
+        flags.effect = container.getFlag("effect", flags.effect);
+        flags.billboard = container.getFlag("billboard", flags.billboard);
+        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
+
+        //////////////////////////////////////////////////////////
+        // MESH_TYPE specific (aka. Node shared logic)
+        flags.zUp = container.getFlag("z_up", flags.renderBack);
+
+        flags.mirror = container.getFlag("mirror", flags.mirror);
+        flags.water = container.getFlag("water", flags.water);
+        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
+
         flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
         flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
         flags.noSelect = container.getFlag("no_select", flags.noSelect);
         flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
         flags.noRefract = container.getFlag("no_refract", flags.noRefract);
-        flags.mirror = container.getFlag("mirror", flags.mirror);
-        flags.water = container.getFlag("water", flags.water);
-        flags.wireframe = container.getFlag("wireframe", flags.wireframe);
-        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
-        flags.effect = container.getFlag("effect", flags.effect);
-        flags.billboard = container.getFlag("billboard", flags.billboard);
-        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
         {
             const auto* e = container.getOptional("static_bounds");
