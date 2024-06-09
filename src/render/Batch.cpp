@@ -88,7 +88,10 @@ namespace render {
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_lodLevel != lodLevel) continue;
-            //if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
+
+            const auto& drawOptions = lodMesh.m_drawOptions;
+            //if (!drawOptions.isKind(kindBits)) continue;
+            if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
             auto* program = programSelector(lodMesh);
             if (!program) continue;
@@ -96,22 +99,15 @@ namespace render {
             BatchCommand* top;
             {
                 BatchKey key{
-                    *program,
-                    *lodMesh.m_vao,
-                    -type->m_priority,
-                    lodMesh.m_drawOptions
+                    type->m_priority,
+                    program,
+                    lodMesh.m_vao,
+                    drawOptions
                 };
 
                 const auto& pair = m_batches.insert({ key, {} });
                 top = &pair.first->second;
-
-                if (pair.second) {
-                    top->m_program = program;
-                    top->m_vao = lodMesh.m_vao;
-                    top->m_drawOptions = lodMesh.m_drawOptions;
-                }
             }
-            top->m_instanceCount++;
 
             auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
             lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex);
@@ -193,7 +189,10 @@ namespace render {
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
-                    //if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
+
+                    const auto& drawOptions = lodMesh.m_drawOptions;
+                    //if (!drawOptions.isKind(kindBits)) continue;
+                    if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
                     auto* program = programSelector(lodMesh);
                     if (!program) continue;
@@ -201,22 +200,15 @@ namespace render {
                     BatchCommand* top;
                     {
                         BatchKey key{
-                            *program,
-                            *lodMesh.m_vao,
-                            -type->m_priority,
-                            lodMesh.m_drawOptions
+                            type->m_priority,
+                            program,
+                            lodMesh.m_vao,
+                            drawOptions
                         };
 
                         const auto& pair = m_batches.insert({ key, {} });
                         top = &pair.first->second;
-
-                        if (pair.second) {
-                            top->m_program = program;
-                            top->m_vao = lodMesh.m_vao;
-                            top->m_drawOptions = lodMesh.m_drawOptions;
-                        }
                     }
-                    top->m_instanceCount++;
 
                     auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
                     lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
@@ -237,7 +229,10 @@ namespace render {
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
-                    //if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
+
+                    const auto& drawOptions = lodMesh.m_drawOptions;
+                    //if (!drawOptions.isKind(kindBits)) continue;
+                    if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
                     auto* program = programSelector(lodMesh);
                     if (!program) continue;
@@ -245,22 +240,15 @@ namespace render {
                     BatchCommand* top;
                     {
                         BatchKey key{
-                            *program,
-                            *lodMesh.m_vao,
-                            -type->m_priority,
-                            lodMesh.m_drawOptions
+                            type->m_priority,
+                            program,
+                            lodMesh.m_vao,
+                            drawOptions
                         };
 
                         const auto& pair = m_batches.insert({ key, {} });
                         top = &pair.first->second;
-
-                        if (pair.second) {
-                            top->m_program = program;
-                            top->m_vao = lodMesh.m_vao;
-                            top->m_drawOptions = lodMesh.m_drawOptions;
-                        }
                     }
-                    top->m_instanceCount++;
 
                     auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
                     lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
@@ -341,9 +329,10 @@ namespace render {
         {
             m_entityIndeces.clear();
             for (const auto& it : m_batches) {
+                const auto& key = it.first;
                 const auto& curr = it.second;
 
-                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
+                auto& lodBaseIndex = programLodBaseIndex[key.m_program];
 
                 for (const auto& lodInstance : curr.m_lodInstances) {
                     const auto* lod = lodInstance.first.m_lod;
@@ -378,20 +367,21 @@ namespace render {
         backend::gl::DrawIndirectCommand indirect{};
 
         for (const auto& it : m_batches) {
+            const auto& key = it.first;
             const auto& curr = it.second;
 
             backend::DrawRange drawRange = {
-                curr.m_program,
-                curr.m_vao,
-                curr.m_drawOptions,
+                key.m_program,
+                key.m_vao,
+                key.m_drawOptions,
                 ctx.m_allowBlend,
                 ctx.m_forceWireframe
             };
 
-            const auto& drawOptions = curr.m_drawOptions;
+            const auto& drawOptions = key.m_drawOptions;
 
             for (const auto& lodEntry : curr.m_lodInstances) {
-                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
+                auto& lodBaseIndex = programLodBaseIndex[key.m_program];
                 auto baseInstance = lodBaseIndex[lodEntry.first];
                 GLuint instanceCount = static_cast<GLuint>(lodEntry.second.size());
                 const auto* lod = lodEntry.first.m_lod;

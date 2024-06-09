@@ -8,18 +8,25 @@
 namespace backend {
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawElementsInstanced.xhtml
     struct DrawOptions {
+        enum class Mode : std::underlying_type_t<std::byte> {
+            points,
+            patches,
+            triangles,
+            triangle_strip,
+        };
+
         enum class Type : std::underlying_type_t<std::byte> {
             none,
             elements,
             arrays,
         };
 
+        uint8_t m_patchVertices{ 3 };
+
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
         // - GL_POINTS
-        uint8_t m_mode = GL_POINTS;
-        uint8_t m_patchVertices{ 3 };
-
+        Mode m_mode : 3 = Mode::points;
         Type m_type : 2 = Type::none;
 
         bool m_alpha : 1 {false};
@@ -33,10 +40,24 @@ namespace backend {
 
         bool m_tessellation : 1 {false};
 
-        unsigned int m_kindBits{ 0 };
+        uint8_t m_kindBits : 3 { 0 };
+
+        GLuint toMode() const noexcept
+        {
+            switch (m_mode) {
+            case Mode::points:
+                return GL_POINTS;
+            case Mode::patches:
+                return GL_PATCHES;
+            case Mode::triangles:
+                return GL_TRIANGLES;
+            case Mode::triangle_strip:
+                return GL_TRIANGLE_STRIP;
+            }
+        }
 
         inline bool isKind(
-            unsigned int kindBits) const noexcept
+            uint8_t kindBits) const noexcept
         {
             return m_kindBits & kindBits;
         }

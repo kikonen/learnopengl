@@ -258,7 +258,7 @@ namespace backend {
         if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
             auto& elem = cmd.element;
             glDrawElementsInstancedBaseVertexBaseInstance(
-                drawOptions.m_mode,
+                drawOptions.toMode(),
                 elem.u_count,
                 GL_UNSIGNED_INT,
                 (void*)(elem.u_firstIndex * sizeof(GLuint)),
@@ -270,7 +270,7 @@ namespace backend {
         {
             auto& arr = cmd.array;
             glDrawArraysInstancedBaseInstance(
-                drawOptions.m_mode,
+                drawOptions.toMode(),
                 arr.u_firstVertex,
                 arr.u_vertexCount,
                 arr.u_instanceCount,
@@ -320,7 +320,7 @@ namespace backend {
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 glMultiDrawElementsIndirect(
-                    drawOptions.m_mode,
+                    drawOptions.toMode(),
                     GL_UNSIGNED_INT,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
@@ -329,7 +329,7 @@ namespace backend {
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 glMultiDrawArraysIndirect(
-                    drawOptions.m_mode,
+                    drawOptions.toMode(),
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));

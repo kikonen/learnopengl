@@ -68,6 +68,6 @@ namespace mesh {
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = GL_TRIANGLES;
+        drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
     }
 }

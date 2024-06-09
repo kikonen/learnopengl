@@ -11,6 +11,7 @@
 #include <assimp/postprocess.h>
 
 #include "util/glm_format.h"
+#include "util/Log.h"
 #include "util/Util.h"
 
 #include "animation/RigContainer.h"
@@ -115,6 +116,10 @@ namespace mesh
         loadAnimations(ctx, meshSet.m_name, scene);
 
         meshSet.m_rig->prepare();
+
+        for (auto& mesh : meshSet.m_meshes) {
+            KI_INFO_OUT(fmt::format("MESH: {}", mesh->str()));
+        }
     }
 
     void AssimpLoader::collectNodes(

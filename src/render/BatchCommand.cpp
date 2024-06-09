@@ -1,21 +1,28 @@
 #include "BatchCommand.h"
 
+#include "asset/Program.h"
+#include "kigl/GLVertexArray.h"
+
+//#include "render/RenderContext.h"
+
 namespace render {
     BatchKey::BatchKey(
-        int programId,
-        int vaoId,
-        int priority,
+        int8_t priority,
+        const Program* program,
+        const kigl::GLVertexArray* vao,
         const backend::DrawOptions& drawOptions) noexcept
-        : m_programId(programId),
-        m_vaoId{ vaoId },
-        m_priority( priority ),
-        m_mode{ drawOptions.m_mode },
-        m_patchVertices{ drawOptions.m_patchVertices },
-        m_type{ drawOptions.m_type },
-        m_renderBack{ drawOptions.m_renderBack },
-        m_wireframe{ drawOptions.m_wireframe },
-        m_tessellation{ drawOptions.m_tessellation },
-        m_kindBits{ drawOptions.m_kindBits }
+        : m_program(program),
+        m_vao{ vao },
+        m_priority( -priority ),
+        m_drawOptions{ drawOptions }
     {
+    }
+
+    bool BatchKey::operator<(const BatchKey& o) const noexcept
+    {
+        return
+            std::tie(  m_priority,   m_program->m_id,   m_vao->m_id, m_drawOptions) <
+            std::tie(o.m_priority, o.m_program->m_id, o.m_vao->m_id, o.m_drawOptions);
+        //return tie ? true : (m_drawOptions < o.m_drawOptions);
     }
 }

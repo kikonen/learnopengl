@@ -39,8 +39,12 @@ namespace mesh {
     std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
-            "<MODEL: id={}, name={}>",
-            m_id, m_name);
+            "<MODEL: id={}, name={}, indeces={}, vertices={}, bones={}>",
+            m_id,
+            m_name,
+            m_indeces.size(),
+            m_vertices.size(),
+            m_vertexBones.size());
     }
 
     uint32_t ModelMesh::getBaseVertex() const noexcept {
@@ -88,6 +92,8 @@ namespace mesh {
         backend::DrawOptions& drawOptions)
     {
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
+        drawOptions.m_mode = drawOptions.m_tessellation
+            ? backend::DrawOptions::Mode::patches
+            : backend::DrawOptions::Mode::triangles;
     }
 }

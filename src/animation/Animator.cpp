@@ -88,6 +88,8 @@ namespace animation {
             // NOTE KI skip nodes not affecting animation
             if (!rigNode.m_required) continue;
 
+            //if (hitCount >= 1) break;
+
             if (rigNode.m_index >= MAX_NODES) throw "too many bones";
             //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             const auto* bone = rig.m_boneContainer.getNode(rigNode.m_boneIndex);
@@ -111,18 +113,36 @@ namespace animation {
             parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
             const auto& globalTransform = parentTransforms[rigNode.m_index + 1];
 
+            //KI_INFO_OUT(fmt::format(
+            //    "{},{} - {}\npare: {}\nnode: {}\nglob: {}\noffs: {}\npale: {}\n",
+            //    rigNode.m_parentIndex,
+            //    rigNode.m_index,
+            //    rigNode.m_name,
+            //    parentTransforms[rigNode.m_parentIndex + 1],
+            //    nodeTransform,
+            //    globalTransform,
+            //    bone ? bone->m_offsetMatrix : glm::mat4{ 0.f },
+            //    bone ? globalTransform * bone->m_offsetMatrix : glm::mat4{ 0.f }));
+
             //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
-                //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
-                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
-                //hitCount++;
+                hitMiss.push_back(fmt::format("[+{}.{}.{}]",
+                    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+
+                hitCount++;
+
+                if (channel) {
+                    channel->interpolate(animationTimeTicks);
+                }
+
                 // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
                 palette[bone->m_index].m_transform = globalTransform * bone->m_offsetMatrix;
+
             }
             else {
-                //hitMiss.push_back(fmt::format("[-{}.{}.{}]",
-                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
-                //missCount++;
+                hitMiss.push_back(fmt::format("[-{}.{}.{}]",
+                    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                missCount++;
             }
         }
 
