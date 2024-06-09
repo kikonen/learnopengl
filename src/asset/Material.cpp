@@ -258,11 +258,11 @@ void Material::loadChannelTexture(
     int validCount = 0;
     for (auto sourceTypes : compoundTypes) {
         const auto& it = m_boundTextures.find(sourceTypes);
-        if (it == m_boundTextures.end()) continue;
-        auto& bound = it->second;
-        if (bound.m_texture) {
-            sourceTextures.push_back((ImageTexture*)bound.m_texture);
-            bound.m_channelPart = true;
+
+        auto* bound = it != m_boundTextures.end() ? &it->second : nullptr;
+        if (bound) {
+            sourceTextures.push_back((ImageTexture*)bound->m_texture);
+            bound->m_channelPart = true;
             validCount++;
         }
         else {
@@ -336,8 +336,8 @@ const MaterialSSBO Material::toSSBO() const
 
     return {
         kd,
-
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
+
         hasBoundTex(TextureType::metal_channel_map) ? WHITE_RGBA : metal,
 
         getTexHandle(TextureType::diffuse, whitePx),
