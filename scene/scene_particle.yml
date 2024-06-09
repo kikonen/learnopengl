@@ -33,6 +33,8 @@ entities:
         - name: fps_text
           kd: [0.0, 0.8, 0.0, 1.0]
           xmetal: [1.0, 0.0, 0, 1]
+          alpha: true
+          render_back: true
     text:
       font: fps_font
       text: "- fps"
@@ -42,8 +44,6 @@ entities:
     scale: 0.01
     render_flags:
       billboard: true
-      alpha: true
-      render_back: true
   - id: player_camera
     parent_id: player
     type: origo
@@ -143,8 +143,7 @@ entities:
       z_step: -10
   - id: rock
     program: g_tex
-    render_flags:
-      render_back: true
+    xrender_flags:
     models:
       - mesh: [rock2, rock]
         level: 0
@@ -181,6 +180,7 @@ entities:
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [1, 0, 0]
           tiling: 4
+          render_back: true
     lods:
       - distance: 20
       - distance: 40
