@@ -66,10 +66,14 @@ entities:
     parent_id: player
     type: text
     model:
+      flags:
+        billboard: true
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
     text:
       font: fps_font
       text: "- fps"
@@ -77,10 +81,7 @@ entities:
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
-    render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
+    xrender_flags:
   - name: Player Camera
     parent_id: player
     type: origo
@@ -277,75 +278,75 @@ entities:
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend_oit: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - id: door_1
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_NN_05h.FBX
       material:
         name: door_1_pbr
         map_pbr: door_1_pbr
+        alpha: true
+        blend_oit: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - name: Window 1_1
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
+        alpha: true
+        blend_oit: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 8.0, 0.0]
     base_rotation: [-90.0, -45.0, 0.0]
     scale: 4
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - name: Window 2
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend_oit: true
     program: g_tex
     shadow_program: simple_depth
     pos: [7.0, 14.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - id: stained_windows_{t}
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend_oit: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 20.0, 10.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
     repeat:
       x_count: 10
       x_step: 2
@@ -365,10 +366,10 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [-5.0, 13.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 3
       x_step: 4
@@ -383,11 +384,11 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [5.0, 13.5, 14.0]
     rotation: [0, 180, 0]
-    render_flags:
-      render_back: true
+    xrender_flags:
   - id: wood_wall_{t}
     model:
       mesh: quad
@@ -396,10 +397,10 @@ entities:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
     program: g_tex
     pos: [-3.0, 13.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
@@ -411,13 +412,13 @@ entities:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
       material_modifier:
         map_bump: textures/wood_1024_normal.png
         parallax_depth: 0.02
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
@@ -431,13 +432,13 @@ entities:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
     script_file: scripts/anim_mirror
   - name: Big mirror 2
@@ -450,13 +451,13 @@ entities:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
     script_file: scripts/anim_mirror
   - name: Airboat
@@ -487,6 +488,9 @@ entities:
         - name: wyvern_pbr
           alias: M_Wyvern
           map_pbr: wyvern_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
       animations:
         - name: fire
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
@@ -500,9 +504,6 @@ entities:
     scale: 2
     base_scale: 0.01
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -524,20 +525,21 @@ entities:
       mesh: bunny
       material_modifier:
         reflection: 0.7
+        render_back: true
     program: g_tex
     pos: [-15.0, 14.0, 5.0]
     scale: 20.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Dragon
     model:
       mesh: dragon
+      material_modifier:
+        render_back: true
     program: g_tex
     pos: [-15.0, 25.0, 0.0]
     scale: 30.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - id: shuttle
     model:
@@ -573,11 +575,11 @@ entities:
         xrefraction: 0.05
         xrefraction_ratio: [1.0, 1.52]
         tiling: 6
+        render_back: true
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
     scale: 1.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     selected: false
     particle:
       material:
@@ -596,12 +598,12 @@ entities:
         kd: [0.160, 0.578, 0.168, 1.0]
         map_pbr: textures/Plastic 01 [4K]
         xreflection: 0.4
+        render_back: false
     program: g_tex
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      render_back: false
+    xrender_flags:
     selected: false
   - xname: Cow fur
     model:
@@ -614,24 +616,24 @@ entities:
         tiling: 1
         layers: 25
         layers_depth: 0.2
+        alpha: true
     program: g_fur
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      alpha: true
+    xrender_flags:
   - name: Cow 2
     model:
       mesh: cow
       material_modifier:
         xreflection: 0.1
         map_pbr: textures/Plastic 01 [4K]
+        render_back: false
     program: g_tex
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      render_back: false
+    xrender_flags:
     selected: false
   - name: Ball
     model:
@@ -750,6 +752,8 @@ entities:
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
+        alpha: true
+        blend: true
     program: ball_effect
     program_definitions:
       effect_plasma: 1
@@ -757,8 +761,6 @@ entities:
     pos: [0, 0, 0]
     scale: 2
     render_flags:
-      alpha: true
-      blend: true
       effect: true
       no_select: true
       no_shadow: true
@@ -793,12 +795,13 @@ entities:
   - id: blend_cubes_{c}
     model:
       mesh: rubik_cube.fbx
+      material_modifier:
+        alpha: true
+        blend_oit: true
+        render_back: true
     program: g_tex
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
-      render_back: true
+    xrender_flags:
     script_file: scripts/anim_four_cubes
     clones:
       - pos: [-5.0, 30.0, -5.0]
@@ -822,13 +825,13 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     priority: -5
     program: g_water
     pos: [0, 9.5, -10]
     scale: 30
-    render_flags:
+    xrender_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 2
@@ -950,12 +953,12 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [-1072, 0.0, -772]
     scale: 128
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 8
@@ -972,12 +975,12 @@ entities:
         name: sea_floor
         map_kd: textures/tiles_1024.png
         tiling: 2
+        render_back: true
     program: g_tex
     pos: [-1072, -70.0, -772]
     scale: 128
     render_flags:
       no_shadow: true
-      render_back: true
     repeat:
       x_count: 8
       y_count: 1
@@ -1079,10 +1082,10 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [15, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Scale 2
     model:
@@ -1095,11 +1098,11 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     scale: 2
     pos: [10, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Scale 3
     model:
@@ -1112,11 +1115,11 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     scale: 3
     pos: [5, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - id: palm_tree_forest_{t}
     model:
@@ -1130,6 +1133,7 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
           map_bump: textures/coconut palm leaf_Normal.png
+          render_back: true
         - name: palm_trunk
           alias: Tree_2Mat
           map_kd: textures/palm02.png
@@ -1138,7 +1142,6 @@ entities:
     program: g_tex
     pos: [350, 10.0, 150.0]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -1161,12 +1164,12 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/leaf maple.png
           map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
     priority: -17
     program: g_tex
     pos: [250, 10.0, 150.0]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -1184,13 +1187,13 @@ entities:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     priority: -15
     pos: [35, 11.5, 60.0]
     render_flags:
       dynamic_bounds: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -1220,10 +1223,10 @@ entities:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
     program: g_tex
     clone_position_offset: [0, 40, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
     clones:
@@ -1289,10 +1292,10 @@ entities:
         xxmap_kd: textures/Marble White_VH_512.PNG
         map_kd: textures/tiles_1024.png
         tiling: 8
+        alpha: true
     program: g_tex
     scale: 100
     render_flags:
-      alpha: true
       no_shadow: true
     pos: [0, -400, 0]
     rot: [270, 0, 0]
@@ -1310,10 +1313,10 @@ entities:
         xxmap_kd: textures/Marble White_VH_512.PNG
         map_kd: textures/tiles_1024.png
         tiling: 8
+        alpha: true
     program: g_tex
     scale: 100
     render_flags:
-      alpha: true
       no_shadow: true
     pos: [0, 400, 0]
     rot: [90, 0, 0]

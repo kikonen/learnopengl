@@ -309,6 +309,7 @@ namespace render {
         unsigned int kindBits,
         Node& node)
     {
+        if (type->m_entityType == EntityType::origo) return;
         if (type->m_flags.invisible || !node.m_visible) return;
 
         node.updateVAO(ctx);

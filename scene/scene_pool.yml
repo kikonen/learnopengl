@@ -76,13 +76,13 @@ entities:
           reflection: 0.5
           refraction: 0.05
           refraction_ratio: [1.0, 1.52]
+          render_back: true
     program: g_mirror
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     scale: 10.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
   - name: Pool floor
     model:
@@ -115,12 +115,12 @@ entities:
           map_bump: textures/water_surface_512_normal.png
           map_dudv: textures/waterDUDV_512.png
           tiling: 2
+          render_back: true
     program: g_water
     pos: [0, 9.0, -10]
     scale: 30
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 2
@@ -161,12 +161,12 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/leaf maple.png
           map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 70]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.05
     generator:
@@ -210,7 +210,6 @@ entities:
     xxpos: [0, 0, 0]
     render_flags:
       pre_depth: true
-      xxwireframe: true
       xxno_shadow: true
       tessellation: true
       xxrender_back: true
@@ -238,6 +237,8 @@ entities:
         - name: grass_bush_01_pbr
           alias: M_atlas_grass_01
           map_pbr: grass_01_pbr
+          alpha: true
+          render_back: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-100.0, 0.0, 140.0]
@@ -246,8 +247,6 @@ entities:
     scale: 3
     base_scale: 0.01
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     repeat:
       x_count: 30
@@ -286,12 +285,12 @@ entities:
           map_bump: textures/water_surface_512_normal.png
           map_dudv: textures/waterDUDV_512.png
           tiling: 2
+          render_back: true
     program: g_water
     pos: [160, 9.0, 20]
     scale: 60
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     xxscript_file: scripts/cycle_water
   - name: Pool side - SINGLE
@@ -325,6 +324,7 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
           map_bump: textures/coconut palm leaf_Normal.png
+          render_back: true
         - name: palm_trunk
           alias: Tree_2Mat
           map_kd: textures/palm02.png
@@ -333,7 +333,6 @@ entities:
     instanced: true
     pos: [240.0, 14, 70]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     generator:
