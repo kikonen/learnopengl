@@ -393,12 +393,17 @@ namespace loader {
                 }
                 auto& materialData = data.materials[0];
                 materialData.aliasName = "*";
-                materialData.modify = true;
                 loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
             } else {
                 reportUnknown("model_entry", k, v);
             }
         }
+
+        // NOTE KI ensure assigns are before modifiers
+        std::sort(
+            data.materials.begin(),
+            data.materials.end(),
+            [](auto& a, auto& b) { return a.modifier < b.modifier; });
 
         for (auto& materialData : data.materials) {
             loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);

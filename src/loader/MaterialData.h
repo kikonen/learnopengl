@@ -12,7 +12,7 @@ namespace loader {
     struct MaterialData
     {
         bool enabled{ false };
-        bool modify{ false };
+        bool modifier{ false };
         std::string aliasName;
         std::string materialName;
 

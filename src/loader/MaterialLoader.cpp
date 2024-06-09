@@ -150,6 +150,7 @@ namespace loader {
         MaterialData& data) const
     {
         data.enabled = true;
+        data.modifier = true;
         data.material.m_name = "<modifier>";
 
         loadMaterial(node, data);
@@ -186,7 +187,7 @@ namespace loader {
                 data.aliasName = readString(v);
             }
             else if (k == "modify") {
-                data.modify = readBool(v);
+                data.modifier = readBool(v);
             }
             else if (k == "ns") {
                 material.ns = readFloat(v);
