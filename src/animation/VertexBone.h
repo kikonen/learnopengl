@@ -15,8 +15,9 @@ namespace animation {
                 return;
 
             for (int i = 0; i < 4; i++) {
-                if (m_boneIds[i] == boneId)
-                    return;
+                // NOTE KI boneId *CAN* be zero
+                //if (m_boneIds[i] == boneId)
+                //    return;
 
                 if (m_weights[i] == 0.f) {
                     m_boneIds[i] = boneId;
