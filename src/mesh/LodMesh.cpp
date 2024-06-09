@@ -61,12 +61,12 @@ namespace mesh {
         m_vao = o.m_vao;
         m_meshIndex = o.m_meshIndex;
 
-        o.m_program = o.m_program;
-        o.m_shadowProgram = o.m_shadowProgram;
-        o.m_preDepthProgram = o.m_preDepthProgram;
-        o.m_selectionProgram = o.m_selectionProgram;
-        o.m_idProgram = o.m_idProgram;
-        o.m_drawOptions = o.m_drawOptions;
+        m_program = o.m_program;
+        m_shadowProgram = o.m_shadowProgram;
+        m_preDepthProgram = o.m_preDepthProgram;
+        m_selectionProgram = o.m_selectionProgram;
+        m_idProgram = o.m_idProgram;
+        m_drawOptions = o.m_drawOptions;
 
         m_flags = o.m_flags;
 
