@@ -27,6 +27,8 @@ entities:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
     text:
       font: fps_font
       text: "- fps"
@@ -36,8 +38,6 @@ entities:
     scale: 0.0025
     render_flags:
       billboard: true
-      alpha: true
-      render_back: true
   - id: player_camera
     parent_id: player
     type: origo
@@ -75,7 +75,6 @@ entities:
     parent_id: planet-origo
     program: g_tex
     render_flags:
-      render_back: true
       no_shadow: true
     pos: [0, 0, 0]
     models:
@@ -109,11 +108,14 @@ entities:
           tiling: 4
       - mesh: [rock2, rock_lod_4]
         level: 4
+        flags:
+          billboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [1, 0, 0]
           tiling: 4
+          render_back: true
     lods:
       - distance: 20
       - distance: 40

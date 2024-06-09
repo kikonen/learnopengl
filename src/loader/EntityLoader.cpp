@@ -125,7 +125,7 @@ namespace loader {
             else if (k == "model") {
                 if (data.type == EntityType::none) {
                     auto& meshData = data.meshes.emplace_back();
-                    loadMesh(v, meshData, loaders);
+                    loaders.m_meshLoader.loadMesh(v, meshData, loaders);
                 }
             }
             else if (k == "program") {
@@ -252,10 +252,10 @@ namespace loader {
                 loaders.m_scriptLoader.loadScript(v, data.script);
             }
             else if (k == "models" || k == "meshes") {
-                loadMeshes(v, data.meshes, loaders);
+                loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
             }
             else if (k == "lods") {
-                loadLods(v, data.lods);
+                loaders.m_meshLoader.loadLods(v, data.lods);
             }
             else {
                 reportUnknown("entity_entry", k, v);
@@ -323,157 +323,6 @@ namespace loader {
             }
             else {
                 reportUnknown("text_entry", k, v);
-            }
-        }
-    }
-
-    void EntityLoader::loadMeshes(
-        const loader::DocNode& node,
-        std::vector<MeshData>& meshes,
-        Loaders& loaders) const
-    {
-        int level = 0;
-        for (const auto& entry : node.getNodes()) {
-            auto& data = meshes.emplace_back();
-            data.level = level;
-            loadMesh(entry, data, loaders);
-            level++;
-        }
-    }
-
-    void EntityLoader::loadMesh(
-        const loader::DocNode& node,
-        MeshData& data,
-        Loaders& loaders) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& key = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            const auto k = util::toLower(key);
-
-            if (k == "level") {
-                data.level = readInt(v);
-            }
-            else if (k == "mesh") {
-                if (v.isSequence()) {
-                    auto& nodes = v.getNodes();
-                    data.meshPath = util::joinPath(readString(nodes[0]), readString(nodes[1]));
-                }
-                else {
-                    data.meshPath = readString(v);
-                }
-
-                if (data.baseDir.empty()) {
-                    std::filesystem::path path{ data.meshPath };
-                    data.baseDir = path.parent_path().string();
-                }
-            }
-            else if (k == "base_dir") {
-                data.baseDir = readString(v);
-            }
-            else if (k == "animations") {
-                loadAnimations(v, data.animations);
-            }
-            else if (k == "materials") {
-                loaders.m_materialLoader.loadMaterials(v, data.materials);
-            }
-            else if (k == "material") {
-                if (data.materials.empty()) {
-                    data.materials.emplace_back();
-                }
-                auto& materialData = data.materials[0];
-                materialData.aliasName = "*";
-                loaders.m_materialLoader.loadMaterial(v, materialData);
-                materialData.materialName = materialData.material.m_name;
-            }
-            else if (k == "material_modifier") {
-                if (data.materials.empty()) {
-                    data.materials.emplace_back();
-                }
-                auto& materialData = data.materials[0];
-                materialData.aliasName = "*";
-                loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
-            } else {
-                reportUnknown("model_entry", k, v);
-            }
-        }
-
-        // NOTE KI ensure assigns are before modifiers
-        std::sort(
-            data.materials.begin(),
-            data.materials.end(),
-            [](auto& a, auto& b) { return a.modifier < b.modifier; });
-
-        for (auto& materialData : data.materials) {
-            loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);
-            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
-        }
-    }
-
-    void EntityLoader::loadLods(
-        const loader::DocNode& node,
-        std::vector<LodData>& lods) const
-    {
-        int level = 0;
-        for (const auto& entry : node.getNodes()) {
-            LodData& data = lods.emplace_back();
-            data.level = level;
-            loadLod(entry, data);
-            level++;
-        }
-    }
-
-    void EntityLoader::loadLod(
-        const loader::DocNode& node,
-        LodData& data) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& key = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            const auto k = util::toLower(key);
-
-            if (k == "level") {
-                data.level = readInt(v);
-            }
-            else if (k == "distance") {
-                data.distance = readFloat(v);
-            }
-            else {
-                reportUnknown("lod_entry", k, v);
-            }
-        }
-    }
-
-    void EntityLoader::loadAnimations(
-        const loader::DocNode& node,
-        std::vector<AnimationData>& animations) const
-    {
-        for (const auto& entry : node.getNodes()) {
-            AnimationData& data = animations.emplace_back();
-            loadAnimation(entry, data);
-        }
-    }
-
-    void EntityLoader::loadAnimation(
-        const loader::DocNode& node,
-        AnimationData& data) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& key = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            const auto k = util::toLower(key);
-
-            if (k == "name") {
-                data.name = readString(v);
-            }
-            else if (k == "path") {
-                data.path = readString(v);
-            }
-            else {
-                reportUnknown("animation_entry", k, v);
             }
         }
     }

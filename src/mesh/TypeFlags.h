@@ -2,14 +2,6 @@
 
 namespace mesh {
     struct TypeFlags {
-        //bool alpha : 1 {false};
-        //bool blend : 1 {false};
-        //bool renderBack : 1 {false};
-        //bool wireframe : 1 {false};
-
-        //bool gbuffer : 1 {false};
-        //bool blendOIT : 1 {false};
-
         bool preDepth : 1 {false};
         bool useBones : 1 {false};
         bool useBonesDebug : 1 {false};
@@ -27,8 +19,6 @@ namespace mesh {
         bool cubeMap : 1 {false};
         bool effect : 1 {false};
         bool skybox : 1 {false};
-
-        bool billboard : 1 {false};
 
         bool noShadow : 1 {false};
         bool noSelect : 1 {false};

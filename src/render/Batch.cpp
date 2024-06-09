@@ -24,6 +24,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
+#include "mesh/InstanceFlags.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -343,6 +344,7 @@ namespace render {
                         instance.u_entityIndex = lodEntry.m_entityIndex;
                         instance.u_meshIndex = lodEntry.m_meshIndex;
                         instance.u_materialIndex = lod->m_materialIndex;
+                        instance.u_shapeIndex = key.m_drawOptions.m_flags;
                     }
                 }
             }

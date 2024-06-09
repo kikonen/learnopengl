@@ -40,6 +40,8 @@ namespace backend {
 
         bool m_tessellation : 1 {false};
 
+        uint8_t m_flags : 3 { 0 };
+
         uint8_t m_kindBits : 3 { 0 };
 
         GLuint toMode() const noexcept
@@ -54,6 +56,8 @@ namespace backend {
             case Mode::triangle_strip:
                 return GL_TRIANGLE_STRIP;
             }
+
+            return 0;
         }
 
         inline bool isKind(

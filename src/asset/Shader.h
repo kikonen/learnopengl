@@ -43,7 +43,7 @@ const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
 const std::string DEF_USE_BLEND_OIT{ "USE_BLEND_OIT" };
 
-const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
+//const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
 
 const std::string DEF_USE_TBN{ "USE_TBN" };
 const std::string DEF_USE_DUDV_TEX{ "USE_DUDV_TEX" };

@@ -161,9 +161,6 @@ namespace mesh {
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
         ki::size_t_entity_flags flags = 0;
 
-        if (m_flags.billboard) {
-            flags |= ENTITY_BILLBOARD_BIT;
-        }
         if (m_flags.noFrustum) {
             flags |= ENTITY_NO_FRUSTUM_BIT;
         }

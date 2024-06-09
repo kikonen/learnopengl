@@ -47,8 +47,7 @@ entities:
       - pos: [5.0, 2.0, 5.0]
   - id: rock
     program: g_tex
-    render_flags:
-      render_back: true
+    xrender_flags:
     models:
       - mesh: rock2/rock
         level: 0
@@ -80,17 +79,20 @@ entities:
           tiling: 4
       - mesh: rock2/rock_lod_4
         level: 4
+        flags:
+          billboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [1, 0, 0]
           tiling: 4
+          render_back: true
     lods:
       - distance: 20
+      - distance: 30
       - distance: 40
+      - distance: 50
       - distance: 60
-      - distance: 80
-      - distance: 100
     pos: [0, 2, -10]
   - id: wooden_floor
     model:

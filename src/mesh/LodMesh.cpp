@@ -19,7 +19,7 @@
 #include "registry/MaterialRegistry.h"
 
 #include "Mesh.h"
-
+#include "InstanceFlags.h"
 
 namespace {
     const std::vector<std::regex> lodMatchers{
@@ -128,6 +128,8 @@ namespace mesh {
             m_material = std::make_unique<Material>();
         }
         *m_material = src;
+
+        setupDrawOptions();
     }
 
     void LodMesh::setupDrawOptions()
@@ -214,6 +216,8 @@ namespace mesh {
             m_vao = m_mesh->prepareRT(ctx);
             m_mesh->prepareLod(*this);
             m_mesh->prepareDrawOptions(m_drawOptions);
+
+            if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
 
         if (m_program) {

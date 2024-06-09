@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "FlagContainer.h"
+
 #include "AnimationData.h"
 #include "MaterialData.h"
 
@@ -14,5 +16,7 @@ namespace loader {
         std::string meshPath;
         std::vector<MaterialData> materials;
         std::vector<AnimationData> animations;
+
+        loader::FlagContainer meshFlags;
     };
 }

@@ -596,10 +596,6 @@ namespace loader {
                 usePreDepth = false;
             }
 
-            //if (type->m_entityType == EntityType::billboard) {
-            //    definitions[DEF_USE_BILLBOARD] = "1";
-            //}
-
             if (useTBN) {
                 definitions[DEF_USE_TBN] = "1";
             }
@@ -829,6 +825,7 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
+                assignMeshFlags(meshData, lodMesh);
                 resolveMaterials(type, lodMesh, entityData, meshData);
                 resolveProgram(type, lodMesh, entityData);
             }
@@ -1014,7 +1011,6 @@ namespace loader {
         flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
 
         flags.effect = container.getFlag("effect", flags.effect);
-        flags.billboard = container.getFlag("billboard", flags.billboard);
         flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
         //////////////////////////////////////////////////////////
@@ -1051,6 +1047,16 @@ namespace loader {
         }
     }
 
+    void SceneLoader::assignMeshFlags(
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
+    {
+        const auto& container = meshData.meshFlags;
+        auto& flags = lodMesh.m_flags;
+
+        flags.billboard = container.getFlag("billboard", flags.billboard);
+    }
+
     void SceneLoader::assignNodeFlags(
         const EntityData& entityData,
         pool::NodeHandle nodeHandle)
@@ -1058,7 +1064,7 @@ namespace loader {
         auto* node = nodeHandle.toNode();
 
         const auto& container = entityData.nodeFlags;
-        NodeFlags& flags = node->m_flags;
+        auto& flags = node->m_flags;
     }
 
     void SceneLoader::loadMeta(

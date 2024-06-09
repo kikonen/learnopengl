@@ -78,7 +78,7 @@ void main() {
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
-  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
+  if ((instance.u_shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = vec3(entity.u_worldScale[0] * scale,
                             entity.u_worldScale[1] * scale,

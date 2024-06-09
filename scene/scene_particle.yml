@@ -175,6 +175,8 @@ entities:
           tiling: 4
       - mesh: [rock2, rock_lod_4]
         level: 4
+        flags:
+          billboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png

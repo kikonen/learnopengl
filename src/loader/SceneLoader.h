@@ -112,6 +112,10 @@ namespace loader {
             const EntityData& entityData,
             pool::TypeHandle typeHandle);
 
+        void assignMeshFlags(
+            const MeshData& meshData,
+            mesh::LodMesh& lodMesh);
+
         void assignNodeFlags(
             const EntityData& entityData,
             pool::NodeHandle nodeHandle);
