@@ -61,13 +61,13 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/leaf maple.png
           map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
     program: g_tex
     priority: 1
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.02
     repeat:
@@ -163,12 +163,13 @@ entities:
         map_kd: textures/wood_1024.png
         xreflection: 0.4
         metal: [1, 0, 0, 1]
+        render_back: true
     program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
     render_flags:
-      render_back: true
+      x: false
     repeat:
       x_count: 1
       x_step: 1
@@ -179,9 +180,9 @@ entities:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 60
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100

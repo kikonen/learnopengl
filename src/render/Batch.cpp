@@ -193,7 +193,7 @@ namespace render {
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
-                    if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
+                    //if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
 
                     auto* program = programSelector(lodMesh);
                     if (!program) continue;
@@ -237,7 +237,7 @@ namespace render {
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
-                    if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
+                    //if (!lodMesh.m_drawOptions.isKind(kindBits)) continue;
 
                     auto* program = programSelector(lodMesh);
                     if (!program) continue;

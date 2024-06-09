@@ -23,13 +23,7 @@ namespace render {
             int programId,
             int vaoId,
             int priority,
-            const backend::DrawOptions& drawOptions) noexcept
-            : m_programId(programId),
-            m_vaoId{ vaoId },
-            m_priority(priority),
-            m_renderBack(drawOptions.m_renderBack),
-            m_wireframe(drawOptions.m_wireframe)
-        {};
+            const backend::DrawOptions& drawOptions) noexcept;
 
         std::string str() const noexcept
         {
@@ -41,15 +35,21 @@ namespace render {
         bool operator<(const BatchKey& o) const noexcept {
             // NOTE KI renderBack & wireframe goes into separate render always due to GL state
             // => reduce state changes via sorting
-            return std::tie(m_priority, m_programId, m_vaoId, m_renderBack, m_wireframe) <
-                std::tie(o.m_priority, o.m_programId, o.m_vaoId, o.m_renderBack, o.m_wireframe);
+            return std::tie(m_priority,     m_programId,   m_vaoId,   m_mode,   m_patchVertices,   m_type,   m_renderBack,   m_wireframe,   m_tessellation,   m_kindBits) <
+                   std::tie(o.m_priority, o.m_programId, o.m_vaoId, o.m_mode, o.m_patchVertices, o.m_type, o.m_renderBack, o.m_wireframe, o.m_tessellation, o.m_kindBits);
         }
 
         const int m_priority;
         const int m_programId;
         const int m_vaoId;
-        const bool m_renderBack;
-        const bool m_wireframe;
+
+        const uint8_t m_mode;
+        const uint8_t m_patchVertices;
+        const backend::DrawOptions::Type m_type : 2;
+        const bool m_renderBack : 1;
+        const bool m_wireframe : 1;
+        const bool m_tessellation : 1;
+        const unsigned int m_kindBits : 3;
     };
 
     struct LodKey {

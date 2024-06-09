@@ -48,10 +48,10 @@ entities:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 60
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
   - xid: object
@@ -66,6 +66,8 @@ entities:
         map_kd: skaterMaleA.png
         metal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -73,8 +75,6 @@ entities:
     base_rotation: [180, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -84,6 +84,8 @@ entities:
       material:
         name: wolf_pbr
         map_pbr: wolf_pbr
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/ANIM_Wolf_Walk_RM.FBX
@@ -94,8 +96,6 @@ entities:
     base_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -112,6 +112,8 @@ entities:
         map_pbr: lion_skin_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/Lion@Walk.FBX
@@ -128,8 +130,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -153,6 +153,8 @@ entities:
         map_pbr: deinodonte_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: idle
           path: anim/Deinodonte@IdleBreathe.FBX
@@ -167,8 +169,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -186,6 +186,8 @@ entities:
         map_pbr: elf_female_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/Elf Animations.FBX
@@ -196,8 +198,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -214,12 +214,21 @@ entities:
         - name: scavenger_body_pbr
           alias: "Material #13"
           map_pbr: scavenger_body_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
       xanimations:
         - name: walk
           path: Scavenger.fbx
@@ -231,9 +240,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -250,6 +256,8 @@ entities:
         map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       xanimations:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
@@ -261,8 +269,6 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
