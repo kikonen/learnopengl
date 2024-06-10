@@ -244,6 +244,7 @@ namespace render {
         {
             state.setStencil(kigl::GLStencilMode::only_non_zero());
             state.setEnabled(GL_DEPTH_TEST, false);
+            state.polygonFrontAndBack(GL_FILL);
 
             primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
