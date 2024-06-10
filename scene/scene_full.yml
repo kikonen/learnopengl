@@ -108,11 +108,11 @@ entities:
       mesh: light
       material_modifier:
         kd: [0.0, 0.7, 0.0, 1.0]
+        program: ball_effect
+        program_definitions:
+          effect_sun: 1
     pos: [0, 0, 600]
     scale: 20
-    program: ball_effect
-    program_definitions:
-      effect_sun: 1
     render_flags:
       effect: true
       no_shadow: true
@@ -754,9 +754,9 @@ entities:
         map_kd: textures/noise_256.png
         alpha: true
         blend: true
-    program: ball_effect
-    program_definitions:
-      effect_plasma: 1
+        program: ball_effect
+        program_definitions:
+          effect_plasma: 1
     #pos: [-5.0, 25.0, 5.0]
     pos: [0, 0, 0]
     scale: 2

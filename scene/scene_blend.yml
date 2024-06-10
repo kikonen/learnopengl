@@ -91,9 +91,9 @@ entities:
         map_kd: textures/noise_256.png
         alpha: true
         blend: true
-    program: ball_effect
-    program_definitions:
-      effect_plasma: 1
+        program: ball_effect
+        program_definitions:
+          effect_plasma: 1
     pos: [0, 4, -8]
     scale: 2
     render_flags:
