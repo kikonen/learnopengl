@@ -386,10 +386,11 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && (drawOptions.m_blend || drawOptions.m_blendOIT) && drawRange.m_allowBlend;
+        const bool blend = !wireframe && drawOptions.m_blend && drawRange.m_allowBlend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            if (!drawOptions.m_blendOIT) {
+            // NOTE KI no blend mode with OIT blend
+            if (!drawOptions.m_gbuffer) {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

@@ -66,7 +66,7 @@ namespace render {
         const RenderContext& ctx,
         const mesh::MeshType* type,
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-        unsigned int kindBits,
+        uint8_t kindBits,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
@@ -91,7 +91,7 @@ namespace render {
             if (lodMesh.m_lodLevel != lodLevel) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
-            //if (!drawOptions.isKind(kindBits)) continue;
+            if (!drawOptions.isKind(kindBits)) continue;
             if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
             auto* program = programSelector(lodMesh);
@@ -131,7 +131,7 @@ namespace render {
         const RenderContext& ctx,
         const mesh::MeshType* type,
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-        unsigned int kindBits,
+        uint8_t kindBits,
         std::span<const Snapshot> snapshots,
         uint32_t entityBaseIndex) noexcept
     {
@@ -192,7 +192,7 @@ namespace render {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
-                    //if (!drawOptions.isKind(kindBits)) continue;
+                    if (!drawOptions.isKind(kindBits)) continue;
                     if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
                     auto* program = programSelector(lodMesh);
@@ -232,7 +232,7 @@ namespace render {
                     if (lodMesh.m_lodLevel != lodLevel) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
-                    //if (!drawOptions.isKind(kindBits)) continue;
+                    if (!drawOptions.isKind(kindBits)) continue;
                     if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
                     auto* program = programSelector(lodMesh);
@@ -306,7 +306,7 @@ namespace render {
         const RenderContext& ctx,
         mesh::MeshType* type,
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-        unsigned int kindBits,
+        uint8_t kindBits,
         Node& node)
     {
         if (type->m_entityType == EntityType::origo) return;

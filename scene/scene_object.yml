@@ -57,6 +57,9 @@ entities:
   - id: object
     model:
       mesh: texture_cube_4/texture_cube_4.fbx
+      material_modifier:
+        xrender_back: true
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]
@@ -65,8 +68,6 @@ entities:
     scale: 1
     base_scale: 0.01
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true

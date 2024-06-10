@@ -279,7 +279,7 @@ entities:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
         alpha: true
-        blend_oit: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 10.0, -5.0]
@@ -294,7 +294,7 @@ entities:
         name: door_1_pbr
         map_pbr: door_1_pbr
         alpha: true
-        blend_oit: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-5.0, 10.0, -5.0]
@@ -309,7 +309,7 @@ entities:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
         alpha: true
-        blend_oit: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 8.0, 0.0]
@@ -324,7 +324,7 @@ entities:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
         alpha: true
-        blend_oit: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [7.0, 14.0, -8.0]
@@ -339,7 +339,7 @@ entities:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
         alpha: true
-        blend_oit: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 20.0, 10.0]
@@ -797,7 +797,7 @@ entities:
       mesh: rubik_cube.fbx
       material_modifier:
         alpha: true
-        blend_oit: true
+        blend: true
         render_back: true
     program: g_tex
     base_scale: 0.01

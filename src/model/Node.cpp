@@ -139,7 +139,7 @@ void Node::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
     const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-    unsigned int kindBits,
+    uint8_t kindBits,
     render::Batch& batch) noexcept
 {
     if (m_instancer) {

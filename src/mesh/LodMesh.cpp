@@ -138,7 +138,6 @@ namespace mesh {
         m_drawOptions.m_blend = m_material->blend;
 
         m_drawOptions.m_gbuffer = m_material->gbuffer;
-        m_drawOptions.m_blendOIT = m_material->blendOIT;
 
         m_drawOptions.m_renderBack = m_material->renderBack;
         m_drawOptions.m_wireframe = m_material->wireframe;
@@ -151,6 +150,7 @@ namespace mesh {
         }
         if (m_drawOptions.m_kindBits == 0) {
             m_drawOptions.m_kindBits = render::KIND_SOLID;
+            m_drawOptions.m_solid = true;
         }
     }
 

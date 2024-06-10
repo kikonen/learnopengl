@@ -41,7 +41,6 @@ const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 const std::string DEF_USE_BLEND{ "USE_BLEND" };
-const std::string DEF_USE_BLEND_OIT{ "USE_BLEND_OIT" };
 
 //const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
 

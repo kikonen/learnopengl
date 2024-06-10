@@ -48,7 +48,7 @@ namespace render {
             const RenderContext& ctx,
             const mesh::MeshType* type,
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-            unsigned int kindBits,
+            uint8_t kindBits,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
@@ -63,7 +63,7 @@ namespace render {
             const RenderContext& ctx,
             const mesh::MeshType* type,
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-            unsigned int kindBits,
+            uint8_t kindBits,
             std::span<const Snapshot> snapshots,
             uint32_t entityBaseIndex) noexcept;
 
@@ -78,7 +78,7 @@ namespace render {
             const RenderContext& ctx,
             mesh::MeshType* type,
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
-            unsigned int kindBits,
+            uint8_t kindBits,
             Node& node);
 
         bool isFlushed() const noexcept;

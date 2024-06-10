@@ -28,10 +28,14 @@ entities:
     parent_id: player
     type: text
     model:
+      flags:
+        billboard: true
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
     text:
       font: fps_font
       text: "- fps"
@@ -39,10 +43,7 @@ entities:
     shadow_program: shadow_font_render
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
-    render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
+    xrender_flags:
   - id: player_camera
     parent_id: player
     type: origo
@@ -59,6 +60,9 @@ entities:
         name: metal
         kd: [0.8, 0.0, 0.0, 1.0]
         metal: [1.0, 0.0, 0, 1]
+        alpha: true
+        xblend: true
+        render_back: true
     custom_material:
       type: text
       font: hello_font
@@ -66,10 +70,7 @@ entities:
     shadow_program: font_atlas_demo
     pos: [2.0, 2.0, -5.0]
     render_flags:
-      alpha: true
-      xblend: true
       xeffect: true
-      render_back: true
   - id: hello_world
     type: text
     model:
@@ -79,6 +80,9 @@ entities:
         xmap_pbr: textures\Fence007A_4K-JPG
         map_pbr: textures\Metal007_1K-PNG
         tiling: 1
+        alpha: true
+        xblend: true
+        render_back: true
     text:
       font: hello_font
       text: ÄÅÖ äåö - Hello world
@@ -87,18 +91,19 @@ entities:
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
     render_flags:
-      alpha: true
-      xblend: true
       xeffect: true
-      render_back: true
     script_file: scripts/seq_hello_text
   - id: another_text
     type: text
     model:
+      flags:
+        billboard: true
       material:
         name: another_text
         map_pbr: textures\Leather037_1K
         tiling: 1
+        alpha: true
+        render_back: true
     text:
       font: another_font
       text: Look at ME
@@ -106,10 +111,7 @@ entities:
     shadow_program: shadow_font_render
     pos: [0, 4, -8]
     scale: 0.01
-    render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
+    xrender_flags:
   - id: directional_light
     model:
       mesh: light
@@ -135,9 +137,9 @@ entities:
         xmetal: [1.0, 0.0, 0, 1]
         xmap_pbr: textures\planks_metal
         tiling: 20
+        render_back: true
     program: g_tex
     render_flags:
-      render_back: true
       no_shadow: true
     pos: [-1, 2.5, -3.001]
     scale: 0.5
@@ -171,13 +173,14 @@ entities:
   - name: Cow
     model:
       mesh: cow
+      flags:
+        billboard: true
       material_modifier:
         map_pbr: textures/Plastic 01 [4K]
     program: g_tex
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
-    render_flags:
-      billboard: true
+    xrender_flags:
 fonts:
   - name: hello_font
     path: fonts/LuckiestGuy.ttf

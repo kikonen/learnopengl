@@ -29,16 +29,16 @@ namespace backend {
         Mode m_mode : 3 = Mode::points;
         Type m_type : 2 = Type::none;
 
+        bool m_solid : 1 {false};
         bool m_alpha : 1 {false};
         bool m_blend : 1 {false};
-
-        bool m_gbuffer : 1 {false};
-        bool m_blendOIT : 1 {false};
 
         bool m_renderBack : 1 {false};
         bool m_wireframe : 1 {false};
 
         bool m_tessellation : 1 {false};
+
+        bool m_gbuffer : 1 {false};
 
         uint8_t m_flags : 3 { 0 };
 

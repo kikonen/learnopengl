@@ -40,6 +40,8 @@ entities:
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [10, 4, -10]
@@ -47,9 +49,6 @@ entities:
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
     repeat:
       z_count: 10
       z_step: 2
@@ -80,13 +79,13 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/leaf maple.png
           map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
     program: g_tex
     priority: 1
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.02
     repeat:
@@ -111,7 +110,6 @@ entities:
     scale: 3
     base_scale: 0.028
     render_flags:
-      xrender_back: true
       xdynamic_bounds: true
       use_bones: true
       xuse_animation: true
@@ -186,12 +184,11 @@ entities:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         reflection: 0.4
+        render_back: true
     program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      render_back: true
     repeat:
       x_count: 1
       x_step: 1
@@ -202,9 +199,9 @@ entities:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 60
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100

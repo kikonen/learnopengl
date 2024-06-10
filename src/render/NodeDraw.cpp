@@ -119,32 +119,29 @@ namespace render {
     {
         auto* type = node->m_typeHandle.toType();
 
-        {
-            auto* map = &m_solidNodes;
-
-            //if (type->m_flags.alpha)
-            //    map = &m_alphaNodes;
-
-            //if (type->m_flags.blend)
-            //    map = &m_blendedNodes;
-
-            if (type->m_flags.invisible)
-                map = &m_invisibleNodes;
-
-            if (map) {
-                // NOTE KI more optimal to not switch between culling mode (=> group by it)
-                const PiorityKey priorityKey{
-                    // NOTE KI *NEGATE* for std::tie
-                    -type->m_priority,
-                };
-
-                const MeshTypeKey typeKey(node->m_typeHandle);
-
-                auto& list = (*map)[priorityKey][typeKey];
-                list.reserve(100);
-                list.push_back(node->toHandle());
-            }
+        if (type->m_flags.invisible) {
+            insertNode(&m_invisibleNodes, node);
         }
+         else {
+             if (type->m_flags.anySolid) {
+                 insertNode(&m_solidNodes, node);
+             }
+             if (type->m_flags.anyAlpha) {
+                 insertNode(&m_alphaNodes, node);
+             }
+             if (type->m_flags.anyBlend) {
+                 insertNode(&m_blendedNodes, node);
+             }
+        }
+    }
+
+    void NodeDraw::insertNode(
+        MeshTypeMap* map,
+        Node* node)
+    {
+        auto& list = (*map)[node->m_typeHandle];
+        list.reserve(100);
+        list.push_back(node->toHandle());
     }
 
     void NodeDraw::drawNodes(
@@ -152,7 +149,7 @@ namespace render {
         FrameBuffer* targetBuffer,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits,
+        uint8_t kindBits,
         GLbitfield copyMask)
     {
         //m_timeElapsedQuery.begin();
@@ -184,12 +181,10 @@ namespace render {
 
                 // NOTE KI only *solid* render in pre-pass
                 {
-                    ctx.m_nodeDraw->drawProgram(
+                    drawProgram(
                         ctx,
                         [this](const mesh::LodMesh& lodMesh) {
-                            auto valid = lodMesh.m_drawOptions.m_gbuffer &&
-                                lodMesh.m_drawOptions.m_alpha;
-                            return valid ? lodMesh.m_preDepthProgram : nullptr;
+                            return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgram : nullptr;
                         },
                         [&typeSelector](const mesh::MeshType* type) {
                             return type->m_flags.preDepth &&
@@ -214,10 +209,11 @@ namespace render {
                     [](const mesh::LodMesh& lodMesh) {
                         return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
                     },
-                    [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
+                    [&typeSelector](const mesh::MeshType* type) {
+                        return !type->m_flags.effect && typeSelector(type);
+                    },
                     nodeSelector,
-                    // NOTE KI no blended
-                    kindBits & ~render::KIND_BLEND);
+                    kindBits);
 
                 ctx.m_batch->flush(ctx);
 
@@ -315,13 +311,13 @@ namespace render {
                 drawProgram(
                     ctx,
                     [this](const mesh::LodMesh& lodMesh) {
-                        return lodMesh.m_drawOptions.m_blendOIT ? m_oitProgram : nullptr;
+                        return lodMesh.m_drawOptions.m_gbuffer ? m_oitProgram : nullptr;
                     },
                     [&typeSelector](const mesh::MeshType* type) {
                         return typeSelector(type);
                     },
                     nodeSelector,
-                    render::KIND_ALL);
+                    kindBits & render::KIND_BLEND);
 
                 ctx.m_batch->flush(ctx);
 
@@ -357,8 +353,8 @@ namespace render {
             drawBlendedImpl(
                 ctx,
                 [&typeSelector](const mesh::MeshType* type) {
-                    return //!type->m_flags.blendOIT &&
-                        //type->m_flags.blend &&
+                    return
+                        type->m_flags.anyBlend &&
                         type->m_flags.effect &&
                         typeSelector(type);
                 },
@@ -635,7 +631,7 @@ namespace render {
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits)
+        uint8_t kindBits)
     {
         drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
     }
@@ -645,7 +641,7 @@ namespace render {
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits)
+        const uint8_t kindBits)
     {
         bool rendered{ false };
 
@@ -653,10 +649,8 @@ namespace render {
 
         auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector, &rendered](
             const MeshTypeMap& typeMap,
-            unsigned int kindBit)
+            unsigned int kind)
         {
-            auto* type = typeMap.begin()->first.m_typeHandle.toType();
-
             for (const auto& it : typeMap) {
                 auto* type = it.first.m_typeHandle.toType();
 
@@ -670,27 +664,21 @@ namespace render {
                     if (!node || !nodeSelector(node)) continue;
 
                     rendered = true;
-                    batch->draw(ctx, type, programSelector, kindBit, *node);
+                    batch->draw(ctx, type, programSelector, kind, *node);
                 }
             }
-            };
+        };
 
         if (kindBits & render::KIND_SOLID) {
-            for (const auto& all : m_solidNodes) {
-                renderTypes(all.second, render::KIND_SOLID);
-            }
+            renderTypes(m_solidNodes, render::KIND_SOLID);
         }
 
         if (kindBits & render::KIND_ALPHA) {
-            for (const auto& all : m_alphaNodes) {
-                renderTypes(all.second, render::KIND_ALPHA);
-            }
+            renderTypes(m_alphaNodes, render::KIND_ALPHA);
         }
 
         if (kindBits & render::KIND_BLEND) {
-            for (const auto& all : m_blendedNodes) {
-                renderTypes(all.second, render::KIND_BLEND);
-            }
+            renderTypes(m_blendedNodes, render::KIND_BLEND);
         }
 
         return rendered;
@@ -709,21 +697,19 @@ namespace render {
 
         // TODO KI discards nodes if *same* distance
         std::map<float, Node*> sorted;
-        for (const auto& all : m_blendedNodes) {
-            for (const auto& map : all.second) {
-                auto* type = map.first.m_typeHandle.toType();
+        for (const auto& map : m_blendedNodes) {
+            auto* type = map.first.m_typeHandle.toType();
 
-                if (!type->isReady()) continue;
-                if (!typeSelector(type)) continue;
+            if (!type->isReady()) continue;
+            if (!typeSelector(type)) continue;
 
-                for (const auto& handle : map.second) {
-                    auto* node = handle.toNode();
-                    if (!node || !nodeSelector(node)) continue;
+            for (const auto& handle : map.second) {
+                auto* node = handle.toNode();
+                if (!node || !nodeSelector(node)) continue;
 
-                    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-                    const float distance = glm::length(viewPos - snapshot.getWorldPosition());
-                    sorted[distance] = node;
-                }
+                const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
+                const float distance = glm::length(viewPos - snapshot.getWorldPosition());
+                sorted[distance] = node;
             }
         }
 

@@ -44,14 +44,13 @@ entities:
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        blend: true
+        render_back: true
     program: g_tex
     pos: [0.0, 0.0, -8.0]
     xbase_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      blend_oit: true
-      render_back: true
   - id: skeleton_1_{t}
     model:
       mesh: fbx/creatures/skeleton/skeleton_animated.FBX
@@ -71,8 +70,6 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -95,8 +92,6 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -119,8 +114,6 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -134,6 +127,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -148,9 +143,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -169,6 +161,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -183,9 +177,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -204,6 +195,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -218,9 +211,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -253,8 +243,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -294,8 +282,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -335,8 +321,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true

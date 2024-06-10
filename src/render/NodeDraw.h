@@ -31,12 +31,6 @@ namespace mesh {
 }
 
 namespace render {
-    struct PiorityKey {
-        int m_priority;
-
-        operator int() const { return m_priority; }
-    };
-
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeKey {
         // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
@@ -51,7 +45,6 @@ namespace render {
 
     using NodeVector = std::vector<pool::NodeHandle>;
     using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
-    using PiorityTypeMap = std::map<PiorityKey, MeshTypeMap>;
 
     class NodeDraw final {
     public:
@@ -70,7 +63,7 @@ namespace render {
             FrameBuffer* targetBuffer,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits,
+            uint8_t kindBits,
             GLbitfield copyMask);
 
         void drawDebug(
@@ -88,15 +81,19 @@ namespace render {
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits);
+            uint8_t kindBits);
 
     private:
+        void insertNode(
+            MeshTypeMap* map,
+            Node* node);
+
         bool drawNodesImpl(
             const RenderContext& ctx,
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits);
+            uint8_t kindBits);
 
         void drawBlendedImpl(
             const RenderContext& ctx,
@@ -126,12 +123,12 @@ namespace render {
         query::TimeElapsedQuery m_timeElapsedQuery;
 
         // NodeDraw
-        PiorityTypeMap m_solidNodes;
+        MeshTypeMap m_solidNodes;
         // NodeDraw
-        PiorityTypeMap m_alphaNodes;
+        MeshTypeMap m_alphaNodes;
         // NodeDraw
-        PiorityTypeMap m_blendedNodes;
+        MeshTypeMap m_blendedNodes;
         // OBSOLETTE
-        PiorityTypeMap m_invisibleNodes;
+        MeshTypeMap m_invisibleNodes;
     };
 }

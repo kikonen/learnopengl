@@ -659,11 +659,10 @@ namespace loader {
         if (f.alpha) m.alpha = mod.alpha;
         if (f.blend) m.blend = mod.blend;
 
-        if (f.gbuffer) m.gbuffer = mod.gbuffer;
-        if (f.blendOIT) m.blendOIT = mod.blendOIT;
-
         if (f.renderBack) m.renderBack = mod.renderBack;
         if (f.wireframe) m.wireframe = mod.wireframe;
+
+        if (f.gbuffer) m.gbuffer = mod.gbuffer;
 
         for (const auto& it : mod.getTexturePaths()) {
             m.addTexPath(it.first, it.second);

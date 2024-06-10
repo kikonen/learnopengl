@@ -193,7 +193,6 @@ entities:
         map_pbr: textures\Fence007A_4K-JPG
         xreflection: 0.05
         parallax_depth: 0.0
-        xblend_oit: true
         alpha: true
         xblend: true
         render_back: true
@@ -332,7 +331,7 @@ entities:
         parallax_depth: 0.0
         tiling: 1
         alpha: true
-        xxblend_oit: true
+        xxblend: true
         render_back: true
     program: g_tex
     pos: [-30.0, 0, -50]

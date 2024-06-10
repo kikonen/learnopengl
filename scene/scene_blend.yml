@@ -44,38 +44,36 @@ entities:
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, -1.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
   - id: window_2
     model:
       mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.5, -1.0, -10.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
   - name: Blend cubes
     model:
       mesh: rubik_cube.fbx
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
     program: g_tex
-    render_flags:
-      alpha: true
-      blend_oit: true
-      render_back: true
     scale: 1
     base_scale: 0.01
     pos: [-4, 0, -6]
@@ -91,22 +89,24 @@ entities:
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
+        alpha: true
+        blend: true
     program: ball_effect
     program_definitions:
       effect_plasma: 1
     pos: [0, 4, -8]
     scale: 2
     render_flags:
-      alpha: true
-      xblend_oit: true
-      blend: true
       effect: true
       no_select: true
+      no_shadow: true
   - name: Hello world
     type: text
     model:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
+        alpha: true
+        render_back: true
     text:
       font: hello_font
       text: Hello world
@@ -114,11 +114,6 @@ entities:
     shadow_program: shadow_font_render
     pos: [-2.5, 0.0, -9.0]
     scale: 0.01
-    render_flags:
-      alpha: true
-      xblend: true
-      xeffect: true
-      render_back: true
     xscript_file: scripts/anim_rotate_object
   - name: Directional light
     model:

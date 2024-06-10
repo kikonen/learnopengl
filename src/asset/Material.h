@@ -267,11 +267,10 @@ public:
     bool alpha : 1 {false};
     bool blend : 1 {false};
 
-    bool gbuffer : 1 {false};
-    bool blendOIT : 1 {false};
-
     bool renderBack : 1 {false};
     bool wireframe : 1 {false};
+
+    bool gbuffer : 1 {false};
 
     std::unordered_map<MaterialProgramType, std::string> m_programs{};
     std::map<std::string, std::string> m_programDefinitions{};

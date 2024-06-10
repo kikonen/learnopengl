@@ -591,10 +591,6 @@ namespace loader {
                 definitions[DEF_USE_BLEND] = "1";
                 usePreDepth = false;
             }
-            if (material.blendOIT) {
-                definitions[DEF_USE_BLEND_OIT] = "1";
-                usePreDepth = false;
-            }
 
             if (useTBN) {
                 definitions[DEF_USE_TBN] = "1";
@@ -718,25 +714,7 @@ namespace loader {
 
             if (material.blend) {
                 // NOTE KI alpha MUST BE true if blend
-                if (!material.alpha) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha) name={}", material.m_name));
-                    material.alpha = true;
-                }
-
-                // NOTE KI blend CANNOT be gbuffer
-                if (material.gbuffer) {
-                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): name={}", material.m_name));
-                    // NOTE KI turning off blend; shader is designed for gbuffer
-                    material.blend = false;
-                }
-            }
-
-            if (material.blendOIT) {
-                // NOTE KI alpha MUST BE true if blend
-                if (!material.alpha) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): name={}", material.m_name));
-                    material.alpha = true;
-                }
+                material.alpha = true;
             }
         }
 

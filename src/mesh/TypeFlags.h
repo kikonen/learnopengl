@@ -2,6 +2,10 @@
 
 namespace mesh {
     struct TypeFlags {
+        bool anySolid: 1 {false};
+        bool anyAlpha : 1 {false};
+        bool anyBlend : 1 {false};
+
         bool preDepth : 1 {false};
         bool useBones : 1 {false};
         bool useBonesDebug : 1 {false};
