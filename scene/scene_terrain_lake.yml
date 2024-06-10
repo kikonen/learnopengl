@@ -43,9 +43,6 @@ entities:
     id: auto
     priority: 20
     type: container
-    instanced: true
-    program: g_terrain
-    depth_program: g_terrain_depth
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
     render_flags:
@@ -53,6 +50,7 @@ entities:
       xxno_shadow: true
       tessellation: true
       xxno_frustum: true
+    instanced: true
     generator:
       type: terrain
       material:
@@ -64,6 +62,8 @@ entities:
         xxrender_back: true
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:

@@ -49,8 +49,8 @@ namespace loader {
         std::vector<MeshData> meshes;
         std::vector<LodData> lods;
 
+        std::string geometryType;
         std::unordered_map<MaterialProgramType, std::string> programs;
-        std::map<std::string, std::string> programDefinitions{};
 
         loader::FlagContainer nodeFlags;
         loader::FlagContainer typeFlags;

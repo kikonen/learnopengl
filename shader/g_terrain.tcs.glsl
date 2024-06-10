@@ -32,7 +32,7 @@ in VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tcs_in[];
 
@@ -55,7 +55,7 @@ out TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tcs_out[];
 
@@ -93,7 +93,7 @@ void main()
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
 #ifdef USE_TBN
-  tcs_out[gl_InvocationID].tangent = tcs_in[gl_InvocationID].tangent;
+  tcs_out[gl_InvocationID].tbn = tcs_in[gl_InvocationID].tbn;
 #endif
 
   if (gl_InvocationID == 0) {

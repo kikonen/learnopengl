@@ -43,7 +43,7 @@ out VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } vs_out;
 
@@ -75,6 +75,10 @@ void main() {
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
+  vec3 normal = a_normal;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 
   worldPos = modelMatrix * pos;
 
@@ -114,22 +118,17 @@ void main() {
   vs_out.vertexPos = a_pos;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * normal;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   if (u_materials[materialIndex].normalMapTex.x > 0) {
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize(normalMatrix * a_tangent);
-
-    // NOTE KI Gram-Schmidt process to re-orthogonalize
+     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    //const vec3 B = cross(N, T);
+    const vec3 bitangent = cross(normal, tangent);
 
-    vs_out.tangent = T;
-  } else {
-    vs_out.tangent = a_tangent;
+    vs_out.tbn = mat3(tangent, bitangent, normal);
   }
 #endif
 }

@@ -6,6 +6,10 @@
 #include "BaseLoader.h"
 #include "MaterialData.h"
 
+namespace mesh {
+    class MeshType;
+}
+
 namespace loader {
     class MaterialLoader : public BaseLoader
     {
@@ -57,5 +61,13 @@ namespace loader {
             Material& m,
             const MaterialData& data);
 
+        void resolveProgram(
+            mesh::MeshType* type,
+            Material* material);
+
+        std::string selectProgram(
+            MaterialProgramType type,
+            const std::unordered_map<MaterialProgramType, std::string> programs,
+            const std::string& defaultValue = "");
     };
 }

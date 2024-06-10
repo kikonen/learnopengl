@@ -32,7 +32,7 @@ in TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tes_in[];
 
@@ -48,7 +48,7 @@ out TES_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 
   float height;
@@ -124,7 +124,7 @@ void main()
   tes_out.materialIndex = tes_in[0].materialIndex;
 
 #ifdef USE_TBN
-  tes_out.tangent = tes_in[0].tangent;
+  tes_out.tbn = tes_in[0].tbn;
 #endif
 
   tes_out.height = h;

@@ -134,13 +134,17 @@ namespace mesh {
 
     void LodMesh::setupDrawOptions()
     {
-        m_drawOptions.m_alpha = m_material->alpha;
-        m_drawOptions.m_blend = m_material->blend;
+        if (!m_material) return;
 
-        m_drawOptions.m_gbuffer = m_material->gbuffer;
+        auto& material = *m_material;
 
-        m_drawOptions.m_renderBack = m_material->renderBack;
-        m_drawOptions.m_wireframe = m_material->wireframe;
+        m_drawOptions.m_alpha = material.alpha;
+        m_drawOptions.m_blend = material.blend;
+
+        m_drawOptions.m_gbuffer = material.gbuffer;
+
+        m_drawOptions.m_renderBack = material.renderBack;
+        m_drawOptions.m_wireframe = material.wireframe;
 
         if (m_drawOptions.m_alpha) {
             m_drawOptions.m_kindBits |= render::KIND_ALPHA;
@@ -152,6 +156,12 @@ namespace mesh {
             m_drawOptions.m_kindBits = render::KIND_SOLID;
             m_drawOptions.m_solid = true;
         }
+
+        m_program = material.getProgram(MaterialProgramType::shader);
+        m_shadowProgram = material.getProgram(MaterialProgramType::shadow);
+        m_preDepthProgram = material.getProgram(MaterialProgramType::pre_depth);
+        m_selectionProgram = material.getProgram(MaterialProgramType::selection);
+        m_idProgram = material.getProgram(MaterialProgramType::object_id);
     }
 
     void LodMesh::setMesh(

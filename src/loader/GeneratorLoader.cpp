@@ -109,7 +109,8 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        mesh::MeshType* type)
+        mesh::MeshType* type,
+        Loaders& loaders)
     {
         if (!data.enabled) return nullptr;
 
@@ -132,6 +133,8 @@ namespace loader {
 
             generator->m_material = data.materialData.material;
             generator->m_material.loadTextures();
+
+            loaders.m_materialLoader.resolveProgram(type, &generator->m_material);
 
             return generator;
         }

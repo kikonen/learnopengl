@@ -12,6 +12,7 @@
 
 //#include "MaterialSSBO.h"
 
+class Program;
 struct MaterialSSBO;
 
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
@@ -41,7 +42,6 @@ enum class TextureType : std::underlying_type_t<std::byte> {
 
 enum class MaterialProgramType : std::underlying_type_t<std::byte> {
     shader,
-    geometry,
     shadow,
     pre_depth,
     selection,
@@ -161,6 +161,12 @@ public:
         return it != m_texturePaths.end() ? it->second : "";
     }
 
+    Program* getProgram(MaterialProgramType type) noexcept
+    {
+        const auto& it = m_programs.find(type);
+        return it != m_programs.end() ? it->second : nullptr;
+    }
+
 private:
     void loadTexture(
         TextureType type,
@@ -272,8 +278,11 @@ public:
 
     bool gbuffer : 1 {false};
 
-    std::unordered_map<MaterialProgramType, std::string> m_programs{};
+    std::string m_geometryType;
+    std::unordered_map<MaterialProgramType, std::string> m_programNames{};
     std::map<std::string, std::string> m_programDefinitions{};
+
+    std::unordered_map<MaterialProgramType, Program*> m_programs{};
 
 private:
     std::unordered_map<TextureType, BoundTexture> m_boundTextures{};

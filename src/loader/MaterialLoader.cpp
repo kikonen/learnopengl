@@ -7,7 +7,12 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
+#include "mesh/MeshType.h"
+
+#include "registry/ProgramRegistry.h"
+
 #include "loader/document.h"
+
 
 namespace {
     const float DEF_ALPHA = 1.0;
@@ -371,22 +376,22 @@ namespace loader {
                 fields.wireframe = true;
             }
             else if (k == "program" || k == "shader") {
-                material.m_programs[MaterialProgramType::shader] = readString(v);
+                material.m_programNames[MaterialProgramType::shader] = readString(v);
             }
             else if (k == "shadow_program") {
-                material.m_programs[MaterialProgramType::shadow] = readString(v);
+                material.m_programNames[MaterialProgramType::shadow] = readString(v);
             }
             else if (k == "pre_depth_program") {
-                material.m_programs[MaterialProgramType::pre_depth] = readString(v);
+                material.m_programNames[MaterialProgramType::pre_depth] = readString(v);
             }
             else if (k == "selection_program") {
-                material.m_programs[MaterialProgramType::selection] = readString(v);
+                material.m_programNames[MaterialProgramType::selection] = readString(v);
             }
             else if (k == "id_program") {
-                material.m_programs[MaterialProgramType::object_id] = readString(v);
+                material.m_programNames[MaterialProgramType::object_id] = readString(v);
             }
             else if (k == "geometry_type") {
-                material.m_programs[MaterialProgramType::geometry] = readString(v);
+                material.m_geometryType = readString(v);
             }
             else if (k == "program_definitions") {
                 for (const auto& defNode : v.getNodes()) {
@@ -667,5 +672,157 @@ namespace loader {
         for (const auto& it : mod.getTexturePaths()) {
             m.addTexPath(it.first, it.second);
         }
+    }
+
+    void MaterialLoader::resolveProgram(
+        mesh::MeshType* type,
+        Material* mat)
+    {
+        if (!mat) return;
+        auto& material = *mat;
+
+        const bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
+        const bool useDisplacementTex = material.hasBoundTex(TextureType::displacement_map);
+        const bool useNormalTex = material.hasBoundTex(TextureType::normal_map);
+        const bool useCubeMap = 1.0 - material.reflection - material.refraction < 1.0;
+        const bool useNormalPattern = material.pattern > 0;
+        const bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+
+        const bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
+
+        const auto& shaderName = selectProgram(
+            MaterialProgramType::shader,
+            material.m_programNames);
+
+        auto preDepthName = selectProgram(
+            MaterialProgramType::pre_depth,
+            material.m_programNames,
+            SHADER_PRE_DEPTH_PASS);
+
+        const auto& shadowName = selectProgram(
+            MaterialProgramType::shadow,
+            material.m_programNames);
+
+        const auto& selectionName = selectProgram(
+            MaterialProgramType::selection,
+            material.m_programNames,
+            SHADER_SELECTION);
+
+        const auto& objectIdName = selectProgram(
+            MaterialProgramType::object_id,
+            material.m_programNames,
+            SHADER_OBJECT_ID);
+
+        if (!shaderName.empty()) {
+            std::map<std::string, std::string, std::less<>> definitions;
+            std::map<std::string, std::string, std::less<>> shadowDefinitions;
+            std::map<std::string, std::string, std::less<>> selectionDefinitions;
+            std::map<std::string, std::string, std::less<>> idDefinitions;
+
+            for (const auto& [k, v] : material.m_programDefinitions) {
+                definitions[k] = v;
+            }
+
+            std::map<std::string, std::string, std::less<>> preDepthDefinitions;
+            bool usePreDepth = type->m_flags.preDepth;
+            bool useBones = type->m_flags.useBones;
+            bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
+
+            if (material.alpha) {
+                definitions[DEF_USE_ALPHA] = "1";
+                shadowDefinitions[DEF_USE_ALPHA] = "1";
+                selectionDefinitions[DEF_USE_ALPHA] = "1";
+                idDefinitions[DEF_USE_ALPHA] = "1";
+                usePreDepth = false;
+            }
+            if (material.blend) {
+                definitions[DEF_USE_BLEND] = "1";
+                usePreDepth = false;
+            }
+
+            if (useTBN) {
+                definitions[DEF_USE_TBN] = "1";
+            }
+            //if (useDudvTex) {
+            //    definitions[DEF_USE_DUDV_TEX] = "1";
+            //}
+            //if (useDisplacementTex) {
+            //    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
+            //}
+            if (useNormalTex) {
+                definitions[DEF_USE_NORMAL_TEX] = "1";
+            }
+            if (useParallax) {
+                definitions[DEF_USE_PARALLAX] = "1";
+            }
+            if (useCubeMap) {
+                definitions[DEF_USE_CUBE_MAP] = "1";
+            }
+            if (useNormalPattern) {
+                definitions[DEF_USE_NORMAL_PATTERN] = "1";
+            }
+            if (useBones) {
+                definitions[DEF_USE_BONES] = "1";
+                shadowDefinitions[DEF_USE_BONES] = "1";
+                selectionDefinitions[DEF_USE_BONES] = "1";
+                idDefinitions[DEF_USE_BONES] = "1";
+            }
+            if (useBonesDebug) {
+                definitions[DEF_USE_BONES_DEBUG] = "1";
+            }
+
+            material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgram(
+                shaderName,
+                false,
+                material.m_geometryType,
+                definitions);
+
+            if (!shadowName.empty()) {
+                material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgram(
+                    shadowName,
+                    false,
+                    "",
+                    shadowDefinitions);
+            }
+
+            if (usePreDepth) {
+                material.m_programs[MaterialProgramType::pre_depth] = ProgramRegistry::get().getProgram(
+                    preDepthName,
+                    false,
+                    "",
+                    preDepthDefinitions);
+            }
+
+            if (!selectionName.empty()) {
+                material.m_programs[MaterialProgramType::selection] = ProgramRegistry::get().getProgram(
+                    selectionName,
+                    false,
+                    "",
+                    selectionDefinitions);
+            }
+
+            if (!objectIdName.empty()) {
+                material.m_programs[MaterialProgramType::object_id] = ProgramRegistry::get().getProgram(
+                    objectIdName,
+                    false,
+                    "",
+                    idDefinitions);
+            }
+        }
+    }
+
+    std::string MaterialLoader::selectProgram(
+        MaterialProgramType type,
+        const std::unordered_map<MaterialProgramType, std::string> programs,
+        const std::string& defaultValue)
+    {
+        std::string program;
+        bool found = false;
+        const auto& it = programs.find(type);
+        if (it != programs.end()) {
+            program = it->second;
+            found = true;
+        }
+        return found ? program : defaultValue;
     }
 }

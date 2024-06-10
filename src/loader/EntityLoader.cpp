@@ -144,14 +144,7 @@ namespace loader {
                 data.programs[MaterialProgramType::object_id] = readString(v);
             }
             else if (k == "geometry_type") {
-                data.programs[MaterialProgramType::geometry] = readString(v);
-            }
-            else if (k == "program_definitions") {
-                for (const auto& defNode : v.getNodes()) {
-                    const auto& defName = defNode.getName();
-                    const auto& defValue = readString(defNode.getNode());
-                    data.programDefinitions[util::toUpper(defName)] = defValue;
-                }
+                data.geometryType = readString(v);
             }
             else if (k == "type_flags" || k == "render_flags") {
                 for (const auto& flagNode : v.getNodes()) {

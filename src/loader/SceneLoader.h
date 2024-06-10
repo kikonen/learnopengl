@@ -124,11 +124,6 @@ namespace loader {
             const EntityData& entityData,
             const glm::uvec3& tile);
 
-        void resolveProgram(
-            mesh::MeshType* type,
-            mesh::LodMesh& lodMesh,
-            const EntityData& entityData);
-
         text::font_id resolveFont(
             pool::TypeHandle typeHandle,
             const TextData& data) const;

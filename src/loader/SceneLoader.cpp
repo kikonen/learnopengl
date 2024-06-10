@@ -70,29 +70,6 @@
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
-
-    std::string selectProgram(
-        MaterialProgramType type,
-        const std::unordered_map<MaterialProgramType, std::string> programsA,
-        const std::unordered_map<MaterialProgramType, std::string> programsB,
-        const std::string& defaultValue = "")
-    {
-        std::string program;
-        bool found = false;
-        const auto& it = programsA.find(type);
-        if (it != programsA.end()) {
-            program = it->second;
-            found = true;
-        }
-        if (program.empty()) {
-            const auto& it = programsB.find(type);
-            if (it != programsB.end()) {
-                program = it->second;
-                found = true;
-            }
-        }
-        return found ? program : defaultValue;
-    }
 }
 
 namespace loader {
@@ -511,158 +488,6 @@ namespace loader {
         return typeHandle;
     }
 
-    void SceneLoader::resolveProgram(
-        mesh::MeshType* type,
-        mesh::LodMesh& lodMesh,
-        const EntityData& entityData)
-    {
-        if (!lodMesh.getMaterial()) return;
-
-        auto& material = *lodMesh.getMaterial();
-
-        bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
-        bool useDisplacementTex = material.hasBoundTex(TextureType::displacement_map);
-        bool useNormalTex = material.hasBoundTex(TextureType::normal_map);
-        bool useCubeMap = 1.0 - material.reflection - material.refraction < 1.0;
-        bool useNormalPattern = material.pattern > 0;
-        bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
-        if (!useParallax) {
-            material.parallaxDepth = 0.f;
-        }
-
-        bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
-
-        const auto& shaderName = selectProgram(
-            MaterialProgramType::shader,
-            material.m_programs,
-            entityData.programs);
-
-        const auto& geometryName = selectProgram(
-            MaterialProgramType::geometry,
-            material.m_programs,
-            entityData.programs);
-
-        auto preDepthName = selectProgram(
-            MaterialProgramType::pre_depth,
-            material.m_programs,
-            entityData.programs,
-            SHADER_PRE_DEPTH_PASS);
-
-        const auto& shadowName = selectProgram(
-            MaterialProgramType::shadow,
-            material.m_programs,
-            entityData.programs);
-
-        const auto& selectionName = selectProgram(
-            MaterialProgramType::selection,
-            material.m_programs,
-            entityData.programs,
-            SHADER_SELECTION);
-
-        const auto& objectIdName = selectProgram(
-            MaterialProgramType::object_id,
-            material.m_programs,
-            entityData.programs,
-            SHADER_OBJECT_ID);
-
-        if (!shaderName.empty()) {
-            std::map<std::string, std::string, std::less<>> definitions;
-            std::map<std::string, std::string, std::less<>> shadowDefinitions;
-            std::map<std::string, std::string, std::less<>> selectionDefinitions;
-            std::map<std::string, std::string, std::less<>> idDefinitions;
-
-            for (const auto& [k, v] : entityData.programDefinitions) {
-                definitions[k] = v;
-            }
-
-            std::map<std::string, std::string, std::less<>> preDepthDefinitions;
-            bool usePreDepth = type->m_flags.preDepth;
-            bool useBones = type->m_flags.useBones;
-            bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
-
-            if (material.alpha) {
-                definitions[DEF_USE_ALPHA] = "1";
-                shadowDefinitions[DEF_USE_ALPHA] = "1";
-                selectionDefinitions[DEF_USE_ALPHA] = "1";
-                idDefinitions[DEF_USE_ALPHA] = "1";
-                usePreDepth = false;
-            }
-            if (material.blend) {
-                definitions[DEF_USE_BLEND] = "1";
-                usePreDepth = false;
-            }
-
-            if (useTBN) {
-                definitions[DEF_USE_TBN] = "1";
-            }
-            //if (useDudvTex) {
-            //    definitions[DEF_USE_DUDV_TEX] = "1";
-            //}
-            //if (useDisplacementTex) {
-            //    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
-            //}
-            if (useNormalTex) {
-                definitions[DEF_USE_NORMAL_TEX] = "1";
-            }
-            if (useParallax) {
-                definitions[DEF_USE_PARALLAX] = "1";
-            }
-            if (useCubeMap) {
-                definitions[DEF_USE_CUBE_MAP] = "1";
-            }
-            if (useNormalPattern) {
-                definitions[DEF_USE_NORMAL_PATTERN] = "1";
-            }
-            if (useBones) {
-                definitions[DEF_USE_BONES] = "1";
-                shadowDefinitions[DEF_USE_BONES] = "1";
-                selectionDefinitions[DEF_USE_BONES] = "1";
-                idDefinitions[DEF_USE_BONES] = "1";
-            }
-            if (useBonesDebug) {
-                definitions[DEF_USE_BONES_DEBUG] = "1";
-            }
-
-            lodMesh.m_program = ProgramRegistry::get().getProgram(
-                shaderName,
-                false,
-                geometryName,
-                definitions);
-
-            if (!shadowName.empty()) {
-                lodMesh.m_shadowProgram = ProgramRegistry::get().getProgram(
-                    shadowName,
-                    false,
-                    "",
-                    shadowDefinitions);
-            }
-
-            if (usePreDepth) {
-                lodMesh.m_preDepthProgram = ProgramRegistry::get().getProgram(
-                    preDepthName,
-                    false,
-                    "",
-                    preDepthDefinitions);
-            }
-
-            if (!selectionName.empty()) {
-                lodMesh.m_selectionProgram = ProgramRegistry::get().getProgram(
-                    selectionName,
-                    false,
-                    "",
-                    selectionDefinitions);
-            }
-
-            if (!objectIdName.empty()) {
-                lodMesh.m_idProgram = ProgramRegistry::get().getProgram(
-                    objectIdName,
-                    false,
-                    "",
-                    idDefinitions);
-            }
-        }
-    }
-
     text::font_id SceneLoader::resolveFont(
         pool::TypeHandle typeHandle,
         const TextData& data) const
@@ -703,10 +528,25 @@ namespace loader {
         }
 
         {
-            const auto& shaderName = selectProgram(
+            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+            if (!useParallax) {
+                material.parallaxDepth = 0.f;
+            }
+        }
+
+        {
+            for (const auto& srcIt : entityData.programs) {
+                const auto& dstIt = material.m_programNames.find(srcIt.first);
+                if (dstIt == material.m_programNames.end()) {
+                    material.m_programNames[srcIt.first] = srcIt.second;
+                }
+            }
+        }
+
+        {
+            const auto& shaderName = m_loaders->m_materialLoader.selectProgram(
                 MaterialProgramType::shader,
-                material.m_programs,
-                entityData.programs);
+                material.m_programNames);
 
             if (shaderName.starts_with("g_")) {
                 material.gbuffer = true;
@@ -717,8 +557,6 @@ namespace loader {
                 material.alpha = true;
             }
         }
-
-        lodMesh.setupDrawOptions();
 
         material.loadTextures();
     }
@@ -803,9 +641,10 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                assignMeshFlags(meshData, lodMesh);
                 resolveMaterials(type, lodMesh, entityData, meshData);
-                resolveProgram(type, lodMesh, entityData);
+                m_loaders->m_materialLoader.resolveProgram(type, lodMesh.getMaterial());
+                assignMeshFlags(meshData, lodMesh);
+                lodMesh.setupDrawOptions();
             }
         }
     }
@@ -923,7 +762,8 @@ namespace loader {
         node->m_light = l.m_lightLoader.createLight(entityData.light, cloneIndex, tile);
         node->m_generator = l.m_generatorLoader.createGenerator(
             entityData.generator,
-            type);
+            type,
+            *m_loaders);
 
         node->m_particleGenerator = l.m_particleLoader.createParticle(
             entityData.particle);
@@ -964,11 +804,6 @@ namespace loader {
 
         //////////////////////////////////////////////////////////
         // LOD_MESH specific
-        const auto& shaderName = selectProgram(
-            MaterialProgramType::shader,
-            {},
-            entityData.programs);
-
         // Rigged model
         {
             flags.useBones = container.getFlag("use_bones", flags.useBones);

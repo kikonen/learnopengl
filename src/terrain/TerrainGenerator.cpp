@@ -287,9 +287,9 @@ namespace terrain {
                 lodMesh->setMaterial(m_material);
                 lodMesh->registerMaterial();
 
-                //lodMesh->m_program = containerType->m_program;
-                //lodMesh->m_shadowProgram = containerType->m_shadowProgram;
-                //lodMesh->m_preDepthProgram = containerType->m_preDepthProgram;
+                lodMesh->m_program = m_material.getProgram(MaterialProgramType::shader);
+                lodMesh->m_shadowProgram = m_material.getProgram(MaterialProgramType::shadow);
+                lodMesh->m_preDepthProgram = m_material.getProgram(MaterialProgramType::pre_depth);
 
                 lodMesh->m_drawOptions.m_patchVertices = 3;
             }
