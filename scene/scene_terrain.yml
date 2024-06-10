@@ -87,13 +87,13 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     priority: -20
     program: g_water
     pos: [0, 30.0, 0]
     scale: 1024
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
   - id: sea_floor
     model:
@@ -102,13 +102,13 @@ entities:
         name: sea_floor
         map_kd: textures/tiles_1024.png
         tiling: 8
+        render_back: true
     priority: -225
     program: g_tex
     pos: [0, -70, 0]
     scale: 1024
     render_flags:
       no_shadow: true
-      render_back: true
   - id: palm_tree_forest_{t}
     model:
       mesh: fbx/scenery/trees/Palm_01.fbx
@@ -121,6 +121,7 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
           map_bump: textures/coconut palm leaf_Normal.png
+          render_back: true
         - name: palm_trunk
           alias: Tree_2Mat
           map_kd: textures/palm02.png
@@ -129,7 +130,6 @@ entities:
     program: g_tex
     pos: [150, 15.0, 150.0]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -157,8 +157,6 @@ entities:
     base_rotation: [0, 0, 0]
     render_flags:
       dynamic_bounds: true
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true

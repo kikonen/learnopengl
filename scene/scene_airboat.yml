@@ -52,10 +52,10 @@ entities:
         name: giant_woodbox
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
     program: g_tex
     clone_position_offset: [0, 60, 80]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
     clones:

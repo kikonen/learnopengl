@@ -75,6 +75,7 @@ entities:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [15, 6.5, -20.0]
@@ -82,7 +83,6 @@ entities:
     base_scale: 0.05
     base_rotation: [0, -180, 0]
     render_flags:
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -128,10 +128,9 @@ entities:
         name: woodwall
         map_kd: textures/wood_1024.png
         reflection: 0.4
+        render_back: true
     program: g_tex
     pos: [-3.0, 8.5, -14.0]
-    render_flags:
-      render_back: true
     repeat:
       x_count: 2
       x_step: 4
@@ -142,10 +141,10 @@ entities:
         name: giant_woodbox
         map_kd: textures/wood_1024.png
         reflection: 0.1
+        render_back: true
     program: g_tex
     clone_position_offset: [0, 40, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
     clones:
@@ -170,13 +169,13 @@ entities:
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
       no_reflect: true
       no_refract: true
@@ -189,13 +188,13 @@ entities:
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [40.0, 10.0, -10.0]
     rotation: [0.0, 270.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
       no_reflect: true
       no_refract: true

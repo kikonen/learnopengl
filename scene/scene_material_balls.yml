@@ -116,7 +116,6 @@ entities:
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-    xrender_flags:
   - name: Bronze ball
     parent_id: origo
     model:
@@ -187,7 +186,6 @@ entities:
     pos: [20.0, 25, -25]
     scale: 5
     rotation: [0, 270, 0]
-    xrender_flags:
     repeat:
       z_count: 5
       z_step: 10

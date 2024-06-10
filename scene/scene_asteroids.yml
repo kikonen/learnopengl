@@ -23,6 +23,8 @@ entities:
     parent_id: player
     type: text
     model:
+      flags:
+        billboard: true
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
@@ -36,8 +38,6 @@ entities:
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
-    render_flags:
-      billboard: true
   - id: player_camera
     parent_id: player
     type: origo

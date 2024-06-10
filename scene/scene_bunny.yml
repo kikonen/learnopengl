@@ -37,12 +37,12 @@ entities:
         refraction: 0.9
         refraction_ratio: [1.0, 1.52]
         metal: [0, 0, 0, 1]
+        render_back: true
     program: g_tex
     pos: [0.0, 0.0, -10.0]
     scale: 30.0
     render_flags:
       no_reflect: true
-      render_back: true
   - name: Directional light
     model:
       mesh: light

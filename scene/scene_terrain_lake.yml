@@ -50,10 +50,8 @@ entities:
     xxpos: [0, 0, 0]
     render_flags:
       pre_depth: true
-      xxwireframe: true
       xxno_shadow: true
       tessellation: true
-      xxrender_back: true
       xxno_frustum: true
     generator:
       type: terrain
@@ -62,6 +60,8 @@ entities:
         map_kd: textures/terrain_2/terrain_2_TX.jpg
         map_ks: textures/terrain_2/terrain_2_SpecLM.png
         map_bump: textures/terrain_2/terrain_2_TN.png
+        xxwireframe: true
+        xxrender_back: true
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
       terrain:
@@ -80,12 +80,12 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [-50, 14.5, -20]
     scale: 70
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     script_file: scripts/anim_water
   - name: Sea
@@ -96,12 +96,12 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [0, 14.0, 0]
     scale: 800
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     script_file: scripts/anim_water
   - name: Sea floor
@@ -111,10 +111,10 @@ entities:
         name: sea_floor
         map_kd: textures/tiles_1024.png
         tiling: 8
+        render_back: true
     program: g_tex
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 800
     render_flags:
       no_shadow: true
-      render_back: true

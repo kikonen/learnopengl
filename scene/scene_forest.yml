@@ -38,7 +38,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: palm_tree_forest_{t}
+  - xid: palm_tree_forest_{t}
     model:
       mesh: fbx/scenery/trees/Palm_01.fbx
       materials:
@@ -50,6 +50,7 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
           map_bump: textures/coconut palm leaf_Normal.png
+          render_back: true
         - name: palm_trunk
           alias: Tree_2Mat
           map_kd: textures/palm02.png
@@ -57,7 +58,6 @@ entities:
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -80,11 +80,11 @@ entities:
           alias: Tree_1Mat
           map_kd: textures/leaf maple.png
           map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -95,7 +95,7 @@ entities:
         z_count: 200
         x_step: 20
         z_step: -20
-  - xid: pine_tree_forest_{t}
+  - id: pine_tree_forest_{t}
     model:
       mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
       materials:
@@ -105,11 +105,11 @@ entities:
         - name: pine_leaf_pbr
           alias: MI_PineTree_01a
           map_pbr: pine_leaf_pbr
+          alpha: true
+          render_back: true
     program: g_tex
     pos: [-1000, 0.0, 0.0]
     render_flags:
-      alpha: true
-      render_back: true
       xstatic_bounds: true
     base_rotation: [-90, 0, 0]
     scale: 2
@@ -118,8 +118,8 @@ entities:
     generator:
       type: grid
       repeat:
-        x_count: 200
-        z_count: 200
+        x_count: 20
+        z_count: 20
         x_step: 20
         z_step: -20
   - name: wooden floor
@@ -129,9 +129,9 @@ entities:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 500
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 4000

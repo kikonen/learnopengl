@@ -37,12 +37,12 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [-30, 0, -30]
     scale: 30
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 2

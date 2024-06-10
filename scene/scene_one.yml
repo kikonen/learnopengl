@@ -30,9 +30,8 @@ entities:
       material_modifier:
         map_pbr: textures/Fence007A_4K-JPG
         tiling: 6
+        alpha: true
+        render_back: true
     program: g_tex
-    render_flags:
-      alpha: true
-      render_back: true
     pos: [0.0, 0.0, 0.0]
     scale: 1.0

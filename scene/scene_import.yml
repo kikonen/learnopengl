@@ -48,15 +48,18 @@ entities:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 60
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
   - xid: object
     model:
       mesh: texture_cube_4/texture_cube_4.fbx
+      material_modifier:
+        xrender_back: true
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]
@@ -65,8 +68,6 @@ entities:
     scale: 1
     base_scale: 0.01
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -81,6 +82,9 @@ entities:
         - name: pine_leaf_pbr
           alias: MI_PineTree_01a
           map_pbr: pine_leaf_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -89,9 +93,6 @@ entities:
     scale: 1
     base_scale: 0.01
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true

@@ -68,12 +68,12 @@ entities:
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [0, 3.1, 0]
     scale: 100
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     script_file: scripts/anim_water_lucy
   - name: Pool side
@@ -106,13 +106,12 @@ entities:
         xmap_pbr: textures\Graffiti
         tiling: 9
         parallax_depth: 0.0
+        xrender_back: true
     xmodel: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     scale: 4
-    xxrender_flags:
-      render_back: true
     audio:
       sources:
         - path: audio/Spring Wind Up_EF911B61_normal_mono.wav
@@ -136,10 +135,10 @@ entities:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [30.0, 25.0, -40.0]
     rotation: [0.0, -45.0, 0.0]
     scale: 20.0
     render_flags:
-      render_back: true
       mirror: true

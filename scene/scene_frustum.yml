@@ -34,8 +34,6 @@ entities:
         map_kd: textures/Dirt_vh_1024.png
         tiling: 1
     program: g_tex
-    render_flags:
-      xxwireframe: true
     priority: 1
     pos: [0, 0, 0]
     scale: 1.0

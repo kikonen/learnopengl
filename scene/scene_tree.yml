@@ -134,3 +134,31 @@ entities:
         z_count: 4
         x_step: 20
         z_step: -40
+  - xid: pine_tree_forest_{t}
+    model:
+      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: pine_leaf_pbr
+          alpha: true
+          blend: true
+          render_back: true
+    program: g_tex
+    pos: [0, 0.0, 0.0]
+    render_flags:
+      xstatic_bounds: true
+    base_rotation: [-90, 0, 0]
+    scale: 2
+    base_scale: 0.01
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: -20

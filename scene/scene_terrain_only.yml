@@ -45,10 +45,8 @@ entities:
     xxpos: [0, 0, 0]
     render_flags:
       pre_depth: true
-      xxwireframe: true
       xxno_shadow: true
       tessellation: true
-      xxrender_back: true
       xxno_frustum: true
     generator:
       type: terrain
@@ -59,6 +57,8 @@ entities:
         map_bump: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+        xxwireframe: true
+        xxrender_back: true
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
