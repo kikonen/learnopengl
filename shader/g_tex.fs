@@ -67,7 +67,7 @@ void main() {
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (material.diffuse.a < 0.95)
+  if (material.diffuse.a < 0.7)
     discard;
 #else
   if (material.diffuse.a < 0.05)
