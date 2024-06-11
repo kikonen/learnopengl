@@ -25,22 +25,22 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Cube Gbuffer
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [0.0, 1.5, -14.0]
   - name: Cube Forward
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: tex
     pos: [0.0, -1.5, -14.0]
   - id: window_1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
@@ -53,8 +53,8 @@ entities:
     scale: 1
     base_scale: 0.01
   - id: window_2
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
@@ -67,8 +67,8 @@ entities:
     scale: 1
     base_scale: 0.01
   - name: Blend cubes
-    model:
-      mesh: rubik_cube.fbx
+    mesh:
+      path: rubik_cube.fbx
       material_modifier:
         alpha: true
         blend: true
@@ -84,8 +84,8 @@ entities:
       z_step: -8
     script_file: scripts/anim_rotate_object
   - name: Plasma ball
-    model:
-      mesh: ball_volume
+    mesh:
+      path: ball_volume
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
@@ -102,7 +102,7 @@ entities:
       no_shadow: true
   - name: Hello world
     type: text
-    model:
+    mesh:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
         alpha: true
@@ -116,8 +116,8 @@ entities:
     scale: 0.01
     xscript_file: scripts/anim_rotate_object
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]

@@ -16,8 +16,8 @@ script:
     - path: lib/common
 entities:
   - name: origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
@@ -27,8 +27,8 @@ entities:
     scale: 1
   - id: player
     Xtype: origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
     program: g_tex
     pos: [0, 25, 40]
     front: [0, 0, -1]
@@ -58,8 +58,8 @@ entities:
     camera:
       default: true
   - id: pawn
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -95,8 +95,8 @@ entities:
       type: camera_zoom
     camera:
   - name: Camera 2
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
     program: g_tex
     pos: [25, 30, 40]
     rotation: [-15, 40, 0]
@@ -106,8 +106,8 @@ entities:
     controller:
       type: camera_zoom
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-25, 45, 0]
@@ -120,8 +120,8 @@ entities:
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
   - name: Point light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [10, 30, 25]
@@ -140,8 +140,8 @@ entities:
     pos: [0.0, 25.0, 0.0]
   - name: Basic ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
@@ -162,8 +162,8 @@ entities:
         size: 1.3
   - name: Gold ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: gold_ball
         kd: [0.7516, 0.6065, 0.2265, 1.0]
@@ -185,8 +185,8 @@ entities:
         size: 1.3
   - name: Fence ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: silver_ball
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -209,8 +209,8 @@ entities:
         size: 1.3
   - name: Plastic ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
@@ -229,8 +229,8 @@ entities:
         size: 1.3
   - name: Rusted iron ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
@@ -254,8 +254,8 @@ entities:
         size: 1.3
   - name: Old gold ball
     parent_id: ball_origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
@@ -280,8 +280,8 @@ entities:
         type: capsule
         size: [1, 4, 0]
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
@@ -303,8 +303,8 @@ entities:
     pos: [0.0, 30.0, 0.0]
   - name: Four cubes
     parent_id: cube_origo
-    model:
-      mesh: texture_cube_3
+    mesh:
+      path: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
@@ -322,8 +322,8 @@ entities:
         type: box
         size: [2, 2, 2]
   - name: Fence
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: fence
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -348,8 +348,8 @@ entities:
         type: plane
         rot: [0, 0, 270]
   - name: Skeleton
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -374,8 +374,8 @@ entities:
         size: [0.3, 3.4, 0]
   - name: world_x_minus
     xtype: origo
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG
@@ -393,8 +393,8 @@ entities:
         rot: [0, 0, 270]
   - name: world_x_plus
     xtype: origo
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG
@@ -412,8 +412,8 @@ entities:
         rot: [0, 0, 90]
   - name: world_y_minus
     type: origo
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG
@@ -432,8 +432,8 @@ entities:
   - name: world_y_plus
     type: origo
     program: g_tex
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG
@@ -450,8 +450,8 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_minus
     xtype: origo
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG
@@ -469,8 +469,8 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_plus
     xtype: origo
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: world_barrier
         map_pbr: textures\Fence007A_4K-JPG

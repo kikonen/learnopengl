@@ -25,8 +25,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-300, 200, -400]
@@ -72,8 +72,8 @@ entities:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - name: Water surface - SINGLE
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: water_surface
         kd: [0.55, 0.55, 0.95, 1.0]
@@ -89,8 +89,8 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         kd: [0.55, 0.55, 0.95, 1.0]
         map_bump: textures/water_surface_512_normal.png
@@ -105,8 +105,8 @@ entities:
       water: true
     script_file: scripts/anim_water
   - name: Sea floor
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: sea_floor
         map_kd: textures/tiles_1024.png

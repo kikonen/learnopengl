@@ -34,12 +34,9 @@ namespace loader {
         std::vector<MeshData>& meshes,
         Loaders& loaders) const
     {
-        int level = 0;
         for (const auto& entry : node.getNodes()) {
             auto& data = meshes.emplace_back();
-            data.level = level;
             loadMesh(entry, data, loaders);
-            level++;
         }
     }
 
@@ -54,20 +51,14 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "level") {
-                data.level = readInt(v);
+            if (k == "name") {
+                data.name = readString(v);
             }
-            else if (k == "mesh") {
-                if (v.isSequence()) {
-                    auto& nodes = v.getNodes();
-                    data.meshPath = util::joinPath(readString(nodes[0]), readString(nodes[1]));
-                }
-                else {
-                    data.meshPath = readString(v);
-                }
+            else if (k == "path" || k == "mesh") {
+                data.path = readString(v);
 
                 if (data.baseDir.empty()) {
-                    std::filesystem::path path{ data.meshPath };
+                    std::filesystem::path path{ data.path };
                     data.baseDir = path.parent_path().string();
                 }
             }
@@ -104,9 +95,21 @@ namespace loader {
                     data.meshFlags.set(util::toLower(flagName), flagValue);
                 }
             }
-            else {
-                reportUnknown("model_entry", k, v);
+            else if (k == "lod") {
+                auto& lod = data.lods.emplace_back();
+                lod.name = "*";
+                loadLod(v, lod);
             }
+            else if (k == "lods") {
+                loadLods(v, data.lods);
+            }
+            else {
+                reportUnknown("mesh_entry", k, v);
+            }
+        }
+
+        if (data.name.empty()) {
+            data.name = data.path;
         }
 
         // NOTE KI ensure assigns are before modifiers
@@ -125,12 +128,11 @@ namespace loader {
         const loader::DocNode& node,
         std::vector<LodData>& lods) const
     {
-        int level = 0;
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
-            data.level = level;
+            data.level = 0;
+            data.name = '*';
             loadLod(entry, data);
-            level++;
         }
     }
 
@@ -144,7 +146,10 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "level") {
+            if (k == "name") {
+                data.name = readString(v);
+            }
+            else if (k == "level") {
                 data.level = readInt(v);
             }
             else if (k == "distance") {

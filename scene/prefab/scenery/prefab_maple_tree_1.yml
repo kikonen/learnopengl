@@ -1,8 +1,8 @@
 --
 prefab:
   id: maple_tree_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_02.fbx
+    mesh:
+      path: fbx/scenery/trees/Maple_02.fbx
       materials:
         - name: maple_trunk
           alias: Tree_0Mat

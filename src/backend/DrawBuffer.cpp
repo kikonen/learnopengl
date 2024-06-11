@@ -257,6 +257,8 @@ namespace backend {
         // https://www.khronos.org/opengl/wiki/Vertex_Rendering
         if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
             auto& elem = cmd.element;
+            if (elem.u_instanceCount == 0) return;
+
             glDrawElementsInstancedBaseVertexBaseInstance(
                 drawOptions.toMode(),
                 elem.u_count,
@@ -269,6 +271,8 @@ namespace backend {
         else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
         {
             auto& arr = cmd.array;
+            if (arr.u_instanceCount == 0) return;
+
             glDrawArraysInstancedBaseInstance(
                 drawOptions.toMode(),
                 arr.u_firstVertex,

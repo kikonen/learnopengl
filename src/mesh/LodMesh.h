@@ -104,7 +104,8 @@ namespace mesh {
         // Squared Distance upto lod is applied
         float m_distance2{ 0.f };
 
-        int16_t m_lodLevel{ -1 };
+        // -1 == collision mesh
+        int8_t m_level{ 0 };
 
         MeshFlags m_flags;
     };

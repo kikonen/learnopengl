@@ -64,8 +64,7 @@ namespace mesh {
     }
 
     uint16_t MeshType::addMeshSet(
-        mesh::MeshSet& meshSet,
-        uint16_t lodLevel)
+        mesh::MeshSet& meshSet)
     {
         uint16_t count = 0;
 
@@ -77,9 +76,6 @@ namespace mesh {
                 lodMesh->getMesh<mesh::Mesh>()->m_animationBaseTransform = glm::toMat4(rotateYUp);
             }
 
-            if (lodMesh->m_lodLevel < 0) {
-                lodMesh->m_lodLevel = lodLevel;
-            }
             count++;
         }
 
@@ -144,23 +140,26 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    uint16_t MeshType::getLodLevel(
+    int8_t MeshType::getLodLevel(
         const glm::vec3& cameraPos,
         const glm::vec3& worldPos) const
     {
         auto& lodMeshes = *m_lodMeshes.get();
-        if (lodMeshes.size() == 1) return lodMeshes[0].m_lodLevel;
+        if (lodMeshes.size() == 1) return lodMeshes[0].m_level;
 
+        const LodMesh* last = &lodMeshes[0];
         {
             auto dist2 = glm::distance2(worldPos, cameraPos);
 
             for (const auto& lodMesh : lodMeshes) {
+                if (lodMesh.m_level < 0) continue;
                 if (dist2 < lodMesh.m_distance2)
-                    return lodMesh.m_lodLevel;
+                    return lodMesh.m_level;
+                last = &lodMesh;
             }
         }
 
-        return lodMeshes[lodMeshes.size() - 1].m_lodLevel;
+        return last->m_level;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

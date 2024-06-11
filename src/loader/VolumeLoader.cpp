@@ -58,7 +58,7 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<volume>");
 
-        type->addMeshSet(*meshSet, 0);
+        type->addMeshSet(*meshSet);
 
         auto* lodMesh = type->modifyLodMesh(0);
         {

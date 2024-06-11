@@ -22,8 +22,8 @@ entities:
     controllers:
       - type: camera_zoom
   - id: directional_light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 400, 500]
@@ -63,8 +63,8 @@ entities:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - id: grid_points
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
     program: g_tex
     pos: [-1024, 150, -1024]
     xxpos: [0, 150, 0]
@@ -77,8 +77,8 @@ entities:
       y_step: 0
       z_step: 256
   - id: sea_surface
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
@@ -94,8 +94,8 @@ entities:
       no_shadow: true
       water: true
   - id: sea_floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: sea_floor
         map_kd: textures/tiles_1024.png
@@ -108,8 +108,8 @@ entities:
     render_flags:
       no_shadow: true
   - id: palm_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Palm_01.fbx
+    mesh:
+      path: fbx/scenery/trees/Palm_01.fbx
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
@@ -139,8 +139,8 @@ entities:
         x_step: -20
         z_step: 20
   - id: skeleton_army_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr

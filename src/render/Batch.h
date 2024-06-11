@@ -83,6 +83,8 @@ namespace render {
 
         bool isFlushed() const noexcept;
 
+        void clearBatches() noexcept;
+
         size_t getFlushedTotalCount() const noexcept {
             return m_flushedTotalCount;
         }
@@ -104,6 +106,7 @@ namespace render {
         bool m_frustumGPU = false;
         uint32_t m_frustumParallelLimit = 999;
 
+        size_t m_pendingCount{ 0 };
         std::map<BatchKey, BatchCommand> m_batches;
 
         std::vector<mesh::InstanceSSBO> m_entityIndeces;

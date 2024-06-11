@@ -27,7 +27,6 @@
 #include "ScriptData.h"
 #include "TextData.h"
 #include "MeshData.h"
-#include "LodData.h"
 
 namespace loader {
     struct EntityData {
@@ -47,7 +46,6 @@ namespace loader {
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
-        std::vector<LodData> lods;
 
         std::string geometryType;
         std::unordered_map<MaterialProgramType, std::string> programs;

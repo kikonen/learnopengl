@@ -68,8 +68,7 @@ namespace mesh {
 
         // @return count of meshes added
         uint16_t addMeshSet(
-            mesh::MeshSet& meshSet,
-            uint16_t lodLevel);
+            mesh::MeshSet& meshSet);
 
         LodMesh* addLodMesh(LodMesh&& lodMesh);
 
@@ -108,7 +107,7 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        uint16_t getLodLevel(
+        int8_t getLodLevel(
             const glm::vec3& cameraPos,
             const glm::vec3& worldPos) const;
 

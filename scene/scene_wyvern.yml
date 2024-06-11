@@ -25,8 +25,8 @@ entities:
     controllers:
       - type: camera_zoom
   - id: wyvern_{t}
-    model:
-      mesh: fbx/creatures/wyvern/SK_Wyvern.FBX
+    mesh:
+      path: fbx/creatures/wyvern/SK_Wyvern.FBX
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern

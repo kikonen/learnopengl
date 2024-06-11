@@ -126,23 +126,23 @@ namespace animation {
 
             //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
-                hitMiss.push_back(fmt::format("[+{}.{}.{}]",
-                    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
+                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
 
-                hitCount++;
+                //hitCount++;
 
-                if (channel) {
-                    channel->interpolate(animationTimeTicks);
-                }
+                //if (channel) {
+                //    channel->interpolate(animationTimeTicks);
+                //}
 
                 // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
                 palette[bone->m_index].m_transform = globalTransform * bone->m_offsetMatrix;
 
             }
             else {
-                hitMiss.push_back(fmt::format("[-{}.{}.{}]",
-                    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
-                missCount++;
+                //hitMiss.push_back(fmt::format("[-{}.{}.{}]",
+                //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                //missCount++;
             }
         }
 

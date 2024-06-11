@@ -124,7 +124,7 @@ namespace loader {
 
         type->m_priority = data.priority;
 
-        type->addMeshSet(*meshSet, 0);
+        type->addMeshSet(*meshSet);
 
         auto* lodMesh = type->modifyLodMesh(0);
         {

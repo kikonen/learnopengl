@@ -27,8 +27,8 @@ entities:
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     program: g_light
@@ -39,8 +39,8 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - xid: object_{t}
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
@@ -52,8 +52,8 @@ entities:
     scale: 2
     base_scale: 0.01
   - id: skeleton_1_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -74,8 +74,8 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: skeleton_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -96,8 +96,8 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: skeleton_3_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -118,8 +118,8 @@ entities:
       xuse_bones_debug: true
       use_animation: true
   - id: scavenger_1_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -152,8 +152,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: scavenger_2_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -186,8 +186,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: scavenger_3_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -220,8 +220,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: lion_1_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -259,8 +259,8 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: lion_2_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -298,8 +298,8 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: lion_3_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr

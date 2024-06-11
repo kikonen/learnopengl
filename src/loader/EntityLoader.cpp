@@ -122,7 +122,7 @@ namespace loader {
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
-            else if (k == "model") {
+            else if (k == "mesh" || k == "model") {
                 if (data.type == EntityType::none) {
                     auto& meshData = data.meshes.emplace_back();
                     loaders.m_meshLoader.loadMesh(v, meshData, loaders);
@@ -244,11 +244,8 @@ namespace loader {
             else if (k == "script_file") {
                 loaders.m_scriptLoader.loadScript(v, data.script);
             }
-            else if (k == "models" || k == "meshes") {
+            else if (k == "meshes") {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
-            }
-            else if (k == "lods") {
-                loaders.m_meshLoader.loadLods(v, data.lods);
             }
             else {
                 reportUnknown("entity_entry", k, v);

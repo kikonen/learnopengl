@@ -88,7 +88,7 @@ namespace render {
         const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_lodLevel != lodLevel) continue;
+            if (lodMesh.m_level != lodLevel) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -106,12 +106,19 @@ namespace render {
                     drawOptions
                 };
 
-                const auto& pair = m_batches.insert({ key, {} });
-                top = &pair.first->second;
+                const auto& it = m_batches.find(key);
+                if (it == m_batches.end()) {
+                    const auto& pair = m_batches.insert({ key, {} });
+                    top = &pair.first->second;
+                } else {
+                    top = &it->second;
+                }
             }
 
             auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
+            lodInstances.reserve(100);
             lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex);
+            m_pendingCount++;
         }
     }
 
@@ -189,7 +196,7 @@ namespace render {
                 const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_lodLevel != lodLevel) continue;
+                    if (lodMesh.m_level != lodLevel) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
                     if (!drawOptions.isKind(kindBits)) continue;
@@ -207,12 +214,20 @@ namespace render {
                             drawOptions
                         };
 
-                        const auto& pair = m_batches.insert({ key, {} });
-                        top = &pair.first->second;
+                        const auto& it = m_batches.find(key);
+                        if (it == m_batches.end()) {
+                            const auto& pair = m_batches.insert({ key, {} });
+                            top = &pair.first->second;
+                        }
+                        else {
+                            top = &it->second;
+                        }
                     }
 
                     auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
+                    lodInstances.reserve(100);
                     lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
+                    m_pendingCount++;
                 }
             }
 
@@ -229,7 +244,7 @@ namespace render {
                 const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_lodLevel != lodLevel) continue;
+                    if (lodMesh.m_level != lodLevel) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
                     if (!drawOptions.isKind(kindBits)) continue;
@@ -247,12 +262,20 @@ namespace render {
                             drawOptions
                         };
 
-                        const auto& pair = m_batches.insert({ key, {} });
-                        top = &pair.first->second;
+                        const auto& it = m_batches.find(key);
+                        if (it == m_batches.end()) {
+                            const auto& pair = m_batches.insert({ key, {} });
+                            top = &pair.first->second;
+                        }
+                        else {
+                            top = &it->second;
+                        }
                     }
 
                     auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
+                    lodInstances.reserve(100);
                     lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
+                    m_pendingCount++;
                 }
             }
 
@@ -318,7 +341,22 @@ namespace render {
 
     bool Batch::isFlushed() const noexcept
     {
-        return m_batches.empty();
+        //return m_batches.empty();
+        return m_pendingCount == 0;
+    }
+
+    void Batch::clearBatches() noexcept
+    {
+        //KI_INFO_OUT(fmt::format("batches: {}, indeces={}", m_batches.size(), m_entityIndeces.size()));
+        for (auto& batchIt : m_batches) {
+            auto& batch = batchIt.second;
+            for (auto& lodIt : batch.m_lodInstances) {
+                auto& lods = lodIt.second;
+                lods.clear();
+            }
+        }
+        m_entityIndeces.clear();
+        m_pendingCount = 0;
     }
 
     size_t Batch::flush(
@@ -338,9 +376,11 @@ namespace render {
 
                 for (const auto& lodInstance : curr.m_lodInstances) {
                     const auto* lod = lodInstance.first.m_lod;
+                    const auto& lodEntries = lodInstance.second;
+                    if (lodEntries.empty()) continue;
 
                     lodBaseIndex[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
-                    for (auto& lodEntry : lodInstance.second) {
+                    for (auto& lodEntry : lodEntries) {
                         auto& instance = m_entityIndeces.emplace_back();
                         instance.u_entityIndex = lodEntry.m_entityIndex;
                         instance.u_meshIndex = lodEntry.m_meshIndex;
@@ -351,7 +391,7 @@ namespace render {
             }
 
             if (m_entityIndeces.empty()) {
-                m_batches.clear();
+                clearBatches();
                 return 0;
             }
         }
@@ -386,7 +426,11 @@ namespace render {
             for (const auto& lodEntry : curr.m_lodInstances) {
                 auto& lodBaseIndex = programLodBaseIndex[key.m_program];
                 auto baseInstance = lodBaseIndex[lodEntry.first];
-                GLuint instanceCount = static_cast<GLuint>(lodEntry.second.size());
+
+                const auto& lodEntries = lodEntry.second;
+                if (lodEntries.empty()) continue;
+
+                GLuint instanceCount = static_cast<GLuint>(lodEntries.size());
                 const auto* lod = lodEntry.first.m_lod;
 
                 if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
@@ -400,6 +444,7 @@ namespace render {
                     cmd.u_firstIndex = lod->m_baseIndex;
                     cmd.u_count = lod->m_indexCount;
 
+                    //KI_INFO_OUT(fmt::format("draw: {}", instanceCount));
                     draw->sendDirect(drawRange, indirect);
                 }
                 else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
@@ -425,8 +470,7 @@ namespace render {
         draw->flush();
         draw->drawPending(false);
 
-        m_batches.clear();
-        m_entityIndeces.clear();
+        clearBatches();
 
         return flushCount;
     }

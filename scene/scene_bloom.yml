@@ -26,8 +26,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Other
-    model:
-      mesh: texture_cube_4/texture_cube_4.obj
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
     program: g_tex
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 90, 0]
@@ -35,8 +35,8 @@ entities:
       z_count: 20
       z_step: -10
   - name: Stained windows
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
@@ -53,8 +53,8 @@ entities:
       z_count: 10
       z_step: 2
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.3, 1.0]
     xxpos: [0, 25, 25]
@@ -68,8 +68,8 @@ entities:
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 50000
   - id: maple_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_02.fbx
+    mesh:
+      path: fbx/scenery/trees/Maple_02.fbx
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -94,8 +94,8 @@ entities:
       x_step: 20
       z_step: -20
   - id: skeleton_army_grid_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -121,8 +121,8 @@ entities:
         x_step: 10
         z_step: -10
   - id: skeleton_army_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -150,22 +150,22 @@ entities:
     render_flags:
       cube_map: true
   - name: Mirror ball
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material_modifier:
         reflection: 0.8
     program: g_tex
     pos: [0, 5, 10]
     scale: 1
   - name: Planet 1
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
       material_modifier:
         map_bump: planet/mars_normal.png
     program: g_tex
@@ -177,8 +177,8 @@ entities:
     render_flags:
       cube_map: true
   - name: Wood wall
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: woodwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -193,8 +193,8 @@ entities:
       x_count: 1
       x_step: 1
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]

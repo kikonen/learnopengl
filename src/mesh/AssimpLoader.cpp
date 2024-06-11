@@ -203,6 +203,11 @@ namespace mesh
                     if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
                     if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
 
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.003" }) continue;
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.004" }) continue;
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.005" }) continue;
+
+
                     modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
                     modelMesh->m_rig = ctx.m_rig;
                     modelMesh->m_nodeName = rigNode.m_name;

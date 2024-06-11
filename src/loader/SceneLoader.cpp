@@ -471,7 +471,6 @@ namespace loader {
         } else
         {
             resolveMeshes(type, entityData, tile);
-            resolveLods(type, entityData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
@@ -591,7 +590,7 @@ namespace loader {
 
             auto future = ModelRegistry::get().getMeshSet(
                 assets.modelsDir,
-                meshData.meshPath);
+                meshData.path);
 
             auto meshSet = future.get();
 
@@ -603,9 +602,7 @@ namespace loader {
                         *meshSet);
                 }
 
-                meshCount += type->addMeshSet(
-                    *meshSet,
-                    meshData.level);
+                meshCount += type->addMeshSet(*meshSet);
             }
 
             KI_INFO(fmt::format(
@@ -641,6 +638,7 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
+                resolveLod(type, meshData, lodMesh);
                 resolveMaterials(type, lodMesh, entityData, meshData);
                 m_loaders->m_materialLoader.resolveProgram(type, lodMesh.getMaterial());
                 assignMeshFlags(meshData, lodMesh);
@@ -649,24 +647,19 @@ namespace loader {
         }
     }
 
-    void SceneLoader::resolveLods(
-        mesh::MeshType* type,
-        const EntityData& entityData)
-    {
-        for (const auto& lodData : entityData.lods) {
-            resolveLod(type, lodData);
-        }
-    }
-
     void SceneLoader::resolveLod(
         mesh::MeshType* type,
-        const LodData& lodData)
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
     {
-        for (auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_lodLevel == lodData.level) {
-                lodMesh.setDistance(lodData.distance);
-            }
-        }
+        auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+        if (!mesh) return;
+
+        const auto* lod = meshData.findLod(mesh->m_name);
+        if (!lod) return;
+
+        lodMesh.m_level = lod->level;
+        lodMesh.setDistance(lod->distance);
     }
 
     void SceneLoader::loadAnimation(

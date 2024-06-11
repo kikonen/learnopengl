@@ -30,8 +30,8 @@ entities:
     render_flags:
       cube_map: true
   - name: Bunny
-    model:
-      mesh: bunny
+    mesh:
+      path: bunny
       material_modifier:
         xreflection: 0.5
         refraction: 0.9
@@ -44,8 +44,8 @@ entities:
     render_flags:
       no_reflect: true
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]

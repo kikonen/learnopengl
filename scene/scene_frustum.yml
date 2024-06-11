@@ -25,9 +25,9 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Base
-    model:
-      mesh: cow
-      xmesh: cube
+    mesh:
+      path: cow
+      xpath: cube
       xxmaterial:
         name: fur_base
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -44,8 +44,8 @@ entities:
       z_step: -15
   - name: Directional light
     type: origo
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]

@@ -34,8 +34,8 @@ entities:
   - name: Directional light
     pos: [0, 45, 100]
     scale: 2.5
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     program: g_tex
@@ -46,8 +46,8 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - id: cube_1
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
@@ -59,16 +59,16 @@ entities:
     render_flags:
       cube_map: true
   - name: Mirror ball
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material_modifier:
         reflection: 0.8
     program: g_tex
     pos: [0, 30.5, -10]
     scale: 10
   - name: Big mirror 2
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: mirror
           alias: "*"
@@ -85,8 +85,8 @@ entities:
     render_flags:
       mirror: true
   - name: Pool floor
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: pool_floor
           alias: "*"
@@ -106,8 +106,8 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool surface
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       materials:
         - name: pool_surface
           alias: "*"
@@ -131,8 +131,8 @@ entities:
       z_step: 60
     script_file: scripts/anim_water
   - name: Pool side
-    model:
-      mesh: pool_brick
+    mesh:
+      path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
         metal: [1.0, 0.0, 0, 1]
@@ -150,8 +150,8 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: maple_tree_forest_1_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_02.fbx
+    mesh:
+      path: fbx/scenery/trees/Maple_02.fbx
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -177,8 +177,8 @@ entities:
         x_step: 20
         z_step: -40
   - id: skeleton_army_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       materials:
         - name: skeleton_pbr
           alias: "*"
@@ -231,8 +231,8 @@ entities:
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
   - id: grass_{t}
-    model:
-      mesh: fbx/scenery/foliage/SM_grass_bush_01.fbx
+    mesh:
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
       materials:
         - name: grass_bush_01_pbr
           alias: M_atlas_grass_01
@@ -254,16 +254,16 @@ entities:
       x_step: 12
       z_step: -12
   - id: cube_2
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [160, 9.5, 20]
     scale: 2.5
   - name: Pool floor - SINGLE
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: pool_floor
           alias: "*"
@@ -276,8 +276,8 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface - SINGLE
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       materials:
         - name: pool_surface
           alias: "*"
@@ -294,8 +294,8 @@ entities:
       water: true
     xxscript_file: scripts/cycle_water
   - name: Pool side - SINGLE
-    model:
-      mesh: pool_brick
+    mesh:
+      path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
         metal: [1.0, 0.0, 0, 1]
@@ -313,8 +313,8 @@ entities:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: palm_tree_forest_2_{t}
-    model:
-      mesh: fbx/scenery/trees/Palm_01.fbx
+    mesh:
+      path: fbx/scenery/trees/Palm_01.fbx
       materials:
         - name: palm_trunk
           alias: Tree_0Mat

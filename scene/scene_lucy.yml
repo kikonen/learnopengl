@@ -30,8 +30,8 @@ entities:
     render_flags:
       cube_map: true
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 55, 60]
@@ -44,8 +44,8 @@ entities:
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 50000
   - name: Pool floor
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -60,8 +60,8 @@ entities:
     render_flags:
       no_shadow: true
   - name: Pool surface
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: pool_surface
         kd: [0.55, 0.55, 0.95, 1.0]
@@ -77,8 +77,8 @@ entities:
       water: true
     script_file: scripts/anim_water_lucy
   - name: Pool side
-    model:
-      mesh: pool_brick
+    mesh:
+      path: pool_brick
       material_modifier:
         map_pbr: textures\Tiles004_1K-PNG
         tiling_x: 90
@@ -94,8 +94,8 @@ entities:
       - pos: [0.0, -1, 100]
         scale: [100, 6, 0.3]
   - name: Lucy statue
-    model:
-      mesh: lucy
+    mesh:
+      path: lucy
       xmaterial:
         name: gold_ball
         kd: [0.7516, 0.6065, 0.2265, 1.0]
@@ -107,7 +107,7 @@ entities:
         tiling: 9
         parallax_depth: 0.0
         xrender_back: true
-    xmodel: water_ball
+    xmesh: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
@@ -126,8 +126,8 @@ entities:
           loop: true
     script_file: scripts/anim_lucy
   - name: Big mirror 2
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: mirror
         kd: [0.800000, 0.800000, 0.800000, 1.0]

@@ -27,15 +27,15 @@ entities:
     controllers:
       - type: camera_zoom
   - xname: Other
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [0.0, 0.0, -20.0]
   - name: Airboat
-    model:
-      mesh: airboat_fixed_colors
+    mesh:
+      path: airboat_fixed_colors
     program: g_tex
     pos: [0.0, 0.0, 0.0]
   - name: Directional light
@@ -46,8 +46,8 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 40000
   - name: Giant wooden box
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: giant_woodbox
         map_kd: textures/wood_1024.png

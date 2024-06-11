@@ -22,23 +22,23 @@
 #include "InstanceFlags.h"
 
 namespace {
-    const std::vector<std::regex> lodMatchers{
-        std::regex(".*lod[0-9]+"),
-    };
+    //const std::vector<std::regex> lodMatchers{
+    //    std::regex(".*lod[0-9]+"),
+    //};
 
-    int16_t resolveLodLevel(const std::string& name)
-    {
-        const auto& str = util::toLower(name);
-        if (!util::matchAny(lodMatchers, str)) return -1;
+    //int16_t resolveLodLevel(const std::string& name)
+    //{
+    //    const auto& str = util::toLower(name);
+    //    if (!util::matchAny(lodMatchers, str)) return -1;
 
-        std::string output = std::regex_replace(
-            str,
-            std::regex(".*lod([0-9]+)"),
-            std::string("$1")
-        );
+    //    std::string output = std::regex_replace(
+    //        str,
+    //        std::regex(".*lod([0-9]+)"),
+    //        std::string("$1")
+    //    );
 
-        return stoi(output);
-    }
+    //    return stoi(output);
+    //}
 }
 
 namespace mesh {
@@ -52,7 +52,7 @@ namespace mesh {
 
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
-        m_lodLevel = o.m_lodLevel;
+        m_level = o.m_level;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = std::move(o.m_material);
@@ -79,7 +79,7 @@ namespace mesh {
 
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
-        m_lodLevel = o.m_lodLevel;
+        m_level = o.m_level;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = std::move(o.m_material);
@@ -107,7 +107,7 @@ namespace mesh {
     {
         return fmt::format(
             "<LOD_MESH: level={}, index={}, vao={}, mesh={}, materialIndex={}>",
-            m_lodLevel,
+            m_level,
             m_meshIndex,
             m_vao ? *m_vao : -1,
             m_mesh ? m_mesh->str() : "N/A",
@@ -177,16 +177,6 @@ namespace mesh {
         m_mesh = mesh;
         if (!m_mesh) return;
 
-        auto level = resolveLodLevel(mesh->m_name);
-        if (level == -1) {
-            level = resolveLodLevel(mesh->m_nodeName);
-        }
-
-        if (level >= 0) {
-            m_lodLevel = level;
-            setDistance((m_lodLevel + 1) * 20.f);
-        }
-
         setMaterial(mesh->getMaterial());
 
         m_meshIndex = mesh->m_registeredIndex;
@@ -205,11 +195,11 @@ namespace mesh {
         }
 
         if (assets.useLodDebug) {
-            if (m_lodLevel > 0)
+            if (m_level > 0)
                 material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-            if (m_lodLevel > 1)
+            if (m_level > 1)
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
-            if (m_lodLevel > 2)
+            if (m_level > 2)
                 material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
         }
 

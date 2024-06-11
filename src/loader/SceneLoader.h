@@ -146,13 +146,10 @@ namespace loader {
             const glm::uvec3& tile,
             int index);
 
-        void resolveLods(
-            mesh::MeshType* type,
-            const EntityData& entityData);
-
         void resolveLod(
             mesh::MeshType* type,
-            const LodData& lodData);
+            const MeshData& meshData,
+            mesh::LodMesh& lodMesh);
 
         void loadAnimation(
             const std::string& baseDir,

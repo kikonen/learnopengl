@@ -26,8 +26,8 @@ entities:
     controllers:
       - type: camera_zoom
   - xname: Stacked Base
-    model:
-      mesh: cow
+    mesh:
+      path: cow
     priority: 1
     pos: [0, 0, 0]
     scale: 1.3
@@ -52,9 +52,9 @@ entities:
         program: g_fur
         layers: 10
   - name: Base
-    model:
-      mesh: cow
-      xxmesh: cube
+    mesh:
+      path: cow
+      xxpath: cube
       material:
         name: fur_base
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -79,9 +79,9 @@ entities:
       x_step: 15
       z_step: -15
   - xname: Fur
-    model:
-      mesh: cow
-      xxmesh: quad
+    mesh:
+      path: cow
+      xxpath: quad
       material:
         name: fur
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -100,8 +100,8 @@ entities:
       x_step: 15
       z_step: -15
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
@@ -121,8 +121,8 @@ entities:
     parent_id: point-light-origo-1
     pos: [-10, 0, 0]
     scale: 0.5
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.1, 0.9, 0.1, 1.0]
     program: g_tex
@@ -146,8 +146,8 @@ entities:
       z_count: 2
   - name: Point light - quad
     parent_id: "point-light-origo-quad-{x}-{z}"
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.1, 0.1, 0.9, 1.0]
     pos: [10, 0, 0]

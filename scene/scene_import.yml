@@ -27,8 +27,8 @@ entities:
   - name: Directional light
     type: origo
     pos: [-15, 25, 25]
-    model:
-      mesh: light
+    mesh:
+      path: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -42,8 +42,8 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
@@ -55,8 +55,8 @@ entities:
       no_shadow: true
     scale: 100
   - xid: object
-    model:
-      mesh: texture_cube_4/texture_cube_4.fbx
+    mesh:
+      path: texture_cube_4/texture_cube_4.fbx
       material_modifier:
         xrender_back: true
         xwireframe: true
@@ -72,9 +72,9 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: object_{t}
-    model:
-      mesh: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
-      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+    mesh:
+      path: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
+      path: fbx/scenery/trees/SM_TreePine_01b.FBX
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a

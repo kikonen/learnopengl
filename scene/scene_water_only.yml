@@ -29,8 +29,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Water surface
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: water_surface
         kd: [0.55, 0.55, 0.95, 1.0]
@@ -52,8 +52,8 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool floor
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: pool_floor
         map_kd: textures/tiles_1024.png

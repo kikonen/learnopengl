@@ -25,8 +25,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [-10, 25, 40]
@@ -39,8 +39,8 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - xid: palm_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Palm_01.fbx
+    mesh:
+      path: fbx/scenery/trees/Palm_01.fbx
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
@@ -69,8 +69,8 @@ entities:
         x_step: 20
         z_step: -20
   - xid: maple_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_02.fbx
+    mesh:
+      path: fbx/scenery/trees/Maple_02.fbx
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -96,8 +96,8 @@ entities:
         x_step: 20
         z_step: -20
   - id: pine_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+    mesh:
+      path: fbx/scenery/trees/SM_TreePine_01b.FBX
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -123,8 +123,8 @@ entities:
         x_step: 20
         z_step: -20
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
