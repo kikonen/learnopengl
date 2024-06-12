@@ -155,9 +155,9 @@ namespace render {
                 useFrustum = false;
         }
 
-        if (useFrustum) {
-            uint32_t instanceCount = count;
+        uint32_t instanceCount = count;
 
+        if (useFrustum) {
             s_accept.reserve(snapshots.size());
             s_accept.clear();
             for (uint32_t i = 0; i < count; i++) {
@@ -186,9 +186,11 @@ namespace render {
                             idx = -1;
                     });
             }
+        }
 
+        {
             for (uint32_t i = 0; i < count; i++) {
-                if (s_accept[i] == -1) {
+                if (useFrustum && s_accept[i] == -1) {
                     instanceCount--;
                     continue;
                 }
@@ -233,53 +235,8 @@ namespace render {
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
 
-            if (instanceCount == 0)
-                return;
-
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
-        }
-        else {
-            for (uint32_t i = 0; i < count; i++) {
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
-
-                for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_level != lodLevel) continue;
-
-                    const auto& drawOptions = lodMesh.m_drawOptions;
-                    if (!drawOptions.isKind(kindBits)) continue;
-                    if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
-
-                    auto* program = programSelector(lodMesh);
-                    if (!program) continue;
-
-                    BatchCommand* top;
-                    {
-                        BatchKey key{
-                            type->m_priority,
-                            program,
-                            lodMesh.m_vao,
-                            drawOptions
-                        };
-
-                        const auto& it = m_batches.find(key);
-                        if (it == m_batches.end()) {
-                            const auto& pair = m_batches.insert({ key, {} });
-                            top = &pair.first->second;
-                        }
-                        else {
-                            top = &it->second;
-                        }
-                    }
-
-                    auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
-                    lodInstances.reserve(100);
-                    lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
-                    m_pendingCount++;
-                }
-            }
-
-            m_drawCount += count;
         }
     }
 
