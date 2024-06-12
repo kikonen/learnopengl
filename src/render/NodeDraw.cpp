@@ -268,7 +268,9 @@ namespace render {
             drawNodesImpl(
                 ctx,
                 [](const mesh::LodMesh& lodMesh) {
-                    return !lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
+                    return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
+                        ? lodMesh.m_program
+                        : nullptr;
                 },
                 [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
                 nodeSelector,

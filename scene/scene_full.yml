@@ -752,7 +752,6 @@ entities:
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
-        alpha: true
         blend: true
         program: ball_effect
         program_definitions:
