@@ -18,11 +18,18 @@ namespace render {
     {
     }
 
+    //inline bool operator<(const DrawOptions& o) const noexcept {
+    //    return std::tie(d.m_blend, d.m_renderBack, m_wireframe, m_type, m_mode) <
+    //        std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode);
+    //}
+
     bool BatchKey::operator<(const BatchKey& o) const noexcept
     {
+        const auto& d = m_drawOptions;
+        const auto& od = o.m_drawOptions;
         return
-            std::tie(  m_priority,   m_program->m_id,   m_vao->m_id, m_drawOptions) <
-            std::tie(o.m_priority, o.m_program->m_id, o.m_vao->m_id, o.m_drawOptions);
+            std::tie(  m_vao->m_id,  d.m_renderBack,   m_priority,   m_program->m_id,   m_drawOptions) <
+            std::tie(o.m_vao->m_id, od.m_renderBack, o.m_priority, o.m_program->m_id, o.m_drawOptions);
         //return tie ? true : (m_drawOptions < o.m_drawOptions);
     }
 }
