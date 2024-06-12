@@ -198,9 +198,11 @@ namespace mesh {
             if (m_level > 0)
                 material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
             if (m_level > 1)
-                material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
+                material->kd = glm::vec4{ 0.f, 0.5f, 0.5f, 1.f };
             if (m_level > 2)
                 material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+            if (m_level > 3)
+                material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
         }
 
         MaterialRegistry::get().registerMaterial(*material);
