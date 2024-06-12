@@ -1254,13 +1254,22 @@ entities:
         x_step: -20
         z_step: 20
   - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xwireframe: true
+    meshes:
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        lods:
+          - level: 0
+            distance: 20
+        material:
+          name: skeleton_pbr
+          map_pbr: skeleton_pbr
+          xmetal: [0.3, 0.4, 0, 1]
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        lods:
+          - level: 1
+            distance: 10000
+        material:
+          name: skeleton_pbr
+          map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
     program: g_tex
     shadow_program: simple_depth
     priority: -15
