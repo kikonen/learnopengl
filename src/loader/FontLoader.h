@@ -27,5 +27,9 @@ namespace loader {
 
         text::font_id createFont(
             const FontData& data) const;
+
+        text::font_id resolveFont(
+            pool::TypeHandle typeHandle,
+            const TextData& data) const;
     };
 }

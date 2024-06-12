@@ -60,6 +60,14 @@ namespace loader {
         }
     }
 
+    text::font_id FontLoader::resolveFont(
+        pool::TypeHandle typeHandle,
+        const TextData& data) const
+    {
+        auto* font = findFont(data.font);
+        return font ? font->id : 0;
+    }
+
     text::font_id FontLoader::createFont(
         const FontData& data) const
     {

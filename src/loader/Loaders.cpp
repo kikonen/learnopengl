@@ -19,6 +19,7 @@ namespace loader {
         m_physicsLoader(ctx),
         m_entityLoader(ctx),
         m_meshLoader(ctx),
+        m_textLoader(ctx),
         m_prefabLoader{ctx}
     {}
 
@@ -38,6 +39,7 @@ namespace loader {
         m_physicsLoader.setRegistry(registry);
         m_entityLoader.setRegistry(registry);
         m_meshLoader.setRegistry(registry);
+        m_textLoader.setRegistry(registry);
         m_prefabLoader.setRegistry(registry);
     }
 }

@@ -44,7 +44,7 @@
 
 //#include "generator/GridGenerator.h"
 //#include "generator/AsteroidBeltGenerator.h"
-#include "generator/TextGenerator.h"
+//#include "generator/TextGenerator.h"
 //#include "terrain/TerrainGenerator.h"
 
 #include "event/Dispatcher.h"
@@ -128,8 +128,6 @@ namespace loader {
                 loadMeta(doc.findNode("meta"), *m_meta);
 
                 l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
-
-                l.m_fontLoader.loadFonts(doc.findNode("fonts"), m_fonts);
 
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
@@ -485,14 +483,6 @@ namespace loader {
         return typeHandle;
     }
 
-    text::font_id SceneLoader::resolveFont(
-        pool::TypeHandle typeHandle,
-        const TextData& data) const
-     {
-        auto* font = findFont(data.font);
-        return font ? font->id : 0;
-    }
-
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
@@ -745,11 +735,10 @@ namespace loader {
             entityData.particle);
 
         if (type->m_entityType == EntityType::text) {
-            auto fontId = resolveFont(typeHandle, entityData.text);
-            auto generator = std::make_unique<TextGenerator>();
-            generator->setFontId(fontId);
-            generator->setText(entityData.text.text);
-            node->m_generator = std::move(generator);
+            node->m_generator = m_loaders->m_textLoader.createGenerator(
+                entityData.text,
+                type,
+                *m_loaders);
         }
 
         l.m_scriptLoader.createScript(
@@ -1024,15 +1013,4 @@ namespace loader {
             }
         }
     }
-
-    const FontData* SceneLoader::findFont(
-        std::string_view name) const
-    {
-        const auto& it = std::find_if(
-            m_fonts.cbegin(),
-            m_fonts.cend(),
-            [&name](const auto& m) { return m.name == name; });
-        return it != m_fonts.end() ? &(*it) : nullptr;
-    }
-
 }

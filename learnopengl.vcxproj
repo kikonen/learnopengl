@@ -212,6 +212,7 @@
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
     <ClCompile Include="src\animation\RigNode.cpp" />
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
+    <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\mesh\TransformRegistry.cpp" />
@@ -419,6 +420,7 @@
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
+    <ClInclude Include="src\loader\TextLoader.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\DocNode_impl.h" />

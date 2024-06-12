@@ -28,9 +28,5 @@ namespace loader {
             std::vector<EntityData>& clones,
             bool recurse,
             Loaders& loaders) const;
-
-        void loadText(
-            const loader::DocNode& node,
-            TextData& data) const;
     };
 }

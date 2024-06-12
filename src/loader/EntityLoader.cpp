@@ -161,7 +161,7 @@ namespace loader {
                 data.front = readVec3(v);
             }
             else if (k == "text") {
-                loadText(v, data.text);
+                loaders.m_textLoader.loadText(v, data.text, loaders);
             }
             else if (k == "position" || k == "pos") {
                 data.position = readVec3(v);
@@ -253,6 +253,9 @@ namespace loader {
             if (!data.meshes.empty()) {
                 data.type = EntityType::model;
             }
+            if (data.text.enabled) {
+                data.type = EntityType::text;
+            }
         }
 
         if (data.enabled) {
@@ -294,23 +297,4 @@ namespace loader {
         }
     }
 
-    void EntityLoader::loadText(
-        const loader::DocNode& node,
-        TextData& data) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& k = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            if (k == "text") {
-                data.text = readString(v);
-            }
-            else if (k == "font") {
-                data.font = readString(v);
-            }
-            else {
-                reportUnknown("text_entry", k, v);
-            }
-        }
-    }
 }

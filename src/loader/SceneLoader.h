@@ -31,7 +31,6 @@ namespace mesh {
 namespace loader {
     struct RootData;
     struct SkyboxData;
-    struct FontData;
     struct MaterialData;
     struct ScriptEngineData;
     struct EntityRoot;
@@ -124,10 +123,6 @@ namespace loader {
             const EntityData& entityData,
             const glm::uvec3& tile);
 
-        text::font_id resolveFont(
-            pool::TypeHandle typeHandle,
-            const TextData& data) const;
-
         void resolveMaterials(
             mesh::MeshType* type,
             mesh::LodMesh& lodMesh,
@@ -202,9 +197,6 @@ namespace loader {
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
-        const FontData* findFont(
-            std::string_view name) const;
-
     private:
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
@@ -220,8 +212,6 @@ namespace loader {
         std::vector<EntityRoot> m_entities;
 
         std::vector<ResolvedEntity> m_resolvedEntities;
-
-        std::vector<FontData> m_fonts;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

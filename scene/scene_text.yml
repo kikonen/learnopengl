@@ -30,20 +30,21 @@ entities:
     mesh:
       flags:
         billboard: true
+    text:
+      text: "- fps"
+      font:
+        path: fonts/Vera.ttf
+        size: 36
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
         alpha: true
         render_back: true
-    text:
-      font: fps_font
-      text: "- fps"
-    program: g_font_render
-    shadow_program: shadow_font_render
+        program: g_font_render
+        shadow_program: shadow_font_render
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
-    xrender_flags:
   - id: player_camera
     parent_id: player
     type: origo
@@ -63,6 +64,10 @@ entities:
         alpha: true
         xblend: true
         render_back: true
+    text:
+      font:
+        path: fonts/LuckiestGuy.ttf
+        size: 72
     custom_material:
       type: text
       font: hello_font
@@ -73,7 +78,11 @@ entities:
       xeffect: true
   - id: hello_world
     type: text
-    mesh:
+    text:
+      font:
+        path: fonts/LuckiestGuy.ttf
+        size: 72
+      text: ÄÅÖ äåö - Hello world
       material:
         name: hello
         map_pbr: textures\Plastic 01 [4K]
@@ -83,11 +92,8 @@ entities:
         alpha: true
         xblend: true
         render_back: true
-    text:
-      font: hello_font
-      text: ÄÅÖ äåö - Hello world
-    program: g_font_render
-    shadow_program: shadow_font_render
+        program: g_font_render
+        shadow_program: shadow_font_render
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
     render_flags:
@@ -98,17 +104,19 @@ entities:
     mesh:
       flags:
         billboard: true
+    text:
+      font:
+        path: fonts/Lobster-Regular.ttf
+        size: 36
+      text: Look at ME
       material:
         name: another_text
         map_pbr: textures\Leather037_1K
         tiling: 1
         alpha: true
         render_back: true
-    text:
-      font: another_font
-      text: Look at ME
-    program: g_font_render
-    shadow_program: shadow_font_render
+        program: g_font_render
+        shadow_program: shadow_font_render
     pos: [0, 4, -8]
     scale: 0.01
     xrender_flags:
@@ -181,13 +189,3 @@ entities:
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
     xrender_flags:
-fonts:
-  - name: hello_font
-    path: fonts/LuckiestGuy.ttf
-    size: 72
-  - name: another_font
-    path: fonts/Lobster-Regular.ttf
-    size: 36
-  - name: fps_font
-    path: fonts/Vera.ttf
-    size: 36
