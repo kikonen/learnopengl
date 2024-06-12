@@ -527,13 +527,6 @@ namespace loader {
         }
 
         {
-            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
-            if (!useParallax) {
-                material.parallaxDepth = 0.f;
-            }
-        }
-
-        {
             for (const auto& srcIt : entityData.programs) {
                 const auto& dstIt = material.m_programNames.find(srcIt.first);
                 if (dstIt == material.m_programNames.end()) {
@@ -543,21 +536,13 @@ namespace loader {
         }
 
         {
-            const auto& shaderName = m_loaders->m_materialLoader.selectProgram(
-                MaterialProgramType::shader,
-                material.m_programNames);
-
-            if (shaderName.starts_with("g_")) {
-                material.gbuffer = true;
-            }
-
-            if (material.blend) {
-                // NOTE KI alpha MUST BE true if blend
-                material.alpha = true;
+            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+            if (!useParallax) {
+                material.parallaxDepth = 0.f;
             }
         }
 
-        material.loadTextures();
+        m_loaders->m_materialLoader.resolveMaterial(type, material);
     }
 
     void SceneLoader::resolveMeshes(
@@ -640,7 +625,6 @@ namespace loader {
             for (auto& lodMesh : span) {
                 resolveLod(type, meshData, lodMesh);
                 resolveMaterials(type, lodMesh, entityData, meshData);
-                m_loaders->m_materialLoader.resolveProgram(type, lodMesh.getMaterial());
                 assignMeshFlags(meshData, lodMesh);
                 lodMesh.setupDrawOptions();
             }

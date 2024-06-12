@@ -674,13 +674,41 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::resolveProgram(
-        mesh::MeshType* type,
-        Material* mat)
+    void MaterialLoader::resolveMaterial(
+        const mesh::MeshType* type,
+        Material& material)
     {
-        if (!mat) return;
-        auto& material = *mat;
+        {
+            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+            if (!useParallax) {
+                material.parallaxDepth = 0.f;
+            }
+        }
 
+        {
+            const auto& shaderName = selectProgram(
+                MaterialProgramType::shader,
+                material.m_programNames);
+
+            if (shaderName.starts_with("g_")) {
+                material.gbuffer = true;
+            }
+
+            if (material.blend) {
+                // NOTE KI alpha MUST BE true if blend
+                material.alpha = true;
+            }
+        }
+
+        material.loadTextures();
+
+        resolveProgram(type, material);
+    }
+
+    void MaterialLoader::resolveProgram(
+        const mesh::MeshType* type,
+        Material& material)
+    {
         const bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
         const bool useDisplacementTex = material.hasBoundTex(TextureType::displacement_map);
         const bool useNormalTex = material.hasBoundTex(TextureType::normal_map);
@@ -825,4 +853,5 @@ namespace loader {
         }
         return found ? program : defaultValue;
     }
+
 }

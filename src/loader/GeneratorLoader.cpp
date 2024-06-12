@@ -134,7 +134,7 @@ namespace loader {
             generator->m_material = data.materialData.material;
             generator->m_material.loadTextures();
 
-            loaders.m_materialLoader.resolveProgram(type, &generator->m_material);
+            loaders.m_materialLoader.resolveMaterial(type, generator->m_material);
 
             return generator;
         }

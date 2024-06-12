@@ -61,9 +61,13 @@ namespace loader {
             Material& m,
             const MaterialData& data);
 
+        void resolveMaterial(
+            const mesh::MeshType* type,
+            Material& material);
+
         void resolveProgram(
-            mesh::MeshType* type,
-            Material* material);
+            const mesh::MeshType* type,
+            Material& material);
 
         std::string selectProgram(
             MaterialProgramType type,
