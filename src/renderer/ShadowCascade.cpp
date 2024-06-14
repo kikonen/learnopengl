@@ -229,7 +229,7 @@ void ShadowCascade::render(
 
     localCtx.m_defaults.m_cullFace = GL_FRONT;
     localCtx.m_shadow = true;
-    localCtx.m_allowBlend = false;
+    localCtx.m_forceSolid = true;
 
     localCtx.copyShadowFrom(parentCtx);
     localCtx.updateMatricesUBO();

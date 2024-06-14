@@ -66,23 +66,14 @@ namespace backend {
             return m_kindBits & kindBits;
         }
 
-        inline bool isSameDrawCommand(
-            const DrawOptions& o,
-            bool forceWireframe,
-            bool allowBlend) const noexcept
-        {
-            // NOTE KI multi/single material *CAN* go in same indirect draw
-            return isSameMultiDraw(o, allowBlend, forceWireframe);
-        }
-
         inline bool isSameMultiDraw(
             const DrawOptions& o,
-            bool forceWireframe,
-            bool allowBlend) const noexcept
+            bool forceSolid,
+            bool forceWireframe) const noexcept
         {
             return m_renderBack == o.m_renderBack &&
                 (forceWireframe ? true : m_wireframe == o.m_wireframe) &&
-                (allowBlend ? m_blend == o.m_blend : true) &&
+                (forceSolid ? true : m_blend == o.m_blend) &&
                 m_mode == o.m_mode &&
                 m_type == o.m_type &&
                 m_tessellation == o.m_tessellation;

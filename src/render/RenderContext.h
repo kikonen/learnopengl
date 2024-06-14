@@ -85,9 +85,9 @@ public:
 
     void copyShadowFrom(const RenderContext& b);
 
-    bool setAllowBlend(bool flag) const {
-        bool old = m_allowBlend;
-        m_allowBlend = flag;
+    bool setForceSolid(bool flag) const {
+        bool old = m_forceSolid;
+        m_forceSolid = flag;
         return old;
     }
 
@@ -133,9 +133,11 @@ public:
 
     mutable ClipPlanesUBO m_clipPlanes;
 
-    mutable bool m_useLight = true;
-    mutable bool m_forceWireframe = false;
-    mutable bool m_allowBlend = true;
-    mutable bool m_shadow = false;
-    mutable bool m_allowDrawDebug = false;
+    mutable bool m_useLight : 1{ true };
+    mutable bool m_shadow : 1 { false };
+
+    mutable bool m_forceSolid : 1{ false };
+    mutable bool m_forceWireframe : 1{ false };
+
+    mutable bool m_allowDrawDebug : 1{ false };
 };

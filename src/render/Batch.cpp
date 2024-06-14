@@ -371,10 +371,10 @@ namespace render {
             const auto& curr = it.second;
 
             backend::DrawRange drawRange = {
-                key.m_program,
                 key.m_vao,
+                key.m_program,
                 key.m_drawOptions,
-                ctx.m_allowBlend,
+                ctx.m_forceSolid,
                 ctx.m_forceWireframe
             };
 

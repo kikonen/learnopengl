@@ -172,7 +172,7 @@ namespace render {
             m_gBuffer.clearAll();
 
             // NOTE KI no blend in G-buffer
-            auto oldAllowBlend = ctx.setAllowBlend(false);
+            auto oldForceSolid = ctx.setForceSolid(true);
 
             // NOTE KI "pre pass depth" causes more artifacts than benefits
             if (assets.prepassDepthEnabled)
@@ -222,7 +222,7 @@ namespace render {
                 }
             }
 
-            ctx.setAllowBlend(oldAllowBlend);
+            ctx.setForceSolid(oldForceSolid);
 
             m_gBuffer.m_buffer->copy(
                 m_gBuffer.m_depthTexture.get(),
@@ -292,7 +292,7 @@ namespace render {
 
         // pass 5 - OIT
         // NOTE KI OIT after *forward* pass to allow using depth texture from them
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             if (assets.effectOitEnabled)
             {
@@ -349,7 +349,7 @@ namespace render {
         // pass 7 - blend effects
         // => separate light calculations
         //if (false)
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             state.setStencil({});
 
@@ -365,14 +365,14 @@ namespace render {
             ctx.m_batch->flush(ctx);
         }
 
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             state.setStencil({});
             particleRenderer.render(ctx);
         }
 
         // pass 8 - screenspace effects
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             state.setEnabled(GL_DEPTH_TEST, false);
             // NOTE KI do NOT modify depth with blend (likely redundant)

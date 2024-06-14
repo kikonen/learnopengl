@@ -215,12 +215,17 @@ namespace backend {
 
         bool sameDraw = true;
         if (!cmdRange.empty()) {
-            sameDraw = curr.m_program == sendRange.m_program &&
-                curr.m_vao == sendRange.m_vao &&
-                curr.m_drawOptions.isSameMultiDraw(
-                    sendRange.m_drawOptions,
-                    curr.m_forceWireframe,
-                    curr.m_allowBlend);
+            const auto& cd = curr.m_drawOptions;
+            const auto& sd = sendRange.m_drawOptions;
+
+            sameDraw = curr.m_vao == sendRange.m_vao &&
+                curr.m_program == sendRange.m_program &&
+                cd.m_renderBack == sd.m_renderBack &&
+                (curr.m_forceWireframe ? true : cd.m_wireframe == sd.m_wireframe) &&
+                (curr.m_forceSolid ? true : cd.m_blend == sd.m_blend) &&
+                cd.m_mode == sd.m_mode &&
+                cd.m_type == sd.m_type &&
+                cd.m_tessellation == sd.m_tessellation;
         }
 
         if (!sameDraw) {
@@ -385,7 +390,7 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && drawOptions.m_blend && drawRange.m_allowBlend;
+        const bool blend = !wireframe && !drawRange.m_forceSolid && drawOptions.m_blend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             // NOTE KI no blend mode with OIT blend
