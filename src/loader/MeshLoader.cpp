@@ -155,6 +155,9 @@ namespace loader {
             else if (k == "distance") {
                 data.distance = readFloat(v);
             }
+            else if (k == "priority") {
+                data.priority = readInt(v);
+            }
             else {
                 reportUnknown("lod_entry", k, v);
             }

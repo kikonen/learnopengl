@@ -53,6 +53,7 @@ namespace mesh {
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
         m_level = o.m_level;
+        m_priority = o.m_priority;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = std::move(o.m_material);
@@ -80,6 +81,7 @@ namespace mesh {
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
         m_level = o.m_level;
+        m_priority = o.m_priority;
         m_distance2 = o.m_distance2;
         m_mesh = o.m_mesh;
         m_material = std::move(o.m_material);

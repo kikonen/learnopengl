@@ -284,6 +284,8 @@ namespace terrain {
                 type->addMeshSet(*meshSet);
 
                 auto* lodMesh = type->modifyLodMesh(0);
+
+                //lodMesh->m_priority = containerType->m_priority;
                 lodMesh->setMaterial(m_material);
                 lodMesh->registerMaterial();
 
@@ -342,8 +344,6 @@ namespace terrain {
         flags.invisible = false;
         flags.terrain = true;
         flags.contained = true;
-
-        type->m_priority = containerType->m_priority;
 
         return typeHandle;
     }

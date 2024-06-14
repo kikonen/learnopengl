@@ -100,7 +100,7 @@ namespace render {
             BatchCommand* top;
             {
                 BatchKey key{
-                    type->m_priority,
+                    lodMesh.m_priority,
                     program,
                     lodMesh.m_vao,
                     drawOptions
@@ -210,7 +210,7 @@ namespace render {
                     BatchCommand* top;
                     {
                         BatchKey key{
-                            type->m_priority,
+                            lodMesh.m_priority,
                             program,
                             lodMesh.m_vao,
                             drawOptions

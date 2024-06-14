@@ -463,8 +463,6 @@ namespace loader {
 
         assignTypeFlags(entityData, typeHandle);
 
-        type->m_priority = entityData.priority;
-
         if (entityData.type == EntityType::origo) {
             type->m_flags.invisible = true;
             type->m_entityType = EntityType::origo;
@@ -643,6 +641,7 @@ namespace loader {
         if (!lod) return;
 
         lodMesh.m_level = lod->level;
+        lodMesh.m_priority = lod->priority;
         lodMesh.setDistance(lod->distance);
     }
 

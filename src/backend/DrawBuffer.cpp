@@ -369,22 +369,17 @@ namespace backend {
     void DrawBuffer::bindDrawRange(
         const backend::DrawRange& drawRange) const
     {
-        const auto& drawOptions = drawRange.m_drawOptions;
         auto& state = kigl::GLState::get();
+        const auto& drawOptions = drawRange.m_drawOptions;
 
-        drawRange.m_program->bind();
+        state.useProgram(*drawRange.m_program);
         state.bindVAO(*drawRange.m_vao);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
         const bool wireframe = drawOptions.m_wireframe || drawRange.m_forceWireframe;
 
-        if (wireframe) {
-            state.polygonFrontAndBack(GL_LINE);
-        }
-        else {
-            state.polygonFrontAndBack(GL_FILL);
-        }
+        state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
         if (drawOptions.m_tessellation) {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);

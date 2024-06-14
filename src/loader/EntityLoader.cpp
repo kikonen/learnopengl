@@ -119,9 +119,6 @@ namespace loader {
             else if (k == "active") {
                 data.active = readBool(v);
             }
-            else if (k == "priority") {
-                data.priority = readInt(v);
-            }
             else if (k == "mesh" || k == "model") {
                 if (data.type == EntityType::none) {
                     auto& meshData = data.meshes.emplace_back();
