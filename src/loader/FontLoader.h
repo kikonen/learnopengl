@@ -22,14 +22,7 @@ namespace loader {
             const loader::DocNode& node,
             FontData& data) const;
 
-        void createFonts(
-            std::vector<FontData>& data);
-
-        text::font_id createFont(
-            const FontData& data) const;
-
         text::font_id resolveFont(
-            pool::TypeHandle typeHandle,
-            const TextData& data) const;
+            const FontData& data) const;
     };
 }

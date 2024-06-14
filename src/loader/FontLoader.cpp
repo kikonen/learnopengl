@@ -52,36 +52,17 @@ namespace loader {
         }
     }
 
-    void FontLoader::createFonts(
-        std::vector<FontData>& fonts)
-    {
-        for (auto& data : fonts) {
-            data.id = createFont(data);
-        }
-    }
-
     text::font_id FontLoader::resolveFont(
-        pool::TypeHandle typeHandle,
-        const TextData& data) const
-    {
-        auto* font = findFont(data.font);
-        return font ? font->id : 0;
-    }
-
-    text::font_id FontLoader::createFont(
         const FontData& data) const
     {
         auto& fr = FontRegistry::get();
-        auto id = fr.registerFont(data.name);
 
-        auto* font = fr.modifyFont(id);
-        font->m_fontPath = data.path;
-        font->m_fontSize = data.size;
-        font->m_atlasSize = data.atlasSize;
+        text::FontAtlas font;
+        font.m_name = data.name;
+        font.m_fontPath = data.path;
+        font.m_fontSize = data.size;
+        font.m_atlasSize = data.atlasSize;
 
-        // TODO KI race condition with RT
-        //font->prepare();
-
-        return id;
+        return fr.registerFont(std::move(font));
     }
 }

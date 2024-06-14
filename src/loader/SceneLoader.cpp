@@ -30,8 +30,6 @@
 #include "mesh/QuadMesh.h"
 #include "mesh/TextMesh.h"
 
-#include "text/TextDraw.h"
-
 #include "component/Light.h"
 #include "component/Camera.h"
 
@@ -41,11 +39,6 @@
 #include "model/EntityType.h"
 
 #include "animation/AnimationLoader.h"
-
-//#include "generator/GridGenerator.h"
-//#include "generator/AsteroidBeltGenerator.h"
-//#include "generator/TextGenerator.h"
-//#include "terrain/TerrainGenerator.h"
 
 #include "event/Dispatcher.h"
 
@@ -200,8 +193,6 @@ namespace loader {
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
         l.m_volumeLoader.attachVolume(root.rootId);
         l.m_cubeMapLoader.attachCubeMap(root.rootId);
-
-        l.m_fontLoader.createFonts(m_fonts);
 
         {
             std::lock_guard lock(m_ready_lock);
@@ -523,13 +514,6 @@ namespace loader {
             }
         }
 
-        {
-            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
-            if (!useParallax) {
-                material.parallaxDepth = 0.f;
-            }
-        }
-
         m_loaders->m_materialLoader.resolveMaterial(type, material);
     }
 
@@ -736,8 +720,8 @@ namespace loader {
 
         if (type->m_entityType == EntityType::text) {
             node->m_generator = m_loaders->m_textLoader.createGenerator(
-                entityData.text,
                 type,
+                entityData.text,
                 *m_loaders);
         }
 

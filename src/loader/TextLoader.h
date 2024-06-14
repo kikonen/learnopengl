@@ -4,6 +4,13 @@
 
 #include "TextData.h"
 
+#include "generator/NodeGenerator.h"
+
+
+namespace mesh {
+    class MeshType;
+}
+
 namespace loader {
     class TextLoader : public BaseLoader
     {
@@ -17,8 +24,8 @@ namespace loader {
             Loaders& loaders) const;
 
         std::unique_ptr<NodeGenerator> createGenerator(
+            const mesh::MeshType* type,
             const TextData& data,
-            mesh::MeshType* type,
             Loaders& loaders);
     };
 }

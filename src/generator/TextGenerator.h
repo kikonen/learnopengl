@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "asset/Material.h"
 #include "asset/AABB.h"
 
 #include "NodeGenerator.h"
@@ -25,6 +26,8 @@ namespace text {
 class TextGenerator final : public NodeGenerator {
 public:
     TextGenerator();
+
+    ~TextGenerator();
 
     virtual void prepare(
         const PrepareContext& ctx,
@@ -72,6 +75,9 @@ public:
     GLuint64 getAtlasTextureHandle() const noexcept;
 
     void clear();
+
+public:
+    Material m_material;
 
 private:
     bool m_dirty{ true };

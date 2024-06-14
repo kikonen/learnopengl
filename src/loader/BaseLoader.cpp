@@ -38,6 +38,8 @@ namespace loader
     {
     }
 
+    BaseLoader::~BaseLoader() = default;
+
     void BaseLoader::setRegistry(std::shared_ptr<Registry> registry)
     {
         m_registry = registry;

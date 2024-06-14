@@ -32,8 +32,11 @@ entities:
         alpha: true
         render_back: true
     text:
-      font: fps_font
       text: "- fps"
+      font:
+        name: fps_font
+        path: fonts/Vera.ttf
+        size: 36
     program: g_font_render
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
@@ -144,7 +147,3 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 50000
-fonts:
-  - name: fps_font
-    path: fonts/Vera.ttf
-    size: 36

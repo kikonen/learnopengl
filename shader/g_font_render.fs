@@ -31,7 +31,7 @@ in VS_OUT {
   flat uint shapeIndex;
 
 #ifdef USE_TBN
-  mat4 tbn;
+  mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;

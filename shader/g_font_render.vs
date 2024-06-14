@@ -17,6 +17,7 @@ layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
@@ -41,7 +42,7 @@ out VS_OUT {
   flat uint shapeIndex;
 
 #ifdef USE_TBN
-  mat4 tbn;
+  mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
   vec3 viewTangentPos;

@@ -38,6 +38,8 @@ namespace loader
         BaseLoader(
             Context ctx);
 
+        ~BaseLoader();
+
         void setRegistry(std::shared_ptr<Registry> registry);
 
         void loadRepeat(

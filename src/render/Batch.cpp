@@ -89,6 +89,7 @@ namespace render {
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_level != lodLevel) continue;
+            if (!lodMesh.m_vao) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -199,6 +200,7 @@ namespace render {
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_level != lodLevel) continue;
+                    if (!lodMesh.m_vao) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
                     if (!drawOptions.isKind(kindBits)) continue;

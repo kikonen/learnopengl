@@ -75,8 +75,11 @@ entities:
         alpha: true
         render_back: true
     text:
-      font: fps_font
       text: "- fps"
+      fonts:
+        name: fps_font
+        path: fonts/Vera.ttf
+        size: 36
     program: g_font_render
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
@@ -1446,7 +1449,3 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
-fonts:
-  - name: fps_font
-    path: fonts/Vera.ttf
-    size: 36

@@ -30,11 +30,6 @@ entities:
     mesh:
       flags:
         billboard: true
-    text:
-      text: "- fps"
-      font:
-        path: fonts/Vera.ttf
-        size: 36
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
@@ -43,6 +38,11 @@ entities:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+    text:
+      text: "- fps"
+      font:
+        path: fonts/Vera.ttf
+        size: 36
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
   - id: player_camera
@@ -78,11 +78,7 @@ entities:
       xeffect: true
   - id: hello_world
     type: text
-    text:
-      font:
-        path: fonts/LuckiestGuy.ttf
-        size: 72
-      text: ÄÅÖ äåö - Hello world
+    mesh:
       material:
         name: hello
         map_pbr: textures\Plastic 01 [4K]
@@ -94,6 +90,11 @@ entities:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+    text:
+      font:
+        path: fonts/LuckiestGuy.ttf
+        size: 72
+      text: ÄÅÖ äåö - Hello world
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
     render_flags:
@@ -104,11 +105,6 @@ entities:
     mesh:
       flags:
         billboard: true
-    text:
-      font:
-        path: fonts/Lobster-Regular.ttf
-        size: 36
-      text: Look at ME
       material:
         name: another_text
         map_pbr: textures\Leather037_1K
@@ -117,6 +113,11 @@ entities:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+    text:
+      font:
+        path: fonts/Lobster-Regular.ttf
+        size: 36
+      text: Look at ME
     pos: [0, 4, -8]
     scale: 0.01
     xrender_flags:

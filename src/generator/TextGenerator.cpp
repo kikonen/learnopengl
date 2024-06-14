@@ -33,6 +33,8 @@ TextGenerator::TextGenerator()
     : m_vboAtlasTex{ "vbo_font", ATTR_FONT_ATLAS_TEX, VBO_FONT_ATLAS_BINDING }
 {}
 
+TextGenerator::~TextGenerator() = default;
+
 void TextGenerator::prepare(
     const PrepareContext& ctx,
     Node& container)
@@ -116,6 +118,8 @@ void TextGenerator::updateVAO(
 
         m_vao.updateRT();
     }
+
+    lodMesh->m_vao = m_vao.getVAO();
 
     lod.m_baseVertex = mesh->getBaseVertex();
     lod.m_baseIndex = mesh->getBaseIndex();

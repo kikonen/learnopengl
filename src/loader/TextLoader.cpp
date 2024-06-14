@@ -28,7 +28,7 @@ namespace loader {
                 data.text = readString(v);
                 data.enabled = false;
             }
-            if (k == "text") {
+            else if (k == "text") {
                 data.text = readString(v);
                 data.enabled = true;
             }
@@ -45,8 +45,8 @@ namespace loader {
     }
 
     std::unique_ptr<NodeGenerator> TextLoader::createGenerator(
+        const mesh::MeshType* type,
         const TextData& data,
-        mesh::MeshType* type,
         Loaders& loaders)
     {
         if (!data.enabled) return nullptr;
@@ -55,14 +55,13 @@ namespace loader {
 
         auto generator = std::make_unique<TextGenerator>();
 
-        auto fontId = resolveFont(typeHandle, entityData.text);
+        auto fontId = loaders.m_fontLoader.resolveFont(data.fontData);
         generator->setFontId(fontId);
         generator->setText(data.text);
 
-        //generator->m_material = data.materialData.material;
-        //generator->m_material.loadTextures();
-
-        //loaders.m_materialLoader.resolveProgram(type, &generator->m_material);
+        generator->m_material = data.materialData.material;
+        generator->m_material.loadTextures();
+        loaders.m_materialLoader.resolveProgram(type, generator->m_material);
 
         return generator;
     }

@@ -10,7 +10,6 @@ namespace loader {
         bool enabled{ false };
 
         std::string text;
-        std::string font;
 
         MaterialData materialData;
         FontData fontData;

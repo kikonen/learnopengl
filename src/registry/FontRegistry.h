@@ -30,8 +30,6 @@ public:
         return &m_fonts[id - 1];
     }
 
-    text::FontAtlas* modifyFont(text::font_id id);
-
     bool bindFont(
         text::font_id id);
 
@@ -39,7 +37,11 @@ public:
         text::font_id id);
 
     text::font_id registerFont(
-        const std::string& name);
+        text::FontAtlas&& src);
+
+private:
+    text::font_id findFont(
+        const text::FontAtlas& src) const noexcept;
 
 private:
     mutable std::shared_mutex m_lock{};
