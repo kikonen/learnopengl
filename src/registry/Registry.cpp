@@ -23,10 +23,9 @@
 #include "animation/AnimationSystem.h"
 
 #include "terrain/TerrainTileRegistry.h"
-
 #include "mesh/TransformRegistry.h"
+#include "text/FontRegistry.h"
 
-#include "registry/FontRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
@@ -115,7 +114,7 @@ void Registry::updateWT(const UpdateContext& ctx)
 void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
-    FontRegistry::get().updateRT(ctx);
+    text::FontRegistry::get().updateRT(ctx);
     mesh::TransformRegistry::get().updateRT(ctx);
     MaterialRegistry::get().updateRT(ctx);
     ModelRegistry::get().updateRT(ctx);

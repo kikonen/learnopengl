@@ -20,9 +20,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/FontRegistry.h"
 
-
+#include "text/FontRegistry.h"
 #include "text/TextDraw.h"
 #include "text/FontAtlas.h"
 
@@ -149,7 +148,7 @@ void TextGenerator::bindBatch(
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 {
-    return FontRegistry::get().getFont(m_fontId)->getTextureHandle();
+    return text::FontRegistry::get().getFont(m_fontId)->getTextureHandle();
 }
 
 void TextGenerator::clear()

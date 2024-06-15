@@ -232,7 +232,7 @@
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
-    <ClCompile Include="src\registry\FontRegistry.cpp" />
+    <ClCompile Include="src\text\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
@@ -510,7 +510,7 @@
     <ClInclude Include="src\pool\Entry.h" />
     <ClInclude Include="src\pool\IdHash.h" />
     <ClInclude Include="src\pool\TypeHandle.h" />
-    <ClInclude Include="src\registry\FontRegistry.h" />
+    <ClInclude Include="src\text\FontRegistry.h" />
     <ClInclude Include="src\pool\NodeHandle.h" />
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\NodeSnapshotRegistry.h" />

@@ -12,12 +12,12 @@
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
-#include "registry/FontRegistry.h"
 
 #include "mesh/TextMesh.h"
 
 #include "mesh/vao/VBO_impl.h"
 
+#include "FontRegistry.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
 
@@ -172,7 +172,7 @@ namespace text
         glm::vec2& pen,
         mesh::TextMesh* mesh)
     {
-        auto* font = FontRegistry::get().getFont(fontId);
+        auto* font = text::FontRegistry::get().getFont(fontId);
         if (!font) return;
 
         addText(mesh, font, text, pen);

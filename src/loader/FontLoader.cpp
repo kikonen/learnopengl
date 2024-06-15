@@ -3,9 +3,7 @@
 #include "util/Util.h"
 
 #include "text/FontAtlas.h"
-
-#include "registry/Registry.h"
-#include "registry/FontRegistry.h"
+#include "text/FontRegistry.h"
 
 #include "loader/document.h"
 
@@ -55,7 +53,7 @@ namespace loader {
     text::font_id FontLoader::resolveFont(
         const FontData& data) const
     {
-        auto& fr = FontRegistry::get();
+        auto& fr = text::FontRegistry::get();
 
         text::FontAtlas font;
         font.m_name = data.name;
