@@ -13,7 +13,7 @@ namespace mesh {
         virtual void clear() override;
 
         // @return VAO
-        virtual const kigl::GLVertexArray* registerModel(
+        virtual const kigl::GLVertexArray* registerMesh(
             mesh::ModelMesh* mesh) override;
 
         virtual void updateRT() override;

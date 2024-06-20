@@ -79,6 +79,9 @@ namespace mesh {
 
         glm::mat4 m_animationBaseTransform{ 1.f };
 
+        uint32_t m_reserveVertexCount{ 0 };
+        uint32_t m_reserveIndexCount{ 0 };
+
     protected:
         bool m_prepared{ false };
 

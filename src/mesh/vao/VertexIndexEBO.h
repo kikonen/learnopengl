@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string_view>
-#include <vector>
+#include <span>
 
 #include "kigl/GLBuffer.h"
 
@@ -20,7 +20,13 @@ namespace mesh
         VertexIndexEBO(
             std::string_view name);
 
-        size_t addIndeces(std::vector<mesh::Index> indeces);
+        // @return baseIndex
+        uint32_t reserveIndeces(uint32_t count);
+
+        void updateIndeces(
+            uint32_t baseIndex,
+            std::span<mesh::Index> indeces) noexcept;
+
         void clear();
 
         void prepareVAO(kigl::GLVertexArray& vao);

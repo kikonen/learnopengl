@@ -75,7 +75,44 @@ namespace mesh {
         m_indexEbo.clear();
     }
 
-    const kigl::GLVertexArray* TexturedVAO::registerModel(
+    const kigl::GLVertexArray* TexturedVAO::registerMesh(
+        mesh::ModelMesh* mesh)
+    {
+        ASSERT_RT();
+
+        auto vertexCount = mesh->m_reserveVertexCount;
+        auto indexCount = mesh->m_reserveIndexCount;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        if (vertexCount == 0) {
+            vertexCount = static_cast<uint32_t>(vertices.size());
+        }
+
+        if (indexCount == 0) {
+            indexCount = static_cast<uint32_t>(indeces.size());
+        }
+
+        mesh->m_vboIndex = m_positionVbo.reserveVertices(vertexCount);
+        mesh->m_eboIndex = m_indexEbo.reserveIndeces(indexCount);
+
+        m_normalVbo.reserveVertices(vertexCount);
+        m_textureVbo.reserveVertices(vertexCount);
+
+        if (vertices.size() > 0) {
+            updateMesh(
+                mesh->m_vboIndex,
+                mesh->m_eboIndex,
+                mesh);
+        }
+
+        return m_vao.get();
+    }
+
+    void TexturedVAO::updateMesh(
+        uint32_t baseVbo,
+        uint32_t baseEbo,
         mesh::ModelMesh* mesh)
     {
         ASSERT_RT();
@@ -83,18 +120,11 @@ namespace mesh {
         auto& vertices = mesh->m_vertices;
         auto& indeces = mesh->m_indeces;
 
-        assert(!vertices.empty());
-        assert(!indeces.empty());
+        m_positionVbo.updateVertices(baseVbo, vertices);
+        m_normalVbo.updateVertices(baseVbo, vertices);
+        m_textureVbo.updateVertices(baseVbo, vertices);
 
-        {
-            mesh->m_positionVboOffset = m_positionVbo.addVertices(vertices);
-            mesh->m_indexEboOffset = m_indexEbo.addIndeces(indeces);
-        }
-
-        m_normalVbo.addVertices(vertices);
-        m_textureVbo.addVertices(vertices);
-
-        return m_vao.get();
+        m_indexEbo.updateIndeces(baseEbo, indeces);
     }
 
     void TexturedVAO::updateRT()
@@ -104,6 +134,7 @@ namespace mesh {
         m_positionVbo.updateVAO(*m_vao);
         m_normalVbo.updateVAO(*m_vao);
         m_textureVbo.updateVAO(*m_vao);
+
         m_indexEbo.updateVAO(*m_vao);
     }
 }

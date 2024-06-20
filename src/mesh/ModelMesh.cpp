@@ -47,10 +47,6 @@ namespace mesh {
             m_vertexBones.size());
     }
 
-    uint32_t ModelMesh::getBaseVertex() const noexcept {
-        return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
-    }
-
     AABB ModelMesh::calculateAABB() const noexcept {
         AABB aabb{ true };
 
@@ -69,10 +65,10 @@ namespace mesh {
         m_prepared = true;
 
         if (m_rig && m_rig->hasBones()) {
-            m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
+            m_vao = ModelRegistry::get().getSkinnedVao()->registerMesh(this);
         }
         else {
-            m_vao = ModelRegistry::get().getTexturedVao()->registerModel(this);
+            m_vao = ModelRegistry::get().getTexturedVao()->registerMesh(this);
         }
 
         return m_vao;

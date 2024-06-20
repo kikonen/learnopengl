@@ -23,7 +23,12 @@ namespace mesh {
         void bind();
         void unbind();
 
-        virtual const kigl::GLVertexArray* registerModel(
+        virtual const kigl::GLVertexArray* registerMesh(
+            mesh::ModelMesh* mesh);
+
+        void updateMesh(
+            uint32_t baseVbo,
+            uint32_t baseEbo,
             mesh::ModelMesh* mesh);
 
         const kigl::GLVertexArray* getVAO() const
