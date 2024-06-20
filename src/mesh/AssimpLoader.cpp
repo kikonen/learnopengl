@@ -277,7 +277,7 @@ namespace mesh
 
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
-            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent, 0);
+            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent);
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {

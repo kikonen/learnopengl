@@ -15,13 +15,11 @@ namespace mesh {
             const glm::vec3& pos,
             const glm::vec2& texture,
             const glm::vec3& normal,
-            const glm::vec3& tangent,
-            const ki::material_id materialID)
+            const glm::vec3& tangent)
             : pos(pos),
             texture(texture),
             normal(normal),
-            tangent(tangent),
-            materialID(materialID)
+            tangent(tangent)
         {
         }
 
@@ -29,8 +27,7 @@ namespace mesh {
             : pos(b.pos),
             texture(b.texture),
             normal(b.normal),
-            tangent(b.tangent),
-            materialID(b.materialID)
+            tangent(b.tangent)
         {
         }
 
@@ -40,7 +37,6 @@ namespace mesh {
             texture = b.texture;
             normal = b.normal;
             tangent = b.tangent;
-            materialID = b.materialID;
 
             return *this;
         }
@@ -56,7 +52,5 @@ namespace mesh {
         glm::vec2 texture;
         glm::vec3 normal;
         glm::vec3 tangent;
-
-        ki::material_id materialID;
     };
 }
