@@ -7,7 +7,6 @@
 #include "mesh/Index.h"
 
 #include "mesh/Vertex.h"
-#include "mesh/vao/TextureEntry.h"
 
 namespace mesh {
     class TextMesh final : public Mesh
@@ -47,7 +46,7 @@ namespace mesh {
         std::vector<Vertex> m_vertices;
         std::vector<mesh::Index> m_indeces;
 
-        std::vector<mesh::TextureEntry> m_atlasCoords;
+        std::vector<glm::vec2> m_atlasCoords;
 
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };

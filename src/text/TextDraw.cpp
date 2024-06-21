@@ -34,7 +34,8 @@ namespace
         mesh::TextMesh* mesh,
         text::FontAtlas* fontAtlas,
         std::string_view text,
-        glm::vec2& pen)
+        glm::vec2& pen,
+        size_t maxCount)
     {
         const auto penOrigin = pen;
         const glm::vec3 normal{ 0.f, 0.f, 1.f };
@@ -54,8 +55,11 @@ namespace
         const float glyphMaxW = m_glyph->s1 - m_glyph->s0;
         const float glyphMaxH = m_glyph->t1 - m_glyph->t0;
 
+        size_t textIndex = 0;
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
         for (const char& ch : text) {
+            if (textIndex >= maxCount) break;
+
             float line_top = pen.y + line_ascender;
 
             if (ch == '\n') {
@@ -129,6 +133,8 @@ namespace
 
             pen.x += glyph->advance_x;
             prev = &ch;
+
+            textIndex++;
         }
     }
 }
@@ -162,7 +168,7 @@ namespace text
         auto* font = text::FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(mesh, font, text, pen);
+        addText(mesh, font, text, pen, mesh->m_reserveIndexCount);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

@@ -38,14 +38,17 @@ namespace mesh {
         uint32_t baseIndex,
         std::span<mesh::Index> indeces) noexcept
     {
-        const size_t count = indeces.size();
-
-        assert(baseIndex + count >= m_entries.size());
+        assert(baseIndex + indeces.size() <= m_entries.size());
 
         std::copy(
             indeces.begin(),
             indeces.end(),
             m_entries.begin() + baseIndex);
+
+        // NOTE KI not optimal at all, should handle each case as separate dirty span
+        if (m_lastSize > baseIndex) {
+            m_lastSize = baseIndex;
+        }
     }
 
     void VertexIndexEBO::clear()

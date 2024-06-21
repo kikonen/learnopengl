@@ -1,8 +1,9 @@
 #include "AtlasTextureVBO.h"
 
 #include "mesh/vao/VBO_impl.h"
+#include "mesh/vao/TextureEntry.h"
 
-namespace mesh {
+namespace text {
     AtlasTextureVBO::AtlasTextureVBO(
         std::string_view name,
         int attr,
@@ -10,7 +11,7 @@ namespace mesh {
         : VBO(name, attr, binding)
     {}
 
-    TextureEntry AtlasTextureVBO::convertVertex(
+    mesh::TextureEntry AtlasTextureVBO::convertVertex(
         const glm::vec2& vertex)
     {
         return { vertex };
@@ -18,10 +19,10 @@ namespace mesh {
 
     void AtlasTextureVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
-        constexpr size_t sz = sizeof(TextureEntry);
+        constexpr size_t sz = sizeof(mesh::TextureEntry);
         {
-            m_entries.reserve(VERTEX_BLOCK_SIZE);
-            m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sz, GL_DYNAMIC_STORAGE_BIT);
+            m_entries.reserve(mesh::VERTEX_BLOCK_SIZE);
+            m_vbo.createEmpty(mesh::VERTEX_BLOCK_SIZE * sz, GL_DYNAMIC_STORAGE_BIT);
         }
 
         {
@@ -37,7 +38,7 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
                 // vertex attr
-                glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(TextureEntry, texCoord));
+                glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(mesh::TextureEntry, texCoord));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 

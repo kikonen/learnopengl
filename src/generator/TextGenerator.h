@@ -9,10 +9,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "mesh/vao/TexturedVAO.h"
-
-#include "text/vao/AtlasTextureVBO.h"
-
 #include "text/size.h"
 
 namespace mesh {
@@ -83,9 +79,6 @@ private:
     bool m_dirty{ true };
 
     AABB m_aabb;
-
-    mesh::AtlasTextureVBO m_vboAtlasTex;
-    mesh::TexturedVAO m_vao{ "text" };
 
     std::unique_ptr<text::TextDraw> m_draw;
 

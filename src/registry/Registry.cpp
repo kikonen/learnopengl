@@ -24,7 +24,9 @@
 
 #include "terrain/TerrainTileRegistry.h"
 #include "mesh/TransformRegistry.h"
+
 #include "text/FontRegistry.h"
+#include "text/TextSystem.h"
 
 #include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -84,6 +86,8 @@ void Registry::prepareShared()
     animation::AnimationSystem::get().prepare();
 
     terrain::TerrrainTileRegistry::get().prepare();
+
+    text::TextSystem::get().prepare();
 }
 
 void Registry::prepareWT()
@@ -114,7 +118,7 @@ void Registry::updateWT(const UpdateContext& ctx)
 void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
-    text::FontRegistry::get().updateRT(ctx);
+
     mesh::TransformRegistry::get().updateRT(ctx);
     MaterialRegistry::get().updateRT(ctx);
     ModelRegistry::get().updateRT(ctx);
@@ -123,6 +127,9 @@ void Registry::updateRT(const UpdateContext& ctx)
     particle::ParticleSystem::get().updateRT(ctx);
     animation::AnimationSystem::get().updateRT(ctx);
     terrain::TerrrainTileRegistry::get().updateRT(ctx);
+
+    text::FontRegistry::get().updateRT(ctx);
+    text::TextSystem::get().updateRT(ctx);
 }
 
 void Registry::postRT(const UpdateContext& ctx)

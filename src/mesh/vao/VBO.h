@@ -56,7 +56,7 @@ namespace mesh {
         bool m_prepared{ false };
 
         kigl::GLBuffer m_vbo;
-        size_t m_lastBufferSize = 0;
+        size_t m_lastSize{ 0 };
 
         kigl::GLVertexArray* m_vao{ nullptr };
 

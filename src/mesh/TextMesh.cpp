@@ -9,6 +9,10 @@
 
 #include "text/TextDraw.h"
 
+#include "text/vao/TextVAO.h"
+#include "text/TextSystem.h"
+
+
 namespace {
 }
 
@@ -33,14 +37,12 @@ namespace mesh {
         m_indeces.clear();
     }
 
-    AABB TextMesh::calculateAABB() const noexcept
-    {
+    AABB TextMesh::calculateAABB() const noexcept {
         AABB aabb{ true };
 
         for (auto&& vertex : m_vertices)
         {
-            const auto& p = vertex.pos;
-            aabb.minmax({ p.x, p.y, p.z });
+            aabb.minmax(vertex.pos);
         }
 
         return aabb;
@@ -52,15 +54,34 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
+        text::TextVAO* vao = text::TextSystem::get().getTextVAO();
+
+        if (m_reserveVertexCount <= 0) {
+            m_reserveVertexCount = 100 * 4;
+        }
+
+        if (m_reserveIndexCount <= 0) {
+            m_reserveIndexCount = 100 * 2;
+        }
+
+        m_vboIndex = vao->reserveVertices(m_reserveVertexCount);
+        vao->reserveAtlasCoords(m_reserveVertexCount);
+
+        m_eboIndex = vao->reserveIndeces(m_reserveIndexCount);
+
+        m_vao = vao->getVAO();
+
         return m_vao;
     }
 
     void TextMesh::prepareLod(
         mesh::LodMesh& lodMesh)
     {
-        lodMesh.m_lod.m_baseVertex = 0;
-        lodMesh.m_lod.m_baseIndex = 0;
-        lodMesh.m_lod.m_indexCount = 0;
+        auto& lod = lodMesh.m_lod;
+
+        lod.m_baseVertex = getBaseVertex();
+        lod.m_baseIndex = getBaseIndex();
+        lod.m_indexCount = getIndexCount();
     }
 
     void TextMesh::prepareDrawOptions(

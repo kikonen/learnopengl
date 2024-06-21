@@ -40,10 +40,17 @@ namespace mesh {
         uint32_t baseIndex,
         const std::span<T_Vertex>& vertices)
     {
+        assert(baseIndex + vertices.size() <= m_entries.size());
+
         uint32_t index = baseIndex;
         for (const auto& vertex : vertices) {
             m_entries[index] = convertVertex(vertex);
             index++;
+        }
+
+        // NOTE KI not optimal at all, should handle each case as separate dirty span
+        if (m_lastSize > baseIndex) {
+            m_lastSize = baseIndex;
         }
     }
 
@@ -59,7 +66,7 @@ namespace mesh {
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::updateVAO(kigl::GLVertexArray& vao)
     {
-        const size_t index = m_lastBufferSize;
+        const size_t index = m_lastSize;
         const size_t totalCount = m_entries.size();
 
         if (index == totalCount) return;
@@ -84,13 +91,13 @@ namespace mesh {
                 &m_entries[updateIndex]);
         }
 
-        m_lastBufferSize = totalCount;
+        m_lastSize = totalCount;
     }
 
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::clear()
     {
         m_entries.clear();
-        m_lastBufferSize = 0;
+        m_lastSize = 0;
     }
 }

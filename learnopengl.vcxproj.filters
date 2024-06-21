@@ -537,9 +537,6 @@
     <ClCompile Include="src\mesh\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\FontRegistry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\TextMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -697,6 +694,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\TextLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\FontRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\TextSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\vao\VertexVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\vao\TextVAO.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\vao\TextVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1424,9 +1436,6 @@
     <ClInclude Include="src\mesh\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\FontRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\TextMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1737,6 +1746,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\TextLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\FontRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\TextSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\vao\VertexEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

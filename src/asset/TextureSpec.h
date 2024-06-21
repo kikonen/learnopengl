@@ -2,7 +2,7 @@
 
 #include "kigl/kigl.h"
 
-constexpr int MIP_MAP_LEVELS = 12;
+inline constexpr int MIP_MAP_LEVELS = 12;
 
 struct TextureSpec {
     // NOTE KI opengl default is GL_REPEAT
