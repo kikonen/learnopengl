@@ -55,6 +55,8 @@ const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 const std::string DEF_USE_BONES{ "USE_BONES" };
 const std::string DEF_USE_BONES_DEBUG{ "USE_BONES_DEBUG" };
 
+const std::string DEF_MAX_SHADOW_MAP_COUNT{ "MAX_SHADOW_MAP_COUNT" };
+
 const std::string DEF_MAT_COUNT{ "MAT_COUNT" };
 const std::string DEF_TEX_COUNT{ "TEX_COUNT" };
 const std::string DEF_LIGHT_COUNT{ "LIGHT_COUNT" };
@@ -141,6 +143,7 @@ constexpr int UNIT_BDRF_LUT = 73;
 
 constexpr int UNIT_VIEWPORT = 74;
 
+constexpr int MAX_SHADOW_MAP_COUNT_ABS = 4;
 constexpr int MAX_SHADOW_MAP_COUNT = 4;
 constexpr int UNIT_SHADOW_MAP_FIRST = 75;
 constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;

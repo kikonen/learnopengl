@@ -806,6 +806,14 @@ namespace loader {
                 definitions);
 
             if (!shadowName.empty()) {
+                {
+                    size_t shadowCount = std::min(
+                        std::max(Assets::get().shadowPlanes.size() - 1, static_cast<size_t>(1)),
+                        static_cast<size_t>(MAX_SHADOW_MAP_COUNT_ABS));
+
+                    shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
+                }
+
                 material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgram(
                     shadowName,
                     false,

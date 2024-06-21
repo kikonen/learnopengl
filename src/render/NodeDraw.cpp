@@ -79,8 +79,18 @@ namespace render {
         m_plainQuad.prepare();
         m_textureQuad.prepare();
 
-        m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS);
-        m_deferredProgram->prepareRT();
+        {
+            std::map<std::string, std::string, std::less<>> definitions;
+
+            size_t shadowCount = std::min(
+                std::max(Assets::get().shadowPlanes.size() - 1, static_cast<size_t>(1)),
+                static_cast<size_t>(MAX_SHADOW_MAP_COUNT_ABS));
+
+            definitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
+
+            m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS, definitions);
+            m_deferredProgram->prepareRT();
+        }
 
         m_oitProgram = ProgramRegistry::get().getProgram(SHADER_OIT_PASS);
         m_oitProgram->prepareRT();

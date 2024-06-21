@@ -21,7 +21,7 @@ struct MatricesUBO {
     glm::mat4 u_viewSkybox{ 1.0f };
 
     // NOTE KI calculated by shadow calculation
-    glm::mat4 u_shadow[MAX_SHADOW_MAP_COUNT];
+    glm::mat4 u_shadow[MAX_SHADOW_MAP_COUNT_ABS];
 
     // top, bottom, left, right, near, far
     glm::vec4 u_frustumPlanes[6];

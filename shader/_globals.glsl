@@ -19,7 +19,7 @@
   #define LIGHT_COUNT 128
 #endif
 
-#define MAX_SHADOW_MAP_COUNT_ABS 5
+#define MAX_SHADOW_MAP_COUNT_ABS 4
 #ifndef MAX_SHADOW_MAP_COUNT
   #define MAX_SHADOW_MAP_COUNT 4
 #endif
