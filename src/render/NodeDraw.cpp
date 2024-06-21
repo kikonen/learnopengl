@@ -375,9 +375,10 @@ namespace render {
             ctx.m_batch->flush(ctx);
         }
 
+        state.setStencil({});
+
         if (!ctx.m_forceSolid)
         {
-            state.setStencil({});
             particleRenderer.render(ctx);
         }
 
