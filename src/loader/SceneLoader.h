@@ -143,6 +143,7 @@ namespace loader {
 
         void resolveLod(
             mesh::MeshType* type,
+            const EntityData& entityData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 

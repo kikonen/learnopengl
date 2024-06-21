@@ -119,6 +119,9 @@ namespace loader {
             else if (k == "active") {
                 data.active = readBool(v);
             }
+            else if (k == "priority") {
+                data.priority = readInt(v);
+            }
             else if (k == "mesh" || k == "model") {
                 auto& meshData = data.meshes.emplace_back();
                 loaders.m_meshLoader.loadMesh(v, meshData, loaders);

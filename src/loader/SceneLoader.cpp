@@ -595,7 +595,7 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveLod(type, meshData, lodMesh);
+                resolveLod(type, entityData, meshData, lodMesh);
                 resolveMaterials(type, lodMesh, entityData, meshData);
                 assignMeshFlags(meshData, lodMesh);
                 lodMesh.setupDrawOptions();
@@ -605,17 +605,20 @@ namespace loader {
 
     void SceneLoader::resolveLod(
         mesh::MeshType* type,
+        const EntityData& entityData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
         auto* mesh = lodMesh.getMesh<mesh::Mesh>();
         if (!mesh) return;
 
+        lodMesh.m_priority = entityData.priority;
+
         const auto* lod = meshData.findLod(mesh->m_name);
         if (!lod) return;
 
         lodMesh.m_level = lod->level;
-        lodMesh.m_priority = lod->priority;
+        lodMesh.m_priority = lod->priority != 0 ? lod->priority : entityData.priority;
         lodMesh.setDistance(lod->distance);
     }
 

@@ -43,6 +43,8 @@ namespace loader {
 
         std::string prefabName;
 
+        int8_t priority{ 0 };
+
         std::vector<MeshData> meshes;
 
         std::string geometryType;
