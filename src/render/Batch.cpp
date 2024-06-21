@@ -104,7 +104,9 @@ namespace render {
                     lodMesh.m_priority,
                     program,
                     lodMesh.m_vao,
-                    drawOptions
+                    drawOptions,
+                    ctx.m_forceSolid,
+                    ctx.m_forceWireframe,
                 };
 
                 const auto& it = m_batches.find(key);
@@ -215,7 +217,9 @@ namespace render {
                             lodMesh.m_priority,
                             program,
                             lodMesh.m_vao,
-                            drawOptions
+                            drawOptions,
+                            ctx.m_forceSolid,
+                            ctx.m_forceWireframe,
                         };
 
                         const auto& it = m_batches.find(key);
@@ -376,8 +380,6 @@ namespace render {
                 key.m_vao,
                 key.m_program,
                 key.m_drawOptions,
-                ctx.m_forceSolid,
-                ctx.m_forceWireframe
             };
 
             const auto& drawOptions = key.m_drawOptions;

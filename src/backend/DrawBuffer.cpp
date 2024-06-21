@@ -221,8 +221,8 @@ namespace backend {
             sameDraw = curr.m_vao == sendRange.m_vao &&
                 curr.m_program == sendRange.m_program &&
                 cd.m_renderBack == sd.m_renderBack &&
-                (curr.m_forceWireframe ? true : cd.m_wireframe == sd.m_wireframe) &&
-                (curr.m_forceSolid ? true : cd.m_blend == sd.m_blend) &&
+                cd.m_wireframe == sd.m_wireframe &&
+                cd.m_blend == sd.m_blend &&
                 cd.m_mode == sd.m_mode &&
                 cd.m_type == sd.m_type &&
                 cd.m_tessellation == sd.m_tessellation;
@@ -382,7 +382,7 @@ namespace backend {
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
-        const bool wireframe = drawOptions.m_wireframe || drawRange.m_forceWireframe;
+        const bool wireframe = drawOptions.m_wireframe;
 
         state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
@@ -390,7 +390,7 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && !drawRange.m_forceSolid && drawOptions.m_blend;
+        const bool blend = !wireframe && drawOptions.m_blend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             // NOTE KI no blend mode with OIT blend

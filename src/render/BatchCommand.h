@@ -24,14 +24,16 @@ namespace render {
             int8_t priority,
             const Program* program,
             const kigl::GLVertexArray* vao,
-            const backend::DrawOptions& drawOptions) noexcept;
+            const backend::DrawOptions& drawOptions,
+            bool forceSolid,
+            bool forceWireframe) noexcept;
 
         bool operator<(const BatchKey& o) const noexcept;
 
         const Program* m_program{ nullptr };
         const kigl::GLVertexArray* m_vao{ nullptr };
 
-        const backend::DrawOptions m_drawOptions;
+        backend::DrawOptions m_drawOptions;
 
         const int8_t m_priority;
     };

@@ -10,12 +10,20 @@ namespace render {
         int8_t priority,
         const Program* program,
         const kigl::GLVertexArray* vao,
-        const backend::DrawOptions& drawOptions) noexcept
+        const backend::DrawOptions& drawOptions,
+        bool forceSolid,
+        bool forceWireframe) noexcept
         : m_program(program),
         m_vao{ vao },
         m_priority( -priority ),
         m_drawOptions{ drawOptions }
     {
+        if (forceSolid) {
+            m_drawOptions.m_blend = false;
+        }
+        if (forceWireframe) {
+            m_drawOptions.m_wireframe = true;
+        }
     }
 
     //inline bool operator<(const DrawOptions& o) const noexcept {
