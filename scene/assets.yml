@@ -131,7 +131,7 @@ assets:
   shadow_polygon_offset: [2, 0.5]
   xshadow_planes: [0.1, 25, 75, 150, 500]
   xshadow_map_sizes: [1024, 1024, 1024, 1024]
-  shadow_planes: [0.1, 40, 90, 300]
+  shadow_planes: [0.1, 40, 90, 500]
   shadow_map_sizes: [2048, 2048, 2048]
   shadow_render_frame_start: 0
   shadow_render_frame_step: 1
