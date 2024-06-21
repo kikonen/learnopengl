@@ -491,8 +491,8 @@ entities:
         - name: wyvern_pbr
           alias: M_Wyvern
           map_pbr: wyvern_pbr
-          alpha: true
-          render_back: true
+          xalpha: true
+          xrender_back: true
           xwireframe: true
       animations:
         - name: fire
@@ -578,7 +578,6 @@ entities:
         xrefraction: 0.05
         xrefraction_ratio: [1.0, 1.52]
         tiling: 6
-        render_back: true
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
     scale: 1.0
@@ -601,7 +600,6 @@ entities:
         kd: [0.160, 0.578, 0.168, 1.0]
         map_pbr: textures/Plastic 01 [4K]
         xreflection: 0.4
-        render_back: false
     program: g_tex
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
@@ -631,7 +629,6 @@ entities:
       material_modifier:
         xreflection: 0.1
         map_pbr: textures/Plastic 01 [4K]
-        render_back: false
     program: g_tex
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
@@ -832,7 +829,7 @@ entities:
     program: g_water
     pos: [0, 9.5, -10]
     scale: 30
-    xrender_flags:
+    render_flags:
       no_shadow: true
       water: true
     repeat:
