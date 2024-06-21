@@ -14,6 +14,7 @@
 #include "registry/Registry.h"
 
 #include "mesh/TextMesh.h"
+#include "mesh/Vertex.h"
 
 #include "mesh/vao/VBO_impl.h"
 
@@ -39,13 +40,6 @@ namespace
         const glm::vec3 normal{ 0.f, 0.f, 1.f };
         const glm::vec3 tangent{ 1.f, 0.f, 0.f };
         const char* prev = { nullptr };
-
-        const mesh::NormalEntry normals[4]{
-            { normal, tangent },
-            { normal, tangent },
-            { normal, tangent },
-            { normal, tangent },
-        };
 
         auto* font = fontAtlas->getFont()->m_font;
 
@@ -97,44 +91,38 @@ namespace
             const float glyphW = glyph->s1 - glyph->s0;
             const float glyphH = glyph->t1 - glyph->t0;
 
-            const GLuint index = (GLuint)mesh->m_normals.size();
+            const GLuint index = (GLuint)mesh->m_vertices.size();
 
-            const mesh::Index indeces[2] {
+            const glm::vec3 positions[4] {
+                { x0, y0, 0.f },
+                { x0, y1, 0.f },
+                { x1, y1, 0.f },
+                { x1, y0, 0.f },
+            };
+            const glm::vec2 atlasCoords[4] {
+                { s0, t0 },
+                { s0, t1 },
+                { s1, t1 },
+                { s1, t0 },
+            };
+
+            const glm::vec2 materialCoords[4]{
+                { 0, 0 },
+                { 0,                  glyphH / glyphMaxH },
+                { glyphW / glyphMaxW, glyphH / glyphMaxH },
+                { glyphW / glyphMaxW, 0 },
+            };
+
+            const mesh::Index indeces[2]{
                 {index, index + 1, index + 2},
                 {index, index + 2, index + 3},
             };
-            const mesh::PositionEntry positions[4] {
-                { { x0, y0, 0.f } },
-                { { x0, y1, 0.f } },
-                { { x1, y1, 0.f } },
-                { { x1, y0, 0.f } },
-            };
-            const mesh::TextureEntry atlasCoords[4] {
-                { {s0, t0} },
-                { {s0, t1} },
-                { {s1, t1} },
-                { {s1, t0} },
-            };
 
-            const mesh::TextureEntry materialCoords[4]{
-                { {0, 0} },
-                { {0,                  glyphH / glyphMaxH} },
-                { {glyphW / glyphMaxW, glyphH / glyphMaxH} },
-                { {glyphW / glyphMaxW, 0} },
-            };
+            for (int i = 0; i < 4; i++) {
+                mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent);
+                mesh->m_atlasCoords.emplace_back(atlasCoords[i]);
+            }
 
-            for (const auto& v : positions) {
-                mesh->m_positions.push_back(v);
-            }
-            for (const auto& v : normals) {
-                mesh->m_normals.push_back(v);
-            }
-            for (const auto& v : atlasCoords) {
-                mesh->m_atlasCoords.emplace_back(v);
-            }
-            for (const auto& v : materialCoords) {
-                mesh->m_texCoords.push_back(v);
-            }
             for (const auto& v : indeces) {
                 mesh->m_indeces.push_back(v);
             }
@@ -166,7 +154,6 @@ namespace text
     }
 
     void TextDraw::render(
-        const RenderContext& ctx,
         text::font_id fontId,
         std::string_view text,
         glm::vec2& pen,

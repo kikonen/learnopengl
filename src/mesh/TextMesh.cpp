@@ -28,9 +28,7 @@ namespace mesh {
     }
 
     void TextMesh::clear() {
-        m_positions.clear();
-        m_normals.clear();
-        m_texCoords.clear();
+        m_vertices.clear();
         m_atlasCoords.clear();
         m_indeces.clear();
     }
@@ -39,9 +37,10 @@ namespace mesh {
     {
         AABB aabb{ true };
 
-        for (auto&& vertex : m_positions)
+        for (auto&& vertex : m_vertices)
         {
-            aabb.minmax({ vertex.x, vertex.y, vertex.z });
+            const auto& p = vertex.pos;
+            aabb.minmax({ p.x, p.y, p.z });
         }
 
         return aabb;

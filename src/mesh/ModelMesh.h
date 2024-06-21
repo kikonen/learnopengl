@@ -58,8 +58,8 @@ namespace mesh {
         }
 
     public:
-        std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
+        std::vector<Index> m_indeces;
 
         std::vector<animation::VertexBone> m_vertexBones;
 
