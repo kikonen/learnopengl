@@ -40,8 +40,10 @@ namespace render {
 
     struct LodKey {
         const backend::Lod* m_lod;
+        uint32_t m_flags;
+
         bool operator<(const LodKey& o) const noexcept {
-            return *m_lod < *o.m_lod;
+            return std::tie(*m_lod, m_flags) < std::tie(*o.m_lod, o.m_flags);
         }
     };
 

@@ -118,7 +118,8 @@ namespace render {
                 }
             }
 
-            auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
+            const LodKey lodKey{ &lodMesh.m_lod, drawOptions.m_flags };
+            auto& lodInstances = top->m_lodInstances[lodKey];
             lodInstances.reserve(100);
             lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex);
             m_pendingCount++;
@@ -232,7 +233,7 @@ namespace render {
                         }
                     }
 
-                    auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod }];
+                    auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod, drawOptions.m_flags }];
                     lodInstances.reserve(100);
                     lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
                     m_pendingCount++;
@@ -348,7 +349,11 @@ namespace render {
                         instance.u_entityIndex = lodEntry.m_entityIndex;
                         instance.u_meshIndex = lodEntry.m_meshIndex;
                         instance.u_materialIndex = lod->m_materialIndex;
-                        instance.u_shapeIndex = key.m_drawOptions.m_flags;
+
+                        // NOTE KI BatchKey does not take in account m_flags
+                        // => can draw different instances in same batch
+                        //instance.u_shapeIndex = key.m_drawOptions.m_flags;
+                        instance.u_shapeIndex = lodInstance.first.m_flags;
                     }
                 }
             }
