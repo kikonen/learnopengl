@@ -17,8 +17,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
-layout(location = UNIFORM_SHADOW_MAP_INDEX) uniform uint u_shadowIndex;
-
 #ifdef USE_ALPHA
 out VS_OUT {
   vec2 texCoord;

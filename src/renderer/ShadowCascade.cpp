@@ -256,24 +256,11 @@ void ShadowCascade::drawNodes(
     };
 
     {
-        // TODO KI separate UBO would be better than early program binds
-        // => these *can* mess drawing
-        m_solidShadowProgram->bind();
-        m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
-
-        m_alphaShadowProgram->bind();
-        m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
-
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_shadowProgram) return lodMesh.m_shadowProgram;
-                if (lodMesh.m_drawOptions.m_alpha) {
-                    return m_alphaShadowProgram;
-                }
-                else {
-                    return m_solidShadowProgram;
-                }
+                return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgram : m_solidShadowProgram;
             },
             typeFilter,
             nodeFilter,
