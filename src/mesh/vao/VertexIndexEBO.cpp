@@ -15,7 +15,7 @@ namespace mesh {
         : m_ebo{ name }
     {}
 
-    uint32_t VertexIndexEBO::reserveIndeces(uint32_t count)
+    uint32_t VertexIndexEBO::reserveIndeces(size_t count)
     {
         const size_t baseIndex = m_entries.size();
 

@@ -64,12 +64,38 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
+        TexturedVAO* vao;
+        SkinnedVAO* skinnedVao = nullptr;
+
         if (m_rig && m_rig->hasBones()) {
-            m_vao = ModelRegistry::get().getSkinnedVao()->registerMesh(this);
+            skinnedVao = ModelRegistry::get().getSkinnedVao();
+            vao = skinnedVao;
         }
         else {
-            m_vao = ModelRegistry::get().getTexturedVao()->registerMesh(this);
+            vao = ModelRegistry::get().getTexturedVao();
         }
+
+        m_vboIndex = vao->reserveVertices(m_vertices.size());
+        m_eboIndex = vao->reserveIndeces(m_indeces.size());
+        if (skinnedVao) {
+            skinnedVao->reserveVertexBones(m_vertexBones.size());
+        }
+
+        vao->updateVertices(
+            m_vboIndex,
+            m_vertices);
+
+        vao->updateIndeces(
+            m_eboIndex,
+            m_indeces);
+
+        if (skinnedVao) {
+            skinnedVao->updateVertexBones(
+                m_vboIndex,
+                m_vertexBones);
+        }
+
+        m_vao = vao->getVAO();
 
         return m_vao;
     }

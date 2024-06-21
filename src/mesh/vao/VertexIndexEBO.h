@@ -21,7 +21,7 @@ namespace mesh
             std::string_view name);
 
         // @return baseIndex
-        uint32_t reserveIndeces(uint32_t count);
+        uint32_t reserveIndeces(size_t count);
 
         void updateIndeces(
             uint32_t baseIndex,

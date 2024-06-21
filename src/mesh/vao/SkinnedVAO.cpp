@@ -35,23 +35,16 @@ namespace mesh {
         m_boneVbo.clear();
     }
 
-    const kigl::GLVertexArray* SkinnedVAO::registerMesh(
-        mesh::ModelMesh* mesh)
+    void SkinnedVAO::reserveVertexBones(size_t count)
     {
-        TexturedVAO::registerMesh(mesh);
+        m_boneVbo.reserveVertices(count);
+    }
 
-        auto vertexCount = mesh->m_reserveVertexCount;
-        auto& vertices = mesh->m_vertices;
-
-        if (vertexCount == 0) {
-            vertexCount = static_cast<uint32_t>(vertices.size());
-        }
-
-        m_boneVbo.reserveVertices(vertexCount);
-
-        m_boneVbo.updateVertices(mesh->m_vboIndex, mesh->m_vertexBones);
-
-        return m_vao.get();
+    void SkinnedVAO::updateVertexBones(
+        uint32_t baseVbo,
+        std::span<animation::VertexBone> vertexBones)
+    {
+        m_boneVbo.updateVertices(baseVbo, vertexBones);
     }
 
     void SkinnedVAO::updateRT()

@@ -4,8 +4,6 @@
 
 #include "kigl/GLVertexArray.h"
 
-#include "mesh/ModelMesh.h"
-
 #include "VertexPositionVBO.h"
 #include "VertexNormalVBO.h"
 #include "VertexTextureVBO.h"
@@ -23,13 +21,16 @@ namespace mesh {
         void bind();
         void unbind();
 
-        virtual const kigl::GLVertexArray* registerMesh(
-            mesh::ModelMesh* mesh);
+        uint32_t reserveVertices(size_t count);
+        uint32_t reserveIndeces(size_t count);
 
-        void updateMesh(
+        void updateVertices(
             uint32_t baseVbo,
+            std::span<Vertex> vertices);
+
+        void updateIndeces(
             uint32_t baseEbo,
-            mesh::ModelMesh* mesh);
+            std::span<Index> indeces);
 
         const kigl::GLVertexArray* getVAO() const
         {

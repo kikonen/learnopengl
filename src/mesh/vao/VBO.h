@@ -27,24 +27,14 @@ namespace mesh {
         virtual ~VBO();
 
         // @return base *index* into entries
-        uint32_t reserveVertices(
-            const uint32_t count);
+        uint32_t reserveVertices(size_t count);
 
         void updateVertices(
             uint32_t baseIndex,
             const std::span<T_Vertex>& vertices);
 
-        //size_t addVertex(
-        //    const T_Vertex& vertex);
-
         virtual T_Entry convertVertex(
             const T_Vertex& vertex) = 0;
-
-        //size_t addEntries(
-        //    const std::vector<T_Entry>& entries);
-
-        //// @return base *offset* into buffer
-        //size_t addEntry(const T_Entry& entry);
 
         void reserveSize(size_t count);
 

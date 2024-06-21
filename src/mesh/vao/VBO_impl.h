@@ -25,8 +25,7 @@ namespace mesh {
     {}
 
     template<typename T_Vertex, typename T_Entry>
-    uint32_t VBO<T_Vertex, T_Entry>::reserveVertices(
-        const uint32_t count)
+    uint32_t VBO<T_Vertex, T_Entry>::reserveVertices(size_t count)
     {
         const uint32_t baseIndex = static_cast<uint32_t>(m_entries.size());
 
@@ -47,48 +46,6 @@ namespace mesh {
             index++;
         }
     }
-
-    //template<typename T_Vertex, typename T_Entry>
-    //size_t VBO<T_Vertex, T_Entry>::addVertex(
-    //    const T_Vertex& vertex)
-    //{
-    //    return addEntry(convertVertex(vertex));
-    //}
-
-    //template<typename T_Vertex, typename T_Entry>
-    //size_t VBO<T_Vertex, T_Entry>::addEntries(
-    //    const std::vector<T_Entry>& entries)
-    //{
-    //    constexpr size_t sz = sizeof(T_Entry);
-
-    //    const size_t baseIndex = m_entries.size();
-    //    const size_t baseOffset = baseIndex * sz;
-
-    //    reserveSize(entries.size());
-    //    for (const auto& entry: entries) {
-    //        addEntry(entry);
-    //    }
-
-    //    return baseOffset;
-    //}
-
-    //template<typename T_Vertex, typename T_Entry>
-    //size_t VBO<T_Vertex, T_Entry>::addEntry(const T_Entry& entry)
-    //{
-    //    constexpr size_t sz = sizeof(T_Entry);
-
-    //    if (m_entries.size() >= MAX_VERTEX_COUNT) {
-    //        throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
-    //    }
-
-    //    const size_t baseIndex = m_entries.size();
-    //    const size_t baseOffset = baseIndex * sz;
-
-    //    reserveSize(1);
-    //    m_entries.emplace_back(entry);
-
-    //    return baseOffset;
-    //}
 
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::reserveSize(size_t count)
