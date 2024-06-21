@@ -166,17 +166,70 @@ entities:
         x_step: 20
         z_step: -20
   - xid: pine_tree_forest_{t}
-    mesh:
-      path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      materials:
-        - name: pine_trunk_pbr
-          alias: MI_TreeBarkPine_01a
-          map_pbr: pine_trunk_pbr
-        - name: pine_leaf_pbr
-          alias: MI_PineTree_01a
-          map_pbr: pine_leaf_pbr
-          alpha: true
-          render_back: true
+    meshes:
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 0
+            distance: 100
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_pbr: pine_trunk_pbr
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_pbr: pine_leaf_pbr
+            alpha: true
+            blend: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 1
+            distance: 200
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_pbr: pine_trunk_pbr
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_pbr: pine_leaf_pbr
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 2
+            distance: 300
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 3
+            distance: 400
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+            alpha: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 4
+            distance: 10000
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
     program: g_tex
     pos: [-1000, 0.0, 0.0]
     render_flags:
@@ -188,8 +241,8 @@ entities:
     generator:
       type: grid
       repeat:
-        x_count: 20
-        z_count: 20
+        x_count: 200
+        z_count: 200
         x_step: 20
         z_step: -20
   - name: wooden floor
