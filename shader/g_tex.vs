@@ -157,7 +157,7 @@ void main() {
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
+    //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);
 

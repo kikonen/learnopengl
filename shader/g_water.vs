@@ -77,7 +77,7 @@ void main() {
   if (u_materials[materialIndex].normalMapTex.x > 0)
   {
     vec3 tangent = a_tangent;
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
+    //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);
 
