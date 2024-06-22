@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <fmt/format.h>
 
+#include "util/thread.h"
+
 #include "asset/Shader.h"
 
 #include "mesh/ModelMesh.h"
@@ -37,6 +39,8 @@ namespace mesh {
 
     void SkinnedVAO::reserveVertexBones(size_t count)
     {
+        ASSERT_RT();
+
         m_boneVbo.reserveVertices(count);
     }
 
@@ -44,6 +48,8 @@ namespace mesh {
         uint32_t baseVbo,
         std::span<animation::VertexBone> vertexBones)
     {
+        ASSERT_RT();
+
         m_boneVbo.updateVertices(baseVbo, vertexBones);
     }
 

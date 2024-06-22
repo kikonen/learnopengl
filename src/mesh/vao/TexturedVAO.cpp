@@ -32,6 +32,8 @@ namespace mesh {
 
     void TexturedVAO::prepare()
     {
+        ASSERT_RT();
+
         if (m_prepared) return;
         m_prepared = true;
 
@@ -47,16 +49,22 @@ namespace mesh {
 
     void TexturedVAO::bind()
     {
+        ASSERT_RT();
+
         kigl::GLState::get().bindVAO(*m_vao);
     }
 
     void TexturedVAO::unbind()
     {
+        ASSERT_RT();
+
         kigl::GLState::get().bindVAO(0);
     }
 
     void TexturedVAO::prepareVAO()
     {
+        ASSERT_RT();
+
         auto& vao = *m_vao;
 
         m_positionVbo.prepareVAO(vao);
@@ -67,6 +75,8 @@ namespace mesh {
 
     void TexturedVAO::clear()
     {
+        ASSERT_RT();
+
         m_positionVbo.clear();
         m_normalVbo.clear();
         m_textureVbo.clear();

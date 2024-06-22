@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <fmt/format.h>
 
+#include "util/thread.h"
+
 #include "asset/Shader.h"
 
 #include "mesh/vao/TextureEntry.h"
@@ -34,6 +36,8 @@ namespace text {
 
     uint32_t TextVAO::reserveAtlasCoords(size_t count)
     {
+        ASSERT_RT();
+
         return m_atlaxTexVbo.reserveVertices(count);
     }
 
@@ -41,6 +45,8 @@ namespace text {
         uint32_t baseVbo,
         std::span<glm::vec2> atlasCoords)
     {
+        ASSERT_RT();
+
         m_atlaxTexVbo.updateVertices(baseVbo, atlasCoords);
     }
 
