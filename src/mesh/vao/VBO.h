@@ -3,6 +3,8 @@
 #include <string>
 #include <string_view>
 #include <span>
+#include <vector>
+#include <tuple>
 
 #include <glm/glm.hpp>
 
@@ -26,6 +28,8 @@ namespace mesh {
 
         virtual ~VBO();
 
+        void clear();
+
         // @return base *index* into entries
         uint32_t reserveVertices(size_t count);
 
@@ -42,12 +46,16 @@ namespace mesh {
 
         void updateVAO(kigl::GLVertexArray& vao);
 
-        void clear();
-
         // @return base *index* into buffer (for next new entry)
         uint32_t getBaseIndex() const noexcept {
             return static_cast<uint32_t>(m_entries.size());
         }
+
+    protected:
+        bool updateSpan(
+            kigl::GLVertexArray& vao,
+            size_t updateIndex,
+            size_t updateCount);
 
     protected:
         const int m_binding;
@@ -56,9 +64,10 @@ namespace mesh {
         bool m_prepared{ false };
 
         kigl::GLBuffer m_vbo;
-        size_t m_lastSize{ 0 };
 
         kigl::GLVertexArray* m_vao{ nullptr };
+
+        std::vector<std::pair<uint32_t, size_t>> m_dirty;
 
         std::vector<T_Entry> m_entries;
     };

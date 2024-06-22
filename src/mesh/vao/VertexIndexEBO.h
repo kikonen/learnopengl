@@ -2,6 +2,8 @@
 
 #include <string_view>
 #include <span>
+#include <vector>
+#include <tuple>
 
 #include "kigl/GLBuffer.h"
 
@@ -32,10 +34,16 @@ namespace mesh
         void prepareVAO(kigl::GLVertexArray& vao);
         void updateVAO(kigl::GLVertexArray& vao);
 
+    protected:
+        bool updateSpan(
+            kigl::GLVertexArray& vao,
+            size_t updateIndex,
+            size_t updateCount);
+
     private:
         kigl::GLBuffer m_ebo;
 
+        std::vector < std::pair<uint32_t, size_t>> m_dirty;
         std::vector<IndexEntry> m_entries;
-        size_t m_lastSize = 0;
     };
 }

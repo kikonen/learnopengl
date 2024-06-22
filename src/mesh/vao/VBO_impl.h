@@ -25,6 +25,13 @@ namespace mesh {
     {}
 
     template<typename T_Vertex, typename T_Entry>
+    void VBO<T_Vertex, T_Entry>::clear()
+    {
+        m_entries.clear();
+        m_dirty.clear();
+    }
+
+    template<typename T_Vertex, typename T_Entry>
     uint32_t VBO<T_Vertex, T_Entry>::reserveVertices(size_t count)
     {
         const uint32_t baseIndex = static_cast<uint32_t>(m_entries.size());
@@ -48,10 +55,7 @@ namespace mesh {
             index++;
         }
 
-        // NOTE KI not optimal at all, should handle each case as separate dirty span
-        if (m_lastSize > baseIndex) {
-            m_lastSize = baseIndex;
-        }
+        m_dirty.push_back({baseIndex, vertices.size()});
     }
 
     template<typename T_Vertex, typename T_Entry>
@@ -66,24 +70,35 @@ namespace mesh {
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::updateVAO(kigl::GLVertexArray& vao)
     {
-        const size_t index = m_lastSize;
+        if (m_dirty.empty()) return;
+
+        for (const auto& range : m_dirty) {
+            if (updateSpan(vao, range.first, range.second)) break;
+        }
+
+        m_dirty.clear();
+    }
+
+    template<typename T_Vertex, typename T_Entry>
+    bool VBO<T_Vertex, T_Entry>::updateSpan(
+        kigl::GLVertexArray & vao,
+        size_t updateIndex,
+        size_t updateCount)
+    {
         const size_t totalCount = m_entries.size();
 
-        if (index == totalCount) return;
-        if (totalCount == 0) return;
+        if (totalCount == 0) return true;
 
         {
             constexpr size_t sz = sizeof(T_Entry);
-            size_t updateIndex = index;
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_vbo.m_size < totalCount * sz) {
                 m_vbo.resizeBuffer(m_entries.capacity() * sz);
                 glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
                 updateIndex = 0;
+                updateCount = totalCount;
             }
-
-            const size_t updateCount = totalCount - updateIndex;
 
             m_vbo.update(
                 updateIndex * sz,
@@ -91,13 +106,6 @@ namespace mesh {
                 &m_entries[updateIndex]);
         }
 
-        m_lastSize = totalCount;
-    }
-
-    template<typename T_Vertex, typename T_Entry>
-    void VBO<T_Vertex, T_Entry>::clear()
-    {
-        m_entries.clear();
-        m_lastSize = 0;
+        return updateCount == totalCount;
     }
 }
