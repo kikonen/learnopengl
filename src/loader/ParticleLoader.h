@@ -20,7 +20,7 @@ namespace loader {
             Context ctx);
 
         void loadParticle(
-            const loader::Node& node,
+            const loader::DocNode& node,
             ParticleData& data,
             Loaders& loaders) const;
 

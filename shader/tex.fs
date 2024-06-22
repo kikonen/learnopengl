@@ -70,7 +70,7 @@ void main() {
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
 #ifdef USE_ALPHA
-#ifdef USE_BLEND_OIT
+#ifdef USE_BLEND
   if (material.diffuse.a < 0.95)
     discard;
 #else
@@ -100,7 +100,7 @@ void main() {
     fs_in.shadowIndex);
 
 #ifdef USE_ALPHA
-#ifdef USE_BLEND_OIT
+#ifdef USE_BLEND
   if (material.diffuse.a < 0.95)
     discard;
 #else

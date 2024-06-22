@@ -98,9 +98,12 @@ RenderContext::RenderContext(
     auto& assets = m_assets;
 
     if (m_parent) {
-        m_forceWireframe = m_parent->m_forceWireframe;
         m_useLight = m_parent->m_useLight;
-        m_allowBlend = m_parent->m_allowBlend;
+        m_shadow = m_parent->m_shadow;
+
+        m_forceSolid = m_parent->m_forceSolid;
+        m_forceWireframe = m_parent->m_forceWireframe;
+
         m_allowDrawDebug = m_parent->m_allowDrawDebug;
     }
 

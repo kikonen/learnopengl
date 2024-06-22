@@ -1,8 +1,7 @@
 #include "ProgramUniforms.h"
 
 ProgramUniforms::ProgramUniforms(Program& program)
-    : u_shadowIndex{ "u_shadowIndex", UNIFORM_SHADOW_MAP_INDEX },
-    u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT },
+    : u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT },
     u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE },
     u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE },
     u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX },

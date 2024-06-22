@@ -5,11 +5,13 @@
 #include "asset/Assets.h"
 
 #include "mesh/MeshSet.h"
+#include "mesh/Mesh.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
 #include "mesh/AssimpLoader.h"
+#include "mesh/TransformRegistry.h"
 
 #include "render/RenderContext.h"
 
@@ -100,7 +102,13 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::startLoad(mesh::MeshSet* meshS
 
                 // NOTE KI if not valid then null; avoids internal errors in render logic
                 if (loaded) {
+                    auto& tr = mesh::TransformRegistry::get();
+                    for (auto& mesh : meshSet->getMeshes()) {
+                        mesh->m_registeredIndex = tr.registerTransform(mesh->m_baseTransform);
+                    }
+
                     meshSet->prepareVolume();
+
                     p.set_value(meshSet);
                 }
                 else {

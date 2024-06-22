@@ -73,6 +73,9 @@ namespace animation
 
             index = m_transforms.size();
             m_transforms.resize(m_transforms.size() + rig.m_boneContainer.size());
+            for (int i = 0; i < rig.m_boneContainer.size(); i++) {
+                m_transforms[index + i] = glm::mat4{ 1.f };
+            }
 
             m_needSnapshot = true;
         }
@@ -166,8 +169,9 @@ namespace animation
         return animator.animate(
             ctx,
             rig,
-            mesh->m_animationBaseTransform,
+            mesh->m_baseTransform,
             mesh->m_inverseBaseTransform,
+            mesh->m_animationBaseTransform,
             palette,
             transform.m_animationIndex,
             transform.m_animationStartTime,

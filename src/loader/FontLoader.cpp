@@ -3,9 +3,7 @@
 #include "util/Util.h"
 
 #include "text/FontAtlas.h"
-
-#include "registry/Registry.h"
-#include "registry/FontRegistry.h"
+#include "text/FontRegistry.h"
 
 #include "loader/document.h"
 
@@ -17,7 +15,7 @@ namespace loader {
     }
 
     void FontLoader::loadFonts(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<FontData>& fonts) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -27,12 +25,12 @@ namespace loader {
     }
 
     void FontLoader::loadFont(
-        const loader::Node& node,
+        const loader::DocNode& node,
         FontData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "name") {
                 data.name = readString(v);
@@ -52,28 +50,17 @@ namespace loader {
         }
     }
 
-    void FontLoader::createFonts(
-        std::vector<FontData>& fonts)
-    {
-        for (auto& data : fonts) {
-            data.id = createFont(data);
-        }
-    }
-
-    text::font_id FontLoader::createFont(
+    text::font_id FontLoader::resolveFont(
         const FontData& data) const
     {
-        auto& fr = FontRegistry::get();
-        auto id = fr.registerFont(data.name);
+        auto& fr = text::FontRegistry::get();
 
-        auto* font = fr.modifyFont(id);
-        font->m_fontPath = data.path;
-        font->m_fontSize = data.size;
-        font->m_atlasSize = data.atlasSize;
+        text::FontAtlas font;
+        font.m_name = data.name;
+        font.m_fontPath = data.path;
+        font.m_fontSize = data.size;
+        font.m_atlasSize = data.atlasSize;
 
-        // TODO KI race condition with RT
-        //font->prepare();
-
-        return id;
+        return fr.registerFont(std::move(font));
     }
 }

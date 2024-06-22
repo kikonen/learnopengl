@@ -110,7 +110,7 @@ void NodeRenderer::render(
                 targetBuffer,
                 [](const mesh::MeshType* type) { return true; },
                 [](const Node* node) { return true; },
-                render::NodeDraw::KIND_ALL,
+                render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT);
         }
@@ -142,8 +142,8 @@ void NodeRenderer::fillHighlightMask(
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this, &program](const mesh::MeshType* type) {
-                auto* p = type->m_selectionProgram ? type->m_selectionProgram : program;
+            [this, &program](const mesh::LodMesh& lodMesh) {
+                auto* p = lodMesh.m_selectionProgram ? lodMesh.m_selectionProgram : program;
                 if (p != program) {
                     p->bind();
                     p->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
@@ -152,7 +152,7 @@ void NodeRenderer::fillHighlightMask(
             },
             [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(); },
-            render::NodeDraw::KIND_ALL);
+            render::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 }
@@ -183,8 +183,8 @@ void NodeRenderer::renderHighlight(
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this, &program](const mesh::MeshType* type) {
-                auto* p = type->m_selectionProgram ? type->m_selectionProgram : program;
+            [this, &program](const mesh::LodMesh& lodMesh) {
+                auto* p = lodMesh.m_selectionProgram ? lodMesh.m_selectionProgram : program;
                 if (p != program) {
                     p->bind();
                     p->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
@@ -193,7 +193,7 @@ void NodeRenderer::renderHighlight(
             },
             [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(); },
-            render::NodeDraw::KIND_ALL);
+            render::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
 

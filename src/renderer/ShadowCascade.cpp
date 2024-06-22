@@ -229,7 +229,7 @@ void ShadowCascade::render(
 
     localCtx.m_defaults.m_cullFace = GL_FRONT;
     localCtx.m_shadow = true;
-    localCtx.m_allowBlend = false;
+    localCtx.m_forceSolid = true;
 
     localCtx.copyShadowFrom(parentCtx);
     localCtx.updateMatricesUBO();
@@ -256,31 +256,15 @@ void ShadowCascade::drawNodes(
     };
 
     {
-        m_solidShadowProgram->bind();
-        m_solidShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
-
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) {
-                return type->m_shadowProgram ? type->m_shadowProgram : m_solidShadowProgram;
+            [this](const mesh::LodMesh& lodMesh) {
+                if (lodMesh.m_shadowProgram) return lodMesh.m_shadowProgram;
+                return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgram : m_solidShadowProgram;
             },
             typeFilter,
             nodeFilter,
-            render::NodeDraw::KIND_SOLID);
-    }
-
-    {
-        m_alphaShadowProgram->bind();
-        m_alphaShadowProgram->m_uniforms->u_shadowIndex.set(m_index);
-
-        ctx.m_nodeDraw->drawProgram(
-            ctx,
-            [this](const mesh::MeshType* type) {
-                return type->m_shadowProgram ? type->m_shadowProgram : m_alphaShadowProgram;
-            },
-            typeFilter,
-            nodeFilter,
-            render::NodeDraw::KIND_ALPHA | render::NodeDraw::KIND_BLEND);
+            render::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

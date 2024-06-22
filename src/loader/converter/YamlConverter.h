@@ -17,9 +17,9 @@ namespace loader {
         YamlConverter();
         ~YamlConverter();
 
-        loader::Node load(const std::string& filePath);
+        loader::DocNode load(const std::string& filePath);
     private:
-        loader::Node convertNode(
+        loader::DocNode convertNode(
             const std::string& name,
             const YAML::Node& yamlNode);
     };

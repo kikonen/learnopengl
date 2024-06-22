@@ -10,7 +10,7 @@ namespace loader {
     YamlConverter::YamlConverter() = default;
     YamlConverter::~YamlConverter() = default;
 
-    loader::Node YamlConverter::load(const std::string& filePath)
+    loader::DocNode YamlConverter::load(const std::string& filePath)
     {
         std::ifstream fin(filePath);
         YAML::Node yamlRoot = YAML::Load(fin);
@@ -18,11 +18,11 @@ namespace loader {
         return convertNode("<root>", yamlRoot);
     }
 
-    loader::Node YamlConverter::convertNode(
+    loader::DocNode YamlConverter::convertNode(
         const std::string& name,
         const YAML::Node& yamlNode)
     {
-        loader::Node node{ name };
+        loader::DocNode node{ name };
 
         const auto type = yamlNode.Type();
 

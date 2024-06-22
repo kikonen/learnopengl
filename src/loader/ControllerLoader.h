@@ -18,11 +18,11 @@ namespace loader {
             Context ctx);
 
         void loadControllers(
-            const loader::Node& node,
+            const loader::DocNode& node,
             std::vector<ControllerData>& controllers) const;
 
         void loadController(
-            const loader::Node& node,
+            const loader::DocNode& node,
             ControllerData& data) const;
 
         NodeController* createController(

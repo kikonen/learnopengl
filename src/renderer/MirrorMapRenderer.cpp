@@ -358,7 +358,7 @@ void MirrorMapRenderer::drawNodes(
                 return node != current &&
                     node != sourceNode;
             },
-            render::NodeDraw::KIND_ALL,
+            render::KIND_ALL,
             GL_COLOR_BUFFER_BIT);
     }
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);

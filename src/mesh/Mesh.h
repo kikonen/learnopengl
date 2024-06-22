@@ -69,6 +69,8 @@ namespace mesh {
     public:
         const ki::mesh_id m_id;
 
+        uint32_t m_registeredIndex{ 0 };
+
         const std::string m_name;
         std::string m_nodeName;
 
@@ -76,6 +78,9 @@ namespace mesh {
         glm::mat4 m_inverseBaseTransform{ 1.f };
 
         glm::mat4 m_animationBaseTransform{ 1.f };
+
+        uint32_t m_reserveVertexCount{ 0 };
+        uint32_t m_reserveIndexCount{ 0 };
 
     protected:
         bool m_prepared{ false };

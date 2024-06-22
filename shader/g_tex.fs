@@ -66,8 +66,8 @@ void main() {
   #include var_tex_material.glsl
 
 #ifdef USE_ALPHA
-#ifdef USE_BLEND_OIT
-  if (material.diffuse.a < 0.95)
+#ifdef USE_BLEND
+  if (material.diffuse.a < 0.7)
     discard;
 #else
   if (material.diffuse.a < 0.05)

@@ -3,4 +3,4 @@ const mat4 modelMatrix = transpose(mat4(
   entity.u_modelMatrixRow0,
   entity.u_modelMatrixRow1,
   entity.u_modelMatrixRow2,
-  VEC_W));
+  VEC_W)) * u_meshTransforms[instance.u_meshIndex];

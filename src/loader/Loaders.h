@@ -20,6 +20,8 @@
 #include "PhysicsLoader.h"
 #include "PrefabLoader.h"
 #include "EntityLoader.h"
+#include "MeshLoader.h"
+#include "TextLoader.h"
 
 class Registry;
 
@@ -41,6 +43,8 @@ namespace loader {
         CubeMapLoader m_cubeMapLoader;
 
         EntityLoader m_entityLoader;
+        MeshLoader m_meshLoader;
+        TextLoader m_textLoader;
 
         FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;

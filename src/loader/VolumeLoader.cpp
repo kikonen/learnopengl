@@ -58,7 +58,7 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<volume>");
 
-        type->addMeshSet(*meshSet, 0);
+        type->addMeshSet(*meshSet);
 
         auto* lodMesh = type->modifyLodMesh(0);
         {
@@ -66,24 +66,24 @@ namespace loader {
             material.m_name = "volume";
             material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
 
+            material.renderBack = true;
+            material.wireframe = true;
+            material.gbuffer = SHADER_VOLUME.starts_with("g_");
+
             lodMesh->setMaterial(material);
+            lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
-        type->m_entityType = mesh::EntityType::marker;
+        type->m_entityType = EntityType::marker;
 
         auto& flags = type->m_flags;
 
-        flags.wireframe = true;
-        flags.renderBack = true;
         flags.noShadow = true;
         flags.noFrustum = false;
         flags.noReflect = true;
         flags.noRefract = true;
         flags.noSelect = true;
         flags.noNormals = true;
-        flags.gbuffer = SHADER_VOLUME.starts_with("g_");
-
-        type->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 
         auto handle = pool::NodeHandle::allocate(assets.volumeId);
         auto* node = handle.toNode();

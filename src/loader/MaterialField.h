@@ -2,49 +2,45 @@
 
 namespace loader {
     struct MaterialField {
-        bool textureSpec = false;
+        bool textureSpec : 1 { false };
 
-        bool pattern = false;
-        bool reflection = false;
-        bool refraction = false;
-        bool refractionRatio = false;
+        bool pattern : 1 { false };
+        bool reflection : 1 { false };
+        bool refraction : 1 { false };
+        bool refractionRatio : 1 { false };
 
-        bool tilingX = false;
-        bool tilingY = false;
+        bool tilingX : 1 { false };
+        bool tilingY : 1 { false };
 
-        bool spriteCount = false;
-        bool spritesX = false;
+        bool spriteCount : 1 { false };
+        bool spritesX : 1 { false };
 
-        bool ns = false;
+        bool ns : 1 { false };
 
-        bool ka = false;
+        bool ka : 1 { false };
 
-        bool kd = false;
-        bool map_kd = false;
+        bool kd : 1 { false };
+        bool ks : 1 { false };
+        bool ke : 1 { false };
 
-        bool ks = false;
-        bool map_ks = false;
-        bool ke = false;
-        bool map_ke = false;
-        bool map_bump = false;
-        bool map_bump_strength = false;
-        bool ni = false;
-        bool d = false;
-        bool illum = false;
+        bool map_bump_strength : 1 { false };
 
-        bool layers = false;
-        bool layersDepth = false;
-        bool parallaxDepth = false;
+        bool ni : 1 { false };
+        bool d : 1 { false };
+        bool illum : 1 { false };
 
-        bool metal = false;
+        bool layers : 1 { false };
+        bool layersDepth : 1 { false };
+        bool parallaxDepth : 1 { false };
 
-        bool map_dudv = false;
-        bool map_noise = false;
+        bool metal : 1 { false };
 
-        bool map_roughness = false;
-        bool map_metalness = false;
-        bool map_occlusion = false;
-        bool map_displacement = false;
-        bool map_opacity = false;
+        bool alpha : 1 {false};
+        bool blend : 1 {false};
+
+        bool renderBack : 1 {false};
+        bool wireframe : 1 {false};
+
+        bool gbuffer : 1 {false};
     };
 }

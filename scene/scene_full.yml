@@ -28,8 +28,8 @@ entities:
     pos: [0.0, 0.0, 0.0]
     script_file: scripts/seq_zero_origo
   - name: ZERO
-    model:
-      mesh: ball_volume
+    mesh:
+      path: ball_volume
       material:
         name: default_ball
         kd: [0, 0.8, 0]
@@ -38,16 +38,16 @@ entities:
     scale: 0.2
   - name: Moving water ball
     parent_id: zero-origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     script_file: scripts/seq_zero
   - id: player
     type: origo
-    xmodel:
-      mesh: player
+    xmesh:
+      path: player
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     front: [0, 0, -1]
@@ -65,22 +65,26 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    model:
+    mesh:
+      flags:
+        billboard: true
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
     text:
-      font: fps_font
       text: "- fps"
+      fonts:
+        name: fps_font
+        path: fonts/Vera.ttf
+        size: 36
     program: g_font_render
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
-    render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
+    xrender_flags:
   - name: Player Camera
     parent_id: player
     type: origo
@@ -103,15 +107,15 @@ entities:
     script_file: scripts/anim_sun_light
   - name: Sun light
     parent_id: light-dir-origo
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.0, 0.7, 0.0, 1.0]
+        program: ball_effect
+        program_definitions:
+          effect_sun: 1
     pos: [0, 0, 600]
     scale: 20
-    program: ball_effect
-    program_definitions:
-      effect_sun: 1
     render_flags:
       effect: true
       no_shadow: true
@@ -145,8 +149,8 @@ entities:
   - id: moving_point_light_{c}
     desc: "NOTE overriding material in clones is *NOT* supported"
     parent_id: zero-origo
-    model:
-      mesh: light
+    mesh:
+      path: light
     pos: [0, 0, 0]
     scale: 0.5
     program: g_light
@@ -163,7 +167,7 @@ entities:
         parent_id: light-4
       - pos: [0.0, 0.0, 15.0]
         parent_id: light-5
-        model:
+        mesh:
           material_modifier:
             kd: [0.8, 0.0, 0.0, 1.0]
         light:
@@ -172,7 +176,7 @@ entities:
         enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: light-6
-        model:
+        mesh:
           material_modifier:
             kd: [0.0, 0.9, 0.0, 1.0]
         light:
@@ -181,7 +185,7 @@ entities:
         enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: light-7
-        model:
+        mesh:
           material_modifier:
             kd: [0.0, 0.0, 0.9, 1.0]
         light:
@@ -190,7 +194,7 @@ entities:
         enabled: false
       - pos: [0.0, 0.0, 15.0]
         parent_id: light-8
-        model:
+        mesh:
           material_modifier:
             kd: [0.9, 0.0, 0.9, 1.0]
         light:
@@ -211,8 +215,8 @@ entities:
     script_file: scripts/anim_rock_light
   - name: Rock light
     parent_id: rock-light-origo
-    model:
-      mesh: light
+    mesh:
+      path: light
     pos: [-10, 0, 0]
     scale: 0.5
     program: g_tex
@@ -227,8 +231,8 @@ entities:
       intensity: 1000
   - name: Active node
     parent_id: zero-origo
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling_x: 2
         tiling_y: 2
@@ -237,8 +241,8 @@ entities:
     script_file: scripts/anim_node_path
   - name: Active node around rock
     parent_id: rock-origo
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
     program: g_tex
     pos: [0, -5, 0]
     script_file: scripts/anim_node_path
@@ -248,8 +252,8 @@ entities:
     render_flags:
       cube_map: true
   - id: example_{t}
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material:
         name: default_glass_ball_todo
         kd: [0.8, 0.8, 0.0, 1.0]
@@ -272,80 +276,80 @@ entities:
       y_step: 0
       z_step: 3
   - name: Window 1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - id: door_1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_NN_05h.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_NN_05h.FBX
       material:
         name: door_1_pbr
         map_pbr: door_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - name: Window 1_1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [5.0, 8.0, 0.0]
     base_rotation: [-90.0, -45.0, 0.0]
     scale: 4
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - name: Window 2
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [7.0, 14.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
   - id: stained_windows_{t}
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [-10.0, 20.0, 10.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
+    xrender_flags:
     repeat:
       x_count: 10
       x_step: 2
@@ -355,8 +359,8 @@ entities:
     render_flags:
       cube_map: true
   - id: brick_wall_{t}
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -365,16 +369,16 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [-5.0, 13.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 3
       x_step: 4
   - name: Brick wall - one
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -383,47 +387,47 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [5.0, 13.5, 14.0]
     rotation: [0, 180, 0]
-    render_flags:
-      render_back: true
+    xrender_flags:
   - id: wood_wall_{t}
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: woodwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
     program: g_tex
     pos: [-3.0, 13.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
   - id: wood_wall_upper_normal_{t}
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: woodwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
       material_modifier:
         map_bump: textures/wood_1024_normal.png
         parallax_depth: 0.02
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
   - name: Big mirror 1
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: mirror
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -431,18 +435,18 @@ entities:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
     script_file: scripts/anim_mirror
   - name: Big mirror 2
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: mirror
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -450,30 +454,30 @@ entities:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
+        render_back: true
     program: g_mirror
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
     script_file: scripts/anim_mirror
   - name: Airboat
-    model:
-      mesh: airboat_fixed_colors
+    mesh:
+      path: airboat_fixed_colors
     program: g_tex
     pos: [24.0, 11.0, 15.0]
     scale: 1.0
   - name: Airboat 2
-    model:
-      mesh: airboat_fixed_colors
+    mesh:
+      path: airboat_fixed_colors
     program: g_tex
     pos: [6.0, 19.0, 22.0]
     scale: 0.5
   - xid: spyro
-    model:
-      mesh: spyro2
+    mesh:
+      path: spyro2
     program: g_tex
     pos: [0.0, 15.0, 30.0]
     material_modifier:
@@ -481,12 +485,15 @@ entities:
       tiling: 6
     scale: 0.06
   - id: wyvern_{t}
-    model:
-      mesh: fbx/creatures/wyvern/SK_Wyvern.FBX
+    mesh:
+      path: fbx/creatures/wyvern/SK_Wyvern.FBX
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern
           map_pbr: wyvern_pbr
+          xalpha: true
+          xrender_back: true
+          xwireframe: true
       animations:
         - name: fire
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
@@ -500,9 +507,6 @@ entities:
     scale: 2
     base_scale: 0.01
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -513,49 +517,50 @@ entities:
       x_step: 100
       z_step: -100
   - name: Backback
-    model:
-      mesh: backpack/backpack
+    mesh:
+      path: backpack/backpack
     program: g_tex
     pos: [10.0, 10.0, 5.0]
     scale: 1.5
     enabled: false
   - name: Bunny
-    model:
-      mesh: bunny
+    mesh:
+      path: bunny
       material_modifier:
         reflection: 0.7
+        render_back: true
     program: g_tex
     pos: [-15.0, 14.0, 5.0]
     scale: 20.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Dragon
-    model:
-      mesh: dragon
+    mesh:
+      path: dragon
+      material_modifier:
+        render_back: true
     program: g_tex
     pos: [-15.0, 25.0, 0.0]
     scale: 30.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - id: shuttle
-    model:
-      mesh: opengl_book/NasaShuttle/shuttle
+    mesh:
+      path: opengl_book/NasaShuttle/shuttle
       material_modifier:
         kd: [1, 1, 1, 1]
     program: g_tex
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
   - name: Sword 2
-    model:
-      mesh: sword2
+    mesh:
+      path: sword2
     program: g_tex
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
   - name: Sword - Excalibur
-    model:
-      mesh: sword2
+    mesh:
+      path: sword2
     program: g_tex
     rotation: [223, 28, 24]
     pos: [250.0, 10.0, -190.0]
@@ -563,8 +568,8 @@ entities:
   - name: Teapot
     desc: Dir light target (back needed due to gap in lid)
     id: dir-light-target
-    model:
-      mesh: smooth_teapot
+    mesh:
+      path: smooth_teapot
       material:
         name: teapot
         kd: [0.578, 0.578, 0.168, 1.0]
@@ -576,8 +581,7 @@ entities:
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
     scale: 1.0
-    render_flags:
-      render_back: true
+    xrender_flags:
     selected: false
     particle:
       material:
@@ -589,8 +593,8 @@ entities:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
   - name: Cow
-    model:
-      mesh: cow
+    mesh:
+      path: cow
       material:
         name: cow
         kd: [0.160, 0.578, 0.168, 1.0]
@@ -600,12 +604,11 @@ entities:
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      render_back: false
+    xrender_flags:
     selected: false
   - xname: Cow fur
-    model:
-      mesh: cow
+    mesh:
+      path: cow
       material:
         name: cow_fur
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -614,15 +617,15 @@ entities:
         tiling: 1
         layers: 25
         layers_depth: 0.2
+        alpha: true
     program: g_fur
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      alpha: true
+    xrender_flags:
   - name: Cow 2
-    model:
-      mesh: cow
+    mesh:
+      path: cow
       material_modifier:
         xreflection: 0.1
         map_pbr: textures/Plastic 01 [4K]
@@ -630,12 +633,11 @@ entities:
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    render_flags:
-      render_back: false
+    xrender_flags:
     selected: false
   - name: Ball
-    model:
-      mesh: texture_ball
+    mesh:
+      path: texture_ball
     program: g_tex
     pos: [0.0, 13.0, 0.0]
     scale: 2.0
@@ -650,8 +652,8 @@ entities:
     render_flags:
       cube_map: true
   - name: Refract ball
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material_modifier:
         reflection: 0.05
         refraction: 0.85
@@ -665,24 +667,24 @@ entities:
     render_flags:
       cube_map: true
   - name: Reflect ball
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material_modifier:
         reflection: 0.8
     program: g_tex
     pos: [-10.0, 25.0, 0.0]
     scale: 1.3
   - name: Water ball
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material_modifier:
         xreflection: 0.3
     program: g_tex
     pos: [5.0, 30.0, 0.0]
     scale: 1.3
   - name: Basic ball
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
@@ -691,8 +693,8 @@ entities:
     pos: [5.0, 30.0, 5.0]
     scale: 1.3
   - name: Gold ball
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: gold_ball
         kd: [0.7516, 0.6065, 0.2265, 1.0]
@@ -705,8 +707,8 @@ entities:
     id: ball-origo
     pos: [5.0, 30.0, 15.0]
   - name: Silver ball
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: silver_ball
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -722,8 +724,8 @@ entities:
         type: sphere
   - name: Bronze ball
     parent_id: ball-origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
@@ -733,8 +735,8 @@ entities:
     scale: 1.3
   - name: Copper ball
     parent_id: ball-origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material:
         name: copper
         kd: [0.800000, 0.800000, 0.800000]
@@ -745,26 +747,25 @@ entities:
     scale: 1.3
   - name: Plasma ball
     parent_id: cube-3
-    model:
-      mesh: ball_volume
+    mesh:
+      path: ball_volume
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
-    program: ball_effect
-    program_definitions:
-      effect_plasma: 1
+        blend: true
+        program: ball_effect
+        program_definitions:
+          effect_plasma: 1
     #pos: [-5.0, 25.0, 5.0]
     pos: [0, 0, 0]
     scale: 2
     render_flags:
-      alpha: true
-      blend: true
       effect: true
       no_select: true
       no_shadow: true
   - name: Brickcube
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling_x: 2
         tiling_y: 2
@@ -772,8 +773,8 @@ entities:
     pos: [5.0, 25.0, 5.0]
     scale: 1
   - id: four_cubes_{c}
-    model:
-      mesh: texture_cube_3
+    mesh:
+      path: texture_cube_3
     program: g_tex
     scale: 1
     camera:
@@ -791,14 +792,15 @@ entities:
       - pos: [5.0, 20.0, 5.0]
         id: cube-4
   - id: blend_cubes_{c}
-    model:
-      mesh: rubik_cube.fbx
+    mesh:
+      path: rubik_cube.fbx
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
     program: g_tex
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
-      render_back: true
+    xrender_flags:
     script_file: scripts/anim_four_cubes
     clones:
       - pos: [-5.0, 30.0, -5.0]
@@ -806,29 +808,29 @@ entities:
       - pos: [-5.0, 30.0, 5.0]
       - pos: [5.0, 30.0, 5.0]
   - name: Wooden matrix Cube
-    model:
-      mesh: texture_cube_4/texture_cube_4.obj
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
     program: g_tex
     pos: [-5.0, 25.0, 5.0]
     rotation: [0, 180, 0]
     scale: 1
     selected: false
   - id: pool_surface_{t}
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: pool_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     priority: -5
     program: g_water
     pos: [0, 9.5, -10]
     scale: 30
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 2
@@ -839,8 +841,8 @@ entities:
       z_step: 60
     script_file: scripts/anim_water
   - id: pool_floor_{t}
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -868,8 +870,8 @@ entities:
         type: plane
         rot: [0, 0, 0]
   - id: pool_side_{c}
-    model:
-      mesh: pool_brick
+    mesh:
+      path: pool_brick
       material_modifier:
         tiling_x: 100
         tiling_y: 10
@@ -887,9 +889,6 @@ entities:
     id: auto
     priority: 20
     type: container
-    instanced: true
-    program: g_terrain
-    depth_program: g_terrain_depth
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
     front: [0, 1, 0]
@@ -897,6 +896,7 @@ entities:
       pre_depth: true
       xxwireframe: true
       tessellation: true
+    instanced: true
     generator:
       type: terrain
       material:
@@ -906,6 +906,8 @@ entities:
         map_bump: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -914,8 +916,8 @@ entities:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
   - id: grid_points_{t}
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material:
         name: sea_floor
         map_kd: textures/tiles_1024.png
@@ -942,20 +944,20 @@ entities:
   - id: sea_surface_{t}
     desc: TODO KI conflicting water reflect with pool
     priority: -20
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_bump: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
+        render_back: true
     program: g_water
     pos: [-1072, 0.0, -772]
     scale: 128
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 8
@@ -966,18 +968,18 @@ entities:
       z_step: 256
   - id: sea_floor_{t}
     priority: -25
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: sea_floor
         map_kd: textures/tiles_1024.png
         tiling: 2
+        render_back: true
     program: g_tex
     pos: [-1072, -70.0, -772]
     scale: 128
     render_flags:
       no_shadow: true
-      render_back: true
     repeat:
       x_count: 8
       y_count: 1
@@ -990,8 +992,8 @@ entities:
     pos: [10.0, 150.0, 200.0]
   - name: Planet
     parent_id: planet-origo
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
       material_modifier:
         map_bump: planet/mars_normal.png
     program: g_tex
@@ -1007,8 +1009,8 @@ entities:
       cube_map: true
   - name: Rock
     parent_id: rock-origo
-    model:
-      mesh: rock2/rock
+    mesh:
+      path: rock2/rock
       material_modifier:
         metal: [0.5, 0.0, 0, 1]
         map_pbr: textures\Rock002_1K-PNG
@@ -1020,55 +1022,61 @@ entities:
     parent_id: planet-origo
     program: g_tex
     pos: [0, 0, 0]
-    models:
-      - mesh: [rock2, rock]
-        level: 0
+    meshes:
+      - path: rock2/rock
+        lod:
+          level: 0
+          distance: 20
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
           #kd: [1, 1, 0]
           tiling: 4
-      - mesh: [rock2, rock_lod_1]
-        level: 1
+      - path: rock2/rock_lod_1
+        lod:
+          level: 1
+          distance: 40
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
           #kd: [0, 1, 1]
           tiling: 4
-      - mesh: [rock2, rock_lod_2]
-        level: 2
+      - path: rock2/rock_lod_2
+        lod:
+          level: 2
+          distance: 60
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 0, 1]
           tiling: 4
-      - mesh: [rock2, rock_lod_3]
-        level: 3
+      - path: rock2/rock_lod_3
+        lod:
+          level: 3
+          distance: 80
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 1, 0]
           tiling: 4
-      - mesh: [rock2, rock_lod_4]
-        level: 4
+      - path: rock2/rock_lod_4
+        lod:
+          level: 4
+          distance: 100
+        flags:
+          billboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [1, 0, 0]
           tiling: 4
-    lods:
-      - distance: 20
-      - distance: 40
-      - distance: 60
-      - distance: 80
-      - distance: 100
     instanced: true
     generator:
       type: asteroid_belt
       count: 1000
   - name: Scale 1
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -1077,14 +1085,14 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     pos: [15, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Scale 2
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -1093,15 +1101,15 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     scale: 2
     pos: [10, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - name: Scale 3
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -1110,33 +1118,67 @@ entities:
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
+        render_back: true
     program: g_tex
     scale: 3
     pos: [5, 11.5, 20.0]
-    render_flags:
-      render_back: true
+    xrender_flags:
     enabled: false
   - id: palm_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Palm_01.fbx
-      materials:
-        - name: palm_trunk
-          alias: Tree_0Mat
-          map_kd: textures/palm02.png
-          map_bump: textures/palm02_normal.png
-        - name: palm_leaf
-          alias: Tree_1Mat
-          map_kd: textures/coconut palm leaf.png
-          map_bump: textures/coconut palm leaf_Normal.png
-        - name: palm_trunk
-          alias: Tree_2Mat
-          map_kd: textures/palm02.png
-          map_bump: textures/palm02_normal.png
+    meshes:
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 0
+            distance: 200
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+            map_bump: textures/palm02_normal.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
+            map_bump: textures/coconut palm leaf_Normal.png
+            render_back: true
+          - name: palm_trunk
+            alias: Tree_2Mat
+            map_kd: textures/palm02.png
+            map_bump: textures/palm02_normal.png
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 1
+            distance: 500
+          - name: Tree_1
+            level: 1
+          - name: Tree_2
+            level: -1
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
+            render_back: true
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 2
+            distance: 10000
+          - name: Tree_1
+            level: 2
+          - name: Tree_2
+            level: -1
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
     priority: -17
     program: g_tex
     pos: [350, 10.0, 150.0]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -1148,23 +1190,59 @@ entities:
         x_step: -25
         z_step: 25
   - xid: maple_tree_forest_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_01.fbx
-      materials:
-        - name: maple_trunk
-          alias: Tree_0Mat
-          map_kd: textures/bark02.png
-          map_bump: textures/bark02_normal.png
-        - name: maple_leaf
-          alias: Tree_1Mat
-          map_kd: textures/leaf maple.png
-          map_bump: textures/leaf maple_Normal.png
+    meshes:
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 0
+            distance: 100
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+            map_bump: textures/bark02_normal.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            map_bump: textures/leaf maple_Normal.png
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 1
+            distance: 200
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 2
+            distance: 600
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 3
+            distance: 10000
+          - name: Tree_1
+            level: -1
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
     priority: -17
     program: g_tex
     pos: [250, 10.0, 150.0]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.05
     instanced: true
@@ -1176,19 +1254,28 @@ entities:
         x_step: -20
         z_step: 20
   - id: skeleton_army_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+    meshes:
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        lods:
+          - level: 0
+            distance: 20
+        material:
+          name: skeleton_pbr
+          map_pbr: skeleton_pbr
+          xmetal: [0.3, 0.4, 0, 1]
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        lods:
+          - level: 1
+            distance: 10000
+        material:
+          name: skeleton_pbr
+          map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
     program: g_tex
     shadow_program: simple_depth
     priority: -15
     pos: [35, 11.5, 60.0]
     render_flags:
       dynamic_bounds: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -1211,17 +1298,17 @@ entities:
         size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{c}
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: giant_woodbox
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
         xreflection: 0.1
+        render_back: true
     program: g_tex
     clone_position_offset: [0, 40, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
     clones:
@@ -1239,8 +1326,8 @@ entities:
         rot: [0, 0, 0]
   - name: world_x_minus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -1259,8 +1346,8 @@ entities:
         rot: [0, 0, 270]
   - name: world_x_plus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -1279,18 +1366,18 @@ entities:
         rot: [0, 0, 90]
   - xname: world_y_minus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
         xxmap_kd: textures/Marble White_VH_512.PNG
         map_kd: textures/tiles_1024.png
         tiling: 8
+        alpha: true
     program: g_tex
     scale: 100
     render_flags:
-      alpha: true
       no_shadow: true
     pos: [0, -400, 0]
     rot: [270, 0, 0]
@@ -1300,18 +1387,18 @@ entities:
         rot: [0, 0, 0]
   - xname: world_y_plus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
         xxmap_kd: textures/Marble White_VH_512.PNG
         map_kd: textures/tiles_1024.png
         tiling: 8
+        alpha: true
     program: g_tex
     scale: 100
     render_flags:
-      alpha: true
       no_shadow: true
     pos: [0, 400, 0]
     rot: [90, 0, 0]
@@ -1321,8 +1408,8 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_minus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -1341,8 +1428,8 @@ entities:
         rot: [90, 0, 0]
   - name: world_z_plus
     type: origo
-    xmodel:
-      mesh: quad
+    xmesh:
+      path: quad
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
@@ -1359,7 +1446,3 @@ entities:
       geom:
         type: plane
         rot: [270, 0, 0]
-fonts:
-  - name: fps_font
-    path: fonts/Vera.ttf
-    size: 36

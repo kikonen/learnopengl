@@ -11,7 +11,7 @@ namespace loader {
             Context ctx);
 
         void loadRoot(
-            const loader::Node& node,
+            const loader::DocNode& node,
             RootData& data) const;
 
         void attachRoot(

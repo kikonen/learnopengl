@@ -208,11 +208,14 @@
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
+    <ClCompile Include="src\loader\MeshLoader.cpp" />
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
     <ClCompile Include="src\animation\RigNode.cpp" />
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
+    <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
+    <ClCompile Include="src\mesh\TransformRegistry.cpp" />
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp" />
@@ -220,8 +223,10 @@
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\animation\AnimationSystem.cpp" />
     <ClCompile Include="src\mesh\MeshSet.cpp" />
+    <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
+    <ClCompile Include="src\text\TextSystem.cpp" />
     <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexTextureVBO.cpp" />
@@ -229,7 +234,7 @@
     <ClCompile Include="src\pool\IdHash.cpp" />
     <ClCompile Include="src\pool\Pool_impl.h" />
     <ClCompile Include="src\pool\TypeHandle.cpp" />
-    <ClCompile Include="src\registry\FontRegistry.cpp" />
+    <ClCompile Include="src\text\FontRegistry.cpp" />
     <ClCompile Include="src\pool\NodeHandle.cpp" />
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp" />
     <ClCompile Include="src\render\BatchCommand.cpp" />
@@ -351,6 +356,8 @@
     <ClCompile Include="src\render\WindowBuffer.cpp" />
     <ClCompile Include="src\text\FontHandle.cpp" />
     <ClCompile Include="src\text\TextDraw.cpp" />
+    <ClCompile Include="src\text\vao\TextVAO.cpp" />
+    <ClCompile Include="src\text\vao\TextVAO.h" />
     <ClCompile Include="src\util\assimp_util.cpp" />
     <ClCompile Include="src\util\glm_util.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
@@ -413,7 +420,12 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
+    <ClInclude Include="src\asset\MaterialFlags.h" />
+    <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
+    <ClInclude Include="src\loader\MeshLoader.h" />
+    <ClInclude Include="src\loader\TextLoader.h" />
+    <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\DocNode_impl.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
@@ -430,7 +442,14 @@
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
+    <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
+    <ClInclude Include="src\mesh\TransformRegistry.h" />
+    <ClInclude Include="src\mesh\TransformSSBO.h" />
+    <ClInclude Include="src\mesh\vao\VertexEntry.h" />
+    <ClInclude Include="src\mesh\vao\VertexVBO.h" />
+    <ClInclude Include="src\model\NodeFlags.h" />
+    <ClInclude Include="src\render\size.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />
@@ -473,6 +492,7 @@
     <ClInclude Include="src\animation\AnimationSystem.h" />
     <ClInclude Include="src\animation\BoneTransformSSBO.h" />
     <ClInclude Include="src\scene\Updater.h" />
+    <ClInclude Include="src\text\TextSystem.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\vao\BoneEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexBoneVBO.h" />
@@ -481,7 +501,7 @@
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\InstanceSSBO.h" />
     <ClInclude Include="src\mesh\LodMesh.h" />
-    <ClInclude Include="src\mesh\NodeRenderFlags.h" />
+    <ClInclude Include="src\mesh\TypeFlags.h" />
     <ClInclude Include="src\mesh\vao\PositionEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexPositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
@@ -497,7 +517,7 @@
     <ClInclude Include="src\pool\Entry.h" />
     <ClInclude Include="src\pool\IdHash.h" />
     <ClInclude Include="src\pool\TypeHandle.h" />
-    <ClInclude Include="src\registry\FontRegistry.h" />
+    <ClInclude Include="src\text\FontRegistry.h" />
     <ClInclude Include="src\pool\NodeHandle.h" />
     <ClInclude Include="src\pool\Pool.h" />
     <ClInclude Include="src\registry\NodeSnapshotRegistry.h" />
@@ -623,7 +643,7 @@
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
-    <ClInclude Include="src\mesh\EntityType.h" />
+    <ClInclude Include="src\model\EntityType.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />

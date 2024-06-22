@@ -22,16 +22,17 @@ namespace loader {
             Context ctx);
 
         void loadGenerator(
-            const loader::Node& node,
+            const loader::DocNode& node,
             GeneratorData& data,
             Loaders& loaders) const;
 
         void loadTerrain(
-            const loader::Node& node,
+            const loader::DocNode& node,
             TerrainData& data) const;
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            mesh::MeshType* type);
+            mesh::MeshType* type,
+            Loaders& loaders);
     };
 }

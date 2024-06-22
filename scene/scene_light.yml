@@ -31,8 +31,8 @@ entities:
     pos: [0, 0, 0]
   - name: light
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
-    model:
-      mesh: light
+    mesh:
+      path: light
     pos: [0, 0, 0]
     scale: 0.5
     program: g_light

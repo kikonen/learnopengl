@@ -46,7 +46,7 @@ void ShadowMapRenderer::prepareRT(
     m_planes = assets.shadowPlanes;
     m_mapSizes = assets.shadowMapSizes;
 
-    int maxCount = std::min(static_cast<int>(m_planes.size()) - 1, MAX_SHADOW_MAP_COUNT);
+    int maxCount = std::min(static_cast<int>(m_planes.size()) - 1, MAX_SHADOW_MAP_COUNT_ABS);
     for (int index = 0; index < maxCount; index++) {
         auto* cascade = new ShadowCascade(
             index,

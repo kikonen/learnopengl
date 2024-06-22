@@ -8,8 +8,8 @@ script:
     - path: lib/common
 entities:
   - id: player
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material_modifier:
         tiling: 5
     program: g_tex
@@ -35,8 +35,8 @@ entities:
     camera:
       default: true
   - name: origo
-    model:
-      mesh: water_ball
+    mesh:
+      path: water_ball
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
     program: g_tex
@@ -49,8 +49,8 @@ entities:
         xautoplay: true
         xlooping: true
   - name: Four cubes
-    model:
-      mesh: texture_cube_3
+    mesh:
+      path: texture_cube_3
     program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
@@ -70,8 +70,8 @@ entities:
           source:
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
   - name: CowJump
-    model:
-      mesh: cow
+    mesh:
+      path: cow
       material_modifier:
         map_pbr: textures/Plastic 01 [4K]
     program: g_tex
@@ -86,8 +86,8 @@ entities:
         gain: 1.0
     script_file: scripts/cow_audio
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]

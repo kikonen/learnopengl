@@ -4,6 +4,8 @@
 
 namespace mesh {
     struct IndexEntry {
+        IndexEntry() {}
+
         IndexEntry(unsigned int a_x, unsigned int a_y, unsigned int a_z)
             : x{ a_x }, y{ a_y }, z{ a_z }
         {}

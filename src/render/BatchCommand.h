@@ -12,29 +12,47 @@
 
 
 class Program;
+class RenderContext;
 
 namespace backend {
     struct Lod;
 }
 
 namespace render {
+    struct BatchKey {
+        BatchKey(
+            int8_t priority,
+            const Program* program,
+            const kigl::GLVertexArray* vao,
+            const backend::DrawOptions& drawOptions,
+            bool forceSolid,
+            bool forceWireframe) noexcept;
+
+        bool operator<(const BatchKey& o) const noexcept;
+
+        const Program* m_program{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
+
+        backend::DrawOptions m_drawOptions;
+
+        const int8_t m_priority;
+    };
+
     struct LodKey {
         const backend::Lod* m_lod;
+        uint32_t m_flags;
+
         bool operator<(const LodKey& o) const noexcept {
-            return *m_lod < *o.m_lod;
+            return std::tie(*m_lod, m_flags) < std::tie(*o.m_lod, o.m_flags);
         }
     };
 
+    struct LodEntry {
+        uint32_t m_entityIndex;
+        uint32_t m_meshIndex;
+    };
+
     struct BatchCommand {
-        const Program* m_program{ nullptr };
-
-        const kigl::GLVertexArray* m_vao{ nullptr };
-
-        std::map<LodKey, std::vector<uint32_t>> m_lodInstances;
-
-        int m_baseIndex{ 0 };
-        int m_instanceCount{ 0 };
-
-        backend::DrawOptions m_drawOptions;
+        std::map<LodKey, std::vector<LodEntry>> m_lodInstances;
     };
 }

@@ -4,20 +4,14 @@
 #include <functional>
 #include <span>
 
-#include "backend/DrawOptions.h"
-
-#include "asset/Material.h"
 #include "asset/AABB.h"
 
 #include "ki/limits.h"
 
-#include "kigl/GLVertexArray.h"
+#include "model/EntityType.h"
 
-#include "EntityType.h"
-
-#include "NodeRenderFlags.h"
-
-#include "mesh/LodMesh.h"
+#include "LodMesh.h"
+#include "TypeFlags.h"
 
 namespace pool {
     class TypeHandle;
@@ -34,7 +28,6 @@ struct PrepareContext;
 struct Snapshot;
 
 class CustomMaterial;
-class Program;
 class Registry;
 class RenderContext;
 class MeshTypeRegistry;
@@ -75,8 +68,7 @@ namespace mesh {
 
         // @return count of meshes added
         uint16_t addMeshSet(
-            mesh::MeshSet& meshSet,
-            uint16_t lodLevel);
+            mesh::MeshSet& meshSet);
 
         LodMesh* addLodMesh(LodMesh&& lodMesh);
 
@@ -115,19 +107,7 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        inline const kigl::GLVertexArray* getVAO() const noexcept {
-            return m_vao;
-        }
-
-        inline const backend::DrawOptions& getDrawOptions() const noexcept {
-            return m_drawOptions;
-        }
-
-        inline backend::DrawOptions& modifyDrawOptions() noexcept {
-            return m_drawOptions;
-        }
-
-        uint16_t getLodLevel(
+        int8_t getLodLevel(
             const glm::vec3& cameraPos,
             const glm::vec3& worldPos) const;
 
@@ -144,14 +124,6 @@ namespace mesh {
         AABB calculateAABB() const noexcept;
 
     public:
-        Program* m_program{ nullptr };
-        Program* m_shadowProgram{ nullptr };
-        Program* m_preDepthProgram{ nullptr };
-        Program* m_selectionProgram{ nullptr };
-        Program* m_idProgram{ nullptr };
-
-        const kigl::GLVertexArray* m_vao{ nullptr };
-
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
 
@@ -159,18 +131,12 @@ namespace mesh {
 
         std::string m_name;
 
-        NodeRenderFlags m_flags;
+        TypeFlags m_flags;
 
         uint32_t m_handleIndex{ 0 };
         ki::type_id m_id{ 0 };
 
-        backend::DrawOptions m_drawOptions;
-
         EntityType m_entityType{ EntityType::origo };
-
-        // NOTE KI *BIGGER* values rendered first (can be negative)
-        // range -254 .. 255
-        int8_t m_priority{ 0 };
 
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

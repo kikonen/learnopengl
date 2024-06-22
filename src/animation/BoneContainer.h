@@ -18,6 +18,8 @@ namespace animation {
         animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
         void bindNode(int16_t boneIndex, int16_t nodeIndex) noexcept;
 
+        const animation::BoneInfo* getNode(int16_t boneIndex) const noexcept;
+
         // @return boneInfo, null if not found
         const animation::BoneInfo* findByNodeIndex(int16_t nodeIndex) const noexcept;
 

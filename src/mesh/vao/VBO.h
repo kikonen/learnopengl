@@ -2,6 +2,7 @@
 
 #include <string>
 #include <string_view>
+#include <span>
 
 #include <glm/glm.hpp>
 
@@ -25,21 +26,15 @@ namespace mesh {
 
         virtual ~VBO();
 
-        // @return base *offset* into buffer
-        size_t addVertices(
-            const std::vector<T_Vertex>& vertices);
+        // @return base *index* into entries
+        uint32_t reserveVertices(size_t count);
 
-        size_t addVertex(
-            const T_Vertex& vertex);
+        void updateVertices(
+            uint32_t baseIndex,
+            const std::span<T_Vertex>& vertices);
 
         virtual T_Entry convertVertex(
             const T_Vertex& vertex) = 0;
-
-        size_t addEntries(
-            const std::vector<T_Entry>& entries);
-
-        // @return base *offset* into buffer
-        size_t addEntry(const T_Entry& entry);
 
         void reserveSize(size_t count);
 
@@ -49,9 +44,9 @@ namespace mesh {
 
         void clear();
 
-        // @return base *offset* into buffer (for next new entry)
-        size_t getBaseOffset() const noexcept {
-            return m_entries.size();
+        // @return base *index* into buffer (for next new entry)
+        uint32_t getBaseIndex() const noexcept {
+            return static_cast<uint32_t>(m_entries.size());
         }
 
     protected:
@@ -61,7 +56,7 @@ namespace mesh {
         bool m_prepared{ false };
 
         kigl::GLBuffer m_vbo;
-        size_t m_lastBufferSize = 0;
+        size_t m_lastSize{ 0 };
 
         kigl::GLVertexArray* m_vao{ nullptr };
 

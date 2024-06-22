@@ -8,7 +8,7 @@
 
 namespace loader {
     struct NodeData {
-        const loader::Node& findNode(const std::string& key) const noexcept;
+        const loader::DocNode& findNode(const std::string& key) const noexcept;
 
         //template<typename T>
         //auto as() const noexcept;
@@ -28,6 +28,6 @@ namespace loader {
         bool asBool() const noexcept;
 
         std::string m_value;
-        std::vector<loader::Node> m_nodes;
+        std::vector<loader::DocNode> m_nodes;
     };
 }

@@ -9,8 +9,6 @@
 
 #include "kigl/GLState.h"
 
-#include "mesh/ModelMesh.h"
-
 #include "VBO_impl.h"
 
 
@@ -75,26 +73,43 @@ namespace mesh {
         m_indexEbo.clear();
     }
 
-    const kigl::GLVertexArray* TexturedVAO::registerModel(
-        mesh::ModelMesh* mesh)
+    uint32_t TexturedVAO::reserveVertices(size_t count)
     {
         ASSERT_RT();
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto baseIndex = m_positionVbo.reserveVertices(count);
 
-        assert(!vertices.empty());
-        assert(!indeces.empty());
+        m_normalVbo.reserveVertices(count);
+        m_textureVbo.reserveVertices(count);
 
-        {
-            mesh->m_positionVboOffset = m_positionVbo.addVertices(vertices);
-            mesh->m_indexEboOffset = m_indexEbo.addIndeces(indeces);
-        }
+        return baseIndex;
+    }
 
-        m_normalVbo.addVertices(vertices);
-        m_textureVbo.addVertices(vertices);
+    uint32_t TexturedVAO::reserveIndeces(size_t count)
+    {
+        ASSERT_RT();
 
-        return m_vao.get();
+        return m_indexEbo.reserveIndeces(count);
+    }
+
+    void TexturedVAO::updateVertices(
+        uint32_t baseVbo,
+        std::span<Vertex> vertices)
+    {
+        ASSERT_RT();
+
+        m_positionVbo.updateVertices(baseVbo, vertices);
+        m_normalVbo.updateVertices(baseVbo, vertices);
+        m_textureVbo.updateVertices(baseVbo, vertices);
+    }
+
+    void TexturedVAO::updateIndeces(
+        uint32_t baseEbo,
+        std::span<Index> indeces)
+    {
+        ASSERT_RT();
+
+        m_indexEbo.updateIndeces(baseEbo, indeces);
     }
 
     void TexturedVAO::updateRT()
@@ -104,6 +119,7 @@ namespace mesh {
         m_positionVbo.updateVAO(*m_vao);
         m_normalVbo.updateVAO(*m_vao);
         m_textureVbo.updateVAO(*m_vao);
+
         m_indexEbo.updateVAO(*m_vao);
     }
 }

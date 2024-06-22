@@ -15,7 +15,7 @@ namespace loader {
             Context ctx);
 
         void loadCustomMaterial(
-            const loader::Node& node,
+            const loader::DocNode& node,
             CustomMaterialData& data) const;
 
         std::unique_ptr<CustomMaterial> createCustomMaterial(

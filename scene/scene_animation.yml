@@ -27,8 +27,8 @@ entities:
   - name: Directional light
     type: origo
     pos: [-20, 25, 25]
-    model:
-      mesh: light
+    mesh:
+      path: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -42,23 +42,23 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         tiling: 60
+        render_back: true
     program: g_tex
     position: [0, 0, 0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100
   - xid: object
-    model:
-      #mesh: texture_cube_4/texture_cube_4.fbx
-      #mesh: fbx/chracters/SK_Character_Grandpa.fbx
-      mesh: fbx/chracters/SK_Character_PunkGuy.fbx
+    mesh:
+      #path: texture_cube_4/texture_cube_4.fbx
+      #path: fbx/chracters/SK_Character_Grandpa.fbx
+      path: fbx/chracters/SK_Character_PunkGuy.fbx
       material:
         name: skin
         xmap_kd: skaterMaleA.png
@@ -66,6 +66,8 @@ entities:
         map_kd: skaterMaleA.png
         metal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -73,17 +75,17 @@ entities:
     base_rotation: [180, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
   - id: wolf_{t}
-    model:
-      mesh: fbx/creatures/wolf/SK_Wolf.FBX
+    mesh:
+      path: fbx/creatures/wolf/SK_Wolf.FBX
       material:
         name: wolf_pbr
         map_pbr: wolf_pbr
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/ANIM_Wolf_Walk_RM.FBX
@@ -94,8 +96,6 @@ entities:
     base_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -105,13 +105,28 @@ entities:
       x_step: 4
       z_step: -7
   - id: lion_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
+      lods:
+        - name: SK_Lion_LOD0
+          level: 0
+          distance: 20
+        - name: SK_Lion_LOD1
+          level: 1
+          distance: 30
+        - name: SK_Lion_LOD2
+          level: 2
+          distance: 40
+        - name: SK_Lion_LOD3
+          level: 3
+          distance: 50
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/Lion@Walk.FBX
@@ -128,8 +143,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -146,13 +159,15 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: deinodonte_{t}
-    model:
-      mesh: fbx/creatures/deinodonte/Deinodonte.FBX
+    mesh:
+      path: fbx/creatures/deinodonte/Deinodonte.FBX
       material:
         name: deinodonte_pbr
         map_pbr: deinodonte_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: idle
           path: anim/Deinodonte@IdleBreathe.FBX
@@ -167,8 +182,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -179,13 +192,15 @@ entities:
       x_step: 20
       z_step: -20
   - id: elf_{t}
-    model:
-      mesh: fbx/characters/elf/Elf Female.fbx
+    mesh:
+      path: fbx/characters/elf/Elf Female.fbx
       material:
         name: elf_pbr
         map_pbr: elf_female_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       animations:
         - name: walk
           path: anim/Elf Animations.FBX
@@ -196,8 +211,6 @@ entities:
     xbase_rotation: [90, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -208,18 +221,27 @@ entities:
       x_step: 5
       z_step: -5
   - id: scavenger_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
           map_pbr: scavenger_body_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
       xanimations:
         - name: walk
           path: Scavenger.fbx
@@ -231,9 +253,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -243,13 +262,15 @@ entities:
       x_step: 5
       z_step: -5
   - id: skeleton_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
+        xrender_back: true
+        xwireframe: true
       xanimations:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
@@ -261,8 +282,6 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -272,7 +291,7 @@ entities:
       x_step: 5
       z_step: -5
   - xid: object_anim
-    model:
+    mesh:
       xanimations:
         - name: walk
           path: fbx/human/anim/Humanoid@WalkForwardUnarmed.FBX

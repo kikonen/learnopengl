@@ -16,7 +16,7 @@ namespace loader {
             Context ctx);
 
         void loadPrefab(
-            const loader::Node& node,
+            const loader::DocNode& node,
             PrefabData& data) const;
     };
 }

@@ -17,6 +17,9 @@ namespace animation {
         int16_t m_index;
         int16_t m_parentIndex;
 
+        bool m_required{ false };
+        int16_t m_boneIndex{ -1 };
+
         const glm::mat4 m_localTransform;
         //glm::mat4 m_globalTransform;
         //glm::mat4 m_globalInvTransform;

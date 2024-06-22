@@ -17,9 +17,9 @@ namespace loader {
         struct Iterator {
             using iterator_category = std::input_iterator_tag;
             using difference_type = std::ptrdiff_t;
-            using value_type = loader::Node;
-            using pointer = loader::Node*;  // or also value_type*
-            using reference = loader::Node&;  // or also value_type&
+            using value_type = loader::DocNode;
+            using pointer = loader::DocNode*;  // or also value_type*
+            using reference = loader::DocNode&;  // or also value_type&
         };
 
         DocNode();
@@ -29,7 +29,7 @@ namespace loader {
 
         std::string str() const noexcept;
 
-        const loader::Node getNode() const noexcept {
+        const loader::DocNode getNode() const noexcept {
             return *this;
         }
 
@@ -37,10 +37,10 @@ namespace loader {
             return m_name;
         }
 
-        const loader::Node& findNode(const std::string& key) const noexcept;
-        const std::vector<loader::Node>& getNodes() const noexcept;
+        const loader::DocNode& findNode(const std::string& key) const noexcept;
+        const std::vector<loader::DocNode>& getNodes() const noexcept;
 
-        void addNode(const loader::Node& node);
+        void addNode(const loader::DocNode& node);
 
         void setValue(std::string value);
 

@@ -12,12 +12,12 @@ namespace loader {
     }
 
     void CustomMaterialLoader::loadCustomMaterial(
-        const loader::Node& node,
+        const loader::DocNode& node,
         CustomMaterialData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);

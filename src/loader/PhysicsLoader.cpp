@@ -15,7 +15,7 @@ namespace loader {
     }
 
     void PhysicsLoader::loadPhysics(
-        const loader::Node& node,
+        const loader::DocNode& node,
         PhysicsData& data) const
     {
         bool explicitEnable = false;
@@ -23,7 +23,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 explicitEnable = readBool(v);
@@ -57,14 +57,14 @@ namespace loader {
     }
 
     void PhysicsLoader::loadBody(
-        const loader::Node& node,
+        const loader::DocNode& node,
         physics::Body& data) const
     {
         data.quat = glm::quat_identity<float, glm::packed_highp>();
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);
@@ -112,12 +112,12 @@ namespace loader {
     }
 
     void PhysicsLoader::loadGeom(
-        const loader::Node& node,
+        const loader::DocNode& node,
         physics::Geom& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "type") {
                 std::string type = readString(v);

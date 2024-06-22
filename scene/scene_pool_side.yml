@@ -21,8 +21,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Pool side
-    model:
-      mesh: pool_brick
+    mesh:
+      path: pool_brick
       material_modifier:
         tiling_x: 30
         tiling_y: 2

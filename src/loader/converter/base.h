@@ -5,7 +5,7 @@
 namespace loader {
     class DocNode;
 
-    typedef loader::DocNode Node;
+    //typedef loader::DocNode Node;
 
     enum class NodeType {
         undefined,

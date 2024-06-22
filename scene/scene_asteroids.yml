@@ -22,22 +22,25 @@ entities:
   - id: fps_counter
     parent_id: player
     type: text
-    model:
+    mesh:
+      flags:
+        billboard: true
       material:
         name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
     text:
-      font: fps_font
       text: "- fps"
+      font:
+        name: fps_font
+        path: fonts/Vera.ttf
+        size: 36
     program: g_font_render
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
-    render_flags:
-      billboard: true
-      alpha: true
-      render_back: true
   - id: player_camera
     parent_id: player
     type: origo
@@ -57,8 +60,8 @@ entities:
     script_file: scripts/anim_asteroids_roll
   - name: Planet
     parent_id: planet-origo
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
     program: g_tex
     pos: [0, 0, 0]
     scale: 1
@@ -75,58 +78,64 @@ entities:
     parent_id: planet-origo
     program: g_tex
     render_flags:
-      render_back: true
       no_shadow: true
     pos: [0, 0, 0]
-    models:
-      - mesh: [rock2, rock]
-        level: 0
+    meshes:
+      - path: rock2/rock
+        lod:
+          level: 0
+          distance: 20
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
           #kd: [1, 1, 0]
           tiling: 4
-      - mesh: [rock2, rock_lod_1]
-        level: 1
+      - path: rock2/rock_lod_1
+        lod:
+          level: 1
+          distance: 40
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
           #kd: [0, 1, 1]
           tiling: 4
-      - mesh: [rock2, rock_lod_2]
-        level: 2
+      - path: rock2/rock_lod_2
+        lod:
+          level: 2
+          distance: 80
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 0, 1]
           tiling: 4
-      - mesh: [rock2, rock_lod_3]
-        level: 3
+      - path: [rock2, rock_lod_3]
+        lod:
+          level: 3
+          distance: 60
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 1, 0]
           tiling: 4
-      - mesh: [rock2, rock_lod_4]
-        level: 4
+      - path: rock2/rock_lod_4
+        lod:
+          level: 4
+          distance: 100
+        flags:
+          billboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [1, 0, 0]
           tiling: 4
-    lods:
-      - distance: 20
-      - distance: 40
-      - distance: 60
-      - distance: 80
-      - distance: 100
+          render_back: true
     instanced: true
     generator:
       type: asteroid_belt
       count: 200000
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
@@ -138,7 +147,3 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 50000
-fonts:
-  - name: fps_font
-    path: fonts/Vera.ttf
-    size: 36

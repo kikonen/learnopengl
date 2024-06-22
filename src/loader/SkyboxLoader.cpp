@@ -40,12 +40,12 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkybox(
-        const loader::Node& node,
+        const loader::DocNode& node,
         SkyboxData& data)
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "program" || k == "shader") {
                 data.programName = readString(v);
@@ -84,7 +84,7 @@ namespace loader {
     }
 
     void SkyboxLoader::loadSkyboxFaces(
-        const loader::Node& node,
+        const loader::DocNode& node,
         SkyboxData& data)
     {
         if (!node.isSequence()) {
@@ -122,26 +122,27 @@ namespace loader {
         auto* type = typeHandle.toType();
         type->setName("<skybox>");
 
-        type->m_priority = data.priority;
+        type->addMeshSet(*meshSet);
 
-        type->addMeshSet(*meshSet, 0);
+        auto* lodMesh = type->modifyLodMesh(0);
+        {
+            lodMesh->m_priority = data.priority;
+            lodMesh->m_drawOptions.m_wireframe = false;
+            lodMesh->m_drawOptions.m_renderBack = true;
+            //lodMesh->flags.gbuffer = false;// data.programName.starts_with("g_");
 
-        type->m_entityType = mesh::EntityType::skybox;
+            lodMesh->m_program = ProgramRegistry::get().getProgram(data.programName);
+        }
+
+        type->m_entityType = EntityType::skybox;
 
         auto& flags = type->m_flags;
 
         flags.skybox = true;
-        flags.wireframe = false;
-        flags.renderBack = true;
         flags.noShadow = true;
         flags.noFrustum = true;
-        //flags.noReflect = true;
-        //flags.noRefract = true;
         flags.noSelect = true;
         flags.noNormals = true;
-        flags.gbuffer = false;// data.programName.starts_with("g_");
-
-        type->m_program = ProgramRegistry::get().getProgram(data.programName);
 
         bool gammaCorrect = data.gammaCorrect;
         if (data.hdri) {

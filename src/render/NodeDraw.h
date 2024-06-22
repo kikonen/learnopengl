@@ -15,6 +15,8 @@
 #include "backend/DrawOptions.h"
 #include "query/TimeElapsedQuery.h"
 
+#include "render/size.h"
+
 class Program;
 
 struct UpdateViewContext;
@@ -25,48 +27,10 @@ class Node;
 
 namespace mesh {
     class MeshType;
+    struct LodMesh;
 }
 
 namespace render {
-    //const auto ANY_TYPE = [](const mesh::MeshType* type) { return true; };
-    //const auto ANY_NODE = [](const Node* node) { return true; };
-
-    //
-    // NOTE KI program key is REQUIRED for sorting "gull back face" draws
-    // next to each other to avoid redundant state changes
-    // => relies into fact that std::map is sorted by this
-    //
-    struct ProgramKey {
-        ProgramKey(
-            ki::program_id programID,
-            int typePriority,
-            const backend::DrawOptions& drawOptions) noexcept
-            : programID(programID),
-            typePriority(typePriority),
-            renderBack(drawOptions.m_renderBack),
-            wireframe(drawOptions.m_wireframe)
-        {};
-
-        std::string str() const noexcept
-        {
-            return fmt::format(
-                "<PROGRAM_KEY: id={}, pri={}, renderBack={}, wireframe={}>",
-                programID, typePriority, renderBack, wireframe);
-        }
-
-        bool operator<(const ProgramKey& o) const noexcept {
-            // NOTE KI renderBack & wireframe goes into separate render always due to GL state
-            // => reduce state changes via sorting
-            return std::tie(typePriority, programID, renderBack, wireframe) <
-                std::tie(o.typePriority, o.programID, o.renderBack, o.wireframe);
-        }
-
-        const int typePriority;
-        const ki::program_id programID;
-        const bool renderBack;
-        const bool wireframe;
-    };
-
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeKey {
         // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
@@ -81,15 +45,8 @@ namespace render {
 
     using NodeVector = std::vector<pool::NodeHandle>;
     using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
-    using ProgramTypeMap = std::map<ProgramKey, MeshTypeMap>;
 
     class NodeDraw final {
-    public:
-        static const unsigned int KIND_SOLID{ 1 << 0 };
-        static const unsigned int KIND_ALPHA{ 1 << 2 };
-        static const unsigned int KIND_BLEND{ 1 << 3 };
-        static const unsigned int KIND_ALL{ KIND_SOLID | KIND_ALPHA | KIND_BLEND };
-
     public:
         NodeDraw();
         ~NodeDraw();
@@ -106,7 +63,7 @@ namespace render {
             FrameBuffer* targetBuffer,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits,
+            uint8_t kindBits,
             GLbitfield copyMask);
 
         void drawDebug(
@@ -121,17 +78,22 @@ namespace render {
 
         void drawProgram(
             const RenderContext& ctx,
-            const std::function<Program* (const mesh::MeshType*)>& programSelector,
+            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits);
+            uint8_t kindBits);
 
     private:
+        void insertNode(
+            MeshTypeMap* map,
+            Node* node);
+
         bool drawNodesImpl(
             const RenderContext& ctx,
+            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            unsigned int kindBits);
+            uint8_t kindBits);
 
         void drawBlendedImpl(
             const RenderContext& ctx,
@@ -161,12 +123,12 @@ namespace render {
         query::TimeElapsedQuery m_timeElapsedQuery;
 
         // NodeDraw
-        ProgramTypeMap m_solidNodes;
+        MeshTypeMap m_solidNodes;
         // NodeDraw
-        ProgramTypeMap m_alphaNodes;
+        MeshTypeMap m_alphaNodes;
         // NodeDraw
-        ProgramTypeMap m_blendedNodes;
+        MeshTypeMap m_blendedNodes;
         // OBSOLETTE
-        ProgramTypeMap m_invisibleNodes;
+        MeshTypeMap m_invisibleNodes;
     };
 }

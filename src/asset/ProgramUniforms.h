@@ -17,7 +17,6 @@ class Program;
 struct ProgramUniforms {
     ProgramUniforms(Program& program);
 
-    uniform::UInt u_shadowIndex;
     uniform::Subroutine u_effect;
 
     uniform::Float u_nearPlane;

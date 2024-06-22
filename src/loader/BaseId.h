@@ -27,20 +27,15 @@ template <> struct fmt::formatter<loader::BaseId> {
 
     template <typename FormatContext>
     auto format(const loader::BaseId& id, FormatContext& ctx) const -> decltype(ctx.out()) {
-        auto& p = id.m_path;
+        const auto& p = id.m_path;
 
         if (p.empty()) {
             return ctx.out();
         }
-        else if (p.size() == 1) {
-            return fmt::format_to(
-                ctx.out(),
-                "{}", p[0]);
-        }
         else {
             return fmt::format_to(
                 ctx.out(),
-                "{}-{}", p[0], p[1]);
+                "{}", p);
         }
     }
 };

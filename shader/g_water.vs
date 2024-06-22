@@ -15,6 +15,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
@@ -76,7 +77,7 @@ void main() {
   if (u_materials[materialIndex].normalMapTex.x > 0)
   {
     vec3 tangent = a_tangent;
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
+    //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);
 

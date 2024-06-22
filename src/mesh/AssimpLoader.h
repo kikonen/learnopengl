@@ -71,7 +71,6 @@ namespace mesh {
             ModelMesh& modelMesh,
             size_t meshIndex,
             size_t faceIndex,
-            size_t vertexOffset,
             const aiMesh* mesh,
             const aiFace* face);
 
@@ -79,7 +78,6 @@ namespace mesh {
             mesh::LoadContext& ctx,
             ModelMesh& modelMesh,
             size_t meshIndex,
-            size_t vertexOffset,
             const aiMesh* mesh,
             const aiBone* bone);
 

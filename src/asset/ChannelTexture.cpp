@@ -225,6 +225,8 @@ void ChannelTexture::load()
         unsigned char* srcByteData{ nullptr };
         unsigned short* srcShortData{ nullptr };
 
+        int srcChannels = 0;
+
         if (image) {
             if (image->m_is16Bbit) {
                 srcShortData = (unsigned short*)image->m_data;
@@ -232,12 +234,21 @@ void ChannelTexture::load()
             else {
                 srcByteData = image->m_data;
             }
+
+            srcChannels = image->m_channels;
         }
 
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                const int srcIndex = y * w + x;
+                int srcIndex = y * (w * srcChannels) + x * srcChannels;
 
+                if (srcChannels > 1) {
+                    int x = 0;
+                    // NOTE KI prefer ALPHA if alpha included, otherwise RED
+                    if (srcChannels == 4) {
+                        srcIndex += 4;
+                    }
+                }
                 int value;
                 if (srcByteData) {
                     value = srcByteData[srcIndex];

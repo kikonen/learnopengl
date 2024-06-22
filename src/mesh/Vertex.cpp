@@ -33,7 +33,6 @@ namespace mesh {
         //    to reduce verteces
         return pos == b.pos &&
             texture == b.texture &&
-            materialID == b.materialID &&
             //normal == b.normal &&
             //tangent == b.tangent &&
             glm::dot(normal, b.normal) >= DOT_NORMAL_SAME &&
@@ -48,11 +47,10 @@ namespace mesh {
     std::string Vertex::str() const noexcept
     {
         return fmt::format(
-            "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {}), material={}>",
+            "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {})>",
             pos.x, pos.y, pos.z,
             texture.x, texture.y,
             normal.x, normal.y, normal.z,
-            tangent.x, tangent.y, tangent.z,
-            materialID);
+            tangent.x, tangent.y, tangent.z);
     }
 }
