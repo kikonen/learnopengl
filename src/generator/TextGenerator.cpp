@@ -64,7 +64,8 @@ void TextGenerator::updateEntity(
     auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
     auto* entity = entityRegistry.modifyEntity(container.m_entityIndex, true);
 
-    const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
+    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
+    const glm::vec4& volume = m_aabb.getVolume();
 
     transform.setVolume(volume);
     snapshot.m_volume = volume;
