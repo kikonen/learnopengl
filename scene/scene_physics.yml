@@ -301,7 +301,7 @@ entities:
   - id: cube_origo
     type: origo
     pos: [0.0, 30.0, 0.0]
-  - name: Four cubes
+  - id: four_cubes_{t}_{c}
     parent_id: cube_origo
     mesh:
       path: texture_cube_3

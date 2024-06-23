@@ -76,7 +76,7 @@ entities:
       no_shadow: true
       water: true
     script_file: scripts/anim_water_lucy
-  - name: Pool side
+  - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
       material_modifier:

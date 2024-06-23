@@ -124,7 +124,7 @@ entities:
       target_id: dir-light-target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
-  - name: Moving point light origo
+  - id: moving_point_light_origo_{t}_{c}
     parent_id: zero-origo
     type: origo
     pos: [0, 14, 0]
@@ -146,7 +146,7 @@ entities:
       - pos: [25.0, 10.0, 25.0]
         id: light-8
     script_file: scripts/anim_moving_point_light
-  - id: moving_point_light_{c}
+  - id: moving_point_light_{t}_{c}
     desc: "NOTE overriding material in clones is *NOT* supported"
     parent_id: zero-origo
     mesh:
@@ -463,18 +463,15 @@ entities:
     render_flags:
       mirror: true
     script_file: scripts/anim_mirror
-  - name: Airboat
+  - id: airboat_{t}_{c}
     mesh:
       path: airboat_fixed_colors
     program: g_tex
-    pos: [24.0, 11.0, 15.0]
     scale: 1.0
-  - name: Airboat 2
-    mesh:
-      path: airboat_fixed_colors
-    program: g_tex
-    pos: [6.0, 19.0, 22.0]
-    scale: 0.5
+    clones:
+      - pos: [24.0, 11.0, 15.0]
+      - pos: [6.0, 19.0, 22.0]
+        scale: 0.5
   - xid: spyro
     mesh:
       path: spyro2
@@ -772,7 +769,7 @@ entities:
     program: g_tex
     pos: [5.0, 25.0, 5.0]
     scale: 1
-  - id: four_cubes_{c}
+  - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
     program: g_tex
@@ -791,7 +788,7 @@ entities:
         id: cube-3
       - pos: [5.0, 20.0, 5.0]
         id: cube-4
-  - id: blend_cubes_{c}
+  - id: blend_cubes_{t}_{c}
     mesh:
       path: rubik_cube.fbx
       material_modifier:
@@ -869,7 +866,7 @@ entities:
       geom:
         type: plane
         rot: [0, 0, 0]
-  - id: pool_side_{c}
+  - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
       material_modifier:
@@ -1297,7 +1294,7 @@ entities:
         type: capsule
         size: [0.9, 4, 0]
     script_file: scripts/seq_skeleton_army
-  - xid: giant_wooden_box_{c}
+  - xid: giant_wooden_box_{t}_{c}
     mesh:
       path: quad
       material:

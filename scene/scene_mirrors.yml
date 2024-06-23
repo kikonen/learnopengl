@@ -58,7 +58,7 @@ entities:
     program: g_tex
     pos: [5.0, 5.0, -5.0]
     scale: 1
-  - name: Four cubes
+  - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
     program: g_tex
@@ -134,7 +134,7 @@ entities:
     repeat:
       x_count: 2
       x_step: 4
-  - name: Giant wooden box
+  - id: giant_wooden_box_{t}_{c}
     mesh:
       path: quad
       material:

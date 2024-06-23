@@ -130,7 +130,7 @@ entities:
       y_step: 0
       z_step: 60
     script_file: scripts/anim_water
-  - name: Pool side
+  - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
       material_modifier:
@@ -363,7 +363,7 @@ entities:
       no_shadow: true
       water: true
     xxscript_file: scripts/cycle_water
-  - name: Pool side - SINGLE
+  - id: pool_side_single_{t}_{c}
     mesh:
       path: pool_brick
       material_modifier:

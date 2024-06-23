@@ -48,7 +48,7 @@ entities:
         reference_distance: 6
         xautoplay: true
         xlooping: true
-  - name: Four cubes
+  - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
     program: g_tex

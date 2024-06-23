@@ -33,11 +33,13 @@ entities:
         tiling: 5
     program: g_tex
     pos: [0.0, 0.0, -20.0]
-  - name: Airboat
+  - id: airboat_{t}_{c}
     mesh:
       path: airboat_fixed_colors
     program: g_tex
-    pos: [0.0, 0.0, 0.0]
+    clones:
+      - pos: [0.0, 0.0, 0.0]
+      - pos: [20.0, 00.0, 0.0]
   - name: Directional light
     type: origo
     pos: [0, 25, 25]
@@ -45,7 +47,7 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 40000
-  - name: Giant wooden box
+  - id: giant_wooden_box_{t}_{c}
     mesh:
       path: quad
       material:

@@ -34,7 +34,7 @@ entities:
       type: camera_zoom
     camera:
       default: true
-  - id: four_cubes_{c}
+  - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
     program: g_tex

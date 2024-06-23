@@ -448,7 +448,7 @@ namespace loader {
     {
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
-        type->setName(entityData.baseId.m_path);
+        type->setName(entityData.baseId.m_path.empty() ? entityData.name : entityData.baseId.m_path);
 
         assignTypeFlags(entityData, typeHandle);
 

@@ -43,7 +43,8 @@ namespace render {
         uint32_t m_flags;
 
         bool operator<(const LodKey& o) const noexcept {
-            return std::tie(*m_lod, m_flags) < std::tie(*o.m_lod, o.m_flags);
+            return std::tie(  m_lod->m_baseVertex,   m_lod->m_baseIndex,   m_lod->m_materialIndex,   m_flags) <
+                   std::tie(o.m_lod->m_baseVertex, o.m_lod->m_baseIndex, o.m_lod->m_materialIndex, o.m_flags);
         }
     };
 
