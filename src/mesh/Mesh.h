@@ -74,8 +74,6 @@ namespace mesh {
         glm::mat4 m_baseTransform{ 1.f };
         glm::mat4 m_inverseBaseTransform{ 1.f };
 
-        glm::mat4 m_animationBaseTransform{ 1.f };
-
     protected:
         bool m_prepared{ false };
 

@@ -514,7 +514,7 @@ namespace loader {
             }
         }
 
-        m_loaders->m_materialLoader.resolveMaterial(type, material);
+        m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
     }
 
     void SceneLoader::resolveMeshes(
@@ -595,31 +595,38 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveLod(type, entityData, meshData, lodMesh);
+                auto* lodData = resolveLod(type, entityData, meshData, lodMesh);
+
+                assignMeshFlags(meshData.meshFlags, lodMesh);
+                if (lodData) {
+                    assignMeshFlags(lodData->meshFlags, lodMesh);
+                }
+
                 resolveMaterials(type, lodMesh, entityData, meshData);
-                assignMeshFlags(meshData, lodMesh);
                 lodMesh.setupDrawOptions();
             }
         }
     }
 
-    void SceneLoader::resolveLod(
+    const LodData* SceneLoader::resolveLod(
         mesh::MeshType* type,
         const EntityData& entityData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
         auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-        if (!mesh) return;
+        if (!mesh) return nullptr;
 
         lodMesh.m_priority = entityData.priority;
 
         const auto* lod = meshData.findLod(mesh->m_name);
-        if (!lod) return;
+        if (!lod) return nullptr;
 
         lodMesh.m_level = lod->level;
         lodMesh.m_priority = lod->priority != 0 ? lod->priority : entityData.priority;
         lodMesh.setDistance(lod->distance);
+
+        return lod;
     }
 
     void SceneLoader::loadAnimation(
@@ -690,7 +697,7 @@ namespace loader {
 #endif
         node->m_typeHandle = typeHandle;
 
-        assignNodeFlags(entityData, handle);
+        assignNodeFlags(entityData.nodeFlags, handle);
 
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
@@ -757,30 +764,11 @@ namespace loader {
         //////////////////////////////////////////////////////////
         // LOD_MESH specific
         // Rigged model
-        {
-            flags.useBones = container.getFlag("use_bones", flags.useBones);
-
-            // NOTE KI bones are *required* if using animation
-            flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
-            if (flags.useAnimation) {
-                flags.useBones = true;
-            }
-
-            // NOTE KI no bones debug if no bones
-            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
-            if (!flags.useBones) {
-                flags.useBonesDebug = false;
-            }
-        }
-
-        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
 
         flags.effect = container.getFlag("effect", flags.effect);
-        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
         //////////////////////////////////////////////////////////
         // MESH_TYPE specific (aka. Node shared logic)
-        flags.zUp = container.getFlag("z_up", flags.zUp);
 
         flags.mirror = container.getFlag("mirror", flags.mirror);
         flags.water = container.getFlag("water", flags.water);
@@ -813,22 +801,41 @@ namespace loader {
     }
 
     void SceneLoader::assignMeshFlags(
-        const MeshData& meshData,
+        const FlagContainer& container,
         mesh::LodMesh& lodMesh)
     {
-        const auto& container = meshData.meshFlags;
         auto& flags = lodMesh.m_flags;
 
         flags.billboard = container.getFlag("billboard", flags.billboard);
+        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
+
+        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
+
+        flags.zUp = container.getFlag("z_up", flags.zUp);
+
+        {
+            flags.useBones = container.getFlag("use_bones", flags.useBones);
+
+            // NOTE KI bones are *required* if using animation
+            flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
+            if (flags.useAnimation) {
+                flags.useBones = true;
+            }
+
+            // NOTE KI no bones debug if no bones
+            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
+            if (!flags.useBones) {
+                flags.useBonesDebug = false;
+            }
+        }
     }
 
     void SceneLoader::assignNodeFlags(
-        const EntityData& entityData,
+        const FlagContainer& container,
         pool::NodeHandle nodeHandle)
     {
         auto* node = nodeHandle.toNode();
 
-        const auto& container = entityData.nodeFlags;
         auto& flags = node->m_flags;
     }
 

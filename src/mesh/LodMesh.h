@@ -91,6 +91,8 @@ namespace mesh {
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
 
+        glm::mat4 m_animationBaseTransform{ 1.f };
+
         std::unique_ptr<Material> m_material;
 
         backend::DrawOptions m_drawOptions;

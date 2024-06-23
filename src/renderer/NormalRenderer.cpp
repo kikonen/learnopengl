@@ -42,10 +42,12 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::LodMesh& lodMesh) { return m_normalProgram; },
+            [this](const mesh::LodMesh& lodMesh) {
+                if (lodMesh.m_flags.tessellation) return (Program*)nullptr;
+                return m_normalProgram;
+            },
             [](const mesh::MeshType* type) {
-                return type->m_flags.noNormals &&
-                    !type->m_flags.tessellation;
+                return type->m_flags.noNormals;
             },
             [](const Node* node) { return true; },
             render::KIND_ALL);

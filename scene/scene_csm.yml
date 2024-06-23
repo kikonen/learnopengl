@@ -78,6 +78,9 @@ entities:
   - id: skeleton_army_grid_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -90,8 +93,6 @@ entities:
     rotation: [0, -135, 0]
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     scale: 3
     base_scale: 0.028
     repeat:
@@ -102,6 +103,9 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -114,8 +118,6 @@ entities:
     base_rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     scale: 3
     base_scale: 0.028
     repeat:
@@ -168,8 +170,6 @@ entities:
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      x: false
     repeat:
       x_count: 1
       x_step: 1

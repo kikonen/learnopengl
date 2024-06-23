@@ -5,6 +5,7 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
+#include "util/glm_util.h"
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
@@ -164,6 +165,11 @@ namespace mesh {
         m_preDepthProgram = material.getProgram(MaterialProgramType::pre_depth);
         m_selectionProgram = material.getProgram(MaterialProgramType::selection);
         m_idProgram = material.getProgram(MaterialProgramType::object_id);
+
+        if (m_flags.zUp) {
+            const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
+            m_animationBaseTransform = glm::toMat4(rotateYUp);
+        }
     }
 
     void LodMesh::setMesh(

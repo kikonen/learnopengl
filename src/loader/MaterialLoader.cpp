@@ -7,7 +7,8 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
-#include "mesh/MeshType.h"
+#include "mesh/LodMesh.h"
+#include "mesh/MeshFlags.h"
 
 #include "registry/ProgramRegistry.h"
 
@@ -675,7 +676,7 @@ namespace loader {
     }
 
     void MaterialLoader::resolveMaterial(
-        const mesh::MeshType* type,
+        const mesh::MeshFlags& meshFlags,
         Material& material)
     {
         {
@@ -702,11 +703,11 @@ namespace loader {
 
         material.loadTextures();
 
-        resolveProgram(type, material);
+        resolveProgram(meshFlags, material);
     }
 
     void MaterialLoader::resolveProgram(
-        const mesh::MeshType* type,
+        const mesh::MeshFlags& meshFlags,
         Material& material)
     {
         const bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
@@ -752,9 +753,10 @@ namespace loader {
             }
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
-            bool usePreDepth = type->m_flags.preDepth;
-            bool useBones = type->m_flags.useBones;
-            bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
+
+            bool usePreDepth = meshFlags.preDepth;
+            bool useBones = meshFlags.useBones;
+            bool useBonesDebug = useBones && meshFlags.useBonesDebug;
 
             if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";

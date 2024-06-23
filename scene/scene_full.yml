@@ -484,6 +484,11 @@ entities:
   - id: wyvern_{t}
     mesh:
       path: fbx/creatures/wyvern/SK_Wyvern.FBX
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern
@@ -503,11 +508,6 @@ entities:
     base_rotation: [0, 0, 0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     repeat:
       x_count: 2
       z_count: 2
@@ -529,7 +529,6 @@ entities:
     program: g_tex
     pos: [-15.0, 14.0, 5.0]
     scale: 20.0
-    xrender_flags:
     enabled: false
   - name: Dragon
     mesh:
@@ -539,7 +538,6 @@ entities:
     program: g_tex
     pos: [-15.0, 25.0, 0.0]
     scale: 30.0
-    xrender_flags:
     enabled: false
   - id: shuttle
     mesh:
@@ -578,7 +576,6 @@ entities:
     program: g_tex
     pos: [-5.0, 25.0, -5.0]
     scale: 1.0
-    xrender_flags:
     selected: false
     particle:
       material:
@@ -600,7 +597,6 @@ entities:
     program: g_tex
     rotation: [0, 180, 0]
     scale: 0.8
-    xrender_flags:
     selected: false
     clones:
       - pos: [5.0, 25.0, -5.0]
@@ -621,7 +617,6 @@ entities:
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    xrender_flags:
   - xname: Cow 2
     mesh:
       path: cow
@@ -632,7 +627,6 @@ entities:
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
     scale: 0.8
-    xrender_flags:
     selected: false
   - name: Ball
     mesh:
@@ -799,7 +793,6 @@ entities:
         render_back: true
     program: g_tex
     base_scale: 0.01
-    xrender_flags:
     script_file: scripts/anim_four_cubes
     clones:
       - pos: [-5.0, 30.0, -5.0]
@@ -1087,7 +1080,6 @@ entities:
         render_back: true
     program: g_tex
     pos: [15, 11.5, 20.0]
-    xrender_flags:
     enabled: false
   - name: Scale 2
     mesh:
@@ -1104,7 +1096,6 @@ entities:
     program: g_tex
     scale: 2
     pos: [10, 11.5, 20.0]
-    xrender_flags:
     enabled: false
   - name: Scale 3
     mesh:
@@ -1121,7 +1112,6 @@ entities:
     program: g_tex
     scale: 3
     pos: [5, 11.5, 20.0]
-    xrender_flags:
     enabled: false
   - id: palm_tree_forest_{t}
     meshes:
@@ -1255,6 +1245,10 @@ entities:
   - id: skeleton_army_2_{t}
     meshes:
       - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        flags:
+          use_bones: true
+          xuse_bones_debug: true
+          use_animation: true
         lods:
           - level: 0
             distance: 20
@@ -1263,6 +1257,10 @@ entities:
           map_pbr: skeleton_pbr
           xmetal: [0.3, 0.4, 0, 1]
       - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        flags:
+          use_bones: true
+          xuse_bones_debug: true
+          use_animation: true
         lods:
           - level: 1
             distance: 10000
@@ -1275,9 +1273,6 @@ entities:
     pos: [35, 11.5, 60.0]
     render_flags:
       dynamic_bounds: true
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     scale: 3
     base_scale: 0.05
     base_rotation: [0, -180, 0]
