@@ -170,7 +170,7 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 0
-            distance: 100
+            distance: 200
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -184,7 +184,7 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 1
-            distance: 200
+            distance: 300
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -197,7 +197,7 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 2
-            distance: 300
+            distance: 400
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -210,7 +210,7 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 3
-            distance: 400
+            distance: 500
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
