@@ -781,22 +781,12 @@ namespace loader {
         flags.noRefract = container.getFlag("no_refract", flags.noRefract);
 
         {
-            const auto* e = container.getOptional("static_bounds");
-            if (e) {
-                flags.staticBounds = e;
-                flags.physics = e;
-            }
-        }
-        {
-            const auto* e = container.getOptional("dynamic_bounds");
-            if (e) {
-                flags.dynamicBounds = e;
-                flags.physics = e;
-            }
-        }
+            flags.staticBounds = container.getFlag("static_bounds", flags.staticBounds);
+            flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
 
-        if (entityData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
-            flags.physics = true;
+            if (entityData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
+                flags.physics = true;
+            }
         }
     }
 
