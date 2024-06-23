@@ -151,31 +151,37 @@ namespace animation
         Node* node,
         mesh::MeshType* type)
     {
-        const auto* lodMesh = type->getLodMesh(0);
-        const auto* mesh = lodMesh->getMesh<mesh::ModelMesh>();
-        auto& transform = node->modifyTransform();
+        bool result = false;
 
-        auto& rig = *mesh->m_rig;
-        auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+        for (const auto& lodMesh : type->getLodMeshes()) {
+            if (!lodMesh.m_flags.useAnimation) continue;
 
-        if (transform.m_animationStartTime < 0) {
-            transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+            const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+            auto& transform = node->modifyTransform();
+
+            auto& rig = *mesh->m_rig;
+            auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+
+            if (transform.m_animationStartTime < 0) {
+                transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+            }
+            if (rig.m_animations.size() > 1) {
+                transform.m_animationIndex = 1;
+            }
+
+            animation::Animator animator;
+            result |= animator.animate(
+                ctx,
+                rig,
+                mesh->m_baseTransform,
+                mesh->m_inverseBaseTransform,
+                lodMesh.m_animationBaseTransform,
+                palette,
+                transform.m_animationIndex,
+                transform.m_animationStartTime,
+                m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
         }
-        if (rig.m_animations.size() > 1) {
-            transform.m_animationIndex = 1;
-        }
-
-        animation::Animator animator;
-        return animator.animate(
-            ctx,
-            rig,
-            mesh->m_baseTransform,
-            mesh->m_inverseBaseTransform,
-            mesh->m_animationBaseTransform,
-            palette,
-            transform.m_animationIndex,
-            transform.m_animationStartTime,
-            m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
+        return result;
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
@@ -207,7 +213,8 @@ namespace animation
         if (!m_enabled) return;
 
         auto* type = node->m_typeHandle.toType();
-        if (!type->m_flags.useAnimation) return;
+
+        if (!type->m_flags.anyAnimation) return;
 
         std::lock_guard lock(m_pendingLock);
         m_pendingNodes.push_back(node->toHandle());

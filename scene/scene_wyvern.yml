@@ -27,10 +27,18 @@ entities:
   - id: wyvern_{t}
     mesh:
       path: fbx/creatures/wyvern/SK_Wyvern.FBX
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern
           map_pbr: wyvern_pbr
+          xalpha: true
+          xrender_back: true
+          xwireframe: true
       animations:
         - name: fire
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
@@ -43,14 +51,6 @@ entities:
     base_rotation: [0, 0, 0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
-      xuse_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     xrepeat:
       x_count: 2
       z_count: 2

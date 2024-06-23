@@ -42,6 +42,8 @@ namespace loader {
     struct ResolvedEntity;
     struct MaterialData;
 
+    struct FlagContainer;
+
     struct MetaData {
         std::string name;
 
@@ -112,11 +114,11 @@ namespace loader {
             pool::TypeHandle typeHandle);
 
         void assignMeshFlags(
-            const MeshData& meshData,
+            const FlagContainer& container,
             mesh::LodMesh& lodMesh);
 
         void assignNodeFlags(
-            const EntityData& entityData,
+            const FlagContainer& container,
             pool::NodeHandle nodeHandle);
 
         const pool::TypeHandle createType(
@@ -141,7 +143,7 @@ namespace loader {
             const glm::uvec3& tile,
             int index);
 
-        void resolveLod(
+        const LodData* resolveLod(
             mesh::MeshType* type,
             const EntityData& entityData,
             const MeshData& meshData,

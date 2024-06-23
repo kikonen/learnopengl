@@ -5,12 +5,7 @@ namespace mesh {
         bool anySolid: 1 {false};
         bool anyAlpha : 1 {false};
         bool anyBlend : 1 {false};
-
-        bool preDepth : 1 {false};
-        bool useBones : 1 {false};
-        bool useBonesDebug : 1 {false};
-        bool useAnimation : 1 {false};
-        bool zUp : 1 {false};
+        bool anyAnimation : 1 {false};
 
         // NOTE KI contained node is in the context of container, managing
         // list of transforms rooted into container
@@ -32,8 +27,6 @@ namespace mesh {
         bool invisible : 1 {false};
         bool noFrustum : 1 {false};
         bool noNormals : 1 {false};
-
-        bool tessellation : 1 {false};
 
         bool physics : 1 {false};
         bool staticBounds : 1 {false};

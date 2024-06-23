@@ -85,6 +85,9 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        use_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -94,9 +97,6 @@ entities:
     pos: [15, 6.5, -20.0]
     scale: 3
     base_scale: 0.05
-    render_flags:
-      use_bones: true
-      use_animation: true
     repeat:
       x_count: 5
       z_count: 50

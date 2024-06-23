@@ -69,12 +69,6 @@ namespace mesh {
 
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
-
-            if (m_flags.zUp) {
-                const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
-                lodMesh->getMesh<mesh::Mesh>()->m_animationBaseTransform = glm::toMat4(rotateYUp);
-            }
-
             count++;
         }
 
@@ -106,6 +100,7 @@ namespace mesh {
             m_flags.anySolid |= opt.m_solid;
             m_flags.anyAlpha |= opt.m_alpha;
             m_flags.anyBlend |= opt.m_blend;
+            m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
         }
     }
 
@@ -116,7 +111,6 @@ namespace mesh {
         m_preparedRT = true;
 
         for (auto& lodMesh : *m_lodMeshes) {
-            lodMesh.m_flags.tessellation = m_flags.tessellation;
             lodMesh.prepareRT(ctx);
         }
 
