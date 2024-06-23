@@ -45,6 +45,8 @@ namespace mesh {
 
         std::vector<glm::vec2> m_atlasCoords;
 
+        uint32_t m_maxSize{ 0 };
+
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };
 

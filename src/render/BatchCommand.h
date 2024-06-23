@@ -19,6 +19,10 @@ namespace backend {
 }
 
 namespace render {
+    // NOTE KI identifies multi-draw batch
+    // => max amount of meshes what can be drawn in same draw call
+    // => i.e. vao, program & al.
+    // @see DrawBuffer::bindDrawRange
     struct BatchKey {
         BatchKey(
             int8_t priority,
@@ -39,21 +43,30 @@ namespace render {
     };
 
     struct LodKey {
-        const backend::Lod* m_lod;
-        uint32_t m_flags;
+        const uint32_t m_baseVertex;
+        const uint32_t m_baseIndex;
+        const uint32_t m_indexCount;
+        const uint32_t m_flags;
 
-        bool operator<(const LodKey& o) const noexcept {
-            return std::tie(  m_lod->m_baseVertex,   m_lod->m_baseIndex,   m_lod->m_materialIndex,   m_flags) <
-                   std::tie(o.m_lod->m_baseVertex, o.m_lod->m_baseIndex, o.m_lod->m_materialIndex, o.m_flags);
-        }
+        LodKey(const backend::Lod& lod, uint32_t flags);
+
+        bool operator<(const LodKey& o) const noexcept;
     };
 
     struct LodEntry {
-        uint32_t m_entityIndex;
-        uint32_t m_meshIndex;
+        const uint32_t m_entityIndex;
+        const uint32_t m_meshIndex;
+        const uint32_t m_materialIndex;
     };
 
     struct BatchCommand {
         std::map<LodKey, std::vector<LodEntry>> m_lodInstances;
+        std::map<LodKey, uint32_t> m_baseIndeces;
+
+        uint32_t getBaseIndex(const LodKey& lodKey) const noexcept
+        {
+            const auto& it = m_baseIndeces.find(lodKey);
+            return it != m_baseIndeces.end() ? it->second : 0;
+        }
     };
 }

@@ -19,7 +19,6 @@
 #include "backend/gl/DrawIndirectCommand.h"
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
-#include "backend/Lod.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -118,10 +117,10 @@ namespace render {
                 }
             }
 
-            const LodKey lodKey{ &lodMesh.m_lod, drawOptions.m_flags };
+            const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
             auto& lodInstances = top->m_lodInstances[lodKey];
             lodInstances.reserve(100);
-            lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex);
+            lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
             m_pendingCount++;
         }
     }
@@ -233,9 +232,10 @@ namespace render {
                         }
                     }
 
-                    auto& lodInstances = top->m_lodInstances[{ &lodMesh.m_lod, drawOptions.m_flags }];
+                    const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
+                    auto& lodInstances = top->m_lodInstances[lodKey];
                     lodInstances.reserve(100);
-                    lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex);
+                    lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
                     m_pendingCount++;
                 }
             }
@@ -321,6 +321,8 @@ namespace render {
         }
         m_entityIndeces.clear();
         m_pendingCount = 0;
+
+        //m_batches.clear();
     }
 
     size_t Batch::flush(
@@ -328,27 +330,23 @@ namespace render {
     {
         size_t flushCount = 0;
 
-        std::map<const Program*, std::map<LodKey, uint32_t>> programLodBaseIndex;
-
         {
             m_entityIndeces.clear();
-            for (const auto& it : m_batches) {
+            for (auto& it : m_batches) {
                 const auto& key = it.first;
-                const auto& curr = it.second;
-
-                auto& lodBaseIndex = programLodBaseIndex[key.m_program];
+                auto& curr = it.second;
 
                 for (const auto& lodInstance : curr.m_lodInstances) {
-                    const auto* lod = lodInstance.first.m_lod;
+                    const auto& lodKey = lodInstance.first;
                     const auto& lodEntries = lodInstance.second;
                     if (lodEntries.empty()) continue;
 
-                    lodBaseIndex[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
+                    curr.m_baseIndeces[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
                     for (auto& lodEntry : lodEntries) {
                         auto& instance = m_entityIndeces.emplace_back();
                         instance.u_entityIndex = lodEntry.m_entityIndex;
                         instance.u_meshIndex = lodEntry.m_meshIndex;
-                        instance.u_materialIndex = lod->m_materialIndex;
+                        instance.u_materialIndex = lodEntry.m_materialIndex;
 
                         // NOTE KI BatchKey does not take in account m_flags
                         // => can draw different instances in same batch
@@ -390,14 +388,13 @@ namespace render {
             const auto& drawOptions = key.m_drawOptions;
 
             for (const auto& lodEntry : curr.m_lodInstances) {
-                auto& lodBaseIndex = programLodBaseIndex[key.m_program];
-                auto baseInstance = lodBaseIndex[lodEntry.first];
+                const auto baseInstance = curr.getBaseIndex(lodEntry.first);
 
                 const auto& lodEntries = lodEntry.second;
                 if (lodEntries.empty()) continue;
 
                 GLuint instanceCount = static_cast<GLuint>(lodEntries.size());
-                const auto* lod = lodEntry.first.m_lod;
+                const auto& lodKey = lodEntry.first;
 
                 if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                     backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
@@ -406,12 +403,12 @@ namespace render {
                     cmd.u_instanceCount = instanceCount;
                     cmd.u_baseInstance = baseInstance;
 
-                    cmd.u_baseVertex = lod->m_baseVertex;
-                    cmd.u_firstIndex = lod->m_baseIndex;
-                    cmd.u_count = lod->m_indexCount;
+                    cmd.u_baseVertex = lodKey.m_baseVertex;
+                    cmd.u_firstIndex = lodKey.m_baseIndex;
+                    cmd.u_count = lodKey.m_indexCount;
 
                     //KI_INFO_OUT(fmt::format("draw: {}", instanceCount));
-                    draw->sendDirect(drawRange, indirect);
+                    draw->send(drawRange, indirect);
                 }
                 else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
                 {
@@ -421,10 +418,10 @@ namespace render {
                     cmd.u_instanceCount = instanceCount;
                     cmd.u_baseInstance = baseInstance;
 
-                    cmd.u_vertexCount = lod->m_indexCount;
-                    cmd.u_firstVertex = lod->m_baseIndex;
+                    cmd.u_vertexCount = lodKey.m_indexCount;
+                    cmd.u_firstVertex = lodKey.m_baseIndex;
 
-                    draw->sendDirect(drawRange, indirect);
+                    draw->send(drawRange, indirect);
                 }
                 else {
                     // NOTE KI "none" no drawing

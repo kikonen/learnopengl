@@ -168,7 +168,7 @@ namespace text
         auto* font = text::FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(mesh, font, text, pen, mesh->m_reserveIndexCount);
+        addText(mesh, font, text, pen, mesh->m_maxSize);
 
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry

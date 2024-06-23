@@ -14,6 +14,7 @@
 
 
 namespace {
+    constexpr uint32_t DEF_SIZE = 100;
 }
 
 namespace mesh {
@@ -56,18 +57,14 @@ namespace mesh {
 
         text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
-        if (m_reserveVertexCount <= 0) {
-            m_reserveVertexCount = 100 * 4;
+        if (m_maxSize == 0) {
+            m_maxSize = DEF_SIZE;
         }
 
-        if (m_reserveIndexCount <= 0) {
-            m_reserveIndexCount = 100 * 2;
-        }
+        m_vboIndex = vao->reserveVertices(m_maxSize * 4);
+        vao->reserveAtlasCoords(m_maxSize * 4);
 
-        m_vboIndex = vao->reserveVertices(m_reserveVertexCount);
-        vao->reserveAtlasCoords(m_reserveVertexCount);
-
-        m_eboIndex = vao->reserveIndeces(m_reserveIndexCount);
+        m_eboIndex = vao->reserveIndeces(m_maxSize * 2);
 
         m_vao = vao->getVAO();
 

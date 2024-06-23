@@ -40,4 +40,22 @@ namespace render {
             std::tie(o.m_vao->m_id, od.m_renderBack, o.m_priority, o.m_program->m_id, od.m_blend, od.m_wireframe, od.m_type, od.m_mode);
         //return tie ? true : (m_drawOptions < o.m_drawOptions);
     }
+
+    LodKey::LodKey(const backend::Lod& lod, uint32_t flags)
+        : m_baseVertex{ lod.m_baseVertex },
+        m_baseIndex{ lod.m_baseIndex},
+        m_indexCount{ lod.m_indexCount },
+        m_flags{ flags }
+    {
+    }
+
+    bool LodKey::operator<(const LodKey& o) const noexcept {
+        // NOTE KI baseVertex identifies Lod; cannot have multiple in same index
+        // - *BUT* indexCount *CAN* very for mesh::TextMesh 
+        // NOTE KI material is now per instance (not Entity)
+        // => Thus new need to check material here m_lod->m_materialIndex
+        return std::tie(m_baseVertex,  m_indexCount, m_flags) <
+            std::tie(o.m_baseVertex, o.m_indexCount, o.m_flags);
+    }
+
 }
