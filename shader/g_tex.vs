@@ -20,6 +20,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
@@ -91,7 +92,7 @@ void main() {
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
-  if ((entity.u_flags & ENTITY_BILLBOARD_BIT) != 0) {
+  if ((instance.u_shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = entity.u_worldScale.xyz;
 
@@ -156,7 +157,7 @@ void main() {
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
+    //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);
 

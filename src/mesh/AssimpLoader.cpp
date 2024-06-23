@@ -11,6 +11,7 @@
 #include <assimp/postprocess.h>
 
 #include "util/glm_format.h"
+#include "util/Log.h"
 #include "util/Util.h"
 
 #include "animation/RigContainer.h"
@@ -113,6 +114,12 @@ namespace mesh
             scene);
 
         loadAnimations(ctx, meshSet.m_name, scene);
+
+        meshSet.m_rig->prepare();
+
+        for (auto& mesh : meshSet.m_meshes) {
+            KI_INFO_OUT(fmt::format("MESH: {}", mesh->str()));
+        }
     }
 
     void AssimpLoader::collectNodes(
@@ -133,7 +140,7 @@ namespace mesh
             rigNode.m_parentIndex = parentIndex;
             nodeIndex = rigNode.m_index;
 
-            KI_INFO_OUT(fmt::format("ASSIMP: NODE parent={}, node={}, name={}, children={}, meshes={}\nT: {}",
+            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}, parent={}, name={}, children={}, meshes={}\nT: {}",
                 parentIndex,
                 nodeIndex,
                 node->mName.C_Str(),
@@ -170,11 +177,12 @@ namespace mesh
         auto& rig = *ctx.m_rig;
 
         std::vector<glm::mat4> globalTransforms;
-        globalTransforms.resize(rig.m_nodes.size());
+        globalTransforms.resize(rig.m_nodes.size() + 1);
+        globalTransforms[0] = glm::mat4{ 1.f };
 
         for (auto& rigNode : rig.m_nodes) {
-            const glm::mat4& parentTransform = rigNode.m_parentIndex >= 0 ? globalTransforms[rigNode.m_parentIndex] : glm::mat4(1.f);
-            globalTransforms[rigNode.m_index] = parentTransform * rigNode.m_localTransform;
+            const glm::mat4& parentTransform = globalTransforms[rigNode.m_parentIndex + 1];
+            globalTransforms[rigNode.m_index + 1] = parentTransform * rigNode.m_localTransform;
 
             auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
@@ -187,7 +195,20 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index]);
+                    if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
+                    if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
+                    if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
+                    if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
+
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.003" }) continue;
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.004" }) continue;
+                    //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.005" }) continue;
+
+
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
                     modelMesh->m_rig = ctx.m_rig;
                     modelMesh->m_nodeName = rigNode.m_name;
 
@@ -211,9 +232,8 @@ namespace mesh
         size_t meshIndex,
         const aiMesh* mesh)
     {
-        auto& vertices = modelMesh.m_vertices;
-        const auto vertexOffset = vertices.size();
-        vertices.reserve(vertexOffset + mesh->mNumVertices);
+        modelMesh.m_vertices.reserve(mesh->mNumVertices);
+        modelMesh.m_indeces.reserve(mesh->mNumVertices);
 
         Material* material{ nullptr };
 
@@ -228,16 +248,15 @@ namespace mesh
         }
 
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, offset={}, material={}, vertices={}, faces={}, bones={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, material={}, vertices={}, faces={}, bones={}",
             rigNode.m_index,
             modelMesh.m_name,
-            vertexOffset,
             material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
             mesh->mNumFaces,
             mesh->mNumBones));
 
-        for (size_t vertexIndex = 0; vertexIndex  < mesh->mNumVertices; vertexIndex++) {
+        for (size_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord;
 
             if (mesh->HasTextureCoords(0))
@@ -258,15 +277,15 @@ namespace mesh
 
             //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
 
-            vertices.emplace_back(pos, texCoord, normal, tangent, 0);
+            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent);
         }
 
         for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
-            processMeshFace(ctx, modelMesh, meshIndex, faceIdx, vertexOffset, mesh, &mesh->mFaces[faceIdx]);
+            processMeshFace(ctx, modelMesh, meshIndex, faceIdx, mesh, &mesh->mFaces[faceIdx]);
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(ctx, modelMesh, meshIndex, vertexOffset, mesh, mesh->mBones[boneIdx]);
+            processMeshBone(ctx, modelMesh, meshIndex, mesh, mesh->mBones[boneIdx]);
         }
     }
 
@@ -275,7 +294,6 @@ namespace mesh
         ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
-        size_t vertexOffset,
         const aiMesh* mesh,
         const aiFace* face)
     {
@@ -286,7 +304,7 @@ namespace mesh
             // vertices and thus indeces areare per mesh, but they are *combined*
             // back single mesh in load
             // => must apply vertex offset in index buffer to match that
-            index[i] = static_cast<glm::uint>(face->mIndices[i] + vertexOffset);
+            index[i] = static_cast<glm::uint>(face->mIndices[i]);
         }
         //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
         //    mesh->mName.C_Str(),
@@ -300,7 +318,6 @@ namespace mesh
         mesh::LoadContext& ctx,
         ModelMesh& modelMesh,
         size_t meshIndex,
-        size_t vertexOffset,
         const aiMesh* mesh,
         const aiBone* bone)
     {
@@ -312,14 +329,12 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, offset={}, weights={}",
+            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, weights={}",
             bi.m_nodeIndex,
             bi.m_index,
             bi.m_nodeName,
             meshIndex,
-            vertexOffset,
             bone->mNumWeights))
-
 
         auto& vertexBones = modelMesh.m_vertexBones;
 
@@ -336,7 +351,7 @@ namespace mesh
             //    weight->mVertexId,
             //    weight->mWeight));
 
-            auto vertexIndex = vertexOffset + bone->mWeights[i].mVertexId;
+            size_t vertexIndex = bone->mWeights[i].mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
@@ -425,28 +440,36 @@ namespace mesh
 
             if (src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath) == AI_SUCCESS) {
                 //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-                material.map_kd = findTexturePath(meshSet, diffusePath.C_Str());
+                material.addTexPath(
+                    TextureType::diffuse,
+                    findTexturePath(meshSet, diffusePath.C_Str()));
             }
         }
         {
             int bumpIndex = 0;
             aiString bumpPath;
             if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
-                material.map_bump = findTexturePath(meshSet, bumpPath.C_Str());
+                material.addTexPath(
+                    TextureType::normal_map,
+                    findTexturePath(meshSet, bumpPath.C_Str()));
             }
         }
         {
             int normalIndex = 0;
             aiString normalPath;
             if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
-                material.map_bump = findTexturePath(meshSet, normalPath.C_Str());
+                material.addTexPath(
+                    TextureType::normal_map,
+                    findTexturePath(meshSet, normalPath.C_Str()));
             }
         }
         {
             int emissionIndex = 0;
             aiString emissionPath;
             if (src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath) == AI_SUCCESS) {
-                material.map_ke = findTexturePath(meshSet, emissionPath.C_Str());
+                material.addTexPath(
+                    TextureType::emission,
+                    findTexturePath(meshSet, emissionPath.C_Str()));
             }
         }
 

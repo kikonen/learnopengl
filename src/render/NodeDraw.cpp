@@ -30,6 +30,8 @@
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 
+#include "size.h"
+
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
@@ -42,19 +44,14 @@ namespace render {
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeComparator {
         bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
-            if (a->m_drawOptions < b->m_drawOptions) return true;
-            else if (b->m_drawOptions < a->m_drawOptions) return false;
             return a->m_id < b->m_id;
         }
     };
-
 
     bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
         const auto& a = m_typeHandle.toType();
         const auto& b = o.m_typeHandle.toType();
 
-        if (a->m_drawOptions < b->m_drawOptions) return true;
-        else if (b->m_drawOptions < a->m_drawOptions) return false;
         return a->m_id < b->m_id;
     }
 
@@ -82,8 +79,18 @@ namespace render {
         m_plainQuad.prepare();
         m_textureQuad.prepare();
 
-        m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS);
-        m_deferredProgram->prepareRT();
+        {
+            std::map<std::string, std::string, std::less<>> definitions;
+
+            size_t shadowCount = std::min(
+                std::max(Assets::get().shadowPlanes.size() - 1, static_cast<size_t>(1)),
+                static_cast<size_t>(MAX_SHADOW_MAP_COUNT_ABS));
+
+            definitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
+
+            m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS, definitions);
+            m_deferredProgram->prepareRT();
+        }
 
         m_oitProgram = ProgramRegistry::get().getProgram(SHADER_OIT_PASS);
         m_oitProgram->prepareRT();
@@ -121,40 +128,30 @@ namespace render {
     void NodeDraw::handleNodeAdded(Node* node)
     {
         auto* type = node->m_typeHandle.toType();
-        auto* program = type->m_program;
 
-        if (type->m_entityType != mesh::EntityType::origo) {
-            assert(program);
-            if (!program) return;
+        if (type->m_flags.invisible) {
+            insertNode(&m_invisibleNodes, node);
         }
-
-        {
-            auto* map = &m_solidNodes;
-
-            if (type->m_flags.alpha)
-                map = &m_alphaNodes;
-
-            if (type->m_flags.blend)
-                map = &m_blendedNodes;
-
-            if (type->m_flags.invisible)
-                map = &m_invisibleNodes;
-
-            if (map) {
-                // NOTE KI more optimal to not switch between culling mode (=> group by it)
-                const ProgramKey programKey(
-                    program ? program->m_id : NULL_PROGRAM_ID,
-                    // NOTE KI *NEGATE* for std::tie
-                    -type->m_priority,
-                    type->getDrawOptions());
-
-                const MeshTypeKey typeKey(node->m_typeHandle);
-
-                auto& list = (*map)[programKey][typeKey];
-                list.reserve(100);
-                list.push_back(node->toHandle());
-            }
+         else {
+             if (type->m_flags.anySolid) {
+                 insertNode(&m_solidNodes, node);
+             }
+             if (type->m_flags.anyAlpha) {
+                 insertNode(&m_alphaNodes, node);
+             }
+             if (type->m_flags.anyBlend) {
+                 insertNode(&m_blendedNodes, node);
+             }
         }
+    }
+
+    void NodeDraw::insertNode(
+        MeshTypeMap* map,
+        Node* node)
+    {
+        auto& list = (*map)[node->m_typeHandle];
+        list.reserve(100);
+        list.push_back(node->toHandle());
     }
 
     void NodeDraw::drawNodes(
@@ -162,7 +159,7 @@ namespace render {
         FrameBuffer* targetBuffer,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits,
+        uint8_t kindBits,
         GLbitfield copyMask)
     {
         //m_timeElapsedQuery.begin();
@@ -185,7 +182,7 @@ namespace render {
             m_gBuffer.clearAll();
 
             // NOTE KI no blend in G-buffer
-            auto oldAllowBlend = ctx.setAllowBlend(false);
+            auto oldForceSolid = ctx.setForceSolid(true);
 
             // NOTE KI "pre pass depth" causes more artifacts than benefits
             if (assets.prepassDepthEnabled)
@@ -194,17 +191,17 @@ namespace render {
 
                 // NOTE KI only *solid* render in pre-pass
                 {
-                    ctx.m_nodeDraw->drawProgram(
+                    drawProgram(
                         ctx,
-                        [this](const mesh::MeshType* type) { return type->m_preDepthProgram; },
+                        [this](const mesh::LodMesh& lodMesh) {
+                            return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgram : nullptr;
+                        },
                         [&typeSelector](const mesh::MeshType* type) {
-                            return type->m_flags.gbuffer &&
-                                type->m_flags.preDepth &&
-                                !type->m_flags.alpha &&
+                            return type->m_flags.preDepth &&
                                 typeSelector(type);
                         },
                         nodeSelector,
-                        kindBits & NodeDraw::KIND_SOLID);
+                        kindBits & render::KIND_SOLID);
                 }
 
                 ctx.m_batch->flush(ctx);
@@ -219,7 +216,12 @@ namespace render {
 
                 drawNodesImpl(
                     ctx,
-                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.gbuffer && typeSelector(type); },
+                    [](const mesh::LodMesh& lodMesh) {
+                        return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
+                    },
+                    [&typeSelector](const mesh::MeshType* type) {
+                        return !type->m_flags.effect && typeSelector(type);
+                    },
                     nodeSelector,
                     kindBits);
 
@@ -230,7 +232,7 @@ namespace render {
                 }
             }
 
-            ctx.setAllowBlend(oldAllowBlend);
+            ctx.setForceSolid(oldForceSolid);
 
             m_gBuffer.m_buffer->copy(
                 m_gBuffer.m_depthTexture.get(),
@@ -252,6 +254,7 @@ namespace render {
         {
             state.setStencil(kigl::GLStencilMode::only_non_zero());
             state.setEnabled(GL_DEPTH_TEST, false);
+            state.polygonFrontAndBack(GL_FILL);
 
             primaryBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
@@ -274,9 +277,15 @@ namespace render {
 
             drawNodesImpl(
                 ctx,
-                [&typeSelector](const mesh::MeshType* type) { return !type->m_flags.gbuffer && typeSelector(type); },
+                [](const mesh::LodMesh& lodMesh) {
+                    return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
+                        ? lodMesh.m_program
+                        : nullptr;
+                },
+                [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
                 nodeSelector,
-                kindBits);
+                // NOTE KI no blended
+                kindBits & ~render::KIND_BLEND);
 
             auto flushedCount = ctx.m_batch->flush(ctx);
             if (flushedCount > 0) {
@@ -293,7 +302,7 @@ namespace render {
 
         // pass 5 - OIT
         // NOTE KI OIT after *forward* pass to allow using depth texture from them
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             if (assets.effectOitEnabled)
             {
@@ -314,10 +323,14 @@ namespace render {
                 // only "blend OIT" nodes
                 drawProgram(
                     ctx,
-                    [this](const mesh::MeshType* type) { return m_oitProgram; },
-                    [&typeSelector](const mesh::MeshType* type) { return type->m_flags.blendOIT && typeSelector(type); },
+                    [this](const mesh::LodMesh& lodMesh) {
+                        return lodMesh.m_drawOptions.m_gbuffer ? m_oitProgram : nullptr;
+                    },
+                    [&typeSelector](const mesh::MeshType* type) {
+                        return typeSelector(type);
+                    },
                     nodeSelector,
-                    NodeDraw::KIND_ALL);
+                    kindBits & render::KIND_BLEND);
 
                 ctx.m_batch->flush(ctx);
 
@@ -346,15 +359,15 @@ namespace render {
         // pass 7 - blend effects
         // => separate light calculations
         //if (false)
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             state.setStencil({});
 
             drawBlendedImpl(
                 ctx,
                 [&typeSelector](const mesh::MeshType* type) {
-                    return !type->m_flags.blendOIT &&
-                        type->m_flags.blend &&
+                    return
+                        type->m_flags.anyBlend &&
                         type->m_flags.effect &&
                         typeSelector(type);
                 },
@@ -362,14 +375,15 @@ namespace render {
             ctx.m_batch->flush(ctx);
         }
 
-        if (ctx.m_allowBlend)
+
+        if (!ctx.m_forceSolid)
         {
             state.setStencil({});
             particleRenderer.render(ctx);
         }
 
         // pass 8 - screenspace effects
-        if (ctx.m_allowBlend)
+        if (!ctx.m_forceSolid)
         {
             state.setEnabled(GL_DEPTH_TEST, false);
             // NOTE KI do NOT modify depth with blend (likely redundant)
@@ -626,20 +640,31 @@ namespace render {
         ctx.m_batch->flush(ctx);
     }
 
-    bool NodeDraw::drawNodesImpl(
+    void NodeDraw::drawProgram(
         const RenderContext& ctx,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits)
+        uint8_t kindBits)
+    {
+        drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
+    }
+
+    bool NodeDraw::drawNodesImpl(
+        const RenderContext& ctx,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<bool(const mesh::MeshType*)>& typeSelector,
+        const std::function<bool(const Node*)>& nodeSelector,
+        const uint8_t kindBits)
     {
         bool rendered{ false };
 
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-        auto renderTypes = [this, &ctx, &typeSelector, &nodeSelector, &rendered](const MeshTypeMap& typeMap) {
-            auto* type = typeMap.begin()->first.m_typeHandle.toType();
-            auto* program = type->m_program;
-
+        auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector, &rendered](
+            const MeshTypeMap& typeMap,
+            unsigned int kind)
+        {
             for (const auto& it : typeMap) {
                 auto* type = it.first.m_typeHandle.toType();
 
@@ -653,21 +678,21 @@ namespace render {
                     if (!node || !nodeSelector(node)) continue;
 
                     rendered = true;
-                    batch->draw(ctx, type, *node, program);
+                    batch->draw(ctx, type, programSelector, kind, *node);
                 }
             }
-            };
+        };
 
-        if (kindBits & NodeDraw::KIND_SOLID) {
-            for (const auto& all : m_solidNodes) {
-                renderTypes(all.second);
-            }
+        if (kindBits & render::KIND_SOLID) {
+            renderTypes(m_solidNodes, render::KIND_SOLID);
         }
 
-        if (kindBits & NodeDraw::KIND_ALPHA) {
-            for (const auto& all : m_alphaNodes) {
-                renderTypes(all.second);
-            }
+        if (kindBits & render::KIND_ALPHA) {
+            renderTypes(m_alphaNodes, render::KIND_ALPHA);
+        }
+
+        if (kindBits & render::KIND_BLEND) {
+            renderTypes(m_blendedNodes, render::KIND_BLEND);
         }
 
         return rendered;
@@ -686,21 +711,19 @@ namespace render {
 
         // TODO KI discards nodes if *same* distance
         std::map<float, Node*> sorted;
-        for (const auto& all : m_blendedNodes) {
-            for (const auto& map : all.second) {
-                auto* type = map.first.m_typeHandle.toType();
+        for (const auto& map : m_blendedNodes) {
+            auto* type = map.first.m_typeHandle.toType();
 
-                if (!type->isReady()) continue;
-                if (!typeSelector(type)) continue;
+            if (!type->isReady()) continue;
+            if (!typeSelector(type)) continue;
 
-                for (const auto& handle : map.second) {
-                    auto* node = handle.toNode();
-                    if (!node || !nodeSelector(node)) continue;
+            for (const auto& handle : map.second) {
+                auto* node = handle.toNode();
+                if (!node || !nodeSelector(node)) continue;
 
-                    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-                    const float distance = glm::length(viewPos - snapshot.getWorldPosition());
-                    sorted[distance] = node;
-                }
+                const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
+                const float distance = glm::length(viewPos - snapshot.getWorldPosition());
+                sorted[distance] = node;
             }
         }
 
@@ -709,60 +732,17 @@ namespace render {
         for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
             auto* node = it->second;
             auto* type = node->m_typeHandle.toType();
-            auto* program = type->m_program;
 
-            ctx.m_batch->draw(ctx, type, *node, program);
+            ctx.m_batch->draw(
+                ctx,
+                type,
+                [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_program; },
+                render::KIND_BLEND,
+                *node);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect
         //ctx.m_batch->flush(ctx);
-    }
-
-    void NodeDraw::drawProgram(
-        const RenderContext& ctx,
-        const std::function<Program* (const mesh::MeshType*)>& programSelector,
-        const std::function<bool(const mesh::MeshType*)>& typeSelector,
-        const std::function<bool(const Node*)>& nodeSelector,
-        unsigned int kindBits)
-    {
-        auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector](const MeshTypeMap& typeMap) {
-            for (const auto& it : typeMap) {
-                auto* type = it.first.m_typeHandle.toType();
-
-                if (!type->isReady()) continue;
-                if (!typeSelector(type)) continue;
-
-                auto activeProgram = programSelector(type);
-                if (!activeProgram) continue;
-
-                auto& batch = ctx.m_batch;
-
-                for (auto& handle : it.second) {
-                    auto* node = handle.toNode();
-                    if (!node || !nodeSelector(node)) continue;
-
-                    batch->draw(ctx, type, *node, activeProgram);
-                }
-            }
-            };
-
-        if (kindBits & NodeDraw::KIND_SOLID) {
-            for (const auto& all : m_solidNodes) {
-                renderTypes(all.second);
-            }
-        }
-
-        if (kindBits & NodeDraw::KIND_ALPHA) {
-            for (const auto& all : m_alphaNodes) {
-                renderTypes(all.second);
-            }
-        }
-
-        if (kindBits & NodeDraw::KIND_BLEND) {
-            for (const auto& all : m_blendedNodes) {
-                renderTypes(all.second);
-            }
-        }
     }
 
     void NodeDraw::drawSkybox(
@@ -779,7 +759,9 @@ namespace render {
         if (!type->isReady()) return;
 
         auto& batch = ctx.m_batch;
-        auto* program = type->m_program;
+
+        auto* lodMesh = type->getLodMesh(0);
+        auto* program = lodMesh->m_program;
 
         state.setDepthFunc(GL_LEQUAL);
         program->bind();

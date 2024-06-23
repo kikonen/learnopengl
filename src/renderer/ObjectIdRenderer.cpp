@@ -153,7 +153,7 @@ void ObjectIdRenderer::render(
     const RenderContext& ctx)
 {
     RenderContext idCtx("OBJECT_ID", &ctx, ctx.m_camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
-    idCtx.m_allowBlend = false;
+    idCtx.m_forceSolid = true;
 
     m_idBuffer->bind(idCtx);
 
@@ -174,12 +174,12 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
     {
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this](const mesh::MeshType* type) {
-                return type->m_idProgram ? type->m_idProgram : m_idProgram;
+            [this](const mesh::LodMesh& lodMesh) {
+                return lodMesh.m_idProgram ? lodMesh.m_idProgram : m_idProgram;
             },
             [](const mesh::MeshType* type) { return !type->m_flags.noSelect && !type->m_flags.tessellation; },
             [](const Node* node) { return true; },
-            render::NodeDraw::KIND_ALL);
+            render::KIND_ALL);
     }
 
     ctx.m_batch->flush(ctx);

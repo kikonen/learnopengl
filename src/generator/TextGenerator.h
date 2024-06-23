@@ -2,15 +2,12 @@
 
 #include <string>
 
+#include "asset/Material.h"
 #include "asset/AABB.h"
 
 #include "NodeGenerator.h"
 
 #include "backend/DrawOptions.h"
-
-#include "mesh/vao/TexturedVAO.h"
-
-#include "text/vao/AtlasTextureVBO.h"
 
 #include "text/size.h"
 
@@ -25,6 +22,8 @@ namespace text {
 class TextGenerator final : public NodeGenerator {
 public:
     TextGenerator();
+
+    ~TextGenerator();
 
     virtual void prepare(
         const PrepareContext& ctx,
@@ -50,11 +49,10 @@ public:
     virtual void bindBatch(
         const RenderContext& ctx,
         mesh::MeshType* type,
-        Node& container,
-        render::Batch& batch) override;
-
-    virtual const kigl::GLVertexArray* getVAO(
-        const Node& container) const noexcept override;
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
+        render::Batch& batch,
+        Node& container) override;
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 
@@ -74,13 +72,13 @@ public:
 
     void clear();
 
+public:
+    Material m_material;
+
 private:
     bool m_dirty{ true };
 
     AABB m_aabb;
-
-    mesh::AtlasTextureVBO m_vboAtlasTex;
-    mesh::TexturedVAO m_vao{ "text" };
 
     std::unique_ptr<text::TextDraw> m_draw;
 

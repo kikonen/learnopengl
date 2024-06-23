@@ -25,8 +25,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Other
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 3
         map_pbr: textures\Bricks007_1K-PNG
@@ -36,8 +36,8 @@ entities:
       z_count: 20
       z_step: -10
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     xxpos: [0, 25, 25]
@@ -56,14 +56,14 @@ entities:
     render_flags:
       cube_map: true
   - name: Planet 1
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
-    model:
-      mesh: planet/planet
+    mesh:
+      path: planet/planet
       material_modifier:
         map_bump: mars_normal.png
     program: g_tex
@@ -75,8 +75,8 @@ entities:
     render_flags:
       cube_map: true
   - name: Brick wall 2 - plain
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -85,18 +85,17 @@ entities:
         xreflection: 0.2
         parallax_depth: 0.07
         map_bump: ''
+        render_back: true
     program: g_tex
     pos: [20.0, 2.5, -5.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      render_back: true
     repeat:
       x_count: 1
       x_step: 1
   - name: Brick wall 2 - normal
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -105,15 +104,14 @@ entities:
         xreflection: 0.2
         parallax_depth: 0.07
         map_bump: ''
+        render_back: true
     program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      render_back: true
   - name: Brick wall 2 - parallax
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
@@ -123,79 +121,75 @@ entities:
         parallax_depth: 0.07
         map_bump: ''
         map_displacement: bricks2_disp.jpg
+        xalpha: true
+        render_back: true
     program: g_tex
     pos: [20.0, 2.5, 5.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      xalpha: true
-      render_back: true
     repeat:
       z_count: 5
       z_step: 5
       y_count: 2
       y_step: 5
   - name: Brick wall 1 - plain
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         map_pbr: textures\Bricks007_1K-PNG
         parallax_depth: 0.02
         map_bump: ''
+        render_back: true
     program: g_tex
     pos: [30.0, 2.5, -5.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      render_back: true
     repeat:
       x_count: 1
       x_step: 1
   - name: Brick wall 1 - normal
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         map_pbr: textures\Bricks007_1K-PNG
         parallax_depth: 0.02
+        render_back: true
     program: g_tex
     pos: [30.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      render_back: true
   - name: Brick wall 1 - parallax
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       material:
         name: brickwall
         map_pbr: textures\Bricks007_1K-PNG
         parallax_depth: 0.02
         map_displacement: textures/brickwall_1024_height.jpg
+        xalpha: true
+        render_back: true
     program: g_tex
     pos: [30.0, 2.5, 5.0]
     scale: 2.5
     rotation: [0, 270, 0]
-    render_flags:
-      xalpha: true
-      render_back: true
     repeat:
       z_count: 5
       z_step: 5
       y_count: 2
       y_step: 5
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
         parallax_depth: 0.0
         tiling: 60
+        render_back: true
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     render_flags:
-      render_back: true
       no_shadow: true
     scale: 100

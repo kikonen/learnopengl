@@ -16,6 +16,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 #include ssbo_materials.glsl
 #include ssbo_terrain_tiles.glsl
 
@@ -24,6 +25,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 out VS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -41,7 +43,7 @@ out VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } vs_out;
 
@@ -59,7 +61,9 @@ ResolvedMaterial material;
 TerrainTile tile;
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint instanceIndex = gl_BaseInstance + gl_InstanceID;
+  instance = u_instances[instanceIndex];
+
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
   tile = u_terrainTiles[entity.u_shapeIndex];
@@ -71,6 +75,10 @@ void main() {
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
+  vec3 normal = a_normal;
+#ifdef USE_TBN
+  vec3 tangent;
+#endif
 
   worldPos = modelMatrix * pos;
 
@@ -78,6 +86,7 @@ void main() {
   gl_Position = pos;
 
   vs_out.entityIndex = entityIndex;
+  vs_out.instanceIndex = instanceIndex;
   vs_out.materialIndex = materialIndex;
 
   vs_out.rangeYmin = tile.u_rangeYmin;
@@ -109,22 +118,17 @@ void main() {
   vs_out.vertexPos = a_pos;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * normal;
 
-#ifdef USE_NORMAL_TEX
+#ifdef USE_TBN
   if (u_materials[materialIndex].normalMapTex.x > 0) {
-    const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize(normalMatrix * a_tangent);
-
-    // NOTE KI Gram-Schmidt process to re-orthogonalize
+     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - dot(T, N) * N);
+    //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    //const vec3 B = cross(N, T);
+    const vec3 bitangent = cross(normal, tangent);
 
-    vs_out.tangent = T;
-  } else {
-    vs_out.tangent = a_tangent;
+    vs_out.tbn = mat3(tangent, bitangent, normal);
   }
 #endif
 }

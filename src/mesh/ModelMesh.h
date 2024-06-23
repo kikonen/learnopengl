@@ -39,16 +39,15 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh);
 
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) override;
-
-        uint32_t getBaseVertex() const noexcept;
+        uint32_t getBaseVertex() const noexcept {
+            return m_vboIndex;
+        }
 
         inline uint32_t getBaseIndex() const noexcept {
-            return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));
+            return m_eboIndex * 3;
         }
 
         inline uint32_t getIndexCount() const noexcept {
@@ -56,17 +55,17 @@ namespace mesh {
         }
 
     public:
-        std::vector<Index> m_indeces;
         std::vector<Vertex> m_vertices;
+        std::vector<Index> m_indeces;
 
         std::vector<animation::VertexBone> m_vertexBones;
 
         animation::RigContainer* m_rig{ nullptr };
 
-        // NOTE KI absolute offset into position VBO
-        size_t m_positionVboOffset{ 0 };
+        // NOTE KI absolute index into VBO
+        uint32_t m_vboIndex{ 0 };
 
-        // NOTE KI absolute offset into EBO
-        size_t m_indexEboOffset{ 0 };
+        // NOTE KI absolute index into EBO
+        uint32_t m_eboIndex{ 0 };
     };
 }

@@ -22,8 +22,6 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
-#include "mesh/EntityType.h"
-
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -32,21 +30,15 @@
 #include "mesh/QuadMesh.h"
 #include "mesh/TextMesh.h"
 
-#include "text/TextDraw.h"
-
 #include "component/Light.h"
 #include "component/Camera.h"
 
 #include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
+#include "model/EntityType.h"
 
 #include "animation/AnimationLoader.h"
-
-//#include "generator/GridGenerator.h"
-//#include "generator/AsteroidBeltGenerator.h"
-#include "generator/TextGenerator.h"
-//#include "terrain/TerrainGenerator.h"
 
 #include "event/Dispatcher.h"
 
@@ -130,8 +122,6 @@ namespace loader {
 
                 l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
 
-                l.m_fontLoader.loadFonts(doc.findNode("fonts"), m_fonts);
-
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
 
@@ -203,8 +193,6 @@ namespace loader {
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
         l.m_volumeLoader.attachVolume(root.rootId);
         l.m_cubeMapLoader.attachCubeMap(root.rootId);
-
-        l.m_fontLoader.createFonts(m_fonts);
 
         {
             std::lock_guard lock(m_ready_lock);
@@ -290,17 +278,17 @@ namespace loader {
 
         // try anim event
         //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
-        if (entityData.desc == "Cow")
-        {
-            event::Event evt { event::Type::animate_rotate };
-            evt.body.animate = {
-                .target = handle.toId(),
-                .duration = 20,
-                .data = { 0, 1.f, 0 },
-                .data2 = { 360.f, 0.f, 0.f },
-            };
-            m_dispatcher->send(evt);
-        }
+        //if (entityData.desc == "Cow")
+        //{
+        //    event::Event evt { event::Type::animate_rotate };
+        //    evt.body.animate = {
+        //        .target = handle.toId(),
+        //        .duration = 20,
+        //        .data = { 0, 1.f, 0 },
+        //        .data2 = { 360.f, 0.f, 0.f },
+        //    };
+        //    m_dispatcher->send(evt);
+        //}
 
         {
             l.m_audioLoader.createAudio(entityData.audio, handle.toId());
@@ -460,23 +448,20 @@ namespace loader {
     {
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
-        type->setName(entityData.baseId.m_path);
+        type->setName(entityData.baseId.m_path.empty() ? entityData.name : entityData.baseId.m_path);
 
-        assignFlags(entityData, typeHandle);
+        assignTypeFlags(entityData, typeHandle);
 
-        type->m_priority = entityData.priority;
-
-        if (entityData.type == mesh::EntityType::origo) {
+        if (entityData.type == EntityType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = mesh::EntityType::origo;
+            type->m_entityType = EntityType::origo;
         } else
         {
             resolveMeshes(type, entityData, tile);
-            resolveLods(type, entityData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (entityData.type != mesh::EntityType::container) {
+            if (entityData.type != EntityType::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -484,165 +469,15 @@ namespace loader {
                     return pool::TypeHandle::NULL_HANDLE;
                 }
             }
-
-            // NOTE KI DEP: program after materials
-            resolveProgram(typeHandle, entityData);
         }
 
         return typeHandle;
     }
 
-    void SceneLoader::resolveProgram(
-        pool::TypeHandle typeHandle,
-        const EntityData& entityData)
-    {
-        auto* type = typeHandle.toType();
-
-        bool useTBN = false;
-        bool useParallax = false;
-        bool useDudvTex = false;
-        bool useDisplacementTex = false;
-        bool useNormalTex = false;
-        bool useCubeMap = false;
-        bool useNormalPattern = false;
-
-        for (auto& lodMesh : type->modifyLodMeshes()) {
-            auto* lodMaterial = lodMesh.getMaterial();
-
-            if (lodMaterial) {
-                auto& material = *lodMaterial;
-
-                useDudvTex |= material.hasTex(MATERIAL_DUDV_MAP_IDX);
-                useDisplacementTex |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX);
-                useNormalTex |= material.hasTex(MATERIAL_NORMAL_MAP_IDX);
-                useCubeMap |= 1.0 - material.reflection - material.refraction < 1.0;
-                useNormalPattern |= material.pattern > 0;
-                useParallax |= material.hasTex(MATERIAL_DISPLACEMENT_MAP_IDX) && material.parallaxDepth > 0;
-                if (!useParallax) {
-                    material.parallaxDepth = 0.f;
-                }
-            }
-        }
-
-        useTBN = useNormalTex || useDudvTex || useDisplacementTex;
-
-        if (!entityData.programName.empty()) {
-            std::map<std::string, std::string, std::less<>> definitions;
-            std::map<std::string, std::string, std::less<>> shadowDefinitions;
-            std::map<std::string, std::string, std::less<>> selectionDefinitions;
-            std::map<std::string, std::string, std::less<>> idDefinitions;
-
-            for (const auto& [k, v] : entityData.programDefinitions) {
-                definitions[k] = v;
-            }
-
-            std::map<std::string, std::string, std::less<>> preDepthDefinitions;
-            bool usePreDepth = type->m_flags.preDepth;
-            bool useBones = type->m_flags.useBones;
-            bool useBonesDebug = useBones && type->m_flags.useBonesDebug;
-
-            if (type->m_flags.alpha) {
-                definitions[DEF_USE_ALPHA] = "1";
-                shadowDefinitions[DEF_USE_ALPHA] = "1";
-                selectionDefinitions[DEF_USE_ALPHA] = "1";
-                idDefinitions[DEF_USE_ALPHA] = "1";
-                usePreDepth = false;
-            }
-            if (type->m_flags.blend) {
-                definitions[DEF_USE_BLEND] = "1";
-                usePreDepth = false;
-            }
-            if (type->m_flags.blendOIT) {
-                definitions[DEF_USE_BLEND_OIT] = "1";
-                usePreDepth = false;
-            }
-
-            //if (type->m_entityType == EntityType::billboard) {
-            //    definitions[DEF_USE_BILLBOARD] = "1";
-            //}
-
-            if (useTBN) {
-                definitions[DEF_USE_TBN] = "1";
-            }
-            //if (useDudvTex) {
-            //    definitions[DEF_USE_DUDV_TEX] = "1";
-            //}
-            //if (useDisplacementTex) {
-            //    definitions[DEF_USE_DISPLACEMENT_TEX] = "1";
-            //}
-            if (useNormalTex) {
-                definitions[DEF_USE_NORMAL_TEX] = "1";
-            }
-            if (useParallax) {
-                definitions[DEF_USE_PARALLAX] = "1";
-            }
-            if (useCubeMap) {
-                definitions[DEF_USE_CUBE_MAP] = "1";
-            }
-            if (useNormalPattern) {
-                definitions[DEF_USE_NORMAL_PATTERN] = "1";
-            }
-            if (useBones) {
-                definitions[DEF_USE_BONES] = "1";
-                shadowDefinitions[DEF_USE_BONES] = "1";
-                selectionDefinitions[DEF_USE_BONES] = "1";
-                idDefinitions[DEF_USE_BONES] = "1";
-            }
-            if (useBonesDebug) {
-                definitions[DEF_USE_BONES_DEBUG] = "1";
-            }
-
-            type->m_program = ProgramRegistry::get().getProgram(
-                entityData.programName,
-                false,
-                entityData.geometryType,
-                definitions);
-
-            if (!entityData.shadowProgramName.empty()) {
-                type->m_shadowProgram = ProgramRegistry::get().getProgram(
-                    entityData.shadowProgramName,
-                    false,
-                    "",
-                    shadowDefinitions);
-            }
-
-            if (usePreDepth) {
-                type->m_preDepthProgram = ProgramRegistry::get().getProgram(
-                    entityData.preDepthProgramName,
-                    false,
-                    "",
-                    preDepthDefinitions);
-            }
-
-            if (!entityData.selectionProgramName.empty()) {
-                type->m_selectionProgram = ProgramRegistry::get().getProgram(
-                    entityData.selectionProgramName,
-                    false,
-                    "",
-                    selectionDefinitions);
-            }
-
-            if (!entityData.idProgramName.empty()) {
-                type->m_idProgram = ProgramRegistry::get().getProgram(
-                    entityData.idProgramName,
-                    false,
-                    "",
-                    idDefinitions);
-            }
-        }
-    }
-
-    text::font_id SceneLoader::resolveFont(
-        pool::TypeHandle typeHandle,
-        const TextData& data) const
-     {
-        auto* font = findFont(data.font);
-        return font ? font->id : 0;
-    }
-
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
+        const EntityData& entityData,
         const MeshData& meshData)
     {
         auto* lodMaterial = lodMesh.getMaterial();
@@ -651,19 +486,35 @@ namespace loader {
         auto& material = *lodMaterial;
         auto& l = *m_loaders;
 
+        // NOTE KI assuming that modifiers are *after* assigns
         for (auto& materialData : meshData.materials) {
             const auto& alias = materialData.aliasName;
             const auto& name = materialData.materialName;
-            KI_INFO_OUT(fmt::format("MAT_REF: model={}, name={}, alias={}", type->str(), name, alias));
-            if (alias == material.m_name || alias.empty() || alias == "*")
+
+            KI_INFO_OUT(fmt::format(
+                "MAT_REF: model={}, material={}, name={}, alias={}",
+                type->str(), material.m_name, name, alias));
+
+            if (name == material.m_name || alias == material.m_name || alias == "*")
             {
-                if (!name.empty() && !alias.empty()) {
+                if (materialData.modifier) {
+                    l.m_materialLoader.modifyMaterial(material, materialData);
+                } else {
                     material.assign(materialData.material);
                 }
-                l.m_materialLoader.modifyMaterial(material, materialData);
             }
         }
-        material.loadTextures();
+
+        {
+            for (const auto& srcIt : entityData.programs) {
+                const auto& dstIt = material.m_programNames.find(srcIt.first);
+                if (dstIt == material.m_programNames.end()) {
+                    material.m_programNames[srcIt.first] = srcIt.second;
+                }
+            }
+        }
+
+        m_loaders->m_materialLoader.resolveMaterial(type, material);
     }
 
     void SceneLoader::resolveMeshes(
@@ -691,12 +542,12 @@ namespace loader {
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (entityData.type == mesh::EntityType::model) {
-            type->m_entityType = mesh::EntityType::model;
+        if (entityData.type == EntityType::model) {
+            type->m_entityType = EntityType::model;
 
             auto future = ModelRegistry::get().getMeshSet(
                 assets.modelsDir,
-                meshData.meshPath);
+                meshData.path);
 
             auto meshSet = future.get();
 
@@ -708,17 +559,15 @@ namespace loader {
                         *meshSet);
                 }
 
-                meshCount += type->addMeshSet(
-                    *meshSet,
-                    meshData.level);
+                meshCount += type->addMeshSet(*meshSet);
             }
 
             KI_INFO(fmt::format(
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
                 entityData.baseId, entityData.desc, type->str()));
         }
-        else if (entityData.type == mesh::EntityType::text) {
-            type->m_entityType = mesh::EntityType::text;
+        else if (entityData.type == EntityType::text) {
+            type->m_entityType = EntityType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
             mesh::LodMesh lodMesh;
@@ -726,19 +575,19 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (entityData.type == mesh::EntityType::terrain) {
+        else if (entityData.type == EntityType::terrain) {
             // NOTE KI handled via container + generator
-            type->m_entityType = mesh::EntityType::terrain;
+            type->m_entityType = EntityType::terrain;
             throw "Terrain not supported currently";
         }
-        else if (entityData.type == mesh::EntityType::container) {
+        else if (entityData.type == EntityType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = mesh::EntityType::container;
+            type->m_entityType = EntityType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = mesh::EntityType::origo;
+            type->m_entityType = EntityType::origo;
             type->m_flags.invisible = true;
         }
 
@@ -746,29 +595,31 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveMaterials(type, lodMesh, meshData);
+                resolveLod(type, entityData, meshData, lodMesh);
+                resolveMaterials(type, lodMesh, entityData, meshData);
+                assignMeshFlags(meshData, lodMesh);
+                lodMesh.setupDrawOptions();
             }
-        }
-    }
-
-    void SceneLoader::resolveLods(
-        mesh::MeshType* type,
-        const EntityData& entityData)
-    {
-        for (const auto& lodData : entityData.lods) {
-            resolveLod(type, lodData);
         }
     }
 
     void SceneLoader::resolveLod(
         mesh::MeshType* type,
-        const LodData& lodData)
+        const EntityData& entityData,
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
     {
-        for (auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_lodLevel == lodData.level) {
-                lodMesh.setDistance(lodData.distance);
-            }
-        }
+        auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+        if (!mesh) return;
+
+        lodMesh.m_priority = entityData.priority;
+
+        const auto* lod = meshData.findLod(mesh->m_name);
+        if (!lod) return;
+
+        lodMesh.m_level = lod->level;
+        lodMesh.m_priority = lod->priority != 0 ? lod->priority : entityData.priority;
+        lodMesh.setDistance(lod->distance);
     }
 
     void SceneLoader::loadAnimation(
@@ -839,6 +690,8 @@ namespace loader {
 #endif
         node->m_typeHandle = typeHandle;
 
+        assignNodeFlags(entityData, handle);
+
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
@@ -852,39 +705,27 @@ namespace loader {
         transform.setScale(entityData.scale);
         transform.setFront(entityData.front);
 
-        auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
-
         {
+            auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
             transform.setVolume(type->getAABB().getVolume());
-
-            // TODO KI basetransform goes *PER* mesh now
-            // => thus THIS IS INCORRECT
-            auto* lodMesh = type->getLodMesh(0);
-            if (lodMesh) {
-                auto* mesh = lodMesh->m_mesh;
-                if (mesh) {
-                    baseTransform = baseTransform * mesh->m_baseTransform;
-                }
-            }
+            transform.setBaseTransform(baseTransform);
         }
-
-        transform.setBaseTransform(baseTransform);
 
         node->m_camera = l.m_cameraLoader.createCamera(entityData.camera);
         node->m_light = l.m_lightLoader.createLight(entityData.light, cloneIndex, tile);
         node->m_generator = l.m_generatorLoader.createGenerator(
             entityData.generator,
-            type);
+            type,
+            *m_loaders);
 
         node->m_particleGenerator = l.m_particleLoader.createParticle(
             entityData.particle);
 
-        if (type->m_entityType == mesh::EntityType::text) {
-            auto fontId = resolveFont(typeHandle, entityData.text);
-            auto generator = std::make_unique<TextGenerator>();
-            generator->setFontId(fontId);
-            generator->setText(entityData.text.text);
-            node->m_generator = std::move(generator);
+        if (type->m_entityType == EntityType::text) {
+            node->m_generator = m_loaders->m_textLoader.createGenerator(
+                type,
+                entityData.text,
+                *m_loaders);
         }
 
         l.m_scriptLoader.createScript(
@@ -904,93 +745,65 @@ namespace loader {
         return handle;
     }
 
-    void SceneLoader::assignFlags(
+    void SceneLoader::assignTypeFlags(
         const EntityData& entityData,
         pool::TypeHandle typeHandle)
     {
         auto* type = typeHandle.toType();
 
-        mesh::NodeRenderFlags& flags = type->m_flags;
+        const auto& container = entityData.typeFlags;
+        mesh::TypeFlags& flags = type->m_flags;
 
-        flags.gbuffer = entityData.programName.starts_with("g_");
-
+        //////////////////////////////////////////////////////////
+        // LOD_MESH specific
         // Rigged model
         {
-            flags.useBones = entityData.findRenderFlag("use_bones", flags.useBones);
+            flags.useBones = container.getFlag("use_bones", flags.useBones);
 
             // NOTE KI bones are *required* if using animation
-            flags.useAnimation = entityData.findRenderFlag("use_animation", flags.useAnimation);
+            flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
             if (flags.useAnimation) {
                 flags.useBones = true;
             }
 
             // NOTE KI no bones debug if no bones
-            flags.useBonesDebug = entityData.findRenderFlag("use_bones_debug", flags.useBonesDebug);
+            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
             if (!flags.useBones) {
                 flags.useBonesDebug = false;
             }
         }
 
-        flags.preDepth = entityData.findRenderFlag("pre_depth", flags.preDepth);
-        flags.gbuffer = entityData.findRenderFlag("gbuffer", flags.gbuffer);
-        flags.alpha = entityData.findRenderFlag("alpha", flags.alpha);
+        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
+
+        flags.effect = container.getFlag("effect", flags.effect);
+        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
+
+        //////////////////////////////////////////////////////////
+        // MESH_TYPE specific (aka. Node shared logic)
+        flags.zUp = container.getFlag("z_up", flags.zUp);
+
+        flags.mirror = container.getFlag("mirror", flags.mirror);
+        flags.water = container.getFlag("water", flags.water);
+        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
+
+        flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
+        flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
+        flags.noSelect = container.getFlag("no_select", flags.noSelect);
+        flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
+        flags.noRefract = container.getFlag("no_refract", flags.noRefract);
 
         {
-            const auto& e = entityData.renderFlags.find("blend");
-            if (e != entityData.renderFlags.end()) {
-                flags.blend = e->second;
-                // NOTE KI alpha MUST BE true if blend
-                if (flags.blend) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
-                    flags.alpha = true;
-                }
-                // NOTE KI blend CANNOT be gbuffer
-                if (flags.blend && flags.gbuffer) {
-                    KI_ERROR(fmt::format("GBUFFER vs. BLEND mismatch (disabled blend): id={}, desc={}", entityData.baseId, entityData.desc));
-                    // NOTE KI turning off blend; shader is designed for gbuffer
-                    flags.blend = false;
-                }
+            const auto* e = container.getOptional("static_bounds");
+            if (e) {
+                flags.staticBounds = e;
+                flags.physics = e;
             }
         }
         {
-            const auto& e = entityData.renderFlags.find("blend_oit");
-            if (e != entityData.renderFlags.end()) {
-                flags.blendOIT = e->second;
-                // NOTE KI alpha MUST BE true if blend
-                if (flags.blendOIT) {
-                    KI_WARN(fmt::format("BLEND requires alpha (enabled alpha): id={}, desc={}", entityData.baseId, entityData.desc));
-                    flags.alpha = true;
-                }
-            }
-        }
-
-        flags.zUp = entityData.findRenderFlag("z_up", flags.renderBack);
-        flags.renderBack = entityData.findRenderFlag("render_back", flags.renderBack);
-        flags.noFrustum = entityData.findRenderFlag("no_frustum", flags.noFrustum);
-        flags.noShadow = entityData.findRenderFlag("no_shadow", flags.noShadow);
-        flags.noSelect = entityData.findRenderFlag("no_select", flags.noSelect);
-        flags.noReflect = entityData.findRenderFlag("no_reflect", flags.noReflect);
-        flags.noRefract = entityData.findRenderFlag("no_refract", flags.noRefract);
-        flags.mirror = entityData.findRenderFlag("mirror", flags.mirror);
-        flags.water = entityData.findRenderFlag("water", flags.water);
-        flags.wireframe = entityData.findRenderFlag("wireframe", flags.wireframe);
-        flags.cubeMap = entityData.findRenderFlag("cube_map", flags.cubeMap);
-        flags.effect = entityData.findRenderFlag("effect", flags.effect);
-        flags.billboard = entityData.findRenderFlag("billboard", flags.billboard);
-        flags.tessellation = entityData.findRenderFlag("tessellation", flags.tessellation);
-
-        {
-            const auto& e = entityData.renderFlags.find("static_bounds");
-            if (e != entityData.renderFlags.end()) {
-                flags.staticBounds = e->second;
-                flags.physics = e->second;
-            }
-        }
-        {
-            const auto& e = entityData.renderFlags.find("dynamic_bounds");
-            if (e != entityData.renderFlags.end()) {
-                flags.dynamicBounds = e->second;
-                flags.physics = e->second;
+            const auto* e = container.getOptional("dynamic_bounds");
+            if (e) {
+                flags.dynamicBounds = e;
+                flags.physics = e;
             }
         }
 
@@ -999,8 +812,28 @@ namespace loader {
         }
     }
 
+    void SceneLoader::assignMeshFlags(
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
+    {
+        const auto& container = meshData.meshFlags;
+        auto& flags = lodMesh.m_flags;
+
+        flags.billboard = container.getFlag("billboard", flags.billboard);
+    }
+
+    void SceneLoader::assignNodeFlags(
+        const EntityData& entityData,
+        pool::NodeHandle nodeHandle)
+    {
+        auto* node = nodeHandle.toNode();
+
+        const auto& container = entityData.nodeFlags;
+        auto& flags = node->m_flags;
+    }
+
     void SceneLoader::loadMeta(
-        const loader::Node& node,
+        const loader::DocNode& node,
         MetaData& data) const
     {
         data.name = "<noname>";
@@ -1008,7 +841,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "name") {
                 data.name = "";// readString(v);
@@ -1167,15 +1000,4 @@ namespace loader {
             }
         }
     }
-
-    const FontData* SceneLoader::findFont(
-        std::string_view name) const
-    {
-        const auto& it = std::find_if(
-            m_fonts.cbegin(),
-            m_fonts.cend(),
-            [&name](const auto& m) { return m.name == name; });
-        return it != m_fonts.end() ? &(*it) : nullptr;
-    }
-
 }

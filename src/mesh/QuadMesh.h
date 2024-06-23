@@ -20,11 +20,8 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;
-
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) override;
 
     protected:
         std::vector<Material> m_material;

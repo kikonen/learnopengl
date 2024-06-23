@@ -7,12 +7,14 @@ layout(vertices=3) out;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
 in VS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -30,12 +32,13 @@ in VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tcs_in[];
 
 out TCS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -52,7 +55,7 @@ out TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tcs_out[];
 
@@ -68,12 +71,14 @@ Entity entity;
 
 void main()
 {
+  instance = u_instances[tcs_in[gl_InvocationID].instanceIndex];
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
   #include var_entity_model_matrix.glsl
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
   tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+  tcs_out[gl_InvocationID].instanceIndex = tcs_in[gl_InvocationID].instanceIndex;
 #ifdef USE_CUBE_MAP
   tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
 #endif
@@ -88,7 +93,7 @@ void main()
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
 #ifdef USE_TBN
-  tcs_out[gl_InvocationID].tangent = tcs_in[gl_InvocationID].tangent;
+  tcs_out[gl_InvocationID].tbn = tcs_in[gl_InvocationID].tbn;
 #endif
 
   if (gl_InvocationID == 0) {

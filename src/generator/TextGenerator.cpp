@@ -20,18 +20,19 @@
 #include "registry/Registry.h"
 #include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/FontRegistry.h"
 
-
-#include "text/TextDraw.h"
+#include "text/FontRegistry.h"
 #include "text/FontAtlas.h"
 
-namespace {
-}
+#include "text/TextDraw.h"
+#include "text/TextSystem.h"
+#include "text/vao/TextVAO.h"
+
 
 TextGenerator::TextGenerator()
-    : m_vboAtlasTex{ "vbo_font", ATTR_FONT_ATLAS_TEX, VBO_FONT_ATLAS_BINDING }
 {}
+
+TextGenerator::~TextGenerator() = default;
 
 void TextGenerator::prepare(
     const PrepareContext& ctx,
@@ -46,9 +47,6 @@ void TextGenerator::prepareRT(
 {
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
-    m_vao.prepare();
-
-    m_vboAtlasTex.prepareVAO(*m_vao.modifyVAO());
 }
 
 void TextGenerator::updateWT(
@@ -66,7 +64,8 @@ void TextGenerator::updateEntity(
     auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
     auto* entity = entityRegistry.modifyEntity(container.m_entityIndex, true);
 
-    const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
+    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
+    const glm::vec4& volume = m_aabb.getVolume();
 
     transform.setVolume(volume);
     snapshot.m_volume = volume;
@@ -88,12 +87,9 @@ void TextGenerator::updateVAO(
 
     mesh->clear();
 
-    m_vboAtlasTex.clear();
-
     glm::vec2 pen{ 0.f };
 
     m_draw->render(
-        ctx,
         m_fontId,
         m_text,
         pen,
@@ -101,38 +97,44 @@ void TextGenerator::updateVAO(
 
     m_aabb = mesh->calculateAABB();
 
-    m_vao.clear();
+    text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
-    {
-        m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
-        mesh->m_positionVboOffset = m_vao.m_positionVbo.addEntries(mesh->m_positions);
-        mesh->m_indexEboOffset = m_vao.m_indexEbo.addIndeces(mesh->m_indeces);
+    vao->updateVertices(
+        mesh->m_vboIndex,
+        mesh->m_vertices);
 
-        m_vao.m_normalVbo.addEntries(mesh->m_normals);
-        m_vao.m_textureVbo.addEntries(mesh->m_texCoords);
+    vao->updateIndeces(
+        mesh->m_eboIndex,
+        mesh->m_indeces);
 
-        m_vboAtlasTex.addEntries(mesh->m_atlasCoords);
-        m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
+    vao->updateAtlasCoords(
+        mesh->m_vboIndex,
+        mesh->m_atlasCoords);
 
-        m_vao.updateRT();
-    }
-
-    lod.m_baseVertex = mesh->getBaseVertex();
-    lod.m_baseIndex = mesh->getBaseIndex();
     lod.m_indexCount = mesh->getIndexCount();
-}
 
-const kigl::GLVertexArray* TextGenerator::getVAO(
-    const Node& container) const noexcept
-{
-    return m_vao.getVAO();
+    //{
+    //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
+    //    mesh->m_positionVboOffset = m_vao.m_positionVbo.addEntries(mesh->m_positions);
+    //    mesh->m_indexEboOffset = m_vao.m_indexEbo.addIndeces(mesh->m_indeces);
+
+    //    m_vao.m_normalVbo.addEntries(mesh->m_normals);
+    //    m_vao.m_textureVbo.addEntries(mesh->m_texCoords);
+
+    //    m_vboAtlasTex.addEntries(mesh->m_atlasCoords);
+    //    m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
+
+    //    m_vao.updateRT();
+    //}
 }
 
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
-    Node& container,
-    render::Batch& batch)
+    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    uint8_t kindBits,
+    render::Batch& batch,
+    Node& container)
 {
     m_draw->updateRT();
 
@@ -141,20 +143,17 @@ void TextGenerator::bindBatch(
     batch.addSnapshot(
         ctx,
         type,
-        &type->getLodMesh(0)->m_lod,
+        programSelector,
+        kindBits,
         snapshot,
         container.m_entityIndex);
 }
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 {
-    return FontRegistry::get().getFont(m_fontId)->getTextureHandle();
+    return text::FontRegistry::get().getFont(m_fontId)->getTextureHandle();
 }
 
 void TextGenerator::clear()
 {
-    //auto* mesh = m_mesh.get();
-    //mesh->clear();
-    //m_vboAtlasTex.clear();
-    //m_vao.clear();
 }

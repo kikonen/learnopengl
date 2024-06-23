@@ -4,16 +4,16 @@
 #include <vector>
 #include <map>
 #include <set>
-#include <unordered_map>
 
 #include <glm/glm.hpp>
 
 #include "asset/Shader.h"
 
-#include "mesh/EntityType.h"
+#include "model/EntityType.h"
 
 #include "BaseId.h"
 #include "BaseData.h"
+#include "FlagContainer.h"
 
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
@@ -27,14 +27,13 @@
 #include "ScriptData.h"
 #include "TextData.h"
 #include "MeshData.h"
-#include "LodData.h"
 
 namespace loader {
     struct EntityData {
         bool enabled{ false };
         bool active{ false };
 
-        mesh::EntityType type{ mesh::EntityType::model };
+        EntityType type{ EntityType::none };
 
         BaseId baseId;
         BaseId parentBaseId;
@@ -47,18 +46,12 @@ namespace loader {
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
-        std::vector<LodData> lods;
 
-        std::string programName{};
         std::string geometryType;
+        std::unordered_map<MaterialProgramType, std::string> programs;
 
-        std::string shadowProgramName;
-        std::string preDepthProgramName{ SHADER_PRE_DEPTH_PASS };
-        std::string selectionProgramName{ SHADER_SELECTION };
-        std::string idProgramName{ SHADER_OBJECT_ID };
-
-        std::map<std::string, std::string> programDefinitions{};
-        std::unordered_map<std::string, bool> renderFlags{};
+        loader::FlagContainer nodeFlags;
+        loader::FlagContainer typeFlags;
 
         glm::vec3 baseRotation{ 0.f };
 
@@ -93,16 +86,5 @@ namespace loader {
         GeneratorData generator;
 
         ParticleData particle;
-
-        bool findRenderFlag(
-            const std::string& flag,
-            bool defaultValue) const noexcept
-        {
-            const auto& e = renderFlags.find(flag);
-            if (e != renderFlags.end()) {
-                return e->second;
-            }
-            return defaultValue;
-        }
     };
 }

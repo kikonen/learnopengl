@@ -112,7 +112,7 @@ Material* Material::find(
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [&name](Material& m) { return m.m_name == name && !m.m_default; });
+        [&name](Material& m) { return m.m_name == name; });
     return it != materials.end() ? &(*it) : nullptr;
 }
 
@@ -143,12 +143,19 @@ Material::Material()
 {
 }
 
-Material::~Material()
-{
-    //KI_INFO(fmt::format(
-    //    "MATERIAL: delete - ID={}, name={}, index={}",
-    //    m_id, m_name, m_registeredIndex));
-}
+Material::Material(Material& o) = default;
+Material::Material(const Material& o) = default;
+Material::Material(Material&& o) = default;
+
+Material::~Material() = default;
+//{
+//    //KI_INFO(fmt::format(
+//    //    "MATERIAL: delete - ID={}, name={}, index={}",
+//    //    m_id, m_name, m_registeredIndex));
+//}
+
+Material& Material::operator=(const Material& o) = default;
+Material& Material::operator=(Material&& o) = default;
 
 void Material::assign(const Material& o)
 {
@@ -165,37 +172,39 @@ void Material::loadTextures()
     const auto& assets = Assets::get();
     auto compressed = assets.compressedTexturesEnabled;
 
-    loadTexture(MATERIAL_DIFFUSE_IDX, map_kd, true, true);
-    loadTexture(MATERIAL_EMISSION_IDX, map_ke, true, false);
-    loadTexture(MATERIAL_SPECULAR_IDX, map_ks, false, false);
-    loadTexture(MATERIAL_NORMAL_MAP_IDX, map_bump, false, false);
-    loadTexture(MATERIAL_DUDV_MAP_IDX, map_dudv, false, false);
-    loadTexture(MATERIAL_NOISE_MAP_IDX, map_noise, false, false);
-    loadTexture(MATERIAL_METALNESS_MAP_IDX, map_metalness, false, false);
-    loadTexture(MATERIAL_ROUGHNESS_MAP_IDX, map_roughness, false, false);
-    loadTexture(MATERIAL_DISPLACEMENT_MAP_IDX, map_displacement, false, false);
-    loadTexture(MATERIAL_OCCLUSION_MAP_IDX, map_occlusion, false, false);
-    loadTexture(MATERIAL_OPACITY_MAP_IDX, map_opacity, false, false);
+    loadTexture(TextureType::diffuse, true, true);
+    loadTexture(TextureType::emission, true, false);
+    loadTexture(TextureType::specular, false, false);
+    loadTexture(TextureType::normal_map, false, false);
+    loadTexture(TextureType::dudv_map, false, false);
+    loadTexture(TextureType::noise_map, false, false);
+    loadTexture(TextureType::metallness_map, false, false);
+    loadTexture(TextureType::roughness_map, false, false);
+    loadTexture(TextureType::displacement_map, false, false);
+    loadTexture(TextureType::occlusion_map, false, false);
+    loadTexture(TextureType::opacity_map, false, false);
 
     loadChannelTexture(
-        MATERIAL_METAL_CHANNEL_MAP_IDX,
+        TextureType::metal_channel_map,
         fmt::format("material_{}_metal", m_registeredIndex),
         {
-            MATERIAL_METALNESS_MAP_IDX,
-            MATERIAL_ROUGHNESS_MAP_IDX,
-            MATERIAL_DISPLACEMENT_MAP_IDX,
-            MATERIAL_OCCLUSION_MAP_IDX
+            TextureType::metallness_map,
+            TextureType::roughness_map,
+            TextureType::displacement_map,
+            TextureType::occlusion_map,
         },
         metal);
 }
 
 void Material::loadTexture(
-    int idx,
-    std::string_view textureName,
+    TextureType type,
     bool gammaCorrect,
     bool usePlaceholder)
 {
-    if (textureName.empty()) return;
+    const auto& it = m_texturePaths.find(type);
+    if (it == m_texturePaths.end()) return;
+
+    const auto& textureName = it->second;
 
     const auto& assets = Assets::get();
 
@@ -232,14 +241,14 @@ void Material::loadTexture(
     }
 
     if (texture && texture->isValid()) {
-        m_textures[idx].m_texture = texture;
+        m_boundTextures.insert({ type, BoundTexture{ texture } });
     }
 }
 
 void Material::loadChannelTexture(
-    int idx,
+    TextureType channelType,
     std::string_view name,
-    const std::vector<int>& textureIndeces,
+    const std::vector<TextureType>& compoundTypes,
     const glm::vec4& defaults)
 {
     const auto& assets = Assets::get();
@@ -247,11 +256,13 @@ void Material::loadChannelTexture(
     std::vector<ImageTexture*> sourceTextures;
 
     int validCount = 0;
-    for (auto sourceIndex : textureIndeces) {
-        auto& bound = m_textures[sourceIndex];
-        if (bound.m_texture) {
-            sourceTextures.push_back((ImageTexture*)bound.m_texture);
-            bound.m_channelPart = true;
+    for (auto sourceTypes : compoundTypes) {
+        const auto& it = m_boundTextures.find(sourceTypes);
+
+        auto* bound = it != m_boundTextures.end() ? &it->second : nullptr;
+        if (bound) {
+            sourceTextures.push_back((ImageTexture*)bound->m_texture);
+            bound->m_channelPart = true;
             validCount++;
         }
         else {
@@ -281,8 +292,11 @@ void Material::loadChannelTexture(
     }
 
     if (texture && texture->isValid()) {
-        m_textures[idx].m_texture = texture;
-        m_textures[idx].m_channelTexture = true;
+        m_boundTextures.insert({ channelType, {} });
+        const auto& it = m_boundTextures.find(channelType);
+        auto& bound = it->second;
+        bound.m_texture = texture;
+        bound.m_channelTexture = true;
     }
 }
 
@@ -304,52 +318,37 @@ std::string Material::getTexturePath(
     return texturePath;
 }
 
-bool Material::hasTex(int index) const
-{
-    const auto& tex = m_textures[index];
-    return tex.m_texture != nullptr;
-}
-
 void Material::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    for (auto& tex : m_textures) {
-        if (!tex.m_texture) continue;
+    for (auto& it : m_boundTextures) {
+        auto& tex = it.second;
         if (tex.m_channelPart) continue;
-
         tex.m_texture->prepare();
-        //tex.m_texIndex = tex.m_texture->m_texIndex;
-        tex.m_handle = tex.m_texture->m_handle;
     }
 }
 
 const MaterialSSBO Material::toSSBO() const
 {
-    for (auto& tex : m_textures) {
-        if (!tex.m_texture) continue;
-        if (tex.m_channelPart) continue;
-        //ASSERT_TEX_INDEX(tex.m_texIndex);
-    }
-
     const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
 
     return {
         kd,
-        m_textures[MATERIAL_EMISSION_IDX].m_handle ? WHITE_RGBA : ke,
+        hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? WHITE_RGBA : metal,
+        hasBoundTex(TextureType::metal_channel_map) ? WHITE_RGBA : metal,
 
-        m_textures[MATERIAL_DIFFUSE_IDX].m_handle ? m_textures[MATERIAL_DIFFUSE_IDX].m_handle : whitePx,
-        m_textures[MATERIAL_EMISSION_IDX].m_handle ? m_textures[MATERIAL_EMISSION_IDX].m_handle : whitePx,
+        getTexHandle(TextureType::diffuse, whitePx),
+        getTexHandle(TextureType::emission, whitePx),
 
-        m_textures[MATERIAL_NORMAL_MAP_IDX].m_handle,
-        m_textures[MATERIAL_DUDV_MAP_IDX].m_handle,
-        m_textures[MATERIAL_NOISE_MAP_IDX].m_handle,
+        getTexHandle(TextureType::normal_map, 0),
+        getTexHandle(TextureType::dudv_map, 0),
+        getTexHandle(TextureType::noise_map, 0),
 
-        m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle ? m_textures[MATERIAL_OPACITY_MAP_IDX].m_handle : whitePx,
-        m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle ? m_textures[MATERIAL_METAL_CHANNEL_MAP_IDX].m_handle : whitePx,
+        getTexHandle(TextureType::opacity_map, whitePx),
+        getTexHandle(TextureType::metal_channel_map, whitePx),
 
         pattern,
 

@@ -20,9 +20,9 @@ entities:
       default: true
     controllers:
       - type: camera_zoom
-  - name: Pool side
-    model:
-      mesh: pool_brick
+  - id: pool_side_{t}_{c}
+    mesh:
+      path: pool_brick
       material_modifier:
         tiling_x: 30
         tiling_y: 2

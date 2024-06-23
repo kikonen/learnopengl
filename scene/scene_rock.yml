@@ -26,8 +26,8 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Rock
-    model:
-      mesh: rock2/rock
+    mesh:
+      path: rock2/rock
       material_modifier:
         metal: [0.5, 0.0, 0, 1]
         map_pbr: textures\Rock002_1K-PNG

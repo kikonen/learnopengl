@@ -18,7 +18,7 @@ namespace loader {
     }
 
     void ControllerLoader::loadControllers(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<ControllerData>& controllers) const
     {
         for (const auto& entry : node.getNodes()) {
@@ -28,7 +28,7 @@ namespace loader {
     }
 
     void ControllerLoader::loadController(
-        const loader::Node& node,
+        const loader::DocNode& node,
         ControllerData& data) const
     {
         data.enabled = true;
@@ -36,7 +36,7 @@ namespace loader {
         // pos relative to owning node
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

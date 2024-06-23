@@ -11,7 +11,7 @@ namespace loader {
             Context ctx);
 
         void loadLight(
-            const loader::Node& node,
+            const loader::DocNode& node,
             LightData& data) const;
 
         std::unique_ptr<Light> createLight(

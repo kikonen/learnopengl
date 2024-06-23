@@ -3,12 +3,16 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <map>
+#include <unordered_map>
+
 #include <glm/glm.hpp>
 
 #include "Texture.h"
 
 //#include "MaterialSSBO.h"
 
+class Program;
 struct MaterialSSBO;
 
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
@@ -21,19 +25,28 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
     selection
 };
 
-constexpr int MATERIAL_DIFFUSE_IDX = 0;
-constexpr int MATERIAL_EMISSION_IDX = 1;
-constexpr int MATERIAL_SPECULAR_IDX = 2;
-constexpr int MATERIAL_NORMAL_MAP_IDX = 3;
-constexpr int MATERIAL_DUDV_MAP_IDX = 4;
-constexpr int MATERIAL_NOISE_MAP_IDX = 5;
-constexpr int MATERIAL_METALNESS_MAP_IDX = 6;
-constexpr int MATERIAL_ROUGHNESS_MAP_IDX = 7;
-constexpr int MATERIAL_OCCLUSION_MAP_IDX = 8;
-constexpr int MATERIAL_DISPLACEMENT_MAP_IDX = 9;
-constexpr int MATERIAL_OPACITY_MAP_IDX = 10;
-constexpr int MATERIAL_METAL_CHANNEL_MAP_IDX = 11;
-constexpr int MATERIAL_TEXTURE_COUNT = MATERIAL_METAL_CHANNEL_MAP_IDX + 1;
+enum class TextureType : std::underlying_type_t<std::byte> {
+    diffuse,
+    emission,
+    specular,
+    normal_map,
+    dudv_map,
+    noise_map,
+    metallness_map,
+    roughness_map,
+    occlusion_map,
+    displacement_map,
+    opacity_map,
+    metal_channel_map
+};
+
+enum class MaterialProgramType : std::underlying_type_t<std::byte> {
+    shader,
+    shadow,
+    pre_depth,
+    selection,
+    object_id
+};
 
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
@@ -58,25 +71,19 @@ struct Material final
 public:
     struct BoundTexture {
         Texture* m_texture{ nullptr };
-        //int m_texIndex{ -1 };
-        GLuint64 m_handle{ 0 };
         bool m_channelPart : 1 { false };
         bool m_channelTexture : 1 { false };
-
-        inline bool valid() const {
-            return m_texture;
-        }
     };
 
 public:
     Material();
-    Material(Material& o) = default;
-    Material(const Material& o) = default;
-    Material(Material&& o) = default;
+    Material(Material& o);
+    Material(const Material& o);
+    Material(Material&& o);
     ~Material();
 
-    Material& operator=(const Material& o) = default;
-    Material& operator=(Material&& o) = default;
+    Material& operator=(const Material& o);
+    Material& operator=(Material&& o);
 
     // assign data from other material, but keep local ID
     // NOTE KI *MUST* keep original materialId
@@ -84,8 +91,6 @@ public:
     void assign(const Material& o);
 
     void loadTextures();
-
-    bool hasTex(int index) const;
 
     void prepare();
 
@@ -112,22 +117,69 @@ public:
     std::string getTexturePath(
         std::string_view textureName);
 
+    void addTexPath(TextureType type, const std::string& path) noexcept
+    {
+        if (path.empty()) return;
+        m_texturePaths.insert({ type, path });
+    }
+
+    bool hasRegisteredTex(TextureType type) const noexcept
+    {
+        return m_texturePaths.find(type) != m_texturePaths.end();
+    }
+
+    bool hasBoundTex(TextureType type) const noexcept
+    {
+        return m_boundTextures.find(type) != m_boundTextures.end();
+    }
+
+    const BoundTexture* getBoundTex(TextureType type) const noexcept
+    {
+        const auto& it = m_boundTextures.find(type);
+        return it != m_boundTextures.end() ? &it->second : nullptr;
+    }
+
+    GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept
+    {
+        const auto& it = m_boundTextures.find(type);
+        return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
+    }
+
+    const std::unordered_map<TextureType, std::string>& getTexturePaths() const noexcept
+    {
+        return m_texturePaths;
+    }
+
+    std::unordered_map<TextureType, std::string>& modifyTexturePaths() noexcept
+    {
+        return m_texturePaths;
+    }
+
+    const std::string& getTexPath(TextureType type) const noexcept
+    {
+        const auto& it = m_texturePaths.find(type);
+        return it != m_texturePaths.end() ? it->second : "";
+    }
+
+    Program* getProgram(MaterialProgramType type) noexcept
+    {
+        const auto& it = m_programs.find(type);
+        return it != m_programs.end() ? it->second : nullptr;
+    }
+
 private:
     void loadTexture(
-        int idx,
-        std::string_view name,
+        TextureType type,
         bool gammaCorrect,
         bool usePlaceholder);
 
     void loadChannelTexture(
-        int idx,
+        TextureType channelType,
         std::string_view name,
-        const std::vector<int>& textureIndeces,
+        const std::vector<TextureType>& compoundTypes,
         const glm::vec4& defaults);
 
 public:
-    std::array<BoundTexture, MATERIAL_TEXTURE_COUNT> m_textures;
-
     mutable int m_registeredIndex = -1;
 
     TextureSpec textureSpec;
@@ -153,29 +205,29 @@ public:
 
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
-    std::string map_kd;
+    //std::string map_kd;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
     glm::vec3 ks { 0.f };
-    std::string map_ks;
+    //std::string map_ks;
 
     // Ke/map_Ke     # emissive
     glm::vec4 ke { 0.f };
-    std::string map_ke;
+    //std::string map_ke;
 
     // some implementations use 'map_bump' instead of 'bump' below
     // bump map(which by default uses luminance channel of the image)
     // bump lemur_bump.tga
-    std::string map_bump;
+    //std::string map_bump;
 
     // channel: metalness, roughness, displacement, ambient-occlusion
     glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
 
-    std::string map_roughness;
-    std::string map_metalness;
-    std::string map_occlusion;
-    std::string map_displacement;
-    std::string map_opacity;
+    //std::string map_roughness;
+    //std::string map_metalness;
+    //std::string map_occlusion;
+    //std::string map_displacement;
+    //std::string map_opacity;
 
     // A material can also have an optical density for its surface. This is also known as index of refraction.
     float ni = 0.0f;
@@ -204,8 +256,8 @@ public:
     // 10. Casts shadows onto invisible surfaces
     int illum = 0;
 
-    std::string map_dudv;
-    std::string map_noise;
+    //std::string map_dudv;
+    //std::string map_noise;
 
     static const ki::material_id DEFAULT_ID = 0;
 
@@ -218,10 +270,24 @@ public:
     uint8_t spritesX = 1;
     uint8_t spritesY = 1;
 
-    bool m_default : 1 {false};
-    bool m_used : 1 {false};
+    bool alpha : 1 {false};
+    bool blend : 1 {false};
+
+    bool renderBack : 1 {false};
+    bool wireframe : 1 {false};
+
+    bool gbuffer : 1 {false};
+
+    std::string m_geometryType;
+    std::unordered_map<MaterialProgramType, std::string> m_programNames{};
+    std::map<std::string, std::string> m_programDefinitions{};
+
+    std::unordered_map<MaterialProgramType, Program*> m_programs{};
 
 private:
+    std::unordered_map<TextureType, BoundTexture> m_boundTextures{};
+    std::unordered_map<TextureType, std::string> m_texturePaths{};
+
     bool m_prepared : 1 {false};
     bool m_loaded : 1 {false};
 };

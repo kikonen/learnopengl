@@ -47,11 +47,8 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
-
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) = 0;
 
         void setAABB(const AABB& aabb) {
             m_aabb = aabb;
@@ -68,6 +65,8 @@ namespace mesh {
 
     public:
         const ki::mesh_id m_id;
+
+        uint32_t m_registeredIndex{ 0 };
 
         const std::string m_name;
         std::string m_nodeName;

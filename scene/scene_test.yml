@@ -27,8 +27,8 @@ entities:
   - name: Directional light
     pos: [0, 25, 40]
     scale: 2.5
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     program: g_light
@@ -39,22 +39,21 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - xid: object_{t}
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        blend: true
+        render_back: true
     program: g_tex
     pos: [0.0, 0.0, -8.0]
     xbase_rotation: [-90.0, 0.0, 0.0]
     scale: 2
     base_scale: 0.01
-    render_flags:
-      blend_oit: true
-      render_back: true
   - id: skeleton_1_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -71,14 +70,12 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
   - id: skeleton_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -95,14 +92,12 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
   - id: skeleton_3_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -119,14 +114,12 @@ entities:
     scale: 1
     base_scale: 0.05
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
   - id: scavenger_1_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -134,6 +127,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -148,9 +143,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -160,8 +152,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: scavenger_2_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -169,6 +161,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -183,9 +177,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -195,8 +186,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: scavenger_3_{t}
-    model:
-      mesh: fbx/characters/scavenger/Scavenger.fbx
+    mesh:
+      path: fbx/characters/scavenger/Scavenger.fbx
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -204,6 +195,8 @@ entities:
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
+          alpha: true
+          render_back: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
@@ -218,9 +211,6 @@ entities:
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
     render_flags:
-      alpha: true
-      render_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true
@@ -230,8 +220,8 @@ entities:
       x_step: 5
       z_step: -5
   - id: lion_1_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -253,8 +243,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -271,8 +259,8 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: lion_2_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -294,8 +282,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       xuse_animation: true
@@ -312,8 +298,8 @@ entities:
       z_step: -7
     xscript_file: scripts/cow_audio
   - id: lion_3_{t}
-    model:
-      mesh: fbx/creatures/lion/SK_Lion.FBX
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -335,8 +321,6 @@ entities:
     xbase_rotation: [0, 0, 0]
     scale: 0.025
     render_flags:
-      xrender_back: true
-      xwireframe: true
       use_bones: true
       xuse_bones_debug: true
       use_animation: true

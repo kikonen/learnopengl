@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <fmt/format.h>
 
+#include "util/thread.h"
+
 #include "asset/Shader.h"
 
 #include "mesh/ModelMesh.h"
@@ -35,14 +37,20 @@ namespace mesh {
         m_boneVbo.clear();
     }
 
-    const kigl::GLVertexArray* SkinnedVAO::registerModel(
-        mesh::ModelMesh* mesh)
+    void SkinnedVAO::reserveVertexBones(size_t count)
     {
-        TexturedVAO::registerModel(mesh);
+        ASSERT_RT();
 
-        m_boneVbo.addVertices(mesh->m_vertexBones);
+        m_boneVbo.reserveVertices(count);
+    }
 
-        return m_vao.get();
+    void SkinnedVAO::updateVertexBones(
+        uint32_t baseVbo,
+        std::span<animation::VertexBone> vertexBones)
+    {
+        ASSERT_RT();
+
+        m_boneVbo.updateVertices(baseVbo, vertexBones);
     }
 
     void SkinnedVAO::updateRT()

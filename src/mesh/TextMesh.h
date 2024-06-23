@@ -6,9 +6,7 @@
 
 #include "mesh/Index.h"
 
-#include "mesh/vao/NormalEntry.h"
-#include "mesh/vao/PositionEntry.h"
-#include "mesh/vao/TextureEntry.h"
+#include "mesh/Vertex.h"
 
 namespace mesh {
     class TextMesh final : public Mesh
@@ -26,18 +24,15 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;
 
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) override;
-
-        inline uint32_t getBaseVertex() const noexcept {
-            return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
+        uint32_t getBaseVertex() const noexcept {
+            return m_vboIndex;
         }
 
         inline uint32_t getBaseIndex() const noexcept {
-            return static_cast<uint32_t>(m_indexEboOffset / sizeof(GLuint));
+            return m_eboIndex * 3;
         }
 
         inline uint32_t getIndexCount() const noexcept {
@@ -45,18 +40,17 @@ namespace mesh {
         }
 
     public:
-        std::vector<mesh::PositionEntry> m_positions;
-        std::vector<mesh::NormalEntry> m_normals;
-        std::vector<mesh::TextureEntry> m_texCoords;
-        std::vector<mesh::TextureEntry> m_atlasCoords;
-
+        std::vector<Vertex> m_vertices;
         std::vector<mesh::Index> m_indeces;
 
-        // NOTE KI absolute offset into position VBO
-        size_t m_positionVboOffset{ 0 };
+        std::vector<glm::vec2> m_atlasCoords;
 
-        // NOTE KI absolute offset into EBO
-        size_t m_indexEboOffset{ 0 };
+        uint32_t m_maxSize{ 0 };
 
+        // NOTE KI absolute index into VBO
+        uint32_t m_vboIndex{ 0 };
+
+        // NOTE KI absolute index into EBO
+        uint32_t m_eboIndex{ 0 };
     };
 }

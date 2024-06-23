@@ -14,7 +14,7 @@ namespace loader{
     }
 
     void LightLoader::loadLight(
-        const loader::Node& node,
+        const loader::DocNode& node,
         LightData& data) const
     {
         // Default to center
@@ -25,7 +25,7 @@ namespace loader{
         // pos relative to owning node
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

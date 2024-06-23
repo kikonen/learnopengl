@@ -15,67 +15,89 @@ namespace mesh {
         : m_ebo{ name }
     {}
 
-    size_t VertexIndexEBO::addIndeces(std::vector<mesh::Index> indeces)
+    void VertexIndexEBO::clear()
     {
-        const size_t count = indeces.size();
+        m_entries.clear();
+        m_dirty.clear();
+    }
+
+
+    uint32_t VertexIndexEBO::reserveIndeces(size_t count)
+    {
+        if (count == 0) return 0;
+
         const size_t baseIndex = m_entries.size();
-        const size_t baseOffset = baseIndex * sizeof(IndexEntry);
 
         if (m_entries.size() + count >= MAX_INDEX_COUNT)
             throw std::runtime_error{ fmt::format("MAX_INDEX_COUNT: {}", MAX_INDEX_COUNT) };
 
-        baseOffset;
-
         {
-            size_t size = m_entries.size() + std::max(INDEX_BLOCK_SIZE, count) + INDEX_BLOCK_SIZE;
+            size_t size = m_entries.size() + std::max(INDEX_BLOCK_SIZE, static_cast<size_t>(count)) + INDEX_BLOCK_SIZE;
             size += INDEX_BLOCK_SIZE - size % INDEX_BLOCK_SIZE;
             size = std::min(size, MAX_INDEX_COUNT);
             m_entries.reserve(size);
         }
 
-        m_entries.insert(
-            m_entries.end(),
-            indeces.begin(),
-            indeces.end());
+        m_entries.resize(m_entries.size() + count);
 
-        return baseOffset;
+        return static_cast<uint32_t>(baseIndex);
     }
 
-    void VertexIndexEBO::clear()
+    void VertexIndexEBO::updateIndeces(
+        uint32_t baseIndex,
+        std::span<mesh::Index> indeces) noexcept
     {
-        m_entries.clear();
-        m_lastSize = 0;
+        assert(baseIndex + indeces.size() <= m_entries.size());
+
+        if (indeces.size() == 0) return;
+
+        std::copy(
+            indeces.begin(),
+            indeces.end(),
+            m_entries.begin() + baseIndex);
+
+        m_dirty.push_back({ baseIndex, indeces.size() });
     }
 
     void VertexIndexEBO::prepareVAO(kigl::GLVertexArray& vao)
     {
         {
-            m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
             m_entries.reserve(INDEX_BLOCK_SIZE);
+            m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
         }
         glVertexArrayElementBuffer(vao, m_ebo);
     }
 
     void VertexIndexEBO::updateVAO(kigl::GLVertexArray& vao)
     {
-        const size_t index = m_lastSize;
+        if (m_dirty.empty()) return;
+
+        for (const auto& range : m_dirty) {
+            if (updateSpan(vao, range.first, range.second)) break;
+        }
+
+        m_dirty.clear();
+    }
+
+    bool VertexIndexEBO::updateSpan(
+        kigl::GLVertexArray& vao,
+        size_t updateIndex,
+        size_t updateCount)
+    {
         const size_t totalCount = m_entries.size();
 
-        if (index == totalCount) return;
-        if (totalCount == 0) return;
+        if (totalCount == 0) return true;
 
         {
             constexpr size_t sz = sizeof(IndexEntry);
-            size_t updateIndex = index;
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_ebo.m_size < totalCount * sz) {
                 m_ebo.resizeBuffer(m_entries.capacity() * sz);
                 glVertexArrayElementBuffer(vao, m_ebo);
                 updateIndex = 0;
+                updateCount = totalCount;
             }
-
-            const size_t updateCount = totalCount - updateIndex;
 
             //m_ebo.invalidateRange(
             //    updateIndex * sz,
@@ -87,6 +109,6 @@ namespace mesh {
                 &m_entries[updateIndex]);
         }
 
-        m_lastSize = totalCount;
+        return updateCount == totalCount;
     }
 }

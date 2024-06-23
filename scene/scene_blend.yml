@@ -25,57 +25,55 @@ entities:
     controllers:
       - type: camera_zoom
   - name: Cube Gbuffer
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [0.0, 1.5, -14.0]
   - name: Cube Forward
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: tex
     pos: [0.0, -1.5, -14.0]
   - id: window_1
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
         name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, -1.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
   - id: window_2
-    model:
-      mesh: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
         name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
+        alpha: true
+        blend: true
     program: g_tex
     shadow_program: simple_depth
     pos: [0.5, -1.0, -10.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      alpha: true
-      blend_oit: true
   - name: Blend cubes
-    model:
-      mesh: rubik_cube.fbx
+    mesh:
+      path: rubik_cube.fbx
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
     program: g_tex
-    render_flags:
-      alpha: true
-      blend_oit: true
-      render_back: true
     scale: 1
     base_scale: 0.01
     pos: [-4, 0, -6]
@@ -86,43 +84,43 @@ entities:
       z_step: -8
     script_file: scripts/anim_rotate_object
   - name: Plasma ball
-    model:
-      mesh: ball_volume
+    mesh:
+      path: ball_volume
       material:
         name: plasma_ball
         map_kd: textures/noise_256.png
-    program: ball_effect
-    program_definitions:
-      effect_plasma: 1
+        alpha: true
+        blend: true
+        program: ball_effect
+        program_definitions:
+          effect_plasma: 1
     pos: [0, 4, -8]
     scale: 2
     render_flags:
-      alpha: true
-      xblend_oit: true
-      blend: true
       effect: true
       no_select: true
+      no_shadow: true
   - name: Hello world
     type: text
-    model:
+    mesh:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
+        alpha: true
+        render_back: true
     text:
-      font: hello_font
       text: Hello world
-    program: font_render
+      fonts:
+        name: hello_font
+        path: fonts/LuckiestGuy.ttf
+        size: 72
+    program: g_font_render
     shadow_program: shadow_font_render
     pos: [-2.5, 0.0, -9.0]
     scale: 0.01
-    render_flags:
-      alpha: true
-      xblend: true
-      xeffect: true
-      render_back: true
     xscript_file: scripts/anim_rotate_object
   - name: Directional light
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     pos: [0, 25, 40]
@@ -134,7 +132,3 @@ entities:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 40000
-fonts:
-  - name: hello_font
-    path: fonts/LuckiestGuy.ttf
-    size: 72

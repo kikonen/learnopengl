@@ -6,6 +6,10 @@
 #include "BaseLoader.h"
 #include "MaterialData.h"
 
+namespace mesh {
+    class MeshType;
+}
+
 namespace loader {
     class MaterialLoader : public BaseLoader
     {
@@ -14,15 +18,19 @@ namespace loader {
             Context ctx);
 
         void loadMaterialModifiers(
-            const loader::Node& node,
+            const loader::DocNode& node,
             MaterialData& data) const;
 
         void loadMaterials(
-            const loader::Node& node,
+            const loader::DocNode& node,
             std::vector<MaterialData>& materials) const;
 
         void loadMaterial(
-            const loader::Node& node,
+            const loader::DocNode& node,
+            MaterialData& data) const;
+
+        void resolveMaterialPaths(
+            const std::string& baseDir,
             MaterialData& data) const;
 
         void resolveMaterialPbr(
@@ -41,17 +49,29 @@ namespace loader {
             MaterialData& data) const;
 
         void loadTextureSpec(
-            const loader::Node& node,
+            const loader::DocNode& node,
             TextureSpec& textureSpec) const;
 
         void loadTextureWrap(
             const std::string& k,
-            const loader::Node& v,
+            const loader::DocNode& v,
             GLint& wrapMode) const;
 
         void modifyMaterial(
             Material& m,
             const MaterialData& data);
 
+        void resolveMaterial(
+            const mesh::MeshType* type,
+            Material& material);
+
+        void resolveProgram(
+            const mesh::MeshType* type,
+            Material& material);
+
+        std::string selectProgram(
+            MaterialProgramType type,
+            const std::unordered_map<MaterialProgramType, std::string> programs,
+            const std::string& defaultValue = "");
     };
 }

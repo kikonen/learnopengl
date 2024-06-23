@@ -31,7 +31,6 @@ namespace mesh {
 namespace loader {
     struct RootData;
     struct SkyboxData;
-    struct FontData;
     struct MaterialData;
     struct ScriptEngineData;
     struct EntityRoot;
@@ -108,25 +107,26 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
-        void assignFlags(
+        void assignTypeFlags(
             const EntityData& entityData,
             pool::TypeHandle typeHandle);
+
+        void assignMeshFlags(
+            const MeshData& meshData,
+            mesh::LodMesh& lodMesh);
+
+        void assignNodeFlags(
+            const EntityData& entityData,
+            pool::NodeHandle nodeHandle);
 
         const pool::TypeHandle createType(
             const EntityData& entityData,
             const glm::uvec3& tile);
 
-        void resolveProgram(
-            pool::TypeHandle typeHandle,
-            const EntityData& entityData);
-
-        text::font_id resolveFont(
-            pool::TypeHandle typeHandle,
-            const TextData& data) const;
-
         void resolveMaterials(
             mesh::MeshType* type,
             mesh::LodMesh& lodMesh,
+            const EntityData& entityData,
             const MeshData& meshData);
 
         void resolveMeshes(
@@ -141,13 +141,11 @@ namespace loader {
             const glm::uvec3& tile,
             int index);
 
-        void resolveLods(
-            mesh::MeshType* type,
-            const EntityData& entityData);
-
         void resolveLod(
             mesh::MeshType* type,
-            const LodData& lodData);
+            const EntityData& entityData,
+            const MeshData& meshData,
+            mesh::LodMesh& lodMesh);
 
         void loadAnimation(
             const std::string& baseDir,
@@ -165,7 +163,7 @@ namespace loader {
             const glm::vec3& tilePositionOffset);
 
         void loadMeta(
-            const loader::Node& node,
+            const loader::DocNode& node,
             MetaData& data) const;
 
         void validate(
@@ -200,9 +198,6 @@ namespace loader {
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
-        const FontData* findFont(
-            std::string_view name) const;
-
     private:
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
@@ -218,8 +213,6 @@ namespace loader {
         std::vector<EntityRoot> m_entities;
 
         std::vector<ResolvedEntity> m_resolvedEntities;
-
-        std::vector<FontData> m_fonts;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

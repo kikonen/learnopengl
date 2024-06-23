@@ -25,17 +25,17 @@ entities:
     controllers:
       - type: camera_zoom
   - id: wyvern_{t}
-    model:
-      mesh: fbx/creatures/wyvern/SK_Wyvern.FBX
+    mesh:
+      path: fbx/creatures/wyvern/SK_Wyvern.FBX
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern
           map_pbr: wyvern_pbr
       animations:
         - name: fire
-          path: fbx/creatures/wyvern/anim/Wyvern@FlyStationarySpreadFire.FBX
+          path: anim/Wyvern@FlyStationarySpreadFire.FBX
         - name: fly
-          path: fbx/creatures/wyvern/anim/Wyvern@FlyStationary.FBX
+          path: anim/Wyvern@FlyStationary.FBX
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0, 0]

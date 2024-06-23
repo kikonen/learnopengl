@@ -25,7 +25,7 @@ namespace loader {
     }
 
     void GeneratorLoader::loadGenerator(
-        const loader::Node& node,
+        const loader::DocNode& node,
         GeneratorData& data,
         Loaders& loaders) const
     {
@@ -33,7 +33,7 @@ namespace loader {
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -88,12 +88,12 @@ namespace loader {
     }
 
     void GeneratorLoader::loadTerrain(
-        const loader::Node& node,
+        const loader::DocNode& node,
         TerrainData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
             }
@@ -109,7 +109,8 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        mesh::MeshType* type)
+        mesh::MeshType* type,
+        Loaders& loaders)
     {
         if (!data.enabled) return nullptr;
 
@@ -132,6 +133,8 @@ namespace loader {
 
             generator->m_material = data.materialData.material;
             generator->m_material.loadTextures();
+
+            loaders.m_materialLoader.resolveMaterial(type, generator->m_material);
 
             return generator;
         }

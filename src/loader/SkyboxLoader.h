@@ -12,11 +12,11 @@ namespace loader {
             Context ctx);
 
         void loadSkybox(
-            const loader::Node& node,
+            const loader::DocNode& node,
             SkyboxData& data);
 
         void loadSkyboxFaces(
-            const loader::Node& node,
+            const loader::DocNode& node,
             SkyboxData& data);
 
         void attachSkybox(

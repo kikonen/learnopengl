@@ -29,7 +29,6 @@ namespace text
         void updateRT();
 
         void render(
-            const RenderContext& ctx,
             text::font_id fontId,
             std::string_view text,
             glm::vec2& pen,

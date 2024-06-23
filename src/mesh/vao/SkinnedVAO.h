@@ -12,9 +12,11 @@ namespace mesh {
 
         virtual void clear() override;
 
-        // @return VAO
-        virtual const kigl::GLVertexArray* registerModel(
-            mesh::ModelMesh* mesh) override;
+        void reserveVertexBones(size_t count);
+
+        void updateVertexBones(
+            uint32_t baseVbo,
+            std::span<animation::VertexBone> vertexBones);
 
         virtual void updateRT() override;
 

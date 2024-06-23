@@ -9,7 +9,12 @@
 
 #include "text/TextDraw.h"
 
+#include "text/vao/TextVAO.h"
+#include "text/TextSystem.h"
+
+
 namespace {
+    constexpr uint32_t DEF_SIZE = 100;
 }
 
 namespace mesh {
@@ -28,20 +33,17 @@ namespace mesh {
     }
 
     void TextMesh::clear() {
-        m_positions.clear();
-        m_normals.clear();
-        m_texCoords.clear();
+        m_vertices.clear();
         m_atlasCoords.clear();
         m_indeces.clear();
     }
 
-    AABB TextMesh::calculateAABB() const noexcept
-    {
+    AABB TextMesh::calculateAABB() const noexcept {
         AABB aabb{ true };
 
-        for (auto&& vertex : m_positions)
+        for (auto&& vertex : m_vertices)
         {
-            aabb.minmax({ vertex.x, vertex.y, vertex.z });
+            aabb.minmax(vertex.pos);
         }
 
         return aabb;
@@ -53,21 +55,33 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
+        text::TextVAO* vao = text::TextSystem::get().getTextVAO();
+
+        if (m_maxSize == 0) {
+            m_maxSize = DEF_SIZE;
+        }
+
+        m_vboIndex = vao->reserveVertices(m_maxSize * 4);
+        vao->reserveAtlasCoords(m_maxSize * 4);
+
+        m_eboIndex = vao->reserveIndeces(m_maxSize * 2);
+
+        m_vao = vao->getVAO();
+
         return m_vao;
     }
 
-    void TextMesh::prepareLod(
+    void TextMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
-        lodMesh.m_lod.m_baseVertex = 0;
-        lodMesh.m_lod.m_baseIndex = 0;
-        lodMesh.m_lod.m_indexCount = 0;
-    }
+        auto& lod = lodMesh.m_lod;
 
-    void TextMesh::prepareDrawOptions(
-        backend::DrawOptions& drawOptions)
-    {
+        lod.m_baseVertex = getBaseVertex();
+        lod.m_baseIndex = getBaseIndex();
+        lod.m_indexCount = getIndexCount();
+
+        auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = GL_TRIANGLES;
+        drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
     }
 }

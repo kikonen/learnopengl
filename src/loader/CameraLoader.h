@@ -13,7 +13,7 @@ namespace loader {
             Context ctx);
 
         void loadCamera(
-            const loader::Node& node,
+            const loader::DocNode& node,
             CameraData& data) const;
 
         std::unique_ptr<Camera> createCamera(

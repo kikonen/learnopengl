@@ -34,8 +34,8 @@ entities:
   - name: Directional light
     pos: [0, 45, 100]
     scale: 2.5
-    model:
-      mesh: light
+    mesh:
+      path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     program: g_tex
@@ -46,8 +46,8 @@ entities:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - id: cube_1
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
@@ -59,16 +59,16 @@ entities:
     render_flags:
       cube_map: true
   - name: Mirror ball
-    model:
-      mesh: glass_ball
+    mesh:
+      path: glass_ball
       material_modifier:
         reflection: 0.8
     program: g_tex
     pos: [0, 30.5, -10]
     scale: 10
   - name: Big mirror 2
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: mirror
           alias: "*"
@@ -76,17 +76,17 @@ entities:
           reflection: 0.5
           refraction: 0.05
           refraction_ratio: [1.0, 1.52]
+          render_back: true
     program: g_mirror
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     scale: 10.0
     front: [0, 0, 1]
     render_flags:
-      render_back: true
       mirror: true
   - name: Pool floor
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: pool_floor
           alias: "*"
@@ -106,8 +106,8 @@ entities:
       y_step: 0
       z_step: 60
   - name: Pool surface
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       materials:
         - name: pool_surface
           alias: "*"
@@ -115,12 +115,12 @@ entities:
           map_bump: textures/water_surface_512_normal.png
           map_dudv: textures/waterDUDV_512.png
           tiling: 2
+          render_back: true
     program: g_water
     pos: [0, 9.0, -10]
     scale: 30
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     repeat:
       x_count: 2
@@ -130,9 +130,9 @@ entities:
       y_step: 0
       z_step: 60
     script_file: scripts/anim_water
-  - name: Pool side
-    model:
-      mesh: pool_brick
+  - id: pool_side_{t}_{c}
+    mesh:
+      path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
         metal: [1.0, 0.0, 0, 1]
@@ -150,23 +150,59 @@ entities:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: maple_tree_forest_1_{t}
-    model:
-      mesh: fbx/scenery/trees/Maple_02.fbx
-      materials:
-        - name: maple_trunk
-          alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/bark02.png
-          map_bump: fbx/scenery/trees/textures/bark02_normal.png
-        - name: maple_leaf
-          alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/leaf maple.png
-          map_bump: fbx/scenery/trees/textures/leaf maple_Normal.png
+    meshes:
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 0
+            distance: 100
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+            map_bump: textures/bark02_normal.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            map_bump: textures/leaf maple_Normal.png
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 1
+            distance: 200
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 2
+            distance: 600
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 3
+            distance: 10000
+          - name: Tree_1
+            level: -1
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 70]
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     scale: 0.05
     generator:
@@ -177,15 +213,15 @@ entities:
         x_step: 20
         z_step: -40
   - id: skeleton_army_2_{t}
-    model:
-      mesh: fbx/creatures/skeleton/skeleton_animated.FBX
+    mesh:
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       materials:
         - name: skeleton_pbr
           alias: "*"
-          map_pbr: fbx/creatures/skeleton/skeleton_pbr
+          map_pbr: skeleton_pbr
           xmetal: [0.3, 0.4, 0, 1]
           xtiling: 60
-    priority: 1
+    priority: -1
     program: g_tex
     shadow_program: simple_depth
     pos: [-20, 10, 80]
@@ -203,18 +239,15 @@ entities:
     id: auto
     priority: 20
     type: container
-    instanced: true
-    program: g_terrain
-    depth_program: g_terrain_depth
     pos: [-1024, 10, -1024]
     xxpos: [0, 0, 0]
     render_flags:
       pre_depth: true
-      xxwireframe: true
       xxno_shadow: true
       tessellation: true
       xxrender_back: true
       xxno_frustum: true
+    instanced: true
     generator:
       type: terrain
       material:
@@ -224,6 +257,8 @@ entities:
         map_bump: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -232,22 +267,54 @@ entities:
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
   - id: grass_{t}
-    model:
-      mesh: fbx/scenery/foliage/SM_grass_bush_01.fbx
-      materials:
-        - name: grass_bush_01_pbr
-          alias: M_atlas_grass_01
-          map_pbr: fbx/scenery/foliage/grass_01_pbr
+    meshes:
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 0
+            distance: 50
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_pbr: grass_01_pbr
+            alpha: true
+            blend: true
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 1
+            distance: 80
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_pbr: grass_01_pbr
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 2
+            distance: 200
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 3
+            distance: 100000
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
     program: g_tex
     shadow_program: simple_depth
+    priority: -20
     pos: [-100.0, 0.0, 140.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
     scale: 3
     base_scale: 0.01
     render_flags:
-      alpha: true
-      render_back: true
       static_bounds: true
     repeat:
       x_count: 30
@@ -255,30 +322,31 @@ entities:
       x_step: 12
       z_step: -12
   - id: cube_2
-    model:
-      mesh: texture_cube
+    mesh:
+      path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [160, 9.5, 20]
     scale: 2.5
   - name: Pool floor - SINGLE
-    model:
-      mesh: quad
+    mesh:
+      path: quad
       materials:
         - name: pool_floor
           alias: "*"
           map_kd: textures/tiles_1024.png
           tiling: 8
     program: g_tex
+    priority: -10
     pos: [160.0, 3.2, 20.0]
     rotation: [270.0, 0.0, 0.0]
     scale: 60
     render_flags:
       no_shadow: true
   - name: Pool surface - SINGLE
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       materials:
         - name: pool_surface
           alias: "*"
@@ -286,17 +354,18 @@ entities:
           map_bump: textures/water_surface_512_normal.png
           map_dudv: textures/waterDUDV_512.png
           tiling: 2
+          render_back: true
     program: g_water
+    priority: -5
     pos: [160, 9.0, 20]
     scale: 60
     render_flags:
       no_shadow: true
-      render_back: true
       water: true
     xxscript_file: scripts/cycle_water
-  - name: Pool side - SINGLE
-    model:
-      mesh: pool_brick
+  - id: pool_side_single_{t}_{c}
+    mesh:
+      path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
         metal: [1.0, 0.0, 0, 1]
@@ -314,26 +383,60 @@ entities:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
   - id: palm_tree_forest_2_{t}
-    model:
-      mesh: fbx/scenery/trees/Palm_01.fbx
-      materials:
-        - name: palm_trunk
-          alias: Tree_0Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
-        - name: palm_leaf
-          alias: Tree_1Mat
-          map_kd: fbx/scenery/trees/textures/coconut palm leaf.png
-          map_bump: fbx/scenery/trees/textures/coconut palm leaf_Normal.png
-        - name: palm_trunk
-          alias: Tree_2Mat
-          map_kd: fbx/scenery/trees/textures/palm02.png
-          map_bump: fbx/scenery/trees/textures/palm02_normal.png
+    meshes:
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 0
+            distance: 200
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+            map_bump: textures/palm02_normal.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
+            map_bump: textures/coconut palm leaf_Normal.png
+            render_back: true
+          - name: palm_trunk
+            alias: Tree_2Mat
+            map_kd: textures/palm02.png
+            map_bump: textures/palm02_normal.png
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 1
+            distance: 500
+          - name: Tree_1
+            level: 1
+          - name: Tree_2
+            level: -1
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
+            render_back: true
+      - path: fbx/scenery/trees/Palm_01.fbx
+        lods:
+          - level: 2
+            distance: 10000
+          - name: Tree_1
+            level: 2
+          - name: Tree_2
+            level: -1
+        materials:
+          - name: palm_trunk
+            alias: Tree_0Mat
+            map_kd: textures/palm02.png
+          - name: palm_leaf
+            alias: Tree_1Mat
+            map_kd: textures/coconut palm leaf.png
     program: g_tex
     instanced: true
     pos: [240.0, 14, 70]
     render_flags:
-      render_back: true
       static_bounds: true
     scale: 0.05
     generator:

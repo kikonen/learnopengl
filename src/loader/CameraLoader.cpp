@@ -17,7 +17,7 @@ namespace loader
     }
 
     void CameraLoader::loadCamera(
-        const loader::Node& node,
+        const loader::DocNode& node,
         CameraData& data) const
     {
         const auto& assets = Assets::get();
@@ -28,7 +28,7 @@ namespace loader
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

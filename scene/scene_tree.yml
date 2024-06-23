@@ -27,8 +27,8 @@ entities:
   - name: Directional light
     type: origo
     pos: [-25, 25, 25]
-    xmodel:
-      mesh: light
+    xmesh:
+      path: light
     program: g_light
     render_flags:
       no_shadow: true
@@ -42,8 +42,8 @@ entities:
     render_flags:
       cube_map: true
   - name: wooden floor
-    model:
-      mesh: plane
+    mesh:
+      path: plane
       material:
         name: wood_floor
         map_pbr: textures\Planks 09 [8K]
@@ -55,8 +55,8 @@ entities:
       no_shadow: true
     scale: 100
   - xid: object
-    model:
-      mesh: texture_cube_4/texture_cube_4.fbx
+    mesh:
+      path: texture_cube_4/texture_cube_4.fbx
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 3.0, 0.0]
@@ -70,16 +70,16 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - id: object
-    model:
-      mesh: fbx/scenery/trees/SM_TreePine_01b.FBX
+  - xid: object
+    mesh:
+      path: fbx/scenery/trees/SM_TreePine_01b.FBX
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_pbr: fbx\scenery\trees\pine_trunk_pbr
+          map_pbr: pine_trunk_pbr
         - name: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_pbr: fbx\scenery\trees\pine_leaf_pbr
+          map_pbr: pine_leaf_pbr
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0.0, 0.0]
@@ -94,9 +94,71 @@ entities:
       xuse_bones: true
       xuse_bones_debug: true
       xuse_animation: true
-  - xid: maple_tree_forest_{t}
-    prefab: prefabs/scenery/maple_tree_1
-    pos: [0, 0.0, 0.0]
+  - id: maple_tree_forest_1_{t}
+    mesh:
+      path: fbx/scenery/trees/Maple_02.fbx
+      materials:
+        - name: maple_trunk
+          alias: Tree_0Mat
+          map_kd: textures/bark02.png
+          map_bump: textures/bark02_normal.png
+        - name: maple_leaf
+          alias: Tree_1Mat
+          map_kd: textures/leaf maple.png
+          map_bump: textures/leaf maple_Normal.png
+          alpha: true
+          render_back: true
+    program: g_tex
+    instanced: true
+    pos: [0, 0, 0]
+    type_flags:
+      static_bounds: true
+    scale: 0.05
+    xgenerator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - xid: maple_tree_forest_2_{t}
+    prefab: prefab/scenery/prefab_maple_tree_1.yml
+    pos: [10, 0, 0]
     render_flags:
       static_bounds: true
-    scale: 1
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - xid: pine_tree_forest_{t}
+    mesh:
+      path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: pine_leaf_pbr
+          alpha: true
+          blend: true
+          render_back: true
+    program: g_tex
+    pos: [0, 0.0, 0.0]
+    render_flags:
+      xstatic_bounds: true
+    base_rotation: [-90, 0, 0]
+    scale: 2
+    base_scale: 0.01
+    instanced: true
+    generator:
+      type: grid
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: -20

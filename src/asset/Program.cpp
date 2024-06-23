@@ -259,7 +259,7 @@ int Program::createProgram() {
     {
         m_programId = glCreateProgram();
 
-        kigl::setLabel(GL_PROGRAM, m_programId, m_programName);
+        kigl::setLabel(GL_PROGRAM, m_programId, m_key);
 
         for (auto& [type, shaderId] : shaderIds) {
             if (shaderId == -1) continue;

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <array>
+#include <functional>
 
 #include <glm/glm.hpp>
 
@@ -14,6 +15,7 @@
 
 #include "model/NodeTransform.h"
 #include "model/Snapshot.h"
+#include "model/NodeFlags.h"
 
 namespace backend {
     struct DrawOptions;
@@ -27,10 +29,15 @@ namespace render {
     class Batch;
 }
 
+namespace mesh {
+    struct LodMesh;
+}
+
 namespace particle {
     class ParticleGenerator;
 }
 
+class Program;
 class Camera;
 class Light;
 class NodeGenerator;
@@ -74,11 +81,12 @@ public:
         const PrepareContext& ctx);
 
     void updateVAO(const RenderContext& ctx) noexcept;
-    const kigl::GLVertexArray* getVAO() const noexcept;
 
     void bindBatch(
         const RenderContext& ctx,
         mesh::MeshType* type,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
         render::Batch& batch) noexcept;
 
     inline Node* getParent() const noexcept {
@@ -180,6 +188,8 @@ private:
 public:
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
+
+    NodeFlags m_flags;
 
 #ifdef _DEBUG
     std::string m_resolvedSID;

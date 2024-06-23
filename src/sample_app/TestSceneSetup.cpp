@@ -59,8 +59,8 @@ void TestSceneSetup::setupEffectExplosion()
         auto* type = typeHandle.toType();
         type->setName("<effect>");
 
-        type->m_program = program;
-        type->m_flags.renderBack = true;
+        //type->m_program = program;
+        //type->m_flags.renderBack = true;
         type->m_flags.noShadow = true;
 
         auto nodeId = SID("<effect>");

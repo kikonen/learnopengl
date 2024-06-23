@@ -215,12 +215,16 @@ namespace backend {
 
         bool sameDraw = true;
         if (!cmdRange.empty()) {
-            sameDraw = curr.m_program == sendRange.m_program &&
-                curr.m_vao == sendRange.m_vao &&
-                curr.m_drawOptions.isSameMultiDraw(
-                    sendRange.m_drawOptions,
-                    curr.m_forceWireframe,
-                    curr.m_allowBlend);
+            const auto& cd = curr.m_drawOptions;
+            const auto& sd = sendRange.m_drawOptions;
+
+            sameDraw = curr.m_vao == sendRange.m_vao &&
+                curr.m_program == sendRange.m_program &&
+                cd.m_renderBack == sd.m_renderBack &&
+                cd.m_wireframe == sd.m_wireframe &&
+                cd.m_blend == sd.m_blend &&
+                cd.m_mode == sd.m_mode &&
+                cd.m_type == sd.m_type;
         }
 
         if (!sameDraw) {
@@ -257,8 +261,10 @@ namespace backend {
         // https://www.khronos.org/opengl/wiki/Vertex_Rendering
         if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
             auto& elem = cmd.element;
+            if (elem.u_instanceCount == 0) return;
+
             glDrawElementsInstancedBaseVertexBaseInstance(
-                drawOptions.m_mode,
+                drawOptions.toMode(),
                 elem.u_count,
                 GL_UNSIGNED_INT,
                 (void*)(elem.u_firstIndex * sizeof(GLuint)),
@@ -269,8 +275,10 @@ namespace backend {
         else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
         {
             auto& arr = cmd.array;
+            if (arr.u_instanceCount == 0) return;
+
             glDrawArraysInstancedBaseInstance(
-                drawOptions.m_mode,
+                drawOptions.toMode(),
                 arr.u_firstVertex,
                 arr.u_vertexCount,
                 arr.u_instanceCount,
@@ -320,7 +328,7 @@ namespace backend {
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 glMultiDrawElementsIndirect(
-                    drawOptions.m_mode,
+                    drawOptions.toMode(),
                     GL_UNSIGNED_INT,
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
@@ -329,7 +337,7 @@ namespace backend {
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
                 glMultiDrawArraysIndirect(
-                    drawOptions.m_mode,
+                    drawOptions.toMode(),
                     (void*)cmdRange.m_baseOffset,
                     drawCount,
                     sizeof(backend::gl::DrawIndirectCommand));
@@ -365,31 +373,27 @@ namespace backend {
     void DrawBuffer::bindDrawRange(
         const backend::DrawRange& drawRange) const
     {
-        const auto& drawOptions = drawRange.m_drawOptions;
         auto& state = kigl::GLState::get();
+        const auto& drawOptions = drawRange.m_drawOptions;
 
-        drawRange.m_program->bind();
         state.bindVAO(*drawRange.m_vao);
+        state.useProgram(*drawRange.m_program);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
-        const bool wireframe = drawOptions.m_wireframe || drawRange.m_forceWireframe;
+        const bool wireframe = drawOptions.m_wireframe;
 
-        if (wireframe) {
-            state.polygonFrontAndBack(GL_LINE);
-        }
-        else {
-            state.polygonFrontAndBack(GL_FILL);
-        }
+        state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
-        if (drawOptions.m_tessellation) {
+        if (drawOptions.m_mode == DrawOptions::Mode::patches) {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && (drawOptions.m_blend || drawOptions.m_blendOIT) && drawRange.m_allowBlend;
+        const bool blend = !wireframe && drawOptions.m_blend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
-            if (!drawOptions.m_blendOIT) {
+            // NOTE KI no blend mode with OIT blend
+            if (!drawOptions.m_gbuffer) {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

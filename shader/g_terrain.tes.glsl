@@ -8,12 +8,14 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl
 
 in TCS_OUT {
   flat uint entityIndex;
+  flat uint instanceIndex;
 
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
@@ -30,7 +32,7 @@ in TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 } tes_in[];
 
@@ -46,7 +48,7 @@ out TES_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-  vec3 tangent;
+  mat3 tbn;
 #endif
 
   float height;
@@ -90,6 +92,7 @@ float fetchHeight(
 
 void main()
 {
+  instance = u_instances[tes_in[0].instanceIndex];
   entity = u_entities[tes_in[0].entityIndex];
   #include var_entity_model_matrix.glsl
 
@@ -121,7 +124,7 @@ void main()
   tes_out.materialIndex = tes_in[0].materialIndex;
 
 #ifdef USE_TBN
-  tes_out.tangent = tes_in[0].tangent;
+  tes_out.tbn = tes_in[0].tbn;
 #endif
 
   tes_out.height = h;

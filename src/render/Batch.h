@@ -1,6 +1,7 @@
 #pragma once
 
 #include <span>
+#include <functional>
 
 #include "backend/gl/PerformanceCounters.h"
 
@@ -14,6 +15,7 @@ namespace backend {
 
 namespace mesh {
     class MeshType;
+    struct LodMesh;
 }
 
 class Program;
@@ -45,7 +47,8 @@ namespace render {
         void addSnapshot(
             const RenderContext& ctx,
             const mesh::MeshType* type,
-            const backend::Lod* lod,
+            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            uint8_t kindBits,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
@@ -55,12 +58,14 @@ namespace render {
         //    std::span<const Snapshot> snapshots,
         //    std::span<uint32_t> entityIndeces) noexcept;
 
+        // NOTE KI snapshots starting from entityBaseIndex
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const mesh::MeshType* type,
-            std::span<const backend::Lod*> lods,
+            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            uint8_t kindBits,
             std::span<const Snapshot> snapshots,
-            uint32_t entityBase) noexcept;
+            uint32_t entityBaseIndex) noexcept;
 
         void bind() noexcept;
 
@@ -72,10 +77,13 @@ namespace render {
         void draw(
             const RenderContext& ctx,
             mesh::MeshType* type,
-            Node& node,
-            Program* program);
+            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            uint8_t kindBits,
+            Node& node);
 
         bool isFlushed() const noexcept;
+
+        void clearBatches() noexcept;
 
         size_t getFlushedTotalCount() const noexcept {
             return m_flushedTotalCount;
@@ -92,20 +100,14 @@ namespace render {
         backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
     private:
-        void addCommand(
-            const RenderContext& ctx,
-            const kigl::GLVertexArray* vao,
-            const backend::DrawOptions& drawOptions,
-            Program* program) noexcept;
-
-    private:
         bool m_prepared = false;
 
         bool m_frustumCPU = false;
         bool m_frustumGPU = false;
         uint32_t m_frustumParallelLimit = 999;
 
-        std::vector<BatchCommand> m_batches;
+        size_t m_pendingCount{ 0 };
+        std::map<BatchKey, BatchCommand> m_batches;
 
         std::vector<mesh::InstanceSSBO> m_entityIndeces;
 

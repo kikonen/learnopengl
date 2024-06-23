@@ -10,7 +10,6 @@
 
 #include "glm/glm.hpp"
 
-
 #include "util/glm_format.h"
 #include "asset/Assets.h"
 #include "asset/Program.h"
@@ -20,11 +19,11 @@
 #include "backend/gl/DrawIndirectCommand.h"
 #include "backend/DrawRange.h"
 #include "backend/DrawBuffer.h"
-#include "backend/Lod.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
+#include "mesh/InstanceFlags.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -40,7 +39,6 @@
 #include "BatchCommand.h"
 
 namespace {
-    constexpr int BATCH_COUNT = 100;
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
 
@@ -66,7 +64,8 @@ namespace render {
     void Batch::addSnapshot(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const backend::Lod* lod_NOPE,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
@@ -84,17 +83,45 @@ namespace render {
 
         m_drawCount++;
 
-        auto& top = m_batches.back();
-        top.m_instanceCount++;
-
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
         const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_lodLevel != lodLevel) continue;
-            LodKey key{ &lodMesh.m_lod };
-            auto& lodInstances = top.m_lodInstances[key];
-            lodInstances.push_back(entityIndex);
+            if (lodMesh.m_level != lodLevel) continue;
+            if (!lodMesh.m_vao) continue;
+
+            const auto& drawOptions = lodMesh.m_drawOptions;
+            if (!drawOptions.isKind(kindBits)) continue;
+            if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+
+            auto* program = programSelector(lodMesh);
+            if (!program) continue;
+
+            BatchCommand* top;
+            {
+                BatchKey key{
+                    lodMesh.m_priority,
+                    program,
+                    lodMesh.m_vao,
+                    drawOptions,
+                    ctx.m_forceSolid,
+                    ctx.m_forceWireframe,
+                };
+
+                const auto& it = m_batches.find(key);
+                if (it == m_batches.end()) {
+                    const auto& pair = m_batches.insert({ key, {} });
+                    top = &pair.first->second;
+                } else {
+                    top = &it->second;
+                }
+            }
+
+            const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
+            auto& lodInstances = top->m_lodInstances[lodKey];
+            lodInstances.reserve(100);
+            lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
+            m_pendingCount++;
         }
     }
 
@@ -113,9 +140,10 @@ namespace render {
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        std::span<const backend::Lod*> lods_NOPE,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
         std::span<const Snapshot> snapshots,
-        uint32_t entityBase) noexcept
+        uint32_t entityBaseIndex) noexcept
     {
         const uint32_t count = static_cast<uint32_t>(snapshots.size());
 
@@ -130,9 +158,9 @@ namespace render {
                 useFrustum = false;
         }
 
-        if (useFrustum) {
-            uint32_t instanceCount = count;
+        uint32_t instanceCount = count;
 
+        if (useFrustum) {
             s_accept.reserve(snapshots.size());
             s_accept.clear();
             for (uint32_t i = 0; i < count; i++) {
@@ -161,11 +189,11 @@ namespace render {
                             idx = -1;
                     });
             }
+        }
 
-            auto& top = m_batches.back();
-
+        {
             for (uint32_t i = 0; i < count; i++) {
-                if (s_accept[i] == -1) {
+                if (useFrustum && s_accept[i] == -1) {
                     instanceCount--;
                     continue;
                 }
@@ -173,41 +201,49 @@ namespace render {
                 const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_lodLevel != lodLevel) continue;
-                    LodKey key{ &lodMesh.m_lod };
+                    if (lodMesh.m_level != lodLevel) continue;
+                    if (!lodMesh.m_vao) continue;
 
-                    auto& lodInstances = top.m_lodInstances[key];
-                    lodInstances.push_back(entityBase + i);
+                    const auto& drawOptions = lodMesh.m_drawOptions;
+                    if (!drawOptions.isKind(kindBits)) continue;
+                    if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+
+                    auto* program = programSelector(lodMesh);
+                    if (!program) continue;
+
+                    BatchCommand* top;
+                    {
+                        BatchKey key{
+                            lodMesh.m_priority,
+                            program,
+                            lodMesh.m_vao,
+                            drawOptions,
+                            ctx.m_forceSolid,
+                            ctx.m_forceWireframe,
+                        };
+
+                        const auto& it = m_batches.find(key);
+                        if (it == m_batches.end()) {
+                            const auto& pair = m_batches.insert({ key, {} });
+                            top = &pair.first->second;
+                        }
+                        else {
+                            top = &it->second;
+                        }
+                    }
+
+                    const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
+                    auto& lodInstances = top->m_lodInstances[lodKey];
+                    lodInstances.reserve(100);
+                    lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
+                    m_pendingCount++;
                 }
             }
 
             //std::cout << "instances: " << instanceCount << ", orig: " << count << '\n';
 
-            if (instanceCount == 0)
-                return;
-
-            top.m_instanceCount += static_cast<int>(instanceCount);
-
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
-        }
-        else {
-            auto& top = m_batches.back();
-
-            top.m_instanceCount += static_cast<int>(count);
-
-            for (uint32_t i = 0; i < count; i++) {
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
-
-                for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_lodLevel != lodLevel) continue;
-                    LodKey key{ &lodMesh.m_lod };
-                    auto& lodInstances = top.m_lodInstances[key];
-                    lodInstances.push_back(entityBase + i);
-                }
-            }
-
-            m_drawCount += count;
         }
     }
 
@@ -239,9 +275,6 @@ namespace render {
             bufferCount = 1;
         }
 
-        m_batches.reserve(BATCH_COUNT);
-        //m_entityIndeces.reserve(ENTITY_COUNT);
-
         m_draw = std::make_unique<backend::DrawBuffer>(
             assets.glUseMapped,
             assets.glUseInvalidate,
@@ -256,69 +289,40 @@ namespace render {
         m_frustumParallelLimit = assets.frustumParallelLimit;
     }
 
-    void Batch::addCommand(
-        const RenderContext& ctx,
-        const kigl::GLVertexArray* vao,
-        const backend::DrawOptions& drawOptions,
-        Program* program) noexcept
-    {
-        auto& cmd = m_batches.emplace_back();
-
-        cmd.m_vao = vao;
-        cmd.m_program = program;
-        cmd.m_drawOptions = drawOptions;
-        cmd.m_baseIndex = 0; // static_cast<int>(m_entityIndeces.size());
-    }
-
     void Batch::draw(
         const RenderContext& ctx,
         mesh::MeshType* type,
-        Node& node,
-        Program* program)
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
+        Node& node)
     {
+        if (type->m_entityType == EntityType::origo) return;
         if (type->m_flags.invisible || !node.m_visible) return;
 
         node.updateVAO(ctx);
-
-        const auto& vao = node.getVAO();
-        if (!vao) return;
-
-        {
-            const auto& drawOptions = type->getDrawOptions();
-            const bool allowBlend = ctx.m_allowBlend;
-
-            if (drawOptions.m_type == backend::DrawOptions::Type::none) return;
-
-            bool change = true;
-            if (!m_batches.empty()) {
-                auto& top = m_batches.back();
-
-                change = program != top.m_program ||
-                    vao != top.m_vao ||
-                    !top.m_drawOptions.isSameDrawCommand(
-                        drawOptions,
-                        ctx.m_forceWireframe,
-                        allowBlend);
-            }
-
-            if (change) {
-                addCommand(ctx, vao, drawOptions, program);
-            }
-
-            auto& top = m_batches.back();
-        }
-
-        node.bindBatch(ctx, type, *this);
+        node.bindBatch(ctx, type, programSelector, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept
     {
-        size_t pendingCount = 0;
-        for (auto& curr : m_batches) {
-            if (curr.m_instanceCount == 0) continue;
-            pendingCount += curr.m_instanceCount;
+        //return m_batches.empty();
+        return m_pendingCount == 0;
+    }
+
+    void Batch::clearBatches() noexcept
+    {
+        //KI_INFO_OUT(fmt::format("batches: {}, indeces={}", m_batches.size(), m_entityIndeces.size()));
+        for (auto& batchIt : m_batches) {
+            auto& batch = batchIt.second;
+            for (auto& lodIt : batch.m_lodInstances) {
+                auto& lods = lodIt.second;
+                lods.clear();
+            }
         }
-        return pendingCount == 0;
+        m_entityIndeces.clear();
+        m_pendingCount = 0;
+
+        //m_batches.clear();
     }
 
     size_t Batch::flush(
@@ -326,29 +330,34 @@ namespace render {
     {
         size_t flushCount = 0;
 
-        std::map<const Program*, std::map<LodKey, uint32_t>> programLodBaseIndex;
-
         {
             m_entityIndeces.clear();
-            for (auto& curr : m_batches) {
-                if (curr.m_instanceCount == 0) continue;
+            for (auto& it : m_batches) {
+                const auto& key = it.first;
+                auto& curr = it.second;
 
-                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
+                for (const auto& lodInstance : curr.m_lodInstances) {
+                    const auto& lodKey = lodInstance.first;
+                    const auto& lodEntries = lodInstance.second;
+                    if (lodEntries.empty()) continue;
 
-                for (const auto& lodEntry : curr.m_lodInstances) {
-                    const auto* lod = lodEntry.first.m_lod;
-
-                    lodBaseIndex[lodEntry.first] = static_cast<uint32_t>(m_entityIndeces.size());
-                    for (auto& entityIndex : lodEntry.second) {
+                    curr.m_baseIndeces[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
+                    for (auto& lodEntry : lodEntries) {
                         auto& instance = m_entityIndeces.emplace_back();
-                        instance.u_entityIndex = entityIndex;
-                        instance.u_materialIndex = lod->m_materialIndex;
+                        instance.u_entityIndex = lodEntry.m_entityIndex;
+                        instance.u_meshIndex = lodEntry.m_meshIndex;
+                        instance.u_materialIndex = lodEntry.m_materialIndex;
+
+                        // NOTE KI BatchKey does not take in account m_flags
+                        // => can draw different instances in same batch
+                        //instance.u_shapeIndex = key.m_drawOptions.m_flags;
+                        instance.u_shapeIndex = lodInstance.first.m_flags;
                     }
                 }
             }
 
             if (m_entityIndeces.empty()) {
-                m_batches.clear();
+                clearBatches();
                 return 0;
             }
         }
@@ -366,24 +375,26 @@ namespace render {
 
         backend::gl::DrawIndirectCommand indirect{};
 
-        for (auto& curr : m_batches) {
-            if (curr.m_instanceCount == 0) continue;
+        for (const auto& it : m_batches) {
+            const auto& key = it.first;
+            const auto& curr = it.second;
 
             backend::DrawRange drawRange = {
-                curr.m_program,
-                curr.m_vao,
-                curr.m_drawOptions,
-                ctx.m_allowBlend,
-                ctx.m_forceWireframe
+                key.m_vao,
+                key.m_program,
+                key.m_drawOptions,
             };
 
-            const auto& drawOptions = curr.m_drawOptions;
+            const auto& drawOptions = key.m_drawOptions;
 
             for (const auto& lodEntry : curr.m_lodInstances) {
-                auto& lodBaseIndex = programLodBaseIndex[curr.m_program];
-                auto baseInstance = lodBaseIndex[lodEntry.first];
-                GLuint instanceCount = static_cast<GLuint>(lodEntry.second.size());
-                const auto* lod = lodEntry.first.m_lod;
+                const auto baseInstance = curr.getBaseIndex(lodEntry.first);
+
+                const auto& lodEntries = lodEntry.second;
+                if (lodEntries.empty()) continue;
+
+                GLuint instanceCount = static_cast<GLuint>(lodEntries.size());
+                const auto& lodKey = lodEntry.first;
 
                 if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                     backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
@@ -392,11 +403,12 @@ namespace render {
                     cmd.u_instanceCount = instanceCount;
                     cmd.u_baseInstance = baseInstance;
 
-                    cmd.u_baseVertex = lod->m_baseVertex;
-                    cmd.u_firstIndex = lod->m_baseIndex;
-                    cmd.u_count = lod->m_indexCount;
+                    cmd.u_baseVertex = lodKey.m_baseVertex;
+                    cmd.u_firstIndex = lodKey.m_baseIndex;
+                    cmd.u_count = lodKey.m_indexCount;
 
-                    draw->sendDirect(drawRange, indirect);
+                    //KI_INFO_OUT(fmt::format("draw: {}", instanceCount));
+                    draw->send(drawRange, indirect);
                 }
                 else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
                 {
@@ -406,10 +418,10 @@ namespace render {
                     cmd.u_instanceCount = instanceCount;
                     cmd.u_baseInstance = baseInstance;
 
-                    cmd.u_vertexCount = lod->m_indexCount;
-                    cmd.u_firstVertex = lod->m_baseIndex;
+                    cmd.u_vertexCount = lodKey.m_indexCount;
+                    cmd.u_firstVertex = lodKey.m_baseIndex;
 
-                    draw->sendDirect(drawRange, indirect);
+                    draw->send(drawRange, indirect);
                 }
                 else {
                     // NOTE KI "none" no drawing
@@ -421,8 +433,7 @@ namespace render {
         draw->flush();
         draw->drawPending(false);
 
-        m_batches.clear();
-        m_entityIndeces.clear();
+        clearBatches();
 
         return flushCount;
     }

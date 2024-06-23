@@ -24,12 +24,12 @@ namespace loader
     }
 
     void AudioLoader::loadAudio(
-        const loader::Node& node,
+        const loader::DocNode& node,
         AudioData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "listener") {
                 loadListener(v, data.listener);
@@ -47,14 +47,14 @@ namespace loader
     }
 
     void AudioLoader::loadListener(
-        const loader::Node& node,
+        const loader::DocNode& node,
         ListenerData& data) const
     {
         data.enabled = true;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
@@ -72,7 +72,7 @@ namespace loader
     }
 
     void AudioLoader::loadSources(
-        const loader::Node& node,
+        const loader::DocNode& node,
         std::vector<SourceData>& sources) const
     {
         int index = 0;
@@ -83,14 +83,14 @@ namespace loader
     }
 
     void AudioLoader::loadSource(
-        const loader::Node& node,
+        const loader::DocNode& node,
         SourceData& data) const
     {
         data.enabled = true;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "enabled") {
                 data.enabled = readBool(v);

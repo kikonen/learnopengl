@@ -12,12 +12,12 @@ namespace loader {
     {}
 
     void PrefabLoader::loadPrefab(
-        const loader::Node& node,
+        const loader::DocNode& node,
         PrefabData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
         }
     }
 }

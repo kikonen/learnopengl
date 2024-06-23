@@ -12,7 +12,7 @@
 
 namespace {
     const loader::DocNode NULL_NODE;
-    const std::vector<loader::Node> NULL_NODES;
+    const std::vector<loader::DocNode> NULL_NODES;
 
     std::string renderNode(
         const loader::DocNode& v) noexcept
@@ -42,18 +42,18 @@ namespace loader {
         return fmt::format("<name={}, value=NULL>", m_name);
     }
 
-    const loader::Node& DocNode::findNode(const std::string& key) const noexcept
+    const loader::DocNode& DocNode::findNode(const std::string& key) const noexcept
     {
         return m_data ? m_data->findNode(key) : NULL_NODE;
     }
 
-    const std::vector<loader::Node>& DocNode::getNodes() const noexcept
+    const std::vector<loader::DocNode>& DocNode::getNodes() const noexcept
     {
         return m_data ? m_data->m_nodes : NULL_NODES;
     }
 
     void DocNode::addNode(
-        const loader::Node& node)
+        const loader::DocNode& node)
     {
         createIfNeeded();
         m_data->m_nodes.push_back(node);

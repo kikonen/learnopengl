@@ -11,6 +11,7 @@
 #include "engine/UpdateContext.h"
 
 #include "util/glm_util.h"
+#include "util/glm_format.h"
 #include "util/Util.h"
 
 #include "RigContainer.h"
@@ -27,6 +28,7 @@ namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
+        const glm::mat4& meshBaseTransform,
         const glm::mat4& inverseMeshBaseTransform,
         const glm::mat4& animationBaseTransform,
         std::span<animation::BoneTransform>& palette,
@@ -67,6 +69,7 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation node hierarchy includes equivalent transforms (presumeably)
         parentTransforms[0] = animationBaseTransform * inverseMeshBaseTransform;
+        //parentTransforms[0] = animationBaseTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
         //    glm::mat4(1.f),
@@ -81,8 +84,16 @@ namespace animation {
         for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
         {
             const auto& rigNode = rig.m_nodes[nodeIndex];
+
+            // NOTE KI skip nodes not affecting animation
+            if (!rigNode.m_required) continue;
+
+            //if (hitCount >= 1) break;
+
             if (rigNode.m_index >= MAX_NODES) throw "too many bones";
-            auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+            const auto* bone = rig.m_boneContainer.getNode(rigNode.m_boneIndex);
+
             //if (bone) {
             //    if (!boneFound) {
             //        //parentTransforms[rigNode.m_parentIndex + 1] = glm::inverse(rigNode.m_localTransform);
@@ -102,13 +113,31 @@ namespace animation {
             parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
             const auto& globalTransform = parentTransforms[rigNode.m_index + 1];
 
+            //KI_INFO_OUT(fmt::format(
+            //    "{},{} - {}\npare: {}\nnode: {}\nglob: {}\noffs: {}\npale: {}\n",
+            //    rigNode.m_parentIndex,
+            //    rigNode.m_index,
+            //    rigNode.m_name,
+            //    parentTransforms[rigNode.m_parentIndex + 1],
+            //    nodeTransform,
+            //    globalTransform,
+            //    bone ? bone->m_offsetMatrix : glm::mat4{ 0.f },
+            //    bone ? globalTransform * bone->m_offsetMatrix : glm::mat4{ 0.f }));
+
             //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (bone) {
                 //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
                 //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+
                 //hitCount++;
+
+                //if (channel) {
+                //    channel->interpolate(animationTimeTicks);
+                //}
+
                 // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
                 palette[bone->m_index].m_transform = globalTransform * bone->m_offsetMatrix;
+
             }
             else {
                 //hitMiss.push_back(fmt::format("[-{}.{}.{}]",

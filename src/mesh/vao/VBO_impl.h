@@ -25,62 +25,37 @@ namespace mesh {
     {}
 
     template<typename T_Vertex, typename T_Entry>
-    size_t VBO<T_Vertex, T_Entry>::addVertices(
-        const std::vector<T_Vertex>& vertices)
+    void VBO<T_Vertex, T_Entry>::clear()
     {
-        constexpr size_t sz = sizeof(T_Entry);
+        m_entries.clear();
+        m_dirty.clear();
+    }
 
-        const size_t baseIndex = m_entries.size();
-        const size_t baseOffset = baseIndex * sz;
+    template<typename T_Vertex, typename T_Entry>
+    uint32_t VBO<T_Vertex, T_Entry>::reserveVertices(size_t count)
+    {
+        const uint32_t baseIndex = static_cast<uint32_t>(m_entries.size());
 
-        reserveSize(vertices.size());
+        reserveSize(count);
+        m_entries.resize(m_entries.size() + count);
+
+        return baseIndex;
+    }
+
+    template<typename T_Vertex, typename T_Entry>
+    void VBO<T_Vertex, T_Entry>::updateVertices(
+        uint32_t baseIndex,
+        const std::span<T_Vertex>& vertices)
+    {
+        assert(baseIndex + vertices.size() <= m_entries.size());
+
+        uint32_t index = baseIndex;
         for (const auto& vertex : vertices) {
-            addEntry(convertVertex(vertex));
+            m_entries[index] = convertVertex(vertex);
+            index++;
         }
 
-        return baseOffset;
-    }
-
-    template<typename T_Vertex, typename T_Entry>
-    size_t VBO<T_Vertex, T_Entry>::addVertex(
-        const T_Vertex& vertex)
-    {
-        return addEntry(convertVertex(vertex));
-    }
-
-    template<typename T_Vertex, typename T_Entry>
-    size_t VBO<T_Vertex, T_Entry>::addEntries(
-        const std::vector<T_Entry>& entries)
-    {
-        constexpr size_t sz = sizeof(T_Entry);
-
-        const size_t baseIndex = m_entries.size();
-        const size_t baseOffset = baseIndex * sz;
-
-        reserveSize(entries.size());
-        for (const auto& entry: entries) {
-            addEntry(entry);
-        }
-
-        return baseOffset;
-    }
-
-    template<typename T_Vertex, typename T_Entry>
-    size_t VBO<T_Vertex, T_Entry>::addEntry(const T_Entry& entry)
-    {
-        constexpr size_t sz = sizeof(T_Entry);
-
-        if (m_entries.size() >= MAX_VERTEX_COUNT) {
-            throw std::runtime_error{ fmt::format("MAX_VERTEX_COUNT: {}", MAX_VERTEX_COUNT) };
-        }
-
-        const size_t baseIndex = m_entries.size();
-        const size_t baseOffset = baseIndex * sz;
-
-        reserveSize(1);
-        m_entries.emplace_back(entry);
-
-        return baseOffset;
+        m_dirty.push_back({baseIndex, vertices.size()});
     }
 
     template<typename T_Vertex, typename T_Entry>
@@ -95,24 +70,35 @@ namespace mesh {
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::updateVAO(kigl::GLVertexArray& vao)
     {
-        const size_t index = m_lastBufferSize;
+        if (m_dirty.empty()) return;
+
+        for (const auto& range : m_dirty) {
+            if (updateSpan(vao, range.first, range.second)) break;
+        }
+
+        m_dirty.clear();
+    }
+
+    template<typename T_Vertex, typename T_Entry>
+    bool VBO<T_Vertex, T_Entry>::updateSpan(
+        kigl::GLVertexArray & vao,
+        size_t updateIndex,
+        size_t updateCount)
+    {
         const size_t totalCount = m_entries.size();
 
-        if (index == totalCount) return;
-        if (totalCount == 0) return;
+        if (totalCount == 0) return true;
 
         {
             constexpr size_t sz = sizeof(T_Entry);
-            size_t updateIndex = index;
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_vbo.m_size < totalCount * sz) {
                 m_vbo.resizeBuffer(m_entries.capacity() * sz);
                 glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
                 updateIndex = 0;
+                updateCount = totalCount;
             }
-
-            const size_t updateCount = totalCount - updateIndex;
 
             m_vbo.update(
                 updateIndex * sz,
@@ -120,13 +106,6 @@ namespace mesh {
                 &m_entries[updateIndex]);
         }
 
-        m_lastBufferSize = totalCount;
-    }
-
-    template<typename T_Vertex, typename T_Entry>
-    void VBO<T_Vertex, T_Entry>::clear()
-    {
-        m_entries.clear();
-        m_lastBufferSize = 0;
+        return updateCount == totalCount;
     }
 }

@@ -39,12 +39,12 @@ namespace mesh {
     std::string ModelMesh::str() const noexcept
     {
         return fmt::format(
-            "<MODEL: id={}, name={}>",
-            m_id, m_name);
-    }
-
-    uint32_t ModelMesh::getBaseVertex() const noexcept {
-        return static_cast<uint32_t>(m_positionVboOffset / sizeof(mesh::PositionEntry));
+            "<MODEL: id={}, name={}, indeces={}, vertices={}, bones={}>",
+            m_id,
+            m_name,
+            m_indeces.size(),
+            m_vertices.size(),
+            m_vertexBones.size());
     }
 
     AABB ModelMesh::calculateAABB() const noexcept {
@@ -64,17 +64,43 @@ namespace mesh {
         if (m_prepared) return m_vao;
         m_prepared = true;
 
+        TexturedVAO* vao;
+        SkinnedVAO* skinnedVao = nullptr;
+
         if (m_rig && m_rig->hasBones()) {
-            m_vao = ModelRegistry::get().getSkinnedVao()->registerModel(this);
+            skinnedVao = ModelRegistry::get().getSkinnedVao();
+            vao = skinnedVao;
         }
         else {
-            m_vao = ModelRegistry::get().getTexturedVao()->registerModel(this);
+            vao = ModelRegistry::get().getTexturedVao();
         }
+
+        m_vboIndex = vao->reserveVertices(m_vertices.size());
+        m_eboIndex = vao->reserveIndeces(m_indeces.size());
+        if (skinnedVao) {
+            skinnedVao->reserveVertexBones(m_vertexBones.size());
+        }
+
+        vao->updateVertices(
+            m_vboIndex,
+            m_vertices);
+
+        vao->updateIndeces(
+            m_eboIndex,
+            m_indeces);
+
+        if (skinnedVao) {
+            skinnedVao->updateVertexBones(
+                m_vboIndex,
+                m_vertexBones);
+        }
+
+        m_vao = vao->getVAO();
 
         return m_vao;
     }
 
-    void ModelMesh::prepareLod(
+    void ModelMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
         auto& lod = lodMesh.m_lod;
@@ -82,12 +108,11 @@ namespace mesh {
         lod.m_baseVertex = getBaseVertex();
         lod.m_baseIndex = getBaseIndex();
         lod.m_indexCount = getIndexCount();
-    }
 
-    void ModelMesh::prepareDrawOptions(
-        backend::DrawOptions& drawOptions)
-    {
+        auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = drawOptions.m_tessellation ? GL_PATCHES : GL_TRIANGLES;
+        drawOptions.m_mode = lodMesh.m_flags.tessellation
+            ? backend::DrawOptions::Mode::patches
+            : backend::DrawOptions::Mode::triangles;
     }
 }

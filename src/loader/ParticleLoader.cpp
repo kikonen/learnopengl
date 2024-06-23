@@ -19,7 +19,7 @@ namespace loader
     {}
 
     void ParticleLoader::loadParticle(
-        const loader::Node& node,
+        const loader::DocNode& node,
         ParticleData& data,
         Loaders& loaders) const
     {
@@ -27,7 +27,7 @@ namespace loader
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
-            const loader::Node& v = pair.getNode();
+            const loader::DocNode& v = pair.getNode();
 
             if (k == "xname" || k == "xxname" || k == "xenabled" || k == "xxenabled") {
                 data.enabled = false;

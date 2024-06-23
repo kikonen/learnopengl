@@ -7,6 +7,8 @@
 namespace mesh {
 #pragma pack(push, 1)
     struct PositionEntry {
+        PositionEntry() {}
+
         PositionEntry(const glm::vec3& v)
             : x{ v.x }, y{ v.y }, z{ v.z }
         {}
