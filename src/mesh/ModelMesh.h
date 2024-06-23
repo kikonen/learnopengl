@@ -39,11 +39,8 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh);
-
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) override;
 
         uint32_t getBaseVertex() const noexcept {
             return m_vboIndex;

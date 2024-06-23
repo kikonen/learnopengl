@@ -116,7 +116,7 @@ namespace mesh {
         m_preparedRT = true;
 
         for (auto& lodMesh : *m_lodMeshes) {
-            lodMesh.m_drawOptions.m_tessellation = m_flags.tessellation;
+            lodMesh.m_flags.tessellation = m_flags.tessellation;
             lodMesh.prepareRT(ctx);
         }
 

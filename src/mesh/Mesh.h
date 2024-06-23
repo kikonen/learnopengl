@@ -47,11 +47,8 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
 
-        virtual void prepareLod(
+        virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
-
-        virtual void prepareDrawOptions(
-            backend::DrawOptions& drawOptions) = 0;
 
         void setAABB(const AABB& aabb) {
             m_aabb = aabb;

@@ -10,6 +10,8 @@ namespace backend {
     struct DrawOptions {
         enum class Mode : std::underlying_type_t<std::byte> {
             points,
+            // NOTE KI https://www.khronos.org/opengl/wiki/Primitive
+            // patches == tessellation
             patches,
             triangles,
             triangle_strip,
@@ -35,8 +37,6 @@ namespace backend {
 
         bool m_renderBack : 1 {false};
         bool m_wireframe : 1 {false};
-
-        bool m_tessellation : 1 {false};
 
         bool m_gbuffer : 1 {false};
 
@@ -75,8 +75,7 @@ namespace backend {
                 (forceWireframe ? true : m_wireframe == o.m_wireframe) &&
                 (forceSolid ? true : m_blend == o.m_blend) &&
                 m_mode == o.m_mode &&
-                m_type == o.m_type &&
-                m_tessellation == o.m_tessellation;
+                m_type == o.m_type;
         }
 
         // NOTE KI for MeshTypeKey

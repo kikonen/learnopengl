@@ -54,15 +54,12 @@ namespace mesh {
         return m_vao;
     }
 
-    void QuadMesh::prepareLod(
+    void QuadMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
         lodMesh.m_lod.m_indexCount = INDEX_COUNT;
-    }
 
-    void QuadMesh::prepareDrawOptions(
-        backend::DrawOptions& drawOptions)
-    {
+        auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = backend::DrawOptions::Mode::triangle_strip;
     }

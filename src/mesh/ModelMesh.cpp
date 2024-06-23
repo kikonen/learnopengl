@@ -100,7 +100,7 @@ namespace mesh {
         return m_vao;
     }
 
-    void ModelMesh::prepareLod(
+    void ModelMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
         auto& lod = lodMesh.m_lod;
@@ -108,13 +108,10 @@ namespace mesh {
         lod.m_baseVertex = getBaseVertex();
         lod.m_baseIndex = getBaseIndex();
         lod.m_indexCount = getIndexCount();
-    }
 
-    void ModelMesh::prepareDrawOptions(
-        backend::DrawOptions& drawOptions)
-    {
+        auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = drawOptions.m_tessellation
+        drawOptions.m_mode = lodMesh.m_flags.tessellation
             ? backend::DrawOptions::Mode::patches
             : backend::DrawOptions::Mode::triangles;
     }

@@ -74,7 +74,7 @@ namespace mesh {
         return m_vao;
     }
 
-    void TextMesh::prepareLod(
+    void TextMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
         auto& lod = lodMesh.m_lod;
@@ -82,11 +82,8 @@ namespace mesh {
         lod.m_baseVertex = getBaseVertex();
         lod.m_baseIndex = getBaseIndex();
         lod.m_indexCount = getIndexCount();
-    }
 
-    void TextMesh::prepareDrawOptions(
-        backend::DrawOptions& drawOptions)
-    {
+        auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
         drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
     }

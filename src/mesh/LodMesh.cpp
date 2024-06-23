@@ -218,8 +218,7 @@ namespace mesh {
     {
         if (m_mesh) {
             m_vao = m_mesh->prepareRT(ctx);
-            m_mesh->prepareLod(*this);
-            m_mesh->prepareDrawOptions(m_drawOptions);
+            m_mesh->prepareLodMesh(*this);
 
             if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }

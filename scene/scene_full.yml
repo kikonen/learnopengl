@@ -589,7 +589,7 @@ entities:
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-  - name: Cow
+  - id: cow_{t}_{c}
     mesh:
       path: cow
       material:
@@ -598,11 +598,13 @@ entities:
         map_pbr: textures/Plastic 01 [4K]
         xreflection: 0.4
     program: g_tex
-    pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
     xrender_flags:
     selected: false
+    clones:
+      - pos: [5.0, 25.0, -5.0]
+      - pos: [5.0, 25.0, -15.0]
   - xname: Cow fur
     mesh:
       path: cow
@@ -620,7 +622,7 @@ entities:
     rotation: [0, 180, 0]
     scale: 0.8
     xrender_flags:
-  - name: Cow 2
+  - xname: Cow 2
     mesh:
       path: cow
       material_modifier:

@@ -30,8 +30,8 @@ namespace render {
 
         bool operator<(const BatchKey& o) const noexcept;
 
-        const Program* m_program{ nullptr };
-        const kigl::GLVertexArray* m_vao{ nullptr };
+        const Program* m_program;
+        const kigl::GLVertexArray* m_vao;
 
         backend::DrawOptions m_drawOptions;
 

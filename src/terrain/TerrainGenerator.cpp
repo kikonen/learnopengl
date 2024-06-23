@@ -293,7 +293,8 @@ namespace terrain {
                 lodMesh->m_shadowProgram = m_material.getProgram(MaterialProgramType::shadow);
                 lodMesh->m_preDepthProgram = m_material.getProgram(MaterialProgramType::pre_depth);
 
-                lodMesh->m_drawOptions.m_tessellation = true;
+                lodMesh->m_flags.tessellation = true;
+                lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
                 lodMesh->m_drawOptions.m_patchVertices = 3;
             }
         }

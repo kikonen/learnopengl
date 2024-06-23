@@ -224,8 +224,7 @@ namespace backend {
                 cd.m_wireframe == sd.m_wireframe &&
                 cd.m_blend == sd.m_blend &&
                 cd.m_mode == sd.m_mode &&
-                cd.m_type == sd.m_type &&
-                cd.m_tessellation == sd.m_tessellation;
+                cd.m_type == sd.m_type;
         }
 
         if (!sameDraw) {
@@ -377,8 +376,8 @@ namespace backend {
         auto& state = kigl::GLState::get();
         const auto& drawOptions = drawRange.m_drawOptions;
 
-        state.useProgram(*drawRange.m_program);
         state.bindVAO(*drawRange.m_vao);
+        state.useProgram(*drawRange.m_program);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
@@ -386,7 +385,7 @@ namespace backend {
 
         state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
-        if (drawOptions.m_tessellation) {
+        if (drawOptions.m_mode == DrawOptions::Mode::patches) {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
