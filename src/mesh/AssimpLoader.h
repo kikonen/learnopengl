@@ -16,6 +16,7 @@ struct aiBone;
 struct aiSkeleton;
 struct aiSkeletonBone;
 struct aiMaterial;
+struct aiMetadata;
 
 namespace animation {
     struct RigNode;
@@ -47,6 +48,9 @@ namespace mesh {
             const aiNode* node,
             int16_t parentIndex,
             const glm::mat4& parentTransform);
+
+        void dumpMetaData(
+            const aiNode* node);
 
         void loadAnimations(
             mesh::LoadContext& ctx,
