@@ -2,10 +2,7 @@
 
 #include <vector>
 #include <mutex>
-#include <atomic>
-#include <span>
-
-#include "kigl/GLBuffer.h"
+#include <tuple>
 
 namespace pool {
     class NodeHandle;
@@ -21,8 +18,6 @@ class Node;
 
 namespace animation {
     struct RigContainer;
-    struct BoneTransform;
-    struct BoneTransformSSBO;
 
     class AnimationSystem {
     public:
@@ -37,11 +32,9 @@ namespace animation {
 
         // Register node instance specific rig
         // @return instance index into bone transform buffer
-        uint32_t registerInstance(animation::RigContainer& rig);
+        std::pair<uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
 
-        std::span<animation::BoneTransform> modifyRange(uint32_t start, uint32_t count) noexcept;
-
-        uint32_t getActiveBoneCount() const noexcept;
+        uint32_t getActiveCount() const noexcept;
 
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);
@@ -57,37 +50,13 @@ namespace animation {
 
         void prepareNodes();
 
-        void snapshotBones();
-        void updateBuffer();
-
     private:
         bool m_enabled{ false };
         bool m_firstFrameOnly{ false };
         size_t m_maxCount{ 0 };
 
-        std::mutex m_lock{};
-        std::mutex m_snapshotLock{};
-
-        std::atomic_bool m_updateReady{ false };
-        size_t m_frameSkipCount{ 0 };
-
-        bool m_needSnapshot{ false };
-
         std::mutex m_pendingLock{};
         std::vector<pool::NodeHandle> m_animationNodes;
         std::vector<pool::NodeHandle> m_pendingNodes;
-
-        size_t m_lastSize{ 0 };
-
-        std::vector<animation::BoneTransform> m_transforms;
-
-        std::vector<BoneTransformSSBO> m_snapshot;
-
-        kigl::GLBuffer m_ssbo{ "bone_transforms_ssbo" };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useDebugFence{ false };
     };
 }

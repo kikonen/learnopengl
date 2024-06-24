@@ -42,6 +42,7 @@ struct Snapshot {
 
     uint32_t m_shapeIndex{ 0 };
     uint32_t m_boneIndex{ 0 };
+    uint32_t m_socketIndex{ 0 };
 
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 

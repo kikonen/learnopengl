@@ -18,10 +18,10 @@
   const uvec4 boneIndex = a_boneIndex + entity.u_boneIndex;
   const vec4 boneWeight = a_boneWeight;
 
-  const mat4 b1 = u_boneTransforms[boneIndex.x].u_transform;
-  const mat4 b2 = u_boneTransforms[boneIndex.y].u_transform;
-  const mat4 b3 = u_boneTransforms[boneIndex.z].u_transform;
-  const mat4 b4 = u_boneTransforms[boneIndex.w].u_transform;
+  const mat4 b1 = u_boneTransforms[boneIndex.x];
+  const mat4 b2 = u_boneTransforms[boneIndex.y];
+  const mat4 b3 = u_boneTransforms[boneIndex.z];
+  const mat4 b4 = u_boneTransforms[boneIndex.w];
 
   // const mat4 b1 = mat4(1.f);
   // const mat4 b2 = mat4(1.f);

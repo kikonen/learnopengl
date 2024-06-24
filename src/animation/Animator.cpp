@@ -17,7 +17,6 @@
 #include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
-#include "BoneTransform.h"
 #include "BoneInfo.h"
 
 namespace {
@@ -31,7 +30,8 @@ namespace animation {
         const glm::mat4& meshBaseTransform,
         const glm::mat4& inverseMeshBaseTransform,
         const glm::mat4& animationBaseTransform,
-        std::span<animation::BoneTransform>& palette,
+        std::span<glm::mat4>& palette,
+        std::span<glm::mat4>& sockets,
         uint16_t animationIndex,
         double animationStartTime,
         double currentTime)
@@ -137,7 +137,7 @@ namespace animation {
                 //}
 
                 // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
-                palette[bone->m_index].m_transform = globalTransform * bone->m_offsetMatrix;
+                palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
 
             }
             else {

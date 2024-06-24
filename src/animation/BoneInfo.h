@@ -4,9 +4,9 @@
 #include <vector>
 #include <map>
 
-#include "ki/size.h"
+#include <glm/glm.hpp>
 
-#include "BoneTransform.h"
+#include "ki/size.h"
 
 struct aiBone;
 

@@ -43,6 +43,23 @@ namespace animation {
         return m_boneContainer.hasBones();
     }
 
+    void RigContainer::addSocket(const RigNode& rigNode)
+    {
+        const auto& it = std::find_if(
+            m_sockets.begin(),
+            m_sockets.end(),
+            [&rigNode](const uint16_t index) { return index == rigNode.m_index; });
+        if (it != m_sockets.end()) return;
+
+        m_sockets.push_back(rigNode.m_index);
+        std::sort(m_sockets.begin(), m_sockets.end());
+    }
+
+    bool RigContainer::hasSockets() const noexcept
+    {
+        return !m_sockets.empty();
+    }
+
     void RigContainer::prepare()
     {
         validate();
@@ -67,8 +84,11 @@ namespace animation {
 
         // NOTE KI mesh required for calculating transforms for attached meshes
         for (auto& rigNode : m_nodes) {
-            const auto& it = m_socketNodes.find(rigNode.m_index);
-            if (it == m_socketNodes.end()) continue;
+            const auto& it = std::find_if(
+                m_sockets.begin(),
+                m_sockets.end(),
+                [&rigNode](const uint16_t index) { return index == rigNode.m_index; });
+            if (it == m_sockets.end()) continue;
 
             rigNode.m_socketRequired = true;
 

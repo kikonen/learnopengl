@@ -102,7 +102,9 @@ void Node::prepareWT(
         auto* lodMesh = type->getLodMesh(0);
         auto* mesh = lodMesh ? lodMesh->getMesh<mesh::ModelMesh>() : nullptr;
         if (mesh) {
-            m_transform.m_boneIndex = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            auto [boneIndex, socketIndex] = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            m_transform.m_boneIndex = boneIndex;
+            m_transform.m_socketIndex = socketIndex;
             m_transform.m_animationIndex = 0;
         }
     }

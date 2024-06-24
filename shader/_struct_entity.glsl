@@ -24,4 +24,5 @@ struct Entity {
 
   uint u_shapeIndex;
   uint u_boneIndex;
+  uint u_socketIndex;
 };

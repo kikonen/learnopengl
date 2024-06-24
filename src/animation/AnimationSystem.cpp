@@ -17,10 +17,10 @@
 #include "pool/NodeHandle.h"
 
 #include "animation/RigContainer.h"
-#include "animation/BoneTransform.h"
 #include "animation/Animator.h"
 
-#include "animation/BoneTransformSSBO.h"
+#include "animation/BoneRegistry.h"
+#include "animation/SocketRegistry.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
@@ -38,8 +38,6 @@ namespace animation
 
     AnimationSystem::AnimationSystem()
     {
-        // NOTE KI null entry
-        m_transforms.emplace_back();
     }
 
     AnimationSystem::~AnimationSystem() = default;
@@ -52,52 +50,35 @@ namespace animation
         m_firstFrameOnly = assets.animationFirstFrameOnly;
         m_maxCount = assets.animationMaxCount;
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
+        auto& boneRegistry = BoneRegistry::get();
+        auto& socketRegistry = SocketRegistry::get();
 
-        m_frameSkipCount = 1;
-
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(BoneTransformSSBO), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
+        boneRegistry.prepare();
+        socketRegistry.prepare();
     }
 
-    uint32_t AnimationSystem::registerInstance(animation::RigContainer& rig)
+    std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(const animation::RigContainer& rig)
     {
-        if (!rig.hasBones()) return 0;
+        auto& boneRegistry = BoneRegistry::get();
+        auto& socketRegistry = SocketRegistry::get();
 
-        size_t index;
-        {
-            std::lock_guard lock(m_pendingLock);
+        uint32_t boneIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
+        uint32_t socketIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
 
-            index = m_transforms.size();
-            m_transforms.resize(m_transforms.size() + rig.m_boneContainer.size());
-            for (int i = 0; i < rig.m_boneContainer.size(); i++) {
-                m_transforms[index + i] = glm::mat4{ 1.f };
-            }
-
-            m_needSnapshot = true;
-        }
-
-        return static_cast<uint32_t>(index);
+        return { boneIndex, socketIndex };
     }
 
-    inline std::span<animation::BoneTransform> AnimationSystem::modifyRange(
-        uint32_t start,
-        uint32_t count) noexcept
+    uint32_t AnimationSystem::getActiveCount() const noexcept
     {
-        return std::span{ m_transforms }.subspan(start, count);
-    }
-
-    uint32_t AnimationSystem::getActiveBoneCount() const noexcept
-    {
-        return static_cast<uint32_t>(m_snapshot.size());
+        return static_cast<uint32_t>(m_animationNodes.size());
     }
 
     void AnimationSystem::updateWT(const UpdateContext& ctx)
     {
         prepareNodes();
+
+        auto& boneRegistry = BoneRegistry::get();
+        auto& socketRegistry = SocketRegistry::get();
 
         static std::vector<std::pair<Node*, mesh::MeshType*>> s_activeNodes;
 
@@ -128,22 +109,17 @@ namespace animation
                         [this, &ctx](auto& pair) {
                             animateNode(ctx, pair.first, pair.second);
                         });
-                    m_needSnapshot |= true;
                 }
                 else {
-                    bool needSnapshot = false;
                     for (auto& pair : s_activeNodes) {
-                        needSnapshot |= animateNode(ctx, pair.first, pair.second);
+                        animateNode(ctx, pair.first, pair.second);
                     }
-                    m_needSnapshot |= needSnapshot;
                 }
             }
-
-            if (m_needSnapshot) {
-                snapshotBones();
-                m_needSnapshot = false;
-            }
         }
+
+        boneRegistry.updateWT();
+        socketRegistry.updateWT();
     }
 
     bool AnimationSystem::animateNode(
@@ -153,6 +129,9 @@ namespace animation
     {
         bool result = false;
 
+        auto& boneRegistry = BoneRegistry::get();
+        auto& socketRegistry = SocketRegistry::get();
+
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
@@ -160,7 +139,8 @@ namespace animation
             auto& transform = node->modifyTransform();
 
             auto& rig = *mesh->m_rig;
-            auto palette = modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+            auto palette = boneRegistry.modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
+            auto sockets = socketRegistry.modifyRange(transform.m_socketIndex, rig.m_sockets.size());
 
             if (transform.m_animationStartTime < 0) {
                 transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
@@ -170,31 +150,34 @@ namespace animation
             }
 
             animation::Animator animator;
-            result |= animator.animate(
+            auto changed = animator.animate(
                 ctx,
                 rig,
                 mesh->m_baseTransform,
                 mesh->m_inverseBaseTransform,
                 lodMesh.m_animationBaseTransform,
                 palette,
+                sockets,
                 transform.m_animationIndex,
                 transform.m_animationStartTime,
                 m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
+
+            if (changed) {
+                boneRegistry.markDirty(transform.m_boneIndex, rig.m_boneContainer.size());
+                socketRegistry.markDirty(transform.m_socketIndex, rig.m_sockets.size());
+            }
+            result |= changed;
         }
         return result;
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
     {
-        if (!m_updateReady) return;
+        auto& boneRegistry = BoneRegistry::get();
+        auto& socketRegistry = SocketRegistry::get();
 
-        m_frameSkipCount++;
-        if (m_frameSkipCount < 2) {
-            return;
-        }
-        m_frameSkipCount = 0;
-
-        updateBuffer();
+        boneRegistry.updateRT();
+        socketRegistry.updateRT();
     }
 
     void AnimationSystem::prepareNodes()
@@ -218,57 +201,5 @@ namespace animation
 
         std::lock_guard lock(m_pendingLock);
         m_pendingNodes.push_back(node->toHandle());
-    }
-
-    void AnimationSystem::snapshotBones()
-    {
-        std::lock_guard lock(m_snapshotLock);
-
-        if (m_transforms.empty() || !m_needSnapshot) {
-            return;
-        }
-
-        const size_t totalCount = m_transforms.size();
-
-        if (m_snapshot.size() != totalCount) {
-            m_snapshot.resize(totalCount);
-        }
-
-        for (size_t i = 0; i < totalCount; i++) {
-            m_snapshot[i].u_transform = m_transforms[i].m_transform;
-        }
-
-        m_updateReady = true;
-    }
-
-    void AnimationSystem::updateBuffer()
-    {
-        std::lock_guard lock(m_snapshotLock);
-
-        constexpr size_t sz = sizeof(BoneTransformSSBO);
-        const size_t totalCount = m_snapshot.size();
-
-        if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
-                m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
-            }
-        }
-
-        //m_ssbo.invalidateRange(
-        //    0,
-        //    totalCount * sz);
-
-        if (m_useInvalidate) {
-            m_ssbo.invalidateRange(0, totalCount * sz);
-        }
-
-        m_ssbo.update(
-            0,
-            totalCount * sz,
-            m_snapshot.data());
-
-        m_updateReady = false;
     }
 }

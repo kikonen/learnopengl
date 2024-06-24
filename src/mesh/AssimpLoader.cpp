@@ -295,7 +295,7 @@ namespace mesh
                     // NOTE KI animated meshes get position via animated bones
                     // non animated nodes via socket nodes
                     if (modelMesh->m_vertexBones.empty()) {
-                        rig.m_socketNodes[rigNode.m_index] = true;
+                        rig.addSocket(rigNode);
                         modelMesh->m_socketIndex = rigNode.m_index;
                     }
 

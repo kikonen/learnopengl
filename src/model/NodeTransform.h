@@ -53,6 +53,7 @@ struct NodeTransform {
 
     uint32_t m_shapeIndex{ 0 };
     uint32_t m_boneIndex{ 0 };
+    uint32_t m_socketIndex{ 0 };
 
     uint16_t m_animationIndex{ 0 };
     double m_animationStartTime{ -1.f };
