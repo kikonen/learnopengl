@@ -189,9 +189,11 @@
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\BoneChannel.cpp" />
     <ClCompile Include="src\animation\BoneInfo.cpp" />
+    <ClCompile Include="src\animation\BoneRegistry.cpp" />
     <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
+    <ClCompile Include="src\animation\SocketRegistry.cpp" />
     <ClCompile Include="src\asset\ChannelTexture.cpp" />
     <ClCompile Include="src\asset\ColorTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
@@ -420,6 +422,8 @@
   <ItemGroup>
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
+    <ClInclude Include="src\animation\BoneRegistry.h" />
+    <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
@@ -453,7 +457,6 @@
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />
     <ClInclude Include="src\animation\BoneChannel.h" />
-    <ClInclude Include="src\animation\MatrixPalette.h" />
     <ClInclude Include="src\animation\NodeAnimation.h" />
     <ClInclude Include="src\animation\RigContainer.h" />
     <ClInclude Include="src\animation\BoneContainer.h" />

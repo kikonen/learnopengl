@@ -6,8 +6,6 @@
 
 #include "ki/size.h"
 
-#include "BoneTransform.h"
-
 struct aiBone;
 
 namespace animation {

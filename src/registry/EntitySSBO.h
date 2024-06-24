@@ -61,7 +61,9 @@ struct EntitySSBO {
     GLuint u_shapeIndex{ 0 };
 
     GLuint u_boneIndex{ 0 };
-    int pad2_1;
+    GLuint u_socketIndex{ 0 };
+
+    //int pad2_1;
     //int pad2_2;
     //int pad2_3;
 

@@ -10,7 +10,6 @@ struct UpdateContext;
 
 namespace animation {
     struct RigContainer;
-    struct BoneTransform;
 
     class Animator {
     public:
@@ -22,7 +21,8 @@ namespace animation {
             const glm::mat4& meshBaseTransform,
             const glm::mat4& inverseMeshBaseTransform,
             const glm::mat4& animationBaseTransform,
-            std::span<animation::BoneTransform>& palette,
+            std::span<glm::mat4>& palette,
+            std::span<glm::mat4>& sockets,
             uint16_t animationIndex,
             double animationStartTime,
             double currentTime);
