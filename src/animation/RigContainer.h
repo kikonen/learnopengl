@@ -41,6 +41,8 @@ namespace animation {
 
         BoneContainer m_boneContainer;
 
+        std::map<uint16_t, bool> m_socketNodes;
+
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
     };
 }

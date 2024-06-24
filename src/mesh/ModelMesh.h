@@ -61,6 +61,7 @@ namespace mesh {
         std::vector<animation::VertexBone> m_vertexBones;
 
         animation::RigContainer* m_rig{ nullptr };
+        uint16_t m_socketIndex{ 0 };
 
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };

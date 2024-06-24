@@ -266,22 +266,17 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
-                    if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
-                    if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
+                    //if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
 
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.003" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.004" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.005" }) continue;
-
-
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
-                    modelMesh->m_rig = ctx.m_rig;
-                    modelMesh->m_nodeName = rigNode.m_name;
 
                     processMesh(
                         ctx,
@@ -289,6 +284,20 @@ namespace mesh
                         *modelMesh,
                         meshIndex,
                         mesh);
+
+                    modelMesh->m_nodeName = rigNode.m_name;
+                    modelMesh->m_rig = ctx.m_rig;
+
+                    // NOTE KI for animated meshes, this transform is canceled in animator
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
+
+                    // TODO KI base transform is in rig in reality *per* instance (animation!)
+                    // NOTE KI animated meshes get position via animated bones
+                    // non animated nodes via socket nodes
+                    if (modelMesh->m_vertexBones.empty()) {
+                        rig.m_socketNodes[rigNode.m_index] = true;
+                        modelMesh->m_socketIndex = rigNode.m_index;
+                    }
 
                     meshSet.addMesh(std::move(modelMesh));
                 }

@@ -98,6 +98,7 @@ void Node::prepareWT(
     }
 
     {
+        // TODO KI *WRONG*, every animated LodMesh has *different* base transform
         auto* lodMesh = type->getLodMesh(0);
         auto* mesh = lodMesh ? lodMesh->getMesh<mesh::ModelMesh>() : nullptr;
         if (mesh) {
