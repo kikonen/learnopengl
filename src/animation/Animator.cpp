@@ -68,7 +68,8 @@ namespace animation {
 
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation node hierarchy includes equivalent transforms (presumeably)
-        parentTransforms[0] = animationBaseTransform * inverseMeshBaseTransform;
+        // NOTE KI order MATTERS when applying inverse
+        parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
         //parentTransforms[0] = animationBaseTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
@@ -86,7 +87,7 @@ namespace animation {
             const auto& rigNode = rig.m_nodes[nodeIndex];
 
             // NOTE KI skip nodes not affecting animation
-            if (!rigNode.m_required) continue;
+            if (!rigNode.m_boneRequired) continue;
 
             //if (hitCount >= 1) break;
 

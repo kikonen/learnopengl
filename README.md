@@ -145,6 +145,9 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
 - https://realitymultiplied.wordpress.com/2016/04/12/assimp-skeletal-animation-tutorial-intro/
 - https://animcoding.com/post/animation-tech-intro-part-1-skinning
 - https://vladh.net/game-engine-skeletal-animation/
+- https://community.khronos.org/t/skeletal-animation-bones-for-models-or-bones-for-meshes/76044/2
+- https://forum.babylonjs.com/t/how-weapon-is-attached-to-a-rigged-animation/17603/2
+- https://blog.demofox.org/2012/09/21/anatomy-of-a-skeletal-animation-system-part-1/
 
 ## CSM
 - https://ogldev.org/www/tutorial49/tutorial49.html
