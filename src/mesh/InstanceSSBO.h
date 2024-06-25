@@ -18,7 +18,8 @@ namespace mesh {
         GLuint u_entityIndex;
         GLuint u_meshIndex;
         GLuint u_materialIndex;
-        GLuint u_shapeIndex{ 0};
+        GLuint u_socketIndex{ 0 };
+        GLuint u_shapeIndex{ 0 };
     };
 #pragma pack(pop)
 }

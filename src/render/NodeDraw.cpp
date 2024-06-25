@@ -194,11 +194,11 @@ namespace render {
                     drawProgram(
                         ctx,
                         [this](const mesh::LodMesh& lodMesh) {
+                            if (!lodMesh.m_flags.preDepth) return (Program*)nullptr;
                             return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgram : nullptr;
                         },
                         [&typeSelector](const mesh::MeshType* type) {
-                            return type->m_flags.preDepth &&
-                                typeSelector(type);
+                            return typeSelector(type);
                         },
                         nodeSelector,
                         kindBits & render::KIND_SOLID);

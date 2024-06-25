@@ -215,6 +215,9 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       materials:
         - name: skeleton_pbr
           alias: "*"
@@ -226,9 +229,6 @@ entities:
     shadow_program: simple_depth
     pos: [-20, 10, 80]
     base_rot: [0, 180, 0]
-    render_flags:
-      use_bones: true
-      xuse_animation: true
     scale: 0.1
     repeat:
       x_count: 25

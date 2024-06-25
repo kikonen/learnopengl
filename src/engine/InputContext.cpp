@@ -9,9 +9,9 @@ InputContext::InputContext(
     Registry* registry,
     const Input* const input)
     : m_assets{ Assets::get() },
-    m_clock(clock),
-    m_registry(registry),
-    m_input(input)
+    m_clock( clock ),
+    m_registry( registry ),
+    m_input( input )
 {
 }
 

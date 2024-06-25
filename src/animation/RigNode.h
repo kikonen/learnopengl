@@ -17,8 +17,9 @@ namespace animation {
         int16_t m_index;
         int16_t m_parentIndex;
 
-        bool m_required{ false };
         int16_t m_boneIndex{ -1 };
+        bool m_boneRequired : 1{ false };
+        bool m_socketRequired : 1{ false };
 
         const glm::mat4 m_localTransform;
         //glm::mat4 m_globalTransform;

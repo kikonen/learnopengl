@@ -52,6 +52,8 @@ Assets::Assets()
     glUseDebugFence = false;
     glUseFinish = false;
 
+    glslUseDebug = false;
+
     compressedTexturesEnabled = false;
     prepassDepthEnabled = false;
 

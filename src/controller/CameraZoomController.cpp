@@ -45,6 +45,8 @@ void CameraZoomController::prepare(
 void CameraZoomController::onKey(
     const InputContext& ctx)
 {
+    if (!ctx.allowKeyboard()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -101,6 +103,8 @@ void CameraZoomController::onMouseMove(
     float xoffset,
     float yoffset)
 {
+    if (!ctx.allowMouse()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -154,6 +158,8 @@ void CameraZoomController::onMouseScroll(
     float xoffset,
     float yoffset)
 {
+    if (!ctx.allowMouse()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 

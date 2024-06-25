@@ -9,6 +9,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_mesh_transforms.glsl
+#include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl

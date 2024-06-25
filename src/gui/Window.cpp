@@ -476,7 +476,7 @@ void Window::onMouseMove(float xpos, float ypos)
     bool isAlt = m_input->isModifierDown(Modifier::ALT);
     int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
 
-    if ((isAlt || state == GLFW_PRESS) && (!assets.useImGui || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+    if ((isAlt || state == GLFW_PRESS) && ctx.m_input->allowMouse()) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
@@ -509,10 +509,13 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
+    const auto& assets = Assets::get();
+
     const InputContext ctx{
         m_engine.getClock(),
         m_engine.getRegistry(),
-        m_input.get() };
+        m_input.get(),
+    };
 
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
     auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();

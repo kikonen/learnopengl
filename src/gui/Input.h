@@ -54,12 +54,24 @@ public:
     void onMouseMove(float xpos, float ypos);
     void onMouseButton(int button, int action, int modifiers);
 
+    inline bool allowMouse() const noexcept
+    {
+        return !imGuiHit;
+    }
+
+    inline bool allowKeyboard() const noexcept
+    {
+        return !imGuiHit;
+    }
+
 public:
     float mouseX = 0;
     float mouseY = 0;
 
     float mouseXoffset = 0;
     float mouseYoffset = 0;
+
+    bool imGuiHit{ false };
 
     Window* window;
 

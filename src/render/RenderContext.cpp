@@ -20,6 +20,7 @@
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
+#include "render/DebugContext.h"
 
 
 RenderContext::RenderContext(
@@ -40,7 +41,8 @@ RenderContext::RenderContext(
         parent->m_nearPlane,
         parent->m_farPlane,
         width,
-        height)
+        height,
+        parent->m_debugContext)
 {}
 
 RenderContext::RenderContext(
@@ -63,7 +65,8 @@ RenderContext::RenderContext(
         nearPlane,
         farPlane,
         width,
-        height)
+        height,
+        parent->m_debugContext)
 {}
 
 RenderContext::RenderContext(
@@ -78,7 +81,8 @@ RenderContext::RenderContext(
     float nearPlane,
     float farPlane,
     int width,
-    int height)
+    int height,
+    const render::DebugContext* const debugContext)
     : m_name{ name },
     m_parent{ parent },
     m_assets{ Assets::get() },
@@ -93,7 +97,8 @@ RenderContext::RenderContext(
     m_farPlane{ farPlane },
     m_resolution({ width, height }),
     m_aspectRatio{ (float)width / (float)height },
-    m_depthFunc{ GL_LESS }
+    m_depthFunc{ GL_LESS },
+    m_debugContext{ debugContext }
 {
     auto& assets = m_assets;
 
@@ -181,6 +186,21 @@ RenderContext::RenderContext(
         0, // shadowCount
     };
 
+    if (m_debugContext) {
+        m_debug = {
+            m_debugContext->m_entityId,
+            m_debugContext->m_boneIndex,
+            m_debugContext->m_debugBoneWeight,
+        };
+    }
+    else {
+        m_debug = {
+            0,
+            0,
+            false,
+        };
+    }
+
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
 
     m_clipPlanes.u_clipCount = 0;
@@ -224,6 +244,13 @@ void RenderContext::updateDataUBO() const
 {
     validateRender("update_data_ubo");
     m_renderData->updateData(m_data);
+    m_renderData->updateDebug(m_debug);
+}
+
+void RenderContext::updateDebugUBO() const
+{
+    validateRender("update_debug_ubo");
+    m_renderData->updateDebug(m_debug);
 }
 
 void RenderContext::updateClipPlanesUBO() const

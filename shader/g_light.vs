@@ -11,6 +11,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_mesh_transforms.glsl
+#include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_clip_planes.glsl

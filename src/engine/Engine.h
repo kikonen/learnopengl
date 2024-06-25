@@ -11,6 +11,8 @@
 
 #include "gui/Input.h"
 
+#include "render/DebugContext.h"
+
 class Window;
 class Scene;
 class SceneUpdater;
@@ -71,6 +73,8 @@ public:
     std::shared_ptr<AnimationUpdater> m_animationUpdater;
 
     std::unique_ptr<Window> m_window;
+
+    render::DebugContext m_debugContext;
 
 protected:
     ki::RenderClock m_clock;

@@ -43,6 +43,25 @@ namespace animation {
         return m_boneContainer.hasBones();
     }
 
+    uint16_t RigContainer::addSocket(const RigNode& rigNode)
+    {
+        const auto& it = std::find_if(
+            m_sockets.begin(),
+            m_sockets.end(),
+            [&rigNode](const uint16_t index) { return index == rigNode.m_index; });
+        if (it != m_sockets.end()) {
+            return static_cast<uint16_t>(std::distance(m_sockets.begin(), it));
+        }
+
+        m_sockets.push_back(rigNode.m_index);
+        return static_cast<uint16_t>(m_sockets.size() - 1);
+    }
+
+    bool RigContainer::hasSockets() const noexcept
+    {
+        return !m_sockets.empty();
+    }
+
     void RigContainer::prepare()
     {
         validate();
@@ -54,13 +73,32 @@ namespace animation {
             auto* bone = m_boneContainer.findByNodeIndex(rigNode.m_index);
             if (!bone) continue;
 
-            rigNode.m_required = true;
+            rigNode.m_boneRequired = true;
             rigNode.m_boneIndex = bone->m_index;
 
             for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
                 auto& parent = m_nodes[nodeIndex];
-                if (parent.m_required) break;
-                parent.m_required = true;
+                if (parent.m_boneRequired) break;
+                parent.m_boneRequired = true;
+                nodeIndex = parent.m_parentIndex;
+            }
+        }
+
+        // NOTE KI mesh required for calculating transforms for attached meshes
+        for (auto& rigNode : m_nodes) {
+            const auto& it = std::find_if(
+                m_sockets.begin(),
+                m_sockets.end(),
+                [&rigNode](const uint16_t index) { return index == rigNode.m_index; });
+            if (it == m_sockets.end()) continue;
+
+            rigNode.m_socketRequired = true;
+
+            for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                auto& parent = m_nodes[nodeIndex];
+                // NOTE KI m_sockets is not sorted
+                //if (parent.m_socketRequired) break;
+                parent.m_socketRequired = true;
                 nodeIndex = parent.m_parentIndex;
             }
         }

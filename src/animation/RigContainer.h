@@ -32,6 +32,10 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
+        // @return registered index in m_sockets
+        uint16_t addSocket(const RigNode& rigNode);
+        bool hasSockets() const noexcept;
+
         void prepare();
         void validate() const;
 
@@ -40,6 +44,8 @@ namespace animation {
         std::vector<animation::RigNode> m_nodes;
 
         BoneContainer m_boneContainer;
+
+        std::vector<uint16_t> m_sockets;
 
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
     };

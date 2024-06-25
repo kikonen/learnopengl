@@ -149,9 +149,80 @@ namespace mesh
                 rigNode.m_localTransform));
         }
 
+        dumpMetaData(node);
+
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
             collectNodes(ctx, assimpNodes, scene, node->mChildren[n], nodeIndex, glm::mat4{ 1.f });
+        }
+    }
+
+    void AssimpLoader::dumpMetaData(
+        const aiNode* node)
+    {
+        const std::string nodeName{ node->mName.C_Str() };
+        const aiMetadata* meta = node->mMetaData;
+        if (!meta) return;
+
+        for (size_t i = 0; i < meta->mNumProperties; i++) {
+            const auto& key = meta->mKeys[i];
+            const auto& value = meta->mValues[i];
+
+            std::string formattedKey{ key.C_Str() };
+            std::string formattedValue;
+
+            bool boolValue;
+            int32_t intValue;
+            uint32_t uintValue;
+            int64_t longValue;
+            uint64_t ulongValue;
+            float floatValue;
+            double doubleValue;
+            aiString stringValue;
+
+            switch (value.mType) {
+            case AI_BOOL:
+                meta->Get(key, boolValue);
+                formattedValue = fmt::format("{}", boolValue);
+                break;
+            case AI_INT32:
+                meta->Get(key, intValue);
+                formattedValue = fmt::format("{}", intValue);
+                break;
+            case AI_UINT64:
+                meta->Get(key, ulongValue);
+                formattedValue = fmt::format("{}", ulongValue);
+                break;
+            case AI_FLOAT:
+                meta->Get(key, floatValue);
+                formattedValue = fmt::format("{}", floatValue);
+                break;
+            case AI_DOUBLE:
+                meta->Get(key, doubleValue);
+                formattedValue = fmt::format("{}", doubleValue);
+                break;
+            case AI_AISTRING:
+                meta->Get(key, stringValue);
+                formattedValue = fmt::format("{}", stringValue.C_Str());
+                break;
+            case AI_AIVECTOR3D:
+                break;
+            case AI_AIMETADATA:
+                break;
+            case AI_INT64:
+                meta->Get(key, longValue);
+                formattedValue = fmt::format("{}", longValue);
+                break;
+            case AI_UINT32:
+                meta->Get(key, uintValue);
+                formattedValue = fmt::format("{}", uintValue);
+                break;
+            default:
+                formattedValue = "<unknown>";
+                break;
+            }
+
+            KI_INFO_OUT(fmt::format("ASSIMP: META: node={}: {}={}", nodeName, formattedKey, formattedValue));
         }
     }
 
@@ -195,22 +266,17 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
-                    if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
-                    if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
+                    //if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
 
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.003" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.004" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.005" }) continue;
-
-
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
-                    modelMesh->m_rig = ctx.m_rig;
-                    modelMesh->m_nodeName = rigNode.m_name;
 
                     processMesh(
                         ctx,
@@ -218,6 +284,23 @@ namespace mesh
                         *modelMesh,
                         meshIndex,
                         mesh);
+
+                    modelMesh->m_nodeName = rigNode.m_name;
+                    modelMesh->m_rig = ctx.m_rig;
+
+                    if (modelMesh->m_vertexBones.empty())
+                    {
+                        // NOTE KI for animated meshes, this transform is canceled in animator
+                        modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
+                    }
+
+                    // TODO KI base transform is in rig in reality *per* instance (animation!)
+                    // NOTE KI animated meshes get position via animated bones
+                    // non animated nodes via socket nodes
+                    if (modelMesh->m_vertexBones.empty()) {
+                        modelMesh->m_nodeIndex = rigNode.m_index;
+                        modelMesh->m_socketIndex = rig.addSocket(rigNode);
+                    }
 
                     meshSet.addMesh(std::move(modelMesh));
                 }

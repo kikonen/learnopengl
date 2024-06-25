@@ -22,7 +22,7 @@ AnimationUpdater::AnimationUpdater(
 
 uint32_t AnimationUpdater::getActiveCount() const noexcept
 {
-    return animation::AnimationSystem::get().getActiveBoneCount();
+    return animation::AnimationSystem::get().getActiveCount();
 }
 
 void AnimationUpdater::update(const UpdateContext& ctx)

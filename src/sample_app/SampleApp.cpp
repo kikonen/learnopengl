@@ -205,7 +205,9 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         cameraNode->m_camera.get(),
         assets.nearPlane,
         assets.farPlane,
-        size.x, size.y);
+        size.x,
+        size.y,
+        &m_debugContext);
     {
         ctx.m_forceWireframe = assets.forceWireframe;
         ctx.m_useLight = assets.useLight;
@@ -237,19 +239,21 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     {
+        const auto* input = window->m_input.get();
         InputState state{
-            window->m_input->isModifierDown(Modifier::CONTROL),
-            window->m_input->isModifierDown(Modifier::SHIFT),
-            window->m_input->isModifierDown(Modifier::ALT),
+            input->isModifierDown(Modifier::CONTROL),
+            input->isModifierDown(Modifier::SHIFT),
+            input->isModifierDown(Modifier::ALT),
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
         };
+
 
         if (state.mouseLeft != m_lastInputState.mouseLeft &&
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if ((state.shift || state.ctrl || state.alt) && (!assets.useImGui || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && input->allowMouse()) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }

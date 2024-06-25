@@ -124,6 +124,9 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -135,8 +138,6 @@ entities:
     base_rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     scale: 3
     base_scale: 0.028
     repeat:
@@ -146,7 +147,6 @@ entities:
       z_step: -10
   - id: rock
     program: g_tex
-    xrender_flags:
     meshes:
       - path: rock2/rock
         lod:

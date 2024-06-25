@@ -48,6 +48,8 @@ public:
     bool glUseDebugFence;
     bool glUseFinish;
 
+    bool glslUseDebug;
+
     bool compressedTexturesEnabled;
     bool prepassDepthEnabled;
 

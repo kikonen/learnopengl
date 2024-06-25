@@ -9,6 +9,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+#include "mesh/MeshFlags.h"
 
 #include "generator/GridGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
@@ -134,7 +135,7 @@ namespace loader {
             generator->m_material = data.materialData.material;
             generator->m_material.loadTextures();
 
-            loaders.m_materialLoader.resolveMaterial(type, generator->m_material);
+            loaders.m_materialLoader.resolveMaterial({}, generator->m_material);
 
             return generator;
         }

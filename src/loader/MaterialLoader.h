@@ -7,7 +7,7 @@
 #include "MaterialData.h"
 
 namespace mesh {
-    class MeshType;
+    struct MeshFlags;
 }
 
 namespace loader {
@@ -62,11 +62,11 @@ namespace loader {
             const MaterialData& data);
 
         void resolveMaterial(
-            const mesh::MeshType* type,
+            const mesh::MeshFlags& meshFlags,
             Material& material);
 
         void resolveProgram(
-            const mesh::MeshType* type,
+            const mesh::MeshFlags& meshFlags,
             Material& material);
 
         std::string selectProgram(

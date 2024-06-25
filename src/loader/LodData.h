@@ -2,6 +2,8 @@
 
 #include "ki/size.h"
 
+#include "FlagContainer.h"
+
 namespace loader {
     struct LodData {
         std::string name;
@@ -11,5 +13,7 @@ namespace loader {
         int8_t priority{ 0 };
 
         float distance{ 0 };
+
+        loader::FlagContainer meshFlags;
     };
 }

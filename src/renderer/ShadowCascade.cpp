@@ -247,8 +247,7 @@ void ShadowCascade::drawNodes(
     // NOTE KI *NO* G-buffer in shadow
     const auto typeFilter = [](const mesh::MeshType* type) {
         // NOTE KI tessellation not suppported
-        return !type->m_flags.noShadow &&
-            !type->m_flags.tessellation;
+        return !type->m_flags.noShadow;
     };
 
     const auto nodeFilter = [](const Node* node) {
@@ -259,6 +258,7 @@ void ShadowCascade::drawNodes(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
+                if (lodMesh.m_flags.tessellation) return (Program*)nullptr;
                 if (lodMesh.m_shadowProgram) return lodMesh.m_shadowProgram;
                 return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgram : m_solidShadowProgram;
             },

@@ -98,10 +98,13 @@ void Node::prepareWT(
     }
 
     {
+        // TODO KI *WRONG*, every animated LodMesh has *different* base transform
         auto* lodMesh = type->getLodMesh(0);
         auto* mesh = lodMesh ? lodMesh->getMesh<mesh::ModelMesh>() : nullptr;
         if (mesh) {
-            m_transform.m_boneIndex = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+            m_transform.m_boneBaseIndex = boneBaseIndex;
+            m_transform.m_socketBaseIndex = socketBaseIndex;
             m_transform.m_animationIndex = 0;
         }
     }

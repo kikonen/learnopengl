@@ -158,6 +158,13 @@ namespace loader {
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
+            else if (k == "flags") {
+                for (const auto& flagNode : v.getNodes()) {
+                    const auto& flagName = flagNode.getName();
+                    const auto& flagValue = readBool(flagNode.getNode());
+                    data.meshFlags.set(util::toLower(flagName), flagValue);
+                }
+            }
             else {
                 reportUnknown("lod_entry", k, v);
             }

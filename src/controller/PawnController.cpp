@@ -46,6 +46,8 @@ void PawnController::prepare(
 void PawnController::onKey(
     const InputContext& ctx)
 {
+    if (!ctx.allowKeyboard()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -161,6 +163,8 @@ void PawnController::onMouseMove(
     float xoffset,
     float yoffset)
 {
+    if (!ctx.allowMouse()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
