@@ -90,6 +90,15 @@ namespace animation
 
     void BoneRegistry::markDirty(size_t start, size_t count) noexcept
     {
+        if (count == 0) return;
+        const auto& it = std::find_if(
+            m_dirtyTransform.begin(),
+            m_dirtyTransform.begin(),
+            [&start, &count](const auto& pair) {
+                return pair.first == start && pair.second == count;
+            });
+        if (it != m_dirtyTransform.end()) return;
+
         m_dirtyTransform.emplace_back(static_cast<uint32_t>(start), static_cast<uint32_t>(count));
     }
 
