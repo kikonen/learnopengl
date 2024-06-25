@@ -32,7 +32,8 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
-        void addSocket(const RigNode& rigNode);
+        // @return registered index in m_sockets
+        uint16_t addSocket(const RigNode& rigNode);
         bool hasSockets() const noexcept;
 
         void prepare();

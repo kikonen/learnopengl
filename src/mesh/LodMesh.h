@@ -86,14 +86,16 @@ namespace mesh {
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
-        uint32_t m_meshIndex{ 0 };
-
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
+
+        uint32_t m_meshIndex{ 0 };
+        uint32_t m_socketIndex{ 0 };
 
         glm::mat4 m_animationBaseTransform{ 1.f };
 
         std::unique_ptr<Material> m_material;
+        uint32_t m_materialIndex{ 0 };
 
         backend::DrawOptions m_drawOptions;
 

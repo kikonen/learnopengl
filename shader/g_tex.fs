@@ -44,6 +44,10 @@ in VS_OUT {
   vec3 boneColor;
 #endif
 #endif
+#ifdef USE_DEBUG
+  flat uint socketBaseIndex;
+  flat uint socketIndex;
+#endif
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
@@ -124,6 +128,12 @@ void main() {
   }
 #endif
 #endif
+
+// #ifdef USE_DEBUG
+//   if (fs_in.socketBaseIndex + fs_in.socketIndex > 0) {
+//     o_fragColor = vec3(1, 1, 0);
+//   }
+// #endif
 
   //o_fragPosition = fs_in.worldPos;
   o_fragNormal = encodeGNormal(normal, fs_in.viewPos);

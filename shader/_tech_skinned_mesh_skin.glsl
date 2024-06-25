@@ -15,7 +15,7 @@
 // - tangent
 #ifdef USE_BONES
 {
-  const uvec4 boneIndex = a_boneIndex + entity.u_boneIndex;
+  const uvec4 boneIndex = a_boneIndex + entity.u_boneBaseIndex;
   const vec4 boneWeight = a_boneWeight;
 
   const mat4 b1 = u_boneTransforms[boneIndex.x];
