@@ -54,7 +54,8 @@ out VS_OUT {
 #ifdef USE_DEBUG
   flat uint boneBaseIndex;
   flat uvec4 boneIndex;
-  flat vec4 boneWeights;
+  flat vec4 boneWeight;
+  vec3 boneColor;
 #endif
 #endif
 } vs_out;
@@ -136,10 +137,34 @@ void main() {
   if (u_debugBoneWeight) {
     vs_out.boneBaseIndex = entity.u_boneIndex;
     vs_out.boneIndex = a_boneIndex;
-    vs_out.boneWeights = a_boneWeight;
+    vs_out.boneWeight = a_boneWeight;
 
-    // vs_out.boneIndex = uvec4(4, 0, 0, 0);
-    // vs_out.boneWeights = vec4(1, 0, 0, 0);
+    uint tbi = u_debugBoneIndex;
+    uvec4 bi = a_boneIndex;
+    vec4 wi = a_boneWeight;
+
+    // tbi = 4;
+    // bi = uvec4(4, 0, 0, 0);
+    // wi = vec4(1, 0, 0, 0);
+
+    float w = 0;
+    if (bi.x == tbi && wi.x > 0) w += wi.x;
+    if (bi.y == tbi && wi.y > 0) w += wi.y;
+    if (bi.z == tbi && wi.z > 0) w += wi.z;
+    if (bi.w == tbi && wi.w > 0) w += wi.w;
+
+    vec3 shade = vec3(0);
+    if (w > 0.9) {
+      shade = vec3(1.0, 0, 0);
+    } else if (w > 0.5) {
+      shade = vec3(0, 1.0, 1.0);
+    } else if (w > 0.25) {
+      shade = vec3(0, 1.0, 0);
+    } else if (w > 0.0) {
+      shade = vec3(0, 0, 1.0);
+    }
+
+    vs_out.boneColor = shade;
   }
 #endif
 #endif

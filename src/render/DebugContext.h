@@ -4,8 +4,8 @@
 
 namespace render {
     struct DebugContext {
-        int m_entityId{ -1 };
-        int m_boneIndex{ -1 };
+        int m_entityId{ 0 };
+        int m_boneIndex{ 0 };
 
         bool m_debugBoneWeight{ false };
     };
