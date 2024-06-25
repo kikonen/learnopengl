@@ -25,6 +25,8 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
+#include fn_decode.glsl
+
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
@@ -33,7 +35,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  uint materialIndex = instance.u_materialIndex;
+  uint materialIndex = decodeMaterialIndex(instance.u_packedMaterial);
   const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
   gl_Position = u_projectedMatrix * worldPos;

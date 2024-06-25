@@ -33,6 +33,7 @@ SET_FLOAT_PRECISION;
 
 Particle particle;
 
+#include fn_decode.glsl
 #include fn_calculate_clipping.glsl
 
 void main() {

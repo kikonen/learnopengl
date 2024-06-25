@@ -60,6 +60,8 @@ ResolvedMaterial material;
 
 TerrainTile tile;
 
+#include fn_decode.glsl
+
 void main() {
   const uint instanceIndex = gl_BaseInstance + gl_InstanceID;
   instance = u_instances[instanceIndex];
@@ -71,7 +73,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const uint materialIndex = instance.u_materialIndex;
+  const uint materialIndex = decodeMaterialIndex(instance.u_packedMaterial);
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;

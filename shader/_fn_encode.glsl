@@ -1,0 +1,1 @@
+// Encode utility functions

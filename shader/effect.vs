@@ -32,6 +32,7 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
+#include fn_decode.glsl
 #include fn_calculate_clipping.glsl
 
 void main() {
@@ -42,7 +43,7 @@ void main() {
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
 
-  const uint umaterialIndex = instance.u_materialIndex;
+  const uint umaterialIndex = decodeMaterialIndex(instance.u_packedMaterial);
   const vec4 worldPos = modelMatrix * vec4(a_pos, 1.0);
 
   gl_Position = u_projectedMatrix * worldPos;

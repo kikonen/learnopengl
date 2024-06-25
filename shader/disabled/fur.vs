@@ -39,7 +39,7 @@ void main() {
 
   vs_out.modelMatrix = modelMatrix;
 
-  const uint materialIndex = instance.u_materialIndex;
+  const uint materialIndex = decodeMaterialIndex(instance.u_packedMaterial);
 
   vs_out.materialIndex = materialIndex;
 

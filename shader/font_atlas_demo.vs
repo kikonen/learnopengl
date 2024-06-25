@@ -30,6 +30,8 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
+#include fn_decode.glsl
+
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
@@ -37,7 +39,7 @@ void main() {
 
   #include var_entity_model_matrix.glsl
 
-  const uint materialIndex = instance.u_materialIndex;
+  const uint materialIndex = decodeMaterialIndex(instance.u_packedMaterial);
 
   vs_out.materialIndex = materialIndex;
 

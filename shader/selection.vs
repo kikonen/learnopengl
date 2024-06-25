@@ -49,12 +49,16 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
+#include fn_decode.glsl
+
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
   #include var_entity_model_matrix.glsl
+
+  const uint shapeIndex = decodeShapeIndex(instance.u_packedMaterial);
 
   vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
@@ -78,7 +82,7 @@ void main() {
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
-  if ((instance.u_shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
+  if ((shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = vec3(entity.u_worldScale[0] * scale,
                             entity.u_worldScale[1] * scale,
@@ -97,10 +101,10 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
 #ifdef USE_ALPHA
-  const uint materialIndex = instance.u_materialIndex;
+  const uint materialIndex = decodeMaterialIndex(instance.u_packedMaterial);
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = instance.u_shapeIndex;
+  vs_out.shapeIndex = shapeIndex;
   vs_out.texCoord = a_texCoord;
 #endif
 
