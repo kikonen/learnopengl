@@ -1242,6 +1242,62 @@ entities:
         z_count: 40
         x_step: -20
         z_step: 20
+  - id: grass_{t}
+    meshes:
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 0
+            distance: 50
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_pbr: grass_01_pbr
+            alpha: true
+            blend: true
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 1
+            distance: 80
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_pbr: grass_01_pbr
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 2
+            distance: 200
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+            render_back: true
+      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+        lods:
+          - level: 3
+            distance: 100000
+        materials:
+          - name: grass_bush_01_pbr
+            alias: M_atlas_grass_01
+            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+    program: g_tex
+    shadow_program: simple_depth
+    priority: -20
+    pos: [250, 10.0, -100.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 3
+    base_scale: 0.01
+    render_flags:
+      static_bounds: true
+      no_shadow: true
+    repeat:
+      x_count: 80
+      z_count: 80
+      x_step: -9
+      z_step: 9
   - id: skeleton_army_2_{t}
     meshes:
       - path: fbx/creatures/skeleton/skeleton_animated.FBX
