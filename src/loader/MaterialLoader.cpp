@@ -710,6 +710,8 @@ namespace loader {
         const mesh::MeshFlags& meshFlags,
         Material& material)
     {
+        const auto& assets = Assets::get();
+
         const bool useDudvTex = material.hasBoundTex(TextureType::dudv_map);
         const bool useDisplacementTex = material.hasBoundTex(TextureType::displacement_map);
         const bool useNormalTex = material.hasBoundTex(TextureType::normal_map);
@@ -756,7 +758,7 @@ namespace loader {
 
             bool usePreDepth = meshFlags.preDepth;
             bool useBones = meshFlags.useBones;
-            bool useBonesDebug = useBones && meshFlags.useBonesDebug;
+            bool useDebug = assets.glslUseDebug;
 
             if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
@@ -797,8 +799,8 @@ namespace loader {
                 selectionDefinitions[DEF_USE_BONES] = "1";
                 idDefinitions[DEF_USE_BONES] = "1";
             }
-            if (useBonesDebug) {
-                definitions[DEF_USE_BONES_DEBUG] = "1";
+            if (useDebug) {
+                definitions[DEF_USE_DEBUG] = "1";
             }
 
             material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgram(

@@ -424,6 +424,7 @@
     <ClInclude Include="src\animation\BoneInfo.h" />
     <ClInclude Include="src\animation\BoneRegistry.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
@@ -453,6 +454,7 @@
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexVBO.h" />
     <ClInclude Include="src\model\NodeFlags.h" />
+    <ClInclude Include="src\render\DebugContext.h" />
     <ClInclude Include="src\render\size.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />

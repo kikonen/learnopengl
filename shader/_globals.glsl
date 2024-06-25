@@ -40,6 +40,7 @@
 //#define UBO_MATERIALS 4
 #define UBO_TEXTURES 5
 #define UBO_BUFFER_INFO 6
+#define UBO_DEBUG 7
 
 #define SSBO_MATERIALS 1
 //#define SSBO_TEXTURES 2

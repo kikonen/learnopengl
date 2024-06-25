@@ -171,6 +171,10 @@ void AssetsLoader::loadAssets(
                 data.glUseFinish = readBool(v);
                 continue;
             }
+            if (k == "glsl_use_debug") {
+                data.glslUseDebug = readBool(v);
+                continue;
+            }
             if (k == "compressed_textures_enabled") {
                 data.compressedTexturesEnabled = readBool(v);
                 continue;

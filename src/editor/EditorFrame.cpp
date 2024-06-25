@@ -22,6 +22,8 @@ void EditorFrame::prepare(const PrepareContext& ctx)
 
 void EditorFrame::draw(const RenderContext& ctx)
 {
+    auto& engine = m_window.getEngine();
+
     // render your GUI
     ImGui::Begin("Edit");
 
@@ -49,6 +51,18 @@ void EditorFrame::draw(const RenderContext& ctx)
     ImGui::ColorEdit3("color", color);
     // multiply triangle's color with this color
     //triangle_shader.setUniform("color", color[0], color[1], color[2]);
+
+    auto& debugContext = engine.m_debugContext;
+    ImGui::Checkbox("boneDebug", &debugContext.m_debugBoneWeight);
+    ImGui::SliderInt("boneIndex", &debugContext.m_boneIndex, 0, 200);
+
+    {
+        auto imguiHit = ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
+        bool isHovered = ImGui::IsItemHovered();
+        bool isFocused = ImGui::IsItemFocused();
+        m_window.m_input->imGuiHit = imguiHit || isHovered || isFocused;
+    }
+
     ImGui::End();
 }
 
