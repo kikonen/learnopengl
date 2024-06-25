@@ -56,12 +56,17 @@ namespace mesh {
         m_level = o.m_level;
         m_priority = o.m_priority;
         m_distance2 = o.m_distance2;
+
         m_mesh = o.m_mesh;
+        m_meshIndex = o.m_meshIndex;
+        m_socketIndex = std::move(o.m_socketIndex);
+
         m_material = std::move(o.m_material);
+        m_materialIndex = std::move(o.m_materialIndex);
+
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
-        m_meshIndex = o.m_meshIndex;
 
         m_program = o.m_program;
         m_shadowProgram = o.m_shadowProgram;
@@ -84,12 +89,17 @@ namespace mesh {
         m_level = o.m_level;
         m_priority = o.m_priority;
         m_distance2 = o.m_distance2;
+
         m_mesh = o.m_mesh;
+        m_meshIndex = o.m_meshIndex;
+        m_socketIndex = std::move(o.m_socketIndex);
+
         m_material = std::move(o.m_material);
+        m_materialIndex = std::move(o.m_materialIndex);
+
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
-        m_meshIndex = o.m_meshIndex;
 
         o.m_program = o.m_program;
         o.m_shadowProgram = o.m_shadowProgram;
@@ -109,12 +119,13 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: level={}, index={}, vao={}, mesh={}, materialIndex={}>",
+            "<LOD_MESH: level={}, index={}, vao={}, mesh={}, material={}, socket={}>",
             m_level,
             m_meshIndex,
             m_vao ? *m_vao : -1,
             m_mesh ? m_mesh->str() : "N/A",
-            m_lod.m_materialIndex);
+            m_materialIndex,
+            m_socketIndex);
     }
 
     Material* LodMesh::getMaterial() noexcept
@@ -188,6 +199,7 @@ namespace mesh {
         setMaterial(mesh->getMaterial());
 
         m_meshIndex = mesh->m_registeredIndex;
+        m_socketIndex = mesh->m_socketIndex;
     }
 
     void LodMesh::registerMaterial()
@@ -215,7 +227,7 @@ namespace mesh {
 
         MaterialRegistry::get().registerMaterial(*material);
 
-        m_lod.m_materialIndex = material->m_registeredIndex;
+        m_materialIndex = material->m_registeredIndex;
 
         // TODO KI basically material could be deleted at this point
     }

@@ -288,15 +288,18 @@ namespace mesh
                     modelMesh->m_nodeName = rigNode.m_name;
                     modelMesh->m_rig = ctx.m_rig;
 
-                    // NOTE KI for animated meshes, this transform is canceled in animator
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
+                    if (modelMesh->m_vertexBones.empty())
+                    {
+                        // NOTE KI for animated meshes, this transform is canceled in animator
+                        modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
+                    }
 
                     // TODO KI base transform is in rig in reality *per* instance (animation!)
                     // NOTE KI animated meshes get position via animated bones
                     // non animated nodes via socket nodes
                     if (modelMesh->m_vertexBones.empty()) {
-                        rig.addSocket(rigNode);
-                        modelMesh->m_socketIndex = rigNode.m_index;
+                        modelMesh->m_nodeIndex = rigNode.m_index;
+                        modelMesh->m_socketIndex = rig.addSocket(rigNode);
                     }
 
                     meshSet.addMesh(std::move(modelMesh));

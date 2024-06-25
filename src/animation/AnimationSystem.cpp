@@ -139,8 +139,8 @@ namespace animation
             auto& transform = node->modifyTransform();
 
             auto& rig = *mesh->m_rig;
-            auto palette = boneRegistry.modifyRange(transform.m_boneIndex, rig.m_boneContainer.size());
-            auto sockets = socketRegistry.modifyRange(transform.m_socketIndex, rig.m_sockets.size());
+            auto palette = boneRegistry.modifyRange(transform.m_boneBaseIndex, rig.m_boneContainer.size());
+            auto sockets = socketRegistry.modifyRange(transform.m_socketBaseIndex, rig.m_sockets.size());
 
             if (transform.m_animationStartTime < 0) {
                 transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
@@ -163,8 +163,8 @@ namespace animation
                 m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
 
             if (changed) {
-                boneRegistry.markDirty(transform.m_boneIndex, rig.m_boneContainer.size());
-                socketRegistry.markDirty(transform.m_socketIndex, rig.m_sockets.size());
+                boneRegistry.markDirty(transform.m_boneBaseIndex, rig.m_boneContainer.size());
+                socketRegistry.markDirty(transform.m_socketBaseIndex, rig.m_sockets.size());
             }
             result |= changed;
         }

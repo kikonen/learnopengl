@@ -21,6 +21,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_mesh_transforms.glsl
+#include ssbo_socket_transforms.glsl
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
@@ -57,6 +58,10 @@ out VS_OUT {
   flat vec4 boneWeight;
   vec3 boneColor;
 #endif
+#endif
+#ifdef USE_DEBUG
+  flat uint socketBaseIndex;
+  flat uint socketIndex;
 #endif
 } vs_out;
 
@@ -135,7 +140,7 @@ void main() {
 #ifdef USE_BONES
 #ifdef USE_DEBUG
   if (u_debugBoneWeight) {
-    vs_out.boneBaseIndex = entity.u_boneIndex;
+    vs_out.boneBaseIndex = entity.u_boneBaseIndex;
     vs_out.boneIndex = a_boneIndex;
     vs_out.boneWeight = a_boneWeight;
 
@@ -167,6 +172,11 @@ void main() {
     vs_out.boneColor = shade;
   }
 #endif
+#endif
+
+#ifdef USE_DEBUG
+  vs_out.socketBaseIndex = entity.u_socketBaseIndex;
+  vs_out.socketIndex = instance.u_socketIndex;
 #endif
 
 #ifdef USE_CUBE_MAP

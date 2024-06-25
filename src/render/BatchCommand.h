@@ -57,6 +57,7 @@ namespace render {
         const uint32_t m_entityIndex;
         const uint32_t m_meshIndex;
         const uint32_t m_materialIndex;
+        const uint32_t m_socketIndex;
     };
 
     struct BatchCommand {

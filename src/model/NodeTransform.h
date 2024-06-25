@@ -49,14 +49,13 @@ struct NodeTransform {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
+    double m_animationStartTime{ -1.f };
 
     uint32_t m_shapeIndex{ 0 };
-    uint32_t m_boneIndex{ 0 };
-    uint32_t m_socketIndex{ 0 };
+    uint16_t m_boneBaseIndex{ 0 };
+    uint16_t m_socketBaseIndex{ 0 };
 
     uint16_t m_animationIndex{ 0 };
-    double m_animationStartTime{ -1.f };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 

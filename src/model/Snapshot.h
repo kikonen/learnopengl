@@ -41,8 +41,8 @@ struct Snapshot {
     pool::NodeHandle m_handle;
 
     uint32_t m_shapeIndex{ 0 };
-    uint32_t m_boneIndex{ 0 };
-    uint32_t m_socketIndex{ 0 };
+    uint16_t m_boneBaseIndex{ 0 };
+    uint16_t m_socketBaseIndex{ 0 };
 
     //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
 
@@ -75,7 +75,8 @@ struct Snapshot {
         m_flags = o.m_flags;
 
         m_shapeIndex = o.m_shapeIndex;
-        m_boneIndex = o.m_boneIndex;
+        m_boneBaseIndex = o.m_boneBaseIndex;
+        m_socketBaseIndex = o.m_socketBaseIndex;
 
         m_volume = o.m_volume;
 
