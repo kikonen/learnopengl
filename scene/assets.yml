@@ -13,6 +13,8 @@ assets:
   gl_use_debug_fence: false
   gl_use_finish: false
 
+  glsl_use_debug: true
+
   compressed_textures_enabled: false
   prepass_depth_enabled: false
 

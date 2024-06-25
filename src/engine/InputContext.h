@@ -21,6 +21,16 @@ public:
 
     PrepareContext toPrepareContext() const;
 
+    inline bool allowMouse() const noexcept
+    {
+        return m_input->allowMouse();
+    }
+
+    inline bool allowKeyboard() const noexcept
+    {
+        return m_input->allowKeyboard();
+    }
+
 public:
     const Assets& m_assets;
     const ki::RenderClock& m_clock;

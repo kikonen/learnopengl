@@ -5,6 +5,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_debug.glsl
 #include ssbo_materials.glsl
 
 #ifndef USE_ALPHA
@@ -36,9 +37,10 @@ in VS_OUT {
 #endif
 
 #ifdef USE_BONES
-#ifdef USE_BONES_DEBUG
-  uvec4 boneIndex;
-  vec4 boneWeights;
+#ifdef USE_DEBUG
+  flat uint boneBaseIndex;
+  flat uvec4 boneIndex;
+  flat vec4 boneWeights;
 #endif
 #endif
 } fs_in;
@@ -111,8 +113,42 @@ void main() {
   // if (fs_in.boneIndex.x > 150) {
   //   o_fragColor = vec3(0.0, 0.0, 1.0);
   // }
-#ifdef USE_BONES_DEBUG
-  o_fragColor = fs_in.boneWeights.rgb;
+#ifdef USE_DEBUG
+  if (u_debugBoneWeight) {
+    uint tbi = u_debugBoneIndex;
+
+    uvec4 bi = fs_in.boneIndex;
+    vec4 wi = fs_in.boneWeights;
+
+    // tbi = 4;
+    // bi = uvec4(4, 0, 0, 0);
+    // wi = vec4(1, 0, 0, 0);
+
+    float w = 0;
+    if (bi.x == tbi && wi.x > 0) w += 0.25;
+    if (bi.y == tbi && wi.y > 0) w += 0.25;
+    if (bi.z == tbi && wi.z > 0) w += 0.25;
+    if (bi.w == tbi && wi.w > 0) w += 0.25;
+
+    if (w > 0) {
+      vec3 shade;
+      if (w >= 1.0) {
+	shade = vec3(1.0, 0, 0);
+      } else if (w >= 0.75) {
+	shade = vec3(0, 1.0, 1.0);
+      } else if (w >= 0.5) {
+	shade = vec3(0, 1.0, 0);
+      } else if (w >= 0.25) {
+	shade = vec3(0, 0, 1.0);
+      } else {
+	shade = vec3(1.0, 1.0, 0);
+      }
+
+      o_fragColor = shade;
+    }
+    //o_fragColor = fs_in.boneWeights.rgb;
+    // o_fragColor = vec3(1.0, 0, 0);
+  }
 #endif
 #endif
 

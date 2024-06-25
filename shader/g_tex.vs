@@ -26,6 +26,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 #include uniform_clip_planes.glsl
+#include uniform_debug.glsl
 
 out VS_OUT {
 #ifdef USE_CUBE_MAP
@@ -50,9 +51,10 @@ out VS_OUT {
 #endif
 
 #ifdef USE_BONES
-#ifdef USE_BONES_DEBUG
-  uvec4 boneIndex;
-  vec4 boneWeights;
+#ifdef USE_DEBUG
+  flat uint boneBaseIndex;
+  flat uvec4 boneIndex;
+  flat vec4 boneWeights;
 #endif
 #endif
 } vs_out;
@@ -130,9 +132,15 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
 #ifdef USE_BONES
-#ifdef USE_BONES_DEBUG
-  vs_out.boneIndex = a_boneIndex;
-  vs_out.boneWeights = a_boneWeight;
+#ifdef USE_DEBUG
+  if (u_debugBoneWeight) {
+    vs_out.boneBaseIndex = entity.u_boneIndex;
+    vs_out.boneIndex = a_boneIndex;
+    vs_out.boneWeights = a_boneWeight;
+
+    // vs_out.boneIndex = uvec4(4, 0, 0, 0);
+    // vs_out.boneWeights = vec4(1, 0, 0, 0);
+  }
 #endif
 #endif
 

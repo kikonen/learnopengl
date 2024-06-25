@@ -5,6 +5,7 @@
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
+#include "asset/DebugUBO.h"
 #include "asset/BufferInfoUBO.h"
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
@@ -61,6 +62,16 @@ namespace render {
             useSingleFence,
             useDebugFence);
 
+        m_debug = std::make_unique<kigl::GLSyncQueue<DebugUBO>>(
+            "debug_ubo",
+            1,
+            RENDER_DATA_BUFFER_COUNT,
+            useMapped,
+            useInvalidate,
+            useFence,
+            useSingleFence,
+            useDebugFence);
+
         m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO>>(
             "buffer_info_ubo",
             1,
@@ -93,6 +104,7 @@ namespace render {
 
         m_matrices->prepare(bufferAlignment, debug);
         m_data->prepare(bufferAlignment, debug);
+        m_debug->prepare(bufferAlignment, debug);
         m_bufferInfo->prepare(bufferAlignment, debug);
         m_clipPlanes->prepare(bufferAlignment, debug);
         m_lights->prepare(bufferAlignment, debug);
@@ -140,6 +152,14 @@ namespace render {
         m_data->flush();
         m_data->bind(UBO_DATA, false, 1);
         m_data->next();
+    }
+
+    void RenderData::updateDebug(const DebugUBO& data)
+    {
+        m_debug->set(0, data);
+        m_debug->flush();
+        m_debug->bind(UBO_DEBUG, false, 1);
+        m_debug->next();
     }
 
     void RenderData::updateBufferInfo(const BufferInfoUBO& data)

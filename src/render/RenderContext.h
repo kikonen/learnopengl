@@ -5,6 +5,7 @@
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
 #include "asset/ClipPlaneUBO.h"
+#include "asset/DebugUBO.h"
 
 #include "kigl/kigl.h"
 
@@ -17,6 +18,7 @@ namespace render {
     class NodeDraw;
     class Batch;
     class RenderData;
+    struct DebugContext;
 }
 
 namespace kigl {
@@ -68,7 +70,8 @@ public:
         float nearPlane,
         float farPlane,
         int width,
-        int height);
+        int height,
+        const render::DebugContext* const debugContext);
 
     ~RenderContext();
 
@@ -77,6 +80,7 @@ public:
     void updateUBOs() const;
     void updateMatricesUBO() const;
     void updateDataUBO() const;
+    void updateDebugUBO() const;
     void updateClipPlanesUBO() const;
     void updateLightsUBO() const;
 
@@ -104,6 +108,8 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
+    const render::DebugContext* const m_debugContext;
+
     const Assets& m_assets;
     const ki::RenderClock& m_clock;
 
@@ -130,6 +136,7 @@ public:
 
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;
+    mutable DebugUBO m_debug;
 
     mutable ClipPlanesUBO m_clipPlanes;
 
