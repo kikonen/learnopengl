@@ -19,7 +19,7 @@
 #include "ParticleLoader.h"
 #include "PhysicsLoader.h"
 #include "PrefabLoader.h"
-#include "EntityLoader.h"
+#include "NodeLoader.h"
 #include "MeshLoader.h"
 #include "TextLoader.h"
 
@@ -42,7 +42,7 @@ namespace loader {
         VolumeLoader m_volumeLoader;
         CubeMapLoader m_cubeMapLoader;
 
-        EntityLoader m_entityLoader;
+        NodeLoader m_nodeLoader;
         MeshLoader m_meshLoader;
         TextLoader m_textLoader;
 

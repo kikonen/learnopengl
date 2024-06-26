@@ -1,4 +1,4 @@
-#include "EntityLoader.h"
+#include "NodeLoader.h"
 
 #include <string>
 #include <vector>
@@ -23,43 +23,43 @@
 #include "loader/document.h"
 
 namespace loader {
-    EntityLoader::EntityLoader(
+    NodeLoader::NodeLoader(
         Context ctx)
         : BaseLoader(ctx)
     {
     }
 
-    void EntityLoader::loadEntities(
+    void NodeLoader::loadNodes(
         const loader::DocNode& node,
-        std::vector<EntityRoot>& entities,
+        std::vector<NodeRoot>& nodes,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
-            auto& entityRoot = entities.emplace_back();
-            loadEntity(
+            auto& nodeRoot = nodes.emplace_back();
+            loadNode(
                 entry,
-                entityRoot,
+                nodeRoot,
                 loaders);
         }
     }
 
-    void EntityLoader::loadEntity(
+    void NodeLoader::loadNode(
         const loader::DocNode& node,
-        EntityRoot& entityRoot,
+        NodeRoot& nodeRoot,
         Loaders& loaders) const
     {
-        loadEntityClone(
+        loadNodeClone(
             node,
-            entityRoot.base,
-            entityRoot.clones,
+            nodeRoot.base,
+            nodeRoot.clones,
             true,
             loaders);
     }
 
-    void EntityLoader::loadEntityClone(
+    void NodeLoader::loadNodeClone(
         const loader::DocNode& node,
-        EntityData& data,
-        std::vector<EntityData>& clones,
+        NodeData& data,
+        std::vector<NodeData>& clones,
         bool recurse,
         Loaders& loaders) const
     {
@@ -89,7 +89,7 @@ namespace loader {
                     data.type = NodeType::terrain;
                 }
                 else {
-                    reportUnknown("entity_type", k, v);
+                    reportUnknown("node_type", k, v);
                 }
             }
             else if (k == "xid") {
@@ -246,7 +246,7 @@ namespace loader {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
             }
             else {
-                reportUnknown("entity_entry", k, v);
+                reportUnknown("node_entry", k, v);
             }
         }
 
@@ -283,9 +283,9 @@ namespace loader {
                 if (k == "clones") {
                     for (const auto& node : v.getNodes()) {
                         // NOTE KI intialize with current data
-                        EntityData clone = data;
-                        std::vector<EntityData> dummy{};
-                        loadEntityClone(
+                        NodeData clone = data;
+                        std::vector<NodeData> dummy{};
+                        loadNodeClone(
                             node,
                             clone,
                             dummy,

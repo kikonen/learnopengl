@@ -2,10 +2,10 @@
 
 #include <vector>
 
-#include "ResolvedEntity.h"
+#include "ResolvedNode.h"
 
 namespace loader {
     struct DagSort {
-        std::vector<ResolvedEntity*> sort(std::vector<ResolvedEntity>& resolvedEntities);
+        std::vector<ResolvedNode*> sort(std::vector<ResolvedNode>& resolvedEntities);
     };
 }

@@ -14,7 +14,7 @@ namespace {
 
     struct DagNode {
         ki::node_id id;
-        loader::ResolvedEntity* resolved;
+        loader::ResolvedNode* resolved;
 
         DagNode* previous{ nullptr };
         int depth{ 0 };
@@ -25,7 +25,7 @@ namespace {
     };
 
     void createNodes(
-        std::vector<loader::ResolvedEntity>& resolvedEntities,
+        std::vector<loader::ResolvedNode>& resolvedEntities,
         std::vector<DagNode>& nodes)
     {
         nodes.reserve(resolvedEntities.size());
@@ -96,7 +96,7 @@ namespace {
 }
 
 namespace loader {
-    std::vector<ResolvedEntity*> DagSort::sort(std::vector<ResolvedEntity>& resolvedEntities)
+    std::vector<ResolvedNode*> DagSort::sort(std::vector<ResolvedNode>& resolvedEntities)
     {
         std::vector<DagNode> nodes;
         std::vector<DagNode*> stack;
@@ -106,7 +106,7 @@ namespace loader {
 
         std::reverse(stack.begin(), stack.end());
 
-        std::vector<ResolvedEntity*> result;
+        std::vector<ResolvedNode*> result;
         for (auto* node : stack) {
             result.push_back(node->resolved);
         }

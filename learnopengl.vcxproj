@@ -271,7 +271,7 @@
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
     <ClCompile Include="src\loader\CubeMapLoader.cpp" />
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
-    <ClCompile Include="src\loader\EntityLoader.cpp" />
+    <ClCompile Include="src\loader\NodeLoader.cpp" />
     <ClCompile Include="src\loader\GeneratorLoader.cpp" />
     <ClCompile Include="src\loader\LightLoader.cpp" />
     <ClCompile Include="src\loader\MaterialLoader.cpp" />
@@ -439,8 +439,8 @@
     <ClInclude Include="src\loader\converter\Value.h" />
     <ClInclude Include="src\loader\converter\YamlConverter.h" />
     <ClInclude Include="src\loader\document.h" />
-    <ClInclude Include="src\loader\EntityData.h" />
-    <ClInclude Include="src\loader\EntityField.h" />
+    <ClInclude Include="src\loader\NodeData.h" />
+    <ClInclude Include="src\loader\NodeField.h" />
     <ClInclude Include="src\loader\Flags.h" />
     <ClInclude Include="src\loader\Loaders.h" />
     <ClInclude Include="src\loader\MaterialReference.h" />
@@ -485,7 +485,7 @@
     <ClInclude Include="src\loader\LodData.h" />
     <ClInclude Include="src\loader\ParticleData.h" />
     <ClInclude Include="src\loader\ParticleLoader.h" />
-    <ClInclude Include="src\loader\ResolvedEntity.h" />
+    <ClInclude Include="src\loader\ResolvedNode.h" />
     <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\animation\RigNode.h" />
@@ -578,8 +578,8 @@
     <ClInclude Include="src\loader\CubeMapLoader.h" />
     <ClInclude Include="src\loader\CustomMaterialData.h" />
     <ClInclude Include="src\loader\CustomMaterialLoader.h" />
-    <ClInclude Include="src\loader\EntityRoot.h" />
-    <ClInclude Include="src\loader\EntityLoader.h" />
+    <ClInclude Include="src\loader\NodeRoot.h" />
+    <ClInclude Include="src\loader\NodeLoader.h" />
     <ClInclude Include="src\loader\GeneratorData.h" />
     <ClInclude Include="src\loader\GeneratorLoader.h" />
     <ClInclude Include="src\loader\LightData.h" />

@@ -29,7 +29,7 @@
 #include "MeshData.h"
 
 namespace loader {
-    struct EntityData {
+    struct NodeData {
         bool enabled{ false };
         bool active{ false };
 
