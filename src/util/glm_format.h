@@ -66,6 +66,23 @@ template <> struct fmt::formatter<glm::vec4> {
     }
 };
 
+template <> struct fmt::formatter<glm::uvec4> {
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        if (it != end && *it != '}') throw fmt::format_error("invalid format");
+
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::uvec4& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        return fmt::format_to(
+            ctx.out(),
+            "({}, {}, {}, {})",
+            p.x, p.y, p.z, p.w);
+    }
+};
+
 template <> struct fmt::formatter<glm::uvec3> {
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
         auto it = ctx.begin(), end = ctx.end();
