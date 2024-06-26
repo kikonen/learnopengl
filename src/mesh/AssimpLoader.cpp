@@ -432,19 +432,21 @@ namespace mesh
             const auto& vw = bone->mWeights[i];
             const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
-            //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}",
-            //    meshIndex,
-            //    boneIndex,
-            //    weight->mVertexId,
-            //    weight->mWeight));
-
             size_t vertexIndex = bone->mWeights[i].mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
             vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
-            vertexBones[vertexIndex].addBone(bi.m_index, vw.mWeight);
+            auto& vb = vertexBones[vertexIndex];
+            vb.addBone(bi.m_index, vw.mWeight);
+
+            //KI_INFO_OUT(fmt::format(
+            //    "ASSIMP: mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
+            //    meshIndex,
+            //    bi.m_index,
+            //    vertexIndex,
+            //    vb.m_boneIds,
+            //    vb.m_weights));
         }
     }
 

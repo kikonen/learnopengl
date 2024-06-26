@@ -521,6 +521,10 @@ void AssetsLoader::loadAssets(
                 data.animationFirstFrameOnly = readBool(v);
                 continue;
             }
+            if (k == "animation_once_only") {
+                data.animationOnceOnly = readBool(v);
+                continue;
+            }
             if (k == "animation_max_count") {
                 data.animationMaxCount = readInt(v);
                 continue;

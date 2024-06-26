@@ -13,6 +13,7 @@ namespace animation {
         void addBone(uint16_t boneId, float weight) {
             if (weight == 0.f)
                 return;
+            assert(weight > 0 && weight <= 1.f);
 
             for (int i = 0; i < 4; i++) {
                 // NOTE KI boneId *CAN* be zero
@@ -24,7 +25,11 @@ namespace animation {
                     m_weights[i] = weight;
                     return;
                 }
+                else {
+                    assert(m_boneIds[i] != boneId);
+                }
             }
+            assert(m_weights.x + m_weights.y + m_weights.z + m_weights.w <= 1.f);
             assert(0);
         }
     };
