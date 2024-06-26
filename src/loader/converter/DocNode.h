@@ -23,7 +23,7 @@ namespace loader {
         };
 
         DocNode();
-        DocNode(loader::NodeType type);
+        DocNode(loader::DocNodeType type);
         DocNode(const std::string& name);
         ~DocNode();
 
@@ -45,16 +45,16 @@ namespace loader {
         void setValue(std::string value);
 
         bool isValid() const noexcept {
-            return m_type != NodeType::undefined;
+            return m_type != DocNodeType::undefined;
         }
 
         bool isSequence() const noexcept
         {
-            return m_type == NodeType::sequence;
+            return m_type == DocNodeType::sequence;
         }
 
         bool isScalar() const noexcept {
-            return m_type == NodeType::scalar;
+            return m_type == DocNodeType::scalar;
         }
 
         //template<typename T>
@@ -70,7 +70,7 @@ namespace loader {
 
     private:
         const std::string m_name;
-        NodeType m_type{ NodeType::undefined };
+        DocNodeType m_type{ DocNodeType::undefined };
         std::shared_ptr<NodeData> m_data;
     };
 }

@@ -1,4 +1,4 @@
-#include "NodeTransform.h"
+#include "NodeState.h"
 
 #include <glm/glm.hpp>
 
@@ -16,7 +16,7 @@
 namespace {
 }
 
-void NodeTransform::updateRootMatrix() noexcept
+void NodeState::updateRootMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirty) return;
@@ -53,7 +53,7 @@ void NodeTransform::updateRootMatrix() noexcept
     m_dirtySnapshot = true;
 }
 
-void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
+void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 {
     ASSERT_WT();
 
@@ -97,7 +97,7 @@ void NodeTransform::updateModelMatrix(const NodeTransform& parent) noexcept
     m_dirtySnapshot = true;
 }
 
-void NodeTransform::updateModelAxis() noexcept
+void NodeState::updateModelAxis() noexcept
 {
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
@@ -108,7 +108,7 @@ void NodeTransform::updateModelAxis() noexcept
     m_viewUp = glm::cross(viewRight, m_viewFront);
 }
 
-void NodeTransform::updateRotationMatrix() noexcept
+void NodeState::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;

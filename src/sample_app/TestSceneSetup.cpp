@@ -71,9 +71,9 @@ void TestSceneSetup::setupEffectExplosion()
 #endif
         node->m_typeHandle = typeHandle;
 
-        auto& transform = node->modifyTransform();
+        auto& state = node->modifyState();
 
-        transform.setScale(2);
+        state.setScale(2);
 
         {
             event::Event evt { event::Type::node_add };

@@ -36,7 +36,7 @@
 #include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
-#include "model/EntityType.h"
+#include "model/NodeType.h"
 
 #include "animation/AnimationLoader.h"
 
@@ -452,16 +452,16 @@ namespace loader {
 
         assignTypeFlags(entityData, typeHandle);
 
-        if (entityData.type == EntityType::origo) {
+        if (entityData.type == NodeType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
+            type->m_nodeType = NodeType::origo;
         } else
         {
             resolveMeshes(type, entityData, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (entityData.type != EntityType::container) {
+            if (entityData.type != NodeType::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -542,8 +542,8 @@ namespace loader {
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (entityData.type == EntityType::model) {
-            type->m_entityType = EntityType::model;
+        if (entityData.type == NodeType::model) {
+            type->m_nodeType = NodeType::model;
 
             auto future = ModelRegistry::get().getMeshSet(
                 assets.modelsDir,
@@ -566,8 +566,8 @@ namespace loader {
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
                 entityData.baseId, entityData.desc, type->str()));
         }
-        else if (entityData.type == EntityType::text) {
-            type->m_entityType = EntityType::text;
+        else if (entityData.type == NodeType::text) {
+            type->m_nodeType = NodeType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
             mesh::LodMesh lodMesh;
@@ -575,19 +575,19 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (entityData.type == EntityType::terrain) {
+        else if (entityData.type == NodeType::terrain) {
             // NOTE KI handled via container + generator
-            type->m_entityType = EntityType::terrain;
+            type->m_nodeType = NodeType::terrain;
             throw "Terrain not supported currently";
         }
-        else if (entityData.type == EntityType::container) {
+        else if (entityData.type == NodeType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = EntityType::container;
+            type->m_nodeType = NodeType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = EntityType::origo;
+            type->m_nodeType = NodeType::origo;
             type->m_flags.invisible = true;
         }
 
@@ -704,18 +704,18 @@ namespace loader {
 
         glm::vec3 pos = entityData.position + clonePositionOffset + tilePositionOffset;
 
-        auto& transform = node->modifyTransform();
-        transform.setPosition(pos);
+        auto& state = node->modifyState();
+        state.setPosition(pos);
 
-        transform.setQuatRotation(util::degreesToQuat(entityData.rotation));
-        transform.setBaseScale(entityData.baseScale);
-        transform.setScale(entityData.scale);
-        transform.setFront(entityData.front);
+        state.setQuatRotation(util::degreesToQuat(entityData.rotation));
+        state.setBaseScale(entityData.baseScale);
+        state.setScale(entityData.scale);
+        state.setFront(entityData.front);
 
         {
             auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
-            transform.setVolume(type->getAABB().getVolume());
-            transform.setBaseTransform(baseTransform);
+            state.setVolume(type->getAABB().getVolume());
+            state.setBaseTransform(baseTransform);
         }
 
         node->m_camera = l.m_cameraLoader.createCamera(entityData.camera);
@@ -728,7 +728,7 @@ namespace loader {
         node->m_particleGenerator = l.m_particleLoader.createParticle(
             entityData.particle);
 
-        if (type->m_entityType == EntityType::text) {
+        if (type->m_nodeType == NodeType::text) {
             node->m_generator = m_loaders->m_textLoader.createGenerator(
                 type,
                 entityData.text,

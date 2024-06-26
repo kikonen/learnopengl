@@ -136,7 +136,7 @@ namespace animation
             if (!lodMesh.m_flags.useAnimation) continue;
 
             const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
-            auto& transform = node->modifyTransform();
+            auto& transform = node->modifyState();
 
             auto& rig = *mesh->m_rig;
             auto palette = boneRegistry.modifyRange(transform.m_boneBaseIndex, rig.m_boneContainer.size());

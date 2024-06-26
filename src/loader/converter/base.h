@@ -7,7 +7,7 @@ namespace loader {
 
     //typedef loader::DocNode Node;
 
-    enum class NodeType {
+    enum class DocNodeType {
         undefined,
         null,
         scalar,

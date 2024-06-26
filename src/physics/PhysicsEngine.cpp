@@ -7,7 +7,7 @@
 #include "util/glm_format.h"
 
 #include "model/Node.h"
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -198,12 +198,12 @@ namespace physics
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
-                for (auto& transform : node->m_instancer->modifyTransforms()) {
+                for (auto& transform : node->m_instancer->modifyStates()) {
                     enforceBounds(ctx, type, *node, transform);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->modifyTransform());
+                enforceBounds(ctx, type, *node, node->modifyState());
             }
         };
 
@@ -236,7 +236,7 @@ namespace physics
             auto* node = obj.m_nodeHandle.toNode();
             if (!node) continue;
 
-            const auto level = node->getTransform().getMatrixLevel();
+            const auto level = node->getState().getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
 
             obj.prepare(m_worldId, m_spaceId);
@@ -271,7 +271,7 @@ namespace physics
             auto* node = handle.toNode();
             if (!node) continue;
 
-            if (node->getTransform().getMatrixLevel() == 0) continue;
+            if (node->getState().getMatrixLevel() == 0) continue;
 
             auto* type = node->m_typeHandle.toType();
             if (type->m_flags.staticBounds) {
@@ -304,7 +304,7 @@ namespace physics
         const UpdateContext& ctx,
         const mesh::MeshType* type,
         Node& node,
-        NodeTransform& transform)
+        NodeState& transform)
     {
         if (transform.m_matrixLevel == transform.m_physicsLevel) return;
         transform.m_physicsLevel = transform.m_matrixLevel;
@@ -316,7 +316,7 @@ namespace physics
 
         auto* parent = node.getParent();
 
-        auto y = surfaceY - parent->getTransform().getWorldPosition().y;
+        auto y = surfaceY - parent->getState().getWorldPosition().y;
         y += transform.getScale().y;
         pos.y = y;
 
@@ -328,9 +328,9 @@ namespace physics
         //transform.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
         if (transform.m_dirty) {
-            transform.updateModelMatrix(parent->getTransform());
-            auto& nodeTransform = node.modifyTransform();
-            nodeTransform.m_dirtySnapshot = true;
+            transform.updateModelMatrix(parent->getState());
+            auto& nodeState = node.modifyState();
+            nodeState.m_dirtySnapshot = true;
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

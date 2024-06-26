@@ -27,7 +27,7 @@ namespace loader {
     DocNode::DocNode() = default;
     DocNode::~DocNode() = default;
 
-    DocNode::DocNode(loader::NodeType type)
+    DocNode::DocNode(loader::DocNodeType type)
         : m_type{ type }
     {}
 

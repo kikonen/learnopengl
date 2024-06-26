@@ -1,6 +1,6 @@
 #pragma once
 
-enum class EntityType : std::underlying_type_t<std::byte> {
+enum class NodeType : std::underlying_type_t<std::byte> {
     none,
     origo,
     marker,

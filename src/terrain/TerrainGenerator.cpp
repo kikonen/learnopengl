@@ -79,12 +79,12 @@ namespace terrain {
         const UpdateContext& ctx,
         Node& container)
     {
-        auto& transform = container.modifyTransform();
-        if (m_containerMatrixLevel == transform.getMatrixLevel()) return;
+        auto& state = container.modifyState();
+        if (m_containerMatrixLevel == state.getMatrixLevel()) return;
 
         updateTiles(ctx, container);
-        transform.m_dirtySnapshot = true;
-        m_containerMatrixLevel = transform.getMatrixLevel();
+        state.m_dirtySnapshot = true;
+        m_containerMatrixLevel = state.getMatrixLevel();
     }
 
     physics::HeightMap* TerrainGenerator::prepareHeightMap(
@@ -158,7 +158,7 @@ namespace terrain {
         const UpdateContext& ctx,
         Node& container)
     {
-        const auto& containerTransform = container.getTransform();
+        const auto& containerState = container.getState();
 
         const int step = m_worldTileSize;
 
@@ -167,14 +167,14 @@ namespace terrain {
 
             const glm::vec3 pos{ step / 2 + info.m_tileU * step, 0, step / 2 + info.m_tileV * step };
 
-            auto& transform = m_transforms[idx];
+            auto& state = m_states[idx];
 
-            transform.setPosition(pos);
+            state.setPosition(pos);
 
-            transform.updateModelMatrix(containerTransform);
+            state.updateModelMatrix(containerState);
         }
 
-        m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+        m_reservedCount = static_cast<uint32_t>(m_states.size());
         setActiveRange(0, m_reservedCount);
     }
 
@@ -208,7 +208,7 @@ namespace terrain {
 
         const int tileCount = m_worldTilesU * m_worldTilesV;
 
-        m_transforms.reserve(tileCount);
+        m_states.reserve(tileCount);
         m_tileInfos.reserve(tileCount);
 
         // Setup initial static values for entity
@@ -258,10 +258,10 @@ namespace terrain {
             }
 
             {
-                auto& transform = m_transforms.emplace_back();
-                transform.setVolume(tileVolume);
-                transform.setScale(scale);
-                transform.m_shapeIndex = info.m_registeredIndex;
+                auto& state = m_states.emplace_back();
+                state.setVolume(tileVolume);
+                state.setScale(scale);
+                state.m_shapeIndex = info.m_registeredIndex;
             }
         }
 
@@ -313,7 +313,7 @@ namespace terrain {
 #endif
             node->m_typeHandle = typeHandle;
 
-            node->modifyTransform().setVolume(minmax.getVolume());
+            node->modifyState().setVolume(minmax.getVolume());
             node->m_instancer = this;
 
             m_nodeHandle = handle;
@@ -338,7 +338,7 @@ namespace terrain {
 
         auto* type = typeHandle.toType();
         type->setName(containerType->getName());
-        type->m_entityType = EntityType::terrain;
+        type->m_nodeType = NodeType::terrain;
 
         auto& flags = type->m_flags;
         flags = containerType->m_flags;

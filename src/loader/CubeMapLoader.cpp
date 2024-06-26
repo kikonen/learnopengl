@@ -70,7 +70,7 @@ namespace loader {
             lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
-        type->m_entityType = EntityType::marker;
+        type->m_nodeType = NodeType::marker;
 
         auto& flags = type->m_flags;
 
@@ -91,13 +91,13 @@ namespace loader {
         node->m_visible = false;
 
         {
-            auto& transform = node->modifyTransform();
+            auto& state = node->modifyState();
 
             //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-            transform.setScale(4.f);
+            state.setScale(4.f);
 
             // NOTE KI m_radius = 1.73205078
-            transform.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->getAABB().getVolume());
         }
 
         {

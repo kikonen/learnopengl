@@ -303,7 +303,7 @@
     <ClCompile Include="src\generator\NodeGenerator.cpp" />
     <ClCompile Include="src\terrain\TerrainGenerator.cpp" />
     <ClCompile Include="src\model\InstancePhysics.cpp" />
-    <ClCompile Include="src\model\NodeTransform.cpp" />
+    <ClCompile Include="src\model\NodeState.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
@@ -641,14 +641,14 @@
     <ClInclude Include="src\kigl\OpenGLInfo.h" />
     <ClInclude Include="src\ki\RenderClock.h" />
     <ClInclude Include="src\model\InstancePhysics.h" />
-    <ClInclude Include="src\model\NodeTransform.h" />
+    <ClInclude Include="src\model\NodeState.h" />
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
-    <ClInclude Include="src\model\EntityType.h" />
+    <ClInclude Include="src\model\NodeType.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\registry\ImageRegistry.h" />
     <ClInclude Include="src\registry\MaterialRegistry.h" />
@@ -678,7 +678,6 @@
     <ClInclude Include="src\script\api\Wait.h" />
     <ClInclude Include="src\controller\VolumeController.h" />
     <ClInclude Include="src\ki\uuid.h" />
-    <ClInclude Include="src\model\Group.h" />
     <ClInclude Include="src\render\BrdfLutTexture.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />
     <ClInclude Include="src\render\EnvironmentMap.h" />

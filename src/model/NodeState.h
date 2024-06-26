@@ -22,7 +22,7 @@ class RenderContext;
 // NOTE KI purposee of this struct is to separate
 // rendering entity and node instance updated, with aim to use separate threads
 //
-struct NodeTransform {
+struct NodeState {
     Sphere m_volume;
 
     glm::vec3 m_position{ 0.f };
@@ -271,7 +271,7 @@ struct NodeTransform {
     }
 
     void updateRootMatrix() noexcept;
-    void updateModelMatrix(const NodeTransform& parent) noexcept;
+    void updateModelMatrix(const NodeState& parent) noexcept;
     void updateModelAxis() noexcept;
     void updateRotationMatrix() noexcept;
 };

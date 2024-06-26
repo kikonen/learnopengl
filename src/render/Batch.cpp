@@ -304,7 +304,7 @@ namespace render {
         uint8_t kindBits,
         Node& node)
     {
-        if (type->m_entityType == EntityType::origo) return;
+        if (type->m_nodeType == NodeType::origo) return;
         if (type->m_flags.invisible || !node.m_visible) return;
 
         node.updateVAO(ctx);

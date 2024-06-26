@@ -86,7 +86,7 @@ void Node::prepareWT(
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         {
-            m_transform.m_flags = type->resolveEntityFlags();
+            m_state.m_flags = type->resolveEntityFlags();
         }
     }
 
@@ -103,9 +103,9 @@ void Node::prepareWT(
         auto* mesh = lodMesh ? lodMesh->getMesh<mesh::ModelMesh>() : nullptr;
         if (mesh) {
             auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
-            m_transform.m_boneBaseIndex = boneBaseIndex;
-            m_transform.m_socketBaseIndex = socketBaseIndex;
-            m_transform.m_animationIndex = 0;
+            m_state.m_boneBaseIndex = boneBaseIndex;
+            m_state.m_socketBaseIndex = socketBaseIndex;
+            m_state.m_animationIndex = 0;
         }
     }
 
@@ -147,7 +147,8 @@ void Node::bindBatch(
 {
     if (m_instancer) {
         m_instancer->bindBatch(ctx, type, programSelector, kindBits, batch, *this);
-    } else {
+    }
+    else {
         const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
 
         batch.addSnapshot(
@@ -163,10 +164,10 @@ void Node::bindBatch(
 void Node::updateModelMatrix() noexcept
 {
     if (m_parent) {
-        m_transform.updateModelMatrix(getParent()->getTransform());
+        m_state.updateModelMatrix(getParent()->getState());
     }
     else {
-        m_transform.updateRootMatrix();
+        m_state.updateRootMatrix();
     }
 }
 
@@ -174,10 +175,10 @@ void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_transform.m_dirtySnapshot = true;
+        m_state.m_dirtySnapshot = true;
         if (m_generator) {
-            for (auto& transform : m_generator->modifyTransforms()) {
-                transform.m_dirtySnapshot = true;
+            for (auto& state : m_generator->modifyStates()) {
+                state.m_dirtySnapshot = true;
             }
         }
     }
@@ -187,10 +188,10 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_transform.m_dirtySnapshot = true;
+        m_state.m_dirtySnapshot = true;
         if (m_generator) {
-            for (auto& transform : m_generator->modifyTransforms()) {
-                transform.m_dirtySnapshot = true;
+            for (auto& state : m_generator->modifyStates()) {
+                state.m_dirtySnapshot = true;
             }
         }
     }
@@ -219,11 +220,11 @@ const std::string& Node::lua_getName() const noexcept
 
 int Node::lua_getCloneIndex() const noexcept
 {
-   return m_cloneIndex;
+    return m_cloneIndex;
 }
 
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
-    const auto& pos = m_transform.getPosition();
+    const auto& pos = m_state.getPosition();
     return { pos.x, pos.y, pos.z };
 }

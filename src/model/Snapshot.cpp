@@ -5,14 +5,14 @@
 #include "model/EntityFlags.h"
 #include "registry/EntitySSBO.h"
 
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 
 
 namespace {
     constexpr ki::size_t_entity_flags PLANE_BITS = 0;
 }
 
-Snapshot::Snapshot(const NodeTransform& o)
+Snapshot::Snapshot(const NodeState& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
     m_shapeIndex{ o.m_shapeIndex },
@@ -32,7 +32,7 @@ Snapshot::Snapshot(const NodeTransform& o)
     o.m_volume.storeWorldVolume(m_volume);
 }
 
-Snapshot::Snapshot(const NodeTransform&& o)
+Snapshot::Snapshot(const NodeState&& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
     m_shapeIndex{ o.m_shapeIndex },
@@ -51,7 +51,7 @@ Snapshot::Snapshot(const NodeTransform&& o)
     o.m_volume.storeWorldVolume(m_volume);
 }
 
-void Snapshot::applyFrom(const NodeTransform& o) noexcept
+void Snapshot::applyFrom(const NodeState& o) noexcept
 {
     m_matrixLevel = o.m_matrixLevel;
 

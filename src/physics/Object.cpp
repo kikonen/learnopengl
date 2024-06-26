@@ -153,12 +153,12 @@ namespace physics
         const auto* node = m_nodeHandle.toNode();
         if (!node) return;
 
-        const auto& transform = node->getTransform();
-        const auto level = transform.getMatrixLevel();
+        const auto& state = node->getState();
+        const auto level = state.getMatrixLevel();
         if (!force && m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        const glm::vec3& pos = transform.getWorldPosition();
+        const glm::vec3& pos = state.getWorldPosition();
         {
             if (m_bodyId) {
                 dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
@@ -234,14 +234,14 @@ namespace physics
             pos.y = 400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
-        pos -= parent->getTransform().getWorldPosition();
+        pos -= parent->getState().getWorldPosition();
 
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
         auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        auto& transform = node->modifyTransform();
-        transform.setPosition(pos);
-        transform.setQuatRotation(rotBase);
+        auto& state = node->modifyState();
+        state.setPosition(pos);
+        state.setQuatRotation(rotBase);
         //m_node->updateModelMatrix();
     }
 }

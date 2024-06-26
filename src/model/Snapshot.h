@@ -17,7 +17,7 @@
 
 struct UpdateContext;
 
-struct NodeTransform;
+struct NodeState;
 struct EntitySSBO;
 
 //
@@ -59,10 +59,10 @@ struct Snapshot {
     ///////////////////////////////////////
     //
     Snapshot() = default;
-    Snapshot(const NodeTransform& o);
-    Snapshot(const NodeTransform&& o);
+    Snapshot(const NodeState& o);
+    Snapshot(const NodeState&& o);
 
-    void applyFrom(const NodeTransform& o) noexcept;
+    void applyFrom(const NodeState& o) noexcept;
 
     //Snapshot& operator=(Snapshot& o) = default;
     inline void applyFrom(const Snapshot& o) noexcept
