@@ -7,6 +7,11 @@
 #include "BoneInfo.h"
 
 namespace animation {
+    bool BoneContainer::empty() const noexcept
+    {
+        return m_boneInfos.empty();
+    }
+
     BoneInfo& BoneContainer::registerBone(const aiBone* bone) noexcept
     {
         int16_t index;

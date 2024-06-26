@@ -67,11 +67,12 @@ namespace mesh {
         const ki::mesh_id m_id;
 
         uint32_t m_registeredIndex{ 0 };
-        uint16_t m_socketIndex{ 0 };
 
         const std::string m_name;
-        std::string m_nodeName;
-        uint16_t m_nodeIndex{ 0 };
+
+        std::string m_rigNodeName;
+        uint16_t m_rigNodeIndex{ 0 };
+        uint16_t m_rigSocketIndex{ 0 };
 
         glm::mat4 m_baseTransform{ 1.f };
         glm::mat4 m_inverseBaseTransform{ 1.f };

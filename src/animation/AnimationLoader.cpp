@@ -27,6 +27,9 @@ namespace animation {
     {
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
 
+        // NOTE KI animations cannot exist in empty rig
+        if (rig.empty()) return;
+
         if (!util::fileExists(filePath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
         }

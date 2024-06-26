@@ -23,6 +23,12 @@ namespace animation {
 
         animation::RigNode& addNode(const aiNode* node);
 
+        // @return true if rig is empty (thus no bones, and thus rig is not needed)
+        bool empty() const noexcept
+        {
+            return m_boneContainer.empty();
+        }
+
         void addAnimation(std::unique_ptr<animation::Animation> animation);
 
         const animation::RigNode* getNode(int16_t index) const noexcept;
@@ -46,6 +52,8 @@ namespace animation {
         BoneContainer m_boneContainer;
 
         std::vector<uint16_t> m_sockets;
+
+        std::map<std::string, uint16_t> m_NameToSocket;
 
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
     };

@@ -8,7 +8,7 @@
 
 #include "animation/RigContainer.h"
 
-#include "mesh/ModelMesh.h"
+#include "mesh/Mesh.h"
 
 namespace {
     std::string extractName(std::string_view meshPath) {
@@ -43,7 +43,7 @@ namespace mesh {
 
     bool MeshSet::isRigged() const noexcept
     {
-        return m_rig->hasBones();
+        return !!m_rig;
     }
 
     void MeshSet::prepareVolume() noexcept {
