@@ -179,6 +179,7 @@ public:
 
     bool animationEnabled;
     bool animationFirstFrameOnly;
+    bool animationOnceOnly;
     int animationMaxCount;
 
     bool particleEnabled;

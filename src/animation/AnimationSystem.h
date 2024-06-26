@@ -53,6 +53,7 @@ namespace animation {
     private:
         bool m_enabled{ false };
         bool m_firstFrameOnly{ false };
+        bool m_onceOnly{ false };
         size_t m_maxCount{ 0 };
 
         std::mutex m_pendingLock{};

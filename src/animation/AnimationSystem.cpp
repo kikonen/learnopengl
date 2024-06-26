@@ -48,6 +48,7 @@ namespace animation
 
         m_enabled = assets.animationEnabled;
         m_firstFrameOnly = assets.animationFirstFrameOnly;
+        m_onceOnly = assets.animationOnceOnly;
         m_maxCount = assets.animationMaxCount;
 
         auto& boneRegistry = BoneRegistry::get();
@@ -136,17 +137,21 @@ namespace animation
             if (!lodMesh.m_flags.useAnimation) continue;
 
             const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
-            auto& transform = node->modifyState();
+            auto& state = node->modifyState();
+
+            if (state.m_animationStartTime <= -42.f) {
+                continue;
+            }
 
             auto& rig = *mesh->m_rig;
-            auto palette = boneRegistry.modifyRange(transform.m_boneBaseIndex, rig.m_boneContainer.size());
-            auto sockets = socketRegistry.modifyRange(transform.m_socketBaseIndex, rig.m_sockets.size());
+            auto palette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
+            auto sockets = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());
 
-            if (transform.m_animationStartTime < 0) {
-                transform.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+            if (state.m_animationStartTime < 0) {
+                state.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
             }
             if (rig.m_animations.size() > 1) {
-                transform.m_animationIndex = 1;
+                state.m_animationIndex = 1;
             }
 
             animation::Animator animator;
@@ -158,13 +163,17 @@ namespace animation
                 lodMesh.m_animationBaseTransform,
                 palette,
                 sockets,
-                transform.m_animationIndex,
-                transform.m_animationStartTime,
-                m_firstFrameOnly ? transform.m_animationStartTime : ctx.m_clock.ts);
+                state.m_animationIndex,
+                state.m_animationStartTime,
+                m_firstFrameOnly ? state.m_animationStartTime : ctx.m_clock.ts);
+
+            if (m_onceOnly) {
+                state.m_animationStartTime = -42;
+            }
 
             if (changed) {
-                boneRegistry.markDirty(transform.m_boneBaseIndex, rig.m_boneContainer.size());
-                socketRegistry.markDirty(transform.m_socketBaseIndex, rig.m_sockets.size());
+                boneRegistry.markDirty(state.m_boneBaseIndex, rig.m_boneContainer.size());
+                socketRegistry.markDirty(state.m_socketBaseIndex, rig.m_sockets.size());
             }
             result |= changed;
         }
