@@ -12,7 +12,7 @@ cube_maps: {}
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     xxpos: [50, 30, 40]

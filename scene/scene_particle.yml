@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     mesh:
       path: water_ball
