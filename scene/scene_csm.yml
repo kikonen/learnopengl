@@ -8,7 +8,7 @@ cube_maps: {}
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - name: Origo
     id: player
     type: origo

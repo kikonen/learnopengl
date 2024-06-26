@@ -14,7 +14,7 @@ cube_maps: {}
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: world_origo
     mesh:
       path: water_ball
