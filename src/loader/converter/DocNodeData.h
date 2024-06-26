@@ -7,7 +7,7 @@
 #include "base.h"
 
 namespace loader {
-    struct NodeData {
+    struct DocNodeData {
         const loader::DocNode& findNode(const std::string& key) const noexcept;
 
         //template<typename T>

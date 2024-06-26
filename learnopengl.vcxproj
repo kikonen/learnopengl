@@ -205,7 +205,7 @@
     <ClCompile Include="src\ki\FpsCounter.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
-    <ClCompile Include="src\loader\converter\NodeData.cpp" />
+    <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
@@ -432,11 +432,10 @@
     <ClInclude Include="src\loader\TextLoader.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
-    <ClInclude Include="src\loader\converter\DocNode_impl.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
     <ClInclude Include="src\loader\converter\DocNode.h" />
     <ClInclude Include="src\loader\converter\base.h" />
-    <ClInclude Include="src\loader\converter\NodeData.h" />
+    <ClInclude Include="src\loader\converter\DocNodeData.h" />
     <ClInclude Include="src\loader\converter\Value.h" />
     <ClInclude Include="src\loader\converter\YamlConverter.h" />
     <ClInclude Include="src\loader\document.h" />

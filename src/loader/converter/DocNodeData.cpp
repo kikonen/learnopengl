@@ -1,4 +1,4 @@
-#include "NodeData.h"
+#include "DocNodeData.h"
 
 #include "util/Util.h"
 
@@ -9,7 +9,7 @@ namespace {
 }
 
 namespace loader {
-    const loader::DocNode& NodeData::findNode(const std::string& key) const noexcept
+    const loader::DocNode& DocNodeData::findNode(const std::string& key) const noexcept
     {
         const auto& it = std::find_if(
             m_nodes.cbegin(),
@@ -28,7 +28,7 @@ namespace loader {
     //    return m_value;
     //}
 
-    bool NodeData::asBool() const noexcept {
+    bool DocNodeData::asBool() const noexcept {
         //if (!util::isBool(m_data->m_value))
         //{
         //    KI_WARN(fmt::format("invalid bool={}", renderNode(*this)));
