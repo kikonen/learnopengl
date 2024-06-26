@@ -31,30 +31,30 @@ std::span<const Snapshot> NodeGenerator::getSnapshots(
 {
     return snapshotRegistry.getSnapshotRange(
         m_snapshotBase,
-        static_cast<uint32_t>(m_transforms.size()));
+        static_cast<uint32_t>(m_states.size()));
 }
 
 void NodeGenerator::prepareSnapshots(
     NodeSnapshotRegistry& snapshotRegistry)
 {
-    const auto count = m_transforms.size();
+    const auto count = m_states.size();
     m_snapshotBase = snapshotRegistry.registerSnapshotRange(count);
 }
 
 void NodeGenerator::snapshotWT(
     NodeSnapshotRegistry& snapshotRegistry)
 {
-    const auto count = static_cast<uint32_t>(m_transforms.size());
+    const auto count = static_cast<uint32_t>(m_states.size());
 
     auto snapshots = snapshotRegistry.modifySnapshotRange(m_snapshotBase, count);
 
     for (size_t i = 0; i < count; i++) {
-        const auto& transform = m_transforms[i];
+        const auto& state = m_states[i];
 
-        assert(!transform.m_dirty);
-        if (!transform.m_dirtySnapshot) continue;
+        assert(!state.m_dirty);
+        if (!state.m_dirtySnapshot) continue;
 
-        snapshots[i].applyFrom(transform);
+        snapshots[i].applyFrom(state);
     }
 }
 
@@ -150,7 +150,7 @@ void NodeGenerator::bindBatch(
     //    m_lods.reserve(m_reservedCount);
     //    m_lods.clear();
 
-    //    if (m_lods.size() != m_transforms.size()) {
+    //    if (m_lods.size() != m_states.size()) {
     //        m_lods.clear();
 
     //        const auto& cameraPos = ctx.m_camera->getWorldPosition();
@@ -197,9 +197,9 @@ glm::vec4 NodeGenerator::calculateVolume() const noexcept
 {
     AABB minmax{ true };
 
-    for (auto& transform : m_transforms)
+    for (auto& state : m_states)
     {
-        minmax.minmax(transform.getPosition());
+        minmax.minmax(state.getPosition());
     }
 
     return minmax.getVolume();

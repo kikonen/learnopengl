@@ -149,11 +149,11 @@ void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
 
-        const auto& transform = node->getTransform();
+        const auto& state = node->getState();
 
-        if (transform.m_dirtySnapshot) {
+        if (state.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
-            snapshot.applyFrom(transform);
+            snapshot.applyFrom(state);
         }
 
         if (node->m_generator) {

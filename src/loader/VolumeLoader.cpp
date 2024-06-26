@@ -74,7 +74,7 @@ namespace loader {
             lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
-        type->m_entityType = EntityType::marker;
+        type->m_nodeType = NodeType::marker;
 
         auto& flags = type->m_flags;
 
@@ -96,9 +96,9 @@ namespace loader {
 
         // NOTE KI m_radius = 1.73205078
         {
-            auto& transform = node->modifyTransform();
+            auto& state = node->modifyState();
 
-            transform.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->getAABB().getVolume());
         }
 
         {

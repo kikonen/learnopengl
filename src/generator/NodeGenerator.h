@@ -3,7 +3,7 @@
 #include <span>
 #include <functional>
 
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 #include "model/InstancePhysics.h"
 
 #include "pool/NodeHandle.h"
@@ -82,14 +82,14 @@ public:
         const RenderContext& ctx,
         const Node& container) {}
 
-    inline const std::vector<NodeTransform>& getTransforms() noexcept
+    inline const std::vector<NodeState>& getStates() noexcept
     {
-        return m_transforms;
+        return m_states;
     }
 
-    inline std::vector<NodeTransform>& modifyTransforms() noexcept
+    inline std::vector<NodeState>& modifyStates() noexcept
     {
-        return m_transforms;
+        return m_states;
     }
 
     std::span<const Snapshot> getSnapshots(
@@ -126,7 +126,7 @@ protected:
 
     ki::level_id m_containerMatrixLevel{ 0 };
 
-    std::vector<NodeTransform> m_transforms;
+    std::vector<NodeState> m_states;
     std::vector<const backend::Lod*> m_lods;
     std::vector<InstancePhysics> m_physics;
 };

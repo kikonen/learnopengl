@@ -27,14 +27,14 @@ namespace loader {
         const auto type = yamlNode.Type();
 
         if (type == YAML::NodeType::Map) {
-            node.m_type = NodeType::map;
+            node.m_type = DocNodeType::map;
             for (const auto& pair : yamlNode) {
                 const std::string& k = pair.first.as<std::string>();
                 node.addNode(convertNode(k, pair.second));
             }
         }
         else if (type == YAML::NodeType::Sequence) {
-            node.m_type = NodeType::sequence;
+            node.m_type = DocNodeType::sequence;
             int index = 0;
             for (const auto& e : yamlNode) {
                 node.addNode(convertNode(std::to_string(index), e));
@@ -42,11 +42,11 @@ namespace loader {
             }
         }
         else if (type == YAML::NodeType::Scalar) {
-            node.m_type = NodeType::scalar;
+            node.m_type = DocNodeType::scalar;
             node.setValue(yamlNode.as<std::string>());
         }
         else if (type == YAML::NodeType::Null) {
-            node.m_type = NodeType::null;
+            node.m_type = DocNodeType::null;
         }
         else {
             throw "Unknown node type";

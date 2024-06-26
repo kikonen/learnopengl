@@ -282,7 +282,7 @@
     <ClCompile Include="src\physics\HeightMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\NodeTransform.cpp">
+    <ClCompile Include="src\model\NodeState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\InstancePhysics.cpp">
@@ -890,9 +890,6 @@
     <ClInclude Include="src\asset\Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\Group.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ki\uuid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1085,7 +1082,7 @@
     <ClInclude Include="src\physics\HeightMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\NodeTransform.h">
+    <ClInclude Include="src\model\NodeState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\InstancePhysics.h">
@@ -1415,7 +1412,7 @@
     <ClInclude Include="src\mesh\vao\QuadVAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\EntityType.h">
+    <ClInclude Include="src\model\NodeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\FontHandle.h">

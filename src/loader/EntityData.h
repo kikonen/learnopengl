@@ -9,7 +9,7 @@
 
 #include "asset/Shader.h"
 
-#include "model/EntityType.h"
+#include "model/NodeType.h"
 
 #include "BaseId.h"
 #include "BaseData.h"
@@ -33,7 +33,7 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
-        EntityType type{ EntityType::none };
+        NodeType type{ NodeType::none };
 
         BaseId baseId;
         BaseId parentBaseId;

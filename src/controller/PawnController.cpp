@@ -95,7 +95,7 @@ void PawnController::onKey(
                         snapshot.getViewUp(),
                         adjust.y
                     });
-                //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+                //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
     }
@@ -153,7 +153,7 @@ void PawnController::onKey(
                 });
 
             //glm::vec3 adjust = snapshot.getPosition();
-            //m_node->getTransform().setPosition(pos);
+            //m_node->getState().setPosition(pos);
         }
     }
 }
@@ -191,6 +191,6 @@ void PawnController::onMouseMove(
                 snapshot.getViewUp(),
                 adjust.y
             });
-        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+        //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }

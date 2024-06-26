@@ -38,8 +38,8 @@ namespace particle {
         auto& ps = ParticleSystem::get();
         if (ps.isFull()) return;
 
-        const auto& transform = node.getTransform();
-        glm::vec3 pos = transform.getWorldPosition();
+        const auto& state = node.getState();
+        glm::vec3 pos = state.getWorldPosition();
 
         for (int i = 0; i < 1000; i++) {
             Particle particle;

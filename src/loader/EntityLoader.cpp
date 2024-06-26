@@ -74,19 +74,19 @@ namespace loader {
             if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
-                    data.type = EntityType::origo;
+                    data.type = NodeType::origo;
                 }
                 else if (type == "container") {
-                    data.type = EntityType::container;
+                    data.type = NodeType::container;
                 }
                 else if (type == "model") {
-                    data.type = EntityType::model;
+                    data.type = NodeType::model;
                 }
                 else if (type == "text") {
-                    data.type = EntityType::text;
+                    data.type = NodeType::text;
                 }
                 else if (type == "terrain") {
-                    data.type = EntityType::terrain;
+                    data.type = NodeType::terrain;
                 }
                 else {
                     reportUnknown("entity_type", k, v);
@@ -250,25 +250,25 @@ namespace loader {
             }
         }
 
-        if (data.type == EntityType::none) {
+        if (data.type == NodeType::none) {
             if (!data.meshes.empty()) {
-                data.type = EntityType::model;
+                data.type = NodeType::model;
             }
             if (data.text.enabled) {
-                data.type = EntityType::text;
+                data.type = NodeType::text;
             }
         }
 
         if (data.enabled) {
             //if (!data.meshes.empty()) {
-            //    if (data.type != EntityType::model) {
+            //    if (data.type != NodeType::model) {
             //        auto msg = fmt::format("INVALID: type is not model - id={}, name={}", data.baseId, data.name);
             //        KI_INFO_OUT(msg);
             //        throw msg;
             //    }
             //}
 
-            if (data.type == EntityType::none) {
+            if (data.type == NodeType::none) {
                 auto msg = fmt::format("INVALID: type missing - id={}, name={}", data.baseId, data.name);
                 KI_INFO_OUT(msg);
                 throw msg;

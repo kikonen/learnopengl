@@ -26,14 +26,14 @@ bool VolumeController::updateWT(
         return false;
     }
 
-    const auto& transform = targetNode->getTransform();
-    const auto& modelMatrix = transform.getModelMatrix();
-    const auto& maxScale = transform.getWorldMaxScale();
+    const auto& state = targetNode->getState();
+    const auto& modelMatrix = state.getModelMatrix();
+    const auto& maxScale = state.getWorldMaxScale();
 
     const auto* rootNode = NodeRegistry::get().getRootWT();
-    const auto& rootPos = rootNode->getTransform().getWorldPosition();
+    const auto& rootPos = rootNode->getState().getWorldPosition();
 
-    const auto& volume = transform.getVolume();
+    const auto& volume = state.getVolume();
     const glm::vec3 volumeCenter = glm::vec3(volume);
     const float volumeRadius = volume.a;
 
@@ -42,11 +42,11 @@ bool VolumeController::updateWT(
     const auto volumeScale = maxScale * volumeRadius;
 
     {
-        auto& volumeTransform = volumeNode.modifyTransform();
-        volumeTransform.setFront(transform.getFront());
-        volumeTransform.setQuatRotation(transform.getQuatRotation());
-        volumeTransform.setPosition(pos);
-        volumeTransform.setScale(volumeScale);
+        auto& volumeState = volumeNode.modifyState();
+        volumeState.setFront(state.getFront());
+        volumeState.setQuatRotation(state.getQuatRotation());
+        volumeState.setPosition(pos);
+        volumeState.setScale(volumeScale);
 
         volumeNode.m_visible = true;
     }

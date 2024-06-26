@@ -8,7 +8,7 @@
 
 #include "ki/limits.h"
 
-#include "model/EntityType.h"
+#include "model/NodeType.h"
 
 #include "LodMesh.h"
 #include "TypeFlags.h"
@@ -136,7 +136,7 @@ namespace mesh {
         uint32_t m_handleIndex{ 0 };
         ki::type_id m_id{ 0 };
 
-        EntityType m_entityType{ EntityType::origo };
+        NodeType m_nodeType{ NodeType::origo };
 
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

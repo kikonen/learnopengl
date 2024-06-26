@@ -13,7 +13,7 @@
 
 #include "audio/size.h"
 
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 #include "model/Snapshot.h"
 #include "model/NodeFlags.h"
 
@@ -47,7 +47,6 @@ struct UpdateContext;
 class RenderContext;
 
 class EntityRegistry;
-
 
 class Node final
 {
@@ -105,20 +104,20 @@ public:
         // TODO KI
     }
 
-    inline const NodeTransform& getTransform() const noexcept {
-        return m_transform;
+    inline const NodeState& getState() const noexcept {
+        return m_state;
     }
 
-    inline NodeTransform& modifyTransform() noexcept {
-        return m_transform;
+    inline NodeState& modifyState() noexcept {
+        return m_state;
     }
 
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
 
-    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex;  }
-    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex;  }
+    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex; }
+    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex; }
 
     void setTagMaterialIndex(int index);
     void setSelectionMaterialIndex(int index);
@@ -173,7 +172,7 @@ public:
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
 private:
-    NodeTransform m_transform;
+    NodeState m_state;
 
     ki::node_id m_id{ 0 };
     uint32_t m_handleIndex{ 0 };
