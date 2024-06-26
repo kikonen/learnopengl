@@ -22,7 +22,6 @@
 #include "MaterialData.h"
 
 #include "loader/document.h"
-#include "converter/DocNode_impl.h"
 
 namespace {
     //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");

@@ -7,11 +7,11 @@
 #include "base.h"
 
 namespace loader {
-    struct NodeData;
+    struct DocNodeData;
 
     class DocNode {
         friend class YamlConverter;
-        friend struct NodeData;
+        friend struct DocNodeData;
 
     public:
         struct Iterator {
@@ -71,6 +71,6 @@ namespace loader {
     private:
         const std::string m_name;
         DocNodeType m_type{ DocNodeType::undefined };
-        std::shared_ptr<NodeData> m_data;
+        std::shared_ptr<DocNodeData> m_data;
     };
 }
