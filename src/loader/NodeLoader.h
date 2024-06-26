@@ -3,29 +3,29 @@
 #include <vector>
 
 #include "BaseLoader.h"
-#include "EntityRoot.h"
+#include "NodeRoot.h"
 
 namespace loader {
-    class EntityLoader : public BaseLoader
+    class NodeLoader : public BaseLoader
     {
     public:
-        EntityLoader(
+        NodeLoader(
             Context ctx);
 
-        void loadEntities(
+        void loadNodes(
             const loader::DocNode& node,
-            std::vector<EntityRoot>& entities,
+            std::vector<NodeRoot>& nodes,
             Loaders& loaders) const;
 
-        void loadEntity(
+        void loadNode(
             const loader::DocNode& node,
-            EntityRoot& entityRoot,
+            NodeRoot& nodeRoot,
             Loaders& loaders) const;
 
-        void loadEntityClone(
+        void loadNodeClone(
             const loader::DocNode& node,
-            EntityData& entityData,
-            std::vector<EntityData>& clones,
+            NodeData& nodeData,
+            std::vector<NodeData>& clones,
             bool recurse,
             Loaders& loaders) const;
     };

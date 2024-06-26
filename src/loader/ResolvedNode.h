@@ -4,12 +4,12 @@
 
 #include "pool/NodeHandle.h"
 
-#include "EntityData.h"
+#include "NodeData.h"
 
 namespace loader {
-    struct ResolvedEntity {
+    struct ResolvedNode {
         ki::node_id parentId;
         pool::NodeHandle handle;
-        const EntityData& data;
+        const NodeData& data;
     };
 }

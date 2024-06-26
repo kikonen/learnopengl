@@ -1,11 +1,11 @@
 #pragma once
 
-#include "EntityData.h"
+#include "NodeData.h"
 #include "MaterialData.h"
 
 namespace loader {
     struct PrefabData {
-        EntityData entity;
+        NodeData node;
         std::vector<MaterialData> materials;
     };
 }

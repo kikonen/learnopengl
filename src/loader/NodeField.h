@@ -1,7 +1,7 @@
 #pragma once
 
 namespace loader {
-    struct EntityField {
+    struct NodeField {
         bool enabled{ false };
         bool active{ false };
         bool type{ false };

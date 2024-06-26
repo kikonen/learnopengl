@@ -33,13 +33,13 @@ namespace loader {
     struct SkyboxData;
     struct MaterialData;
     struct ScriptEngineData;
-    struct EntityRoot;
-    struct EntityData;
+    struct NodeRoot;
+    struct NodeData;
     struct TextData;
     struct MeshData;
     struct LodData;
     struct AnimationData;
-    struct ResolvedEntity;
+    struct ResolvedNode;
     struct MaterialData;
 
     struct FlagContainer;
@@ -69,8 +69,8 @@ namespace loader {
         void load();
 
     private:
-        void loadedEntity(
-            const EntityRoot& entityRoot,
+        void loadedNode(
+            const NodeRoot& nodeRoot,
             bool success);
 
         void attach(
@@ -78,39 +78,39 @@ namespace loader {
 
         void notifySceneLoaded();
 
-        void attachResolvedEntities(
-            std::vector<ResolvedEntity>& resolvedEntities);
+        void attachResolvedNodes(
+            std::vector<ResolvedNode>& resolvedNodes);
 
-        void attachResolvedEntity(
-            const ResolvedEntity& resolvedEntity);
+        void attachResolvedNode(
+            const ResolvedNode& resolvedNode);
 
-        void addResolvedEntity(
-            const ResolvedEntity& resolvedEntity);
+        void addResolvedNode(
+            const ResolvedNode& resolvedNode);
 
-        bool resolveEntity(
+        bool resolveNode(
             const ki::node_id rootId,
-            const EntityRoot& entityRoot);
+            const NodeRoot& nodeRoot);
 
-        pool::TypeHandle resolveEntityClone(
+        pool::TypeHandle resolveNodeClone(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityRoot& entityRoot,
-            const EntityData& entityData,
+            const NodeRoot& nodeRoot,
+            const NodeData& nodeData,
             bool cloned,
             int cloneIndex);
 
-        pool::TypeHandle resolveEntityCloneRepeat(
+        pool::TypeHandle resolveNodeCloneRepeat(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityRoot& entityRoot,
-            const EntityData& entityData,
+            const NodeRoot& nodeRoot,
+            const NodeData& nodeData,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
         void assignTypeFlags(
-            const EntityData& entityData,
+            const NodeData& nodeData,
             pool::TypeHandle typeHandle);
 
         void assignMeshFlags(
@@ -122,30 +122,30 @@ namespace loader {
             pool::NodeHandle nodeHandle);
 
         const pool::TypeHandle createType(
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const glm::uvec3& tile);
 
         void resolveMaterials(
             mesh::MeshType* type,
             mesh::LodMesh& lodMesh,
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const MeshData& meshData);
 
         void resolveMeshes(
             mesh::MeshType* type,
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const glm::uvec3& tile);
 
         void resolveMesh(
             mesh::MeshType* type,
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const MeshData& meshData,
             const glm::uvec3& tile,
             int index);
 
         const LodData* resolveLod(
             mesh::MeshType* type,
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
@@ -157,7 +157,7 @@ namespace loader {
         pool::NodeHandle createNode(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
-            const EntityData& entityData,
+            const NodeData& nodeData,
             const bool cloned,
             const int cloneIndex,
             const glm::uvec3& tile,
@@ -171,27 +171,27 @@ namespace loader {
         void validate(
             const RootData& root);
 
-        void validateEntity(
+        void validateNode(
             const ki::node_id rootId,
-            const EntityRoot& entityRoot,
+            const NodeRoot& nodeRoot,
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
-        void validateEntityClone(
+        void validateNodeClone(
             const ki::node_id rootId,
-            const EntityRoot& entityRoot,
-            const EntityData& entityData,
+            const NodeRoot& nodeRoot,
+            const NodeData& nodeData,
             bool cloned,
             int cloneIndex,
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
-        void validateEntityCloneRepeat(
+        void validateNodeCloneRepeat(
             const ki::node_id rootId,
-            const EntityRoot& entityRoot,
-            const EntityData& entityData,
+            const NodeRoot& nodeRoot,
+            const NodeData& nodeData,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
@@ -212,9 +212,9 @@ namespace loader {
         std::unique_ptr<RootData> m_root;
         std::unique_ptr<ScriptEngineData> m_scriptEngineData;
 
-        std::vector<EntityRoot> m_entities;
+        std::vector<NodeRoot> m_nodes;
 
-        std::vector<ResolvedEntity> m_resolvedEntities;
+        std::vector<ResolvedNode> m_resolvedNodes;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

@@ -429,7 +429,7 @@
     <ClCompile Include="src\loader\BaseId.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\EntityLoader.cpp">
+    <ClCompile Include="src\loader\NodeLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\RootLoader.cpp">
@@ -1244,7 +1244,7 @@
     <ClInclude Include="src\loader\CubeMapLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityLoader.h">
+    <ClInclude Include="src\loader\NodeLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SkyboxData.h">
@@ -1265,7 +1265,7 @@
     <ClInclude Include="src\loader\BaseData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityRoot.h">
+    <ClInclude Include="src\loader\NodeRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\ControllerData.h">
@@ -1502,7 +1502,7 @@
     <ClInclude Include="src\ki\sid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\ResolvedEntity.h">
+    <ClInclude Include="src\loader\ResolvedNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\DagSort.h">
@@ -1679,10 +1679,10 @@
     <ClInclude Include="src\loader\Flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityData.h">
+    <ClInclude Include="src\loader\NodeData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\EntityField.h">
+    <ClInclude Include="src\loader\NodeField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\converter\DocNode.h">
