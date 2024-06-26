@@ -199,7 +199,7 @@ namespace mesh {
         setMaterial(mesh->getMaterial());
 
         m_meshIndex = mesh->m_registeredIndex;
-        m_socketIndex = mesh->m_socketIndex;
+        m_socketIndex = mesh->m_rigSocketIndex;
     }
 
     void LodMesh::registerMaterial()

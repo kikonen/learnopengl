@@ -53,8 +53,12 @@ namespace animation {
             return static_cast<uint16_t>(std::distance(m_sockets.begin(), it));
         }
 
+        uint16_t index = static_cast<uint16_t>(m_sockets.size());
+
         m_sockets.push_back(rigNode.m_index);
-        return static_cast<uint16_t>(m_sockets.size() - 1);
+        m_NameToSocket.insert({ rigNode.m_name, index });
+
+        return index;
     }
 
     bool RigContainer::hasSockets() const noexcept

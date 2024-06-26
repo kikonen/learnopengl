@@ -98,14 +98,13 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        meshSet.m_rig = std::make_unique<animation::RigContainer>();
-        mesh::LoadContext ctx{ meshSet.m_rig.get() };
+        auto rig = std::make_unique<animation::RigContainer>();
+        mesh::LoadContext ctx{ rig.get() };
 
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
         collectNodes(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
-        //rig.calculateInvTransforms();
 
         processMeshes(
             ctx,
@@ -113,9 +112,19 @@ namespace mesh
             assimpNodes,
             scene);
 
-        loadAnimations(ctx, meshSet.m_name, scene);
+        if (!rig->empty()) {
+            loadAnimations(ctx, meshSet.m_name, scene);
 
-        meshSet.m_rig->prepare();
+            rig->prepare();
+            meshSet.m_rig = std::move(rig);
+        }
+        else {
+            for (auto& mesh : meshSet.getMeshes()) {
+                auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
+                modelMesh->m_rig = nullptr;
+                modelMesh->m_rigSocketIndex = 0;
+            }
+        }
 
         for (auto& mesh : meshSet.m_meshes) {
             KI_INFO_OUT(fmt::format("MESH: {}", mesh->str()));
@@ -285,22 +294,18 @@ namespace mesh
                         meshIndex,
                         mesh);
 
-                    modelMesh->m_nodeName = rigNode.m_name;
                     modelMesh->m_rig = ctx.m_rig;
 
-                    if (modelMesh->m_vertexBones.empty())
-                    {
-                        // NOTE KI for animated meshes, this transform is canceled in animator
-                        modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
-                    }
+                    modelMesh->m_rigNodeName = rigNode.m_name;
 
                     // TODO KI base transform is in rig in reality *per* instance (animation!)
                     // NOTE KI animated meshes get position via animated bones
                     // non animated nodes via socket nodes
-                    if (modelMesh->m_vertexBones.empty()) {
-                        modelMesh->m_nodeIndex = rigNode.m_index;
-                        modelMesh->m_socketIndex = rig.addSocket(rigNode);
-                    }
+                    modelMesh->m_rigNodeIndex = rigNode.m_index;
+                    modelMesh->m_rigSocketIndex = rig.addSocket(rigNode);
+
+                    // NOTE KI for animated meshes, this transform is canceled in animator
+                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
 
                     meshSet.addMesh(std::move(modelMesh));
                 }

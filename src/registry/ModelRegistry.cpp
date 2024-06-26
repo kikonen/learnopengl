@@ -5,7 +5,7 @@
 #include "asset/Assets.h"
 
 #include "mesh/MeshSet.h"
-#include "mesh/Mesh.h"
+#include "mesh/ModelMesh.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"

@@ -13,6 +13,8 @@ namespace animation {
 
     // Manage bones shared based into their name
     struct BoneContainer {
+        bool empty() const noexcept;
+
         animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
         void bindNode(int16_t boneIndex, int16_t nodeIndex) noexcept;
 
