@@ -385,6 +385,8 @@ namespace mesh
         const aiMesh* mesh,
         const aiFace* face)
     {
+        assert(face->mNumIndices <= 3);
+
         Index index{ 0, 0, 0 };
         for (uint32_t i = 0; i < face->mNumIndices; i++)
         {
@@ -409,12 +411,7 @@ namespace mesh
         const aiMesh* mesh,
         const aiBone* bone)
     {
-        auto& rig = *ctx.m_rig;
-        auto& bi = rig.m_boneContainer.registerBone(bone);
-        auto* rigNode = rig.findNode(bi.m_nodeName);
-        if (rigNode) {
-            rig.m_boneContainer.bindNode(bi.m_index, rigNode->m_index);
-        }
+        auto& bi = ctx.m_rig->registerBone(bone);
 
         KI_INFO_OUT(fmt::format(
             "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, weights={}",

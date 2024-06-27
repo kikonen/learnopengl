@@ -19,6 +19,23 @@ namespace animation {
         return rigNode;
     }
 
+    animation::BoneInfo& RigContainer::registerBone(const aiBone* bone) noexcept
+    {
+        auto& bi = m_boneContainer.registerBone(bone);
+        auto* rigNode = findNode(bi.m_nodeName);
+
+        if (bi.m_nodeIndex >= 0) {
+            assert(rigNode->m_index == bi.m_nodeIndex);
+            return bi;
+        }
+
+        if (rigNode) {
+            m_boneContainer.bindNode(bi.m_index, rigNode->m_index);
+        }
+
+        return bi;
+    }
+
     const animation::RigNode* RigContainer::getNode(int16_t index) const noexcept
     {
         return &m_nodes[index];
