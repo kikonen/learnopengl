@@ -11,6 +11,8 @@
 
 
 namespace {
+    thread_local std::exception_ptr lastException = nullptr;
+
     std::unordered_map<std::string, std::shared_future<ChannelTexture*>> textures;
 
     std::mutex textures_lock{};
@@ -29,11 +31,24 @@ namespace {
                    p.set_value(texture);
                 }
                 catch (const std::exception& ex) {
-                    KI_CRITICAL(ex.what());
-                    p.set_exception(std::make_exception_ptr(ex));
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex.what()));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
+                }
+                catch (const std::string& ex) {
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
+                }
+                catch (const char* ex) {
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
                 }
                 catch (...) {
-                    p.set_exception(std::make_exception_ptr(std::current_exception()));
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", "UNKNOWN_ERROR"));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
                 }
             }
         };

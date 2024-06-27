@@ -132,16 +132,22 @@ namespace loader {
 
                 validate(*m_root);
                 attach(*m_root);
-
-                std::lock_guard lock(m_ready_lock);
-                m_runningCount--;
             }
             catch (const std::runtime_error& ex) {
-                KI_CRITICAL(ex.what());
-
-                std::lock_guard lock(m_ready_lock);
-                m_runningCount--;
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
             }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+            }
+
+            std::lock_guard lock(m_ready_lock);
+            m_runningCount--;
         });
     }
 
@@ -169,7 +175,20 @@ namespace loader {
                 notifySceneLoaded();
             }
             catch (const std::runtime_error& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
                 throw ex;
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                throw ex;
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                throw ex;
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", "UNKNOWN_ERROR"));
+                throw std::current_exception();
             }
         });
     }
@@ -335,8 +354,24 @@ namespace loader {
                 loadedNode(nodeRoot, true);
             }
             catch (const std::runtime_error& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
                 loadedNode(nodeRoot, false);
                 throw ex;
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                loadedNode(nodeRoot, false);
+                throw ex;
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                loadedNode(nodeRoot, false);
+                throw ex;
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+                loadedNode(nodeRoot, false);
+                throw std::current_exception();
             }
         });
 
@@ -578,7 +613,7 @@ namespace loader {
         else if (nodeData.type == NodeType::terrain) {
             // NOTE KI handled via container + generator
             type->m_nodeType = NodeType::terrain;
-            throw "Terrain not supported currently";
+            throw std::runtime_error("Terrain not supported currently");
         }
         else if (nodeData.type == NodeType::container) {
             // NOTE KI generator takes care of actual work
@@ -871,7 +906,7 @@ namespace loader {
         }
 
         if (pass1Errors > 0 || pass2Errors > 0) {
-            auto msg = fmt::format("VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
+            auto msg = fmt::format("SCENE_ERROR: VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
             KI_CRITICAL(msg);
             throw std::runtime_error{ msg };
         }
@@ -971,7 +1006,7 @@ namespace loader {
             }
 
             if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
-                auto msg = fmt::format("SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
+                auto msg = fmt::format("SCENE_ERROR: SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
                 KI_CRITICAL(msg);
                 errorCount++;
             }
@@ -990,7 +1025,7 @@ namespace loader {
 
                 // TODO KI validate missing
                 if (collectedIds.find(sid) == collectedIds.end()) {
-                    auto msg = fmt::format("PARENT SID MISSING: {} = {}", sid, resolvedSID);
+                    auto msg = fmt::format("SCENE_ERROR: PARENT SID MISSING: {} = {}", sid, resolvedSID);
                     KI_CRITICAL(msg);
                     errorCount++;
                 }

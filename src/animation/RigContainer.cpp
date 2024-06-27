@@ -123,7 +123,7 @@ namespace animation {
                     return node.m_name == name;
                 });
 
-            if (nodeIt == m_nodes.end()) throw fmt::format("missing: {}", name);
+            if (nodeIt == m_nodes.end()) throw std::runtime_error(fmt::format("missing_bone_node: {}", name));
         }
     }
 

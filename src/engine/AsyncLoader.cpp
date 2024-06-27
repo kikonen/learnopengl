@@ -6,6 +6,10 @@
 
 #include "kigl/kigl.h"
 
+namespace {
+    thread_local std::exception_ptr lastException = nullptr;
+}
+
 AsyncLoader::AsyncLoader(
     std::shared_ptr<std::atomic<bool>> alive)
   : m_alive(alive)
@@ -59,8 +63,16 @@ void AsyncLoader::addLoader(
                 m_loadedCount++;
                 m_waitCondition.notify_all();
             } catch (const std::runtime_error& ex) {
-                KI_CRITICAL(ex.what());
-                int x = 0;
+                KI_CRITICAL(fmt::format("ASYNC_ERROR: {}", ex.what()));
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("ASYNC_ERROR: {}", ex));
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("ASYNC_ERROR: {}", ex));
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("ASYNC_ERROR: {}", "UNKNOWN_ERROR"));
             }
         }
     };

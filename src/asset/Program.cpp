@@ -158,7 +158,7 @@ GLint Program::getUniformLoc(std::string_view name)
     m_uniformLocations.insert({ key, vi });
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM::MISSING_UNIFORM: {} - uniform={}",
+            "PROGRAM_ERROR: MISSING_UNIFORM: {} - uniform={}",
             m_programName, name));
     }
     return vi;
@@ -178,7 +178,7 @@ GLint Program::getUniformSubroutineLoc(std::string_view name, GLenum shaderType)
 
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            "PROGRAM_ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_programName, shaderType, name));
     }
     return vi;
@@ -198,7 +198,7 @@ GLint Program::getSubroutineIndex(std::string_view name, GLenum shaderType)
 
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM::MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            "PROGRAM_ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_programName, shaderType, name));
     }
     return vi;
@@ -228,7 +228,7 @@ int Program::compileSource(
             char infoLog[LOG_SIZE];
             glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
             KI_ERROR(fmt::format(
-                "PROGRAM:::SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
+                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
                 shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
@@ -238,7 +238,7 @@ int Program::compileSource(
             shaderId = -1;
 
             const auto msg = fmt::format(
-                "PROGRAM:::SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}, PATH={}",
+                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}, PATH={}",
                 shaderType, m_programName, shaderPath);
             throw std::runtime_error{ msg };
         }
@@ -277,7 +277,7 @@ int Program::createProgram() {
                 char infoLog[LOG_SIZE];
                 glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
                 const auto msg = fmt::format(
-                    "PROGRAM::PROGRAM::LINKING_FAILED program={}\n{}",
+                    "PROGRAM_ERROR: PROGRAM::LINKING_FAILED program={}\n{}",
                     m_programName, infoLog);
                 KI_ERROR(msg);
 
@@ -317,7 +317,7 @@ void Program::validateProgram() const {
         glGetProgramInfoLog(m_programId, LOG_SIZE, NULL, infoLog);
 
         const auto msg = fmt::format(
-            "PROGRAM::PROGRAM::VALIDATE_FAILED program={}\n{}",
+            "PROGRAM_ERROR: PROGRAM::VALIDATE_FAILED program={}\n{}",
             m_programName, infoLog);
 
         KI_ERROR(msg);
@@ -385,7 +385,7 @@ void Program::setupUBO(
     unsigned int blockIndex = glGetUniformBlockIndex(m_programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN(fmt::format(
-            "PROGRAM::MISSING_UBO program={}, UBO={}",
+            "PROGRAM_ERROR: MISSING_UBO program={}, UBO={}",
             m_programName, name));
         return;
     }
@@ -395,7 +395,7 @@ void Program::setupUBO(
     glGetActiveUniformBlockiv(m_programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &remoteSize);
 
     KI_INFO(fmt::format(
-        "PROGRAM::UBO_SIZE program={}, UBO={}, local_size={}, remote_size={}",
+        "PROGRAM_ERROR: UBO_SIZE program={}, UBO={}, local_size={}, remote_size={}",
         m_programName, name, localSize, remoteSize));
 
     if (localSize != remoteSize) {
@@ -404,7 +404,7 @@ void Program::setupUBO(
         }
 
         const auto msg = fmt::format(
-            "PROGRAM::UBO_SIZE program={}. UBO={}. local_size={}. remote_size={}",
+            "PROGRAM_ERROR: UBO_SIZE program={}. UBO={}. local_size={}. remote_size={}",
             m_programName, name, localSize, remoteSize);
 
         KI_CRITICAL(msg);
@@ -496,15 +496,15 @@ std::vector<std::string> Program::loadSourceLines(
     catch (std::ifstream::failure e) {
         if (!optional) {
             KI_ERROR(fmt::format(
-                "PROGRAM::FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                "PROGRAM_ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
                 m_programName, path));
         }
         else {
             KI_DEBUG(fmt::format(
-                "PROGRAM::FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                "PROGRAM_ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
                 m_programName, path));
         }
-        throw;
+        throw e;
     }
 
     return lines;

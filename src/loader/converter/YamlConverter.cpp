@@ -49,7 +49,7 @@ namespace loader {
             node.m_type = DocNodeType::null;
         }
         else {
-            throw "Unknown node type";
+            throw std::runtime_error("Unknown node type");
         }
 
         return node;
