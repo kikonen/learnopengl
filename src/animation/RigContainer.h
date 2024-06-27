@@ -13,6 +13,7 @@
 #include "BoneContainer.h"
 
 struct aiNode;
+struct aiBone;
 
 namespace animation {
     struct Animation;
@@ -22,6 +23,9 @@ namespace animation {
         ~RigContainer();
 
         animation::RigNode& addNode(const aiNode* node);
+
+        // Register new bone or return old
+        animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
 
         // @return true if rig is empty (thus no bones, and thus rig is not needed)
         bool empty() const noexcept
