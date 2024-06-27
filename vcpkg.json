@@ -15,7 +15,7 @@
     {
       "name": "entt",
       "platform": "windows & x64",
-      "version>=": "3.13.1"
+      "version>=": "3.13.2"
     },
     {
       "name": "crc32c",
@@ -50,12 +50,12 @@
     {
       "name": "glm",
       "platform": "windows & x64",
-      "version>=": "1.0.1#2"
+      "version>=": "1.0.1#3"
     },
     {
       "name": "imgui",
       "platform": "windows & x64",
-      "version>=": "1.90.2",
+      "version>=": "1.90.7",
       "default-features": false,
       "features": [
         "docking-experimental",
@@ -109,7 +109,7 @@
       "version>=": "0.8.0#1"
     }
   ],
-  "builtin-baseline": "326d8b43e365352ba3ccadf388d989082fe0f2a6",
+  "builtin-baseline": "c247b81088dbe46c159be6157944d5db8bf76b4a",
   "overrides": [
     {
       "name": "assimp",
