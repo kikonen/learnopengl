@@ -19,7 +19,7 @@ namespace animation
         const std::string m_jointName;
         const glm::mat4 m_transform{ 1.f };
 
-        int16_t m_jointIndex{ -1 };
-        int16_t m_socketIndex{ -1 };
+        int16_t m_index{ -1 };
+            int16_t m_jointIndex{ -1 };
     };
 }

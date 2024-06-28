@@ -70,7 +70,7 @@ namespace animation {
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
         parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
-        //parentTransforms[0] = animationBaseTransform;
+        parentTransforms[0] = animationBaseTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
         //    glm::mat4(1.f),
@@ -117,7 +117,7 @@ namespace animation {
                 //}
 
                 const auto* channel = animation->findByJointIndex(rigJoint.m_index);
-                const glm::mat4& nodeTransform = channel
+
                 const glm::mat4 jointTransform = channel
                     ? channel->interpolate(animationTimeTicks)
                     : rigJoint.m_localTransform;
@@ -148,7 +148,7 @@ namespace animation {
                     //}
 
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
-                    palette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
+                    palette[bone->m_index] = inverseMeshBaseTransform * globalTransform * bone->m_offsetMatrix;
 
                 }
                 else {

@@ -198,7 +198,7 @@ namespace loader {
                 data.name = readString(v);
             }
             else if (k == "joint") {
-                data.name = readString(v);
+                data.joint = readString(v);
             }
             else if (k == "offset") {
                 data.offset = readVec3(v);
@@ -209,6 +209,13 @@ namespace loader {
             else {
                 reportUnknown("socket_entry", k, v);
             }
+        }
+
+        if (data.joint.empty()) {
+            data.joint = data.name;
+        }
+        if (data.name.empty()) {
+            data.name = data.joint;
         }
     }
 

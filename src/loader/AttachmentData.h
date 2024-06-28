@@ -6,7 +6,7 @@
 
 namespace loader {
     struct AttachmentData {
-        std::string mesh;
+        std::string name;
         std::string socket;
 
         glm::vec3 offset{ 0.f };

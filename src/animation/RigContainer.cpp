@@ -83,7 +83,7 @@ namespace animation {
             m_sockets.push_back(a_socket);
             auto& socket = m_sockets[index];
             socket.m_jointIndex = joint.m_index;
-            socket.m_socketIndex = index;
+            socket.m_index = index;
         }
         m_NameToSocket.insert({ joint.m_name, index });
 
@@ -93,6 +93,18 @@ namespace animation {
     const animation::RigSocket* RigContainer::getSocket(int16_t socketIndex) const noexcept
     {
         return socketIndex >= 0 ? &m_sockets[socketIndex] : nullptr;
+    }
+
+    const animation::RigSocket* RigContainer::findSocket(const std::string& socketName) const noexcept
+    {
+        const auto& it = std::find_if(
+            m_sockets.begin(),
+            m_sockets.end(),
+            [&socketName](const auto& socket) { return socketName == socket.m_name; });
+
+        if (it == m_sockets.end()) return nullptr;
+
+        return &(*it);
     }
 
     void RigContainer::prepare()
