@@ -15,7 +15,7 @@
 #include "util/Util.h"
 
 #include "animation/RigContainer.h"
-#include "animation/RigNode.h"
+#include "animation/RigJoint.h"
 #include "animation/Animation.h"
 #include "animation/BoneChannel.h"
 #include "animation/BoneContainer.h"
@@ -104,7 +104,7 @@ namespace mesh
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectNodes(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+        collectJoints(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
 
         processMeshes(
             ctx,
@@ -122,7 +122,6 @@ namespace mesh
             for (auto& mesh : meshSet.getMeshes()) {
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
                 modelMesh->m_rig = nullptr;
-                modelMesh->m_rigSocketIndex = 0;
             }
         }
 
@@ -131,7 +130,7 @@ namespace mesh
         }
     }
 
-    void AssimpLoader::collectNodes(
+    void AssimpLoader::collectJoints(
         mesh::LoadContext& ctx,
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
@@ -141,28 +140,32 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        uint16_t nodeIndex;
+        uint16_t jointIndex;
+        glm::mat4 globalTransform;
         {
             assimpNodes.push_back(node);
 
-            auto& rigNode = rig.addNode(node);
-            rigNode.m_parentIndex = parentIndex;
-            nodeIndex = rigNode.m_index;
+            auto& rigJoint = rig.addJoint(node);
+            rigJoint.m_parentIndex = parentIndex;
+            jointIndex = rigJoint.m_index;
 
-            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}, parent={}, name={}, children={}, meshes={}\nT: {}",
+            globalTransform = parentTransform * rigJoint.m_localTransform;
+            rigJoint.m_globalTransform = globalTransform;
+
+            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}.{}, name={}, children={}, meshes={}\nT: {}",
                 parentIndex,
-                nodeIndex,
+                jointIndex,
                 node->mName.C_Str(),
                 node->mNumChildren,
                 node->mNumMeshes,
-                rigNode.m_localTransform));
+                rigJoint.m_localTransform));
         }
 
         dumpMetaData(node);
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(ctx, assimpNodes, scene, node->mChildren[n], nodeIndex, glm::mat4{ 1.f });
+            collectJoints(ctx, assimpNodes, scene, node->mChildren[n], jointIndex, globalTransform);
         }
     }
 
@@ -256,15 +259,8 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        std::vector<glm::mat4> globalTransforms;
-        globalTransforms.resize(rig.m_nodes.size() + 1);
-        globalTransforms[0] = glm::mat4{ 1.f };
-
-        for (auto& rigNode : rig.m_nodes) {
-            const glm::mat4& parentTransform = globalTransforms[rigNode.m_parentIndex + 1];
-            globalTransforms[rigNode.m_index + 1] = parentTransform * rigNode.m_localTransform;
-
-            auto& node = assimpNodes[rigNode.m_index];
+        for (auto& rigJoint : rig.m_joints) {
+            auto& node = assimpNodes[rigJoint.m_index];
             if (node->mNumMeshes == 0) continue;
 
             {
@@ -289,23 +285,17 @@ namespace mesh
 
                     processMesh(
                         ctx,
-                        rigNode,
+                        rigJoint,
                         *modelMesh,
                         meshIndex,
                         mesh);
 
                     modelMesh->m_rig = ctx.m_rig;
 
-                    modelMesh->m_rigNodeName = rigNode.m_name;
-
-                    // TODO KI base transform is in rig in reality *per* instance (animation!)
-                    // NOTE KI animated meshes get position via animated bones
-                    // non animated nodes via socket nodes
-                    modelMesh->m_rigNodeIndex = rigNode.m_index;
-                    modelMesh->m_rigSocketIndex = rig.addSocket(rigNode);
+                    modelMesh->m_rigJointName = rigJoint.m_name;
 
                     // NOTE KI for animated meshes, this transform is canceled in animator
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
+                    modelMesh->setBaseTransform(rigJoint.m_globalTransform);
 
                     meshSet.addMesh(std::move(modelMesh));
                 }
@@ -315,7 +305,7 @@ namespace mesh
 
     void AssimpLoader::processMesh(
         mesh::LoadContext& ctx,
-        animation::RigNode& rigNode,
+        animation::RigJoint& rigJoint,
         ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh)
@@ -336,8 +326,9 @@ namespace mesh
         }
 
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, material={}, vertices={}, faces={}, bones={}",
-            rigNode.m_index,
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
+            rigJoint.m_parentIndex,
+            rigJoint.m_index,
             modelMesh.m_name,
             material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
@@ -414,10 +405,10 @@ namespace mesh
         auto& bi = ctx.m_rig->registerBone(bone);
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, weights={}",
-            bi.m_nodeIndex,
+            "ASSIMP: BONE joint={}, bone={}, name={}, mesh={}, weights={}",
+            bi.m_jointIndex,
             bi.m_index,
-            bi.m_nodeName,
+            bi.m_jointName,
             meshIndex,
             bone->mNumWeights))
 

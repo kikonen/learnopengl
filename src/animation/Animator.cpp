@@ -63,11 +63,11 @@ namespace animation {
             //    currentTime, animationTimeSecs, ticksPerSecond, timeInTicks, animation->m_duration);
         }
 
-        constexpr size_t MAX_NODES = 200;
-        glm::mat4 parentTransforms[MAX_NODES + 1];
+        constexpr size_t MAX_JOINTS = 200;
+        glm::mat4 parentTransforms[MAX_JOINTS + 1];
 
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
-        // => animation node hierarchy includes equivalent transforms (presumeably)
+        // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
         parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
         //parentTransforms[0] = animationBaseTransform;
@@ -86,28 +86,29 @@ namespace animation {
             mat = inverseMeshBaseTransform * animationBaseTransform;
         }
 
-        for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
+        bool foundRoot = false;
+        for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
         {
-            const auto& rigNode = rig.m_nodes[nodeIndex];
+            const auto& rigJoint = rig.m_joints[jointIndex];
 
-            bool accept = rigNode.m_boneRequired || rigNode.m_socketRequired;
+            bool accept = rigJoint.m_boneRequired || rigJoint.m_socketRequired;
 
-            // NOTE KI skip nodes not affecting animation/sockets
+            // NOTE KI skip joints not affecting animation/sockets
             if (!accept) continue;
 
             //if (hitCount >= 5) break;
 
             bool handled = false;
 
-            if (rigNode.m_boneRequired) {
-                if (rigNode.m_index >= MAX_NODES) throw "too many bones";
-                //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
-                const auto* bone = rig.m_boneContainer.getNode(rigNode.m_boneIndex);
+            if (rigJoint.m_boneRequired) {
+                if (rigJoint.m_index >= MAX_JOINTS) throw "too many joints";
+                //auto* bone = rig.m_boneContainer.findByJoingIndex(rigJoint.m_index);
+                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
 
                 //if (bone) {
                 //    if (!boneFound) {
-                //        //parentTransforms[rigNode.m_parentIndex + 1] = glm::inverse(rigNode.m_localTransform);
-                //        parentTransforms[rigNode.m_parentIndex + 1] = glm::mat4(1.f);
+                //        //parentTransforms[rigJoint.m_parentIndex + 1] = glm::inverse(rigJoint.m_localTransform);
+                //        parentTransforms[rigJoint.m_parentIndex + 1] = glm::mat4(1.f);
                 //    }
                 //    boneFound |= true;
                 //}
@@ -115,29 +116,30 @@ namespace animation {
                 //    if (!boneFound) continue;
                 //}
 
-                const auto* channel = animation->findByNodeIndex(rigNode.m_index);
+                const auto* channel = animation->findByJointIndex(rigJoint.m_index);
                 const glm::mat4& nodeTransform = channel
+                const glm::mat4 jointTransform = channel
                     ? channel->interpolate(animationTimeTicks)
-                    : rigNode.m_localTransform;
+                    : rigJoint.m_localTransform;
 
-                parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
-                const auto& globalTransform = parentTransforms[rigNode.m_index + 1];
+                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+                const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
 
                 KI_INFO_OUT(fmt::format(
-                    "{},{} - {}\npare: {}\nnode: {}\nglob: {}\noffs: {}\npale: {}\n",
-                    rigNode.m_parentIndex,
-                    rigNode.m_index,
-                    rigNode.m_name,
-                    parentTransforms[rigNode.m_parentIndex + 1],
-                    nodeTransform,
+                    "{},{} - {}\npare: {}\njoin: {}\nglob: {}\noffs: {}\npale: {}\n",
+                    rigJoint.m_parentIndex,
+                    rigJoint.m_index,
+                    rigJoint.m_name,
+                    parentTransforms[rigJoint.m_parentIndex + 1],
+                    jointTransform,
                     globalTransform,
                     bone ? bone->m_offsetMatrix : glm::mat4{ 0.f },
                     bone ? globalTransform * bone->m_offsetMatrix : glm::mat4{ 0.f }));
 
-                //auto* bone = rig.m_boneContainer.findByNodeIndex(rigNode.m_index);
+                //auto* bone = rig.m_boneContainer.findByJointIndex(rigJoint.m_index);
                 if (bone) {
                     //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
-                    //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                    //    rigJoint.m_parentIndex, rigJoint.m_index, rigJoint.m_name));
 
                     hitCount++;
 
@@ -151,17 +153,17 @@ namespace animation {
                 }
                 else {
                     //hitMiss.push_back(fmt::format("[-{}.{}.{}]",
-                    //    rigNode.m_parentIndex, rigNode.m_index, rigNode.m_name));
+                    //    rigJoint.m_parentIndex, rigJoint.m_index, rigJoint.m_name));
                     //missCount++;
                 }
 
                 handled = true;
             }
 
-            if (!handled && rigNode.m_socketRequired) {
-                const glm::mat4& nodeTransform = rigNode.m_localTransform;
+            if (!handled && rigJoint.m_socketRequired) {
+                const glm::mat4& jointTransform = rigJoint.m_localTransform;
 
-                parentTransforms[rigNode.m_index + 1] = parentTransforms[rigNode.m_parentIndex + 1] * nodeTransform;
+                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
             }
         }
 
@@ -169,8 +171,8 @@ namespace animation {
             sockets[i] = parentTransforms[rig.m_sockets[i] + 1];
         }
 
-        KI_INFO_OUT(fmt::format("ANIM: nodes={}, bones={}, hit={}, miss={}, graph={}",
-            rig.m_nodes.size(), rig.m_boneContainer.m_boneInfos.size(), hitCount, missCount,
+        KI_INFO_OUT(fmt::format("ANIM: joints={}, bones={}, hit={}, miss={}, graph={}",
+            rig.m_joints.size(), rig.m_boneContainer.m_boneInfos.size(), hitCount, missCount,
             util::join(hitMiss, "")));
 
         return true;

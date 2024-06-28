@@ -6,6 +6,7 @@
 #include "FlagContainer.h"
 
 #include "LodData.h"
+#include "SocketData.h"
 #include "AnimationData.h"
 #include "MaterialData.h"
 
@@ -17,6 +18,7 @@ namespace loader {
         std::string path;
 
         std::vector<LodData> lods;
+        std::vector<SocketData> sockets;
 
         std::vector<MaterialData> materials;
         std::vector<AnimationData> animations;

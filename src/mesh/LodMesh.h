@@ -112,7 +112,7 @@ namespace mesh {
         int8_t m_level{ 0 };
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
-// range -254 .. 255
+        // range -254 .. 255
         int8_t m_priority{ 0 };
 
         MeshFlags m_flags;

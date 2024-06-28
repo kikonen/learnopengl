@@ -19,7 +19,7 @@ struct aiMaterial;
 struct aiMetadata;
 
 namespace animation {
-    struct RigNode;
+    struct RigJoint;
 }
 
 namespace mesh {
@@ -41,7 +41,7 @@ namespace mesh {
             mesh::MeshSet& meshSet);
 
     private:
-        void collectNodes(
+        void collectJoints(
             mesh::LoadContext& ctx,
             std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
@@ -65,7 +65,7 @@ namespace mesh {
 
         void processMesh(
             mesh::LoadContext& ctx,
-            animation::RigNode& rigNode,
+            animation::RigJoint& rigJoint,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh);

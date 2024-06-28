@@ -70,9 +70,8 @@ namespace mesh {
 
         const std::string m_name;
 
-        std::string m_rigNodeName;
-        uint16_t m_rigNodeIndex{ 0 };
-        uint16_t m_rigSocketIndex{ 0 };
+        // NOTE KI for debug
+        std::string m_rigJointName;
 
         glm::mat4 m_baseTransform{ 1.f };
         glm::mat4 m_inverseBaseTransform{ 1.f };

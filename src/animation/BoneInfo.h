@@ -15,9 +15,9 @@ namespace animation {
         BoneInfo(const aiBone* bone);
 
         int16_t m_index{ -1 };
-        int16_t m_nodeIndex{ -1 };
+        int16_t m_jointIndex{ -1 };
 
-        std::string m_nodeName;
+        std::string m_jointName;
 
         // It is sometimes called an inverse - bind matrix,
         // or inverse bind pose matrix.

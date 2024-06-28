@@ -9,8 +9,8 @@
 struct aiNode;
 
 namespace animation {
-    struct RigNode {
-        RigNode(const aiNode* node);
+    struct RigJoint {
+        RigJoint(const aiNode* node);
 
         const std::string m_name;
 
@@ -21,8 +21,9 @@ namespace animation {
         bool m_boneRequired : 1{ false };
         bool m_socketRequired : 1{ false };
 
+        // local == relative to parent joint
         const glm::mat4 m_localTransform;
-        //glm::mat4 m_globalTransform;
-        //glm::mat4 m_globalInvTransform;
+        // global == relative to model
+        glm::mat4 m_globalTransform;
     };
 }
