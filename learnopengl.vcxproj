@@ -452,7 +452,6 @@
     <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\animation\RigSocket.h" />
-    <ClInclude Include="src\animation\SocketContainer.h" />
     <ClInclude Include="src\mesh\TransformRegistry.h" />
     <ClInclude Include="src\mesh\TransformSSBO.h" />
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />

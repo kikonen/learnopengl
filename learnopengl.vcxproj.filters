@@ -1778,9 +1778,6 @@
     <ClInclude Include="src\animation\RigSocket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\SocketContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\loader\AttachmentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_inverse.hpp>
 
 namespace {
-    const glm::mat4& calcTransform(
+    glm::mat4 calcTransform(
         glm::vec3 offset,
         glm::quat rotation)
     {

@@ -90,7 +90,7 @@ namespace mesh {
         std::unique_ptr<Mesh> m_deleter;
 
         uint32_t m_meshIndex{ 0 };
-        uint32_t m_socketIndex{ 0 };
+        int32_t m_socketIndex{ -1 };
 
         glm::mat4 m_animationBaseTransform{ 1.f };
 

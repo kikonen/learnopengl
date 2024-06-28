@@ -833,10 +833,25 @@ namespace loader {
         auto* type = typeHandle.toType();
         auto* node = nodeHandle.toNode();
 
+        auto& lodMeshes = type->modifyLodMeshes();
+
         for (const auto& attachment : nodeData.attachments) {
-            // find mesh
-            // find socket
-            // bind them
+            const auto& it = std::find_if(
+                lodMeshes.begin(),
+                lodMeshes.end(),
+                [&name = attachment.name](const auto& lodMesh) {
+                    return name == lodMesh.m_mesh->m_name;
+                });
+            if (it == lodMeshes.end()) continue;
+
+            auto& lodMesh = *it;
+            const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+            if (!mesh->m_rig) continue;
+
+            const auto* socket = mesh->m_rig->findSocket(attachment.socket);
+            if (!socket) continue;
+
+            lodMesh.m_socketIndex = socket->m_index;
         }
     }
 

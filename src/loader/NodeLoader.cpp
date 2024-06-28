@@ -321,8 +321,8 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "mesh") {
-                data.mesh = readString(v);
+            if (k == "name") {
+                data.name = readString(v);
             }
             else if (k == "socket") {
                 data.socket = readString(v);
