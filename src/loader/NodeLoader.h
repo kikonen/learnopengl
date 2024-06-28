@@ -28,5 +28,13 @@ namespace loader {
             std::vector<NodeData>& clones,
             bool recurse,
             Loaders& loaders) const;
+
+        void loadAttachments(
+            const loader::DocNode& node,
+            std::vector<AttachmentData>& attachments) const;
+
+        void loadAttachment(
+            const loader::DocNode& node,
+            AttachmentData& data) const;
     };
 }

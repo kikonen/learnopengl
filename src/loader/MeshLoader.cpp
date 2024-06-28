@@ -161,9 +161,6 @@ namespace loader {
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
-            else if (k == "socket") {
-                loadSocket(v, data.boundSocket);
-            }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
@@ -198,6 +195,9 @@ namespace loader {
             const auto k = util::toLower(key);
 
             if (k == "name") {
+                data.name = readString(v);
+            }
+            else if (k == "joint") {
                 data.name = readString(v);
             }
             else if (k == "offset") {

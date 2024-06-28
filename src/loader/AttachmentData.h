@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 
 namespace loader {
-    struct SocketData {
-        std::string name;
-        std::string joint;
+    struct AttachmentData {
+        std::string mesh;
+        std::string socket;
 
         glm::vec3 offset{ 0.f };
         glm::vec3 rotation{ 0.f };
