@@ -27,7 +27,7 @@ namespace animation {
         const float m_time;
     };
 
-    // Animation sequence for Node
+    // Animation sequence for Joint
     struct BoneChannel {
         friend class AnimationLoader;
         friend struct Animation;
@@ -71,10 +71,10 @@ namespace animation {
         //    const std::vector<float>& times,
         //    float animationTimeTicks) const noexcept;
 
-        const std::string m_nodeName;
+        const std::string m_jointName;
 
         uint16_t m_index{ 0 };
-        int16_t m_nodeIndex;
+        int16_t m_jointIndex;
 
         std::vector<glm::vec3> m_positionKeyValues;
         std::vector<float> m_positionKeyTimes;

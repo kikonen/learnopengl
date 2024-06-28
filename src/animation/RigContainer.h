@@ -9,7 +9,7 @@
 
 #include "asset/Material.h"
 
-#include "RigNode.h"
+#include "RigJoint.h"
 #include "BoneContainer.h"
 
 struct aiNode;
@@ -17,12 +17,12 @@ struct aiBone;
 
 namespace animation {
     struct Animation;
-    struct RigNode;
+    struct RigJoint;
 
     struct RigContainer {
         ~RigContainer();
 
-        animation::RigNode& addNode(const aiNode* node);
+        animation::RigJoint& addJoint(const aiNode* node);
 
         // Register new bone or return old
         animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
@@ -35,23 +35,30 @@ namespace animation {
 
         void addAnimation(std::unique_ptr<animation::Animation> animation);
 
-        const animation::RigNode* getNode(int16_t index) const noexcept;
+        const animation::RigJoint* getJoint(int16_t index) const noexcept;
 
         // @return nullptr if not found
-        const animation::RigNode* findNode(const std::string& name) const noexcept;
+        const animation::RigJoint* findJoint(const std::string& name) const noexcept;
 
         bool hasBones() const noexcept;
 
         // @return registered index in m_sockets
-        uint16_t addSocket(const RigNode& rigNode);
-        bool hasSockets() const noexcept;
+        int16_t registerSocket(const std::string& jointName);
+
+        // @return registered joint in m_sockets
+        const animation::RigJoint* getSocket(int16_t socketIndex) const noexcept;
+
+        bool hasSockets() const noexcept
+        {
+            return !m_sockets.empty();
+        }
 
         void prepare();
         void validate() const;
 
         //void calculateInvTransforms() noexcept;
 
-        std::vector<animation::RigNode> m_nodes;
+        std::vector<animation::RigJoint> m_joints;
 
         BoneContainer m_boneContainer;
 

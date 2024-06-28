@@ -624,7 +624,7 @@
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\RigNode.cpp">
+    <ClCompile Include="src\animation\RigJoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp">
@@ -1610,7 +1610,7 @@
     <ClInclude Include="src\mesh\vao\VertexIndexEBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\RigNode.h">
+    <ClInclude Include="src\animation\RigJoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\Animation.h">
@@ -1767,6 +1767,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\DebugContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\SocketData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

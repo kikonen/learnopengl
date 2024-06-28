@@ -103,6 +103,9 @@ namespace loader {
             else if (k == "lods") {
                 loadLods(v, data.lods);
             }
+            else if (k == "sockets") {
+                loadSockets(v, data.sockets);
+            }
             else {
                 reportUnknown("mesh_entry", k, v);
             }
@@ -158,6 +161,9 @@ namespace loader {
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
+            else if (k == "socket") {
+                loadSocket(v, data.boundSocket);
+            }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
@@ -167,6 +173,41 @@ namespace loader {
             }
             else {
                 reportUnknown("lod_entry", k, v);
+            }
+        }
+    }
+
+    void MeshLoader::loadSockets(
+        const loader::DocNode& node,
+        std::vector<SocketData>& sockets) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            SocketData& data = sockets.emplace_back();
+            loadSocket(entry, data);
+        }
+    }
+
+    void MeshLoader::loadSocket(
+        const loader::DocNode& node,
+        SocketData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "name") {
+                data.name = readString(v);
+            }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
+            }
+            else if (k == "rotation") {
+                data.rotation = readDegreesRotation(v);
+            }
+            else {
+                reportUnknown("socket_entry", k, v);
             }
         }
     }

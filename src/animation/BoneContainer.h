@@ -16,24 +16,24 @@ namespace animation {
         bool empty() const noexcept;
 
         animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
-        void bindNode(int16_t boneIndex, int16_t nodeIndex) noexcept;
+        void bindJoint(int16_t boneIndex, int16_t jointIndex) noexcept;
 
-        const animation::BoneInfo* getNode(int16_t boneIndex) const noexcept;
+        const animation::BoneInfo* getInfo(int16_t boneIndex) const noexcept;
 
         // @return boneInfo, null if not found
-        const animation::BoneInfo* findByNodeIndex(int16_t nodeIndex) const noexcept;
+        const animation::BoneInfo* findByJointIndex(int16_t jointIndex) const noexcept;
 
         inline bool hasBones() const noexcept {
-            return !m_nodeNameToIndex.empty();
+            return !m_jointNameToIndex.empty();
         }
 
         inline int16_t size() const noexcept {
-            return static_cast<int16_t>(m_nodeNameToIndex.size());
+            return static_cast<int16_t>(m_jointNameToIndex.size());
         }
 
         std::vector<animation::BoneInfo> m_boneInfos;
-        std::map<std::string, int16_t> m_nodeNameToIndex;
+        std::map<std::string, int16_t> m_jointNameToIndex;
 
-        std::map<int16_t, int16_t> m_nodeToBone;
+        std::map<int16_t, int16_t> m_jointToBone;
     };
 }

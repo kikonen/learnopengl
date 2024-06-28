@@ -114,7 +114,7 @@ namespace animation {
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                "ASSIMP: CHANNEL anim={}, channel={}, joint={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
                 channel->mNodeName.C_Str(),
@@ -123,9 +123,9 @@ namespace animation {
                 channel->mNumScalingKeys));
 
             auto& bc = animation->addChannel({ channel });
-            auto* rigNode = rig.findNode(bc.m_nodeName);
-            if (rigNode) {
-                animation->bindNode(bc.m_index, rigNode->m_index);
+            auto* rigJoint = rig.findJoint(bc.m_jointName);
+            if (rigJoint) {
+                animation->bindJoint(bc.m_index, rigJoint->m_index);
             }
 
             bc.reservePositionKeys(channel->mNumPositionKeys);

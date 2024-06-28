@@ -23,9 +23,9 @@ namespace animation {
         return channel;
     }
 
-    void Animation::bindNode(uint16_t channelIndex, uint16_t nodeIndex)
+    void Animation::bindJoint(uint16_t channelIndex, uint16_t jointIndex)
     {
-        mNodeToChannel.insert({ nodeIndex, channelIndex });
-        m_channels[channelIndex].m_nodeIndex = nodeIndex;
+        mjointToChannel.insert({ jointIndex, channelIndex });
+        m_channels[channelIndex].m_jointIndex = jointIndex;
     }
 }

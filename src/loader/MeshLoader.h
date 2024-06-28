@@ -6,6 +6,7 @@
 
 #include "MeshData.h"
 #include "LodData.h"
+#include "SocketData.h"
 #include "AnimationData.h"
 
 namespace loader {
@@ -32,6 +33,14 @@ namespace loader {
         void loadLod(
             const loader::DocNode& node,
             LodData& data) const;
+
+        void loadSockets(
+            const loader::DocNode& node,
+            std::vector<SocketData>& sockets) const;
+
+        void loadSocket(
+            const loader::DocNode& node,
+            SocketData& data) const;
 
         void loadAnimations(
             const loader::DocNode& node,

@@ -1,23 +1,7 @@
 #include "BoneRegistry.h"
 
-#include <tuple>
-#include <algorithm>
-#include <execution>
-
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
-
-#include "engine/UpdateContext.h"
-
-#include "model/Node.h"
-
-#include "mesh/MeshType.h"
-#include "mesh/ModelMesh.h"
-
-#include "pool/NodeHandle.h"
-
-#include "animation/RigContainer.h"
-#include "animation/Animator.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;

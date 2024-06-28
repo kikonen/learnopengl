@@ -3,6 +3,7 @@
 #include "ki/size.h"
 
 #include "FlagContainer.h"
+#include "SocketData.h"
 
 namespace loader {
     struct LodData {
@@ -15,5 +16,7 @@ namespace loader {
         float distance{ 0 };
 
         loader::FlagContainer meshFlags;
+
+        SocketData boundSocket;
     };
 }

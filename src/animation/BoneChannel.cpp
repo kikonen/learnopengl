@@ -40,8 +40,8 @@ namespace animation {
     {}
 
     BoneChannel::BoneChannel(const aiNodeAnim* channel)
-        : m_nodeName{ channel->mNodeName.C_Str() },
-        m_nodeIndex{ -1 }
+        : m_jointName{ channel->mNodeName.C_Str() },
+        m_jointIndex{ -1 }
     {}
 
     void BoneChannel::reservePositionKeys(uint16_t size)
