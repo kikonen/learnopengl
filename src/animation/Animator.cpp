@@ -168,7 +168,7 @@ namespace animation {
         }
 
         for (int i = 0; i < rig.m_sockets.size(); i++) {
-            sockets[i] = parentTransforms[rig.m_sockets[i] + 1];
+            sockets[i] = parentTransforms[rig.m_sockets[i].m_jointIndex + 1];
         }
 
         KI_INFO_OUT(fmt::format("ANIM: joints={}, bones={}, hit={}, miss={}, graph={}",

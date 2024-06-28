@@ -149,6 +149,10 @@ namespace loader {
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
+        void resolveSockets(
+            const MeshData& meshData,
+            mesh::MeshSet& meshSet);
+
         void loadAnimation(
             const std::string& baseDir,
             const AnimationData& data,
@@ -163,6 +167,11 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& clonePositionOffset,
             const glm::vec3& tilePositionOffset);
+
+        void resolveAttachments(
+            pool::TypeHandle typeHandle,
+            pool::NodeHandle nodeHandle,
+            const NodeData& nodeData);
 
         void loadMeta(
             const loader::DocNode& node,

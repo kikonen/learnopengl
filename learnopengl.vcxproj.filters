@@ -717,6 +717,9 @@
     <ClCompile Include="src\animation\BoneRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation\RigSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1770,6 +1773,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SocketData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\RigSocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\SocketContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\AttachmentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

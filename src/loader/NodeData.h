@@ -27,6 +27,7 @@
 #include "ScriptData.h"
 #include "TextData.h"
 #include "MeshData.h"
+#include "AttachmentData.h"
 
 namespace loader {
     struct NodeData {
@@ -46,6 +47,7 @@ namespace loader {
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
+        std::vector<AttachmentData> attachments;
 
         std::string geometryType;
         std::unordered_map<MaterialProgramType, std::string> programs;

@@ -245,6 +245,9 @@ namespace loader {
             else if (k == "meshes") {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
             }
+            else if (k == "attachments") {
+                loadAttachments(v, data.attachments);
+            }
             else {
                 reportUnknown("node_entry", k, v);
             }
@@ -298,4 +301,35 @@ namespace loader {
         }
     }
 
+    void NodeLoader::loadAttachments(
+        const loader::DocNode& node,
+        std::vector<AttachmentData>& attachments) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            auto& data = attachments.emplace_back();
+            loadAttachment(entry, data);
+        }
+    }
+
+    void NodeLoader::loadAttachment(
+        const loader::DocNode& node,
+        AttachmentData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "mesh") {
+                data.mesh = readString(v);
+            }
+            else if (k == "socket") {
+                data.socket = readString(v);
+            }
+            else {
+                reportUnknown("attachment_entry", k, v);
+            }
+        }
+    }
 }

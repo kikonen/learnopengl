@@ -217,6 +217,7 @@
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
+    <ClCompile Include="src\animation\RigSocket.cpp" />
     <ClCompile Include="src\mesh\TransformRegistry.cpp" />
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp" />
@@ -426,6 +427,7 @@
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
+    <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
@@ -449,6 +451,8 @@
     <ClInclude Include="src\loader\PrefabLoader.h" />
     <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
+    <ClInclude Include="src\animation\RigSocket.h" />
+    <ClInclude Include="src\animation\SocketContainer.h" />
     <ClInclude Include="src\mesh\TransformRegistry.h" />
     <ClInclude Include="src\mesh\TransformSSBO.h" />
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />

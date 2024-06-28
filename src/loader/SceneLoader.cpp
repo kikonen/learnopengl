@@ -39,6 +39,8 @@
 #include "model/NodeType.h"
 
 #include "animation/AnimationLoader.h"
+#include "animation/RigContainer.h"
+#include "animation/RigSocket.h"
 
 #include "event/Dispatcher.h"
 
@@ -587,6 +589,11 @@ namespace loader {
             auto meshSet = future.get();
 
             if (meshSet) {
+                resolveSockets(
+                    meshData,
+                    *meshSet
+                );
+
                 for (auto& animationData : meshData.animations) {
                     loadAnimation(
                         meshData.baseDir,
@@ -661,7 +668,36 @@ namespace loader {
         lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
         lodMesh.setDistance(lod->distance);
 
+        //const auto& socketData = lod->boundSocket;
+        //if (!socketData.name.empty()) {
+        //    auto& socket = lodMesh.m_socket;
+        //    socket.m_name = socketData.name;
+        //    socket.m_offset = socketData.offset;
+        //    socket.m_quatRotation = util::degreesToQuat(nodeData.rotation);
+        //    socket.getTransform();
+        //}
+
         return lod;
+    }
+
+    void SceneLoader::resolveSockets(
+        const MeshData& meshData,
+        mesh::MeshSet& meshSet)
+    {
+        if (!meshSet.m_rig) return;
+
+        auto& rig = *meshSet.m_rig;
+        for (const auto& socketData : meshData.sockets) {
+            animation::RigSocket socket{
+                socketData.name,
+                socketData.joint,
+                socketData.offset,
+                util::degreesToQuat(socketData.rotation) };
+
+            rig.registerSocket(socket);
+        }
+
+        rig.prepare();
     }
 
     void SceneLoader::loadAnimation(
@@ -784,7 +820,24 @@ namespace loader {
             MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
         }
 
+        resolveAttachments(typeHandle, handle, nodeData);
+
         return handle;
+    }
+
+    void SceneLoader::resolveAttachments(
+        pool::TypeHandle typeHandle,
+        pool::NodeHandle nodeHandle,
+        const NodeData& nodeData)
+    {
+        auto* type = typeHandle.toType();
+        auto* node = nodeHandle.toNode();
+
+        for (const auto& attachment : nodeData.attachments) {
+            // find mesh
+            // find socket
+            // bind them
+        }
     }
 
     void SceneLoader::assignTypeFlags(

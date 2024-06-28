@@ -10,6 +10,8 @@
 #include "asset/Material.h"
 
 #include "RigJoint.h"
+#include "RigSocket.h"
+
 #include "BoneContainer.h"
 
 struct aiNode;
@@ -42,11 +44,11 @@ namespace animation {
 
         bool hasBones() const noexcept;
 
-        // @return registered index in m_sockets
-        int16_t registerSocket(const std::string& jointName);
+        // @return registered index in m_sockets, -1 if joint not found
+        int16_t registerSocket(const animation::RigSocket& socket);
 
-        // @return registered joint in m_sockets
-        const animation::RigJoint* getSocket(int16_t socketIndex) const noexcept;
+        // @return registered socket, null if not found
+        const animation::RigSocket* getSocket(int16_t socketIndex) const noexcept;
 
         bool hasSockets() const noexcept
         {
@@ -62,7 +64,7 @@ namespace animation {
 
         BoneContainer m_boneContainer;
 
-        std::vector<uint16_t> m_sockets;
+        std::vector<animation::RigSocket> m_sockets;
 
         std::map<std::string, uint16_t> m_NameToSocket;
 

@@ -60,8 +60,10 @@ namespace animation {
         return m_boneContainer.hasBones();
     }
 
-    int16_t RigContainer::registerSocket(const std::string& jointName)
+    int16_t RigContainer::registerSocket(const animation::RigSocket& a_socket)
     {
+        const auto& jointName = a_socket.m_jointName;
+
         const auto& socketIt = m_NameToSocket.find(jointName);
         if (socketIt != m_NameToSocket.end()) {
             return socketIt->second;
@@ -77,17 +79,20 @@ namespace animation {
 
         int16_t index = static_cast<int16_t>(m_sockets.size());
 
-        m_sockets.push_back(joint.m_index);
+        {
+            m_sockets.push_back(a_socket);
+            auto& socket = m_sockets[index];
+            socket.m_jointIndex = joint.m_index;
+            socket.m_socketIndex = index;
+        }
         m_NameToSocket.insert({ joint.m_name, index });
 
         return index;
     }
 
-    const animation::RigJoint* RigContainer::getSocket(int16_t socketIndex) const noexcept
+    const animation::RigSocket* RigContainer::getSocket(int16_t socketIndex) const noexcept
     {
-        const auto& it = std::find(m_sockets.begin(), m_sockets.end(), socketIndex);
-        if (it == m_sockets.end()) nullptr;
-        return &m_joints[*it];
+        return socketIndex >= 0 ? &m_sockets[socketIndex] : nullptr;
     }
 
     void RigContainer::prepare()
@@ -117,7 +122,7 @@ namespace animation {
             const auto& it = std::find_if(
                 m_sockets.begin(),
                 m_sockets.end(),
-                [&rigJoint](const uint16_t index) { return index == rigJoint.m_index; });
+                [&rigJoint](const auto& socket) { return socket.m_jointIndex == rigJoint.m_index; });
             if (it == m_sockets.end()) continue;
 
             rigJoint.m_socketRequired = true;
