@@ -206,6 +206,9 @@ namespace loader {
             else if (k == "rotation") {
                 data.rotation = readDegreesRotation(v);
             }
+            else if (k == "scale") {
+                data.scale = readVec3(v);
+            }
             else {
                 reportUnknown("socket_entry", k, v);
             }

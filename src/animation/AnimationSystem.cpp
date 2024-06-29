@@ -77,19 +77,6 @@ namespace animation
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
             for (const auto& socket : rig.m_sockets) {
                 const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
-                if (rigJoint.m_boneIndex >= 0) {
-                    const auto& bi = rig.m_boneContainer.m_boneInfos[rigJoint.m_boneIndex];
-
-                    KI_INFO_OUT(fmt::format(
-                        "SOCKET_INIT: node={}.{}, name={}, socket={}\nbone: {}\njoin: {}\nsock: {}",
-                        rigJoint.m_parentIndex,
-                        rigJoint.m_index,
-                        rigJoint.m_name,
-                        socket.m_name,
-                        bi.m_offsetMatrix,
-                        rigJoint.m_globalInvTransform,
-                        socket.m_transform));
-                }
                 socketPalette[socket.m_index] = rigJoint.m_globalTransform * socket.m_transform;
             }
             socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
