@@ -22,6 +22,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "mesh/mesh_util.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -830,28 +832,24 @@ namespace loader {
         pool::NodeHandle nodeHandle,
         const NodeData& nodeData)
     {
-        auto* type = typeHandle.toType();
-        auto* node = nodeHandle.toNode();
+        if (nodeData.attachments.empty()) return;
 
+        auto* type = typeHandle.toType();
         auto& lodMeshes = type->modifyLodMeshes();
 
+        auto rig = mesh::findRig(lodMeshes);
+        if (!rig) return;
+
         for (const auto& attachment : nodeData.attachments) {
-            const auto& it = std::find_if(
-                lodMeshes.begin(),
-                lodMeshes.end(),
-                [&name = attachment.name](const auto& lodMesh) {
-                    return name == lodMesh.m_mesh->m_name;
-                });
-            if (it == lodMeshes.end()) continue;
+            if (!attachment.enabled) continue;
 
-            auto& lodMesh = *it;
-            const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
-            if (!mesh->m_rig) continue;
+            mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
+            if (!lodMesh) continue;
 
-            const auto* socket = mesh->m_rig->findSocket(attachment.socket);
+            const auto* socket = rig->findSocket(attachment.socket);
             if (!socket) continue;
 
-            lodMesh.m_socketIndex = socket->m_index;
+            lodMesh->m_socketIndex = socket->m_index;
         }
     }
 

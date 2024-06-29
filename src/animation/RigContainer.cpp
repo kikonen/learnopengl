@@ -4,6 +4,8 @@
 
 #include <fmt/format.h>
 
+#include "util/glm_format.h"
+
 #include "Animation.h"
 #include "RigJoint.h"
 #include "BoneInfo.h"
@@ -78,13 +80,13 @@ namespace animation {
         auto& joint = *jointIt;
 
         int16_t index = static_cast<int16_t>(m_sockets.size());
-
         {
             m_sockets.push_back(a_socket);
             auto& socket = m_sockets[index];
             socket.m_jointIndex = joint.m_index;
             socket.m_index = index;
         }
+        joint.m_socketIndex = index;
         m_NameToSocket.insert({ joint.m_name, index });
 
         return index;
@@ -147,6 +149,27 @@ namespace animation {
                 jointIndex = parent.m_parentIndex;
             }
         }
+
+        for (auto& rigJoint : m_joints) {
+            if (rigJoint.m_boneIndex >= 0) {
+                const auto& bi = m_boneContainer.m_boneInfos[rigJoint.m_boneIndex];
+
+                KI_INFO_OUT(fmt::format(
+                    "PREPARE: name={}\nbone: {}\njoin: {}",
+                    rigJoint.m_name,
+                    bi.m_offsetMatrix,
+                    rigJoint.m_globalInvTransform));
+            }
+            else {
+                KI_INFO_OUT(fmt::format(
+                    "PREPARE: name={}\nbone: {}\njoin: {}",
+                    rigJoint.m_name,
+                    "NA",
+                    rigJoint.m_globalInvTransform));
+            }
+        }
+
+        dumpHierarchy(0);
     }
 
     void RigContainer::validate() const
@@ -166,6 +189,30 @@ namespace animation {
 
             if (jointIt == m_joints.end()) throw std::runtime_error(fmt::format("missing_bone_joint: {}", name));
         }
+    }
+
+    void RigContainer::dumpHierarchy(int16_t level) const
+    {
+        std::string sb;
+        sb.reserve(10000);
+
+        for (const auto& rigJoint : m_joints) {
+            const auto& line = fmt::format(
+                "[{}.{}, name={}, bone={}, socket={}]",
+                rigJoint.m_parentIndex,
+                rigJoint.m_index,
+                rigJoint.m_name,
+                rigJoint.m_boneIndex >= 0 ? std::to_string(rigJoint.m_boneIndex) : std::string{ "NA" },
+                rigJoint.m_socketIndex >= 0 ? std::to_string(rigJoint.m_socketIndex) : std::string{ "NA" });
+
+            for (int i = 0; i < rigJoint.m_level; i++) {
+                sb += "    ";
+            }
+            sb += line;
+            sb += "\n";
+        }
+
+        KI_INFO_OUT(fmt::format("TREE:\n{}", sb));
     }
 
     //void RigContainer::calculateInvTransforms() noexcept

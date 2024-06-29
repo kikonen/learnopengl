@@ -59,6 +59,7 @@ namespace animation {
 
         void prepare();
         void validate() const;
+        void dumpHierarchy(int16_t level) const;
 
         //void calculateInvTransforms() noexcept;
 

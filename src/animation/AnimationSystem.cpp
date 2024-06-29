@@ -4,6 +4,10 @@
 #include <algorithm>
 #include <execution>
 
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
+
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
 
@@ -17,6 +21,7 @@
 #include "pool/NodeHandle.h"
 
 #include "animation/RigContainer.h"
+#include "animation/BoneInfo.h"
 #include "animation/Animator.h"
 
 #include "animation/BoneRegistry.h"
@@ -63,10 +68,34 @@ namespace animation
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
-        uint32_t boneIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
-        uint32_t socketIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
+        uint32_t boneBaseIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
+        uint32_t socketBaseIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
 
-        return { boneIndex, socketIndex };
+        // NOTE KI all bones are initially identity matrix
+        // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
+        {
+            auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
+            for (const auto& socket : rig.m_sockets) {
+                const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
+                if (rigJoint.m_boneIndex >= 0) {
+                    const auto& bi = rig.m_boneContainer.m_boneInfos[rigJoint.m_boneIndex];
+
+                    KI_INFO_OUT(fmt::format(
+                        "SOCKET_INIT: node={}.{}, name={}, socket={}\nbone: {}\njoin: {}\nsock: {}",
+                        rigJoint.m_parentIndex,
+                        rigJoint.m_index,
+                        rigJoint.m_name,
+                        socket.m_name,
+                        bi.m_offsetMatrix,
+                        rigJoint.m_globalInvTransform,
+                        socket.m_transform));
+                }
+                socketPalette[socket.m_index] = rigJoint.m_globalTransform * socket.m_transform;
+            }
+            socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
+        }
+
+        return { boneBaseIndex, socketBaseIndex };
     }
 
     uint32_t AnimationSystem::getActiveCount() const noexcept
@@ -143,9 +172,12 @@ namespace animation
                 continue;
             }
 
+            if (!mesh->m_rig) continue;
+
             auto& rig = *mesh->m_rig;
-            auto palette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
-            auto sockets = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());
+
+            auto bonePalette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
+            auto socketPalette = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());
 
             if (state.m_animationStartTime < 0) {
                 state.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
@@ -161,8 +193,8 @@ namespace animation
                 mesh->m_baseTransform,
                 mesh->m_inverseBaseTransform,
                 lodMesh.m_animationBaseTransform,
-                palette,
-                sockets,
+                bonePalette,
+                socketPalette,
                 state.m_animationIndex,
                 state.m_animationStartTime,
                 m_firstFrameOnly ? state.m_animationStartTime : ctx.m_clock.ts);

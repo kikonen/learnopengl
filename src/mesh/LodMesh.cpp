@@ -59,7 +59,7 @@ namespace mesh {
 
         m_mesh = o.m_mesh;
         m_meshIndex = o.m_meshIndex;
-        m_socketIndex = std::move(o.m_socketIndex);
+        m_socketIndex = o.m_socketIndex;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -92,7 +92,7 @@ namespace mesh {
 
         m_mesh = o.m_mesh;
         m_meshIndex = o.m_meshIndex;
-        m_socketIndex = std::move(o.m_socketIndex);
+        m_socketIndex = o.m_socketIndex;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -199,7 +199,6 @@ namespace mesh {
         setMaterial(mesh->getMaterial());
 
         m_meshIndex = mesh->m_registeredIndex;
-        //m_socketIndex = mesh->m_rigSocketIndex;
     }
 
     void LodMesh::registerMaterial()
