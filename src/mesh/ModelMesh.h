@@ -60,7 +60,7 @@ namespace mesh {
 
         std::vector<animation::VertexBone> m_vertexBones;
 
-        animation::RigContainer* m_rig{ nullptr };
+        std::shared_ptr<animation::RigContainer> m_rig;
 
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };

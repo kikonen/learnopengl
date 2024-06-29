@@ -21,8 +21,8 @@ namespace animation {
             const glm::mat4& meshBaseTransform,
             const glm::mat4& inverseMeshBaseTransform,
             const glm::mat4& animationBaseTransform,
-            std::span<glm::mat4>& palette,
-            std::span<glm::mat4>& sockets,
+            std::span<glm::mat4>& bonePalette,
+            std::span<glm::mat4>& socketPalette,
             uint16_t animationIndex,
             double animationStartTime,
             double currentTime);

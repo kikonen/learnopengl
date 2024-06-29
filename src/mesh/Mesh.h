@@ -69,6 +69,7 @@ namespace mesh {
         uint32_t m_registeredIndex{ 0 };
 
         const std::string m_name;
+        const std::string m_alias;
 
         // NOTE KI for debug
         std::string m_rigJointName;

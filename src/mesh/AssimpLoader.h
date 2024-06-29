@@ -46,10 +46,17 @@ namespace mesh {
             std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
             const aiNode* node,
+            int16_t level,
             int16_t parentIndex,
-            const glm::mat4& parentTransform);
+            const glm::mat4& parentTransform,
+            const glm::mat4& parentInvTransform);
 
         void dumpMetaData(
+            const std::vector<animation::RigJoint>& joints,
+            const std::vector<const aiNode*>& assimpNodes);
+
+        void dumpMetaData(
+            const animation::RigJoint& rigJoint,
             const aiNode* node);
 
         void loadAnimations(

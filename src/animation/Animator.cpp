@@ -30,8 +30,8 @@ namespace animation {
         const glm::mat4& meshBaseTransform,
         const glm::mat4& inverseMeshBaseTransform,
         const glm::mat4& animationBaseTransform,
-        std::span<glm::mat4>& palette,
-        std::span<glm::mat4>& sockets,
+        std::span<glm::mat4>& bonePalette,
+        std::span<glm::mat4>& socketPalette,
         uint16_t animationIndex,
         double animationStartTime,
         double currentTime)
@@ -82,9 +82,10 @@ namespace animation {
         std::vector<std::string> hitMiss;
         //bool boneFound = false;
 
-        for (auto& mat : palette) {
-            mat = inverseMeshBaseTransform * animationBaseTransform;
-        }
+        //for (auto& mat : bonePalette) {
+        //    mat = inverseMeshBaseTransform * animationBaseTransform;
+        //    mat = glm::mat4(1.f);
+        //}
 
         bool foundRoot = false;
         for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
@@ -98,8 +99,6 @@ namespace animation {
 
             //if (hitCount >= 5) break;
 
-            bool handled = false;
-
             if (rigJoint.m_boneRequired) {
                 if (rigJoint.m_index >= MAX_JOINTS) throw "too many joints";
                 //auto* bone = rig.m_boneContainer.findByJoingIndex(rigJoint.m_index);
@@ -107,7 +106,7 @@ namespace animation {
 
                 //if (bone) {
                 //    if (!boneFound) {
-                //        //parentTransforms[rigJoint.m_parentIndex + 1] = glm::inverse(rigJoint.m_localTransform);
+                //        //parentTransforms[rigJoint.m_parentIndex + 1] = glm::inverse(rigJoint.m_transform);
                 //        parentTransforms[rigJoint.m_parentIndex + 1] = glm::mat4(1.f);
                 //    }
                 //    boneFound |= true;
@@ -120,7 +119,12 @@ namespace animation {
 
                 const glm::mat4 jointTransform = channel
                     ? channel->interpolate(animationTimeTicks)
-                    : rigJoint.m_localTransform;
+                    : rigJoint.m_transform;
+
+                //if (rigJoint.m_name == std::string{ "SkeletonKnight_" })
+                //{
+                //    jointTransform = glm::mat4(1.f);
+                //}
 
                 parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
                 const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
@@ -148,27 +152,24 @@ namespace animation {
                     //}
 
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
-                    palette[bone->m_index] = inverseMeshBaseTransform * globalTransform * bone->m_offsetMatrix;
-
+                    bonePalette[bone->m_index] = inverseMeshBaseTransform * globalTransform * bone->m_offsetMatrix;
                 }
                 else {
                     //hitMiss.push_back(fmt::format("[-{}.{}.{}]",
                     //    rigJoint.m_parentIndex, rigJoint.m_index, rigJoint.m_name));
                     //missCount++;
                 }
-
-                handled = true;
             }
-
-            if (!handled && rigJoint.m_socketRequired) {
-                const glm::mat4& jointTransform = rigJoint.m_localTransform;
-
-                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+            else {
+                if (rigJoint.m_socketRequired) {
+                    parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * rigJoint.m_transform;
+                }
             }
         }
 
-        for (int i = 0; i < rig.m_sockets.size(); i++) {
-            sockets[i] = parentTransforms[rig.m_sockets[i].m_jointIndex + 1];
+        for (const auto& socket : rig.m_sockets) {
+            socketPalette[socket.m_index] = parentTransforms[socket.m_jointIndex + 1] *
+                socket.m_transform;
         }
 
         KI_INFO_OUT(fmt::format("ANIM: joints={}, bones={}, hit={}, miss={}, graph={}",

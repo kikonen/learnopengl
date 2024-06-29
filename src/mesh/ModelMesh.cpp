@@ -67,7 +67,7 @@ namespace mesh {
         TexturedVAO* vao;
         SkinnedVAO* skinnedVao = nullptr;
 
-        if (m_rig && m_rig->hasBones() && !m_vertexBones.empty()) {
+        if (m_rig && !m_vertexBones.empty()) {
             skinnedVao = ModelRegistry::get().getSkinnedVao();
             vao = skinnedVao;
         }

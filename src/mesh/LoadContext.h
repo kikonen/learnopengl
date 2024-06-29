@@ -14,11 +14,11 @@ namespace animation {
 
 namespace mesh {
     struct LoadContext {
-        LoadContext(animation::RigContainer* rig)
+        LoadContext(std::shared_ptr<animation::RigContainer> rig)
             : m_rig{ rig }
         {}
 
-        animation::RigContainer* m_rig;
+        std::shared_ptr<animation::RigContainer> m_rig;
 
         std::vector<Material> m_materials;
         std::map<size_t, ki::material_id> m_materialMapping;

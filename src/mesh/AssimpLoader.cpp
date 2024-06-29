@@ -98,13 +98,14 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        auto rig = std::make_unique<animation::RigContainer>();
-        mesh::LoadContext ctx{ rig.get() };
+        auto rig = std::make_shared<animation::RigContainer>();
+        mesh::LoadContext ctx{ rig };
 
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectJoints(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
+        collectJoints(ctx, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
+        dumpMetaData(rig->m_joints, assimpNodes);
 
         processMeshes(
             ctx,
@@ -116,12 +117,12 @@ namespace mesh
             loadAnimations(ctx, meshSet.m_name, scene);
 
             rig->prepare();
-            meshSet.m_rig = std::move(rig);
+            meshSet.m_rig = rig;
         }
         else {
             for (auto& mesh : meshSet.getMeshes()) {
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
-                modelMesh->m_rig = nullptr;
+                modelMesh->m_rig.reset();
             }
         }
 
@@ -135,41 +136,66 @@ namespace mesh
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
+        int16_t level,
         int16_t parentIndex,
-        const glm::mat4& parentTransform)
+        const glm::mat4& parentTransform2,
+        const glm::mat4& parentInvTransform2)
     {
         auto& rig = *ctx.m_rig;
 
         uint16_t jointIndex;
         glm::mat4 globalTransform;
+        glm::mat4 globalInvTransform;
         {
             assimpNodes.push_back(node);
 
+            glm::mat4 parentTransform = parentTransform2;
+            glm::mat4 parentInvTransform = parentInvTransform2;
+
+            //if (std::string{ "root" } == std::string{ node->mName.C_Str() }) {
+            //    //parentTransform = glm::mat4{ 1.f };
+            //    parentInvTransform = glm::mat4{ 1.f };
+            //}
+
             auto& rigJoint = rig.addJoint(node);
+            rigJoint.m_level = level;
             rigJoint.m_parentIndex = parentIndex;
             jointIndex = rigJoint.m_index;
 
-            globalTransform = parentTransform * rigJoint.m_localTransform;
+            globalTransform = parentTransform * rigJoint.m_transform;
+            globalInvTransform = parentInvTransform * rigJoint.m_invTransform;
             rigJoint.m_globalTransform = globalTransform;
+            rigJoint.m_globalInvTransform = globalInvTransform;
 
-            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}.{}, name={}, children={}, meshes={}\nT: {}",
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: NODE node={}.{}, name={}, children={}, meshes={}\nT: {}\nG: {}\nI: {}",
                 parentIndex,
                 jointIndex,
                 node->mName.C_Str(),
                 node->mNumChildren,
                 node->mNumMeshes,
-                rigJoint.m_localTransform));
+                rigJoint.m_transform,
+                rigJoint.m_globalTransform,
+                rigJoint.m_globalInvTransform));
         }
-
-        dumpMetaData(node);
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectJoints(ctx, assimpNodes, scene, node->mChildren[n], jointIndex, globalTransform);
+            collectJoints(ctx, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform, globalInvTransform);
         }
     }
 
     void AssimpLoader::dumpMetaData(
+        const std::vector<animation::RigJoint>& joints,
+        const std::vector<const aiNode*>& assimpNodes)
+    {
+        for (int i = 0; i < joints.size(); i++) {
+            dumpMetaData(joints[i], assimpNodes[i]);
+        }
+    }
+
+    void AssimpLoader::dumpMetaData(
+        const animation::RigJoint& rigJoint,
         const aiNode* node)
     {
         const std::string nodeName{ node->mName.C_Str() };
@@ -234,7 +260,13 @@ namespace mesh
                 break;
             }
 
-            KI_INFO_OUT(fmt::format("ASSIMP: META: node={}: {}={}", nodeName, formattedKey, formattedValue));
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: META node={}.{}, name={}, key={}, value={}",
+                rigJoint.m_parentIndex,
+                rigJoint.m_index,
+                rigJoint.m_name,
+                formattedKey,
+                formattedValue));
         }
     }
 

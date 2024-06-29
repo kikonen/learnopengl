@@ -21,6 +21,8 @@
 #include "animation/RigContainer.h"
 #include "animation/AnimationSystem.h"
 
+#include "mesh/mesh_util.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/MeshType.h"
@@ -98,12 +100,13 @@ void Node::prepareWT(
     }
 
     {
-        // TODO KI *WRONG*, every animated LodMesh has *different* base transform
-        auto* lodMesh = type->getLodMesh(0);
-        auto* mesh = lodMesh ? lodMesh->getMesh<mesh::ModelMesh>() : nullptr;
+        // NOTE KI for now, allow only single Rig per mesh type
+        // i.e. not possible to attach animated attachments
+        // or have separate animations for LOD level meshes
+        const auto rig = mesh::findRig(type->modifyLodMeshes());
 
-        if (mesh && mesh->m_rig) {
-            auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*mesh->m_rig);
+        if (rig) {
+            auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
             m_state.m_boneBaseIndex = boneBaseIndex;
             m_state.m_socketBaseIndex = socketBaseIndex;
             m_state.m_animationIndex = 0;

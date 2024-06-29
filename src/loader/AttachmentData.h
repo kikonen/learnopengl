@@ -6,6 +6,8 @@
 
 namespace loader {
     struct AttachmentData {
+        bool enabled{ false };
+
         std::string name;
         std::string socket;
 

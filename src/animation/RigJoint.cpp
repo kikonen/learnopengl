@@ -9,8 +9,10 @@ namespace animation {
         : m_name{ node->mName.C_Str() },
         m_index{ -1 },
         m_parentIndex{ -1 },
-        m_localTransform{ assimp_util::toMat4(node->mTransformation) },
-        m_globalTransform{ 1.f }
+        m_transform{ assimp_util::toMat4(node->mTransformation) },
+        m_invTransform{ glm::inverse(m_transform)},
+        m_globalTransform{ 1.f },
+        m_globalInvTransform{ 1.f }
     {
     }
 }
