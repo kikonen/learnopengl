@@ -694,7 +694,9 @@ namespace loader {
                 socketData.name,
                 socketData.joint,
                 socketData.offset,
-                util::degreesToQuat(socketData.rotation) };
+                util::degreesToQuat(socketData.rotation),
+                socketData.scale
+            };
 
             rig.registerSocket(socket);
         }

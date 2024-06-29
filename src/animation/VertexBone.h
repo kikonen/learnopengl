@@ -23,14 +23,19 @@ namespace animation {
                 if (m_weights[i] == 0.f) {
                     m_boneIds[i] = boneId;
                     m_weights[i] = weight;
-                    return;
+                    break;
                 }
                 else {
-                    assert(m_boneIds[i] != boneId);
+                    if (m_boneIds[i] == boneId) {
+                        m_weights[i] += weight;
+                        break;
+                        //assert(m_boneIds[i] != boneId);
+                    }
                 }
             }
-            assert(m_weights.x + m_weights.y + m_weights.z + m_weights.w <= 1.f);
-            assert(0);
+            float sum = m_weights.x + m_weights.y + m_weights.z + m_weights.w;
+            assert(sum <= 1.0001f);
+            //assert(0);
         }
     };
 }

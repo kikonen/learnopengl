@@ -198,7 +198,8 @@ namespace animation {
 
         for (const auto& rigJoint : m_joints) {
             const auto& line = fmt::format(
-                "[{}.{}, name={}, bone={}, socket={}]",
+                "[{}{}.{}, name={}, bone={}, socket={}]",
+                rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
                 rigJoint.m_name,

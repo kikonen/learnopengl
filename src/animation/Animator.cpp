@@ -129,16 +129,16 @@ namespace animation {
                 parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
                 const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
 
-                KI_INFO_OUT(fmt::format(
-                    "{},{} - {}\npare: {}\njoin: {}\nglob: {}\noffs: {}\npale: {}\n",
-                    rigJoint.m_parentIndex,
-                    rigJoint.m_index,
-                    rigJoint.m_name,
-                    parentTransforms[rigJoint.m_parentIndex + 1],
-                    jointTransform,
-                    globalTransform,
-                    bone ? bone->m_offsetMatrix : glm::mat4{ 0.f },
-                    bone ? globalTransform * bone->m_offsetMatrix : glm::mat4{ 0.f }));
+                //KI_INFO_OUT(fmt::format(
+                //    "{},{} - {}\npare: {}\njoin: {}\nglob: {}\noffs: {}\npale: {}\n",
+                //    rigJoint.m_parentIndex,
+                //    rigJoint.m_index,
+                //    rigJoint.m_name,
+                //    parentTransforms[rigJoint.m_parentIndex + 1],
+                //    jointTransform,
+                //    globalTransform,
+                //    bone ? bone->m_offsetMatrix : glm::mat4{ 0.f },
+                //    bone ? globalTransform * bone->m_offsetMatrix : glm::mat4{ 0.f }));
 
                 //auto* bone = rig.m_boneContainer.findByJointIndex(rigJoint.m_index);
                 if (bone) {
@@ -172,9 +172,9 @@ namespace animation {
                 socket.m_transform;
         }
 
-        KI_INFO_OUT(fmt::format("ANIM: joints={}, bones={}, hit={}, miss={}, graph={}",
-            rig.m_joints.size(), rig.m_boneContainer.m_boneInfos.size(), hitCount, missCount,
-            util::join(hitMiss, "")));
+        //KI_INFO_OUT(fmt::format("ANIM: joints={}, bones={}, hit={}, miss={}, graph={}",
+        //    rig.m_joints.size(), rig.m_boneContainer.m_boneInfos.size(), hitCount, missCount,
+        //    util::join(hitMiss, "")));
 
         return true;
     }

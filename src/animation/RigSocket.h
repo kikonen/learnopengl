@@ -13,7 +13,8 @@ namespace animation
             const std::string& name,
             const std::string& jointName,
             glm::vec3 offset,
-            glm::quat rotation);
+            glm::quat rotation,
+            glm::vec3 scale);
 
         const std::string m_name;
         const std::string m_jointName;
