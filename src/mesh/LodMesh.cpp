@@ -53,9 +53,8 @@ namespace mesh {
 
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
-        m_level = o.m_level;
+        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
-        m_distance2 = o.m_distance2;
 
         m_mesh = o.m_mesh;
         m_meshIndex = o.m_meshIndex;
@@ -86,9 +85,8 @@ namespace mesh {
 
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
-        m_level = o.m_level;
+        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
-        m_distance2 = o.m_distance2;
 
         m_mesh = o.m_mesh;
         m_meshIndex = o.m_meshIndex;
@@ -120,7 +118,7 @@ namespace mesh {
     {
         return fmt::format(
             "<LOD_MESH: level={}, index={}, vao={}, mesh={}, material={}, socket={}>",
-            m_level,
+            m_levelMask,
             m_meshIndex,
             m_vao ? *m_vao : -1,
             m_mesh ? m_mesh->str() : "N/A",
@@ -214,13 +212,13 @@ namespace mesh {
         }
 
         if (assets.useLodDebug) {
-            if (m_level > 0)
+            if (m_levelMask >= 1 << 0)
                 material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-            if (m_level > 1)
+            if (m_levelMask >= 1 << 1)
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.5f, 1.f };
-            if (m_level > 2)
+            if (m_levelMask >= 1 << 2)
                 material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
-            if (m_level > 3)
+            if (m_levelMask >= 1 << 3)
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
         }
 

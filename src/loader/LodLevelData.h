@@ -1,19 +1,11 @@
 #pragma once
 
-#include <stdint.h>
-
-#include "FlagContainer.h"
+#include "ki/size.h"
 
 namespace loader {
-    struct LodData {
-        std::string name;
-
+    struct LodLevelData {
         std::vector<int> levels{ {0} };
-        int8_t priority{ 0 };
-
         float distance{ 0 };
-
-        loader::FlagContainer meshFlags;
 
         uint8_t getLevelMask() const noexcept
         {
@@ -22,6 +14,11 @@ namespace loader {
                 mask |= 1 << level;
             }
             return mask;
+        }
+
+        float getDistance2() const noexcept
+        {
+            return distance * distance;
         }
     };
 }

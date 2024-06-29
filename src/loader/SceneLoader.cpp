@@ -510,7 +510,27 @@ namespace loader {
             }
         }
 
+        resolveLodLevels(type, nodeData);
+
         return typeHandle;
+    }
+
+    void SceneLoader::resolveLodLevels(
+        mesh::MeshType* type,
+        const NodeData& nodeData)
+    {
+        for (const auto& data : nodeData.lodLevels) {
+            mesh::LodLevel level{
+                data.getLevelMask(),
+                data.getDistance2() };
+            type->m_lodLevels.push_back(level);
+        }
+
+        std::sort(
+            type->m_lodLevels.begin(),
+            type->m_lodLevels.end(),
+            [](auto& a, auto& b) { return a.m_distance2 < b.m_distance2; }
+        );
     }
 
     void SceneLoader::resolveMaterials(
@@ -666,18 +686,8 @@ namespace loader {
         const auto* lod = meshData.findLod(mesh->m_name);
         if (!lod) return nullptr;
 
-        lodMesh.m_level = lod->level;
+        lodMesh.m_levelMask = lod->getLevelMask();
         lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
-        lodMesh.setDistance(lod->distance);
-
-        //const auto& socketData = lod->boundSocket;
-        //if (!socketData.name.empty()) {
-        //    auto& socket = lodMesh.m_socket;
-        //    socket.m_name = socketData.name;
-        //    socket.m_offset = socketData.offset;
-        //    socket.m_quatRotation = util::degreesToQuat(nodeData.rotation);
-        //    socket.getTransform();
-        //}
 
         return lod;
     }

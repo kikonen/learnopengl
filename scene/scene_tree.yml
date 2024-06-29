@@ -99,7 +99,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 0
-            distance: 100
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -114,7 +113,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 1
-            distance: 200
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -126,7 +124,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 2
-            distance: 600
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -137,13 +134,21 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 3
-            distance: 10000
           - name: Tree_1
-            level: -1
+            level: []
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
             map_kd: textures/bark02.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 100
+      - level: 2
+        distance: 200
+      - level: 3
+        distance: 600
     program: g_tex
     instanced: true
     pos: [0, 0, 0]

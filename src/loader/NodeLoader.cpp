@@ -248,6 +248,9 @@ namespace loader {
             else if (k == "attachments") {
                 loadAttachments(v, data.attachments);
             }
+            else if (k == "lod_levels") {
+                loadLodLevels(v, data.lodLevels);
+            }
             else {
                 reportUnknown("node_entry", k, v);
             }
@@ -333,6 +336,38 @@ namespace loader {
             }
             else {
                 reportUnknown("attachment_entry", k, v);
+            }
+        }
+    }
+
+    void NodeLoader::loadLodLevels(
+        const loader::DocNode& node,
+        std::vector<LodLevelData>& lodLevels) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            auto& data = lodLevels.emplace_back();
+            loadLodLevel(entry, data);
+        }
+    }
+
+    void NodeLoader::loadLodLevel(
+        const loader::DocNode& node,
+        LodLevelData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "level") {
+                data.levels = readIntVector(v, 1);
+            }
+            else if (k == "distance") {
+                data.distance = readFloat(v);
+            }
+            else {
+                reportUnknown("lod_level_entry", k, v);
             }
         }
     }

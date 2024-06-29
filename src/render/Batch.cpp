@@ -84,10 +84,10 @@ namespace render {
         m_drawCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
+        const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_level != lodLevel) continue;
+            if ((lodMesh.m_levelMask & levelMask) == 0) continue;
             if (!lodMesh.m_vao) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
@@ -202,10 +202,10 @@ namespace render {
                     continue;
                 }
 
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
+                const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_level != lodLevel) continue;
+                    if ((lodMesh.m_levelMask & levelMask) == 0) continue;
                     if (!lodMesh.m_vao) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;

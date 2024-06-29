@@ -10,6 +10,7 @@
 
 #include "model/NodeType.h"
 
+#include "LodLevel.h"
 #include "LodMesh.h"
 #include "TypeFlags.h"
 
@@ -107,7 +108,7 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        int8_t getLodLevel(
+        uint8_t getLodLevelMask(
             const glm::vec3& cameraPos,
             const glm::vec3& worldPos) const;
 
@@ -126,6 +127,8 @@ namespace mesh {
     public:
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
+
+        std::vector<LodLevel> m_lodLevels;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 

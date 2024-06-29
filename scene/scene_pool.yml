@@ -154,7 +154,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 0
-            distance: 100
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -169,7 +168,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 1
-            distance: 200
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -181,7 +179,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 2
-            distance: 600
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -192,13 +189,21 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 3
-            distance: 10000
           - name: Tree_1
-            level: -1
+            level: []
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
             map_kd: textures/bark02.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 100
+      - level: 2
+        distance: 100
+      - level: 3
+        distance: 600
     program: g_tex
     instanced: true
     pos: [-40.0, 4, 70]
@@ -271,7 +276,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 0
-            distance: 50
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -282,7 +286,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 1
-            distance: 80
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -292,7 +295,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 2
-            distance: 200
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -301,11 +303,19 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 3
-            distance: 100000
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
             map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 50
+      - level: 2
+        distance: 80
+      - level: 3
+        distance: 200
     program: g_tex
     shadow_program: simple_depth
     priority: -20
@@ -387,7 +397,6 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -405,11 +414,10 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 1
-            distance: 500
           - name: Tree_1
             level: 1
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -425,7 +433,7 @@ nodes:
           - name: Tree_1
             level: 2
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -433,6 +441,13 @@ nodes:
           - name: palm_leaf
             alias: Tree_1Mat
             map_kd: textures/coconut palm leaf.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 500
     program: g_tex
     instanced: true
     pos: [240.0, 14, 70]

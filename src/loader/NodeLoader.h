@@ -36,5 +36,13 @@ namespace loader {
         void loadAttachment(
             const loader::DocNode& node,
             AttachmentData& data) const;
+
+        void loadLodLevels(
+            const loader::DocNode& node,
+            std::vector<LodLevelData>& attachments) const;
+
+        void loadLodLevel(
+            const loader::DocNode& node,
+            LodLevelData& data) const;
     };
 }

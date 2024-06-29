@@ -430,6 +430,7 @@
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
+    <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
     <ClInclude Include="src\loader\SocketData.h" />
@@ -450,6 +451,7 @@
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
+    <ClInclude Include="src\mesh\LodLevel.h" />
     <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\animation\RigSocket.h" />

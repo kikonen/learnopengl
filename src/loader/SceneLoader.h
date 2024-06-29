@@ -125,6 +125,10 @@ namespace loader {
             const NodeData& nodeData,
             const glm::uvec3& tile);
 
+        void resolveLodLevels(
+            mesh::MeshType* type,
+            const NodeData& nodeData);
+
         void resolveMaterials(
             mesh::MeshType* type,
             mesh::LodMesh& lodMesh,

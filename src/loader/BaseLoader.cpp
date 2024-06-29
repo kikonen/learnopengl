@@ -146,8 +146,14 @@ namespace loader
         std::vector<int> a;
         a.reserve(reserve);
 
-        for (const auto& e : node.getNodes()) {
-            a.push_back(readInt(e));
+
+        if (node.isSequence()) {
+            for (const auto& e : node.getNodes()) {
+                a.push_back(readInt(e));
+            }
+        }
+        else {
+            a.push_back(readInt(node));
         }
 
         return a;
@@ -158,8 +164,13 @@ namespace loader
         std::vector<float> a;
         a.reserve(reserve);
 
-        for (const auto& e : node.getNodes()) {
-            a.push_back(readFloat(e));
+        if (node.isSequence()) {
+            for (const auto& e : node.getNodes()) {
+                a.push_back(readFloat(e));
+            }
+        }
+        else {
+            a.push_back(readFloat(node));
         }
 
         return a;

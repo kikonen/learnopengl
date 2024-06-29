@@ -1018,7 +1018,6 @@ nodes:
       - path: rock2/rock
         lod:
           level: 0
-          distance: 20
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
@@ -1027,7 +1026,6 @@ nodes:
       - path: rock2/rock_lod_1
         lod:
           level: 1
-          distance: 40
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
           map_pbr: textures\Rock002_1K-PNG
@@ -1036,7 +1034,6 @@ nodes:
       - path: rock2/rock_lod_2
         lod:
           level: 2
-          distance: 60
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
@@ -1045,7 +1042,6 @@ nodes:
       - path: rock2/rock_lod_3
         lod:
           level: 3
-          distance: 80
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
@@ -1054,7 +1050,6 @@ nodes:
       - path: rock2/rock_lod_4
         lod:
           level: 4
-          distance: 100
         flags:
           billboard: true
         material_modifier:
@@ -1062,6 +1057,17 @@ nodes:
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [1, 0, 0]
           tiling: 4
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
+      - level: 2
+        distance: 40
+      - level: 3
+        distance: 60
+      - level: 4
+        distance: 80
     instanced: true
     generator:
       type: asteroid_belt
@@ -1118,7 +1124,6 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -1136,11 +1141,10 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 1
-            distance: 500
           - name: Tree_1
             level: 1
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -1152,11 +1156,10 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 2
-            distance: 10000
           - name: Tree_1
             level: 2
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -1164,6 +1167,13 @@ nodes:
           - name: palm_leaf
             alias: Tree_1Mat
             map_kd: textures/coconut palm leaf.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 500
     priority: -17
     program: g_tex
     pos: [350, 10.0, 150.0]
@@ -1183,7 +1193,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 0
-            distance: 100
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -1198,7 +1207,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 1
-            distance: 200
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -1210,7 +1218,6 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 2
-            distance: 600
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -1221,13 +1228,21 @@ nodes:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 3
-            distance: 10000
           - name: Tree_1
-            level: -1
+            level: []
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
             map_kd: textures/bark02.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 100
+      - level: 2
+        distance: 200
+      - level: 3
+        distance: 600
     priority: -17
     program: g_tex
     pos: [250, 10.0, 150.0]
@@ -1247,7 +1262,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 0
-            distance: 50
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -1258,7 +1272,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 1
-            distance: 80
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -1268,7 +1281,6 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 2
-            distance: 200
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
@@ -1277,11 +1289,19 @@ nodes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
         lods:
           - level: 3
-            distance: 100000
         materials:
           - name: grass_bush_01_pbr
             alias: M_atlas_grass_01
             map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 50
+      - level: 2
+        distance: 80
+      - level: 3
+        distance: 200
     program: g_tex
     shadow_program: simple_depth
     priority: -20
@@ -1307,7 +1327,6 @@ nodes:
           use_animation: true
         lods:
           - level: 0
-            distance: 20
         material:
           name: skeleton_pbr
           map_pbr: skeleton_pbr
@@ -1319,10 +1338,14 @@ nodes:
           use_animation: true
         lods:
           - level: 1
-            distance: 10000
         material:
           name: skeleton_pbr
           map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
     program: g_tex
     shadow_program: simple_depth
     priority: -15
