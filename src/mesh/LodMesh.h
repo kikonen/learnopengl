@@ -55,10 +55,6 @@ namespace mesh {
             std::unique_ptr<Mesh> mesh,
             bool umique) noexcept;
 
-        void setDistance(float dist) {
-            m_distance2 = dist * dist;
-        }
-
         Material* getMaterial() noexcept;
         void setMaterial(const Material& material) noexcept;
 
@@ -105,11 +101,8 @@ namespace mesh {
         Program* m_selectionProgram{ nullptr };
         Program* m_idProgram{ nullptr };
 
-        // Squared Distance upto lod is applied
-        float m_distance2{ 0.f };
-
-        // -1 == collision mesh
-        int8_t m_level{ 0 };
+        // NOTE KI level == 0 by default enabled
+        uint8_t m_levelMask{ 1 };
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
         // range -254 .. 255

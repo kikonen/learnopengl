@@ -133,7 +133,7 @@ namespace loader {
     {
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
-            data.level = 0;
+            data.levels = { {0} };
             data.name = '*';
             loadLod(entry, data);
         }
@@ -153,7 +153,7 @@ namespace loader {
                 data.name = readString(v);
             }
             else if (k == "level") {
-                data.level = readInt(v);
+                data.levels = readIntVector(v, 1);
             }
             else if (k == "distance") {
                 data.distance = readFloat(v);

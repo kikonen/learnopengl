@@ -28,7 +28,8 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType()
-        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
+        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()},
+        m_lodLevels{ { 1, 0 } }
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
@@ -39,13 +40,14 @@ namespace mesh {
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
+        m_lodLevels{ std::move(o.m_lodLevels) },
         m_customMaterial{ std::move(o.m_customMaterial) }
     {
     }
 
     MeshType::~MeshType()
     {
-        KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
+        KI_INFO(fmt::format("NODE_TYPE: delet   e iD={}", m_id));
     }
 
     std::string MeshType::str() const noexcept
@@ -133,26 +135,20 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    int8_t MeshType::getLodLevel(
+    uint8_t MeshType::getLodLevelMask(
         const glm::vec3& cameraPos,
         const glm::vec3& worldPos) const
     {
-        auto& lodMeshes = *m_lodMeshes.get();
-        if (lodMeshes.size() == 1) return lodMeshes[0].m_level;
+        if (m_lodLevels.empty()) return 0;
+        //if (m_lodLevels.size() == 1) return m_lodLevels[0].m_levelMask;
 
-        const LodMesh* last = &lodMeshes[0];
+        for (int i = m_lodLevels.size() - 1; i >= 0; i--)
         {
+            const auto& lod = m_lodLevels[i];
             auto dist2 = glm::distance2(worldPos, cameraPos);
-
-            for (const auto& lodMesh : lodMeshes) {
-                if (lodMesh.m_level < 0) continue;
-                if (dist2 < lodMesh.m_distance2)
-                    return lodMesh.m_level;
-                last = &lodMesh;
-            }
+            if (lod.m_distance2 <= dist2)
+                return lod.m_levelMask;
         }
-
-        return last->m_level;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

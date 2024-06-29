@@ -112,7 +112,6 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -130,11 +129,10 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 1
-            distance: 500
           - name: Tree_1
             level: 1
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -146,11 +144,10 @@ nodes:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 2
-            distance: 10000
           - name: Tree_1
             level: 2
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -158,6 +155,13 @@ nodes:
           - name: palm_leaf
             alias: Tree_1Mat
             map_kd: textures/coconut palm leaf.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 500
     priority: 1
     program: g_tex
     pos: [150, 15.0, 150.0]
