@@ -75,6 +75,9 @@ namespace animation
     void SocketRegistry::markDirty(size_t start, size_t count) noexcept
     {
         if (count == 0) return;
+
+        std::lock_guard lock(m_lockDirty);
+
         const auto& it = std::find_if(
             m_dirtyTransform.begin(),
             m_dirtyTransform.begin(),
@@ -112,6 +115,7 @@ namespace animation
     void SocketRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);
+        std::lock_guard lockDirty(m_lockDirty);
 
         if (m_dirtyTransform.empty()) return;
 

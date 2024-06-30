@@ -8,7 +8,11 @@
 #include "kigl/GLBuffer.h"
 
 namespace animation {
+    class AnimationSystem;
+
     class BoneRegistry {
+        friend AnimationSystem;
+
     public:
         static animation::BoneRegistry& get() noexcept;
 
@@ -19,6 +23,9 @@ namespace animation {
 
         void prepare();
 
+        uint32_t getActiveCount() const noexcept;
+
+    protected:
         // Register node instance specific rig
         // @return instance index into bone transform buffer
         uint32_t reserveInstance(size_t count);
@@ -29,8 +36,6 @@ namespace animation {
 
         void markDirtyAll() noexcept;
         void markDirty(size_t start, size_t count) noexcept;
-
-        uint32_t getActiveCount() const noexcept;
 
         void updateWT();
         void updateRT();
@@ -43,8 +48,11 @@ namespace animation {
             size_t updateIndex,
             size_t updateCount);
 
-    private:
+    protected:
         std::mutex m_lock{};
+
+    private:
+        std::mutex m_lockDirty{};
 
         std::atomic_bool m_updateReady{ false };
         size_t m_frameSkipCount{ 0 };

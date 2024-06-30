@@ -65,6 +65,8 @@ namespace animation
 
     std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(const animation::RigContainer& rig)
     {
+        std::lock_guard lock(m_pendingLock);
+
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
@@ -74,6 +76,10 @@ namespace animation
         // NOTE KI all bones are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
         {
+            // NOTE KI need to keep locked while bones are modified
+            // => avoid races with registration of other instances
+            std::lock_guard lockSockets(socketRegistry.m_lock);
+
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
             for (const auto& socket : rig.m_sockets) {
                 const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
@@ -118,6 +124,11 @@ namespace animation
             std::lock_guard lock(m_pendingLock);
 
             if (m_enabled) {
+                // NOTE KI need to keep locked while bones are modified
+                // => avoid races with registration of other instances
+                std::lock_guard lockBones(boneRegistry.m_lock);
+                std::lock_guard lockSockets(socketRegistry.m_lock);
+
                 if (true) {
                     std::for_each(
                         std::execution::par_unseq,
