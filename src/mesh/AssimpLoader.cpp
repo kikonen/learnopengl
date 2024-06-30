@@ -98,7 +98,7 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        auto rig = std::make_shared<animation::RigContainer>();
+        auto rig = std::make_shared<animation::RigContainer>(meshSet.m_filePath);
         mesh::LoadContext ctx{ rig };
 
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
