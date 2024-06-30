@@ -198,8 +198,8 @@ namespace physics
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
-                for (auto& transform : node->m_instancer->modifyStates()) {
-                    enforceBounds(ctx, type, *node, transform);
+                for (auto& state : node->m_instancer->modifyStates()) {
+                    enforceBounds(ctx, type, *node, state);
                 }
             }
             else {
@@ -304,31 +304,31 @@ namespace physics
         const UpdateContext& ctx,
         const mesh::MeshType* type,
         Node& node,
-        NodeState& transform)
+        NodeState& state)
     {
-        if (transform.m_matrixLevel == transform.m_physicsLevel) return;
-        transform.m_physicsLevel = transform.m_matrixLevel;
+        if (state.m_matrixLevel == state.m_physicsLevel) return;
+        state.m_physicsLevel = state.m_matrixLevel;
 
-        const auto& worldPos = transform.getWorldPosition();
-        glm::vec3 pos = transform.getPosition();
+        const auto& worldPos = state.getWorldPosition();
+        glm::vec3 pos = state.getPosition();
 
         const auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
         auto y = surfaceY - parent->getState().getWorldPosition().y;
-        y += transform.getScale().y;
+        y += state.getScale().y;
         pos.y = y;
 
         //KI_INFO_OUT(fmt::format(
         //    "({},{}, {}) => {}, {}, {}",
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
-        transform.setPosition(pos);
-        //transform.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
+        state.setPosition(pos);
+        //state.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
-        if (transform.m_dirty) {
-            transform.updateModelMatrix(parent->getState());
+        if (state.m_dirty) {
+            state.updateModelMatrix(parent->getState());
             auto& nodeState = node.modifyState();
             nodeState.m_dirtySnapshot = true;
         }

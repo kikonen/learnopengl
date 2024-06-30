@@ -236,12 +236,28 @@ namespace physics
         }
         pos -= parent->getState().getWorldPosition();
 
-        // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-        auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
-
         auto& state = node->modifyState();
+
+        // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+        auto rq = glm::normalize(glm::conjugate(m_body.quat) * rot);
+
+        // NOTE KI project rotation to XZ plane to keep nodes UP
+        // => nodes still travel backwards, but not rotating grazily
+        if (true) {
+            // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
+            const auto rotated = glm::mat3(rq) * state.m_front;
+            //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
+            const auto rads = glm::atan(rotated.x, rotated.z);
+            const auto degrees = glm::degrees(rads);
+            rq = util::radiansToQuat(glm::vec3(0, rads, 0));
+
+            dQuaternion quat{ rq.w, rq.x, rq.y, rq.z };
+            dBodySetQuaternion(m_bodyId, quat);
+        }
+        //const auto rotatedFront = rotBase * state.m_front;
+
         state.setPosition(pos);
-        state.setQuatRotation(rotBase);
+        state.setQuatRotation(rq);
         //m_node->updateModelMatrix();
     }
 }
