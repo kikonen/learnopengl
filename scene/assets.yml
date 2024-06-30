@@ -122,6 +122,7 @@ assets:
 
   animation_enabled: true
   animation_first_frame_only: false
+  animation_once_only: false
   animation_max_count: 1000
 
   particle_enabled: true
