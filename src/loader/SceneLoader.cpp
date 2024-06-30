@@ -700,6 +700,8 @@ namespace loader {
 
         auto& rig = *meshSet.m_rig;
         for (const auto& socketData : meshData.sockets) {
+            if (!socketData.enabled) continue;
+
             animation::RigSocket socket{
                 socketData.name,
                 socketData.joint,
