@@ -12,6 +12,10 @@
 #include "VertexBone.h"
 
 namespace animation {
+    RigContainer::RigContainer(const std::string& name)
+        : m_name{ name }
+    {}
+
     RigContainer::~RigContainer() = default;
 
     animation::RigJoint& RigContainer::addJoint(const aiNode* node)
@@ -25,6 +29,8 @@ namespace animation {
     {
         auto& bi = m_boneContainer.registerBone(bone);
         auto* rigJoint = findJoint(bi.m_jointName);
+
+        assert(rigJoint);
 
         if (bi.m_jointIndex >= 0) {
             assert(rigJoint->m_index == bi.m_jointIndex);
@@ -66,9 +72,16 @@ namespace animation {
     {
         const auto& jointName = a_socket.m_jointName;
 
-        const auto& socketIt = m_NameToSocket.find(jointName);
-        if (socketIt != m_NameToSocket.end()) {
-            return socketIt->second;
+        {
+            const auto& socketIt = m_NameToSocket.find(jointName);
+            if (socketIt != m_NameToSocket.end()) {
+                const auto& old = m_sockets[socketIt->second];
+                if (old.m_name != a_socket.m_name)
+                    throw std::runtime_error(fmt::format(
+                        "RIG_ERROR: duplicate_socket: rig={}, joint={}, socket={} vs. {}",
+                        m_name, old.m_jointName, old.m_name, a_socket.m_name));
+                return socketIt->second;
+            }
         }
 
         const auto& jointIt = std::find_if(
@@ -196,6 +209,14 @@ namespace animation {
         std::string sb;
         sb.reserve(10000);
 
+        auto appendLine = [](auto& sb, auto level, const auto& line) {
+            for (int i = 0; i < level; i++) {
+                sb += "    ";
+            }
+            sb += line;
+            sb += "\n";
+            };
+
         for (const auto& rigJoint : m_joints) {
             const auto& line = fmt::format(
                 "[{}{}.{}, name={}, bone={}, socket={}]",
@@ -206,14 +227,17 @@ namespace animation {
                 rigJoint.m_boneIndex >= 0 ? std::to_string(rigJoint.m_boneIndex) : std::string{ "NA" },
                 rigJoint.m_socketIndex >= 0 ? std::to_string(rigJoint.m_socketIndex) : std::string{ "NA" });
 
-            for (int i = 0; i < rigJoint.m_level; i++) {
-                sb += "    ";
-            }
-            sb += line;
-            sb += "\n";
+            const auto& line2 = rigJoint.m_transform == glm::mat4{ 1.f }
+                    ? "<ID>"
+                    : fmt::format(
+                        "{}",
+                        rigJoint.m_transform);
+
+            appendLine(sb, rigJoint.m_level, line);
+            appendLine(sb, rigJoint.m_level, line2);
         }
 
-        KI_INFO_OUT(fmt::format("TREE:\n{}", sb));
+        KI_INFO_OUT(fmt::format("TREE: rig={}\n{}", m_name, sb));
     }
 
     //void RigContainer::calculateInvTransforms() noexcept
