@@ -90,17 +90,27 @@ namespace animation {
             [&jointName](const auto& joint) { return joint.m_name == jointName; });
         if (jointIt == m_joints.end()) return -1;
 
-        auto& joint = *jointIt;
+        auto& rigJoint = *jointIt;
 
         int16_t index = static_cast<int16_t>(m_sockets.size());
         {
             m_sockets.push_back(a_socket);
             auto& socket = m_sockets[index];
-            socket.m_jointIndex = joint.m_index;
+            socket.m_jointIndex = rigJoint.m_index;
             socket.m_index = index;
         }
-        joint.m_socketIndex = index;
-        m_NameToSocket.insert({ joint.m_name, index });
+        rigJoint.m_socketIndex = index;
+        m_NameToSocket.insert({ rigJoint.m_name, index });
+
+        const auto& line = fmt::format(
+            "RIG_SOCKET_ADD: {} - {}.{}, joint={}, bone={}, socket={}.{}]",
+            m_name,
+            rigJoint.m_parentIndex,
+            rigJoint.m_index,
+            rigJoint.m_name,
+            rigJoint.m_boneIndex,
+            index,
+            a_socket.m_name);
 
         return index;
     }

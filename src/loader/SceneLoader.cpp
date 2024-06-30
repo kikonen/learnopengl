@@ -853,18 +853,46 @@ namespace loader {
         auto& lodMeshes = type->modifyLodMeshes();
 
         auto rig = mesh::findRig(lodMeshes);
-        if (!rig) return;
+        if (!rig) {
+            KI_INFO_OUT(fmt::format(
+                "SOCKET_BIND_ERROR: {} - rig_missing",
+                nodeData.name));
+            return;
+        }
 
         for (const auto& attachment : nodeData.attachments) {
             if (!attachment.enabled) continue;
 
             mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
-            if (!lodMesh) continue;
+            if (!lodMesh) {
+                KI_INFO_OUT(fmt::format(
+                    "SOCKET_BIND_ERROR: {} - mesh_missing, socket={}, mesh={}",
+                    nodeData.name,
+                    attachment.socket,
+                    attachment.name));
+                continue;
+            }
 
             const auto* socket = rig->findSocket(attachment.socket);
-            if (!socket) continue;
+            if (!socket) {
+                KI_INFO_OUT(fmt::format(
+                    "SOCKET_BIND_ERROR: {} - socket_missing, socket={}, mesh={}",
+                    nodeData.name,
+                    attachment.socket,
+                    attachment.name));
+                continue;
+            }
 
             lodMesh->m_socketIndex = socket->m_index;
+
+            KI_INFO_OUT(fmt::format(
+                "SOCKET_BIND_OK: {} - joint={}.{}, socket={}.{}, mesh={}",
+                rig->m_name,
+                socket->m_jointIndex,
+                socket->m_jointName,
+                socket->m_index,
+                attachment.socket,
+                attachment.name));
         }
     }
 
