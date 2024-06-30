@@ -12,6 +12,8 @@
 
 namespace loader {
     struct MeshData {
+        bool enabled{ false };
+
         std::string baseDir;
 
         std::string name;
