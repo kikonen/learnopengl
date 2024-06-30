@@ -82,6 +82,7 @@ namespace mesh
             aiProcess_RemoveRedundantMaterials |
             aiProcess_GenUVCoords |
             aiProcess_SortByPType |
+            aiProcess_ValidateDataStructure |
             0);
 
         // If the import failed, report it
