@@ -194,8 +194,12 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "name") {
+            if (k == "enabled") {
+                data.enabled = readBool(v);
+            }
+            else if (k == "name" || k == "xname") {
                 data.name = readString(v);
+                data.enabled = k != "xname";
             }
             else if (k == "joint") {
                 data.joint = readString(v);
