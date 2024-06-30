@@ -22,6 +22,7 @@ namespace animation {
     struct RigJoint;
 
     struct RigContainer {
+        RigContainer(const std::string& name);
         ~RigContainer();
 
         animation::RigJoint& addJoint(const aiNode* node);
@@ -62,6 +63,8 @@ namespace animation {
         void dumpHierarchy(int16_t level) const;
 
         //void calculateInvTransforms() noexcept;
+
+        const std::string m_name;
 
         std::vector<animation::RigJoint> m_joints;
 
