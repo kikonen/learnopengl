@@ -583,6 +583,7 @@ namespace loader {
     {
         uint16_t index = 0;
         for (const auto& meshData : nodeData.meshes) {
+            if (!meshData.enabled) continue;
             resolveMesh(type, nodeData, meshData, tile, index);
             index++;
         }

@@ -51,11 +51,15 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
+            if (k == "enabled") {
+                data.enabled = readBool(v);
+            }
             if (k == "name") {
                 data.name = readString(v);
             }
             else if (k == "path" || k == "mesh") {
                 data.path = readString(v);
+                data.enabled = k != "xpath";
 
                 if (data.baseDir.empty()) {
                     std::filesystem::path path{ data.path };
