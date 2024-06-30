@@ -69,7 +69,7 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
+        //parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
         parentTransforms[0] = animationBaseTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
@@ -79,7 +79,7 @@ namespace animation {
         size_t hitCount = 0;
         size_t missCount = 0;
 
-        std::vector<std::string> hitMiss;
+        //std::vector<std::string> hitMiss;
         //bool boneFound = false;
 
         //for (auto& mat : bonePalette) {
@@ -117,7 +117,7 @@ namespace animation {
 
                 const auto* channel = animation->findByJointIndex(rigJoint.m_index);
 
-                const glm::mat4 jointTransform = channel
+                const glm::mat4& jointTransform = channel
                     ? channel->interpolate(animationTimeTicks)
                     : rigJoint.m_transform;
 

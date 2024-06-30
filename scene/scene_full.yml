@@ -1321,31 +1321,78 @@ nodes:
   - id: skeleton_army_2_{t}
     meshes:
       - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        sockets:
+          - name: head
+            joint: Bip01_Head1
+            scale: 0.43
+            offset: [3.6, 1.6, 0]
+            rotation: [0, 90, 0]
+          - name: neck
+            joint: Bip01_Spine4
+            scale: 0.37
+            offset: [-0.5, 2, 0]
+            rotation: [195, -90, -45]
+          - name: l_arm
+            joint: Bip01_L_Forearm
+            scale: 0.35
+            offset: [10, 0, 0]
+            rotation: [90, -45, 90]
+          - name: r_hand
+            joint: Bip01_R_Hand
+            scale: 0.25
+            offset: [2.3, -1.4, 0]
+            rotation: [20, -90, 0]
         flags:
           use_bones: true
-          xuse_bones_debug: true
           use_animation: true
-        lods:
-          - level: 0
         material:
           name: skeleton_pbr
           map_pbr: skeleton_pbr
           xmetal: [0.3, 0.4, 0, 1]
-      - path: fbx/creatures/skeleton/skeleton_animated.FBX
-        flags:
-          use_bones: true
-          xuse_bones_debug: true
-          use_animation: true
-        lods:
-          - level: 1
+          xtiling: 60
+          xrender_back: true
+          xwireframe: true
+      - name: helmet
+        path: fbx\creatures\skeleton_knight\Helmet.fbx
+        lod:
+          level: [0, 1, 2]
         material:
-          name: skeleton_pbr
-          map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 20
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+      - name: armor
+        path: fbx\creatures\skeleton_knight\Armor.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_ChestArmor_BaseColor.jpg
+          map_bump: textures\T_ChestArmor_Normal.jpg
+          map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+      - name: 2HandedSword
+        path: fbx\creatures\skeleton_knight\2HandedSword.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_2HandedSword_BaseColor.jpg
+          map_bump: textures\T_2HandedSword_Normal.jpg
+          map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
+      - name: shield
+        path: fbx\creatures\skeleton_knight\Shield.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Shield_BaseColor.jpg
+          map_bump: textures\T_Shield_Normal.jpg
+          map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
+    attachments:
+      - name: Helmet
+        socket: head
+      - name: Armor
+        socket: neck
+      - name: 2HandedSword
+        socket: r_hand
+      - name: SM_Shield
+        socket: l_arm
     program: g_tex
     shadow_program: simple_depth
     priority: -15
@@ -1357,7 +1404,7 @@ nodes:
     base_rotation: [0, -180, 0]
     repeat:
       x_count: 10
-      z_count: 50
+      z_count: 10
       x_step: -10
       z_step: 10
     physics:
