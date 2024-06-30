@@ -80,7 +80,7 @@ namespace animation
 
         const auto& it = std::find_if(
             m_dirtyTransform.begin(),
-            m_dirtyTransform.begin(),
+            m_dirtyTransform.end(),
             [&start, &count](const auto& pair) {
                 return pair.first == start && pair.second == count;
             });
