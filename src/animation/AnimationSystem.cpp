@@ -150,13 +150,11 @@ namespace animation
         socketRegistry.updateWT();
     }
 
-    bool AnimationSystem::animateNode(
+    void AnimationSystem::animateNode(
         const UpdateContext& ctx,
         Node* node,
         mesh::MeshType* type)
     {
-        bool result = false;
-
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
@@ -205,9 +203,7 @@ namespace animation
                 boneRegistry.markDirty(state.m_boneBaseIndex, rig.m_boneContainer.size());
                 socketRegistry.markDirty(state.m_socketBaseIndex, rig.m_sockets.size());
             }
-            result |= changed;
         }
-        return result;
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
