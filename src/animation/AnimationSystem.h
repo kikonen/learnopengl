@@ -43,7 +43,7 @@ namespace animation {
 
     private:
         // @return true if bone palette was updated
-        bool animateNode(
+        void animateNode(
             const UpdateContext& ctx,
             Node* node,
             mesh::MeshType* type);
