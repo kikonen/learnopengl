@@ -2,7 +2,10 @@
 // => mat4 wastes lot of space (2 * vec4)
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 struct Particle {
-  vec4 u_pos_scale;
+  float u_x;
+  float u_y;
+  float u_z;
+  float u_scale;
 
   uint u_materialIndex;
   uint u_spriteIndex;

@@ -11,12 +11,15 @@
 #pragma pack(push, 1)
 struct ParticleSSBO {
     // xyz = pos, a = scale
-    glm::vec4 u_pos_scale{ 0.f };
+    float u_x;
+    float u_y;
+    float u_z;
+    float u_scale;
 
-    GLuint u_materialIndex{ 0 };
-    GLuint u_spriteIndex{ 0 };
+    GLuint u_materialIndex;
+    GLuint u_spriteIndex;
 
-    int pad1;
-    int pad2;
+    //int pad1;
+    //int pad2;
 };
 #pragma pack(pop)

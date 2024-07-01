@@ -21,8 +21,8 @@
 #include "ParticleGenerator.h"
 
 namespace {
-    constexpr size_t BLOCK_SIZE = 1000;
-    constexpr size_t MAX_BLOCK_COUNT = 5100;
+    constexpr size_t BLOCK_SIZE = 10000;
+    constexpr size_t MAX_BLOCK_COUNT = 1100;
 
     static particle::ParticleSystem s_system;
 }

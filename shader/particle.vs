@@ -41,12 +41,13 @@ void main() {
 
   const uint materialIndex = particle.u_materialIndex;
 
-  const vec4 worldPos = vec4(particle.u_pos_scale.xyz, 1.0);
+  const vec3 pos = vec3(particle.u_x, particle.u_y, particle.u_z);
+  const vec4 worldPos = vec4(pos, 1.0);
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  const float particleScale = particle.u_pos_scale.a / gl_Position.w;
+  const float particleScale = particle.u_scale / gl_Position.w;
   gl_PointSize = 2000 * particleScale;
 
   vs_out.diffuse = u_materials[materialIndex].diffuse;
