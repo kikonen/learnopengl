@@ -30,10 +30,10 @@ namespace particle {
 
         void updateSSBO(ParticleSSBO& ssbo) const noexcept
         {
-            ssbo.u_pos_scale.x = m_pos.x;
-            ssbo.u_pos_scale.y = m_pos.y;
-            ssbo.u_pos_scale.z = m_pos.z;
-            ssbo.u_pos_scale.w = m_scale;
+            ssbo.u_x = m_pos.x;
+            ssbo.u_y = m_pos.y;
+            ssbo.u_z = m_pos.z;
+            ssbo.u_scale = m_scale;
             ssbo.u_materialIndex = m_materialIndex;
             ssbo.u_spriteIndex = m_spriteIndex;
             ssbo.u_materialIndex = m_materialIndex;
