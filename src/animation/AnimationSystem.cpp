@@ -186,9 +186,9 @@ namespace animation
             auto changed = animator.animate(
                 ctx,
                 rig,
-                mesh->m_baseTransform,
-                mesh->m_inverseBaseTransform,
-                lodMesh.m_animationBaseTransform,
+                mesh->m_rigTransform,
+                mesh->m_inverseRigTransform,
+                lodMesh.m_animationRigTransform,
                 bonePalette,
                 socketPalette,
                 state.m_animationIndex,

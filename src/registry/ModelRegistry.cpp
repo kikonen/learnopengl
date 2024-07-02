@@ -108,7 +108,7 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::startLoad(mesh::MeshSet* meshS
                 if (loaded) {
                     auto& tr = mesh::TransformRegistry::get();
                     for (auto& mesh : meshSet->getMeshes()) {
-                        mesh->m_registeredIndex = tr.registerTransform(mesh->m_baseTransform);
+                        mesh->m_registeredIndex = tr.registerTransform(mesh->m_rigTransform);
                     }
 
                     meshSet->prepareVolume();

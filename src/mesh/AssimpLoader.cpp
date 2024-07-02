@@ -20,6 +20,7 @@
 #include "animation/BoneChannel.h"
 #include "animation/BoneContainer.h"
 #include "animation/BoneInfo.h"
+#include "animation/MeshInfo.h"
 #include "animation/AnimationLoader.h"
 
 #include "mesh/LoadContext.h"
@@ -328,7 +329,10 @@ namespace mesh
                     modelMesh->m_rigJointName = rigJoint.m_name;
 
                     // NOTE KI for animated meshes, this transform is canceled in animator
-                    modelMesh->setBaseTransform(rigJoint.m_globalTransform);
+                    modelMesh->setRigTransform(rigJoint.m_globalTransform);
+
+                    // NOTE KI for debug
+                    rig.registerMesh(rigJoint.m_index, modelMesh.get());
 
                     meshSet.addMesh(std::move(modelMesh));
                 }

@@ -11,11 +11,16 @@
 
 #include "RigJoint.h"
 #include "RigSocket.h"
+#include "MeshInfo.h"
 
 #include "BoneContainer.h"
 
 struct aiNode;
 struct aiBone;
+
+namespace mesh {
+    class ModelMesh;
+}
 
 namespace animation {
     struct Animation;
@@ -58,6 +63,11 @@ namespace animation {
             return !m_sockets.empty();
         }
 
+        // NOTE KI for debug
+        void registerMesh(
+            uint16_t jointIndex,
+            mesh::ModelMesh* mesh);
+
         void prepare();
         void validate() const;
         void dumpHierarchy(int16_t level) const;
@@ -75,5 +85,8 @@ namespace animation {
         std::map<std::string, uint16_t> m_NameToSocket;
 
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
+
+        // NOTE KI for debug
+        std::map<uint16_t, std::vector<MeshInfo>> m_jointMeshes;
     };
 }

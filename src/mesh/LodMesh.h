@@ -88,7 +88,7 @@ namespace mesh {
         uint32_t m_meshIndex{ 0 };
         int32_t m_socketIndex{ -1 };
 
-        glm::mat4 m_animationBaseTransform{ 1.f };
+        glm::mat4 m_animationRigTransform{ 1.f };
 
         std::unique_ptr<Material> m_material;
         uint32_t m_materialIndex{ 0 };
