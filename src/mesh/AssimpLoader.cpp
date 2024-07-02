@@ -145,7 +145,7 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        uint16_t jointIndex;
+        int16_t jointIndex;
         glm::mat4 globalTransform;
         glm::mat4 globalInvTransform;
         {
