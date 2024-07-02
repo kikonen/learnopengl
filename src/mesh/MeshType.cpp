@@ -149,6 +149,7 @@ namespace mesh {
             if (lod.m_distance2 <= dist2)
                 return lod.m_levelMask;
         }
+        return 0;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
