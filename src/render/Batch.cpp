@@ -69,16 +69,15 @@ namespace render {
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
-        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
-            return;
-
         if (entityIndex < 0) return;
 
-        const auto& frustum = ctx.m_camera->getFrustum();
+        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
+            const auto& frustum = ctx.m_camera->getFrustum();
 
-        if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
-            m_skipCount++;
-            return;
+            if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
+                m_skipCount++;
+                return;
+            }
         }
 
         m_drawCount++;
