@@ -241,14 +241,16 @@ namespace animation {
             };
 
         for (const auto& rigJoint : m_joints) {
+            const RigSocket* socket = rigJoint.m_socketIndex >= 0 ? &m_sockets[rigJoint.m_socketIndex] : nullptr;
+
             const auto& line = fmt::format(
-                "J: [{}{}.{}, name={}, bone={}, socket={}]",
+                "J: [{}{}.{}, name={}{}{}]",
                 rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
                 rigJoint.m_name,
-                rigJoint.m_boneIndex >= 0 ? std::to_string(rigJoint.m_boneIndex) : std::string{ "NA" },
-                rigJoint.m_socketIndex >= 0 ? std::to_string(rigJoint.m_socketIndex) : std::string{ "NA" });
+                rigJoint.m_boneIndex >= 0 ? fmt::format(", bone={}", rigJoint.m_boneIndex) : "",
+                socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 
             const auto& line2 = rigJoint.m_transform == glm::mat4{ 1.f }
                     ? "T: [ID]"
