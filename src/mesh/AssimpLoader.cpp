@@ -228,10 +228,10 @@ namespace mesh
                 meta->Get(key, intValue);
                 formattedValue = fmt::format("{}", intValue);
                 break;
-            case AI_UINT64:
-                meta->Get(key, ulongValue);
-                formattedValue = fmt::format("{}", ulongValue);
-                break;
+            //case AI_UINT64:
+            //    meta->Get(key, ulongValue);
+            //    formattedValue = fmt::format("{}", ulongValue);
+            //    break;
             case AI_FLOAT:
                 meta->Get(key, floatValue);
                 formattedValue = fmt::format("{}", floatValue);
@@ -246,16 +246,16 @@ namespace mesh
                 break;
             case AI_AIVECTOR3D:
                 break;
-            case AI_AIMETADATA:
-                break;
-            case AI_INT64:
-                meta->Get(key, longValue);
-                formattedValue = fmt::format("{}", longValue);
-                break;
-            case AI_UINT32:
-                meta->Get(key, uintValue);
-                formattedValue = fmt::format("{}", uintValue);
-                break;
+            //case AI_AIMETADATA:
+            //    break;
+            //case AI_INT64:
+            //    meta->Get(key, longValue);
+            //    formattedValue = fmt::format("{}", longValue);
+            //    break;
+            //case AI_UINT32:
+            //    meta->Get(key, uintValue);
+            //    formattedValue = fmt::format("{}", uintValue);
+            //    break;
             default:
                 formattedValue = "<unknown>";
                 break;
@@ -490,7 +490,7 @@ namespace mesh
         const aiScene* scene,
         const aiMaterial* src)
     {
-        const auto name = src->GetName().C_Str();
+        const auto name = const_cast<aiMaterial*>(src)->GetName().C_Str();
 
         KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
             name,

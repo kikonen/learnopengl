@@ -63,7 +63,6 @@ namespace animation {
             filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
-            scene->mNumSkeletons,
             scene->mNumMaterials,
             scene->mNumTextures))
 
