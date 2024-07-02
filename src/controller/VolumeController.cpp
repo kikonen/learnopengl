@@ -19,7 +19,7 @@ bool VolumeController::updateWT(
     const UpdateContext& ctx,
     Node& volumeNode) noexcept
 {
-    Node* targetNode = m_targetId.toNode();
+    const Node* targetNode = m_targetId.toNode();
 
     if (!targetNode) {
         volumeNode.m_visible = false;

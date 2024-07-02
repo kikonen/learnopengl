@@ -18,8 +18,8 @@ namespace animation {
         bool animate(
             const UpdateContext& ctx,
             const animation::RigContainer& rig,
-            const glm::mat4& meshBaseTransform,
-            const glm::mat4& inverseMeshBaseTransform,
+            const glm::mat4& meshRigTransform,
+            const glm::mat4& inverseMeshRigTransform,
             const glm::mat4& animationBaseTransform,
             std::span<glm::mat4>& bonePalette,
             std::span<glm::mat4>& socketPalette,

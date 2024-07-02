@@ -177,7 +177,7 @@ namespace mesh {
 
         if (m_flags.zUp) {
             const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
-            m_animationBaseTransform = glm::toMat4(rotateYUp);
+            m_animationRigTransform = glm::toMat4(rotateYUp);
         }
     }
 

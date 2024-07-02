@@ -5,6 +5,7 @@
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
+#include "util/Util.h"
 
 #include "Animation.h"
 #include "RigJoint.h"
@@ -22,6 +23,7 @@ namespace animation {
     {
         auto& rigJoint = m_joints.emplace_back(node);
         rigJoint.m_index = static_cast<int16_t>(m_joints.size() - 1);
+
         return rigJoint;
     }
 
@@ -132,6 +134,17 @@ namespace animation {
         return &(*it);
     }
 
+    void RigContainer::registerMesh(
+        uint16_t jointIndex,
+        mesh::ModelMesh* mesh)
+    {
+        const auto& it = m_jointMeshes.find(jointIndex);
+        if (it != m_jointMeshes.end()) {
+            m_jointMeshes.insert({ jointIndex, {} });
+        }
+        m_jointMeshes[jointIndex].emplace_back(mesh);
+    }
+
     void RigContainer::prepare()
     {
         validate();
@@ -229,7 +242,7 @@ namespace animation {
 
         for (const auto& rigJoint : m_joints) {
             const auto& line = fmt::format(
-                "[{}{}.{}, name={}, bone={}, socket={}]",
+                "J: [{}{}.{}, name={}, bone={}, socket={}]",
                 rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
@@ -238,13 +251,25 @@ namespace animation {
                 rigJoint.m_socketIndex >= 0 ? std::to_string(rigJoint.m_socketIndex) : std::string{ "NA" });
 
             const auto& line2 = rigJoint.m_transform == glm::mat4{ 1.f }
-                    ? "<ID>"
+                    ? "T: [ID]"
                     : fmt::format(
-                        "{}",
+                        "T: {}",
                         rigJoint.m_transform);
 
             appendLine(sb, rigJoint.m_level, line);
             appendLine(sb, rigJoint.m_level, line2);
+
+            if (const auto& it = m_jointMeshes.find(rigJoint.m_index); it != m_jointMeshes.end()) {
+                std::vector<std::string> meshLines;
+
+                for (const auto& mi : it->second) {
+                    std::string meshLine = fmt::format(
+                        "M: [mesh={}, material={}, vertices={}, indeces={}]",
+                        mi.m_name, mi.m_material, mi.m_vertexCount, mi.m_indexCount);
+
+                    appendLine(sb, rigJoint.m_level, meshLine);
+                }
+            }
         }
 
         KI_INFO_OUT(fmt::format("TREE: rig={}\n{}", m_name, sb));

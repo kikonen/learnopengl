@@ -27,9 +27,9 @@ namespace animation {
     bool Animator::animate(
         const UpdateContext& ctx,
         const animation::RigContainer& rig,
-        const glm::mat4& meshBaseTransform,
-        const glm::mat4& inverseMeshBaseTransform,
-        const glm::mat4& animationBaseTransform,
+        const glm::mat4& meshRigTransform,
+        const glm::mat4& inverseMeshRigTransform,
+        const glm::mat4& animationRigTransform,
         std::span<glm::mat4>& bonePalette,
         std::span<glm::mat4>& socketPalette,
         uint16_t animationIndex,
@@ -69,8 +69,8 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        //parentTransforms[0] = inverseMeshBaseTransform * animationBaseTransform;
-        parentTransforms[0] = animationBaseTransform;
+        //parentTransforms[0] = inverseMeshRigTransform * animationRigTransform;
+        parentTransforms[0] = animationRigTransform;
         //parentTransforms[0] = glm::mat4(1.f);
         //parentTransforms[0] *= glm::translate(
         //    glm::mat4(1.f),
@@ -83,7 +83,7 @@ namespace animation {
         //bool boneFound = false;
 
         //for (auto& mat : bonePalette) {
-        //    mat = inverseMeshBaseTransform * animationBaseTransform;
+        //    mat = inverseMeshRigTransform * animationRigTransform;
         //    mat = glm::mat4(1.f);
         //}
 
@@ -152,7 +152,7 @@ namespace animation {
                     //}
 
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
-                    bonePalette[bone->m_index] = inverseMeshBaseTransform * globalTransform * bone->m_offsetMatrix;
+                    bonePalette[bone->m_index] = inverseMeshRigTransform * globalTransform * bone->m_offsetMatrix;
                 }
                 else {
                     //hitMiss.push_back(fmt::format("[-{}.{}.{}]",

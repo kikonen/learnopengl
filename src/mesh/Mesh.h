@@ -58,9 +58,9 @@ namespace mesh {
             return m_aabb;
         }
 
-        void setBaseTransform(const glm::mat4& baseTransform) {
-            m_baseTransform = baseTransform;
-            m_inverseBaseTransform = glm::inverse(baseTransform);
+        void setRigTransform(const glm::mat4& rigTransform) {
+            m_rigTransform = rigTransform;
+            m_inverseRigTransform = glm::inverse(rigTransform);
         }
 
     public:
@@ -74,8 +74,8 @@ namespace mesh {
         // NOTE KI for debug
         std::string m_rigJointName;
 
-        glm::mat4 m_baseTransform{ 1.f };
-        glm::mat4 m_inverseBaseTransform{ 1.f };
+        glm::mat4 m_rigTransform{ 1.f };
+        glm::mat4 m_inverseRigTransform{ 1.f };
 
     protected:
         bool m_prepared{ false };
