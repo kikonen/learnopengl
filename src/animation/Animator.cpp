@@ -71,9 +71,9 @@ namespace animation {
         // NOTE KI order MATTERS when applying inverse
         //parentTransforms[0] = inverseMeshRigTransform * animationRigTransform;
         parentTransforms[0] = animationRigTransform;
-        //parentTransforms[0] = glm::mat4(1.f);
+        //parentTransforms[0] = ID_MAT;
         //parentTransforms[0] *= glm::translate(
-        //    glm::mat4(1.f),
+        //    ID_MAT,
         //    glm::vec3{ 0.f, 24.5f, 0.f });
 
         size_t hitCount = 0;
@@ -84,7 +84,7 @@ namespace animation {
 
         //for (auto& mat : bonePalette) {
         //    mat = inverseMeshRigTransform * animationRigTransform;
-        //    mat = glm::mat4(1.f);
+        //    mat = ID_MAT;
         //}
 
         bool foundRoot = false;
@@ -107,7 +107,7 @@ namespace animation {
                 //if (bone) {
                 //    if (!boneFound) {
                 //        //parentTransforms[rigJoint.m_parentIndex + 1] = glm::inverse(rigJoint.m_transform);
-                //        parentTransforms[rigJoint.m_parentIndex + 1] = glm::mat4(1.f);
+                //        parentTransforms[rigJoint.m_parentIndex + 1] = ID_MAT;
                 //    }
                 //    boneFound |= true;
                 //}
@@ -123,7 +123,7 @@ namespace animation {
 
                 //if (rigJoint.m_name == std::string{ "SkeletonKnight_" })
                 //{
-                //    jointTransform = glm::mat4(1.f);
+                //    jointTransform = ID_MAT;
                 //}
 
                 parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
