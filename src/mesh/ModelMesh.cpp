@@ -52,7 +52,8 @@ namespace mesh {
 
         for (auto&& vertex : m_vertices)
         {
-            aabb.minmax(vertex.pos);
+            const auto& pos = m_rigTransform * glm::vec4(vertex.pos, 1.f);
+            aabb.minmax(pos);
         }
 
         return aabb;

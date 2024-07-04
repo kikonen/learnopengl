@@ -26,7 +26,6 @@ Snapshot::Snapshot(const NodeState& o)
     //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
-    //m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
 {
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
@@ -45,7 +44,6 @@ Snapshot::Snapshot(const NodeState&& o)
     //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
-    //m_lodMaterialIndeces{ o.m_lodMaterialIndeces }
 {
     o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
@@ -77,8 +75,6 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
     m_modelMatrix = o.m_modelMatrix;
 
     m_modelScale = o.m_modelScale;
-
-    //m_lodMaterialIndeces = o.m_lodMaterialIndeces;
 
     o.m_dirtySnapshot = false;
     o.m_dirtyNormal = false;

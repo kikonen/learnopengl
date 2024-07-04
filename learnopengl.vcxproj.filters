@@ -1799,6 +1799,9 @@
     <ClInclude Include="src\animation\MeshInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\model\PivotPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

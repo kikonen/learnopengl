@@ -1,6 +1,10 @@
 #include "VolumeController.h"
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
 
 #include "pool/NodeHandle.h"
 

@@ -30,6 +30,9 @@ struct NodeState {
     // Basescale, normalizes scale
     glm::vec3 m_baseScale{ 1.f };
 
+    glm::vec3 m_offset{ 0.f };
+    glm::vec3 m_pivot{ 0.f };
+
     glm::vec3 m_worldPos{ 0.f };
 
     // Base transform for mesh
@@ -112,11 +115,6 @@ struct NodeState {
         return m_scale;
     }
 
-    inline const glm::vec3& getBaseScale() const noexcept
-    {
-        return m_baseScale;
-    }
-
     inline const glm::quat& getQuatRotation() const noexcept
     {
         return m_quatRotation;
@@ -142,11 +140,6 @@ struct NodeState {
         setScale({ scale, scale, scale });
     }
 
-    inline void setBaseScale(float scale) noexcept
-    {
-        setBaseScale({ scale, scale, scale });
-    }
-
     inline void setScale(const glm::vec3& scale) noexcept
     {
         assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
@@ -162,6 +155,16 @@ struct NodeState {
         }
     }
 
+    inline const glm::vec3& getBaseScale() const noexcept
+    {
+        return m_baseScale;
+    }
+
+    inline void setBaseScale(float scale) noexcept
+    {
+        setBaseScale({ scale, scale, scale });
+    }
+
     inline void setBaseScale(const glm::vec3& scale) noexcept
     {
         assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
@@ -174,6 +177,34 @@ struct NodeState {
 
             m_dirty = true;
             m_dirtyNormal = true;
+        }
+    }
+
+    inline const glm::vec3& getOffset() const noexcept
+    {
+        return m_offset;
+    }
+
+    inline void setOffset(const glm::vec3& offset) noexcept
+    {
+        if (m_offset != offset)
+        {
+            m_offset = offset;
+            m_dirty = true;
+        }
+    }
+
+    inline const glm::vec3& getPivot() const noexcept
+    {
+        return m_pivot;
+    }
+
+    inline void setPivot(const glm::vec3& pivot) noexcept
+    {
+        if (m_pivot != pivot)
+        {
+            m_pivot = pivot;
+            m_dirty = true;
         }
     }
 

@@ -74,9 +74,6 @@ namespace mesh {
             count++;
         }
 
-        // NOTE KI ensure volume is containing all meshes
-        prepareVolume();
-
         return count;
     }
 
@@ -170,6 +167,8 @@ namespace mesh {
         AABB aabb{ true };
 
         for (auto& lodMesh : *m_lodMeshes) {
+            if (lodMesh.m_flags.noVolume) continue;
+
             auto* mesh = lodMesh.getMesh<mesh::Mesh>();
             if (!mesh) continue;
             mesh->prepareVolume();

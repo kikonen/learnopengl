@@ -4,11 +4,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "model/PivotPoint.h"
+
 #include "converter/base.h"
 
 #include "Context.h"
 #include "BaseId.h"
 #include "BaseData.h"
+
 
 namespace event {
     class Dispatcher;
@@ -55,6 +58,7 @@ namespace loader
         int readInt(const loader::DocNode& node) const;
         float readFloat(const loader::DocNode& node) const;
 
+        std::vector<std::string> readStringVector(const loader::DocNode& node, int reserve) const;
         std::vector<int> readIntVector(const loader::DocNode& node, int reserve) const;
         std::vector<float> readFloatVector(const loader::DocNode& node, int reserve) const;
 
@@ -91,6 +95,8 @@ namespace loader
             bool automatic);
 
         BaseId readId(const loader::DocNode& node) const;
+
+        PivotPoint readPivotPoint(const loader::DocNode& node) const;
 
         std::string readFile(std::string_view filename) const;
 
