@@ -142,6 +142,7 @@ namespace animation {
 
                 //auto* bone = rig.m_boneContainer.findByJointIndex(rigJoint.m_index);
                 if (bone) {
+                    foundRoot = true;
                     //hitMiss.push_back(fmt::format("[+{}.{}.{}]",
                     //    rigJoint.m_parentIndex, rigJoint.m_index, rigJoint.m_name));
 

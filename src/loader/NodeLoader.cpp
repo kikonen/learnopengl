@@ -179,6 +179,12 @@ namespace loader {
             else if (k == "base_scale") {
                 data.baseScale = readScale3(v);
             }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
+            }
+            else if (k == "pivot") {
+                data.pivot = readPivotPoint(v);
+            }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);
             }

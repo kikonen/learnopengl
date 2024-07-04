@@ -25,6 +25,34 @@
 
 namespace {
     //std::regex UUID_RE = std::regex("[0-9]{8}-[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{8}");
+
+    const std::string PIVOT_ZERO{ "0" };
+    const std::string PIVOT_MIDDLE{ "M" };
+    const std::string PIVOT_TOP{ "T" };
+    const std::string PIVOT_BOTTOM{ "B" };
+    const std::string PIVOT_LEFT{ "L" };
+    const std::string PIVOT_RIGHT{ "R" };
+
+    std::map<std::string, PivotAlignment> m_pivots;
+
+    std::map<std::string, PivotAlignment>& getPivotMapping () {
+        if (m_pivots.empty()) {
+            m_pivots[PIVOT_ZERO] = PivotAlignment::zero;
+            m_pivots[PIVOT_MIDDLE] = PivotAlignment::middle;
+            m_pivots[PIVOT_TOP] = PivotAlignment::top;
+            m_pivots[PIVOT_BOTTOM] = PivotAlignment::bottom;
+            m_pivots[PIVOT_LEFT] = PivotAlignment::left;
+            m_pivots[PIVOT_RIGHT] = PivotAlignment::right;
+        }
+        return m_pivots;
+    }
+
+    PivotAlignment resolvePivot(const std::string& p) {
+        const auto& mapping = getPivotMapping();
+        const auto& it = mapping.find(p);
+        if (it != mapping.end()) return it->second;
+        return PivotAlignment::zero;
+    }
 }
 
 namespace loader
@@ -141,11 +169,27 @@ namespace loader
         return node.asFloat();
     }
 
+    std::vector<std::string> BaseLoader::readStringVector(const loader::DocNode& node, int reserve) const
+    {
+        std::vector<std::string> a;
+        a.reserve(reserve);
+
+        if (node.isSequence()) {
+            for (const auto& e : node.getNodes()) {
+                a.push_back(readString(e));
+            }
+        }
+        else {
+            a.push_back(readString(node));
+        }
+
+        return a;
+    }
+
     std::vector<int> BaseLoader::readIntVector(const loader::DocNode& node, int reserve) const
     {
         std::vector<int> a;
         a.reserve(reserve);
-
 
         if (node.isSequence()) {
             for (const auto& e : node.getNodes()) {
@@ -524,6 +568,32 @@ namespace loader
         baseId.m_path = readString(node);
 
         return baseId;
+    }
+
+    PivotPoint BaseLoader::readPivotPoint(const loader::DocNode& node) const
+    {
+        PivotPoint pivot;
+
+        std::vector<std::string> data = readStringVector(node, 3);
+        for (auto& p : data) {
+            p = util::toUpper(p);
+        }
+
+        if (data.size() == 1) {
+            data.push_back(data[0]);
+            data.push_back(data[0]);
+        }
+        else {
+            while (data.size() < 3) {
+                data.push_back(PIVOT_ZERO);
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            pivot.axis[i] = resolvePivot(data[i]);
+        }
+
+        return pivot;
     }
 
     std::string BaseLoader::resolveTexturePath(

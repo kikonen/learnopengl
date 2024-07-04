@@ -67,6 +67,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
     // => thus can use globally shared temp vars
     static glm::mat4 s_translateMatrix{ 1.f };
     static glm::mat4 s_scaleMatrix{ 1.f };
+    static glm::mat4 s_offsetMatrix{ 1.f };
     {
         s_translateMatrix[3].x = m_position.x;
         s_translateMatrix[3].y = m_position.y;
@@ -75,11 +76,15 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         s_scaleMatrix[0].x = m_baseScale.x * m_scale.x;
         s_scaleMatrix[1].y = m_baseScale.y * m_scale.y;
         s_scaleMatrix[2].z = m_baseScale.z * m_scale.z;
+
+        s_offsetMatrix[3].x = m_offset.x;
+        s_offsetMatrix[3].y = m_offset.y;
+        s_offsetMatrix[3].z = m_offset.z;
     }
 
     bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
-    m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * m_rotationMatrix * s_scaleMatrix * m_baseTransform;
+    m_modelMatrix = parent.m_modelMatrix * s_translateMatrix * s_offsetMatrix * m_rotationMatrix * s_scaleMatrix * m_baseTransform;
     m_modelScale = glm::mat3{ s_scaleMatrix * m_baseTransform } * parent.m_modelScale;
 
     {

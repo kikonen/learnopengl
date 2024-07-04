@@ -587,6 +587,9 @@ namespace loader {
             resolveMesh(type, nodeData, meshData, tile, index);
             index++;
         }
+
+        // NOTE KI ensure volume is containing all meshes
+        type->prepareVolume();
     }
 
     void SceneLoader::resolveMesh(
@@ -798,6 +801,10 @@ namespace loader {
         state.setQuatRotation(util::degreesToQuat(nodeData.rotation));
         state.setBaseScale(nodeData.baseScale);
         state.setScale(nodeData.scale);
+
+        state.setPivot(resolvePivot(typeHandle, nodeData));
+        state.setOffset(nodeData.offset);
+
         state.setFront(nodeData.front);
 
         {
@@ -840,6 +847,14 @@ namespace loader {
         resolveAttachments(typeHandle, handle, nodeData);
 
         return handle;
+    }
+
+    glm::vec3 SceneLoader::resolvePivot(
+        pool::TypeHandle typeHandle,
+        const NodeData& nodeData)
+    {
+        glm::vec3 pivot{ 0.f, 1.f, 0.f };
+        return pivot;
     }
 
     void SceneLoader::resolveAttachments(
@@ -945,9 +960,11 @@ namespace loader {
 
         flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
 
-        flags.zUp = container.getFlag("z_up", flags.zUp);
+        flags.noVolume = container.getFlag("no_volume", flags.noVolume);
 
         {
+            flags.zUp = container.getFlag("z_up", flags.zUp);
+
             flags.useBones = container.getFlag("use_bones", flags.useBones);
 
             // NOTE KI bones are *required* if using animation

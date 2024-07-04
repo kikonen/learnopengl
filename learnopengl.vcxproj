@@ -463,6 +463,7 @@
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexVBO.h" />
     <ClInclude Include="src\model\NodeFlags.h" />
+    <ClInclude Include="src\model\PivotPoint.h" />
     <ClInclude Include="src\render\DebugContext.h" />
     <ClInclude Include="src\render\size.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
