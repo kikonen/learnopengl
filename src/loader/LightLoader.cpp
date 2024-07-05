@@ -5,6 +5,7 @@
 #include "component/Light.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader{
     LightLoader::LightLoader(

@@ -64,6 +64,7 @@
 #include "converter/YamlConverter.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
@@ -802,7 +803,7 @@ namespace loader {
         state.setBaseScale(nodeData.baseScale);
         state.setScale(nodeData.scale);
 
-        state.setPivot(resolvePivot(typeHandle, nodeData));
+        state.setPivot(nodeData.pivot.resolve(type));
         state.setOffset(nodeData.offset);
 
         state.setFront(nodeData.front);
@@ -847,14 +848,6 @@ namespace loader {
         resolveAttachments(typeHandle, handle, nodeData);
 
         return handle;
-    }
-
-    glm::vec3 SceneLoader::resolvePivot(
-        pool::TypeHandle typeHandle,
-        const NodeData& nodeData)
-    {
-        glm::vec3 pivot{ 0.f, 1.f, 0.f };
-        return pivot;
     }
 
     void SceneLoader::resolveAttachments(

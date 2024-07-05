@@ -21,6 +21,9 @@
 #include "Loaders.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
+
+#include "PivotLoader.h"
 
 namespace loader {
     NodeLoader::NodeLoader(
@@ -183,7 +186,7 @@ namespace loader {
                 data.offset = readVec3(v);
             }
             else if (k == "pivot") {
-                data.pivot = readPivotPoint(v);
+                data.pivot = PivotLoader{}.read(node);
             }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);

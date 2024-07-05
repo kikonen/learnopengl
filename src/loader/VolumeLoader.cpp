@@ -26,9 +26,7 @@
 #include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
-
-namespace {
-}
+#include "loader_util.h"
 
 namespace loader {
     VolumeLoader::VolumeLoader(

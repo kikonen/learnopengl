@@ -9,6 +9,7 @@
 #include "registry/Registry.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     ScriptLoader::ScriptLoader(

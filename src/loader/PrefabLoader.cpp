@@ -4,6 +4,7 @@
 #include "util/glm_util.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     PrefabLoader::PrefabLoader(

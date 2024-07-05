@@ -211,9 +211,11 @@
     <ClCompile Include="src\loader\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
+    <ClCompile Include="src\loader\loader_util.cpp" />
     <ClCompile Include="src\loader\MeshLoader.cpp" />
     <ClCompile Include="src\loader\ParticleLoader.cpp" />
     <ClCompile Include="src\animation\RigJoint.cpp" />
+    <ClCompile Include="src\loader\PivotLoader.cpp" />
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
@@ -229,6 +231,7 @@
     <ClCompile Include="src\animation\AnimationSystem.cpp" />
     <ClCompile Include="src\mesh\MeshSet.cpp" />
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
+    <ClCompile Include="src\model\PivotPoint.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\text\TextSystem.cpp" />
@@ -435,8 +438,10 @@
     <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
+    <ClInclude Include="src\loader\PivotLoader.h" />
     <ClInclude Include="src\loader\SocketData.h" />
     <ClInclude Include="src\loader\TextLoader.h" />
+    <ClInclude Include="src\loader\loader_util.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\Document.h" />

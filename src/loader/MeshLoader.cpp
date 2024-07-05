@@ -21,6 +21,7 @@
 #include "Loaders.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     MeshLoader::MeshLoader(

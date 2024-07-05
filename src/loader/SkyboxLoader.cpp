@@ -23,6 +23,7 @@
 #include "scene/SkyboxMaterial.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace {
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };

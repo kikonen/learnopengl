@@ -22,7 +22,7 @@
 #include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
-
+#include "loader_util.h"
 
 namespace loader {
     CubeMapLoader::CubeMapLoader(

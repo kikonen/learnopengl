@@ -3,6 +3,7 @@
 #include "util/Util.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     CustomMaterialLoader::CustomMaterialLoader(
