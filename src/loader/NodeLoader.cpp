@@ -186,7 +186,7 @@ namespace loader {
                 data.offset = readVec3(v);
             }
             else if (k == "pivot") {
-                data.pivot = PivotLoader{}.read(node);
+                data.pivot = PivotLoader{}.load(v);
             }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);
