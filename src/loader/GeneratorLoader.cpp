@@ -16,6 +16,8 @@
 #include "terrain/TerrainGenerator.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
+
 #include "loader/Loaders.h"
 
 namespace loader {

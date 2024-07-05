@@ -172,10 +172,6 @@ namespace loader {
             const glm::vec3& clonePositionOffset,
             const glm::vec3& tilePositionOffset);
 
-        glm::vec3 resolvePivot(
-            pool::TypeHandle typeHandle,
-            const NodeData& nodeData);
-
         void resolveAttachments(
             pool::TypeHandle typeHandle,
             pool::NodeHandle nodeHandle,

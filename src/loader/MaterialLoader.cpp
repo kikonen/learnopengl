@@ -13,7 +13,7 @@
 #include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
-
+#include "loader_util.h"
 
 namespace {
     const float DEF_ALPHA = 1.0;

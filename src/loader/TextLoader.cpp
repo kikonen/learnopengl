@@ -8,7 +8,7 @@
 #include "Loaders.h"
 
 #include "generator/TextGenerator.h"
-
+#include "loader_util.h"
 
 namespace loader {
     TextLoader::TextLoader(

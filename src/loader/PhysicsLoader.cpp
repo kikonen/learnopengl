@@ -6,6 +6,7 @@
 #include "event/Dispatcher.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     PhysicsLoader::PhysicsLoader(
