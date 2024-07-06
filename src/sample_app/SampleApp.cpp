@@ -454,7 +454,7 @@ void SampleApp::selectNode(
                     .target = node->getId(),
                     .duration = 5,
                     .relative = true,
-                    .data = { 0.f, 1.f, 0.f },
+                    .data = m_debugContext.m_selectionAxis,
                     .data2 = { 360.f, 0, 0 },
                 };
                 ctx.m_registry->m_dispatcherWorker->send(evt);

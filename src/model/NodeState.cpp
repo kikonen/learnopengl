@@ -83,13 +83,13 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         s_offsetMatrix[3].y = m_offset.y;
         s_offsetMatrix[3].z = m_offset.z;
 
-        s_pivotMatrix[3].x = -m_pivot.x / m_baseScale.x * m_scale.x;
-        s_pivotMatrix[3].y = -m_pivot.y / m_baseScale.y * m_scale.y;
-        s_pivotMatrix[3].z = -m_pivot.z / m_baseScale.z * m_scale.z;
+        s_pivotMatrix[3].x = -m_pivot.x * m_baseScale.x * m_scale.x;
+        s_pivotMatrix[3].y = -m_pivot.y * m_baseScale.y * m_scale.y;
+        s_pivotMatrix[3].z = -m_pivot.z * m_baseScale.z * m_scale.z;
 
-        s_invPivotMatrix[3].x = m_pivot.x / m_baseScale.x * m_scale.x;
-        s_invPivotMatrix[3].y = m_pivot.y / m_baseScale.y * m_scale.y;
-        s_invPivotMatrix[3].z = m_pivot.z / m_baseScale.z * m_scale.z;
+        s_invPivotMatrix[3].x = m_pivot.x * m_baseScale.x * m_scale.x;
+        s_invPivotMatrix[3].y = m_pivot.y * m_baseScale.y * m_scale.y;
+        s_invPivotMatrix[3].z = m_pivot.z * m_baseScale.z * m_scale.z;
     }
 
     bool wasDirtyRotation = m_dirtyRotation;

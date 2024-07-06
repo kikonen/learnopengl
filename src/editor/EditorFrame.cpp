@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "asset/Assets.h"
 
 #include "engine/Engine.h"
@@ -24,6 +26,7 @@ void EditorFrame::draw(const RenderContext& ctx)
 {
     const auto& assets = Assets::get();
     auto& engine = m_window.getEngine();
+    auto& debugContext = engine.m_debugContext;
 
     // render your GUI
     ImGui::Begin("Edit");
@@ -54,14 +57,18 @@ void EditorFrame::draw(const RenderContext& ctx)
     //triangle_shader.setUniform("color", color[0], color[1], color[2]);
 
     if (assets.glslUseDebug) {
-        auto& debugContext = engine.m_debugContext;
-        ImGui::Checkbox("boneDebug", &debugContext.m_debugBoneWeight);
-        ImGui::InputInt("boneIndex", &debugContext.m_boneIndex, 1, 10);
+        ImGui::Checkbox("bone debug", &debugContext.m_debugBoneWeight);
+        ImGui::InputInt("bone index", &debugContext.m_boneIndex, 1, 10);
+    }
+
+    {
+        ImGui::SliderFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
     }
 
     {
         auto imguiHit = ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
             ImGui::IsAnyItemHovered() ||
+            ImGui::IsAnyItemActive() ||
             ImGui::IsAnyItemFocused();
         m_window.m_input->imGuiHit = imguiHit;
     }
