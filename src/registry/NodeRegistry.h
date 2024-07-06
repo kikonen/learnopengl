@@ -79,8 +79,14 @@ public:
     inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
     inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode.toNode(); }
 
-    uint32_t getNodeCount() const noexcept {
+    uint32_t getNodeCount() const noexcept
+    {
         return static_cast<uint32_t>(m_allNodes.size());
+    }
+
+    const std::vector<Node*> getCachedNodesRT() const noexcept
+    {
+        return m_cachedNodesRT;
     }
 
     pool::NodeHandle getNextCameraNode(
