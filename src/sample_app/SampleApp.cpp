@@ -448,7 +448,7 @@ void SampleApp::selectNode(
         KI_INFO(fmt::format("selected: {}", nodeId));
 
         if (node) {
-            {
+            if (m_debugContext.m_selectionAxis != glm::vec3{0.f}) {
                 event::Event evt { event::Type::animate_rotate };
                 evt.body.animate = {
                     .target = node->getId(),
