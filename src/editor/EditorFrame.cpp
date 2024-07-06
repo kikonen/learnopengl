@@ -55,8 +55,14 @@ void EditorFrame::draw(const RenderContext& ctx)
     if (ImGui::CollapsingHeader("Node"))
     {
         renderNodeSelector(ctx, debugContext);
-        renderNodeEdit(ctx, debugContext);
-        renderNodeDebug(ctx, debugContext);
+        if (ImGui::TreeNode("Edit")) {
+            renderNodeEdit(ctx, debugContext);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Debug")) {
+            renderNodeDebug(ctx, debugContext);
+            ImGui::TreePop();
+        }
     }
 
     if (ImGui::CollapsingHeader("Animation"))
@@ -98,10 +104,8 @@ void EditorFrame::renderNodeSelector(
     const auto curr = debugContext.m_targetNode.toNode();
     const auto* currType = curr ? curr->m_typeHandle.toType() : nullptr;
     if (ImGui::BeginCombo("Node", currType ? currType->m_name.c_str() : nullptr)) {
-        const auto& nodes = nr.getCachedNodesRT();
-        for (int n = 0; n < nodes.size(); n++)
+        for (const auto* node : nr.getCachedNodesRT())
         {
-            const auto* node = nodes[n];
             if (!node) continue;
 
             const auto* type = node->m_typeHandle.toType();
