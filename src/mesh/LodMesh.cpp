@@ -74,6 +74,8 @@ namespace mesh {
         m_idProgram = o.m_idProgram;
         m_drawOptions = o.m_drawOptions;
 
+        m_animationRigTransform = o.m_animationRigTransform;
+
         m_flags = o.m_flags;
 
         o.m_mesh = nullptr;
@@ -99,12 +101,14 @@ namespace mesh {
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
 
-        o.m_program = o.m_program;
-        o.m_shadowProgram = o.m_shadowProgram;
-        o.m_preDepthProgram = o.m_preDepthProgram;
-        o.m_selectionProgram = o.m_selectionProgram;
-        o.m_idProgram = o.m_idProgram;
-        o.m_drawOptions = o.m_drawOptions;
+        m_program = o.m_program;
+        m_shadowProgram = o.m_shadowProgram;
+        m_preDepthProgram = o.m_preDepthProgram;
+        m_selectionProgram = o.m_selectionProgram;
+        m_idProgram = o.m_idProgram;
+        m_drawOptions = o.m_drawOptions;
+
+        m_animationRigTransform = o.m_animationRigTransform;
 
         m_flags = o.m_flags;
 
