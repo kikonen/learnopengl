@@ -187,7 +187,8 @@ nodes:
           path: anim/Deinodonte@ClawsAttackLeft.FBX
     program: g_tex
     shadow_program: simple_depth
-    pos: [-10.0, 8.0, -10.0]
+    xpos: [-10.0, 8.0, -10.0]
+    pos: [-10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     xbase_rotation: [90, 0, 0]
     scale: 0.025
@@ -257,7 +258,8 @@ nodes:
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     shadow_program: simple_depth
-    pos: [10.0, 3.0, 0.0]
+    xpos: [10.0, 3.0, 0.0]
+    pos: [10.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
@@ -285,7 +287,8 @@ nodes:
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
     shadow_program: simple_depth
-    pos: [20.0, 2.0, 0.0]
+    xpos: [20.0, 2.0, 0.0]
+    pos: [20.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
     scale: 1
