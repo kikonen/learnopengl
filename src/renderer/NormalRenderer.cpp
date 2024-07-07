@@ -47,7 +47,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                 return m_normalProgram;
             },
             [](const mesh::MeshType* type) {
-                return type->m_flags.noNormals;
+                return !type->m_flags.noNormals;
             },
             [](const Node* node) { return true; },
             render::KIND_ALL);

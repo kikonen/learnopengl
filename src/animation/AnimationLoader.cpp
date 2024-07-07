@@ -76,15 +76,16 @@ namespace animation {
     {
         if (scene->mNumAnimations == 0) return;
 
+        auto& clipContainer = rig.m_clipContainer;
 
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
-                static_cast<int16_t>(rig.m_animations.size()),
+                static_cast<int16_t>(clipContainer.m_animations.size()),
                 namePrefix,
                 scene,
                 scene->mAnimations[index]);
-            rig.addAnimation(std::move(animation));
+            clipContainer.addAnimation(std::move(animation), true);
         }
     }
 

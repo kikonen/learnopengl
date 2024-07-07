@@ -212,6 +212,10 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         ctx.m_forceWireframe = assets.forceWireframe;
         ctx.m_useLight = assets.useLight;
 
+        if (m_debugContext.m_nodeDebugEnabled) {
+            ctx.m_forceWireframe |= m_debugContext.m_wireframe;
+        }
+
         // https://paroj.github.io/gltut/apas04.html
         if (assets.rasterizerDiscard) {
             //glEnable(GL_RASTERIZER_DISCARD);
@@ -262,7 +266,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     if (assets.useImGui) {
-        if (assets.imGuiDemo) {
+        if (assets.imGuiDemo || m_debugContext.m_imguiDemo) {
             ImGui::ShowDemoWindow();
         }
 

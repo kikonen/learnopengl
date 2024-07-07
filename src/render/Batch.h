@@ -23,6 +23,7 @@ class Program;
 struct Snapshot;
 
 struct PrepareContext;
+struct UpdateContext;
 class RenderContext;
 
 class Node;
@@ -73,6 +74,9 @@ namespace render {
             const PrepareContext& ctx,
             int entryCount = -1,
             int bufferCount = -1);
+
+        void updateRT(
+            const UpdateContext& ctx);
 
         void draw(
             const RenderContext& ctx,

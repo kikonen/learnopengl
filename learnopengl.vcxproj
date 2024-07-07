@@ -185,6 +185,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\animation\Animation.cpp" />
+    <ClCompile Include="src\animation\animation_util.cpp" />
+    <ClCompile Include="src\animation\ClipContainer.cpp" />
     <ClCompile Include="src\animation\AnimationLoader.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\BoneChannel.cpp" />
@@ -232,6 +234,7 @@
     <ClCompile Include="src\mesh\MeshSet.cpp" />
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\model\PivotPoint.cpp" />
+    <ClCompile Include="src\render\DebugContext.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\text\TextSystem.cpp" />
@@ -426,10 +429,14 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\animation_util.h" />
+    <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\animation\AnimationLoader.h" />
     <ClInclude Include="src\animation\BoneInfo.h" />
     <ClInclude Include="src\animation\BoneRegistry.h" />
     <ClInclude Include="src\animation\MeshInfo.h" />
+    <ClInclude Include="src\animation\Clip.h" />
+    <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />

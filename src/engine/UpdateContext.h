@@ -7,6 +7,10 @@
 class Assets;
 class Registry;
 
+namespace render {
+    struct DebugContext;
+}
+
 //
 // Context for doing updates, without rendering
 //
@@ -20,6 +24,7 @@ public:
 
 public:
     const Assets& m_assets;
+    const render::DebugContext& m_debugContext;
     const ki::RenderClock& m_clock;
 
     Registry* const m_registry;

@@ -51,11 +51,6 @@ namespace animation {
         return &m_joints[index];
     }
 
-    void RigContainer::addAnimation(std::unique_ptr<animation::Animation> animation)
-    {
-        m_animations.push_back(std::move(animation));
-    }
-
     const animation::RigJoint* RigContainer::findJoint(const std::string& name) const noexcept
     {
         const auto& it = std::find_if(

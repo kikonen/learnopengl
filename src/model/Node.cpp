@@ -109,7 +109,7 @@ void Node::prepareWT(
             auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
             m_state.m_boneBaseIndex = boneBaseIndex;
             m_state.m_socketBaseIndex = socketBaseIndex;
-            m_state.m_animationIndex = 0;
+            //m_state.m_animationClipIndex = ;
         }
     }
 

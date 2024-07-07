@@ -20,6 +20,8 @@
 
 #include "pool/NodeHandle.h"
 
+#include "render/DebugContext.h"
+
 #include "animation/RigContainer.h"
 #include "animation/BoneInfo.h"
 #include "animation/Animator.h"
@@ -155,6 +157,7 @@ namespace animation
         Node* node,
         mesh::MeshType* type)
     {
+        const auto& debugContext = render::DebugContext::get();
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
@@ -165,6 +168,7 @@ namespace animation
             auto& state = node->modifyState();
 
             if (state.m_animationStartTime <= -42.f) {
+                // NOTE KI "once"
                 continue;
             }
 
@@ -175,11 +179,23 @@ namespace animation
             auto bonePalette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
             auto socketPalette = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());
 
-            if (state.m_animationStartTime < 0) {
-                state.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+            bool paused = false;
+
+            if (debugContext.m_animationDebugEnabled) {
+                paused = debugContext.m_animationPaused;
+
+                if (state.m_animationStartTime < 0) {
+                    state.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+                }
+                state.m_animationClipIndex = debugContext.m_animationClipIndex;
             }
-            if (rig.m_animations.size() > 1) {
-                state.m_animationIndex = 1;
+
+            double animationTime = ctx.m_clock.ts;
+            if (m_firstFrameOnly) {
+                animationTime = state.m_animationStartTime;
+            }
+            if (paused) {
+                animationTime = state.m_animationLastTime;
             }
 
             animation::Animator animator;
@@ -191,10 +207,11 @@ namespace animation
                 lodMesh.m_animationRigTransform,
                 bonePalette,
                 socketPalette,
-                state.m_animationIndex,
+                state.m_animationClipIndex,
                 state.m_animationStartTime,
-                m_firstFrameOnly ? state.m_animationStartTime : ctx.m_clock.ts);
+                animationTime);
 
+            state.m_animationLastTime = animationTime;
             if (m_onceOnly) {
                 state.m_animationStartTime = -42;
             }

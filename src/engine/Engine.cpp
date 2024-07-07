@@ -32,7 +32,8 @@
 
 
 Engine::Engine()
-    : m_alive(std::make_shared<std::atomic<bool>>(true))
+    : m_alive(std::make_shared<std::atomic<bool>>(true)),
+    m_debugContext{ render::DebugContext::modify() }
 {
 }
 
