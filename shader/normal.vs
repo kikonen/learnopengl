@@ -44,8 +44,9 @@ void main() {
   #include var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
-  const vec4 pos = vec4(a_pos, 1.0);
   const mat3 viewNormalMatrix = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
+
+  vec4 pos = vec4(a_pos, 1.0);
 
   vec4 worldPos;
   vec3 normal;

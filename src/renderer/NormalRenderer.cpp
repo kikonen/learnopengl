@@ -3,6 +3,8 @@
 #include "asset/Shader.h"
 #include "asset/Program.h"
 
+#include "kigl/GLState.h"
+
 #include "engine/PrepareContext.h"
 
 #include "mesh/LodMesh.h"
@@ -27,7 +29,7 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_normalProgram = ProgramRegistry::get().getProgram(SHADER_NORMAL);
+    m_normalProgram = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
     m_normalProgram->prepareRT();
 }
 
@@ -39,7 +41,13 @@ void NormalRenderer::render(
 
 void NormalRenderer::drawNodes(const RenderContext& ctx)
 {
+    ctx.m_batch->flush(ctx);
+
     {
+        // NOTE KI stencil mask must be cleared
+        // BUG KI normals are showing only if selection/volume is shown some node
+        ctx.m_state.setStencil({});
+
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
