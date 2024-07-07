@@ -34,7 +34,9 @@
 #include "registry/Registry.h"
 
 #include "engine/PrepareContext.h"
+#include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 
 #include "BatchCommand.h"
 
@@ -294,6 +296,15 @@ namespace render {
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
         m_frustumParallelLimit = assets.frustumParallelLimit;
+    }
+
+    void Batch::updateRT(
+        const UpdateContext& ctx)
+    {
+        const auto& assets = ctx.m_assets;
+        const auto& debugContext = ctx.m_debugContext;
+
+        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && debugContext.m_frustumEnabled;
     }
 
     void Batch::draw(

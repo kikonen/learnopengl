@@ -12,8 +12,10 @@
 #include "RigJoint.h"
 #include "RigSocket.h"
 #include "MeshInfo.h"
+#include "Clip.h"
 
 #include "BoneContainer.h"
+#include "ClipContainer.h"
 
 struct aiNode;
 struct aiBone;
@@ -23,7 +25,6 @@ namespace mesh {
 }
 
 namespace animation {
-    struct Animation;
     struct RigJoint;
 
     struct RigContainer {
@@ -40,8 +41,6 @@ namespace animation {
         {
             return m_boneContainer.empty();
         }
-
-        void addAnimation(std::unique_ptr<animation::Animation> animation);
 
         const animation::RigJoint* getJoint(int16_t index) const noexcept;
 
@@ -84,7 +83,7 @@ namespace animation {
 
         std::map<std::string, uint16_t> m_NameToSocket;
 
-        std::vector<std::unique_ptr<animation::Animation>> m_animations;
+        animation::ClipContainer m_clipContainer;
 
         // NOTE KI for debug
         std::map<uint16_t, std::vector<MeshInfo>> m_jointMeshes;

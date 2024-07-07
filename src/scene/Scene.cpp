@@ -31,6 +31,7 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "render/DebugContext.h"
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
 #include "render/RenderContext.h"
@@ -169,7 +170,7 @@ void Scene::prepareRT()
         m_objectIdRenderer->prepareRT(ctx);
     }
 
-    if (m_normalRenderer->isEnabled()) {
+    if (assets.showNormals) {
         m_normalRenderer->prepareRT(ctx);
     }
 
@@ -259,11 +260,18 @@ void Scene::prepareRT()
 
 void Scene::updateRT(const UpdateContext& ctx)
 {
+    const auto& assets = ctx.m_assets;
+    const auto& debugContext = ctx.m_debugContext;
+
     m_registry->m_dispatcherView->dispatchEvents();
 
     m_registry->updateRT(ctx);
 
     m_renderData->update();
+
+    m_normalRenderer->setEnabled(assets.showNormals && debugContext.m_nodeDebugEnabled && debugContext.m_showNormals);
+
+    m_batch->updateRT(ctx);
 }
 
 void Scene::postRT(const UpdateContext& ctx)
@@ -474,10 +482,8 @@ void Scene::drawScene(
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 
-    if (assets.showNormals) {
-        if (m_normalRenderer->isEnabled()) {
-            m_normalRenderer->render(ctx);
-        }
+    if (m_normalRenderer->isEnabled()) {
+        m_normalRenderer->render(ctx);
     }
 }
 

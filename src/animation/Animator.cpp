@@ -32,14 +32,15 @@ namespace animation {
         const glm::mat4& animationRigTransform,
         std::span<glm::mat4>& bonePalette,
         std::span<glm::mat4>& socketPalette,
-        uint16_t animationIndex,
+        uint16_t clipIndex,
         double animationStartTime,
         double currentTime)
     {
         if (animationStartTime < 0) return false;
-        if (animationIndex < 0 || animationIndex >= rig.m_animations.size()) return false;
+        if (clipIndex < 0 || clipIndex >= rig.m_clipContainer.m_clips.size()) return false;
 
-        auto* animation = rig.m_animations[animationIndex].get();
+        const auto& clip = rig.m_clipContainer.m_clips[clipIndex];
+        const auto* animation = rig.m_clipContainer.m_animations[clip.m_animationIndex].get();
 
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);

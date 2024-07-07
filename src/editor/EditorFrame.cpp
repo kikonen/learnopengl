@@ -36,6 +36,7 @@ void EditorFrame::draw(const RenderContext& ctx)
 
     // NOTE KI don't waste CPU if Edit window is collapsed
     if (!ImGui::Begin("Edit")) {
+        trackImGuiState(debugContext);
         ImGui::End();
         return;
     }
@@ -43,7 +44,7 @@ void EditorFrame::draw(const RenderContext& ctx)
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     //if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-    ImGuiID dockspace_id = ImGui::GetID("learnopengl");
+    ImGuiID dockspace_id = ImGui::GetID("learnopengl_editor");
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     //}
 
@@ -67,7 +68,12 @@ void EditorFrame::draw(const RenderContext& ctx)
 
     if (ImGui::CollapsingHeader("Animation"))
     {
-        renderBoneDebug(ctx, debugContext);
+        renderAnimationDebug(ctx, debugContext);
+    }
+
+    if (ImGui::CollapsingHeader("Misc"))
+    {
+        renderMiscDebug(ctx, debugContext);
     }
 
     trackImGuiState(debugContext);
@@ -143,17 +149,38 @@ void EditorFrame::renderNodeDebug(
     const RenderContext& ctx,
     render::DebugContext& debugContext)
 {
-    ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
+    ImGui::Checkbox("Node debug", &debugContext.m_nodeDebugEnabled);
+
+    if (debugContext.m_nodeDebugEnabled) {
+        ImGui::Checkbox("Wireframe", &debugContext.m_wireframe);
+        ImGui::Checkbox("Show normals", &debugContext.m_showNormals);
+        ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
+    }
 }
 
-void EditorFrame::renderBoneDebug(
+void EditorFrame::renderAnimationDebug(
     const RenderContext& ctx,
     render::DebugContext& debugContext)
 {
     const auto& assets = ctx.m_assets;
 
-    if (assets.glslUseDebug) {
-        ImGui::Checkbox("Bone debug", &debugContext.m_debugBoneWeight);
-        ImGui::InputInt("Bone index", &debugContext.m_boneIndex, 1, 10);
+    ImGui::Checkbox("Animation debug", &debugContext.m_animationDebugEnabled);
+
+    if (debugContext.m_animationDebugEnabled) {
+        ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
+        ImGui::InputInt("Clip", &debugContext.m_animationClipIndex, 1, 10);
+
+        if (assets.glslUseDebug) {
+            ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
+            ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
+        }
     }
+}
+
+void EditorFrame::renderMiscDebug(
+    const RenderContext & ctx,
+    render::DebugContext & debugContext)
+{
+    ImGui::Checkbox("ImGui Demo", &debugContext.m_imguiDemo);
+    ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
 }

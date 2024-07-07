@@ -34,7 +34,11 @@ private:
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 
-    void renderBoneDebug(
+    void renderAnimationDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext);
+
+    void renderMiscDebug(
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 };

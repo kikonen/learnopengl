@@ -189,8 +189,8 @@ RenderContext::RenderContext(
     if (m_debugContext) {
         m_debug = {
             m_debugContext->m_entityId,
-            m_debugContext->m_boneIndex,
-            m_debugContext->m_debugBoneWeight,
+            m_debugContext->m_animationBoneIndex,
+            m_debugContext->m_animationDebugBoneWeight,
         };
     }
     else {
