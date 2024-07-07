@@ -1,5 +1,7 @@
 #include "RigContainer.h"
 
+#include <tuple>
+
 #include <assimp/scene.h>
 
 #include <fmt/format.h>
@@ -12,12 +14,32 @@
 #include "BoneInfo.h"
 #include "VertexBone.h"
 
+namespace {
+    std::pair<bool, std::string> reolveJointAlias(
+        const std::string& name,
+        std::vector<std::string> jointPrefixes)
+    {
+        for (const auto& prefix : jointPrefixes) {
+            if (util::startsWith(name, prefix)) {
+                const auto& alias = prefix.size() != name.size()
+                    ? name.substr(prefix.size(), name.size() - prefix.size())
+                    : "<ROOT>";
+                return { true, alias };
+                break;
+            }
+        }
+        return { false, "" };
+    }
+}
+
 namespace animation {
     RigContainer::RigContainer(const std::string& name)
         : m_name{ name }
     {
         m_jointPrefixes.push_back("Scavenger_ ");
+        m_jointPrefixes.push_back("Scavenger_");
         m_jointPrefixes.push_back("humanoid_ ");
+        m_jointPrefixes.push_back("humanoid_");
     }
 
     RigContainer::~RigContainer() = default;
@@ -27,13 +49,10 @@ namespace animation {
         auto& rigJoint = m_joints.emplace_back(node);
         rigJoint.m_index = static_cast<int16_t>(m_joints.size() - 1);
 
-        for (const auto& prefix : m_jointPrefixes) {
-            if (util::startsWith(rigJoint.m_name, prefix)) {
-                rigJoint.m_plainName = rigJoint.m_name.substr(prefix.size(), rigJoint.m_name.size() - prefix.size());
-            }
-            else {
-                rigJoint.m_plainName = "<NA>";
-            }
+        const auto [foundAlias, alias] = reolveJointAlias(rigJoint.m_name, m_jointPrefixes);
+        if (foundAlias) {
+            rigJoint.m_hasAliasName = true;
+            rigJoint.m_aliasName = alias;
         }
 
         return rigJoint;
@@ -65,10 +84,18 @@ namespace animation {
 
     const animation::RigJoint* RigContainer::findJoint(const std::string& name) const noexcept
     {
+        const auto [foundAlias, alias] = reolveJointAlias(name, m_jointPrefixes);
+
         const auto& it = std::find_if(
             m_joints.begin(),
             m_joints.end(),
-            [&name](const RigJoint& m) { return m.m_name == name || util::endsWith(name, m.m_plainName); });
+            [&name, &foundAlias, &alias](const RigJoint& j) {
+                if (j.m_name == name) return true;
+                if (j.m_hasAliasName && foundAlias) {
+                    return j.m_aliasName == alias;
+                }
+                return false;
+            });
         return it != m_joints.end() ? &m_joints[it->m_index] : nullptr;
     }
 
@@ -251,12 +278,12 @@ namespace animation {
             const RigSocket* socket = rigJoint.m_socketIndex >= 0 ? &m_sockets[rigJoint.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
-                "J: [{}{}.{}, name={}, plain={}{}{}]",
+                "J: [{}{}.{}, name={}{}{}{}]",
                 rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
                 rigJoint.m_name,
-                rigJoint.m_plainName,
+                rigJoint.m_hasAliasName ? fmt::format(", alias={}", rigJoint.m_aliasName) : "",
                 rigJoint.m_boneIndex >= 0 ? fmt::format(", bone={}", rigJoint.m_boneIndex) : "",
                 socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 
