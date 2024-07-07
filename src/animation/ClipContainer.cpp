@@ -1,5 +1,9 @@
 #include "ClipContainer.h"
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
 namespace animation {
     uint16_t ClipContainer::addAnimation(
         std::unique_ptr<animation::Animation> src,
@@ -18,6 +22,11 @@ namespace animation {
             addClip(clip);
         }
 
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: ADD_ANIMATION: name={}, index={}",
+            anim->m_name,
+            anim->m_index));
+
         return index;
     }
 
@@ -33,6 +42,13 @@ namespace animation {
         if (anim) {
             clip.m_animationIndex = anim->m_index;
         }
+
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: ADD_CLIP: name={}, index={}, animName={}, animIndex={}",
+            clip.m_name,
+            clip.m_index,
+            clip.m_animationName,
+            clip.m_animationIndex));
 
         return index;
     }
