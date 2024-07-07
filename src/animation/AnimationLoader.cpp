@@ -138,7 +138,18 @@ namespace animation {
             auto& bc = animation->addChannel({ channel });
             auto* rigJoint = rig.findJoint(bc.m_jointName);
             if (rigJoint) {
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: CHANNEL_BIND_JOINT - channel={}, joint={}",
+                    bc.m_jointName,
+                    rigJoint->m_name
+                ));
                 animation->bindJoint(bc.m_index, rigJoint->m_index);
+            }
+            else {
+                KI_WARN_OUT(fmt::format(
+                    "ASSIMP: CHANNEL_MISSING_JOINT - channeö={}",
+                    bc.m_jointName
+                ));
             }
 
             bc.reservePositionKeys(channel->mNumPositionKeys);
