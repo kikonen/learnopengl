@@ -15,7 +15,7 @@ out GS_OUT {
   vec4 fragColor;
 } gs_out;
 
-const float MAGNITUDE = 0.2;
+const float MAGNITUDE = 0.1;
 
 void generateNormal(const int index)
 {
