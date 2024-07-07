@@ -62,6 +62,7 @@ namespace mesh {
         void loadAnimations(
             mesh::LoadContext& ctx,
             const std::string& namePrefix,
+            const std::string& filePath,
             const aiScene* scene);
 
         void processMeshes(

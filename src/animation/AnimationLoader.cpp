@@ -9,12 +9,15 @@
 #include "util/glm_format.h"
 #include "util/Util.h"
 #include "util/Log.h"
+#include "util/assimp_util.h"
 
 #include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
 
-#include "util/assimp_util.h"
+#include "MetadataLoader.h"
+#include "Metadata.h"
+#include "Clip.h"
 
 namespace animation {
     AnimationLoader::AnimationLoader() = default;
@@ -22,7 +25,7 @@ namespace animation {
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
         const std::string& filePath)
     {
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
@@ -66,12 +69,13 @@ namespace animation {
             scene->mNumMaterials,
             scene->mNumTextures))
 
-        loadAnimations(rig, namePrefix, scene);
+        loadAnimations(rig, uniquePrefix, filePath, scene);
     }
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
+        const std::string& filePath,
         const aiScene* scene)
     {
         if (scene->mNumAnimations == 0) return;
@@ -82,23 +86,32 @@ namespace animation {
             auto animation = loadAnimation(
                 rig,
                 static_cast<int16_t>(clipContainer.m_animations.size()),
-                namePrefix,
+                uniquePrefix,
                 scene,
                 scene->mAnimations[index]);
             clipContainer.addAnimation(std::move(animation), true);
+        }
+
+        animation::MetadataLoader metadataLoader{};
+        const auto metadata = metadataLoader.load(filePath);
+        if (metadata) {
+            for (auto& clip : metadata->m_clips) {
+                clip.m_animationName = uniquePrefix + "_" + clip.m_animationName;
+                clipContainer.addClip(clip);
+            }
         }
     }
 
     std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(
         animation::RigContainer& rig,
         int16_t animIndex,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
         const aiScene* scene,
         const aiAnimation* anim)
     {
         auto animation = std::make_unique<animation::Animation>(
             anim,
-            namePrefix);
+            uniquePrefix);
         animation->m_index = animIndex;
 
         KI_INFO_OUT(fmt::format(

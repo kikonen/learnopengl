@@ -116,7 +116,7 @@ namespace mesh
             scene);
 
         if (!rig->empty()) {
-            loadAnimations(ctx, meshSet.m_name, scene);
+            loadAnimations(ctx, meshSet.m_name, meshSet.m_filePath, scene);
 
             rig->prepare();
             meshSet.m_rig = rig;
@@ -275,6 +275,7 @@ namespace mesh
     void AssimpLoader::loadAnimations(
         mesh::LoadContext& ctx,
         const std::string& namePrefix,
+        const std::string& filePath,
         const aiScene* scene)
     {
         animation::AnimationLoader loader{};
@@ -282,6 +283,7 @@ namespace mesh
         loader.loadAnimations(
             *ctx.m_rig,
             namePrefix,
+            filePath,
             scene);
     }
 

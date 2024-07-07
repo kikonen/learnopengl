@@ -15,6 +15,8 @@ namespace animation {
         const std::string m_name;
         const bool m_assimpFbx;
 
+        std::string m_plainName;
+
         int16_t m_index;
         int16_t m_parentIndex;
 

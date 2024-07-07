@@ -33,6 +33,7 @@ namespace animation {
         }
 
         const std::string m_name;
+        const std::string m_uniqueName;
 
         const float m_duration;
         const float m_ticksPerSecond;

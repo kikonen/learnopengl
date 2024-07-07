@@ -12,7 +12,7 @@ namespace animation {
         anim->m_index = index;
         if (registerClip) {
             Clip clip;
-            clip.m_animationName = anim->m_name;
+            clip.m_animationName = anim->m_uniqueName;
             clip.m_lastFrame = anim->m_duration;
 
             addClip(clip);
@@ -42,7 +42,7 @@ namespace animation {
         const auto& it = std::find_if(
             m_animations.begin(),
             m_animations.end(),
-            [&name](const auto& anim) { return anim->m_name == name;  });
+            [&name](const auto& anim) { return anim->m_uniqueName == name;  });
         if (it == m_animations.end()) return nullptr;
         return it->get();
     }
