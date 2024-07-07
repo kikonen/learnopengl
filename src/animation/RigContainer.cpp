@@ -15,7 +15,10 @@
 namespace animation {
     RigContainer::RigContainer(const std::string& name)
         : m_name{ name }
-    {}
+    {
+        m_jointPrefixes.push_back("Scavenger_ ");
+        m_jointPrefixes.push_back("humanoid_ ");
+    }
 
     RigContainer::~RigContainer() = default;
 
@@ -23,6 +26,15 @@ namespace animation {
     {
         auto& rigJoint = m_joints.emplace_back(node);
         rigJoint.m_index = static_cast<int16_t>(m_joints.size() - 1);
+
+        for (const auto& prefix : m_jointPrefixes) {
+            if (util::startsWith(rigJoint.m_name, prefix)) {
+                rigJoint.m_plainName = rigJoint.m_name.substr(prefix.size(), rigJoint.m_name.size() - prefix.size());
+            }
+            else {
+                rigJoint.m_plainName = "<NA>";
+            }
+        }
 
         return rigJoint;
     }
@@ -56,7 +68,7 @@ namespace animation {
         const auto& it = std::find_if(
             m_joints.begin(),
             m_joints.end(),
-            [&name](const RigJoint& m) { return m.m_name == name; });
+            [&name](const RigJoint& m) { return m.m_name == name || util::endsWith(name, m.m_plainName); });
         return it != m_joints.end() ? &m_joints[it->m_index] : nullptr;
     }
 
@@ -239,11 +251,12 @@ namespace animation {
             const RigSocket* socket = rigJoint.m_socketIndex >= 0 ? &m_sockets[rigJoint.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
-                "J: [{}{}.{}, name={}{}{}]",
+                "J: [{}{}.{}, name={}, plain={}{}{}]",
                 rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
                 rigJoint.m_name,
+                rigJoint.m_plainName,
                 rigJoint.m_boneIndex >= 0 ? fmt::format(", bone={}", rigJoint.m_boneIndex) : "",
                 socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 

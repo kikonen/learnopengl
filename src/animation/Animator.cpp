@@ -40,6 +40,8 @@ namespace animation {
         if (clipIndex < 0 || clipIndex >= rig.m_clipContainer.m_clips.size()) return false;
 
         const auto& clip = rig.m_clipContainer.m_clips[clipIndex];
+        if (clip.m_animationIndex < 0) return false;
+
         const auto* animation = rig.m_clipContainer.m_animations[clip.m_animationIndex].get();
 
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });

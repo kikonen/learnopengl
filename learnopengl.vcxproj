@@ -193,6 +193,8 @@
     <ClCompile Include="src\animation\BoneInfo.cpp" />
     <ClCompile Include="src\animation\BoneRegistry.cpp" />
     <ClCompile Include="src\animation\MeshInfo.cpp" />
+    <ClCompile Include="src\animation\Metadata.cpp" />
+    <ClCompile Include="src\animation\MetadataLoader.cpp" />
     <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
@@ -437,6 +439,7 @@
     <ClInclude Include="src\animation\MeshInfo.h" />
     <ClInclude Include="src\animation\Clip.h" />
     <ClInclude Include="src\animation\MetaData.h" />
+    <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />

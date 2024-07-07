@@ -27,6 +27,9 @@ namespace util
     // @return reference of str param
     std::string toLower(std::string_view str);
 
+    bool startsWith(std::string_view str, std::string_view prefix);
+    bool endsWith(std::string_view str, std::string_view suffix);
+
     std::string replace(
         const std::string& str,
         const std::string_view from,
