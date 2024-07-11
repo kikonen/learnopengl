@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 struct aiScene;
 struct aiAnimation;
@@ -10,6 +11,13 @@ struct aiAnimation;
 namespace animation {
     struct RigContainer;
     struct Animation;
+
+    class AnimationNotFoundError : public std::runtime_error {
+    public:
+        AnimationNotFoundError(const std::string& msg)
+            : std::runtime_error(msg.c_str())
+        {}
+    };
 
     class AnimationLoader {
     public:

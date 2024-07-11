@@ -84,9 +84,9 @@ void EditorFrame::draw(const RenderContext& ctx)
 void EditorFrame::trackImGuiState(
     render::DebugContext& debugContext)
 {
-    auto imguiHit = ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-        ImGui::IsAnyItemHovered() ||
-        ImGui::IsAnyItemActive() ||
+     //ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+     //ImGui::IsAnyItemHovered() ||
+     auto imguiHit = ImGui::IsAnyItemActive() ||
         ImGui::IsAnyItemFocused();
     m_window.m_input->imGuiHit = imguiHit;
 }

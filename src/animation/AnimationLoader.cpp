@@ -34,7 +34,7 @@ namespace animation {
         if (rig.empty()) return;
 
         if (!util::fileExists(filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+            throw AnimationNotFoundError{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
         }
 
         Assimp::Importer importer;
