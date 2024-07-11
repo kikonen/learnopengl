@@ -727,6 +727,7 @@ namespace loader {
         mesh::MeshSet& meshSet)
     {
         if (!meshSet.isRigged()) return;
+        if (!*m_ctx.m_alive) return;
 
         const auto& assets = Assets::get();
 
@@ -746,10 +747,16 @@ namespace loader {
                 data.path);
         }
 
-        loader.loadAnimations(
-            *meshSet.m_rig,
-            data.name,
-            filePath);
+        try {
+            loader.loadAnimations(
+                *meshSet.m_rig,
+                data.name,
+                filePath);
+        }
+        catch (animation::AnimationNotFoundError ex) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
+            //throw std::current_exception();
+        }
     }
 
     pool::NodeHandle SceneLoader::createNode(

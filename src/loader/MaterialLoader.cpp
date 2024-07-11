@@ -248,7 +248,7 @@ namespace loader {
                     TextureType::specular,
                     resolveTexturePath(line, true));
             }
-            else if (k == "map_bump" || k == "bump") {
+            else if (k == "map_bump" || k == "map_normal") {
                 std::string line = readString(v);
                 material.addTexPath(
                     TextureType::normal_map,
