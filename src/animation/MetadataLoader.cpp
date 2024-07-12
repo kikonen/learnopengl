@@ -109,10 +109,16 @@ namespace animation
                 clip.m_animationName = readString(v);
             }
             else if (k == "firstFrame") {
-                clip.m_firstFrame = readInt(v);
+                // NOTE KI try to avoid errors due to weird cases like this
+                //firstFrame: 1969.9999
+                //lastFrame : 2020.0001
+                clip.m_firstFrame = round(readFloat(v));
             }
             else if (k == "lastFrame") {
-                clip.m_lastFrame = readInt(v);
+                clip.m_lastFrame = round(readFloat(v));
+            }
+            else if (k == "loop") {
+                clip.m_loop = readInt(v) == 1;
             }
         }
     }
