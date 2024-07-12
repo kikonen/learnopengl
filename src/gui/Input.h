@@ -56,12 +56,12 @@ public:
 
     inline bool allowMouse() const noexcept
     {
-        return !imGuiHit;
+        return !(imGuiHasMouse || imGuiHasKeyboard);
     }
 
     inline bool allowKeyboard() const noexcept
     {
-        return !imGuiHit;
+        return !imGuiHasKeyboard;
     }
 
 public:
@@ -71,7 +71,8 @@ public:
     float mouseXoffset = 0;
     float mouseYoffset = 0;
 
-    bool imGuiHit{ false };
+    bool imGuiHasKeyboard{ false };
+    bool imGuiHasMouse{ false };
 
     Window* window;
 
