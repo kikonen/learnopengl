@@ -8,15 +8,25 @@
 
 #include "engine/Engine.h"
 
+#include "event/Event.h"
+#include "event/Dispatcher.h"
+
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
 
+
 #include "render/RenderContext.h"
 
+#include "controller/PawnController.h"
+#include "controller/CameraZoomController.h"
+
 #include "registry/NodeRegistry.h"
+#include "registry/ControllerRegistry.h"
+
+class PawnController;
 
 EditorFrame::EditorFrame(Window& window)
     : Frame(window)
@@ -51,6 +61,11 @@ void EditorFrame::draw(const RenderContext& ctx)
     //if (ImGui::CollapsingHeader("Status"))
     {
         renderStatus(ctx, debugContext);
+    }
+
+    if (ImGui::CollapsingHeader("Camera"))
+    {
+        renderCameraDebug(ctx, debugContext);
     }
 
     if (ImGui::CollapsingHeader("Node"))
@@ -105,15 +120,90 @@ void EditorFrame::renderStatus(
     ImGui::Text(fpsSummary.c_str());
 }
 
+void EditorFrame::renderCameraDebug(
+    const RenderContext& ctx,
+    render::DebugContext& debugContext)
+{
+    const auto& nr = NodeRegistry::get();
+    const auto& cr = ControllerRegistry::get();
+
+    // Pawn
+    {
+        const auto* currNode = nr.getActiveNode();
+        const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
+        if (ImGui::BeginCombo("Pawn selector", currType ? currType->m_name.c_str() : nullptr)) {
+            for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
+                const PawnController* nodeController = nullptr;
+                for (const auto& controller : controllers) {
+                    nodeController = dynamic_cast<const PawnController*>(&(*controller));
+                    if (nodeController) break;
+                }
+
+                if (nodeController) {
+                    const auto* node = nodeHandle.toNode();
+                    if (!node) continue;
+
+                    const auto* type = node->m_typeHandle.toType();
+                    const auto* name = type->m_name.c_str();
+
+                    ImGui::PushID((void*)node);
+                    if (ImGui::Selectable(name, node == currNode)) {
+                        event::Event evt { event::Type::node_activate };
+                        evt.body.node.target = node->getId();
+                        ctx.m_registry->m_dispatcherWorker->send(evt);
+                    }
+                    ImGui::PopID();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+
+    // Camera
+    {
+
+        const auto* currNode = nr.getActiveCameraNode();
+        const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
+        if (ImGui::BeginCombo("Camera selector", currType ? currType->m_name.c_str() : nullptr)) {
+            for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
+                const CameraZoomController* nodeController = nullptr;
+                for (const auto& controller : controllers) {
+                    nodeController = dynamic_cast<const CameraZoomController*>(&(*controller));
+                    if (nodeController) break;
+                }
+
+                if (nodeController) {
+                    const auto* node = nodeHandle.toNode();
+                    if (!node) continue;
+
+                    const auto* type = node->m_typeHandle.toType();
+                    const auto* name = type->m_name.c_str();
+
+                    ImGui::PushID((void*)node);
+                    if (ImGui::Selectable(name, node == currNode)) {
+                        event::Event evt { event::Type::camera_activate };
+                        evt.body.node.target = node->getId();
+                        ctx.m_registry->m_dispatcherWorker->send(evt);
+                    }
+                    ImGui::PopID();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+}
+
 void EditorFrame::renderNodeSelector(
     const RenderContext& ctx,
     render::DebugContext& debugContext)
 {
     const auto& nr = NodeRegistry::get();
 
-    const auto curr = debugContext.m_targetNode.toNode();
-    const auto* currType = curr ? curr->m_typeHandle.toType() : nullptr;
-    if (ImGui::BeginCombo("NodeSelector", currType ? currType->m_name.c_str() : nullptr)) {
+    const auto currNode = debugContext.m_targetNode.toNode();
+    const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
+    if (ImGui::BeginCombo("Node selector", currType ? currType->m_name.c_str() : nullptr)) {
         for (const auto* node : nr.getCachedNodesRT())
         {
             if (!node) continue;
@@ -122,7 +212,7 @@ void EditorFrame::renderNodeSelector(
             const auto* name = type->m_name.c_str();
 
             ImGui::PushID((void*)node);
-            if (ImGui::Selectable(name, node == curr))
+            if (ImGui::Selectable(name, node == currNode))
                 debugContext.m_targetNode = node->toHandle();
             ImGui::PopID();
         }
