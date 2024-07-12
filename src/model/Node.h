@@ -63,6 +63,11 @@ public:
     Node& operator=(Node& o) = delete;
     Node& operator=(Node&& o) noexcept;
 
+    bool operator==(const Node& o) const noexcept
+    {
+        return m_handle == o.m_handle;
+    }
+
     std::string str() const noexcept;
 
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }

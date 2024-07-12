@@ -57,6 +57,11 @@ namespace mesh {
         MeshType& operator=(const MeshType& o) = delete;
         MeshType& operator=(MeshType&& o) = delete;
 
+        bool operator==(const MeshType& o) const noexcept
+        {
+            return m_handle == o.m_handle;
+        }
+
         inline ki::type_id getId() const noexcept { return m_handle.m_id; }
         inline pool::TypeHandle toHandle() const noexcept { return m_handle; }
 

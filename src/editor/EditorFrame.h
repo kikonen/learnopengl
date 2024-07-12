@@ -22,6 +22,10 @@ private:
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 
+    void renderCameraDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext);
+
     void renderNodeSelector(
         const RenderContext& ctx,
         render::DebugContext& debugContext);
