@@ -46,6 +46,11 @@ public:
         m_bindAfter = binder;
     }
 
+    render::FrameBuffer* getSourceFrameBuffer() const
+    {
+        return m_sourceBuffer;
+    }
+
     void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
     void setDestinationFrameBuffer(render::FrameBuffer* frameBuffer);
 

@@ -44,6 +44,11 @@ public:
         return m_fpsCounter;
     }
 
+    std::shared_ptr<Scene> getCurrentScene() const
+    {
+        return m_currentScene;
+    }
+
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;

@@ -42,6 +42,10 @@ private:
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 
+    void renderBufferDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext);
+
     void renderMiscDebug(
         const RenderContext& ctx,
         render::DebugContext& debugContext);

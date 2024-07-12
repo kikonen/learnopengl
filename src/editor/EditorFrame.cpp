@@ -23,8 +23,15 @@
 #include "controller/PawnController.h"
 #include "controller/CameraZoomController.h"
 
+#include "model/Viewport.h"
+
+#include "renderer/ObjectIdRenderer.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
+
+#include "render/FrameBuffer.h"
+#include "scene/Scene.h"
 
 class PawnController;
 
@@ -84,6 +91,11 @@ void EditorFrame::draw(const RenderContext& ctx)
     if (ImGui::CollapsingHeader("Animation"))
     {
         renderAnimationDebug(ctx, debugContext);
+    }
+
+    if (ImGui::CollapsingHeader("Viewport"))
+    {
+        renderBufferDebug(ctx, debugContext);
     }
 
     if (ImGui::CollapsingHeader("Misc"))
@@ -262,6 +274,30 @@ void EditorFrame::renderAnimationDebug(
             ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
             ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
         }
+    }
+}
+
+void EditorFrame::renderBufferDebug(
+    const RenderContext& ctx,
+    render::DebugContext& debugContext)
+{
+    auto& window = m_window;
+    auto& scene = *window.getEngine().getCurrentScene();
+
+    // NOTE KI allow max half window size
+    float w = std::min(ImGui::GetWindowWidth(), ctx.m_resolution.x / 2.f);
+
+    if (ImGui::TreeNode("ObjectId")) {
+        const auto& fb = scene.m_objectIdRenderer->m_debugViewport->getSourceFrameBuffer();
+        auto& att = fb->m_spec.attachments[0];
+        ImTextureID texId = (void*)att.textureID;
+        ImGui::Image(
+            texId,
+            ImVec2{ w, w / ctx.m_aspectRatio },
+            ImVec2{ 0, 1 }, // uv1
+            ImVec2{ 1, 0 }  // uv2
+        );
+        ImGui::TreePop();
     }
 }
 
