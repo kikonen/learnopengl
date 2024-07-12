@@ -48,13 +48,8 @@ Node::Node()
 {
 }
 
-Node::Node(ki::node_id id)
-    : m_id{ id }
-{
-}
-
 Node::Node(Node&& o) noexcept
-    : m_id{ o.m_id }
+    : m_handle{ o.m_handle }
 {}
 
 Node& Node::operator=(Node&& o) noexcept
@@ -74,7 +69,7 @@ std::string Node::str() const noexcept
     auto* type = m_typeHandle.toType();
     return fmt::format(
         "<NODE: id={}, type={}>",
-        m_id, type ? type->str() : "<null>");
+        m_handle.str(), type ? type->str() : "<null>");
 }
 
 void Node::prepareWT(
@@ -214,7 +209,7 @@ int Node::getHighlightIndex() const noexcept
 
 ki::node_id Node::lua_getId() const noexcept
 {
-    return m_id;
+    return m_handle.m_id;
 }
 
 const std::string& Node::lua_getName() const noexcept

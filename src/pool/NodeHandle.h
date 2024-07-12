@@ -1,11 +1,13 @@
 #pragma once
 
+#include <string>
+
 #include "ki/size.h"
 
 class Node;
 
 namespace pool {
-    class NodeHandle final
+    struct NodeHandle final
     {
         friend class Node;
 
@@ -61,6 +63,11 @@ namespace pool {
         bool isNull() const noexcept { return m_handleIndex == 0;  }
         operator int() const { return m_handleIndex; }
 
+        inline std::string str() const noexcept
+        {
+            return "[" + std::to_string(m_id) + "." + std::to_string(m_handleIndex) + "]";
+        }
+
         void reset() noexcept {
             m_handleIndex = 0;
             m_id = 0;
@@ -80,8 +87,19 @@ namespace pool {
     public:
         static NodeHandle NULL_HANDLE;
 
-    private:
+    //private:
         uint32_t m_handleIndex;
         ki::node_id m_id;
     };
 }
+
+template <>
+struct std::hash<pool::NodeHandle>
+{
+    size_t operator()(const pool::NodeHandle& k) const
+    {
+        // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+        return ((std::hash<int>()(k.m_handleIndex)
+            ^ (std::hash<int>()(k.m_id) << 1)) >> 1);
+    }
+};

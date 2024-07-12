@@ -10,17 +10,19 @@
 
 #include "model/NodeType.h"
 
+#include "pool/TypeHandle.h"
+
 #include "LodLevel.h"
 #include "LodMesh.h"
 #include "TypeFlags.h"
 
-namespace pool {
-    class TypeHandle;
-}
+//namespace pool {
+//    struct TypeHandle;
+//}
 
 namespace render {
     struct MeshTypeKey;
-    struct MeshTypeComparator;
+    //struct MeshTypeComparator;
     class Batch;
 }
 
@@ -40,9 +42,9 @@ namespace mesh {
 
     class MeshType final
     {
-        friend class pool::TypeHandle;
+        friend struct pool::TypeHandle;
         friend class MeshTypeRegistry;
-        friend struct render::MeshTypeComparator;
+        //friend struct render::MeshTypeComparator;
         friend struct render::MeshTypeKey;
 
     public:
@@ -55,8 +57,8 @@ namespace mesh {
         MeshType& operator=(const MeshType& o) = delete;
         MeshType& operator=(MeshType&& o) = delete;
 
-        inline ki::type_id getId() const noexcept { return m_id; }
-        pool::TypeHandle toHandle() const noexcept;
+        inline ki::type_id getId() const noexcept { return m_handle.m_id; }
+        inline pool::TypeHandle toHandle() const noexcept { return m_handle; }
 
         const std::string& getName() const noexcept { return m_name; }
         void setName(std::string_view name) noexcept {
@@ -132,12 +134,12 @@ namespace mesh {
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
+        pool::TypeHandle m_handle;
+
         std::string m_name;
 
         TypeFlags m_flags;
 
-        uint32_t m_handleIndex{ 0 };
-        ki::type_id m_id{ 0 };
 
         NodeType m_nodeType{ NodeType::origo };
 

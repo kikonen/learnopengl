@@ -28,8 +28,8 @@ namespace pool {
     NodeHandle& NodeHandle::operator=(const Node* node) noexcept
     {
         if (node) {
-            m_handleIndex = node->m_handleIndex;
-            m_id = node->m_id;
+            m_handleIndex = node->m_handle.m_handleIndex;
+            m_id = node->m_handle.m_id;
         }
         return *this;
     }
@@ -41,11 +41,11 @@ namespace pool {
         auto* entry = s_pool.getEntry(m_handleIndex);
         if (!entry) return nullptr;
 
-        if (entry->m_data.m_id && entry->m_data.m_id == m_id) {
+        if (entry->m_data.m_handle.m_id && entry->m_data.m_handle.m_id == m_id) {
             return &entry->m_data;
         }
 
-        // TODO KI invalidated; clear iteslf
+        // TODO KI invalidated; clear itself
         //clear();
 
         return nullptr;
@@ -62,12 +62,12 @@ namespace pool {
 
         auto* entry = s_pool.getEntry(handleIndex);
 
-        entry->m_data.m_id = id;
-        entry->m_data.m_handleIndex = handleIndex;
+        NodeHandle handle{ handleIndex, id };
+        entry->m_data.m_handle = handle;
 
         m_IdToIndex.insert({ id, handleIndex });
 
-        return { handleIndex, id };
+        return handle;
     }
 
     NodeHandle NodeHandle::toHandle(ki::node_id id) noexcept
