@@ -284,10 +284,11 @@ void EditorFrame::renderBufferDebug(
     auto& window = m_window;
     auto& scene = *window.getEngine().getCurrentScene();
 
-    // NOTE KI allow max half window size
-    float w = std::min(ImGui::GetWindowWidth(), ctx.m_resolution.x / 2.f);
-
     if (ImGui::TreeNode("ObjectId")) {
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        // NOTE KI allow max half window size
+        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f);
+
         const auto& fb = scene.m_objectIdRenderer->m_debugViewport->getSourceFrameBuffer();
         auto& att = fb->m_spec.attachments[0];
         ImTextureID texId = (void*)att.textureID;
@@ -295,7 +296,9 @@ void EditorFrame::renderBufferDebug(
             texId,
             ImVec2{ w, w / ctx.m_aspectRatio },
             ImVec2{ 0, 1 }, // uv1
-            ImVec2{ 1, 0 }  // uv2
+            ImVec2{ 1, 0 }, // uv2
+            ImVec4{ 1, 1, 1, 1 }, // tint_col
+            ImVec4{ 1, 1, 1, 1 }  // border_col
         );
         ImGui::TreePop();
     }
