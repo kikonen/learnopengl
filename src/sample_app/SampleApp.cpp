@@ -410,9 +410,11 @@ void SampleApp::selectNode(
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-    const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
-    const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
-    const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+    //const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
+    //const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
+    //const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+
+    const bool selectMode = inputState.ctrl;
 
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);
@@ -470,25 +472,27 @@ void SampleApp::selectNode(
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
         }
-    } else if (playerMode) {
-        if (node && inputState.ctrl) {
-            auto exists = ControllerRegistry::get().hasController(node);
-            if (exists) {
-                event::Event evt { event::Type::node_activate };
-                evt.body.node.target = node->getId();
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
-
-            node = nullptr;
-        }
-    } else if (cameraMode) {
-        // NOTE KI null == default camera
-        event::Event evt { event::Type::camera_activate };
-        evt.body.node.target = node->getId();
-        ctx.m_registry->m_dispatcherWorker->send(evt);
-
-        node = nullptr;
     }
+    //else if (playerMode) {
+    //    if (node && inputState.ctrl) {
+    //        auto exists = ControllerRegistry::get().hasController(node);
+    //        if (exists) {
+    //            event::Event evt { event::Type::node_activate };
+    //            evt.body.node.target = node->getId();
+    //            ctx.m_registry->m_dispatcherWorker->send(evt);
+    //        }
+
+    //        node = nullptr;
+    //    }
+    //}
+    //else if (cameraMode) {
+    //    // NOTE KI null == default camera
+    //    event::Event evt { event::Type::camera_activate };
+    //    evt.body.node.target = node->getId();
+    //    ctx.m_registry->m_dispatcherWorker->send(evt);
+
+    //    node = nullptr;
+    //}
 }
 
 Assets SampleApp::loadAssets()
