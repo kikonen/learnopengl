@@ -27,9 +27,9 @@ assets:
   window_maximized: true
   window_full_screen: false
 
-  camera_move_mormal: [5.5, 7.5, 7.5]
-  camera_move_run: [10, 14, 14]
-  camera_rotate_normal: [18, 18, 18]
+  camera_move_mormal: [2.5, 2.5, 2.5]
+  camera_move_run: [8, 8, 8]
+  camera_rotate_normal: [28, 28, 28]
   camera_rotate_run: [56, 56, 56]
   camera_zoom_normal: [20, 20, 20]
   camera_zoom_run: [25, 25, 25]
