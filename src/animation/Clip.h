@@ -81,6 +81,8 @@ namespace animation
 
         uint16_t m_firstFrame{ 0 };
         uint16_t m_lastFrame{ 0 };
+
+        float m_duration{ 0 };
         //std::vector<std::string> m_events;
         //bool m_loop{ false };
     };

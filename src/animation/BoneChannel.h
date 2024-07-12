@@ -34,6 +34,11 @@ namespace animation {
 
         BoneChannel(const aiNodeAnim* channel);
 
+        uint16_t getMaxFrame() const noexcept
+        {
+            return static_cast<uint16_t>(m_positionKeyTimes.size() - 1);
+        }
+
         void reservePositionKeys(uint16_t size);
         void reserveRotationKeys(uint16_t size);
         void reserveScaleKeys(uint16_t size);
@@ -42,17 +47,33 @@ namespace animation {
         void addeRotationKey(const aiQuatKey& key);
         void addeScaleKey(const aiVectorKey& key);
 
-        glm::mat4 interpolate(float animationTimeTicks) const noexcept;
+        // @param firstFrame..lastFrame range used for clip
+        glm::mat4 interpolate(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
 
     private:
-        glm::vec3 interpolatePosition(float animationTimeTicks) const noexcept;
-        glm::quat interpolateRotation(float animationTimeTicks) const noexcept;
-        glm::vec3 interpolateScale(float animationTimeTicks) const noexcept;
+        glm::vec3 interpolatePosition(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
+
+        glm::quat interpolateRotation(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
+
+        glm::vec3 interpolateScale(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
 
         glm::vec3 interpolateVector(
             float animationTimeTicks,
             const glm::vec3& aValue,
             const glm::vec3& bValue,
+            float firstFrameTime,
             float aTime,
             float bTime) const noexcept;
 
@@ -60,12 +81,24 @@ namespace animation {
             float animationTimeTicks,
             const glm::quat& aValue,
             const glm::quat& bValue,
+            float firstFrameTime,
             float aTime,
             float bTime) const noexcept;
 
-        uint16_t findPosition(float animationTimeTicks) const noexcept;
-        uint16_t findRotation(float animationTimeTicks) const noexcept;
-        uint16_t findScale(float animationTimeTicks) const noexcept;
+        uint16_t findPosition(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
+
+        uint16_t findRotation(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
+
+        uint16_t findScale(
+            float animationTimeTicks,
+            uint16_t firstFrame,
+            uint16_t lastFrame) const noexcept;
 
         //uint16_t findIndex(
         //    const std::vector<float>& times,

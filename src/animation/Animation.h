@@ -32,6 +32,12 @@ namespace animation {
             return it != mjointToChannel.end() ? &m_channels[it->second] : nullptr;
         }
 
+        uint16_t getMaxFrame() const;
+
+        uint16_t getClipDuration(
+            uint16_t firstFrame,
+            uint16_t lastFrame) const;
+
         const std::string m_name;
         const std::string m_uniqueName;
 

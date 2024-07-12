@@ -111,7 +111,7 @@ namespace animation {
                 animation::Clip clip;
                 clip.m_name = animation.m_name;
                 clip.m_animationName = animation.m_uniqueName;
-                clip.m_lastFrame = animation.m_duration;
+                clip.m_lastFrame = animation.getMaxFrame();
                 clipContainer.addClip(clip);
             }
         }
@@ -172,15 +172,19 @@ namespace animation {
                 bc.addPositionKey(channel->mPositionKeys[i]);
             }
 
-            bc.reserveRotationKeys(channel->mNumPositionKeys);
+            bc.reserveRotationKeys(channel->mNumRotationKeys);
             for (size_t i = 0; i < channel->mNumRotationKeys; i++) {
                 bc.addeRotationKey(channel->mRotationKeys[i]);
             }
 
-            bc.reserveScaleKeys(channel->mNumPositionKeys);
+            bc.reserveScaleKeys(channel->mNumScalingKeys);
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
                 bc.addeScaleKey(channel->mScalingKeys[i]);
             }
+
+            // NOTE KI technically might be that they differ, but logic is not really supporting it
+            assert(channel->mNumPositionKeys == channel->mNumRotationKeys);
+            assert(channel->mNumPositionKeys == channel->mNumScalingKeys);
         }
 
         return animation;
