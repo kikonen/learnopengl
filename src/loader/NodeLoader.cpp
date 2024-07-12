@@ -102,7 +102,7 @@ namespace loader {
             else if (k == "id") {
                 data.baseId = readId(v);
             }
-            else if (k == "parent_id") {
+            else if (k == "parent_id" || k == "parent") {
                 data.parentBaseId = readId(v);
             }
             else if (k == "xxname" || k == "xname") {
