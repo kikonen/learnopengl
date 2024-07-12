@@ -46,6 +46,7 @@ namespace animation {
         const auto& animation = *rig.m_clipContainer.m_animations[clip.m_animationIndex];
         const auto firstFrame = clip.m_firstFrame;
         const auto lastFrame = clip.m_lastFrame;
+        const auto singleClip = clip.m_single;
 
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);
@@ -124,7 +125,7 @@ namespace animation {
                 const auto* channel = animation.findByJointIndex(rigJoint.m_index);
 
                 const glm::mat4& jointTransform = channel
-                    ? channel->interpolate(animationTimeTicks, firstFrame, lastFrame)
+                    ? channel->interpolate(animationTimeTicks, firstFrame, lastFrame, singleClip)
                     : rigJoint.m_transform;
 
                 //if (rigJoint.m_name == std::string{ "SkeletonKnight_" })

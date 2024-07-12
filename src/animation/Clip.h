@@ -86,6 +86,7 @@ namespace animation
 
         bool m_loop{ false };
 
+        bool m_single{ true };
         //std::vector<std::string> m_events;
     };
 }

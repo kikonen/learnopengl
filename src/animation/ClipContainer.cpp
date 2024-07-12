@@ -34,6 +34,8 @@ namespace animation {
 
         const auto* anim = findAnimation(clip.m_animationName);
         if (anim) {
+            m_animations[anim->m_index]->m_clipCount++;
+
             clip.m_animationIndex = anim->m_index;
 
             if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
@@ -87,12 +89,9 @@ namespace animation {
         return &(*it);
     }
 
-    bool ClipContainer::hasClips(uint16_t animationIndex) const
+    uint16_t ClipContainer::getClipCount(uint16_t animationIndex) const
     {
-        return std::find_if(
-            m_clips.begin(),
-            m_clips.end(),
-            [&animationIndex](const auto& clip) { return clip.m_animationIndex == animationIndex;  }) != m_clips.end();
+        return m_animations[animationIndex]->m_clipCount;
     }
 }
 

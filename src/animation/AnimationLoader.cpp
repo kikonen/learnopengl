@@ -106,8 +106,25 @@ namespace animation {
 
         // NOTE KI register anims without unique name with their given name
         for (auto animIndex : animationIndeces) {
-            if (!clipContainer.hasClips(animIndex)) {
-                const auto& animation = *clipContainer.m_animations[animIndex];
+            const auto& animation = *clipContainer.m_animations[animIndex];
+
+            if (animation.m_clipCount > 1) {
+                // NOTE KI assume all channels are consistent
+                const animation::BoneChannel* prev{ nullptr };
+                for (const auto& channel : animation.m_channels) {
+                    if (prev) {
+                        assert(channel.m_positionKeyTimes.size() == prev->m_positionKeyTimes.size());
+                        assert(channel.m_rotationKeyTimes.size() == prev->m_rotationKeyTimes.size());
+                        assert(channel.m_scaleKeyTimes.size() == prev->m_scaleKeyTimes.size());
+                    }
+
+                    assert(channel.m_positionKeyTimes.size() == channel.m_rotationKeyTimes.size());
+                    assert(channel.m_positionKeyTimes.size() == channel.m_scaleKeyTimes.size());
+
+                    prev = &channel;
+                }
+            }
+            else {
                 animation::Clip clip;
                 clip.m_name = animation.m_name;
                 clip.m_animationName = animation.m_uniqueName;
@@ -181,10 +198,6 @@ namespace animation {
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
                 bc.addeScaleKey(channel->mScalingKeys[i]);
             }
-
-            // NOTE KI technically might be that they differ, but logic is not really supporting it
-            assert(channel->mNumPositionKeys == channel->mNumRotationKeys);
-            assert(channel->mNumPositionKeys == channel->mNumScalingKeys);
         }
 
         return animation;

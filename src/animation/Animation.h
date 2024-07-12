@@ -46,6 +46,8 @@ namespace animation {
 
         int16_t m_index;
 
+        int16_t m_clipCount{ 0 };
+
         std::vector<animation::BoneChannel> m_channels;
         std::map<uint16_t, uint16_t> mjointToChannel;
     };
