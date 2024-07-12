@@ -113,7 +113,7 @@ void EditorFrame::renderNodeSelector(
 
     const auto curr = debugContext.m_targetNode.toNode();
     const auto* currType = curr ? curr->m_typeHandle.toType() : nullptr;
-    if (ImGui::BeginCombo("Node", currType ? currType->m_name.c_str() : nullptr)) {
+    if (ImGui::BeginCombo("NodeSelector", currType ? currType->m_name.c_str() : nullptr)) {
         for (const auto* node : nr.getCachedNodesRT())
         {
             if (!node) continue;
