@@ -30,17 +30,39 @@ namespace animation {
         auto& clip = m_clips[index];
         clip.m_index = index;
 
+        assert(clip.m_firstFrame <= clip.m_lastFrame);
+
         const auto* anim = findAnimation(clip.m_animationName);
         if (anim) {
             clip.m_animationIndex = anim->m_index;
+
+            if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
+                KI_WARN_OUT(fmt::format(
+                    "ASSIMP: CLIP_OUT_OF_BOUNDS: name={}, index={}, animName={}, animIndex={}, range=[{},{}], max={}",
+                    clip.m_name,
+                    clip.m_index,
+                    clip.m_animationName,
+                    clip.m_animationIndex,
+                    clip.m_firstFrame,
+                    clip.m_lastFrame,
+                    max));
+                clip.m_lastFrame = max;
+                if (clip.m_firstFrame > clip.m_lastFrame) {
+                    clip.m_firstFrame = clip.m_lastFrame;
+                }
+            }
+
+            clip.m_duration = anim->getClipDuration(clip.m_firstFrame, clip.m_lastFrame);
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: ADD_CLIP: name={}, index={}, animName={}, animIndex={}",
+            "ASSIMP: ADD_CLIP: name={}, index={}, animName={}, animIndex={}, range=[{},{}]",
             clip.m_name,
             clip.m_index,
             clip.m_animationName,
-            clip.m_animationIndex));
+            clip.m_animationIndex,
+            clip.m_firstFrame,
+            clip.m_lastFrame));
 
         return index;
     }

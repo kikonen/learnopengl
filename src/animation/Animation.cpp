@@ -29,4 +29,17 @@ namespace animation {
         mjointToChannel.insert({ jointIndex, channelIndex });
         m_channels[channelIndex].m_jointIndex = jointIndex;
     }
+
+    uint16_t Animation::getMaxFrame() const
+    {
+        return m_channels[0].getMaxFrame();
+    }
+
+    uint16_t Animation::getClipDuration(
+        uint16_t firstFrame,
+        uint16_t lastFrame) const
+    {
+        const auto& times = m_channels[0].m_positionKeyTimes;
+        return times[lastFrame] - times[firstFrame];
+    }
 }

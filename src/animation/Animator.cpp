@@ -41,8 +41,11 @@ namespace animation {
 
         const auto& clip = rig.m_clipContainer.m_clips[clipIndex];
         if (clip.m_animationIndex < 0) return false;
+        if (clip.m_duration <= 0.f) return false;
 
         const auto& animation = *rig.m_clipContainer.m_animations[clip.m_animationIndex];
+        const auto firstFrame = clip.m_firstFrame;
+        const auto lastFrame = clip.m_lastFrame;
 
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);
@@ -59,7 +62,7 @@ namespace animation {
             float animationTimeSecs = (float)(currentTime - animationStartTime);
             float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : 25.f;
             float timeInTicks = animationTimeSecs * ticksPerSecond;
-            animationTimeTicks = fmod(timeInTicks, animation.m_duration);
+            animationTimeTicks = fmod(timeInTicks, clip.m_duration);
 
             //std::cout << fmt::format(
             //    "time={}, secs={}, ticksSec={}, ticks={}, duration={}\n",
@@ -121,7 +124,7 @@ namespace animation {
                 const auto* channel = animation.findByJointIndex(rigJoint.m_index);
 
                 const glm::mat4& jointTransform = channel
-                    ? channel->interpolate(animationTimeTicks)
+                    ? channel->interpolate(animationTimeTicks, firstFrame, lastFrame)
                     : rigJoint.m_transform;
 
                 //if (rigJoint.m_name == std::string{ "SkeletonKnight_" })
