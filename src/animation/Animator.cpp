@@ -42,7 +42,7 @@ namespace animation {
         const auto& clip = rig.m_clipContainer.m_clips[clipIndex];
         if (clip.m_animationIndex < 0) return false;
 
-        const auto* animation = rig.m_clipContainer.m_animations[clip.m_animationIndex].get();
+        const auto& animation = *rig.m_clipContainer.m_animations[clip.m_animationIndex];
 
         //auto quat = util::degreesToQuat(glm::vec3{ 0.f, .2f, 0.f });
         //auto rotationMatrix = glm::toMat4(quat);
@@ -57,9 +57,9 @@ namespace animation {
         float animationTimeTicks;
         {
             float animationTimeSecs = (float)(currentTime - animationStartTime);
-            float ticksPerSecond = animation->m_ticksPerSecond != 0.f ? animation->m_ticksPerSecond : 25.f;
+            float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : 25.f;
             float timeInTicks = animationTimeSecs * ticksPerSecond;
-            animationTimeTicks = fmod(timeInTicks, animation->m_duration);
+            animationTimeTicks = fmod(timeInTicks, animation.m_duration);
 
             //std::cout << fmt::format(
             //    "time={}, secs={}, ticksSec={}, ticks={}, duration={}\n",
@@ -118,7 +118,7 @@ namespace animation {
                 //    if (!boneFound) continue;
                 //}
 
-                const auto* channel = animation->findByJointIndex(rigJoint.m_index);
+                const auto* channel = animation.findByJointIndex(rigJoint.m_index);
 
                 const glm::mat4& jointTransform = channel
                     ? channel->interpolate(animationTimeTicks)

@@ -16,12 +16,13 @@ namespace animation {
         std::vector<animation::Clip> m_clips;
 
         uint16_t addAnimation(
-            std::unique_ptr<animation::Animation> take,
-            bool registerClip);
+            std::unique_ptr<animation::Animation> take);
 
         uint16_t addClip(const animation::Clip& clip);
 
         const animation::Animation* findAnimation(const std::string& name) const;
         const animation::Clip* findClip(const std::string& name) const;
+
+        bool hasClips(uint16_t animationIndex) const;
     };
 }

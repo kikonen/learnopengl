@@ -82,6 +82,8 @@ namespace animation {
 
         auto& clipContainer = rig.m_clipContainer;
 
+        std::vector<uint16_t> animationIndeces;
+
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
@@ -89,7 +91,8 @@ namespace animation {
                 uniquePrefix,
                 scene,
                 scene->mAnimations[index]);
-            clipContainer.addAnimation(std::move(animation), true);
+            auto animIndex = clipContainer.addAnimation(std::move(animation));
+            animationIndeces.push_back(animIndex);
         }
 
         animation::MetadataLoader metadataLoader{};
@@ -97,6 +100,18 @@ namespace animation {
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
                 clip.m_animationName = uniquePrefix + "_" + clip.m_animationName;
+                clipContainer.addClip(clip);
+            }
+        }
+
+        // NOTE KI register anims without unique name with their given name
+        for (auto animIndex : animationIndeces) {
+            if (!clipContainer.hasClips(animIndex)) {
+                const auto& animation = *clipContainer.m_animations[animIndex];
+                animation::Clip clip;
+                clip.m_name = animation.m_name;
+                clip.m_animationName = animation.m_uniqueName;
+                clip.m_lastFrame = animation.m_duration;
                 clipContainer.addClip(clip);
             }
         }
