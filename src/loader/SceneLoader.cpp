@@ -791,9 +791,8 @@ namespace loader {
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
         assert(node);
-#ifdef _DEBUG
-        node->m_resolvedSID = resolvedSID;
-#endif
+
+        node->setName(resolvedSID);
         node->m_typeHandle = typeHandle;
 
         assignNodeFlags(nodeData.nodeFlags, handle);

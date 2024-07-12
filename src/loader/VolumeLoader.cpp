@@ -85,9 +85,8 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.volumeId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<volume>";
-#endif
+
+        node->setName("<volume>");
         node->m_typeHandle = typeHandle;
 
         node->m_visible = false;

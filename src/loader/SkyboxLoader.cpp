@@ -165,9 +165,8 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.skyboxId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<skybox>";
-#endif
+
+        node->setName("<skybox>");
         node->m_typeHandle = typeHandle;
 
         {

@@ -130,8 +130,7 @@ void EditorFrame::renderCameraDebug(
     // Pawn
     {
         const auto* currNode = nr.getActiveNode();
-        const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
-        if (ImGui::BeginCombo("Pawn selector", currType ? currType->m_name.c_str() : nullptr)) {
+        if (ImGui::BeginCombo("Pawn selector", currNode ? currNode->getName().c_str() : nullptr)) {
             for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
                 const PawnController* nodeController = nullptr;
                 for (const auto& controller : controllers) {
@@ -143,8 +142,7 @@ void EditorFrame::renderCameraDebug(
                     const auto* node = nodeHandle.toNode();
                     if (!node) continue;
 
-                    const auto* type = node->m_typeHandle.toType();
-                    const auto* name = type->m_name.c_str();
+                    const auto* name = node->getName().c_str();
 
                     ImGui::PushID((void*)node);
                     if (ImGui::Selectable(name, node == currNode)) {
@@ -164,8 +162,7 @@ void EditorFrame::renderCameraDebug(
     {
 
         const auto* currNode = nr.getActiveCameraNode();
-        const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
-        if (ImGui::BeginCombo("Camera selector", currType ? currType->m_name.c_str() : nullptr)) {
+        if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
             for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
                 const CameraZoomController* nodeController = nullptr;
                 for (const auto& controller : controllers) {
@@ -177,8 +174,7 @@ void EditorFrame::renderCameraDebug(
                     const auto* node = nodeHandle.toNode();
                     if (!node) continue;
 
-                    const auto* type = node->m_typeHandle.toType();
-                    const auto* name = type->m_name.c_str();
+                    const auto* name = node->getName().c_str();
 
                     ImGui::PushID((void*)node);
                     if (ImGui::Selectable(name, node == currNode)) {
@@ -202,14 +198,12 @@ void EditorFrame::renderNodeSelector(
     const auto& nr = NodeRegistry::get();
 
     const auto currNode = debugContext.m_targetNode.toNode();
-    const auto* currType = currNode ? currNode->m_typeHandle.toType() : nullptr;
-    if (ImGui::BeginCombo("Node selector", currType ? currType->m_name.c_str() : nullptr)) {
+    if (ImGui::BeginCombo("Node selector", currNode ? currNode->getName().c_str() : nullptr)) {
         for (const auto* node : nr.getCachedNodesRT())
         {
             if (!node) continue;
 
-            const auto* type = node->m_typeHandle.toType();
-            const auto* name = type->m_name.c_str();
+            const auto* name = node->getName().c_str();
 
             ImGui::PushID((void*)node);
             if (ImGui::Selectable(name, node == currNode))

@@ -481,7 +481,7 @@ namespace loader {
             const auto pos = out.find("{t}");
             if (pos != std::string::npos) {
                 handledClone = true;
-                out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
+                out.replace(pos, 3, fmt::format("{}_{}_{}", tile.x, tile.y, tile.z));
             }
         }
         {
