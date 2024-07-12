@@ -495,7 +495,7 @@ Node* Scene::getActiveNode() const
 const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
-    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
 Node* Scene::getActiveCameraNode() const
@@ -506,7 +506,7 @@ Node* Scene::getActiveCameraNode() const
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCameraNode();
-    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)

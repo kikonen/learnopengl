@@ -33,7 +33,7 @@ namespace mesh {
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
-        : m_id{ o.m_id },
+        : m_handle{ o.m_handle },
         m_name{ o.m_name },
         m_nodeType{ o.m_nodeType },
         m_flags{ o.m_flags },
@@ -47,7 +47,7 @@ namespace mesh {
 
     MeshType::~MeshType()
     {
-        KI_INFO(fmt::format("NODE_TYPE: delet   e iD={}", m_id));
+        KI_INFO(fmt::format("NODE_TYPE: delete - id={}", m_handle.str()));
     }
 
     std::string MeshType::str() const noexcept
@@ -56,12 +56,7 @@ namespace mesh {
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, lod={}>",
-            m_id, m_name, lodMesh ? lodMesh->str() : "N/A");
-    }
-
-    pool::TypeHandle MeshType::toHandle() const noexcept
-    {
-        return { m_handleIndex, m_id };
+            m_handle.str(), m_name, lodMesh ? lodMesh->str() : "N/A");
     }
 
     uint16_t MeshType::addMeshSet(

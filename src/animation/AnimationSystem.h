@@ -5,7 +5,7 @@
 #include <tuple>
 
 namespace pool {
-    class NodeHandle;
+    struct NodeHandle;
 }
 
 namespace mesh {

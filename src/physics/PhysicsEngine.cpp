@@ -265,7 +265,7 @@ namespace physics
     {
         if (m_pendingNodes.empty()) return;
 
-        std::vector<ki::node_id> prepared;
+        std::vector<pool::NodeHandle> prepared;
 
         for (auto& handle : m_pendingNodes) {
             auto* node = handle.toNode();
@@ -281,7 +281,7 @@ namespace physics
                 m_enforceBoundsDynamic.push_back(handle);
             }
 
-            prepared.push_back(node->getId());
+            prepared.push_back(node->toHandle());
         }
 
         if (!prepared.empty()) {
@@ -293,7 +293,7 @@ namespace physics
                     const auto& it = std::find_if(
                         prepared.cbegin(),
                         prepared.cend(),
-                        [nodeId = handle.toId()](const auto& id) { return id == nodeId; });
+                        [handle](const auto& h) { return h == handle; });
                     return it != prepared.end();
                 });
             m_pendingNodes.erase(it, m_pendingNodes.end());

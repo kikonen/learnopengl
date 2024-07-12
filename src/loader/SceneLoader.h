@@ -18,8 +18,8 @@ namespace text {
 }
 
 namespace pool {
-    class NodeHandle;
-    class TypeHandle;
+    struct NodeHandle;
+    struct TypeHandle;
 }
 
 namespace mesh {

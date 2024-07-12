@@ -50,12 +50,11 @@ class EntityRegistry;
 
 class Node final
 {
-    friend class pool::NodeHandle;
+    friend struct pool::NodeHandle;
     friend class NodeRegistry;
 
 public:
     Node();
-    Node(ki::node_id id);
     Node(Node& o) = delete;
     Node(const Node&) = delete;
     Node(Node&& o) noexcept;
@@ -66,12 +65,8 @@ public:
 
     std::string str() const noexcept;
 
-    inline ki::node_id getId() const noexcept { return m_id; }
-    inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
-
-    pool::NodeHandle toHandle() const noexcept {
-        return { m_handleIndex, m_id };
-    }
+    inline ki::node_id getId() const noexcept { return m_handle.m_id; }
+    inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
     void prepareWT(
         const PrepareContext& ctx);
@@ -174,10 +169,8 @@ public:
 private:
     NodeState m_state;
 
-    ki::node_id m_id{ 0 };
-    uint32_t m_handleIndex{ 0 };
-
-    pool::NodeHandle m_parent{};
+    pool::NodeHandle m_handle;
+    pool::NodeHandle m_parent;
 
     int m_cloneIndex{ 0 };
 
@@ -185,10 +178,10 @@ private:
     int m_selectionMaterialIndex{ -1 };
 
 public:
+    NodeFlags m_flags;
+
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
-
-    NodeFlags m_flags;
 
 #ifdef _DEBUG
     std::string m_resolvedSID;

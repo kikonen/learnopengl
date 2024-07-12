@@ -4,7 +4,7 @@
 #include "ControllerData.h"
 
 namespace pool {
-    class NodeHandle;
+    struct NodeHandle;
 }
 
 class Node;

@@ -14,7 +14,7 @@
 struct UpdateContext;
 
 namespace pool {
-    class NodeHandle;
+    struct NodeHandle;
 }
 
 namespace mesh {
