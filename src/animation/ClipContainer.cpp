@@ -6,21 +6,13 @@
 
 namespace animation {
     uint16_t ClipContainer::addAnimation(
-        std::unique_ptr<animation::Animation> src,
-        bool registerClip)
+        std::unique_ptr<animation::Animation> src)
     {
         uint16_t index = static_cast<uint16_t>(m_animations.size());
         m_animations.push_back(std::move(src));
 
         auto* anim = m_animations[index].get();
         anim->m_index = index;
-        if (registerClip) {
-            Clip clip;
-            clip.m_animationName = anim->m_uniqueName;
-            clip.m_lastFrame = anim->m_duration;
-
-            addClip(clip);
-        }
 
         KI_INFO_OUT(fmt::format(
             "ASSIMP: ADD_ANIMATION: name={}, index={}",
@@ -71,6 +63,14 @@ namespace animation {
             [&name](const auto& clip) { return clip.m_name == name;  });
         if (it == m_clips.end()) return nullptr;
         return &(*it);
+    }
+
+    bool ClipContainer::hasClips(uint16_t animationIndex) const
+    {
+        return std::find_if(
+            m_clips.begin(),
+            m_clips.end(),
+            [&animationIndex](const auto& clip) { return clip.m_animationIndex == animationIndex;  }) != m_clips.end();
     }
 }
 
