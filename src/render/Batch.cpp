@@ -88,6 +88,7 @@ namespace render {
         const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
+            if (lodMesh.m_flags.hidden) continue;
             if ((lodMesh.m_levelMask & levelMask) == 0) continue;
             if (!lodMesh.m_vao) continue;
 
@@ -206,6 +207,7 @@ namespace render {
                 const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
+                    if (lodMesh.m_flags.hidden) continue;
                     if ((lodMesh.m_levelMask & levelMask) == 0) continue;
                     if (!lodMesh.m_vao) continue;
 

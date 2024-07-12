@@ -955,6 +955,8 @@ namespace loader {
     {
         auto& flags = lodMesh.m_flags;
 
+        flags.hidden = container.getFlag("hidden", flags.hidden);
+
         flags.billboard = container.getFlag("billboard", flags.billboard);
         flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
