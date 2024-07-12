@@ -121,5 +121,7 @@ namespace animation
                 clip.m_loop = readInt(v) == 1;
             }
         }
+
+        clip.m_single = false;
     }
 }

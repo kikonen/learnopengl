@@ -88,26 +88,31 @@ namespace animation {
     glm::mat4 BoneChannel::interpolate(
         float animationTimeTicks,
         uint16_t firstFrame,
-        uint16_t lastFrame) const noexcept
+        uint16_t lastFrame,
+        bool single) const noexcept
     {
+        if (single) {
+            firstFrame = 0;
+        }
+
         //static const glm::mat4 ID_MAT{ 1.f };
         glm::mat4 s_translateMatrix{ 1.f };
         glm::mat4 s_scaleMatrix{ 1.f };
 
         {
-            const auto& scale = interpolateScale(animationTimeTicks, firstFrame, lastFrame);
-            s_scaleMatrix[0].x = scale.x;
-            s_scaleMatrix[1].y = scale.y;
-            s_scaleMatrix[2].z = scale.z;
-        }
-        {
-            const auto& translate = interpolatePosition(animationTimeTicks, firstFrame, lastFrame);
+            const auto& translate = interpolatePosition(animationTimeTicks, firstFrame, single ? m_positionKeyTimes.size() - 1 : lastFrame);
             s_translateMatrix[3].x = translate.x;
             s_translateMatrix[3].y = translate.y;
             s_translateMatrix[3].z = translate.z;
         }
+        {
+            const auto& scale = interpolateScale(animationTimeTicks, firstFrame, single ? m_scaleKeyTimes.size() - 1 : lastFrame);
+            s_scaleMatrix[0].x = scale.x;
+            s_scaleMatrix[1].y = scale.y;
+            s_scaleMatrix[2].z = scale.z;
+        }
 
-        const auto& rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks, firstFrame, lastFrame));
+        const auto& rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks, firstFrame, single ? m_rotationKeyTimes.size() - 1 : lastFrame));
 
         return s_translateMatrix * rotateMatrix * s_scaleMatrix;
     }

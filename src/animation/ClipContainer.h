@@ -23,6 +23,6 @@ namespace animation {
         const animation::Animation* findAnimation(const std::string& name) const;
         const animation::Clip* findClip(const std::string& name) const;
 
-        bool hasClips(uint16_t animationIndex) const;
+        uint16_t getClipCount(uint16_t animationIndex) const;
     };
 }

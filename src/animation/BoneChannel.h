@@ -51,7 +51,8 @@ namespace animation {
         glm::mat4 interpolate(
             float animationTimeTicks,
             uint16_t firstFrame,
-            uint16_t lastFrame) const noexcept;
+            uint16_t lastFrame,
+            bool single) const noexcept;
 
     private:
         glm::vec3 interpolatePosition(
