@@ -73,6 +73,11 @@ public:
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }
     inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
+    const std::string& getName() const noexcept { return m_name; }
+    void setName(std::string_view name) noexcept {
+        m_name = name;
+    }
+
     void prepareWT(
         const PrepareContext& ctx);
 
@@ -171,6 +176,8 @@ public:
 
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+    std::string m_name;
+
 private:
     NodeState m_state;
 
@@ -187,9 +194,4 @@ public:
 
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
-
-#ifdef _DEBUG
-    std::string m_resolvedSID;
-#endif
-
 };

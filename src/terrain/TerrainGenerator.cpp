@@ -308,9 +308,8 @@ namespace terrain {
             auto handle = pool::NodeHandle::allocate(nodeId);
             auto* node = handle.toNode();
             assert(node);
-#ifdef _DEBUG
-            node->m_resolvedSID = "<terrain_tiles>";
-#endif
+
+            node->setName("<terrain_tiles>");
             node->m_typeHandle = typeHandle;
 
             node->modifyState().setVolume(minmax.getVolume());

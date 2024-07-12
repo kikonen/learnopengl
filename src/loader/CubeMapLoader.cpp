@@ -83,9 +83,8 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<cube_map>";
-#endif
+
+        node->setName("<cube_map>");
         node->m_typeHandle = typeHandle;
 
         node->m_visible = false;
