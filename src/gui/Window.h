@@ -22,7 +22,7 @@ public:
         Engine& engine);
     ~Window();
 
-    Engine& getEngine() const noexcept {
+    Engine& getEngine() noexcept {
         return m_engine;
     }
 
