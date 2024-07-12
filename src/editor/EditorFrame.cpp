@@ -84,11 +84,15 @@ void EditorFrame::draw(const RenderContext& ctx)
 void EditorFrame::trackImGuiState(
     render::DebugContext& debugContext)
 {
-     //ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-     //ImGui::IsAnyItemHovered() ||
-     auto imguiHit = ImGui::IsAnyItemActive() ||
-        ImGui::IsAnyItemFocused();
-    m_window.m_input->imGuiHit = imguiHit;
+    m_window.m_input->imGuiHasKeyboard =
+        ImGui::IsAnyItemActive() ||
+        ImGui::IsAnyItemFocused() ||
+        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+
+    m_window.m_input->imGuiHasMouse =
+        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+        ImGui::IsAnyItemHovered() ||
+        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
 }
 
 void EditorFrame::renderStatus(
