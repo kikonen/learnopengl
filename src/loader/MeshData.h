@@ -19,6 +19,10 @@ namespace loader {
         std::string name;
         std::string path;
 
+        // NOTE KI used *ONLY* if explicitly set to valid value
+        // => otherwise value from NodeData is inherited
+        glm::vec3 scale{ 0.f };
+
         std::vector<LodData> lods;
         std::vector<SocketData> sockets;
 

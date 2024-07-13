@@ -6,6 +6,8 @@
 #include <memory>
 #include <functional>
 
+#include "asset/AABB.h"
+
 #include "backend/Lod.h"
 #include "backend/DrawOptions.h"
 
@@ -72,10 +74,12 @@ namespace mesh {
             return m_drawOptions;
         }
 
+        AABB calculateAABB() const noexcept;
+
     private:
         void setMesh(Mesh* mesh) noexcept;
 
-        /////////////////////
+        void updateTransform();
 
     public:
         backend::Lod m_lod;
@@ -89,6 +93,7 @@ namespace mesh {
         int32_t m_socketIndex{ -1 };
 
         glm::mat4 m_animationRigTransform{ 1.f };
+        glm::vec3 m_scale{ 1.f };
 
         std::unique_ptr<Material> m_material;
         uint32_t m_materialIndex{ 0 };

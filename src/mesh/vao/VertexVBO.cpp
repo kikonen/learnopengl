@@ -96,6 +96,8 @@ namespace mesh {
             aabb.minmax({ p.x, p.y, p.z });
         }
 
+        aabb.updateVolume();
+
         return aabb;
     }
 }

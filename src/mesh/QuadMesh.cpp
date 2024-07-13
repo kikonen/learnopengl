@@ -15,6 +15,11 @@
 namespace {
     constexpr int INDEX_COUNT = 4;
 
+    glm::vec3 AABB_VERTICES[] = {
+        glm::vec3{ -1.f, -1.f, 0.f },
+        glm::vec3{ 1.f, 1.f, 0.f },
+    };
+
     // NOTE KI plane, only xy
     const AABB QUAD_AABB = {
         glm::vec3{ -1.f, -1.f, 0.f },
@@ -39,9 +44,19 @@ namespace mesh {
         return fmt::format("<QUAD: id={}>", m_id);
     }
 
-    AABB QuadMesh::calculateAABB() const noexcept
+    AABB QuadMesh::calculateAABB(const glm::mat4& transform) const noexcept
     {
-        return QUAD_AABB;
+        AABB aabb{ true };
+
+        for (auto&& vertex : AABB_VERTICES)
+        {
+            const auto& pos = transform * glm::vec4(vertex, 1.f);
+            aabb.minmax(pos);
+        }
+
+        aabb.updateVolume();
+
+        return aabb;
     }
 
     const kigl::GLVertexArray* QuadMesh::prepareRT(

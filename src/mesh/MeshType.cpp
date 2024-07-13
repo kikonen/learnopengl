@@ -159,16 +159,16 @@ namespace mesh {
 
     AABB MeshType::calculateAABB() const noexcept
     {
+        if (m_lodMeshes->empty()) return {};
+
         AABB aabb{ true };
 
         for (auto& lodMesh : *m_lodMeshes) {
             if (lodMesh.m_flags.noVolume) continue;
-
-            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-            if (!mesh) continue;
-            mesh->prepareVolume();
-            aabb.merge(mesh->getAABB());
+            aabb.minmax(lodMesh.calculateAABB());
         }
+
+        aabb.updateVolume();
 
         return aabb;
     }

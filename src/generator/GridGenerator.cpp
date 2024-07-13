@@ -64,7 +64,6 @@ void GridGenerator::updateInstances(
                 state.setVolume(containerState.getVolume());
 
                 state.setBaseTransform(containerState.getBaseTransform());
-                state.setBaseScale(containerState.getBaseScale());
 
                 state.setQuatRotation(containerState.getQuatRotation());
                 state.setScale(containerState.getScale());

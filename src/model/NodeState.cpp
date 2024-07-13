@@ -30,13 +30,13 @@ void NodeState::updateRootMatrix() noexcept
         s_translateMatrix[3].y = m_position.y;
         s_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_baseScale.x * m_scale.x;
-        s_scaleMatrix[1].y = m_baseScale.y * m_scale.y;
-        s_scaleMatrix[2].z = m_baseScale.z * m_scale.z;
+        s_scaleMatrix[0].x = m_scale.x;
+        s_scaleMatrix[1].y = m_scale.y;
+        s_scaleMatrix[2].z = m_scale.z;
     }
 
     m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
-    m_modelScale = m_baseScale * m_scale;
+    m_modelScale = m_scale;
 
     {
         const auto& wp = m_modelMatrix[3];
@@ -75,21 +75,21 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         s_translateMatrix[3].y = m_position.y;
         s_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_baseScale.x * m_scale.x;
-        s_scaleMatrix[1].y = m_baseScale.y * m_scale.y;
-        s_scaleMatrix[2].z = m_baseScale.z * m_scale.z;
+        s_scaleMatrix[0].x = m_scale.x;
+        s_scaleMatrix[1].y = m_scale.y;
+        s_scaleMatrix[2].z = m_scale.z;
 
         s_offsetMatrix[3].x = m_offset.x;
         s_offsetMatrix[3].y = m_offset.y;
         s_offsetMatrix[3].z = m_offset.z;
 
-        s_pivotMatrix[3].x = -m_pivot.x * m_baseScale.x * m_scale.x;
-        s_pivotMatrix[3].y = -m_pivot.y * m_baseScale.y * m_scale.y;
-        s_pivotMatrix[3].z = -m_pivot.z * m_baseScale.z * m_scale.z;
+        s_pivotMatrix[3].x = -m_pivot.x * m_scale.x;
+        s_pivotMatrix[3].y = -m_pivot.y * m_scale.y;
+        s_pivotMatrix[3].z = -m_pivot.z * m_scale.z;
 
-        s_invPivotMatrix[3].x = m_pivot.x * m_baseScale.x * m_scale.x;
-        s_invPivotMatrix[3].y = m_pivot.y * m_baseScale.y * m_scale.y;
-        s_invPivotMatrix[3].z = m_pivot.z * m_baseScale.z * m_scale.z;
+        s_invPivotMatrix[3].x = m_pivot.x * m_scale.x;
+        s_invPivotMatrix[3].y = m_pivot.y * m_scale.y;
+        s_invPivotMatrix[3].z = m_pivot.z * m_scale.z;
     }
 
     bool wasDirtyRotation = m_dirtyRotation;

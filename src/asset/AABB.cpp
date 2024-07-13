@@ -18,21 +18,10 @@ void AABB::minmax(const glm::vec3& pos)
     m_max.z = std::max(m_max.z, pos.z);
 }
 
-void AABB::merge(const AABB& o)
+void AABB::minmax(const AABB& o)
 {
-    {
-        const auto& p = o.m_min;
-        m_min.x = std::min(m_min.x, p.x);
-        m_min.y = std::min(m_min.y, p.y);
-        m_min.z = std::min(m_min.z, p.z);
-    }
-
-    {
-        const auto& p = o.m_max;
-        m_max.x = std::max(m_max.x, p.x);
-        m_max.y = std::max(m_max.y, p.y);
-        m_max.z = std::max(m_max.z, p.z);
-    }
+    minmax(o.m_min);
+    minmax(o.m_max);
 }
 
 void AABB::updateVolume()

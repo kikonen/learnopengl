@@ -46,18 +46,17 @@ namespace mesh {
         return !!m_rig;
     }
 
-    void MeshSet::prepareVolume() noexcept {
-        m_aabb = calculateAABB();
-    }
-
-    AABB MeshSet::calculateAABB() const noexcept
+    AABB MeshSet::calculateAABB(const glm::mat4& transform) const noexcept
     {
+        if (m_meshes.empty()) return {};
+
         AABB aabb{ true };
 
         for (auto& mesh : m_meshes) {
-            mesh->prepareVolume();
-            aabb.merge(mesh->getAABB());
+            aabb.minmax(mesh->calculateAABB(transform));
         }
+
+        aabb.updateVolume();
 
         return aabb;
     }

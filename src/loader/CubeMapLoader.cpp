@@ -96,7 +96,7 @@ namespace loader {
             state.setScale(4.f);
 
             // NOTE KI m_radius = 1.73205078
-            state.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->calculateAABB(glm::mat4{ 1.f }).getVolume());
         }
 
         {

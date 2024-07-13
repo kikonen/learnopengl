@@ -95,7 +95,7 @@ namespace loader {
         {
             auto& state = node->modifyState();
 
-            state.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->calculateAABB(glm::mat4{ 1.f }).getVolume());
         }
 
         {

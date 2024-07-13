@@ -93,7 +93,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto* lodMesh = type->getLodMesh(0);
     const auto* mesh = lodMesh->m_mesh;
-    const auto& volume = mesh->getAABB().getVolume();
+    const auto& volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
 
     auto& containerState = container.modifyState();
 

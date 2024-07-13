@@ -100,6 +100,9 @@ namespace loader {
                     data.meshFlags.set(util::toLower(flagName), flagValue);
                 }
             }
+            else if (k == "scale") {
+                data.scale = readScale3(v);
+            }
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
                 lod.name = "*";
