@@ -14,8 +14,12 @@ class Node;
 class Viewport;
 class WaterMapRenderer;
 
+class EditorFrame;
+
 class MirrorMapRenderer final : public Renderer
 {
+    friend class EditorFrame;
+
 public:
     MirrorMapRenderer(
         std::string_view name,

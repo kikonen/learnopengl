@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "asset/Assets.h"
+#include "asset/DynamicCubeMap.h"
 
 #include "engine/Engine.h"
 
@@ -29,6 +30,7 @@
 #include "renderer/NodeRenderer.h"
 #include "renderer/WaterMapRenderer.h"
 #include "renderer/MirrorMapRenderer.h"
+#include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
 #include "registry/NodeRegistry.h"
@@ -295,110 +297,98 @@ void EditorFrame::renderBufferDebug(
 
     constexpr float scrollbarPadding = 0.f;
 
-    if (ImGui::TreeNode("ObjectId")) {
+    auto viewportTex = [&ctx](Viewport& viewport, bool useAspectRatio) {
         ImVec2 availSize = ImGui::GetContentRegionAvail();
         // NOTE KI allow max half window size
         float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+        float h = w / ctx.m_aspectRatio;
+        if (!useAspectRatio) {
+            w = h;
+        }
 
-        auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
-        viewport->invokeBindBefore();
-
-        const auto& fb = viewport->getSourceFrameBuffer();
+        viewport.invokeBindBefore();
+        const auto& fb = viewport.getSourceFrameBuffer();
         auto& att = fb->m_spec.attachments[0];
         ImTextureID texId = (void*)att.textureID;
         ImGui::Image(
             texId,
-            ImVec2{ w, w / ctx.m_aspectRatio },
+            ImVec2{ w, h },
             ImVec2{ 0, 1 }, // uv1
             ImVec2{ 1, 0 }, // uv2
             ImVec4{ 1, 1, 1, 1 }, // tint_col
             ImVec4{ 1, 1, 1, 1 }  // border_col
         );
+    };
+
+    if (ImGui::TreeNode("ObjectId")) {
+        auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
+        viewportTex(*viewport, true);
+
         ImGui::TreePop();
     }
+
     if (ImGui::TreeNode("Water reflection")) {
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        // NOTE KI allow max half window size
-        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-
         auto& viewport = scene.m_waterMapRenderer->m_reflectionDebugViewport;
-        viewport->invokeBindBefore();
+        viewportTex(*viewport, true);
 
-        const auto& fb = viewport->getSourceFrameBuffer();
-        auto& att = fb->m_spec.attachments[0];
-        ImTextureID texId = (void*)att.textureID;
-        ImGui::Image(
-            texId,
-            ImVec2{ w, w / ctx.m_aspectRatio },
-            ImVec2{ 0, 1 }, // uv1
-            ImVec2{ 1, 0 }, // uv2
-            ImVec4{ 1, 1, 1, 1 }, // tint_col
-            ImVec4{ 1, 1, 1, 1 }  // border_col
-        );
         ImGui::TreePop();
     }
     if (ImGui::TreeNode("Water refraction")) {
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        // NOTE KI allow max half window size
-        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-
         auto& viewport = scene.m_waterMapRenderer->m_refractionDebugViewport;
-        viewport->invokeBindBefore();
+        viewportTex(*viewport, true);
 
-        const auto& fb = viewport->getSourceFrameBuffer();
-        auto& att = fb->m_spec.attachments[0];
-        ImTextureID texId = (void*)att.textureID;
-        ImGui::Image(
-            texId,
-            ImVec2{ w, w / ctx.m_aspectRatio },
-            ImVec2{ 0, 1 }, // uv1
-            ImVec2{ 1, 0 }, // uv2
-            ImVec4{ 1, 1, 1, 1 }, // tint_col
-            ImVec4{ 1, 1, 1, 1 }  // border_col
-        );
         ImGui::TreePop();
     }
+
     if (ImGui::TreeNode("Mirror reflection")) {
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        // NOTE KI allow max half window size
-        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-
         auto& viewport = scene.m_mirrorMapRenderer->m_reflectionDebugViewport;
-        viewport->invokeBindBefore();
+        viewportTex(*viewport, true);
 
-        const auto& fb = viewport->getSourceFrameBuffer();
-        auto& att = fb->m_spec.attachments[0];
-        ImTextureID texId = (void*)att.textureID;
-        ImGui::Image(
-            texId,
-            ImVec2{ w, w / ctx.m_aspectRatio },
-            ImVec2{ 0, 1 }, // uv1
-            ImVec2{ 1, 0 }, // uv2
-            ImVec4{ 1, 1, 1, 1 }, // tint_col
-            ImVec4{ 1, 1, 1, 1 }  // border_col
-        );
         ImGui::TreePop();
     }
+    if (ImGui::TreeNode("Mirror - Mirror reflection")) {
+        auto& viewport = scene.m_mirrorMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
+        viewportTex(*viewport, true);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Mirror - Water reflection")) {
+        auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
+        viewportTex(*viewport, true);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Mirror - Water refraction")) {
+        auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
+        viewportTex(*viewport, true); 
+
+        ImGui::TreePop();
+    }
+
+    if (ImGui::TreeNode("Cube - Mirror reflection")) {
+        auto& viewport = scene.m_cubeMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
+        viewportTex(*viewport, false);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Cube - Water reflection")) {
+        auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
+        viewportTex(*viewport, false);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Cube - Water refraction")) {
+        auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
+        viewportTex(*viewport, false);
+
+        ImGui::TreePop();
+    }
+
     if (assets.showRearView) {
         if (ImGui::TreeNode("Rear view")) {
-            ImVec2 availSize = ImGui::GetContentRegionAvail();
-            // NOTE KI allow max half window size
-            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-
             auto& viewport = scene.m_rearViewport;
-            viewport->invokeBindBefore();
+            viewportTex(*viewport, true);
 
-            const auto& fb = viewport->getSourceFrameBuffer();
-            auto& att = fb->m_spec.attachments[0];
-            ImTextureID texId = (void*)att.textureID;
-            ImGui::Image(
-                texId,
-                ImVec2{ w, w / ctx.m_aspectRatio },
-                ImVec2{ 0, 1 }, // uv1
-                ImVec2{ 1, 0 }, // uv2
-                ImVec4{ 1, 1, 1, 1 }, // tint_col
-                ImVec4{ 1, 1, 1, 1 }  // border_col
-            );
             ImGui::TreePop();
         }
     }

@@ -18,8 +18,12 @@ class DynamicCubeMap;
 class WaterMapRenderer;
 class MirrorMapRenderer;
 
+class EditorFrame;
+
 class CubeMapRenderer final : public Renderer
 {
+    friend class EditorFrame;
+
 public:
     CubeMapRenderer(bool useFrameStep)
         : Renderer("main", useFrameStep) {}
@@ -70,7 +74,7 @@ private:
 
     Material m_tagMaterial;
 
-    ki::node_id m_tagId;
+    ki::node_id m_tagId{ 0 };
     pool::NodeHandle m_tagNode{};
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
