@@ -7,13 +7,10 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - id: player
-    mesh:
-      path: water_ball
-      material_modifier:
-        tiling: 5
+  - id: player_fps
+    type: origo
     program: g_tex
-    pos: [0, 2, 0.0]
+    pos: [0, 3, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 1.0
@@ -26,7 +23,7 @@ nodes:
     controllers:
       - type: pawn
   - id: fps_counter
-    parent_id: player
+    parent_id: player_fps
     type: text
     mesh:
       flags:
@@ -47,15 +44,50 @@ nodes:
     shadow_program: shadow_font_render
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
-  - id: player_camera
-    parent_id: player
+  - id: player_fsp_camera
+    parent_id: player_fps
     type: origo
-    pos: [0, 3, 5]
-    rotation: [-15, 0, 0]
+    pos: [0.0, 0.12, 0.0]
     controller:
+      rotation: [-27, 0, 0]
       type: camera_zoom
     camera:
       default: true
+  - id: player_fps_arms_{t}
+    parent: player_fps
+    mesh:
+      path: fbx/characters/SK_Mannequin_Arms/SK_Mannequin_Arms.fbx
+      flags:
+        use_bones: true
+        use_animation: true
+        z_up: true
+      material:
+        map_kd: material/M_UE4Man_Body_BaseColor.png
+        map_normal: material/M_UE4Man_Body_Normal.png
+        map_metalness: material/M_UE4Man_Body_MetallicRoughness.png
+      animations:
+        - name: idle
+          path: anim/FirstPerson_Idle.FBX
+        - name: run
+          path: anim/FirstPerson_Run.FBX
+        - name: fire
+          path: anim/FirstPerson_Fire.FBX
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, -1.5, 0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 90, 180]
+    pivot:
+      alignment: m
+    flags:
+      no_frustum: true
+    scale: 1
+    base_scale: 0.01
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5
   - name: origo
     mesh:
       path: water_ball
