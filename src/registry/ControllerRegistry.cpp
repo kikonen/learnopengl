@@ -48,7 +48,7 @@ void ControllerRegistry::prepare(Registry* registry)
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
     for (const auto& it : m_controllers) {
-        auto* node = pool::NodeHandle::toNode(it.first);
+        auto* node = it.first.toNode();
         if (!node) continue;
 
         bool changed = false;
