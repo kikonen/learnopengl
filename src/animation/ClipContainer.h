@@ -24,5 +24,15 @@ namespace animation {
         const animation::Clip* findClip(const std::string& name) const;
 
         uint16_t getClipCount(uint16_t animationIndex) const;
+
+        float getAnimationTimeTicks(
+            uint16_t clipIndex,
+            double animationStartTime,
+            double currentTime) const;
+
+    private:
+        float animationTimeToSecs(
+            uint16_t animationIndex,
+            float animationTime) const;
     };
 }

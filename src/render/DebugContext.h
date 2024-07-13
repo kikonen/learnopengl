@@ -26,6 +26,7 @@ namespace render {
         bool m_animationDebugEnabled{ false };
         bool m_animationPaused{ false };
         int m_animationClipIndex{ -1 };
+        float m_animationTime{ -1 };
 
         int m_animationBoneIndex{ 0 };
         bool m_animationDebugBoneWeight{ false };

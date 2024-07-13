@@ -99,6 +99,11 @@ namespace animation {
         const auto metadata = metadataLoader.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
+                // TODO KI clip sequences seem to be stored like
+                // 0 - 48, 48 - 98, 98 - ...
+                if (clip.m_firstFrame > 0 && clip.m_firstFrame < clip.m_lastFrame) {
+                    clip.m_firstFrame++;
+                }
                 clip.m_animationName = uniquePrefix + "_" + clip.m_animationName;
                 clipContainer.addClip(clip);
             }

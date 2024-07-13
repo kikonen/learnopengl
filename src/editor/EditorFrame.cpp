@@ -269,6 +269,7 @@ void EditorFrame::renderAnimationDebug(
     if (debugContext.m_animationDebugEnabled) {
         ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
         ImGui::InputInt("Clip", &debugContext.m_animationClipIndex, 1, 10);
+        ImGui::InputFloat("Time", &debugContext.m_animationTime, 0.01f, 0.1f);
 
         if (assets.glslUseDebug) {
             ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
