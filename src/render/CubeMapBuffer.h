@@ -19,6 +19,11 @@ namespace render {
 
         virtual void bind(const RenderContext& ctx) override;
 
+        GLuint getTextureID() const noexcept
+        {
+            return m_textureID;
+        }
+
     private:
         const int m_face;
         const GLuint m_textureID;
