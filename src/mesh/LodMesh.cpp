@@ -18,6 +18,7 @@
 #include "render/size.h"
 
 #include "registry/MaterialRegistry.h"
+#include "mesh/TransformRegistry.h"
 
 #include "Mesh.h"
 #include "InstanceFlags.h"
@@ -60,6 +61,8 @@ namespace mesh {
         m_meshIndex = o.m_meshIndex;
         m_socketIndex = o.m_socketIndex;
 
+        m_scale = o.m_scale;
+
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
 
@@ -93,6 +96,8 @@ namespace mesh {
         m_mesh = o.m_mesh;
         m_meshIndex = o.m_meshIndex;
         m_socketIndex = o.m_socketIndex;
+
+        m_scale = o.m_scale;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -199,8 +204,6 @@ namespace mesh {
         if (!m_mesh) return;
 
         setMaterial(mesh->getMaterial());
-
-        m_meshIndex = mesh->m_registeredIndex;
     }
 
     void LodMesh::registerMaterial()
@@ -239,6 +242,8 @@ namespace mesh {
             m_vao = m_mesh->prepareRT(ctx);
             m_mesh->prepareLodMesh(*this);
 
+            updateTransform();
+
             if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
 
@@ -261,5 +266,27 @@ namespace mesh {
         if (m_idProgram) {
             m_idProgram->prepareRT();
         }
+    }
+
+    void LodMesh::updateTransform() {
+        glm::mat4 transform = glm::scale(glm::mat4{ 1.f }, m_scale) * m_mesh->m_rigTransform;
+        //transform = m_mesh->m_rigTransform;
+        m_meshIndex = mesh::TransformRegistry::get().registerTransform(transform);
+    }
+
+    AABB LodMesh::calculateAABB() const noexcept
+    {
+        if (!m_mesh) return {};
+
+        AABB aabb{ true };
+
+        if (m_mesh) {
+            const auto& transform = glm::scale(glm::mat4{ 1.f }, m_scale) * m_mesh->m_rigTransform;
+            aabb.minmax(m_mesh->calculateAABB(transform));
+        }
+
+        aabb.updateVolume();
+
+        return aabb;
     }
 }

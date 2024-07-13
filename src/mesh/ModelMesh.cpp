@@ -47,14 +47,17 @@ namespace mesh {
             m_vertexBones.size());
     }
 
-    AABB ModelMesh::calculateAABB() const noexcept {
+    AABB ModelMesh::calculateAABB(const glm::mat4& transform) const noexcept
+    {
         AABB aabb{ true };
 
         for (auto&& vertex : m_vertices)
         {
-            const auto& pos = m_rigTransform * glm::vec4(vertex.pos, 1.f);
+            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
             aabb.minmax(pos);
         }
+
+        aabb.updateVolume();
 
         return aabb;
     }

@@ -11,7 +11,7 @@ script:
 nodes:
   - id: player
     type: origo
-    pos: [0, 0, 10]
+    pos: [0, 0, 20]
     front: [0, 0, -1]
     active: true
     audio:
@@ -62,9 +62,9 @@ nodes:
     parent_id: planet-origo
     mesh:
       path: planet/planet
+      scale: 2
     program: g_tex
     pos: [0, 0, 0]
-    scale: 1
     particle:
       material:
         name: particle_firespin
@@ -97,6 +97,7 @@ nodes:
           map_pbr: textures\Rock002_1K-PNG
           #kd: [0, 1, 1]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_2
         lod:
           level: 2
@@ -105,7 +106,8 @@ nodes:
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 0, 1]
           tiling: 4
-      - path: [rock2, rock_lod_3]
+        scale: 1
+      - path: rock2/rock_lod_3
         lod:
           level: 3
         material_modifier:
@@ -113,17 +115,19 @@ nodes:
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [0, 1, 0]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_4
         lod:
           level: 4
         flags:
-          billboard: true
+          xbillboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
           map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           #kd: [1, 0, 0]
           tiling: 4
           render_back: true
+        scale: 1.8
     lod_levels:
       - level: 0
         distance: 0
@@ -134,7 +138,7 @@ nodes:
       - level: 3
         distance: 80
       - level: 4
-        distance: 100
+        distance: 200
     instanced: true
     generator:
       type: asteroid_belt

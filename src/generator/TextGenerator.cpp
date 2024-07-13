@@ -95,7 +95,7 @@ void TextGenerator::updateVAO(
         pen,
         mesh);
 
-    m_aabb = mesh->calculateAABB();
+    m_aabb = mesh->calculateAABB(glm::mat4{1.f});
 
     text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 

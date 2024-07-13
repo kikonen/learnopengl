@@ -664,17 +664,28 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
-
-                assignMeshFlags(meshData.meshFlags, lodMesh);
-                if (lodData) {
-                    assignMeshFlags(lodData->meshFlags, lodMesh);
-                }
-
-                resolveMaterials(type, lodMesh, nodeData, meshData);
-                lodMesh.setupDrawOptions();
+                resolveLodMesh(type, nodeData, meshData, lodMesh);
             }
         }
+    }
+
+    void SceneLoader::resolveLodMesh(
+        mesh::MeshType* type,
+        const NodeData& nodeData,
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_scale = meshData.scale.x > 0 ? meshData.scale : nodeData.meshScale;
+
+        auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
+
+        assignMeshFlags(meshData.meshFlags, lodMesh);
+        if (lodData) {
+            assignMeshFlags(lodData->meshFlags, lodMesh);
+        }
+
+        resolveMaterials(type, lodMesh, nodeData, meshData);
+        lodMesh.setupDrawOptions();
     }
 
     const LodData* SceneLoader::resolveLod(
@@ -806,7 +817,6 @@ namespace loader {
         state.setPosition(pos);
 
         state.setQuatRotation(util::degreesToQuat(nodeData.rotation));
-        state.setBaseScale(nodeData.baseScale);
         state.setScale(nodeData.scale);
 
         state.setPivot(nodeData.pivot.resolve(type));

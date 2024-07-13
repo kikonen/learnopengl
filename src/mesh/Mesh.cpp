@@ -24,8 +24,4 @@ namespace mesh {
     {
         return fmt::format("<MESH: id={}>", m_id);
     }
-
-    void Mesh::prepareVolume() {
-        setAABB(calculateAABB());
-    }
 }

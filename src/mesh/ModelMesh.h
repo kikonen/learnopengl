@@ -34,7 +34,7 @@ namespace mesh {
             return !m_vertices.empty() && !m_indeces.empty();
         }
 
-        virtual AABB calculateAABB() const noexcept override;
+        virtual AABB calculateAABB(const glm::mat4& transform) const noexcept override;
 
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
