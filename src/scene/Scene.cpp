@@ -85,7 +85,7 @@ Scene::Scene(
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
-        m_normalRenderer->setEnabled(assets.showNormals);
+        m_normalRenderer->setEnabled(false);
     }
 
     m_batch = std::make_unique<render::Batch>();
@@ -170,7 +170,8 @@ void Scene::prepareRT()
         m_objectIdRenderer->prepareRT(ctx);
     }
 
-    if (assets.showNormals) {
+    //if (assets.showNormals)
+    {
         m_normalRenderer->prepareRT(ctx);
     }
 
@@ -269,7 +270,7 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     m_renderData->update();
 
-    m_normalRenderer->setEnabled(assets.showNormals && debugContext.m_nodeDebugEnabled && debugContext.m_showNormals);
+    m_normalRenderer->setEnabled(debugContext.m_nodeDebugEnabled && debugContext.m_showNormals);
 
     m_batch->updateRT(ctx);
 }

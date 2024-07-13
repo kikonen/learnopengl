@@ -63,6 +63,16 @@ Viewport::~Viewport()
     KI_INFO(fmt::format("VIEW_PORT: delete, name={}", m_name));
 }
 
+void Viewport::invokeBindBefore()
+{
+    m_bindBefore(*this);
+}
+
+void Viewport::invokeBindAfter()
+{
+    m_bindAfter(*this);
+}
+
 void Viewport::setSourceFrameBuffer(render::FrameBuffer* frameBuffer)
 {
     m_sourceBuffer = frameBuffer;
@@ -149,7 +159,7 @@ void Viewport::updateRT(const UpdateViewContext& ctx)
 
 void Viewport::bind(const RenderContext& ctx)
 {
-    m_bindBefore(*this);
+    invokeBindBefore();
 
     if (m_useDirectBlit) return;
     if (m_textureId == 0) return;
@@ -173,7 +183,7 @@ void Viewport::bind(const RenderContext& ctx)
         uniforms->u_effect.set(util::as_integer(m_effect));
     }
 
-    m_bindAfter(*this);
+    invokeBindAfter();
 }
 
 void Viewport::unbind(const RenderContext& ctx)

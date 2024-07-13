@@ -47,21 +47,21 @@ assets:
   placeholder_texture: textures/tiles_1024.png
 
   use_imgui: true
-  imgui_demo: false
+  #imgui_demo: false
   imgui_font_size: 18
   imgui_font_path: fonts/Vera.ttf
 
   use_script: true
   use_light: true
 
-  force_wireframe: false
+  #force_wireframe: false
 
-  show_normals: false
+  #show_normals: false
   show_rear_view: false
   show_shadow_map_view: false
-  show_reflection_view: false
-  show_refraction_view: false
-  show_objectid_view: false
+  #show_reflection_view: false
+  #show_refraction_view: false
+  #show_objectid_view: false
 
   show_volume: true
   show_selection_volume: true
