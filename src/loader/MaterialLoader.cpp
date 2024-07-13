@@ -673,6 +673,10 @@ namespace loader {
         for (const auto& it : mod.getTexturePaths()) {
             m.addTexPath(it.first, it.second);
         }
+
+        for (const auto& progIt : mod.m_programNames) {
+            m.m_programNames[progIt.first] = progIt.second;
+        }
     }
 
     void MaterialLoader::resolveMaterial(
