@@ -37,13 +37,14 @@ namespace animation {
         double currentTime)
     {
         if (animationStartTime < 0) return false;
-        if (clipIndex < 0 || clipIndex >= rig.m_clipContainer.m_clips.size()) return false;
+        const auto& clipContainer = rig.m_clipContainer;
+        if (clipIndex < 0 || clipIndex >= clipContainer.m_clips.size()) return false;
 
-        const auto& clip = rig.m_clipContainer.m_clips[clipIndex];
+        const auto& clip = clipContainer.m_clips[clipIndex];
         if (clip.m_animationIndex < 0) return false;
         if (clip.m_duration <= 0.f) return false;
 
-        const auto& animation = *rig.m_clipContainer.m_animations[clip.m_animationIndex];
+        const auto& animation = *clipContainer.m_animations[clip.m_animationIndex];
         const auto firstFrame = clip.m_firstFrame;
         const auto lastFrame = clip.m_lastFrame;
         const auto singleClip = clip.m_single;
@@ -58,17 +59,7 @@ namespace animation {
         //    }
         //}
 
-        float animationTimeTicks;
-        {
-            float animationTimeSecs = (float)(currentTime - animationStartTime);
-            float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : 25.f;
-            float timeInTicks = animationTimeSecs * ticksPerSecond;
-            animationTimeTicks = fmod(timeInTicks, clip.m_duration);
-
-            //std::cout << fmt::format(
-            //    "time={}, secs={}, ticksSec={}, ticks={}, duration={}\n",
-            //    currentTime, animationTimeSecs, ticksPerSecond, timeInTicks, animation->m_duration);
-        }
+        float animationTimeTicks = clipContainer.getAnimationTimeTicks(clipIndex, animationStartTime, currentTime);
 
         constexpr size_t MAX_JOINTS = 200;
         glm::mat4 parentTransforms[MAX_JOINTS + 1];

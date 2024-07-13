@@ -12,7 +12,8 @@ namespace {
         uint16_t lastFrame) noexcept
     {
         uint16_t min = firstFrame;
-        uint16_t max = lastFrame;
+        // NOTE KI -1 so that "next = curr + 1" won't blend into next clip
+        uint16_t max = lastFrame - 1;
 
         const auto startTick = times[firstFrame];
 

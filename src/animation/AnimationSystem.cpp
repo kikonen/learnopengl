@@ -157,7 +157,7 @@ namespace animation
         Node* node,
         mesh::MeshType* type)
     {
-        const auto& debugContext = render::DebugContext::get();
+        auto& debugContext = render::DebugContext::modify();
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
@@ -190,12 +190,31 @@ namespace animation
                 state.m_animationClipIndex = debugContext.m_animationClipIndex;
             }
 
-            double animationTime = ctx.m_clock.ts;
+            double animationStartTime = state.m_animationStartTime;
+            double animationCurrentTime = ctx.m_clock.ts;
+
             if (m_firstFrameOnly) {
-                animationTime = state.m_animationStartTime;
+                animationCurrentTime = state.m_animationStartTime;
             }
             if (paused) {
-                animationTime = state.m_animationLastTime;
+                animationCurrentTime = state.m_animationLastTime;
+            }
+
+            if (debugContext.m_animationDebugEnabled) {
+                if (debugContext.m_animationTime >= 0) {
+                    animationStartTime = 0;
+                    animationCurrentTime = debugContext.m_animationTime;
+
+                    auto clipIndex = state.m_animationClipIndex;
+                    const auto& clipContainer = rig.m_clipContainer;
+                    if (clipIndex >= 0 || clipIndex < clipContainer.m_clips.size()) {
+                        const auto& clip = clipContainer.m_clips[clipIndex];
+                        if (!clip.m_single && animationCurrentTime > clip.m_durationSecs) {
+                            animationCurrentTime = clip.m_durationSecs;
+                            debugContext.m_animationTime = clip.m_durationSecs;
+                        }
+                    }
+                }
             }
 
             animation::Animator animator;
@@ -208,10 +227,10 @@ namespace animation
                 bonePalette,
                 socketPalette,
                 state.m_animationClipIndex,
-                state.m_animationStartTime,
-                animationTime);
+                animationStartTime,
+                animationCurrentTime);
 
-            state.m_animationLastTime = animationTime;
+            state.m_animationLastTime = animationCurrentTime;
             if (m_onceOnly) {
                 state.m_animationStartTime = -42;
             }

@@ -83,6 +83,7 @@ namespace animation
         uint16_t m_lastFrame{ 0 };
 
         float m_duration{ 0 };
+        float m_durationSecs{ 0 };
 
         bool m_loop{ false };
 

@@ -4,6 +4,10 @@
 
 #include "util/Log.h"
 
+namespace {
+    constexpr float DEF_FPS = 25.f;
+}
+
 namespace animation {
     uint16_t ClipContainer::addAnimation(
         std::unique_ptr<animation::Animation> src)
@@ -54,7 +58,8 @@ namespace animation {
                 }
             }
 
-            clip.m_duration = anim->getClipDuration(clip.m_firstFrame, clip.m_lastFrame);
+            clip.m_duration = clip.m_single ? anim->m_duration : anim->getClipDuration(clip.m_firstFrame, clip.m_lastFrame);
+            clip.m_durationSecs = animationTimeToSecs(clip.m_animationIndex, clip.m_duration);
         }
 
         KI_INFO_OUT(fmt::format(
@@ -92,6 +97,37 @@ namespace animation {
     uint16_t ClipContainer::getClipCount(uint16_t animationIndex) const
     {
         return m_animations[animationIndex]->m_clipCount;
+    }
+
+    float ClipContainer::getAnimationTimeTicks(
+        uint16_t clipIndex,
+        double animationStartTime,
+        double currentTime) const
+    {
+        const auto& clip = m_clips[clipIndex];
+        const auto& animation = *m_animations[clip.m_animationIndex];
+
+        float animationTimeTicks;
+        {
+            const float animationTimeSecs = (float)(currentTime - animationStartTime);
+            const float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : DEF_FPS;
+            const float timeInTicks = animationTimeSecs * ticksPerSecond;
+            animationTimeTicks = fmod(timeInTicks, clip.m_duration);
+
+            //std::cout << fmt::format(
+            //    "time={}, secs={}, ticksSec={}, ticks={}, duration={}\n",
+            //    currentTime, animationTimeSecs, ticksPerSecond, timeInTicks, animation->m_duration);
+        }
+        return animationTimeTicks;
+    }
+
+    float ClipContainer::animationTimeToSecs(
+        uint16_t animationIndex,
+        float animationTime) const
+    {
+        const auto& animation = *m_animations[animationIndex];
+        const float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : DEF_FPS;
+        return animationTime / ticksPerSecond;
     }
 }
 
