@@ -297,6 +297,8 @@ void EditorFrame::renderBufferDebug(
 
     constexpr float scrollbarPadding = 0.f;
 
+    ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+
     auto viewportTex = [&ctx](Viewport& viewport, bool useAspectRatio) {
         ImVec2 availSize = ImGui::GetContentRegionAvail();
         // NOTE KI allow max half window size
@@ -320,58 +322,58 @@ void EditorFrame::renderBufferDebug(
         );
     };
 
-    if (ImGui::TreeNode("ObjectId")) {
+    if (ImGui::TreeNodeEx("ObjectId", tnFlags)) {
         auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Water reflection")) {
+    if (ImGui::TreeNodeEx("Water reflection", tnFlags)) {
         auto& viewport = scene.m_waterMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
-    if (ImGui::TreeNode("Water refraction")) {
+    if (ImGui::TreeNodeEx("Water refraction", tnFlags)) {
         auto& viewport = scene.m_waterMapRenderer->m_refractionDebugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Mirror reflection")) {
+    if (ImGui::TreeNodeEx("Mirror reflection", tnFlags)) {
         auto& viewport = scene.m_mirrorMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
-    if (ImGui::TreeNode("Mirror - Mirror reflection")) {
+    if (ImGui::TreeNodeEx("Mirror - Mirror reflection", tnFlags)) {
         auto& viewport = scene.m_mirrorMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
-    if (ImGui::TreeNode("Mirror - Water reflection")) {
+    if (ImGui::TreeNodeEx("Mirror - Water reflection", tnFlags)) {
         auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
-    if (ImGui::TreeNode("Mirror - Water refraction")) {
+    if (ImGui::TreeNodeEx("Mirror - Water refraction", tnFlags)) {
         auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
         viewportTex(*viewport, true); 
 
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Cube - Mirror reflection")) {
+    if (ImGui::TreeNodeEx("Cube - Mirror reflection", tnFlags)) {
         auto& viewport = scene.m_cubeMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, false);
 
         ImGui::TreePop();
     }
-    if (ImGui::TreeNode("Cube - Water reflection")) {
+    if (ImGui::TreeNodeEx("Cube - Water reflection", tnFlags)) {
         auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
         viewportTex(*viewport, false);
 
@@ -384,8 +386,47 @@ void EditorFrame::renderBufferDebug(
         ImGui::TreePop();
     }
 
+    if (false && ImGui::TreeNodeEx("Cube - Faces", tnFlags)) {
+        auto& cmr = *scene.m_cubeMapRenderer;
+
+        auto faceTex = [&ctx, &cmr](int faceIndex) {
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+            float h = w / ctx.m_aspectRatio;
+            w = h;
+
+            // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
+            auto& prev = cmr.m_prev;
+            auto fb = prev->asFrameBuffer(faceIndex);
+            //fb.bind(ctx);
+            //fb.bindFace();
+
+            ImTextureID texId = (void*)fb.getTextureID();
+            ImGui::Image(
+                texId,
+                ImVec2{ w, h },
+                ImVec2{ 0, 1 }, // uv1
+                ImVec2{ 1, 0 }, // uv2
+                ImVec4{ 1, 1, 1, 1 }, // tint_col
+                ImVec4{ 1, 1, 1, 1 }  // border_col
+            );
+        };
+
+        for (unsigned int face = 0; face < 6; face++) {
+            const auto& name = fmt::format("Cube - Face {}", face);
+            if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                faceTex(face);
+
+                ImGui::TreePop();
+            }
+        }
+
+        ImGui::TreePop();
+    }
+
     if (assets.showRearView) {
-        if (ImGui::TreeNode("Rear view")) {
+        if (ImGui::TreeNodeEx("Rear view", tnFlags)) {
             auto& viewport = scene.m_rearViewport;
             viewportTex(*viewport, true);
 
