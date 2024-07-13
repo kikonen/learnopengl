@@ -26,6 +26,10 @@
 #include "model/Viewport.h"
 
 #include "renderer/ObjectIdRenderer.h"
+#include "renderer/NodeRenderer.h"
+#include "renderer/WaterMapRenderer.h"
+#include "renderer/MirrorMapRenderer.h"
+#include "renderer/ShadowMapRenderer.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
@@ -52,7 +56,9 @@ void EditorFrame::draw(const RenderContext& ctx)
     auto& debugContext = m_window.getEngine().m_debugContext;
 
     // NOTE KI don't waste CPU if Edit window is collapsed
-    if (!ImGui::Begin("Edit")) {
+    bool* openPtr = nullptr;
+    ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar;
+    if (!ImGui::Begin("Edit", openPtr, flags)) {
         trackImGuiState(debugContext);
         ImGui::End();
         return;
@@ -282,15 +288,22 @@ void EditorFrame::renderBufferDebug(
     const RenderContext& ctx,
     render::DebugContext& debugContext)
 {
+    const auto& assets = ctx.m_assets;
+
     auto& window = m_window;
     auto& scene = *window.getEngine().getCurrentScene();
+
+    constexpr float scrollbarPadding = 0.f;
 
     if (ImGui::TreeNode("ObjectId")) {
         ImVec2 availSize = ImGui::GetContentRegionAvail();
         // NOTE KI allow max half window size
-        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f);
+        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
 
-        const auto& fb = scene.m_objectIdRenderer->m_debugViewport->getSourceFrameBuffer();
+        auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
+        viewport->invokeBindBefore();
+
+        const auto& fb = viewport->getSourceFrameBuffer();
         auto& att = fb->m_spec.attachments[0];
         ImTextureID texId = (void*)att.textureID;
         ImGui::Image(
@@ -302,6 +315,92 @@ void EditorFrame::renderBufferDebug(
             ImVec4{ 1, 1, 1, 1 }  // border_col
         );
         ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Water reflection")) {
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        // NOTE KI allow max half window size
+        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+
+        auto& viewport = scene.m_waterMapRenderer->m_reflectionDebugViewport;
+        viewport->invokeBindBefore();
+
+        const auto& fb = viewport->getSourceFrameBuffer();
+        auto& att = fb->m_spec.attachments[0];
+        ImTextureID texId = (void*)att.textureID;
+        ImGui::Image(
+            texId,
+            ImVec2{ w, w / ctx.m_aspectRatio },
+            ImVec2{ 0, 1 }, // uv1
+            ImVec2{ 1, 0 }, // uv2
+            ImVec4{ 1, 1, 1, 1 }, // tint_col
+            ImVec4{ 1, 1, 1, 1 }  // border_col
+        );
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Water refraction")) {
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        // NOTE KI allow max half window size
+        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+
+        auto& viewport = scene.m_waterMapRenderer->m_refractionDebugViewport;
+        viewport->invokeBindBefore();
+
+        const auto& fb = viewport->getSourceFrameBuffer();
+        auto& att = fb->m_spec.attachments[0];
+        ImTextureID texId = (void*)att.textureID;
+        ImGui::Image(
+            texId,
+            ImVec2{ w, w / ctx.m_aspectRatio },
+            ImVec2{ 0, 1 }, // uv1
+            ImVec2{ 1, 0 }, // uv2
+            ImVec4{ 1, 1, 1, 1 }, // tint_col
+            ImVec4{ 1, 1, 1, 1 }  // border_col
+        );
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Mirror reflection")) {
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        // NOTE KI allow max half window size
+        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+
+        auto& viewport = scene.m_mirrorMapRenderer->m_reflectionDebugViewport;
+        viewport->invokeBindBefore();
+
+        const auto& fb = viewport->getSourceFrameBuffer();
+        auto& att = fb->m_spec.attachments[0];
+        ImTextureID texId = (void*)att.textureID;
+        ImGui::Image(
+            texId,
+            ImVec2{ w, w / ctx.m_aspectRatio },
+            ImVec2{ 0, 1 }, // uv1
+            ImVec2{ 1, 0 }, // uv2
+            ImVec4{ 1, 1, 1, 1 }, // tint_col
+            ImVec4{ 1, 1, 1, 1 }  // border_col
+        );
+        ImGui::TreePop();
+    }
+    if (assets.showRearView) {
+        if (ImGui::TreeNode("Rear view")) {
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+
+            auto& viewport = scene.m_rearViewport;
+            viewport->invokeBindBefore();
+
+            const auto& fb = viewport->getSourceFrameBuffer();
+            auto& att = fb->m_spec.attachments[0];
+            ImTextureID texId = (void*)att.textureID;
+            ImGui::Image(
+                texId,
+                ImVec2{ w, w / ctx.m_aspectRatio },
+                ImVec2{ 0, 1 }, // uv1
+                ImVec2{ 1, 0 }, // uv2
+                ImVec4{ 1, 1, 1, 1 }, // tint_col
+                ImVec4{ 1, 1, 1, 1 }  // border_col
+            );
+            ImGui::TreePop();
+        }
     }
 }
 
