@@ -677,6 +677,10 @@ namespace loader {
         for (const auto& progIt : mod.m_programNames) {
             m.m_programNames[progIt.first] = progIt.second;
         }
+
+        for (const auto& progIt : mod.m_programDefinitions) {
+            m.m_programDefinitions[progIt.first] = progIt.second;
+        }
     }
 
     void MaterialLoader::resolveMaterial(
