@@ -4,6 +4,10 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
+
 #include "asset/Assets.h"
 #include "asset/DynamicCubeMap.h"
 
@@ -34,6 +38,7 @@
 #include "renderer/ShadowMapRenderer.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/NodeSnapshotRegistry.h"
 #include "registry/ControllerRegistry.h"
 
 #include "render/FrameBuffer.h"
@@ -86,8 +91,8 @@ void EditorFrame::draw(const RenderContext& ctx)
     if (ImGui::CollapsingHeader("Node"))
     {
         renderNodeSelector(ctx, debugContext);
-        if (ImGui::TreeNode("Edit")) {
-            renderNodeEdit(ctx, debugContext);
+        if (ImGui::TreeNode("Properties")) {
+            renderNodeProperties(ctx, debugContext);
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("Debug")) {
@@ -217,7 +222,7 @@ void EditorFrame::renderNodeSelector(
 {
     const auto& nr = NodeRegistry::get();
 
-    const auto currNode = debugContext.m_targetNode.toNode();
+    const auto currNode = debugContext.m_selectedNode.toNode();
     if (ImGui::BeginCombo("Node selector", currNode ? currNode->getName().c_str() : nullptr)) {
         for (const auto* node : nr.getCachedNodesRT())
         {
@@ -227,7 +232,7 @@ void EditorFrame::renderNodeSelector(
 
             ImGui::PushID((void*)node);
             if (ImGui::Selectable(name, node == currNode))
-                debugContext.m_targetNode = node->toHandle();
+                debugContext.m_selectedNode = node->toHandle();
             ImGui::PopID();
         }
 
@@ -235,22 +240,37 @@ void EditorFrame::renderNodeSelector(
     }
 }
 
-void EditorFrame::renderNodeEdit(
+void EditorFrame::renderNodeProperties(
     const RenderContext& ctx,
     render::DebugContext& debugContext)
 {
-    static float rotation = 0.0;
-    ImGui::DragFloat("rotation", &rotation, 0, 2);
-    static float translation[] = { 0.f, 0.f, 0.f };
-    ImGui::DragFloat3("position", translation, -1.0, 1.0);
-    static float color[4] = { 1.0f,1.0f,1.0f,1.0f };
-    // pass the parameters to the shader
-    //    triangle_shader.setUniform("rotation", rotation);
-    //    triangle_shader.setUniform("translation", translation[0], translation[1]);
-        // color picker
-    ImGui::ColorEdit3("color", color);
-    // multiply triangle's color with this color
-    //triangle_shader.setUniform("color", color[0], color[1], color[2]);
+    auto* node = debugContext.m_selectedNode.toNode();
+    if (!node) return;
+
+    auto& state = node->modifyState();
+
+    {
+        glm::vec3 pos = state.m_position;
+        // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+        if (ImGui::InputFloat3("position", glm::value_ptr(pos))) {
+            state.setPosition(pos);
+        }
+    }
+
+    {
+        glm::vec3 rot = state.getDegreesRotation();
+        // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+        if (ImGui::InputFloat3("rotation", glm::value_ptr(rot))) {
+            state.setDegreesRotation(rot);
+
+            auto quat = util::degreesToQuat(rot);
+            auto deg = util::quatToDegrees(quat);
+
+            KI_INFO_OUT(fmt::format(
+                "rot={}, deg={}, quat={}",
+                rot, deg, quat));
+        }
+    }
 }
 
 void EditorFrame::renderNodeDebug(
@@ -260,7 +280,7 @@ void EditorFrame::renderNodeDebug(
     ImGui::Checkbox("Node debug", &debugContext.m_nodeDebugEnabled);
 
     if (debugContext.m_nodeDebugEnabled) {
-        ImGui::Checkbox("Wireframe", &debugContext.m_wireframe);
+        ImGui::Checkbox("Wireframe", &debugContext.m_forceWireframe);
         ImGui::Checkbox("Show normals", &debugContext.m_showNormals);
         ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
     }

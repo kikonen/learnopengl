@@ -30,7 +30,7 @@ private:
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 
-    void renderNodeEdit(
+    void renderNodeProperties(
         const RenderContext& ctx,
         render::DebugContext& debugContext);
 
