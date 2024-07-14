@@ -223,6 +223,7 @@
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
+    <ClCompile Include="src\mesh\LineMesh.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\animation\RigSocket.cpp" />
     <ClCompile Include="src\mesh\TransformRegistry.cpp" />
@@ -453,6 +454,7 @@
     <ClInclude Include="src\loader\TextLoader.h" />
     <ClInclude Include="src\loader\loader_util.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
+    <ClInclude Include="src\mesh\LineMesh.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
     <ClInclude Include="src\loader\converter\DocNode.h" />
