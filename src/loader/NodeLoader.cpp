@@ -290,6 +290,10 @@ namespace loader {
             }
         }
 
+        for (auto& meshData : data.meshes) {
+            meshData.scale = meshData.scale.x > 0 ? meshData.scale : data.meshScale;
+        }
+
         if (hasClones) {
             for (const auto& pair : node.getNodes()) {
                 const std::string& k = pair.getName();
