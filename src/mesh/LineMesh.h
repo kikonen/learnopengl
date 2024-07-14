@@ -3,12 +3,14 @@
 #include <string>
 
 #include "mesh/Mesh.h"
-
+#include "mesh/PrimitiveType.h"
 #include "mesh/Index.h"
-
 #include "mesh/Vertex.h"
 
 namespace mesh {
+    //
+    // https://stackoverflow.com/questions/39588937/when-drawing-lines-with-vbo-how-do-i-specify-indices
+    //
     class LineMesh final : public Mesh
     {
     public:
@@ -40,12 +42,10 @@ namespace mesh {
         }
 
     public:
+        mesh::PrimitiveType m_type;
+
         std::vector<Vertex> m_vertices;
         std::vector<mesh::Index> m_indeces;
-
-        std::vector<glm::vec2> m_atlasCoords;
-
-        uint32_t m_maxSize{ 0 };
 
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };

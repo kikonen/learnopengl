@@ -22,6 +22,7 @@
 #include "NodeLoader.h"
 #include "MeshLoader.h"
 #include "TextLoader.h"
+#include "VertexLoader.h"
 
 class Registry;
 
@@ -45,6 +46,8 @@ namespace loader {
         NodeLoader m_nodeLoader;
         MeshLoader m_meshLoader;
         TextLoader m_textLoader;
+
+        VertexLoader m_vertexLoader;
 
         FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;

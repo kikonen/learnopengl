@@ -20,6 +20,7 @@ namespace loader {
         m_nodeLoader(ctx),
         m_meshLoader(ctx),
         m_textLoader(ctx),
+        m_vertexLoader(ctx),
         m_prefabLoader{ctx}
     {}
 
@@ -40,6 +41,7 @@ namespace loader {
         m_nodeLoader.setRegistry(registry);
         m_meshLoader.setRegistry(registry);
         m_textLoader.setRegistry(registry);
+        m_vertexLoader.setRegistry(registry);
         m_prefabLoader.setRegistry(registry);
     }
 }

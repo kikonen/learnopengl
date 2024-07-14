@@ -9,6 +9,8 @@
 #include "SocketData.h"
 #include "AnimationData.h"
 #include "MaterialData.h"
+#include "VertexData.h"
+
 
 namespace loader {
     struct MeshData {
@@ -32,6 +34,8 @@ namespace loader {
         std::vector<AnimationData> animations;
 
         loader::FlagContainer meshFlags;
+
+        VertexData vertexData;
 
         const LodData* findLod(
             const std::string& meshName) const noexcept

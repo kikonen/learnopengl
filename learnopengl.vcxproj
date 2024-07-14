@@ -222,6 +222,7 @@
     <ClCompile Include="src\loader\PivotLoader.cpp" />
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
     <ClCompile Include="src\loader\TextLoader.cpp" />
+    <ClCompile Include="src\loader\VertexLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
     <ClCompile Include="src\mesh\LineMesh.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
@@ -453,6 +454,8 @@
     <ClInclude Include="src\loader\SocketData.h" />
     <ClInclude Include="src\loader\TextLoader.h" />
     <ClInclude Include="src\loader\loader_util.h" />
+    <ClInclude Include="src\loader\VertexData.h" />
+    <ClInclude Include="src\loader\VertexLoader.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\LineMesh.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
@@ -474,6 +477,7 @@
     <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\animation\RigSocket.h" />
+    <ClInclude Include="src\mesh\PrimitiveType.h" />
     <ClInclude Include="src\mesh\TransformRegistry.h" />
     <ClInclude Include="src\mesh\TransformSSBO.h" />
     <ClInclude Include="src\mesh\mesh_util.h" />
