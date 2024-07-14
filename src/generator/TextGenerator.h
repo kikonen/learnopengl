@@ -57,15 +57,19 @@ public:
     text::font_id getFontId() const noexcept { return m_fontId; }
 
     void setFontId(text::font_id fontId) noexcept {
-        m_fontId = fontId;
-        m_dirty = true;
+        if (m_fontId != fontId) {
+            m_fontId = fontId;
+            m_dirty = true;
+        }
     }
 
     std::string getText() const noexcept { return m_text; }
 
     void setText(std::string_view text) {
-        m_text = text;
-        m_dirty = true;
+        if (m_text != text) {
+            m_text = text;
+            m_dirty = true;
+        }
     }
 
     GLuint64 getAtlasTextureHandle() const noexcept;
