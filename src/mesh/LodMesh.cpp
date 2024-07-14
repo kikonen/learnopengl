@@ -62,6 +62,7 @@ namespace mesh {
         m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
+        m_baseScale = o.m_baseScale;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -98,6 +99,7 @@ namespace mesh {
         m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
+        m_baseScale = o.m_baseScale;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -269,8 +271,7 @@ namespace mesh {
     }
 
     void LodMesh::updateTransform() {
-        glm::mat4 transform = glm::scale(glm::mat4{ 1.f }, m_scale) * m_mesh->m_rigTransform;
-        //transform = m_mesh->m_rigTransform;
+        glm::mat4 transform = glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) * m_mesh->m_rigTransform;
         m_meshIndex = mesh::TransformRegistry::get().registerTransform(transform);
     }
 
@@ -281,7 +282,7 @@ namespace mesh {
         AABB aabb{ true };
 
         if (m_mesh) {
-            const auto& transform = glm::scale(glm::mat4{ 1.f }, m_scale) * m_mesh->m_rigTransform;
+            const auto& transform = glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) * m_mesh->m_rigTransform;
             aabb.minmax(m_mesh->calculateAABB(transform));
         }
 

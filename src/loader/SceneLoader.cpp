@@ -676,6 +676,7 @@ namespace loader {
         mesh::LodMesh& lodMesh)
     {
         lodMesh.m_scale = meshData.scale.x > 0 ? meshData.scale : nodeData.meshScale;
+        lodMesh.m_baseScale = meshData.baseScale;
 
         auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
 
