@@ -16,6 +16,11 @@
 namespace {
 }
 
+glm::vec3 NodeState::getDegreesRotation() const noexcept
+{
+    return util::quatToDegrees(m_quatRotation);
+}
+
 void NodeState::updateRootMatrix() noexcept
 {
     ASSERT_WT();
@@ -100,9 +105,11 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         s_invPivotMatrix *
         m_rotationMatrix *
         s_pivotMatrix *
-        s_scaleMatrix *
-        m_baseTransform;
-    m_modelScale = glm::mat3{ s_scaleMatrix * m_baseTransform } * parent.m_modelScale;
+        s_scaleMatrix;
+
+    m_modelScale = glm::mat3{ s_scaleMatrix } * parent.m_modelScale;
+
+    assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 
     {
         const auto& wp = m_modelMatrix[3];
@@ -134,6 +141,6 @@ void NodeState::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;
-    m_rotationMatrix = glm::toMat4(m_quatRotation);
+    m_rotationMatrix = glm::toMat4(m_quatRotation) * glm::toMat4(m_baseRotation);
     m_dirtyRotation = false;
 }
