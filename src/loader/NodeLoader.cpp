@@ -288,6 +288,13 @@ namespace loader {
                 KI_INFO_OUT(msg);
                 throw msg;
             }
+
+        }
+
+        if (data.type == NodeType::text) {
+            for (auto& meshData : data.meshes) {
+                meshData.enabled = true;
+            }
         }
 
         for (auto& meshData : data.meshes) {
