@@ -675,7 +675,7 @@ namespace loader {
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
-        lodMesh.m_scale = meshData.scale.x > 0 ? meshData.scale : nodeData.meshScale;
+        lodMesh.m_scale = meshData.scale;
         lodMesh.m_baseScale = meshData.baseScale;
 
         auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
@@ -719,12 +719,18 @@ namespace loader {
         for (const auto& socketData : meshData.sockets) {
             if (!socketData.enabled) continue;
 
+            // TODO KI scale is in LodMesh level, but sockets in Mesh level
+            // => PROBLEM if same mesh is used for differently scaled LodMeshes
+            //glm::vec3 meshScale{ 0.01375f * 2.f };
+            auto meshScale = meshData.scale * meshData.baseScale;
+
             animation::RigSocket socket{
                 socketData.name,
                 socketData.joint,
                 socketData.offset,
                 util::degreesToQuat(socketData.rotation),
-                socketData.scale
+                socketData.scale,
+                meshScale
             };
 
             rig.registerSocket(socket);

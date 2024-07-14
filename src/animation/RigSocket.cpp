@@ -16,6 +16,12 @@ namespace {
             glm::toMat4(rotation) *
             glm::scale(glm::mat4{ 1.f }, scale);
     }
+
+    glm::mat4 calcMeshScaleTransform(
+        glm::vec3 meshScale)
+    {
+        return glm::scale(glm::mat4{ 1.f }, meshScale);
+    }
 }
 
 namespace animation
@@ -25,9 +31,16 @@ namespace animation
         const std::string& jointName,
         glm::vec3 offset,
         glm::quat rotation,
-        glm::vec3 scale)
+        glm::vec3 scale,
+        glm::vec3 meshScale)
         : m_name{ name },
         m_jointName{ jointName },
-        m_transform{ calcTransform(offset, rotation, scale) }
+        m_offset{ offset },
+        m_rotation{ rotation },
+        m_scale{ scale },
+        m_meshScale{ meshScale },
+        m_transform{ calcTransform(offset, rotation, scale) },
+        m_meshScaleTransform{ calcMeshScaleTransform(meshScale) },
+        m_invMeshScaleTransform{ glm::inverse(m_meshScaleTransform) }
     {}
 }

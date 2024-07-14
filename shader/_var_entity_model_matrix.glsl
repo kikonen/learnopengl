@@ -7,7 +7,11 @@ mat4 modelMatrix = transpose(mat4(
   VEC_W));
 
 if (instance.u_socketIndex >= 0) {
-  modelMatrix *= u_socketTransforms[entity.u_socketBaseIndex + instance.u_socketIndex];
+  // modelMatrix *= u_socketTransforms[entity.u_socketBaseIndex + instance.u_socketIndex];
+  modelMatrix =
+    modelMatrix
+    * u_socketTransforms[entity.u_socketBaseIndex + instance.u_socketIndex]
+    * u_meshTransforms[instance.u_meshIndex];
 
   // float scale = 1.0;
   // mat4 scaleMatrix = mat4(scale, 0, 0, 0,

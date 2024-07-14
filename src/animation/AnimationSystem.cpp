@@ -85,7 +85,13 @@ namespace animation
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
             for (const auto& socket : rig.m_sockets) {
                 const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
-                socketPalette[socket.m_index] = rigJoint.m_globalTransform * socket.m_transform;
+                socketPalette[socket.m_index] =
+                    socket.m_meshScaleTransform *
+                    rigJoint.m_globalTransform *
+                    glm::translate(glm::mat4{ 1.f }, socket.m_offset) *
+                    glm::toMat4(socket.m_rotation) *
+                    socket.m_invMeshScaleTransform;
+
             }
             socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
         }

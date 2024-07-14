@@ -10,10 +10,9 @@ nodes:
   - id: player_fps
     type: origo
     program: g_tex
-    pos: [0, 3, 0.0]
+    pos: [0, 4, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
-    scale: 1.0
     render_flags:
       allow_normals: false
     active: true
@@ -42,17 +41,17 @@ nodes:
         size: 36
     program: g_font_render
     shadow_program: shadow_font_render
-    pos: [1.0, 0.75, -0.75]
+    pos: [0.5, 0.75, -2]
     scale: 0.01
-  - id: player_fsp_camera
+  - id: player_fps_camera
     parent_id: player_fps
     type: origo
     pos: [0.0, 0.12, 0.0]
-    controller:
-      rotation: [-27, 0, 0]
-      type: camera_zoom
     camera:
+      rotation: [-17, 0, 0]
       default: true
+    controllers:
+      - type: camera_zoom
   - id: player_fps_arms_{t}
     parent: player_fps
     mesh:
@@ -65,6 +64,8 @@ nodes:
         map_kd: material/M_UE4Man_Body_BaseColor.png
         map_normal: material/M_UE4Man_Body_Normal.png
         map_metalness: material/M_UE4Man_Body_MetallicRoughness.png
+        program: g_tex
+        shadow_program: simple_depth
       animations:
         - name: idle
           path: anim/FirstPerson_Idle.FBX
@@ -72,22 +73,14 @@ nodes:
           path: anim/FirstPerson_Run.FBX
         - name: fire
           path: anim/FirstPerson_Fire.FBX
-    program: g_tex
-    shadow_program: simple_depth
-    pos: [0.0, -1.5, 0]
+      base_scale: 0.01
+    pos: [-1.35, -1.6, -1.2]
     rotation: [0, 0, 0]
     base_rotation: [0, 90, 180]
     pivot:
       alignment: m
     flags:
       no_frustum: true
-    scale: 1
-    base_scale: 0.01
-    xrepeat:
-      x_count: 2
-      z_count: 2
-      x_step: 5
-      z_step: -5
   - name: origo
     mesh:
       path: water_ball
@@ -95,7 +88,6 @@ nodes:
         kd: [0.0, 0.2, 0.8, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
-    scale: 1
     particle:
       material:
         name: particle_firespin
@@ -110,7 +102,6 @@ nodes:
     mesh:
       path: texture_cube_3
     program: g_tex
-    scale: 1
     base_rot: [-90, 0, 0]
     clones:
       - pos: [-5.0, 2.0, -5.0]
@@ -159,24 +150,20 @@ nodes:
         sockets:
           - name: head
             joint: Bip01_Head1
-            scale: 0.43
-            offset: [3.6, 1.6, 0]
-            rotation: [0, 90, 0]
+            offset: [3.3, 1.3, 0]
+            rotation: [85, 90, 0]
           - name: neck
             joint: Bip01_Spine4
-            scale: 0.37
-            offset: [-0.5, 2, 0]
-            rotation: [195, -90, -45]
+            offset: [-1.9, 3.3, 0]
+            rotation: [0, -85, -99]
           - name: l_arm
             joint: Bip01_L_Forearm
-            scale: 0.35
-            offset: [10, 0, 0]
-            rotation: [90, -45, 90]
+            offset: [7, 0, 0]
+            rotation: [80, 0, 0]
           - name: r_hand
             joint: Bip01_R_Hand
-            scale: 0.25
             offset: [2.3, -1.4, 0]
-            rotation: [20, -90, 0]
+            rotation: [-45, 0, 0]
         flags:
           use_bones: true
           use_animation: true
@@ -187,14 +174,18 @@ nodes:
           xtiling: 60
           xrender_back: true
           xwireframe: true
+        base_scale: 0.01375
+        scale: 2
       - name: helmet
         path: fbx\creatures\skeleton_knight\Helmet.fbx
         lod:
           level: [0, 1, 2]
         material:
+          kd: [0.8, 0.8, 0]
           map_kd: textures\T_Helmet_BaseColor.jpg
           map_bump: textures\T_Helmet_Normal.jpg
           map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+        scale: 0.00121
       - name: armor
         path: fbx\creatures\skeleton_knight\Armor.fbx
         lod:
@@ -203,6 +194,8 @@ nodes:
           map_kd: textures\T_ChestArmor_BaseColor.jpg
           map_bump: textures\T_ChestArmor_Normal.jpg
           map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+        xscale: 0.000121
+        scale: 0.000121
       - name: 2HandedSword
         path: fbx\creatures\skeleton_knight\2HandedSword.fbx
         lod:
@@ -211,6 +204,7 @@ nodes:
           map_kd: textures\T_2HandedSword_BaseColor.jpg
           map_bump: textures\T_2HandedSword_Normal.jpg
           map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
+        scale: 0.000075
       - name: shield
         path: fbx\creatures\skeleton_knight\Shield.fbx
         lod:
@@ -219,6 +213,7 @@ nodes:
           map_kd: textures\T_Shield_BaseColor.jpg
           map_bump: textures\T_Shield_Normal.jpg
           map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
+        scale: 0.0001
     attachments:
       - name: Helmet
         socket: head
@@ -236,12 +231,11 @@ nodes:
     render_flags:
       xdynamic_bounds: true
     scale: 3
-    base_scale: 0.028
     repeat:
       x_count: 2
       z_count: 2
-      x_step: 10
-      z_step: -10
+      x_step: 7
+      z_step: -7
   - id: rock
     program: g_tex
     meshes:
@@ -250,44 +244,48 @@ nodes:
           level: 0
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [1, 1, 0]
+          map_pbr: textures\Rock002_1K-PNG
+          kd: [0.9, 0.9, 0]
           tiling: 4
       - path: rock2/rock_lod_1
         lod:
           level: 1
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [0, 1, 1]
+          map_pbr: textures\Rock002_1K-PNG
+          kd: [0, 0.8, 0.8]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_2
         lod:
           level: 2
         material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 0, 1]
+          #metal: [0.5, 0.0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0, 0.8]
           tiling: 4
+        scale: 1
       - path: rock2/rock_lod_3
         lod:
           level: 3
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 1, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0.8, 0]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_4
         lod:
           level: 4
         flags:
-          billboard: true
+          xbillboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [1, 0, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0.8, 0, 0]
           tiling: 4
           render_back: true
+        scale: 1.8
     lod_levels:
       - level: 0
         distance: 0
