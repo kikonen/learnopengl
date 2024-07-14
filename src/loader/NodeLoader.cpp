@@ -147,7 +147,7 @@ namespace loader {
             else if (k == "geometry_type") {
                 data.geometryType = readString(v);
             }
-            else if (k == "type_flags" || k == "render_flags") {
+            else if (k == "flags" || k == "type_flags" || k == "render_flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
                     const auto& flagValue = readBool(flagNode.getNode());
