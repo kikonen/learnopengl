@@ -644,6 +644,17 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
+        else if (nodeData.type == NodeType::primitive) {
+            type->m_nodeType = NodeType::primitive;
+
+            auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
+
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(std::move(mesh), true);
+            type->addLodMesh(std::move(lodMesh));
+
+            meshCount++;
+        }
         else if (nodeData.type == NodeType::terrain) {
             // NOTE KI handled via container + generator
             type->m_nodeType = NodeType::terrain;

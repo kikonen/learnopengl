@@ -88,6 +88,9 @@ namespace loader {
                 else if (type == "text") {
                     data.type = NodeType::text;
                 }
+                else if (type == "primitive") {
+                    data.type = NodeType::primitive;
+                }
                 else if (type == "terrain") {
                     data.type = NodeType::terrain;
                 }
@@ -294,6 +297,15 @@ namespace loader {
         if (data.type == NodeType::text) {
             for (auto& meshData : data.meshes) {
                 meshData.enabled = true;
+            }
+        }
+
+        if (data.type == NodeType::primitive) {
+            for (auto& meshData : data.meshes) {
+                meshData.enabled = true;
+                if (!meshData.vertexData.valid) {
+                    meshData.enabled = false;
+                }
             }
         }
 

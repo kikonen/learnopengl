@@ -117,6 +117,9 @@ namespace loader {
             else if (k == "sockets") {
                 loadSockets(v, data.sockets);
             }
+            else if (k == "vertex") {
+                loaders.m_vertexLoader.load(v, data.vertexData);
+            }
             else {
                 reportUnknown("mesh_entry", k, v);
             }
