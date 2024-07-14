@@ -75,6 +75,15 @@ int SampleApp::onInit()
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
     Assets::set(loadAssets());
+
+    {
+        const auto& assets = Assets::get();
+        auto& debugContext = render::DebugContext::modify();
+        debugContext.m_frustumEnabled = assets.frustumEnabled;
+        debugContext.m_forceWireframe = assets.forceWireframe;
+        debugContext.m_showNormals = assets.showNormals;
+    }
+
     return 0;
 }
 
@@ -213,7 +222,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         ctx.m_useLight = assets.useLight;
 
         if (m_debugContext.m_nodeDebugEnabled) {
-            ctx.m_forceWireframe |= m_debugContext.m_wireframe;
+            ctx.m_forceWireframe |= m_debugContext.m_forceWireframe;
         }
 
         // https://paroj.github.io/gltut/apas04.html
@@ -410,6 +419,8 @@ void SampleApp::selectNode(
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
+    auto& debugContext = render::DebugContext::modify();
+
     //const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
     //const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
     //const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
@@ -471,6 +482,8 @@ void SampleApp::selectNode(
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
+
+            debugContext.m_selectedNode = node->toHandle();
         }
     }
     //else if (playerMode) {
