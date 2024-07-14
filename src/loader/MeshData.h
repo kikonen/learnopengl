@@ -23,6 +23,8 @@ namespace loader {
         // => otherwise value from NodeData is inherited
         glm::vec3 scale{ 0.f };
 
+        glm::vec3 baseScale{ 1.f };
+
         std::vector<LodData> lods;
         std::vector<SocketData> sockets;
 
