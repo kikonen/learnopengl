@@ -826,9 +826,8 @@ namespace loader {
         state.setFront(nodeData.front);
 
         {
-            auto baseTransform = glm::toMat4(util::degreesToQuat(nodeData.baseRotation));
+            state.setBaseRotation(util::degreesToQuat(nodeData.baseRotation));
             state.setVolume(type->getAABB().getVolume());
-            state.setBaseTransform(baseTransform);
         }
 
         node->m_camera = l.m_cameraLoader.createCamera(nodeData.camera);

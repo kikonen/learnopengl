@@ -33,8 +33,8 @@ struct NodeState {
 
     glm::vec3 m_worldPos{ 0.f };
 
-    // Base transform for mesh
-    glm::mat4 m_baseTransform{ 1.f };
+    // Base rotation for node
+    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -75,20 +75,19 @@ struct NodeState {
     ///////////////////////////////////////
     //
 
-    void setBaseTransform(const glm::mat4& transform) noexcept
+    void setBaseRotation(const glm::quat& rotation) noexcept
     {
-        if (m_baseTransform != transform) {
-            m_baseTransform = transform;
+        if (m_baseRotation != rotation) {
+            m_baseRotation = rotation;
             m_dirty = true;
             m_dirtyRotation = true;
-            m_dirtyNormal = true;
             m_dirtySnapshot = true;
         }
     }
 
-    inline const glm::mat4& getBaseTransform() const noexcept
+    inline const glm::quat& getBaseRotation() const noexcept
     {
-        return m_baseTransform;
+        return m_baseRotation;
     }
 
     inline const glm::vec4 getVolume() const noexcept
@@ -209,6 +208,8 @@ struct NodeState {
     {
         setQuatRotation(adjust * m_quatRotation);
     }
+
+    glm::vec3 getDegreesRotation() const noexcept;
 
     void setDegreesRotation(const glm::vec3& rot) noexcept
     {
