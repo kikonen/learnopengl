@@ -3,6 +3,7 @@
 #include <map>
 
 #include "asset/Material.h"
+#include "asset/Shader.h"
 
 #include "animation/RigContainer.h"
 #include "animation/BoneInfo.h"
@@ -73,6 +74,10 @@ namespace mesh {
         }
 
         auto material = Material::createMaterial(BasicMaterial::blue);
+        material.inmutable = true;
+        material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
+        material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
+        material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
         mesh->setMaterial(material);
 
         return mesh;
