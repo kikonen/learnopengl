@@ -17,6 +17,7 @@
 
 #include "mesh/MeshType.h"
 #include "mesh/ModelMesh.h"
+#include "mesh/PrimitiveMesh.h"
 
 #include "pool/NodeHandle.h"
 
@@ -170,17 +171,34 @@ namespace animation
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
-            const auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
             auto& state = node->modifyState();
-
             if (state.m_animationStartTime <= -42.f) {
                 // NOTE KI "once"
                 continue;
             }
 
-            if (!mesh->m_rig) continue;
+            const mesh::Mesh* mesh{ nullptr };
+            std::shared_ptr<animation::RigContainer> rigPtr;
 
-            auto& rig = *mesh->m_rig;
+            if (!rigPtr)
+            {
+                const auto* m = lodMesh.getMesh<mesh::ModelMesh>();
+                if (m) {
+                    rigPtr = m->m_rig;
+                    mesh = m;
+                }
+            }
+            if (!rigPtr)
+            {
+                const auto* m = lodMesh.getMesh<mesh::PrimitiveMesh>();
+                if (m) {
+                    rigPtr = m->m_rig;
+                    mesh = m;
+                }
+            }
+
+            if (!rigPtr) continue;
+            auto& rig = *rigPtr;
 
             auto bonePalette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
             auto socketPalette = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());

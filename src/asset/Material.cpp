@@ -47,10 +47,10 @@ namespace {
         return mat;
     }
 
-    Material createWhiteMaterial() {
+    Material createRGBMaterial(std::string_view name, const glm::vec4& color) {
         Material mat;
-        mat.m_name = "<white>";
-        mat.kd = { 1.f, 1.f, 1.f, 1.f };
+        mat.m_name = name;
+        mat.kd = color;
         return mat;
     }
 
@@ -94,7 +94,11 @@ Material Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
     case BasicMaterial::basic: return createBasicMaterial();
-    case BasicMaterial::white: return createWhiteMaterial();
+    case BasicMaterial::white: return createRGBMaterial("<white>", { 1.f, 1.f, 1.f, 1.f });
+    case BasicMaterial::red: return createRGBMaterial("<red>", { 1.f, 0.f, 0.f, 1.f });
+    case BasicMaterial::green: return createRGBMaterial("<green>", { 0.f, 1.f, 0.f, 1.f });
+    case BasicMaterial::blue: return createRGBMaterial("<blue>", { 0.f, 0.f, 1.f, 1.f });
+    case BasicMaterial::yellow: return createRGBMaterial("<yellow>", { 1.f, 1.f, 0.f, 1.f });
     case BasicMaterial::gold: return createGoldMaterial();
     case BasicMaterial::silver: return createSilverMaterial();
     case BasicMaterial::bronze: return createBronzeMaterial();
