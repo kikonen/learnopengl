@@ -176,27 +176,26 @@ void Material::loadTextures()
     const auto& assets = Assets::get();
     auto compressed = assets.compressedTexturesEnabled;
 
-    loadTexture(TextureType::diffuse, true, true);
-    loadTexture(TextureType::emission, true, false);
-    loadTexture(TextureType::specular, false, false);
-    loadTexture(TextureType::normal_map, false, false);
-    loadTexture(TextureType::dudv_map, false, false);
-    loadTexture(TextureType::noise_map, false, false);
-    loadTexture(TextureType::metallness_map, false, false);
-    loadTexture(TextureType::roughness_map, false, false);
-    loadTexture(TextureType::displacement_map, false, false);
-    loadTexture(TextureType::occlusion_map, false, false);
-    loadTexture(TextureType::opacity_map, false, false);
+    for (const auto& it : m_texturePaths) {
+        const auto type = it.first;
+        bool gammaCorrect = false;
+        bool usePlaceholder = false;
+
+        if (type == TextureType::diffuse) {
+            gammaCorrect = true;
+            usePlaceholder = true;
+        }
+        else if (type == TextureType::emission) {
+            gammaCorrect = true;
+        }
+
+        loadTexture(type, gammaCorrect, usePlaceholder);
+    }
 
     loadChannelTexture(
         TextureType::metal_channel_map,
         fmt::format("material_{}_metal", m_registeredIndex),
-        {
-            TextureType::metallness_map,
-            TextureType::roughness_map,
-            TextureType::displacement_map,
-            TextureType::occlusion_map,
-        },
+        map_channelParts,
         metal);
 }
 
@@ -252,7 +251,7 @@ void Material::loadTexture(
 void Material::loadChannelTexture(
     TextureType channelType,
     std::string_view name,
-    const std::vector<TextureType>& compoundTypes,
+    const std::vector<ChannelPart>& parts,
     const glm::vec4& defaults)
 {
     const auto& assets = Assets::get();
@@ -260,8 +259,8 @@ void Material::loadChannelTexture(
     std::vector<ImageTexture*> sourceTextures;
 
     int validCount = 0;
-    for (auto sourceTypes : compoundTypes) {
-        const auto& it = m_boundTextures.find(sourceTypes);
+    for (const auto& part : parts) {
+        const auto& it = m_boundTextures.find(part.m_type);
 
         auto* bound = it != m_boundTextures.end() ? &it->second : nullptr;
         if (bound) {
@@ -278,10 +277,9 @@ void Material::loadChannelTexture(
 
     if (validCount == 0) return;
 
-    const std::string& placeholderPath = assets.placeholderTexture;
-
     auto future = ChannelTexture::getTexture(
         name,
+        parts,
         sourceTextures,
         defaults,
         false,

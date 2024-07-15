@@ -209,6 +209,7 @@
     <ClCompile Include="src\kigl\GLFence.cpp" />
     <ClCompile Include="src\ki\FpsCounter.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
+    <ClCompile Include="src\loader\ChannelTextureLoader.cpp" />
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
@@ -444,9 +445,13 @@
     <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\asset\ChannelPart.h" />
+    <ClInclude Include="src\asset\ChannelTextureDefinition.h" />
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
+    <ClInclude Include="src\asset\TextureType.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
+    <ClInclude Include="src\loader\ChannelTextureLoader.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />

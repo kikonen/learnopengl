@@ -8,6 +8,7 @@
 
 #include "asset/ImageTexture.h"
 #include "asset/Image.h"
+#include "asset/ChannelPart.h"
 
 
 namespace {
@@ -60,6 +61,7 @@ namespace {
 
 std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     std::string_view name,
+    const std::vector<ChannelPart>& parts,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
     bool is16Bbit,
@@ -87,18 +89,20 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, is16Bbit, spec));
+    auto future = startLoad(new ChannelTexture(name, parts, sourceTextures, defaults, is16Bbit, spec));
     textures.insert({ cacheKey, future });
     return future;
 }
 
 ChannelTexture::ChannelTexture(
     std::string_view name,
+    const std::vector<ChannelPart>& parts,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
     bool is16Bbit,
     const TextureSpec& spec)
     : Texture(name, false, spec),
+    m_parts{ parts },
     m_sourceTextures{ sourceTextures },
     m_defaults{ defaults },
     m_is16Bbit{ is16Bbit }
