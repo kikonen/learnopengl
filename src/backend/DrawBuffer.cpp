@@ -399,6 +399,6 @@ namespace backend {
         }
 
         // HACK KI for primitive GL_LINES
-        glLineWidth(2.f);
+        glLineWidth(1.5f);
     }
 }

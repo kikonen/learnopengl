@@ -18,6 +18,10 @@ struct MaterialSSBO;
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
     white,
+    red,
+    green,
+    blue,
+    yellow,
     gold,
     silver,
     bronze,

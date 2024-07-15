@@ -27,6 +27,8 @@
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 
+#include "mesh/RigJointTreeGenerator.h"
+
 #include "util/assimp_util.h"
 
 namespace {
@@ -116,9 +118,18 @@ namespace mesh
             scene);
 
         if (!rig->empty()) {
+            rig->prepare();
+
             loadAnimations(ctx, meshSet.m_name, meshSet.m_filePath, scene);
 
-            rig->prepare();
+            {
+                RigJointTreeGenerator generator;
+                auto mesh = generator.generate(rig);
+                if (mesh) {
+                    meshSet.addMesh(std::move(mesh));
+                }
+            }
+
             meshSet.m_rig = rig;
         }
         else {
@@ -362,6 +373,8 @@ namespace mesh
                 material = &m_defaultMaterial;
             }
             modelMesh.setMaterial(*material);
+
+            //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }
 
 

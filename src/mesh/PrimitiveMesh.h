@@ -24,6 +24,7 @@ namespace mesh {
     {
     public:
         PrimitiveMesh();
+        PrimitiveMesh(std::string_view name);
         virtual ~PrimitiveMesh();
 
         virtual std::string str() const noexcept override;

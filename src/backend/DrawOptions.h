@@ -9,6 +9,7 @@ namespace backend {
     // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDrawElementsInstanced.xhtml
     struct DrawOptions {
         enum class Mode : std::underlying_type_t<std::byte> {
+            none,
             points,
             // NOTE KI https://www.khronos.org/opengl/wiki/Primitive
             // patches == tessellation

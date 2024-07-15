@@ -31,6 +31,12 @@ namespace mesh {
     {
     }
 
+    PrimitiveMesh::PrimitiveMesh(std::string_view name)
+        : Mesh(name),
+        m_type{ PrimitiveType::none }
+    {
+    }
+
     PrimitiveMesh::~PrimitiveMesh()
     {
     }
@@ -112,6 +118,8 @@ namespace mesh {
 
         auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
+
+        drawOptions.m_mode = backend::DrawOptions::Mode::none;
 
         switch (m_type) {
         case PrimitiveType::lines:
