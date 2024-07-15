@@ -215,5 +215,5 @@ void main() {
 #endif
 
   // HACK KI for primitive GL_POINTS
-  gl_PointSize = 4.0;
+  gl_PointSize = u_materials[materialIndex].layersDepth;
 }

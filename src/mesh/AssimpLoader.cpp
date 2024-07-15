@@ -129,8 +129,10 @@ namespace mesh
             if (assets.animationJointTree)
             {
                 RigJointTreeGenerator generator;
-                auto mesh = generator.generate(rig);
-                if (mesh) {
+                if (auto mesh = generator.generateTree(rig)) {
+                    meshSet.addMesh(std::move(mesh));
+                }
+                if (auto mesh = generator.generatePoints(rig)) {
                     meshSet.addMesh(std::move(mesh));
                 }
             }

@@ -13,7 +13,8 @@ namespace mesh {
     public:
         RigJointTreeGenerator() = default;
 
-        std::unique_ptr<mesh::Mesh> generate(std::shared_ptr<animation::RigContainer> rig) const;
+        std::unique_ptr<mesh::Mesh> generateTree(std::shared_ptr<animation::RigContainer> rig) const;
+        std::unique_ptr<mesh::Mesh> generatePoints(std::shared_ptr<animation::RigContainer> rig) const;
 
     private:
     };
