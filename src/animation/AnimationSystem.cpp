@@ -263,6 +263,10 @@ namespace animation
                 boneRegistry.markDirty(state.m_boneBaseIndex, rig.m_boneContainer.size());
                 socketRegistry.markDirty(state.m_socketBaseIndex, rig.m_sockets.size());
             }
+
+            // NOTE KI need to animated only once
+            // => multiple rigs per node are *NOT* currently supported
+            break;
         }
     }
 
