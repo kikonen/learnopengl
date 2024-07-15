@@ -281,6 +281,7 @@ public:
     bool wireframe : 1 {false};
 
     bool gbuffer : 1 {false};
+    bool inmutable : 1 {false};
 
     std::string m_geometryType;
     std::unordered_map<MaterialProgramType, std::string> m_programNames{};
