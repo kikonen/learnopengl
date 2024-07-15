@@ -273,28 +273,60 @@ namespace loader {
                     resolveTexturePath(line, true));
             }
             else if (k == "map_roughness") {
-                std::string line = readString(v);
-                material.addTexPath(
-                    TextureType::roughness_map,
-                    resolveTexturePath(line, false));
+                if (!material.hasRegisteredTex(TextureType::roughness_map)) {
+                    ChannelPart part{
+                        TextureType::roughness_map,
+                        { ChannelPart::Channel::green }
+                    };
+                    material.map_channelParts.push_back(part);
+
+                    std::string line = readString(v);
+                    material.addTexPath(
+                        TextureType::roughness_map,
+                        resolveTexturePath(line, false));
+                }
             }
             else if (k == "map_metalness") {
-                std::string line = readString(v);
-                material.addTexPath(
-                    TextureType::metallness_map,
-                    resolveTexturePath(line, false));
+                if (!material.hasRegisteredTex(TextureType::metallness_map)) {
+                    ChannelPart part{
+                        TextureType::metallness_map,
+                        { ChannelPart::Channel::red }
+                    };
+                    material.map_channelParts.push_back(part);
+
+                    std::string line = readString(v);
+                    material.addTexPath(
+                        TextureType::metallness_map,
+                        resolveTexturePath(line, false));
+                }
             }
             else if (k == "map_occlusion") {
-                std::string line = readString(v);
-                material.addTexPath(
-                    TextureType::occlusion_map,
-                    resolveTexturePath(line, false));
+                if (!material.hasRegisteredTex(TextureType::occlusion_map)) {
+                    ChannelPart part{
+                        TextureType::occlusion_map,
+                        { ChannelPart::Channel::alpha }
+                    };
+                    material.map_channelParts.push_back(part);
+
+                    std::string line = readString(v);
+                    material.addTexPath(
+                        TextureType::occlusion_map,
+                        resolveTexturePath(line, false));
+                }
             }
             else if (k == "map_displacement") {
-                std::string line = readString(v);
-                material.addTexPath(
-                    TextureType::displacement_map,
-                    resolveTexturePath(line, false));
+                if (!material.hasRegisteredTex(TextureType::displacement_map)) {
+                    ChannelPart part{
+                        TextureType::displacement_map,
+                        { ChannelPart::Channel::blue }
+                    };
+                    material.map_channelParts.push_back(part);
+
+                    std::string line = readString(v);
+                    material.addTexPath(
+                        TextureType::displacement_map,
+                        resolveTexturePath(line, false));
+                }
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
@@ -544,30 +576,58 @@ namespace loader {
         }
 
         if (!found && util::matchAny(metalnessMatchers, matchName)) {
-            material.addTexPath(
+            if (!material.hasRegisteredTex(TextureType::metallness_map)) {
+                ChannelPart part{
                 TextureType::metallness_map,
-                assetPath);
+                { ChannelPart::Channel::red }
+                };
+                material.map_channelParts.push_back(part);
+                material.addTexPath(
+                    TextureType::metallness_map,
+                    assetPath);
+            }
             found = true;
         }
 
         if (!found && util::matchAny(roughnessMatchers, matchName)) {
-            material.addTexPath(
+            if (!material.hasRegisteredTex(TextureType::roughness_map)) {
+                ChannelPart part{
                 TextureType::roughness_map,
-                assetPath);
+                { ChannelPart::Channel::green }
+                };
+                material.map_channelParts.push_back(part);
+                material.addTexPath(
+                    TextureType::roughness_map,
+                    assetPath);
+            }
             found = true;
         }
 
         if (!found && util::matchAny(occlusionMatchers, matchName)) {
-            material.addTexPath(
+            if (!material.hasRegisteredTex(TextureType::occlusion_map)) {
+                ChannelPart part{
                 TextureType::occlusion_map,
-                assetPath);
+                { ChannelPart::Channel::alpha }
+                };
+                material.map_channelParts.push_back(part);
+                material.addTexPath(
+                    TextureType::occlusion_map,
+                    assetPath);
+            }
             found = true;
         }
 
         if (!found && util::matchAny(displacementMatchers, matchName)) {
-            material.addTexPath(
-                TextureType::displacement_map,
-                assetPath);
+            if (!material.hasRegisteredTex(TextureType::displacement_map)) {
+                ChannelPart part{
+                    TextureType::displacement_map,
+                    { ChannelPart::Channel::blue }
+                };
+                material.map_channelParts.push_back(part);
+                material.addTexPath(
+                    TextureType::displacement_map,
+                    assetPath);
+            }
             found = true;
         }
 
