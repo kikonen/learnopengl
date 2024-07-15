@@ -5,6 +5,7 @@
 #include "kigl/kigl.h"
 
 #include "util/glm_format.h"
+#include "util/Log.h"
 
 #include "asset/ImageTexture.h"
 #include "asset/Image.h"
@@ -224,22 +225,22 @@ void ChannelTexture::load()
 
     const int dstPixelMax = m_is16Bbit ? 65535 : 255;
 
-    int dstOffset = -1;
-
     m_width = w;
     m_height = h;
 
-    for (auto& tex : m_sourceTextures) {
-        dstOffset++;
-        int defaultValue = (int)(m_defaults[dstOffset] * (m_is16Bbit ? 65535 : 255));
-        //if (!tex) continue;
+    for (int partIndex = 0; partIndex < m_parts.size(); partIndex++) {
+        const auto& part = m_parts[partIndex];
+        const auto& tex = m_sourceTextures[partIndex];
 
         auto* image = tex ? tex->m_image.get() : nullptr;
-        //if (!image) continue;
+        if (!image) continue;
 
-        //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
-        const int srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
-        const float pixelRatio = dstPixelMax / (float)srcPixelMax;
+        if (image->m_width != w || image->m_height != h) {
+            KI_WARN(fmt::format(
+                "CHANNEL_TEX: part={}, ({}, {}) != ({}, {})",
+                partIndex, w, h, image->m_width, image->m_height));
+            continue;
+        }
 
         unsigned char* srcByteData{ nullptr };
         unsigned short* srcShortData{ nullptr };
@@ -257,36 +258,44 @@ void ChannelTexture::load()
             srcChannels = image->m_channels;
         }
 
-        for (int y = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
-                int srcIndex = y * (w * srcChannels) + x * srcChannels;
+        //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
+        const int srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
+        const float pixelRatio = dstPixelMax / (float)srcPixelMax;
 
-                if (srcChannels > 1) {
-                    int x = 0;
-                    // NOTE KI prefer ALPHA if alpha included, otherwise RED
-                    if (srcChannels == 4) {
-                        srcIndex += 4;
+        for (int srcChannelIndex = 0; srcChannelIndex < 4; srcChannelIndex++) {
+            if (srcChannelIndex >= srcChannels) continue;
+
+            auto channel = part.m_mapping[srcChannelIndex];
+
+            int dstChannelIndex = ChannelPart::getChannelIndex(channel);
+            if (dstChannelIndex == -1) continue;
+
+            int defaultValue = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 65535 : 255));
+
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int srcIndex = y * (w * srcChannels) + x * srcChannels + srcChannelIndex;
+
+                    int value;
+                    if (srcByteData) {
+                        value = srcByteData[srcIndex];
+                        value = (int)(value * pixelRatio);
                     }
-                }
-                int value;
-                if (srcByteData) {
-                    value = srcByteData[srcIndex];
-                    value = (int)(value * pixelRatio);
-                }
-                else if (srcShortData) {
-                    value = srcShortData[srcIndex];
-                    value = (int)(value * pixelRatio);
-                }
-                else {
-                    value = defaultValue;
-                }
+                    else if (srcShortData) {
+                        value = srcShortData[srcIndex];
+                        value = (int)(value * pixelRatio);
+                    }
+                    else {
+                        value = defaultValue;
+                    }
 
-                int dstIndex = y * w * dstRGBA + x * dstRGBA + dstOffset;
-                if (m_is16Bbit) {
-                    dstShortData[dstIndex] = value;
-                }
-                else {
-                    dstByteData[dstIndex] = value;
+                    int dstIndex = y * w * dstRGBA + x * dstRGBA + dstChannelIndex;
+                    if (m_is16Bbit) {
+                        dstShortData[dstIndex] = value;
+                    }
+                    else {
+                        dstByteData[dstIndex] = value;
+                    }
                 }
             }
         }

@@ -24,4 +24,18 @@ struct ChannelPart {
         ChannelPart::Channel::none,
         ChannelPart::Channel::none
     };
+
+    static int getChannelIndex(ChannelPart::Channel channel) {
+        switch (channel) {
+            case ChannelPart::Channel::red:
+                return 0;
+            case ChannelPart::Channel::green:
+                return 1;
+            case ChannelPart::Channel::blue:
+                return 2;
+            case ChannelPart::Channel::alpha:
+                return 3;
+        }
+        return -1;
+    }
 };
