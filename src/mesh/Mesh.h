@@ -16,6 +16,8 @@
 
 #include "registry/Registry.h"
 
+#include "mesh/MeshFlags.h"
+
 struct PrepareContext;
 
 namespace mesh {
@@ -66,6 +68,8 @@ namespace mesh {
 
         glm::mat4 m_rigTransform{ 1.f };
         glm::mat4 m_inverseRigTransform{ 1.f };
+
+        MeshFlags m_flags;
 
     protected:
         bool m_prepared{ false };

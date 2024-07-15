@@ -19,6 +19,8 @@ namespace mesh {
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::lines;
+        mesh->m_flags.noVolume = true;
+        mesh->m_flags.useBones = true;
 
         auto& vertices = mesh->m_vertices;
         auto& vertexBones = mesh->m_vertexBones;
@@ -91,6 +93,8 @@ namespace mesh {
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::points;
+        mesh->m_flags.noVolume = true;
+        mesh->m_flags.useBones = true;
 
         auto& vertices = mesh->m_vertices;
         auto& vertexBones = mesh->m_vertexBones;
