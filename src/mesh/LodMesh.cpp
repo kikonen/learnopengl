@@ -205,6 +205,9 @@ namespace mesh {
         m_mesh = mesh;
         if (!m_mesh) return;
 
+        m_flags.noVolume = m_mesh->m_flags.noVolume;
+        m_flags.useBones = m_mesh->m_flags.useBones;
+
         setMaterial(mesh->getMaterial());
     }
 
