@@ -213,9 +213,9 @@ namespace mesh
 
             bool boolValue;
             int32_t intValue;
-            uint32_t uintValue;
-            int64_t longValue;
-            uint64_t ulongValue;
+            //uint32_t uintValue;
+            //int64_t longValue;
+            //uint64_t ulongValue;
             float floatValue;
             double doubleValue;
             aiString stringValue;
@@ -417,21 +417,10 @@ namespace mesh
     {
         assert(face->mNumIndices <= 3);
 
-        Index index{ 0, 0, 0 };
         for (uint32_t i = 0; i < face->mNumIndices; i++)
         {
-            // NOTE KI multi material models are split by *material* into meshes
-            // vertices and thus indeces areare per mesh, but they are *combined*
-            // back single mesh in load
-            // => must apply vertex offset in index buffer to match that
-            index[i] = static_cast<glm::uint>(face->mIndices[i]);
+            modelMesh.m_indeces.push_back(face->mIndices[i]);
         }
-        //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
-        //    mesh->mName.C_Str(),
-        //    faceIndex,
-        //    vertexOffset,
-        //    index));
-        modelMesh.m_indeces.push_back({ index });
     }
 
     void AssimpLoader::processMeshBone(
@@ -453,7 +442,6 @@ namespace mesh
 
         auto& vertexBones = modelMesh.m_vertexBones;
 
-        Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
             const auto& vw = bone->mWeights[i];

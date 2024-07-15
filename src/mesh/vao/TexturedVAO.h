@@ -9,6 +9,8 @@
 #include "VertexTextureVBO.h"
 #include "VertexIndexEBO.h"
 
+#include "mesh/Index.h"
+
 namespace mesh {
     class TexturedVAO {
     public:
@@ -30,7 +32,7 @@ namespace mesh {
 
         void updateIndeces(
             uint32_t baseEbo,
-            std::span<Index> indeces);
+            std::span<Index32> indeces);
 
         const kigl::GLVertexArray* getVAO() const
         {

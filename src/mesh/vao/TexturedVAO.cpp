@@ -115,7 +115,7 @@ namespace mesh {
 
     void TexturedVAO::updateIndeces(
         uint32_t baseEbo,
-        std::span<Index> indeces)
+        std::span<Index32> indeces)
     {
         ASSERT_RT();
 

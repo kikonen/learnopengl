@@ -1,7 +1,8 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include <stdint.h>
 
 namespace mesh {
-    using Index = glm::uvec3;
+    using Index16 = uint16_t;
+    using Index32 = uint32_t;
 }

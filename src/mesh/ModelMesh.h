@@ -47,16 +47,16 @@ namespace mesh {
         }
 
         inline uint32_t getBaseIndex() const noexcept {
-            return m_eboIndex * 3;
+            return m_eboIndex;
         }
 
         inline uint32_t getIndexCount() const noexcept {
-            return static_cast<uint32_t>(m_indeces.size() * 3);
+            return static_cast<uint32_t>(m_indeces.size());
         }
 
     public:
         std::vector<Vertex> m_vertices;
-        std::vector<Index> m_indeces;
+        std::vector<Index32> m_indeces;
 
         std::vector<animation::VertexBone> m_vertexBones;
 

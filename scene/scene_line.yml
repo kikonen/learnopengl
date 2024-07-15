@@ -76,12 +76,13 @@ nodes:
           - [ 1, -1, 0]
           - [ 1,  1, 0]
         indeces:
-          [0, 1, 1, 2, 2, 3, 3, 0, 3, 4, 4, 1]
+          [0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3]
       flags:
         render_back: true
     program: g_tex
     scale: 1
     pos: [0, 2, 0]
+    script: scripts/anim_lucy
   - id: points
     type: primitive
     mesh:
@@ -96,7 +97,7 @@ nodes:
           - [ 1, -1, 0]
           - [ 1,  1, 0]
         indeces:
-          [0, 1, 1, 2, 2, 3, 3, 0, 3, 4, 4, 1]
+          [0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3]
       flags:
         render_back: true
     program: g_tex

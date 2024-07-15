@@ -2,20 +2,29 @@
 
 #include <string>
 
+#include "animation/VertexBone.h"
+
 #include "mesh/Mesh.h"
 #include "mesh/PrimitiveType.h"
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
 
+namespace animation {
+    struct RigContainer;
+    struct VertexBone;
+}
+
 namespace mesh {
     //
+    // **References**
+    // https://www.khronos.org/opengl/wiki/Primitive
     // https://stackoverflow.com/questions/39588937/when-drawing-lines-with-vbo-how-do-i-specify-indices
     //
-    class LineMesh final : public Mesh
+    class PrimitiveMesh final : public Mesh
     {
     public:
-        LineMesh();
-        virtual ~LineMesh();
+        PrimitiveMesh();
+        virtual ~PrimitiveMesh();
 
         virtual std::string str() const noexcept override;
 
@@ -34,18 +43,22 @@ namespace mesh {
         }
 
         inline uint32_t getBaseIndex() const noexcept {
-            return m_eboIndex * 3;
+            return m_eboIndex;
         }
 
         inline uint32_t getIndexCount() const noexcept {
-            return static_cast<uint32_t>(m_indeces.size() * 3);
+            return static_cast<uint32_t>(m_indeces.size());
         }
 
     public:
-        mesh::PrimitiveType m_type;
+        PrimitiveType m_type;
 
         std::vector<Vertex> m_vertices;
-        std::vector<mesh::Index> m_indeces;
+        std::vector<Index32> m_indeces;
+
+        std::vector<animation::VertexBone> m_vertexBones;
+
+        std::shared_ptr<animation::RigContainer> m_rig;
 
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };

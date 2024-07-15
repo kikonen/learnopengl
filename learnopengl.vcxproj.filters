@@ -750,7 +750,7 @@
     <ClCompile Include="src\animation\Metadata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\LineMesh.cpp">
+    <ClCompile Include="src\mesh\PrimitiveMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\VertexLoader.cpp">
@@ -1853,7 +1853,7 @@
     <ClInclude Include="src\animation\MetadataLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\LineMesh.h">
+    <ClInclude Include="src\mesh\PrimitiveMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\VertexData.h">

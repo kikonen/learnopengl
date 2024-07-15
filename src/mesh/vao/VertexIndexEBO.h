@@ -27,7 +27,7 @@ namespace mesh
 
         void updateIndeces(
             uint32_t baseIndex,
-            std::span<mesh::Index> indeces) noexcept;
+            std::span<mesh::Index32> indeces) noexcept;
 
         void clear();
 
@@ -44,6 +44,6 @@ namespace mesh
         kigl::GLBuffer m_ebo;
 
         std::vector < std::pair<uint32_t, size_t>> m_dirty;
-        std::vector<IndexEntry> m_entries;
+        std::vector<IndexEntry32> m_entries;
     };
 }
