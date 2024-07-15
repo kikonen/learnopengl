@@ -15,6 +15,8 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+#include "loader/ChannelTextureLoader.h"
+
 namespace {
     const float DEF_ALPHA = 1.0;
 
@@ -299,6 +301,10 @@ namespace loader {
                 material.addTexPath(
                     TextureType::opacity_map,
                     resolveTexturePath(line, true));
+            }
+            else if (k == "map_channel") {
+                ChannelTextureLoader loader;
+                loader.loadParts(v, material);
             }
             else if (k == "metal") {
                 material.metal = readVec4(v);
