@@ -11,7 +11,7 @@
 #include "mesh/PrimitiveMesh.h"
 
 namespace mesh {
-    std::unique_ptr<mesh::Mesh> RigJointTreeGenerator::generate(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::Mesh> RigJointTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;
 
@@ -79,6 +79,68 @@ namespace mesh {
         material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
         material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
         mesh->setMaterial(material);
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> RigJointTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
+    {
+        auto& rig = *rigPtr;
+
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>("joint_points");
+
+        mesh->m_rig = rigPtr;
+        mesh->m_type = mesh::PrimitiveType::points;
+
+        auto& vertices = mesh->m_vertices;
+        auto& vertexBones = mesh->m_vertexBones;
+        auto& indeces = mesh->m_indeces;
+
+        vertices.reserve(rig.m_joints.size());
+        vertexBones.reserve(rig.m_joints.size());
+        indeces.reserve(rig.m_joints.size());
+
+        std::map<int16_t, int16_t> jointToVertex;
+
+        auto findVertexIndex = [&jointToVertex](uint16_t jointIndex) {
+            const auto& it = jointToVertex.find(jointIndex);
+            return it != jointToVertex.end() ? it->second : -1;
+            };
+
+        // generate initial vertices
+        for (auto& rigJoint : rig.m_joints) {
+            if (rigJoint.m_boneIndex < 0) continue;
+
+            jointToVertex.insert({ rigJoint.m_index, static_cast<int16_t>(vertices.size()) });
+            auto& vertex = vertices.emplace_back();
+            vertex.pos = rigJoint.m_globalTransform * glm::vec4{ 0, 0, 0, 1 };
+
+            auto& vertexBone = vertexBones.emplace_back();
+            vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+        }
+
+        // generate points: one for each vertex
+        for (auto& rigJoint : rig.m_joints) {
+            if (rigJoint.m_parentIndex < 0) continue;
+            if (rigJoint.m_boneIndex < 0) continue;
+
+            int16_t vertexIndex = findVertexIndex(rigJoint.m_index);
+            assert(vertexIndex >= 0);
+
+            indeces.push_back(vertexIndex);
+        }
+
+        {
+            auto material = Material::createMaterial(BasicMaterial::green);
+
+            material.inmutable = true;
+            material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
+            material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
+            material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
+            material.layersDepth = 6.f;
+
+            mesh->setMaterial(material);
+        }
 
         return mesh;
     }
