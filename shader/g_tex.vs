@@ -213,4 +213,7 @@ void main() {
 #endif
   }
 #endif
+
+  // HACK KI for primitive GL_POINTS
+  gl_PointSize = 4.0;
 }

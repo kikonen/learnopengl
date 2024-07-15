@@ -45,7 +45,7 @@ namespace mesh {
 
     void VertexIndexEBO::updateIndeces(
         uint32_t baseIndex,
-        std::span<mesh::Index> indeces) noexcept
+        std::span<mesh::Index32> indeces) noexcept
     {
         assert(baseIndex + indeces.size() <= m_entries.size());
 
@@ -63,7 +63,7 @@ namespace mesh {
     {
         {
             m_entries.reserve(INDEX_BLOCK_SIZE);
-            m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry), GL_DYNAMIC_STORAGE_BIT);
+            m_ebo.createEmpty(INDEX_BLOCK_SIZE * sizeof(IndexEntry32), GL_DYNAMIC_STORAGE_BIT);
         }
         glVertexArrayElementBuffer(vao, m_ebo);
     }
@@ -89,7 +89,7 @@ namespace mesh {
         if (totalCount == 0) return true;
 
         {
-            constexpr size_t sz = sizeof(IndexEntry);
+            constexpr size_t sz = sizeof(IndexEntry32);
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_ebo.m_size < totalCount * sz) {

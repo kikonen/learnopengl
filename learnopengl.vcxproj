@@ -224,7 +224,7 @@
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\loader\VertexLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
-    <ClCompile Include="src\mesh\LineMesh.cpp" />
+    <ClCompile Include="src\mesh\PrimitiveMesh.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\animation\RigSocket.cpp" />
     <ClCompile Include="src\mesh\TransformRegistry.cpp" />
@@ -457,7 +457,7 @@
     <ClInclude Include="src\loader\VertexData.h" />
     <ClInclude Include="src\loader\VertexLoader.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
-    <ClInclude Include="src\mesh\LineMesh.h" />
+    <ClInclude Include="src\mesh\PrimitiveMesh.h" />
     <ClInclude Include="src\mesh\LoadContext.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
     <ClInclude Include="src\loader\converter\DocNode.h" />

@@ -13,6 +13,8 @@
 
 #include "mesh/LodMesh.h"
 
+#include "animation/RigContainer.h"
+
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
@@ -21,7 +23,6 @@
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
-#include "animation/RigContainer.h"
 
 namespace mesh {
     ModelMesh::ModelMesh(

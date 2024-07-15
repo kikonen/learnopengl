@@ -5,7 +5,7 @@
 
 #include "loader_util.h"
 
-#include "mesh/LineMesh.h"
+#include "mesh/PrimitiveMesh.h"
 
 
 namespace loader {
@@ -102,20 +102,20 @@ namespace loader {
 
         switch (data.type) {
         case mesh::PrimitiveType::points:
-            return createLineMesh(meshData, data, loaders);
+            return createPrimitiveMesh(meshData, data, loaders);
         case mesh::PrimitiveType::lines:
-            return createLineMesh(meshData, data, loaders);
+            return createPrimitiveMesh(meshData, data, loaders);
         }
 
         return nullptr;
     }
 
-    std::unique_ptr<mesh::Mesh> VertexLoader::createLineMesh(
+    std::unique_ptr<mesh::Mesh> VertexLoader::createPrimitiveMesh(
         const MeshData& meshData,
         const VertexData& data,
         Loaders& loaders) const
     {
-        auto mesh = std::make_unique<mesh::LineMesh>();
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>();
 
         mesh->m_type = data.type;
 
@@ -130,18 +130,8 @@ namespace loader {
             vertex.pos = v;
         }
 
-        const auto indexCount = data.indeces.size();
-        for (int i = 0; i < indexCount; i += 3)
-        {
-            auto& index = indeces.emplace_back();
-
-            int v = 0;
-            for (int vidx = 0; vidx < 3; vidx++) {
-                if (i + vidx < indexCount) {
-                    v = data.indeces[i + vidx];
-                }
-                index[vidx] = v;
-            }
+        for (auto& v : data.indeces) {
+            indeces.push_back(v);
         }
 
         return mesh;
