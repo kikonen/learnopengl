@@ -33,7 +33,9 @@
     + (b2 * pos) * boneWeight.y
     + (b3 * pos) * boneWeight.z
     + (b4 * pos) * boneWeight.w;
-  pos = skinPos;
+
+  // https://www.khronos.org/opengl/wiki/Skeletal_Animation
+  pos = vec4(skinPos.xyz, 1.0);
 
 #ifdef USE_BONES_NORMAL
   // Skin the normal
