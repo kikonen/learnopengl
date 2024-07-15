@@ -231,7 +231,7 @@ namespace animation
 
                     auto clipIndex = state.m_animationClipIndex;
                     const auto& clipContainer = rig.m_clipContainer;
-                    if (clipIndex >= 0 || clipIndex < clipContainer.m_clips.size()) {
+                    if (clipIndex >= 0 && clipIndex < clipContainer.m_clips.size()) {
                         const auto& clip = clipContainer.m_clips[clipIndex];
                         if (!clip.m_single && animationCurrentTime > clip.m_durationSecs) {
                             animationCurrentTime = clip.m_durationSecs;
