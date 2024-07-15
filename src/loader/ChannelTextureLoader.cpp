@@ -37,15 +37,17 @@ namespace {
         const loader::DocNode& node)
     {
         std::vector<ChannelPart::Channel> vec;
+        vec.reserve(4);
 
-        std::string s = readString(node);
-        while (s.size() < 4) {
-            s += CHANNEL_NONE;
+        std::string str = readString(node);
+
+        for (int i = 0; i < str.size(); i++) {
+            std::string p{ str[i] };
+            vec.push_back(resolveChannel(util::toUpper(p)));
         }
 
-        for (int i = 0; i < 4; i++) {
-            std::string p{ s[i] };
-            vec.push_back(resolveChannel(util::toUpper(p)));
+        while (vec.size() < 4) {
+            vec.push_back(ChannelPart::Channel::none);
         }
 
         return vec;
