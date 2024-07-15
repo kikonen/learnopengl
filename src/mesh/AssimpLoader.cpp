@@ -10,6 +10,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "asset/Assets.h"
+
 #include "util/glm_format.h"
 #include "util/Log.h"
 #include "util/Util.h"
@@ -62,6 +64,8 @@ namespace mesh
         mesh::MeshSet& meshSet)
     {
         std::lock_guard lock(m_lock);
+
+        const auto& assets = Assets::get();
 
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", meshSet.m_filePath));
 
@@ -122,6 +126,7 @@ namespace mesh
 
             loadAnimations(ctx, meshSet.m_name, meshSet.m_filePath, scene);
 
+            if (assets.animationJointTree)
             {
                 RigJointTreeGenerator generator;
                 auto mesh = generator.generate(rig);

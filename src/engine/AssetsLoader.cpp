@@ -517,6 +517,10 @@ void AssetsLoader::loadAssets(
                 data.animationEnabled = readBool(v);
                 continue;
             }
+            if (k == "animation_joint_tree") {
+                data.animationJointTree = readBool(v);
+                continue;
+            }
             if (k == "animation_first_frame_only") {
                 data.animationFirstFrameOnly = readBool(v);
                 continue;
