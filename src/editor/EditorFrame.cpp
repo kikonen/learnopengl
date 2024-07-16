@@ -64,7 +64,9 @@ void EditorFrame::draw(const RenderContext& ctx)
 
     // NOTE KI don't waste CPU if Edit window is collapsed
     bool* openPtr = nullptr;
-    ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar;
+    ImGuiWindowFlags flags = 0
+        | ImGuiWindowFlags_MenuBar
+        | 0;
     if (!ImGui::Begin("Edit", openPtr, flags)) {
         trackImGuiState(debugContext);
         ImGui::End();
@@ -77,6 +79,8 @@ void EditorFrame::draw(const RenderContext& ctx)
     ImGuiID dockspace_id = ImGui::GetID("learnopengl_editor");
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     //}
+
+    renderMenuBar(ctx, debugContext);
 
     //if (ImGui::CollapsingHeader("Status"))
     {
@@ -121,6 +125,7 @@ void EditorFrame::draw(const RenderContext& ctx)
     ImGui::End();
 }
 
+
 void EditorFrame::trackImGuiState(
     render::DebugContext& debugContext)
 {
@@ -133,6 +138,32 @@ void EditorFrame::trackImGuiState(
         ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
         ImGui::IsAnyItemHovered() ||
         ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+}
+
+void EditorFrame::renderMenuBar(
+    const RenderContext& ctx,
+    render::DebugContext& debugContext)
+{
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            ImGui::Checkbox("ImGui Demo", &debugContext.m_imguiDemo);
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
 }
 
 void EditorFrame::renderStatus(
@@ -382,7 +413,7 @@ void EditorFrame::renderBufferDebug(
     }
     if (ImGui::TreeNodeEx("Mirror - Water refraction", tnFlags)) {
         auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
-        viewportTex(*viewport, true); 
+        viewportTex(*viewport, true);
 
         ImGui::TreePop();
     }
@@ -459,6 +490,5 @@ void EditorFrame::renderMiscDebug(
     const RenderContext & ctx,
     render::DebugContext & debugContext)
 {
-    ImGui::Checkbox("ImGui Demo", &debugContext.m_imguiDemo);
     ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
 }

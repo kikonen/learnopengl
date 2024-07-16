@@ -18,6 +18,10 @@ private:
     void trackImGuiState(
         render::DebugContext& debugContext);
 
+    void renderMenuBar(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext);
+
     void renderStatus(
         const RenderContext& ctx,
         render::DebugContext& debugContext);
