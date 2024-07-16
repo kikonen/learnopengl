@@ -19,6 +19,7 @@ public:
         const std::vector<ChannelPart>& parts,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
+        int channelCount,
         bool is16Bbit,
         const TextureSpec& spec);
 
@@ -27,6 +28,7 @@ public:
         const std::vector<ChannelPart>& parts,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
+        int channelCount,
         bool is16Bbit,
         const TextureSpec& spec);
 
@@ -43,6 +45,7 @@ private:
     const std::vector<ImageTexture*> m_sourceTextures;
 
     const glm::vec4 m_defaults;
+    const int m_channelCount;
     const bool m_is16Bbit;
 
     int m_width{ 0 };
