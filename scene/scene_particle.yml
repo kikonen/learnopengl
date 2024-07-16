@@ -9,7 +9,6 @@ script:
 nodes:
   - id: player_fps
     type: origo
-    program: g_tex
     pos: [0, 4, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
@@ -28,19 +27,18 @@ nodes:
       flags:
         billboard: true
       material:
-        - name: fps_text
-          kd: [0.0, 0.8, 0.0, 1.0]
-          xmetal: [1.0, 0.0, 0, 1]
-          alpha: true
-          render_back: true
+        kd: [0.0, 0.8, 0.0, 1.0]
+        xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
+        program: g_font_render
+        shadow_program: shadow_font_render
     text:
       text: "- fps"
       fonts:
         name: fps_font
         path: fonts/Vera.ttf
         size: 36
-    program: g_font_render
-    shadow_program: shadow_font_render
     pos: [0.5, 0.75, -2]
     scale: 0.01
   - id: player_fps_camera
@@ -88,7 +86,7 @@ nodes:
       path: water_ball
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
-    program: g_tex
+        program: g_tex
     pos: [0.0, 0.0, 0.0]
     particle:
       material:
@@ -103,7 +101,7 @@ nodes:
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
-    program: g_tex
+      program: g_tex
     base_rot: [-90, 0, 0]
     clones:
       - pos: [-5.0, 2.0, -5.0]
@@ -341,9 +339,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+        program: g_light
     pos: [-25, 45, 0]
     scale: 1.5
-    program: g_light
     render_flags:
       no_shadow: true
     light:

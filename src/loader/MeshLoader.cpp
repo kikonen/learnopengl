@@ -73,6 +73,21 @@ namespace loader {
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
             }
+            else if (k == "program") {
+                data.programs[MaterialProgramType::shader] = readString(v);
+            }
+            else if (k == "shadow_program") {
+                data.programs[MaterialProgramType::shadow] = readString(v);
+            }
+            else if (k == "pre_depth_program") {
+                data.programs[MaterialProgramType::pre_depth] = readString(v);
+            }
+            else if (k == "selection_program") {
+                data.programs[MaterialProgramType::selection] = readString(v);
+            }
+            else if (k == "id_program") {
+                data.programs[MaterialProgramType::object_id] = readString(v);
+            }
             else if (k == "materials") {
                 loaders.m_materialLoader.loadMaterials(v, data.materials);
             }

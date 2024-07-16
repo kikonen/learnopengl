@@ -147,9 +147,6 @@ namespace loader {
             else if (k == "id_program") {
                 data.programs[MaterialProgramType::object_id] = readString(v);
             }
-            else if (k == "geometry_type") {
-                data.geometryType = readString(v);
-            }
             else if (k == "flags" || k == "type_flags" || k == "render_flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();
