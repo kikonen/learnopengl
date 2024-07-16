@@ -30,6 +30,8 @@ namespace loader {
         std::vector<LodData> lods;
         std::vector<SocketData> sockets;
 
+        std::unordered_map<MaterialProgramType, std::string> programs;
+
         std::vector<MaterialData> materials;
         std::vector<AnimationData> animations;
 

@@ -23,7 +23,6 @@ namespace loader {
         bool lods{ false };
 
         bool programName{ false };
-        bool geometryType{ false };
 
         bool shadowProgramName{ false };
         bool preDepthProgramName{ false };

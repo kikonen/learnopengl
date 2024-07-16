@@ -577,6 +577,13 @@ namespace loader {
                     material.m_programNames[srcIt.first] = srcIt.second;
                 }
             }
+
+            for (const auto& srcIt : meshData.programs) {
+                const auto& dstIt = material.m_programNames.find(srcIt.first);
+                if (dstIt == material.m_programNames.end()) {
+                    material.m_programNames[srcIt.first] = srcIt.second;
+                }
+            }
         }
 
         m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);

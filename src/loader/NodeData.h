@@ -52,7 +52,6 @@ namespace loader {
         std::vector<AttachmentData> attachments;
         std::vector<LodLevelData> lodLevels;
 
-        std::string geometryType;
         std::unordered_map<MaterialProgramType, std::string> programs;
 
         loader::FlagContainer nodeFlags;
