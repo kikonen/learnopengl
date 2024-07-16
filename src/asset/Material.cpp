@@ -282,6 +282,7 @@ void Material::loadChannelTexture(
         parts,
         sourceTextures,
         defaults,
+        4,
         false,
         textureSpec);
 
