@@ -240,7 +240,7 @@ namespace loader {
                 data.rotation = readDegreesRotation(v);
             }
             else if (k == "scale") {
-                data.scale = readVec3(v);
+                data.scale = readFloat(v);
             }
             else {
                 reportUnknown("socket_entry", k, v);

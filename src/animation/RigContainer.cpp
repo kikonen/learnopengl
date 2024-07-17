@@ -156,6 +156,11 @@ namespace animation {
         return socketIndex >= 0 ? &m_sockets[socketIndex] : nullptr;
     }
 
+    animation::RigSocket* RigContainer::modifySocket(int16_t socketIndex) noexcept
+    {
+        return socketIndex >= 0 ? &m_sockets[socketIndex] : nullptr;
+    }
+
     const animation::RigSocket* RigContainer::findSocket(const std::string& socketName) const noexcept
     {
         const auto& it = std::find_if(

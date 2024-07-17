@@ -1338,15 +1338,15 @@ nodes:
           - name: neck
             joint: Bip01_Spine4
             offset: [-1.9, 3.3, 0]
-            rotation: [0, -85, -99]
+            rotation: [0, -85, -110]
           - name: l_arm
             joint: Bip01_L_Forearm
             offset: [7, 0, 0]
             rotation: [80, 0, 0]
           - name: r_hand
             joint: Bip01_R_Hand
-            offset: [2.3, -1.4, 0]
-            rotation: [-45, 0, 0]
+            offset: [2.4, 0, -2.3]
+            rotation: [-66, -4, 0]
         flags:
           use_bones: true
           use_animation: true

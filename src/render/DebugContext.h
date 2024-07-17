@@ -4,18 +4,14 @@
 
 #include "ki/size.h"
 
-#include "pool/NodeHandle.h"
-
 namespace render {
     struct DebugContext {
         static const render::DebugContext& get() noexcept;
         static render::DebugContext& modify() noexcept;
 
-        bool m_imguiDemo{ false };
         bool m_frustumEnabled{ true };
 
         int m_entityId{ 0 };
-        pool::NodeHandle m_selectedNode;
 
         bool m_nodeDebugEnabled{ false };
         bool m_forceWireframe{ false };

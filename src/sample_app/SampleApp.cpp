@@ -118,13 +118,13 @@ int SampleApp::onSetup()
     //state.setEnabled(GL_MULTISAMPLE, false);
 
     if (assets.useImGui) {
-        m_frameInit = std::make_unique<FrameInit>(*m_window);
-        m_frame = std::make_unique<EditorFrame>(*m_window);
+        m_editorInit = std::make_unique<FrameInit>(*m_window);
+        m_editor = std::make_unique<editor::EditorFrame>(*m_window);
 
         PrepareContext ctx{ m_registry.get()};
 
-        m_frameInit->prepare(ctx);
-        m_frame->prepare(ctx);
+        m_editorInit->prepare(ctx);
+        m_editor->prepare(ctx);
     }
 
     if (false) {
@@ -242,7 +242,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         state.clearColor(BLACK_COLOR);
 
         if (assets.useImGui) {
-            m_frame->bind(ctx);
+            m_editor->bind(ctx);
             state.clear();
         }
 
@@ -275,12 +275,12 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     if (assets.useImGui) {
-        if (assets.imGuiDemo || m_debugContext.m_imguiDemo) {
+        if (assets.imGuiDemo || m_editor->getState().m_imguiDemo) {
             ImGui::ShowDemoWindow();
         }
 
-        m_frame->draw(ctx);
-        m_frame->render(ctx);
+        m_editor->draw(ctx);
+        m_editor->render(ctx);
     }
 
     frustumDebug(ctx, clock);
@@ -483,7 +483,7 @@ void SampleApp::selectNode(
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
-            debugContext.m_selectedNode = node->toHandle();
+            m_editor->getState().m_selectedNode = node->toHandle();
         }
     }
     //else if (playerMode) {

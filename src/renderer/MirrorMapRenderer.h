@@ -14,11 +14,13 @@ class Node;
 class Viewport;
 class WaterMapRenderer;
 
-class EditorFrame;
+namespace editor {
+    class EditorFrame;
+}
 
 class MirrorMapRenderer final : public Renderer
 {
-    friend class EditorFrame;
+    friend class editor::EditorFrame;
 
 public:
     MirrorMapRenderer(

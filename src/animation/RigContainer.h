@@ -55,6 +55,9 @@ namespace animation {
         // @return registered socket, null if not found
         const animation::RigSocket* getSocket(int16_t socketIndex) const noexcept;
 
+        // @return registered socket, null if not found
+        animation::RigSocket* modifySocket(int16_t socketIndex) noexcept;
+
         const animation::RigSocket* findSocket(const std::string& socketName) const noexcept;
 
         bool hasSockets() const noexcept

@@ -18,11 +18,13 @@ class DynamicCubeMap;
 class WaterMapRenderer;
 class MirrorMapRenderer;
 
-class EditorFrame;
+namespace editor {
+    class EditorFrame;
+}
 
 class CubeMapRenderer final : public Renderer
 {
-    friend class EditorFrame;
+    friend class editor::EditorFrame;
 
 public:
     CubeMapRenderer(bool useFrameStep)
