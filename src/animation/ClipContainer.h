@@ -15,6 +15,12 @@ namespace animation {
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
         std::vector<animation::Clip> m_clips;
 
+        const animation::Animation* getAnimation(uint16_t animationIndex) const;
+        const animation::Clip* getClip(uint16_t clipIndex) const;
+
+        animation::Animation* modifyAnimation(uint16_t animationIndex);
+        animation::Clip* modifyClip(uint16_t clipIndex);
+
         uint16_t addAnimation(
             std::unique_ptr<animation::Animation> take);
 

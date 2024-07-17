@@ -10,11 +10,11 @@ namespace {
     glm::mat4 calcTransform(
         glm::vec3 offset,
         glm::quat rotation,
-        glm::vec3 scale)
+        float scale)
     {
         return glm::translate(glm::mat4{ 1.f }, offset) *
             glm::toMat4(rotation) *
-            glm::scale(glm::mat4{ 1.f }, scale);
+            glm::scale(glm::mat4{ 1.f }, glm::vec3{ scale });
     }
 
     glm::mat4 calcMeshScaleTransform(
@@ -31,7 +31,7 @@ namespace animation
         const std::string& jointName,
         glm::vec3 offset,
         glm::quat rotation,
-        glm::vec3 scale,
+        float scale,
         glm::vec3 meshScale)
         : m_name{ name },
         m_jointName{ jointName },
@@ -43,4 +43,10 @@ namespace animation
         m_meshScaleTransform{ calcMeshScaleTransform(meshScale) },
         m_invMeshScaleTransform{ glm::inverse(m_meshScaleTransform) }
     {}
+
+    void RigSocket::updateTransforms() {
+        m_transform = calcTransform(m_offset, m_rotation, m_scale);
+        m_meshScaleTransform = calcMeshScaleTransform(m_meshScale);
+        m_invMeshScaleTransform = glm::inverse(m_meshScaleTransform);
+    }
 }

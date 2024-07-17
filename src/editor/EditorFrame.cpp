@@ -18,6 +18,9 @@
 
 #include "model/Node.h"
 
+#include "animation/RigContainer.h"
+#include "animation/RigSocket.h"
+
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
@@ -46,414 +49,481 @@
 
 class PawnController;
 
-EditorFrame::EditorFrame(Window& window)
-    : Frame(window)
-{
-}
+namespace editor {
+    EditorFrame::EditorFrame(Window& window)
+        : Frame(window)
+    {
+    }
 
-void EditorFrame::prepare(const PrepareContext& ctx)
-{
-    const auto& assets = ctx.m_assets;
+    void EditorFrame::prepare(const PrepareContext& ctx)
+    {
+        const auto& assets = ctx.m_assets;
 
-    Frame::prepare(ctx);
-}
+        Frame::prepare(ctx);
+    }
 
-void EditorFrame::draw(const RenderContext& ctx)
-{
-    auto& debugContext = m_window.getEngine().m_debugContext;
+    void EditorFrame::draw(const RenderContext& ctx)
+    {
+        auto& debugContext = m_window.getEngine().m_debugContext;
 
-    // NOTE KI don't waste CPU if Edit window is collapsed
-    bool* openPtr = nullptr;
-    ImGuiWindowFlags flags = 0
-        | ImGuiWindowFlags_MenuBar
-        | 0;
-    if (!ImGui::Begin("Edit", openPtr, flags)) {
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+        // NOTE KI don't waste CPU if Edit window is collapsed
+        bool* openPtr = nullptr;
+        ImGuiWindowFlags flags = 0
+            | ImGuiWindowFlags_MenuBar
+            | 0;
+        if (!ImGui::Begin("Edit", openPtr, flags)) {
+            trackImGuiState(debugContext);
+            ImGui::End();
+            return;
+        }
+
+        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+        //if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+        ImGuiID dockspace_id = ImGui::GetID("learnopengl_editor");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+        //}
+
+        renderMenuBar(ctx, debugContext);
+
+        //if (ImGui::CollapsingHeader("Status"))
+        {
+            renderStatus(ctx, debugContext);
+        }
+
+        if (ImGui::CollapsingHeader("Camera"))
+        {
+            renderCameraDebug(ctx, debugContext);
+        }
+
+        if (ImGui::CollapsingHeader("Node"))
+        {
+            renderNodeEdit(ctx, debugContext);
+        }
+
+        if (ImGui::CollapsingHeader("Animation"))
+        {
+            renderAnimationDebug(ctx, debugContext);
+        }
+
+        if (ImGui::CollapsingHeader("Viewport"))
+        {
+            renderBufferDebug(ctx, debugContext);
+        }
+
+        if (ImGui::CollapsingHeader("Misc"))
+        {
+            renderMiscDebug(ctx, debugContext);
+        }
+
         trackImGuiState(debugContext);
+
         ImGui::End();
-        return;
     }
 
-    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-    //if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-    ImGuiID dockspace_id = ImGui::GetID("learnopengl_editor");
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-    //}
-
-    renderMenuBar(ctx, debugContext);
-
-    //if (ImGui::CollapsingHeader("Status"))
+    void EditorFrame::trackImGuiState(
+        render::DebugContext& debugContext)
     {
-        renderStatus(ctx, debugContext);
+        m_window.m_input->imGuiHasKeyboard =
+            ImGui::IsAnyItemActive() ||
+            ImGui::IsAnyItemFocused() ||
+            ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+
+        m_window.m_input->imGuiHasMouse =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered() ||
+            ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
     }
 
-    if (ImGui::CollapsingHeader("Camera"))
+    void EditorFrame::renderMenuBar(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
-        renderCameraDebug(ctx, debugContext);
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                ImGui::Checkbox("ImGui Demo", &m_state.m_imguiDemo);
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Edit"))
+            {
+                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenuBar();
+        }
     }
 
-    if (ImGui::CollapsingHeader("Node"))
+    void EditorFrame::renderStatus(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        const auto& fpsCounter = m_window.getEngine().getFpsCounter();
+        //auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
+        auto fpsSummary = fpsCounter.formatSummary("");
+        ImGui::Text(fpsSummary.c_str());
+    }
+
+    void EditorFrame::renderCameraDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        const auto& nr = NodeRegistry::get();
+        const auto& cr = ControllerRegistry::get();
+
+        // Pawn
+        {
+            const auto* currNode = nr.getActiveNode();
+            if (ImGui::BeginCombo("Pawn selector", currNode ? currNode->getName().c_str() : nullptr)) {
+                for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
+                    const PawnController* nodeController = nullptr;
+                    for (const auto& controller : controllers) {
+                        nodeController = dynamic_cast<const PawnController*>(&(*controller));
+                        if (nodeController) break;
+                    }
+
+                    if (nodeController) {
+                        const auto* node = nodeHandle.toNode();
+                        if (!node) continue;
+
+                        const auto* name = node->getName().c_str();
+
+                        ImGui::PushID((void*)node);
+                        if (ImGui::Selectable(name, node == currNode)) {
+                            event::Event evt { event::Type::node_activate };
+                            evt.body.node.target = node->getId();
+                            ctx.m_registry->m_dispatcherWorker->send(evt);
+                        }
+                        ImGui::PopID();
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+        }
+
+        // Camera
+        {
+
+            const auto* currNode = nr.getActiveCameraNode();
+            if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
+                for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
+                    const CameraZoomController* nodeController = nullptr;
+                    for (const auto& controller : controllers) {
+                        nodeController = dynamic_cast<const CameraZoomController*>(&(*controller));
+                        if (nodeController) break;
+                    }
+
+                    if (nodeController) {
+                        const auto* node = nodeHandle.toNode();
+                        if (!node) continue;
+
+                        const auto* name = node->getName().c_str();
+
+                        ImGui::PushID((void*)node);
+                        if (ImGui::Selectable(name, node == currNode)) {
+                            event::Event evt { event::Type::camera_activate };
+                            evt.body.node.target = node->getId();
+                            ctx.m_registry->m_dispatcherWorker->send(evt);
+                        }
+                        ImGui::PopID();
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+        }
+    }
+
+    void EditorFrame::renderNodeEdit(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
         renderNodeSelector(ctx, debugContext);
-        if (ImGui::TreeNode("Properties")) {
+
+        if (ImGui::TreeNode("Node properties")) {
             renderNodeProperties(ctx, debugContext);
+            renderTypeProperties(ctx, debugContext);
+            renderRigProperties(ctx, debugContext);
             ImGui::TreePop();
         }
-        if (ImGui::TreeNode("Debug")) {
+
+        if (ImGui::TreeNode("Node debug")) {
             renderNodeDebug(ctx, debugContext);
             ImGui::TreePop();
         }
     }
 
-    if (ImGui::CollapsingHeader("Animation"))
+    void EditorFrame::renderNodeSelector(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
-        renderAnimationDebug(ctx, debugContext);
-    }
+        const auto& nr = NodeRegistry::get();
 
-    if (ImGui::CollapsingHeader("Viewport"))
-    {
-        renderBufferDebug(ctx, debugContext);
-    }
+        const auto currNode = m_state.m_selectedNode.toNode();
+        if (ImGui::BeginCombo("Node selector", currNode ? currNode->getName().c_str() : nullptr)) {
+            for (const auto* node : nr.getCachedNodesRT())
+            {
+                if (!node) continue;
 
-    if (ImGui::CollapsingHeader("Misc"))
-    {
-        renderMiscDebug(ctx, debugContext);
-    }
+                const auto* name = node->getName().c_str();
 
-    trackImGuiState(debugContext);
-
-    ImGui::End();
-}
-
-
-void EditorFrame::trackImGuiState(
-    render::DebugContext& debugContext)
-{
-    m_window.m_input->imGuiHasKeyboard =
-        ImGui::IsAnyItemActive() ||
-        ImGui::IsAnyItemFocused() ||
-        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
-
-    m_window.m_input->imGuiHasMouse =
-        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-        ImGui::IsAnyItemHovered() ||
-        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
-}
-
-void EditorFrame::renderMenuBar(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("File"))
-        {
-            ImGui::Checkbox("ImGui Demo", &debugContext.m_imguiDemo);
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-            ImGui::Separator();
-            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
-    }
-}
-
-void EditorFrame::renderStatus(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    const auto& fpsCounter = m_window.getEngine().getFpsCounter();
-    //auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
-    auto fpsSummary = fpsCounter.formatSummary("");
-    ImGui::Text(fpsSummary.c_str());
-}
-
-void EditorFrame::renderCameraDebug(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    const auto& nr = NodeRegistry::get();
-    const auto& cr = ControllerRegistry::get();
-
-    // Pawn
-    {
-        const auto* currNode = nr.getActiveNode();
-        if (ImGui::BeginCombo("Pawn selector", currNode ? currNode->getName().c_str() : nullptr)) {
-            for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
-                const PawnController* nodeController = nullptr;
-                for (const auto& controller : controllers) {
-                    nodeController = dynamic_cast<const PawnController*>(&(*controller));
-                    if (nodeController) break;
-                }
-
-                if (nodeController) {
-                    const auto* node = nodeHandle.toNode();
-                    if (!node) continue;
-
-                    const auto* name = node->getName().c_str();
-
-                    ImGui::PushID((void*)node);
-                    if (ImGui::Selectable(name, node == currNode)) {
-                        event::Event evt { event::Type::node_activate };
-                        evt.body.node.target = node->getId();
-                        ctx.m_registry->m_dispatcherWorker->send(evt);
-                    }
-                    ImGui::PopID();
-                }
+                ImGui::PushID((void*)node);
+                if (ImGui::Selectable(name, node == currNode))
+                    m_state.m_selectedNode = node->toHandle();
+                ImGui::PopID();
             }
 
             ImGui::EndCombo();
         }
     }
 
-    // Camera
+    void EditorFrame::renderNodeProperties(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
+        auto* node = m_state.m_selectedNode.toNode();
+        if (!node) return;
 
-        const auto* currNode = nr.getActiveCameraNode();
-        if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
-            for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
-                const CameraZoomController* nodeController = nullptr;
-                for (const auto& controller : controllers) {
-                    nodeController = dynamic_cast<const CameraZoomController*>(&(*controller));
-                    if (nodeController) break;
-                }
+        auto& state = node->modifyState();
 
-                if (nodeController) {
-                    const auto* node = nodeHandle.toNode();
-                    if (!node) continue;
+        {
+            glm::vec3 pos = state.m_position;
+            // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+            if (ImGui::InputFloat3("Node position", glm::value_ptr(pos))) {
+                state.setPosition(pos);
+            }
+        }
 
-                    const auto* name = node->getName().c_str();
+        {
+            glm::vec3 rot = state.getDegreesRotation();
+            // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+            if (ImGui::InputFloat3("Node rotation", glm::value_ptr(rot))) {
+                state.setDegreesRotation(rot);
 
-                    ImGui::PushID((void*)node);
-                    if (ImGui::Selectable(name, node == currNode)) {
-                        event::Event evt { event::Type::camera_activate };
-                        evt.body.node.target = node->getId();
-                        ctx.m_registry->m_dispatcherWorker->send(evt);
+                auto quat = util::degreesToQuat(rot);
+                auto deg = util::quatToDegrees(quat);
+
+                KI_INFO_OUT(fmt::format(
+                    "rot={}, deg={}, quat={}",
+                    rot, deg, quat));
+            }
+        }
+    }
+
+    void EditorFrame::renderTypeProperties(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        auto* node = m_state.m_selectedNode.toNode();
+        if (!node) return;
+
+        {
+            ImGui::SeparatorText("Mesh type");
+            auto* type = node->m_typeHandle.toType();
+            ImGui::Text(type->getName().c_str());
+
+            const auto currMesh = m_state.m_selectedMesh;
+            if (ImGui::BeginCombo("Mesh", currMesh ? currMesh->m_name.c_str() : nullptr)) {
+                for (auto& lodMesh : type->getLodMeshes()) {
+                    auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+
+                    const auto* name = mesh->m_name.c_str();
+
+                    ImGui::PushID((void*)mesh);
+                    const bool isSelected = currMesh == mesh;
+                    if (ImGui::Selectable(name, isSelected)) {
+                        m_state.m_selectedMesh = mesh;
                     }
                     ImGui::PopID();
+
+                    //if (isSelected)
+                    //    ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+        }
+    }
+
+    void EditorFrame::renderRigProperties(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        if (!m_state.m_selectedMesh) return;
+
+        auto* mesh = m_state.m_selectedMesh;
+
+        auto rig = mesh->getRigContainer();
+        if (!rig) return;
+
+        if (ImGui::CollapsingHeader("Rig"))
+        {
+            auto& clipContainer = rig->m_clipContainer;
+
+            {
+                auto* currSocket = rig->getSocket(m_state.m_selectedSocketIndex);
+                if (ImGui::BeginCombo("Socket", currSocket ? currSocket->m_name.c_str() : nullptr)) {
+                    for (auto& socket : rig->m_sockets) {
+                        const auto* name = socket.m_name.c_str();
+
+                        ImGui::PushID((void*)socket.m_index);
+                        const bool isSelected = m_state.m_selectedSocketIndex == socket.m_index;
+                        if (ImGui::Selectable(name, isSelected)) {
+                            m_state.m_selectedSocketIndex = socket.m_index;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
                 }
             }
 
-            ImGui::EndCombo();
+            if (auto* socket = rig->modifySocket(m_state.m_selectedSocketIndex);  socket) {
+                ImGui::Text(socket->m_jointName.c_str());
+
+                {
+                    glm::vec3 offset = socket->m_offset;
+                    if (ImGui::InputFloat3("Socket offset", glm::value_ptr(offset))) {
+                        socket->m_offset = offset;
+                        socket->updateTransforms();
+                    }
+                }
+
+                {
+                    glm::vec3 rot = util::quatToDegrees(socket->m_rotation);
+                    if (ImGui::InputFloat3("Socket rotation", glm::value_ptr(rot))) {
+                        socket->m_rotation = util::degreesToQuat(rot);
+                        socket->updateTransforms();
+                    }
+                }
+
+                {
+                    float scale = socket->m_scale;
+                    if (ImGui::InputFloat("Socket scale", &scale)) {
+                        socket->m_scale = scale;
+                        socket->updateTransforms();
+                    }
+                }
+            }
+
+            if (!clipContainer.m_animations.empty())
+            {
+                auto* currAnim = clipContainer.getAnimation(m_state.m_selectedAnimationIndex);
+                if (ImGui::BeginCombo("Animation", currAnim ? currAnim->m_name.c_str() : nullptr)) {
+                    for (auto& anim : clipContainer.m_animations) {
+                        const auto* name = anim->m_name.c_str();
+
+                        const bool isSelected = m_state.m_selectedAnimationIndex == anim->m_index;
+
+                        ImGui::PushID((void*)anim->m_index);
+                        if (ImGui::Selectable(name, isSelected)) {
+                            m_state.m_selectedAnimationIndex = anim->m_index;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+
+                    }
+                    ImGui::EndCombo();
+                }
+            }
+
+            if (!clipContainer.m_clips.empty())
+            {
+                auto* currClip = clipContainer.getClip(m_state.m_selectedClipIndex);
+                if (ImGui::BeginCombo("Clip", currClip ? currClip->m_name.c_str() : nullptr)) {
+                    for (auto& clip : clipContainer.m_clips) {
+                        const auto* name = clip.m_name.c_str();
+
+                        ImGui::PushID((void*)clip.m_index);
+                        const bool isSelected = m_state.m_selectedClipIndex == clip.m_index;
+                        if (ImGui::Selectable(name, isSelected)) {
+                            m_state.m_selectedClipIndex = clip.m_index;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+            }
         }
     }
-}
 
-void EditorFrame::renderNodeSelector(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    const auto& nr = NodeRegistry::get();
-
-    const auto currNode = debugContext.m_selectedNode.toNode();
-    if (ImGui::BeginCombo("Node selector", currNode ? currNode->getName().c_str() : nullptr)) {
-        for (const auto* node : nr.getCachedNodesRT())
-        {
-            if (!node) continue;
-
-            const auto* name = node->getName().c_str();
-
-            ImGui::PushID((void*)node);
-            if (ImGui::Selectable(name, node == currNode))
-                debugContext.m_selectedNode = node->toHandle();
-            ImGui::PopID();
-        }
-
-        ImGui::EndCombo();
-    }
-}
-
-void EditorFrame::renderNodeProperties(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    auto* node = debugContext.m_selectedNode.toNode();
-    if (!node) return;
-
-    auto& state = node->modifyState();
-
+    void EditorFrame::renderNodeDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
-        glm::vec3 pos = state.m_position;
-        // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-        if (ImGui::InputFloat3("position", glm::value_ptr(pos))) {
-            state.setPosition(pos);
+        ImGui::Checkbox("Node debug", &debugContext.m_nodeDebugEnabled);
+
+        if (debugContext.m_nodeDebugEnabled) {
+            ImGui::Checkbox("Wireframe", &debugContext.m_forceWireframe);
+            ImGui::Checkbox("Show normals", &debugContext.m_showNormals);
+            ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
         }
     }
 
+    void EditorFrame::renderAnimationDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
     {
-        glm::vec3 rot = state.getDegreesRotation();
-        // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-        if (ImGui::InputFloat3("rotation", glm::value_ptr(rot))) {
-            state.setDegreesRotation(rot);
+        const auto& assets = ctx.m_assets;
 
-            auto quat = util::degreesToQuat(rot);
-            auto deg = util::quatToDegrees(quat);
+        ImGui::Checkbox("Animation debug", &debugContext.m_animationDebugEnabled);
 
-            KI_INFO_OUT(fmt::format(
-                "rot={}, deg={}, quat={}",
-                rot, deg, quat));
+        if (debugContext.m_animationDebugEnabled) {
+            ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
+            ImGui::InputInt("Clip", &debugContext.m_animationClipIndex, 1, 10);
+            ImGui::InputFloat("Time", &debugContext.m_animationTime, 0.01f, 0.1f);
+
+            if (assets.glslUseDebug) {
+                ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
+                ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
+            }
         }
     }
-}
 
-void EditorFrame::renderNodeDebug(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    ImGui::Checkbox("Node debug", &debugContext.m_nodeDebugEnabled);
+    void EditorFrame::renderBufferDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        const auto& assets = ctx.m_assets;
 
-    if (debugContext.m_nodeDebugEnabled) {
-        ImGui::Checkbox("Wireframe", &debugContext.m_forceWireframe);
-        ImGui::Checkbox("Show normals", &debugContext.m_showNormals);
-        ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
-    }
-}
+        auto& window = m_window;
+        auto& scene = *window.getEngine().getCurrentScene();
 
-void EditorFrame::renderAnimationDebug(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    const auto& assets = ctx.m_assets;
+        constexpr float scrollbarPadding = 0.f;
 
-    ImGui::Checkbox("Animation debug", &debugContext.m_animationDebugEnabled);
+        ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-    if (debugContext.m_animationDebugEnabled) {
-        ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
-        ImGui::InputInt("Clip", &debugContext.m_animationClipIndex, 1, 10);
-        ImGui::InputFloat("Time", &debugContext.m_animationTime, 0.01f, 0.1f);
-
-        if (assets.glslUseDebug) {
-            ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
-            ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
-        }
-    }
-}
-
-void EditorFrame::renderBufferDebug(
-    const RenderContext& ctx,
-    render::DebugContext& debugContext)
-{
-    const auto& assets = ctx.m_assets;
-
-    auto& window = m_window;
-    auto& scene = *window.getEngine().getCurrentScene();
-
-    constexpr float scrollbarPadding = 0.f;
-
-    ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
-
-    auto viewportTex = [&ctx](Viewport& viewport, bool useAspectRatio) {
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        // NOTE KI allow max half window size
-        float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-        float h = w / ctx.m_aspectRatio;
-        if (!useAspectRatio) {
-            w = h;
-        }
-
-        viewport.invokeBindBefore();
-        const auto& fb = viewport.getSourceFrameBuffer();
-        auto& att = fb->m_spec.attachments[0];
-        ImTextureID texId = (void*)att.textureID;
-        ImGui::Image(
-            texId,
-            ImVec2{ w, h },
-            ImVec2{ 0, 1 }, // uv1
-            ImVec2{ 1, 0 }, // uv2
-            ImVec4{ 1, 1, 1, 1 }, // tint_col
-            ImVec4{ 1, 1, 1, 1 }  // border_col
-        );
-    };
-
-    if (ImGui::TreeNodeEx("ObjectId", tnFlags)) {
-        auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNodeEx("Water reflection", tnFlags)) {
-        auto& viewport = scene.m_waterMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNodeEx("Water refraction", tnFlags)) {
-        auto& viewport = scene.m_waterMapRenderer->m_refractionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNodeEx("Mirror reflection", tnFlags)) {
-        auto& viewport = scene.m_mirrorMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNodeEx("Mirror - Mirror reflection", tnFlags)) {
-        auto& viewport = scene.m_mirrorMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNodeEx("Mirror - Water reflection", tnFlags)) {
-        auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNodeEx("Mirror - Water refraction", tnFlags)) {
-        auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
-        viewportTex(*viewport, true);
-
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNodeEx("Cube - Mirror reflection", tnFlags)) {
-        auto& viewport = scene.m_cubeMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, false);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNodeEx("Cube - Water reflection", tnFlags)) {
-        auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
-        viewportTex(*viewport, false);
-
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Cube - Water refraction")) {
-        auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
-        viewportTex(*viewport, false);
-
-        ImGui::TreePop();
-    }
-
-    if (false && ImGui::TreeNodeEx("Cube - Faces", tnFlags)) {
-        auto& cmr = *scene.m_cubeMapRenderer;
-
-        auto faceTex = [&ctx, &cmr](int faceIndex) {
+        auto viewportTex = [&ctx](Viewport& viewport, bool useAspectRatio) {
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
             float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
             float h = w / ctx.m_aspectRatio;
-            w = h;
+            if (!useAspectRatio) {
+                w = h;
+            }
 
-            // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
-            auto& prev = cmr.m_prev;
-            auto fb = prev->asFrameBuffer(faceIndex);
-            //fb.bind(ctx);
-            //fb.bindFace();
-
-            ImTextureID texId = (void*)fb.getTextureID();
+            viewport.invokeBindBefore();
+            const auto& fb = viewport.getSourceFrameBuffer();
+            auto& att = fb->m_spec.attachments[0];
+            ImTextureID texId = (void*)att.textureID;
             ImGui::Image(
                 texId,
                 ImVec2{ w, h },
@@ -462,33 +532,125 @@ void EditorFrame::renderBufferDebug(
                 ImVec4{ 1, 1, 1, 1 }, // tint_col
                 ImVec4{ 1, 1, 1, 1 }  // border_col
             );
-        };
+            };
 
-        for (unsigned int face = 0; face < 6; face++) {
-            const auto& name = fmt::format("Cube - Face {}", face);
-            if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                faceTex(face);
-
-                ImGui::TreePop();
-            }
-        }
-
-        ImGui::TreePop();
-    }
-
-    if (assets.showRearView) {
-        if (ImGui::TreeNodeEx("Rear view", tnFlags)) {
-            auto& viewport = scene.m_rearViewport;
+        if (ImGui::TreeNodeEx("ObjectId", tnFlags)) {
+            auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
             viewportTex(*viewport, true);
 
             ImGui::TreePop();
         }
-    }
-}
 
-void EditorFrame::renderMiscDebug(
-    const RenderContext & ctx,
-    render::DebugContext & debugContext)
-{
-    ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
+        if (ImGui::TreeNodeEx("Water reflection", tnFlags)) {
+            auto& viewport = scene.m_waterMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Water refraction", tnFlags)) {
+            auto& viewport = scene.m_waterMapRenderer->m_refractionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Mirror reflection", tnFlags)) {
+            auto& viewport = scene.m_mirrorMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Mirror - Mirror reflection", tnFlags)) {
+            auto& viewport = scene.m_mirrorMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Mirror - Water reflection", tnFlags)) {
+            auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Mirror - Water refraction", tnFlags)) {
+            auto& viewport = scene.m_mirrorMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
+            viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Cube - Mirror reflection", tnFlags)) {
+            auto& viewport = scene.m_cubeMapRenderer->m_mirrorMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, false);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Cube - Water reflection", tnFlags)) {
+            auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_reflectionDebugViewport;
+            viewportTex(*viewport, false);
+
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Cube - Water refraction")) {
+            auto& viewport = scene.m_cubeMapRenderer->m_waterMapRenderer->m_refractionDebugViewport;
+            viewportTex(*viewport, false);
+
+            ImGui::TreePop();
+        }
+
+        if (false && ImGui::TreeNodeEx("Cube - Faces", tnFlags)) {
+            auto& cmr = *scene.m_cubeMapRenderer;
+
+            auto faceTex = [&ctx, &cmr](int faceIndex) {
+                ImVec2 availSize = ImGui::GetContentRegionAvail();
+                // NOTE KI allow max half window size
+                float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+                float h = w / ctx.m_aspectRatio;
+                w = h;
+
+                // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
+                auto& prev = cmr.m_prev;
+                auto fb = prev->asFrameBuffer(faceIndex);
+                //fb.bind(ctx);
+                //fb.bindFace();
+
+                ImTextureID texId = (void*)fb.getTextureID();
+                ImGui::Image(
+                    texId,
+                    ImVec2{ w, h },
+                    ImVec2{ 0, 1 }, // uv1
+                    ImVec2{ 1, 0 }, // uv2
+                    ImVec4{ 1, 1, 1, 1 }, // tint_col
+                    ImVec4{ 1, 1, 1, 1 }  // border_col
+                );
+                };
+
+            for (unsigned int face = 0; face < 6; face++) {
+                const auto& name = fmt::format("Cube - Face {}", face);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    faceTex(face);
+
+                    ImGui::TreePop();
+                }
+            }
+
+            ImGui::TreePop();
+        }
+
+        if (assets.showRearView) {
+            if (ImGui::TreeNodeEx("Rear view", tnFlags)) {
+                auto& viewport = scene.m_rearViewport;
+                viewportTex(*viewport, true);
+
+                ImGui::TreePop();
+            }
+        }
+    }
+
+    void EditorFrame::renderMiscDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
+    }
 }

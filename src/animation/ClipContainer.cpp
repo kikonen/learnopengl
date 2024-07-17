@@ -9,6 +9,30 @@ namespace {
 }
 
 namespace animation {
+    const animation::Animation* ClipContainer::getAnimation(uint16_t animationIndex) const
+    {
+        if (animationIndex < 0 || animationIndex >= m_animations.size()) return nullptr;
+        return m_animations[animationIndex].get();
+    }
+
+    const animation::Clip* ClipContainer::getClip(uint16_t clipIndex) const
+    {
+        if (clipIndex < 0 || clipIndex >= m_clips.size()) return nullptr;
+        return &m_clips[clipIndex];
+    }
+
+    animation::Animation* ClipContainer::modifyAnimation(uint16_t animationIndex)
+    {
+        if (animationIndex < 0 || animationIndex >= m_animations.size()) return nullptr;
+        return m_animations[animationIndex].get();
+    }
+
+    animation::Clip* ClipContainer::modifyClip(uint16_t clipIndex)
+    {
+        if (clipIndex < 0 || clipIndex >= m_clips.size()) return nullptr;
+        return &m_clips[clipIndex];
+    }
+
     uint16_t ClipContainer::addAnimation(
         std::unique_ptr<animation::Animation> src)
     {

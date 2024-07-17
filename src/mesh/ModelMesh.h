@@ -42,6 +42,11 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh);
 
+        virtual std::shared_ptr<animation::RigContainer> getRigContainer() override
+        {
+            return m_rig;
+        }
+
         uint32_t getBaseVertex() const noexcept {
             return m_vboIndex;
         }

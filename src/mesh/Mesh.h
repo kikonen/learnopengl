@@ -20,6 +20,10 @@
 
 struct PrepareContext;
 
+namespace animation {
+    struct RigContainer;
+}
+
 namespace mesh {
     struct LodMesh;
 
@@ -55,6 +59,11 @@ namespace mesh {
         void setRigTransform(const glm::mat4& rigTransform) {
             m_rigTransform = rigTransform;
             m_inverseRigTransform = glm::inverse(rigTransform);
+        }
+
+        virtual std::shared_ptr<animation::RigContainer> getRigContainer()
+        {
+            return nullptr;
         }
 
     public:

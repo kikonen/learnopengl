@@ -36,6 +36,11 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 
+        virtual std::shared_ptr<animation::RigContainer> getRigContainer() override
+        {
+            return m_rig;
+        }
+
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;
 

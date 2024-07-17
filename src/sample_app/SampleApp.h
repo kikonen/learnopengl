@@ -7,13 +7,18 @@
 #include "engine/Engine.h"
 
 #include "gui/FrameInit.h"
-#include "gui/Frame.h"
 
 #include "TestSceneSetup.h"
 
 namespace loader {
     class SceneLoader;
 }
+
+namespace editor {
+    class EditorFrame;
+}
+
+class RenderContext;
 
 class SampleApp final : public Engine {
 public:
@@ -47,8 +52,8 @@ private:
     std::shared_ptr<Scene> loadScene();
 
 private:
-    std::unique_ptr<Frame> m_frame;
-    std::unique_ptr<FrameInit> m_frameInit;
+    std::unique_ptr<editor::EditorFrame> m_editor;
+    std::unique_ptr<FrameInit> m_editorInit;
 
     std::vector<std::unique_ptr<loader::SceneLoader>> m_loaders;
     std::unique_ptr<TestSceneSetup> m_testSetup;

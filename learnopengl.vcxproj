@@ -450,6 +450,7 @@
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\asset\TextureType.h" />
+    <ClInclude Include="src\editor\EditorState.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\ChannelTextureLoader.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
