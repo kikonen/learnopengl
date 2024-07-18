@@ -24,6 +24,7 @@ namespace editor {
 
         mesh::Mesh* m_selectedMesh{ nullptr };
         int m_selectedSocketIndex{ -1 };
+
         int m_selectedAnimationIndex{ -1 };
         int m_selectedClipIndex{ -1 };
     };

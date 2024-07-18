@@ -217,6 +217,7 @@ namespace animation
 
             auto& nodeState = node->modifyState();
             auto& currAnim = state.m_current;
+            auto& nextAnim = state.m_next;
 
             if (currAnim.m_startTime <= -42.f) {
                 // NOTE KI "once"
@@ -257,10 +258,20 @@ namespace animation
                 if (currAnim.m_startTime < 0) {
                     currAnim.m_startTime = ctx.m_clock.ts - (rand() % 60);
                 }
-                currAnim.m_clipIndex = debugContext.m_animationClipIndex;
+
+                currAnim.m_clipIndex = debugContext.m_animationClipIndexA;
+
+                if (debugContext.m_animationBlend) {
+                    nextAnim.m_clipIndex = debugContext.m_animationClipIndexB;
+                }
+                else {
+                    nextAnim.m_clipIndex = -1;
+                }
             }
 
-            double animationStartTime = currAnim.m_startTime;
+            double animationStartTimeA = currAnim.m_startTime;
+            double animationStartTimeB = nextAnim.m_startTime;
+
             double animationCurrentTime = ctx.m_clock.ts;
 
             if (m_firstFrameOnly) {
@@ -270,34 +281,62 @@ namespace animation
                 animationCurrentTime = currAnim.m_lastTime;
             }
 
-            if (debugContext.m_animationDebugEnabled) {
-                if (debugContext.m_animationTime >= 0) {
-                    animationStartTime = 0;
-                    animationCurrentTime = debugContext.m_animationTime;
+            float blendFactor = 0;
 
-                    auto clipIndex = currAnim.m_clipIndex;
-                    const auto& clipContainer = rig.m_clipContainer;
-                    if (clipIndex >= 0 && clipIndex < clipContainer.m_clips.size()) {
-                        const auto& clip = clipContainer.m_clips[clipIndex];
-                        if (!clip.m_single && animationCurrentTime > clip.m_durationSecs) {
-                            animationCurrentTime = clip.m_durationSecs;
-                            debugContext.m_animationTime = clip.m_durationSecs;
+            if (debugContext.m_animationDebugEnabled) {
+                if (debugContext.m_animationCurrentTime >= 0) {
+                    animationCurrentTime = debugContext.m_animationCurrentTime;
+
+                    animationStartTimeA = debugContext.m_animationStartTimeA;
+                    animationStartTimeB = debugContext.m_animationStartTimeB;
+
+                    blendFactor = debugContext.m_animationBlendFactor;
+
+                    if (false) {
+                        auto clipIndex = currAnim.m_clipIndex;
+                        const auto& clipContainer = rig.m_clipContainer;
+                        if (clipIndex >= 0 && clipIndex < clipContainer.m_clips.size()) {
+                            const auto& clip = clipContainer.m_clips[clipIndex];
+                            if (!clip.m_single && animationCurrentTime > clip.m_durationSecs) {
+                                animationCurrentTime = clip.m_durationSecs;
+                                debugContext.m_animationCurrentTime = clip.m_durationSecs;
+                            }
                         }
                     }
                 }
             }
 
+            blendFactor = std::max(std::min(blendFactor, 1.f), 0.f);
+
             animation::Animator animator;
-            auto changed = animator.animate(
-                rig,
-                mesh->m_rigTransform,
-                mesh->m_inverseRigTransform,
-                lodMesh.m_animationRigTransform,
-                bonePalette,
-                socketPalette,
-                currAnim.m_clipIndex,
-                animationStartTime,
-                animationCurrentTime);
+            bool changed = false;
+            if (nextAnim.m_clipIndex < 0) {
+                changed = animator.animate(
+                    rig,
+                    mesh->m_rigTransform,
+                    mesh->m_inverseRigTransform,
+                    lodMesh.m_animationRigTransform,
+                    bonePalette,
+                    socketPalette,
+                    currAnim.m_clipIndex,
+                    animationStartTimeA,
+                    animationCurrentTime);
+            }
+            else {
+                changed = animator.animateBlended(
+                    rig,
+                    mesh->m_rigTransform,
+                    mesh->m_inverseRigTransform,
+                    lodMesh.m_animationRigTransform,
+                    bonePalette,
+                    socketPalette,
+                    currAnim.m_clipIndex,
+                    animationStartTimeA,
+                    nextAnim.m_clipIndex,
+                    animationStartTimeB,
+                    blendFactor,
+                    animationCurrentTime);
+            }
 
             currAnim.m_lastTime = animationCurrentTime;
             if (m_onceOnly) {
