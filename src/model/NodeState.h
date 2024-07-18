@@ -50,14 +50,9 @@ struct NodeState {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    double m_animationStartTime{ -1.f };
-    double m_animationLastTime{ -1.f };
-
     uint32_t m_shapeIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
-
-    int16_t m_animationClipIndex{ -1 };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
