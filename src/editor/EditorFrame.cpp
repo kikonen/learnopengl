@@ -488,10 +488,26 @@ namespace editor {
 
         if (debugContext.m_animationDebugEnabled) {
             ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
-            ImGui::InputInt("Clip", &debugContext.m_animationClipIndex, 1, 10);
-            ImGui::InputFloat("Time", &debugContext.m_animationTime, 0.01f, 0.1f);
+
+            ImGui::SeparatorText("Animation blending");
+
+            ImGui::InputFloat("Current time", &debugContext.m_animationCurrentTime, 0.01f, 0.1f);
+
+            ImGui::InputInt("Clip A", &debugContext.m_animationClipIndexA, 1, 10);
+            ImGui::InputFloat("Clip A start", &debugContext.m_animationStartTimeA, 0.01f, 0.1f);
+
+            ImGui::Checkbox("Blend animation", &debugContext.m_animationBlend);
+
+            if (debugContext.m_animationBlend) {
+                ImGui::InputFloat("Blend factor", &debugContext.m_animationBlendFactor, 0.01f, 0.1f);
+
+                ImGui::InputInt("Clip B", &debugContext.m_animationClipIndexB, 1, 10);
+                ImGui::InputFloat("Clip B start", &debugContext.m_animationStartTimeB, 0.01f, 0.1f);
+            }
 
             if (assets.glslUseDebug) {
+                ImGui::SeparatorText("Bone visualization");
+
                 ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
                 ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
             }

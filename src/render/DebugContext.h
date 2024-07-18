@@ -21,8 +21,17 @@ namespace render {
 
         bool m_animationDebugEnabled{ false };
         bool m_animationPaused{ false };
-        int m_animationClipIndex{ -1 };
-        float m_animationTime{ -1 };
+
+        float m_animationCurrentTime{ -1 };
+
+        int m_animationClipIndexA{ -1 };
+        float m_animationStartTimeA{ 0 };
+
+        bool m_animationBlend{ false };
+        float m_animationBlendFactor{ 0.f };
+
+        int m_animationClipIndexB{ -1 };
+        float m_animationStartTimeB{ 0 };
 
         int m_animationBoneIndex{ 0 };
         bool m_animationDebugBoneWeight{ false };
