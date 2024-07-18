@@ -35,6 +35,12 @@ namespace {
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 
     static animation::AnimationSystem s_registry;
+
+    struct ActiveNode {
+        animation::AnimationState& m_state;
+        Node* m_node;
+        mesh::MeshType* m_type;
+    };
 }
 
 namespace animation
@@ -100,9 +106,47 @@ namespace animation
         return { boneBaseIndex, socketBaseIndex };
     }
 
+    animation::AnimationState* AnimationSystem::getState(
+        pool::NodeHandle handle)
+    {
+        const auto& it = m_nodeToState.find(handle);
+        if (it == m_nodeToState.end()) return nullptr;
+        return &m_states[it->second];
+    }
+
+    void AnimationSystem::startAnimation(
+        pool::NodeHandle handle,
+        uint16_t clipIndex,
+        float speed,
+        bool restart,
+        bool repeat)
+    {
+        auto* state = getState(handle);
+        if (!state) return;
+
+        {
+            auto& play = state->m_current.m_active ? state->m_next : state->m_current;
+            play.m_clipIndex = clipIndex;
+            play.m_speed = speed;
+            play.m_repeat = repeat;
+            play.m_active = true;
+        }
+        state->m_blendDuration = 2.f;
+    }
+
+    void AnimationSystem::stopAnimation(
+        pool::NodeHandle handle)
+    {
+        auto* state = getState(handle);
+        if (!state) return;
+
+        state->m_current.m_active = false;
+        state->m_next.m_active = false;
+    }
+
     uint32_t AnimationSystem::getActiveCount() const noexcept
     {
-        return static_cast<uint32_t>(m_animationNodes.size());
+        return static_cast<uint32_t>(m_states.size());
     }
 
     void AnimationSystem::updateWT(const UpdateContext& ctx)
@@ -112,19 +156,18 @@ namespace animation
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
-        static std::vector<std::pair<Node*, mesh::MeshType*>> s_activeNodes;
+        static std::vector<ActiveNode> s_activeNodes;
 
         // prepare
         {
             s_activeNodes.clear();
-            s_activeNodes.reserve(m_animationNodes.size());
+            s_activeNodes.reserve(m_states.size());
 
-            for (auto& handle : m_animationNodes) {
-                auto* node = handle.toNode();
+            for (auto& state : m_states) {
+                auto* node = state.m_handle.toNode();
                 if (!node) continue;
                 auto* type = node->m_typeHandle.toType();
-
-                s_activeNodes.push_back({ node, type });
+                s_activeNodes.push_back({ state, node, type });
             }
         }
 
@@ -143,13 +186,13 @@ namespace animation
                         std::execution::par_unseq,
                         s_activeNodes.begin(),
                         s_activeNodes.end(),
-                        [this, &ctx](auto& pair) {
-                            animateNode(ctx, pair.first, pair.second);
+                        [this, &ctx](auto& active) {
+                            animateNode(ctx, active.m_state, active.m_node, active.m_type);
                         });
                 }
                 else {
-                    for (auto& pair : s_activeNodes) {
-                        animateNode(ctx, pair.first, pair.second);
+                    for (auto& active : s_activeNodes) {
+                        animateNode(ctx, active.m_state, active.m_node, active.m_type);
                     }
                 }
             }
@@ -161,6 +204,7 @@ namespace animation
 
     void AnimationSystem::animateNode(
         const UpdateContext& ctx,
+        animation::AnimationState& state,
         Node* node,
         mesh::MeshType* type)
     {
@@ -171,8 +215,10 @@ namespace animation
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
-            auto& state = node->modifyState();
-            if (state.m_animationStartTime <= -42.f) {
+            auto& nodeState = node->modifyState();
+            auto& currAnim = state.m_current;
+
+            if (currAnim.m_startTime <= -42.f) {
                 // NOTE KI "once"
                 continue;
             }
@@ -200,28 +246,28 @@ namespace animation
             if (!rigPtr) continue;
             auto& rig = *rigPtr;
 
-            auto bonePalette = boneRegistry.modifyRange(state.m_boneBaseIndex, rig.m_boneContainer.size());
-            auto socketPalette = socketRegistry.modifyRange(state.m_socketBaseIndex, rig.m_sockets.size());
+            auto bonePalette = boneRegistry.modifyRange(nodeState.m_boneBaseIndex, rig.m_boneContainer.size());
+            auto socketPalette = socketRegistry.modifyRange(nodeState.m_socketBaseIndex, rig.m_sockets.size());
 
             bool paused = false;
 
             if (debugContext.m_animationDebugEnabled) {
                 paused = debugContext.m_animationPaused;
 
-                if (state.m_animationStartTime < 0) {
-                    state.m_animationStartTime = ctx.m_clock.ts - (rand() % 60);
+                if (currAnim.m_startTime < 0) {
+                    currAnim.m_startTime = ctx.m_clock.ts - (rand() % 60);
                 }
-                state.m_animationClipIndex = debugContext.m_animationClipIndex;
+                currAnim.m_clipIndex = debugContext.m_animationClipIndex;
             }
 
-            double animationStartTime = state.m_animationStartTime;
+            double animationStartTime = currAnim.m_startTime;
             double animationCurrentTime = ctx.m_clock.ts;
 
             if (m_firstFrameOnly) {
-                animationCurrentTime = state.m_animationStartTime;
+                animationCurrentTime = currAnim.m_startTime;
             }
             if (paused) {
-                animationCurrentTime = state.m_animationLastTime;
+                animationCurrentTime = currAnim.m_lastTime;
             }
 
             if (debugContext.m_animationDebugEnabled) {
@@ -229,7 +275,7 @@ namespace animation
                     animationStartTime = 0;
                     animationCurrentTime = debugContext.m_animationTime;
 
-                    auto clipIndex = state.m_animationClipIndex;
+                    auto clipIndex = currAnim.m_clipIndex;
                     const auto& clipContainer = rig.m_clipContainer;
                     if (clipIndex >= 0 && clipIndex < clipContainer.m_clips.size()) {
                         const auto& clip = clipContainer.m_clips[clipIndex];
@@ -243,25 +289,24 @@ namespace animation
 
             animation::Animator animator;
             auto changed = animator.animate(
-                ctx,
                 rig,
                 mesh->m_rigTransform,
                 mesh->m_inverseRigTransform,
                 lodMesh.m_animationRigTransform,
                 bonePalette,
                 socketPalette,
-                state.m_animationClipIndex,
+                currAnim.m_clipIndex,
                 animationStartTime,
                 animationCurrentTime);
 
-            state.m_animationLastTime = animationCurrentTime;
+            currAnim.m_lastTime = animationCurrentTime;
             if (m_onceOnly) {
-                state.m_animationStartTime = -42;
+                currAnim.m_startTime = -42;
             }
 
             if (changed) {
-                boneRegistry.markDirty(state.m_boneBaseIndex, rig.m_boneContainer.size());
-                socketRegistry.markDirty(state.m_socketBaseIndex, rig.m_sockets.size());
+                boneRegistry.markDirty(nodeState.m_boneBaseIndex, rig.m_boneContainer.size());
+                socketRegistry.markDirty(nodeState.m_socketBaseIndex, rig.m_sockets.size());
             }
 
             // NOTE KI need to animated only once
@@ -285,7 +330,10 @@ namespace animation
         if (m_pendingNodes.empty()) return;
 
         for (auto& handle : m_pendingNodes) {
-            m_animationNodes.push_back(handle);
+            uint16_t index = static_cast<uint16_t>(m_states.size());
+            auto& state = m_states.emplace_back(handle);
+            state.m_index = index;
+            m_nodeToState.insert({ handle, state.m_index });
         }
         m_pendingNodes.clear();
     }

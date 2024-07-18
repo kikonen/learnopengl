@@ -435,6 +435,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\LocalTransform.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\animation\AnimationLoader.h" />
@@ -491,6 +492,7 @@
     <ClInclude Include="src\mesh\mesh_util.h" />
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexVBO.h" />
+    <ClInclude Include="src\animation\AnimationState.h" />
     <ClInclude Include="src\model\NodeFlags.h" />
     <ClInclude Include="src\model\PivotPoint.h" />
     <ClInclude Include="src\render\DebugContext.h" />

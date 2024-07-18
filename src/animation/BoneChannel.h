@@ -11,6 +11,8 @@ struct aiVectorKey;
 struct aiQuatKey;
 
 namespace animation {
+    struct LocalTransform;
+
     // Vector transform/scale key frame
     struct VectorKey {
         VectorKey(const aiVectorKey& key);
@@ -48,7 +50,7 @@ namespace animation {
         void addeScaleKey(const aiVectorKey& key);
 
         // @param firstFrame..lastFrame range used for clip
-        glm::mat4 interpolate(
+        LocalTransform interpolate(
             float animationTimeTicks,
             uint16_t firstFrame,
             uint16_t lastFrame,

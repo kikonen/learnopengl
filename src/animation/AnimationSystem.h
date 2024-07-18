@@ -1,8 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include <mutex>
 #include <tuple>
+
+#include "AnimationState.h"
 
 namespace pool {
     struct NodeHandle;
@@ -34,6 +37,19 @@ namespace animation {
         // @return instance index into bone transform buffer
         std::pair<uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
 
+        animation::AnimationState* getState(
+            pool::NodeHandle handle);
+
+        void startAnimation(
+            pool::NodeHandle handle,
+            uint16_t clipIndex,
+            float speed,
+            bool restart,
+            bool repeat);
+
+        void stopAnimation(
+            pool::NodeHandle handle);
+
         uint32_t getActiveCount() const noexcept;
 
         void updateWT(const UpdateContext& ctx);
@@ -45,6 +61,7 @@ namespace animation {
         // @return true if bone palette was updated
         void animateNode(
             const UpdateContext& ctx,
+            animation::AnimationState& state,
             Node* node,
             mesh::MeshType* type);
 
@@ -56,8 +73,10 @@ namespace animation {
         bool m_onceOnly{ false };
         size_t m_maxCount{ 0 };
 
+        std::vector<animation::AnimationState> m_states;
+        std::map<pool::NodeHandle, uint16_t> m_nodeToState;
+
         std::mutex m_pendingLock{};
-        std::vector<pool::NodeHandle> m_animationNodes;
         std::vector<pool::NodeHandle> m_pendingNodes;
     };
 }
