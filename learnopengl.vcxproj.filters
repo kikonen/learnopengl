@@ -762,6 +762,9 @@
     <ClCompile Include="src\loader\ChannelTextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\api\AnimationPlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1887,6 +1890,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\EditorState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\api\AnimationPlay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\AnimationState.h">

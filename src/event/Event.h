@@ -19,50 +19,12 @@
 
 #include "size.h"
 
+#include "Type.h"
+
 struct UpdateContext;
 class NodeController;
 
 namespace event {
-    enum class Type : std::underlying_type_t<std::byte> {
-        none = 0,
-
-        node_add,
-        node_added,
-        //node_change_parent,
-        node_select,
-        node_activate,
-
-        type_prepare_view,
-
-        // NOTE KI allow camera to vary independent of active node
-        camera_activate,
-
-        controller_add,
-
-        audio_listener_add,
-        audio_source_add,
-        audio_listener_update,
-        audio_source_update,
-        audio_listener_activate,
-
-        audio_source_play,
-        audio_source_stop,
-        audio_source_pause,
-
-        physics_add,
-
-        animate_wait,
-        animate_move,
-        animate_rotate,
-
-        scene_loaded,
-
-        script_bind,
-        script_run,
-
-        app_shutdown,
-    };
-
     struct PhysicsData {
         bool update{ false };
         physics::Body body;
@@ -138,7 +100,7 @@ namespace event {
         audio::listener_id id{ 0 };
     };
 
-    struct AnimateAction {
+    struct CommandAction {
 		ki::node_id target{ 0 };
 
         script::command_id after{ 0 };
@@ -182,7 +144,7 @@ namespace event {
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
             PhysicsAction physics;
-            AnimateAction animate;
+            CommandAction command;
             ScriptAction script;
         } body;
     };
