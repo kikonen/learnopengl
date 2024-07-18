@@ -466,8 +466,8 @@ void SampleApp::selectNode(
 
         if (node) {
             if (m_debugContext.m_selectionAxis != glm::vec3{0.f}) {
-                event::Event evt { event::Type::animate_rotate };
-                evt.body.animate = {
+                event::Event evt { event::Type::command_rotate };
+                evt.body.command = {
                     .target = node->getId(),
                     .duration = 5,
                     .relative = true,

@@ -243,6 +243,7 @@
     <ClCompile Include="src\render\DebugContext.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
+    <ClCompile Include="src\script\api\AnimationPlay.cpp" />
     <ClCompile Include="src\text\TextSystem.cpp" />
     <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp" />
@@ -452,6 +453,7 @@
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\asset\TextureType.h" />
     <ClInclude Include="src\editor\EditorState.h" />
+    <ClInclude Include="src\event\Type.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\ChannelTextureLoader.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
@@ -538,6 +540,7 @@
     <ClInclude Include="src\animation\AnimationSystem.h" />
     <ClInclude Include="src\animation\BoneTransformSSBO.h" />
     <ClInclude Include="src\scene\Updater.h" />
+    <ClInclude Include="src\script\api\AnimationPlay.h" />
     <ClInclude Include="src\text\TextSystem.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\vao\BoneEntry.h" />

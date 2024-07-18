@@ -58,45 +58,45 @@ namespace script
     void CommandEngine::prepare(Registry* registry)
     {
         registry->m_dispatcherWorker->addListener(
-            event::Type::animate_wait,
+            event::Type::command_wait,
             [this](const event::Event& e) {
-                auto& anim = e.body.animate;
-                KI_OUT(fmt::format("ANIM:wait {}\n", anim.target));
+                auto& cmd = e.body.command;
+                KI_OUT(fmt::format("CMD:wait {}\n", cmd.target));
                 addCommand<Wait>(
-                    anim.after,
+                    cmd.after,
                     Wait{
-                        anim.duration,
+                        cmd.duration,
                     });
             });
 
         registry->m_dispatcherWorker->addListener(
-            event::Type::animate_move,
+            event::Type::command_move,
             [this](const event::Event& e) {
-                auto& anim = e.body.animate;
-                KI_OUT(fmt::format("ANIM:move {}\n", anim.target));
+                auto& cmd = e.body.command;
+                KI_OUT(fmt::format("CMD:move {}\n", cmd.target));
                 addCommand(
-                    anim.after,
+                    cmd.after,
                     MoveNode{
-                        anim.target,
-                        anim.duration,
-                        anim.relative,
-                        anim.data
+                        cmd.target,
+                        cmd.duration,
+                        cmd.relative,
+                        cmd.data
                     });
             });
 
         registry->m_dispatcherWorker->addListener(
-            event::Type::animate_rotate,
+            event::Type::command_rotate,
             [this](const event::Event& e) {
-                auto& anim = e.body.animate;
-                KI_OUT(fmt::format("ANIM:rotate {}\n", anim.target));
+                auto& cmd = e.body.command;
+                KI_OUT(fmt::format("CMD:rotate {}\n", cmd.target));
                 addCommand(
-                    anim.after,
+                    cmd.after,
                     RotateNode {
-                        anim.target,
-                        anim.duration,
-                        anim.relative,
-                        anim.data,
-                        anim.data2.x
+                        cmd.target,
+                        cmd.duration,
+                        cmd.relative,
+                        cmd.data,
+                        cmd.data2.x
                     });
             });
     }
