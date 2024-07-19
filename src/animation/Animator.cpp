@@ -139,7 +139,9 @@ namespace animation {
         std::span<glm::mat4> socketPalette,
         uint16_t clipIndex,
         double animationStartTime,
-        double currentTime)
+        float speed,
+        double currentTime,
+        bool forceFirstFrame)
     {
         if (animationStartTime < 0) return false;
         const auto& clipContainer = rig.m_clipContainer;
@@ -156,7 +158,8 @@ namespace animation {
         float animationTimeTicks = clipContainer.getAnimationTimeTicks(
             clipIndex,
             animationStartTime,
-            currentTime);
+            forceFirstFrame ? animationStartTime : currentTime,
+            speed);
 
         glm::mat4 parentTransforms[MAX_JOINTS + 1];
 
@@ -220,10 +223,13 @@ namespace animation {
         std::span<glm::mat4> socketPalette,
         uint16_t clipIndexA,
         double animationStartTimeA,
+        float speedA,
         uint16_t clipIndexB,
         double animationStartTimeB,
+        float speedB,
         float blendFactor,
-        double currentTime)
+        double currentTime,
+        bool forceFirstFrame)
     {
         if (animationStartTimeA < 0) return false;
         const auto& clipContainer = rig.m_clipContainer;
@@ -256,12 +262,14 @@ namespace animation {
         float animationTimeTicksA = clipContainer.getAnimationTimeTicks(
             clipIndexA,
             animationStartTimeA,
-            currentTime);
+            forceFirstFrame ? animationStartTimeA : currentTime,
+            speedA);
 
         float animationTimeTicksB = clipContainer.getAnimationTimeTicks(
             clipIndexB,
             animationStartTimeB,
-            currentTime);
+            forceFirstFrame ? animationStartTimeB : currentTime,
+            speedB);
 
         glm::mat4 parentTransforms[MAX_JOINTS + 1];
 

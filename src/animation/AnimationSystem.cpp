@@ -61,7 +61,6 @@ namespace animation
         const auto& assets = Assets::get();
 
         m_enabled = assets.animationEnabled;
-        m_firstFrameOnly = assets.animationFirstFrameOnly;
         m_onceOnly = assets.animationOnceOnly;
         m_maxCount = assets.animationMaxCount;
 
@@ -117,31 +116,41 @@ namespace animation
     void AnimationSystem::startAnimation(
         pool::NodeHandle handle,
         uint16_t clipIndex,
+        float duration,
+        float blendTime,
         float speed,
         bool restart,
-        bool repeat)
+        bool repeat,
+        double startTime)
     {
         auto* state = getState(handle);
         if (!state) return;
 
-        {
-            auto& play = state->m_current.m_active ? state->m_next : state->m_current;
-            play.m_clipIndex = clipIndex;
-            play.m_speed = speed;
-            play.m_repeat = repeat;
-            play.m_active = true;
-        }
-        state->m_blendDuration = 2.f;
+        auto& play = state->m_pending;
+        play.m_clipIndex = clipIndex;
+        play.m_startTime = startTime;
+        play.m_duration = duration;
+        play.m_blendTime = blendTime;
+        play.m_speed = speed;
+        play.m_repeat = repeat;
+        play.m_active = true;
     }
 
     void AnimationSystem::stopAnimation(
-        pool::NodeHandle handle)
+        pool::NodeHandle handle,
+        double stopTime)
     {
         auto* state = getState(handle);
         if (!state) return;
 
-        state->m_current.m_active = false;
-        state->m_next.m_active = false;
+        auto& play = state->m_pending;
+        play.m_clipIndex = -1;
+        play.m_startTime = stopTime;
+        play.m_duration = 0.f;
+        play.m_blendTime = 0.f;
+        play.m_speed = 1.f;
+        play.m_repeat = false;
+        play.m_active = true;
     }
 
     uint32_t AnimationSystem::getActiveCount() const noexcept
@@ -212,140 +221,122 @@ namespace animation
         auto& boneRegistry = BoneRegistry::get();
         auto& socketRegistry = SocketRegistry::get();
 
+        if (debugContext.m_animationPaused) return;
+
+        auto& playA = state.m_current;
+        auto& playB = state.m_next;
+        if (state.m_pending.m_active) {
+            playB = state.m_pending;
+            state.m_pending.m_active = false;
+        }
+
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
-            auto& nodeState = node->modifyState();
-            auto& currAnim = state.m_current;
-            auto& nextAnim = state.m_next;
+            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+            auto rig = mesh->getRigContainer().get();
 
-            if (currAnim.m_startTime <= -42.f) {
-                // NOTE KI "once"
-                continue;
-            }
+            if (!rig) continue;
 
-            const mesh::Mesh* mesh{ nullptr };
-            std::shared_ptr<animation::RigContainer> rigPtr;
-
-            if (!rigPtr)
+            uint32_t boneBaseIndex;
+            uint32_t socketBaseIndex;
             {
-                const auto* m = lodMesh.getMesh<mesh::ModelMesh>();
-                if (m) {
-                    rigPtr = m->m_rig;
-                    mesh = m;
-                }
-            }
-            if (!rigPtr)
-            {
-                const auto* m = lodMesh.getMesh<mesh::PrimitiveMesh>();
-                if (m) {
-                    rigPtr = m->m_rig;
-                    mesh = m;
-                }
+                const auto& nodeState = node->getState();
+                boneBaseIndex = nodeState.m_boneBaseIndex;
+                socketBaseIndex = nodeState.m_socketBaseIndex;
             }
 
-            if (!rigPtr) continue;
-            auto& rig = *rigPtr;
+            auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig->m_boneContainer.size());
+            auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
-            auto bonePalette = boneRegistry.modifyRange(nodeState.m_boneBaseIndex, rig.m_boneContainer.size());
-            auto socketPalette = socketRegistry.modifyRange(nodeState.m_socketBaseIndex, rig.m_sockets.size());
+            double currentTime = ctx.m_clock.ts;
 
-            bool paused = false;
+            float blendFactor = -1.f;
 
             if (debugContext.m_animationDebugEnabled) {
-                paused = debugContext.m_animationPaused;
+                playA.m_clipIndex = debugContext.m_animationClipIndexA;
+                playB.m_clipIndex = debugContext.m_animationClipIndexB;
 
-                if (currAnim.m_startTime < 0) {
-                    currAnim.m_startTime = ctx.m_clock.ts - (rand() % 60);
-                }
+                playA.m_speed = debugContext.m_animationSpeedA;
+                playB.m_speed = debugContext.m_animationSpeedB;
 
-                currAnim.m_clipIndex = debugContext.m_animationClipIndexA;
+                blendFactor = debugContext.m_animationBlendFactor;
 
-                if (debugContext.m_animationBlend) {
-                    nextAnim.m_clipIndex = debugContext.m_animationClipIndexB;
+                if (debugContext.m_animationManualTime) {
+                    currentTime = debugContext.m_animationCurrentTime;
+                    playA.m_startTime = debugContext.m_animationStartTimeA;
+                    playB.m_startTime = debugContext.m_animationStartTimeB;
                 }
                 else {
-                    nextAnim.m_clipIndex = -1;
-                }
-            }
-
-            double animationStartTimeA = currAnim.m_startTime;
-            double animationStartTimeB = nextAnim.m_startTime;
-
-            double animationCurrentTime = ctx.m_clock.ts;
-
-            if (m_firstFrameOnly) {
-                animationCurrentTime = currAnim.m_startTime;
-            }
-            if (paused) {
-                animationCurrentTime = currAnim.m_lastTime;
-            }
-
-            float blendFactor = 0;
-
-            if (debugContext.m_animationDebugEnabled) {
-                if (debugContext.m_animationCurrentTime >= 0) {
-                    animationCurrentTime = debugContext.m_animationCurrentTime;
-
-                    animationStartTimeA = debugContext.m_animationStartTimeA;
-                    animationStartTimeB = debugContext.m_animationStartTimeB;
-
-                    blendFactor = debugContext.m_animationBlendFactor;
-
-                    if (false) {
-                        auto clipIndex = currAnim.m_clipIndex;
-                        const auto& clipContainer = rig.m_clipContainer;
-                        if (clipIndex >= 0 && clipIndex < clipContainer.m_clips.size()) {
-                            const auto& clip = clipContainer.m_clips[clipIndex];
-                            if (!clip.m_single && animationCurrentTime > clip.m_durationSecs) {
-                                animationCurrentTime = clip.m_durationSecs;
-                                debugContext.m_animationCurrentTime = clip.m_durationSecs;
-                            }
-                        }
+                    if (playA.m_startTime < 1000.f) {
+                        playA.m_startTime = currentTime;
+                    }
+                    if (playB.m_startTime < 1000.f) {
+                        playB.m_startTime = currentTime + 3.f;
                     }
                 }
+
+                if (!debugContext.m_animationBlend) {
+                    playB.m_clipIndex = -1;
+                    playB.m_active = false;
+                }
+            }
+
+            if (blendFactor < 0) {
+                // TODO KI calculate blend factor
             }
 
             blendFactor = std::max(std::min(blendFactor, 1.f), 0.f);
 
-            animation::Animator animator;
-            bool changed = false;
-            if (nextAnim.m_clipIndex < 0) {
-                changed = animator.animate(
-                    rig,
-                    mesh->m_rigTransform,
-                    mesh->m_inverseRigTransform,
-                    lodMesh.m_animationRigTransform,
-                    bonePalette,
-                    socketPalette,
-                    currAnim.m_clipIndex,
-                    animationStartTimeA,
-                    animationCurrentTime);
-            }
-            else {
-                changed = animator.animateBlended(
-                    rig,
-                    mesh->m_rigTransform,
-                    mesh->m_inverseRigTransform,
-                    lodMesh.m_animationRigTransform,
-                    bonePalette,
-                    socketPalette,
-                    currAnim.m_clipIndex,
-                    animationStartTimeA,
-                    nextAnim.m_clipIndex,
-                    animationStartTimeB,
-                    blendFactor,
-                    animationCurrentTime);
+            // NOTE KI next is completely blended
+            if (blendFactor >= 1.f) {
+                playA = playB;
+                playB.m_active = false;
             }
 
-            currAnim.m_lastTime = animationCurrentTime;
+            animation::Animator animator;
+            bool changed = false;
+             if (playB.m_clipIndex < 0) {
+                 changed = animator.animate(
+                     *rig,
+                     mesh->m_rigTransform,
+                     mesh->m_inverseRigTransform,
+                     lodMesh.m_animationRigTransform,
+                     bonePalette,
+                     socketPalette,
+                     playA.m_clipIndex,
+                     playA.m_startTime,
+                     playA.m_speed,
+                     currentTime,
+                     debugContext.m_animationForceFirstFrame);
+            }
+            else {
+                 changed = animator.animateBlended(
+                     *rig,
+                     mesh->m_rigTransform,
+                     mesh->m_inverseRigTransform,
+                     lodMesh.m_animationRigTransform,
+                     bonePalette,
+                     socketPalette,
+                     playA.m_clipIndex,
+                     playA.m_startTime,
+                     playA.m_speed,
+                     playB.m_clipIndex,
+                     playB.m_startTime,
+                     playB.m_speed,
+                     blendFactor,
+                     currentTime,
+                     debugContext.m_animationForceFirstFrame);
+            }
+
             if (m_onceOnly) {
-                currAnim.m_startTime = -42;
+                playA.m_active = false;
+                playB.m_active = false;
             }
 
             if (changed) {
-                boneRegistry.markDirty(nodeState.m_boneBaseIndex, rig.m_boneContainer.size());
-                socketRegistry.markDirty(nodeState.m_socketBaseIndex, rig.m_sockets.size());
+                boneRegistry.markDirty(boneBaseIndex, bonePalette.size());
+                socketRegistry.markDirty(socketBaseIndex, socketPalette.size());
             }
 
             // NOTE KI need to animated only once

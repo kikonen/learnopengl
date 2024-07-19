@@ -126,7 +126,8 @@ namespace animation {
     float ClipContainer::getAnimationTimeTicks(
         uint16_t clipIndex,
         double animationStartTime,
-        double currentTime) const
+        double currentTime,
+        float speed) const
     {
         const auto& clip = m_clips[clipIndex];
         const auto& animation = *m_animations[clip.m_animationIndex];
@@ -135,7 +136,7 @@ namespace animation {
         {
             const float animationTimeSecs = (float)(currentTime - animationStartTime);
             const float ticksPerSecond = animation.m_ticksPerSecond != 0.f ? animation.m_ticksPerSecond : DEF_FPS;
-            const float timeInTicks = animationTimeSecs * ticksPerSecond;
+            const float timeInTicks = animationTimeSecs * ticksPerSecond * speed;
             animationTimeTicks = fmod(timeInTicks, clip.m_duration);
 
             //std::cout << fmt::format(

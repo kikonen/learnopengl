@@ -23,7 +23,9 @@ namespace animation {
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndex,
             double animationStartTime,
-            double currentTime);
+            float speed,
+            double currentTime,
+            bool forceFirstFrame);
 
         // Update single palette with clipIndex animation clip
         // @return true if palette was changed
@@ -36,9 +38,12 @@ namespace animation {
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndexA,
             double animationStartTimeA,
+            float speedA,
             uint16_t clipIndexB,
             double animationStartTimeB,
+            float speedB,
             float blendFactor,
-            double currentTime);
+            double currentTime,
+            bool forceFirstFrame);
     };
 }

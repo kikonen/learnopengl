@@ -484,18 +484,26 @@ namespace editor {
     {
         const auto& assets = ctx.m_assets;
 
+        ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
         ImGui::Checkbox("Animation debug", &debugContext.m_animationDebugEnabled);
 
         if (debugContext.m_animationDebugEnabled) {
-            ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
-
             ImGui::SeparatorText("Animation blending");
 
-            ImGui::InputFloat("Current time", &debugContext.m_animationCurrentTime, 0.01f, 0.1f);
+            ImGui::Checkbox("Force first frame", &debugContext.m_animationForceFirstFrame);
+            if (!debugContext.m_animationForceFirstFrame) {
+                ImGui::Checkbox("Manual time", &debugContext.m_animationManualTime);
+                if (debugContext.m_animationManualTime) {
+                    ImGui::InputFloat("Current time", &debugContext.m_animationCurrentTime, 0.01f, 0.1f);
+                }
+            }
 
+            ImGui::SeparatorText("Clip A");
             ImGui::InputInt("Clip A", &debugContext.m_animationClipIndexA, 1, 10);
             ImGui::InputFloat("Clip A start", &debugContext.m_animationStartTimeA, 0.01f, 0.1f);
+            ImGui::InputFloat("Clip A speed", &debugContext.m_animationSpeedA, 0.01f, 0.1f);
 
+            ImGui::SeparatorText("Clip B");
             ImGui::Checkbox("Blend animation", &debugContext.m_animationBlend);
 
             if (debugContext.m_animationBlend) {
@@ -503,6 +511,7 @@ namespace editor {
 
                 ImGui::InputInt("Clip B", &debugContext.m_animationClipIndexB, 1, 10);
                 ImGui::InputFloat("Clip B start", &debugContext.m_animationStartTimeB, 0.01f, 0.1f);
+                ImGui::InputFloat("Clip B speed", &debugContext.m_animationSpeedB, 0.01f, 0.1f);
             }
 
             if (assets.glslUseDebug) {

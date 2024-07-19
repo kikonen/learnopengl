@@ -34,7 +34,8 @@ namespace animation {
         float getAnimationTimeTicks(
             uint16_t clipIndex,
             double animationStartTime,
-            double currentTime) const;
+            double currentTime,
+            float speed) const;
 
     private:
         float animationTimeToSecs(
