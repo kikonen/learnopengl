@@ -48,6 +48,11 @@ namespace loader {
             return m_type != DocNodeType::undefined;
         }
 
+        bool isNull() const noexcept
+        {
+            return m_type == DocNodeType::null;
+        }
+
         bool isSequence() const noexcept
         {
             return m_type == DocNodeType::sequence;

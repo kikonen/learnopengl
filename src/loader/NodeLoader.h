@@ -29,6 +29,11 @@ namespace loader {
             bool recurse,
             Loaders& loaders) const;
 
+        void loadPrefab(
+            const loader::DocNode& node,
+            NodeData& data,
+            Loaders& loaders) const;
+
         void loadAttachments(
             const loader::DocNode& node,
             std::vector<AttachmentData>& attachments) const;

@@ -20,6 +20,7 @@
 
 #include "Loaders.h"
 
+#include "loader/converter/YamlConverter.h"
 #include "loader/document.h"
 #include "loader_util.h"
 
@@ -70,11 +71,18 @@ namespace loader {
 
         data.enabled = true;
 
+        if (recurse) {
+            loadPrefab(node.findNode("prefab"), data, loaders);
+        }
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "type") {
+            if (k == "prefab") {
+                // NOTE KI loaded as "pre step"
+            }
+            else if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
                     data.type = NodeType::origo;
@@ -329,6 +337,54 @@ namespace loader {
                         clones.push_back(clone);
                     }
                 }
+            }
+        }
+    }
+
+    void NodeLoader::loadPrefab(
+        const loader::DocNode& node,
+        NodeData& data,
+        Loaders& loaders) const
+    {
+        if (node.isNull()) return;
+
+        std::string path;
+
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "path") {
+                path = readString(v);
+            }
+        }
+
+        if (path.empty()) return;
+
+        const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
+
+        KI_INFO_OUT(fmt::format("prefab={}", fullPath));
+
+        if (!util::fileExists(fullPath))
+        {
+            throw fmt::format("INVALID: prefab missing - path={}", fullPath);
+        }
+
+        loader::YamlConverter converter;
+        auto doc = converter.load(fullPath);
+
+        for (const auto& pair : doc.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "prefab") {
+                std::vector<NodeData> clones;
+                loadNodeClone(
+                    v,
+                    data,
+                    clones,
+                    false,
+                    loaders);
             }
         }
     }

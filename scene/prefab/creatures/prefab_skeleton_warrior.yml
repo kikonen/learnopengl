@@ -1,0 +1,106 @@
+---
+prefab:
+  meshes:
+    - path: fbx/creatures/skeleton/skeleton_animated.FBX
+      sockets:
+        - name: head
+          joint: Bip01_Head1
+          offset: [3.3, 1.3, 0]
+          rotation: [85, 90, 0]
+        - name: neck
+          joint: Bip01_Spine4
+          offset: [-1.9, 3.3, 0]
+          rotation: [0, -85, -110]
+        - name: l_arm
+          joint: Bip01_L_Forearm
+          offset: [7, 0, 0]
+          rotation: [80, 0, 0]
+        - name: r_hand
+          joint: Bip01_R_Hand
+          offset: [2.4, 0, -2.3]
+          rotation: [-66, -4, 0]
+      flags:
+        use_bones: true
+        use_animation: true
+      material:
+        map_pbr: skeleton_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xrender_back: true
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.01375
+      scale: 2
+      xlods:
+        - level: []
+        - name: joint_tree
+          level: [0, 1, 2]
+    - name: helmet
+      path: fbx\creatures\skeleton_knight\Helmet.fbx
+      lod:
+        level: [0, 1, 2]
+      material:
+        kd: [0.8, 0.8, 0]
+        map_kd: textures\T_Helmet_BaseColor.jpg
+        map_bump: textures\T_Helmet_Normal.jpg
+        map_channel:
+          - path: textures\T_Helmet_MetallicSmoothness_1024.png
+            channel: R
+          - path: textures\T_Helmet_Occlusion.png
+            channel: A
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.00121
+    - name: armor
+      path: fbx\creatures\skeleton_knight\Armor.fbx
+      lod:
+        level: [0, 1, 2]
+      material:
+        map_kd: textures\T_ChestArmor_BaseColor.jpg
+        map_bump: textures\T_ChestArmor_Normal.jpg
+        map_channel:
+          - path: textures\T_ChestArmor_MetallicSmoothness_1024.png
+            channel: R
+          - path: textures\T_2HandedSword_Occlusion.png
+            channel: A
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.000121
+    - name: 2HandedSword
+      path: fbx\creatures\skeleton_knight\2HandedSword.fbx
+      lod:
+        level: [0, 1, 2]
+      material:
+        map_kd: textures\T_2HandedSword_BaseColor.jpg
+        map_bump: textures\T_2HandedSword_Normal.jpg
+        map_channel:
+          - path: textures\T_2HandedSword_MetallicSmoothness_1024.png
+            channel: R
+          - path: textures\T_ChestArmor_Occlusion.jpg
+            channel: A
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.000075
+    - name: shield
+      path: fbx\creatures\skeleton_knight\Shield.fbx
+      lod:
+        level: [0, 1, 2]
+      material:
+        map_kd: textures\T_Shield_BaseColor.jpg
+        map_bump: textures\T_Shield_Normal.jpg
+        map_channel:
+          - path: textures\T_Shield_MetallicSmoothness_2048.png
+            channel: R
+          - path: textures\T_Shield_Occlusion.png
+            channel: A
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.0001
+  attachments:
+    - name: Helmet
+      socket: head
+    - name: Armor
+      socket: neck
+    - name: 2HandedSword
+      socket: r_hand
+    - name: SM_Shield
+      socket: l_arm
