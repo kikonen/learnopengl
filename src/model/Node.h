@@ -73,6 +73,11 @@ public:
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }
     inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
+    inline mesh::MeshType* getType() const noexcept
+    {
+        return m_typeHandle.toType();
+    }
+
     const std::string& getName() const noexcept { return m_name; }
     void setName(std::string_view name) noexcept {
         m_name = name;

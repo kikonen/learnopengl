@@ -24,6 +24,8 @@
 #include "api/AudioPause.h"
 #include "api/AudioStop.h"
 
+#include "api/AnimationPlay.h"
+
 struct UpdateContext;
 namespace script
 {
@@ -36,6 +38,7 @@ namespace script
         sizeof(script::AudioPause),
         sizeof(script::AudioPlay),
         sizeof(script::AudioStop),
+        sizeof(script::AnimationPlay),
         sizeof(script::MoveNode),
         sizeof(script::MoveSplineNode),
         sizeof(script::RotateNode),

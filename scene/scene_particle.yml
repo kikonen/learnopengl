@@ -253,6 +253,7 @@ nodes:
       z_count: 2
       x_step: 7
       z_step: -7
+    script: scripts/seq_skeleton
   - id: rock
     program: g_tex
     meshes:

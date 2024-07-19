@@ -74,6 +74,9 @@ namespace {
             else if (k == "sync") {
                 opt.sync = value.as<bool>();
             }
+            else if (k == "name") {
+                opt.name = value.as<std::string>();
+            }
             });
         return opt;
     }
