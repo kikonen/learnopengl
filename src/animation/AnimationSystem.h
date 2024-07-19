@@ -40,15 +40,23 @@ namespace animation {
         animation::AnimationState* getState(
             pool::NodeHandle handle);
 
+        // start new anim and stop current one
+        // If no current anim directly start playing
+        // @param blendTime blending period or anims
+        // from the start of newly started anim
         void startAnimation(
             pool::NodeHandle handle,
             uint16_t clipIndex,
+            float duration,
+            float blendTime,
             float speed,
             bool restart,
-            bool repeat);
+            bool repeat,
+            double startTime);
 
         void stopAnimation(
-            pool::NodeHandle handle);
+            pool::NodeHandle handle,
+            double stopTime);
 
         uint32_t getActiveCount() const noexcept;
 
@@ -69,7 +77,6 @@ namespace animation {
 
     private:
         bool m_enabled{ false };
-        bool m_firstFrameOnly{ false };
         bool m_onceOnly{ false };
         size_t m_maxCount{ 0 };
 
