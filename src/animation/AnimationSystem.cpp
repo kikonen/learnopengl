@@ -222,13 +222,18 @@ namespace animation
 
         auto& playA = state.m_current;
         auto& playB = state.m_next;
-        if (state.m_pending.m_active) {
-            playB = state.m_pending;
-            state.m_pending.m_active = false;
-        }
-        if (!playA.m_active) {
-            playA = playB;
-            playB.m_active = false;
+        {
+            if (state.m_pending.m_active) {
+                playB = state.m_pending;
+                state.m_pending.m_active = false;
+            }
+            if (!playA.m_active && playB.m_active) {
+                playA = playB;
+                playB.m_active = false;
+            }
+
+            if (!playA.m_active)
+                return;
         }
 
         for (const auto& lodMesh : type->getLodMeshes()) {
@@ -283,10 +288,15 @@ namespace animation
                 }
             }
 
-            if (playB.m_clipIndex >= 0) {
+            if (playB.m_active) {
                 if (blendFactor < 0) {
-                    // TODO KI calculate blend factor
-                    blendFactor = 1.f;
+                    if (playB.m_blendTime > 0) {
+                        auto diff = currentTime - playB.m_startTime;
+                        blendFactor = diff / playB.m_blendTime;
+                    }
+                    else {
+                        blendFactor = 1.f;
+                    }
                 }
 
                 blendFactor = std::max(std::min(blendFactor, 1.f), 0.f);
@@ -300,7 +310,7 @@ namespace animation
 
             animation::Animator animator;
             bool changed = false;
-             if (playB.m_clipIndex < 0) {
+             if (!playB.m_active) {
                  changed = animator.animate(
                      *rig,
                      mesh->m_rigTransform,
