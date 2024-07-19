@@ -119,9 +119,11 @@ void main()
     rgb = mix(outline_color, color.rgb, beta);
 
     float a = max(color.a, beta);
+#ifdef USE_ALPHA
     if (a < 0.7) {
       discard;
     }
+#endif
   }
   rgb = materialColor.rgb;
 

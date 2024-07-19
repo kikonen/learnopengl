@@ -110,7 +110,7 @@ nodes:
         map_pbr: textures\Leather037_1K
         tiling: 1
         alpha: true
-        render_back: true
+        xrender_back: true
         program: g_font_render
         shadow_program: shadow_font_render
     text:
@@ -120,7 +120,6 @@ nodes:
       text: Look at ME
     pos: [0, 4, -8]
     scale: 0.01
-    xrender_flags:
   - id: directional_light
     mesh:
       path: light

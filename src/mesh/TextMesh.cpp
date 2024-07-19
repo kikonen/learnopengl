@@ -67,7 +67,7 @@ namespace mesh {
         m_vboIndex = vao->reserveVertices(m_maxSize * 4);
         vao->reserveAtlasCoords(m_maxSize * 4);
 
-        m_eboIndex = vao->reserveIndeces(m_maxSize * 2);
+        m_eboIndex = vao->reserveIndeces(m_maxSize * 4);
 
         m_vao = vao->getVAO();
 
