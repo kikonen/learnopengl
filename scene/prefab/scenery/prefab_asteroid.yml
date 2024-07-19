@@ -1,0 +1,64 @@
+---
+prefab:
+  meshes:
+    - path: rock2/rock
+      lod:
+        level: 0
+      material_modifier:
+        metal: [0.5, 0.0, 0, 1]
+        map_pbr: textures\Rock002_1K-PNG
+        #kd: [1, 1, 0]
+        tiling: 4
+    - path: rock2/rock_lod_1
+      lod:
+        level: 1
+      material_modifier:
+        metal: [0.5, 0.0, 0, 1]
+        map_pbr: textures\Rock002_1K-PNG
+        #kd: [0, 1, 1]
+        tiling: 4
+      scale: 1.5
+    - path: rock2/rock_lod_2
+      lod:
+        level: 2
+      material_modifier:
+        #metal: [0.5, 0.0, 0, 1]
+        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+        #kd: [0, 0, 1]
+        tiling: 4
+      scale: 1
+    - path: rock2/rock_lod_3
+      lod:
+        level: 3
+      material_modifier:
+        #metal: [0.5, 0.0, 0, 1]
+        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+        #kd: [0, 1, 0]
+        tiling: 4
+      scale: 1.5
+    - path: rock2/rock_lod_4
+      lod:
+        level: 4
+      flags:
+        xbillboard: true
+      material_modifier:
+        #metal: [0.5, 0.0, 0, 1]
+        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+        #kd: [1, 0, 0]
+        tiling: 4
+        render_back: true
+      scale: 1.8
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 20
+    - level: 2
+      distance: 40
+    - level: 3
+      distance: 80
+    - level: 4
+      distance: 200
+  program: g_tex
+  render_flags:
+    no_shadow: true

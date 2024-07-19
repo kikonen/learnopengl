@@ -23,7 +23,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - id: zero-origo
+  - id: zero_origo
     type: origo
     pos: [0.0, 0.0, 0.0]
     script_file: scripts/seq_zero_origo
@@ -37,7 +37,7 @@ nodes:
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
   - name: Moving water ball
-    parent_id: zero-origo
+    parent_id: zero_origo
     mesh:
       path: water_ball
     program: g_tex
@@ -99,14 +99,14 @@ nodes:
     pos: [0, 0, 1]
     render_flags:
       cube_map: true
-  - id: light-dir-origo
-    parent_id: planet-origo
+  - id: light_dir_origo
+    parent_id: planet_origo
     type: origo
     pos: [0.0, 400.0, 0.0]
     rotation: [0.0, 25.0, 0.0]
     script_file: scripts/anim_sun_light
   - name: Sun light
-    parent_id: light-dir-origo
+    parent_id: light_dir_origo
     mesh:
       path: light
       material_modifier:
@@ -121,34 +121,34 @@ nodes:
       no_shadow: true
     light:
       type: directional
-      target_id: dir-light-target
+      target_id: dir_light_target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
   - id: moving_point_light_origo_{t}_{c}
-    parent_id: zero-origo
+    parent_id: zero_origo
     type: origo
     pos: [0, 14, 0]
     clones:
       - pos: [-15.0, 14.0, -15.0]
-        id: light-1
+        id: light_1
       - pos: [15.0, 14.0, -15.0]
-        id: light-2
+        id: light_2
       - pos: [-15.0, 14.0, 15.0]
-        id: light-3
+        id: light_3
       - pos: [15.0, 14.0, 15.0]
-        id: light-4
+        id: light_4
       - pos: [-25.0, 10.0, -25.0]
-        id: light-5
+        id: light_5
       - pos: [25.0, 10.0, -25.0]
-        id: light-6
+        id: light_6
       - pos: [-25, 10.0, 25.0]
-        id: light-7
+        id: light_7
       - pos: [25.0, 10.0, 25.0]
-        id: light-8
+        id: light_8
     script_file: scripts/anim_moving_point_light
   - id: moving_point_light_{t}_{c}
     desc: "NOTE overriding material in clones is *NOT* supported"
-    parent_id: zero-origo
+    parent_id: zero_origo
     mesh:
       path: light
     pos: [0, 0, 0]
@@ -158,15 +158,15 @@ nodes:
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
-        parent_id: light-1
+        parent_id: light_1
       - pos: [0.0, 0.0, 10.0]
-        parent_id: light-2
+        parent_id: light_2
       - pos: [0.0, 0.0, 10.0]
-        parent_id: light-3
+        parent_id: light_3
       - pos: [0.0, 0.0, 10.0]
-        parent_id: light-4
+        parent_id: light_4
       - pos: [0.0, 0.0, 15.0]
-        parent_id: light-5
+        parent_id: light_5
         mesh:
           material_modifier:
             kd: [0.8, 0.0, 0.0, 1.0]
@@ -175,7 +175,7 @@ nodes:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: light-6
+        parent_id: light_6
         mesh:
           material_modifier:
             kd: [0.0, 0.9, 0.0, 1.0]
@@ -184,7 +184,7 @@ nodes:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: light-7
+        parent_id: light_7
         mesh:
           material_modifier:
             kd: [0.0, 0.0, 0.9, 1.0]
@@ -193,7 +193,7 @@ nodes:
           enabled: false
         enabled: false
       - pos: [0.0, 0.0, 15.0]
-        parent_id: light-8
+        parent_id: light_8
         mesh:
           material_modifier:
             kd: [0.9, 0.0, 0.9, 1.0]
@@ -208,13 +208,13 @@ nodes:
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
-  - id: rock-light-origo
-    parent_id: rock-origo
+  - id: rock_light_origo
+    parent_id: rock_origo
     type: origo
     pos: [0.0, 10.0, 0.0]
     script_file: scripts/anim_rock_light
   - name: Rock light
-    parent_id: rock-light-origo
+    parent_id: rock_light_origo
     mesh:
       path: light
     pos: [-10, 0, 0]
@@ -230,7 +230,7 @@ nodes:
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - name: Active node
-    parent_id: zero-origo
+    parent_id: zero_origo
     mesh:
       path: texture_cube
       material_modifier:
@@ -240,7 +240,7 @@ nodes:
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
   - name: Active node around rock
-    parent_id: rock-origo
+    parent_id: rock_origo
     mesh:
       path: texture_cube
     program: g_tex
@@ -562,7 +562,7 @@ nodes:
     scale: 1.0
   - name: Teapot
     desc: Dir light target (back needed due to gap in lid)
-    id: dir-light-target
+    id: dir_light_target
     mesh:
       path: smooth_teapot
       material:
@@ -697,7 +697,7 @@ nodes:
     scale: 1.3
   - name: ball origo
     type: origo
-    id: ball-origo
+    id: ball_origo
     pos: [5.0, 30.0, 15.0]
   - name: Silver ball
     mesh:
@@ -716,7 +716,7 @@ nodes:
       geom:
         type: sphere
   - name: Bronze ball
-    parent_id: ball-origo
+    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -727,7 +727,7 @@ nodes:
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
   - name: Copper ball
-    parent_id: ball-origo
+    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -979,11 +979,11 @@ nodes:
       x_step: 256
       y_step: 0
       z_step: 256
-  - id: planet-origo
+  - id: planet_origo
     type: origo
     pos: [10.0, 150.0, 200.0]
   - name: Planet
-    parent_id: planet-origo
+    parent_id: planet_origo
     mesh:
       path: planet/planet
       material_modifier:
@@ -993,14 +993,14 @@ nodes:
     scale: 10
     script_file: scripts/anim_planet
   - name: Rock origo
-    id: rock-origo
-    parent_id: planet-origo
+    id: rock_origo
+    parent_id: planet_origo
     type: origo
     pos: [0.0, -50.0, 0.0]
     render_flags:
       cube_map: true
   - name: Rock
-    parent_id: rock-origo
+    parent_id: rock_origo
     mesh:
       path: rock2/rock
       material_modifier:
@@ -1011,68 +1011,9 @@ nodes:
     pos: [0.0, 0, 0.0]
     scale: 1.5
   - name: Asteroid belt
-    parent_id: planet-origo
-    program: g_tex
-    pos: [0, 0, 0]
-    meshes:
-      - path: rock2/rock
-        lod:
-          level: 0
-        material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          map_pbr: textures\Rock002_1K-PNG
-          #kd: [0.9, 0.9, 0]
-          tiling: 4
-      - path: rock2/rock_lod_1
-        lod:
-          level: 1
-        material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          map_pbr: textures\Rock002_1K-PNG
-          #kd: [0, 0.8, 0.8]
-          tiling: 4
-        scale: 1.5
-      - path: rock2/rock_lod_2
-        lod:
-          level: 2
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [0, 0, 0.8]
-          tiling: 4
-        scale: 1
-      - path: rock2/rock_lod_3
-        lod:
-          level: 3
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [0, 0.8, 0]
-          tiling: 4
-        scale: 1.5
-      - path: rock2/rock_lod_4
-        lod:
-          level: 4
-        flags:
-          xbillboard: true
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [0.8, 0, 0]
-          tiling: 4
-          render_back: true
-        scale: 1.8
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 20
-      - level: 2
-        distance: 40
-      - level: 3
-        distance: 60
-      - level: 4
-        distance: 80
+    parent_id: planet_origo
+    prefab:
+      path: prefab/scenery/prefab_asteroid.yml
     instanced: true
     generator:
       type: asteroid_belt
@@ -1124,67 +1065,13 @@ nodes:
     scale: 3
     pos: [5, 11.5, 20.0]
     enabled: false
-  - id: palm_tree_forest_{t}
-    meshes:
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 0
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-            map_bump: textures/palm02_normal.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-            map_bump: textures/coconut palm leaf_Normal.png
-            render_back: true
-          - name: palm_trunk
-            alias: Tree_2Mat
-            map_kd: textures/palm02.png
-            map_bump: textures/palm02_normal.png
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 1
-          - name: Tree_1
-            level: 1
-          - name: Tree_2
-            level: []
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-            render_back: true
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 2
-          - name: Tree_1
-            level: 2
-          - name: Tree_2
-            level: []
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 200
-      - level: 2
-        distance: 500
+  - id: palm_tree_forest_{c}_{t}
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
     priority: -17
-    program: g_tex
     pos: [350, 10.0, 150.0]
     render_flags:
       static_bounds: true
-    mesh_scale: 0.05
     instanced: true
     generator:
       type: grid
@@ -1194,66 +1081,12 @@ nodes:
         x_step: -25
         z_step: 25
   - xid: maple_tree_forest_{t}
-    meshes:
-      - path: fbx/scenery/trees/Maple_02.fbx
-        lods:
-          - level: 0
-        materials:
-          - name: maple_trunk
-            alias: Tree_0Mat
-            map_kd: textures/bark02.png
-            map_bump: textures/bark02_normal.png
-          - name: maple_leaf
-            alias: Tree_1Mat
-            map_kd: textures/leaf maple.png
-            map_bump: textures/leaf maple_Normal.png
-            alpha: true
-            render_back: true
-      - path: fbx/scenery/trees/Maple_02.fbx
-        lods:
-          - level: 1
-        materials:
-          - name: maple_trunk
-            alias: Tree_0Mat
-            map_kd: textures/bark02.png
-          - name: maple_leaf
-            alias: Tree_1Mat
-            map_kd: textures/leaf maple.png
-            render_back: true
-      - path: fbx/scenery/trees/Maple_02.fbx
-        lods:
-          - level: 2
-        materials:
-          - name: maple_trunk
-            alias: Tree_0Mat
-            map_kd: textures/bark02.png
-          - name: maple_leaf
-            alias: Tree_1Mat
-            map_kd: textures/leaf maple.png
-      - path: fbx/scenery/trees/Maple_02.fbx
-        lods:
-          - level: 3
-          - name: Tree_1
-            level: []
-        materials:
-          - name: maple_trunk
-            alias: Tree_0Mat
-            map_kd: textures/bark02.png
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 100
-      - level: 2
-        distance: 200
-      - level: 3
-        distance: 600
+    prefab:
+      path: prefab/scenery/prefab_maple_tree.yml
     priority: -17
-    program: g_tex
     pos: [250, 10.0, 150.0]
     render_flags:
       static_bounds: true
-    mesh_scale: 0.05
     instanced: true
     generator:
       type: grid
@@ -1327,104 +1160,9 @@ nodes:
       z_count: 80
       x_step: -9
       z_step: 9
-  - id: skeleton_army_2_{t}
-    meshes:
-      - path: fbx/creatures/skeleton/skeleton_animated.FBX
-        sockets:
-          - name: head
-            joint: Bip01_Head1
-            offset: [3.3, 1.3, 0]
-            rotation: [85, 90, 0]
-          - name: neck
-            joint: Bip01_Spine4
-            offset: [-1.9, 3.3, 0]
-            rotation: [0, -85, -110]
-          - name: l_arm
-            joint: Bip01_L_Forearm
-            offset: [7, 0, 0]
-            rotation: [80, 0, 0]
-          - name: r_hand
-            joint: Bip01_R_Hand
-            offset: [2.4, 0, -2.3]
-            rotation: [-66, -4, 0]
-        flags:
-          use_bones: true
-          use_animation: true
-        material:
-          map_pbr: skeleton_pbr
-          xmetal: [0.3, 0.4, 0, 1]
-          xrender_back: true
-        base_scale: 0.01375
-        scale: 2
-        xlods:
-          - level: []
-          - name: joint_tree
-            level: [0, 1, 2]
-      - name: helmet
-        path: fbx\creatures\skeleton_knight\Helmet.fbx
-        lod:
-          level: [0, 1, 2]
-        material:
-          kd: [0.8, 0.8, 0]
-          map_kd: textures\T_Helmet_BaseColor.jpg
-          map_bump: textures\T_Helmet_Normal.jpg
-          map_channel:
-            - path: textures\T_Helmet_MetallicSmoothness_1024.png
-              channel: R
-            - path: textures\T_Helmet_Occlusion.png
-              channel: A
-        scale: 0.00121
-      - name: armor
-        path: fbx\creatures\skeleton_knight\Armor.fbx
-        lod:
-          level: [0, 1, 2]
-        material:
-          map_kd: textures\T_ChestArmor_BaseColor.jpg
-          map_bump: textures\T_ChestArmor_Normal.jpg
-          map_channel:
-            - path: textures\T_ChestArmor_MetallicSmoothness_1024.png
-              channel: R
-            - path: textures\T_2HandedSword_Occlusion.png
-              channel: A
-        xscale: 0.000121
-        scale: 0.000121
-      - name: 2HandedSword
-        path: fbx\creatures\skeleton_knight\2HandedSword.fbx
-        lod:
-          level: [0, 1, 2]
-        material:
-          map_kd: textures\T_2HandedSword_BaseColor.jpg
-          map_bump: textures\T_2HandedSword_Normal.jpg
-          map_channel:
-            - path: textures\T_2HandedSword_MetallicSmoothness_1024.png
-              channel: R
-            - path: textures\T_ChestArmor_Occlusion.jpg
-              channel: A
-        scale: 0.000075
-      - name: shield
-        path: fbx\creatures\skeleton_knight\Shield.fbx
-        lod:
-          level: [0, 1, 2]
-        material:
-          map_kd: textures\T_Shield_BaseColor.jpg
-          map_bump: textures\T_Shield_Normal.jpg
-          map_channel:
-            - path: textures\T_Shield_MetallicSmoothness_2048.png
-              channel: R
-            - path: textures\T_Shield_Occlusion.png
-              channel: A
-        scale: 0.0001
-    attachments:
-      - name: Helmet
-        socket: head
-      - name: Armor
-        socket: neck
-      - name: 2HandedSword
-        socket: r_hand
-      - name: SM_Shield
-        socket: l_arm
-    program: g_tex
-    shadow_program: simple_depth
+  - id: skeleton_army_{c}_{t}
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: -15
     pos: [35, 11.5, 60.0]
     render_flags:

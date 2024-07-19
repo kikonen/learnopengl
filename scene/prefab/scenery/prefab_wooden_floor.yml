@@ -1,0 +1,18 @@
+---
+prefab:
+  mesh:
+    path: plane
+    material:
+      map_kd: textures\Planks 09 [8K]\Planks09_col_2048.png
+      map_normal: textures\Planks 09 [8K]\Planks09_nrm_2048.png
+      map_channel:
+        - path: textures\Planks 09 [8K]\Planks09_rgh_2048.png
+          channel: G
+        - path: textures\Planks 09 [8K]\Planks09_disp_2048.png
+          channel: B
+        - path: textures\Planks 09 [8K]\Planks09_AO_2048.png
+          channel: A
+      tiling: 60
+      program: g_tex
+  render_flags:
+    no_shadow: true

@@ -3,8 +3,6 @@ name: Asteroids
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
@@ -26,7 +24,6 @@ nodes:
       flags:
         billboard: true
       material:
-        name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
         alpha: true
@@ -53,13 +50,12 @@ nodes:
     pos: [0.0, 0.0, 0.0]
     render_flags:
       cube_map: true
-  - name: Planet origo
-    id: planet-origo
+  - id: planet_origo
     type: origo
     pos: [0.0, 0.0, 0.0]
     script_file: scripts/anim_asteroids_roll
-  - name: Planet
-    parent_id: planet-origo
+  - id: planet
+    parent_id: planet_origo
     mesh:
       path: planet/planet
       scale: 2
@@ -67,7 +63,6 @@ nodes:
     pos: [0, 0, 0]
     particle:
       material:
-        name: particle_firespin
         kd: [1, 1, 1, 1]
         map_kd: particles/7_firespin_spritesheet.png
         sprites: 61
@@ -75,70 +70,10 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
   - id: asteroid_belt
-    parent_id: planet-origo
-    program: g_tex
-    render_flags:
-      no_shadow: true
+    parent_id: planet_origo
+    prefab:
+      path: prefab/scenery/prefab_asteroid.yml
     pos: [0, 0, 0]
-    meshes:
-      - path: rock2/rock
-        lod:
-          level: 0
-        material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          map_pbr: textures\Rock002_1K-PNG
-          #kd: [1, 1, 0]
-          tiling: 4
-      - path: rock2/rock_lod_1
-        lod:
-          level: 1
-        material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          map_pbr: textures\Rock002_1K-PNG
-          #kd: [0, 1, 1]
-          tiling: 4
-        scale: 1.5
-      - path: rock2/rock_lod_2
-        lod:
-          level: 2
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [0, 0, 1]
-          tiling: 4
-        scale: 1
-      - path: rock2/rock_lod_3
-        lod:
-          level: 3
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [0, 1, 0]
-          tiling: 4
-        scale: 1.5
-      - path: rock2/rock_lod_4
-        lod:
-          level: 4
-        flags:
-          xbillboard: true
-        material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
-          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          #kd: [1, 0, 0]
-          tiling: 4
-          render_back: true
-        scale: 1.8
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 20
-      - level: 2
-        distance: 40
-      - level: 3
-        distance: 80
-      - level: 4
-        distance: 200
     instanced: true
     generator:
       type: asteroid_belt

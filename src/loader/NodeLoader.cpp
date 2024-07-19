@@ -137,8 +137,10 @@ namespace loader {
                 data.priority = readInt(v);
             }
             else if (k == "mesh" || k == "model") {
-                auto& meshData = data.meshes.emplace_back();
-                loaders.m_meshLoader.loadMesh(v, meshData, loaders);
+                if (data.meshes.empty()) {
+                    data.meshes.emplace_back();
+                }
+                loaders.m_meshLoader.loadMesh(v, data.meshes[0], loaders);
             }
             else if (k == "program") {
                 data.programs[MaterialProgramType::shader] = readString(v);
@@ -221,8 +223,10 @@ namespace loader {
                 loaders.m_controllerLoader.loadControllers(v, data.controllers);
             }
             else if (k == "controller") {
-                auto& controllerDaata = data.controllers.emplace_back();
-                loaders.m_controllerLoader.loadController(v, controllerDaata);
+                if (data.controllers.empty()) {
+                    data.controllers.emplace_back();
+                }
+                loaders.m_controllerLoader.loadController(v, data.controllers[0]);
             }
             else if (k == "generator") {
                 loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);

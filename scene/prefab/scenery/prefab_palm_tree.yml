@@ -1,0 +1,62 @@
+---
+prefab:
+  meshes:
+    - path: fbx/scenery/trees/Palm_01.fbx
+      lods:
+        - level: 0
+      materials:
+        - name: palm_trunk
+          alias: Tree_0Mat
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
+        - name: palm_leaf
+          alias: Tree_1Mat
+          map_kd: textures/coconut palm leaf.png
+          map_bump: textures/coconut palm leaf_Normal.png
+          render_back: true
+        - name: palm_trunk
+          alias: Tree_2Mat
+          map_kd: textures/palm02.png
+          map_bump: textures/palm02_normal.png
+      base_scale: 0.05
+      program: g_tex
+    - path: fbx/scenery/trees/Palm_01.fbx
+      lods:
+        - level: 1
+        - name: Tree_1
+          level: 1
+        - name: Tree_2
+          level: []
+      materials:
+        - name: palm_trunk
+          alias: Tree_0Mat
+          map_kd: textures/palm02.png
+        - name: palm_leaf
+          alias: Tree_1Mat
+          map_kd: textures/coconut palm leaf.png
+          render_back: true
+      base_scale: 0.05
+      program: g_tex
+    - path: fbx/scenery/trees/Palm_01.fbx
+      lods:
+        - level: 2
+        - name: Tree_1
+          level: 2
+        - name: Tree_2
+          level: []
+      materials:
+        - name: palm_trunk
+          alias: Tree_0Mat
+          map_kd: textures/palm02.png
+        - name: palm_leaf
+          alias: Tree_1Mat
+          map_kd: textures/coconut palm leaf.png
+      base_scale: 0.05
+      program: g_tex
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 200
+    - level: 2
+      distance: 500
