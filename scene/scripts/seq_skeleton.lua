@@ -61,10 +61,10 @@ local function animation(coid)
     --print(string.format("loop: %d", id))
 
     cid = idle(wid)
-    wid = cmd:wait({ after=cid, time=2 + rnd(6) })
+    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     cid = attack(wid)
-    wid = cmd:wait({ after=cid, time=1 + rnd(4) })
+    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     cid = cmd:resume({ after=cid }, coid)
   end

@@ -57,7 +57,7 @@ namespace script
         as.startAnimation(
             m_nodeHandle,
             m_clipIndex,
-            2.f,
+            1.5f,
             1.f,
             false,
             false,
