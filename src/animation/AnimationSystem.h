@@ -47,7 +47,6 @@ namespace animation {
         void startAnimation(
             pool::NodeHandle handle,
             uint16_t clipIndex,
-            float duration,
             float blendTime,
             float speed,
             bool restart,

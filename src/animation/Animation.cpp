@@ -35,7 +35,7 @@ namespace animation {
         return m_channels[0].getMaxFrame();
     }
 
-    uint16_t Animation::getClipDuration(
+    float Animation::getClipDuration(
         uint16_t firstFrame,
         uint16_t lastFrame) const
     {

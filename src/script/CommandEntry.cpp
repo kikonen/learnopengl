@@ -33,6 +33,9 @@ namespace script {
             else if (auto* src = dynamic_cast<AudioStop*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
+            else if (auto* src = dynamic_cast<AnimationPlay*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
             else if (auto* src = dynamic_cast<MoveNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }

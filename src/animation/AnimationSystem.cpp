@@ -116,7 +116,6 @@ namespace animation
     void AnimationSystem::startAnimation(
         pool::NodeHandle handle,
         uint16_t clipIndex,
-        float duration,
         float blendTime,
         float speed,
         bool restart,
@@ -129,7 +128,6 @@ namespace animation
         auto& play = state->m_pending;
         play.m_clipIndex = clipIndex;
         play.m_startTime = startTime;
-        play.m_duration = duration;
         play.m_blendTime = blendTime;
         play.m_speed = speed;
         play.m_repeat = repeat;
@@ -146,7 +144,6 @@ namespace animation
         auto& play = state->m_pending;
         play.m_clipIndex = -1;
         play.m_startTime = stopTime;
-        play.m_duration = 0.f;
         play.m_blendTime = 0.f;
         play.m_speed = 1.f;
         play.m_repeat = false;
@@ -229,6 +226,10 @@ namespace animation
             playB = state.m_pending;
             state.m_pending.m_active = false;
         }
+        if (!playA.m_active) {
+            playA = playB;
+            playB.m_active = false;
+        }
 
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
@@ -282,16 +283,19 @@ namespace animation
                 }
             }
 
-            if (blendFactor < 0) {
-                // TODO KI calculate blend factor
-            }
+            if (playB.m_clipIndex >= 0) {
+                if (blendFactor < 0) {
+                    // TODO KI calculate blend factor
+                    blendFactor = 1.f;
+                }
 
-            blendFactor = std::max(std::min(blendFactor, 1.f), 0.f);
+                blendFactor = std::max(std::min(blendFactor, 1.f), 0.f);
 
-            // NOTE KI next is completely blended
-            if (blendFactor >= 1.f) {
-                playA = playB;
-                playB.m_active = false;
+                // NOTE KI next is completely blended
+                if (blendFactor >= 1.f) {
+                    playA = playB;
+                    playB.m_active = false;
+                }
             }
 
             animation::Animator animator;

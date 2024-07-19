@@ -34,7 +34,7 @@ namespace animation {
 
         uint16_t getMaxFrame() const;
 
-        uint16_t getClipDuration(
+        float getClipDuration(
             uint16_t firstFrame,
             uint16_t lastFrame) const;
 
