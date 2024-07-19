@@ -75,6 +75,15 @@ int SampleApp::onInit()
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
     Assets::set(loadAssets());
+
+    {
+        const auto& assets = Assets::get();
+        auto& debugContext = render::DebugContext::modify();
+        debugContext.m_frustumEnabled = assets.frustumEnabled;
+        debugContext.m_forceWireframe = assets.forceWireframe;
+        debugContext.m_showNormals = assets.showNormals;
+    }
+
     return 0;
 }
 
@@ -109,13 +118,13 @@ int SampleApp::onSetup()
     //state.setEnabled(GL_MULTISAMPLE, false);
 
     if (assets.useImGui) {
-        m_frameInit = std::make_unique<FrameInit>(*m_window);
-        m_frame = std::make_unique<EditorFrame>(*m_window);
+        m_editorInit = std::make_unique<FrameInit>(*m_window);
+        m_editor = std::make_unique<editor::EditorFrame>(*m_window);
 
         PrepareContext ctx{ m_registry.get()};
 
-        m_frameInit->prepare(ctx);
-        m_frame->prepare(ctx);
+        m_editorInit->prepare(ctx);
+        m_editor->prepare(ctx);
     }
 
     if (false) {
@@ -205,10 +214,16 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         cameraNode->m_camera.get(),
         assets.nearPlane,
         assets.farPlane,
-        size.x, size.y);
+        size.x,
+        size.y,
+        &m_debugContext);
     {
         ctx.m_forceWireframe = assets.forceWireframe;
         ctx.m_useLight = assets.useLight;
+
+        if (m_debugContext.m_nodeDebugEnabled) {
+            ctx.m_forceWireframe |= m_debugContext.m_forceWireframe;
+        }
 
         // https://paroj.github.io/gltut/apas04.html
         if (assets.rasterizerDiscard) {
@@ -227,7 +242,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         state.clearColor(BLACK_COLOR);
 
         if (assets.useImGui) {
-            m_frame->bind(ctx);
+            m_editor->bind(ctx);
             state.clear();
         }
 
@@ -237,19 +252,21 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     {
+        const auto* input = window->m_input.get();
         InputState state{
-            window->m_input->isModifierDown(Modifier::CONTROL),
-            window->m_input->isModifierDown(Modifier::SHIFT),
-            window->m_input->isModifierDown(Modifier::ALT),
+            input->isModifierDown(Modifier::CONTROL),
+            input->isModifierDown(Modifier::SHIFT),
+            input->isModifierDown(Modifier::ALT),
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
         };
+
 
         if (state.mouseLeft != m_lastInputState.mouseLeft &&
             state.mouseLeft == GLFW_PRESS &&
             state.ctrl)
         {
-            if ((state.shift || state.ctrl || state.alt) && (!assets.useImGui || !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))) {
+            if ((state.shift || state.ctrl || state.alt) && input->allowMouse()) {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
         }
@@ -258,12 +275,12 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     if (assets.useImGui) {
-        if (assets.imGuiDemo) {
+        if (assets.imGuiDemo || m_editor->getState().m_imguiDemo) {
             ImGui::ShowDemoWindow();
         }
 
-        m_frame->draw(ctx);
-        m_frame->render(ctx);
+        m_editor->draw(ctx);
+        m_editor->render(ctx);
     }
 
     frustumDebug(ctx, clock);
@@ -402,9 +419,13 @@ void SampleApp::selectNode(
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-    const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
-    const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
-    const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+    auto& debugContext = render::DebugContext::modify();
+
+    //const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
+    //const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
+    //const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
+
+    const bool selectMode = inputState.ctrl;
 
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);
@@ -444,13 +465,13 @@ void SampleApp::selectNode(
         KI_INFO(fmt::format("selected: {}", nodeId));
 
         if (node) {
-            {
-                event::Event evt { event::Type::animate_rotate };
-                evt.body.animate = {
+            if (m_debugContext.m_selectionAxis != glm::vec3{0.f}) {
+                event::Event evt { event::Type::command_rotate };
+                evt.body.command = {
                     .target = node->getId(),
                     .duration = 5,
                     .relative = true,
-                    .data = { 0.f, 1.f, 0.f },
+                    .data = m_debugContext.m_selectionAxis,
                     .data2 = { 360.f, 0, 0 },
                 };
                 ctx.m_registry->m_dispatcherWorker->send(evt);
@@ -461,26 +482,30 @@ void SampleApp::selectNode(
                 evt.body.audioSource.id = node->m_audioSourceIds[0];
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
-        }
-    } else if (playerMode) {
-        if (node && inputState.ctrl) {
-            auto exists = ControllerRegistry::get().hasController(node);
-            if (exists) {
-                event::Event evt { event::Type::node_activate };
-                evt.body.node.target = node->getId();
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
 
-            node = nullptr;
+            m_editor->getState().m_selectedNode = node->toHandle();
         }
-    } else if (cameraMode) {
-        // NOTE KI null == default camera
-        event::Event evt { event::Type::camera_activate };
-        evt.body.node.target = node->getId();
-        ctx.m_registry->m_dispatcherWorker->send(evt);
-
-        node = nullptr;
     }
+    //else if (playerMode) {
+    //    if (node && inputState.ctrl) {
+    //        auto exists = ControllerRegistry::get().hasController(node);
+    //        if (exists) {
+    //            event::Event evt { event::Type::node_activate };
+    //            evt.body.node.target = node->getId();
+    //            ctx.m_registry->m_dispatcherWorker->send(evt);
+    //        }
+
+    //        node = nullptr;
+    //    }
+    //}
+    //else if (cameraMode) {
+    //    // NOTE KI null == default camera
+    //    event::Event evt { event::Type::camera_activate };
+    //    evt.body.node.target = node->getId();
+    //    ctx.m_registry->m_dispatcherWorker->send(evt);
+
+    //    node = nullptr;
+    //}
 }
 
 Assets SampleApp::loadAssets()

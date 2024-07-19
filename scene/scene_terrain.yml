@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 200, 100]
@@ -112,7 +112,6 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -130,11 +129,10 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 1
-            distance: 500
           - name: Tree_1
             level: 1
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -146,11 +144,10 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 2
-            distance: 10000
           - name: Tree_1
             level: 2
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -158,6 +155,13 @@ entities:
           - name: palm_leaf
             alias: Tree_1Mat
             map_kd: textures/coconut palm leaf.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 500
     priority: 1
     program: g_tex
     pos: [150, 15.0, 150.0]
@@ -175,6 +179,10 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -189,9 +197,6 @@ entities:
     base_rotation: [0, 0, 0]
     render_flags:
       dynamic_bounds: true
-      use_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
     repeat:
       x_count: 10
       z_count: 50

@@ -48,13 +48,13 @@ void AsteroidBeltGenerator::updateWT(
     Node& container)
 {
     if (done) return;
-    const auto parentLevel = container.getParent()->getTransform().getMatrixLevel();
+    const auto parentLevel = container.getParent()->getState().getMatrixLevel();
     const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
-        auto& transform = container.modifyTransform();
-        transform.m_dirtySnapshot = true;
+        auto& state = container.modifyState();
+        state.m_dirtySnapshot = true;
     }
 
     //done = true;
@@ -69,15 +69,15 @@ void AsteroidBeltGenerator::updateAsteroids(
 {
     auto* registry = ctx.m_registry;
 
-    const auto& parentTransform = container.getParent()->getTransform();
+    const auto& parentState = container.getParent()->getState();
 
     if (rotate) {
         rotateAsteroids(ctx, container);
     }
 
-    for (auto& transform : m_transforms)
+    for (auto& state : m_states)
     {
-        transform.updateModelMatrix(parentTransform);
+        state.updateModelMatrix(parentState);
     }
 
     container.m_instancer = this;
@@ -93,23 +93,23 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto* lodMesh = type->getLodMesh(0);
     const auto* mesh = lodMesh->m_mesh;
-    const auto& volume = mesh->getAABB().getVolume();
+    const auto& volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
 
-    auto& containerTransform = container.modifyTransform();
+    auto& containerState = container.modifyState();
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
 
-        auto& asteroid = m_transforms.emplace_back();
+        auto& asteroid = m_states.emplace_back();
         asteroid.m_flags = type->resolveEntityFlags();
         asteroid.setVolume(volume);
     }
 
     initAsteroids(ctx, container);
-    containerTransform.setVolume(calculateVolume());
+    containerState.setVolume(calculateVolume());
 
-    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+    m_reservedCount = static_cast<uint32_t>(m_states.size());
     setActiveRange(0, m_reservedCount);
 }
 
@@ -123,7 +123,7 @@ void AsteroidBeltGenerator::initAsteroids(
     );
     srand(static_cast<unsigned int>(ts.count()));
 
-    const size_t count = m_transforms.size();
+    const size_t count = m_states.size();
 
     const glm::vec3 center{ 0.f };
     const float radius = m_radius;
@@ -131,7 +131,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_transforms[i];
+        auto& asteroid = m_states[i];
         auto& physics = m_physics[i];
 
         {
@@ -183,11 +183,11 @@ void AsteroidBeltGenerator::rotateAsteroids(
     Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = m_transforms.size();
+    const size_t count = m_states.size();
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_transforms[i];
+        auto& asteroid = m_states[i];
         auto& physics = m_physics[i];
 
         {

@@ -48,6 +48,8 @@ public:
     bool glUseDebugFence;
     bool glUseFinish;
 
+    bool glslUseDebug;
+
     bool compressedTexturesEnabled;
     bool prepassDepthEnabled;
 
@@ -176,7 +178,9 @@ public:
     float fogDensity;
 
     bool animationEnabled;
+    bool animationJointTree;
     bool animationFirstFrameOnly;
+    bool animationOnceOnly;
     int animationMaxCount;
 
     bool particleEnabled;

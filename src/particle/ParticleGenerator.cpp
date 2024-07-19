@@ -38,8 +38,8 @@ namespace particle {
         auto& ps = ParticleSystem::get();
         if (ps.isFull()) return;
 
-        const auto& transform = node.getTransform();
-        glm::vec3 pos = transform.getWorldPosition();
+        const auto& state = node.getState();
+        glm::vec3 pos = state.getWorldPosition();
 
         for (int i = 0; i < 1000; i++) {
             Particle particle;
@@ -49,7 +49,7 @@ namespace particle {
                 pos.y + 10.f - prnd(20.f),
                 pos.z + 50.f - prnd(100.f) };
 
-            particle.m_dir = { 0.f, 1.f, 0.f };
+            particle.m_dir = { prnd(.4f), 1.f, prnd(.4f) };
             particle.m_velocity = 0.01f + prnd(.4f);
             particle.m_lifetime = 5.f + prnd(100.f);
             particle.m_scale = 0.0001f + prnd(0.2f);

@@ -102,6 +102,8 @@ namespace script
             ut["audioPause"] = &CommandAPI::lua_audioPause;
             ut["audioStop"] = &CommandAPI::lua_audioStop;
 
+            ut["animationPlay"] = &CommandAPI::lua_animationPlay;
+
             ut["resume"] = sol::yielding(&CommandAPI::lua_resume_wrapper);
             ut["start"] = &CommandAPI::lua_start;
         }

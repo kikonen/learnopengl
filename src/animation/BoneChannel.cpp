@@ -4,19 +4,26 @@
 
 #include "util/assimp_util.h"
 
+#include "LocalTransform.h"
+
 namespace {
     uint16_t findIndex(
         const std::vector<float>& times,
-        float animationTimeTicks) noexcept
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) noexcept
     {
-        uint16_t min = 0;
-        uint16_t max = static_cast<uint16_t>(times.size() - 1);
+        uint16_t min = firstFrame;
+        // NOTE KI -1 so that "next = curr + 1" won't blend into next clip
+        uint16_t max = lastFrame - 1;
+
+        const auto startTick = times[firstFrame];
 
         // NOTE KI binary zearch
         while (min + 1 < max) {
             const auto curr = min + (max - min) / 2;
 
-            if (animationTimeTicks < times[curr]) {
+            if (animationTimeTicks < times[curr] - startTick) {
                 max = curr;
             }
             else {
@@ -25,7 +32,6 @@ namespace {
         }
         return min;
     }
-
 }
 
 namespace animation {
@@ -40,8 +46,8 @@ namespace animation {
     {}
 
     BoneChannel::BoneChannel(const aiNodeAnim* channel)
-        : m_nodeName{ channel->mNodeName.C_Str() },
-        m_nodeIndex{ -1 }
+        : m_jointName{ channel->mNodeName.C_Str() },
+        m_jointIndex{ -1 }
     {}
 
     void BoneChannel::reservePositionKeys(uint16_t size)
@@ -81,37 +87,35 @@ namespace animation {
     }
 
     // @return interpolated transform matrix
-    glm::mat4 BoneChannel::interpolate(float animationTimeTicks) const noexcept
+    animation::LocalTransform BoneChannel::interpolate(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame,
+        bool single) const noexcept
     {
-        //static const glm::mat4 ID_MAT{ 1.f };
-        glm::mat4 s_translateMatrix{ 1.f };
-        glm::mat4 s_scaleMatrix{ 1.f };
+        animation::LocalTransform local;
 
-        {
-            const auto& scale = interpolateScale(animationTimeTicks);
-            s_scaleMatrix[0].x = scale.x;
-            s_scaleMatrix[1].y = scale.y;
-            s_scaleMatrix[2].z = scale.z;
-        }
-        {
-            const auto& translate = interpolatePosition(animationTimeTicks);
-            s_translateMatrix[3].x = translate.x;
-            s_translateMatrix[3].y = translate.y;
-            s_translateMatrix[3].z = translate.z;
+        if (single) {
+            firstFrame = 0;
         }
 
-        const auto& rotateMatrix = glm::toMat4(interpolateRotation(animationTimeTicks));
+        local.m_translate = interpolatePosition(animationTimeTicks, firstFrame, single ? m_positionKeyTimes.size() - 1 : lastFrame);
+        local.m_scale = interpolateScale(animationTimeTicks, firstFrame, single ? m_scaleKeyTimes.size() - 1 : lastFrame);
+        local.m_rotation = interpolateRotation(animationTimeTicks, firstFrame, single ? m_rotationKeyTimes.size() - 1 : lastFrame);
 
-        return s_translateMatrix * rotateMatrix * s_scaleMatrix;
+        return local;
     }
 
-    glm::vec3 BoneChannel::interpolatePosition(float animationTimeTicks) const noexcept
+    glm::vec3 BoneChannel::interpolatePosition(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
         if (m_positionKeyValues.size() == 1) {
             return m_positionKeyValues[0];
         }
 
-        uint16_t currIndex = findPosition(animationTimeTicks);
+        uint16_t currIndex = findPosition(animationTimeTicks, firstFrame, lastFrame);
         uint16_t nextIndex = currIndex  + 1;
 
         assert(nextIndex < m_positionKeyValues.size());
@@ -120,17 +124,21 @@ namespace animation {
             animationTimeTicks,
             m_positionKeyValues[currIndex],
             m_positionKeyValues[nextIndex],
+            m_positionKeyTimes[firstFrame],
             m_positionKeyTimes[currIndex],
             m_positionKeyTimes[nextIndex]);
     }
 
-    glm::quat BoneChannel::interpolateRotation(float animationTimeTicks) const noexcept
+    glm::quat BoneChannel::interpolateRotation(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
         if (m_rotationKeyValues.size() == 1) {
             return m_rotationKeyValues[0];
         }
 
-        uint16_t currIndex = findRotation(animationTimeTicks);
+        uint16_t currIndex = findRotation(animationTimeTicks, firstFrame, lastFrame);
         uint16_t nextIndex = currIndex + 1;
 
         assert(nextIndex < m_rotationKeyValues.size());
@@ -139,17 +147,21 @@ namespace animation {
             animationTimeTicks,
             m_rotationKeyValues[currIndex],
             m_rotationKeyValues[nextIndex],
+            m_rotationKeyTimes[firstFrame],
             m_rotationKeyTimes[currIndex],
             m_rotationKeyTimes[nextIndex]);
     }
 
-    glm::vec3 BoneChannel::interpolateScale(float animationTimeTicks) const noexcept
+    glm::vec3 BoneChannel::interpolateScale(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
         if (m_scaleKeyValues.size() == 1) {
             return m_scaleKeyValues[0];
         }
 
-        uint16_t currIndex = findScale(animationTimeTicks);
+        uint16_t currIndex = findScale(animationTimeTicks, firstFrame, lastFrame);
         uint16_t nextIndex = currIndex + 1;
 
         assert(nextIndex < m_scaleKeyValues.size());
@@ -158,6 +170,7 @@ namespace animation {
             animationTimeTicks,
             m_scaleKeyValues[currIndex],
             m_scaleKeyValues[nextIndex],
+            m_scaleKeyTimes[firstFrame],
             m_scaleKeyTimes[currIndex],
             m_scaleKeyTimes[nextIndex]);
     }
@@ -166,11 +179,12 @@ namespace animation {
         float animationTimeTicks,
         const glm::vec3& aValue,
         const glm::vec3& bValue,
+        float firstFrameTime,
         float aTime,
         float bTime) const noexcept
     {
-        const float t1 = (float)aTime;
-        const float t2 = (float)bTime;
+        const float t1 = (float)aTime - firstFrameTime;
+        const float t2 = (float)bTime - firstFrameTime;
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
 
@@ -192,11 +206,12 @@ namespace animation {
         float animationTimeTicks,
         const glm::quat& aValue,
         const glm::quat& bValue,
+        float firstFrameTime,
         float aTime,
         float bTime) const noexcept
     {
-        const float t1 = (float)aTime;
-        const float t2 = (float)bTime;
+        const float t1 = (float)aTime - firstFrameTime;
+        const float t2 = (float)bTime - firstFrameTime;
         const float deltaTime = t2 - t1;
         const float factor = (animationTimeTicks - t1) / deltaTime;
 
@@ -210,19 +225,28 @@ namespace animation {
         return glm::slerp(aValue, bValue, factor);
     }
 
-    uint16_t BoneChannel::findPosition(float animationTimeTicks) const noexcept
+    uint16_t BoneChannel::findPosition(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
-        return findIndex(m_positionKeyTimes, animationTimeTicks);
+        return findIndex(m_positionKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
-    uint16_t BoneChannel::findRotation(float animationTimeTicks) const noexcept
+    uint16_t BoneChannel::findRotation(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
-        return findIndex(m_rotationKeyTimes, animationTimeTicks);
+        return findIndex(m_rotationKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
-    uint16_t BoneChannel::findScale(float animationTimeTicks) const noexcept
+    uint16_t BoneChannel::findScale(
+        float animationTimeTicks,
+        uint16_t firstFrame,
+        uint16_t lastFrame) const noexcept
     {
-        return findIndex(m_scaleKeyTimes, animationTimeTicks);
+        return findIndex(m_scaleKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
     //uint16_t BoneChannel::findIndex2(

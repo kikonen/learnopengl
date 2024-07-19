@@ -131,9 +131,9 @@ namespace physics {
 
     float HeightMap::getLevel(const glm::vec3& worldPos) const noexcept
     {
-        const auto& transform = m_origin->getTransform();
-        const auto& originPos = transform.getWorldPosition();
-        const auto& modelMat = transform.getModelMatrix();
+        const auto& state = m_origin->getState();
+        const auto& originPos = state.getWorldPosition();
+        const auto& modelMat = state.getModelMatrix();
 
         const auto diff = worldPos - originPos;
 

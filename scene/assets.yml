@@ -13,6 +13,8 @@ assets:
   gl_use_debug_fence: false
   gl_use_finish: false
 
+  glsl_use_debug: true
+
   compressed_textures_enabled: false
   prepass_depth_enabled: false
 
@@ -25,9 +27,9 @@ assets:
   window_maximized: true
   window_full_screen: false
 
-  camera_move_mormal: [5.5, 7.5, 7.5]
-  camera_move_run: [10, 14, 14]
-  camera_rotate_normal: [18, 18, 18]
+  camera_move_mormal: [2.5, 2.5, 2.5]
+  camera_move_run: [8, 8, 8]
+  camera_rotate_normal: [28, 28, 28]
   camera_rotate_run: [56, 56, 56]
   camera_zoom_normal: [20, 20, 20]
   camera_zoom_run: [25, 25, 25]
@@ -45,21 +47,21 @@ assets:
   placeholder_texture: textures/tiles_1024.png
 
   use_imgui: true
-  imgui_demo: false
+  #imgui_demo: false
   imgui_font_size: 18
   imgui_font_path: fonts/Vera.ttf
 
   use_script: true
   use_light: true
 
-  force_wireframe: false
+  #force_wireframe: false
 
-  show_normals: false
+  #show_normals: false
   show_rear_view: false
   show_shadow_map_view: false
-  show_reflection_view: false
-  show_refraction_view: false
-  show_objectid_view: false
+  #show_reflection_view: false
+  #show_refraction_view: false
+  #show_objectid_view: false
 
   show_volume: true
   show_selection_volume: true
@@ -119,7 +121,9 @@ assets:
   fog_density: 1.1
 
   animation_enabled: true
+  animation_joint_tree: false
   animation_first_frame_only: false
+  animation_once_only: false
   animation_max_count: 1000
 
   particle_enabled: true

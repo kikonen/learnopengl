@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 3, 7]
@@ -38,7 +38,20 @@ entities:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - xid: object_{t}
+  - name: wooden floor
+    mesh:
+      path: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
+        render_back: true
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      no_shadow: true
+    scale: 100
+  - id: object_{t}
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
@@ -48,12 +61,18 @@ entities:
         render_back: true
     program: g_tex
     pos: [0.0, 0.0, -8.0]
-    xbase_rotation: [-90.0, 0.0, 0.0]
+    base_rotation: [-90.0, 0.0, 0.0]
+    pivot:
+      alignment: t
     scale: 2
     base_scale: 0.01
   - id: skeleton_1_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -67,15 +86,17 @@ entities:
     pos: [-2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 1
     base_scale: 0.05
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
   - id: skeleton_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -89,15 +110,17 @@ entities:
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 1
     base_scale: 0.05
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
   - id: skeleton_3_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -111,15 +134,17 @@ entities:
     pos: [2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 1
     base_scale: 0.05
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
   - id: scavenger_1_{t}
     mesh:
       path: fbx/characters/scavenger/Scavenger.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -141,11 +166,9 @@ entities:
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [-90, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -154,6 +177,10 @@ entities:
   - id: scavenger_2_{t}
     mesh:
       path: fbx/characters/scavenger/Scavenger.fbx
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -175,11 +202,9 @@ entities:
     pos: [15.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [-90, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -188,6 +213,10 @@ entities:
   - id: scavenger_3_{t}
     mesh:
       path: fbx/characters/scavenger/Scavenger.fbx
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -209,11 +238,9 @@ entities:
     pos: [20.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [-90, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -222,6 +249,11 @@ entities:
   - id: lion_1_{t}
     mesh:
       path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+        z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -241,12 +273,9 @@ entities:
     pos: [0.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
-      z_up: true
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
@@ -261,6 +290,11 @@ entities:
   - id: lion_2_{t}
     mesh:
       path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+        z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -280,12 +314,9 @@ entities:
     pos: [5.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
-      z_up: true
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
@@ -300,6 +331,11 @@ entities:
   - id: lion_3_{t}
     mesh:
       path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -319,12 +355,9 @@ entities:
     pos: [10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
+    pivot:
+      alignment: m
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav

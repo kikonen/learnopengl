@@ -33,13 +33,13 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto parentLevel = container.getParent()->getTransform().getMatrixLevel();
+    const auto parentLevel = container.getParent()->getState().getMatrixLevel();
     if (m_containerMatrixLevel == parentLevel) return;
     updateInstances(
         ctx,
         container);
-    auto& transform = container.modifyTransform();
-    transform.m_dirtySnapshot = true;
+    auto& state = container.modifyState();
+    state.m_dirtySnapshot = true;
     m_containerMatrixLevel = parentLevel;
 }
 
@@ -47,36 +47,34 @@ void GridGenerator::updateInstances(
     const UpdateContext& ctx,
     Node& container)
 {
-    const auto& parentTransform = container.getParent()->getTransform();
+    const auto& parentState = container.getParent()->getState();
 
-    const auto& containerTransform = container.getTransform();
+    const auto& containerState = container.getState();
     int idx = 0;
 
     for (auto z = 0; z < m_zCount; z++) {
         for (auto y = 0; y < m_yCount; y++) {
             for (auto x = 0; x < m_xCount; x++) {
-                auto& transform = m_transforms[idx];
+                auto& state = m_states[idx];
 
                 const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
 
-                transform.setPosition(containerTransform.getPosition() + pos);
+                state.setPosition(containerState.getPosition() + pos);
 
-                transform.setVolume(containerTransform.getVolume());
+                state.setVolume(containerState.getVolume());
 
-                transform.setBaseTransform(containerTransform.getBaseTransform());
-                transform.setBaseScale(containerTransform.getBaseScale());
+                state.setBaseRotation(containerState.getBaseRotation());
+                state.setQuatRotation(containerState.getQuatRotation());
+                state.setScale(containerState.getScale());
 
-                transform.setQuatRotation(containerTransform.getQuatRotation());
-                transform.setScale(containerTransform.getScale());
-
-                transform.updateModelMatrix(parentTransform);
+                state.updateModelMatrix(parentState);
 
                 idx++;
             }
         }
     }
 
-    m_reservedCount = static_cast<uint32_t>(m_transforms.size());
+    m_reservedCount = static_cast<uint32_t>(m_states.size());
     setActiveRange(0, m_reservedCount);
 
     container.m_instancer = this;
@@ -90,10 +88,10 @@ void GridGenerator::prepareInstances(
 
     const auto count = m_zCount * m_xCount * m_yCount;
 
-    m_transforms.reserve(count);
+    m_states.reserve(count);
 
     for (int i = 0; i < count; i++) {
-        auto& transform = m_transforms.emplace_back();
-        transform.m_flags = type->resolveEntityFlags();
+        auto& state = m_states.emplace_back();
+        state.m_flags = type->resolveEntityFlags();
     }
 }

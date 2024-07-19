@@ -22,7 +22,7 @@
 #include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
-
+#include "loader_util.h"
 
 namespace loader {
     CubeMapLoader::CubeMapLoader(
@@ -70,7 +70,7 @@ namespace loader {
             lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
-        type->m_entityType = EntityType::marker;
+        type->m_nodeType = NodeType::marker;
 
         auto& flags = type->m_flags;
 
@@ -83,21 +83,20 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.cubeMapId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<cube_map>";
-#endif
+
+        node->setName("<cube_map>");
         node->m_typeHandle = typeHandle;
 
         node->m_visible = false;
 
         {
-            auto& transform = node->modifyTransform();
+            auto& state = node->modifyState();
 
             //node->setScale(m_asyncLoader->assets.cubeMapFarPlane);
-            transform.setScale(4.f);
+            state.setScale(4.f);
 
             // NOTE KI m_radius = 1.73205078
-            transform.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->calculateAABB(glm::mat4{ 1.f }).getVolume());
         }
 
         {

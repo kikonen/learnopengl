@@ -9,12 +9,15 @@
 #include "util/glm_format.h"
 #include "util/Util.h"
 #include "util/Log.h"
+#include "util/assimp_util.h"
 
 #include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
 
-#include "util/assimp_util.h"
+#include "MetadataLoader.h"
+#include "Metadata.h"
+#include "Clip.h"
 
 namespace animation {
     AnimationLoader::AnimationLoader() = default;
@@ -22,13 +25,16 @@ namespace animation {
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
         const std::string& filePath)
     {
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
 
+        // NOTE KI animations cannot exist in empty rig
+        if (rig.empty()) return;
+
         if (!util::fileExists(filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+            throw AnimationNotFoundError{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
         }
 
         Assimp::Importer importer;
@@ -60,42 +66,89 @@ namespace animation {
             filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
-            scene->mNumSkeletons,
             scene->mNumMaterials,
             scene->mNumTextures))
 
-        loadAnimations(rig, namePrefix, scene);
+        loadAnimations(rig, uniquePrefix, filePath, scene);
     }
 
     void AnimationLoader::loadAnimations(
         animation::RigContainer& rig,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
+        const std::string& filePath,
         const aiScene* scene)
     {
         if (scene->mNumAnimations == 0) return;
 
+        auto& clipContainer = rig.m_clipContainer;
+
+        std::vector<uint16_t> animationIndeces;
 
         for (size_t index = 0; index < scene->mNumAnimations; index++) {
             auto animation = loadAnimation(
                 rig,
-                static_cast<int16_t>(rig.m_animations.size()),
-                namePrefix,
+                static_cast<int16_t>(clipContainer.m_animations.size()),
+                uniquePrefix,
                 scene,
                 scene->mAnimations[index]);
-            rig.addAnimation(std::move(animation));
+            auto animIndex = clipContainer.addAnimation(std::move(animation));
+            animationIndeces.push_back(animIndex);
+        }
+
+        animation::MetadataLoader metadataLoader{};
+        const auto metadata = metadataLoader.load(filePath);
+        if (metadata) {
+            for (auto& clip : metadata->m_clips) {
+                // TODO KI clip sequences seem to be stored like
+                // 0 - 48, 48 - 98, 98 - ...
+                if (clip.m_firstFrame > 0 && clip.m_firstFrame < clip.m_lastFrame) {
+                    clip.m_firstFrame++;
+                }
+                clip.m_animationName = uniquePrefix + "_" + clip.m_animationName;
+                clipContainer.addClip(clip);
+            }
+        }
+
+        // NOTE KI register anims without unique name with their given name
+        for (auto animIndex : animationIndeces) {
+            const auto& animation = *clipContainer.m_animations[animIndex];
+
+            if (animation.m_clipCount > 1) {
+                // NOTE KI assume all channels are consistent
+                const animation::BoneChannel* prev{ nullptr };
+                for (const auto& channel : animation.m_channels) {
+                    if (prev) {
+                        assert(channel.m_positionKeyTimes.size() == prev->m_positionKeyTimes.size());
+                        assert(channel.m_rotationKeyTimes.size() == prev->m_rotationKeyTimes.size());
+                        assert(channel.m_scaleKeyTimes.size() == prev->m_scaleKeyTimes.size());
+                    }
+
+                    assert(channel.m_positionKeyTimes.size() == channel.m_rotationKeyTimes.size());
+                    assert(channel.m_positionKeyTimes.size() == channel.m_scaleKeyTimes.size());
+
+                    prev = &channel;
+                }
+            }
+            else {
+                animation::Clip clip;
+                clip.m_name = animation.m_name;
+                clip.m_animationName = animation.m_uniqueName;
+                clip.m_lastFrame = animation.getMaxFrame();
+                clipContainer.addClip(clip);
+            }
         }
     }
 
     std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(
         animation::RigContainer& rig,
         int16_t animIndex,
-        const std::string& namePrefix,
+        const std::string& uniquePrefix,
         const aiScene* scene,
         const aiAnimation* anim)
     {
         auto animation = std::make_unique<animation::Animation>(
             anim,
-            namePrefix);
+            uniquePrefix);
         animation->m_index = animIndex;
 
         KI_INFO_OUT(fmt::format(
@@ -111,7 +164,7 @@ namespace animation {
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                "ASSIMP: CHANNEL anim={}, channel={}, joint={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
                 channel->mNodeName.C_Str(),
@@ -120,9 +173,20 @@ namespace animation {
                 channel->mNumScalingKeys));
 
             auto& bc = animation->addChannel({ channel });
-            auto* rigNode = rig.findNode(bc.m_nodeName);
-            if (rigNode) {
-                animation->bindNode(bc.m_index, rigNode->m_index);
+            auto* rigJoint = rig.findJoint(bc.m_jointName);
+            if (rigJoint) {
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: CHANNEL_BIND_JOINT - channel={}, joint={}",
+                    bc.m_jointName,
+                    rigJoint->m_name
+                ));
+                animation->bindJoint(bc.m_index, rigJoint->m_index);
+            }
+            else {
+                KI_WARN_OUT(fmt::format(
+                    "ASSIMP: CHANNEL_MISSING_JOINT - channeö={}",
+                    bc.m_jointName
+                ));
             }
 
             bc.reservePositionKeys(channel->mNumPositionKeys);
@@ -130,12 +194,12 @@ namespace animation {
                 bc.addPositionKey(channel->mPositionKeys[i]);
             }
 
-            bc.reserveRotationKeys(channel->mNumPositionKeys);
+            bc.reserveRotationKeys(channel->mNumRotationKeys);
             for (size_t i = 0; i < channel->mNumRotationKeys; i++) {
                 bc.addeRotationKey(channel->mRotationKeys[i]);
             }
 
-            bc.reserveScaleKeys(channel->mNumPositionKeys);
+            bc.reserveScaleKeys(channel->mNumScalingKeys);
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
                 bc.addeScaleKey(channel->mScalingKeys[i]);
             }

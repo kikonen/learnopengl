@@ -29,8 +29,8 @@ namespace pool {
     TypeHandle& TypeHandle::operator=(const mesh::MeshType* type) noexcept
     {
         if (type) {
-            m_handleIndex = type->m_handleIndex;
-            m_id = type->m_id;
+            m_handleIndex = type->m_handle.m_handleIndex;
+            m_id = type->m_handle.m_id;
         }
         return *this;
     }
@@ -42,7 +42,7 @@ namespace pool {
         auto* entry = s_pool.getEntry(m_handleIndex);
         if (!entry) return nullptr;
 
-        if (entry->m_data.m_id && entry->m_data.m_id == m_id) {
+        if (entry->m_data.m_handle.m_id && entry->m_data.m_handle.m_id == m_id) {
             return &entry->m_data;
         }
 
@@ -63,8 +63,8 @@ namespace pool {
 
         auto* entry = s_pool.getEntry(handleIndex);
 
-        entry->m_data.m_id = id;
-        entry->m_data.m_handleIndex = handleIndex;
+        TypeHandle handle{ handleIndex, id };
+        entry->m_data.m_handle = handle;
 
         m_IdToIndex.insert({ id, handleIndex });
 

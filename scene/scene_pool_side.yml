@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - name: Camera
     type: origo
     pos: [0, 8, 30]

@@ -30,7 +30,7 @@ public:
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->getId());
+        const auto& it = m_controllers.find(node->toHandle());
         if (it == m_controllers.end()) return nullptr;
 
         for (auto* controller : it->second) {
@@ -45,7 +45,7 @@ public:
         if (!node) return false;
         if (!node->m_preparedRT) return false;
 
-        const auto& it = m_controllers.find(node->getId());
+        const auto& it = m_controllers.find(node->toHandle());
         return it != m_controllers.end() && !it->second.empty();
     }
 
@@ -54,25 +54,30 @@ public:
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->getId());
+        const auto& it = m_controllers.find(node->toHandle());
         return it != m_controllers.end() ? it->second[0] : nullptr;
     }
 
-	inline const std::vector<NodeController*>* getControllers(Node* node) const noexcept
+	inline const std::vector<NodeController*>* forNode(Node* node) const noexcept
 	{
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
 
-        const auto& it = m_controllers.find(node->getId());
+        const auto& it = m_controllers.find(node->toHandle());
 		return it != m_controllers.end() ? &it->second : nullptr;
 	}
 
+    const std::unordered_map<pool::NodeHandle, std::vector<NodeController*>>& getControllers() const noexcept
+    {
+        return m_controllers;
+    }
+
     void addController(
-        ki::node_id targetId,
+        pool::NodeHandle target,
         NodeController* controller);
 
 private:
     Registry* m_registry{ nullptr };
 
-    std::unordered_map<ki::node_id, std::vector<NodeController*>> m_controllers;
+    std::unordered_map<pool::NodeHandle, std::vector<NodeController*>> m_controllers;
 };

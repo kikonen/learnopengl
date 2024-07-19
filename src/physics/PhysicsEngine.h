@@ -14,14 +14,14 @@
 struct UpdateContext;
 
 namespace pool {
-    class NodeHandle;
+    struct NodeHandle;
 }
 
 namespace mesh {
     class MeshType;
 }
 
-struct NodeTransform;
+struct NodeState;
 
 
 namespace physics {
@@ -68,7 +68,7 @@ namespace physics {
             const UpdateContext& ctx,
             const mesh::MeshType* type,
             Node& node,
-            NodeTransform& transform);
+            NodeState& state);
 
     public:
         dWorldID m_worldId{ nullptr };

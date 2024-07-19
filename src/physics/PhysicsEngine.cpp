@@ -7,7 +7,7 @@
 #include "util/glm_format.h"
 
 #include "model/Node.h"
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -198,12 +198,12 @@ namespace physics
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
-                for (auto& transform : node->m_instancer->modifyTransforms()) {
-                    enforceBounds(ctx, type, *node, transform);
+                for (auto& state : node->m_instancer->modifyStates()) {
+                    enforceBounds(ctx, type, *node, state);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->modifyTransform());
+                enforceBounds(ctx, type, *node, node->modifyState());
             }
         };
 
@@ -236,7 +236,7 @@ namespace physics
             auto* node = obj.m_nodeHandle.toNode();
             if (!node) continue;
 
-            const auto level = node->getTransform().getMatrixLevel();
+            const auto level = node->getState().getMatrixLevel();
             if (obj.m_matrixLevel == level) continue;
 
             obj.prepare(m_worldId, m_spaceId);
@@ -265,13 +265,13 @@ namespace physics
     {
         if (m_pendingNodes.empty()) return;
 
-        std::vector<ki::node_id> prepared;
+        std::vector<pool::NodeHandle> prepared;
 
         for (auto& handle : m_pendingNodes) {
             auto* node = handle.toNode();
             if (!node) continue;
 
-            if (node->getTransform().getMatrixLevel() == 0) continue;
+            if (node->getState().getMatrixLevel() == 0) continue;
 
             auto* type = node->m_typeHandle.toType();
             if (type->m_flags.staticBounds) {
@@ -281,7 +281,7 @@ namespace physics
                 m_enforceBoundsDynamic.push_back(handle);
             }
 
-            prepared.push_back(node->getId());
+            prepared.push_back(node->toHandle());
         }
 
         if (!prepared.empty()) {
@@ -293,7 +293,7 @@ namespace physics
                     const auto& it = std::find_if(
                         prepared.cbegin(),
                         prepared.cend(),
-                        [nodeId = handle.toId()](const auto& id) { return id == nodeId; });
+                        [handle](const auto& h) { return h == handle; });
                     return it != prepared.end();
                 });
             m_pendingNodes.erase(it, m_pendingNodes.end());
@@ -304,33 +304,33 @@ namespace physics
         const UpdateContext& ctx,
         const mesh::MeshType* type,
         Node& node,
-        NodeTransform& transform)
+        NodeState& state)
     {
-        if (transform.m_matrixLevel == transform.m_physicsLevel) return;
-        transform.m_physicsLevel = transform.m_matrixLevel;
+        if (state.m_matrixLevel == state.m_physicsLevel) return;
+        state.m_physicsLevel = state.m_matrixLevel;
 
-        const auto& worldPos = transform.getWorldPosition();
-        glm::vec3 pos = transform.getPosition();
+        const auto& worldPos = state.getWorldPosition();
+        glm::vec3 pos = state.getPosition();
 
         const auto surfaceY = getWorldSurfaceLevel(worldPos);
 
         auto* parent = node.getParent();
 
-        auto y = surfaceY - parent->getTransform().getWorldPosition().y;
-        y += transform.getScale().y;
+        auto y = surfaceY - parent->getState().getWorldPosition().y;
+        y += state.getScale().y;
         pos.y = y;
 
         //KI_INFO_OUT(fmt::format(
         //    "({},{}, {}) => {}, {}, {}",
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
-        transform.setPosition(pos);
-        //transform.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
+        state.setPosition(pos);
+        //state.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
-        if (transform.m_dirty) {
-            transform.updateModelMatrix(parent->getTransform());
-            auto& nodeTransform = node.modifyTransform();
-            nodeTransform.m_dirtySnapshot = true;
+        if (state.m_dirty) {
+            state.updateModelMatrix(parent->getState());
+            auto& nodeState = node.modifyState();
+            nodeState.m_dirtySnapshot = true;
         }
 
         //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));

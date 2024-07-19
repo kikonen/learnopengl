@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 10, 20]
@@ -43,7 +43,6 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -61,11 +60,10 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 1
-            distance: 500
           - name: Tree_1
             level: 1
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -77,11 +75,10 @@ entities:
       - path: fbx/scenery/trees/Palm_01.fbx
         lods:
           - level: 2
-            distance: 10000
           - name: Tree_1
             level: 2
           - name: Tree_2
-            level: -1
+            level: []
         materials:
           - name: palm_trunk
             alias: Tree_0Mat
@@ -89,6 +86,13 @@ entities:
           - name: palm_leaf
             alias: Tree_1Mat
             map_kd: textures/coconut palm leaf.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 500
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
@@ -107,7 +111,6 @@ entities:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 0
-            distance: 100
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -122,7 +125,6 @@ entities:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 1
-            distance: 200
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -134,7 +136,6 @@ entities:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 2
-            distance: 600
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
@@ -145,13 +146,21 @@ entities:
       - path: fbx/scenery/trees/Maple_02.fbx
         lods:
           - level: 3
-            distance: 10000
           - name: Tree_1
-            level: -1
+            level: []
         materials:
           - name: maple_trunk
             alias: Tree_0Mat
             map_kd: textures/bark02.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 100
+      - level: 2
+        distance: 200
+      - level: 3
+        distance: 600
     program: g_tex
     pos: [-1000, 10.0, 0.0]
     render_flags:
@@ -170,7 +179,6 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 0
-            distance: 200
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -184,7 +192,6 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 1
-            distance: 300
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -197,7 +204,6 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 2
-            distance: 400
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -210,7 +216,6 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 3
-            distance: 500
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -222,7 +227,6 @@ entities:
       - path: fbx/scenery/trees/SM_TreePine_01b.FBX
         lods:
           - level: 4
-            distance: 10000
         materials:
           - name: pine_trunk_pbr
             alias: MI_TreeBarkPine_01a
@@ -230,6 +234,17 @@ entities:
           - name: pine_leaf_pbr
             alias: MI_PineTree_01a
             map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 200
+      - level: 2
+        distance: 300
+      - level: 3
+        distance: 500
+      - level: 4
+        distance: 500
     program: g_tex
     pos: [-1000, 0.0, 0.0]
     render_flags:

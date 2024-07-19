@@ -71,6 +71,18 @@ namespace util {
         return s;
     }
 
+    bool startsWith(std::string_view str, std::string_view suffix)
+    {
+        std::string s{ str };
+        return s.rfind(suffix, 0) == 0;
+    }
+
+    bool endsWith(std::string_view str, std::string_view suffix)
+    {
+        std::string s{ str };
+        return s.rfind(suffix, s.size()) == s.size();
+    }
+
     void splitString(
         const std::string& v,
         std::vector<std::string>& result,

@@ -41,18 +41,18 @@ namespace {
 }
 
 namespace render {
-    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    struct MeshTypeComparator {
-        bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
-            return a->m_id < b->m_id;
-        }
-    };
+    //// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    //struct MeshTypeComparator {
+    //    bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
+    //        return a->m_handle.m_id < b->m_handle.m_id;
+    //    }
+    //};
 
     bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
         const auto& a = m_typeHandle.toType();
         const auto& b = o.m_typeHandle.toType();
 
-        return a->m_id < b->m_id;
+        return a->m_handle.m_id < b->m_handle.m_id;
     }
 
     NodeDraw::NodeDraw()
@@ -194,11 +194,11 @@ namespace render {
                     drawProgram(
                         ctx,
                         [this](const mesh::LodMesh& lodMesh) {
+                            if (!lodMesh.m_flags.preDepth) return (Program*)nullptr;
                             return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgram : nullptr;
                         },
                         [&typeSelector](const mesh::MeshType* type) {
-                            return type->m_flags.preDepth &&
-                                typeSelector(type);
+                            return typeSelector(type);
                         },
                         nodeSelector,
                         kindBits & render::KIND_SOLID);

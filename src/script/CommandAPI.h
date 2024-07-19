@@ -70,6 +70,9 @@ namespace script
         int lua_audioStop(
             const sol::table& lua_opt) noexcept;
 
+        int lua_animationPlay(
+            const sol::table& lua_opt) noexcept;
+
         int lua_start(
             const sol::table& lua_opt,
             sol::function fn) noexcept;

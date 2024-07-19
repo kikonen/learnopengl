@@ -4,9 +4,9 @@
 #include <vector>
 #include <map>
 
-#include "ki/size.h"
+#include <glm/glm.hpp>
 
-#include "BoneTransform.h"
+#include "ki/size.h"
 
 struct aiBone;
 
@@ -15,9 +15,9 @@ namespace animation {
         BoneInfo(const aiBone* bone);
 
         int16_t m_index{ -1 };
-        int16_t m_nodeIndex{ -1 };
+        int16_t m_jointIndex{ -1 };
 
-        std::string m_nodeName;
+        std::string m_jointName;
 
         // It is sometimes called an inverse - bind matrix,
         // or inverse bind pose matrix.

@@ -28,24 +28,26 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType()
-        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
+        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()},
+        m_lodLevels{ { 1, 0 } }
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
-        : m_id{ o.m_id },
+        : m_handle{ o.m_handle },
         m_name{ o.m_name },
-        m_entityType{ o.m_entityType },
+        m_nodeType{ o.m_nodeType },
         m_flags{ o.m_flags },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
+        m_lodLevels{ std::move(o.m_lodLevels) },
         m_customMaterial{ std::move(o.m_customMaterial) }
     {
     }
 
     MeshType::~MeshType()
     {
-        KI_INFO(fmt::format("NODE_TYPE: delete iD={}", m_id));
+        KI_INFO(fmt::format("NODE_TYPE: delete - id={}", m_handle.str()));
     }
 
     std::string MeshType::str() const noexcept
@@ -54,12 +56,7 @@ namespace mesh {
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, lod={}>",
-            m_id, m_name, lodMesh ? lodMesh->str() : "N/A");
-    }
-
-    pool::TypeHandle MeshType::toHandle() const noexcept
-    {
-        return { m_handleIndex, m_id };
+            m_handle.str(), m_name, lodMesh ? lodMesh->str() : "N/A");
     }
 
     uint16_t MeshType::addMeshSet(
@@ -69,17 +66,8 @@ namespace mesh {
 
         for (auto& mesh : meshSet.getMeshes()) {
             auto* lodMesh = addLodMesh({ mesh.get() });
-
-            if (m_flags.zUp) {
-                const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
-                lodMesh->getMesh<mesh::Mesh>()->m_animationBaseTransform = glm::toMat4(rotateYUp);
-            }
-
             count++;
         }
-
-        // NOTE KI ensure volume is containing all meshes
-        prepareVolume();
 
         return count;
     }
@@ -106,6 +94,7 @@ namespace mesh {
             m_flags.anySolid |= opt.m_solid;
             m_flags.anyAlpha |= opt.m_alpha;
             m_flags.anyBlend |= opt.m_blend;
+            m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
         }
     }
 
@@ -116,7 +105,6 @@ namespace mesh {
         m_preparedRT = true;
 
         for (auto& lodMesh : *m_lodMeshes) {
-            lodMesh.m_flags.tessellation = m_flags.tessellation;
             lodMesh.prepareRT(ctx);
         }
 
@@ -139,26 +127,21 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    int8_t MeshType::getLodLevel(
+    uint8_t MeshType::getLodLevelMask(
         const glm::vec3& cameraPos,
         const glm::vec3& worldPos) const
     {
-        auto& lodMeshes = *m_lodMeshes.get();
-        if (lodMeshes.size() == 1) return lodMeshes[0].m_level;
+        if (m_lodLevels.empty()) return 0;
+        //if (m_lodLevels.size() == 1) return m_lodLevels[0].m_levelMask;
 
-        const LodMesh* last = &lodMeshes[0];
+        for (auto i = m_lodLevels.size() - 1; i >= 0; i--)
         {
+            const auto& lod = m_lodLevels[i];
             auto dist2 = glm::distance2(worldPos, cameraPos);
-
-            for (const auto& lodMesh : lodMeshes) {
-                if (lodMesh.m_level < 0) continue;
-                if (dist2 < lodMesh.m_distance2)
-                    return lodMesh.m_level;
-                last = &lodMesh;
-            }
+            if (lod.m_distance2 <= dist2)
+                return lod.m_levelMask;
         }
-
-        return last->m_level;
+        return 0;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {
@@ -176,14 +159,16 @@ namespace mesh {
 
     AABB MeshType::calculateAABB() const noexcept
     {
+        if (m_lodMeshes->empty()) return {};
+
         AABB aabb{ true };
 
         for (auto& lodMesh : *m_lodMeshes) {
-            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-            if (!mesh) continue;
-            mesh->prepareVolume();
-            aabb.merge(mesh->getAABB());
+            if (lodMesh.m_flags.noVolume) continue;
+            aabb.minmax(lodMesh.calculateAABB());
         }
+
+        aabb.updateVolume();
 
         return aabb;
     }

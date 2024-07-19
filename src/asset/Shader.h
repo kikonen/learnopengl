@@ -44,6 +44,8 @@ const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
 //const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
 
+const std::string DEF_USE_DEBUG{ "USE_DEBUG" };
+
 const std::string DEF_USE_TBN{ "USE_TBN" };
 const std::string DEF_USE_DUDV_TEX{ "USE_DUDV_TEX" };
 const std::string DEF_USE_HEIGHT_TEX{ "USE_HEIGHT_TEX" };
@@ -53,7 +55,6 @@ const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 const std::string DEF_USE_BONES{ "USE_BONES" };
-const std::string DEF_USE_BONES_DEBUG{ "USE_BONES_DEBUG" };
 
 const std::string DEF_MAX_SHADOW_MAP_COUNT{ "MAX_SHADOW_MAP_COUNT" };
 

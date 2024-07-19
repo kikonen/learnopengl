@@ -72,21 +72,21 @@ namespace audio
         m_device = alcOpenDevice(nullptr);
         if (!m_device)
         {
-            KI_CRITICAL("ERROR: Failed to open audio device");
+            KI_CRITICAL("AUDIO_ERROR: Failed to open audio device");
             return;
         }
 
         m_context = alcCreateContext(m_device, nullptr);
         if (!m_context)
         {
-            KI_CRITICAL("ERROR: Could not create audio context");
+            KI_CRITICAL("AUDIO_ERROR: Could not create audio context");
             return;
         }
 
         ALCboolean curr = alcMakeContextCurrent(m_context);
         if (curr != ALC_TRUE)
         {
-            KI_CRITICAL("ERROR: Could not make audio context current");
+            KI_CRITICAL("AUDIO_ERROR: Could not make audio context current");
             return;
         }
 

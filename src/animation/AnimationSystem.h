@@ -1,14 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include <mutex>
-#include <atomic>
-#include <span>
+#include <tuple>
 
-#include "kigl/GLBuffer.h"
+#include "AnimationState.h"
 
 namespace pool {
-    class NodeHandle;
+    struct NodeHandle;
 }
 
 namespace mesh {
@@ -21,8 +21,6 @@ class Node;
 
 namespace animation {
     struct RigContainer;
-    struct BoneTransform;
-    struct BoneTransformSSBO;
 
     class AnimationSystem {
     public:
@@ -35,13 +33,31 @@ namespace animation {
 
         void prepare();
 
-        // Register node instance specific rig
+        // Register joint instance specific rig
         // @return instance index into bone transform buffer
-        uint32_t registerInstance(animation::RigContainer& rig);
+        std::pair<uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
 
-        std::span<animation::BoneTransform> modifyRange(uint32_t start, uint32_t count) noexcept;
+        animation::AnimationState* getState(
+            pool::NodeHandle handle);
 
-        uint32_t getActiveBoneCount() const noexcept;
+        // start new anim and stop current one
+        // If no current anim directly start playing
+        // @param blendTime blending period or anims
+        // from the start of newly started anim
+        void startAnimation(
+            pool::NodeHandle handle,
+            uint16_t clipIndex,
+            float blendTime,
+            float speed,
+            bool restart,
+            bool repeat,
+            double startTime);
+
+        void stopAnimation(
+            pool::NodeHandle handle,
+            double stopTime);
+
+        uint32_t getActiveCount() const noexcept;
 
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);
@@ -50,44 +66,23 @@ namespace animation {
 
     private:
         // @return true if bone palette was updated
-        bool animateNode(
+        void animateNode(
             const UpdateContext& ctx,
+            animation::AnimationState& state,
             Node* node,
             mesh::MeshType* type);
 
         void prepareNodes();
 
-        void snapshotBones();
-        void updateBuffer();
-
     private:
         bool m_enabled{ false };
-        bool m_firstFrameOnly{ false };
+        bool m_onceOnly{ false };
         size_t m_maxCount{ 0 };
 
-        std::mutex m_lock{};
-        std::mutex m_snapshotLock{};
-
-        std::atomic_bool m_updateReady{ false };
-        size_t m_frameSkipCount{ 0 };
-
-        bool m_needSnapshot{ false };
+        std::vector<animation::AnimationState> m_states;
+        std::map<pool::NodeHandle, uint16_t> m_nodeToState;
 
         std::mutex m_pendingLock{};
-        std::vector<pool::NodeHandle> m_animationNodes;
         std::vector<pool::NodeHandle> m_pendingNodes;
-
-        size_t m_lastSize{ 0 };
-
-        std::vector<animation::BoneTransform> m_transforms;
-
-        std::vector<BoneTransformSSBO> m_snapshot;
-
-        kigl::GLBuffer m_ssbo{ "bone_transforms_ssbo" };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useDebugFence{ false };
     };
 }

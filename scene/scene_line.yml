@@ -1,0 +1,105 @@
+---
+name: Test
+skybox:
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/borghese_gardens_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    mesh:
+      path: water_ball
+      material_modifier:
+        tiling: 5
+    program: g_tex
+    pos: [2.5, 2, 3]
+    front: [0, 0, -1]
+    scale: 0.1
+    render_flags:
+      allow_normals: false
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    pos: [0, 4, 5]
+    rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
+    camera:
+      default: true
+  - id: directional_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-15, 25, 40]
+    scale: 2.5
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.4, 0.4, 0.4, 1.0]
+      xdiffuse: [0.0, 0.9, 0.0, 1.0]
+      intensity: 30000
+  - id: wooden_floor
+    mesh:
+      path: plane
+      material:
+        name: wood_floor
+        kd: [0.8, 0.8, 0.0, 1.0]
+        map_pbr: textures\Planks 09 [8K]
+        xmetal: [1.0, 0.0, 0, 1]
+        xmap_pbr: textures\planks_metal
+        tiling: 20
+    program: g_tex
+    render_flags:
+      no_shadow: true
+    scale: 100
+  - id: lines
+    type: primitive
+    mesh:
+      material:
+        kd: [0.0, 0.0, 1.0, 1.0]
+        xmetal: [1.0, 0.0, 0, 1]
+      vertex:
+        type: lines
+        vertices:
+          - [-1,  1, 0]
+          - [-1, -1, 0]
+          - [ 1, -1, 0]
+          - [ 1,  1, 0]
+        indeces:
+          [0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3]
+      flags:
+        render_back: true
+    program: g_tex
+    scale: 1
+    pos: [0, 2, 0]
+    script: scripts/anim_lucy
+  - id: points
+    type: primitive
+    mesh:
+      material:
+        kd: [0.0, 1.0, 0.0, 1.0]
+        xmetal: [1.0, 0.0, 0, 1]
+      vertex:
+        type: points
+        vertices:
+          - [-1,  1, 0]
+          - [-1, -1, 0]
+          - [ 1, -1, 0]
+          - [ 1,  1, 0]
+        indeces:
+          [0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3]
+      flags:
+        render_back: true
+    program: g_tex
+    scale: 1
+    pos: [3, 2, 0]

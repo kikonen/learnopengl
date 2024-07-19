@@ -14,6 +14,7 @@
 #include "registry/Registry.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader
 {
@@ -55,9 +56,8 @@ namespace loader
 
         auto handle = pool::NodeHandle::allocate(assets.rootId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<root>";
-#endif
+
+        node->setName("<root>");
         node->m_typeHandle = typeHandle;
 
         {

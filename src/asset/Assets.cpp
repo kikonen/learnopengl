@@ -52,6 +52,8 @@ Assets::Assets()
     glUseDebugFence = false;
     glUseFinish = false;
 
+    glslUseDebug = false;
+
     compressedTexturesEnabled = false;
     prepassDepthEnabled = false;
 
@@ -183,7 +185,9 @@ Assets::Assets()
     fogDensity = 1.0;
 
     animationEnabled = true;
-    animationFirstFrameOnly = true;
+    animationJointTree = false;
+    animationFirstFrameOnly = false;
+    animationOnceOnly = false;
     animationMaxCount = 1000;
 
     particleEnabled = true;

@@ -39,7 +39,7 @@ namespace script
     {
         NodeCommand::bind(ctx);
 
-        m_base = getNode()->getTransform().getQuatRotation();
+        m_base = getNode()->getState().getQuatRotation();
 
         // NOTE KI relative means now "relative to axis of node"
         if (m_relative) {
@@ -59,8 +59,8 @@ namespace script
         // NOTE KI trying to keep things relative to current context
         // i.e. allow multiple concurrent rotations
         {
-            auto& transform = getNode()->modifyTransform();
-            const auto& base = transform.getQuatRotation();
+            auto& state = getNode()->modifyState();
+            const auto& base = state.getQuatRotation();
             const auto relativeAxis = m_relative ? glm::mat3(base) * m_axis : m_axis;
 
             const auto t = m_finished ? 1.f : (m_elapsedTime / m_duration);
@@ -68,7 +68,7 @@ namespace script
 
             const auto rot = util::axisRadiansToQuat(relativeAxis, radians - m_previousRadians);
 
-            transform.setQuatRotation(rot * base);
+            state.setQuatRotation(rot * base);
 
             m_previousRadians = radians;
         }

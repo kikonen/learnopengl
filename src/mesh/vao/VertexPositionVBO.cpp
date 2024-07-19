@@ -65,6 +65,8 @@ namespace mesh {
             aabb.minmax({ vertex.x, vertex.y, vertex.z });
         }
 
+        aabb.updateVolume();
+
         return aabb;
     }
 }

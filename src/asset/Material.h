@@ -10,6 +10,9 @@
 
 #include "Texture.h"
 
+#include "TextureType.h"
+#include "ChannelPart.h"
+
 //#include "MaterialSSBO.h"
 
 class Program;
@@ -18,26 +21,15 @@ struct MaterialSSBO;
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
     white,
+    red,
+    green,
+    blue,
+    yellow,
     gold,
     silver,
     bronze,
     highlight,
     selection
-};
-
-enum class TextureType : std::underlying_type_t<std::byte> {
-    diffuse,
-    emission,
-    specular,
-    normal_map,
-    dudv_map,
-    noise_map,
-    metallness_map,
-    roughness_map,
-    occlusion_map,
-    displacement_map,
-    opacity_map,
-    metal_channel_map
 };
 
 enum class MaterialProgramType : std::underlying_type_t<std::byte> {
@@ -176,7 +168,7 @@ private:
     void loadChannelTexture(
         TextureType channelType,
         std::string_view name,
-        const std::vector<TextureType>& compoundTypes,
+        const std::vector<ChannelPart>& parts,
         const glm::vec4& defaults);
 
 public:
@@ -277,8 +269,12 @@ public:
     bool wireframe : 1 {false};
 
     bool gbuffer : 1 {false};
+    bool inmutable : 1 {false};
 
     std::string m_geometryType;
+
+    std::vector<ChannelPart> map_channelParts;
+
     std::unordered_map<MaterialProgramType, std::string> m_programNames{};
     std::map<std::string, std::string> m_programDefinitions{};
 

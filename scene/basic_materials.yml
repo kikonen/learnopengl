@@ -7,7 +7,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
 materials:
   - name: default
     kd: [0.8, 0.8, 0.0, 1.0]

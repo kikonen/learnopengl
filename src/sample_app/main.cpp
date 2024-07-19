@@ -28,11 +28,16 @@ int runEngine() {
         engine->run();
     }
     catch (const std::exception& ex) {
-        KI_CRITICAL(ex.what());
-        int x = 0;
+        KI_CRITICAL(fmt::format("MAIN_ERROR: {}", ex.what()));
+    }
+    catch (const std::string& ex) {
+        KI_CRITICAL(fmt::format("MAIN_ERROR: {}", ex));
+    }
+    catch (const char* ex) {
+        KI_CRITICAL(fmt::format("MAIN_ERROR: {}", ex));
     }
     catch (...) {
-        KI_CRITICAL("UNKNOWN_ERROR");
+        KI_CRITICAL(fmt::format("MAIN_ERROR: {}", "UNKNOWN_ERROR"));
         int x = 0;
         throw;
     }

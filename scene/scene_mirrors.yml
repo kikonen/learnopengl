@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 0, 5]
@@ -71,6 +71,10 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -82,10 +86,6 @@ entities:
     scale: 2
     base_scale: 0.05
     base_rotation: [0, -180, 0]
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     repeat:
       x_count: 5
       z_count: 20
@@ -114,10 +114,9 @@ entities:
         map_kd: textures/brickwall_1024.png
         map_bump: textures/brickwall_1024_normal.png
         reflection: 0.2
+        render_back: true
     program: g_tex
     pos: [-5.0, 8.5, -14.0]
-    render_flags:
-      render_back: true
     repeat:
       x_count: 3
       x_step: 4

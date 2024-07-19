@@ -22,6 +22,8 @@
 #include "asset/Program.h"
 #include "asset/Shader.h"
 
+#include "mesh/mesh_util.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -36,9 +38,11 @@
 #include "particle/ParticleGenerator.h"
 
 #include "model/Node.h"
-#include "model/EntityType.h"
+#include "model/NodeType.h"
 
 #include "animation/AnimationLoader.h"
+#include "animation/RigContainer.h"
+#include "animation/RigSocket.h"
 
 #include "event/Dispatcher.h"
 
@@ -54,12 +58,13 @@
 #include "DagSort.h"
 
 #include "Loaders.h"
-#include "EntityRoot.h"
-#include "ResolvedEntity.h"
+#include "NodeRoot.h"
+#include "ResolvedNode.h"
 
 #include "converter/YamlConverter.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
@@ -125,28 +130,34 @@ namespace loader {
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
 
-                l.m_entityLoader.loadEntities(
-                    doc.findNode("entities"),
-                    m_entities,
+                l.m_nodeLoader.loadNodes(
+                    doc.findNode("nodes"),
+                    m_nodes,
                     l);
 
                 validate(*m_root);
                 attach(*m_root);
-
-                std::lock_guard lock(m_ready_lock);
-                m_runningCount--;
             }
             catch (const std::runtime_error& ex) {
-                KI_CRITICAL(ex.what());
-
-                std::lock_guard lock(m_ready_lock);
-                m_runningCount--;
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
             }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+            }
+
+            std::lock_guard lock(m_ready_lock);
+            m_runningCount--;
         });
     }
 
-    void SceneLoader::loadedEntity(
-        const EntityRoot& entityRoot,
+    void SceneLoader::loadedNode(
+        const NodeRoot& nodeRoot,
         bool success)
     {
         std::lock_guard lock(m_ready_lock);
@@ -154,22 +165,35 @@ namespace loader {
         m_pendingCount--;
 
         KI_INFO_OUT(fmt::format(
-            "LOADED: entity={}, success={}, pending={}",
-            entityRoot.base.name, success, m_pendingCount));
+            "LOADED: node={}, success={}, pending={}",
+            nodeRoot.base.name, success, m_pendingCount));
 
         if (m_pendingCount > 0) return;
 
-        // NOTE KI event will be put queue *AFTER* entity attach events
+        // NOTE KI event will be put queue *AFTER* node attach events
         // => should they should be fully attached in scene at this point
         // => worker will trigger event into UI thread after processing all updates
 
         m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
             try {
-                attachResolvedEntities(m_resolvedEntities);
+                attachResolvedNodes(m_resolvedNodes);
                 notifySceneLoaded();
             }
             catch (const std::runtime_error& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
                 throw ex;
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                throw ex;
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                throw ex;
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", "UNKNOWN_ERROR"));
+                throw std::current_exception();
             }
         });
     }
@@ -198,10 +222,10 @@ namespace loader {
             std::lock_guard lock(m_ready_lock);
 
             m_pendingCount = 0;
-            for (const auto& entity : m_entities) {
-                if (resolveEntity(root.rootId, entity)) {
+            for (const auto& node : m_nodes) {
+                if (resolveNode(root.rootId, node)) {
                     m_pendingCount++;
-                    KI_INFO_OUT(fmt::format("START: entity={}, pending={}", entity.base.name, m_pendingCount));
+                    KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.base.name, m_pendingCount));
                 }
             }
 
@@ -209,26 +233,26 @@ namespace loader {
         }
     }
 
-    void SceneLoader::attachResolvedEntities(
-        std::vector<ResolvedEntity>& resolvedEntities)
+    void SceneLoader::attachResolvedNodes(
+        std::vector<ResolvedNode>& resolvedNodes)
     {
         auto& l = *m_loaders;
 
         DagSort sorter;
-        auto sorted = sorter.sort(resolvedEntities);
+        auto sorted = sorter.sort(resolvedNodes);
 
         for (auto* resolved : sorted) {
             if (!*m_ctx.m_alive) return;
-            attachResolvedEntity(*resolved);
+            attachResolvedNode(*resolved);
         }
     }
 
-    void SceneLoader::attachResolvedEntity(
-        const ResolvedEntity& resolved)
+    void SceneLoader::attachResolvedNode(
+        const ResolvedNode& resolved)
     {
         auto& l = *m_loaders;
         auto& handle = resolved.handle;
-        auto& entityData = resolved.data;
+        auto& nodeData = resolved.data;
 
         {
             event::Event evt { event::Type::node_add };
@@ -239,7 +263,7 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (entityData.active) {
+        if (nodeData.active) {
             event::Event evt { event::Type::node_activate };
             evt.body.node = {
                 .target = handle.toId(),
@@ -247,7 +271,7 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (entityData.selected) {
+        if (nodeData.selected) {
             event::Event evt { event::Type::node_select };
             evt.body.node = {
                 .target = handle.toId(),
@@ -255,7 +279,7 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (entityData.camera.isDefault) {
+        if (nodeData.camera.isDefault) {
             event::Event evt { event::Type::camera_activate };
             evt.body.node = {
                 .target = handle.toId(),
@@ -263,7 +287,7 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        for (auto& controllerData : entityData.controllers) {
+        for (auto& controllerData : nodeData.controllers) {
             if (!controllerData.enabled) continue;
 
             auto* controller = l.m_controllerLoader.createController(controllerData, handle);
@@ -277,8 +301,8 @@ namespace loader {
         }
 
         // try anim event
-        //if (!entity.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
-        //if (entityData.desc == "Cow")
+        //if (!node.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
+        //if (nodeData.desc == "Cow")
         //{
         //    event::Event evt { event::Type::animate_rotate };
         //    evt.body.animate = {
@@ -291,73 +315,89 @@ namespace loader {
         //}
 
         {
-            l.m_audioLoader.createAudio(entityData.audio, handle.toId());
-            l.m_physicsLoader.createObject(entityData.physics, handle.toId());
+            l.m_audioLoader.createAudio(nodeData.audio, handle.toId());
+            l.m_physicsLoader.createObject(nodeData.physics, handle.toId());
         }
     }
 
-    void SceneLoader::addResolvedEntity(
-        const ResolvedEntity& resolved)
+    void SceneLoader::addResolvedNode(
+        const ResolvedNode& resolved)
     {
         {
             std::lock_guard lock(m_ready_lock);
-            m_resolvedEntities.push_back(resolved);
+            m_resolvedNodes.push_back(resolved);
         }
     }
 
-    bool SceneLoader::resolveEntity(
+    bool SceneLoader::resolveNode(
         const ki::node_id rootId,
-        const EntityRoot& entityRoot)
+        const NodeRoot& nodeRoot)
     {
-        if (!entityRoot.base.enabled) {
+        if (!nodeRoot.base.enabled) {
             return false;
         }
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &entityRoot]() {
+        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &nodeRoot]() {
             try {
-                if (entityRoot.clones.empty()) {
+                if (nodeRoot.clones.empty()) {
                     pool::TypeHandle typeHandle{};
-                    resolveEntityClone(typeHandle, rootId, entityRoot, entityRoot.base, false, 0);
+                    resolveNodeClone(typeHandle, rootId, nodeRoot, nodeRoot.base, false, 0);
                 }
                 else {
                     pool::TypeHandle typeHandle{};
 
                     int cloneIndex = 0;
-                    for (auto& cloneData : entityRoot.clones) {
+                    for (auto& cloneData : nodeRoot.clones) {
                         if (!*m_ctx.m_alive) return;
-                        typeHandle = resolveEntityClone(typeHandle, rootId, entityRoot, cloneData, true, cloneIndex);
-                        if (!entityRoot.base.cloneMesh) {
+                        typeHandle = resolveNodeClone(typeHandle, rootId, nodeRoot, cloneData, true, cloneIndex);
+                        if (!nodeRoot.base.cloneMesh) {
                             typeHandle = pool::TypeHandle::NULL_HANDLE;
                         }
                         cloneIndex++;
                     }
                 }
-                loadedEntity(entityRoot, true);
+                loadedNode(nodeRoot, true);
             }
             catch (const std::runtime_error& ex) {
-                loadedEntity(entityRoot, false);
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
+                loadedNode(nodeRoot, false);
                 throw ex;
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                loadedNode(nodeRoot, false);
+                throw ex;
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                loadedNode(nodeRoot, false);
+                throw ex;
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+                loadedNode(nodeRoot, false);
+                throw std::current_exception();
             }
         });
 
         return true;
     }
 
-    pool::TypeHandle SceneLoader::resolveEntityClone(
+    pool::TypeHandle SceneLoader::resolveNodeClone(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
-        const EntityRoot& entityRoot,
-        const EntityData& entityData,
+        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool cloned,
         int cloneIndex)
     {
         if (!*m_ctx.m_alive) return typeHandle;
 
-        if (!entityData.enabled) {
+        if (!nodeData.enabled) {
             return typeHandle;
         }
 
-        const auto& repeat = entityData.repeat;
+        const auto& repeat = nodeData.repeat;
 
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
@@ -367,17 +407,17 @@ namespace loader {
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    typeHandle = resolveEntityCloneRepeat(
+                    typeHandle = resolveNodeCloneRepeat(
                         typeHandle,
                         rootId,
-                        entityRoot,
-                        entityData,
+                        nodeRoot,
+                        nodeData,
                         cloned,
                         cloneIndex,
                         tile,
                         tilePositionOffset);
 
-                    if (!entityRoot.base.cloneMesh)
+                    if (!nodeRoot.base.cloneMesh)
                         typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
@@ -386,11 +426,11 @@ namespace loader {
         return typeHandle;
     }
 
-    pool::TypeHandle SceneLoader::resolveEntityCloneRepeat(
+    pool::TypeHandle SceneLoader::resolveNodeCloneRepeat(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
-        const EntityRoot& entityRoot,
-        const EntityData& entityData,
+        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -398,14 +438,14 @@ namespace loader {
     {
         if (!*m_ctx.m_alive) return typeHandle;
 
-        if (!entityData.enabled) {
+        if (!nodeData.enabled) {
             return typeHandle;
         }
 
         // NOTE KI overriding material in clones is *NOT* supported"
         if (!typeHandle) {
             typeHandle = createType(
-                entityData,
+                nodeData,
                 tile);
             if (!typeHandle) return typeHandle;
         }
@@ -413,100 +453,132 @@ namespace loader {
         if (!*m_ctx.m_alive) return typeHandle;
 
         auto handle = createNode(
-            typeHandle, rootId, entityData,
+            typeHandle, rootId, nodeData,
             cloned, cloneIndex, tile,
-            entityData.clonePositionOffset,
+            nodeData.clonePositionOffset,
             tilePositionOffset);
 
         ki::node_id parentId;
-        if (entityData.parentBaseId.empty()) {
+        if (nodeData.parentBaseId.empty()) {
             parentId = rootId;
         }
         else {
             auto [id, _] = resolveId(
-                entityData.parentBaseId,
+                nodeData.parentBaseId,
                 cloneIndex,
                 tile,
                 false);
             parentId = id;
         }
 
-        ResolvedEntity resolved{
+        ResolvedNode resolved{
             parentId,
             handle,
-            entityData
+            nodeData
         };
 
-        addResolvedEntity(resolved);
+        addResolvedNode(resolved);
 
         return typeHandle;
     }
 
     const pool::TypeHandle SceneLoader::createType(
-        const EntityData& entityData,
+        const NodeData& nodeData,
         const glm::uvec3& tile)
     {
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
-        type->setName(entityData.baseId.m_path.empty() ? entityData.name : entityData.baseId.m_path);
+        type->setName(nodeData.baseId.m_path.empty() ? nodeData.name : nodeData.baseId.m_path);
 
-        assignTypeFlags(entityData, typeHandle);
+        assignTypeFlags(nodeData, typeHandle);
 
-        if (entityData.type == EntityType::origo) {
+        if (nodeData.type == NodeType::origo) {
             type->m_flags.invisible = true;
-            type->m_entityType = EntityType::origo;
+            type->m_nodeType = NodeType::origo;
         } else
         {
-            resolveMeshes(type, entityData, tile);
+            resolveMeshes(type, nodeData, tile);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (entityData.type != EntityType::container) {
+            if (nodeData.type != NodeType::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                        entityData.baseId, entityData.desc));
+                        nodeData.baseId, nodeData.desc));
                     return pool::TypeHandle::NULL_HANDLE;
                 }
             }
         }
 
+        resolveLodLevels(type, nodeData);
+
         return typeHandle;
+    }
+
+    void SceneLoader::resolveLodLevels(
+        mesh::MeshType* type,
+        const NodeData& nodeData)
+    {
+        for (const auto& data : nodeData.lodLevels) {
+            mesh::LodLevel level{
+                data.getLevelMask(),
+                data.getDistance2() };
+            type->m_lodLevels.push_back(level);
+        }
+
+        std::sort(
+            type->m_lodLevels.begin(),
+            type->m_lodLevels.end(),
+            [](auto& a, auto& b) { return a.m_distance2 < b.m_distance2; }
+        );
     }
 
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
-        const EntityData& entityData,
+        const NodeData& nodeData,
         const MeshData& meshData)
     {
         auto* lodMaterial = lodMesh.getMaterial();
         if (!lodMaterial) return;
 
         auto& material = *lodMaterial;
-        auto& l = *m_loaders;
 
-        // NOTE KI assuming that modifiers are *after* assigns
-        for (auto& materialData : meshData.materials) {
-            const auto& alias = materialData.aliasName;
-            const auto& name = materialData.materialName;
+        if (!material.inmutable)
+        {
+            auto& l = *m_loaders;
 
-            KI_INFO_OUT(fmt::format(
-                "MAT_REF: model={}, material={}, name={}, alias={}",
-                type->str(), material.m_name, name, alias));
+            // NOTE KI assuming that modifiers are *after* assigns
+            for (auto& materialData : meshData.materials) {
+                const auto& alias = materialData.aliasName;
+                const auto& name = materialData.materialName;
 
-            if (name == material.m_name || alias == material.m_name || alias == "*")
-            {
-                if (materialData.modifier) {
-                    l.m_materialLoader.modifyMaterial(material, materialData);
-                } else {
-                    material.assign(materialData.material);
+                KI_INFO_OUT(fmt::format(
+                    "MAT_REF: model={}, material={}, name={}, alias={}",
+                    type->str(), material.m_name, name, alias));
+
+                if (name == material.m_name || alias == material.m_name || alias == "*")
+                {
+                    if (materialData.modifier) {
+                        l.m_materialLoader.modifyMaterial(material, materialData);
+                    }
+                    else {
+                        material.assign(materialData.material);
+                    }
                 }
             }
         }
 
         {
-            for (const auto& srcIt : entityData.programs) {
+            for (const auto& srcIt : nodeData.programs) {
+                const auto& dstIt = material.m_programNames.find(srcIt.first);
+                if (dstIt == material.m_programNames.end()) {
+                    material.m_programNames[srcIt.first] = srcIt.second;
+                }
+            }
+
+            for (const auto& srcIt : meshData.programs) {
                 const auto& dstIt = material.m_programNames.find(srcIt.first);
                 if (dstIt == material.m_programNames.end()) {
                     material.m_programNames[srcIt.first] = srcIt.second;
@@ -514,24 +586,28 @@ namespace loader {
             }
         }
 
-        m_loaders->m_materialLoader.resolveMaterial(type, material);
+        m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
     }
 
     void SceneLoader::resolveMeshes(
         mesh::MeshType* type,
-        const EntityData& entityData,
+        const NodeData& nodeData,
         const glm::uvec3& tile)
     {
         uint16_t index = 0;
-        for (const auto& meshData : entityData.meshes) {
-            resolveMesh(type, entityData, meshData, tile, index);
+        for (const auto& meshData : nodeData.meshes) {
+            if (!meshData.enabled) continue;
+            resolveMesh(type, nodeData, meshData, tile, index);
             index++;
         }
+
+        // NOTE KI ensure volume is containing all meshes
+        type->prepareVolume();
     }
 
     void SceneLoader::resolveMesh(
         mesh::MeshType* type,
-        const EntityData& entityData,
+        const NodeData& nodeData,
         const MeshData& meshData,
         const glm::uvec3& tile,
         int index)
@@ -542,8 +618,8 @@ namespace loader {
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (entityData.type == EntityType::model) {
-            type->m_entityType = EntityType::model;
+        if (nodeData.type == NodeType::model) {
+            type->m_nodeType = NodeType::model;
 
             auto future = ModelRegistry::get().getMeshSet(
                 assets.modelsDir,
@@ -552,6 +628,11 @@ namespace loader {
             auto meshSet = future.get();
 
             if (meshSet) {
+                resolveSockets(
+                    meshData,
+                    *meshSet
+                );
+
                 for (auto& animationData : meshData.animations) {
                     loadAnimation(
                         meshData.baseDir,
@@ -564,10 +645,10 @@ namespace loader {
 
             KI_INFO(fmt::format(
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
-                entityData.baseId, entityData.desc, type->str()));
+                nodeData.baseId, nodeData.desc, type->str()));
         }
-        else if (entityData.type == EntityType::text) {
-            type->m_entityType = EntityType::text;
+        else if (nodeData.type == NodeType::text) {
+            type->m_nodeType = NodeType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
             mesh::LodMesh lodMesh;
@@ -575,19 +656,30 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (entityData.type == EntityType::terrain) {
-            // NOTE KI handled via container + generator
-            type->m_entityType = EntityType::terrain;
-            throw "Terrain not supported currently";
+        else if (nodeData.type == NodeType::primitive) {
+            type->m_nodeType = NodeType::primitive;
+
+            auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
+
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(std::move(mesh), true);
+            type->addLodMesh(std::move(lodMesh));
+
+            meshCount++;
         }
-        else if (entityData.type == EntityType::container) {
+        else if (nodeData.type == NodeType::terrain) {
+            // NOTE KI handled via container + generator
+            type->m_nodeType = NodeType::terrain;
+            throw std::runtime_error("Terrain not supported currently");
+        }
+        else if (nodeData.type == NodeType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_entityType = EntityType::container;
+            type->m_nodeType = NodeType::container;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_entityType = EntityType::origo;
+            type->m_nodeType = NodeType::origo;
             type->m_flags.invisible = true;
         }
 
@@ -595,31 +687,79 @@ namespace loader {
         if (meshCount > 0) {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveLod(type, entityData, meshData, lodMesh);
-                resolveMaterials(type, lodMesh, entityData, meshData);
-                assignMeshFlags(meshData, lodMesh);
-                lodMesh.setupDrawOptions();
+                resolveLodMesh(type, nodeData, meshData, lodMesh);
             }
         }
     }
 
-    void SceneLoader::resolveLod(
+    void SceneLoader::resolveLodMesh(
         mesh::MeshType* type,
-        const EntityData& entityData,
+        const NodeData& nodeData,
+        const MeshData& meshData,
+        mesh::LodMesh& lodMesh)
+    {
+        lodMesh.m_scale = meshData.scale;
+        lodMesh.m_baseScale = meshData.baseScale;
+
+        auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
+
+        assignMeshFlags(meshData.meshFlags, lodMesh);
+        if (lodData) {
+            assignMeshFlags(lodData->meshFlags, lodMesh);
+        }
+
+        resolveMaterials(type, lodMesh, nodeData, meshData);
+        lodMesh.setupDrawOptions();
+    }
+
+    const LodData* SceneLoader::resolveLod(
+        mesh::MeshType* type,
+        const NodeData& nodeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
         auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-        if (!mesh) return;
+        if (!mesh) return nullptr;
 
-        lodMesh.m_priority = entityData.priority;
+        lodMesh.m_priority = nodeData.priority;
 
         const auto* lod = meshData.findLod(mesh->m_name);
-        if (!lod) return;
+        if (!lod) return nullptr;
 
-        lodMesh.m_level = lod->level;
-        lodMesh.m_priority = lod->priority != 0 ? lod->priority : entityData.priority;
-        lodMesh.setDistance(lod->distance);
+        lodMesh.m_levelMask = lod->getLevelMask();
+        lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
+
+        return lod;
+    }
+
+    void SceneLoader::resolveSockets(
+        const MeshData& meshData,
+        mesh::MeshSet& meshSet)
+    {
+        if (!meshSet.m_rig) return;
+
+        auto& rig = *meshSet.m_rig;
+        for (const auto& socketData : meshData.sockets) {
+            if (!socketData.enabled) continue;
+
+            // TODO KI scale is in LodMesh level, but sockets in Mesh level
+            // => PROBLEM if same mesh is used for differently scaled LodMeshes
+            //glm::vec3 meshScale{ 0.01375f * 2.f };
+            auto meshScale = meshData.scale * meshData.baseScale;
+
+            animation::RigSocket socket{
+                socketData.name,
+                socketData.joint,
+                socketData.offset,
+                util::degreesToQuat(socketData.rotation),
+                socketData.scale,
+                meshScale
+            };
+
+            rig.registerSocket(socket);
+        }
+
+        rig.prepare();
     }
 
     void SceneLoader::loadAnimation(
@@ -628,6 +768,7 @@ namespace loader {
         mesh::MeshSet& meshSet)
     {
         if (!meshSet.isRigged()) return;
+        if (!*m_ctx.m_alive) return;
 
         const auto& assets = Assets::get();
 
@@ -647,16 +788,22 @@ namespace loader {
                 data.path);
         }
 
-        loader.loadAnimations(
-            *meshSet.m_rig,
-            data.name,
-            filePath);
+        try {
+            loader.loadAnimations(
+                *meshSet.m_rig,
+                data.name,
+                filePath);
+        }
+        catch (animation::AnimationNotFoundError ex) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
+            //throw std::current_exception();
+        }
     }
 
     pool::NodeHandle SceneLoader::createNode(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
-        const EntityData& entityData,
+        const NodeData& nodeData,
         const bool cloned,
         const int cloneIndex,
         const glm::uvec3& tile,
@@ -669,14 +816,14 @@ namespace loader {
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
-            if (!entityData.baseId.empty()) {
-                auto [k, v] = resolveId(entityData.baseId, cloneIndex, tile, false);
+            if (!nodeData.baseId.empty()) {
+                auto [k, v] = resolveId(nodeData.baseId, cloneIndex, tile, false);
                 nodeId = k;
                 resolvedSID = v;
             }
 
             if (!nodeId) {
-                auto [k, v] = resolveId({ entityData.name }, cloneIndex, tile, true);
+                auto [k, v] = resolveId({ nodeData.name }, cloneIndex, tile, true);
                 nodeId = k;
                 resolvedSID = v;
             }
@@ -685,79 +832,179 @@ namespace loader {
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
         assert(node);
-#ifdef _DEBUG
-        node->m_resolvedSID = resolvedSID;
-#endif
+
+        node->setName(resolvedSID);
         node->m_typeHandle = typeHandle;
 
-        assignNodeFlags(entityData, handle);
+        assignNodeFlags(nodeData.nodeFlags, handle);
 
         node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
-        glm::vec3 pos = entityData.position + clonePositionOffset + tilePositionOffset;
+        glm::vec3 pos = nodeData.position + clonePositionOffset + tilePositionOffset;
 
-        auto& transform = node->modifyTransform();
-        transform.setPosition(pos);
+        auto& state = node->modifyState();
+        state.setPosition(pos);
 
-        transform.setQuatRotation(util::degreesToQuat(entityData.rotation));
-        transform.setBaseScale(entityData.baseScale);
-        transform.setScale(entityData.scale);
-        transform.setFront(entityData.front);
+        state.setQuatRotation(util::degreesToQuat(nodeData.rotation));
+        state.setScale(nodeData.scale);
+
+        state.setPivot(nodeData.pivot.resolve(type));
+        state.setOffset(nodeData.offset);
+
+        state.setFront(nodeData.front);
 
         {
-            auto baseTransform = glm::toMat4(util::degreesToQuat(entityData.baseRotation));
-            transform.setVolume(type->getAABB().getVolume());
-            transform.setBaseTransform(baseTransform);
+            state.setBaseRotation(util::degreesToQuat(nodeData.baseRotation));
+            state.setVolume(type->getAABB().getVolume());
         }
 
-        node->m_camera = l.m_cameraLoader.createCamera(entityData.camera);
-        node->m_light = l.m_lightLoader.createLight(entityData.light, cloneIndex, tile);
+        node->m_camera = l.m_cameraLoader.createCamera(nodeData.camera);
+        node->m_light = l.m_lightLoader.createLight(nodeData.light, cloneIndex, tile);
         node->m_generator = l.m_generatorLoader.createGenerator(
-            entityData.generator,
+            nodeData.generator,
             type,
             *m_loaders);
 
         node->m_particleGenerator = l.m_particleLoader.createParticle(
-            entityData.particle);
+            nodeData.particle);
 
-        if (type->m_entityType == EntityType::text) {
+        if (type->m_nodeType == NodeType::text) {
             node->m_generator = m_loaders->m_textLoader.createGenerator(
                 type,
-                entityData.text,
+                nodeData.text,
                 *m_loaders);
         }
 
         l.m_scriptLoader.createScript(
             rootId,
             node->getId(),
-            entityData.script);
+            nodeData.script);
 
         {
             type->setCustomMaterial(
                 l.m_customMaterialLoader.createCustomMaterial(
-                    entityData.customMaterial,
+                    nodeData.customMaterial,
                     cloneIndex,
                     tile));
             MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
         }
 
+        resolveAttachments(typeHandle, handle, nodeData);
+
         return handle;
     }
 
+    void SceneLoader::resolveAttachments(
+        pool::TypeHandle typeHandle,
+        pool::NodeHandle nodeHandle,
+        const NodeData& nodeData)
+    {
+        if (nodeData.attachments.empty()) return;
+
+        auto* type = typeHandle.toType();
+        auto& lodMeshes = type->modifyLodMeshes();
+
+        auto rig = mesh::findRig(lodMeshes);
+        if (!rig) {
+            KI_INFO_OUT(fmt::format(
+                "SOCKET_BIND_ERROR: {} - rig_missing",
+                nodeData.name));
+            return;
+        }
+
+        for (const auto& attachment : nodeData.attachments) {
+            if (!attachment.enabled) continue;
+
+            mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
+            if (!lodMesh) {
+                KI_INFO_OUT(fmt::format(
+                    "SOCKET_BIND_ERROR: {} - mesh_missing, socket={}, mesh={}",
+                    nodeData.name,
+                    attachment.socket,
+                    attachment.name));
+                continue;
+            }
+
+            const auto* socket = rig->findSocket(attachment.socket);
+            if (!socket) {
+                KI_INFO_OUT(fmt::format(
+                    "SOCKET_BIND_ERROR: {} - socket_missing, socket={}, mesh={}",
+                    nodeData.name,
+                    attachment.socket,
+                    attachment.name));
+                continue;
+            }
+
+            lodMesh->m_socketIndex = socket->m_index;
+
+            KI_INFO_OUT(fmt::format(
+                "SOCKET_BIND_OK: {} - joint={}.{}, socket={}.{}, mesh={}",
+                rig->m_name,
+                socket->m_jointIndex,
+                socket->m_jointName,
+                socket->m_index,
+                attachment.socket,
+                attachment.name));
+        }
+    }
+
     void SceneLoader::assignTypeFlags(
-        const EntityData& entityData,
+        const NodeData& nodeData,
         pool::TypeHandle typeHandle)
     {
         auto* type = typeHandle.toType();
 
-        const auto& container = entityData.typeFlags;
+        const auto& container = nodeData.typeFlags;
         mesh::TypeFlags& flags = type->m_flags;
 
         //////////////////////////////////////////////////////////
         // LOD_MESH specific
         // Rigged model
+
+        flags.effect = container.getFlag("effect", flags.effect);
+
+        //////////////////////////////////////////////////////////
+        // MESH_TYPE specific (aka. Node shared logic)
+
+        flags.mirror = container.getFlag("mirror", flags.mirror);
+        flags.water = container.getFlag("water", flags.water);
+        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
+
+        flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
+        flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
+        flags.noSelect = container.getFlag("no_select", flags.noSelect);
+        flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
+        flags.noRefract = container.getFlag("no_refract", flags.noRefract);
+
         {
+            flags.staticBounds = container.getFlag("static_bounds", flags.staticBounds);
+            flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
+
+            if (nodeData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
+                flags.physics = true;
+            }
+        }
+    }
+
+    void SceneLoader::assignMeshFlags(
+        const FlagContainer& container,
+        mesh::LodMesh& lodMesh)
+    {
+        auto& flags = lodMesh.m_flags;
+
+        flags.hidden = container.getFlag("hidden", flags.hidden);
+
+        flags.billboard = container.getFlag("billboard", flags.billboard);
+        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
+
+        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
+
+        flags.noVolume = container.getFlag("no_volume", flags.noVolume);
+
+        {
+            flags.zUp = container.getFlag("z_up", flags.zUp);
+
             flags.useBones = container.getFlag("use_bones", flags.useBones);
 
             // NOTE KI bones are *required* if using animation
@@ -772,63 +1019,14 @@ namespace loader {
                 flags.useBonesDebug = false;
             }
         }
-
-        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
-
-        flags.effect = container.getFlag("effect", flags.effect);
-        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
-
-        //////////////////////////////////////////////////////////
-        // MESH_TYPE specific (aka. Node shared logic)
-        flags.zUp = container.getFlag("z_up", flags.zUp);
-
-        flags.mirror = container.getFlag("mirror", flags.mirror);
-        flags.water = container.getFlag("water", flags.water);
-        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
-
-        flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
-        flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
-        flags.noSelect = container.getFlag("no_select", flags.noSelect);
-        flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
-        flags.noRefract = container.getFlag("no_refract", flags.noRefract);
-
-        {
-            const auto* e = container.getOptional("static_bounds");
-            if (e) {
-                flags.staticBounds = e;
-                flags.physics = e;
-            }
-        }
-        {
-            const auto* e = container.getOptional("dynamic_bounds");
-            if (e) {
-                flags.dynamicBounds = e;
-                flags.physics = e;
-            }
-        }
-
-        if (entityData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
-            flags.physics = true;
-        }
-    }
-
-    void SceneLoader::assignMeshFlags(
-        const MeshData& meshData,
-        mesh::LodMesh& lodMesh)
-    {
-        const auto& container = meshData.meshFlags;
-        auto& flags = lodMesh.m_flags;
-
-        flags.billboard = container.getFlag("billboard", flags.billboard);
     }
 
     void SceneLoader::assignNodeFlags(
-        const EntityData& entityData,
+        const FlagContainer& container,
         pool::NodeHandle nodeHandle)
     {
         auto* node = nodeHandle.toNode();
 
-        const auto& container = entityData.nodeFlags;
         auto& flags = node->m_flags;
     }
 
@@ -865,53 +1063,53 @@ namespace loader {
         int pass1Errors = 0;
         int pass2Errors = 0;
 
-        for (const auto& entity : m_entities) {
-            validateEntity(root.rootId, entity, 0, pass1Errors, collectedIds);
+        for (const auto& node : m_nodes) {
+            validateNode(root.rootId, node, 0, pass1Errors, collectedIds);
         }
 
-        for (const auto& entity : m_entities) {
-            validateEntity(root.rootId, entity, 1, pass2Errors, collectedIds);
+        for (const auto& node : m_nodes) {
+            validateNode(root.rootId, node, 1, pass2Errors, collectedIds);
         }
 
         if (pass1Errors > 0 || pass2Errors > 0) {
-            auto msg = fmt::format("VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
+            auto msg = fmt::format("SCENE_ERROR: VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
             KI_CRITICAL(msg);
             throw std::runtime_error{ msg };
         }
     }
 
-    void SceneLoader::validateEntity(
+    void SceneLoader::validateNode(
         const ki::node_id rootId,
-        const EntityRoot& entityRoot,
+        const NodeRoot& nodeRoot,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (entityRoot.clones.empty()) {
-            validateEntityClone(rootId, entityRoot, entityRoot.base, false, 0, pass, errorCount, collectedIds);
+        if (nodeRoot.clones.empty()) {
+            validateNodeClone(rootId, nodeRoot, nodeRoot.base, false, 0, pass, errorCount, collectedIds);
         }
         else {
             int cloneIndex = 0;
-            for (auto& cloneData : entityRoot.clones) {
-                validateEntityClone(rootId, entityRoot, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
+            for (auto& cloneData : nodeRoot.clones) {
+                validateNodeClone(rootId, nodeRoot, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
                 cloneIndex++;
             }
         }
     }
 
-    void SceneLoader::validateEntityClone(
+    void SceneLoader::validateNodeClone(
         const ki::node_id rootId,
-        const EntityRoot& entityRoot,
-        const EntityData& entityData,
+        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool cloned,
         int cloneIndex,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (!entityData.enabled) return;
+        if (!nodeData.enabled) return;
 
-        const auto& repeat = entityData.repeat;
+        const auto& repeat = nodeData.repeat;
 
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
@@ -919,10 +1117,10 @@ namespace loader {
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    validateEntityCloneRepeat(
+                    validateNodeCloneRepeat(
                         rootId,
-                        entityRoot,
-                        entityData,
+                        nodeRoot,
+                        nodeData,
                         cloned,
                         cloneIndex,
                         tile,
@@ -935,10 +1133,10 @@ namespace loader {
         }
     }
 
-    void SceneLoader::validateEntityCloneRepeat(
+    void SceneLoader::validateNodeCloneRepeat(
         const ki::node_id rootId,
-        const EntityRoot& entityRoot,
-        const EntityData& entityData,
+        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -947,25 +1145,25 @@ namespace loader {
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (!entityData.enabled) return;
+        if (!nodeData.enabled) return;
 
         if (pass == 0) {
-            if (entityData.name == "Linden tree forest - part 1")
+            if (nodeData.name == "Linden tree forest - part 1")
                 int x = 0;
 
             ki::node_id sid;
             std::string resolvedSID;
             {
                 auto [k, v] = resolveId(
-                    entityData.baseId,
+                    nodeData.baseId,
                     cloneIndex, tile,
-                    entityData.baseId.m_path == entityRoot.base.baseId.m_path);
+                    nodeData.baseId.m_path == nodeRoot.base.baseId.m_path);
                 sid = k;
                 resolvedSID = v;
 
                 if (!sid) {
                     auto [k, v] = resolveId(
-                        { entityData.name },
+                        { nodeData.name },
                         cloneIndex, tile,
                         true);
                     sid = k;
@@ -974,7 +1172,7 @@ namespace loader {
             }
 
             if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
-                auto msg = fmt::format("SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
+                auto msg = fmt::format("SCENE_ERROR: SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
                 KI_CRITICAL(msg);
                 errorCount++;
             }
@@ -984,16 +1182,16 @@ namespace loader {
         if (pass == 1) {
             // NOTE KI parentId can be *MISSING*
             // but it cannot be duplicate
-            if (!entityData.parentBaseId.empty()) {
+            if (!nodeData.parentBaseId.empty()) {
                 auto [sid, resolvedSID] = resolveId(
-                    entityData.parentBaseId,
+                    nodeData.parentBaseId,
                     cloneIndex,
                     tile,
                     false);
 
                 // TODO KI validate missing
                 if (collectedIds.find(sid) == collectedIds.end()) {
-                    auto msg = fmt::format("PARENT SID MISSING: {} = {}", sid, resolvedSID);
+                    auto msg = fmt::format("SCENE_ERROR: PARENT SID MISSING: {} = {}", sid, resolvedSID);
                     KI_CRITICAL(msg);
                     errorCount++;
                 }

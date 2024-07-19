@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+//#define SF(x) (x == -0.0 ? 0.f : x)
+#define SF(x) x
 
 //
 // https://fmt.dev/latest/contents.html
@@ -31,11 +33,11 @@ template <> struct fmt::formatter<glm::vec3> {
             ? fmt::format_to(
                 ctx.out(),
                 "({:.3f}, {:.3f}, {:.3f})",
-                p.x, p.y, p.z)
+                SF(p.x), SF(p.y), SF(p.z))
             : fmt::format_to(
                 ctx.out(),
                 "({:.3e}, {:.3e}, {:.3e})",
-                p.x, p.y, p.z);
+                SF(p.x), SF(p.y), SF(p.z));
     }
 };
 
@@ -58,11 +60,28 @@ template <> struct fmt::formatter<glm::vec4> {
             ? fmt::format_to(
                 ctx.out(),
                 "({:.3f}, {:.3f}, {:.3f}, {:.3f})",
-                p.x, p.y, p.z, p.w)
+                SF(p.x), SF(p.y), SF(p.z), SF(p.w))
             : fmt::format_to(
                 ctx.out(),
                 "({:.3e}, {:.3e}, {:.3e}, {:.3e})",
-                p.x, p.y, p.z, p.w);
+                SF(p.x), SF(p.y), SF(p.z), SF(p.w));
+    }
+};
+
+template <> struct fmt::formatter<glm::uvec4> {
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        if (it != end && *it != '}') throw fmt::format_error("invalid format");
+
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::uvec4& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        return fmt::format_to(
+            ctx.out(),
+            "({}, {}, {}, {})",
+            SF(p.x), SF(p.y), SF(p.z), SF(p.w));
     }
 };
 
@@ -79,7 +98,7 @@ template <> struct fmt::formatter<glm::uvec3> {
         return fmt::format_to(
             ctx.out(),
             "({}, {}, {})",
-            p.x, p.y, p.z);
+            SF(p.x), SF(p.y), SF(p.z));
     }
 };
 
@@ -97,7 +116,7 @@ template <> struct fmt::formatter<glm::uvec2> {
         return fmt::format_to(
             ctx.out(),
             "({}, {})",
-            p.x, p.y);
+            SF(p.x), SF(p.y));
     }
 };
 
@@ -121,17 +140,17 @@ template <> struct fmt::formatter<glm::mat3> {
             ? fmt::format_to(
                 ctx.out(),
                 "[({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f})]",
-                m[0].x, m[0].y, m[0].z,
-                m[1].x, m[1].y, m[1].z,
-                m[2].x, m[2].y, m[2].z,
-                m[3].x, m[3].y, m[3].z)
+                SF(m[0].x), SF(m[0].y), SF(m[0].z),
+                SF(m[1].x), SF(m[1].y), SF(m[1].z),
+                SF(m[2].x), SF(m[2].y), SF(m[2].z),
+                SF(m[3].x), SF(m[3].y), SF(m[3].z))
             : fmt::format_to(
                 ctx.out(),
                 "[({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e})]",
-                m[0].x, m[0].y, m[0].z,
-                m[1].x, m[1].y, m[1].z,
-                m[2].x, m[2].y, m[2].z,
-                m[3].x, m[3].y, m[3].z);
+                SF(m[0].x), SF(m[0].y), SF(m[0].z),
+                SF(m[1].x), SF(m[1].y), SF(m[1].z),
+                SF(m[2].x), SF(m[2].y), SF(m[2].z),
+                SF(m[3].x), SF(m[3].y), SF(m[3].z));
     }
 };
 
@@ -155,17 +174,17 @@ template <> struct fmt::formatter<glm::mat4> {
             ? fmt::format_to(
                 ctx.out(),
                 "[({:.1f}, {:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}, {:.1f})]",
-                m[0].x, m[0].y, m[0].z, m[0].w,
-                m[1].x, m[1].y, m[1].z, m[1].w,
-                m[2].x, m[2].y, m[2].z, m[2].w,
-                m[3].x, m[3].y, m[3].z, m[3].w)
+                SF(m[0].x), SF(m[0].y), SF(m[0].z), SF(m[0].w),
+                SF(m[1].x), SF(m[1].y), SF(m[1].z), SF(m[1].w),
+                SF(m[2].x), SF(m[2].y), SF(m[2].z), SF(m[2].w),
+                SF(m[3].x), SF(m[3].y), SF(m[3].z), SF(m[3].w))
             : fmt::format_to(
                 ctx.out(),
                 "[({:.1e}, {:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}, {:.1e})]",
-                m[0].x, m[0].y, m[0].z, m[0].w,
-                m[1].x, m[1].y, m[1].z, m[1].w,
-                m[2].x, m[2].y, m[2].z, m[2].w,
-                m[3].x, m[3].y, m[3].z, m[3].w);
+                SF(m[0].x), SF(m[0].y), SF(m[0].z), SF(m[0].w),
+                SF(m[1].x), SF(m[1].y), SF(m[1].z), SF(m[1].w),
+                SF(m[2].x), SF(m[2].y), SF(m[2].z), SF(m[2].w),
+                SF(m[3].x), SF(m[3].y), SF(m[3].z), SF(m[3].w));
     }
 };
 
@@ -188,10 +207,10 @@ template <> struct fmt::formatter<glm::quat> {
             ? fmt::format_to(
                 ctx.out(),
                 "({:.3f}, {:.3f}, {:.3f}, {:.3f})",
-                p.x, p.y, p.z, p.w)
+                SF(p.x), SF(p.y), SF(p.z), SF(p.w))
             : fmt::format_to(
                 ctx.out(),
                 "({:.3e}, {:.3e}, {:.3e}, {:.3e})",
-                p.x, p.y, p.z, p.w);
+                SF(p.x), SF(p.y), SF(p.z), SF(p.w));
     }
 };

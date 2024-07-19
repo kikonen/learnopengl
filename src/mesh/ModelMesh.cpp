@@ -13,6 +13,8 @@
 
 #include "mesh/LodMesh.h"
 
+#include "animation/RigContainer.h"
+
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
@@ -21,7 +23,6 @@
 #include "engine/PrepareContext.h"
 #include "registry/ModelRegistry.h"
 
-#include "animation/RigContainer.h"
 
 namespace mesh {
     ModelMesh::ModelMesh(
@@ -47,13 +48,17 @@ namespace mesh {
             m_vertexBones.size());
     }
 
-    AABB ModelMesh::calculateAABB() const noexcept {
+    AABB ModelMesh::calculateAABB(const glm::mat4& transform) const noexcept
+    {
         AABB aabb{ true };
 
         for (auto&& vertex : m_vertices)
         {
-            aabb.minmax(vertex.pos);
+            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
+            aabb.minmax(pos);
         }
+
+        aabb.updateVolume();
 
         return aabb;
     }
@@ -67,7 +72,7 @@ namespace mesh {
         TexturedVAO* vao;
         SkinnedVAO* skinnedVao = nullptr;
 
-        if (m_rig && m_rig->hasBones()) {
+        if (m_rig && !m_vertexBones.empty()) {
             skinnedVao = ModelRegistry::get().getSkinnedVao();
             vao = skinnedVao;
         }

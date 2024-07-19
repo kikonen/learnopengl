@@ -4,11 +4,15 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
+#include tech_skinned_mesh_data.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
+#include ssbo_mesh_transforms.glsl
+#include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -40,8 +44,9 @@ void main() {
   #include var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
-  const vec4 pos = vec4(a_pos, 1.0);
   const mat3 viewNormalMatrix = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
+
+  vec4 pos = vec4(a_pos, 1.0);
 
   vec4 worldPos;
   vec3 normal;
@@ -61,10 +66,15 @@ void main() {
     normal = -u_viewFront;
     tangent = u_viewRight;
   } else {
+    normal = a_normal;
+    tangent = a_tangent;
+
+    #include tech_skinned_mesh_skin.glsl
+
     worldPos = modelMatrix * pos;
 
-    normal = normalize(viewNormalMatrix * a_normal);
-    tangent = normalize(viewNormalMatrix * a_tangent);
+    normal = normalize(viewNormalMatrix * normal);
+    tangent = normalize(viewNormalMatrix * tangent);
   }
 
   gl_Position = u_viewMatrix * worldPos;

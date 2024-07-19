@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 1, 15]
@@ -57,6 +57,10 @@ entities:
   - xid: object
     mesh:
       path: texture_cube_4/texture_cube_4.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       material_modifier:
         xrender_back: true
         xwireframe: true
@@ -67,14 +71,14 @@ entities:
     base_rotation: [0, 0, 0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
   - id: object_{t}
     mesh:
       path: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
       path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       materials:
         - name: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -92,10 +96,6 @@ entities:
     base_rotation: [-90, 0, 0]
     scale: 1
     base_scale: 0.01
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
     repeat:
       x_count: 10
       z_count: 10

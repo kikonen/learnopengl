@@ -6,17 +6,12 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
-  - id: player
-    mesh:
-      path: water_ball
-      material_modifier:
-        tiling: 5
-    program: g_tex
-    pos: [0, 2, 0.0]
+nodes:
+  - id: player_fps
+    type: origo
+    pos: [0, 4, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
-    scale: 1.0
     render_flags:
       allow_normals: false
     active: true
@@ -26,44 +21,73 @@ entities:
     controllers:
       - type: pawn
   - id: fps_counter
-    parent_id: player
+    parent_id: player_fps
     type: text
     mesh:
       flags:
         billboard: true
       material:
-        - name: fps_text
-          kd: [0.0, 0.8, 0.0, 1.0]
-          xmetal: [1.0, 0.0, 0, 1]
-          alpha: true
-          render_back: true
+        kd: [0.0, 0.8, 0.0, 1.0]
+        xmetal: [1.0, 0.0, 0, 1]
+        alpha: true
+        render_back: true
+        program: g_font_render
+        shadow_program: shadow_font_render
     text:
       text: "- fps"
       fonts:
         name: fps_font
         path: fonts/Vera.ttf
         size: 36
-    program: g_font_render
-    shadow_program: shadow_font_render
-    pos: [1.0, 0.75, -0.75]
+    pos: [0.5, 0.75, -2]
     scale: 0.01
-  - id: player_camera
-    parent_id: player
+  - id: player_fps_camera
+    parent_id: player_fps
     type: origo
-    pos: [0, 3, 5]
-    rotation: [-15, 0, 0]
-    controller:
-      type: camera_zoom
+    pos: [0.0, 0.12, 0.0]
     camera:
+      rotation: [-17, 0, 0]
       default: true
+    controllers:
+      - type: camera_zoom
+  - id: player_fps_arms_{t}
+    parent: player_fps
+    mesh:
+      path: fbx/characters/SK_Mannequin_Arms/SK_Mannequin_Arms.fbx
+      flags:
+        use_bones: true
+        use_animation: true
+        z_up: true
+      material:
+        map_kd: material/M_UE4Man_Body_BaseColor.png
+        map_normal: material/M_UE4Man_Body_Normal.png
+        map_channel:
+          - path: material/M_UE4Man_Body_MetallicRoughness.png
+            channel: xRG
+        program: g_tex
+        shadow_program: simple_depth
+      animations:
+        - name: idle
+          path: anim/FirstPerson_Idle.FBX
+        - name: run
+          path: anim/FirstPerson_Run.FBX
+        - name: fire
+          path: anim/FirstPerson_Fire.FBX
+      base_scale: 0.01
+    pos: [-1.35, -1.6, -1.2]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 90, 180]
+    pivot:
+      alignment: m
+    flags:
+      no_frustum: true
   - name: origo
     mesh:
       path: water_ball
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
-    program: g_tex
+        program: g_tex
     pos: [0.0, 0.0, 0.0]
-    scale: 1
     particle:
       material:
         name: particle_firespin
@@ -77,8 +101,7 @@ entities:
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
-    program: g_tex
-    scale: 1
+      program: g_tex
     base_rot: [-90, 0, 0]
     clones:
       - pos: [-5.0, 2.0, -5.0]
@@ -122,12 +145,101 @@ entities:
             texture_spec:
               wrap: GL_CLAMP_TO_EDGE
   - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
+    meshes:
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        sockets:
+          - name: head
+            joint: Bip01_Head1
+            offset: [3.3, 1.3, 0]
+            rotation: [85, 90, 0]
+          - name: neck
+            joint: Bip01_Spine4
+            offset: [-1.9, 3.3, 0]
+            rotation: [0, -85, -110]
+          - name: l_arm
+            joint: Bip01_L_Forearm
+            offset: [7, 0, 0]
+            rotation: [80, 0, 0]
+          - name: r_hand
+            joint: Bip01_R_Hand
+            offset: [2.4, 0, -2.3]
+            rotation: [-66, -4, 0]
+        flags:
+          use_bones: true
+          use_animation: true
+        material:
+          map_pbr: skeleton_pbr
+          xmetal: [0.3, 0.4, 0, 1]
+          xrender_back: true
+        base_scale: 0.01375
+        scale: 2
+        xlods:
+          - level: []
+          - name: joint_tree
+            level: [0, 1, 2]
+      - name: helmet
+        path: fbx\creatures\skeleton_knight\Helmet.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          kd: [0.8, 0.8, 0]
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_channel:
+            - path: textures\T_Helmet_MetallicSmoothness_1024.png
+              channel: R
+            - path: textures\T_Helmet_Occlusion.png
+              channel: A
+        scale: 0.00121
+      - name: armor
+        path: fbx\creatures\skeleton_knight\Armor.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_ChestArmor_BaseColor.jpg
+          map_bump: textures\T_ChestArmor_Normal.jpg
+          map_channel:
+            - path: textures\T_ChestArmor_MetallicSmoothness_1024.png
+              channel: R
+            - path: textures\T_2HandedSword_Occlusion.png
+              channel: A
+        xscale: 0.000121
+        scale: 0.000121
+      - name: 2HandedSword
+        path: fbx\creatures\skeleton_knight\2HandedSword.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_2HandedSword_BaseColor.jpg
+          map_bump: textures\T_2HandedSword_Normal.jpg
+          map_channel:
+            - path: textures\T_2HandedSword_MetallicSmoothness_1024.png
+              channel: R
+            - path: textures\T_ChestArmor_Occlusion.jpg
+              channel: A
+        scale: 0.000075
+      - name: shield
+        path: fbx\creatures\skeleton_knight\Shield.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Shield_BaseColor.jpg
+          map_bump: textures\T_Shield_Normal.jpg
+          map_channel:
+            - path: textures\T_Shield_MetallicSmoothness_2048.png
+              channel: R
+            - path: textures\T_Shield_Occlusion.png
+              channel: A
+        scale: 0.0001
+    attachments:
+      - name: Helmet
+        socket: head
+      - name: Armor
+        socket: neck
+      - name: 2HandedSword
+        socket: r_hand
+      - name: SM_Shield
+        socket: l_arm
     program: g_tex
     shadow_program: simple_depth
     priority: 1
@@ -135,77 +247,91 @@ entities:
     base_rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     scale: 3
-    base_scale: 0.028
     repeat:
       x_count: 2
       z_count: 2
-      x_step: 10
-      z_step: -10
+      x_step: 7
+      z_step: -7
+    script: scripts/seq_skeleton
   - id: rock
     program: g_tex
-    xrender_flags:
     meshes:
       - path: rock2/rock
         lod:
           level: 0
-          distance: 20
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [1, 1, 0]
+          map_pbr: textures\Rock002_1K-PNG
+          kd: [0.9, 0.9, 0]
           tiling: 4
       - path: rock2/rock_lod_1
         lod:
           level: 1
-          distance: 40
         material_modifier:
           metal: [0.5, 0.0, 0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
-          kd: [0, 1, 1]
+          map_pbr: textures\Rock002_1K-PNG
+          kd: [0, 0.8, 0.8]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_2
         lod:
           level: 2
-          distance: 60
         material_modifier:
-          metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 0, 1]
+          #metal: [0.5, 0.0, 0, 1]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0, 0.8]
           tiling: 4
+        scale: 1
       - path: rock2/rock_lod_3
         lod:
           level: 3
-          distance: 80
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [0, 1, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0, 0.8, 0]
           tiling: 4
+        scale: 1.5
       - path: rock2/rock_lod_4
         lod:
           level: 4
-          distance: 100
         flags:
-          billboard: true
+          xbillboard: true
         material_modifier:
           #metal: [0.5, 0.0, 0, 1]
-          #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-          kd: [1, 0, 0]
+          map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+          kd: [0.8, 0, 0]
           tiling: 4
           render_back: true
+        scale: 1.8
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
+      - level: 2
+        distance: 40
+      - level: 3
+        distance: 60
+      - level: 4
+        distance: 80
     pos: [0, 2, -10]
   - id: wooden_floor
     mesh:
       path: plane
       material:
-        name: wood_floor
-        map_pbr: textures\Planks 09 [8K]
-        parallax_depth: 0.0
+        xmap_pbr: textures\Planks 09 [8K]
+        map_kd: textures\Planks 09 [8K]\Planks09_col_2048.png
+        map_normal: textures\Planks 09 [8K]\Planks09_nrm_2048.png
+        map_channel:
+          - path: textures\Planks 09 [8K]\Planks09_rgh_2048.png
+            channel: G
+          - path: textures\Planks 09 [8K]\Planks09_disp_2048.png
+            channel: B
+          - path: textures\Planks 09 [8K]\Planks09_AO_2048.png
+            channel: A
         tiling: 10
-    program: g_tex
+        program: g_tex
     render_flags:
       no_shadow: true
     scale: 100
@@ -214,9 +340,9 @@ entities:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+        program: g_light
     pos: [-25, 45, 0]
     scale: 1.5
-    program: g_light
     render_flags:
       no_shadow: true
     light:

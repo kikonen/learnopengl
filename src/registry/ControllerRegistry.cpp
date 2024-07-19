@@ -40,14 +40,15 @@ void ControllerRegistry::prepare(Registry* registry)
         event::Type::controller_add,
         [this](const event::Event& e) {
             auto& action = e.body.control;
-            addController(action.target, action.controller);
+            auto handle = pool::NodeHandle::toHandle(action.target);
+            addController(handle, action.controller);
         });
 }
 
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
     for (const auto& it : m_controllers) {
-        auto* node = pool::NodeHandle::toNode(it.first);
+        auto* node = it.first.toNode();
         if (!node) continue;
 
         bool changed = false;
@@ -63,15 +64,15 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
 }
 
 void ControllerRegistry::addController(
-    ki::node_id targetId,
+    pool::NodeHandle target,
     NodeController* controller)
 {
     if (!controller) return;
 
-    auto* node = pool::NodeHandle::toNode(targetId);
+    auto* node = target.toNode();
 
     if (!node) {
-        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - targetId={}", targetId));
+        KI_WARN(fmt::format("ADD_CONTROLLER: MISSING_NODE - targetId={}", target.str()));
         return;
     }
 
@@ -79,14 +80,14 @@ void ControllerRegistry::addController(
     controller->prepare(ctx, *node);
 
     {
-        if (const auto& it = m_controllers.find(targetId);
+        if (const auto& it = m_controllers.find(target);
             it == m_controllers.end())
         {
-            m_controllers.insert(std::make_pair(targetId, std::vector<NodeController*>{}));
+            m_controllers.insert({ target, std::vector<NodeController*>{} });
         }
     }
 
     {
-        m_controllers.find(targetId)->second.emplace_back(controller);
+        m_controllers.find(target)->second.emplace_back(controller);
     }
 }

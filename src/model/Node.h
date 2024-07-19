@@ -13,7 +13,7 @@
 
 #include "audio/size.h"
 
-#include "model/NodeTransform.h"
+#include "model/NodeState.h"
 #include "model/Snapshot.h"
 #include "model/NodeFlags.h"
 
@@ -48,15 +48,13 @@ class RenderContext;
 
 class EntityRegistry;
 
-
 class Node final
 {
-    friend class pool::NodeHandle;
+    friend struct pool::NodeHandle;
     friend class NodeRegistry;
 
 public:
     Node();
-    Node(ki::node_id id);
     Node(Node& o) = delete;
     Node(const Node&) = delete;
     Node(Node&& o) noexcept;
@@ -65,13 +63,24 @@ public:
     Node& operator=(Node& o) = delete;
     Node& operator=(Node&& o) noexcept;
 
+    bool operator==(const Node& o) const noexcept
+    {
+        return m_handle == o.m_handle;
+    }
+
     std::string str() const noexcept;
 
-    inline ki::node_id getId() const noexcept { return m_id; }
-    inline uint32_t getHandleIndex() const noexcept { return m_handleIndex; }
+    inline ki::node_id getId() const noexcept { return m_handle.m_id; }
+    inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
-    pool::NodeHandle toHandle() const noexcept {
-        return { m_handleIndex, m_id };
+    inline mesh::MeshType* getType() const noexcept
+    {
+        return m_typeHandle.toType();
+    }
+
+    const std::string& getName() const noexcept { return m_name; }
+    void setName(std::string_view name) noexcept {
+        m_name = name;
     }
 
     void prepareWT(
@@ -105,20 +114,20 @@ public:
         // TODO KI
     }
 
-    inline const NodeTransform& getTransform() const noexcept {
-        return m_transform;
+    inline const NodeState& getState() const noexcept {
+        return m_state;
     }
 
-    inline NodeTransform& modifyTransform() noexcept {
-        return m_transform;
+    inline NodeState& modifyState() noexcept {
+        return m_state;
     }
 
     void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
 
-    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex;  }
-    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex;  }
+    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex; }
+    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex; }
 
     void setTagMaterialIndex(int index);
     void setSelectionMaterialIndex(int index);
@@ -172,13 +181,13 @@ public:
 
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
+    std::string m_name;
+
 private:
-    NodeTransform m_transform;
+    NodeState m_state;
 
-    ki::node_id m_id{ 0 };
-    uint32_t m_handleIndex{ 0 };
-
-    pool::NodeHandle m_parent{};
+    pool::NodeHandle m_handle;
+    pool::NodeHandle m_parent;
 
     int m_cloneIndex{ 0 };
 
@@ -186,13 +195,8 @@ private:
     int m_selectionMaterialIndex{ -1 };
 
 public:
-    bool m_visible : 1 { true };
-    bool m_preparedRT : 1 { false };
-
     NodeFlags m_flags;
 
-#ifdef _DEBUG
-    std::string m_resolvedSID;
-#endif
-
+    bool m_visible : 1 { true };
+    bool m_preparedRT : 1 { false };
 };

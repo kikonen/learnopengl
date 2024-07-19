@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 1, 15]
@@ -59,6 +59,10 @@ entities:
       #path: texture_cube_4/texture_cube_4.fbx
       #path: fbx/chracters/SK_Character_Grandpa.fbx
       path: fbx/chracters/SK_Character_PunkGuy.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
       material:
         name: skin
         xmap_kd: skaterMaleA.png
@@ -74,13 +78,13 @@ entities:
     rotation: [0, 0, 0]
     base_rotation: [180, 0, 0]
     scale: 0.025
-    render_flags:
-      xuse_bones: true
-      xuse_bones_debug: true
-      xuse_animation: true
   - id: wolf_{t}
     mesh:
       path: fbx/creatures/wolf/SK_Wolf.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       material:
         name: wolf_pbr
         map_pbr: wolf_pbr
@@ -95,10 +99,6 @@ entities:
     rotation: [0, 0, 0]
     base_rotation: [-90, 0, 0]
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -107,19 +107,20 @@ entities:
   - id: lion_{t}
     mesh:
       path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       lods:
         - name: SK_Lion_LOD0
           level: 0
-          distance: 20
         - name: SK_Lion_LOD1
           level: 1
-          distance: 30
         - name: SK_Lion_LOD2
           level: 2
-          distance: 40
         - name: SK_Lion_LOD3
           level: 3
-          distance: 50
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -136,17 +137,21 @@ entities:
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
           path: anim/Lion@Roar.FBX
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
+      - level: 2
+        distance: 30
+      - level: 3
+        distance: 40
     program: g_tex
     shadow_program: simple_depth
     pos: [-20.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [90, 0, 0]
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     xaudio:
       source:
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
@@ -161,6 +166,11 @@ entities:
   - id: deinodonte_{t}
     mesh:
       path: fbx/creatures/deinodonte/Deinodonte.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       material:
         name: deinodonte_pbr
         map_pbr: deinodonte_pbr
@@ -177,15 +187,11 @@ entities:
           path: anim/Deinodonte@ClawsAttackLeft.FBX
     program: g_tex
     shadow_program: simple_depth
-    pos: [-10.0, 8.0, -10.0]
+    xpos: [-10.0, 8.0, -10.0]
+    pos: [-10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     xbase_rotation: [90, 0, 0]
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -194,6 +200,11 @@ entities:
   - id: elf_{t}
     mesh:
       path: fbx/characters/elf/Elf Female.fbx
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
       material:
         name: elf_pbr
         map_pbr: elf_female_pbr
@@ -210,11 +221,6 @@ entities:
     rotation: [0, 0, 0]
     xbase_rotation: [90, 0, 0]
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
-      z_up: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -223,6 +229,10 @@ entities:
   - id: scavenger_{t}
     mesh:
       path: fbx/characters/scavenger/Scavenger.fbx
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
@@ -248,14 +258,11 @@ entities:
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
     shadow_program: simple_depth
-    pos: [10.0, 3.0, 0.0]
+    xpos: [10.0, 3.0, 0.0]
+    pos: [10.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [-90, 0, 0]
     scale: 0.025
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     xrepeat:
       x_count: 2
       z_count: 2
@@ -264,6 +271,10 @@ entities:
   - id: skeleton_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -276,15 +287,12 @@ entities:
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
     shadow_program: simple_depth
-    pos: [20.0, 2.0, 0.0]
+    xpos: [20.0, 2.0, 0.0]
+    pos: [20.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     xbase_rotation: [0, 0, 0]
     scale: 1
     base_scale: 0.05
-    render_flags:
-      use_bones: true
-      xuse_bones_debug: true
-      use_animation: true
     xrepeat:
       x_count: 2
       z_count: 2

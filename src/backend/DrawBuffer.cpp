@@ -397,5 +397,8 @@ namespace backend {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }
+
+        // HACK KI for primitive GL_LINES
+        glLineWidth(1.5f);
     }
 }

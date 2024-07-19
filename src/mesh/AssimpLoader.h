@@ -16,9 +16,10 @@ struct aiBone;
 struct aiSkeleton;
 struct aiSkeletonBone;
 struct aiMaterial;
+struct aiMetadata;
 
 namespace animation {
-    struct RigNode;
+    struct RigJoint;
 }
 
 namespace mesh {
@@ -40,17 +41,28 @@ namespace mesh {
             mesh::MeshSet& meshSet);
 
     private:
-        void collectNodes(
+        void collectJoints(
             mesh::LoadContext& ctx,
             std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
             const aiNode* node,
+            int16_t level,
             int16_t parentIndex,
-            const glm::mat4& parentTransform);
+            const glm::mat4& parentTransform,
+            const glm::mat4& parentInvTransform);
+
+        void dumpMetaData(
+            const std::vector<animation::RigJoint>& joints,
+            const std::vector<const aiNode*>& assimpNodes);
+
+        void dumpMetaData(
+            const animation::RigJoint& rigJoint,
+            const aiNode* node);
 
         void loadAnimations(
             mesh::LoadContext& ctx,
             const std::string& namePrefix,
+            const std::string& filePath,
             const aiScene* scene);
 
         void processMeshes(
@@ -61,7 +73,7 @@ namespace mesh {
 
         void processMesh(
             mesh::LoadContext& ctx,
-            animation::RigNode& rigNode,
+            animation::RigJoint& rigJoint,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh);

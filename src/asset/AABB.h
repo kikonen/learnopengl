@@ -52,8 +52,7 @@ struct AABB final
     void updateVolume();
 
     void minmax(const glm::vec3& pos);
-
-    void merge(const AABB& o);
+    void minmax(const AABB& o);
 
 public:
     glm::vec4 m_volume{ 0.f };

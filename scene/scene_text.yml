@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     mesh:
       path: water_ball
@@ -145,7 +145,7 @@ entities:
         map_pbr: textures\Planks 09 [8K]
         xmetal: [1.0, 0.0, 0, 1]
         xmap_pbr: textures\planks_metal
-        tiling: 20
+        tiling: 5
         render_back: true
     program: g_tex
     render_flags:

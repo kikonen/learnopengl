@@ -7,7 +7,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 1, 15]
@@ -96,6 +96,9 @@ entities:
   - id: skeleton_army_grid_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -111,8 +114,6 @@ entities:
     base_scale: 0.028
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     generator:
       type: grid
       repeat:
@@ -123,6 +124,9 @@ entities:
   - id: skeleton_army_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        xuse_animation: true
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
@@ -135,8 +139,6 @@ entities:
     base_rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
-      use_bones: true
-      xuse_animation: true
     scale: 3
     base_scale: 0.028
     repeat:

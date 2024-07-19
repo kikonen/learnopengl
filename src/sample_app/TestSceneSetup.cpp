@@ -66,14 +66,13 @@ void TestSceneSetup::setupEffectExplosion()
         auto nodeId = SID("<effect>");
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<effect>";
-#endif
+
+        node->setName("<effect>");
         node->m_typeHandle = typeHandle;
 
-        auto& transform = node->modifyTransform();
+        auto& state = node->modifyState();
 
-        transform.setScale(2);
+        state.setScale(2);
 
         {
             event::Event evt { event::Type::node_add };

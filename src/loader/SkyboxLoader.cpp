@@ -23,6 +23,7 @@
 #include "scene/SkyboxMaterial.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace {
     const std::string SKYBOX_MESH_NAME{ "quad_skybox" };
@@ -134,7 +135,7 @@ namespace loader {
             lodMesh->m_program = ProgramRegistry::get().getProgram(data.programName);
         }
 
-        type->m_entityType = EntityType::skybox;
+        type->m_nodeType = NodeType::skybox;
 
         auto& flags = type->m_flags;
 
@@ -164,9 +165,8 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.skyboxId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<skybox>";
-#endif
+
+        node->setName("<skybox>");
         node->m_typeHandle = typeHandle;
 
         {

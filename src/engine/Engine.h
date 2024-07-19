@@ -11,6 +11,8 @@
 
 #include "gui/Input.h"
 
+#include "render/DebugContext.h"
+
 class Window;
 class Scene;
 class SceneUpdater;
@@ -42,6 +44,11 @@ public:
         return m_fpsCounter;
     }
 
+    std::shared_ptr<Scene> getCurrentScene() const
+    {
+        return m_currentScene;
+    }
+
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
@@ -71,6 +78,8 @@ public:
     std::shared_ptr<AnimationUpdater> m_animationUpdater;
 
     std::unique_ptr<Window> m_window;
+
+    render::DebugContext& m_debugContext;
 
 protected:
     ki::RenderClock m_clock;

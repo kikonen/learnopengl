@@ -46,6 +46,8 @@ void PawnController::prepare(
 void PawnController::onKey(
     const InputContext& ctx)
 {
+    if (!ctx.allowKeyboard()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -67,6 +69,10 @@ void PawnController::onKey(
     if (input->isModifierDown(Modifier::ALT)) {
         moveSpeed *= 10;
         rotateSpeed *= 2;
+    }
+    if (input->isModifierDown(Modifier::CONTROL)) {
+        moveSpeed *= 0.1;
+        rotateSpeed *= 0.25;
     }
 
     {
@@ -93,7 +99,7 @@ void PawnController::onKey(
                         snapshot.getViewUp(),
                         adjust.y
                     });
-                //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+                //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
             }
         }
     }
@@ -151,7 +157,7 @@ void PawnController::onKey(
                 });
 
             //glm::vec3 adjust = snapshot.getPosition();
-            //m_node->getTransform().setPosition(pos);
+            //m_node->getState().setPosition(pos);
         }
     }
 }
@@ -161,6 +167,8 @@ void PawnController::onMouseMove(
     float xoffset,
     float yoffset)
 {
+    if (!ctx.allowMouse()) return;
+
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
@@ -187,6 +195,6 @@ void PawnController::onMouseMove(
                 snapshot.getViewUp(),
                 adjust.y
             });
-        //m_node->getTransform().adjustQuatRotation(util::degreesToQuat(adjust));
+        //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
     }
 }

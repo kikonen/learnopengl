@@ -10,21 +10,26 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "asset/Assets.h"
+
 #include "util/glm_format.h"
 #include "util/Log.h"
 #include "util/Util.h"
 
 #include "animation/RigContainer.h"
-#include "animation/RigNode.h"
+#include "animation/RigJoint.h"
 #include "animation/Animation.h"
 #include "animation/BoneChannel.h"
 #include "animation/BoneContainer.h"
 #include "animation/BoneInfo.h"
+#include "animation/MeshInfo.h"
 #include "animation/AnimationLoader.h"
 
 #include "mesh/LoadContext.h"
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
+
+#include "mesh/RigJointTreeGenerator.h"
 
 #include "util/assimp_util.h"
 
@@ -60,6 +65,8 @@ namespace mesh
     {
         std::lock_guard lock(m_lock);
 
+        const auto& assets = Assets::get();
+
         KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", meshSet.m_filePath));
 
         if (!util::fileExists(meshSet.m_filePath)) {
@@ -82,6 +89,7 @@ namespace mesh
             aiProcess_RemoveRedundantMaterials |
             aiProcess_GenUVCoords |
             aiProcess_SortByPType |
+            //aiProcess_ValidateDataStructure |
             0);
 
         // If the import failed, report it
@@ -98,14 +106,14 @@ namespace mesh
             scene->mNumMaterials,
             scene->mNumTextures));
 
-        meshSet.m_rig = std::make_unique<animation::RigContainer>();
-        mesh::LoadContext ctx{ meshSet.m_rig.get() };
+        auto rig = std::make_shared<animation::RigContainer>(meshSet.m_filePath);
+        mesh::LoadContext ctx{ rig };
 
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectNodes(ctx, assimpNodes, scene, scene->mRootNode, -1, glm::mat4{ 1.f });
-        //rig.calculateInvTransforms();
+        collectJoints(ctx, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
+        dumpMetaData(rig->m_joints, assimpNodes);
 
         processMeshes(
             ctx,
@@ -113,51 +121,179 @@ namespace mesh
             assimpNodes,
             scene);
 
-        loadAnimations(ctx, meshSet.m_name, scene);
+        if (!rig->empty()) {
+            rig->prepare();
 
-        meshSet.m_rig->prepare();
+            loadAnimations(ctx, meshSet.m_name, meshSet.m_filePath, scene);
+
+            if (assets.animationJointTree)
+            {
+                RigJointTreeGenerator generator;
+                if (auto mesh = generator.generateTree(rig)) {
+                    meshSet.addMesh(std::move(mesh));
+                }
+                if (auto mesh = generator.generatePoints(rig)) {
+                    meshSet.addMesh(std::move(mesh));
+                }
+            }
+
+            meshSet.m_rig = rig;
+        }
+        else {
+            for (auto& mesh : meshSet.getMeshes()) {
+                auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
+                modelMesh->m_rig.reset();
+            }
+        }
 
         for (auto& mesh : meshSet.m_meshes) {
             KI_INFO_OUT(fmt::format("MESH: {}", mesh->str()));
         }
     }
 
-    void AssimpLoader::collectNodes(
+    void AssimpLoader::collectJoints(
         mesh::LoadContext& ctx,
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
+        int16_t level,
         int16_t parentIndex,
-        const glm::mat4& parentTransform)
+        const glm::mat4& parentTransform2,
+        const glm::mat4& parentInvTransform2)
     {
         auto& rig = *ctx.m_rig;
 
-        uint16_t nodeIndex;
+        int16_t jointIndex;
+        glm::mat4 globalTransform;
+        glm::mat4 globalInvTransform;
         {
             assimpNodes.push_back(node);
 
-            auto& rigNode = rig.addNode(node);
-            rigNode.m_parentIndex = parentIndex;
-            nodeIndex = rigNode.m_index;
+            glm::mat4 parentTransform = parentTransform2;
+            glm::mat4 parentInvTransform = parentInvTransform2;
 
-            KI_INFO_OUT(fmt::format("ASSIMP: NODE node={}, parent={}, name={}, children={}, meshes={}\nT: {}",
+            //if (std::string{ "root" } == std::string{ node->mName.C_Str() }) {
+            //    //parentTransform = glm::mat4{ 1.f };
+            //    parentInvTransform = glm::mat4{ 1.f };
+            //}
+
+            auto& rigJoint = rig.addJoint(node);
+            rigJoint.m_level = level;
+            rigJoint.m_parentIndex = parentIndex;
+            jointIndex = rigJoint.m_index;
+
+            globalTransform = parentTransform * rigJoint.m_transform;
+            globalInvTransform = parentInvTransform * rigJoint.m_invTransform;
+            rigJoint.m_globalTransform = globalTransform;
+            rigJoint.m_globalInvTransform = globalInvTransform;
+
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: NODE node={}.{}, name={}, children={}, meshes={}\nT: {}\nG: {}\nI: {}",
                 parentIndex,
-                nodeIndex,
+                jointIndex,
                 node->mName.C_Str(),
                 node->mNumChildren,
                 node->mNumMeshes,
-                rigNode.m_localTransform));
+                rigJoint.m_transform,
+                rigJoint.m_globalTransform,
+                rigJoint.m_globalInvTransform));
         }
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectNodes(ctx, assimpNodes, scene, node->mChildren[n], nodeIndex, glm::mat4{ 1.f });
+            collectJoints(ctx, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform, globalInvTransform);
+        }
+    }
+
+    void AssimpLoader::dumpMetaData(
+        const std::vector<animation::RigJoint>& joints,
+        const std::vector<const aiNode*>& assimpNodes)
+    {
+        for (int i = 0; i < joints.size(); i++) {
+            dumpMetaData(joints[i], assimpNodes[i]);
+        }
+    }
+
+    void AssimpLoader::dumpMetaData(
+        const animation::RigJoint& rigJoint,
+        const aiNode* node)
+    {
+        const std::string nodeName{ node->mName.C_Str() };
+        const aiMetadata* meta = node->mMetaData;
+        if (!meta) return;
+
+        for (size_t i = 0; i < meta->mNumProperties; i++) {
+            const auto& key = meta->mKeys[i];
+            const auto& value = meta->mValues[i];
+
+            std::string formattedKey{ key.C_Str() };
+            std::string formattedValue;
+
+            bool boolValue;
+            int32_t intValue;
+            //uint32_t uintValue;
+            //int64_t longValue;
+            //uint64_t ulongValue;
+            float floatValue;
+            double doubleValue;
+            aiString stringValue;
+
+            switch (value.mType) {
+            case AI_BOOL:
+                meta->Get(key, boolValue);
+                formattedValue = fmt::format("{}", boolValue);
+                break;
+            case AI_INT32:
+                meta->Get(key, intValue);
+                formattedValue = fmt::format("{}", intValue);
+                break;
+            //case AI_UINT64:
+            //    meta->Get(key, ulongValue);
+            //    formattedValue = fmt::format("{}", ulongValue);
+            //    break;
+            case AI_FLOAT:
+                meta->Get(key, floatValue);
+                formattedValue = fmt::format("{}", floatValue);
+                break;
+            case AI_DOUBLE:
+                meta->Get(key, doubleValue);
+                formattedValue = fmt::format("{}", doubleValue);
+                break;
+            case AI_AISTRING:
+                meta->Get(key, stringValue);
+                formattedValue = fmt::format("{}", stringValue.C_Str());
+                break;
+            case AI_AIVECTOR3D:
+                break;
+            //case AI_AIMETADATA:
+            //    break;
+            //case AI_INT64:
+            //    meta->Get(key, longValue);
+            //    formattedValue = fmt::format("{}", longValue);
+            //    break;
+            //case AI_UINT32:
+            //    meta->Get(key, uintValue);
+            //    formattedValue = fmt::format("{}", uintValue);
+            //    break;
+            default:
+                formattedValue = "<unknown>";
+                break;
+            }
+
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: META node={}.{}, name={}, key={}, value={}",
+                rigJoint.m_parentIndex,
+                rigJoint.m_index,
+                rigJoint.m_name,
+                formattedKey,
+                formattedValue));
         }
     }
 
     void AssimpLoader::loadAnimations(
         mesh::LoadContext& ctx,
         const std::string& namePrefix,
+        const std::string& filePath,
         const aiScene* scene)
     {
         animation::AnimationLoader loader{};
@@ -165,6 +301,7 @@ namespace mesh
         loader.loadAnimations(
             *ctx.m_rig,
             namePrefix,
+            filePath,
             scene);
     }
 
@@ -176,15 +313,8 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        std::vector<glm::mat4> globalTransforms;
-        globalTransforms.resize(rig.m_nodes.size() + 1);
-        globalTransforms[0] = glm::mat4{ 1.f };
-
-        for (auto& rigNode : rig.m_nodes) {
-            const glm::mat4& parentTransform = globalTransforms[rigNode.m_parentIndex + 1];
-            globalTransforms[rigNode.m_index + 1] = parentTransform * rigNode.m_localTransform;
-
-            auto& node = assimpNodes[rigNode.m_index];
+        for (auto& rigJoint : rig.m_joints) {
+            auto& node = assimpNodes[rigJoint.m_index];
             if (node->mNumMeshes == 0) continue;
 
             {
@@ -195,29 +325,34 @@ namespace mesh
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
-                    if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
-                    if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
-                    if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
-                    if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "WEAPON_BONE" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Sword" }) continue;
+                    //if (modelMesh->m_name == std::string{ "SM_Shield" }) continue;
+                    //if (modelMesh->m_name == std::string{ "skeleton_knight" }) continue;
 
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.003" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.004" }) continue;
                     //if (modelMesh->m_name == std::string{ "UBX_SM_FieldFences01a_LOD0_data.005" }) continue;
 
-
-                    modelMesh->setBaseTransform(globalTransforms[rigNode.m_index + 1]);
-                    modelMesh->m_rig = ctx.m_rig;
-                    modelMesh->m_nodeName = rigNode.m_name;
-
                     processMesh(
                         ctx,
-                        rigNode,
+                        rigJoint,
                         *modelMesh,
                         meshIndex,
                         mesh);
+
+                    modelMesh->m_rig = ctx.m_rig;
+
+                    modelMesh->m_rigJointName = rigJoint.m_name;
+
+                    // NOTE KI for animated meshes, this transform is canceled in animator
+                    modelMesh->setRigTransform(rigJoint.m_globalTransform);
+
+                    // NOTE KI for debug
+                    rig.registerMesh(rigJoint.m_index, modelMesh.get());
 
                     meshSet.addMesh(std::move(modelMesh));
                 }
@@ -227,7 +362,7 @@ namespace mesh
 
     void AssimpLoader::processMesh(
         mesh::LoadContext& ctx,
-        animation::RigNode& rigNode,
+        animation::RigJoint& rigJoint,
         ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh)
@@ -245,11 +380,14 @@ namespace mesh
                 material = &m_defaultMaterial;
             }
             modelMesh.setMaterial(*material);
+
+            //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }
 
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}, name={}, material={}, vertices={}, faces={}, bones={}",
-            rigNode.m_index,
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
+            rigJoint.m_parentIndex,
+            rigJoint.m_index,
             modelMesh.m_name,
             material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
             mesh->mNumVertices,
@@ -297,21 +435,12 @@ namespace mesh
         const aiMesh* mesh,
         const aiFace* face)
     {
-        Index index{ 0, 0, 0 };
+        assert(face->mNumIndices <= 3);
+
         for (uint32_t i = 0; i < face->mNumIndices; i++)
         {
-            // NOTE KI multi material models are split by *material* into meshes
-            // vertices and thus indeces areare per mesh, but they are *combined*
-            // back single mesh in load
-            // => must apply vertex offset in index buffer to match that
-            index[i] = static_cast<glm::uint>(face->mIndices[i]);
+            modelMesh.m_indeces.push_back(face->mIndices[i]);
         }
-        //KI_INFO_OUT(fmt::format("ASSIMP: FACE mesh={}, face={}, offset={}, idx={}",
-        //    mesh->mName.C_Str(),
-        //    faceIndex,
-        //    vertexOffset,
-        //    index));
-        modelMesh.m_indeces.push_back({ index });
     }
 
     void AssimpLoader::processMeshBone(
@@ -321,42 +450,38 @@ namespace mesh
         const aiMesh* mesh,
         const aiBone* bone)
     {
-        auto& rig = *ctx.m_rig;
-        auto& bi = rig.m_boneContainer.registerBone(bone);
-        auto* rigNode = rig.findNode(bi.m_nodeName);
-        if (rigNode) {
-            rig.m_boneContainer.bindNode(bi.m_index, rigNode->m_index);
-        }
+        auto& bi = ctx.m_rig->registerBone(bone);
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE node={}, bone={}, name={}, mesh={}, weights={}",
-            bi.m_nodeIndex,
+            "ASSIMP: BONE joint={}, bone={}, name={}, mesh={}, weights={}",
+            bi.m_jointIndex,
             bi.m_index,
-            bi.m_nodeName,
+            bi.m_jointName,
             meshIndex,
             bone->mNumWeights))
 
         auto& vertexBones = modelMesh.m_vertexBones;
 
-        Index index{ 0, 0, 0 };
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
             const auto& vw = bone->mWeights[i];
             const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
-
-            //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: mesh={}, bone={}, vertex={}, weight={}",
-            //    meshIndex,
-            //    boneIndex,
-            //    weight->mVertexId,
-            //    weight->mWeight));
 
             size_t vertexIndex = bone->mWeights[i].mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
             vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
-            vertexBones[vertexIndex].addBone(bi.m_index, vw.mWeight);
+            auto& vb = vertexBones[vertexIndex];
+            vb.addBone(bi.m_index, vw.mWeight);
+
+            //KI_INFO_OUT(fmt::format(
+            //    "ASSIMP: mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
+            //    meshIndex,
+            //    bi.m_index,
+            //    vertexIndex,
+            //    vb.m_boneIds,
+            //    vb.m_weights));
         }
     }
 
@@ -379,7 +504,7 @@ namespace mesh
         const aiScene* scene,
         const aiMaterial* src)
     {
-        const auto name = src->GetName().C_Str();
+        const auto name = const_cast<aiMaterial*>(src)->GetName().C_Str();
 
         KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
             name,

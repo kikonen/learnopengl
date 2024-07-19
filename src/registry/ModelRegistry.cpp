@@ -2,21 +2,24 @@
 
 #include <fmt/format.h>
 
+#include "util/Log.h"
+
 #include "asset/Assets.h"
 
 #include "mesh/MeshSet.h"
-#include "mesh/Mesh.h"
+#include "mesh/ModelMesh.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
 #include "mesh/AssimpLoader.h"
-#include "mesh/TransformRegistry.h"
 
 #include "render/RenderContext.h"
 
 namespace {
     static ModelRegistry s_registry;
+
+    thread_local std::exception_ptr lastException = nullptr;
 }
 
 ModelRegistry& ModelRegistry::get() noexcept
@@ -102,24 +105,32 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::startLoad(mesh::MeshSet* meshS
 
                 // NOTE KI if not valid then null; avoids internal errors in render logic
                 if (loaded) {
-                    auto& tr = mesh::TransformRegistry::get();
-                    for (auto& mesh : meshSet->getMeshes()) {
-                        mesh->m_registeredIndex = tr.registerTransform(mesh->m_baseTransform);
-                    }
-
-                    meshSet->prepareVolume();
-
                     p.set_value(meshSet);
                 }
                 else {
-                    KI_CRITICAL(fmt::format("FAIL_LOADER: Invalid mesh: {}", meshSet->str()));
+                    KI_CRITICAL(fmt::format("MODEL_ERROR: Invalid mesh: {}", meshSet->str()));
                     p.set_value(nullptr);
                 }
-             } catch (const std::exception& ex) {
-                KI_CRITICAL(ex.what());
-                p.set_exception(std::make_exception_ptr(ex));
-            } catch (...) {
-                p.set_exception(std::make_exception_ptr(std::current_exception()));
+            }
+            catch (const std::exception& ex) {
+                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex.what()));
+                lastException = std::current_exception();
+                p.set_exception(lastException);
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex));
+                lastException = std::current_exception();
+                p.set_exception(lastException);
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex));
+                lastException = std::current_exception();
+                p.set_exception(lastException);
+            }
+            catch (...) {
+                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", "UNKNOWN_ERROR"));
+                lastException = std::current_exception();
+                p.set_exception(lastException);
             }
         }
     };

@@ -171,6 +171,10 @@ void AssetsLoader::loadAssets(
                 data.glUseFinish = readBool(v);
                 continue;
             }
+            if (k == "glsl_use_debug") {
+                data.glslUseDebug = readBool(v);
+                continue;
+            }
             if (k == "compressed_textures_enabled") {
                 data.compressedTexturesEnabled = readBool(v);
                 continue;
@@ -513,8 +517,16 @@ void AssetsLoader::loadAssets(
                 data.animationEnabled = readBool(v);
                 continue;
             }
+            if (k == "animation_joint_tree") {
+                data.animationJointTree = readBool(v);
+                continue;
+            }
             if (k == "animation_first_frame_only") {
                 data.animationFirstFrameOnly = readBool(v);
+                continue;
+            }
+            if (k == "animation_once_only") {
+                data.animationOnceOnly = readBool(v);
                 continue;
             }
             if (k == "animation_max_count") {

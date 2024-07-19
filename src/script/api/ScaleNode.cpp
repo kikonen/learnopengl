@@ -22,7 +22,7 @@ namespace script
 
         m_end = m_scale;
         if (!m_relative) {
-            m_end -= getNode()->getTransform().getScale();
+            m_end -= getNode()->getState().getScale();
         }
     }
 
@@ -48,7 +48,7 @@ namespace script
         }
 
         auto adjust = scale - m_previous;
-        getNode()->modifyTransform().adjustScale(adjust);
+        getNode()->modifyState().adjustScale(adjust);
         m_previous = scale;
     }
 }

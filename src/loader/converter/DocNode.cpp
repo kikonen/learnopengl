@@ -8,7 +8,7 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
-#include "NodeData.h"
+#include "DocNodeData.h"
 
 namespace {
     const loader::DocNode NULL_NODE;
@@ -27,7 +27,7 @@ namespace loader {
     DocNode::DocNode() = default;
     DocNode::~DocNode() = default;
 
-    DocNode::DocNode(loader::NodeType type)
+    DocNode::DocNode(loader::DocNodeType type)
         : m_type{ type }
     {}
 
@@ -84,6 +84,6 @@ namespace loader {
     void DocNode::createIfNeeded()
     {
         if (m_data) return;
-        m_data = std::make_shared<NodeData>();
+        m_data = std::make_shared<DocNodeData>();
     }
 }

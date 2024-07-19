@@ -46,6 +46,14 @@ public:
         m_bindAfter = binder;
     }
 
+    void invokeBindBefore();
+    void invokeBindAfter();
+
+    render::FrameBuffer* getSourceFrameBuffer() const
+    {
+        return m_sourceBuffer;
+    }
+
     void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
     void setDestinationFrameBuffer(render::FrameBuffer* frameBuffer);
 

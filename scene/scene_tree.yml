@@ -6,7 +6,7 @@ skybox:
 script:
   scripts:
     - path: lib/common
-entities:
+nodes:
   - id: player
     type: origo
     pos: [0, 1, 15]
@@ -95,19 +95,60 @@ entities:
       xuse_bones_debug: true
       xuse_animation: true
   - id: maple_tree_forest_1_{t}
-    mesh:
-      path: fbx/scenery/trees/Maple_02.fbx
-      materials:
-        - name: maple_trunk
-          alias: Tree_0Mat
-          map_kd: textures/bark02.png
-          map_bump: textures/bark02_normal.png
-        - name: maple_leaf
-          alias: Tree_1Mat
-          map_kd: textures/leaf maple.png
-          map_bump: textures/leaf maple_Normal.png
-          alpha: true
-          render_back: true
+    meshes:
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 0
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+            map_bump: textures/bark02_normal.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            map_bump: textures/leaf maple_Normal.png
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 1
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+            render_back: true
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 2
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+          - name: maple_leaf
+            alias: Tree_1Mat
+            map_kd: textures/leaf maple.png
+      - path: fbx/scenery/trees/Maple_02.fbx
+        lods:
+          - level: 3
+          - name: Tree_1
+            level: []
+        materials:
+          - name: maple_trunk
+            alias: Tree_0Mat
+            map_kd: textures/bark02.png
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 100
+      - level: 2
+        distance: 200
+      - level: 3
+        distance: 600
     program: g_tex
     instanced: true
     pos: [0, 0, 0]
@@ -135,18 +176,70 @@ entities:
         x_step: 20
         z_step: -40
   - xid: pine_tree_forest_{t}
-    mesh:
-      path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      materials:
-        - name: pine_trunk_pbr
-          alias: MI_TreeBarkPine_01a
-          map_pbr: pine_trunk_pbr
-        - name: pine_leaf_pbr
-          alias: MI_PineTree_01a
-          map_pbr: pine_leaf_pbr
-          alpha: true
-          blend: true
-          render_back: true
+    meshes:
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 0
+            distance: 200
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_pbr: pine_trunk_pbr
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_pbr: pine_leaf_pbr
+            alpha: true
+            blend: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 1
+            distance: 300
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_pbr: pine_trunk_pbr
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_pbr: pine_leaf_pbr
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 2
+            distance: 400
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+            alpha: true
+            render_back: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 3
+            distance: 500
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+            alpha: true
+      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+        lods:
+          - level: 4
+            distance: 10000
+        materials:
+          - name: pine_trunk_pbr
+            alias: MI_TreeBarkPine_01a
+            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+          - name: pine_leaf_pbr
+            alias: MI_PineTree_01a
+            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
     program: g_tex
     pos: [0, 0.0, 0.0]
     render_flags:

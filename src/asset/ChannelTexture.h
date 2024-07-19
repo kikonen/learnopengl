@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Texture.h"
+#include "ChannelPart.h"
 
 class ImageTexture;
 
@@ -15,15 +16,19 @@ class ChannelTexture final : public Texture
 public:
     static std::shared_future<ChannelTexture*> getTexture(
         std::string_view name,
+        const std::vector<ChannelPart>& parts,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
+        int channelCount,
         bool is16Bbit,
         const TextureSpec& spec);
 
     ChannelTexture(
         std::string_view name,
+        const std::vector<ChannelPart>& parts,
         const std::vector<ImageTexture*>& sourceTextures,
         const glm::vec4& defaults,
+        int channelCount,
         bool is16Bbit,
         const TextureSpec& spec);
 
@@ -36,8 +41,11 @@ public:
     void load();
 
 private:
+    const std::vector<ChannelPart> m_parts;
     const std::vector<ImageTexture*> m_sourceTextures;
+
     const glm::vec4 m_defaults;
+    const int m_channelCount;
     const bool m_is16Bbit;
 
     int m_width{ 0 };

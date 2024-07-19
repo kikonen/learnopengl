@@ -5,14 +5,14 @@
 #include <string>
 #include <memory>
 
-#include "Node.h"
+#include "DocNode.h"
 
 namespace loader {
     struct Document {
-        Document(std::unique_ptr<Node>&& root)
+        Document(std::unique_ptr<DocNode>&& root)
             : m_root{ std::move(root) }
         {}
 
-        std::unique_ptr<Node> m_root;
+        std::unique_ptr<DocNode> m_root;
     };
 }

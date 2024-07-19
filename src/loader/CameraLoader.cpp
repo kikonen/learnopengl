@@ -7,6 +7,7 @@
 #include "component/Camera.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader
 {

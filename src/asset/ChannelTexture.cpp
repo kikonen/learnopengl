@@ -5,12 +5,16 @@
 #include "kigl/kigl.h"
 
 #include "util/glm_format.h"
+#include "util/Log.h"
 
 #include "asset/ImageTexture.h"
 #include "asset/Image.h"
+#include "asset/ChannelPart.h"
 
 
 namespace {
+    thread_local std::exception_ptr lastException = nullptr;
+
     std::unordered_map<std::string, std::shared_future<ChannelTexture*>> textures;
 
     std::mutex textures_lock{};
@@ -29,11 +33,24 @@ namespace {
                    p.set_value(texture);
                 }
                 catch (const std::exception& ex) {
-                    KI_CRITICAL(ex.what());
-                    p.set_exception(std::make_exception_ptr(ex));
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex.what()));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
+                }
+                catch (const std::string& ex) {
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
+                }
+                catch (const char* ex) {
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", ex));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
                 }
                 catch (...) {
-                    p.set_exception(std::make_exception_ptr(std::current_exception()));
+                    KI_CRITICAL(fmt::format("CHANNEL_TEX_ERROR: {}", "UNKNOWN_ERROR"));
+                    lastException = std::current_exception();
+                    p.set_exception(lastException);
                 }
             }
         };
@@ -45,8 +62,10 @@ namespace {
 
 std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
     std::string_view name,
+    const std::vector<ChannelPart>& parts,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
+    int channelCount,
     bool is16Bbit,
     const TextureSpec& spec)
 {
@@ -59,8 +78,8 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
         }
 
         cacheKey = fmt::format(
-            "{}_{}_{}_{}-{}_{}_{}_{}_{}",
-            name, pathsStr, defaults, is16Bbit,
+            "{}_{}_{}_{}_{}-{}_{}_{}_{}_{}",
+            name, pathsStr, defaults, channelCount, is16Bbit,
             spec.wrapS, spec.wrapT,
             spec.minFilter, spec.magFilter, spec.mipMapLevels);
     }
@@ -72,20 +91,24 @@ std::shared_future<ChannelTexture*> ChannelTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ChannelTexture(name, sourceTextures, defaults, is16Bbit, spec));
+    auto future = startLoad(new ChannelTexture(name, parts, sourceTextures, defaults, channelCount, is16Bbit, spec));
     textures.insert({ cacheKey, future });
     return future;
 }
 
 ChannelTexture::ChannelTexture(
     std::string_view name,
+    const std::vector<ChannelPart>& parts,
     const std::vector<ImageTexture*>& sourceTextures,
     const glm::vec4& defaults,
+    int channelCount,
     bool is16Bbit,
     const TextureSpec& spec)
     : Texture(name, false, spec),
+    m_parts{ parts },
     m_sourceTextures{ sourceTextures },
     m_defaults{ defaults },
+    m_channelCount{ channelCount },
     m_is16Bbit{ is16Bbit }
 {
 }
@@ -112,7 +135,7 @@ void ChannelTexture::prepare()
         m_pixelFormat = GL_UNSIGNED_BYTE;
     }
 
-    switch (m_sourceTextures.size()) {
+    switch (m_channelCount) {
     case 4:
         m_format = GL_RGBA;
         m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA8;
@@ -186,12 +209,11 @@ void ChannelTexture::load()
     if (!m_valid) return;
 
     const int dstPixelBytes = m_is16Bbit ? 2 : 1;
-    const int dstRGBA = static_cast<int>(m_sourceTextures.size());
 
-    const int bufferSize = w * dstPixelBytes * h * dstRGBA;
+    const int bufferSize = w * dstPixelBytes * h * m_channelCount;
 
     m_data = new unsigned char[bufferSize];
-    memset(m_data, 1, bufferSize);
+    memset(m_data, 0, bufferSize);
 
     unsigned char* dstByteData{ nullptr };
     unsigned short* dstShortData{ nullptr };
@@ -205,27 +227,29 @@ void ChannelTexture::load()
 
     const int dstPixelMax = m_is16Bbit ? 65535 : 255;
 
-    int dstOffset = -1;
-
     m_width = w;
     m_height = h;
 
-    for (auto& tex : m_sourceTextures) {
-        dstOffset++;
-        int defaultValue = (int)(m_defaults[dstOffset] * (m_is16Bbit ? 65535 : 255));
-        //if (!tex) continue;
+    bool filled[4] = { false, false, false, false };
+
+    for (int partIndex = 0; partIndex < m_parts.size(); partIndex++) {
+        const auto& part = m_parts[partIndex];
+        const auto& tex = m_sourceTextures[partIndex];
 
         auto* image = tex ? tex->m_image.get() : nullptr;
-        //if (!image) continue;
+        if (!image) continue;
 
-        //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
-        const int srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
-        const float pixelRatio = dstPixelMax / (float)srcPixelMax;
+        if (image->m_width != w || image->m_height != h) {
+            KI_WARN(fmt::format(
+                "CHANNEL_TEX: part={}, ({}, {}) != ({}, {})",
+                partIndex, w, h, image->m_width, image->m_height));
+            continue;
+        }
 
         unsigned char* srcByteData{ nullptr };
         unsigned short* srcShortData{ nullptr };
 
-        int srcChannels = 0;
+        int srcChannelCount = 0;
 
         if (image) {
             if (image->m_is16Bbit) {
@@ -235,34 +259,66 @@ void ChannelTexture::load()
                 srcByteData = image->m_data;
             }
 
-            srcChannels = image->m_channels;
+            srcChannelCount = image->m_channels;
         }
+
+        //const int srcPixelBytes = image && image->m_is16Bbit ? 2 : 1;
+        const int srcPixelMax = image && image->m_is16Bbit ? 65535 : 255;
+        const float pixelRatio = dstPixelMax / (float)srcPixelMax;
+
+        for (int srcChannelIndex = 0; srcChannelIndex < 4; srcChannelIndex++) {
+            if (srcChannelIndex >= srcChannelCount) continue;
+
+            auto channel = part.m_mapping[srcChannelIndex];
+
+            int dstChannelIndex = ChannelPart::getChannelIndex(channel);
+            if (dstChannelIndex == -1) continue;
+
+            if (dstChannelIndex >= m_channelCount) continue;
+
+            int defaultValue = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 65535 : 255));
+
+            filled[dstChannelIndex] = true;
+
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int srcIndex = y * (w * srcChannelCount) + x * srcChannelCount + srcChannelIndex;
+
+                    int value;
+                    if (srcByteData) {
+                        value = srcByteData[srcIndex];
+                        value = (int)(value * pixelRatio);
+                    }
+                    else if (srcShortData) {
+                        value = srcShortData[srcIndex];
+                        value = (int)(value * pixelRatio);
+                    }
+                    else {
+                        value = defaultValue;
+                    }
+
+                    int dstIndex = y * w * m_channelCount + x * m_channelCount + dstChannelIndex;
+                    if (m_is16Bbit) {
+                        dstShortData[dstIndex] = value;
+                    }
+                    else {
+                        dstByteData[dstIndex] = value;
+                    }
+                }
+            }
+        }
+
+    }
+
+    // NOTE KI fill missed values with default
+    for (int dstChannelIndex = 0; dstChannelIndex < 4; dstChannelIndex++) {
+        if (filled[dstChannelIndex]) continue;
+        if (dstChannelIndex >= m_channelCount) continue;
 
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                int srcIndex = y * (w * srcChannels) + x * srcChannels;
-
-                if (srcChannels > 1) {
-                    int x = 0;
-                    // NOTE KI prefer ALPHA if alpha included, otherwise RED
-                    if (srcChannels == 4) {
-                        srcIndex += 4;
-                    }
-                }
-                int value;
-                if (srcByteData) {
-                    value = srcByteData[srcIndex];
-                    value = (int)(value * pixelRatio);
-                }
-                else if (srcShortData) {
-                    value = srcShortData[srcIndex];
-                    value = (int)(value * pixelRatio);
-                }
-                else {
-                    value = defaultValue;
-                }
-
-                int dstIndex = y * w * dstRGBA + x * dstRGBA + dstOffset;
+                int value = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 65535 : 255));
+                int dstIndex = y * w * m_channelCount + x * m_channelCount + dstChannelIndex;
                 if (m_is16Bbit) {
                     dstShortData[dstIndex] = value;
                 }

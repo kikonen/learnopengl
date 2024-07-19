@@ -34,7 +34,9 @@
 #include "registry/Registry.h"
 
 #include "engine/PrepareContext.h"
+#include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 
 #include "BatchCommand.h"
 
@@ -69,25 +71,25 @@ namespace render {
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
-        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
-            return;
-
         if (entityIndex < 0) return;
 
-        const auto& frustum = ctx.m_camera->getFrustum();
+        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
+            const auto& frustum = ctx.m_camera->getFrustum();
 
-        if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
-            m_skipCount++;
-            return;
+            if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
+                m_skipCount++;
+                return;
+            }
         }
 
         m_drawCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto lodLevel = type->getLodLevel(cameraPos, snapshot.m_worldPos);
+        const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.m_worldPos);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
-            if (lodMesh.m_level != lodLevel) continue;
+            if (lodMesh.m_flags.hidden) continue;
+            if ((lodMesh.m_levelMask & levelMask) == 0) continue;
             if (!lodMesh.m_vao) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
@@ -120,7 +122,11 @@ namespace render {
             const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
             auto& lodInstances = top->m_lodInstances[lodKey];
             lodInstances.reserve(100);
-            lodInstances.emplace_back(entityIndex, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
+            lodInstances.emplace_back(
+                entityIndex,
+                lodMesh.m_meshIndex,
+                lodMesh.m_materialIndex,
+                lodMesh.m_socketIndex);
             m_pendingCount++;
         }
     }
@@ -198,10 +204,11 @@ namespace render {
                     continue;
                 }
 
-                const auto lodLevel = type->getLodLevel(cameraPos, snapshots[i].m_worldPos);
+                const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].m_worldPos);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_level != lodLevel) continue;
+                    if (lodMesh.m_flags.hidden) continue;
+                    if ((lodMesh.m_levelMask & levelMask) == 0) continue;
                     if (!lodMesh.m_vao) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
@@ -235,7 +242,11 @@ namespace render {
                     const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
                     auto& lodInstances = top->m_lodInstances[lodKey];
                     lodInstances.reserve(100);
-                    lodInstances.emplace_back(entityBaseIndex + i, lodMesh.m_meshIndex, lodMesh.m_lod.m_materialIndex);
+                    lodInstances.emplace_back(
+                        entityBaseIndex + i,
+                        lodMesh.m_meshIndex,
+                        lodMesh.m_materialIndex,
+                        lodMesh.m_socketIndex);
                     m_pendingCount++;
                 }
             }
@@ -289,6 +300,15 @@ namespace render {
         m_frustumParallelLimit = assets.frustumParallelLimit;
     }
 
+    void Batch::updateRT(
+        const UpdateContext& ctx)
+    {
+        const auto& assets = ctx.m_assets;
+        const auto& debugContext = ctx.m_debugContext;
+
+        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && debugContext.m_frustumEnabled;
+    }
+
     void Batch::draw(
         const RenderContext& ctx,
         mesh::MeshType* type,
@@ -296,7 +316,7 @@ namespace render {
         uint8_t kindBits,
         Node& node)
     {
-        if (type->m_entityType == EntityType::origo) return;
+        if (type->m_nodeType == NodeType::origo) return;
         if (type->m_flags.invisible || !node.m_visible) return;
 
         node.updateVAO(ctx);
@@ -347,6 +367,7 @@ namespace render {
                         instance.u_entityIndex = lodEntry.m_entityIndex;
                         instance.u_meshIndex = lodEntry.m_meshIndex;
                         instance.u_materialIndex = lodEntry.m_materialIndex;
+                        instance.u_socketIndex = lodEntry.m_socketIndex;
 
                         // NOTE KI BatchKey does not take in account m_flags
                         // => can draw different instances in same batch

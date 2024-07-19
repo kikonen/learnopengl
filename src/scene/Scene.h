@@ -48,9 +48,13 @@ class ShadowMapRenderer;
 class ObjectIdRenderer;
 class NormalRenderer;
 
+namespace editor {
+    class EditorFrame;
+}
 
 class Scene final
 {
+    friend class editor::EditorFrame;
 public:
     Scene(
         std::shared_ptr<Registry> registry,

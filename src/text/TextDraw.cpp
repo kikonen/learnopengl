@@ -117,9 +117,9 @@ namespace
                 { glyphW / glyphMaxW, 0 },
             };
 
-            const mesh::Index indeces[2]{
-                {index, index + 1, index + 2},
-                {index, index + 2, index + 3},
+            const mesh::Index32 indeces[2 * 3] {
+                index, index + 1, index + 2,
+                index, index + 2, index + 3,
             };
 
             for (int i = 0; i < 4; i++) {

@@ -6,6 +6,8 @@
 #include <memory>
 #include <functional>
 
+#include "asset/AABB.h"
+
 #include "backend/Lod.h"
 #include "backend/DrawOptions.h"
 
@@ -55,10 +57,6 @@ namespace mesh {
             std::unique_ptr<Mesh> mesh,
             bool umique) noexcept;
 
-        void setDistance(float dist) {
-            m_distance2 = dist * dist;
-        }
-
         Material* getMaterial() noexcept;
         void setMaterial(const Material& material) noexcept;
 
@@ -76,22 +74,31 @@ namespace mesh {
             return m_drawOptions;
         }
 
+        AABB calculateAABB() const noexcept;
+
     private:
         void setMesh(Mesh* mesh) noexcept;
 
-        /////////////////////
+        void updateTransform();
 
     public:
         backend::Lod m_lod;
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
-        uint32_t m_meshIndex{ 0 };
-
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
 
+        uint32_t m_meshIndex{ 0 };
+        int32_t m_socketIndex{ -1 };
+
+        glm::mat4 m_animationRigTransform{ 1.f };
+
+        glm::vec3 m_scale{ 1.f };
+        glm::vec3 m_baseScale{ 1.f };
+
         std::unique_ptr<Material> m_material;
+        uint32_t m_materialIndex{ 0 };
 
         backend::DrawOptions m_drawOptions;
 
@@ -101,14 +108,11 @@ namespace mesh {
         Program* m_selectionProgram{ nullptr };
         Program* m_idProgram{ nullptr };
 
-        // Squared Distance upto lod is applied
-        float m_distance2{ 0.f };
-
-        // -1 == collision mesh
-        int8_t m_level{ 0 };
+        // NOTE KI level == 0 by default enabled
+        uint8_t m_levelMask{ 1 };
 
         // NOTE KI *BIGGER* values rendered first (can be negative)
-// range -254 .. 255
+        // range -254 .. 255
         int8_t m_priority{ 0 };
 
         MeshFlags m_flags;

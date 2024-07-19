@@ -26,9 +26,7 @@
 #include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
-
-namespace {
-}
+#include "loader_util.h"
 
 namespace loader {
     VolumeLoader::VolumeLoader(
@@ -74,7 +72,7 @@ namespace loader {
             lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
-        type->m_entityType = EntityType::marker;
+        type->m_nodeType = NodeType::marker;
 
         auto& flags = type->m_flags;
 
@@ -87,18 +85,17 @@ namespace loader {
 
         auto handle = pool::NodeHandle::allocate(assets.volumeId);
         auto* node = handle.toNode();
-#ifdef _DEBUG
-        node->m_resolvedSID = "<volume>";
-#endif
+
+        node->setName("<volume>");
         node->m_typeHandle = typeHandle;
 
         node->m_visible = false;
 
         // NOTE KI m_radius = 1.73205078
         {
-            auto& transform = node->modifyTransform();
+            auto& state = node->modifyState();
 
-            transform.setVolume(meshSet->getAABB().getVolume());
+            state.setVolume(meshSet->calculateAABB(glm::mat4{ 1.f }).getVolume());
         }
 
         {

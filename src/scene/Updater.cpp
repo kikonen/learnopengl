@@ -64,9 +64,18 @@ void Updater::start()
                 m_running = false;
             }
             catch (const std::exception& ex) {
-                KI_CRITICAL(ex.what());
+                KI_CRITICAL(fmt::format("UPDATER_ERROR: {}", ex.what()));
+                m_running = false;
+            }
+            catch (const std::string& ex) {
+                KI_CRITICAL(fmt::format("UPDATER_ERROR: {}", ex));
+                m_running = false;
+            }
+            catch (const char* ex) {
+                KI_CRITICAL(fmt::format("UPDATER_ERROR: {}", ex));
             }
             catch (...) {
+                KI_CRITICAL("UPDATER_ERROR: UNKNOWN_ERROR");
                 m_running = false;
             }
         }

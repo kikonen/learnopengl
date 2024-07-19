@@ -31,6 +31,7 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "render/DebugContext.h"
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
 #include "render/RenderContext.h"
@@ -84,7 +85,7 @@ Scene::Scene(
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
-        m_normalRenderer->setEnabled(assets.showNormals);
+        m_normalRenderer->setEnabled(false);
     }
 
     m_batch = std::make_unique<render::Batch>();
@@ -169,7 +170,8 @@ void Scene::prepareRT()
         m_objectIdRenderer->prepareRT(ctx);
     }
 
-    if (m_normalRenderer->isEnabled()) {
+    //if (assets.showNormals)
+    {
         m_normalRenderer->prepareRT(ctx);
     }
 
@@ -259,11 +261,18 @@ void Scene::prepareRT()
 
 void Scene::updateRT(const UpdateContext& ctx)
 {
+    const auto& assets = ctx.m_assets;
+    const auto& debugContext = ctx.m_debugContext;
+
     m_registry->m_dispatcherView->dispatchEvents();
 
     m_registry->updateRT(ctx);
 
     m_renderData->update();
+
+    m_normalRenderer->setEnabled(debugContext.m_nodeDebugEnabled && debugContext.m_showNormals);
+
+    m_batch->updateRT(ctx);
 }
 
 void Scene::postRT(const UpdateContext& ctx)
@@ -474,10 +483,8 @@ void Scene::drawScene(
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 
-    if (assets.showNormals) {
-        if (m_normalRenderer->isEnabled()) {
-            m_normalRenderer->render(ctx);
-        }
+    if (m_normalRenderer->isEnabled()) {
+        m_normalRenderer->render(ctx);
     }
 }
 
@@ -489,7 +496,7 @@ Node* Scene::getActiveNode() const
 const std::vector<NodeController*>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
-    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
 Node* Scene::getActiveCameraNode() const
@@ -500,7 +507,7 @@ Node* Scene::getActiveCameraNode() const
 const std::vector<NodeController*>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCameraNode();
-    return node ? ControllerRegistry::get().getControllers(node) : nullptr;
+    return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
 ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)

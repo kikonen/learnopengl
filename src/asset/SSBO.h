@@ -19,6 +19,7 @@ constexpr GLuint SSBO_PARTICLES = 10;
 constexpr GLuint SSBO_TERRAIN_TILES = 11;
 constexpr GLuint SSBO_BONE_TRANSFORMS = 12;
 constexpr GLuint SSBO_MESH_TRANSFORMS = 13;
+constexpr GLuint SSBO_SOCKET_TRANSFORMS = 14;
 
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552

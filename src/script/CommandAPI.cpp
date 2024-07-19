@@ -29,6 +29,8 @@
 #include "api/AudioPause.h"
 #include "api/AudioStop.h"
 
+#include "api/AnimationPlay.h"
+
 namespace {
     struct CommandOptions {
         script::command_id afterId = 0;
@@ -38,8 +40,12 @@ namespace {
         bool repeat = false;
         bool sync = false;
 
+        std::string name;
+
         std::string str() const noexcept {
-            return fmt::format("<OPT: after={}, duration={}, relative={}, repeat={}>", afterId, duration, relative, repeat);
+            return fmt::format(
+                "<OPT: after={}, duration={}, relative={}, repeat={}, sync={}, name={}>",
+                afterId, duration, relative, repeat, sync, name);
         }
     };
 
@@ -67,6 +73,9 @@ namespace {
             }
             else if (k == "sync") {
                 opt.sync = value.as<bool>();
+            }
+            else if (k == "name") {
+                opt.name = value.as<std::string>();
             }
             });
         return opt;
@@ -287,6 +296,20 @@ namespace script
             AudioStop{
                 m_nodeId,
                 opt.index
+            });
+    }
+
+    int CommandAPI::lua_animationPlay(
+        const sol::table& lua_opt) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            AnimationPlay{
+                m_nodeId,
+                opt.name,
+                opt.repeat
             });
     }
 

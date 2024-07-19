@@ -153,12 +153,12 @@ namespace physics
         const auto* node = m_nodeHandle.toNode();
         if (!node) return;
 
-        const auto& transform = node->getTransform();
-        const auto level = transform.getMatrixLevel();
+        const auto& state = node->getState();
+        const auto level = state.getMatrixLevel();
         if (!force && m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        const glm::vec3& pos = transform.getWorldPosition();
+        const glm::vec3& pos = state.getWorldPosition();
         {
             if (m_bodyId) {
                 dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
@@ -234,14 +234,30 @@ namespace physics
             pos.y = 400;
             dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
         }
-        pos -= parent->getTransform().getWorldPosition();
+        pos -= parent->getState().getWorldPosition();
+
+        auto& state = node->modifyState();
 
         // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-        auto rotBase = glm::normalize(glm::conjugate(m_body.quat) * rot);
+        auto rq = glm::normalize(glm::conjugate(m_body.quat) * rot);
 
-        auto& transform = node->modifyTransform();
-        transform.setPosition(pos);
-        transform.setQuatRotation(rotBase);
+        // NOTE KI project rotation to XZ plane to keep nodes UP
+        // => nodes still travel backwards, but not rotating grazily
+        if (true) {
+            // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
+            const auto rotated = glm::mat3(rq) * state.m_front;
+            //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
+            const auto rads = glm::atan(rotated.x, rotated.z);
+            const auto degrees = glm::degrees(rads);
+            rq = util::radiansToQuat(glm::vec3(0, rads, 0));
+
+            dQuaternion quat{ rq.w, rq.x, rq.y, rq.z };
+            dBodySetQuaternion(m_bodyId, quat);
+        }
+        //const auto rotatedFront = rotBase * state.m_front;
+
+        state.setPosition(pos);
+        state.setQuatRotation(rq);
         //m_node->updateModelMatrix();
     }
 }

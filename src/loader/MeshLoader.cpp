@@ -21,6 +21,7 @@
 #include "Loaders.h"
 
 #include "loader/document.h"
+#include "loader_util.h"
 
 namespace loader {
     MeshLoader::MeshLoader(
@@ -51,11 +52,15 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
+            if (k == "enabled") {
+                data.enabled = readBool(v);
+            }
             if (k == "name") {
                 data.name = readString(v);
             }
             else if (k == "path" || k == "mesh") {
                 data.path = readString(v);
+                data.enabled = k != "xpath";
 
                 if (data.baseDir.empty()) {
                     std::filesystem::path path{ data.path };
@@ -67,6 +72,21 @@ namespace loader {
             }
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
+            }
+            else if (k == "program") {
+                data.programs[MaterialProgramType::shader] = readString(v);
+            }
+            else if (k == "shadow_program") {
+                data.programs[MaterialProgramType::shadow] = readString(v);
+            }
+            else if (k == "pre_depth_program") {
+                data.programs[MaterialProgramType::pre_depth] = readString(v);
+            }
+            else if (k == "selection_program") {
+                data.programs[MaterialProgramType::selection] = readString(v);
+            }
+            else if (k == "id_program") {
+                data.programs[MaterialProgramType::object_id] = readString(v);
             }
             else if (k == "materials") {
                 loaders.m_materialLoader.loadMaterials(v, data.materials);
@@ -95,6 +115,12 @@ namespace loader {
                     data.meshFlags.set(util::toLower(flagName), flagValue);
                 }
             }
+            else if (k == "scale") {
+                data.scale = readScale3(v);
+            }
+            else if (k == "base_scale") {
+                data.baseScale = readScale3(v);
+            }
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
                 lod.name = "*";
@@ -102,6 +128,12 @@ namespace loader {
             }
             else if (k == "lods") {
                 loadLods(v, data.lods);
+            }
+            else if (k == "sockets") {
+                loadSockets(v, data.sockets);
+            }
+            else if (k == "vertex") {
+                loaders.m_vertexLoader.load(v, data.vertexData);
             }
             else {
                 reportUnknown("mesh_entry", k, v);
@@ -130,7 +162,7 @@ namespace loader {
     {
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
-            data.level = 0;
+            data.levels = { {0} };
             data.name = '*';
             loadLod(entry, data);
         }
@@ -150,7 +182,7 @@ namespace loader {
                 data.name = readString(v);
             }
             else if (k == "level") {
-                data.level = readInt(v);
+                data.levels = readIntVector(v, 1);
             }
             else if (k == "distance") {
                 data.distance = readFloat(v);
@@ -158,9 +190,68 @@ namespace loader {
             else if (k == "priority") {
                 data.priority = readInt(v);
             }
+            else if (k == "flags") {
+                for (const auto& flagNode : v.getNodes()) {
+                    const auto& flagName = flagNode.getName();
+                    const auto& flagValue = readBool(flagNode.getNode());
+                    data.meshFlags.set(util::toLower(flagName), flagValue);
+                }
+            }
             else {
                 reportUnknown("lod_entry", k, v);
             }
+        }
+    }
+
+    void MeshLoader::loadSockets(
+        const loader::DocNode& node,
+        std::vector<SocketData>& sockets) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            SocketData& data = sockets.emplace_back();
+            loadSocket(entry, data);
+        }
+    }
+
+    void MeshLoader::loadSocket(
+        const loader::DocNode& node,
+        SocketData& data) const
+    {
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "enabled") {
+                data.enabled = readBool(v);
+            }
+            else if (k == "name" || k == "xname") {
+                data.name = readString(v);
+                data.enabled = k != "xname";
+            }
+            else if (k == "joint") {
+                data.joint = readString(v);
+            }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
+            }
+            else if (k == "rotation") {
+                data.rotation = readDegreesRotation(v);
+            }
+            else if (k == "scale") {
+                data.scale = readFloat(v);
+            }
+            else {
+                reportUnknown("socket_entry", k, v);
+            }
+        }
+
+        if (data.joint.empty()) {
+            data.joint = data.name;
+        }
+        if (data.name.empty()) {
+            data.name = data.joint;
         }
     }
 

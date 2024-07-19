@@ -5,6 +5,7 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
+#include "util/glm_util.h"
 
 #include "asset/Assets.h"
 #include "asset/Material.h"
@@ -17,6 +18,7 @@
 #include "render/size.h"
 
 #include "registry/MaterialRegistry.h"
+#include "mesh/TransformRegistry.h"
 
 #include "Mesh.h"
 #include "InstanceFlags.h"
@@ -52,15 +54,22 @@ namespace mesh {
 
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
-        m_level = o.m_level;
+        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
-        m_distance2 = o.m_distance2;
+
         m_mesh = o.m_mesh;
+        m_meshIndex = o.m_meshIndex;
+        m_socketIndex = o.m_socketIndex;
+
+        m_scale = o.m_scale;
+        m_baseScale = o.m_baseScale;
+
         m_material = std::move(o.m_material);
+        m_materialIndex = std::move(o.m_materialIndex);
+
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
-        m_meshIndex = o.m_meshIndex;
 
         m_program = o.m_program;
         m_shadowProgram = o.m_shadowProgram;
@@ -68,6 +77,8 @@ namespace mesh {
         m_selectionProgram = o.m_selectionProgram;
         m_idProgram = o.m_idProgram;
         m_drawOptions = o.m_drawOptions;
+
+        m_animationRigTransform = o.m_animationRigTransform;
 
         m_flags = o.m_flags;
 
@@ -80,22 +91,31 @@ namespace mesh {
 
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
-        m_level = o.m_level;
+        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
-        m_distance2 = o.m_distance2;
+
         m_mesh = o.m_mesh;
+        m_meshIndex = o.m_meshIndex;
+        m_socketIndex = o.m_socketIndex;
+
+        m_scale = o.m_scale;
+        m_baseScale = o.m_baseScale;
+
         m_material = std::move(o.m_material);
+        m_materialIndex = std::move(o.m_materialIndex);
+
         m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
-        m_meshIndex = o.m_meshIndex;
 
-        o.m_program = o.m_program;
-        o.m_shadowProgram = o.m_shadowProgram;
-        o.m_preDepthProgram = o.m_preDepthProgram;
-        o.m_selectionProgram = o.m_selectionProgram;
-        o.m_idProgram = o.m_idProgram;
-        o.m_drawOptions = o.m_drawOptions;
+        m_program = o.m_program;
+        m_shadowProgram = o.m_shadowProgram;
+        m_preDepthProgram = o.m_preDepthProgram;
+        m_selectionProgram = o.m_selectionProgram;
+        m_idProgram = o.m_idProgram;
+        m_drawOptions = o.m_drawOptions;
+
+        m_animationRigTransform = o.m_animationRigTransform;
 
         m_flags = o.m_flags;
 
@@ -108,12 +128,13 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: level={}, index={}, vao={}, mesh={}, materialIndex={}>",
-            m_level,
+            "<LOD_MESH: level={}, index={}, vao={}, mesh={}, material={}, socket={}>",
+            m_levelMask,
             m_meshIndex,
             m_vao ? *m_vao : -1,
             m_mesh ? m_mesh->str() : "N/A",
-            m_lod.m_materialIndex);
+            m_materialIndex,
+            m_socketIndex);
     }
 
     Material* LodMesh::getMaterial() noexcept
@@ -164,6 +185,11 @@ namespace mesh {
         m_preDepthProgram = material.getProgram(MaterialProgramType::pre_depth);
         m_selectionProgram = material.getProgram(MaterialProgramType::selection);
         m_idProgram = material.getProgram(MaterialProgramType::object_id);
+
+        if (m_flags.zUp) {
+            const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
+            m_animationRigTransform = glm::toMat4(rotateYUp);
+        }
     }
 
     void LodMesh::setMesh(
@@ -179,9 +205,10 @@ namespace mesh {
         m_mesh = mesh;
         if (!m_mesh) return;
 
-        setMaterial(mesh->getMaterial());
+        m_flags.noVolume = m_mesh->m_flags.noVolume;
+        m_flags.useBones = m_mesh->m_flags.useBones;
 
-        m_meshIndex = mesh->m_registeredIndex;
+        setMaterial(mesh->getMaterial());
     }
 
     void LodMesh::registerMaterial()
@@ -197,19 +224,19 @@ namespace mesh {
         }
 
         if (assets.useLodDebug) {
-            if (m_level > 0)
+            if (m_levelMask >= 1 << 0)
                 material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-            if (m_level > 1)
+            if (m_levelMask >= 1 << 1)
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.5f, 1.f };
-            if (m_level > 2)
+            if (m_levelMask >= 1 << 2)
                 material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
-            if (m_level > 3)
+            if (m_levelMask >= 1 << 3)
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
         }
 
         MaterialRegistry::get().registerMaterial(*material);
 
-        m_lod.m_materialIndex = material->m_registeredIndex;
+        m_materialIndex = material->m_registeredIndex;
 
         // TODO KI basically material could be deleted at this point
     }
@@ -219,6 +246,8 @@ namespace mesh {
         if (m_mesh) {
             m_vao = m_mesh->prepareRT(ctx);
             m_mesh->prepareLodMesh(*this);
+
+            updateTransform();
 
             if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
@@ -242,5 +271,26 @@ namespace mesh {
         if (m_idProgram) {
             m_idProgram->prepareRT();
         }
+    }
+
+    void LodMesh::updateTransform() {
+        glm::mat4 transform = glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) * m_mesh->m_rigTransform;
+        m_meshIndex = mesh::TransformRegistry::get().registerTransform(transform);
+    }
+
+    AABB LodMesh::calculateAABB() const noexcept
+    {
+        if (!m_mesh) return {};
+
+        AABB aabb{ true };
+
+        if (m_mesh) {
+            const auto& transform = glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) * m_mesh->m_rigTransform;
+            aabb.minmax(m_mesh->calculateAABB(transform));
+        }
+
+        aabb.updateVolume();
+
+        return aabb;
     }
 }

@@ -15,13 +15,13 @@
 // - tangent
 #ifdef USE_BONES
 {
-  const uvec4 boneIndex = a_boneIndex + entity.u_boneIndex;
+  const uvec4 boneIndex = a_boneIndex + entity.u_boneBaseIndex;
   const vec4 boneWeight = a_boneWeight;
 
-  const mat4 b1 = u_boneTransforms[boneIndex.x].u_transform;
-  const mat4 b2 = u_boneTransforms[boneIndex.y].u_transform;
-  const mat4 b3 = u_boneTransforms[boneIndex.z].u_transform;
-  const mat4 b4 = u_boneTransforms[boneIndex.w].u_transform;
+  const mat4 b1 = u_boneTransforms[boneIndex.x];
+  const mat4 b2 = u_boneTransforms[boneIndex.y];
+  const mat4 b3 = u_boneTransforms[boneIndex.z];
+  const mat4 b4 = u_boneTransforms[boneIndex.w];
 
   // const mat4 b1 = mat4(1.f);
   // const mat4 b2 = mat4(1.f);
@@ -33,7 +33,9 @@
     + (b2 * pos) * boneWeight.y
     + (b3 * pos) * boneWeight.z
     + (b4 * pos) * boneWeight.w;
-  pos = skinPos;
+
+  // https://www.khronos.org/opengl/wiki/Skeletal_Animation
+  pos = vec4(skinPos.xyz, 1.0);
 
 #ifdef USE_BONES_NORMAL
   // Skin the normal
