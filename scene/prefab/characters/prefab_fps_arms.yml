@@ -1,0 +1,26 @@
+---
+prefab:
+  mesh:
+    path: fbx/characters/SK_Mannequin_Arms/SK_Mannequin_Arms.fbx
+    flags:
+      use_bones: true
+      use_animation: true
+      z_up: true
+    material:
+      map_kd: material/M_UE4Man_Body_BaseColor.png
+      map_normal: material/M_UE4Man_Body_Normal.png
+      map_channel:
+        - path: material/M_UE4Man_Body_MetallicRoughness.png
+          channel: xRG
+      program: g_tex
+      shadow_program: simple_depth
+    animations:
+      - name: idle
+        path: anim/FirstPerson_Idle.FBX
+      - name: run
+        path: anim/FirstPerson_Run.FBX
+      - name: fire
+        path: anim/FirstPerson_Fire.FBX
+    base_scale: 0.01
+  flags:
+    no_frustum: true

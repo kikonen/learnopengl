@@ -50,37 +50,15 @@ nodes:
       default: true
     controllers:
       - type: camera_zoom
-  - id: player_fps_arms_{t}
+  - id: player_fps_arms_{c}_{t}
     parent: player_fps
-    mesh:
-      path: fbx/characters/SK_Mannequin_Arms/SK_Mannequin_Arms.fbx
-      flags:
-        use_bones: true
-        use_animation: true
-        z_up: true
-      material:
-        map_kd: material/M_UE4Man_Body_BaseColor.png
-        map_normal: material/M_UE4Man_Body_Normal.png
-        map_channel:
-          - path: material/M_UE4Man_Body_MetallicRoughness.png
-            channel: xRG
-        program: g_tex
-        shadow_program: simple_depth
-      animations:
-        - name: idle
-          path: anim/FirstPerson_Idle.FBX
-        - name: run
-          path: anim/FirstPerson_Run.FBX
-        - name: fire
-          path: anim/FirstPerson_Fire.FBX
-      base_scale: 0.01
+    prefab:
+      path: prefab/characters/prefab_fps_arms.yml
     pos: [-1.35, -1.6, -1.2]
-    rotation: [0, 0, 0]
     base_rotation: [0, 90, 180]
     pivot:
       alignment: m
-    flags:
-      no_frustum: true
+    script: scripts/fps_player
   - name: origo
     mesh:
       path: water_ball

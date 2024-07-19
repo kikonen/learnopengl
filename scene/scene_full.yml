@@ -62,7 +62,7 @@ nodes:
         default: true
     controllers:
       - type: pawn
-  - id: fps_counter
+  - xid: fps_counter
     parent_id: player
     type: text
     mesh:
