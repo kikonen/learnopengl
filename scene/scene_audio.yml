@@ -25,7 +25,7 @@ nodes:
     audio:
       listener:
         default: true
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     pos: [0, 3, 3]

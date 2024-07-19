@@ -85,7 +85,7 @@ nodes:
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
     xrender_flags:
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     pos: [0, 5.25, 0.25]

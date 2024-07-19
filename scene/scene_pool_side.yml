@@ -13,7 +13,7 @@ nodes:
     active: true
     controllers:
       - type: pawn
-  - name: Player Camera
+  - id: player_camera
     parent_id: player
     type: origo
     camera:
