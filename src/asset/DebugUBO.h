@@ -11,5 +11,8 @@ struct DebugUBO {
     int u_boneIndex;
 
     int u_boneWeight; // bool as 4 bytes
+
+    float u_parallaxDepth;
+    int u_parallaxMethod;
 };
 #pragma pack(pop)

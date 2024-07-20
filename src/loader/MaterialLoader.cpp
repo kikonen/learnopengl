@@ -754,13 +754,6 @@ namespace loader {
         Material& material)
     {
         {
-            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
-            if (!useParallax) {
-                material.parallaxDepth = 0.f;
-            }
-        }
-
-        {
             const auto& shaderName = selectProgram(
                 MaterialProgramType::shader,
                 material.m_programNames);
@@ -776,8 +769,14 @@ namespace loader {
         }
 
         material.loadTextures();
-
         resolveProgram(meshFlags, material);
+
+        {
+            bool useParallax = material.hasBoundTex(TextureType::displacement_map) && material.parallaxDepth > 0;
+            if (!useParallax) {
+                material.parallaxDepth = 0.f;
+            }
+        }
     }
 
     void MaterialLoader::resolveProgram(

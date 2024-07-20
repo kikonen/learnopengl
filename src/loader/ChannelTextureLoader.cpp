@@ -13,17 +13,46 @@ namespace {
     const std::string CHANNEL_BLUE{ "B" };
     const std::string CHANNEL_ALPHA{ "A" };
 
-    std::map<std::string, ChannelPart::Channel> m_channels;
+    std::map<std::string, ChannelPart::Channel> g_channels{
+        { CHANNEL_NONE, ChannelPart::Channel::none },
+        { CHANNEL_RED, ChannelPart::Channel::red },
+        { CHANNEL_GREEN, ChannelPart::Channel::green},
+        { CHANNEL_BLUE, ChannelPart::Channel::blue},
+        { CHANNEL_ALPHA, ChannelPart::Channel::alpha},
+    };
+
+    std::map<std::string, TextureType> g_textureTypes{
+        { "diffuse", TextureType::diffuse},
+        { "emission", TextureType::emission },
+        { "specular", TextureType::specular },
+        { "normal_map", TextureType::normal_map },
+        { "dudv_map", TextureType::dudv_map },
+        { "noise_map", TextureType::noise_map },
+        { "metallness_map", TextureType::metallness_map },
+        { "roughness_map", TextureType::roughness_map },
+        { "occlusion_map", TextureType::occlusion_map },
+        { "displacement_map", TextureType::displacement_map },
+        { "opacity_map", TextureType::opacity_map },
+        { "channel_part_1_map", TextureType::channel_part_1_map },
+        { "channel_part_2_map", TextureType::channel_part_2_map },
+        { "channel_part_3_map", TextureType::channel_part_3_map },
+        { "channel_part_4_map", TextureType::channel_part_4_map },
+        { "metal_channel_map", TextureType::metal_channel_map },
+    };
+
+    std::map<std::string, TextureType>& getTextureTypeMapping() {
+        return g_textureTypes;
+    }
 
     std::map<std::string, ChannelPart::Channel>& getChannelMapping() {
-        if (m_channels.empty()) {
-            m_channels[CHANNEL_NONE] = ChannelPart::Channel::none;
-            m_channels[CHANNEL_RED] = ChannelPart::Channel::red;
-            m_channels[CHANNEL_GREEN] = ChannelPart::Channel::green;
-            m_channels[CHANNEL_BLUE] = ChannelPart::Channel::blue;
-            m_channels[CHANNEL_ALPHA] = ChannelPart::Channel::alpha;
-        }
-        return m_channels;
+        return g_channels;
+    }
+
+    TextureType resolveTextureType(const std::string& p, TextureType defaultType) {
+        const auto& mapping = getTextureTypeMapping();
+        const auto& it = mapping.find(p);
+        if (it != mapping.end()) return it->second;
+        return defaultType;
     }
 
     ChannelPart::Channel resolveChannel(const std::string& p) {
@@ -96,15 +125,34 @@ namespace loader {
     {
         part.m_type = type;
 
+        bool enabled = true;
+        std::string path;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "path") {
-                material.addTexPath(type, readString(v));
+            if (k == "path" || k == "xpath") {
+                path = readString(v);
+                enabled = k == "path";
+            }
+            else if (k == "type") {
+                part.m_type = resolveTextureType(readString(v), type);
             }
             else if (k == "channel") {
                 readChannelMapping(v, part);
+            }
+        }
+
+        if (enabled) {
+            if (!path.empty()) {
+                material.addTexPath(part.m_type, path);
+            }
+        }
+        else {
+            part.m_type = TextureType::none;
+            for (auto& map : part.m_mapping) {
+                map = ChannelPart::Channel::none;
             }
         }
     }

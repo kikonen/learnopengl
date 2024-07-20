@@ -191,6 +191,8 @@ RenderContext::RenderContext(
             m_debugContext->m_entityId,
             m_debugContext->m_animationBoneIndex,
             m_debugContext->m_animationDebugBoneWeight,
+            m_debugContext->m_parallaxDepth,
+            m_debugContext->m_parallaxMethod,
         };
     }
     else {

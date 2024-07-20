@@ -781,5 +781,8 @@ namespace editor {
         render::DebugContext& debugContext)
     {
         ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
+
+        ImGui::InputFloat("Parallax depth", &debugContext.m_parallaxDepth, 0.01f, 0.1f);
+        ImGui::InputInt("Parallax method", &debugContext.m_parallaxMethod, 1, 10);
     }
 }

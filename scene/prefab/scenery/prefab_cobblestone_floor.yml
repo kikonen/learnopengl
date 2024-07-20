@@ -1,0 +1,22 @@
+---
+prefab:
+  mesh:
+    path: plane
+    material:
+      map_kd: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Color.png
+      map_normal: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_NormalGL.png
+      map_channel:
+        - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Roughness.png
+          type: roughness_map
+          channel: G
+        - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Displacement.png
+          type: displacement_map
+          channel: B
+        - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_AmbientOcclusion.png
+          type: occlusion_map
+          channel: A
+      tiling: 60
+      parallax_depth: 0.1
+      program: g_tex
+  render_flags:
+    no_shadow: true

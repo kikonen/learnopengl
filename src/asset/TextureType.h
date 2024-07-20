@@ -4,6 +4,7 @@
 
 // channel = metalness, roughness, displacement, ambient - occlusion
 enum class TextureType : std::underlying_type_t<std::byte> {
+    none,
     diffuse,
     emission,
     specular,

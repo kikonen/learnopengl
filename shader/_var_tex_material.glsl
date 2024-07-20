@@ -20,6 +20,4 @@
   material.reflection = u_materials[i].reflection;
   material.refraction = u_materials[i].refraction;
   material.refractionRatio = u_materials[i].refractionRatio;
-
-  material.parallaxDepth = u_materials[i].parallaxDepth;
 }

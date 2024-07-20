@@ -141,11 +141,16 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
     pos: [0, 2, -10]
-  - id: wooden_floor
+  - xid: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     position: [0, 0, 0]
     scale: 100
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
   - name: Directional light
     mesh:
       path: light

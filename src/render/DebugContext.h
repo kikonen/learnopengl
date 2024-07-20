@@ -39,5 +39,8 @@ namespace render {
 
         int m_animationBoneIndex{ 0 };
         bool m_animationDebugBoneWeight{ false };
+
+        float m_parallaxDepth{ 0.1f };
+        int m_parallaxMethod{ 0 };
     };
 }

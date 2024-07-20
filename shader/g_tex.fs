@@ -32,7 +32,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 viewTangentPos;
+  flat vec3 viewTangentPos;
   vec3 tangentPos;
 #endif
 
@@ -127,6 +127,12 @@ void main() {
     }
   }
 #endif
+#endif
+
+#ifdef USE_PARALLAX
+  if (material.metal.b > 0) {
+    // o_fragColor = vec3(material.metal.b, 0, 0);
+  }
 #endif
 
 // #ifdef USE_DEBUG

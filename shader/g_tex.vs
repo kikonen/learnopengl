@@ -47,7 +47,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 viewTangentPos;
+  flat vec3 viewTangentPos;
   vec3 tangentPos;
 #endif
 
