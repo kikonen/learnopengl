@@ -36,6 +36,7 @@ namespace {
         script::command_id afterId = 0;
         int index = 0;
         float duration = 0;
+        float speed = 1;
         bool relative = false;
         bool repeat = false;
         bool sync = false;
@@ -44,8 +45,8 @@ namespace {
 
         std::string str() const noexcept {
             return fmt::format(
-                "<OPT: after={}, duration={}, relative={}, repeat={}, sync={}, name={}>",
-                afterId, duration, relative, repeat, sync, name);
+                "<OPT: after={}, duration={}, speed={}, relative={}, repeat={}, sync={}, name={}>",
+                afterId, duration, speed, relative, repeat, sync, name);
         }
     };
 
@@ -64,6 +65,9 @@ namespace {
             }
             else if (k == "duration") {
                 opt.duration = value.as<float>();
+            }
+            else if (k == "speed") {
+                opt.speed = value.as<float>();
             }
             else if (k == "relative") {
                 opt.relative = value.as<bool>();
@@ -309,6 +313,7 @@ namespace script
             AnimationPlay{
                 m_nodeId,
                 opt.name,
+                opt.speed,
                 opt.repeat
             });
     }

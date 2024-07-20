@@ -688,6 +688,12 @@ namespace loader {
             const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, nodeData, meshData, lodMesh);
+
+                auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+                const auto rig = mesh ? mesh->getRigContainer() : nullptr;
+                if (rig) {
+                    rig->dump();
+                }
             }
         }
     }

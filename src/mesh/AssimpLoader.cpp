@@ -67,7 +67,7 @@ namespace mesh
 
         const auto& assets = Assets::get();
 
-        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", meshSet.m_filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE path={}", meshSet.m_filePath));
 
         if (!util::fileExists(meshSet.m_filePath)) {
             throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", meshSet.m_filePath) };
@@ -124,7 +124,7 @@ namespace mesh
         if (!rig->empty()) {
             rig->prepare();
 
-            loadAnimations(ctx, meshSet.m_name, meshSet.m_filePath, scene);
+            loadAnimations(ctx, "master", meshSet.m_filePath, scene);
 
             if (assets.animationJointTree)
             {

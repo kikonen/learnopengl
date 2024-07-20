@@ -4,14 +4,14 @@ local rnd = math.random
 
 local function randomIdle()
   local name;
-  local r = rnd(10);
+  local r = rnd(100);
 
-  if r > 6 then
-    name = "Idle"
-  elseif r > 2 then
-    name = "Idle2"
+  if r > 60 then
+    name = "master:Idle"
+  elseif r > 30 then
+    name = "master:Idle2"
   else
-    name = "Hit"
+    name = "master:Hit"
   end
 
   return name;
@@ -19,14 +19,14 @@ end
 
 local function randomMove()
   local name;
-  local r = rnd(10);
+  local r = rnd(100);
 
-  if r > 6 then
-    name = "Walk01"
-  elseif r > 2 then
-    name = "Walk02"
+  if r > 60 then
+    name = "master:Walk01"
+  elseif r > 30 then
+    name = "master:Walk02"
   else
-    name = "Run"
+    name = "master:Run"
   end
 
   return name;
@@ -34,14 +34,14 @@ end
 
 local function randomAttack()
   local name;
-  local r = rnd(10);
+  local r = rnd(100);
 
-  if r > 8 then
-    name = "SwingHeavy"
-  elseif r > 5 then
-    name = "SwingNormal"
+  if r > 80 then
+    name = "master:SwingHeavy"
+  elseif r > 50 then
+    name = "master:SwingNormal"
   else
-    name = "SwingQuick"
+    name = "master:SwingQuick"
   end
 
   return name;
@@ -60,14 +60,14 @@ local function attack(wid)
     { after=wid, name = randomMove() } )
 
   cid = cmd:move(
-    { after=wid, time=10, relative=true },
+    { after=wid, time=10 + rnd(5), relative=true },
     { 25 - rnd(100), 0, 25 - rnd(100) })
 
-  wid = cmd:wait({ after=0, time=7 })
+  wid = cmd:wait({ after=0, time=7 + rnd(5) })
   cmd:cancel({ after=wid, time=0 }, cid)
 
   cid = cmd:move(
-    { after=cid, time=10, relative=true },
+    { after=cid, time=10 + rnd(5), relative=true },
     { 25 - rnd(100), 0, 25 - rnd(100) })
 
   cmd:cancel({ after=0, time=0 }, cid)
@@ -76,21 +76,21 @@ local function attack(wid)
     { after=cid, name = randomAttack() } )
 
   cid = cmd:move(
-    { after=cid, time=5, relative=true },
+    { after=cid, time=5 + rnd(5), relative=true },
     { 25 - rnd(50), 0, 25 - rnd(50) })
 
   cid = cmd:animationPlay(
     { after=cid, name = randomIdle() } )
 
   cid = cmd:move(
-    { after=cid, time=5, relative=true },
+    { after=cid, time=5 + rnd(5), relative=true },
     { 10 - rnd(20), 0, 10 - rnd(20) })
 
   cid = cmd:animationPlay(
     { after=cid, name = randomMove() } )
 
   cid = cmd:moveSpline(
-    { after=cid, time=3, relative=true },
+    { after=cid, time=3 + rnd(5), relative=true },
     { 20, 0, 5 },
     { 5 - rnd(10), 0, 5 - rnd(10) })
 
@@ -98,7 +98,7 @@ local function attack(wid)
     { after=cid, name = randomAttack() } )
 
   cid = cmd:move(
-    { after=cid, time=2, relative=false },
+    { after=cid, time=2 + rnd(5), relative=false },
     { x, y, z })
 
   return cid;
@@ -111,11 +111,11 @@ local function animation(coid)
   local origPos = node:getPos()
 
   while true do
-    wid = cmd:wait({ after=cid, time=1 })
+    wid = cmd:wait({ after=cid, time=1 + rnd(5) })
 
     cid = attack(wid)
 
-    wid = cmd:wait({ after=cid, time=10 })
+    wid = cmd:wait({ after=cid, time=10 + rnd(5) })
 
     cid = cmd:resume({ after=wid }, coid)
   end

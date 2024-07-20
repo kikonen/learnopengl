@@ -7,11 +7,11 @@ local function randomIdle()
   local r = rnd(10);
 
   if r > 6 then
-    name = "Idle"
+    name = "master:Idle"
   elseif r > 2 then
-    name = "Idle2"
+    name = "master:Idle2"
   else
-    name = "Hit"
+    name = "master:Hit"
   end
 
   return name;
@@ -22,11 +22,11 @@ local function randomAttack()
   local r = rnd(10);
 
   if r > 8 then
-    name = "SwingHeavy"
+    name = "master:SwingHeavy"
   elseif r > 5 then
-    name = "SwingNormal"
+    name = "master:SwingNormal"
   else
-    name = "SwingQuick"
+    name = "master:SwingQuick"
   end
 
   return name;

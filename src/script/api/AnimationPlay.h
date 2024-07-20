@@ -12,6 +12,7 @@ namespace script
         AnimationPlay(
             ki::node_id nodeId,
             std::string clipName,
+            float speed,
             bool repeat) noexcept;
 
         virtual void bind(const UpdateContext& ctx) noexcept;
@@ -21,6 +22,7 @@ namespace script
 
     private:
         const std::string m_clipName;
+        const float m_speed;
         const bool m_repeat;
         int16_t m_clipIndex{ -1 };
     };

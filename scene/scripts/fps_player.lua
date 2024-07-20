@@ -12,17 +12,23 @@ local function handler(coid)
   local origPos = node:getPos()
 
   while true do
-    wid = cmd:wait({ after=cid, time=1 })
+    cid = cmd:animationPlay(
+      { after=wid, name = "idle:Unreal Take" } )
 
-    cid = attack(wid)
+    wid = cmd:wait({ after=cid, time=5 })
 
-    wid = cmd:wait({ after=cid, time=10 })
+    cid = cmd:animationPlay(
+      { after=wid, name = "run:Unreal Take" } )
+
+    wid = cmd:wait({ after=cid, time=5 })
+
+    cid = cmd:animationPlay(
+      { after=wid, speed=0.5, name = "fire:Unreal Take" } )
+
+    wid = cmd:wait({ after=cid, time=3 })
 
     cid = cmd:resume({ after=wid }, coid)
   end
 end
 
---cmd:start({}, handler)
-
-cmd:animationPlay(
-  { after=wid, name = "Unreal Take" } )
+cmd:start({}, handler)

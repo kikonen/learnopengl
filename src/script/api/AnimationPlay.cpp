@@ -21,9 +21,11 @@ namespace script
     AnimationPlay::AnimationPlay(
         ki::node_id nodeId,
         std::string clipName,
+        float speed,
         bool repeat) noexcept
         : NodeCommand(nodeId, 0, false),
         m_clipName{ clipName },
+        m_speed{ speed },
         m_repeat{ repeat }
     {
     }
@@ -58,9 +60,9 @@ namespace script
             m_nodeHandle,
             m_clipIndex,
             1.5f,
-            1.f,
+            m_speed,
             false,
-            false,
+            m_repeat,
             ctx.m_clock.ts);
 
         m_finished = true;

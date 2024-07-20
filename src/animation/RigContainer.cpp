@@ -243,8 +243,6 @@ namespace animation {
                     rigJoint.m_globalInvTransform));
             }
         }
-
-        dumpHierarchy(0);
     }
 
     void RigContainer::validate() const
@@ -264,6 +262,12 @@ namespace animation {
 
             if (jointIt == m_joints.end()) throw std::runtime_error(fmt::format("missing_bone_joint: {}", name));
         }
+    }
+
+    void RigContainer::dump() const
+    {
+        dumpHierarchy(0);
+        dumpAnimations(0);
     }
 
     void RigContainer::dumpHierarchy(int16_t level) const
@@ -315,6 +319,47 @@ namespace animation {
         }
 
         KI_INFO_OUT(fmt::format("TREE: rig={}\n{}", m_name, sb));
+    }
+
+    void RigContainer::dumpAnimations(int16_t level) const
+    {
+        std::string sb;
+
+        auto appendLine = [](auto& sb, auto level, const auto& line) {
+            for (int i = 0; i < level; i++) {
+                sb += "    ";
+            }
+            sb += line;
+            sb += "\n";
+            };
+
+        for (const auto& anim : m_clipContainer.m_animations) {
+            const auto& line = fmt::format(
+                "A: [{}, name={}] - duration={}, tps={}, clips={}, channels={}",
+                anim->m_index,
+                anim->m_uniqueName,
+                anim->m_duration,
+                anim->m_ticksPerSecond,
+                anim->m_clipCount,
+                anim->m_channels.size());
+            appendLine(sb, 0, line);
+        }
+
+        for (const auto& clip : m_clipContainer.m_clips) {
+            const auto& line = fmt::format(
+                "C: [{}, {}] - range=[{}, {}], duration={}, loop={}, anim={}.{}",
+                clip.m_index,
+                clip.m_name,
+                clip.m_firstFrame,
+                clip.m_lastFrame,
+                clip.m_durationSecs,
+                clip.m_loop,
+                clip.m_animationIndex,
+                clip.m_animationName);
+            appendLine(sb, 0, line);
+        }
+
+        KI_INFO_OUT(fmt::format("ANIM: rig={}\n{}", m_name, sb));
     }
 
     //void RigContainer::calculateInvTransforms() noexcept

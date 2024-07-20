@@ -28,7 +28,7 @@ namespace animation {
         const std::string& uniquePrefix,
         const std::string& filePath)
     {
-        KI_INFO_OUT(fmt::format("ASSIMP: FILE path={}", filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE path={}", filePath));
 
         // NOTE KI animations cannot exist in empty rig
         if (rig.empty()) return;
@@ -99,12 +99,14 @@ namespace animation {
         const auto metadata = metadataLoader.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
+                clip.m_name = uniquePrefix + ":" + clip.m_name;
+
                 // TODO KI clip sequences seem to be stored like
                 // 0 - 48, 48 - 98, 98 - ...
                 if (clip.m_firstFrame > 0 && clip.m_firstFrame < clip.m_lastFrame) {
                     clip.m_firstFrame++;
                 }
-                clip.m_animationName = uniquePrefix + "_" + clip.m_animationName;
+                clip.m_animationName = uniquePrefix + ":" + clip.m_animationName;
                 clipContainer.addClip(clip);
             }
         }
@@ -131,7 +133,7 @@ namespace animation {
             }
             else {
                 animation::Clip clip;
-                clip.m_name = animation.m_name;
+                clip.m_name = animation.m_uniqueName;
                 clip.m_animationName = animation.m_uniqueName;
                 clip.m_lastFrame = animation.getMaxFrame();
                 clipContainer.addClip(clip);
