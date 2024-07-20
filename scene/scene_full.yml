@@ -513,6 +513,9 @@ nodes:
       z_count: 2
       x_step: 100
       z_step: -100
+    script: |
+      cmd:animationPlay(
+        { name = "fire:Take 001" });
   - name: Backback
     mesh:
       path: backpack/backpack
