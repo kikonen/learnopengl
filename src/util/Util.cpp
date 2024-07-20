@@ -142,6 +142,11 @@ namespace util {
         return false;
     }
 
+    bool fileExists(std::string_view basePath, std::string_view filePath)
+    {
+        return fileExists(joinPath(basePath, filePath));
+    }
+
     bool fileExists(std::string_view filePath)
     {
         std::ifstream f(std::string{ filePath });

@@ -29,6 +29,7 @@ namespace loader
 
         void setRegistry(std::shared_ptr<Registry> registry);
 
+        bool fileExists(std::string_view filename) const;
         std::string readFile(std::string_view filename) const;
 
     public:

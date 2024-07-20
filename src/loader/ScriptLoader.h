@@ -27,9 +27,9 @@ namespace loader {
             std::vector<ScriptData>& scripts) const;
 
         void loadScript(
-
             const loader::DocNode& node,
-            ScriptData& data) const;
+            ScriptData& data,
+            bool forceFile) const;
 
         void createScriptEngine(
             const ki::node_id rootId,

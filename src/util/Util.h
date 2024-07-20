@@ -54,6 +54,7 @@ namespace util
         const std::vector<std::regex>& matchers,
         const std::string& str);
 
+    bool fileExists(std::string_view basePath, std::string_view filePath);
     bool fileExists(std::string_view filePath);
     bool dirExists(std::string_view filePath);
 

@@ -50,19 +50,25 @@ namespace loader {
     {
         for (const auto& entry : node.getNodes()) {
             ScriptData& data = scripts.emplace_back();
-            loadScript(entry, data);
+            loadScript(entry, data, false);
         }
     }
 
     void ScriptLoader::loadScript(
         const loader::DocNode& node,
-        ScriptData& data) const
+        ScriptData& data,
+        bool forceFile) const
     {
         data.enabled = true;
 
         if (node.isScalar()) {
             std::string filename = readString(node) + ".lua";
-            data.script = readFile(filename);
+            if (forceFile || fileExists(filename)) {
+                data.script = readFile(filename);
+            }
+            else {
+                data.script = readString(node);
+            }
             return;
         }
 

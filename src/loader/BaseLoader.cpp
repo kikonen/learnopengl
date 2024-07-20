@@ -45,6 +45,11 @@ namespace loader
         m_dispatcher = m_registry->m_dispatcherWorker;
     }
 
+    bool BaseLoader::fileExists(std::string_view filename) const
+    {
+        return util::fileExists(m_ctx.m_dirName, filename);
+    }
+
     std::string BaseLoader::readFile(std::string_view filename) const
     {
         return util::readFile(m_ctx.m_dirName, filename);
