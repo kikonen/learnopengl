@@ -41,19 +41,11 @@ nodes:
     pos: [0, 5, 10]
     render_flags:
       cube_map: true
-  - name: wooden floor
-    mesh:
-      path: plane
-      material:
-        name: wood_floor
-        map_pbr: textures\Planks 09 [8K]
-        tiling: 60
-    program: g_tex
-    position: [0, 0, 0]
-    render_flags:
-      render_back: true
-      no_shadow: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
+    position: [0, 0, 0]
   - xid: object
     mesh:
       path: texture_cube_4/texture_cube_4.fbx

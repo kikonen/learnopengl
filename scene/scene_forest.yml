@@ -152,16 +152,8 @@ nodes:
         z_count: 200
         x_step: 20
         z_step: -20
-  - name: wooden floor
-    mesh:
-      path: plane
-      material:
-        name: wood_floor
-        map_pbr: textures\Planks 09 [8K]
-        tiling: 500
-        render_back: true
-    program: g_tex
-    position: [0, 0, 0]
-    render_flags:
-      no_shadow: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
     scale: 4000
+    position: [0, 0, 0]

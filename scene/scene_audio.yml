@@ -85,16 +85,8 @@ nodes:
         reference_distance: 3
         gain: 1.0
     script_file: scripts/cow_audio
-  - name: wooden floor
-    mesh:
-      path: plane
-      material:
-        name: wood_floor
-        map_pbr: textures\Planks 09 [8K]
-        parallax_depth: 0.0
-        tiling: 10
-    program: g_tex
-    front: [0, 1, 0]
-    render_flags:
-      no_shadow: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
+    position: [0, 0, 0]
