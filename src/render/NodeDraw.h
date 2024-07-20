@@ -25,6 +25,10 @@ class RenderContext;
 
 class Node;
 
+namespace editor {
+    class EditorFrame;
+}
+
 namespace mesh {
     class MeshType;
     struct LodMesh;
@@ -47,6 +51,8 @@ namespace render {
     using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 
     class NodeDraw final {
+        friend class editor::EditorFrame;
+
     public:
         NodeDraw();
         ~NodeDraw();

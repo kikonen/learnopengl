@@ -18,6 +18,9 @@
 
 #include "model/Node.h"
 
+#include "render/NodeDraw.h"
+#include "render/FrameBuffer.h"
+
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
 
@@ -559,6 +562,30 @@ namespace editor {
             );
             };
 
+        auto bufferTex = [&ctx](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
+            float h = w / ctx.m_aspectRatio;
+            if (!useAspectRatio) {
+                w = h;
+            }
+
+            // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
+
+            const auto& att = fb.m_spec.attachments[attachmentIndex];
+            ImTextureID texId = (void*)att.textureID;
+            ImGui::Image(
+                texId,
+                ImVec2{ w, h },
+                ImVec2{ 0, 1 }, // uv1
+                ImVec2{ 1, 0 }, // uv2
+                ImVec4{ 1, 1, 1, 1 }, // tint_col
+                ImVec4{ 1, 1, 1, 1 }  // border_col
+            );
+            };
+
+
         if (ImGui::TreeNodeEx("ObjectId", tnFlags)) {
             auto& viewport = scene.m_objectIdRenderer->m_debugViewport;
             viewportTex(*viewport, true);
@@ -668,6 +695,83 @@ namespace editor {
                 viewportTex(*viewport, true);
 
                 ImGui::TreePop();
+            }
+        }
+
+        {
+            const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_buffer;
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.drawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("OIT - Buffer {}", bufferIndex);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
+            }
+        }
+        {
+            const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_primary;
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.drawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("Effect primary - Buffer {}", bufferIndex);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
+            }
+        }
+        {
+            const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_secondary;
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.drawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("Effect secondary - Buffer {}", bufferIndex);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
+            }
+        }
+        {
+            for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
+                int bufferIndex = 0;
+                for (const auto& att : fb->m_spec.attachments) {
+                    if (att.drawBufferIndex < 0) continue;
+
+                    const auto& name = fmt::format("Effect buffers - Buffer {}", bufferIndex);
+                    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                        bufferTex(*fb, att.index, true);
+                        ImGui::TreePop();
+                    }
+
+                    bufferIndex++;
+                }
+            }
+        }
+        {
+            const auto& fb = scene.m_nodeDraw->m_gBuffer.m_buffer;
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.drawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("GBuffer - Buffer {}", bufferIndex);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
             }
         }
     }
