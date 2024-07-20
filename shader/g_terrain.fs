@@ -6,6 +6,7 @@
 #include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
+#include uniform_debug.glsl
 #include uniform_data.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -26,6 +27,10 @@ in TES_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 
   float height;
 } fs_in;
@@ -43,6 +48,9 @@ SET_FLOAT_PRECISION;
 ResolvedMaterial material;
 
 #include fn_gbuffer_encode.glsl
+#ifdef USE_PARALLAX
+#include fn_calculate_parallax_mapping.glsl
+#endif
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;

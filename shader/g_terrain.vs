@@ -46,6 +46,10 @@ out VS_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -130,6 +134,12 @@ void main() {
     const vec3 bitangent = cross(normal, tangent);
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
+
+#ifdef USE_PARALLAX
+    const mat3 invTBN = transpose(vs_out.tbn);
+    vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
+    vs_out.tangentPos  = invTBN * worldPos.xyz;
+#endif
   }
 #endif
 }

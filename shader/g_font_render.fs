@@ -61,7 +61,9 @@ const float glow_center    = 1.25;
 ResolvedMaterial material;
 
 #include fn_calculate_normal_pattern.glsl
+#ifdef USE_PARALLAX
 #include fn_calculate_parallax_mapping.glsl
+#endif
 #include fn_gbuffer_encode.glsl
 
 void main()

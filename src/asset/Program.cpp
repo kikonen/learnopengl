@@ -248,6 +248,8 @@ int Program::compileSource(
 }
 
 int Program::createProgram() {
+    KI_INFO_OUT(fmt::format("[PROGRAM_CREATE - {}]", m_key));
+
     // build and compile our shader program
     // ------------------------------------
     std::unordered_map<GLenum, GLuint> shaderIds;

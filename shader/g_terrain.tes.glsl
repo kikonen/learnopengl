@@ -35,6 +35,10 @@ in TCS_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 } tes_in[];
 
 out TES_OUT {
@@ -50,6 +54,10 @@ out TES_OUT {
 
 #ifdef USE_TBN
   mat3 tbn;
+#endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
 #endif
 
   float height;
@@ -126,6 +134,10 @@ void main()
 
 #ifdef USE_TBN
   tes_out.tbn = tes_in[0].tbn;
+#endif
+#ifdef USE_PARALLAX
+  tes_out.viewTangentPos = tes_in[0].viewTangentPos;
+  tes_out.tangentPos = tes_in[0].tangentPos;
 #endif
 
   tes_out.height = h;

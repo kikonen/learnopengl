@@ -35,6 +35,10 @@ in VS_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 } tcs_in[];
 
 out TCS_OUT {
@@ -57,6 +61,10 @@ out TCS_OUT {
 
 #ifdef USE_TBN
   mat3 tbn;
+#endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
 #endif
 } tcs_out[];
 
@@ -95,6 +103,10 @@ void main()
 
 #ifdef USE_TBN
   tcs_out[gl_InvocationID].tbn = tcs_in[gl_InvocationID].tbn;
+#endif
+#ifdef USE_PARALLAX
+  tcs_out[gl_InvocationID].viewTangentPos = tcs_in[gl_InvocationID].viewTangentPos;
+  tcs_out[gl_InvocationID].tangentPos = tcs_in[gl_InvocationID].tangentPos;
 #endif
 
   if (gl_InvocationID == 0) {
