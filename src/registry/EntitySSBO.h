@@ -58,7 +58,7 @@ struct EntitySSBO {
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
-    GLuint u_shapeIndex{ 0 };
+    GLuint u_tileIndex{ 0 };
 
     GLuint u_boneBaseIndex{ 0 };
     GLuint u_socketBaseIndex{ 0 };

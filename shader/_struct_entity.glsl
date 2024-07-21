@@ -22,7 +22,7 @@ struct Entity {
   uint u_objectID;
   uint u_flags;
 
-  uint u_shapeIndex;
+  uint u_tileIndex;
   uint u_boneBaseIndex;
   uint u_socketBaseIndex;
 };

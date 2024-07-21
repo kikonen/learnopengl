@@ -49,7 +49,7 @@ struct NodeState {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
-    uint32_t m_shapeIndex{ 0 };
+    uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
 

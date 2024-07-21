@@ -261,7 +261,7 @@ namespace terrain {
                 auto& state = m_states.emplace_back();
                 state.setVolume(tileVolume);
                 state.setScale(scale);
-                state.m_shapeIndex = info.m_registeredIndex;
+                state.m_tileIndex = info.m_registeredIndex;
             }
         }
 

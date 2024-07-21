@@ -39,7 +39,7 @@ struct Snapshot {
 
     pool::NodeHandle m_handle;
 
-    uint32_t m_shapeIndex{ 0 };
+    uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
 
@@ -68,7 +68,7 @@ struct Snapshot {
 
         m_flags = o.m_flags;
 
-        m_shapeIndex = o.m_shapeIndex;
+        m_tileIndex = o.m_tileIndex;
         m_boneBaseIndex = o.m_boneBaseIndex;
         m_socketBaseIndex = o.m_socketBaseIndex;
 
