@@ -29,7 +29,6 @@
 
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
-#include "mesh/QuadMesh.h"
 #include "mesh/TextMesh.h"
 
 #include "component/Light.h"

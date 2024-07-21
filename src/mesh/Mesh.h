@@ -17,6 +17,8 @@
 #include "registry/Registry.h"
 
 #include "mesh/MeshFlags.h"
+#include "mesh/Index.h"
+#include "mesh/Vertex.h"
 
 struct PrepareContext;
 
@@ -66,11 +68,32 @@ namespace mesh {
             return nullptr;
         }
 
+        inline uint32_t getBaseVertex() const noexcept {
+            return m_vboIndex;
+        }
+
+        inline uint32_t getBaseIndex() const noexcept {
+            return m_eboIndex;
+        }
+
+        inline uint32_t getIndexCount() const noexcept {
+            return static_cast<uint32_t>(m_indeces.size());
+        }
+
     public:
         const ki::mesh_id m_id;
 
         const std::string m_name;
         const std::string m_alias;
+
+        std::vector<mesh::Vertex> m_vertices;
+        std::vector<mesh::Index32> m_indeces;
+
+        // NOTE KI absolute index into VBO
+        uint32_t m_vboIndex{ 0 };
+
+        // NOTE KI absolute index into EBO
+        uint32_t m_eboIndex{ 0 };
 
         // NOTE KI for debug
         std::string m_rigJointName;
