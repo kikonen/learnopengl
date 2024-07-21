@@ -144,7 +144,7 @@ void CameraZoomController::onMouseMove(
         script::CommandEngine::get().addCommand(
             0,
             script::RotateNode{
-                m_nodeHandle.toId(),
+                m_nodeHandle,
                 0.f,
                 true,
                 snapshot.getViewRight(),

@@ -2,6 +2,8 @@
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "audio/size.h"
 
 #include "BaseLoader.h"
@@ -32,19 +34,19 @@ namespace loader {
 
         void createAudio(
             const AudioData& data,
-            const ki::node_id nodeId);
+            const pool::NodeHandle handle);
 
         void createSources(
             const std::vector<SourceData>& sources,
-            const ki::node_id nodeId);
+            const pool::NodeHandle handle);
 
         void createSource(
             const SourceData& data,
-            const ki::node_id nodeId,
+            const pool::NodeHandle handle,
             const uint8_t index);
 
         void createListener(
             const ListenerData& data,
-            const ki::node_id nodeId);
+            const pool::NodeHandle handle);
     };
 }

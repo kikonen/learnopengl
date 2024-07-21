@@ -14,9 +14,9 @@
 namespace script
 {
     AudioPause::AudioPause(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         int index) noexcept
-        : NodeCommand(nodeId, 0, false),
+        : NodeCommand(handle, 0, false),
         m_index(index)
     {
     }

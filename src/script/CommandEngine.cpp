@@ -77,7 +77,7 @@ namespace script
                 addCommand(
                     cmd.after,
                     MoveNode{
-                        cmd.target,
+                        pool::NodeHandle::toHandle(cmd.target),
                         cmd.duration,
                         cmd.relative,
                         cmd.data
@@ -92,7 +92,7 @@ namespace script
                 addCommand(
                     cmd.after,
                     RotateNode {
-                        cmd.target,
+                        pool::NodeHandle::toHandle(cmd.target),
                         cmd.duration,
                         cmd.relative,
                         cmd.data,

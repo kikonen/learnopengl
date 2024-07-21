@@ -10,7 +10,7 @@ namespace script
     {
     public:
         AnimationPlay(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             std::string clipName,
             float speed,
             bool repeat) noexcept;

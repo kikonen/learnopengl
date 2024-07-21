@@ -205,7 +205,7 @@ namespace editor {
                         ImGui::PushID((void*)node);
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt { event::Type::node_activate };
-                            evt.body.node.target = node->getId();
+                            evt.body.node.target = node->toHandle();
                             ctx.m_registry->m_dispatcherWorker->send(evt);
                         }
                         ImGui::PopID();
@@ -237,7 +237,7 @@ namespace editor {
                         ImGui::PushID((void*)node);
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt { event::Type::camera_activate };
-                            evt.body.node.target = node->getId();
+                            evt.body.node.target = node->toHandle();
                             ctx.m_registry->m_dispatcherWorker->send(evt);
                         }
                         ImGui::PopID();

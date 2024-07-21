@@ -252,7 +252,7 @@ void NodeRegistry::attachListeners()
                 auto handle = pool::NodeHandle::toHandle(data.target);
 
                 auto& se = script::ScriptEngine::get();
-                const auto& scripts = se.getNodeScripts(data.target);
+                const auto& scripts = se.getNodeScripts(handle);
 
                 for (const auto& scriptId : scripts) {
                     {
@@ -374,7 +374,7 @@ void NodeRegistry::attachListeners()
             [this](const event::Event& e) {
                 auto& data = e.body.script;
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                script::ScriptEngine::get().bindNodeScript(data.target, data.id);
+                script::ScriptEngine::get().bindNodeScript(handle, data.id);
             });
 
         dispatcher->addListener(
@@ -443,7 +443,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
 }
 
-void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
+void NodeRegistry::selectNode(pool::NodeHandle handle, bool append) const noexcept
 {
     if (!append) {
         for (auto* node : m_cachedNodesRT) {
@@ -454,15 +454,15 @@ void NodeRegistry::selectNodeById(ki::node_id id, bool append) const noexcept
 
     clearSelectedCount();
 
-    auto* node = pool::NodeHandle::toNode(id);
+    auto* node = handle.toNode();
     if (!node) return;
 
     if (append && node->isSelected()) {
-        KI_INFO(fmt::format("DESELECT: id={}", id));
+        KI_INFO(fmt::format("DESELECT: id={}", handle.str()));
         node->setSelectionMaterialIndex(-1);
     }
     else {
-        KI_INFO(fmt::format("SELECT: id={}", id));
+        KI_INFO(fmt::format("SELECT: id={}", handle.str()));
         node->setSelectionMaterialIndex(m_selectionMaterial->m_registeredIndex);
     }
 }

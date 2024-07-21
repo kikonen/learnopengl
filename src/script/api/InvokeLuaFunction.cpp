@@ -9,9 +9,9 @@
 namespace script
 {
     InvokeLuaFunction::InvokeLuaFunction(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         std::string_view functionName) noexcept
-        : NodeCommand(nodeId, 0, false),
+        : NodeCommand(handle, 0, false),
         m_functionName(functionName)
     {
     }

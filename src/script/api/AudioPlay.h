@@ -11,7 +11,7 @@ namespace script
     {
     public:
         AudioPlay(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             int index,
             bool sync) noexcept;
 

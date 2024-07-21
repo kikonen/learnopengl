@@ -134,25 +134,25 @@ namespace loader
 
     void AudioLoader::createAudio(
         const AudioData& data,
-        ki::node_id nodeId)
+        pool::NodeHandle handle)
     {
-        createListener(data.listener, nodeId);
-        createSources(data.sources, nodeId);
+        createListener(data.listener, handle);
+        createSources(data.sources, handle);
     }
 
     void AudioLoader::createSources(
         const std::vector<SourceData>& sources,
-        const ki::node_id nodeId)
+        const pool::NodeHandle handle)
     {
         uint8_t index = 0;
         for (const auto& data : sources) {
-            createSource(data, nodeId, index++);
+            createSource(data, handle, index++);
         }
     }
 
     void AudioLoader::createSource(
         const SourceData& data,
-        const ki::node_id nodeId,
+        const pool::NodeHandle handle,
         const uint8_t index)
     {
         if (!data.enabled) return;
@@ -181,7 +181,7 @@ namespace loader
                 .gain = data.gain,
             };
             auto& body = evt.body.audioInit = {
-                .target = nodeId,
+                .target = handle.toId(),
             };
             m_dispatcher->send(evt);
         }
@@ -189,7 +189,7 @@ namespace loader
 
     void AudioLoader::createListener(
         const ListenerData& data,
-        const ki::node_id nodeId)
+        const pool::NodeHandle handle)
     {
         if (!data.enabled) return;
 
@@ -201,7 +201,7 @@ namespace loader
                 .gain = data.gain,
             };
             auto& body = evt.body.audioInit = {
-                .target = nodeId,
+                .target = handle.toId(),
             };
             m_dispatcher->send(evt);
         }

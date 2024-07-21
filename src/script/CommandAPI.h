@@ -9,6 +9,8 @@
 
 #include "Coroutine.h"
 
+#include "pool/NodeHandle.h"
+
 class Node;
 
 namespace script
@@ -24,7 +26,7 @@ namespace script
         CommandAPI(
             ScriptEngine* scriptEngine,
             CommandEngine* commandEngine,
-            ki::node_id nodeId);
+            pool::NodeHandle handle);
         ~CommandAPI();
 
     public:
@@ -84,7 +86,7 @@ namespace script
     private:
         CommandEngine* const m_commandEngine;
         ScriptEngine* const m_scriptEngine;
-        const ki::node_id m_nodeId;
+        const pool::NodeHandle m_handle;
 
         std::vector<Coroutine*> m_coroutines;
     };

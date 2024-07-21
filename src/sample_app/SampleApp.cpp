@@ -338,10 +338,12 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
 
     auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
 
+    auto handle = pool::NodeHandle::toHandle(fpsNodeId);
+
     script::CommandEngine::get().addCommand(
         0,
         script::SetTextNode{
-            fpsNodeId,
+            handle,
             0.f,
             fpsText
         });
@@ -435,7 +437,7 @@ void SampleApp::selectNode(
 
         // deselect
         if (node && node->isSelected()) {
-            nodeRegistry.selectNodeById(0, false);
+            nodeRegistry.selectNode(pool::NodeHandle::NULL_HANDLE, false);
 
             if (volumeNode) {
                 auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);
@@ -454,7 +456,7 @@ void SampleApp::selectNode(
         }
 
         // select
-        nodeRegistry.selectNodeById(nodeId, inputState.shift);
+        nodeRegistry.selectNode(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE, inputState.shift);
 
         if (volumeNode) {
             auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);

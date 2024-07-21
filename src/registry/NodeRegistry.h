@@ -60,7 +60,7 @@ public:
         return m_rootWT.toNode();
     }
 
-    void selectNodeById(ki::node_id id, bool append) const noexcept;
+    void selectNode(pool::NodeHandle handle, bool append) const noexcept;
 
     int countTagged() const noexcept;
     int countSelected() const noexcept;

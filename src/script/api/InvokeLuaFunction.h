@@ -10,7 +10,7 @@ namespace script
     {
     public:
         InvokeLuaFunction(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             std::string_view functionName) noexcept;
 
         virtual void execute(

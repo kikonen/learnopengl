@@ -19,11 +19,11 @@
 namespace script
 {
     AnimationPlay::AnimationPlay(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         std::string clipName,
         float speed,
         bool repeat) noexcept
-        : NodeCommand(nodeId, 0, false),
+        : NodeCommand(handle, 0, false),
         m_clipName{ clipName },
         m_speed{ speed },
         m_repeat{ repeat }
@@ -57,7 +57,7 @@ namespace script
         auto& as = animation::AnimationSystem::get();
 
         as.startAnimation(
-            m_nodeHandle,
+            m_handle,
             m_clipIndex,
             1.5f,
             m_speed,

@@ -24,12 +24,12 @@ namespace {
 namespace script
 {
     RotateNode::RotateNode(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         float duration,
         bool relative,
         const glm::vec3& axis,
         const float degrees) noexcept
-        : NodeCommand(nodeId, duration, relative),
+        : NodeCommand(handle, duration, relative),
         m_axis(glm::normalize(axis)),
         m_radians(glm::radians(degrees))
     {

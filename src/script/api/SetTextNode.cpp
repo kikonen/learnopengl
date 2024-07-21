@@ -9,10 +9,10 @@
 namespace script
 {
     SetTextNode::SetTextNode(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         float duration,
         std::string text) noexcept
-        : NodeCommand(nodeId, duration, false),
+        : NodeCommand(handle, duration, false),
         m_text(text)
     {}
 

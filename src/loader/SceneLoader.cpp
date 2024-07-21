@@ -212,7 +212,7 @@ namespace loader {
         auto& l = *m_loaders;
 
         l.m_rootLoader.attachRoot(root);
-        l.m_scriptLoader.createScriptEngine(root.rootId, *m_scriptEngineData);
+        l.m_scriptLoader.createScriptEngine(*m_scriptEngineData);
 
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
         l.m_volumeLoader.attachVolume(root.rootId);
@@ -315,8 +315,8 @@ namespace loader {
         //}
 
         {
-            l.m_audioLoader.createAudio(nodeData.audio, handle.toId());
-            l.m_physicsLoader.createObject(nodeData.physics, handle.toId());
+            l.m_audioLoader.createAudio(nodeData.audio, handle);
+            l.m_physicsLoader.createObject(nodeData.physics, handle);
         }
     }
 
@@ -883,8 +883,7 @@ namespace loader {
         }
 
         l.m_scriptLoader.createScript(
-            rootId,
-            node->getId(),
+            node->toHandle(),
             nodeData.script);
 
         {

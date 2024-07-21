@@ -7,12 +7,12 @@
 namespace script
 {
     MoveSplineNode::MoveSplineNode(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         float duration,
         bool relative,
         const glm::vec3& controlPoint,
         const glm::vec3& position) noexcept
-        : NodeCommand(nodeId, duration, relative),
+        : NodeCommand(handle, duration, relative),
         m_controlPoint(controlPoint),
         m_position(position)
     {

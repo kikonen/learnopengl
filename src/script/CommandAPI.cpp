@@ -104,10 +104,10 @@ namespace script
     CommandAPI::CommandAPI(
         ScriptEngine* scriptEngine,
         CommandEngine* commandEngine,
-        ki::node_id nodeId)
-        :m_scriptEngine(scriptEngine),
-        m_commandEngine(commandEngine),
-        m_nodeId(nodeId)
+        pool::NodeHandle handle)
+        :m_scriptEngine{ scriptEngine },
+        m_commandEngine{ commandEngine },
+        m_handle{ handle }
     {}
 
     CommandAPI::~CommandAPI() = default;
@@ -171,7 +171,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveNode{
-                m_nodeId,
+                m_handle,
                 opt.duration,
                 opt.relative,
                 pos
@@ -192,7 +192,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveSplineNode{
-                m_nodeId,
+                m_handle,
                 opt.duration,
                 opt.relative,
                 p,
@@ -213,7 +213,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             RotateNode{
-                m_nodeId,
+                m_handle,
                 opt.duration,
                 opt.relative,
                 dir,
@@ -233,7 +233,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             ScaleNode{
-                m_nodeId,
+                m_handle,
                 opt.duration,
                 opt.relative,
                 scale
@@ -257,7 +257,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             SetTextNode{
-                m_nodeId,
+                m_handle,
                 opt.duration,
                 text
             });
@@ -271,7 +271,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPlay{
-                m_nodeId,
+                m_handle,
                 opt.index,
                 opt.sync
             });
@@ -285,7 +285,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPause{
-                m_nodeId,
+                m_handle,
                 opt.index
             });
     }
@@ -298,7 +298,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioStop{
-                m_nodeId,
+                m_handle,
                 opt.index
             });
     }
@@ -311,7 +311,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AnimationPlay{
-                m_nodeId,
+                m_handle,
                 opt.name,
                 opt.speed,
                 opt.repeat
@@ -334,7 +334,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             StartNode{
-                m_nodeId,
+                m_handle,
                 coroutine
             });
     }
@@ -346,7 +346,7 @@ namespace script
         const auto opt = readOptions(lua_opt);
 
         if (coroutineID < 0 && coroutineID >= m_coroutines.size()) {
-            KI_WARN_OUT(fmt::format("resume: Invalid coroutine - node={}, coroutineID={}, opt={}", m_nodeId, coroutineID, opt.str()));
+            KI_WARN_OUT(fmt::format("resume: Invalid coroutine - node={}, coroutineID={}, opt={}", m_handle.str(), coroutineID, opt.str()));
             return 0;
         }
 
@@ -357,7 +357,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             ResumeNode{
-                m_nodeId,
+                m_handle,
                 coroutine
             });
     }

@@ -13,10 +13,10 @@
 namespace script
 {
     AudioPlay::AudioPlay(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         int index,
         bool sync) noexcept
-        : NodeCommand(nodeId, 0, false),
+        : NodeCommand(handle, 0, false),
         m_index(index),
         m_sync(sync)
     {

@@ -12,6 +12,8 @@
 #include "size.h"
 #include "Script.h"
 
+#include "pool/NodeHandle.h"
+
 struct PrepareContext;
 
 class Node;
@@ -38,11 +40,11 @@ namespace script
         script::script_id registerScript(std::string_view source);
 
         void bindNodeScript(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             script::script_id scriptId);
 
         std::vector<script::script_id> getNodeScripts(
-            ki::node_id nodeId);
+            pool::NodeHandle handle);
 
         void runGlobalScript(
             script::script_id scriptId);
@@ -52,7 +54,7 @@ namespace script
             script::script_id scriptId);
 
         bool hasFunction(
-            Node* node,
+            pool::NodeHandle handle,
             std::string_view name);
 
         void invokeFunction(
@@ -64,7 +66,7 @@ namespace script
     private:
         // @return fnName
         std::string createNodeFunction(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             script::script_id scriptId);
 
         void registerTypes();
@@ -75,10 +77,10 @@ namespace script
         sol::state m_lua;
         sol::table m_luaNodes;
 
-        std::unordered_map<ki::node_id, std::unique_ptr<CommandAPI>> m_apis;
+        std::unordered_map<pool::NodeHandle, std::unique_ptr<CommandAPI>> m_apis;
 
-        std::unordered_map<ki::node_id, std::unordered_map<script::script_id, std::string>> m_nodeFunctions;
-        std::unordered_map<ki::node_id, std::vector<script::script_id>> m_nodeScripts;
+        std::unordered_map<pool::NodeHandle, std::unordered_map<script::script_id, std::string>> m_nodeFunctions;
+        std::unordered_map<pool::NodeHandle, std::vector<script::script_id>> m_nodeScripts;
 
         std::unordered_map<script::script_id, Script> m_scripts;
 

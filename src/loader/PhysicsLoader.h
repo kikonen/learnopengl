@@ -4,6 +4,8 @@
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "BaseLoader.h"
 
 #include "PhysicsData.h"
@@ -29,6 +31,6 @@ namespace loader {
 
         void createObject(
             const PhysicsData& data,
-            const ki::node_id nodeId);
+            const pool::NodeHandle handle);
     };
 }

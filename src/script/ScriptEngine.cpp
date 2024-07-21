@@ -134,17 +134,17 @@ namespace script
     }
 
     void ScriptEngine::bindNodeScript(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         script::script_id scriptId)
     {
-        auto fnName = createNodeFunction(nodeId, scriptId);
+        auto fnName = createNodeFunction(handle, scriptId);
 
         if (fnName.empty()) return;
 
         std::unordered_map<script::script_id, std::string> fnMap{ { scriptId, fnName } };
-        m_nodeFunctions.insert({ nodeId, fnMap });
+        m_nodeFunctions.insert({ handle, fnMap });
 
-        m_apis.insert({ nodeId, std::make_unique<CommandAPI>(this, m_commandEngine, nodeId) });
+        m_apis.insert({ handle, std::make_unique<CommandAPI>(this, m_commandEngine, handle) });
 
         //if (!m_luaNodes[nodeId]) {
         //    m_luaNodes[nodeId] = m_lua.create_table_with();
@@ -152,9 +152,9 @@ namespace script
     }
 
     std::vector<script::script_id> ScriptEngine::getNodeScripts(
-        ki::node_id nodeId)
+        pool::NodeHandle handle)
     {
-        const auto it = m_nodeFunctions.find(nodeId);
+        const auto it = m_nodeFunctions.find(handle);
         if (it == m_nodeFunctions.end()) return {};
 
         std::vector<script::script_id> scripts;
@@ -165,7 +165,7 @@ namespace script
     }
 
     std::string ScriptEngine::createNodeFunction(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
@@ -176,7 +176,7 @@ namespace script
         const auto& script = it->second;
 
         // NOTE KI unique wrapperFn for node
-        const std::string nodeFnName = fmt::format("fn_{}_{}", nodeId, scriptId);
+        const std::string nodeFnName = fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
 
         // NOTE KI pass context as closure to Node
         // - node, cmd, id
@@ -195,7 +195,7 @@ end)", nodeFnName, "{}", script.m_source);
     void ScriptEngine::runGlobalScript(
         script::script_id scriptId)
     {
-        const auto& it = m_nodeFunctions.find(0);
+        const auto& it = m_nodeFunctions.find(pool::NodeHandle::NULL_HANDLE);
 
         if (it == m_nodeFunctions.end()) return;
 
@@ -212,26 +212,29 @@ end)", nodeFnName, "{}", script.m_source);
         Node* node,
         script::script_id scriptId)
     {
-        const auto nodeId = node->getId();
-        const auto& it = m_nodeFunctions.find(nodeId);
+        if (!node) return;
+
+        const auto& handle = node->toHandle();
+        const auto& it = m_nodeFunctions.find(handle);
 
         if (it == m_nodeFunctions.end()) return;
 
         if (const auto& fnIt = it->second.find(scriptId);
             fnIt != it->second.end())
         {
+
             auto& fnName = fnIt->second;
             sol::function fn = m_lua[fnName];
-            auto* api = m_apis.find(nodeId)->second.get();
-            fn(std::ref(node), std::ref(api), nodeId);
+            auto* api = m_apis.find(handle)->second.get();
+            fn(std::ref(node), std::ref(api), handle.toId());
         }
     }
 
     bool ScriptEngine::hasFunction(
-        Node* node,
+        pool::NodeHandle handle,
         std::string_view name)
     {
-        sol::table luaNode = m_luaNodes[node->getId()];
+        sol::table luaNode = m_luaNodes[handle.toId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
         return fnPtr != sol::nullopt;
@@ -241,16 +244,16 @@ end)", nodeFnName, "{}", script.m_source);
         Node* node,
         std::string_view name)
     {
-        const auto nodeId = node->getId();
+        const auto handle = node->toHandle();
 
         //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->getId(), name));
-        sol::table luaNode = m_luaNodes[nodeId];
+        sol::table luaNode = m_luaNodes[handle.toId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
         if (fnPtr != sol::nullopt) {
-            auto* api = m_apis.find(nodeId)->second.get();
+            auto* api = m_apis.find(handle)->second.get();
             auto& fn = fnPtr.value();
-            fn(std::ref(node), std::ref(api), nodeId);
+            fn(std::ref(node), std::ref(api), handle.toId());
         }
     }
 }

@@ -167,7 +167,7 @@ namespace loader {
 
     void PhysicsLoader::createObject(
         const PhysicsData& data,
-        const ki::node_id nodeId)
+        const pool::NodeHandle handle)
     {
         if (!data.enabled) return;
 
@@ -180,7 +180,7 @@ namespace loader {
                 .geom = data.geom,
             };
             auto& body = evt.body.physics = {
-                .target = nodeId,
+                .target = handle.toId(),
             };
             m_dispatcher->send(evt);
         }

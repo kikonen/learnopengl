@@ -9,13 +9,13 @@ namespace script
     class MoveNode final : public NodeCommand
     {
     public:
-        MoveNode()
-            : NodeCommand(0, 0, true),
-            m_position(0)
-        {}
+        //MoveNode()
+        //    : NodeCommand(0, 0, true),
+        //    m_position(0)
+        //{}
 
         MoveNode(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             float duration,
             bool relative,
             const glm::vec3& position) noexcept;

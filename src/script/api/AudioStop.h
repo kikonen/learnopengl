@@ -11,7 +11,7 @@ namespace script
     {
     public:
         AudioStop(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             int index) noexcept;
 
         virtual void execute(

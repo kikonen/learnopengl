@@ -100,26 +100,23 @@ namespace loader {
     }
 
     void ScriptLoader::createScriptEngine(
-        const ki::node_id rootId,
         const ScriptEngineData& data)
     {
         if (!data.enabled) return;
-        createScripts(rootId, 0, data.scripts);
+        createScripts(pool::NodeHandle::NULL_HANDLE, data.scripts);
     }
 
     void ScriptLoader::createScripts(
-        const ki::node_id rootId,
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         const std::vector<ScriptData>& scripts) const
     {
         for (auto& data : scripts) {
-            createScript(rootId, 0, data);
+            createScript(handle, data);
         }
     }
 
     void ScriptLoader::createScript(
-        const ki::node_id rootId,
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         const ScriptData& data) const
     {
         if (!data.enabled) return;
@@ -139,16 +136,16 @@ namespace loader {
             {
                 event::Event evt { event::Type::script_bind };
                 auto& body = evt.body.script = {
-                    .target = nodeId,
+                    .target = handle.toId(),
                     .id = scriptId,
                 };
                 m_dispatcher->send(evt);
             }
 
-            if (nodeId == 0) {
+            if (handle.isNull()) {
                 event::Event evt { event::Type::script_run };
                 auto& body = evt.body.script = {
-                    .target = 0,
+                    .target = handle.toId(),
                     .id = scriptId,
                 };
                 m_dispatcher->send(evt);

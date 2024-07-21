@@ -10,7 +10,7 @@ namespace script
     {
     public:
         StartNode(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             Coroutine* coroutine) noexcept;
 
         virtual void execute(

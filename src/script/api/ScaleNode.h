@@ -10,7 +10,7 @@ namespace script
     {
     public:
         ScaleNode(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             float duration,
             bool relative,
             const glm::vec3& scale) noexcept;

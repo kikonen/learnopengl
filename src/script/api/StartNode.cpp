@@ -10,9 +10,9 @@
 namespace script
 {
     StartNode::StartNode(
-        ki::node_id nodeId,
+        pool::NodeHandle handle,
         Coroutine* coroutine) noexcept
-        : NodeCommand(nodeId, 0, false),
+        : NodeCommand(handle, 0, false),
         m_coroutine(coroutine)
     {
     }

@@ -205,7 +205,7 @@ bool CubeMapRenderer::render(
             script::CommandEngine::get().addCommand(
                 0,
                 script::MoveNode{
-                    tagNode->getId(),
+                    tagNode->toHandle(),
                     0.f,
                     false,
                     tagPos

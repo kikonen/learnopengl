@@ -2,6 +2,8 @@
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "BaseLoader.h"
 
 #include "ScriptData.h"
@@ -32,17 +34,14 @@ namespace loader {
             bool forceFile) const;
 
         void createScriptEngine(
-            const ki::node_id rootId,
             const ScriptEngineData& data);
 
         void createScripts(
-            const ki::node_id rootId,
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             const std::vector<ScriptData>& scripts) const;
 
         void createScript(
-            const ki::node_id rootId,
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             const ScriptData& data) const;
     };
 }

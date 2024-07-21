@@ -10,7 +10,7 @@ namespace script
     {
     public:
         AudioPause(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             int index) noexcept;
 
         virtual void execute(

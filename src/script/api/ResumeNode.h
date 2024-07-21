@@ -12,7 +12,7 @@ namespace script
     {
     public:
         ResumeNode(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             Coroutine* coroutine) noexcept;
 
         virtual void execute(

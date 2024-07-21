@@ -10,7 +10,7 @@ namespace script
     {
     public:
         NodeCommand(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             float duration,
             bool relative) noexcept;
 
@@ -20,13 +20,11 @@ namespace script
 
     protected:
         inline Node* getNode() const noexcept {
-            return m_nodeHandle.toNode();
+            return m_handle.toNode();
         }
 
     public:
-        ki::node_id m_nodeId;
-        bool m_relative;
-
-        pool::NodeHandle m_nodeHandle{};
+        const pool::NodeHandle m_handle;
+        const bool m_relative;
     };
 }

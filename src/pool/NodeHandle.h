@@ -75,6 +75,7 @@ namespace pool {
 
         Node* toNode() const noexcept;
         ki::node_id toId() const noexcept { return m_id; }
+        int toIndex() const noexcept { return m_handleIndex; }
 
         static NodeHandle allocate(ki::node_id id) noexcept;
 

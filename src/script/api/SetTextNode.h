@@ -8,7 +8,7 @@ namespace script
     {
     public:
         SetTextNode(
-            ki::node_id nodeId,
+            pool::NodeHandle handle,
             float duration,
             std::string text) noexcept;
 
