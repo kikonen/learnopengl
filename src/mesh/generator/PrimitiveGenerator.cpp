@@ -62,8 +62,37 @@ namespace mesh {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateBox(
+        std::string_view name,
+        glm::vec3 size) const
+    {
+        auto mesh = std::make_unique<mesh::ModelMesh>(name);
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::BoxMesh shape{};
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateSphere(
         std::string_view name,
+        float radius,
         int slices,
         int segments) const
     {
@@ -73,14 +102,12 @@ namespace mesh {
         auto& indeces = mesh->m_indeces;
 
         generator::SphereMesh shape{
-            1.0f,
+            radius,
             slices,
             segments,
         };
 
         for (const auto& vertex : shape.vertices()) {
-            int x = 0;
-            KI_INFO_OUT(fmt::format("SPHERE: VER: pos={}, uv={}, normal={}", vertex.position, vertex.texCoord, vertex.normal));
             auto& v = vertices.emplace_back(
                 vertex.position,
                 vertex.texCoord,
@@ -89,8 +116,6 @@ namespace mesh {
         }
 
         for (const auto& tri : shape.triangles()) {
-            int x = 0;
-            KI_INFO_OUT(fmt::format("SPHERE: IND: vertices={}", tri.vertices));
             indeces.push_back(tri.vertices[0]);
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
@@ -101,6 +126,7 @@ namespace mesh {
 
     std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateCapsule(
         std::string_view name,
+        float radius,
         float size,
         int slices,
         int segments,
@@ -112,15 +138,14 @@ namespace mesh {
         auto& indeces = mesh->m_indeces;
 
         generator::CapsuleMesh shape{
-            1.0f,
+            radius,
             size,
             slices,
             segments,
+            rings
         };
 
         for (const auto& vertex : shape.vertices()) {
-            int x = 0;
-            KI_INFO_OUT(fmt::format("CAPSULE: VER: pos={}, uv={}, normal={}", vertex.position, vertex.texCoord, vertex.normal));
             auto& v = vertices.emplace_back(
                 vertex.position,
                 vertex.texCoord,
@@ -129,8 +154,42 @@ namespace mesh {
         }
 
         for (const auto& tri : shape.triangles()) {
-            int x = 0;
-            KI_INFO_OUT(fmt::format("CAPSULE: IND: vertices={}", tri.vertices));
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateCylinder(
+        std::string_view name,
+        float radius,
+        float size,
+        int slices,
+        int segments) const
+    {
+        auto mesh = std::make_unique<mesh::ModelMesh>(name);
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::CylinderMesh shape{
+            radius,
+            size,
+            slices,
+            segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
             indeces.push_back(tri.vertices[0]);
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);

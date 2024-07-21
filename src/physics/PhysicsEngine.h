@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <mutex>
+#include <memory>
 
 #include <ode/ode.h>
 
@@ -25,7 +26,11 @@ struct NodeState;
 
 
 namespace physics {
+    class MeshGenerator;
+
     class PhysicsEngine {
+        friend class MeshGenerator;
+
     public:
         static PhysicsEngine& get() noexcept;
 

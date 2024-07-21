@@ -53,7 +53,7 @@ namespace loader {
         {
             mesh::PrimitiveGenerator generator;
             mesh::LodMesh lodMesh;
-            lodMesh.setMesh(generator.generateCapsule("<capsule>", 0.5f, 8, 2, 2), true);
+            lodMesh.setMesh(generator.generateCapsule("<capsule>", 1.f, 0.5f, 8, 2, 2), true);
             type->addLodMesh(std::move(lodMesh));
         }
 

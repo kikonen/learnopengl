@@ -24,6 +24,8 @@
 
 #include "registry/SnapshotRegistry_impl.h"
 
+#include "mesh/Mesh.h"
+#include "physics/MeshGenerator.h"
 
 #define KI_TIMER(x)
 
@@ -132,6 +134,10 @@ void SceneUpdater::update(const UpdateContext& ctx)
             {
                 KI_TIMER("physics ");
                 physics::PhysicsEngine::get().update(ctx);
+
+                physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
+                const auto& meshes = generator.generateMeshes();
+                int x = 0;
             }
             {
                 KI_TIMER("audio   ");

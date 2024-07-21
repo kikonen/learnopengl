@@ -4,7 +4,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "model/Node.h"
-#include "PhysicsEngine.h"
 
 namespace {
     constexpr int DIR_X = 1;
