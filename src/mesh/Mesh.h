@@ -37,9 +37,12 @@ namespace mesh {
 
         virtual std::string str() const noexcept;
 
-        virtual bool isValid() const noexcept { return true; }
+        bool isValid() const noexcept
+        {
+            return !m_vertices.empty() && !m_indeces.empty();
+        }
 
-        virtual AABB calculateAABB(const glm::mat4& transform) const noexcept = 0;
+        AABB calculateAABB(const glm::mat4& transform) const;
 
         void setMaterial(const Material& material) noexcept
         {

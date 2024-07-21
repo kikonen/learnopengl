@@ -41,28 +41,9 @@ namespace mesh {
     {
     }
 
-    std::string PrimitiveMesh::str() const noexcept
-    {
-        return fmt::format("<LINE: id={}>", m_id);
-    }
-
     void PrimitiveMesh::clear() {
         m_vertices.clear();
         m_indeces.clear();
-    }
-
-    AABB PrimitiveMesh::calculateAABB(const glm::mat4& transform) const noexcept {
-        AABB aabb{ true };
-
-        for (auto&& vertex : m_vertices)
-        {
-            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
-            aabb.minmax(pos);
-        }
-
-        aabb.updateVolume();
-
-        return aabb;
     }
 
     const kigl::GLVertexArray* PrimitiveMesh::prepareRT(

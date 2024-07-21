@@ -27,29 +27,10 @@ namespace mesh {
     {
     }
 
-    std::string TextMesh::str() const noexcept
-    {
-        return fmt::format("<TEXT: id={}>", m_id);
-    }
-
     void TextMesh::clear() {
         m_vertices.clear();
         m_atlasCoords.clear();
         m_indeces.clear();
-    }
-
-    AABB TextMesh::calculateAABB(const glm::mat4& transform) const noexcept {
-        AABB aabb{ true };
-
-        for (auto&& vertex : m_vertices)
-        {
-            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
-            aabb.minmax(pos);
-        }
-
-        aabb.updateVolume();
-
-        return aabb;
     }
 
     const kigl::GLVertexArray* TextMesh::prepareRT(

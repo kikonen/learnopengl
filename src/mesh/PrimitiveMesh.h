@@ -27,11 +27,7 @@ namespace mesh {
         PrimitiveMesh(std::string_view name);
         virtual ~PrimitiveMesh();
 
-        virtual std::string str() const noexcept override;
-
         void clear();
-
-        virtual AABB calculateAABB(const glm::mat4& transform) const noexcept override;
 
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;

@@ -22,6 +22,26 @@ namespace mesh {
 
     std::string Mesh::str() const noexcept
     {
-        return fmt::format("<MESH: id={}>", m_id);
+        return fmt::format(
+            "<MESH: id={}, name={}, indeces={}, vertices={}>",
+            m_id,
+            m_name,
+            m_indeces.size(),
+            m_vertices.size());
+    }
+
+    AABB Mesh::calculateAABB(const glm::mat4& transform) const
+    {
+        AABB aabb{ true };
+
+        for (auto&& vertex : m_vertices)
+        {
+            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
+            aabb.minmax(pos);
+        }
+
+        aabb.updateVolume();
+
+        return aabb;
     }
 }

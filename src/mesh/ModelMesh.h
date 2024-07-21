@@ -27,15 +27,6 @@ namespace mesh {
 
         virtual ~ModelMesh();
 
-        virtual std::string str() const noexcept override;
-
-        virtual bool isValid() const noexcept override
-        {
-            return !m_vertices.empty() && !m_indeces.empty();
-        }
-
-        virtual AABB calculateAABB(const glm::mat4& transform) const noexcept override;
-
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
 

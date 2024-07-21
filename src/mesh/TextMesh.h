@@ -15,11 +15,7 @@ namespace mesh {
         TextMesh();
         virtual ~TextMesh();
 
-        virtual std::string str() const noexcept override;
-
         void clear();
-
-        virtual AABB calculateAABB(const glm::mat4& transform) const noexcept override;
 
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) override;
