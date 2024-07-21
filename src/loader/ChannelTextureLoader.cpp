@@ -2,6 +2,9 @@
 
 #include <map>
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
 #include "util/Util.h"
 
 #include "loader_util.h"
@@ -52,7 +55,7 @@ namespace {
         const auto& mapping = getTextureTypeMapping();
         const auto& it = mapping.find(p);
         if (it != mapping.end()) return it->second;
-        return defaultType;
+        KI_WARN_OUT(fmt::format("LOADER_CHANNEL: missing_type={}", p));
     }
 
     ChannelPart::Channel resolveChannel(const std::string& p) {
@@ -141,6 +144,9 @@ namespace loader {
             }
             else if (k == "channel") {
                 readChannelMapping(v, part);
+            }
+            else {
+                reportUnknown("channel_part_entry", k, v);
             }
         }
 

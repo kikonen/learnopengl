@@ -18,7 +18,8 @@
 #include "loader/ChannelTextureLoader.h"
 
 namespace {
-    const float DEF_ALPHA = 1.0;
+    constexpr float DEF_ALPHA = 1.0f;
+    constexpr float DEF_PARALLAX_DEPTH = 0.1f;
 
     const std::vector<std::regex> texturesMatchers{
         std::regex("textures"),
@@ -447,6 +448,14 @@ namespace loader {
         material.spritesY = material.spriteCount / material.spritesX;
         if (material.spriteCount % material.spritesX != 0) {
             material.spritesY++;
+        }
+
+        if (material.hasRegisteredTex(TextureType::displacement_map)) {
+            if (!fields.parallaxDepth) {
+                KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", DEF_PARALLAX_DEPTH));
+                material.parallaxDepth = DEF_PARALLAX_DEPTH;
+                fields.parallaxDepth = true;
+            }
         }
     }
 
