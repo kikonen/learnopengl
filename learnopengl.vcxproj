@@ -310,7 +310,6 @@
     <ClCompile Include="src\engine\AssetsLoader.cpp" />
     <ClCompile Include="src\asset\AABB.cpp" />
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp" />
-    <ClCompile Include="src\mesh\vao\QuadVAO.cpp" />
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp" />
     <ClCompile Include="src\asset\Uniform.cpp" />
     <ClCompile Include="src\backend\DrawBuffer.cpp" />
@@ -395,7 +394,6 @@
     <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
     <ClCompile Include="src\renderer\CubeMapRenderer.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
-    <ClCompile Include="src\mesh\QuadMesh.cpp" />
     <ClCompile Include="src\render\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\mesh\MeshType.cpp" />
@@ -702,7 +700,6 @@
     <ClInclude Include="src\asset\TextureUBO.h" />
     <ClInclude Include="src\asset\Uniform.h" />
     <ClInclude Include="src\mesh\vao\NormalEntry.h" />
-    <ClInclude Include="src\mesh\vao\QuadVAO.h" />
     <ClInclude Include="src\asset\SSBO.h" />
     <ClInclude Include="src\backend\DrawBuffer.h" />
     <ClInclude Include="src\backend\DrawOptions.h" />
@@ -812,7 +809,6 @@
     <ClInclude Include="src\renderer\ParticleRenderer.h" />
     <ClInclude Include="src\renderer\CubeMapRenderer.h" />
     <ClInclude Include="src\mesh\Mesh.h" />
-    <ClInclude Include="src\mesh\QuadMesh.h" />
     <ClInclude Include="src\render\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\mesh\MeshType.h" />

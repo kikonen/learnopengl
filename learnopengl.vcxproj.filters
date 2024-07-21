@@ -507,9 +507,6 @@
     <ClCompile Include="src\mesh\vao\TexturedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\QuadVAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\vao\TerrainVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -520,9 +517,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\QuadMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\MeshType.cpp">
@@ -1589,9 +1583,6 @@
     <ClInclude Include="src\mesh\vao\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\QuadVAO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\model\NodeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1602,9 +1593,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mesh\QuadMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MeshType.h">

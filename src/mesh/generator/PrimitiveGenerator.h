@@ -7,6 +7,9 @@ namespace mesh {
     class Mesh;
 
     struct PrimitiveGenerator {
+        std::unique_ptr<mesh::Mesh> generateQuad(
+            std::string_view name) const;
+
         /// @param slices Subdivisions around the z-azis (longitudes).
         /// @param segments Subdivisions along the z-azis (latitudes).
         std::unique_ptr<mesh::Mesh> generateSphere(
