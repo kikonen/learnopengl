@@ -36,6 +36,7 @@
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/VaoRegistry.h"
 
 
 Registry::Registry(
@@ -88,6 +89,8 @@ void Registry::prepareShared()
     terrain::TerrrainTileRegistry::get().prepare();
 
     text::TextSystem::get().prepare();
+
+    VaoRegistry::get().prepare();
 }
 
 void Registry::prepareWT()
@@ -121,7 +124,6 @@ void Registry::updateRT(const UpdateContext& ctx)
 
     mesh::TransformRegistry::get().updateRT(ctx);
     MaterialRegistry::get().updateRT(ctx);
-    ModelRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
     particle::ParticleSystem::get().updateRT(ctx);
@@ -130,6 +132,8 @@ void Registry::updateRT(const UpdateContext& ctx)
 
     text::FontRegistry::get().updateRT(ctx);
     text::TextSystem::get().updateRT(ctx);
+
+    VaoRegistry::get().updateRT(ctx);
 }
 
 void Registry::postRT(const UpdateContext& ctx)

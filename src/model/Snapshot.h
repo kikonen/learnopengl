@@ -33,7 +33,6 @@ struct Snapshot {
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
-    //glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
@@ -43,11 +42,6 @@ struct Snapshot {
     uint32_t m_shapeIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
-
-    //std::array<int32_t, ki::MAX_LOD> m_lodMaterialIndeces;
-
-    //// NOTE KI only in *active*
-    //std::array<backend::Lod, ki::MAX_LOD> m_lods;
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
@@ -86,13 +80,10 @@ struct Snapshot {
 
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
-        //m_viewRight = o.m_viewRight;
         m_modelMatrix = o.m_modelMatrix;
         m_handle = o.m_handle;
 
         m_modelScale = o.m_modelScale;
-
-        //m_lodMaterialIndeces = o.m_lodMaterialIndeces;
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;

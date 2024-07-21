@@ -28,8 +28,6 @@ ModelRegistry& ModelRegistry::get() noexcept
 }
 
 ModelRegistry::ModelRegistry()
-    : m_texturedVao{ std::make_unique<mesh::TexturedVAO>("mesh_textured") },
-    m_skinnedVao{ std::make_unique<mesh::SkinnedVAO>("mesh_skinned") }
 {
 }
 
@@ -39,14 +37,6 @@ ModelRegistry::~ModelRegistry() {
 void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 {
     m_alive = alive;
-    m_texturedVao->prepare();
-    m_skinnedVao->prepare();
-}
-
-void ModelRegistry::updateRT(const UpdateContext& ctx)
-{
-    m_texturedVao->updateRT();
-    m_skinnedVao->updateRT();
 }
 
 std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(

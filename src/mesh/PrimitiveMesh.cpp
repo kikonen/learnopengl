@@ -21,7 +21,7 @@
 #include "mesh/vao/PositionEntry.h"
 
 #include "engine/PrepareContext.h"
-#include "registry/ModelRegistry.h"
+#include "registry/VaoRegistry.h"
 
 
 namespace mesh {
@@ -56,11 +56,11 @@ namespace mesh {
         SkinnedVAO* skinnedVao = nullptr;
 
         if (m_rig && !m_vertexBones.empty()) {
-            skinnedVao = ModelRegistry::get().getSkinnedVao();
+            skinnedVao = VaoRegistry::get().getSkinnedVao();
             vao = skinnedVao;
         }
         else {
-            vao = ModelRegistry::get().getTexturedVao();
+            vao = VaoRegistry::get().getTexturedVao();
         }
 
         m_vboIndex = vao->reserveVertices(m_vertices.size());

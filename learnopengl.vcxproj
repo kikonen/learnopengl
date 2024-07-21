@@ -243,6 +243,7 @@
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\model\PivotPoint.cpp" />
     <ClCompile Include="src\physics\MeshGenerator.cpp" />
+    <ClCompile Include="src\registry\VaoRegistry.cpp" />
     <ClCompile Include="src\render\DebugContext.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
@@ -541,6 +542,7 @@
     <ClInclude Include="src\model\NodeFlags.h" />
     <ClInclude Include="src\model\PivotPoint.h" />
     <ClInclude Include="src\physics\MeshGenerator.h" />
+    <ClInclude Include="src\registry\VaoRegistry.h" />
     <ClInclude Include="src\render\DebugContext.h" />
     <ClInclude Include="src\render\size.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
