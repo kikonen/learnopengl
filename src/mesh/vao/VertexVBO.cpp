@@ -74,7 +74,7 @@ namespace mesh {
                     //
 
                     // texture attr
-                    glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_texture));
+                    glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_texCoord));
 
                     glVertexArrayAttribBinding(vao, ATTR_TEX, m_binding);
                 }

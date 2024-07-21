@@ -138,9 +138,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SupportJustMyCode>false</SupportJustMyCode>
@@ -161,9 +161,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -225,6 +225,8 @@
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\loader\VertexLoader.cpp" />
     <ClCompile Include="src\mesh\AssimpLoader.cpp" />
+    <ClCompile Include="src\mesh\generator\PrimitiveGenerator.cpp" />
+    <ClCompile Include="src\mesh\generator\PrimitiveGenerator.h" />
     <ClCompile Include="src\mesh\RigJointTreeGenerator.cpp" />
     <ClCompile Include="src\mesh\PrimitiveMesh.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
@@ -423,6 +425,48 @@
     <ClCompile Include="src\asset\Program.cpp" />
     <ClCompile Include="src\util\thread.cpp" />
     <ClCompile Include="src\util\Util.cpp" />
+    <ClCompile Include="vendor\generator\src\AnyMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\AnyPath.cpp" />
+    <ClCompile Include="vendor\generator\src\AnyShape.cpp" />
+    <ClCompile Include="vendor\generator\src\BoxMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CappedConeMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CappedCylinderMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CappedTubeMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CapsuleMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CircleShape.cpp" />
+    <ClCompile Include="vendor\generator\src\ConeMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\ConvexPolygonMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\CylinderMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\DiskMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\DodecahedronMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\EmptyMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\EmptyPath.cpp" />
+    <ClCompile Include="vendor\generator\src\EmptyShape.cpp" />
+    <ClCompile Include="vendor\generator\src\GridShape.cpp" />
+    <ClCompile Include="vendor\generator\src\HelixPath.cpp" />
+    <ClCompile Include="vendor\generator\src\IcosahedronMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\IcoSphereMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\KnotPath.cpp" />
+    <ClCompile Include="vendor\generator\src\LinePath.cpp" />
+    <ClCompile Include="vendor\generator\src\LineShape.cpp" />
+    <ClCompile Include="vendor\generator\src\ObjWriter.cpp" />
+    <ClCompile Include="vendor\generator\src\ParametricMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\ParametricPath.cpp" />
+    <ClCompile Include="vendor\generator\src\ParametricShape.cpp" />
+    <ClCompile Include="vendor\generator\src\PlaneMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\RectangleShape.cpp" />
+    <ClCompile Include="vendor\generator\src\RoundedBoxMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\RoundedRectangleShape.cpp" />
+    <ClCompile Include="vendor\generator\src\SphereMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\SphericalConeMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\SphericalTriangleMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\SpringMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\SvgWriter.cpp" />
+    <ClCompile Include="vendor\generator\src\TeapotMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\TorusKnotMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\TorusMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\TriangleMesh.cpp" />
+    <ClCompile Include="vendor\generator\src\TubeMesh.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\asset\Texture.cpp" />
@@ -818,6 +862,12 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vendor\generator\src\cmake_install.cmake" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vendor\generator\src\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

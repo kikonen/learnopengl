@@ -12,16 +12,16 @@ namespace mesh {
         VertexEntry() {}
 
         VertexEntry(const mesh::Vertex& v)
-            : u_pos(v.pos),
-            u_texture(v.texture),
-            u_normal(v.normal),
-            u_tangent(v.tangent)
+            : u_pos{ v.pos },
+            u_texCoord{ v.texCoord },
+            u_normal{ v.normal },
+            u_tangent{ v.tangent }
         {}
 
         glm::vec3 u_pos;
 
         //kigl::UV16 texCoord;
-        glm::vec2 u_texture;
+        glm::vec2 u_texCoord;
 
         kigl::VEC10 u_normal;
         kigl::VEC10 u_tangent;

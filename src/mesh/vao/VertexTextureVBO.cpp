@@ -13,7 +13,7 @@ namespace mesh {
     TextureEntry VertexTextureVBO::convertVertex(
         const Vertex& vertex)
     {
-        return { vertex.texture };
+        return { vertex.texCoord };
     }
 
     void VertexTextureVBO::prepareVAO(kigl::GLVertexArray& vao)

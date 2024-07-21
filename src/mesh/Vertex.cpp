@@ -32,7 +32,7 @@ namespace mesh {
         // => for normal & tangent can bind together "similar" ones
         //    to reduce verteces
         return pos == b.pos &&
-            texture == b.texture &&
+            texCoord == b.texCoord &&
             //normal == b.normal &&
             //tangent == b.tangent &&
             glm::dot(normal, b.normal) >= DOT_NORMAL_SAME &&
@@ -49,7 +49,7 @@ namespace mesh {
         return fmt::format(
             "<VERTEX: pos=({}, {}, {}), texture=({}, {}), normal=({}, {}, {}), tangent=({}, {}, {})>",
             pos.x, pos.y, pos.z,
-            texture.x, texture.y,
+            texCoord.x, texCoord.y,
             normal.x, normal.y, normal.z,
             tangent.x, tangent.y, tangent.z);
     }

@@ -1,6 +1,10 @@
 #include "VolumeLoader.h"
 
+#include <fmt/format.h>
+
 #include "util/Util.h"
+#include "util/Log.h"
+#include "util/glm_format.h"
 
 #include "asset/Assets.h"
 
@@ -11,8 +15,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
-
-#include "mesh/MeshSet.h"
+#include "mesh/generator/PrimitiveGenerator.h"
 
 #include "controller/VolumeController.h"
 
@@ -20,6 +23,7 @@
 
 #include "model/Node.h"
 
+#include "mesh/ModelMesh.h"
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
@@ -42,21 +46,16 @@ namespace loader {
 
         if (!assets.showVolume) return;
 
-        auto future = ModelRegistry::get().getMeshSet(
-            assets.modelsDir,
-            "ball_volume");
-        auto* meshSet = future.get();
-
-        if (!meshSet) {
-            KI_ERROR("Failed to load volume mesh");
-            return;
-        }
-
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
         type->setName("<volume>");
 
-        type->addMeshSet(*meshSet);
+        {
+            mesh::PrimitiveGenerator generator;
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(generator.generateCapsule("<capsule>", 0.5f, 8, 2, 2), true);
+            type->addLodMesh(std::move(lodMesh));
+        }
 
         auto* lodMesh = type->modifyLodMesh(0);
         {
@@ -95,7 +94,8 @@ namespace loader {
         {
             auto& state = node->modifyState();
 
-            state.setVolume(meshSet->calculateAABB(glm::mat4{ 1.f }).getVolume());
+            state.setBaseRotation(util::degreesToQuat(glm::vec3{ 90.f, 0, 0 }));
+            state.setVolume(lodMesh->calculateAABB().getVolume());
         }
 
         {

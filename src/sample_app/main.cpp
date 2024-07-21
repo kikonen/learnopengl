@@ -10,9 +10,11 @@
 
 #include <entt/entt.hpp>
 
+#include "util/Log.h"
+#include "util/glm_format.h"
+
 #include "engine/Engine.h"
 #include "sample_app/SampleApp.h"
-
 
 int runEngine() {
     auto engine = std::make_unique<SampleApp>();

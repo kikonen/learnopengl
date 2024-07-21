@@ -56,6 +56,7 @@ namespace {
         const auto& it = mapping.find(p);
         if (it != mapping.end()) return it->second;
         KI_WARN_OUT(fmt::format("LOADER_CHANNEL: missing_type={}", p));
+        return TextureType::none;
     }
 
     ChannelPart::Channel resolveChannel(const std::string& p) {

@@ -23,6 +23,14 @@ https://glad.dav1d.de
 
 3) Unzip into vendor/glad
 
+## Vendor modules
+
+### generator
+
+For generating simple basic meshes
+https://github.com/ilmola/generator
+
+
 # TODO/Research
 - "shell based grass and fur"
   + https://gim.studio/an-introduction-to-shell-based-fur-technique/

@@ -13,28 +13,28 @@ namespace mesh {
 
         Vertex(
             const glm::vec3& pos,
-            const glm::vec2& texture,
+            const glm::vec2& texCoord,
             const glm::vec3& normal,
             const glm::vec3& tangent)
-            : pos(pos),
-            texture(texture),
-            normal(normal),
-            tangent(tangent)
+            : pos{ pos },
+            texCoord{ texCoord },
+            normal{ normal },
+            tangent{ tangent }
         {
         }
 
         Vertex(const Vertex& b) noexcept
-            : pos(b.pos),
-            texture(b.texture),
-            normal(b.normal),
-            tangent(b.tangent)
+            : pos{ b.pos },
+            texCoord{ b.texCoord },
+            normal{ b.normal },
+            tangent{ b.tangent }
         {
         }
 
         Vertex& operator=(const Vertex& b)
         {
             pos = b.pos;
-            texture = b.texture;
+            texCoord = b.texCoord;
             normal = b.normal;
             tangent = b.tangent;
 
@@ -49,7 +49,7 @@ namespace mesh {
 
     public:
         glm::vec3 pos;
-        glm::vec2 texture;
+        glm::vec2 texCoord;
         glm::vec3 normal;
         glm::vec3 tangent;
     };
