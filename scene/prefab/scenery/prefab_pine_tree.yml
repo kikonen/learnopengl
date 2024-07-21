@@ -1,0 +1,83 @@
+---
+prefab:
+  meshes:
+    - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      lods:
+        - level: 0
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: pine_leaf_pbr
+          alpha: true
+          blend: true
+          render_back: true
+      program: g_tex
+      base_scale: 0.01
+    - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      lods:
+        - level: 1
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_pbr: pine_trunk_pbr
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_pbr: pine_leaf_pbr
+          alpha: true
+          render_back: true
+      program: g_tex
+      base_scale: 0.01
+    - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      lods:
+        - level: 2
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+          alpha: true
+          render_back: true
+      program: g_tex
+      base_scale: 0.01
+    - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      lods:
+        - level: 3
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+          alpha: true
+      program: g_tex
+      base_scale: 0.01
+    - path: fbx/scenery/trees/SM_TreePine_01b.FBX
+      lods:
+        - level: 4
+      materials:
+        - name: pine_trunk_pbr
+          alias: MI_TreeBarkPine_01a
+          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
+        - name: pine_leaf_pbr
+          alias: MI_PineTree_01a
+          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+      program: g_tex
+      base_scale: 0.01
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 200
+    - level: 2
+      distance: 300
+    - level: 3
+      distance: 500
+    - level: 4
+      distance: 500
+  base_rotation: [-90, 0, 0]

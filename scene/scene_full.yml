@@ -289,7 +289,6 @@ nodes:
     pos: [5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
-    xrender_flags:
   - id: door_1
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_NN_05h.FBX
@@ -304,7 +303,6 @@ nodes:
     pos: [-5.0, 10.0, -5.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
-    xrender_flags:
   - name: Window 1_1
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
@@ -319,7 +317,6 @@ nodes:
     pos: [5.0, 8.0, 0.0]
     base_rotation: [-90.0, -45.0, 0.0]
     scale: 4
-    xrender_flags:
   - name: Window 2
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
@@ -334,7 +331,6 @@ nodes:
     pos: [7.0, 14.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
-    xrender_flags:
   - id: stained_windows_{t}
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
@@ -349,7 +345,6 @@ nodes:
     pos: [-10.0, 20.0, 10.0]
     base_rotation: [-90.0, 0.0, 0.0]
     scale: 2
-    xrender_flags:
     repeat:
       x_count: 10
       x_step: 2
@@ -501,9 +496,9 @@ nodes:
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
         - name: fly
           path: anim/Wyvern@FlyStationary.FBX
+      program: g_tex
+      shadow_program: simple_depth
       base_scale: 0.01
-    program: g_tex
-    shadow_program: simple_depth
     pos: [0.0, 35.0, 30.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]

@@ -56,13 +56,13 @@ nodes:
       material_modifier:
         xrender_back: true
         xwireframe: true
-    program: g_tex
-    shadow_program: simple_depth
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.01
     pos: [0.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [0, 0, 0]
     scale: 1
-    base_scale: 0.01
   - id: object_{t}
     mesh:
       path: fbx/characters/viking/SK_Viking_M01_Warrior_Compiled.FBX
@@ -81,13 +81,13 @@ nodes:
           alpha: true
           render_back: true
           xwireframe: true
-    program: g_tex
-    shadow_program: simple_depth
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.01
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     base_rotation: [-90, 0, 0]
     scale: 1
-    base_scale: 0.01
     repeat:
       x_count: 10
       z_count: 10

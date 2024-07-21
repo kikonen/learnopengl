@@ -67,83 +67,12 @@ nodes:
         x_step: 20
         z_step: -20
   - xid: pine_tree_forest_{t}
-    meshes:
-      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-        lods:
-          - level: 0
-        materials:
-          - name: pine_trunk_pbr
-            alias: MI_TreeBarkPine_01a
-            map_pbr: pine_trunk_pbr
-          - name: pine_leaf_pbr
-            alias: MI_PineTree_01a
-            map_pbr: pine_leaf_pbr
-            alpha: true
-            blend: true
-            render_back: true
-      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-        lods:
-          - level: 1
-        materials:
-          - name: pine_trunk_pbr
-            alias: MI_TreeBarkPine_01a
-            map_pbr: pine_trunk_pbr
-          - name: pine_leaf_pbr
-            alias: MI_PineTree_01a
-            map_pbr: pine_leaf_pbr
-            alpha: true
-            render_back: true
-      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-        lods:
-          - level: 2
-        materials:
-          - name: pine_trunk_pbr
-            alias: MI_TreeBarkPine_01a
-            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-          - name: pine_leaf_pbr
-            alias: MI_PineTree_01a
-            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
-            alpha: true
-            render_back: true
-      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-        lods:
-          - level: 3
-        materials:
-          - name: pine_trunk_pbr
-            alias: MI_TreeBarkPine_01a
-            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-          - name: pine_leaf_pbr
-            alias: MI_PineTree_01a
-            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
-            alpha: true
-      - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-        lods:
-          - level: 4
-        materials:
-          - name: pine_trunk_pbr
-            alias: MI_TreeBarkPine_01a
-            map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-          - name: pine_leaf_pbr
-            alias: MI_PineTree_01a
-            map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 200
-      - level: 2
-        distance: 300
-      - level: 3
-        distance: 500
-      - level: 4
-        distance: 500
-    program: g_tex
+    prefab:
+      path: prefab/scenery/prefab_pine_tree.yml
     pos: [-1000, 0.0, 0.0]
     render_flags:
       xstatic_bounds: true
-    base_rotation: [-90, 0, 0]
     scale: 2
-    base_scale: 0.01
     instanced: true
     generator:
       type: grid

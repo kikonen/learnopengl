@@ -319,7 +319,9 @@ namespace loader {
         }
 
         for (auto& meshData : data.meshes) {
-            meshData.scale = meshData.scale.x > 0 ? meshData.scale : data.meshScale;
+            if (!meshData.hasScale) {
+                meshData.scale = data.meshScale;
+            }
         }
 
         if (hasClones) {

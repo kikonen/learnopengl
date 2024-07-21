@@ -251,7 +251,7 @@ nodes:
         xreflection: 0.05
         tiling: 3
         parallax_depth: 0.0
-    program: g_tex
+        program: g_tex
     pos: [0.0, 0.0, 25.0]
     scale: [1, 1, 3]
     base_rot: [90, 0, 0]
@@ -330,8 +330,8 @@ nodes:
         ke: [0.0, 0.1, 0.0]
         alpha: true
         render_back: true
-    program: g_tex
-    shadow_program: simple_depth
+        program: g_tex
+        shadow_program: simple_depth
     pos: [3, 25, 25]
     base_rotation: [0, 0, 0]
     scale: 3

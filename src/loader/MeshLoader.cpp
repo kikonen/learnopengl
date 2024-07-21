@@ -116,6 +116,7 @@ namespace loader {
                 }
             }
             else if (k == "scale") {
+                data.hasScale = true;
                 data.scale = readScale3(v);
             }
             else if (k == "base_scale") {

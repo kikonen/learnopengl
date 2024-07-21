@@ -46,12 +46,11 @@ nodes:
         map_pbr: door_glass_1_pbr
         alpha: true
         blend: true
-    program: g_tex
-    shadow_program: simple_depth
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.01
     pos: [0.0, -1.0, -8.0]
     base_rotation: [-90.0, 0.0, 0.0]
-    scale: 1
-    base_scale: 0.01
   - id: window_2
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
@@ -60,12 +59,11 @@ nodes:
         map_pbr: door_glass_2_pbr
         alpha: true
         blend: true
-    program: g_tex
-    shadow_program: simple_depth
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.01
     pos: [0.5, -1.0, -10.0]
     base_rotation: [-90.0, 0.0, 0.0]
-    scale: 1
-    base_scale: 0.01
   - name: Blend cubes
     mesh:
       path: rubik_cube.fbx

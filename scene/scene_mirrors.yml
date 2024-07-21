@@ -80,11 +80,11 @@ nodes:
         map_pbr: skeleton_pbr
         xmetal: [0.3, 0.4, 0, 1]
         xwireframe: true
-    program: g_tex
-    shadow_program: simple_depth
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.05
     pos: [15, 6.5, -20.0]
     scale: 2
-    base_scale: 0.05
     base_rotation: [0, -180, 0]
     repeat:
       x_count: 5

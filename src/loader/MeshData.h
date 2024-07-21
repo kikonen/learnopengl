@@ -23,6 +23,7 @@ namespace loader {
 
         // NOTE KI used *ONLY* if explicitly set to valid value
         // => otherwise value from NodeData is inherited
+        bool hasScale{ false };
         glm::vec3 scale{ 0.f };
 
         glm::vec3 baseScale{ 1.f };
