@@ -34,8 +34,11 @@ void NormalRenderer::prepareRT(
 }
 
 void NormalRenderer::render(
-    const RenderContext& ctx)
+    const RenderContext& ctx,
+    render::FrameBuffer* targetBuffer)
 {
+    if (!isEnabled()) return;
+    targetBuffer->bind(ctx);
     drawNodes(ctx);
 }
 

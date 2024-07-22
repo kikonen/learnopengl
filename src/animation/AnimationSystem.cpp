@@ -292,7 +292,7 @@ namespace animation
                 if (blendFactor < 0) {
                     if (playB.m_blendTime > 0) {
                         auto diff = currentTime - playB.m_startTime;
-                        blendFactor = diff / playB.m_blendTime;
+                        blendFactor = static_cast<float>(diff / playB.m_blendTime);
                     }
                     else {
                         blendFactor = 1.f;

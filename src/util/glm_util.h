@@ -4,6 +4,8 @@
 
 namespace util
 {
+    float ratiansBetween(glm::vec3 a, glm::vec3 b);
+
     glm::quat degreesToQuat(const glm::vec3& rot);
     glm::quat radiansToQuat(const glm::vec3& rot);
 
@@ -15,4 +17,6 @@ namespace util
 
     glm::quat axisDegreesToQuat(const glm::vec3& axis, float degrees);
     glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians);
+
+    glm::quat normalToRotation(const glm::vec3& normal);
 }

@@ -3,6 +3,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
+#include "util/Log.h"
+#include "util/Util.h"
+#include "util/glm_util.h"
+
 #include "model/Node.h"
 
 namespace {
@@ -86,8 +93,15 @@ namespace physics
             //const auto& plane = m_geom.plane;
             //auto plane = glm::vec4(0, 0, 1, 0) * q;
             const auto rotM = glm::toMat4(q);
-            auto plane = rotM * glm::vec4(0, 1, 0, 1);
-            m_geomId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, 0);
+
+            glm::vec3 normal{ 0, 1.f, 0 };
+            float dist = 0.f;
+            auto plane = rotM * glm::vec4(normal, 1.f);
+
+            KI_INFO_OUT(fmt::format("CREATE_PLANE: n={}, d={}",
+                glm::vec3{plane}, plane.w));
+
+            m_geomId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, dist);
             break;
         }
         case GeomType::box: {
@@ -177,10 +191,22 @@ namespace physics
 
             switch (m_geom.type) {
             case GeomType::plane: {
-                dVector4 plane;
-                dGeomPlaneGetParams(m_geomId, plane);
+                dVector4 result;
+                dGeomPlaneGetParams(m_geomId, result);
+
+                const glm::vec4 plane{
+                    static_cast<float>(result[0]),
+                    static_cast<float>(result[1]),
+                    static_cast<float>(result[2]),
+                    static_cast<float>(result[3]) };
+                glm::vec3 normal{ plane };
+
                 // NOTE KI distance into direction of plane normal
-                const auto dist = glm::dot(pos, glm::vec3{ plane[0], plane[1], plane[2] });
+                auto dist = glm::dot(normal, pos);
+
+                KI_INFO_OUT(fmt::format("UPDATED_PLANE: n={}, d={} old_d={}",
+                    normal, dist, plane.w));
+
                 dGeomPlaneSetParams(m_geomId, plane[0], plane[1], plane[2], dist);
                 break;
             }

@@ -2,6 +2,10 @@
 
 #include "Renderer.h"
 
+namespace render {
+    class FrameBuffer;
+}
+
 class NormalRenderer final : public Renderer
 {
 public:
@@ -12,7 +16,8 @@ public:
         const PrepareContext& ctx) override;
 
     void render(
-        const RenderContext& ctx);
+        const RenderContext& ctx,
+        render::FrameBuffer* targetBuffer);
 
 private:
     void drawNodes(const RenderContext& ctx);

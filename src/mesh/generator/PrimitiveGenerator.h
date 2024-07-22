@@ -9,12 +9,17 @@ namespace mesh {
     class Mesh;
 
     struct PrimitiveGenerator {
+        std::unique_ptr<mesh::Mesh> generatePlane(
+            std::string_view name,
+            const glm::vec2& size = glm::vec2{ 1.f, 1.f }) const;
+
         std::unique_ptr<mesh::Mesh> generateQuad(
-            std::string_view name) const;
+            std::string_view name,
+            const glm::vec2& size = glm::vec2{ 1.f, 1.f }) const;
 
         std::unique_ptr<mesh::Mesh> generateBox(
             std::string_view name,
-            glm::vec3 size = glm::vec3{ 1.f, 1.f, 1.f }) const;
+            const glm::vec3& size = glm::vec3{ 1.f, 1.f, 1.f }) const;
 
         /// @param slices Subdivisions around the z-azis (longitudes).
         /// @param segments Subdivisions along the z-azis (latitudes).

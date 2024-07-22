@@ -4,6 +4,11 @@
 
 namespace util
 {
+    float ratiansBetween(glm::vec3 a, glm::vec3 b)
+    {
+        return acos(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
+    }
+
     glm::quat degreesToQuat(const glm::vec3& rot)
     {
         return glm::normalize(glm::quat(glm::radians(rot)));
@@ -52,5 +57,21 @@ namespace util
             v.y * sinHalf,
             v.z * sinHalf
             });
+    }
+
+    // https://forums.unrealengine.com/t/rotation-from-normal/11543/3
+    glm::quat normalToRotation(const glm::vec3& normal)
+    {
+        glm::vec3 up{ 0, 1.f, 0 };
+
+        const float thetaCos = glm::dot(up, normal);
+
+        // Identity rotation if exactly same dir (avoid NaN in acosf)
+        if (thetaCos == 1.f) return glm::quat{ 0, 0, 0, 1.f };
+
+        const auto axis = glm::normalize(glm::cross(up, normal));
+        const float theta = acosf(thetaCos);
+
+        return util::axisRadiansToQuat(axis, theta);
     }
 }

@@ -92,6 +92,8 @@ void NodeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
+    if (!isEnabled()) return;
+
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 

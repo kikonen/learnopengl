@@ -6,6 +6,7 @@
 
 #include "util/Util.h"
 #include "util/Log.h"
+#include "util/glm_util.h"
 #include "util/glm_format.h"
 
 #include "mesh/ModelMesh.h"
@@ -21,14 +22,31 @@ namespace {
     };
 
     const int QUAD_INDECES[] = {
-        0, 1, 3,
-        3, 1, 2
+        0, 1, 2,
+        2, 1, 3
     };
 }
 
 namespace mesh {
+    std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generatePlane(
+        std::string_view name,
+        const glm::vec2& size) const
+    {
+        auto mesh = generateQuad(name, size);
+
+        glm::mat3 rotateMat = glm::mat4(util::degreesToQuat({ -90, 0, 0 }));
+
+        for (auto& vertex : mesh->m_vertices) {
+            vertex.pos = rotateMat * vertex.pos;
+            vertex.normal = rotateMat * vertex.normal;
+        }
+
+        return std::move(mesh);
+    }
+
     std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateQuad(
-        std::string_view name) const
+        std::string_view name,
+        const glm::vec2& size) const
     {
         auto mesh = std::make_unique<mesh::ModelMesh>(name);
 
@@ -38,12 +56,14 @@ namespace mesh {
         vertices.reserve(4);
         indeces.reserve(indeces.size());
 
+        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size, 1.f });
+
         auto& row = QUAD_VERTICES;
         for (int i = 0; i < 4; i++) {
             auto& v = vertices.emplace_back();
 
-            int offset = 12 * i;
-            v.pos = glm::vec3{ row[offset + 0], row[offset + 1] , row[offset + 2] };
+            int offset = 11 * i;
+            v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
 
             offset += 3;
             v.normal = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
@@ -64,7 +84,7 @@ namespace mesh {
 
     std::unique_ptr<mesh::Mesh> PrimitiveGenerator::generateBox(
         std::string_view name,
-        glm::vec3 size) const
+        const glm::vec3& size) const
     {
         auto mesh = std::make_unique<mesh::ModelMesh>(name);
 
