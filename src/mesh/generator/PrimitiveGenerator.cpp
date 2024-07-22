@@ -71,7 +71,7 @@ namespace mesh {
         auto& vertices = mesh->m_vertices;
         auto& indeces = mesh->m_indeces;
 
-        generator::BoxMesh shape{};
+        generator::BoxMesh shape{ size, {1, 1, 1} };
 
         for (const auto& vertex : shape.vertices()) {
             auto& v = vertices.emplace_back(

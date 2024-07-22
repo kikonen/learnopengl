@@ -70,6 +70,10 @@ namespace editor {
             const RenderContext& ctx,
             render::DebugContext& debugContext);
 
+        void renderPhysicsDebug(
+            const RenderContext& ctx,
+            render::DebugContext& debugContext);
+
         void renderMiscDebug(
             const RenderContext& ctx,
             render::DebugContext& debugContext);

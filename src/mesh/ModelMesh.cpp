@@ -78,6 +78,26 @@ namespace mesh {
 
         return m_vao;
     }
+    const kigl::GLVertexArray* ModelMesh::prepareRTDebug(
+        const PrepareContext& ctx)
+    {
+        TexturedVAO* vao = VaoRegistry::get().getDebugVao();
+
+        m_vboIndex = vao->reserveVertices(m_vertices.size());
+        m_eboIndex = vao->reserveIndeces(m_indeces.size());
+
+        vao->updateVertices(
+            m_vboIndex,
+            m_vertices);
+
+        vao->updateIndeces(
+            m_eboIndex,
+            m_indeces);
+
+        m_vao = vao->getVAO();
+
+        return m_vao;
+    }
 
     void ModelMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)

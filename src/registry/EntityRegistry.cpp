@@ -35,6 +35,9 @@ EntityRegistry::EntityRegistry()
 {
     // null entry
     registerEntity();
+
+    auto* entity = modifyEntity(0, true);
+    entity->setModelMatrix(glm::mat4(1.f), true, true);
 }
 
 void EntityRegistry::prepare()

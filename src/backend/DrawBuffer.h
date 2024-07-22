@@ -42,6 +42,14 @@ namespace backend {
 
         void bind();
 
+        // STEPS:
+        // - sendInstanceIndeces
+        // - send or sendDirect
+        // - flush
+        // - drawPending
+        void sendInstanceIndeces(
+            std::span<mesh::InstanceSSBO> indeces);
+
         void send(
             const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
@@ -50,20 +58,17 @@ namespace backend {
             const backend::DrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
-        void sendInstanceIndeces(
-            std::span<mesh::InstanceSSBO> indeces);
-
-        void flushIfNeeded();
         void flush();
-
-        void flushIfNotSame(
-            const backend::DrawRange& sendRange);
-
         void drawPending(bool drawCurrent);
 
         gl::PerformanceCounters getCounters(bool clear) const;
 
     private:
+        void flushIfNeeded();
+
+        void flushIfNotSame(
+            const backend::DrawRange& sendRange);
+
         void bindDrawRange(
             const backend::DrawRange& drawRange) const;
 

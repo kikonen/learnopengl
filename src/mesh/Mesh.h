@@ -58,6 +58,12 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareRT(
             const PrepareContext& ctx) = 0;
 
+        virtual const kigl::GLVertexArray* prepareRTDebug(
+            const PrepareContext& ctx)
+        {
+            return nullptr;
+        }
+
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
 

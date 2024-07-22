@@ -37,7 +37,14 @@ public:
         return m_skinnedVao.get();
     }
 
+    mesh::TexturedVAO* getDebugVao()
+    {
+        return m_debugVao.get();
+    }
+
 private:
     std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
+
+    std::unique_ptr<mesh::TexturedVAO> m_debugVao;
 };

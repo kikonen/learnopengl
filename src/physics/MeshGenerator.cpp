@@ -59,7 +59,9 @@ namespace physics {
                 dReal radius = dGeomSphereGetRadius(geomId);
                 mesh = generator.generateSphere(
                     "<geom-sphere>",
-                    static_cast<float>(radius));
+                    static_cast<float>(radius),
+                    8,
+                    4);
                 break;
             }
             case GeomType::capsule: {
@@ -69,7 +71,9 @@ namespace physics {
                 mesh = generator.generateCapsule(
                     "<geom-capsule>",
                     static_cast<float>(radius),
-                    static_cast<float>(length));
+                    static_cast<float>(length),
+                    8,
+                    4);
                 break;
             }
             case GeomType::cylinder: {
@@ -79,13 +83,15 @@ namespace physics {
                 mesh = generator.generateCylinder(
                     "<geom-cylinder>",
                     static_cast<float>(radius),
-                    static_cast<float>(length));
+                    static_cast<float>(length),
+                    8,
+                    4);
                 break;
             }
             }
         }
 
-        if (obj.m_geom.type != GeomType::plane) {
+        if (mesh && obj.m_geom.type != GeomType::plane) {
             const dReal* dpos = dGeomGetPosition(geomId);
             const dReal* dquat = dGeomGetRotation(geomId);
 
@@ -99,6 +105,13 @@ namespace physics {
                 static_cast<float>(dquat[1]),
                 static_cast<float>(dquat[2]),
                 static_cast<float>(dquat[3]) };
+
+            glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
+                glm::mat4(rot);
+
+            for (auto& vertex : mesh->m_vertices) {
+                vertex.pos = transform * glm::vec4(vertex.pos, 1.f);
+            }
         }
 
         return mesh;

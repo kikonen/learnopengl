@@ -103,6 +103,11 @@ namespace render {
         backend::gl::PerformanceCounters getCounters(bool clear) const;
         backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
+        backend::DrawBuffer* getDrawBuffer()
+        {
+            return m_draw.get();
+        }
+
     private:
         bool m_prepared = false;
 

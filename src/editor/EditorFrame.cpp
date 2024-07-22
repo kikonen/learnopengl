@@ -117,6 +117,11 @@ namespace editor {
             renderBufferDebug(ctx, debugContext);
         }
 
+        if (ImGui::CollapsingHeader("Physics"))
+        {
+            renderPhysicsDebug(ctx, debugContext);
+        }
+
         if (ImGui::CollapsingHeader("Misc"))
         {
             renderMiscDebug(ctx, debugContext);
@@ -774,6 +779,13 @@ namespace editor {
                 bufferIndex++;
             }
         }
+    }
+
+    void EditorFrame::renderPhysicsDebug(
+        const RenderContext& ctx,
+        render::DebugContext& debugContext)
+    {
+        ImGui::Checkbox("Physics show objects", &debugContext.m_physicsShowObjects);
     }
 
     void EditorFrame::renderMiscDebug(

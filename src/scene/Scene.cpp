@@ -49,7 +49,17 @@
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
 
+#include "mesh/Mesh.h"
+#include "mesh/vao/TexturedVAO.h"
+#include "physics/MeshGenerator.h"
+#include "physics/PhysicsEngine.h"
+#include "registry/VaoRegistry.h"
+#include "backend/DrawBuffer.h"
+#include "asset/Program.h"
+
 namespace {
+    Material s_physicsObjectMaterial;
+    Program* s_physicsObjectProgram;
 }
 
 Scene::Scene(
@@ -257,6 +267,12 @@ void Scene::prepareRT()
             ViewportRegistry::get().addViewport(m_waterMapRenderer->m_refractionDebugViewport);
         }
     }
+
+    s_physicsObjectMaterial = Material::createMaterial(BasicMaterial::white);
+    MaterialRegistry::get().registerMaterial(s_physicsObjectMaterial);
+
+    s_physicsObjectProgram = ProgramRegistry::get().getProgram("g_tex");
+    s_physicsObjectProgram->prepareRT();
 }
 
 void Scene::updateRT(const UpdateContext& ctx)
@@ -399,6 +415,73 @@ void Scene::drawMain(const RenderContext& parentCtx)
 
     localCtx.m_allowDrawDebug = true;
     drawScene(localCtx, m_mainRenderer.get());
+
+    if (render::DebugContext::get().m_physicsShowObjects) {
+        GLint drawFboId = 0, readFboId = 0;
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
+
+        physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
+        const auto& meshes = generator.generateMeshes();
+
+        if (!meshes.empty()) {
+            auto* vao = VaoRegistry::get().getDebugVao();
+            vao->clear();
+
+            PrepareContext prepareCtx{ parentCtx.m_registry };
+
+            std::vector<mesh::InstanceSSBO> instances;
+            for (auto& mesh : meshes) {
+                mesh->prepareRTDebug(prepareCtx);
+
+                auto& instance = instances.emplace_back();
+                // NOTE KI null entity/mesh are supposed to have ID mat model matrices
+                instance.u_entityIndex = 0;
+                instance.u_meshIndex = 0;
+                instance.u_materialIndex = s_physicsObjectMaterial.m_registeredIndex;
+            }
+
+            vao->updateRT();
+
+            m_mainRenderer->m_buffer->bind(localCtx);
+
+            auto* drawBuffer = m_batch->getDrawBuffer();
+            drawBuffer->sendInstanceIndeces(instances);
+
+            for (auto& mesh : meshes) {
+                backend::DrawOptions drawOptions;
+                {
+                    drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
+                    drawOptions.m_type = backend::DrawOptions::Type::elements;
+                    drawOptions.m_solid = true;
+                    drawOptions.m_wireframe = true;
+                    drawOptions.m_renderBack = true;
+                }
+
+                backend::DrawRange drawRange{
+                        vao->getVAO(),
+                        s_physicsObjectProgram,
+                        drawOptions };
+
+                backend::gl::DrawIndirectCommand indirect{};
+                {
+                    backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
+
+                    //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+                    cmd.u_instanceCount = 1;
+                    cmd.u_baseInstance = 1;
+
+                    cmd.u_baseVertex = mesh->getBaseVertex();
+                    cmd.u_firstIndex = mesh->getBaseIndex();
+                    cmd.u_count = mesh->getIndexCount();
+                }
+
+                drawBuffer->sendDirect(drawRange, indirect);
+            }
+            drawBuffer->flush();
+            drawBuffer->drawPending(false);
+        }
+    }
 }
 
 // "back mirror" viewport

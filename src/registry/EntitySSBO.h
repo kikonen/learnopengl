@@ -34,24 +34,24 @@ struct EntitySSBO {
     // matrix is just N * vec4, thus vec4 is *largest*
     // NOTE KI encode in *ROW* order
     // last row is *ALWAYS* [0, 0, 0, 1]
-    glm::vec4 u_modelMatrixRow0{ 1.f };
-    glm::vec4 u_modelMatrixRow1{ 1.f };
-    glm::vec4 u_modelMatrixRow2{ 1.f };
+    glm::vec4 u_modelMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
+    glm::vec4 u_modelMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
+    glm::vec4 u_modelMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-    glm::vec3 u_normalMatrix0{ 0.f }; // 4 *  4 * 4 = 64
+    glm::vec3 u_normalMatrix0{ 1.f, 0.f, 0.f }; // 4 *  4 * 4 = 64
     //int pad1;
-    glm::vec3 u_normalMatrix1{ 0.f }; // 4 *  4 * 4 = 64
+    glm::vec3 u_normalMatrix1{ 0.f, 1.f, 0.f }; // 4 *  4 * 4 = 64
     //int pad2;
-    glm::vec3 u_normalMatrix2{ 0.f }; // 4 *  4 * 4 = 64
+    glm::vec3 u_normalMatrix2{ 0.f, 0.f, 1.f }; // 4 *  4 * 4 = 64
     //int pad3;
 
     // center + radius
-    glm::vec4 u_volume{ 0.f }; // 3 * 1 * 4 = 12 => 16
+    glm::vec4 u_volume{ 0.f, 0.f, 0.f, 1.f }; // 3 * 1 * 4 = 12 => 16
 
-    glm::vec3 u_worldScale{ 0.f };
+    glm::vec3 u_worldScale{ 1.f };
     //int pad4_1;
 
-    GLuint64 u_fontHandle;
+    GLuint64 u_fontHandle{ 0 };
 
     GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
 
