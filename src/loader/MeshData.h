@@ -11,10 +11,13 @@
 #include "MaterialData.h"
 #include "VertexData.h"
 
+#include "MeshDataType.h"
 
 namespace loader {
     struct MeshData {
         bool enabled{ false };
+
+        MeshDataType type{ MeshDataType::mesh };
 
         std::string baseDir;
 

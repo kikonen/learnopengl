@@ -6,6 +6,7 @@
 #include "loader_util.h"
 
 #include "mesh/PrimitiveMesh.h"
+#include "mesh/generator/PrimitiveGenerator.h"
 
 
 namespace loader {
@@ -34,9 +35,27 @@ namespace loader {
                 else if (type == "line_strip") {
                     data.type = mesh::PrimitiveType::line_strip;
                 }
+                else if (type == "capsule") {
+                    data.type = mesh::PrimitiveType::capsule;
+                }
                 else {
                     reportUnknown("vertex_type", k, v);
                 }
+            }
+            else if (k == "radius") {
+                data.radius = readFloat(v);
+            }
+            else if (k == "length") {
+                data.length = readFloat(v);
+            }
+            else if (k == "slices") {
+                data.slices = readInt(v);
+            }
+            else if (k == "segments") {
+                data.segments = readInt(v);
+            }
+            else if (k == "rings") {
+                data.rings = readInt(v);
             }
             else if (k == "vertices") {
                 loadVertices(v, data.vertices);
@@ -52,12 +71,13 @@ namespace loader {
         {
             bool valid = true;
             valid = data.type != mesh::PrimitiveType::none;
-            valid &= !(data.vertices.empty() || data.indeces.empty());
 
             switch (data.type) {
             case mesh::PrimitiveType::points:
+                valid &= !(data.vertices.empty() || data.indeces.empty());
                 break;
             case mesh::PrimitiveType::lines:
+                valid &= !(data.vertices.empty() || data.indeces.empty());
                 valid &= data.indeces.size() > 1;
                 valid &= data.indeces.size() % 2 == 0;
                 break;
@@ -105,6 +125,8 @@ namespace loader {
             return createPrimitiveMesh(meshData, data, loaders);
         case mesh::PrimitiveType::lines:
             return createPrimitiveMesh(meshData, data, loaders);
+        case mesh::PrimitiveType::capsule:
+            return createCapsuleMesh(meshData, data, loaders);
         }
 
         return nullptr;
@@ -115,9 +137,11 @@ namespace loader {
         const VertexData& data,
         Loaders& loaders) const
     {
-        auto mesh = std::make_unique<mesh::PrimitiveMesh>();
+        const auto& name = data.name.empty() ? "<primitive>" : data.name;
 
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(name);
         mesh->m_type = data.type;
+        mesh->m_alias = "primitive";
 
         auto& vertices = mesh->m_vertices;
         auto& indeces = mesh->m_indeces;
@@ -133,6 +157,27 @@ namespace loader {
         for (auto& v : data.indeces) {
             indeces.push_back(v);
         }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> VertexLoader::createCapsuleMesh(
+        const MeshData& meshData,
+        const VertexData& data,
+        Loaders& loaders) const
+    {
+        const auto& name = data.name.empty() ? "<capsule>" : data.name;
+
+        mesh::PrimitiveGenerator generator;
+        auto mesh = generator.generateCapsule(
+            name,
+            data.radius,
+            data.length,
+            data.slices,
+            data.segments,
+            data.rings);
+
+        mesh->m_alias = "capsule";
 
         return mesh;
     }

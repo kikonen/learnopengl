@@ -5,6 +5,7 @@ namespace mesh {
         none,
         points,
         lines,
-        line_strip
+        line_strip,
+        capsule
     };
 }

@@ -505,6 +505,7 @@
     <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
+    <ClInclude Include="src\loader\MeshDataType.h" />
     <ClInclude Include="src\loader\PivotLoader.h" />
     <ClInclude Include="src\loader\SocketData.h" />
     <ClInclude Include="src\loader\TextLoader.h" />

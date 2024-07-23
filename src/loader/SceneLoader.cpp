@@ -619,28 +619,7 @@ namespace loader {
         // NOTE KI materials MUST be resolved before loading mesh
         if (nodeData.type == NodeType::model) {
             type->m_nodeType = NodeType::model;
-
-            auto future = ModelRegistry::get().getMeshSet(
-                assets.modelsDir,
-                meshData.path);
-
-            auto meshSet = future.get();
-
-            if (meshSet) {
-                resolveSockets(
-                    meshData,
-                    *meshSet
-                );
-
-                for (auto& animationData : meshData.animations) {
-                    loadAnimation(
-                        meshData.baseDir,
-                        animationData,
-                        *meshSet);
-                }
-
-                meshCount += type->addMeshSet(*meshSet);
-            }
+            meshCount += resolveModelMesh(type, nodeData, meshData, tile, index);
 
             KI_INFO(fmt::format(
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
@@ -695,6 +674,55 @@ namespace loader {
                 }
             }
         }
+    }
+
+    int SceneLoader::resolveModelMesh(
+        mesh::MeshType* type,
+        const NodeData& nodeData,
+        const MeshData& meshData,
+        const glm::uvec3& tile,
+        int index)
+    {
+        const auto& assets = Assets::get();
+        int meshCount = 0;
+
+        switch (meshData.type) {
+        case MeshDataType::mesh: {
+            auto future = ModelRegistry::get().getMeshSet(
+                assets.modelsDir,
+                meshData.path);
+
+            auto meshSet = future.get();
+
+            if (meshSet) {
+                resolveSockets(
+                    meshData,
+                    *meshSet
+                );
+
+                for (auto& animationData : meshData.animations) {
+                    loadAnimation(
+                        meshData.baseDir,
+                        animationData,
+                        *meshSet);
+                }
+
+                meshCount += type->addMeshSet(*meshSet);
+            }
+            break;
+        }
+        case MeshDataType::primitive: {
+            auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
+
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(std::move(mesh), true);
+            type->addLodMesh(std::move(lodMesh));
+
+            meshCount++;
+        }
+        }
+
+        return meshCount;
     }
 
     void SceneLoader::resolveLodMesh(

@@ -122,5 +122,7 @@ void PhysicsRenderer::drawObjects(
         }
         drawBuffer->flush();
         drawBuffer->drawPending(false);
+
+        glFinish();
     }
 }

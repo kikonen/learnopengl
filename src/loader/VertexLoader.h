@@ -41,5 +41,10 @@ namespace loader {
             const MeshData& meshData,
             const VertexData& data,
             Loaders& loaders) const;
+
+        std::unique_ptr<mesh::Mesh> createCapsuleMesh(
+            const MeshData& meshData,
+            const VertexData& data,
+            Loaders& loaders) const;
     };
 }

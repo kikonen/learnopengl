@@ -58,6 +58,21 @@ namespace loader {
             if (k == "name") {
                 data.name = readString(v);
             }
+            else if (k == "type") {
+                std::string type = readString(v);
+                if (type == "none") {
+                    data.type = MeshDataType::none;
+                }
+                else if (type == "mesh") {
+                    data.type = MeshDataType::mesh;
+                }
+                else if (type == "primitive") {
+                    data.type = MeshDataType::primitive;
+                }
+                else {
+                    reportUnknown("mesh_data_type", k, v);
+                }
+            }
             else if (k == "path" || k == "mesh") {
                 data.path = readString(v);
                 data.enabled = k != "xpath";
@@ -143,6 +158,11 @@ namespace loader {
 
         if (data.name.empty()) {
             data.name = data.path;
+        }
+
+        if (data.vertexData.valid) {
+            data.type = MeshDataType::primitive;
+            data.enabled = true;
         }
 
         // NOTE KI ensure assigns are before modifiers

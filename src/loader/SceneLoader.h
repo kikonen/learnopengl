@@ -147,6 +147,14 @@ namespace loader {
             const glm::uvec3& tile,
             int index);
 
+        // @return count of meshes added
+        int resolveModelMesh(
+            mesh::MeshType* type,
+            const NodeData& nodeData,
+            const MeshData& meshData,
+            const glm::uvec3& tile,
+            int index);
+
         void resolveLodMesh(
             mesh::MeshType* type,
             const NodeData& nodeData,
