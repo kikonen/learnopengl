@@ -98,8 +98,8 @@ namespace physics
             float dist = 0.f;
             auto plane = rotM * glm::vec4(normal, 1.f);
 
-            KI_INFO_OUT(fmt::format("CREATE_PLANE: n={}, d={}",
-                glm::vec3{plane}, plane.w));
+            //KI_INFO_OUT(fmt::format("CREATE_PLANE: n={}, d={}",
+            //    glm::vec3{plane}, plane.w));
 
             m_geomId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, dist);
             break;
@@ -204,8 +204,8 @@ namespace physics
                 // NOTE KI distance into direction of plane normal
                 auto dist = glm::dot(normal, pos);
 
-                KI_INFO_OUT(fmt::format("UPDATED_PLANE: n={}, d={} old_d={}",
-                    normal, dist, plane.w));
+                //KI_INFO_OUT(fmt::format("UPDATED_PLANE: n={}, d={} old_d={}",
+                //    normal, dist, plane.w));
 
                 dGeomPlaneSetParams(m_geomId, plane[0], plane[1], plane[2], dist);
                 break;
@@ -268,7 +268,7 @@ namespace physics
 
         // NOTE KI project rotation to XZ plane to keep nodes UP
         // => nodes still travel backwards, but not rotating grazily
-        if (true) {
+        if (false) {
             // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
             const auto rotated = glm::mat3(rq) * state.m_front;
             //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
@@ -280,6 +280,13 @@ namespace physics
             dBodySetQuaternion(m_bodyId, quat);
         }
         //const auto rotatedFront = rotBase * state.m_front;
+
+        //if (m_geom.type == GeomType::box) {
+        //    auto degrees = util::quatToDegrees(rq);
+        //    KI_INFO_OUT(fmt::format(
+        //        "OBJ_BODY_2: id={}, type={}, pos={}, rot={}, degrees={}",
+        //        m_id, util::as_integer(m_geom.type), pos, rot, degrees));
+        //}
 
         state.setPosition(pos);
         state.setQuatRotation(rq);

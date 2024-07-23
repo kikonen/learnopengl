@@ -7,14 +7,16 @@
 
 #include "mesh/Mesh.h"
 #include "mesh/vao/TexturedVAO.h"
-#include "physics/MeshGenerator.h"
 #include "physics/PhysicsEngine.h"
 #include "registry/VaoRegistry.h"
 #include "backend/DrawBuffer.h"
 #include "asset/Program.h"
 
+#include "mesh/TransformRegistry.h"
+
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
+#include "registry/EntityRegistry.h"
 
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
@@ -23,6 +25,14 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 
     m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
     m_objectProgram->prepareRT();
+
+    m_entityIndex = EntityRegistry::get().registerEntity();
+    {
+        auto* entity = EntityRegistry::get().modifyEntity(m_entityIndex, true);
+        entity->setModelMatrix(glm::mat4(1.f), true, true);
+    }
+
+    m_meshIndex = mesh::TransformRegistry::get().registerTransform(glm::mat4{ 1.f });
 }
 
 void PhysicsRenderer::render(
@@ -45,23 +55,22 @@ void PhysicsRenderer::drawObjects(
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
-    physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
-    const auto& meshes = generator.generateMeshes();
+    auto meshes = physics::PhysicsEngine::get().getObjectMeshes();
 
-    if (!meshes.empty()) {
+    if (meshes && !meshes->empty()) {
         auto* vao = VaoRegistry::get().getDebugVao();
         vao->clear();
 
         PrepareContext prepareCtx{ ctx.m_registry };
 
         std::vector<mesh::InstanceSSBO> instances;
-        for (auto& mesh : meshes) {
+        for (auto& mesh : *meshes) {
             mesh->prepareRTDebug(prepareCtx);
 
             auto& instance = instances.emplace_back();
             // NOTE KI null entity/mesh are supposed to have ID mat model matrices
-            instance.u_entityIndex = 0;
-            instance.u_meshIndex = 0;
+            instance.u_entityIndex = m_entityIndex;
+            instance.u_meshIndex = m_meshIndex;
             instance.u_materialIndex = m_objectMaterial.m_registeredIndex;
         }
 
@@ -71,14 +80,14 @@ void PhysicsRenderer::drawObjects(
 
         drawBuffer->sendInstanceIndeces(instances);
 
-        for (auto& mesh : meshes) {
+        for (auto& mesh : *meshes) {
             backend::DrawOptions drawOptions;
             {
                 drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
                 drawOptions.m_type = backend::DrawOptions::Type::elements;
                 drawOptions.m_solid = true;
                 drawOptions.m_wireframe = true;
-                drawOptions.m_renderBack = true;
+                //drawOptions.m_renderBack = true;
             }
 
             backend::DrawRange drawRange{
@@ -99,7 +108,7 @@ void PhysicsRenderer::drawObjects(
                 cmd.u_count = mesh->getIndexCount();
             }
 
-            drawBuffer->sendDirect(drawRange, indirect);
+            drawBuffer->send(drawRange, indirect);
         }
         drawBuffer->flush();
         drawBuffer->drawPending(false);

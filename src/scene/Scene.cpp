@@ -486,11 +486,13 @@ void Scene::drawScene(
         nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 
-    if (m_normalRenderer->isEnabled()) {
-        m_normalRenderer->render(ctx, nodeRenderer->m_buffer.get());
-    }
+    if (ctx.m_allowDrawDebug) {
+        if (m_normalRenderer->isEnabled()) {
+            m_normalRenderer->render(ctx, nodeRenderer->m_buffer.get());
+        }
 
-    m_physicsRenderer->render(ctx, nodeRenderer->m_buffer.get());
+        m_physicsRenderer->render(ctx, nodeRenderer->m_buffer.get());
+    }
 }
 
 Node* Scene::getActiveNode() const

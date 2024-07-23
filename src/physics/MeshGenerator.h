@@ -18,7 +18,7 @@ namespace physics {
     public:
         MeshGenerator(const PhysicsEngine& engine);
 
-        std::vector<std::unique_ptr<mesh::Mesh>> generateMeshes() const;
+        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> generateMeshes() const;
 
     private:
         std::unique_ptr<mesh::Mesh> generateObject(const Object& obj) const;

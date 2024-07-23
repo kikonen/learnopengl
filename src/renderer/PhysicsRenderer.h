@@ -27,4 +27,7 @@ private:
 private:
     Material m_objectMaterial;
     Program* m_objectProgram;
+
+    uint32_t m_entityIndex{ 0 };
+    uint32_t m_meshIndex{ 0 };
 };

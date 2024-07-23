@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <fmt/format.h>
@@ -10,6 +12,8 @@
 #include "util/Log.h"
 #include "util/Util.h"
 #include "util/glm_util.h"
+
+#include "render/DebugContext.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/ModelMesh.h"
@@ -24,17 +28,19 @@ namespace physics {
         : m_engine{ engine}
     {}
 
-    std::vector<std::unique_ptr<mesh::Mesh>> MeshGenerator::generateMeshes() const
+    std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> MeshGenerator::generateMeshes() const
     {
-        std::vector<std::unique_ptr<mesh::Mesh>> meshes;
-        meshes.reserve(m_engine.m_objects.size());
+        if (!render::DebugContext::get().m_physicsShowObjects) return nullptr;
+
+        auto meshes = std::make_shared<std::vector<std::unique_ptr<mesh::Mesh>>>();
+        meshes->reserve(m_engine.m_objects.size());
 
         for (const auto& obj : m_engine.m_objects) {
             if (!obj.m_geomId) continue;
 
             auto mesh = generateObject(obj);
             if (mesh) {
-                meshes.push_back(std::move(mesh));
+                meshes->push_back(std::move(mesh));
             }
         }
 
@@ -65,14 +71,14 @@ namespace physics {
                 float dist = plane.w;
 
                 rot = util::normalToRotation(normal);
-                glm::vec3 degrees = util::quatToDegrees(rot);
 
-                KI_INFO_OUT(fmt::format(
-                    "GET_PLANE: n={}, d={}, rot={}, degrees={}",
-                    normal, dist, rot, degrees));
+                //glm::vec3 degrees = util::quatToDegrees(rot);
+                //KI_INFO_OUT(fmt::format(
+                //    "GET_PLANE: n={}, d={}, rot={}, degrees={}",
+                //    normal, dist, rot, degrees));
 
                 pos = normal * dist;
-                glm::vec2 size{ 50.f, 50.f };
+                glm::vec2 size{ 100.f, 100.f };
                 mesh = generator.generatePlane("<obj-plane>", size);
                 break;
             }
@@ -126,8 +132,8 @@ namespace physics {
         }
 
         if (mesh && obj.m_geom.type != GeomType::plane) {
-            const dReal* dpos = dGeomGetPosition(geomId);
-            const dReal* dquat = dGeomGetRotation(geomId);
+            const dReal* dpos = dBodyGetPosition(obj.m_bodyId);
+            const dReal* dquat = dBodyGetQuaternion(obj.m_bodyId);
 
             pos = glm::vec3{
                 static_cast<float>(dpos[0]),
@@ -139,6 +145,17 @@ namespace physics {
                 static_cast<float>(dquat[1]),
                 static_cast<float>(dquat[2]),
                 static_cast<float>(dquat[3]) };
+
+            //if (obj.m_geom.type == GeomType::box) {
+            //    auto degrees = util::quatToDegrees(rot);
+
+            //    KI_INFO_OUT(fmt::format(
+            //        "GET_GEOM: id={}, type={}, pos={}, rot={}, degrees={}",
+            //        obj.m_id, util::as_integer(obj.m_geom.type), pos, rot, degrees));
+            //}
+
+            // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+            rot = glm::normalize(glm::conjugate(obj.m_geom.quat) * rot);
         }
 
         glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *

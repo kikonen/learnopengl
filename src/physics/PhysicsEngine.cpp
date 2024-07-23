@@ -21,6 +21,8 @@
 
 #include "Surface.h"
 
+#include "physics/MeshGenerator.h"
+
 namespace {
     constexpr float STEP_SIZE = 0.03f;
 
@@ -182,6 +184,8 @@ namespace physics
                 for (const auto& obj : m_objects) {
                     obj.updateFromPhysics();
                 }
+
+                generateObjectMeshes();
             }
         }
     }
@@ -388,5 +392,11 @@ namespace physics
         auto* type = node->m_typeHandle.toType();
         if (!(type->m_flags.staticBounds || type->m_flags.dynamicBounds)) return;
         m_pendingNodes.push_back(node->toHandle());
+    }
+
+    void PhysicsEngine::generateObjectMeshes()
+    {
+        physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
+        m_objectMeshes = generator.generateMeshes();
     }
 }

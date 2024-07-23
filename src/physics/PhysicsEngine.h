@@ -20,6 +20,7 @@ namespace pool {
 
 namespace mesh {
     class MeshType;
+    class Mesh;
 }
 
 struct NodeState;
@@ -43,7 +44,7 @@ namespace physics {
         void update(const UpdateContext& ctx);
         void updateBounds(const UpdateContext& ctx);
 
-        inline bool isEnabled(bool enabled) const noexcept{
+        inline bool isEnabled(bool enabled) const noexcept {
             return m_enabled;
         }
 
@@ -64,6 +65,13 @@ namespace physics {
         uint32_t getObjectCount() const noexcept {
             return static_cast<uint32_t>(m_objects.size());
         }
+
+        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> getObjectMeshes() const noexcept
+        {
+            return m_objectMeshes;
+        }
+
+        void generateObjectMeshes();
 
     private:
         void preparePending(const UpdateContext& ctx);
@@ -109,5 +117,6 @@ namespace physics {
 
         std::vector<HeightMap> m_heightMaps;
 
+        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> m_objectMeshes;
     };
 }
