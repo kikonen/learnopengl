@@ -79,7 +79,8 @@ namespace physics {
 
                 pos = normal * dist;
                 glm::vec2 size{ 100.f, 100.f };
-                mesh = generator.generatePlane("<obj-plane>", size);
+                mesh = generator.generatePlane(fmt::format("<plane-{}>", obj.m_id), size);
+                mesh->m_alias = "plane";
                 break;
             }
             case GeomType::box: {
@@ -91,17 +92,19 @@ namespace physics {
                     static_cast<float>(lengths[2]) / 2.f
                 };
                 mesh = generator.generateBox(
-                    "<geom-box>",
+                    fmt::format("<box-{}>", obj.m_id),
                     size);
+                mesh->m_alias = "box";
                 break;
             }
             case GeomType::sphere: {
                 dReal radius = dGeomSphereGetRadius(geomId);
                 mesh = generator.generateSphere(
-                    "<geom-sphere>",
+                    fmt::format("<sphere-{}>", obj.m_id),
                     static_cast<float>(radius),
                     16,
                     8);
+                mesh->m_alias = "sphere";
                 break;
             }
             case GeomType::capsule: {
@@ -109,11 +112,12 @@ namespace physics {
                 dReal length;
                 dGeomCapsuleGetParams(geomId, &radius, &length);
                 mesh = generator.generateCapsule(
-                    "<geom-capsule>",
+                    fmt::format("<capsule-{}>", obj.m_id),
                     static_cast<float>(radius),
                     static_cast<float>(length),
                     8,
                     8);
+                mesh->m_alias = "capsule";
                 break;
             }
             case GeomType::cylinder: {
@@ -121,11 +125,12 @@ namespace physics {
                 dReal length;
                 dGeomCylinderGetParams(geomId, &radius, &length);
                 mesh = generator.generateCylinder(
-                    "<geom-cylinder>",
+                    fmt::format("<cylinder-{}>", obj.m_id),
                     static_cast<float>(radius),
                     static_cast<float>(length),
                     8,
                     8);
+                mesh->m_alias = "cylinder";
                 break;
             }
             }

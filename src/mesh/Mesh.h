@@ -93,7 +93,7 @@ namespace mesh {
         const ki::mesh_id m_id;
 
         const std::string m_name;
-        const std::string m_alias;
+        std::string m_alias;
 
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;

@@ -23,6 +23,9 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
     m_objectMaterial = Material::createMaterial(BasicMaterial::white);
     MaterialRegistry::get().registerMaterial(m_objectMaterial);
 
+    m_planeMaterial = Material::createMaterial(BasicMaterial::blue);
+    MaterialRegistry::get().registerMaterial(m_planeMaterial);
+
     m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
     m_objectProgram->prepareRT();
 
@@ -72,6 +75,9 @@ void PhysicsRenderer::drawObjects(
             instance.u_entityIndex = m_entityIndex;
             instance.u_meshIndex = m_meshIndex;
             instance.u_materialIndex = m_objectMaterial.m_registeredIndex;
+            if (mesh->m_alias == "plane") {
+                instance.u_materialIndex = m_planeMaterial.m_registeredIndex;
+            }
         }
 
         vao->updateRT();
@@ -80,7 +86,9 @@ void PhysicsRenderer::drawObjects(
 
         drawBuffer->sendInstanceIndeces(instances);
 
-        for (auto& mesh : *meshes) {
+        int baseInstance = 0;
+        for (auto& mesh : *meshes)
+        {
             backend::DrawOptions drawOptions;
             {
                 drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
@@ -101,7 +109,7 @@ void PhysicsRenderer::drawObjects(
 
                 //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
                 cmd.u_instanceCount = 1;
-                cmd.u_baseInstance = 1;
+                cmd.u_baseInstance = baseInstance;
 
                 cmd.u_baseVertex = mesh->getBaseVertex();
                 cmd.u_firstIndex = mesh->getBaseIndex();
@@ -109,6 +117,8 @@ void PhysicsRenderer::drawObjects(
             }
 
             drawBuffer->send(drawRange, indirect);
+
+            baseInstance++;
         }
         drawBuffer->flush();
         drawBuffer->drawPending(false);

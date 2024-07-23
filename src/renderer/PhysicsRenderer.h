@@ -26,6 +26,8 @@ private:
 
 private:
     Material m_objectMaterial;
+    Material m_planeMaterial;
+
     Program* m_objectProgram;
 
     uint32_t m_entityIndex{ 0 };
