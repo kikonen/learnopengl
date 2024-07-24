@@ -241,55 +241,63 @@ namespace physics
         auto* parent = node->getParent();
         if (!parent) return;
 
-        const dReal* dpos = dBodyGetPosition(m_bodyId);
-        const dReal* dquat = dBodyGetQuaternion(m_bodyId);
-
-        glm::vec3 pos = { dpos[0], dpos[1], dpos[2] };
-        glm::quat rot{
-            static_cast<float>(dquat[0]),
-            static_cast<float>(dquat[1]),
-            static_cast<float>(dquat[2]),
-            static_cast<float>(dquat[3]) };
-
-        if (pos.y < -400) {
-            pos.y = -400;
-            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
-        }
-        if (pos.y > 400) {
-            pos.y = 400;
-            dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
-        }
-        pos -= parent->getState().getWorldPosition();
-
         auto& state = node->modifyState();
 
-        // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-        auto rq = glm::normalize(glm::conjugate(m_body.quat) * rot);
+        glm::vec3 pos{ 0.f };
+        glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
+        {
+            const dReal* dpos = dBodyGetPosition(m_bodyId);
+            const dReal* dquat = dBodyGetQuaternion(m_bodyId);
 
-        // NOTE KI project rotation to XZ plane to keep nodes UP
-        // => nodes still travel backwards, but not rotating grazily
-        if (false) {
-            // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
-            const auto rotated = glm::mat3(rq) * state.m_front;
-            //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
-            const auto rads = glm::atan(rotated.x, rotated.z);
-            const auto degrees = glm::degrees(rads);
-            rq = util::radiansToQuat(glm::vec3(0, rads, 0));
+            pos = glm::vec3{
+                static_cast<float>(dpos[0]),
+                static_cast<float>(dpos[1]),
+                static_cast<float>(dpos[2]) };
 
-            dQuaternion quat{ rq.w, rq.x, rq.y, rq.z };
-            dBodySetQuaternion(m_bodyId, quat);
+            rot = glm::quat{
+                static_cast<float>(dquat[0]),
+                static_cast<float>(dquat[1]),
+                static_cast<float>(dquat[2]),
+                static_cast<float>(dquat[3]) };
+
+            if (pos.y < -400) {
+                pos.y = -400;
+                dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+            }
+            if (pos.y > 400) {
+                pos.y = 400;
+                dBodySetPosition(m_bodyId, pos[0], pos[1], pos[2]);
+            }
+            pos -= parent->getState().getWorldPosition();
+
+            // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+            rot = glm::normalize(rot * glm::conjugate(m_body.quat));
+
+            // NOTE KI project rotation to XZ plane to keep nodes UP
+            // => nodes still travel backwards, but not rotating grazily
+            if (false) {
+                // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
+                const auto rotated = glm::mat3(rot) * state.m_front;
+                //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
+                const auto rads = glm::atan(rotated.x, rotated.z);
+                const auto degrees = glm::degrees(rads);
+                rot = util::radiansToQuat(glm::vec3(0, rads, 0));
+
+                dQuaternion quat{ rot.w, rot.x, rot.y, rot.z };
+                dBodySetQuaternion(m_bodyId, quat);
+            }
+            //const auto rotatedFront = rotBase * state.m_front;
+
+            //if (m_geom.type == GeomType::box) {
+            //    auto degrees = util::quatToDegrees(rq);
+            //    KI_INFO_OUT(fmt::format(
+            //        "OBJ_BODY_2: id={}, type={}, pos={}, rot={}, degrees={}",
+            //        m_id, util::as_integer(m_geom.type), pos, rot, degrees));
+            //}
         }
-        //const auto rotatedFront = rotBase * state.m_front;
-
-        //if (m_geom.type == GeomType::box) {
-        //    auto degrees = util::quatToDegrees(rq);
-        //    KI_INFO_OUT(fmt::format(
-        //        "OBJ_BODY_2: id={}, type={}, pos={}, rot={}, degrees={}",
-        //        m_id, util::as_integer(m_geom.type), pos, rot, degrees));
-        //}
 
         state.setPosition(pos);
-        state.setQuatRotation(rq);
+        state.setQuatRotation(rot);
         //m_node->updateModelMatrix();
     }
 }
