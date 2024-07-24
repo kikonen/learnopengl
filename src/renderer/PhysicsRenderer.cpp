@@ -5,6 +5,8 @@
 #include "render/DebugContext.h"
 #include "render/Batch.h"
 
+#include "kigl/GLState.h"
+
 #include "mesh/Mesh.h"
 #include "mesh/vao/TexturedVAO.h"
 #include "physics/PhysicsEngine.h"
@@ -60,69 +62,71 @@ void PhysicsRenderer::drawObjects(
 
     auto meshes = physics::PhysicsEngine::get().getObjectMeshes();
 
-    if (meshes && !meshes->empty()) {
-        auto* vao = VaoRegistry::get().getDebugVao();
-        vao->clear();
+    if (!meshes || meshes->empty()) return;
 
-        PrepareContext prepareCtx{ ctx.m_registry };
+    auto* vao = VaoRegistry::get().getDebugVao();
+    vao->clear();
 
-        std::vector<mesh::InstanceSSBO> instances;
-        for (auto& mesh : *meshes) {
-            mesh->prepareRTDebug(prepareCtx);
+    PrepareContext prepareCtx{ ctx.m_registry };
 
-            auto& instance = instances.emplace_back();
-            // NOTE KI null entity/mesh are supposed to have ID mat model matrices
-            instance.u_entityIndex = m_entityIndex;
-            instance.u_meshIndex = m_meshIndex;
-            instance.u_materialIndex = m_objectMaterial.m_registeredIndex;
-            if (mesh->m_alias == "plane") {
-                instance.u_materialIndex = m_planeMaterial.m_registeredIndex;
-            }
+    std::vector<mesh::InstanceSSBO> instances;
+    for (auto& mesh : *meshes) {
+        mesh->prepareRTDebug(prepareCtx);
+
+        auto& instance = instances.emplace_back();
+        // NOTE KI null entity/mesh are supposed to have ID mat model matrices
+        instance.u_entityIndex = m_entityIndex;
+        instance.u_meshIndex = m_meshIndex;
+        instance.u_materialIndex = m_objectMaterial.m_registeredIndex;
+        if (mesh->m_alias == "plane") {
+            instance.u_materialIndex = m_planeMaterial.m_registeredIndex;
         }
-
-        vao->updateRT();
-
-        targetBuffer->bind(ctx);
-
-        drawBuffer->sendInstanceIndeces(instances);
-
-        int baseInstance = 0;
-        for (auto& mesh : *meshes)
-        {
-            backend::DrawOptions drawOptions;
-            {
-                drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
-                drawOptions.m_type = backend::DrawOptions::Type::elements;
-                drawOptions.m_solid = true;
-                drawOptions.m_wireframe = true;
-                //drawOptions.m_renderBack = true;
-            }
-
-            backend::DrawRange drawRange{
-                    vao->getVAO(),
-                    m_objectProgram,
-                    drawOptions };
-
-            backend::gl::DrawIndirectCommand indirect{};
-            {
-                backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
-
-                //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
-                cmd.u_instanceCount = 1;
-                cmd.u_baseInstance = baseInstance;
-
-                cmd.u_baseVertex = mesh->getBaseVertex();
-                cmd.u_firstIndex = mesh->getBaseIndex();
-                cmd.u_count = mesh->getIndexCount();
-            }
-
-            drawBuffer->send(drawRange, indirect);
-
-            baseInstance++;
-        }
-        drawBuffer->flush();
-        drawBuffer->drawPending(false);
-
-        glFinish();
     }
+
+    vao->updateRT();
+
+    targetBuffer->bind(ctx);
+
+    drawBuffer->sendInstanceIndeces(instances);
+
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+
+    int baseInstance = 0;
+    for (auto& mesh : *meshes)
+    {
+        backend::DrawOptions drawOptions;
+        {
+            drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
+            drawOptions.m_type = backend::DrawOptions::Type::elements;
+            drawOptions.m_solid = true;
+            drawOptions.m_wireframe = true;
+            //drawOptions.m_renderBack = true;
+        }
+
+        backend::DrawRange drawRange{
+                vao->getVAO(),
+                m_objectProgram,
+                drawOptions };
+
+        backend::gl::DrawIndirectCommand indirect{};
+        {
+            backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
+
+            //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
+            cmd.u_instanceCount = 1;
+            cmd.u_baseInstance = baseInstance;
+
+            cmd.u_baseVertex = mesh->getBaseVertex();
+            cmd.u_firstIndex = mesh->getBaseIndex();
+            cmd.u_count = mesh->getIndexCount();
+        }
+
+        drawBuffer->send(drawRange, indirect);
+
+        baseInstance++;
+    }
+    drawBuffer->flush();
+    drawBuffer->drawPending(false);
+
+    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 }

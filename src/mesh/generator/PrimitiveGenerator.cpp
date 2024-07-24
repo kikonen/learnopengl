@@ -21,6 +21,15 @@ namespace {
          1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
     };
 
+    // NOTE KI normal, tangent, tex stored to allow normal g_tex shader
+    const float PLANE_VERTICES[] = {
+        // pos              // normal         // tangent        // tex
+        -1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+         1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+         1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    };
+
     const int QUAD_INDECES[] = {
         0, 1, 2,
         2, 1, 3
@@ -96,17 +105,41 @@ namespace {
     std::unique_ptr<mesh::Mesh> createPlane(
         mesh::PrimitiveGenerator generator)
     {
-        auto mesh = createQuad(generator);
-        mesh->m_alias = "plane";
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
 
-        glm::mat3 rotateMat = glm::mat4(util::degreesToQuat({ -90, 0, 0 }));
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
 
-        for (auto& vertex : mesh->m_vertices) {
-            vertex.pos = rotateMat * vertex.pos;
-            vertex.normal = rotateMat * vertex.normal;
+        vertices.reserve(4);
+        indeces.reserve(indeces.size());
+
+        glm::vec2 size{ generator.size.x, generator.size.y };
+        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size.x, 1.f, size.y});
+
+        auto& row = PLANE_VERTICES;
+        for (int i = 0; i < 4; i++) {
+            auto& v = vertices.emplace_back();
+
+            int offset = 11 * i;
+            v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
+
+            offset += 3;
+            v.normal = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
+
+            offset += 3;
+            v.tangent = glm::vec3{ row[offset + 0], row[offset + 1] , row[offset + 2] };
+
+            offset += 3;
+            v.texCoord = glm::vec2{ row[offset + 0], row[offset + 1] };
         }
 
-        return std::move(mesh);
+        for (auto& index : QUAD_INDECES) {
+            indeces.push_back(index);
+        }
+
+        return mesh;
     }
 
     std::unique_ptr<mesh::Mesh> createBox(
