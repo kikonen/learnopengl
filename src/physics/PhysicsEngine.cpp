@@ -399,4 +399,21 @@ namespace physics
         physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
         m_objectMeshes = generator.generateMeshes();
     }
+
+    std::vector<pool::NodeHandle> PhysicsEngine::rayCast(glm::vec3 origin, glm::vec3 dir)
+    {
+        std::vector<pool::NodeHandle> hits;
+
+        dGeomID rayId = dCreateRay(m_spaceId, 1000);
+        dGeomRaySet(rayId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
+
+        dContactGeom contact;
+        for (auto& obj : m_objects) {
+            if (dCollide(rayId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
+                hits.push_back(obj.m_nodeHandle);
+            }
+        }
+
+        return hits;
+    }
 }

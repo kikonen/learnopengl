@@ -54,6 +54,7 @@
 #include "gui/Input.h"
 #include "gui/Window.h"
 
+#include "physics/PhysicsEngine.h"
 
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
@@ -428,6 +429,17 @@ void SampleApp::selectNode(
     //const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
 
     const bool selectMode = inputState.ctrl;
+
+    const auto* camera = ctx.m_camera;
+    const auto& hits = physics::PhysicsEngine::get().rayCast(
+        camera->getWorldPosition(),
+        camera->getViewFront());
+    if (!hits.empty()) {
+        for (auto& hit : hits) {
+            auto* node = hit.toNode();
+            KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+        }
+    }
 
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);

@@ -73,6 +73,8 @@ namespace physics {
 
         void generateObjectMeshes();
 
+        std::vector<pool::NodeHandle> rayCast(glm::vec3 origin, glm::vec3 dir);
+
     private:
         void preparePending(const UpdateContext& ctx);
         void preparePendingNodes(const UpdateContext& ctx);
