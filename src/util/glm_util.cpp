@@ -67,7 +67,7 @@ namespace util
         const float thetaCos = glm::dot(up, normal);
 
         // Identity rotation if exactly same dir (avoid NaN in acosf)
-        if (thetaCos == 1.f) return glm::quat{ 0, 0, 0, 1.f };
+        if (thetaCos == 1.f) return glm::quat{ 1.f, 0.f, 0.f, 0.f };
 
         const auto axis = glm::normalize(glm::cross(up, normal));
         const float theta = acosf(thetaCos);

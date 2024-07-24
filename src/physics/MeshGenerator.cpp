@@ -53,7 +53,7 @@ namespace physics {
         if (!geomId) return nullptr;
 
         glm::vec3 pos{ 0.f };
-        glm::quat rot{ 0.f, 0.f, 0.f, 1.f };
+        glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
 
         std::unique_ptr<mesh::Mesh> mesh;
         {
