@@ -51,9 +51,13 @@ namespace loader {
         type->setName("<volume>");
 
         {
-            mesh::PrimitiveGenerator generator;
+            auto generator = mesh::PrimitiveGenerator::sphere();
+            generator.radius = 1.f;
+            generator.slices = 8;
+            generator.segments = 4;
+
             mesh::LodMesh lodMesh;
-            lodMesh.setMesh(generator.generateCapsule("<capsule>", 1.f, 0.5f, 8, 2, 2), true);
+            lodMesh.setMesh(generator.create(), true);
             type->addLodMesh(std::move(lodMesh));
         }
 

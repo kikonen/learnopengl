@@ -38,9 +38,18 @@ namespace loader {
                 else if (type == "capsule") {
                     data.type = mesh::PrimitiveType::capsule;
                 }
+                else if (type == "cylinder") {
+                    data.type = mesh::PrimitiveType::cylinder;
+                }
+                else if (type == "capped_cylinder") {
+                    data.type = mesh::PrimitiveType::capped_cylinder;
+                }
                 else {
                     reportUnknown("vertex_type", k, v);
                 }
+            }
+            else if (k == "size") {
+                data.size = readVec3(v);
             }
             else if (k == "radius") {
                 data.radius = readFloat(v);
@@ -120,65 +129,22 @@ namespace loader {
     {
         if (!data.valid) return nullptr;
 
-        switch (data.type) {
-        case mesh::PrimitiveType::points:
-            return createPrimitiveMesh(meshData, data, loaders);
-        case mesh::PrimitiveType::lines:
-            return createPrimitiveMesh(meshData, data, loaders);
-        case mesh::PrimitiveType::capsule:
-            return createCapsuleMesh(meshData, data, loaders);
+        auto generator = mesh::PrimitiveGenerator::get(data.type);
+
+        if (!data.name.empty()) {
+            generator.name = data.name;
+        }
+        if (!data.alias.empty()) {
+            generator.alias= data.alias;
         }
 
-        return nullptr;
-    }
+        generator.size = data.size;
+        generator.radius = data.radius;
+        generator.length = data.length;
+        generator.slices = data.slices;
+        generator.segments = data.segments;
+        generator.rings = data.rings;
 
-    std::unique_ptr<mesh::Mesh> VertexLoader::createPrimitiveMesh(
-        const MeshData& meshData,
-        const VertexData& data,
-        Loaders& loaders) const
-    {
-        const auto& name = data.name.empty() ? "<primitive>" : data.name;
-
-        auto mesh = std::make_unique<mesh::PrimitiveMesh>(name);
-        mesh->m_type = data.type;
-        mesh->m_alias = "primitive";
-
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
-
-        vertices.reserve(data.vertices.size());
-        indeces.reserve(data.indeces.size());
-
-        for (auto& v : data.vertices) {
-            auto& vertex = vertices.emplace_back();
-            vertex.pos = v;
-        }
-
-        for (auto& v : data.indeces) {
-            indeces.push_back(v);
-        }
-
-        return mesh;
-    }
-
-    std::unique_ptr<mesh::Mesh> VertexLoader::createCapsuleMesh(
-        const MeshData& meshData,
-        const VertexData& data,
-        Loaders& loaders) const
-    {
-        const auto& name = data.name.empty() ? "<capsule>" : data.name;
-
-        mesh::PrimitiveGenerator generator;
-        auto mesh = generator.generateCapsule(
-            name,
-            data.radius,
-            data.length,
-            data.slices,
-            data.segments,
-            data.rings);
-
-        mesh->m_alias = "capsule";
-
-        return mesh;
+        return generator.create();
     }
 }

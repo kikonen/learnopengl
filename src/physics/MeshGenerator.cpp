@@ -57,7 +57,6 @@ namespace physics {
 
         std::unique_ptr<mesh::Mesh> mesh;
         {
-            mesh::PrimitiveGenerator generator;
             switch (obj.m_geom.type) {
             case GeomType::plane: {
                 dVector4 result;
@@ -79,8 +78,12 @@ namespace physics {
 
                 pos = normal * dist;
                 glm::vec2 size{ 100.f, 100.f };
-                mesh = generator.generatePlane(fmt::format("<plane-{}>", obj.m_id), size);
-                mesh->m_alias = "plane";
+
+                auto generator = mesh::PrimitiveGenerator::plane();
+                generator.name = fmt::format("<plane-{}>", obj.m_id);
+                generator.size = glm::vec3{ size.x, size.y, 0.f };
+                mesh = generator.create();
+
                 break;
             }
             case GeomType::box: {
@@ -91,46 +94,54 @@ namespace physics {
                     static_cast<float>(lengths[1]) / 2.f,
                     static_cast<float>(lengths[2]) / 2.f
                 };
-                mesh = generator.generateBox(
-                    fmt::format("<box-{}>", obj.m_id),
-                    size);
-                mesh->m_alias = "box";
+
+                auto generator = mesh::PrimitiveGenerator::box();
+                generator.name = fmt::format("<box-{}>", obj.m_id);
+                generator.size = size;
+                mesh = generator.create();
+
                 break;
             }
             case GeomType::sphere: {
                 dReal radius = dGeomSphereGetRadius(geomId);
-                mesh = generator.generateSphere(
-                    fmt::format("<sphere-{}>", obj.m_id),
-                    static_cast<float>(radius),
-                    16,
-                    8);
-                mesh->m_alias = "sphere";
+
+                auto generator = mesh::PrimitiveGenerator::sphere();
+                generator.name = fmt::format("<sphere-{}>", obj.m_id);
+                generator.radius = static_cast<float>(radius);
+                generator.slices = 16;
+                generator.segments = 8;
+                mesh = generator.create();
+
                 break;
             }
             case GeomType::capsule: {
                 dReal radius;
                 dReal length;
                 dGeomCapsuleGetParams(geomId, &radius, &length);
-                mesh = generator.generateCapsule(
-                    fmt::format("<capsule-{}>", obj.m_id),
-                    static_cast<float>(radius),
-                    static_cast<float>(length),
-                    8,
-                    8);
-                mesh->m_alias = "capsule";
+
+                auto generator = mesh::PrimitiveGenerator::capsule();
+                generator.name = fmt::format("<capsule-{}>", obj.m_id);
+                generator.radius = static_cast<float>(radius);
+                generator.length = static_cast<float>(length);
+                generator.slices = 8;
+                generator.segments = 8;
+                mesh = generator.create();
+
                 break;
             }
             case GeomType::cylinder: {
                 dReal radius;
                 dReal length;
                 dGeomCylinderGetParams(geomId, &radius, &length);
-                mesh = generator.generateCylinder(
-                    fmt::format("<cylinder-{}>", obj.m_id),
-                    static_cast<float>(radius),
-                    static_cast<float>(length),
-                    8,
-                    8);
-                mesh->m_alias = "cylinder";
+
+                auto generator = mesh::PrimitiveGenerator::capped_cylinder();
+                generator.name = fmt::format("<cylinder-{}>", obj.m_id);
+                generator.radius = static_cast<float>(radius);
+                generator.length = static_cast<float>(length);
+                generator.slices = 8;
+                generator.segments = 8;
+                mesh = generator.create();
+
                 break;
             }
             }

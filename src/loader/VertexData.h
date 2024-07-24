@@ -13,7 +13,9 @@ namespace loader {
         mesh::PrimitiveType type{ mesh::PrimitiveType::none };
 
         std::string name;
+        std::string alias;
 
+        glm::vec3 size{ 1.f };
         float radius = 1.f;
         float length{ 0.5f };
         int slices{ 32 };

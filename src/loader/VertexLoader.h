@@ -37,12 +37,8 @@ namespace loader {
             Loaders& loaders) const;
 
     private:
-        std::unique_ptr<mesh::Mesh> createPrimitiveMesh(
-            const MeshData& meshData,
-            const VertexData& data,
-            Loaders& loaders) const;
-
-        std::unique_ptr<mesh::Mesh> createCapsuleMesh(
+        std::unique_ptr<mesh::Mesh> createMesh(
+            std::string defaultName,
             const MeshData& meshData,
             const VertexData& data,
             Loaders& loaders) const;

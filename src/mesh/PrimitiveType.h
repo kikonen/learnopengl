@@ -6,6 +6,12 @@ namespace mesh {
         points,
         lines,
         line_strip,
-        capsule
+        plane,
+        quad,
+        box,
+        sphere,
+        capsule,
+        cylinder,
+        capped_cylinder
     };
 }

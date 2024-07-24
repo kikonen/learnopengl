@@ -88,6 +88,27 @@ namespace mesh {
         return m_vao;
     }
 
+    const kigl::GLVertexArray* PrimitiveMesh::prepareRTDebug(
+        const PrepareContext& ctx)
+    {
+        TexturedVAO* vao = VaoRegistry::get().getDebugVao();
+
+        m_vboIndex = vao->reserveVertices(m_vertices.size());
+        m_eboIndex = vao->reserveIndeces(m_indeces.size());
+
+        vao->updateVertices(
+            m_vboIndex,
+            m_vertices);
+
+        vao->updateIndeces(
+            m_eboIndex,
+            m_indeces);
+
+        m_vao = vao->getVAO();
+
+        return m_vao;
+    }
+
     void PrimitiveMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
@@ -99,8 +120,7 @@ namespace mesh {
 
         auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-
-        drawOptions.m_mode = backend::DrawOptions::Mode::none;
+        drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
 
         switch (m_type) {
         case PrimitiveType::lines:
