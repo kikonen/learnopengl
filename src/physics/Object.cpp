@@ -113,11 +113,11 @@ namespace physics
             break;
         }
         case GeomType::capsule: {
-            m_geomId = dCreateCapsule(spaceId, radius, length);
+            m_geomId = dCreateCapsule(spaceId, radius, length * 2.f);
             break;
         }
         case GeomType::cylinder: {
-            m_geomId = dCreateCylinder(spaceId, radius, length);
+            m_geomId = dCreateCylinder(spaceId, radius, length * 2.f);
             break;
         }
         }

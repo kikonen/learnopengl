@@ -15,7 +15,13 @@ namespace physics {
 
     struct Geom {
         // NOTE KI *SCALED* using scale of node
-        // size{0] == radius
+        // box:
+        // - size == vec3
+        // sphere:
+        // - size.x == radius
+        // capsule/cylinder:
+        // - size.x == radius
+        // - size.y == length (Half of the length between centers of the caps along the z-axis.)
         glm::vec3 size{ 1.f };
 
         glm::quat quat{ 1.f, 0.f, 0.f, 0.f };

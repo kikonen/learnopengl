@@ -80,6 +80,7 @@ namespace mesh {
             };
         }
 
+        /// @param radius The radius of the sphere
         /// @param slices Subdivisions around the z-azis (longitudes).
         /// @param segments Subdivisions along the z-azis (latitudes).
         static PrimitiveGenerator sphere()
@@ -94,7 +95,8 @@ namespace mesh {
             };
         }
 
-        /// @param size Half of the length between centers of the caps along the z-axis.
+        /// @param radius Radius of the capsule on the xy-plane.
+        /// @param length Half of the length between centers of the caps along the z-axis.
         /// @param slices Number of subdivisions around the z-axis.
         /// @param segments Subdivisions along the z-azis (latitudes).
         /// @param rings Number of radial subdivisions in the caps.
@@ -113,7 +115,7 @@ namespace mesh {
         }
 
         /// @param radius Radius of the cylinder along the xy-plane.
-        /// @param size Half of the length of the cylinder along the z-axis.
+        /// @param length Half of the length of the cylinder along the z-axis.
         /// @param slices Subdivisions around the z-axis.
         /// @param segments Subdivisions along the z-axis.
         static PrimitiveGenerator cylinder()
@@ -130,7 +132,7 @@ namespace mesh {
         }
 
         /// @param radius Radius of the cylinder along the xy-plane.
-        /// @param size Half of the length of the cylinder along the z-axis.
+        /// @param length Half of the length of the cylinder along the z-axis.
         /// @param slices Subdivisions around the z-axis.
         /// @param segments Subdivisions along the z-axis.
         static PrimitiveGenerator capped_cylinder()

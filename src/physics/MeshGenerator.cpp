@@ -90,9 +90,9 @@ namespace physics {
                 dVector3 lengths;
                 dGeomBoxGetLengths(geomId, lengths);
                 glm::vec3 size{
-                    static_cast<float>(lengths[0]) / 2.f,
-                    static_cast<float>(lengths[1]) / 2.f,
-                    static_cast<float>(lengths[2]) / 2.f
+                    static_cast<float>(lengths[0]) * 0.5f,
+                    static_cast<float>(lengths[1]) * 0.5f,
+                    static_cast<float>(lengths[2]) * 0.5f
                 };
 
                 auto generator = mesh::PrimitiveGenerator::box();
@@ -122,7 +122,7 @@ namespace physics {
                 auto generator = mesh::PrimitiveGenerator::capsule();
                 generator.name = fmt::format("<capsule-{}>", obj.m_id);
                 generator.radius = static_cast<float>(radius);
-                generator.length = static_cast<float>(length);
+                generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
                 generator.segments = 8;
                 mesh = generator.create();
@@ -137,7 +137,7 @@ namespace physics {
                 auto generator = mesh::PrimitiveGenerator::capped_cylinder();
                 generator.name = fmt::format("<cylinder-{}>", obj.m_id);
                 generator.radius = static_cast<float>(radius);
-                generator.length = static_cast<float>(length);
+                generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
                 generator.segments = 8;
                 mesh = generator.create();
