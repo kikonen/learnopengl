@@ -65,14 +65,13 @@ nodes:
         ke: [0.0, 0.1, 0.0]
         alpha: true
         render_back: true
-    program: g_tex
-    shadow_program: simple_depth
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.028
     pos: [5, 24, 28]
     front: [0, 0, -1]
     base_rotation: [0, 0, 0]
     scale: 3
-    base_scale: 0.028
-    xrender_flags:
     controller:
       type: pawn
     physics:
@@ -83,7 +82,7 @@ nodes:
         rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [0.5, 3, 0]
+        size: [1, 1.5, 0]
   - name: Pawn Camera
     parent_id: pawn
     type: origo
@@ -163,7 +162,7 @@ nodes:
         xmap_pbr: textures\Planks 09 [8K]
         map_pbr: textures\Metal007_1K-PNG
         xreflection: 0.05
-        parallax_depth: 0.0
+        xparallax_depth: 0.0
     program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
@@ -179,57 +178,66 @@ nodes:
   - name: Fence ball
     parent_id: ball_origo
     mesh:
-      path: water_ball
+      vertex:
+        type: cylinder
+        radius: 1
+        length: 1
       material:
         kd: [0.5075, 0.5075, 0.5075, 1.0]
         map_pbr: textures\Fence007A_4K-JPG
         xreflection: 0.05
-        parallax_depth: 0.0
+        xparallax_depth: 0.0
         alpha: true
         xblend: true
         render_back: true
     program: g_tex
     pos: [0.0, 0.0, 10.0]
+    base_rotation: [90, 0, 0]
     scale: 1.3
-    xrender_flags:
-    xphysics:
+    physics:
       body:
-        type: sphere
+        type: cylinder
         density: 0.05
+        rot: [90, 0, 0]
+        scale: 1.3
       geom:
-        type: sphere
-        size: 1.3
+        type: cylinder
+        size: [1, 1, 0]
   - name: Plastic ball
     parent_id: ball_origo
     mesh:
-      path: water_ball
+      vertex:
+        type: capped_cylinder
+        radius: 1
+        length: 1
       material:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         map_pbr: textures\Plastic 01 [4K]
         xreflection: 0.05
-        parallax_depth: 0.0
+        xparallax_depth: 0.1
     program: g_tex
     pos: [0.0, 0.0, 15.0]
+    base_rotation: [45, 0, 0]
     scale: 1.3
-    xphysics:
+    physics:
       body:
-        type: sphere
+        type: cylinder
         density: 0.3
+        scale: 1.3
+        rot: [45, 0, 0]
       geom:
-        type: sphere
-        size: 1.3
+        type: cylinder
+        size: [1, 1, 0]
   - name: Rusted iron ball
     parent_id: ball_origo
     mesh:
       path: water_ball
       material:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        xmap_pbr: textures\Plastic 01 [4K]
         map_pbr: textures\Metal022_1K-PNG
         xreflection: 0.05
-        parallax_depth: 0.0
         tiling: 3
-        parallax_depth: 0.0
+        xparallax_depth: 0.0
     program: g_tex
     pos: [-10.0, 0.0, 20.0]
     scale: 1.3
@@ -243,17 +251,19 @@ nodes:
   - name: Old gold ball
     parent_id: ball_origo
     mesh:
-      path: water_ball
+      vertex:
+        type: capsule
+        radius: 1
+        length: 1
       material:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        xmap_pbr: textures\Plastic 01 [4K]
         map_pbr: textures\Metal008_1K-PNG
         xreflection: 0.05
         tiling: 3
-        parallax_depth: 0.0
+        xparallax_depth: 0.0
         program: g_tex
     pos: [0.0, 0.0, 25.0]
-    scale: [1, 1, 3]
+    scale: [1, 1, 1]
     base_rot: [90, 0, 0]
     physics:
       body:
@@ -262,7 +272,7 @@ nodes:
         rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [1, 4, 0]
+        size: [1, 1, 0]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -302,7 +312,7 @@ nodes:
       material:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_pbr: textures\Fence007A_4K-JPG
-        parallax_depth: 0.0
+        xparallax_depth: 0.0
         tiling: 1
         alpha: true
         xxblend: true
@@ -311,7 +321,6 @@ nodes:
     pos: [-30.0, 0, -50]
     scale: 5
     rotation: [0, 270, 0]
-    xrender_flags:
     repeat:
       z_count: 10
       y_count: 4
@@ -332,11 +341,10 @@ nodes:
         render_back: true
         program: g_tex
         shadow_program: simple_depth
+      base_scale: 0.028
     pos: [3, 25, 25]
     base_rotation: [0, 0, 0]
     scale: 3
-    base_scale: 0.028
-    xrender_flags:
     physics:
       body:
         type: capsule
@@ -344,7 +352,7 @@ nodes:
         rot: [90, 0, 0]
       geom:
         type: capsule
-        size: [0.3, 3.4, 0]
+        size: [1, 1.5, 0]
   - name: world_x_minus
     xtype: origo
     mesh:

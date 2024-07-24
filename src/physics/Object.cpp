@@ -56,9 +56,11 @@ namespace physics
     {
         if (ready()) return;
 
-        const auto& sz = m_geom.size;
-        const float radius = sz.x;
-        const float length = sz.y;
+        const auto& scale = m_body.scale;
+
+        auto sz = scale * m_geom.size;
+        float radius = sz.x;
+        float length = sz.y;
 
         if (m_body.type != BodyType::none) {
             m_bodyId = dBodyCreate(worldId);

@@ -17,6 +17,8 @@ namespace physics {
         // size{0] == radius
         glm::vec3 size{ 1.f };
 
+        glm::vec3 scale{ 1.f };
+
         // initial values for physics
         glm::vec3 linearVel{ 0.f };
         glm::vec3 angularVel{ 0.f };
