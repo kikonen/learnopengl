@@ -399,6 +399,11 @@ namespace backend {
         }
 
         // HACK KI for primitive GL_LINES
-        glLineWidth(1.5f);
+        // OPENGL: API 0x7 (7) DEPRECATED MEDIUM - API_ID_LINE_WIDTH
+        // deprecated behavior warning has been generated.
+        // Wide lines have been deprecated. glLineWidth set to 1.500000.
+        // glLineWidth with width greater than 1.0 will generate GL_INVALID_VALUE
+        // error in future versions
+        //glLineWidth(1.5f);
     }
 }

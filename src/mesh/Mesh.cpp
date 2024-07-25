@@ -19,7 +19,7 @@ namespace mesh {
 
     Mesh::~Mesh()
     {
-        KI_INFO(fmt::format("MESH: delete {}", str()));
+        //KI_INFO(fmt::format("MESH: delete {}", str()));
     }
 
     std::string Mesh::str() const noexcept

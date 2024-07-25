@@ -42,6 +42,12 @@ private:
         const RenderContext& ctx,
         const ki::RenderClock& clock);
 
+    void raycastPlayer(
+        const RenderContext& ctx,
+        Scene* scene,
+        const InputState& inputState,
+        const InputState& lastInputState);
+
     void selectNode(
         const RenderContext& ctx,
         Scene* scene,

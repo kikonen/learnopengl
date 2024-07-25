@@ -38,7 +38,7 @@ nodes:
     audio:
       listener:
         default: true
-    physics:
+    xphysics:
       update: true
       body:
         kinematic: true

@@ -88,7 +88,7 @@ void PhysicsRenderer::drawObjects(
 
     drawBuffer->sendInstanceIndeces(instances);
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
+    //ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
 
     int baseInstance = 0;
     for (auto& mesh : *meshes)
@@ -127,5 +127,5 @@ void PhysicsRenderer::drawObjects(
     drawBuffer->flush();
     drawBuffer->drawPending(false);
 
-    ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
+    //ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
 }

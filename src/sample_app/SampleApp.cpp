@@ -265,10 +265,15 @@ int SampleApp::onRender(const ki::RenderClock& clock)
 
         if (state.mouseLeft != m_lastInputState.mouseLeft &&
             state.mouseLeft == GLFW_PRESS &&
-            state.ctrl)
+            input->allowMouse())
         {
-            if ((state.shift || state.ctrl || state.alt) && input->allowMouse()) {
+            if (state.ctrl)
+            {
                 selectNode(ctx, scene, state, m_lastInputState);
+            }
+            else if (state.shift)
+            {
+                raycastPlayer(ctx, scene, state, m_lastInputState);
             }
         }
 
@@ -413,6 +418,39 @@ void SampleApp::onDestroy()
     KI_INFO_OUT("APP: stopped all!");
 }
 
+void SampleApp::raycastPlayer(
+    const RenderContext& ctx,
+    Scene* scene,
+    const InputState& inputState,
+    const InputState& lastInputState)
+{
+    const Node* player = nullptr;
+
+    if (!player)
+    {
+        const auto playerId = SID("player");
+        player = pool::NodeHandle::toNode(playerId);
+    }
+    if (!player)
+    {
+        const auto playerId = SID("fps_player");
+        player = pool::NodeHandle::toNode(playerId);
+    }
+
+    if (player) {
+        const auto& state = player->getState();
+        const auto& hits = physics::PhysicsEngine::get().rayCast(
+            state.getWorldPosition(),
+            state.getViewFront());
+        if (!hits.empty()) {
+            for (auto& hit : hits) {
+                auto* node = hit.toNode();
+                KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+            }
+        }
+    }
+}
+
 void SampleApp::selectNode(
     const RenderContext& ctx,
     Scene* scene,
@@ -424,28 +462,7 @@ void SampleApp::selectNode(
 
     auto& debugContext = render::DebugContext::modify();
 
-    //const bool cameraMode = inputState.ctrl && inputState.alt && inputState.shift;
-    //const bool playerMode = inputState.ctrl && inputState.alt && !cameraMode;
-    //const bool selectMode = inputState.ctrl && !playerMode && !cameraMode;
-
     const bool selectMode = inputState.ctrl;
-
-    {
-        const auto playerId = SID("player");
-        const auto* player = pool::NodeHandle::toNode(playerId);
-        if (player) {
-            const auto& state = player->getState();
-            const auto& hits = physics::PhysicsEngine::get().rayCast(
-                state.getWorldPosition(),
-                state.getViewFront());
-            if (!hits.empty()) {
-                for (auto& hit : hits) {
-                    auto* node = hit.toNode();
-                    KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
-                }
-            }
-        }
-    }
 
     ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
     auto* node = pool::NodeHandle::toNode(nodeId);

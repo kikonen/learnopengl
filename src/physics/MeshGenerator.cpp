@@ -124,7 +124,7 @@ namespace physics {
                 generator.name = fmt::format("<ray-{}>", obj.m_id);
                 generator.origin = origin;
                 generator.dir = dir;
-                generator.length = 4.f;
+                generator.length = length;
                 mesh = generator.create();
 
                 break;
