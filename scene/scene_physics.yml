@@ -256,12 +256,14 @@ nodes:
         radius: 1
         length: 1
       material:
-        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        #kd: [0.7140, 0.4284, 0.1814, 1.0]
+        #kd: [1, 1, 1, 0.68]
         map_pbr: textures\Metal008_1K-PNG
         xreflection: 0.05
         tiling: 3
         xparallax_depth: 0.0
         program: g_tex
+        xblend: true
     pos: [0.0, 0.0, 25.0]
     scale: [1, 1, 1]
     base_rot: [90, 0, 0]
