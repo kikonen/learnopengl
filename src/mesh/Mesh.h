@@ -72,6 +72,11 @@ namespace mesh {
             return nullptr;
         }
 
+        virtual backend::DrawOptions::Mode getDrawMode()
+        {
+            return backend::DrawOptions::Mode::triangles;
+        }
+
         inline uint32_t getBaseVertex() const noexcept {
             return m_vboIndex;
         }

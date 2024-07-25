@@ -62,7 +62,45 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createQuad(
+    std::unique_ptr<mesh::Mesh> createRay(
+        mesh::PrimitiveGenerator generator)
+    {
+        if (generator.length == 0) return nullptr;
+
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        vertices.reserve(2);
+        indeces.reserve(2);
+
+        const auto& origin = generator.origin;
+        const auto& dir = generator.dir;
+        const auto& length = generator.length;
+
+        {
+            auto& v = vertices.emplace_back();
+            v.pos = origin;
+            v.normal = { 0, 1, 0 };
+            v.tangent = { 0, 0, 1 };
+        }
+        {
+            auto& v = vertices.emplace_back();
+            v.pos = origin + dir * length;
+            v.normal = { 0, 1, 0 };
+            v.tangent = { 0, 0, 1 };
+        }
+
+        indeces.push_back(0);
+        indeces.push_back(1);
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createPlane(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -76,9 +114,9 @@ namespace {
         indeces.reserve(indeces.size());
 
         glm::vec2 size{ generator.size.x, generator.size.y };
-        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size, 1.f });
+        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size.x, 1.f, size.y });
 
-        auto& row = QUAD_VERTICES;
+        auto& row = PLANE_VERTICES;
         for (int i = 0; i < 4; i++) {
             auto& v = vertices.emplace_back();
 
@@ -102,7 +140,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createPlane(
+    std::unique_ptr<mesh::Mesh> createQuad(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -116,9 +154,9 @@ namespace {
         indeces.reserve(indeces.size());
 
         glm::vec2 size{ generator.size.x, generator.size.y };
-        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size.x, 1.f, size.y});
+        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size, 1.f });
 
-        auto& row = PLANE_VERTICES;
+        auto& row = QUAD_VERTICES;
         for (int i = 0; i < 4; i++) {
             auto& v = vertices.emplace_back();
 
@@ -316,6 +354,8 @@ namespace mesh {
             return createVertices(*this);
         case PrimitiveType::lines:
             return createVertices(*this);
+        case PrimitiveType::ray:
+            return createRay(*this);
         case PrimitiveType::plane:
             return createPlane(*this);
         case PrimitiveType::quad:

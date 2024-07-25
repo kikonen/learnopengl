@@ -40,6 +40,8 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;
 
+        virtual backend::DrawOptions::Mode getDrawMode() override;
+
     public:
         PrimitiveType m_type;
 

@@ -130,6 +130,13 @@ namespace physics
         m_gravity = { 0, -2.01f, 0 };
 
         dWorldSetGravity(m_worldId, m_gravity.x, m_gravity.y, m_gravity.z);
+
+        {
+            m_rayId = registerObject();
+            auto* obj = getObject(m_rayId);
+            obj->m_geom.type = GeomType::ray;
+            obj->m_body.kinematic = true;
+        }
     }
 
     void PhysicsEngine::update(const UpdateContext& ctx)
@@ -137,58 +144,59 @@ namespace physics
         if (!m_enabled) return;
 
         m_initialDelay += ctx.m_clock.elapsedSecs;
+        if (m_initialDelay < 10) return;
 
-        if (m_initialDelay > 10) {
-            preparePending(ctx);
+        std::lock_guard lock{ m_lock };
 
-            for (auto* obj : m_updateObjects) {
-                obj->updateToPhysics(false);
+        preparePending(ctx);
+
+        for (auto* obj : m_updateObjects) {
+            obj->updateToPhysics(false);
+        }
+
+        const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
+        const int n = static_cast<int>(dtTotal / STEP_SIZE);
+        m_remainder = dtTotal - n * STEP_SIZE;
+
+        if (n > 0) {
+            m_invokeCount++;
+            m_stepCount += n;
+
+            //std::cout << "n=" << n << '\n';
+
+            //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
+
+            //std::cout << "[BEFORE]\n";
+            //for (const auto& it : m_objects) {
+            //    Object* obj = it.second;
+            //    if (!obj->m_bodyId) continue;
+
+            //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
+            //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
+            //}
+
+            for (int i = 0; i < n; i++) {
+                if (!*m_alive) return;
+
+                dSpaceCollide(m_spaceId, this, &nearCallback);
+                dWorldQuickStep(m_worldId, STEP_SIZE);
+                dJointGroupEmpty(m_contactgroupId);
             }
 
-            const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
-            const int n = static_cast<int>(dtTotal / STEP_SIZE);
-            m_remainder = dtTotal - n * STEP_SIZE;
+            //std::cout << "[AFTER]\n";
+            //for (const auto& it : m_objects) {
+            //    Object* obj = it.second;
+            //    if (!obj->m_bodyId) continue;
 
-            if (n > 0) {
-                m_invokeCount++;
-                m_stepCount += n;
+            //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
+            //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
+            //}
 
-                //std::cout << "n=" << n << '\n';
-
-                //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
-
-                //std::cout << "[BEFORE]\n";
-                //for (const auto& it : m_objects) {
-                //    Object* obj = it.second;
-                //    if (!obj->m_bodyId) continue;
-
-                //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
-                //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
-                //}
-
-                for (int i = 0; i < n; i++) {
-                    if (!*m_alive) return;
-
-                    dSpaceCollide(m_spaceId, this, &nearCallback);
-                    dWorldQuickStep(m_worldId, STEP_SIZE);
-                    dJointGroupEmpty(m_contactgroupId);
-                }
-
-                //std::cout << "[AFTER]\n";
-                //for (const auto& it : m_objects) {
-                //    Object* obj = it.second;
-                //    if (!obj->m_bodyId) continue;
-
-                //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
-                //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
-                //}
-
-                for (const auto& obj : m_objects) {
-                    obj.updateFromPhysics();
-                }
-
-                generateObjectMeshes();
+            for (const auto& obj : m_objects) {
+                obj.updateFromPhysics();
             }
+
+            generateObjectMeshes();
         }
     }
 
@@ -239,20 +247,20 @@ namespace physics
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id - 1];
 
-            auto* node = obj.m_nodeHandle.toNode();
-            if (!node) continue;
-
-            const auto level = node->getState().getMatrixLevel();
-            if (obj.m_matrixLevel == level) continue;
-
             obj.prepare(m_worldId, m_spaceId);
             obj.updateToPhysics(false);
 
-            if (obj.m_update) {
-                m_updateObjects.push_back(&obj);
-            }
+            auto* node = obj.m_nodeHandle.toNode();
+            if (node) {
+                const auto level = node->getState().getMatrixLevel();
+                if (obj.m_matrixLevel == level) continue;
 
-            prepared.insert({ id, true });
+                if (obj.m_update) {
+                    m_updateObjects.push_back(&obj);
+                }
+
+                prepared.insert({ id, true });
+            }
         }
 
         if (!prepared.empty()) {
@@ -406,13 +414,25 @@ namespace physics
 
     std::vector<pool::NodeHandle> PhysicsEngine::rayCast(glm::vec3 origin, glm::vec3 dir)
     {
+        if (!m_enabled) return {};
+
+        std::lock_guard lock{ m_lock };
+
+        auto* ray = getObject(m_rayId);
+        if (!ray || !ray->m_geomId) return {};
+
+        const auto rayId = ray->m_geomId;
+
         std::vector<pool::NodeHandle> hits;
 
-        dGeomID rayId = dCreateRay(m_spaceId, 1000);
         dGeomRaySet(rayId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
+        dGeomRaySetLength(rayId, 100.f);
 
         dContactGeom contact;
         for (auto& obj : m_objects) {
+            if (rayId == obj.m_geomId) continue;
+            if (!obj.m_geomId) continue;
+
             if (dCollide(rayId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
                 hits.push_back(obj.m_nodeHandle);
             }

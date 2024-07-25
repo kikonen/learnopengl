@@ -8,6 +8,7 @@
 #include "kigl/GLState.h"
 
 #include "mesh/Mesh.h"
+#include "mesh/PrimitiveMesh.h"
 #include "mesh/vao/TexturedVAO.h"
 #include "registry/VaoRegistry.h"
 #include "backend/DrawBuffer.h"
@@ -94,11 +95,11 @@ void PhysicsRenderer::drawObjects(
     {
         backend::DrawOptions drawOptions;
         {
-            drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
+            drawOptions.m_mode = mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;
             drawOptions.m_solid = true;
             drawOptions.m_wireframe = true;
-            //drawOptions.m_renderBack = true;
+            drawOptions.m_renderBack = false;
         }
 
         backend::DrawRange drawRange{

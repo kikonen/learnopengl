@@ -100,15 +100,20 @@ namespace mesh {
 
         auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
+        drawOptions.m_mode = getDrawMode();
 
+    }
+
+    backend::DrawOptions::Mode PrimitiveMesh::getDrawMode()
+    {
         switch (m_type) {
         case PrimitiveType::lines:
-            drawOptions.m_mode = backend::DrawOptions::Mode::lines;
-            break;
+            return backend::DrawOptions::Mode::lines;
         case PrimitiveType::points:
-            drawOptions.m_mode = backend::DrawOptions::Mode::points;
-            break;
+            return backend::DrawOptions::Mode::points;
+        case PrimitiveType::ray:
+            return backend::DrawOptions::Mode::lines;
         }
+        return backend::DrawOptions::Mode::triangles;
     }
 }

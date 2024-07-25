@@ -6,6 +6,7 @@
 namespace physics {
     enum class GeomType : std::underlying_type_t<std::byte> {
         none,
+        ray,
         plane,
         box,
         sphere,

@@ -90,6 +90,11 @@ namespace physics
         }
 
         switch (m_geom.type) {
+        case GeomType::ray: {
+            m_geomId = dCreateRay(spaceId, 0);
+            dGeomRaySet(m_geomId, 0, 0, 0, 0, 0, 1);
+            break;
+        }
         case GeomType::plane: {
             const auto& q = m_geom.quat;
             //const auto& plane = m_geom.plane;

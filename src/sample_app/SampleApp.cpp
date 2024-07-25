@@ -430,14 +430,20 @@ void SampleApp::selectNode(
 
     const bool selectMode = inputState.ctrl;
 
-    const auto* camera = ctx.m_camera;
-    const auto& hits = physics::PhysicsEngine::get().rayCast(
-        camera->getWorldPosition(),
-        camera->getViewFront());
-    if (!hits.empty()) {
-        for (auto& hit : hits) {
-            auto* node = hit.toNode();
-            KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+    {
+        const auto playerId = SID("player");
+        const auto* player = pool::NodeHandle::toNode(playerId);
+        if (player) {
+            const auto& state = player->getState();
+            const auto& hits = physics::PhysicsEngine::get().rayCast(
+                state.getWorldPosition(),
+                state.getViewFront());
+            if (!hits.empty()) {
+                for (auto& hit : hits) {
+                    auto* node = hit.toNode();
+                    KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+                }
+            }
         }
     }
 

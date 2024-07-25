@@ -34,12 +34,15 @@ namespace {
         std::lock_guard lock{ g_materialLock };
 
         if (g_materials.empty()) {
+            const auto& matRed = Material::createMaterial(BasicMaterial::red);
             const auto& matWhite = Material::createMaterial(BasicMaterial::white);
             const auto& matBlue = Material::createMaterial(BasicMaterial::blue);
             const auto& matGreen = Material::createMaterial(BasicMaterial::green);
+            const auto& matGold = Material::createMaterial(BasicMaterial::gold);
 
             g_materials.insert({
                 { physics::GeomType::none, matWhite },
+                { physics::GeomType::ray, matRed },
                 { physics::GeomType::plane, matBlue },
                 { physics::GeomType::box, matGreen },
             });
@@ -100,6 +103,32 @@ namespace physics {
         std::unique_ptr<mesh::Mesh> mesh;
         {
             switch (obj.m_geom.type) {
+            case GeomType::ray: {
+                dVector3 startOde;
+                dVector3 dirOde;
+
+                dGeomRayGet(geomId, startOde, dirOde);
+                float length = static_cast<float>(dGeomRayGetLength(geomId));
+
+                const glm::vec3 origin{
+                    static_cast<float>(startOde[0]),
+                    static_cast<float>(startOde[1]),
+                    static_cast<float>(startOde[2]) };
+
+                const glm::vec3 dir{
+                    static_cast<float>(dirOde[0]),
+                    static_cast<float>(dirOde[1]),
+                    static_cast<float>(dirOde[2]) };
+
+                auto generator = mesh::PrimitiveGenerator::ray();
+                generator.name = fmt::format("<ray-{}>", obj.m_id);
+                generator.origin = origin;
+                generator.dir = dir;
+                generator.length = 4.f;
+                mesh = generator.create();
+
+                break;
+            }
             case GeomType::plane: {
                 dVector4 result;
                 dGeomPlaneGetParams(geomId, result);
@@ -189,7 +218,7 @@ namespace physics {
             }
         }
 
-        if (mesh && obj.m_geom.type != GeomType::plane) {
+        if (mesh && obj.m_bodyId && obj.m_geom.type != GeomType::plane) {
             const dReal* dpos = dBodyGetPosition(obj.m_bodyId);
             const dReal* dquat = dBodyGetQuaternion(obj.m_bodyId);
 
@@ -211,16 +240,15 @@ namespace physics {
             //        "GET_GEOM: id={}, type={}, pos={}, rot={}, degrees={}",
             //        obj.m_id, util::as_integer(obj.m_geom.type), pos, rot, degrees));
             //}
-
-            // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-            rot = glm::normalize(glm::conjugate(obj.m_geom.quat) * rot);
         }
 
-        glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
-            glm::mat4(rot);
+        if (mesh) {
+            glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
+                glm::mat4(rot);
 
-        for (auto& vertex : mesh->m_vertices) {
-            vertex.pos = transform * glm::vec4(vertex.pos, 1.f);
+            for (auto& vertex : mesh->m_vertices) {
+                vertex.pos = transform * glm::vec4(vertex.pos, 1.f);
+            }
         }
 
         return mesh;

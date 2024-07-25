@@ -23,6 +23,9 @@ namespace mesh {
         int segments{ 4 };
         int rings{ 8 };
 
+        glm::vec3 origin{ 0.f };
+        glm::vec3 dir{ 0.f };
+
         std::vector<glm::vec3> vertices;
         std::vector<int> indeces;
 
@@ -50,6 +53,18 @@ namespace mesh {
                 .type = PrimitiveType::lines,
                 .name = "<lines>",
                 .alias = "lines"
+            };
+        }
+
+        /// @param origin origin of ray
+        /// @param dir dir of ray
+        /// @param length length of ray
+        static PrimitiveGenerator ray()
+        {
+            return {
+                .type = PrimitiveType::ray,
+                .name = "<ray>",
+                .alias = "ray"
             };
         }
 
@@ -155,6 +170,8 @@ namespace mesh {
                 return points();
             case PrimitiveType::lines:
                 return lines();
+            case PrimitiveType::ray:
+                return ray();
             case PrimitiveType::plane:
                 return plane();
             case PrimitiveType::quad:

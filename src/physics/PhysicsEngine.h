@@ -89,6 +89,8 @@ namespace physics {
     private:
         std::shared_ptr<std::atomic<bool>> m_alive;
 
+        std::mutex m_lock;
+
         bool m_prepared{ false };
 
         glm::vec3 m_gravity{ 0, -9.81f, 0 };
@@ -110,6 +112,7 @@ namespace physics {
 
         std::vector<Object*> m_updateObjects;
         std::vector<Object> m_objects;
+        physics::physics_id m_rayId{ 0 };
 
         std::vector<HeightMap> m_heightMaps;
     };

@@ -33,6 +33,8 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh);
 
+        virtual backend::DrawOptions::Mode getDrawMode() override;
+
         virtual std::shared_ptr<animation::RigContainer> getRigContainer() override
         {
             return m_rig;

@@ -95,4 +95,9 @@ namespace mesh {
             ? backend::DrawOptions::Mode::patches
             : backend::DrawOptions::Mode::triangles;
     }
+
+    backend::DrawOptions::Mode ModelMesh::getDrawMode()
+    {
+        return backend::DrawOptions::Mode::triangles;
+    }
 }
