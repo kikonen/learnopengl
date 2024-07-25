@@ -25,8 +25,7 @@ private:
         render::FrameBuffer* targetBuffer);
 
 private:
-    Material m_objectMaterial;
-    Material m_planeMaterial;
+    Material m_fallbackMaterial;
 
     Program* m_objectProgram;
 

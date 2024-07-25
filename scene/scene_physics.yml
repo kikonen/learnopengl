@@ -360,7 +360,7 @@ nodes:
       material:
         kd: [0, 0.8, 0]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     program: g_tex
     scale: 100
@@ -379,7 +379,7 @@ nodes:
       material:
         kd: [0.8, 0.8, 0]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     program: g_tex
     scale: 100
@@ -398,7 +398,7 @@ nodes:
       material:
         kd: [0.8, 0, 0]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     program: g_tex
     scale: 100
@@ -418,7 +418,7 @@ nodes:
       material:
         kd: [0.8, 0, 0.8]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     scale: 100
     render_flags:
@@ -436,7 +436,7 @@ nodes:
       material:
         kd: [0, 0, 0.8]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     program: g_tex
     scale: 100
@@ -455,7 +455,7 @@ nodes:
       material:
         kd: [0, 0.8, 0.8]
         map_pbr: textures\Fence007A_4K-JPG
-        tiling: 4
+        tiling: 10
         alpha: true
     program: g_tex
     scale: 100

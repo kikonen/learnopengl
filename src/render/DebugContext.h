@@ -1,8 +1,15 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
+
+namespace mesh {
+    class Mesh;
+}
 
 namespace render {
     struct DebugContext {
@@ -44,5 +51,7 @@ namespace render {
         int m_parallaxMethod{ 0 };
 
         bool m_physicsShowObjects{ false };
+
+        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> m_physicsMeshes;
     };
 }

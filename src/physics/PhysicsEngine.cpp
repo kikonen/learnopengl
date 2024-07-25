@@ -12,6 +12,8 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "render/DebugContext.h"
+
 #include "engine/UpdateContext.h"
 
 #include "generator/NodeGenerator.h"
@@ -396,8 +398,10 @@ namespace physics
 
     void PhysicsEngine::generateObjectMeshes()
     {
+        auto& debugContext = render::DebugContext::modify();
+
         physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
-        m_objectMeshes = generator.generateMeshes();
+        debugContext.m_physicsMeshes = generator.generateMeshes();
     }
 
     std::vector<pool::NodeHandle> PhysicsEngine::rayCast(glm::vec3 origin, glm::vec3 dir)

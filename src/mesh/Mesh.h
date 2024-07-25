@@ -28,6 +28,7 @@ namespace animation {
 
 namespace mesh {
     struct LodMesh;
+    class TexturedVAO;
 
     class Mesh
     {
@@ -55,14 +56,8 @@ namespace mesh {
         }
 
         // @return VAO for mesh
-        virtual const kigl::GLVertexArray* prepareRT(
-            const PrepareContext& ctx) = 0;
-
-        virtual const kigl::GLVertexArray* prepareRTDebug(
-            const PrepareContext& ctx)
-        {
-            return nullptr;
-        }
+        virtual const kigl::GLVertexArray* prepareVAO();
+        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao) = 0;
 
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
@@ -113,7 +108,7 @@ namespace mesh {
         MeshFlags m_flags;
 
     protected:
-        bool m_prepared{ false };
+        bool m_preparedVAO{ false };
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 

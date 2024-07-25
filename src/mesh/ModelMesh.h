@@ -27,11 +27,8 @@ namespace mesh {
 
         virtual ~ModelMesh();
 
-        virtual const kigl::GLVertexArray* prepareRT(
-            const PrepareContext& ctx) override;
-
-        virtual const kigl::GLVertexArray* prepareRTDebug(
-            const PrepareContext& ctx) override;
+        virtual const kigl::GLVertexArray* prepareVAO() override;
+        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao) override;
 
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh);

@@ -1,6 +1,8 @@
 #include "MeshGenerator.h"
 
 #include <cmath>
+#include <map>
+#include <mutex>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -13,14 +15,53 @@
 #include "util/Util.h"
 #include "util/glm_util.h"
 
+
 #include "render/DebugContext.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/ModelMesh.h"
 
+#include "registry/MaterialRegistry.h"
+
 #include "PhysicsEngine.h"
 
 namespace {
+    std::mutex g_materialLock;
+    std::map<physics::GeomType, Material> g_materials;
+
+    void setupMaterials()
+    {
+        std::lock_guard lock{ g_materialLock };
+
+        if (g_materials.empty()) {
+            const auto& matWhite = Material::createMaterial(BasicMaterial::white);
+            const auto& matBlue = Material::createMaterial(BasicMaterial::blue);
+            const auto& matGreen = Material::createMaterial(BasicMaterial::green);
+
+            g_materials.insert({
+                { physics::GeomType::none, matWhite },
+                { physics::GeomType::plane, matBlue },
+                { physics::GeomType::box, matGreen },
+            });
+
+            for (auto& [geom, material] : g_materials) {
+                MaterialRegistry::get().registerMaterial(material);
+            }
+        }
+    }
+
+    const Material& getMaterial(physics::GeomType type)
+    {
+        setupMaterials();
+        {
+            const auto& it = g_materials.find(type);
+            if (it != g_materials.end()) return it->second;
+        }
+        {
+            const auto& it = g_materials.find(physics::GeomType::none);
+            return it->second;
+        }
+    }
 }
 
 namespace physics {
@@ -40,6 +81,7 @@ namespace physics {
 
             auto mesh = generateObject(obj);
             if (mesh) {
+                mesh->setMaterial(getMaterial(obj.m_geom.type));
                 meshes->push_back(std::move(mesh));
             }
         }
@@ -124,7 +166,7 @@ namespace physics {
                 generator.radius = static_cast<float>(radius);
                 generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
-                generator.segments = 8;
+                generator.segments = 4;
                 mesh = generator.create();
 
                 break;
@@ -139,7 +181,7 @@ namespace physics {
                 generator.radius = static_cast<float>(radius);
                 generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
-                generator.segments = 8;
+                generator.segments = 4;
                 mesh = generator.create();
 
                 break;

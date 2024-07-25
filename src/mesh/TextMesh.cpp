@@ -33,25 +33,32 @@ namespace mesh {
         m_indeces.clear();
     }
 
-    const kigl::GLVertexArray* TextMesh::prepareRT(
-        const PrepareContext& ctx)
+    const kigl::GLVertexArray* TextMesh::prepareVAO()
     {
-        if (m_prepared) return m_vao;
-        m_prepared = true;
+        if (m_preparedVAO) return m_vao;
+        m_preparedVAO = true;
 
         text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
+        return setupVAO(vao);
+    }
+
+    const kigl::GLVertexArray* TextMesh::setupVAO(mesh::TexturedVAO* vao)
+    {
         if (m_maxSize == 0) {
             m_maxSize = DEF_SIZE;
         }
 
         m_vboIndex = vao->reserveVertices(m_maxSize * 4);
-        vao->reserveAtlasCoords(m_maxSize * 4);
+
+        text::TextVAO* textVao = dynamic_cast<text::TextVAO*>(vao);
+        if (textVao) {
+            textVao->reserveAtlasCoords(m_maxSize * 4);
+        }
 
         m_eboIndex = vao->reserveIndeces(m_maxSize * 4);
 
         m_vao = vao->getVAO();
-
         return m_vao;
     }
 

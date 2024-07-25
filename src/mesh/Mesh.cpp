@@ -4,6 +4,8 @@
 
 #include "pool/IdGenerator.h"
 
+#include "registry/VaoRegistry.h"
+
 namespace {
     IdGenerator<ki::mesh_id> ID_GENERATOR;
 }
@@ -43,5 +45,14 @@ namespace mesh {
         aabb.updateVolume();
 
         return aabb;
+    }
+
+    const kigl::GLVertexArray* Mesh::prepareVAO()
+    {
+        if (m_preparedVAO) return m_vao;
+        m_preparedVAO = true;
+
+        m_vao = setupVAO(VaoRegistry::get().getTexturedVao());
+        return m_vao;
     }
 }

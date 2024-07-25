@@ -9,7 +9,6 @@
 
 #include "mesh/Mesh.h"
 #include "mesh/vao/TexturedVAO.h"
-#include "physics/PhysicsEngine.h"
 #include "registry/VaoRegistry.h"
 #include "backend/DrawBuffer.h"
 #include "asset/Program.h"
@@ -22,11 +21,8 @@
 
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
-    m_objectMaterial = Material::createMaterial(BasicMaterial::white);
-    MaterialRegistry::get().registerMaterial(m_objectMaterial);
-
-    m_planeMaterial = Material::createMaterial(BasicMaterial::blue);
-    MaterialRegistry::get().registerMaterial(m_planeMaterial);
+    m_fallbackMaterial = Material::createMaterial(BasicMaterial::yellow);
+    MaterialRegistry::get().registerMaterial(m_fallbackMaterial);
 
     m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
     m_objectProgram->prepareRT();
@@ -51,7 +47,9 @@ void PhysicsRenderer::drawObjects(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    if (!render::DebugContext::get().m_physicsShowObjects) return;
+    const auto& debugContext = render::DebugContext::get();
+
+    if (!debugContext.m_physicsShowObjects) return;
 
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
@@ -60,26 +58,26 @@ void PhysicsRenderer::drawObjects(
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
-    auto meshes = physics::PhysicsEngine::get().getObjectMeshes();
+    auto meshes = debugContext.m_physicsMeshes;
 
     if (!meshes || meshes->empty()) return;
 
-    auto* vao = VaoRegistry::get().getDebugVao();
+    auto* vao = VaoRegistry::get().getPrimitiveVao();
     vao->clear();
 
     PrepareContext prepareCtx{ ctx.m_registry };
 
     std::vector<mesh::InstanceSSBO> instances;
     for (auto& mesh : *meshes) {
-        mesh->prepareRTDebug(prepareCtx);
+        mesh->setupVAO(vao);
 
         auto& instance = instances.emplace_back();
         // NOTE KI null entity/mesh are supposed to have ID mat model matrices
         instance.u_entityIndex = m_entityIndex;
         instance.u_meshIndex = m_meshIndex;
-        instance.u_materialIndex = m_objectMaterial.m_registeredIndex;
-        if (mesh->m_alias == "plane") {
-            instance.u_materialIndex = m_planeMaterial.m_registeredIndex;
+        instance.u_materialIndex = mesh->getMaterial().m_registeredIndex;
+        if (instance.u_materialIndex < 0) {
+            instance.u_materialIndex = m_fallbackMaterial.m_registeredIndex;
         }
     }
 

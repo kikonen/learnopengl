@@ -20,7 +20,6 @@ namespace pool {
 
 namespace mesh {
     class MeshType;
-    class Mesh;
 }
 
 struct NodeState;
@@ -64,11 +63,6 @@ namespace physics {
 
         uint32_t getObjectCount() const noexcept {
             return static_cast<uint32_t>(m_objects.size());
-        }
-
-        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> getObjectMeshes() const noexcept
-        {
-            return m_objectMeshes;
         }
 
         void generateObjectMeshes();
@@ -118,7 +112,5 @@ namespace physics {
         std::vector<Object> m_objects;
 
         std::vector<HeightMap> m_heightMaps;
-
-        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> m_objectMeshes;
     };
 }

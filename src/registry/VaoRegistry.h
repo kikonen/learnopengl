@@ -37,14 +37,17 @@ public:
         return m_skinnedVao.get();
     }
 
-    mesh::TexturedVAO* getDebugVao()
+    // NOTE KI primitive VAO is "throwaway" render meshes
+    // which are recalculated on every render cycle again
+    // => mostly useful for debug thus
+    mesh::TexturedVAO* getPrimitiveVao()
     {
-        return m_debugVao.get();
+        return m_primitiveVao.get();
     }
 
 private:
     std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 
-    std::unique_ptr<mesh::TexturedVAO> m_debugVao;
+    std::unique_ptr<mesh::TexturedVAO> m_primitiveVao;
 };

@@ -244,7 +244,7 @@ namespace mesh {
     void LodMesh::prepareRT(const PrepareContext& ctx)
     {
         if (m_mesh) {
-            m_vao = m_mesh->prepareRT(ctx);
+            m_vao = m_mesh->prepareVAO();
             m_mesh->prepareLodMesh(*this);
 
             updateTransform();

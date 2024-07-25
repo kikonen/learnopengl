@@ -46,28 +46,29 @@ namespace mesh {
         m_indeces.clear();
     }
 
-    const kigl::GLVertexArray* PrimitiveMesh::prepareRT(
-        const PrepareContext& ctx)
+    const kigl::GLVertexArray* PrimitiveMesh::prepareVAO()
     {
-        if (m_prepared) return m_vao;
-        m_prepared = true;
+        if (m_preparedVAO) return m_vao;
+        m_preparedVAO = true;
 
         TexturedVAO* vao;
-        SkinnedVAO* skinnedVao = nullptr;
 
         if (m_rig && !m_vertexBones.empty()) {
-            skinnedVao = VaoRegistry::get().getSkinnedVao();
-            vao = skinnedVao;
+            vao = VaoRegistry::get().getSkinnedVao();
         }
         else {
             vao = VaoRegistry::get().getTexturedVao();
         }
 
+        return setupVAO(vao);
+    }
+
+    const kigl::GLVertexArray* PrimitiveMesh::setupVAO(mesh::TexturedVAO* vao)
+    {
         m_vboIndex = vao->reserveVertices(m_vertices.size());
         m_eboIndex = vao->reserveIndeces(m_indeces.size());
-        if (skinnedVao) {
-            skinnedVao->reserveVertexBones(m_vertexBones.size());
-        }
+
+        SkinnedVAO* skinnedVao = dynamic_cast<mesh::SkinnedVAO*>(vao);
 
         vao->updateVertices(
             m_vboIndex,
@@ -78,34 +79,13 @@ namespace mesh {
             m_indeces);
 
         if (skinnedVao) {
+            skinnedVao->reserveVertexBones(m_vertexBones.size());
             skinnedVao->updateVertexBones(
                 m_vboIndex,
                 m_vertexBones);
         }
 
         m_vao = vao->getVAO();
-
-        return m_vao;
-    }
-
-    const kigl::GLVertexArray* PrimitiveMesh::prepareRTDebug(
-        const PrepareContext& ctx)
-    {
-        TexturedVAO* vao = VaoRegistry::get().getDebugVao();
-
-        m_vboIndex = vao->reserveVertices(m_vertices.size());
-        m_eboIndex = vao->reserveIndeces(m_indeces.size());
-
-        vao->updateVertices(
-            m_vboIndex,
-            m_vertices);
-
-        vao->updateIndeces(
-            m_eboIndex,
-            m_indeces);
-
-        m_vao = vao->getVAO();
-
         return m_vao;
     }
 
