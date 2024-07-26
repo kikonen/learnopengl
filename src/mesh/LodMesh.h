@@ -6,6 +6,9 @@
 #include <memory>
 #include <functional>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "asset/AABB.h"
 
 #include "backend/Lod.h"
@@ -96,6 +99,7 @@ namespace mesh {
 
         glm::vec3 m_scale{ 1.f };
         glm::vec3 m_baseScale{ 1.f };
+        glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
 
         std::unique_ptr<Material> m_material;
         uint32_t m_materialIndex{ 0 };

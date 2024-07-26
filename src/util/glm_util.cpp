@@ -60,10 +60,10 @@ namespace util
     }
 
     // https://forums.unrealengine.com/t/rotation-from-normal/11543/3
-    glm::quat normalToRotation(const glm::vec3& normal)
+    glm::quat normalToRotation(
+        const glm::vec3& normal,
+        const glm::vec3& up)
     {
-        glm::vec3 up{ 0, 1.f, 0 };
-
         const float thetaCos = glm::dot(up, normal);
 
         // Identity rotation if exactly same dir (avoid NaN in acosf)

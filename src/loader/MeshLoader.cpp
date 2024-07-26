@@ -137,6 +137,10 @@ namespace loader {
             else if (k == "base_scale") {
                 data.baseScale = readScale3(v);
             }
+            else if (k == "base_rotation" || k == "base_rot") {
+                data.hasBaseRotation = true;
+                data.baseRotation = readVec3(v);
+            }
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
                 lod.name = "*";

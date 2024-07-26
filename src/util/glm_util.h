@@ -18,5 +18,5 @@ namespace util
     glm::quat axisDegreesToQuat(const glm::vec3& axis, float degrees);
     glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians);
 
-    glm::quat normalToRotation(const glm::vec3& normal);
+    glm::quat normalToRotation(const glm::vec3& normal, const glm::vec3& up);
 }

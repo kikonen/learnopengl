@@ -733,6 +733,7 @@ namespace loader {
     {
         lodMesh.m_scale = meshData.scale;
         lodMesh.m_baseScale = meshData.baseScale;
+        lodMesh.m_baseRotation = util::degreesToQuat(meshData.baseRotation);
 
         auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
 
