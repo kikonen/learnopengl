@@ -100,6 +100,10 @@ namespace mesh {
                 updateCount = totalCount;
             }
 
+            m_vbo.invalidateRange(
+                updateIndex * sz,
+                updateCount * sz);
+
             m_vbo.update(
                 updateIndex * sz,
                 updateCount * sz,

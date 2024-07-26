@@ -12,15 +12,22 @@ namespace kigl {
         }
 
         ~GLBuffer() {
+            discard();
+        }
+
+        operator int() const { return m_id; }
+
+        void discard() {
             if (m_mapped) {
                 glUnmapNamedBuffer(m_id);
             }
             if (m_created) {
                 glDeleteBuffers(1, &m_id);
             }
+            m_mapped = false;
+            m_created = false;
+            m_id = 0;
         }
-
-        operator int() const { return m_id; }
 
         void create() {
             if (m_created) return;
