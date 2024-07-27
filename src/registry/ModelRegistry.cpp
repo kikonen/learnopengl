@@ -40,6 +40,7 @@ void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 }
 
 std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
+    std::string_view id,
     std::string_view rootDir,
     std::string_view meshPath)
 {
@@ -48,7 +49,9 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
     std::lock_guard lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-    std::string key = util::joinPath(
+    std::string key = fmt::format(
+        "{}_{}_{}",
+        id,
         rootDir,
         meshPath);
 

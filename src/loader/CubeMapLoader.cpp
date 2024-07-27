@@ -39,6 +39,7 @@ namespace loader {
         if (!assets.showCubeMapCenter) return;
 
         auto future = ModelRegistry::get().getMeshSet(
+            "",
             assets.modelsDir,
             "ball_volume");
 

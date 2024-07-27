@@ -21,6 +21,7 @@ namespace loader {
 
         std::string baseDir;
 
+        std::string id;
         std::string name;
         std::string path;
 

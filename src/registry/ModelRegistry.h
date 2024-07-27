@@ -28,6 +28,7 @@ public:
     void prepare(std::shared_ptr<std::atomic<bool>> alive);
 
     std::shared_future<mesh::MeshSet*> getMeshSet(
+        std::string_view id,
         std::string_view rootDir,
         std::string_view meshPath);
 

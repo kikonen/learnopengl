@@ -268,6 +268,7 @@ namespace terrain {
         auto typeHandle = createType(registry, container.m_typeHandle);
         {
             auto future = ModelRegistry::get().getMeshSet(
+                "",
                 m_modelsDir,
                 TERRAIN_QUAD_MESH_NAME);
             auto* meshSet = future.get();

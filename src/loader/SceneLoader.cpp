@@ -689,6 +689,7 @@ namespace loader {
         switch (meshData.type) {
         case MeshDataType::mesh: {
             auto future = ModelRegistry::get().getMeshSet(
+                meshData.id,
                 assets.modelsDir,
                 meshData.path);
 

@@ -55,7 +55,10 @@ namespace loader {
             if (k == "enabled") {
                 data.enabled = readBool(v);
             }
-            if (k == "name") {
+            else if (k == "id") {
+                data.id = readString(v);
+            }
+            else if (k == "name") {
                 data.name = readString(v);
             }
             else if (k == "type") {

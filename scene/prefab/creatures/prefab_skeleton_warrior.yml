@@ -1,7 +1,8 @@
 ---
 prefab:
   meshes:
-    - path: fbx/creatures/skeleton/skeleton_animated.FBX
+    - id: prefab_skeleton_warrior
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
       sockets:
         - name: head
           joint: Bip01_Head1
