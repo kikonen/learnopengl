@@ -428,20 +428,28 @@ void SampleApp::raycastPlayer(
 
     if (!player)
     {
-        const auto playerId = SID("player");
-        player = pool::NodeHandle::toNode(playerId);
+        player = pool::NodeHandle::toNode(SID("player"));
     }
     if (!player)
     {
-        const auto playerId = SID("fps_player");
-        player = pool::NodeHandle::toNode(playerId);
+        player = pool::NodeHandle::toNode(SID("player_2"));
+    }
+    if (!player)
+    {
+        player = pool::NodeHandle::toNode(SID("fps_player"));
+    }
+    if (!player)
+    {
+        player = pool::NodeHandle::toNode(SID("fps_player_2"));
     }
 
     if (player) {
         const auto& state = player->getState();
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             state.getWorldPosition(),
-            state.getViewFront());
+            state.getViewFront(),
+            player->toHandle());
+
         if (!hits.empty()) {
             for (auto& hit : hits) {
                 auto* node = hit.toNode();

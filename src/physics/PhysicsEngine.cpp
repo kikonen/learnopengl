@@ -412,7 +412,10 @@ namespace physics
         debugContext.m_physicsMeshes = generator.generateMeshes();
     }
 
-    std::vector<pool::NodeHandle> PhysicsEngine::rayCast(glm::vec3 origin, glm::vec3 dir)
+    std::vector<pool::NodeHandle> PhysicsEngine::rayCast(
+        glm::vec3 origin,
+        glm::vec3 dir,
+        pool::NodeHandle fromNode)
     {
         if (!m_enabled) return {};
 
@@ -432,6 +435,7 @@ namespace physics
         for (auto& obj : m_objects) {
             if (rayId == obj.m_geomId) continue;
             if (!obj.m_geomId) continue;
+            if (obj.m_nodeHandle == fromNode) continue;
 
             if (dCollide(rayId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
                 hits.push_back(obj.m_nodeHandle);
