@@ -19,7 +19,7 @@
 #include "mesh/MeshType.h"
 
 #include "component/Light.h"
-#include "component/Camera.h"
+#include "component/CameraComponent.h"
 
 #include "particle/ParticleGenerator.h"
 

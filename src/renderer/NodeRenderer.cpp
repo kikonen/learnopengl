@@ -12,7 +12,6 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "component/Camera.h"
 
 #include "model/Node.h"
 
@@ -24,6 +23,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"

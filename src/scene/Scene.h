@@ -23,7 +23,6 @@ namespace render {
     class WindowBuffer;
 }
 
-class Camera;
 class Light;
 
 class Node;

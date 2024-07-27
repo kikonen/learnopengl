@@ -1,5 +1,6 @@
 #include "ControllerLoader.h"
 
+#include "util/glm_util.h"
 #include "util/Util.h"
 
 #include "model/Node.h"
@@ -67,6 +68,15 @@ namespace loader {
             else if (k == "mode") {
                 data.mode = readInt(v);
             }
+            else if (k == "target_id") {
+                data.targetBaseId = readId(v);
+            }
+            else if (k == "dir") {
+                data.direction = readVec3(v);
+            }
+            else if (k == "distance") {
+                data.distance = readFloat(v);
+            }
             else {
                 reportUnknown("controller_entry", k, v);
             }
@@ -79,6 +89,8 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
+        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, 0, {0, 0, 0}, false);
+
         switch (data.type) {
         case ControllerType::pawn: {
             auto* controller = new PawnController();
@@ -86,6 +98,13 @@ namespace loader {
         }
         case ControllerType::camera_zoom: {
             auto* controller = new CameraZoomController();
+            controller->m_targetId = targetId;
+
+            const auto& quat = util::degreesToQuat(data.direction);
+            const auto& dir = glm::normalize(quat * glm::vec3{0, 1.f, 0});
+
+            controller->m_direction = dir;
+            controller->m_distance = data.distance;
             return controller;
         }
         }

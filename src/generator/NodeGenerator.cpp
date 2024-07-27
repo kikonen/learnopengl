@@ -8,8 +8,6 @@
 
 #include "model/Node.h"
 
-#include "component/Camera.h"
-
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -145,43 +143,6 @@ void NodeGenerator::bindBatch(
     const auto& snapshots = snapshotRegistry.getSnapshotRange(
         m_snapshotBase,
         m_reservedCount);
-
-    //{
-    //    m_lods.reserve(m_reservedCount);
-    //    m_lods.clear();
-
-    //    if (m_lods.size() != m_states.size()) {
-    //        m_lods.clear();
-
-    //        const auto& cameraPos = ctx.m_camera->getWorldPosition();
-
-    //        auto& meshLods = type->getLods();
-
-    //        //auto* meshLod = type->getLod(0);
-    //        //const auto& lod = meshLod->m_lod;
-
-    //        for (auto& snapshot : snapshots) {
-    //            auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
-    //            //std::cout << "DIST: " << distance << "\n";
-
-    //            int lodIndex = 0;
-    //            for (; lodIndex < meshLods.size(); lodIndex++) {
-    //                if (dist2 < meshLods[lodIndex].m_lod.m_distance2)
-    //                    break;
-    //            }
-    //            if (lodIndex >= meshLods.size()) {
-    //                lodIndex--;
-    //            }
-
-    //            // TODO KI select LOD based to distance
-    //            //int lodIndex = static_cast<int>(rand() * (meshLods.size() + 1)) % meshLods.size();
-
-    //            m_lods.push_back(&meshLods[lodIndex].m_lod);
-    //        }
-    //    }
-    //}
-    //auto lodSpan = std::span<const backend::Lod*>{ m_lods };
-    //auto lodSpan = std::span<const backend::Lod*>{};
 
     // NOTE KI instanced node may not be ready, or currently not generating visible entities
     batch.addSnapshotsInstanced(

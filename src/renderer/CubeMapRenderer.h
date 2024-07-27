@@ -6,7 +6,7 @@
 
 #include "asset/Material.h"
 
-#include "component/Camera.h"
+#include "render/Camera.h"
 
 namespace render {
     class CubeMapBuffer;
@@ -72,7 +72,7 @@ private:
     std::unique_ptr<DynamicCubeMap> m_prev;
     std::unique_ptr<DynamicCubeMap> m_curr;
 
-    std::vector<Camera> m_cameras;
+    std::vector<render::Camera> m_cameras;
 
     Material m_tagMaterial;
 

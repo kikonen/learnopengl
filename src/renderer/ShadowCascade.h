@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "component/Camera.h"
+#include "render/Camera.h"
 
 #include "kigl/kigl.h"
 
@@ -63,7 +63,7 @@ private:
 
     size_t m_cascadeCount{ 0 };
 
-    Camera m_camera;
+    render::Camera m_camera;
 
     Program* m_solidShadowProgram{ nullptr };
     Program* m_alphaShadowProgram{ nullptr };

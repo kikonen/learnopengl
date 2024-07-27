@@ -60,7 +60,7 @@
     <ClCompile Include="src\component\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\Camera.cpp">
+    <ClCompile Include="src\render\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Assets.cpp">
@@ -900,6 +900,18 @@
     <ClCompile Include="src\renderer\PhysicsRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\CameraComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\FpsCamera.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\FpsCamerra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\FollowCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -950,7 +962,7 @@
     <ClInclude Include="src\component\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\Camera.h">
+    <ClInclude Include="src\render\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Assets.h">
@@ -2046,6 +2058,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MeshDataType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\CameraComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\FollowCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\CameraType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,6 @@
 #include "asset/Uniform.h"
 
 #include "component/Light.h"
-#include "component/Camera.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -19,6 +18,7 @@
 
 #include "engine/PrepareContext.h"
 
+#include "render/Camera.h"
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"

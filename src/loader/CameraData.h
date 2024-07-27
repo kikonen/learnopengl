@@ -4,8 +4,12 @@
 
 #include <glm/glm.hpp>
 
+#include "CameraType.h"
+
 namespace loader {
     struct CameraData {
+        CameraType type{ CameraType::none };
+
         bool enabled{ false };
 
         bool isDefault{ false };
@@ -19,5 +23,7 @@ namespace loader {
         glm::vec3 up{ 0.f, 1.f, 0.f };
 
         glm::vec3 degreesRotation{ 0.f };
+
+        glm::vec3 distance{ 0.f };
     };
 }

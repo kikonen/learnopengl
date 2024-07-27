@@ -29,12 +29,13 @@
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
-#include "component/Camera.h"
 
 #include "registry/Registry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
+
+#include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/DebugContext.h"
 

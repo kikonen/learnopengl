@@ -8,17 +8,20 @@
 
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
+#include "engine/UpdateContext.h"
 
-#include "component/Camera.h"
+#include "render/Camera.h"
 
 #include "event/Dispatcher.h"
 
 #include "script/CommandEngine.h"
 #include "script/api/RotateNode.h"
+#include "script/api/MoveNode.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
+
 
 
 CameraZoomController::CameraZoomController()
@@ -36,10 +39,51 @@ void CameraZoomController::prepare(
 
     m_nodeHandle = node.toHandle();
 
+    m_targetHandle = pool::NodeHandle::toHandle(m_targetId);
+
     m_speedZoomNormal = assets.cameraZoomNormal;
     m_speedZoomRun = assets.cameraZoomRun;
 
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
+}
+
+bool CameraZoomController::updateWT(
+    const UpdateContext& ctx,
+    Node& node) noexcept
+{
+    return false;
+
+    Node* targetNode = m_targetHandle.toNode();
+    if (!targetNode) return false;
+
+    const auto& state = node.getState();
+    const bool nodeChanged = m_nodeMatrixLevel != state.m_matrixLevel;
+
+    const auto& targetState = targetNode->getState();
+    const bool targetChanged = m_targetMatrixLevel != targetState.m_matrixLevel;
+
+    if (!(targetChanged || nodeChanged)) return false;
+
+    m_nodeMatrixLevel = state.m_matrixLevel;
+    m_targetMatrixLevel = targetState.m_matrixLevel;
+
+    const auto& targetPos = targetState.getWorldPosition();
+    const auto& targetFront = targetState.getViewFront();
+
+    const auto& nodePos = targetPos + -targetFront * m_distance;
+
+    // TODO KI resolve node placement
+
+    script::CommandEngine::get().addCommand(
+        0,
+        script::MoveNode{
+            m_nodeHandle,
+            0.2f,
+            false,
+            nodePos
+        });
+
+    return true;
 }
 
 void CameraZoomController::onKey(
@@ -52,7 +96,7 @@ void CameraZoomController::onKey(
 
     const auto* input = ctx.m_input;
 
-    auto* camera = node->m_camera.get();
+    auto& camera = node->m_camera.get()->getCamera();
     const float dt = ctx.m_clock.elapsedSecs;
 
     glm::vec3 zoomSpeed{ m_speedZoomNormal };
@@ -90,10 +134,10 @@ void CameraZoomController::onKey(
         }
 
         if (input->isKeyDown(Key::ZOOM_IN)) {
-            camera->adjustFov(-zoomSpeed.z * dt);
+            camera.adjustFov(-zoomSpeed.z * dt);
         }
         if (input->isKeyDown(Key::ZOOM_OUT)) {
-            camera->adjustFov(zoomSpeed.z * dt);
+            camera.adjustFov(zoomSpeed.z * dt);
         }
     }
 }
@@ -163,9 +207,9 @@ void CameraZoomController::onMouseScroll(
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
-    auto* camera = node->m_camera.get();
+    auto& camera = node->m_camera.get()->getCamera();
 
     auto adjustment = m_speedMouseSensitivity.z * yoffset;
 
-    camera->adjustFov(static_cast<float>(-adjustment));
+    camera.adjustFov(static_cast<float>(-adjustment));
 }

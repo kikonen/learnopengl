@@ -5,7 +5,7 @@
 
 #include "kigl/GLState.h"
 
-#include "component/Camera.h"
+#include "render/Camera.h"
 
 #include "pool/NodeHandle.h"
 

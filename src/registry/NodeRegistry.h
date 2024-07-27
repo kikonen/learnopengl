@@ -14,7 +14,7 @@
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
-#include "component/Camera.h"
+#include "component/CameraComponent.h"
 #include "component/NodeComponent.h"
 
 struct Material;
@@ -156,7 +156,7 @@ private:
 
     //mutable std::mutex m_lock;
 
-    std::vector<NodeComponent<Camera>> m_cameraComponents;
+    //std::vector<NodeComponent<CameraComponent>> m_cameraComponents;
 
     std::vector<pool::NodeHandle> m_cameraNodes;
 

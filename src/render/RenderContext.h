@@ -19,6 +19,7 @@ namespace render {
     class Batch;
     class RenderData;
     struct DebugContext;
+    class Camera;
 }
 
 namespace kigl {
@@ -28,7 +29,6 @@ namespace kigl {
 class Assets;
 class Registry;
 
-class Camera;
 
 struct RenderContextDefaults {
     // https://cmichel.io/understanding-front-faces-winding-order-and-normals
@@ -45,14 +45,14 @@ public:
     RenderContext(
         std::string_view name,
         const RenderContext* parent,
-        Camera* camera,
+        render::Camera* camera,
         int width,
         int height);
 
     RenderContext(
         std::string_view name,
         const RenderContext* parent,
-        Camera* camera,
+        render::Camera* camera,
         float nearPlane,
         float farPlane,
         int width,
@@ -66,7 +66,7 @@ public:
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
         render::Batch* batch,
-        Camera* camera,
+        render::Camera* camera,
         float nearPlane,
         float farPlane,
         int width,
@@ -132,7 +132,7 @@ public:
 
     Registry* const m_registry;
 
-    Camera* const m_camera;
+    render::Camera* const m_camera;
 
     mutable MatricesUBO m_matrices;
     mutable DataUBO m_data;

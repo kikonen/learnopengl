@@ -24,14 +24,40 @@ nodes:
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
-  - id: player
-    Xtype: origo
+  - id: cap
     mesh:
-      path: water_ball
-    program: g_tex
+      vertex:
+        type: capsule
+        radius: 1
+        length: 1
+      material:
+        kd: [0.4, 1, 0.4, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
     pos: [0, 25, 40]
     front: [0, 0, -1]
-    scale: 0.25
+    base_scale: 0.25
+    base_rot: [90, 0, 0]
+  - id: player
+    mesh:
+      vertex:
+        type: capsule
+        radius: 1
+        length: 2
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
+      base_scale: 0.25
+      base_rot: [90, 0, 0]
+    pos: [0, 25, 40]
+    front: [0, 0, -1]
     active: true
     controller:
       type: pawn
@@ -42,18 +68,20 @@ nodes:
       update: true
       body:
         kinematic: true
-        type: sphere
-        density: 0.1
+        type: capsule
+        density: 0.01
+        scale: 0.25
+        xrot: [90, 0, 0]
       geom:
-        size: 0.25
-        type: sphere
+        type: capsule
+        size: [1, 2, 0]
   - id: player_camera
-    parent_id: player
     type: origo
-    pos: [0, 3, 5]
-    rotation: [-15, 0, 0]
+    pos: [0, 1, 2]
     controller:
+      rotation: [-15, 0, 0]
       type: camera_zoom
+      target_id: player
     camera:
       default: true
   - id: pawn
@@ -110,7 +138,7 @@ nodes:
     pos: [-25, 45, 0]
     scale: 1.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -124,8 +152,9 @@ nodes:
     pos: [10, 30, 25]
     scale: 0.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     light:
       type: point
       linear: 0.14
@@ -366,8 +395,9 @@ nodes:
         alpha: true
     program: g_tex
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [-101, 0, 0]
     rot: [0, 0, -90]
     physics:
@@ -385,8 +415,9 @@ nodes:
         alpha: true
     program: g_tex
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [102, 0, 0]
     rot: [0, 0, 90]
     physics:
@@ -404,8 +435,9 @@ nodes:
         alpha: true
     program: g_tex
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [0, -103, 0]
     rot: [0, 0, 0]
     physics:
@@ -423,8 +455,9 @@ nodes:
         tiling: 10
         alpha: true
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [0, 104, 0]
     rot: [180, 0, 0]
     physics:
@@ -442,8 +475,9 @@ nodes:
         alpha: true
     program: g_tex
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [0, 0, -105]
     rot: [90, 0, 0]
     physics:
@@ -461,8 +495,9 @@ nodes:
         alpha: true
     program: g_tex
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
+      no_select: true
     pos: [0, 0, 106]
     rot: [-90, 0, 0]
     physics:

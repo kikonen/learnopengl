@@ -203,6 +203,10 @@
     <ClCompile Include="src\asset\ColorTexture.cpp" />
     <ClCompile Include="src\asset\HdriTexture.cpp" />
     <ClCompile Include="src\asset\ProgramUniforms.cpp" />
+    <ClCompile Include="src\component\CameraComponent.cpp" />
+    <ClCompile Include="src\component\FollowCamera.cpp" />
+    <ClCompile Include="src\component\FpsCamera.h" />
+    <ClCompile Include="src\component\FpsCamerra.cpp" />
     <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
@@ -418,7 +422,7 @@
     <ClCompile Include="src\mesh\ModelLoader.cpp" />
     <ClCompile Include="src\model\Node.cpp" />
     <ClCompile Include="src\component\Light.cpp" />
-    <ClCompile Include="src\component\Camera.cpp" />
+    <ClCompile Include="src\render\Camera.cpp" />
     <ClCompile Include="src\mesh\ModelMesh.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\sample_app\main.cpp" />
@@ -497,9 +501,12 @@
     <ClInclude Include="src\asset\DebugUBO.h" />
     <ClInclude Include="src\asset\MaterialFlags.h" />
     <ClInclude Include="src\asset\TextureType.h" />
+    <ClInclude Include="src\component\CameraComponent.h" />
+    <ClInclude Include="src\component\FollowCamera.h" />
     <ClInclude Include="src\editor\EditorState.h" />
     <ClInclude Include="src\event\Type.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
+    <ClInclude Include="src\loader\CameraType.h" />
     <ClInclude Include="src\loader\ChannelTextureLoader.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\LodLevelData.h" />
@@ -838,7 +845,7 @@
     <ClInclude Include="src\mesh\ModelLoader.h" />
     <ClInclude Include="src\model\Node.h" />
     <ClInclude Include="src\component\Light.h" />
-    <ClInclude Include="src\component\Camera.h" />
+    <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\util\thread.h" />
     <ClInclude Include="src\util\Util.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />

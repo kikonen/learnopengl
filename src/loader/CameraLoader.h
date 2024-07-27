@@ -3,7 +3,7 @@
 #include "BaseLoader.h"
 #include "CameraData.h"
 
-class Camera;
+class CameraComponent;
 
 namespace loader {
     class CameraLoader : public BaseLoader
@@ -16,7 +16,7 @@ namespace loader {
             const loader::DocNode& node,
             CameraData& data) const;
 
-        std::unique_ptr<Camera> createCamera(
+        std::unique_ptr<CameraComponent> createCamera(
             const CameraData& data);
 
     };

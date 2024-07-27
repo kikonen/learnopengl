@@ -6,7 +6,6 @@
 
 #include "kigl/GLState.h"
 
-#include "component/Camera.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
@@ -14,6 +13,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"

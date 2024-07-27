@@ -5,14 +5,11 @@
 
 #include "kigl/GLState.h"
 
-#include "component/Camera.h"
 
 #include "engine/UpdateContext.h"
-#include "render/RenderContext.h"
-
-#include "render/Batch.h"
-
 #include "engine/PrepareContext.h"
+
+#include "render/RenderContext.h"
 
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"

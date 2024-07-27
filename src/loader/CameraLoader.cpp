@@ -4,7 +4,8 @@
 
 #include "util/Util.h"
 
-#include "component/Camera.h"
+#include "component/FpsCamera.h"
+#include "component/FollowCamera.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -23,20 +24,30 @@ namespace loader
     {
         const auto& assets = Assets::get();
 
+        data.enabled = false;
         data.fov = assets.cameraFov;
-
-        data.enabled = true;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "xxenabled" || k == "xenabled") {
-                // NOTE compat with old "disable" logic
-                data.enabled = false;
+            if (k == "type" || k == "xtype") {
+                data.enabled = k != "xtype";
+
+                std::string type = readString(v);
+                if (type == "none") {
+                    data.type = CameraType::none;
+                }
+                else if (type == "fps") {
+                    data.type = CameraType::fps;
+                }
+                else if (type == "follow") {
+                    data.type = CameraType::follow;
+                }
+                else {
+                    data.enabled = false;
+                    reportUnknown("camera_type", k, v);
+                }
             }
             else if (k == "default") {
                 data.isDefault = readBool(v);
@@ -49,6 +60,9 @@ namespace loader
             }
             else if (k == "up") {
                 data.up = readVec3(v);
+            }
+            else if (k == "distance") {
+                data.distance = readVec3(v);
             }
             else if (k == "pos") {
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
@@ -69,24 +83,36 @@ namespace loader
         }
     }
 
-    std::unique_ptr<Camera> CameraLoader::createCamera(
+    std::unique_ptr<CameraComponent> CameraLoader::createCamera(
         const CameraData& data)
     {
-        if (!data.enabled) return std::unique_ptr<Camera>();
+        if (!data.enabled) return nullptr;
 
         // NOTE only node cameras in scenefile for now
-        auto camera = std::make_unique<Camera>();
+        std::unique_ptr<CameraComponent> component;
+
+        switch (data.type) {
+        case CameraType::fps:
+            component = std::make_unique<FpsCamera>();
+            break;
+        case CameraType::follow:
+            component = std::make_unique<FollowCamera>();
+            break;
+        }
+
+        component->m_enabled = data.enabled;
+        component->m_default = data.isDefault;
+        component->m_distance = data.distance;
+
+        auto& camera = component->getCamera();
 
         if (data.orthagonal) {
-            camera->setViewport(data.viewport);
+            camera.setViewport(data.viewport);
         }
-        camera->setAxis(data.front, data.up);
-        camera->setDegreesRotation(data.degreesRotation);
-        camera->setFov(data.fov);
+        camera.setAxis(data.front, data.up);
+        camera.setDegreesRotation(data.degreesRotation);
+        camera.setFov(data.fov);
 
-        camera->setEnabled(data.enabled);
-        camera->setDefault(data.isDefault);
-
-        return camera;
+        return component;
     }
 }

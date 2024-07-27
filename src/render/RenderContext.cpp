@@ -12,10 +12,10 @@
 
 #include "asset/Assets.h"
 
-#include "component/Camera.h"
 
 #include "registry/Registry.h"
 
+#include "render/Camera.h"
 #include "render/NodeDraw.h"
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
@@ -26,7 +26,7 @@
 RenderContext::RenderContext(
     std::string_view name,
     const RenderContext* parent,
-    Camera* camera,
+    render::Camera* camera,
     int width,
     int height)
     : RenderContext(
@@ -48,7 +48,7 @@ RenderContext::RenderContext(
 RenderContext::RenderContext(
     std::string_view name,
     const RenderContext* parent,
-    Camera* camera,
+    render::Camera* camera,
     float nearPlane,
     float farPlane,
     int width,
@@ -77,7 +77,7 @@ RenderContext::RenderContext(
     render::RenderData* renderData,
     render::NodeDraw* nodeDraw,
     render::Batch* batch,
-    Camera* camera,
+    render::Camera* camera,
     float nearPlane,
     float farPlane,
     int width,

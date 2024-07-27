@@ -38,7 +38,7 @@ namespace particle {
 }
 
 class Program;
-class Camera;
+class CameraComponent;
 class Light;
 class NodeGenerator;
 
@@ -171,7 +171,7 @@ public:
     uint32_t m_snapshotIndex{ 0 };
     uint32_t m_entityIndex{ 0 };
 
-    std::unique_ptr<Camera> m_camera{ nullptr };
+    std::unique_ptr<CameraComponent> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
 

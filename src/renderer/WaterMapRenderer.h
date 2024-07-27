@@ -6,7 +6,7 @@
 
 #include "asset/Material.h"
 
-#include "component/Camera.h"
+#include "render/Camera.h"
 
 namespace render {
     class FrameBuffer;
@@ -67,7 +67,7 @@ private:
     float m_farPlane{ 1000.0f };
 
 
-    std::vector<Camera> m_cameras;
+    std::vector<render::Camera> m_cameras;
 
     int m_reflectionWidth{ -1 };
     int m_reflectionheight{ -1 };

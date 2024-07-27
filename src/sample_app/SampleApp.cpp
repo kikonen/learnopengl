@@ -212,7 +212,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
-        cameraNode->m_camera.get(),
+        &cameraNode->m_camera->getCamera(),
         assets.nearPlane,
         assets.farPlane,
         size.x,
