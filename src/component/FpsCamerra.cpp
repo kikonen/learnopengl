@@ -30,16 +30,12 @@ void FpsCamera::updateRT(const UpdateContext& ctx, Node& node)
     //const auto& target = cameraPos + snapshot.getViewFront() * 100.0f;
     const glm::vec3 up{ 0, 0, 1 };
 
-    //const auto& rot = util::normalToRotation(front, up);
-    //auto degreesRot = util::quatToDegrees(rot);
     auto degreesRot = glm::vec3{ -15.f, 0.f, 0.f };
 
-    cameraPos += -nodeFront * 3.f + nodeUp * 1.f;
+    //cameraPos += -nodeFront * 3.f + nodeUp * 1.f;
 
-    //m_camera.setNodeQuat(snapshot.getQuatRotation());
-
-    m_camera.setDegreesRotation(degreesRot);
     m_camera.setWorldPosition(cameraPos);
+    m_camera.setAxis(snapshot.getViewFront(), snapshot.getViewUp());
 
     const auto& cameraFront = m_camera.getViewFront();
 

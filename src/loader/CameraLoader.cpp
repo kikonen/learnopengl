@@ -110,7 +110,7 @@ namespace loader
             camera.setViewport(data.viewport);
         }
         camera.setAxis(data.front, data.up);
-        camera.setDegreesRotation(data.degreesRotation);
+        //camera.setDegreesRotation(data.degreesRotation);
         camera.setFov(data.fov);
 
         return component;

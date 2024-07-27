@@ -68,20 +68,17 @@ namespace render {
 
         const glm::vec3& getViewFront() const noexcept
         {
-            if (m_dirty) updateCamera();
-            return m_viewFront;
+            return m_front;
         }
 
         const glm::vec3& getViewRight() const noexcept
         {
-            if (m_dirty) updateCamera();
-            return m_viewRight;
+            return m_right;
         }
 
         const glm::vec3& getViewUp() const noexcept
         {
-            if (m_dirty) updateCamera();
-            return m_viewUp;
+            return m_up;
         }
 
         void setAxis(
@@ -106,11 +103,6 @@ namespace render {
 
         void setFov(float fov) noexcept;
         void adjustFov(float adjustement) noexcept;
-
-        void setDegreesRotation(const glm::vec3& rotation) noexcept;
-        inline const glm::vec3& getDegreesRotation() const noexcept {
-            return m_degreesRotation;
-        }
 
         void updateCamera() const noexcept;
 
@@ -147,6 +139,8 @@ namespace render {
         // *UP* direction of world
         glm::vec3 m_up{ 0.f, 1.f, 0.f };
 
+        glm::vec3 m_right{ 0.f, 0.f, 1.f };
+
         //// *RIGHT* cross product of front * up
         //glm::vec3 m_right{ 1.f, 0.f, 0.f };
 
@@ -164,14 +158,6 @@ namespace render {
         ki::level_id m_viewLevel{ 0 };
 
         glm::vec3 m_worldPosition{ 0.f };
-        mutable glm::vec3 m_viewFront{ 0.f };
-        mutable glm::vec3 m_viewRight{ 0.f };
-        mutable glm::vec3 m_viewUp{ 0.f };
-
-        //m_yaw = rotation.y;
-        //m_pitch = rotation.x;
-        //m_roll = rotation.z;
-        glm::vec3 m_degreesRotation{ 0.f };
 
         mutable Frustum m_frustum;
 

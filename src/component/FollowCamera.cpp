@@ -32,12 +32,28 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     glm::vec3 targetPos = snapshot.getWorldPosition() +
         snapshot.getViewFront() * m_distance.z;
 
-    glm::vec3 v = targetPos - cameraPos;
+    glm::vec3 dir = glm::normalize(targetPos - cameraPos);
 
-    auto degreesRot = glm::vec3{ -15.f, 0.f, 0.f };
+    const auto& viewMatrix = glm::lookAt(
+        cameraPos,
+        targetPos,
+        glm::vec3{ 0, 1, 0 });
+    const auto viewFront = glm::normalize(viewMatrix * glm::vec4{ 0, 0, 1, 1 });
 
-    m_camera.setDegreesRotation(degreesRot);
+    //auto degreesRot = glm::vec3{ 0.f, 0.f, 0.f };
+    //m_camera.setDegreesRotation(degreesRot);
     m_camera.setWorldPosition(cameraPos);
+    m_camera.setAxis(dir, snapshot.getViewUp());
+    //m_camera.setAxis(dir, {0, 1, 0});
+
+    const auto viewMatrix2 = m_camera.getView();
+    const auto viewFront2 = glm::normalize(viewMatrix2 * glm::vec4{ 0, 0, 1, 1 });
+
+    const auto& viewMatrix3 = glm::lookAt(
+        cameraPos,
+        targetPos,
+        glm::vec3{ 0, 1, 0 });
+    const auto viewFront3 = glm::normalize(viewMatrix * glm::vec4{ 0, 0, 1, 1 });
 
     const auto& camFront = m_camera.getViewFront();
 

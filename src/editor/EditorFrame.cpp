@@ -210,7 +210,7 @@ namespace editor {
                         ImGui::PushID((void*)node);
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt { event::Type::node_activate };
-                            evt.body.node.target = node->toHandle();
+                            evt.body.node.target = node->getId();
                             ctx.m_registry->m_dispatcherWorker->send(evt);
                         }
                         ImGui::PopID();
@@ -227,9 +227,9 @@ namespace editor {
             const auto* currNode = nr.getActiveCameraNode();
             if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
                 for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
-                    const CameraZoomController* nodeController = nullptr;
+                    const PawnController* nodeController = nullptr;
                     for (const auto& controller : controllers) {
-                        nodeController = dynamic_cast<const CameraZoomController*>(&(*controller));
+                        nodeController = dynamic_cast<const PawnController*>(&(*controller));
                         if (nodeController) break;
                     }
 
@@ -242,7 +242,7 @@ namespace editor {
                         ImGui::PushID((void*)node);
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt { event::Type::camera_activate };
-                            evt.body.node.target = node->toHandle();
+                            evt.body.node.target = node->getId();
                             ctx.m_registry->m_dispatcherWorker->send(evt);
                         }
                         ImGui::PopID();

@@ -13,7 +13,9 @@ namespace {
 
 namespace render {
     Camera::Camera()
-    {}
+    {
+        setAxis({ 0.f, -1.f, 0.f }, {0.f, 1.f, 0.f});
+    }
 
     Camera::Camera(
         const glm::vec3& worldPos,
@@ -109,8 +111,8 @@ namespace render {
 
         m_viewMatrix = glm::lookAt(
             m_worldPosition,
-            m_worldPosition + m_viewFront,
-            m_viewUp);
+            m_worldPosition + m_front,
+            m_up);
         m_dirtyView = false;
         m_viewLevel++;
 
@@ -123,7 +125,11 @@ namespace render {
     {
         m_front = glm::normalize(front);
         m_up = glm::normalize(up);
-        //m_right = glm::normalize(glm::cross(m_front, m_up));
+        m_right = glm::normalize(glm::cross(m_front, m_up));
+
+        m_right = glm::normalize(glm::cross(m_front, m_up));
+        m_up = glm::normalize(glm::cross(m_right, m_front));
+
         m_dirty = true;
     }
 
@@ -145,15 +151,6 @@ namespace render {
         }
     }
 
-    void Camera::setDegreesRotation(const glm::vec3& euler) noexcept
-    {
-        if (m_degreesRotation != euler)
-        {
-            m_degreesRotation = euler;
-            m_dirty = true;
-        }
-    }
-
     void Camera::updateFov(float fov) noexcept
     {
         if (fov < MIN_FOV) {
@@ -171,20 +168,6 @@ namespace render {
     void Camera::updateCamera() const noexcept
     {
         if (!m_dirty) return;
-
-        {
-            glm::vec3 viewFront;
-            {
-                // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-                glm::quat quat = glm::quat(glm::radians(m_degreesRotation));
-                viewFront = quat * m_front;
-            }
-
-            // NOTE KI glm::normalize for vec4 *IS* incorrect (4d len...)
-            m_viewFront = glm::normalize(viewFront);
-            m_viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
-            m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
-        }
 
         m_dirty = false;
         m_dirtyView = true;
