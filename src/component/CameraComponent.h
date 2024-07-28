@@ -4,6 +4,7 @@
 
 struct UpdateContext;
 class Node;
+struct Snapshot;
 
 class CameraComponent
 {
@@ -26,16 +27,11 @@ public:
 
     virtual void updateRT(const UpdateContext& ctx, Node& node) = 0;
 
+    virtual void snapToIdeal(const Snapshot& snapshot) = 0;
+
 public:
     bool m_enabled{ true };
     bool m_default{ false };
-
-    // camera
-    // - horiz = x
-    // - vert = y
-    // target
-    // - dist = z
-    glm::vec3 m_distance{ 0.f };
 
 protected:
     ki::level_id m_nodeLevel{ 0 };

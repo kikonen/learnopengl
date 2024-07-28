@@ -509,8 +509,9 @@ nodes:
       x_step: 100
       z_step: -100
     script: |
+      local wid = cmd:wait({ time=2 })
       cmd:animationPlay(
-        { name = "fire:Take 001" });
+        { after=wid, name = "fire:Take 001" });
   - name: Backback
     mesh:
       path: backpack/backpack

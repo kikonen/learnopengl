@@ -22,18 +22,13 @@ nodes:
     active: true
     controllers:
       - type: pawn
+    camera:
+      type: follow
+      distance: [4, 2, 10]
+      default: true
     audio:
       listener:
         default: true
-  - id: player_camera
-    parent_id: player
-    type: origo
-    pos: [0, 3, 3]
-    rotation: [-15, 0, 0]
-    controller:
-      type: camera_zoom
-    camera:
-      default: true
   - name: origo
     mesh:
       path: water_ball

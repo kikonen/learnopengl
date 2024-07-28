@@ -1,5 +1,7 @@
 #include "FollowCamera.h"
 
+#include "util/debug.h"
+
 #include "model/Node.h"
 
 #include "render/Camera.h"
@@ -16,6 +18,7 @@ namespace {
 FollowCamera::FollowCamera() = default;
 FollowCamera::~FollowCamera() = default;
 
+// Game Programming in C++ - chapter 9
 void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
 {
     if (!m_enabled) return;
@@ -23,41 +26,56 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
     const auto& snapshot = snapshotRegistry.getSnapshot(node.m_snapshotIndex);
 
-    const auto& level = snapshot.getMatrixLevel();
-    const bool nodeChanged = m_nodeLevel != level;
-    if (!nodeChanged) return;
+    //const auto& level = snapshot.getMatrixLevel();
+    //const bool nodeChanged = m_nodeLevel != level;
+    //if (!nodeChanged) return;
 
-    const auto& cameraPos = calculateCameraPos(snapshot);
+    const auto dt = ctx.m_clock.elapsedSecs;
+
+    // Compute dampening from spring constant
+    const float dampening = 2.0f * std::sqrt(m_springConstant);
+
+    // Compute ideal position
+    const auto& idealPos = calculateCameraPos(snapshot);
+
+    // Compute acceleration of spring
+    const auto diff = m_actualPos - idealPos;
+    const auto acel = -m_springConstant * diff -
+        dampening * m_velocity;
+
+    // Update velocity
+    m_velocity += acel * dt;
+
+    // Update actual camera position
+    m_actualPos += m_velocity * dt;
 
     glm::vec3 targetPos = snapshot.getWorldPosition() +
         snapshot.getViewFront() * m_distance.z;
 
-    glm::vec3 dir = glm::normalize(targetPos - cameraPos);
+    glm::vec3 dir = glm::normalize(targetPos - m_actualPos);
 
-    const auto& viewMatrix = glm::lookAt(
-        cameraPos,
-        targetPos,
-        glm::vec3{ 0, 1, 0 });
-    const auto viewFront = glm::normalize(viewMatrix * glm::vec4{ 0, 0, 1, 1 });
-
-    //auto degreesRot = glm::vec3{ 0.f, 0.f, 0.f };
-    //m_camera.setDegreesRotation(degreesRot);
-    m_camera.setWorldPosition(cameraPos);
+    m_camera.setWorldPosition(m_actualPos);
     m_camera.setAxis(dir, snapshot.getViewUp());
-    //m_camera.setAxis(dir, {0, 1, 0});
 
-    const auto viewMatrix2 = m_camera.getView();
-    const auto viewFront2 = glm::normalize(viewMatrix2 * glm::vec4{ 0, 0, 1, 1 });
+    //m_nodeLevel = level;
+}
 
-    const auto& viewMatrix3 = glm::lookAt(
-        cameraPos,
-        targetPos,
-        glm::vec3{ 0, 1, 0 });
-    const auto viewFront3 = glm::normalize(viewMatrix * glm::vec4{ 0, 0, 1, 1 });
+void FollowCamera::snapToIdeal(const Snapshot& snapshot)
+{
+    // Set actual position to ideal
+    m_actualPos = calculateCameraPos(snapshot);
 
-    const auto& camFront = m_camera.getViewFront();
+    // Zero velocity
+    m_velocity = glm::vec3{ 0.f };
 
-    m_nodeLevel = level;
+    // Compute target and view
+    glm::vec3 targetPos = snapshot.getWorldPosition() +
+        snapshot.getViewFront() * m_distance.z;
+
+    glm::vec3 dir = glm::normalize(targetPos - m_actualPos);
+
+    m_camera.setWorldPosition(m_actualPos);
+    m_camera.setAxis(dir, snapshot.getViewUp());
 }
 
 glm::vec3 FollowCamera::calculateCameraPos(const Snapshot& snapshot)

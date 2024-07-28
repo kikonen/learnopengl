@@ -24,13 +24,10 @@ nodes:
         default: true
     controllers:
       - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
     camera:
+      type: follow
+      distance: [4, 2, 20]
       default: true
-    controllers:
-      - type: camera_zoom
   - name: Directional light
     pos: [0, 45, 100]
     mesh:

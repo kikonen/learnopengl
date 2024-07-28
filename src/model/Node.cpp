@@ -121,6 +121,11 @@ void Node::prepareRT(
     const PrepareContext& ctx)
 {
     auto* type = m_typeHandle.toType();
+
+    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
+    if (m_camera) {
+        m_camera->snapToIdeal(snapshot);
+    }
 }
 
 bool Node::isEntity() const noexcept

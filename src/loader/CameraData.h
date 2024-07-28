@@ -25,5 +25,7 @@ namespace loader {
         glm::vec3 degreesRotation{ 0.f };
 
         glm::vec3 distance{ 0.f };
+
+        float springConstant{ 64.f };
     };
 }

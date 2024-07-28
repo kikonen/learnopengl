@@ -64,6 +64,9 @@ namespace loader
             else if (k == "distance") {
                 data.distance = readVec3(v);
             }
+            else if (k == "spring_constant") {
+                data.springConstant = readFloat(v);
+            }
             else if (k == "pos") {
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
@@ -95,14 +98,17 @@ namespace loader
         case CameraType::fps:
             component = std::make_unique<FpsCamera>();
             break;
-        case CameraType::follow:
-            component = std::make_unique<FollowCamera>();
+        case CameraType::follow: {
+            auto followCamera = std::make_unique<FollowCamera>();
+            followCamera->m_springConstant = data.springConstant;
+            followCamera->m_distance = data.distance;
+            component = std::move(followCamera);
             break;
+        }
         }
 
         component->m_enabled = data.enabled;
         component->m_default = data.isDefault;
-        component->m_distance = data.distance;
 
         auto& camera = component->getCamera();
 

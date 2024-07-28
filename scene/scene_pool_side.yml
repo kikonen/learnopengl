@@ -7,19 +7,16 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - name: Camera
+  - name: player
     type: origo
     pos: [0, 8, 30]
     active: true
     controllers:
       - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
     camera:
+      type: follow
+      distance: [4, 0, 20]
       default: true
-    controllers:
-      - type: camera_zoom
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick

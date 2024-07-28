@@ -804,6 +804,7 @@
     <ClInclude Include="src\script\size.h" />
     <ClInclude Include="src\text\FontHandle.h" />
     <ClInclude Include="src\text\TextDraw.h" />
+    <ClInclude Include="src\util\debug.h" />
     <ClInclude Include="src\util\DirtyVector.h" />
     <ClInclude Include="src\util\DirtyVector_impl.h" />
     <ClInclude Include="src\util\glm_format.h" />

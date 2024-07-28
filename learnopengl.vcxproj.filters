@@ -2069,6 +2069,9 @@
     <ClInclude Include="src\loader\CameraType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

@@ -41,7 +41,7 @@ nodes:
     front: [0, 0, -1]
     base_scale: 0.25
     base_rot: [90, 0, 0]
-  - id: player
+  - xid: player
     mesh:
       vertex:
         type: capsule
@@ -61,6 +61,10 @@ nodes:
     active: true
     controller:
       type: pawn
+    camera:
+      type: follow
+      distance: [4, 2, 20]
+      default: true
     audio:
       listener:
         default: true
@@ -75,15 +79,37 @@ nodes:
       geom:
         type: capsule
         size: [1, 2, 0]
-  - id: player_camera
-    type: origo
-    pos: [0, 1, 2]
+  - id: player_2
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base_rotation: [0, 180, 0]
+    pos: [0, 25, 40]
+    front: [0, 0, -1]
+    active: true
     controller:
-      rotation: [-15, 0, 0]
-      type: camera_zoom
-      target_id: player
+      type: pawn
     camera:
+      type: follow
+      distance: [4, 3, 10]
       default: true
+    audio:
+      listener:
+        default: true
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: capsule
+        density: 0.1
+        scale: 0.25
+        rot: [90, 0, 0]
+      geom:
+        type: capsule
+        size: [1, 2, 0]
+    script: |
+      local wid = cmd:wait({ time=2 })
+      cmd:animationPlay(
+        { after=wid, name = "master:Walk02" });
   - id: pawn
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
@@ -111,25 +137,6 @@ nodes:
       geom:
         type: capsule
         size: [1, 1.5, 0]
-  - name: Pawn Camera
-    parent_id: pawn
-    type: origo
-    pos: [0, 3.0, 12]
-    rotation: [-13, 0, 0]
-    controller:
-      type: camera_zoom
-    camera:
-  - name: Camera 2
-    mesh:
-      path: water_ball
-    program: g_tex
-    pos: [25, 30, 40]
-    rotation: [-15, 40, 0]
-    front: [0, 0, -1]
-    camera:
-      default: false
-    controller:
-      type: camera_zoom
   - name: Directional light
     mesh:
       path: light
