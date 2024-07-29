@@ -165,6 +165,16 @@ void Node::bindBatch(
     }
 }
 
+const Snapshot& Node::getActiveSnapshot(Registry* registry) const noexcept
+{
+    return registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
+}
+
+Snapshot& Node::modifyActiveSnapshot(Registry* registry) noexcept
+{
+    return registry->m_activeSnapshotRegistry->modifySnapshot(m_snapshotIndex);
+}
+
 void Node::updateModelMatrix() noexcept
 {
     if (m_parent) {

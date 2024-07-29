@@ -14,7 +14,6 @@
 #include "audio/size.h"
 
 #include "model/NodeState.h"
-#include "model/Snapshot.h"
 #include "model/NodeFlags.h"
 
 namespace backend {
@@ -46,7 +45,10 @@ struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
 
+class Registry;
 class EntityRegistry;
+
+struct Snapshot;
 
 class Node final
 {
@@ -121,6 +123,9 @@ public:
     inline NodeState& modifyState() noexcept {
         return m_state;
     }
+
+    const Snapshot& getActiveSnapshot(Registry* registry) const noexcept;
+    Snapshot& modifyActiveSnapshot(Registry* registry) noexcept;
 
     void updateModelMatrix() noexcept;
 
