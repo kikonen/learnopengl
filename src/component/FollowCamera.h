@@ -17,11 +17,7 @@ private:
     glm::vec3 calculateCameraPos(const Snapshot& snapshot);
 
 public:
-    // camera
-    // - horiz = x
-    // - vert = y
-    // target
-    // - dist = z
+    // [horiz_offset, vert_offset, target_dist
     glm::vec3 m_distance{ 0.f };
 
     // Spring constant (higher is more stiff)

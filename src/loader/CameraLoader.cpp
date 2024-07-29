@@ -6,6 +6,7 @@
 
 #include "component/FpsCamera.h"
 #include "component/FollowCamera.h"
+#include "component/OrbitCamera.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -44,6 +45,9 @@ namespace loader
                 else if (type == "follow") {
                     data.type = CameraType::follow;
                 }
+                else if (type == "orbit") {
+                    data.type = CameraType::orbit;
+                }
                 else {
                     data.enabled = false;
                     reportUnknown("camera_type", k, v);
@@ -61,6 +65,15 @@ namespace loader
             else if (k == "up") {
                 data.up = readVec3(v);
             }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
+            }
+            else if (k == "pitch_speed") {
+                data.pitchSpeed = readFloat(v);
+            }
+            else if (k == "yaw_speed") {
+                data.yawSpeed = readFloat(v);
+            }
             else if (k == "distance") {
                 data.distance = readVec3(v);
             }
@@ -69,9 +82,6 @@ namespace loader
             }
             else if (k == "pos") {
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
-            }
-            else if (k == "rot" || k == "rotation") {
-                data.degreesRotation = readVec3(v);
             }
             else if (k == "orthagonal") {
                 data.orthagonal = readBool(v);
@@ -105,19 +115,28 @@ namespace loader
             component = std::move(followCamera);
             break;
         }
+        case CameraType::orbit: {
+            auto orbitCamera = std::make_unique<OrbitCamera>();
+            orbitCamera->m_offset = data.offset;
+            orbitCamera->m_up = data.up;
+            orbitCamera->m_pitchSpeed = glm::radians(data.pitchSpeed);
+            orbitCamera->m_yawSpeed = glm::radians(data.yawSpeed);
+            component = std::move(orbitCamera);
+            break;
+        }
         }
 
         component->m_enabled = data.enabled;
         component->m_default = data.isDefault;
 
-        auto& camera = component->getCamera();
-
-        if (data.orthagonal) {
-            camera.setViewport(data.viewport);
+        {
+            auto& camera = component->getCamera();
+            if (data.orthagonal) {
+                camera.setViewport(data.viewport);
+            }
+            camera.setAxis(data.front, data.up);
+            camera.setFov(data.fov);
         }
-        camera.setAxis(data.front, data.up);
-        //camera.setDegreesRotation(data.degreesRotation);
-        camera.setFov(data.fov);
 
         return component;
     }

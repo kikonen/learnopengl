@@ -912,6 +912,9 @@
     <ClCompile Include="src\component\FollowCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\OrbitCamerra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2070,6 +2073,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\OrbitCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

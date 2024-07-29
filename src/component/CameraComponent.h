@@ -27,7 +27,7 @@ public:
 
     virtual void updateRT(const UpdateContext& ctx, Node& node) = 0;
 
-    virtual void snapToIdeal(const Snapshot& snapshot) = 0;
+    virtual void snapToIdeal(const Snapshot& snapshot) {};
 
 public:
     bool m_enabled{ true };

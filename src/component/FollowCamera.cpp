@@ -23,14 +23,14 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
 {
     if (!m_enabled) return;
 
+    const auto dt = ctx.m_clock.elapsedSecs;
+
     auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
     const auto& snapshot = snapshotRegistry.getSnapshot(node.m_snapshotIndex);
 
     //const auto& level = snapshot.getMatrixLevel();
     //const bool nodeChanged = m_nodeLevel != level;
     //if (!nodeChanged) return;
-
-    const auto dt = ctx.m_clock.elapsedSecs;
 
     // Compute dampening from spring constant
     const float dampening = 2.0f * std::sqrt(m_springConstant);

@@ -3,5 +3,6 @@
 enum class CameraType {
     none,
     fps,
-    follow
+    follow,
+    orbit
 };
