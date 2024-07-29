@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -138,7 +139,7 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(container.m_snapshotIndex);
+    const auto& snapshot = container.getActiveSnapshot(ctx.m_registry);
 
     batch.addSnapshot(
         ctx,

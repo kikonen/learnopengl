@@ -9,6 +9,7 @@
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
 #include "model/Viewport.h"
 
 #include "engine/PrepareContext.h"
@@ -23,7 +24,6 @@
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 
@@ -204,9 +204,7 @@ bool MirrorMapRenderer::render(
         auto& camera = m_cameras[0];
         float nearPlane = 0.f;
         {
-            auto& snapshotRegistry = *parentCtx.m_registry->m_activeSnapshotRegistry;
-
-            const auto& snapshot = snapshotRegistry.getSnapshot(closest->m_snapshotIndex);
+            const auto& snapshot = closest->getActiveSnapshot(parentCtx.m_registry);
             const glm::vec3& planePos = snapshot.getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
@@ -368,8 +366,6 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
-
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
@@ -379,7 +375,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
         const auto& viewFront = glm::normalize(snapshot.getViewFront());
 
         const auto dot = glm::dot(viewFront, cameraFront);

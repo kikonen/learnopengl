@@ -5,6 +5,7 @@
 #include "gui/Input.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
@@ -20,8 +21,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
-
 
 
 CameraZoomController::CameraZoomController()
@@ -157,9 +156,7 @@ void CameraZoomController::onMouseMove(
 
     glm::vec3 adjust{ 0.f };
 
-    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
-
-    const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
 
     const auto& curr = snapshot.getDegreesRotation();
     float currX = curr.x;

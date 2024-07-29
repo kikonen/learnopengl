@@ -8,7 +8,7 @@
 #include "gui/Input.h"
 
 #include "model/Node.h"
-
+#include "model/Snapshot.h"
 
 #include "script/CommandEngine.h"
 #include "script/api/RotateNode.h"
@@ -18,7 +18,6 @@
 #include "engine/InputContext.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeSnapshotRegistry.h"
 
 
 PawnController::PawnController()
@@ -55,7 +54,7 @@ void PawnController::onKey(
 
     const float dt = ctx.m_clock.elapsedSecs;
 
-    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
     const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
@@ -174,7 +173,7 @@ void PawnController::onMouseMove(
 
     bool changed = false;
 
-    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(node->m_snapshotIndex);
+    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
 
     glm::vec3 adjust{ 0.f };
 

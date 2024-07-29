@@ -27,7 +27,7 @@ void OrbitCamera::updateRT(const UpdateContext& ctx, Node& node)
 
     {
         // Create a quaternion for yaw about world up
-        glm::quat yaw = util::axisRadiansToQuat(UP, m_yawSpeed * dt);
+        const auto& yaw = util::axisRadiansToQuat(UP, m_yawSpeed * dt);
 
         // Transform offset and up by yaw
         m_offset = yaw * m_offset;
@@ -37,23 +37,22 @@ void OrbitCamera::updateRT(const UpdateContext& ctx, Node& node)
         // Compute camera forward/right from these vectors
         // Forward owner.position - (owner.position + offset)
         // = -offset
-        glm::vec3 front = glm::normalize(- 1.f * m_offset);
-
-        glm::vec3 right = glm::normalize(glm::cross(m_up, front));
+        const auto& front = glm::normalize(- 1.f * m_offset);
+        const auto& right = glm::normalize(glm::cross(m_up, front));
 
         // Create quaternion for pitch about camera right
-        glm::quat pitch = util::axisRadiansToQuat(right, m_pitchSpeed * dt);
+        const auto& pitch = util::axisRadiansToQuat(right, m_pitchSpeed * dt);
 
         // Transform camera offset and up by pitch
-        m_offset = pitch * m_offset, pitch;
-        m_up = pitch * m_up, pitch;
+        m_offset = pitch * m_offset;
+        m_up = pitch * m_up;
     }
 
     // Compute transform matrix
-    glm::vec3 target = snapshot.getWorldPosition();
+    const auto& target = snapshot.getWorldPosition();
 
-    const glm::vec3 cameraPos = target + m_offset;
-    const glm::vec3 cameraFront = glm::normalize(target - cameraPos);
+    const auto& cameraPos = target + m_offset;
+    const auto& cameraFront = glm::normalize(target - cameraPos);
 
     m_camera.setWorldPosition(cameraPos);
     m_camera.setAxis(cameraFront, m_up);

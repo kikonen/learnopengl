@@ -12,6 +12,7 @@
 #include "mesh/MeshType.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
 
 #include "script/CommandEngine.h"
 #include "script/api/MoveNode.h"
@@ -21,7 +22,6 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/MaterialRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -187,16 +187,14 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    auto& snapshotRegistry = *parentCtx.m_registry->m_activeSnapshotRegistry;
-
     if (assets.showCubeMapCenter) {
         Node* tagNode = getTagNode();
         if (tagNode) {
             auto& nodeRegistry = *parentCtx.m_registry->m_nodeRegistry;
 
             const auto* rootNode = nodeRegistry.getRootRT();
-            const auto& snapshot = snapshotRegistry.getSnapshot(centerNode->m_snapshotIndex);
-            const auto& rootSnapshot = snapshotRegistry.getSnapshot(rootNode->m_snapshotIndex);
+            const auto& snapshot = centerNode->getActiveSnapshot(parentCtx.m_registry);
+            const auto& rootSnapshot = rootNode->getActiveSnapshot(parentCtx.m_registry);
 
             const auto& rootPos = rootSnapshot.getWorldPosition();
             const auto& centerPos = snapshot.getWorldPosition();
@@ -236,7 +234,7 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = snapshotRegistry.getSnapshot(centerNode->m_snapshotIndex);
+        const auto& snapshot = centerNode->getActiveSnapshot(parentCtx.m_registry);
         const auto& center = snapshot.getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
@@ -373,8 +371,6 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
     if (m_nodes.empty()) return nullptr;
 
-    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
-
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
@@ -384,7 +380,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
+        const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
         auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
 
         if (false) {

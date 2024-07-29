@@ -122,7 +122,7 @@ void Node::prepareRT(
 {
     auto* type = m_typeHandle.toType();
 
-    const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
+    const auto& snapshot = getActiveSnapshot(ctx.m_registry);
     if (m_camera) {
         m_camera->snapToIdeal(snapshot);
     }
@@ -153,7 +153,7 @@ void Node::bindBatch(
         m_instancer->bindBatch(ctx, type, programSelector, kindBits, batch, *this);
     }
     else {
-        const auto& snapshot = ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
+        const auto& snapshot = getActiveSnapshot(ctx.m_registry);
 
         batch.addSnapshot(
             ctx,

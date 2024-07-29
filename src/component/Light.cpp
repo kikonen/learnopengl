@@ -22,7 +22,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
 
-    const auto& snapshot = snapshotRegistry.getSnapshot(node.m_snapshotIndex);
+    const auto& snapshot = node.getActiveSnapshot(ctx.m_registry);
     const bool nodeChanged = m_nodeMatrixLevel != snapshot.getMatrixLevel();
 
     if (nodeChanged) {
