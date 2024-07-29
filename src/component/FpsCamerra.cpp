@@ -9,6 +9,10 @@
 #include "registry/Registry.h"
 #include "registry/NodeSnapshotRegistry.h"
 
+namespace {
+    const glm::vec3 UP{ 0, 1.f, 0 };
+}
+
 FpsCamera::FpsCamera() = default;
 FpsCamera::~FpsCamera() = default;
 
@@ -23,21 +27,11 @@ void FpsCamera::updateRT(const UpdateContext& ctx, Node& node)
     const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
-    auto cameraPos = snapshot.getWorldPosition();
-    const auto nodeFront = snapshot.getViewFront();
-    const auto nodeUp = snapshot.getViewUp();
-
-    //const auto& target = cameraPos + snapshot.getViewFront() * 100.0f;
-    const glm::vec3 up{ 0, 0, 1 };
-
-    auto degreesRot = glm::vec3{ -15.f, 0.f, 0.f };
-
-    //cameraPos += -nodeFront * 3.f + nodeUp * 1.f;
+    const auto& cameraPos = snapshot.getWorldPosition();
+    const auto& cameraFront = snapshot.getViewFront();
 
     m_camera.setWorldPosition(cameraPos);
-    m_camera.setAxis(snapshot.getViewFront(), snapshot.getViewUp());
-
-    const auto& cameraFront = m_camera.getViewFront();
+    m_camera.setAxis(cameraFront, UP);
 
     m_nodeLevel = level;
 }

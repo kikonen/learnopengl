@@ -10,12 +10,13 @@ nodes:
   - name: player
     type: origo
     pos: [0, 8, 30]
+    front: [0, 0, -1]
     active: true
     controllers:
       - type: pawn
     camera:
-      type: follow
-      distance: [4, 0, 20]
+      type: fps
+      distance: [4, 0, 10]
       default: true
   - id: pool_side_{t}_{c}
     mesh:

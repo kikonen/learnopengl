@@ -68,34 +68,36 @@ namespace render {
 
         const glm::vec3& getViewFront() const noexcept
         {
-            return m_front;
+            return m_viewFront;
         }
 
         const glm::vec3& getViewRight() const noexcept
         {
-            return m_right;
+            return m_viewRight;
         }
 
         const glm::vec3& getViewUp() const noexcept
         {
-            return m_up;
+            return m_viewUp;
         }
 
+        // @front Camera front (i.e. dir to target)
+        // @param up *UP* direction of world
         void setAxis(
             const glm::vec3& front,
             const glm::vec3& up) noexcept;
 
-        inline const glm::vec3& getFront() const noexcept {
-            return m_front;
-        }
-
-        //inline const glm::vec3& getRight() const noexcept {
-        //    return m_right;
+        //inline const glm::vec3& getFront() const noexcept {
+        //    return m_front;
         //}
 
-        inline const glm::vec3& getUp() const noexcept {
-            return m_up;
-        }
+        ////inline const glm::vec3& getRight() const noexcept {
+        ////    return m_right;
+        ////}
+
+        //inline const glm::vec3& getUp() const noexcept {
+        //    return m_up;
+        //}
 
         inline float getFov() const noexcept {
             return m_fov;
@@ -134,15 +136,12 @@ namespace render {
 
         // *DIRECTION* at camera is pointing at (== target)
         // *NOT* required to be orthogonal to up
-        glm::vec3 m_front{ 0.f, 0.f, -1.f };
+        glm::vec3 m_viewFront{ 0.f, 0.f, -1.f };
 
-        // *UP* direction of world
-        glm::vec3 m_up{ 0.f, 1.f, 0.f };
+        // *UP* direction of camera
+        glm::vec3 m_viewUp{ 0.f, 1.f, 0.f };
 
-        glm::vec3 m_right{ 0.f, 0.f, 1.f };
-
-        //// *RIGHT* cross product of front * up
-        //glm::vec3 m_right{ 1.f, 0.f, 0.f };
+        glm::vec3 m_viewRight{ 0.f, 0.f, 1.f };
 
         float m_aspectRatio = -1;
         float m_nearPlane = -1;

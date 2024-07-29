@@ -111,8 +111,8 @@ namespace render {
 
         m_viewMatrix = glm::lookAt(
             m_worldPosition,
-            m_worldPosition + m_front,
-            m_up);
+            m_worldPosition + m_viewFront,
+            m_viewUp);
         m_dirtyView = false;
         m_viewLevel++;
 
@@ -123,12 +123,9 @@ namespace render {
         const glm::vec3& front,
         const glm::vec3& up) noexcept
     {
-        m_front = glm::normalize(front);
-        m_up = glm::normalize(up);
-        m_right = glm::normalize(glm::cross(m_front, m_up));
-
-        m_right = glm::normalize(glm::cross(m_front, m_up));
-        m_up = glm::normalize(glm::cross(m_right, m_front));
+        m_viewFront = glm::normalize(front);
+        m_viewRight = glm::normalize(glm::cross(m_viewFront, glm::normalize(up)));
+        m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
 
         m_dirty = true;
     }

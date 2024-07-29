@@ -41,7 +41,7 @@ nodes:
     front: [0, 0, -1]
     base_scale: 0.25
     base_rot: [90, 0, 0]
-  - xid: player
+  - id: player
     mesh:
       vertex:
         type: capsule
@@ -58,17 +58,15 @@ nodes:
       base_rot: [90, 0, 0]
     pos: [0, 25, 40]
     front: [0, 0, -1]
-    active: true
     controller:
       type: pawn
     camera:
-      type: follow
+      type: fps
       distance: [4, 2, 20]
-      default: true
     audio:
       listener:
         default: true
-    xphysics:
+    physics:
       update: true
       body:
         kinematic: true
@@ -90,7 +88,7 @@ nodes:
       type: pawn
     camera:
       type: follow
-      distance: [4, 3, 10]
+      distance: [5, 2.5, 10]
       default: true
     audio:
       listener:

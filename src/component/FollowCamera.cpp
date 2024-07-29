@@ -12,7 +12,7 @@
 #include "registry/NodeSnapshotRegistry.h"
 
 namespace {
-    const glm::vec3 up{ 0, 1.f, 0 };
+    const glm::vec3 UP{ 0, 1.f, 0 };
 }
 
 FollowCamera::FollowCamera() = default;
@@ -49,13 +49,13 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     // Update actual camera position
     m_actualPos += m_velocity * dt;
 
-    glm::vec3 targetPos = snapshot.getWorldPosition() +
+    glm::vec3 target = snapshot.getWorldPosition() +
         snapshot.getViewFront() * m_distance.z;
 
-    glm::vec3 dir = glm::normalize(targetPos - m_actualPos);
+    glm::vec3 cameraFront = glm::normalize(target - m_actualPos);
 
     m_camera.setWorldPosition(m_actualPos);
-    m_camera.setAxis(dir, snapshot.getViewUp());
+    m_camera.setAxis(cameraFront, UP);
 
     //m_nodeLevel = level;
 }
@@ -69,13 +69,13 @@ void FollowCamera::snapToIdeal(const Snapshot& snapshot)
     m_velocity = glm::vec3{ 0.f };
 
     // Compute target and view
-    glm::vec3 targetPos = snapshot.getWorldPosition() +
+    glm::vec3 target = snapshot.getWorldPosition() +
         snapshot.getViewFront() * m_distance.z;
 
-    glm::vec3 dir = glm::normalize(targetPos - m_actualPos);
+    glm::vec3 cameraFront = glm::normalize(target - m_actualPos);
 
     m_camera.setWorldPosition(m_actualPos);
-    m_camera.setAxis(dir, snapshot.getViewUp());
+    m_camera.setAxis(cameraFront, UP);
 }
 
 glm::vec3 FollowCamera::calculateCameraPos(const Snapshot& snapshot)
