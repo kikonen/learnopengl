@@ -31,5 +31,8 @@ namespace loader {
         glm::vec3 distance{ 0.f };
 
         float springConstant{ 64.f };
+
+        std::vector<glm::vec3> path;
+        float speed{ 0.f };
     };
 }

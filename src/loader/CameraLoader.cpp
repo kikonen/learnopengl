@@ -7,6 +7,7 @@
 #include "component/FpsCamera.h"
 #include "component/FollowCamera.h"
 #include "component/OrbitCamera.h"
+#include "component/SplineCamera.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -48,6 +49,9 @@ namespace loader
                 else if (type == "orbit") {
                     data.type = CameraType::orbit;
                 }
+                else if (type == "spline") {
+                    data.type = CameraType::spline;
+                }
                 else {
                     data.enabled = false;
                     reportUnknown("camera_type", k, v);
@@ -80,6 +84,12 @@ namespace loader
             else if (k == "spring_constant") {
                 data.springConstant = readFloat(v);
             }
+            else if (k == "path") {
+                loadPath(v, data.path);
+            }
+            else if (k == "speed") {
+                data.speed = readFloat(v);
+            }
             else if (k == "pos") {
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
@@ -96,6 +106,16 @@ namespace loader
         }
     }
 
+    void CameraLoader::loadPath(
+        const loader::DocNode& node,
+        std::vector<glm::vec3>& path) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            auto& point = path.emplace_back();
+            point = readVec3(entry);
+        }
+    }
+
     std::unique_ptr<CameraComponent> CameraLoader::createCamera(
         const CameraData& data)
     {
@@ -105,23 +125,32 @@ namespace loader
         std::unique_ptr<CameraComponent> component;
 
         switch (data.type) {
-        case CameraType::fps:
-            component = std::make_unique<FpsCamera>();
+        case CameraType::fps: {
+            auto c = std::make_unique<FpsCamera>();
+            component = std::move(c);
             break;
+        }
         case CameraType::follow: {
-            auto followCamera = std::make_unique<FollowCamera>();
-            followCamera->m_springConstant = data.springConstant;
-            followCamera->m_distance = data.distance;
-            component = std::move(followCamera);
+            auto c = std::make_unique<FollowCamera>();
+            c->m_springConstant = data.springConstant;
+            c->m_distance = data.distance;
+            component = std::move(c);
             break;
         }
         case CameraType::orbit: {
-            auto orbitCamera = std::make_unique<OrbitCamera>();
-            orbitCamera->m_offset = data.offset;
-            orbitCamera->m_up = data.up;
-            orbitCamera->m_pitchSpeed = glm::radians(data.pitchSpeed);
-            orbitCamera->m_yawSpeed = glm::radians(data.yawSpeed);
-            component = std::move(orbitCamera);
+            auto c = std::make_unique<OrbitCamera>();
+            c->m_offset = data.offset;
+            c->m_up = data.up;
+            c->m_pitchSpeed = glm::radians(data.pitchSpeed);
+            c->m_yawSpeed = glm::radians(data.yawSpeed);
+            component = std::move(c);
+            break;
+        }
+        case CameraType::spline: {
+            auto c = std::make_unique<SplineCamera>();
+            c->m_path = Spline{ data.path };
+            c->m_speed = data.speed;
+            component = std::move(c);
             break;
         }
         }

@@ -915,6 +915,12 @@
     <ClCompile Include="src\component\OrbitCamerra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\SplineCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\Spline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2076,6 +2082,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\OrbitCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\SplineCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\Spline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

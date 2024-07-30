@@ -208,6 +208,8 @@
     <ClCompile Include="src\component\FpsCamera.h" />
     <ClCompile Include="src\component\FpsCamerra.cpp" />
     <ClCompile Include="src\component\OrbitCamerra.cpp" />
+    <ClCompile Include="src\component\Spline.cpp" />
+    <ClCompile Include="src\component\SplineCamera.cpp" />
     <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
@@ -505,6 +507,8 @@
     <ClInclude Include="src\component\CameraComponent.h" />
     <ClInclude Include="src\component\FollowCamera.h" />
     <ClInclude Include="src\component\OrbitCamera.h" />
+    <ClInclude Include="src\component\Spline.h" />
+    <ClInclude Include="src\component\SplineCamera.h" />
     <ClInclude Include="src\editor\EditorState.h" />
     <ClInclude Include="src\event\Type.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
