@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "Category.h"
+
 namespace physics {
     enum class GeomType : std::underlying_type_t<std::byte> {
         none,
@@ -29,8 +31,8 @@ namespace physics {
 
         glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
 
-        unsigned int category{ UINT_MAX };
-        unsigned int collide{ UINT_MAX };
+        uint32_t categoryMask{ UINT_MAX };
+        uint32_t collisionMask{ UINT_MAX };
 
         GeomType type{ GeomType::none };
     };

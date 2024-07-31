@@ -5,6 +5,7 @@
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
+#include "util/Util.h"
 
 #include "model/Node.h"
 #include "model/NodeState.h"
@@ -415,6 +416,7 @@ namespace physics
     std::vector<pool::NodeHandle> PhysicsEngine::rayCast(
         glm::vec3 origin,
         glm::vec3 dir,
+        physics::Category category,
         pool::NodeHandle fromNode)
     {
         if (!m_enabled) return {};
@@ -424,23 +426,27 @@ namespace physics
         auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geomId) return {};
 
-        const auto rayId = ray->m_geomId;
+        const auto rayGeomId = ray->m_geomId;
 
         std::vector<pool::NodeHandle> hits;
 
-        dGeomRaySet(rayId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-        dGeomRaySetLength(rayId, 100.f);
+        dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
+        dGeomRaySetLength(rayGeomId, 100.f);
+        dGeomSetCategoryBits(rayGeomId, util::as_integer(category));
 
         dContactGeom contact;
         for (auto& obj : m_objects) {
-            if (rayId == obj.m_geomId) continue;
+            if (rayGeomId == obj.m_geomId) continue;
             if (!obj.m_geomId) continue;
             if (obj.m_nodeHandle == fromNode) continue;
 
-            if (dCollide(rayId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
+            if (dCollide(rayGeomId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
                 hits.push_back(obj.m_nodeHandle);
             }
         }
+
+        // NOTE KI set mask to "none" to prevent collisions after casting
+        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
 
         return hits;
     }

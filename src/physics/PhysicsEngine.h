@@ -70,6 +70,7 @@ namespace physics {
         std::vector<pool::NodeHandle> rayCast(
             glm::vec3 origin,
             glm::vec3 dir,
+            physics::Category category,
             pool::NodeHandle fromNode);
 
     private:

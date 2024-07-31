@@ -19,4 +19,10 @@ namespace util
     glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians);
 
     glm::quat normalToRotation(const glm::vec3& normal, const glm::vec3& up);
+
+    // This will transform the vector and renormalize the w component
+    glm::vec3 transformWithPerspDiv(
+        const glm::vec3& vec,
+        const glm::mat4& transform,
+        float w /*= 1.0f*/);
 }

@@ -1,5 +1,7 @@
 #include "PhysicsLoader.h"
 
+#include <unordered_map>
+
 #include "util/Util.h"
 #include "util/glm_util.h"
 
@@ -7,6 +9,38 @@
 
 #include "loader/document.h"
 #include "loader_util.h"
+
+namespace {
+    std::unordered_map<std::string, physics::Category> g_categoryMapping;
+
+    const std::unordered_map<std::string, physics::Category>& getCategoryMapping()
+    {
+        if (g_categoryMapping.empty()) {
+            g_categoryMapping.insert({
+                { "none", physics::Category::none },
+                { "invalid", physics::Category::invalid },
+                { "ground", physics::Category::ground },
+                { "scenery", physics::Category::scenery },
+                { "water", physics::Category::water },
+                { "npc", physics::Category::npc },
+                { "player", physics::Category::player },
+                { "ray_player_fire", physics::Category::ray_player_fire },
+                { "ray_npc_fire", physics::Category::ray_npc_fire },
+                { "ray_hit", physics::Category::ray_hit },
+                });
+        }
+        return g_categoryMapping;
+    }
+
+    physics::Category readCategory(std::string v)
+    {
+        const auto& mapping = getCategoryMapping();
+        const auto& it = mapping.find(v);
+        if (it != mapping.end()) return it->second;
+        // NOTE KI for data tracking data mismatches
+        return physics::Category::invalid;
+    }
+}
 
 namespace loader {
     PhysicsLoader::PhysicsLoader(
@@ -157,15 +191,27 @@ namespace loader {
                 data.plane = readVec4(v);
             }
             else if (k == "category") {
-                data.category = readInt(v);
+                loadMask(v, data.categoryMask);
             }
-            else if (k == "collide") {
-                data.collide = readInt(v);
+            else if (k == "collision") {
+                loadMask(v, data.collisionMask);
             }
             else {
                 reportUnknown("geom_entry", k, v);
             }
         }
+    }
+
+    void PhysicsLoader::loadMask(
+        const loader::DocNode& node,
+        uint32_t& mask) const
+    {
+        uint32_t m = 0;
+        for (const auto& entry : node.getNodes()) {
+            const auto& category = readCategory(readString(entry));
+            m |= util::as_integer(category);
+        }
+        mask = m;
     }
 
     void PhysicsLoader::createObject(

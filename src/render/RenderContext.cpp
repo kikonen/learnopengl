@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
+#include "util/glm_util.h"
 
 #include "kigl/GLState.h"
 
@@ -305,4 +306,17 @@ PrepareContext RenderContext::toPrepareContext() const
     return {
         m_registry,
     };
+}
+
+glm::vec3 RenderContext::unproject(const glm::vec2& screenPoint, float z)
+{
+    // Convert screenPoint to device coordinates (between -1 and +1)
+    glm::vec3 deviceCoord = { screenPoint.x, screenPoint.y, z };
+    deviceCoord.x /= (m_resolution.x) * 0.5f;
+    deviceCoord.y /= (m_resolution.y) * 0.5f;
+
+    // Transform vector by unprojection matrix
+    glm::mat4 unprojection = glm::inverse(m_camera->getProjected());
+
+    return util::transformWithPerspDiv(deviceCoord, unprojection, 1);
 }

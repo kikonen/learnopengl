@@ -2,6 +2,21 @@
 
 #include <glm/gtx/quaternion.hpp>
 
+namespace {
+    inline bool nearZero(float val, float epsilon = 0.001f)
+    {
+        if (fabs(val) <= epsilon)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+}
+
 namespace util
 {
     float ratiansBetween(glm::vec3 a, glm::vec3 b)
@@ -73,5 +88,22 @@ namespace util
         const float theta = acosf(thetaCos);
 
         return util::axisRadiansToQuat(axis, theta);
+    }
+
+    // This will transform the vector and renormalize the w component
+    glm::vec3 transformWithPerspDiv(
+        const glm::vec3& vec,
+        const glm::mat4& transform,
+        float w /*= 1.0f*/)
+    {
+        glm::vec4 result = transform * glm::vec4(vec, w);
+
+        float transformedW = result.w;
+        if (!nearZero(std::abs(transformedW)))
+        {
+            transformedW = 1.0f / transformedW;
+            result *= transformedW;
+        }
+        return result;
     }
 }

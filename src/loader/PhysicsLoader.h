@@ -29,6 +29,10 @@ namespace loader {
             const loader::DocNode& node,
             physics::Geom& data) const;
 
+        void loadMask(
+            const loader::DocNode& node,
+            uint32_t& mask) const;
+
         void createObject(
             const PhysicsData& data,
             const pool::NodeHandle handle);

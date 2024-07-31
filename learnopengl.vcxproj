@@ -557,6 +557,7 @@
     <ClInclude Include="src\model\NodeFlags.h" />
     <ClInclude Include="src\model\PivotPoint.h" />
     <ClInclude Include="src\model\PrimitiveNode.h" />
+    <ClInclude Include="src\physics\Category.h" />
     <ClInclude Include="src\physics\MeshGenerator.h" />
     <ClInclude Include="src\registry\VaoRegistry.h" />
     <ClInclude Include="src\renderer\PhysicsRenderer.h" />

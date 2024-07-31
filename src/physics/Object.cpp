@@ -130,6 +130,10 @@ namespace physics
         }
 
         if (m_geomId) {
+            KI_INFO_OUT(fmt::format("id={}, cat={}, col={}", m_id, m_geom.categoryMask, m_geom.collisionMask));
+            dGeomSetCategoryBits(m_geomId, m_geom.categoryMask);
+            dGeomSetCollideBits(m_geomId, m_geom.collisionMask);
+
             // NOTE KI node updates only if body
             if (m_bodyId) {
                 dGeomSetBody(m_geomId, m_bodyId);

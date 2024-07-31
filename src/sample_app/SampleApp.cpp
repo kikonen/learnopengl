@@ -448,6 +448,7 @@ void SampleApp::raycastPlayer(
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             state.getWorldPosition(),
             state.getViewFront(),
+            physics::Category::ray_player_fire,
             player->toHandle());
 
         if (!hits.empty()) {
