@@ -232,7 +232,7 @@ namespace animation
                 playB.m_active = false;
             }
 
-            if (!playA.m_active)
+            if (!playA.m_active && !debugContext.m_animationDebugEnabled)
                 return;
         }
 
