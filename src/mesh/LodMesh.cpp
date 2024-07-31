@@ -274,8 +274,9 @@ namespace mesh {
     }
 
     void LodMesh::updateTransform() {
+        // TODO KI rotate here causes very weird artifacts
         const auto& transform =
-            glm::mat4(m_baseRotation) *
+            //glm::mat4(m_baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
             m_mesh->m_rigTransform;
         m_meshIndex = mesh::TransformRegistry::get().registerTransform(transform);
@@ -288,8 +289,9 @@ namespace mesh {
         AABB aabb{ true };
 
         if (m_mesh) {
+            // TODO KI rotate here causes very weird artifacts
             const auto& transform =
-                glm::mat4(m_baseRotation) *
+                //glm::mat4(m_baseRotation) *
                 glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
                 m_mesh->m_rigTransform;
             aabb.minmax(m_mesh->calculateAABB(transform));
