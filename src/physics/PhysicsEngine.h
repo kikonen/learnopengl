@@ -70,6 +70,7 @@ namespace physics {
         std::vector<pool::NodeHandle> rayCast(
             glm::vec3 origin,
             glm::vec3 dir,
+            float distance,
             uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode);

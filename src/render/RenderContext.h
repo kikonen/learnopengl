@@ -105,7 +105,7 @@ public:
     PrepareContext toPrepareContext() const;
 
     // @param z [0, 1]
-    glm::vec3 unproject(const glm::vec2& screenPoint, float z);
+    glm::vec3 unproject(const glm::vec2& screenPoint, float z) const;
 
 public:
     const std::string m_name;

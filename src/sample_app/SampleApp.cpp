@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "util/glm_format.h"
 #include "util/Util.h"
 
 #include "kigl/kigl.h"
@@ -450,6 +451,31 @@ void SampleApp::raycastPlayer(
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             state.getWorldPosition(),
             state.getViewFront(),
+            100.f,
+            util::as_integer(physics::Category::ray_player_fire),
+            util::as_integer(physics::Category::npc),
+            player->toHandle());
+
+        if (!hits.empty()) {
+            for (auto& hit : hits) {
+                auto* node = hit.toNode();
+                KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+            }
+        }
+    }
+
+    if (inputState.mouseLeft) {
+        glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
+        const auto startPos = ctx.unproject(screenPos, 0.0);
+        const auto endPos = ctx.unproject(screenPos, 1.0);
+        KI_INFO_OUT(fmt::format(
+            "UNPROJECT: screenPos={}, z0={}, z1={}",
+            screenPos, startPos, endPos));
+
+        const auto& hits = physics::PhysicsEngine::get().rayCast(
+            startPos,
+            glm::normalize(endPos - startPos),
+            100.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
             player->toHandle());

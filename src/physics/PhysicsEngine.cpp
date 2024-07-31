@@ -431,6 +431,7 @@ namespace physics
     std::vector<pool::NodeHandle> PhysicsEngine::rayCast(
         glm::vec3 origin,
         glm::vec3 dir,
+        float distance,
         uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode)
@@ -442,12 +443,16 @@ namespace physics
         auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geomId) return {};
 
+        KI_INFO_OUT(fmt::format(
+            "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
+            origin, dir, distance, categoryMask, collisionMask));
+
         const auto rayGeomId = ray->m_geomId;
 
         ObjectHit hit;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-        dGeomRaySetLength(rayGeomId, 100.f);
+        dGeomRaySetLength(rayGeomId, distance);
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 

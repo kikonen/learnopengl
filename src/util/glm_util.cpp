@@ -3,18 +3,10 @@
 #include <glm/gtx/quaternion.hpp>
 
 namespace {
-    inline bool nearZero(float val, float epsilon = 0.001f)
+    inline bool nearZero(float val, float epsilon = 0.00001f)
     {
-        if (fabs(val) <= epsilon)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return fabs(val) <= epsilon;
     }
-
 }
 
 namespace util

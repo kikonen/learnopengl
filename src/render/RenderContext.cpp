@@ -308,7 +308,7 @@ PrepareContext RenderContext::toPrepareContext() const
     };
 }
 
-glm::vec3 RenderContext::unproject(const glm::vec2& screenPoint, float z)
+glm::vec3 RenderContext::unproject(const glm::vec2& screenPoint, float z) const
 {
     // Convert screenPoint to device coordinates (between -1 and +1)
     glm::vec3 deviceCoord = { screenPoint.x, screenPoint.y, z };
