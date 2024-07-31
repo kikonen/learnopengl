@@ -33,7 +33,8 @@ namespace physics
         m_geom{ o.m_geom },
         m_bodyId{ o.m_bodyId },
         m_geomId{ o.m_geomId },
-        m_nodeHandle{ o.m_nodeHandle }
+        m_nodeHandle{ o.m_nodeHandle },
+        m_matrixLevel{ o.m_matrixLevel }
     {
         // NOTE KI o is moved now
         o.m_geomId = 0;

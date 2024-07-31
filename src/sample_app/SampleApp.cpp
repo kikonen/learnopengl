@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "util/Util.h"
+
 #include "kigl/kigl.h"
 
 #include "ki/sid.h"
@@ -448,7 +450,8 @@ void SampleApp::raycastPlayer(
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             state.getWorldPosition(),
             state.getViewFront(),
-            physics::Category::ray_player_fire,
+            util::as_integer(physics::Category::ray_player_fire),
+            util::as_integer(physics::Category::npc),
             player->toHandle());
 
         if (!hits.empty()) {

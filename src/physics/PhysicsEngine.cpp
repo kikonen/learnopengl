@@ -33,10 +33,23 @@ namespace {
     constexpr int CONTACT_GROUP_ID = 0;
 
     static physics::PhysicsEngine s_engine;
+
+    struct ObjectHit {
+        physics::Object* object;
+        std::vector<pool::NodeHandle> hits;
+    };
 }
 
 namespace physics
 {
+    static void rayCallback(void* data, dGeomID o1, dGeomID o2) {
+        dContactGeom contact;
+        if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
+            ObjectHit* hit = static_cast<ObjectHit*>(data);
+            hit->hits.push_back(hit->object->m_nodeHandle);
+        }
+    }
+
     static void nearCallback(void* data, dGeomID o1, dGeomID o2)
     {
         // exit without doing anything if the two bodies are connected by a joint
@@ -137,6 +150,8 @@ namespace physics
             auto* obj = getObject(m_rayId);
             obj->m_geom.type = GeomType::ray;
             obj->m_body.kinematic = true;
+            obj->m_geom.categoryMask = 0;
+            obj->m_geom.collisionMask = 0;
         }
     }
 
@@ -416,7 +431,8 @@ namespace physics
     std::vector<pool::NodeHandle> PhysicsEngine::rayCast(
         glm::vec3 origin,
         glm::vec3 dir,
-        physics::Category category,
+        uint32_t categoryMask,
+        uint32_t collisionMask,
         pool::NodeHandle fromNode)
     {
         if (!m_enabled) return {};
@@ -428,26 +444,28 @@ namespace physics
 
         const auto rayGeomId = ray->m_geomId;
 
-        std::vector<pool::NodeHandle> hits;
+        ObjectHit hit;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
         dGeomRaySetLength(rayGeomId, 100.f);
-        dGeomSetCategoryBits(rayGeomId, util::as_integer(category));
+        dGeomSetCategoryBits(rayGeomId, categoryMask);
+        dGeomSetCollideBits(rayGeomId, collisionMask);
 
-        dContactGeom contact;
         for (auto& obj : m_objects) {
             if (rayGeomId == obj.m_geomId) continue;
             if (!obj.m_geomId) continue;
             if (obj.m_nodeHandle == fromNode) continue;
 
-            if (dCollide(rayGeomId, obj.m_geomId, 1, &contact, sizeof(dContactGeom)) != 0) {
-                hits.push_back(obj.m_nodeHandle);
-            }
+            hit.object = &obj;
+
+            // NOTE KI dCollide  does not check category/collision bitmask
+            dSpaceCollide2(rayGeomId, obj.m_geomId, &hit, &rayCallback);
         }
 
         // NOTE KI set mask to "none" to prevent collisions after casting
         dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
+        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
 
-        return hits;
+        return hit.hits;
     }
 }
