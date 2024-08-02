@@ -26,6 +26,25 @@
 
 RenderContext::RenderContext(
     std::string_view name,
+    const RenderContext* parent)
+    : RenderContext(
+        name,
+        parent,
+        parent->m_clock,
+        parent->m_registry,
+        parent->m_renderData,
+        parent->m_nodeDraw,
+        parent->m_batch,
+        parent->m_camera,
+        parent->m_nearPlane,
+        parent->m_farPlane,
+        parent->m_resolution.x,
+        parent->m_resolution.y,
+        parent->m_debugContext)
+{}
+
+RenderContext::RenderContext(
+    std::string_view name,
     const RenderContext* parent,
     render::Camera* camera,
     int width,

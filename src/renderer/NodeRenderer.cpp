@@ -161,9 +161,12 @@ void NodeRenderer::fillHighlightMask(
 
 // Render highlight over stencil masked nodes
 void NodeRenderer::renderHighlight(
-    const RenderContext& ctx,
+    const RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
+    RenderContext ctx{ "local", &parentCtx };
+    ctx.m_forceWireframe = true;
+
     const auto& assets = ctx.m_assets;
 
     if (!assets.showHighlight) return;
@@ -176,7 +179,11 @@ void NodeRenderer::renderHighlight(
     state.setEnabled(GL_DEPTH_TEST, false);
     state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
 
+    glLineWidth(4.f);
+
     // draw selection color (scaled a bit bigger)
+    // https://www.reddit.com/r/opengl/comments/14jisvu/how_can_i_outline_selected_meshes/
+    // https://ameye.dev/notes/rendering-outlines/
     {
         auto* program = m_selectionProgram;
         program->bind();
@@ -198,6 +205,8 @@ void NodeRenderer::renderHighlight(
             render::KIND_ALL);
     }
     ctx.m_batch->flush(ctx);
+
+    glLineWidth(1.f);
 
     state.setEnabled(GL_DEPTH_TEST, true);
 }

@@ -33,12 +33,6 @@ out VS_OUT {
 } vs_out;
 #endif
 
-const float SCALE = 1.024;
-const mat4 SCALE_MATRIX = mat4(SCALE, 0, 0, 0,
-                               0, SCALE, 0, 0,
-                               0, 0, SCALE, 0,
-                               0, 0,     0, 1);
-
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
@@ -60,30 +54,13 @@ void main() {
   vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
 
-  float scale;
-  mat4 scaleMatrix;
-
-  if (u_stencilMode == STENCIL_MODE_MASK) {
-    scale = 1.0;
-    scaleMatrix = mat4(1.0);
-  } else if (u_stencilMode == STENCIL_MODE_HIGHLIGHT) {
-    scale = SCALE;
-    scaleMatrix = SCALE_MATRIX;
-  } else {
-    scale = 1.5;
-    scaleMatrix = mat4(scale, 0, 0, 0,
-                       0, scale, 0, 0,
-                       0, 0, scale, 0,
-                       0, 0,     0, 1);
-  }
-
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
   if ((instance.u_shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
-    vec3 entityScale = vec3(entity.u_worldScale[0] * scale,
-                            entity.u_worldScale[1] * scale,
-                            entity.u_worldScale[2] * scale);
+    vec3 entityScale = vec3(entity.u_worldScale[0],
+                            entity.u_worldScale[1],
+                            entity.u_worldScale[2]);
 
     worldPos = vec4(entityPos
                     + u_viewRight * a_pos.x * entityScale.x
@@ -92,7 +69,7 @@ void main() {
   } else {
     #include tech_skinned_mesh_skin.glsl
 
-    worldPos = modelMatrix * scaleMatrix * pos;
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;

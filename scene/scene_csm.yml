@@ -17,13 +17,9 @@ nodes:
     active: true
     controllers:
      - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
     camera:
+      type: fps
       default: true
-    controllers:
-      - type: camera_zoom
   - name: Other
     mesh:
       path: texture_cube

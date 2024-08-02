@@ -44,6 +44,10 @@ class RenderContext final
 public:
     RenderContext(
         std::string_view name,
+        const RenderContext* parent);
+
+    RenderContext(
+        std::string_view name,
         const RenderContext* parent,
         render::Camera* camera,
         int width,
