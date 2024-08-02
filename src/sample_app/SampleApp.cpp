@@ -43,6 +43,8 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "script/api/MoveNode.h"
+
 #include "render/RenderContext.h"
 
 #include "loader/SceneLoader.h"
@@ -464,18 +466,44 @@ void SampleApp::raycastPlayer(
         }
     }
 
-    if (inputState.mouseLeft) {
+    if (player && inputState.mouseLeft) {
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
-        const auto startPos = ctx.unproject(screenPos, 0.0);
-        const auto endPos = ctx.unproject(screenPos, 1.0);
+
+        const auto startPos = ctx.unproject(screenPos, .1f);
+        const auto endPos = ctx.unproject(screenPos, .5f);
+
         KI_INFO_OUT(fmt::format(
             "UNPROJECT: screenPos={}, z0={}, z1={}",
             screenPos, startPos, endPos));
 
+        auto greenBall = pool::NodeHandle::toNode(SID("green_ball"));
+        auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
+
+        if (greenBall) {
+            script::CommandEngine::get().addCommand(
+                0,
+                script::MoveNode{
+                    greenBall->toHandle(),
+                    0.f,
+                    false,
+                    startPos
+                });
+        }
+        if (redBall) {
+            script::CommandEngine::get().addCommand(
+                0,
+                script::MoveNode{
+                    redBall->toHandle(),
+                    0.f,
+                    false,
+                    endPos
+                });
+        }
+
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             startPos,
             glm::normalize(endPos - startPos),
-            100.f,
+            10.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
             player->toHandle());

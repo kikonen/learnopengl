@@ -104,8 +104,20 @@ public:
     UpdateContext toUpdateContext() const;
     PrepareContext toPrepareContext() const;
 
+    // @https://gamedev.stackexchange.com/questions/140101/clip-space-normalized-device-coordinate-space-and-window-space-in-opengl
+    //
+    // Clip space is the objects' position in a coordinate system relative to the camera.
+    // -Z is always in the same direction the camera is pointing.
+    // You get it by doing the necessary transformations on the world space positions.
+    //
+    // Normalized device cooridnate (or NDC for short) is the same coordinate system,
+    // but the Z values are in the 0->1 range. This can be achieved by dividing the x and y with z.
+    //
+    // Window space is the NDC converted to device coordinates.
+    // OpenGL multiplies x with the width of the screen, and y with the height.
+    //
     // @param z [0, 1]
-    glm::vec3 unproject(const glm::vec2& screenPoint, float z) const;
+    glm::vec3 unproject(const glm::vec2& screenPoint, float deviceZ) const;
 
 public:
     const std::string m_name;
