@@ -469,8 +469,9 @@ void SampleApp::raycastPlayer(
     if (player && inputState.mouseLeft) {
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 
-        const auto startPos = ctx.unproject(screenPos, .1f);
-        const auto endPos = ctx.unproject(screenPos, .5f);
+        const auto startPos = ctx.unproject(screenPos, .01f);
+        const auto endPos = ctx.unproject(screenPos, .8f);
+        const auto dir = glm::normalize(endPos - startPos);
 
         KI_INFO_OUT(fmt::format(
             "UNPROJECT: screenPos={}, z0={}, z1={}",
@@ -480,8 +481,27 @@ void SampleApp::raycastPlayer(
         auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
 
         if (greenBall) {
-            script::CommandEngine::get().addCommand(
-                0,
+            auto cmdId = 0;
+            for (int i = 0; i < 2; i++) {
+                cmdId = script::CommandEngine::get().addCommand(
+                    cmdId,
+                    script::MoveNode{
+                        greenBall->toHandle(),
+                        0.f,
+                        false,
+                        startPos
+                    });
+                cmdId = script::CommandEngine::get().addCommand(
+                    cmdId,
+                    script::MoveNode{
+                        greenBall->toHandle(),
+                        2.f,
+                        true,
+                        dir * 5.f
+                    });
+            }
+            cmdId = script::CommandEngine::get().addCommand(
+                cmdId,
                 script::MoveNode{
                     greenBall->toHandle(),
                     0.f,
@@ -502,7 +522,7 @@ void SampleApp::raycastPlayer(
 
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             startPos,
-            glm::normalize(endPos - startPos),
+            dir,
             10.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
