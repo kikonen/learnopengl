@@ -286,6 +286,8 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     if (assets.useImGui) {
+        ctx.m_state.bindFrameBuffer(0, false);
+
         if (assets.imGuiDemo || m_editor->getState().m_imguiDemo) {
             ImGui::ShowDemoWindow();
         }
