@@ -122,6 +122,7 @@ namespace {
 
             int offset = 11 * i;
             v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
+            //v.pos *= 0.5;
 
             offset += 3;
             v.normal = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
@@ -162,6 +163,7 @@ namespace {
 
             int offset = 11 * i;
             v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
+            //v.pos *= 0.5;
 
             offset += 3;
             v.normal = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
@@ -190,7 +192,42 @@ namespace {
         auto& vertices = mesh->m_vertices;
         auto& indeces = mesh->m_indeces;
 
-        generator::BoxMesh shape{ generator.size, { 1, 1, 1 } };
+        generator::BoxMesh shape{
+            generator.size,
+            { 1, 1, 1 } };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createRoundedBox(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::RoundedBoxMesh shape{
+            generator.radius,
+            generator.size,
+            generator.slices,
+            generator.segments };
 
         for (const auto& vertex : shape.vertices()) {
             auto& v = vertices.emplace_back(
@@ -222,7 +259,7 @@ namespace {
         generator::SphereMesh shape{
             generator.radius,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -256,7 +293,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
             generator.rings
         };
 
@@ -291,7 +328,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -325,7 +362,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -359,7 +396,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -393,7 +430,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -427,7 +464,7 @@ namespace {
             generator.inner_radius,
             generator.radius,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -461,7 +498,7 @@ namespace {
             generator.inner_radius,
             generator.radius,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -496,7 +533,7 @@ namespace {
             generator.radius,
             generator.length,
             generator.slices,
-            generator.segments,
+            generator.segments.x,
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -533,6 +570,8 @@ namespace mesh {
             return createQuad(*this);
         case PrimitiveType::box:
             return createBox(*this);
+        case PrimitiveType::rounded_box:
+            return createRoundedBox(*this);
         case PrimitiveType::sphere:
             return createSphere(*this);
         case PrimitiveType::capsule:

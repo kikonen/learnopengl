@@ -16,16 +16,16 @@ namespace mesh {
         std::string name;
         std::string alias;
 
-        glm::vec3 size{ 1.f, 1.f, 1.f };
+        glm::vec3 size{ 0.5f, 0.5f, 0.5f };
         float inner_radius = 0.f;
-        float radius = 1.f;
+        float radius = 0.5f;
         float length{ 0.5f };
         int slices{ 32 };
-        int segments{ 4 };
+        glm::ivec3 segments{ 4 };
         int rings{ 8 };
 
         glm::vec3 origin{ 0.f };
-        glm::vec3 dir{ 0.f };
+        glm::vec3 dir{ 0.f, 0.f, -1.f };
 
         std::vector<glm::vec3> vertices;
         std::vector<int> indeces;
@@ -92,13 +92,32 @@ namespace mesh {
             return {
                 .type = PrimitiveType::box,
                 .name = "<box>",
-                .alias = "box"
+                .alias = "box",
+                .size{ 0.5f, 0.5f, 0.5f },
+                .segments{ 1, 1, 1 },
+            };
+        }
+
+        /// @param radius Radius of the rounded edges.
+        /// @param size Half of the side length in x (0), y (1) and z (2) direction.
+        /// @param slices Number subdivions around in the rounded edges.
+        /// @param segments Number of subdivisons in x (0), y (1) and z (2)
+        /// direction for the flat faces.
+        static PrimitiveGenerator rounded_box()
+        {
+            return {
+                .type = PrimitiveType::rounded_box,
+                .name = "<rounded_box>",
+                .alias = "rounded_box",
+                .size{ 0.375f, 0.375f, 0.375f },
+                .radius = 0.125f,
+                .slices = 4,
+                .segments = { 8, 8, 8 }
             };
         }
 
         /// @param radius The radius of the sphere
         /// @param slices Subdivisions around the z-azis (longitudes).
-
         /// @param segments Subdivisions along the z-azis (latitudes).
         static PrimitiveGenerator sphere()
         {
@@ -106,9 +125,9 @@ namespace mesh {
                 .type = PrimitiveType::sphere,
                 .name = "<sphere>",
                 .alias = "sphere",
-                .radius = 1.f,
+                .radius = 0.5f,
                 .slices = 32,
-                .segments = 16
+                .segments = { 16, 0, 0 }
             };
         }
 
@@ -123,10 +142,10 @@ namespace mesh {
                 .type = PrimitiveType::capsule,
                 .name = "<capsule>",
                 .alias = "capsule",
-                .radius = 1.f,
+                .radius = 0.5f,
                 .length= 0.5f,
                 .slices = 32,
-                .segments = 4,
+                .segments = { 4, 0, 0 },
                 .rings = 8
             };
         }
@@ -141,10 +160,10 @@ namespace mesh {
                 .type = PrimitiveType::cylinder,
                 .name = "<cylinder>",
                 .alias = "cylinder",
-                .radius = 1.f,
-                .length= 1.f,
+                .radius = 0.5f,
+                .length= 0.5f,
                 .slices = 32,
-                .segments = 8,
+                .segments = { 8, 0, 0 },
             };
         }
 
@@ -158,10 +177,10 @@ namespace mesh {
                 .type = PrimitiveType::capped_cylinder,
                 .name = "<capped_cylinder>",
                 .alias = "capped_cylinder",
-                .radius = 1.f,
-                .length = 1.f,
+                .radius = 0.5f,
+                .length = 0.5f,
                 .slices = 32,
-                .segments = 8,
+                .segments = { 8, 0, 0 },
             };
         }
 
@@ -175,10 +194,10 @@ namespace mesh {
                 .type = PrimitiveType::cone,
                 .name = "<cone>",
                 .alias = "cone",
-                .radius = 1.f,
-                .length = 1.f,
+                .radius = 0.5f,
+                .length = 0.5f,
                 .slices = 32,
-                .segments = 8,
+                .segments = { 8, 0, 0 },
             };
         }
 
@@ -192,10 +211,10 @@ namespace mesh {
                 .type = PrimitiveType::capped_cone,
                 .name = "<capped_cone>",
                 .alias = "capped_cone",
-                .radius = 1.f,
-                .length = 1.f,
+                .radius = 0.5f,
+                .length = 0.5f,
                 .slices = 32,
-                .segments = 8,
+                .segments = { 8, 0, 0 },
             };
         }
 
@@ -213,10 +232,10 @@ namespace mesh {
                 .type = PrimitiveType::torus,
                 .name = "<torus>",
                 .alias = "torus",
-                .inner_radius = 0.25f,
-                .radius = 1.f,
+                .inner_radius = 0.125f,
+                .radius = 0.375f,
                 .slices = 16,
-                .segments = 32,
+                .segments = { 32, 0, 0 },
             };
         }
 
@@ -233,7 +252,7 @@ namespace mesh {
                 .name = "<disk>",
                 .alias = "disk",
                 .inner_radius = 0.f,
-                .radius = 1.f,
+                .radius = 0.5f,
                 .slices = 32,
                 .rings = 4,
             };
@@ -252,11 +271,11 @@ namespace mesh {
                 .type = PrimitiveType::spring,
                 .name = "<spring>",
                 .alias = "spring",
-                .inner_radius = 0.25f,
-                .radius = 1.f,
-                .length = 1.f,
+                .inner_radius = 0.125f,
+                .radius = 0.375f,
+                .length = 0.5f,
                 .slices = 8,
-                .segments = 32,
+                .segments = { 32, 0, 0 },
             };
         }
 
@@ -275,6 +294,8 @@ namespace mesh {
                 return quad();
             case PrimitiveType::box:
                 return box();
+            case PrimitiveType::rounded_box:
+                return rounded_box();
             case PrimitiveType::sphere:
                 return sphere();
             case PrimitiveType::capsule:

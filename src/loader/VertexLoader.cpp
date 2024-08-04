@@ -35,6 +35,24 @@ namespace loader {
                 else if (type == "line_strip") {
                     data.type = mesh::PrimitiveType::line_strip;
                 }
+                else if (type == "ray") {
+                    data.type = mesh::PrimitiveType::ray;
+                }
+                else if (type == "plane") {
+                    data.type = mesh::PrimitiveType::plane;
+                }
+                else if (type == "quad") {
+                    data.type = mesh::PrimitiveType::quad;
+                }
+                else if (type == "box") {
+                    data.type = mesh::PrimitiveType::box;
+                }
+                else if (type == "rounded_box") {
+                    data.type = mesh::PrimitiveType::rounded_box;
+                }
+                else if (type == "sphere") {
+                    data.type = mesh::PrimitiveType::sphere;
+                }
                 else if (type == "capsule") {
                     data.type = mesh::PrimitiveType::capsule;
                 }
@@ -65,24 +83,39 @@ namespace loader {
             }
             else if (k == "size") {
                 data.size = readVec3(v);
+                data.has_size = true;
             }
             else if (k == "inner_radius") {
                 data.inner_radius = readFloat(v);
+                data.has_inner_radius = true;
             }
             else if (k == "radius") {
                 data.radius = readFloat(v);
+                data.has_radius = true;
             }
             else if (k == "length") {
                 data.length = readFloat(v);
+                data.has_length = true;
             }
             else if (k == "slices") {
                 data.slices = readInt(v);
+                data.has_slices = true;
             }
             else if (k == "segments") {
-                data.segments = readInt(v);
+                data.segments = readUVec3(v);
+                data.has_segments = true;
             }
             else if (k == "rings") {
                 data.rings = readInt(v);
+                data.has_rings = true;
+            }
+            else if (k == "origin") {
+                data.origin = readVec3(v);
+                data.has_origin = true;
+            }
+            else if (k == "dir") {
+                data.dir = readVec3(v);
+                data.has_dir = true;
             }
             else if (k == "vertices") {
                 loadVertices(v, data.vertices);
@@ -156,13 +189,16 @@ namespace loader {
             generator.alias= data.alias;
         }
 
-        generator.size = data.size;
-        generator.inner_radius = data.inner_radius;
-        generator.radius = data.radius;
-        generator.length = data.length;
-        generator.slices = data.slices;
-        generator.segments = data.segments;
-        generator.rings = data.rings;
+        if (data.has_size) generator.size = data.size;
+        if (data.has_inner_radius) generator.inner_radius = data.inner_radius;
+        if (data.has_radius) generator.radius = data.radius;
+        if (data.has_length) generator.length = data.length;
+        if (data.has_slices) generator.slices = data.slices;
+        if (data.has_segments) generator.segments = data.segments;
+        if (data.has_rings) generator.rings = data.rings;
+        if (data.has_origin) generator.origin = data.origin;
+        if (data.has_dir) generator.dir = data.dir;
+
         generator.vertices = data.vertices;
         generator.indeces = data.indeces;
 

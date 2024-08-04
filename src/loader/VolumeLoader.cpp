@@ -54,7 +54,7 @@ namespace loader {
             auto generator = mesh::PrimitiveGenerator::sphere();
             generator.radius = 1.f;
             generator.slices = 8;
-            generator.segments = 4;
+            generator.segments = { 4, 0, 0 };
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(generator.create(), true);

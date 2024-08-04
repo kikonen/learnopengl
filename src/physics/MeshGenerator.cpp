@@ -180,7 +180,7 @@ namespace physics {
                 generator.name = fmt::format("<sphere-{}>", obj.m_id);
                 generator.radius = static_cast<float>(radius);
                 generator.slices = 16;
-                generator.segments = 8;
+                generator.segments = { 8, 0, 0 };
                 mesh = generator.create();
 
                 break;
@@ -195,7 +195,7 @@ namespace physics {
                 generator.radius = static_cast<float>(radius);
                 generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
-                generator.segments = 4;
+                generator.segments = { 4, 0, 0 };
                 mesh = generator.create();
 
                 break;
@@ -210,7 +210,7 @@ namespace physics {
                 generator.radius = static_cast<float>(radius);
                 generator.length = static_cast<float>(length * 0.5f);
                 generator.slices = 8;
-                generator.segments = 4;
+                generator.segments = { 4, 0, 0 };
                 mesh = generator.create();
 
                 break;

@@ -10,6 +10,7 @@ namespace mesh {
         plane,
         quad,
         box,
+        rounded_box,
         sphere,
         capsule,
         cylinder,

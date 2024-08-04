@@ -88,21 +88,39 @@ nodes:
     scale: 1
     pos: [3, 2, 0]
     xscript: scripts/anim_lucy
-  - id: cone
+  - id: primitive-1
     type: primitive
     mesh:
       material:
-        xkd: [0.0, 1.0, 0.0, 1.0]
+        xkd: [0.0, 0.2, 0.0, 1.0]
         xxmetal: [1.0, 0.0, 0, 1]
         map_pbr: textures\Metal007_1K-PNG
         program: g_tex
         render_back: true
       vertex:
-        type: capped_cone
-        inner_radius: 0.25
-        radius: 1
-        slices: 16
-        segments: 32
+        type: box
+        xinner_radius: 0.25
+        xradius: 0.25
+        xslices: 16
+        xsegments: 32
     scale: 1
-    base_rotation: [0, -135, 0]
+    xbase_rotation: [0, -135, 0]
+    pos: [2, 2, -20]
+  - id: primitive-2
+    type: primitive
+    mesh:
+      material:
+        xkd: [0.0, 0.2, 0.0, 1.0]
+        xxmetal: [1.0, 0.0, 0, 1]
+        map_pbr: textures\Metal007_1K-PNG
+        program: g_tex
+        render_back: true
+      vertex:
+        type: quad
+        xinner_radius: 0.25
+        xradius: 0.25
+        xslices: 16
+        xsegments: 32
+    scale: 1
+    xbase_rotation: [0, -135, 0]
     pos: [3, 2, -20]
