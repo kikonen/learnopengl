@@ -36,20 +36,16 @@ nodes:
       xdiffuse: [0.0, 0.9, 0.0, 1.0]
       intensity: 30000
   - id: wooden_floor
-    mesh:
-      path: plane
-      material:
-        name: wood_floor
-        kd: [0.8, 0.8, 0.0, 1.0]
-        map_pbr: textures\Planks 09 [8K]
-        xmetal: [1.0, 0.0, 0, 1]
-        xmap_pbr: textures\planks_metal
-        tiling: 20
-    program: g_tex
-    render_flags:
-      no_shadow: true
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    position: [0, 0, 0]
     scale: 100
-  - xid: lines
+  - xid: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: lines
     type: primitive
     mesh:
       material:
@@ -70,12 +66,13 @@ nodes:
     scale: 1
     pos: [0, 2, 0]
     script: scripts/anim_lucy
-  - xid: points
+  - id: points
     type: primitive
     mesh:
       material:
         kd: [0.0, 1.0, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
+        layers_depth: 10
       vertex:
         type: points
         vertices:
@@ -90,6 +87,7 @@ nodes:
     program: g_tex
     scale: 1
     pos: [3, 2, 0]
+    xscript: scripts/anim_lucy
   - id: cone
     type: primitive
     mesh:
