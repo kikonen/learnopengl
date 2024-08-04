@@ -17,6 +17,7 @@ namespace mesh {
         std::string alias;
 
         glm::vec3 size{ 1.f, 1.f, 1.f };
+        float inner_radius = 0.f;
         float radius = 1.f;
         float length{ 0.5f };
         int slices{ 32 };
@@ -97,6 +98,7 @@ namespace mesh {
 
         /// @param radius The radius of the sphere
         /// @param slices Subdivisions around the z-azis (longitudes).
+
         /// @param segments Subdivisions along the z-azis (latitudes).
         static PrimitiveGenerator sphere()
         {
@@ -163,6 +165,101 @@ namespace mesh {
             };
         }
 
+        /// @param radius Radius of the cylinder along the xy-plane.
+        /// @param length Half of the length of the cylinder along the z-axis.
+        /// @param slices Subdivisions around the z-axis.
+        /// @param segments Subdivisions along the z-axis.
+        static PrimitiveGenerator cone()
+        {
+            return {
+                .type = PrimitiveType::cone,
+                .name = "<cone>",
+                .alias = "cone",
+                .radius = 1.f,
+                .length = 1.f,
+                .slices = 32,
+                .segments = 8,
+            };
+        }
+
+        /// @param radius Radius of the cylinder along the xy-plane.
+        /// @param length Half of the length of the cylinder along the z-axis.
+        /// @param slices Subdivisions around the z-axis.
+        /// @param segments Subdivisions along the z-axis.
+        static PrimitiveGenerator capped_cone()
+        {
+            return {
+                .type = PrimitiveType::capped_cone,
+                .name = "<capped_cone>",
+                .alias = "capped_cone",
+                .radius = 1.f,
+                .length = 1.f,
+                .slices = 32,
+                .segments = 8,
+            };
+        }
+
+        /// @param minor Radius of the minor (inner) ring
+        /// @param major Radius of the major (outer) ring
+        /// @param slices Subdivisions around the minor ring
+        /// @param segments Subdivisions around the major ring
+        /// @param minorStart Counterclockwise angle relative to the xy-plane.
+        /// @param minorSweep Counterclockwise angle around the circle.
+        /// @param majorStart Counterclockwise angle around the z-axis relative to the x-axis.
+        /// @param majorSweep Counterclockwise angle around the z-axis.
+        static PrimitiveGenerator torus()
+        {
+            return {
+                .type = PrimitiveType::torus,
+                .name = "<torus>",
+                .alias = "torus",
+                .inner_radius = 0.25f,
+                .radius = 1.f,
+                .slices = 16,
+                .segments = 32,
+            };
+        }
+
+        /// @param radius Outer radius of the disk on the xy-plane.
+        /// @param innerRadius radius of the inner circle on the xy-plane.
+        /// @param slices Number of subdivisions around the z-axis.
+        /// @param rings Number of subdivisions along the radius.
+        /// @param start Counterclockwise angle relative to the x-axis
+        /// @param sweep Counterclockwise angle.
+        static PrimitiveGenerator disk()
+        {
+            return {
+                .type = PrimitiveType::disk,
+                .name = "<disk>",
+                .alias = "disk",
+                .inner_radius = 0.f,
+                .radius = 1.f,
+                .slices = 32,
+                .rings = 4,
+            };
+        }
+
+        /// @param minor Radius of the spring it self.
+        /// @param major Radius from the z-axis
+        /// @param size Half of the length along the z-axis.
+        /// @param slices Subdivisions around the spring.
+        /// @param segments Subdivisions along the path.
+        /// @param majorStart Counterclockwise angle around the z-axis relative to the x-axis.
+        /// @param majorSweep Counterclockwise angle arounf the z-axis.
+        static PrimitiveGenerator spring()
+        {
+            return {
+                .type = PrimitiveType::spring,
+                .name = "<spring>",
+                .alias = "spring",
+                .inner_radius = 0.25f,
+                .radius = 1.f,
+                .length = 1.f,
+                .slices = 8,
+                .segments = 32,
+            };
+        }
+
         static PrimitiveGenerator get(PrimitiveType type)
         {
             switch (type) {
@@ -186,6 +283,16 @@ namespace mesh {
                 return cylinder();
             case PrimitiveType::capped_cylinder:
                 return capped_cylinder();
+            case PrimitiveType::cone:
+                return cone();
+            case PrimitiveType::capped_cone:
+                return capped_cone();
+            case PrimitiveType::torus:
+                return torus();
+            case PrimitiveType::disk:
+                return disk();
+            case PrimitiveType::spring:
+                return spring();
             }
 
             return none();

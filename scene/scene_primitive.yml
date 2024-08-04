@@ -8,30 +8,17 @@ script:
     - path: lib/common
 nodes:
   - id: player
-    mesh:
-      path: water_ball
-      material_modifier:
-        tiling: 5
-    program: g_tex
+    type: origo
     pos: [2.5, 2, 3]
     front: [0, 0, -1]
-    scale: 0.1
-    render_flags:
-      allow_normals: false
     active: true
     audio:
       listener:
         default: true
     controllers:
       - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
-    pos: [0, 4, 5]
-    rotation: [-15, 0, 0]
-    controller:
-      type: camera_zoom
     camera:
+      type: fps
       default: true
   - id: directional_light
     mesh:
@@ -62,7 +49,7 @@ nodes:
     render_flags:
       no_shadow: true
     scale: 100
-  - id: lines
+  - xid: lines
     type: primitive
     mesh:
       material:
@@ -83,7 +70,7 @@ nodes:
     scale: 1
     pos: [0, 2, 0]
     script: scripts/anim_lucy
-  - id: points
+  - xid: points
     type: primitive
     mesh:
       material:
@@ -103,3 +90,21 @@ nodes:
     program: g_tex
     scale: 1
     pos: [3, 2, 0]
+  - id: cone
+    type: primitive
+    mesh:
+      material:
+        xkd: [0.0, 1.0, 0.0, 1.0]
+        xxmetal: [1.0, 0.0, 0, 1]
+        map_pbr: textures\Metal007_1K-PNG
+        program: g_tex
+        render_back: true
+      vertex:
+        type: capped_cone
+        inner_radius: 0.25
+        radius: 1
+        slices: 16
+        segments: 32
+    scale: 1
+    base_rotation: [0, -135, 0]
+    pos: [3, 2, -20]

@@ -344,6 +344,177 @@ namespace {
 
         return mesh;
     }
+
+    std::unique_ptr<mesh::Mesh> createCone(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::ConeMesh shape{
+            generator.radius,
+            generator.length,
+            generator.slices,
+            generator.segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createCappedCone(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::CappedConeMesh shape{
+            generator.radius,
+            generator.length,
+            generator.slices,
+            generator.segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createTorus(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::TorusMesh shape{
+            generator.inner_radius,
+            generator.radius,
+            generator.slices,
+            generator.segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createDisk(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::DiskMesh shape{
+            generator.inner_radius,
+            generator.radius,
+            generator.slices,
+            generator.segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createSpring(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::SpringMesh shape{
+            generator.inner_radius,
+            generator.radius,
+            generator.length,
+            generator.slices,
+            generator.segments,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
 }
 
 namespace mesh {
@@ -370,6 +541,16 @@ namespace mesh {
             return createCylinder(*this);
         case PrimitiveType::capped_cylinder:
             return createCappedCylinder(*this);
+        case PrimitiveType::cone:
+            return createCone(*this);
+        case PrimitiveType::capped_cone:
+            return createCappedCone(*this);
+        case PrimitiveType::torus:
+            return createTorus(*this);
+        case PrimitiveType::disk:
+            return createDisk(*this);
+        case PrimitiveType::spring:
+            return createSpring(*this);
         }
 
         return nullptr;

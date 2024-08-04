@@ -44,12 +44,30 @@ namespace loader {
                 else if (type == "capped_cylinder") {
                     data.type = mesh::PrimitiveType::capped_cylinder;
                 }
+                else if (type == "cone") {
+                    data.type = mesh::PrimitiveType::cone;
+                }
+                else if (type == "capped_cone") {
+                    data.type = mesh::PrimitiveType::capped_cone;
+                }
+                else if (type == "torus") {
+                    data.type = mesh::PrimitiveType::torus;
+                }
+                else if (type == "disk") {
+                    data.type = mesh::PrimitiveType::disk;
+                }
+                else if (type == "spring") {
+                    data.type = mesh::PrimitiveType::spring;
+                }
                 else {
                     reportUnknown("vertex_type", k, v);
                 }
             }
             else if (k == "size") {
                 data.size = readVec3(v);
+            }
+            else if (k == "inner_radius") {
+                data.inner_radius = readFloat(v);
             }
             else if (k == "radius") {
                 data.radius = readFloat(v);
@@ -139,11 +157,14 @@ namespace loader {
         }
 
         generator.size = data.size;
+        generator.inner_radius = data.inner_radius;
         generator.radius = data.radius;
         generator.length = data.length;
         generator.slices = data.slices;
         generator.segments = data.segments;
         generator.rings = data.rings;
+        generator.vertices = data.vertices;
+        generator.indeces = data.indeces;
 
         return generator.create();
     }

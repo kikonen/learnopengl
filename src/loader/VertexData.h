@@ -16,6 +16,7 @@ namespace loader {
         std::string alias;
 
         glm::vec3 size{ 1.f };
+        float inner_radius = 0.f;
         float radius = 1.f;
         float length{ 0.5f };
         int slices{ 32 };

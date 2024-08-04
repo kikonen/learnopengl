@@ -13,6 +13,11 @@ namespace mesh {
         sphere,
         capsule,
         cylinder,
-        capped_cylinder
+        capped_cylinder,
+        cone,
+        capped_cone,
+        torus,
+        disk,
+        spring,
     };
 }
