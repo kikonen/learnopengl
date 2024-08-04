@@ -8,7 +8,7 @@
 
 namespace loader {
     struct CameraData {
-        CameraType type{ CameraType::none };
+        CameraType type{ CameraType::fps };
 
         bool enabled{ false };
 
