@@ -62,6 +62,9 @@ nodes:
         default: true
     controllers:
       - type: pawn
+    camera:
+      type: fps
+      default: true
   - xid: fps_counter
     parent_id: player
     type: text
@@ -85,14 +88,6 @@ nodes:
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
     xrender_flags:
-  - id: player_camera
-    parent_id: player
-    type: origo
-    pos: [0, 5.25, 0.25]
-    camera:
-      default: true
-    controllers:
-      - type: camera_zoom
   - name: Player cube map 1
     type: origo
     parent_id: player

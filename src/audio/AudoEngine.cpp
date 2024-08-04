@@ -168,6 +168,16 @@ namespace audio
         source->pause();
     }
 
+    void AudioEngine::toggleSource(audio::source_id id, bool play)
+    {
+        if (play) {
+            playSource(id);
+        }
+        else {
+            stopSource(id);
+        }
+    }
+
     bool AudioEngine::isPlaying(audio::source_id id)
     {
         auto* source = getSource(id);

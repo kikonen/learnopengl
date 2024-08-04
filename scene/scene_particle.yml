@@ -18,8 +18,30 @@ nodes:
     audio:
       listener:
         default: true
+      sources:
+        - path: audio/Wheeze 1_B2356390_normal.wav
+          reference_distance: 0.1
+          gain: 0.4
+          loop: true
+        - path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 1.2
+          loop: trueS
+        - path: audio/Steps In Grass_6D932A6E_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 1.5
+          loop: true
     controllers:
       - type: pawn
+    camera:
+      type: fps
+      rotation: [-17, 0, 0]
+      default: true
+    script: |
+      cmd:audioPlay(
+        { sync=true, index=0 })
   - id: fps_counter
     parent_id: player_fps
     type: text
@@ -41,15 +63,6 @@ nodes:
         size: 36
     pos: [2.5, -1.8, -6]
     scale: 0.01
-  - id: player_fps_camera
-    parent_id: player_fps
-    type: origo
-    pos: [0.0, 0.12, 0.0]
-    camera:
-      rotation: [-17, 0, 0]
-      default: true
-    controllers:
-      - type: camera_zoom
   - id: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:

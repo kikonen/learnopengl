@@ -21,6 +21,12 @@ public:
         float yoffset) override;
 
 private:
+    void toggleAudio(
+        Node* node,
+        bool actionWalk,
+        bool actionTurn);
+
+private:
     pool::NodeHandle m_nodeHandle{};
 
     glm::vec3 m_speedMoveNormal{ 0.f };

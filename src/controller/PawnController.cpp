@@ -14,6 +14,8 @@
 #include "script/api/RotateNode.h"
 #include "script/api/MoveNode.h"
 
+#include "audio/AudioEngine.h"
+
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
 
@@ -74,6 +76,9 @@ void PawnController::onKey(
         rotateSpeed *= 0.25;
     }
 
+    bool actionWalk = false;
+    bool actionTurn = false;
+
     {
         if (true) {
             bool changed = false;
@@ -99,6 +104,7 @@ void PawnController::onKey(
                         adjust.y
                     });
                 //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
+                actionTurn = true;
             }
         }
     }
@@ -157,8 +163,11 @@ void PawnController::onKey(
 
             //glm::vec3 adjust = snapshot.getPosition();
             //m_node->getState().setPosition(pos);
+            actionWalk = true;
         }
     }
+
+    toggleAudio(node, actionWalk, actionTurn);
 }
 
 void PawnController::onMouseMove(
@@ -176,6 +185,9 @@ void PawnController::onMouseMove(
     const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
 
     glm::vec3 adjust{ 0.f };
+
+    bool actionWalk = false;
+    bool actionTurn = false;
 
     if (xoffset != 0) {
         auto yaw = -m_speedMouseSensitivity.x * xoffset;
@@ -195,5 +207,21 @@ void PawnController::onMouseMove(
                 adjust.y
             });
         //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
+        actionTurn = true;
     }
+
+    toggleAudio(node, actionWalk, actionTurn);
+}
+
+void PawnController::toggleAudio(
+    Node* node,
+    bool actionWalk,
+    bool actionTurn)
+{
+    auto& ae = audio::AudioEngine::get();
+    const auto walkId = node->m_audioSourceIds[1];
+    const auto turnId = node->m_audioSourceIds[2];
+
+    ae.toggleSource(walkId, actionWalk);
+    ae.toggleSource(turnId, actionTurn && !actionWalk);
 }

@@ -42,9 +42,11 @@ namespace audio
             m_enabled = enabled;
         }
 
-        void playSource(audio::source_id);
-        void stopSource(audio::source_id);
-        void pauseSource(audio::source_id);
+        void playSource(audio::source_id id);
+        void stopSource(audio::source_id id);
+        void pauseSource(audio::source_id id);
+        void toggleSource(audio::source_id id, bool play);
+
 
         bool isPlaying(audio::source_id);
         bool isPaused(audio::source_id);
