@@ -68,6 +68,9 @@ namespace loader {
                 else if (type == "capped_cone") {
                     data.type = mesh::PrimitiveType::capped_cone;
                 }
+                else if (type == "spherical_cone") {
+                    data.type = mesh::PrimitiveType::spherical_cone;
+                }
                 else if (type == "tube") {
                     data.type = mesh::PrimitiveType::tube;
                 }
@@ -76,6 +79,9 @@ namespace loader {
                 }
                 else if (type == "torus") {
                     data.type = mesh::PrimitiveType::torus;
+                }
+                else if (type == "torus_knot") {
+                    data.type = mesh::PrimitiveType::torus_knot;
                 }
                 else if (type == "disk") {
                     data.type = mesh::PrimitiveType::disk;
@@ -102,6 +108,14 @@ namespace loader {
             else if (k == "length") {
                 data.length = readFloat(v);
                 data.has_length = true;
+            }
+            else if (k == "p") {
+                data.p = readInt(v);
+                data.has_p= true;
+            }
+            else if (k == "q") {
+                data.q = readInt(v);
+                data.has_q = true;
             }
             else if (k == "slices") {
                 data.slices = readInt(v);
@@ -199,6 +213,8 @@ namespace loader {
         if (data.has_inner_radius) generator.inner_radius = data.inner_radius;
         if (data.has_radius) generator.radius = data.radius;
         if (data.has_length) generator.length = data.length;
+        if (data.has_p) generator.p = data.p;
+        if (data.has_q) generator.q = data.q;
         if (data.has_slices) generator.slices = data.slices;
         if (data.has_segments) generator.segments = data.segments;
         if (data.has_rings) generator.rings = data.rings;

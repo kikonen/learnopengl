@@ -20,6 +20,8 @@ namespace mesh {
         float inner_radius = 0.f;
         float radius = 0.5f;
         float length{ 0.5f };
+        int p{ 0 };
+        int q{ 0 };
         int slices{ 32 };
         glm::ivec3 segments{ 4 };
         int rings{ 8 };
@@ -218,6 +220,27 @@ namespace mesh {
             };
         }
 
+        /// @param radius Radius of the negative z end on the xy-plane.
+        /// @param size Half of the distance between cap and tip along the z-axis.
+        /// @param slices Number of subdivisions around the z-axis.
+        /// @param segments Number subdivisions along the z-axis.
+        /// @param rings Number subdivisions in the cap.
+        /// @param start Counterclockwise angle around the z-axis relative to the positive x-axis.
+        /// @param sweep Counterclockwise angle around the z-axis.
+        static PrimitiveGenerator spherical_cone()
+        {
+            return {
+                .type = PrimitiveType::spherical_cone,
+                .name = "<capped_cone>",
+                .alias = "capped_cone",
+                .radius = 0.5f,
+                .length = 0.5f,
+                .slices = 32,
+                .segments = { 8, 0, 0 },
+                .rings = 4
+            };
+        }
+
         /// @param radius The outer radius of the cylinder on the xy-plane.
         /// @param innerRadius The inner radius of the cylinder on the xy-plane.
         /// @param size Half of the length of the cylinder along the z-axis.
@@ -280,6 +303,21 @@ namespace mesh {
                 .radius = 0.375f,
                 .slices = 16,
                 .segments = { 32, 0, 0 },
+            };
+        }
+
+        /// @param slices Number subdivisions around the circle.
+        /// @param segments Number of subdivisions around the path.
+        static PrimitiveGenerator torus_knot()
+        {
+            return {
+                .type = PrimitiveType::torus_knot,
+                .name = "<torus_knot>",
+                .alias = "torus_knot",
+                .p = 2,
+                .q = 3,
+                .slices = 8,
+                .segments = { 96, 0, 0 },
             };
         }
 
@@ -352,12 +390,16 @@ namespace mesh {
                 return cone();
             case PrimitiveType::capped_cone:
                 return capped_cone();
+            case PrimitiveType::spherical_cone:
+                return spherical_cone();
             case PrimitiveType::tube:
                 return tube();
             case PrimitiveType::capped_tube:
                 return capped_tube();
             case PrimitiveType::torus:
                 return torus();
+            case PrimitiveType::torus_knot:
+                return torus_knot();
             case PrimitiveType::disk:
                 return disk();
             case PrimitiveType::spring:

@@ -62,7 +62,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createRay(
+    std::unique_ptr<mesh::Mesh> create_ray(
         mesh::PrimitiveGenerator generator)
     {
         if (generator.length == 0) return nullptr;
@@ -100,7 +100,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createPlane(
+    std::unique_ptr<mesh::Mesh> create_plane(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -141,7 +141,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createQuad(
+    std::unique_ptr<mesh::Mesh> create_quad(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -182,7 +182,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createBox(
+    std::unique_ptr<mesh::Mesh> create_box(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -213,7 +213,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createRoundedBox(
+    std::unique_ptr<mesh::Mesh> create_rounded_box(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -246,7 +246,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createSphere(
+    std::unique_ptr<mesh::Mesh> create_sphere(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -279,7 +279,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCapsule(
+    std::unique_ptr<mesh::Mesh> create_capsule(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -314,7 +314,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCylinder(
+    std::unique_ptr<mesh::Mesh> create_cylinder(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -348,7 +348,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCappedCylinder(
+    std::unique_ptr<mesh::Mesh> create_capped_cylinder(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -382,7 +382,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCone(
+    std::unique_ptr<mesh::Mesh> create_cone(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -416,7 +416,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCappedCone(
+    std::unique_ptr<mesh::Mesh> create_capped_cone(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -426,11 +426,12 @@ namespace {
         auto& vertices = mesh->m_vertices;
         auto& indeces = mesh->m_indeces;
 
-        generator::CappedConeMesh shape{
+        generator::SphericalConeMesh shape{
             generator.radius,
             generator.length,
             generator.slices,
             generator.segments.x,
+            generator.rings
         };
 
         for (const auto& vertex : shape.vertices()) {
@@ -450,7 +451,42 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createTube(
+    std::unique_ptr<mesh::Mesh> create_spherical_cone(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::SphericalConeMesh shape{
+            generator.radius,
+            generator.length,
+            generator.slices,
+            generator.segments.x,
+            generator.rings
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> create_tube(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -485,7 +521,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createCappedTube(
+    std::unique_ptr<mesh::Mesh> create_capped_tube(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -521,7 +557,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createTorus(
+    std::unique_ptr<mesh::Mesh> create_torus(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -555,7 +591,41 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createDisk(
+    std::unique_ptr<mesh::Mesh> create_torus_knot(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::TorusKnotMesh shape{
+            generator.p,
+            generator.q,
+            generator.slices,
+            generator.segments.x,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> create_disk(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -589,7 +659,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> createSpring(
+    std::unique_ptr<mesh::Mesh> create_spring(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -634,37 +704,41 @@ namespace mesh {
         case PrimitiveType::lines:
             return createVertices(*this);
         case PrimitiveType::ray:
-            return createRay(*this);
+            return create_ray(*this);
         case PrimitiveType::plane:
-            return createPlane(*this);
+            return create_plane(*this);
         case PrimitiveType::quad:
-            return createQuad(*this);
+            return create_quad(*this);
         case PrimitiveType::box:
-            return createBox(*this);
+            return create_box(*this);
         case PrimitiveType::rounded_box:
-            return createRoundedBox(*this);
+            return create_rounded_box(*this);
         case PrimitiveType::sphere:
-            return createSphere(*this);
+            return create_sphere(*this);
         case PrimitiveType::capsule:
-            return createCapsule(*this);
+            return create_capsule(*this);
         case PrimitiveType::cylinder:
-            return createCylinder(*this);
+            return create_cylinder(*this);
         case PrimitiveType::capped_cylinder:
-            return createCappedCylinder(*this);
+            return create_capped_cylinder(*this);
         case PrimitiveType::cone:
-            return createCone(*this);
+            return create_cone(*this);
         case PrimitiveType::capped_cone:
-            return createCappedCone(*this);
+            return create_capped_cone(*this);
+        case PrimitiveType::spherical_cone:
+            return create_spherical_cone(*this);
         case PrimitiveType::tube:
-            return createTube(*this);
+            return create_tube(*this);
         case PrimitiveType::capped_tube:
-            return createCappedTube(*this);
+            return create_capped_tube(*this);
         case PrimitiveType::torus:
-            return createTorus(*this);
+            return create_torus(*this);
+        case PrimitiveType::torus_knot:
+            return create_torus_knot(*this);
         case PrimitiveType::disk:
-            return createDisk(*this);
+            return create_disk(*this);
         case PrimitiveType::spring:
-            return createSpring(*this);
+            return create_spring(*this);
         }
 
         return nullptr;

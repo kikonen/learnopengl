@@ -17,9 +17,11 @@ namespace mesh {
         capped_cylinder,
         cone,
         capped_cone,
+        spherical_cone,
         tube,
         capped_tube,
         torus,
+        torus_knot,
         disk,
         spring,
     };

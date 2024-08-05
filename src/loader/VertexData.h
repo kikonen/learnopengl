@@ -19,6 +19,8 @@ namespace loader {
         float inner_radius{ 0.f };
         float radius{ 0.5f };
         float length{ 0.5f };
+        int p{ 0 };
+        int q{ 0 };
         int slices{ 32 };
         glm::ivec3 segments{ 4 };
         int rings{ 8 };
@@ -30,6 +32,8 @@ namespace loader {
         bool has_inner_radius{ false };
         bool has_radius{ false };
         bool has_length{ false };
+        bool has_p{ false };
+        bool has_q{ false };
         bool has_slices{ false };
         bool has_segments{ false };
         bool has_rings{ false };
