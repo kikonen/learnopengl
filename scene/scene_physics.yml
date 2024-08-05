@@ -59,6 +59,7 @@ nodes:
     pos: [0, 25, 40]
     front: [0, 0, -1]
     camera:
+      type: follow
       distance: [4, 2, 20]
     controllers:
       - type: pawn
