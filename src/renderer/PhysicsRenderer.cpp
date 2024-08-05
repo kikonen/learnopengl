@@ -94,13 +94,15 @@ void PhysicsRenderer::drawObjects(
     int baseInstance = 0;
     for (auto& mesh : *meshes)
     {
+        auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
+
         backend::DrawOptions drawOptions;
         {
             drawOptions.m_mode = mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;
             drawOptions.m_solid = true;
             drawOptions.m_wireframe = true;
-            drawOptions.m_renderBack = false;
+            drawOptions.m_renderBack = primitiveMesh ? primitiveMesh->m_type == mesh::PrimitiveType::plane : false;
         }
 
         backend::DrawRange drawRange{
