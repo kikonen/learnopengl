@@ -49,6 +49,16 @@ nodes:
         program: g_tex
       scale: 2.5
     pos: [0, 9.5, -10]
+    physics:
+      body:
+        type: box
+        density: 0.5
+        rot: [0, 0, 0]
+      geom:
+        type: box
+        category: [can_float]
+        collision: [water]
+        size: [5, 5, 5]
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 30.5, -10]
@@ -119,6 +129,17 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [60, 0.2, 60]
     script_file: scripts/anim_water
   - id: pool_side_{t}_{c}
     mesh:

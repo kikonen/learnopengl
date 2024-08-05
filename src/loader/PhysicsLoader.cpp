@@ -19,11 +19,16 @@ namespace {
             g_categoryMapping.insert({
                 { "none", physics::Category::none },
                 { "invalid", physics::Category::invalid },
+                // surroundings
                 { "ground", physics::Category::ground },
                 { "scenery", physics::Category::scenery },
                 { "water", physics::Category::water },
+                // characters and creatures
                 { "npc", physics::Category::npc },
                 { "player", physics::Category::player },
+                // characteristic
+                { "can_float", physics::Category::can_float },
+                // ray
                 { "ray_player_fire", physics::Category::ray_player_fire },
                 { "ray_npc_fire", physics::Category::ray_npc_fire },
                 { "ray_hit", physics::Category::ray_hit },

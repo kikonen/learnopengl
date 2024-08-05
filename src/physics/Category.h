@@ -13,9 +13,11 @@ namespace physics {
         // characters and creatures
         npc = 1 << 5,
         player = 1 << 6,
+        // characteristic
+        can_float = 1 << 7,
         // Ray casting
-        ray_player_fire = 1 << 7,
-        ray_npc_fire = 1 << 8,
-        ray_hit = 1 << 9,
+        ray_player_fire = 1 << 8,
+        ray_npc_fire = 1 << 9,
+        ray_hit = 1 << 10,
     };
 }
