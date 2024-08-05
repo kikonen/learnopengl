@@ -68,6 +68,12 @@ namespace loader {
                 else if (type == "capped_cone") {
                     data.type = mesh::PrimitiveType::capped_cone;
                 }
+                else if (type == "tube") {
+                    data.type = mesh::PrimitiveType::tube;
+                }
+                else if (type == "capped_tube") {
+                    data.type = mesh::PrimitiveType::capped_tube;
+                }
                 else if (type == "torus") {
                     data.type = mesh::PrimitiveType::torus;
                 }

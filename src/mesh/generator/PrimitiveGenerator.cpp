@@ -450,6 +450,77 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> createTube(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::TubeMesh shape{
+            generator.radius,
+            generator.inner_radius,
+            generator.length,
+            generator.slices,
+            generator.segments.x,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
+    std::unique_ptr<mesh::Mesh> createCappedTube(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::CappedTubeMesh shape{
+            generator.radius,
+            generator.inner_radius,
+            generator.length,
+            generator.slices,
+            generator.segments.x,
+            generator.rings,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> createTorus(
         mesh::PrimitiveGenerator generator)
     {
@@ -584,6 +655,10 @@ namespace mesh {
             return createCone(*this);
         case PrimitiveType::capped_cone:
             return createCappedCone(*this);
+        case PrimitiveType::tube:
+            return createTube(*this);
+        case PrimitiveType::capped_tube:
+            return createCappedTube(*this);
         case PrimitiveType::torus:
             return createTorus(*this);
         case PrimitiveType::disk:

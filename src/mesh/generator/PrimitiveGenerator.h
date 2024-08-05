@@ -218,6 +218,50 @@ namespace mesh {
             };
         }
 
+        /// @param radius The outer radius of the cylinder on the xy-plane.
+        /// @param innerRadius The inner radius of the cylinder on the xy-plane.
+        /// @param size Half of the length of the cylinder along the z-axis.
+        /// @param slices Subdivisions around the z-axis.
+        /// @param segments Subdivisions along the z-axis.
+        /// @param start Counterclockwise angle around the z-axis relative to the x-axis.
+        /// @param sweep Counterclockwise angle around the z-axis.
+        static PrimitiveGenerator tube()
+        {
+            return {
+                .type = PrimitiveType::tube,
+                .name = "<tube>",
+                .alias = "tube",
+                .inner_radius = 0.3f,
+                .radius = 0.5f,
+                .length = 0.5f,
+                .slices = 32,
+                .segments = { 8, 0, 0 },
+            };
+        }
+
+        /// @param radius The outer radius of the cylinder on the xy-plane.
+        /// @param innerRadius The inner radius of the cylinder on the xy-plane.
+        /// @param size Half of the length of the cylinder along the z-axis.
+        /// @param slices Number nubdivisions around the z-axis.
+        /// @param segments Number of subdivisions along the z-axis.
+        /// @param rings Number radial subdivisions in the cap.
+        /// @param start Counterclockwise angle around the z-axis relative to the x-axis.
+        /// @param sweep Counterclockwise angle around the z-axis.
+        static PrimitiveGenerator capped_tube()
+        {
+            return {
+                .type = PrimitiveType::capped_tube,
+                .name = "<capped_tube>",
+                .alias = "capped_tube",
+                .inner_radius = 0.3f,
+                .radius = 0.5f,
+                .length = 0.5f,
+                .slices = 32,
+                .segments = { 8, 0, 0 },
+                .rings = 1,
+            };
+        }
+
         /// @param minor Radius of the minor (inner) ring
         /// @param major Radius of the major (outer) ring
         /// @param slices Subdivisions around the minor ring
@@ -308,6 +352,10 @@ namespace mesh {
                 return cone();
             case PrimitiveType::capped_cone:
                 return capped_cone();
+            case PrimitiveType::tube:
+                return tube();
+            case PrimitiveType::capped_tube:
+                return capped_tube();
             case PrimitiveType::torus:
                 return torus();
             case PrimitiveType::disk:
