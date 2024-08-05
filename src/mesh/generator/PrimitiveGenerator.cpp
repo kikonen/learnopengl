@@ -284,6 +284,38 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> create_dodeca_hedron(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::DodecahedronMesh shape{
+            generator.radius,
+            generator.segments.x,
+            generator.rings };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> create_sphere(
         mesh::PrimitiveGenerator generator)
     {
@@ -753,6 +785,8 @@ namespace mesh {
             return create_box(*this);
         case PrimitiveType::rounded_box:
             return create_rounded_box(*this);
+        case PrimitiveType::dodeca_hedron:
+            return create_dodeca_hedron(*this);
         case PrimitiveType::sphere:
             return create_sphere(*this);
         case PrimitiveType::capsule:

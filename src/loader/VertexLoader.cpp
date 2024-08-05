@@ -53,6 +53,9 @@ namespace loader {
                 else if (type == "rounded_box") {
                     data.type = mesh::PrimitiveType::rounded_box;
                 }
+                else if (type == "dodeca_hedron") {
+                    data.type = mesh::PrimitiveType::dodeca_hedron;
+                }
                 else if (type == "sphere") {
                     data.type = mesh::PrimitiveType::sphere;
                 }

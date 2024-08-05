@@ -149,6 +149,23 @@ namespace mesh {
             };
         }
 
+        /// @param radius The radius of the enclosing sphere.
+        /// @param segments The number segments along each edge. Should be >= 1.
+        /// If <1 empty mesh is generated.
+        /// @param rings The number of radial segments on each face. Should be >= 1.
+        /// If <1 an empty mesh is generated.
+        static PrimitiveGenerator dodeca_hedron()
+        {
+            return {
+                .type = PrimitiveType::dodeca_hedron,
+                .name = "<dodeca_hedron>",
+                .alias = "dodeca_hedron",
+                .radius = 0.5f,
+                .segments = { 1, 0, 0 },
+                .rings = 1,
+            };
+        }
+
         /// @param radius The radius of the sphere
         /// @param slices Subdivisions around the z-azis (longitudes).
         /// @param segments Subdivisions along the z-azis (latitudes).
@@ -411,6 +428,8 @@ namespace mesh {
                 return box();
             case PrimitiveType::rounded_box:
                 return rounded_box();
+            case PrimitiveType::dodeca_hedron:
+                return dodeca_hedron();
             case PrimitiveType::sphere:
                 return sphere();
             case PrimitiveType::capsule:

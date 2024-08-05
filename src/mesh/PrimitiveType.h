@@ -12,6 +12,7 @@ namespace mesh {
         quad,
         box,
         rounded_box,
+        dodeca_hedron,
         sphere,
         capsule,
         cylinder,

@@ -126,7 +126,8 @@ nodes:
         xinner_radius: 0.25
         xradius: 0.25
         xslices: 16
-        xsegments: 32
+        xsegments: 4
+        xrings: 4
     scale: 1
     xbase_rotation: [0, -135, 0]
     pos: [3, 2, -20]
