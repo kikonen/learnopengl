@@ -26,6 +26,7 @@ struct NodeState;
 
 
 namespace physics {
+    struct RayHit;
     class MeshGenerator;
 
     class PhysicsEngine {
@@ -67,7 +68,7 @@ namespace physics {
 
         void generateObjectMeshes();
 
-        std::vector<pool::NodeHandle> rayCast(
+        std::vector<physics::RayHit> rayCast(
             glm::vec3 origin,
             glm::vec3 dir,
             float distance,

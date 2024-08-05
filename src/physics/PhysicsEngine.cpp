@@ -25,6 +25,7 @@
 #include "Surface.h"
 
 #include "physics/MeshGenerator.h"
+#include "physics/RayHit.h"
 
 namespace {
     constexpr float STEP_SIZE = 0.03f;
@@ -34,9 +35,9 @@ namespace {
 
     static physics::PhysicsEngine s_engine;
 
-    struct ObjectHit {
-        physics::Object* object;
-        std::vector<pool::NodeHandle> hits;
+    struct HitData {
+        physics::Object* test;
+        std::vector<physics::RayHit> hits;
     };
 }
 
@@ -45,8 +46,23 @@ namespace physics
     static void rayCallback(void* data, dGeomID o1, dGeomID o2) {
         dContactGeom contact;
         if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
-            ObjectHit* hit = static_cast<ObjectHit*>(data);
-            hit->hits.push_back(hit->object->m_nodeHandle);
+            HitData* hitData = static_cast<HitData*>(data);
+            auto& hit = hitData->hits.emplace_back();
+            hit.handle = hitData->test->m_nodeHandle;
+
+            hit.pos = {
+                static_cast<float>(contact.pos[0]),
+                static_cast<float>(contact.pos[1]),
+                static_cast<float>(contact.pos[2]) };
+
+            hit.normal = {
+                static_cast<float>(contact.pos[0]),
+                static_cast<float>(contact.pos[1]),
+                static_cast<float>(contact.pos[2]) };
+
+            hit.depth = contact.depth;
+
+            KI_INFO_OUT(fmt::format(""));
         }
     }
 
@@ -428,7 +444,7 @@ namespace physics
         debugContext.m_physicsMeshes = generator.generateMeshes();
     }
 
-    std::vector<pool::NodeHandle> PhysicsEngine::rayCast(
+    std::vector<physics::RayHit> PhysicsEngine::rayCast(
         glm::vec3 origin,
         glm::vec3 dir,
         float distance,
@@ -449,7 +465,7 @@ namespace physics
 
         const auto rayGeomId = ray->m_geomId;
 
-        ObjectHit hit;
+        HitData hitData;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
         dGeomRaySetLength(rayGeomId, distance);
@@ -461,16 +477,16 @@ namespace physics
             if (!obj.m_geomId) continue;
             if (obj.m_nodeHandle == fromNode) continue;
 
-            hit.object = &obj;
+            hitData.test = &obj;
 
             // NOTE KI dCollide  does not check category/collision bitmask
-            dSpaceCollide2(rayGeomId, obj.m_geomId, &hit, &rayCallback);
+            dSpaceCollide2(rayGeomId, obj.m_geomId, &hitData, &rayCallback);
         }
 
         // NOTE KI set mask to "none" to prevent collisions after casting
         dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
         dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
 
-        return hit.hits;
+        return hitData.hits;
     }
 }

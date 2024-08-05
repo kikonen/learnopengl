@@ -43,6 +43,7 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "script/api/Wait.h"
 #include "script/api/MoveNode.h"
 
 #include "render/RenderContext.h"
@@ -60,11 +61,14 @@
 #include "gui/Window.h"
 
 #include "physics/PhysicsEngine.h"
+#include "physics/RayHit.h"
 
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
 
     ki::node_id fpsNodeId = SID("fps_counter");
+
+    std::vector<script::command_id> g_rayMarkers;
 }
 
 SampleApp::SampleApp()
@@ -462,8 +466,13 @@ void SampleApp::raycastPlayer(
 
         if (!hits.empty()) {
             for (auto& hit : hits) {
-                auto* node = hit.toNode();
-                KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+                auto* node = hit.handle.toNode();
+                KI_INFO_OUT(fmt::format(
+                    "HIT: node={}, pos={}, normal={}, depth={}",
+                    node ? node->getName() : "N/A",
+                    hit.pos,
+                    hit.normal,
+                    hit.depth));
             }
         }
     }
@@ -482,9 +491,14 @@ void SampleApp::raycastPlayer(
         auto greenBall = pool::NodeHandle::toNode(SID("green_ball"));
         auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
 
+        for (auto& cmdId : g_rayMarkers) {
+            script::CommandEngine::get().cancel(cmdId);
+        }
+        g_rayMarkers.clear();
+
         if (greenBall) {
             auto cmdId = 0;
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 5; i++) {
                 cmdId = script::CommandEngine::get().addCommand(
                     cmdId,
                     script::MoveNode{
@@ -493,6 +507,17 @@ void SampleApp::raycastPlayer(
                         false,
                         startPos
                     });
+                g_rayMarkers.push_back(cmdId);
+
+                if (i == 0) {
+                    cmdId = script::CommandEngine::get().addCommand(
+                        cmdId,
+                        script::Wait{
+                            2.f
+                        });
+                    g_rayMarkers.push_back(cmdId);
+                }
+
                 cmdId = script::CommandEngine::get().addCommand(
                     cmdId,
                     script::MoveNode{
@@ -501,18 +526,22 @@ void SampleApp::raycastPlayer(
                         true,
                         dir * 5.f
                     });
+                g_rayMarkers.push_back(cmdId);
             }
-            cmdId = script::CommandEngine::get().addCommand(
-                cmdId,
-                script::MoveNode{
-                    greenBall->toHandle(),
-                    0.f,
-                    false,
-                    startPos
-                });
+            {
+                cmdId = script::CommandEngine::get().addCommand(
+                    cmdId,
+                    script::MoveNode{
+                        greenBall->toHandle(),
+                        0.f,
+                        false,
+                        startPos
+                    });
+                g_rayMarkers.push_back(cmdId);
+            }
         }
         if (redBall) {
-            script::CommandEngine::get().addCommand(
+            auto cmdId = script::CommandEngine::get().addCommand(
                 0,
                 script::MoveNode{
                     redBall->toHandle(),
@@ -520,6 +549,7 @@ void SampleApp::raycastPlayer(
                     false,
                     endPos
                 });
+            g_rayMarkers.push_back(cmdId);
         }
 
         const auto& hits = physics::PhysicsEngine::get().rayCast(
@@ -532,8 +562,13 @@ void SampleApp::raycastPlayer(
 
         if (!hits.empty()) {
             for (auto& hit : hits) {
-                auto* node = hit.toNode();
-                KI_INFO_OUT(fmt::format("HIT: {}", node->getName()));
+                auto* node = hit.handle.toNode();
+                KI_INFO_OUT(fmt::format(
+                    "HIT: node={}, pos={}, normal={}, depth={}",
+                    node ? node->getName() : "N/A",
+                    hit.pos,
+                    hit.normal,
+                    hit.depth));
             }
         }
     }

@@ -559,6 +559,7 @@
     <ClInclude Include="src\model\PrimitiveNode.h" />
     <ClInclude Include="src\physics\Category.h" />
     <ClInclude Include="src\physics\MeshGenerator.h" />
+    <ClInclude Include="src\physics\RayHit.h" />
     <ClInclude Include="src\registry\VaoRegistry.h" />
     <ClInclude Include="src\renderer\PhysicsRenderer.h" />
     <ClInclude Include="src\render\DebugContext.h" />
