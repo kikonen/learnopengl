@@ -26,7 +26,7 @@ namespace loader
     {
         const auto& assets = Assets::get();
 
-        data.enabled = false;
+        data.enabled = true;
         data.fov = assets.cameraFov;
 
         for (const auto& pair : node.getNodes()) {

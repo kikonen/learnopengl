@@ -15,12 +15,11 @@ nodes:
     audio:
       listener:
         default: true
+    camera:
+      default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-    camera:
-      type: fps
-      default: true
   - id: directional_light
     mesh:
       path: light

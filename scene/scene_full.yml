@@ -60,11 +60,11 @@ nodes:
     audio:
       listener:
         default: true
+    camera:
+      default: true
     controllers:
       - type: pawn
-    camera:
-      type: fps
-      default: true
+      - type: camera_zoom
   - xid: fps_counter
     parent_id: player
     type: text

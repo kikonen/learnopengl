@@ -58,11 +58,11 @@ nodes:
       base_rot: [90, 0, 0]
     pos: [0, 25, 40]
     front: [0, 0, -1]
-    controller:
-      type: pawn
     camera:
-      type: fps
       distance: [4, 2, 20]
+    controllers:
+      - type: pawn
+      - type: camera_zoom
     audio:
       listener:
         default: true
@@ -84,12 +84,13 @@ nodes:
     pos: [0, 25, 40]
     front: [0, 0, -1]
     active: true
-    controller:
-      type: pawn
     camera:
       type: follow
       distance: [5, 2.5, 10]
       default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
     audio:
       listener:
         default: true

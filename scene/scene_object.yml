@@ -15,14 +15,10 @@ nodes:
     audio:
       listener:
         default: true
-    controllers:
-      - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
     camera:
       default: true
     controllers:
+      - type: pawn
       - type: camera_zoom
   - name: Directional light
     type: origo

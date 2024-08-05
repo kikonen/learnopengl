@@ -23,14 +23,10 @@ nodes:
     audio:
       listener:
         default: true
-    controllers:
-      - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
     camera:
       default: true
     controllers:
+      - type: pawn
       - type: camera_zoom
   - name: Directional light
     mesh:
@@ -46,7 +42,6 @@ nodes:
       type: directional
       diffuse: [0.8, 0.8, 0.7, 1.0]
       intensity: 30000
-    camera:
   - name: Silver ball
     mesh:
       path: water_ball

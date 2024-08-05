@@ -33,13 +33,12 @@ nodes:
           gain: 1.0
           pitch: 1.5
           loop: true
+    camera:
+      rotation: [-17, 0, 0]
+      default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-    camera:
-      type: fps
-      rotation: [-17, 0, 0]
-      default: true
     script: |
       cmd:audioPlay(
         { sync=true, index=0 })

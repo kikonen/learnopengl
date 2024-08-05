@@ -22,12 +22,11 @@ nodes:
     audio:
       listener:
         default: true
+    camera:
+      default: true
     controllers:
       - type: pawn
-    camera:
-      type: follow
-      distance: [4, 2, 20]
-      default: true
+      - type: camera_zoom
   - name: Directional light
     pos: [0, 45, 100]
     mesh:

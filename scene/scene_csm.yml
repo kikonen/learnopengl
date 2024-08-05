@@ -15,11 +15,11 @@ nodes:
     pos: [0, 1, 15]
     front: [0, 0, -1]
     active: true
+    camera:
+      default: true
     controllers:
      - type: pawn
-    camera:
-      type: fps
-      default: true
+      - type: camera_zoom
   - name: Other
     mesh:
       path: texture_cube

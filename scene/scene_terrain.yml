@@ -12,14 +12,10 @@ nodes:
     pos: [0, 200, 100]
     front: [0, 0, -1]
     active: true
-    controllers:
-      - type: pawn
-  - id: camera
-    parent_id: player
-    type: origo
     camera:
       default: true
     controllers:
+      - type: pawn
       - type: camera_zoom
   - id: directional_light
     mesh:

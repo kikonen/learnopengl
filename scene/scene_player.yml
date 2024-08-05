@@ -23,17 +23,11 @@ nodes:
     audio:
       listener:
         default: true
-    controllers:
-      - type: pawn
-  - id: player_camera
-    parent_id: player
-    type: origo
-    pos: [0, 3, 5]
-    rotation: [-15, 0, 0]
-    controller:
-      type: camera_zoom
     camera:
       default: true
+    controller:
+      - type: pawn
+      - type: camera_zoom
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3

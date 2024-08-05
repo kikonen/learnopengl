@@ -19,11 +19,14 @@ nodes:
     render_flags:
       allow_normals: false
     active: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
     audio:
       listener:
         default: true
-    controllers:
-      - type: pawn
   - id: fps_counter
     parent_id: player
     type: text
@@ -45,15 +48,6 @@ nodes:
         size: 36
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
-  - id: player_camera
-    parent_id: player
-    type: origo
-    pos: [0, 4, 5]
-    rotation: [-15, 0, 0]
-    controller:
-      type: camera_zoom
-    camera:
-      default: true
   - id: font_atlas
     mesh:
       path: quad

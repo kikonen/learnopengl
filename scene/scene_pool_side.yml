@@ -12,12 +12,11 @@ nodes:
     pos: [0, 8, 30]
     front: [0, 0, -1]
     active: true
+    camera:
+      default: true
     controllers:
       - type: pawn
-    camera:
-      type: fps
-      distance: [4, 0, 10]
-      default: true
+      - type: camera_zoom
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
