@@ -41,6 +41,9 @@ namespace loader {
         bool has_origin{ false };
         bool has_dir{ false };
 
+        std::vector<glm::vec3> bezier_d0;
+        std::vector<glm::vec3> bezier_d1;
+
         std::vector<glm::vec3> vertices;
         std::vector<int> indeces;
     };

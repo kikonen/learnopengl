@@ -100,6 +100,44 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> create_bezier(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        glm::dvec3 controlPoints[2][2]{
+            generator.bezier_d0[0],
+            generator.bezier_d0[1],
+            generator.bezier_d1[0],
+            generator.bezier_d1[1],
+        };
+
+        generator::BezierMesh<2, 2> shape{
+            controlPoints,
+            generator.segments};
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> create_plane(
         mesh::PrimitiveGenerator generator)
     {
@@ -705,6 +743,8 @@ namespace mesh {
             return createVertices(*this);
         case PrimitiveType::ray:
             return create_ray(*this);
+        case PrimitiveType::bezier:
+            return create_bezier(*this);
         case PrimitiveType::plane:
             return create_plane(*this);
         case PrimitiveType::quad:

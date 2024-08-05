@@ -7,6 +7,7 @@ namespace mesh {
         lines,
         line_strip,
         ray,
+        bezier,
         plane,
         quad,
         box,

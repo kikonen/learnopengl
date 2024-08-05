@@ -38,6 +38,9 @@ namespace loader {
                 else if (type == "ray") {
                     data.type = mesh::PrimitiveType::ray;
                 }
+                else if (type == "bezier") {
+                    data.type = mesh::PrimitiveType::bezier;
+                }
                 else if (type == "plane") {
                     data.type = mesh::PrimitiveType::plane;
                 }
@@ -137,6 +140,12 @@ namespace loader {
                 data.dir = readVec3(v);
                 data.has_dir = true;
             }
+            else if (k == "bezier_d0") {
+                loadVertices(v, data.bezier_d0);
+            }
+            else if (k == "bezier_d1") {
+                loadVertices(v, data.bezier_d1);
+            }
             else if (k == "vertices") {
                 loadVertices(v, data.vertices);
             }
@@ -160,6 +169,10 @@ namespace loader {
                 valid &= !(data.vertices.empty() || data.indeces.empty());
                 valid &= data.indeces.size() > 1;
                 valid &= data.indeces.size() % 2 == 0;
+                break;
+            case mesh::PrimitiveType::bezier:
+                valid &= data.bezier_d0.size() > 1;
+                valid &= data.bezier_d1.size() > 1;
                 break;
             }
 
@@ -220,6 +233,9 @@ namespace loader {
         if (data.has_rings) generator.rings = data.rings;
         if (data.has_origin) generator.origin = data.origin;
         if (data.has_dir) generator.dir = data.dir;
+
+        generator.bezier_d0 = data.bezier_d0;
+        generator.bezier_d1 = data.bezier_d1;
 
         generator.vertices = data.vertices;
         generator.indeces = data.indeces;

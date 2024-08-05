@@ -29,6 +29,9 @@ namespace mesh {
         glm::vec3 origin{ 0.f };
         glm::vec3 dir{ 0.f, 0.f, -1.f };
 
+        std::vector<glm::vec3> bezier_d0;
+        std::vector<glm::vec3> bezier_d1;
+
         std::vector<glm::vec3> vertices;
         std::vector<int> indeces;
 
@@ -68,6 +71,34 @@ namespace mesh {
                 .type = PrimitiveType::ray,
                 .name = "<ray>",
                 .alias = "ray"
+            };
+        }
+
+        // NOTE KI 4 x 1 bezier control points
+        // - passed via bezier_d0 and bezier_d1
+        //
+        //vertex:
+        //  type: bezier
+        //  bezier_d0:
+        //    - [0, 0, 0]
+        //    - [1, 1, 1]
+        //  bezier_d1:
+        //    - [2, 0, 0]
+        //    - [1, -1, 1]
+        //
+        // https://se.mathworks.com/matlabcentral/fileexchange/42302-smooth-3d-bezier-curves-with-implicit-control-points?s_tid=blogs_rc_5
+        //
+        /// A bezier patch with D0xD1 control points.
+        /// @tparam D0 Number of control points along the t[0] axis. Must be > 1.
+        /// @tparam D1 Number of control points along the t[1] axis. Must be > 1.
+        /// @image html BezierMesh.svg
+        static PrimitiveGenerator bezier()
+        {
+            return {
+                .type = PrimitiveType::bezier,
+                .name = "<bezier>",
+                .alias = "bezier",
+                .segments = { 2, 2, 2 }
             };
         }
 
@@ -370,6 +401,8 @@ namespace mesh {
                 return lines();
             case PrimitiveType::ray:
                 return ray();
+            case PrimitiveType::bezier:
+                return bezier();
             case PrimitiveType::plane:
                 return plane();
             case PrimitiveType::quad:
