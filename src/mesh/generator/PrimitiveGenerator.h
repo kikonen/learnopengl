@@ -166,6 +166,19 @@ namespace mesh {
             };
         }
 
+        /// @param radius The radius of the containing sphere.
+        /// @param segments The number of segments per icosahedron edge. Must be >= 1.
+        static PrimitiveGenerator ico_sphere()
+        {
+            return {
+                .type = PrimitiveType::ico_sphere,
+                .name = "<ico_sphere>",
+                .alias = "ico_sphere",
+                .radius = 0.5f,
+                .segments = { 4, 0, 0 }
+            };
+        }
+
         /// @param radius The radius of the sphere
         /// @param slices Subdivisions around the z-azis (longitudes).
         /// @param segments Subdivisions along the z-azis (latitudes).
@@ -430,6 +443,8 @@ namespace mesh {
                 return rounded_box();
             case PrimitiveType::dodeca_hedron:
                 return dodeca_hedron();
+            case PrimitiveType::ico_sphere:
+                return ico_sphere();
             case PrimitiveType::sphere:
                 return sphere();
             case PrimitiveType::capsule:

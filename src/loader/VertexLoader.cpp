@@ -56,6 +56,9 @@ namespace loader {
                 else if (type == "dodeca_hedron") {
                     data.type = mesh::PrimitiveType::dodeca_hedron;
                 }
+                else if (type == "ico_sphere") {
+                    data.type = mesh::PrimitiveType::ico_sphere;
+                }
                 else if (type == "sphere") {
                     data.type = mesh::PrimitiveType::sphere;
                 }

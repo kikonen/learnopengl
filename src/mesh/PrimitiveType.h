@@ -13,6 +13,7 @@ namespace mesh {
         box,
         rounded_box,
         dodeca_hedron,
+        ico_sphere,
         sphere,
         capsule,
         cylinder,
