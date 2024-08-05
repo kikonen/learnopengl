@@ -22,8 +22,12 @@
 
 #include "controller/VolumeController.h"
 
-#include "script/api/SetTextNode.h"
 #include "script/CommandEngine.h"
+#include "script/api/SetTextNode.h"
+#include "script/api/Cancel.h"
+#include "script/api/Wait.h"
+#include "script/api/MoveNode.h"
+
 
 #include "event/Dispatcher.h"
 
@@ -42,9 +46,6 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
-
-#include "script/api/Wait.h"
-#include "script/api/MoveNode.h"
 
 #include "render/RenderContext.h"
 
@@ -492,7 +493,12 @@ void SampleApp::raycastPlayer(
         auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
 
         for (auto& cmdId : g_rayMarkers) {
-            script::CommandEngine::get().cancel(cmdId);
+            cmdId = script::CommandEngine::get().addCommand(
+                0,
+                script::Cancel{
+                    0,
+                    cmdId
+                });
         }
         g_rayMarkers.clear();
 

@@ -10,6 +10,8 @@
 #include "model/Node.h"
 #include "model/Snapshot.h"
 
+#include "component/FpsCamera.h"
+
 #include "script/CommandEngine.h"
 #include "script/api/RotateNode.h"
 #include "script/api/MoveNode.h"
@@ -164,6 +166,14 @@ void PawnController::onKey(
             //glm::vec3 adjust = snapshot.getPosition();
             //m_node->getState().setPosition(pos);
             actionWalk = true;
+        }
+    }
+
+    if (actionWalk || actionTurn) {
+        // HACK KI try to avoid drifing camea due to camera pitch stuck into some value
+        auto* fpsCamera = dynamic_cast<FpsCamera*>(node->m_camera.get());
+        if (fpsCamera) {
+            fpsCamera->setPitchSpeed(0.f);
         }
     }
 

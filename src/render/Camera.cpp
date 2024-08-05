@@ -124,7 +124,7 @@ namespace render {
         const glm::vec3& up) noexcept
     {
         m_viewFront = glm::normalize(front);
-        m_viewRight = glm::normalize(glm::cross(m_viewFront, glm::normalize(up)));
+        m_viewRight = glm::normalize(glm::cross(m_viewFront, up));
         m_viewUp = glm::normalize(glm::cross(m_viewRight, m_viewFront));
 
         m_dirty = true;

@@ -5,7 +5,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "api/CancelCommand.h"
+#include "api/Cancel.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
 

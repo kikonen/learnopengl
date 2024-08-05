@@ -131,10 +131,10 @@ void NodeState::updateModelAxis() noexcept
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
     // NOTE KI w == 0; only rotation
-    m_viewFront = glm::mat3(m_quatRotation) * m_front;
-
-    glm::vec3 viewRight = glm::cross(m_viewFront, m_up);
-    m_viewUp = glm::cross(viewRight, m_viewFront);
+    m_viewFront = glm::normalize(glm::mat3(m_quatRotation) * m_front);
+    glm::vec3 viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+    m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
+    //m_viewRight = viewRight;
 }
 
 void NodeState::updateRotationMatrix() noexcept

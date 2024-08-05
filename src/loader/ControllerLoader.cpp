@@ -98,13 +98,6 @@ namespace loader {
         }
         case ControllerType::camera_zoom: {
             auto* controller = new CameraZoomController();
-            controller->m_targetId = targetId;
-
-            const auto& quat = util::degreesToQuat(data.direction);
-            const auto& dir = glm::normalize(quat * glm::vec3{0, 1.f, 0});
-
-            controller->m_direction = dir;
-            controller->m_distance = data.distance;
             return controller;
         }
         }

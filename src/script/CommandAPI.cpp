@@ -13,7 +13,7 @@
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
 
-#include "api/CancelCommand.h"
+#include "api/Cancel.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
 
@@ -122,7 +122,7 @@ namespace script
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            CancelCommand{
+            Cancel{
                 opt.duration,
                 static_cast<script::command_id>(commandId)
             });

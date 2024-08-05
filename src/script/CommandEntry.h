@@ -6,7 +6,7 @@
 
 #include "api/Command.h"
 
-#include "api/CancelCommand.h"
+#include "api/Cancel.h"
 #include "api/InvokeLuaFunction.h"
 #include "api/Sync.h"
 #include "api/Wait.h"
@@ -30,7 +30,7 @@ struct UpdateContext;
 namespace script
 {
     constexpr size_t COMMAND_BUFFER_SIZE = std::max({
-        sizeof(script::CancelCommand),
+        sizeof(script::Cancel),
         sizeof(script::Sync),
         sizeof(script::Wait),
         sizeof(script::InvokeLuaFunction),

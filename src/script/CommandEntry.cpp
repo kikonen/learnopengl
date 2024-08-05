@@ -12,7 +12,7 @@ namespace {
 namespace script {
     void CommandEntry::moveCommand(Command* other_cmd, bool useDelete) {
         if (other_cmd) {
-            if (auto* src = dynamic_cast<CancelCommand*>(other_cmd)) {
+            if (auto* src = dynamic_cast<Cancel*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<Sync*>(other_cmd)) {

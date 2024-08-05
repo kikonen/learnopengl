@@ -17,6 +17,7 @@ nodes:
         default: true
     controllers:
       - type: pawn
+      - type: camera_zoom
     camera:
       type: fps
       default: true

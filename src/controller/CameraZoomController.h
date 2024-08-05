@@ -33,16 +33,8 @@ public:
         float xoffset,
         float yoffset) override;
 
-public:
-    ki::node_id m_targetId{ 0 };
-
-    // Relative to target viewFront & target worldPosition
-    glm::vec3 m_direction{ 0.f };
-    float m_distance{ 0.f };
-
 private:
     pool::NodeHandle m_nodeHandle{};
-    pool::NodeHandle m_targetHandle{};
 
     ki::level_id m_nodeMatrixLevel{ 0 };
     ki::level_id m_targetMatrixLevel{ 0 };

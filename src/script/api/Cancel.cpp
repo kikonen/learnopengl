@@ -1,4 +1,4 @@
-#include "CancelCommand.h"
+#include "Cancel.h"
 
 #include "script/CommandEngine.h"
 
@@ -8,7 +8,7 @@
 
 namespace script
 {
-    CancelCommand::CancelCommand(
+    Cancel::Cancel(
         float duration,
         script::command_id commandId) noexcept
         : Command(duration),
@@ -16,7 +16,7 @@ namespace script
     {
     }
 
-    void CancelCommand::execute(
+    void Cancel::execute(
         const UpdateContext& ctx) noexcept
     {
         m_elapsedTime += ctx.m_clock.elapsedSecs;

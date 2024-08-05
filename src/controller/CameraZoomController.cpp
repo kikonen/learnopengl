@@ -1,11 +1,15 @@
 #include "CameraZoomController.h"
 
+#include <numbers>
+
 #include "asset/Assets.h"
 
 #include "gui/Input.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
+
+#include "component/FpsCamera.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
@@ -38,8 +42,6 @@ void CameraZoomController::prepare(
 
     m_nodeHandle = node.toHandle();
 
-    m_targetHandle = pool::NodeHandle::toHandle(m_targetId);
-
     m_speedZoomNormal = assets.cameraZoomNormal;
     m_speedZoomRun = assets.cameraZoomRun;
 
@@ -51,38 +53,6 @@ bool CameraZoomController::updateWT(
     Node& node) noexcept
 {
     return false;
-
-    Node* targetNode = m_targetHandle.toNode();
-    if (!targetNode) return false;
-
-    const auto& state = node.getState();
-    const bool nodeChanged = m_nodeMatrixLevel != state.m_matrixLevel;
-
-    const auto& targetState = targetNode->getState();
-    const bool targetChanged = m_targetMatrixLevel != targetState.m_matrixLevel;
-
-    if (!(targetChanged || nodeChanged)) return false;
-
-    m_nodeMatrixLevel = state.m_matrixLevel;
-    m_targetMatrixLevel = targetState.m_matrixLevel;
-
-    const auto& targetPos = targetState.getWorldPosition();
-    const auto& targetFront = targetState.getViewFront();
-
-    const auto& nodePos = targetPos + -targetFront * m_distance;
-
-    // TODO KI resolve node placement
-
-    script::CommandEngine::get().addCommand(
-        0,
-        script::MoveNode{
-            m_nodeHandle,
-            0.2f,
-            false,
-            nodePos
-        });
-
-    return true;
 }
 
 void CameraZoomController::onKey(
@@ -127,7 +97,6 @@ void CameraZoomController::onKey(
             m_registry->m_dispatcherWorker->send(evt);
         }
     } else {
-
         if (input->isModifierDown(Modifier::SHIFT)) {
             zoomSpeed = m_speedZoomRun;
         }
@@ -151,47 +120,22 @@ void CameraZoomController::onMouseMove(
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
-    bool changed = false;
-    const float MAX_ANGLE = 89.f;
+    auto* fpsCamera = dynamic_cast<FpsCamera*>(node->m_camera.get());
 
-    glm::vec3 adjust{ 0.f };
+    if (!fpsCamera) return;
 
-    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
+    const int maxMouseSpeed = 500;
+    const float maxPitchSpeed = std::numbers::pi_v<float> * 8;
+    float pitchSpeed = 0.f;
 
-    const auto& curr = snapshot.getDegreesRotation();
-    float currX = curr.x;
-    if (currX == 180.f) {
-        currX = 0.f;
+    if (yoffset != 0)
+    {
+        // Convert to ~[-1.0, 1.0]
+        pitchSpeed = yoffset / maxMouseSpeed;
+        pitchSpeed *= maxPitchSpeed;
     }
 
-    const auto maxUp = MAX_ANGLE - currX;
-    const auto maxDown = -MAX_ANGLE - currX;
-
-    if (yoffset != 0) {
-        auto pitch = m_speedMouseSensitivity.y * yoffset;
-
-        if (pitch < maxDown) {
-            pitch = maxDown;
-        }
-        if (pitch > maxUp) {
-            pitch = maxUp;
-        }
-
-        adjust.x = static_cast<float>(pitch);
-        changed = true;
-    }
-
-    if (changed) {
-        script::CommandEngine::get().addCommand(
-            0,
-            script::RotateNode{
-                m_nodeHandle,
-                0.f,
-                true,
-                snapshot.getViewRight(),
-                -adjust.x
-            });
-    }
+    fpsCamera->setPitchSpeed(pitchSpeed);
 }
 
 void CameraZoomController::onMouseScroll(

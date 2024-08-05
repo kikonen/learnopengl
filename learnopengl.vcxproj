@@ -346,7 +346,7 @@
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
     <ClCompile Include="src\asset\Volume.cpp" />
-    <ClCompile Include="src\script\api\CancelCommand.cpp" />
+    <ClCompile Include="src\script\api\Cancel.cpp" />
     <ClCompile Include="src\script\api\Command.cpp" />
     <ClCompile Include="src\script\CommandAPI.cpp" />
     <ClCompile Include="src\script\api\MoveSplineNode.cpp" />
@@ -771,7 +771,7 @@
     <ClInclude Include="src\registry\ModelRegistry.h" />
     <ClInclude Include="src\registry\MeshTypeRegistry.h" />
     <ClInclude Include="src\registry\ProgramRegistry.h" />
-    <ClInclude Include="src\script\api\CancelCommand.h" />
+    <ClInclude Include="src\script\api\Cancel.h" />
     <ClInclude Include="src\script\api\Command.h" />
     <ClInclude Include="src\script\CommandAPI.h" />
     <ClInclude Include="src\script\CommandEngine.h" />

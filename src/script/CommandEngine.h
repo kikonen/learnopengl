@@ -17,6 +17,9 @@ namespace script
 
     class CommandEngine final
     {
+        friend class Cancel;
+        friend class Sync;
+
     public:
         static CommandEngine& get() noexcept;
 
@@ -34,14 +37,15 @@ namespace script
             script::command_id afterId,
             T&& cmd) noexcept;
 
+    protected:
+        bool isAlive(script::command_id commandId) const noexcept;
+
+        bool hasPending() const noexcept;
+
         void addPending(
             const CommandHandle& handle) noexcept;
 
         void cancel(script::command_id commandId) noexcept;
-
-        bool isAlive(script::command_id commandId) const noexcept;
-
-        bool hasPending() const noexcept;
 
     private:
         void activateNext(const CommandEntry* prevEntry) noexcept;

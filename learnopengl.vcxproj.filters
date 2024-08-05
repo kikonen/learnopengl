@@ -189,7 +189,7 @@
     <ClCompile Include="src\script\api\RotateNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\api\CancelCommand.cpp">
+    <ClCompile Include="src\script\api\Cancel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\NodeCommand.cpp">
@@ -1115,7 +1115,7 @@
     <ClInclude Include="src\script\api\ScaleNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\api\CancelCommand.h">
+    <ClInclude Include="src\script\api\Cancel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\NodeCommand.h">

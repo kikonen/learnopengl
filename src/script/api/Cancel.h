@@ -5,10 +5,10 @@
 
 namespace script
 {
-    class CancelCommand final : public Command
+    class Cancel final : public Command
     {
     public:
-        CancelCommand(
+        Cancel(
             float duration,
             script::command_id commandId) noexcept;
 
