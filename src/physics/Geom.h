@@ -27,12 +27,16 @@ namespace physics {
         // - size.y == length (Half of the length between centers of the caps along the z-axis.)
         glm::vec3 size{ 1.f };
 
-        glm::quat quat{ 1.f, 0.f, 0.f, 0.f };
+        glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
+        glm::vec3 offset{ 0.f };
 
         glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
 
         uint32_t categoryMask{ UINT_MAX };
         uint32_t collisionMask{ UINT_MAX };
+
+        // dContactXX flags for geom
+        uint32_t contactFlags{ 0 };
 
         GeomType type{ GeomType::none };
     };

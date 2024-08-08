@@ -199,7 +199,10 @@ namespace loader {
                 data.size = readVec3(v);
             }
             else if (k == "rot" || k == "rotation") {
-                data.quat = util::degreesToQuat(readDegreesRotation(v));
+                data.rotation = util::degreesToQuat(readDegreesRotation(v));
+            }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
             }
             else if (k == "plane") {
                 data.plane = readVec4(v);

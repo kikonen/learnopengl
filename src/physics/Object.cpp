@@ -99,17 +99,9 @@ namespace physics
             break;
         }
         case GeomType::plane: {
-            const auto& q = m_geom.quat;
-            //const auto& plane = m_geom.plane;
-            //auto plane = glm::vec4(0, 0, 1, 0) * q;
-            const auto rotM = glm::toMat4(q);
-
             glm::vec3 normal{ 0, 1.f, 0 };
             float dist = 0.f;
-            auto plane = rotM * glm::vec4(normal, 1.f);
-
-            //KI_INFO_OUT(fmt::format("CREATE_PLANE: n={}, d={}",
-            //    glm::vec3{plane}, plane.w));
+            auto plane = m_geom.rotation * glm::vec4(normal, 1.f);
 
             m_geomId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, dist);
             break;
@@ -140,6 +132,9 @@ namespace physics
             // NOTE KI node updates only if body
             if (m_bodyId) {
                 dGeomSetBody(m_geomId, m_bodyId);
+
+                const auto& offset = m_geom.offset;
+                dGeomSetOffsetPosition(m_geomId, offset.x, offset.y, offset.z);
             }
 
             //if (const auto& q = m_geom.quat;

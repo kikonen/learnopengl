@@ -219,8 +219,10 @@ namespace physics {
         }
 
         if (mesh && obj.m_bodyId && obj.m_geom.type != GeomType::plane) {
-            const dReal* dpos = dBodyGetPosition(obj.m_bodyId);
-            const dReal* dquat = dBodyGetQuaternion(obj.m_bodyId);
+            const dReal* dpos = dGeomGetPosition(obj.m_geomId);
+
+            dQuaternion dquat;
+            dGeomGetQuaternion(obj.m_geomId, dquat);
 
             pos = glm::vec3{
                 static_cast<float>(dpos[0]),
