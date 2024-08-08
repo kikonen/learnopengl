@@ -139,7 +139,7 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: 1
-    pos: [20, 0.0, 20]
+    pos: [20, 0.62, 20]
     base_rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true

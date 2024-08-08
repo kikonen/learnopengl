@@ -176,26 +176,20 @@ nodes:
         x_step: 20
         z_step: -40
   - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_animation: true
-      material:
-        map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-        program: g_tex
-        shadow_program: simple_depth
-      scale: 0.1
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     priority: -1
-    pos: [-20, 10, 80]
+    pos: [-20, 10.86, 80]
     base_rot: [0, 180, 0]
+    scale: 4
     repeat:
       x_count: 25
       z_count: 1
       x_step: 10
       z_step: 0
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle" });
   - name: Terrain grass v2
     id: auto
     priority: 20

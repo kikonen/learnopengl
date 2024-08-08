@@ -129,11 +129,15 @@ nodes:
         type: capsule
         density: 0.4
         rot: [90, 0, 0]
+        scale: 0.25
         max_angular_velocity: 0
         force_axis: true
       geom:
         type: capsule
-        size: [1, 1.5, 0]
+        size: [1, 2, 0]
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle2" });
   - name: Directional light
     mesh:
       path: light
@@ -376,11 +380,15 @@ nodes:
         type: capsule
         density: 0.1
         rot: [90, 0, 0]
+        scale: 0.25
         max_angular_velocity: 0
         force_axis: true
       geom:
         type: capsule
-        size: [1, 1.5, 0]
+        size: [1, 2, 0]
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle2" });
   - name: world_x_minus
     xtype: origo
     mesh:

@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include "util/debug.h"
+
 #include <fmt/format.h>
 
 #include "pool/IdGenerator.h"
@@ -41,6 +43,10 @@ namespace mesh {
             const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
             aabb.minmax(pos);
         }
+
+        KI_INFO_OUT(fmt::format(
+            "AABB: model={}, min={}, max={}",
+            m_name, aabb.m_min, aabb.m_max));
 
         aabb.updateVolume();
 
