@@ -75,6 +75,8 @@ nodes:
         density: 0.01
         scale: 0.25
         xrot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
       geom:
         type: capsule
         size: [1, 2, 0]
@@ -103,6 +105,8 @@ nodes:
         density: 0.1
         scale: 0.25
         rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
       geom:
         type: capsule
         size: [1, 2, 0]
@@ -111,21 +115,12 @@ nodes:
       cmd:animationPlay(
         { after=wid, name = "master:Walk02" });
   - id: pawn
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      material:
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
-        ke: [0.0, 0.1, 0.0]
-        alpha: true
-        render_back: true
-        program: g_tex
-        shadow_program: simple_depth
-      base_scale: 0.028
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     pos: [5, 24, 28]
     front: [0, 0, -1]
     base_rotation: [0, 0, 0]
-    scale: 3
+    scale: 1
     controller:
       type: pawn
     physics:
@@ -134,6 +129,8 @@ nodes:
         type: capsule
         density: 0.4
         rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
       geom:
         type: capsule
         size: [1, 1.5, 0]
@@ -368,26 +365,19 @@ nodes:
       geom:
         type: plane
         rot: [0, 0, 270]
-  - name: Skeleton
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      material:
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
-        ke: [0.0, 0.1, 0.0]
-        alpha: true
-        render_back: true
-        program: g_tex
-        shadow_program: simple_depth
-      base_scale: 0.028
+  - id: skeleton_2
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     pos: [3, 25, 25]
     base_rotation: [0, 0, 0]
-    scale: 3
+    scale: 1
     physics:
       body:
         type: capsule
         density: 0.1
         rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
       geom:
         type: capsule
         size: [1, 1.5, 0]

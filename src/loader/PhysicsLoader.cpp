@@ -100,7 +100,7 @@ namespace loader {
         const loader::DocNode& node,
         physics::Body& data) const
     {
-        data.quat = glm::quat_identity<float, glm::packed_highp>();
+        //data.baseRotation = glm::quat_identity<float, glm::packed_highp>();
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -139,14 +139,23 @@ namespace loader {
             else if (k == "density") {
                 data.density = readFloat(v);
             }
-            else if (k == "linear_vel") {
-                data.linearVel = readVec3(v);
+            else if (k == "linear_velocity" || k == "linear_vel") {
+                data.linearVelocity = readVec3(v);
             }
-            else if (k == "angular_vel") {
-                data.angularVel = readVec3(v);
+            else if (k == "angular_velocity" || k == "angular_vel") {
+                data.angularVelocity = readVec3(v);
+            }
+            else if (k == "max_angular_velocity" || k == "max_angular_vel") {
+                data.maxAngulerVelocity = readFloat(v);
             }
             else if (k == "rot" || k == "rotation") {
-                data.quat = util::degreesToQuat(readDegreesRotation(v));
+                data.baseRotation = util::degreesToQuat(readDegreesRotation(v));
+            }
+            else if (k == "axis") {
+                data.axis = readVec3(v);
+            }
+            else if (k == "force_axis") {
+                data.forceAxis = readBool(v);
             }
             else {
                 reportUnknown("body_entry", k, v);

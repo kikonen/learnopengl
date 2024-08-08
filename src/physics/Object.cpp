@@ -57,11 +57,13 @@ namespace physics
     {
         if (ready()) return;
 
+        m_body.invBaseRotation = glm::conjugate(m_body.baseRotation);
+
         const auto& scale = m_body.scale;
 
         auto sz = scale * m_geom.size;
         float radius = sz.x;
-        float length = sz.y;
+        float length = sz.y * 2.f;
 
         if (m_body.type != BodyType::none) {
             m_bodyId = dBodyCreate(worldId);
@@ -121,11 +123,11 @@ namespace physics
             break;
         }
         case GeomType::capsule: {
-            m_geomId = dCreateCapsule(spaceId, radius, length * 2.f);
+            m_geomId = dCreateCapsule(spaceId, radius, length);
             break;
         }
         case GeomType::cylinder: {
-            m_geomId = dCreateCylinder(spaceId, radius, length * 2.f);
+            m_geomId = dCreateCylinder(spaceId, radius, length);
             break;
         }
         }
@@ -153,7 +155,9 @@ namespace physics
         }
 
         if (m_bodyId) {
-            if (const auto& q = m_body.quat;
+            dBodySetMaxAngularSpeed(m_bodyId, m_body.maxAngulerVelocity);
+
+            if (const auto& q = m_body.baseRotation;
                 q != IDENTITY_QUAT)
             {
                 dQuaternion quat{ q.w, q.x, q.y, q.z };
@@ -199,7 +203,7 @@ namespace physics
         if (m_geomId) {
             const auto& sz = m_geom.size;
             const float radius = sz.x;
-            const float length = sz.y;
+            const float length = sz.y * 2.f;
 
             switch (m_geom.type) {
             case GeomType::plane: {
@@ -283,7 +287,7 @@ namespace physics
             pos -= parent->getState().getWorldPosition();
 
             // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-            rot = glm::normalize(rot * glm::conjugate(m_body.quat));
+            rot = glm::normalize(rot * m_body.invBaseRotation);
 
             // NOTE KI project rotation to XZ plane to keep nodes UP
             // => nodes still travel backwards, but not rotating grazily

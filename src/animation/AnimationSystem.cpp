@@ -122,8 +122,13 @@ namespace animation
         bool repeat,
         double startTime)
     {
+        waitForPrepared();
+
         auto* state = getState(handle);
-        if (!state) return;
+        if (!state) {
+            KI_WARN_OUT("ANIM: STATE_MISSING");
+            return;
+        }
 
         auto& play = state->m_pending;
         play.m_clipIndex = clipIndex;
@@ -368,18 +373,34 @@ namespace animation
         socketRegistry.updateRT();
     }
 
+    void AnimationSystem::waitForPrepared()
+    {
+        std::unique_lock<std::mutex> lock(m_pendingLock);
+
+        bool done = m_pendingNodes.empty();
+
+        while (!done) {
+            m_pendingWait.wait(lock);
+            done = m_pendingNodes.empty();
+        }
+    }
+
     void AnimationSystem::prepareNodes()
     {
-        std::lock_guard lock(m_pendingLock);
-        if (m_pendingNodes.empty()) return;
+        std::unique_lock lock(m_pendingLock);
 
-        for (auto& handle : m_pendingNodes) {
-            uint16_t index = static_cast<uint16_t>(m_states.size());
-            auto& state = m_states.emplace_back(handle);
-            state.m_index = index;
-            m_nodeToState.insert({ handle, state.m_index });
+        if (!m_pendingNodes.empty())
+        {
+            for (auto& handle : m_pendingNodes) {
+                uint16_t index = static_cast<uint16_t>(m_states.size());
+                auto& state = m_states.emplace_back(handle);
+                state.m_index = index;
+                m_nodeToState.insert({ handle, state.m_index });
+            }
+            m_pendingNodes.clear();
         }
-        m_pendingNodes.clear();
+
+        m_pendingWait.notify_all();
     }
 
     void AnimationSystem::handleNodeAdded(Node* node)

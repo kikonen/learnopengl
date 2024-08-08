@@ -1,5 +1,7 @@
 #include "ScriptLoader.h"
 
+#include "asset/Assets.h"
+
 #include "util/Util.h"
 
 #include "model/Node.h"
@@ -103,23 +105,33 @@ namespace loader {
         const ScriptEngineData& data)
     {
         if (!data.enabled) return;
-        createScripts(pool::NodeHandle::NULL_HANDLE, data.scripts);
+        const auto& registeredIds = createScripts(pool::NodeHandle::NULL_HANDLE, data.scripts);
+        bindNodeScripts(pool::NodeHandle::NULL_HANDLE, registeredIds);
+        runGlobalScripts(registeredIds);
     }
 
-    void ScriptLoader::createScripts(
+    std::vector<script::script_id> ScriptLoader::createScripts(
         pool::NodeHandle handle,
         const std::vector<ScriptData>& scripts) const
     {
+        std::vector<script::script_id> registeredIds;
+
         for (auto& data : scripts) {
-            createScript(handle, data);
+            for (auto scriptId : createScript(handle, data)) {
+                registeredIds.push_back(scriptId);
+            }
         }
+
+        return registeredIds;
     }
 
-    void ScriptLoader::createScript(
+    std::vector<script::script_id> ScriptLoader::createScript(
         pool::NodeHandle handle,
         const ScriptData& data) const
     {
-        if (!data.enabled) return;
+        if (!data.enabled) return {};
+
+        std::vector<script::script_id> registeredIds;
 
         std::vector<std::string> scripts;
 
@@ -131,25 +143,41 @@ namespace loader {
 
         for (const auto& script : scripts) {
             if (script.empty()) continue;
-
             auto scriptId = script::ScriptEngine::get().registerScript(script);
-            {
-                event::Event evt { event::Type::script_bind };
-                auto& body = evt.body.script = {
-                    .target = handle.toId(),
-                    .id = scriptId,
-                };
-                m_dispatcher->send(evt);
-            }
+            registeredIds.push_back(scriptId);
+        }
 
-            if (handle.isNull()) {
-                event::Event evt { event::Type::script_run };
-                auto& body = evt.body.script = {
-                    .target = handle.toId(),
-                    .id = scriptId,
-                };
-                m_dispatcher->send(evt);
-            }
+        return registeredIds;
+    }
+
+    void ScriptLoader::bindNodeScripts(
+        pool::NodeHandle handle,
+        const std::vector<script::script_id>& scriptIds) const
+    {
+        const auto& assets = Assets::get();
+        if (!assets.useScript) return;
+
+        for (auto scriptId : scriptIds)
+        {
+            event::Event evt { event::Type::script_bind };
+            auto& body = evt.body.script = {
+                .target = handle.toId(),
+                .id = scriptId,
+            };
+            m_dispatcher->send(evt);
+        }
+    }
+
+    void ScriptLoader::runGlobalScripts(
+        const std::vector<script::script_id>& scriptIds) const
+    {
+        for (auto scriptId : scriptIds) {
+            event::Event evt { event::Type::script_run };
+            auto& body = evt.body.script = {
+                .target = 0,
+                .id = scriptId,
+            };
+            m_dispatcher->send(evt);
         }
     }
 }

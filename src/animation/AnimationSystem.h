@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <mutex>
+#include <condition_variable>
 #include <tuple>
 
 #include "AnimationState.h"
@@ -72,6 +73,7 @@ namespace animation {
             Node* node,
             mesh::MeshType* type);
 
+        void waitForPrepared();
         void prepareNodes();
 
     private:
@@ -83,6 +85,8 @@ namespace animation {
         std::map<pool::NodeHandle, uint16_t> m_nodeToState;
 
         std::mutex m_pendingLock{};
+        std::condition_variable m_pendingWait;
+
         std::vector<pool::NodeHandle> m_pendingNodes;
     };
 }

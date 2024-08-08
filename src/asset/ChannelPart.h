@@ -7,6 +7,12 @@
 #include "TextureType.h"
 
 struct ChannelPart {
+    //
+    // How channels of this texture are mapped into result texture channels
+    // - max 4 source channels
+    // - for each define target channel
+    // For example,
+    // xxxR = map channel 3 (ALPHA) into target channel 0 (RED)
     enum class Channel : std::underlying_type_t<std::byte> {
         none,
         red,
@@ -17,7 +23,6 @@ struct ChannelPart {
 
     TextureType m_type;
 
-    // How channels of this texture are mapped into result texture channels
     std::array<Channel, 4> m_mapping{
         ChannelPart::Channel::none,
         ChannelPart::Channel::none,

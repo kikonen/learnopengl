@@ -244,29 +244,6 @@ void NodeRegistry::attachListeners()
                 e.body.node.parentId);
         });
 
-    if (assets.useScript) {
-        dispatcher->addListener(
-            event::Type::node_added,
-            [this](const event::Event& e) {
-                auto& data = e.body.node;
-                auto handle = pool::NodeHandle::toHandle(data.target);
-
-                auto& se = script::ScriptEngine::get();
-                const auto& scripts = se.getNodeScripts(handle);
-
-                for (const auto& scriptId : scripts) {
-                    {
-                        event::Event evt { event::Type::script_run };
-                        auto& body = evt.body.script = {
-                            .target = data.target,
-                            .id = scriptId,
-                        };
-                        m_registry->m_dispatcherWorker->send(evt);
-                    }
-                }
-            });
-    }
-
     //dispatcher->addListener(
     //    event::Type::node_change_parent,
     //    [this](const event::Event& e) {
@@ -370,24 +347,25 @@ void NodeRegistry::attachListeners()
 
     if (assets.useScript) {
         dispatcher->addListener(
-            event::Type::script_bind,
+            event::Type::node_added,
             [this](const event::Event& e) {
-                auto& data = e.body.script;
+                auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                script::ScriptEngine::get().bindNodeScript(handle, data.id);
-            });
+                const auto& scripts = script::ScriptEngine::get().getNodeScripts(handle);
 
-        dispatcher->addListener(
-            event::Type::script_run,
-            [this](const event::Event& e) {
-                auto& data = e.body.script;
-                if (data.target) {
-                    if (auto* node = pool::NodeHandle::toNode(data.target)) {
-                        script::ScriptEngine::get().runNodeScript(node, data.id);
-                    }
+                if (!scripts.empty()) {
+                    KI_INFO_OUT(fmt::format("trigger_scripts: {}", scripts.size()));
                 }
-                else {
-                    script::ScriptEngine::get().runGlobalScript(data.id);
+
+                for (const auto& scriptId : scripts) {
+                    {
+                        event::Event evt { event::Type::script_run };
+                        auto& body = evt.body.script = {
+                            .target = data.target,
+                            .id = scriptId,
+                        };
+                        m_registry->m_dispatcherWorker->send(evt);
+                    }
                 }
             });
     }

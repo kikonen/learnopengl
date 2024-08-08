@@ -1,15 +1,15 @@
 require "module_1"
 
-print("COMMON: init")
+print("LUA: COMMON: init")
 
 function printf(...)
   io.write(string.format(...))
 end
 
-print("testing...")
+print("LUA: testing...")
 local delay = 1.0
 local id = 10
-printf("TEST: delay=%f, id=%i\n", delay, id)
-print("tested!!!")
+printf("LUA: TEST: delay=%f, id=%i\n", delay, id)
+print("LUA: tested!!!")
 
-print("COMMON: ready")
+print("LUA: COMMON: ready")

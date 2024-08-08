@@ -1,0 +1,19 @@
+---
+prefab:
+  meshes:
+    - id: prefab_skeleton
+      path: fbx/creatures/skeleton/skeleton_animated.FBX
+      flags:
+        use_bones: true
+        use_animation: true
+      material:
+        map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
+        map_normal: skeleton_pbr/Skeleton_Body_Normal.png
+        map_channel:
+          - path: skeleton_pbr/Skeleton_Body_MetallicSmoothness.png
+            type: metallness_map
+            channel: xxxR
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.01375
+      scale: 2

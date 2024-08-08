@@ -1,1 +1,1 @@
-print("MODULE: module load works!")
+print("LUA: MODULE: module load works!")

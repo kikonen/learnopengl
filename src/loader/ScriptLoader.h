@@ -4,6 +4,8 @@
 
 #include "pool/NodeHandle.h"
 
+#include "script/size.h"
+
 #include "BaseLoader.h"
 
 #include "ScriptData.h"
@@ -36,12 +38,19 @@ namespace loader {
         void createScriptEngine(
             const ScriptEngineData& data);
 
-        void createScripts(
+        std::vector<script::script_id> createScripts(
             pool::NodeHandle handle,
             const std::vector<ScriptData>& scripts) const;
 
-        void createScript(
+        std::vector<script::script_id> createScript(
             pool::NodeHandle handle,
             const ScriptData& data) const;
+
+        void bindNodeScripts(
+            pool::NodeHandle handle,
+            const std::vector<script::script_id>& scriptIds) const;
+
+        void runGlobalScripts(
+            const std::vector<script::script_id>& scriptIds) const;
     };
 }

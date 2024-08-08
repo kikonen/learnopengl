@@ -30,15 +30,41 @@
 namespace {
     constexpr float STEP_SIZE = 0.03f;
 
-    constexpr int MAX_CONTACTS = 8;
+    constexpr int MAX_CONTACTS = 4;
     constexpr int CONTACT_GROUP_ID = 0;
 
-    static physics::PhysicsEngine s_engine;
+    static physics::PhysicsEngine g_engine;
+
+    // NOTE KI shared, only single thread does checking
+    dContact g_contacts[MAX_CONTACTS]{};
 
     struct HitData {
         physics::Object* test;
         std::vector<physics::RayHit> hits;
     };
+
+    inline void resetContactDefaults()
+    {
+        // up to MAX_CONTACTS contacts per box-box
+        for (int i = 0; i < MAX_CONTACTS; i++)
+        {
+            g_contacts[i].surface.mode = 0 |
+                dContactBounce |
+                dContactSlip1 |
+                dContactSlip2 |
+                dContactSoftCFM |
+                dContactSoftERP |
+                dContactApprox1;
+            g_contacts[i].surface.mu = 30;// dInfinity;
+            g_contacts[i].surface.mu2 = 0;
+            g_contacts[i].surface.slip1 = 0.7;
+            g_contacts[i].surface.slip2 = 0.7;
+            g_contacts[i].surface.bounce = 0.6;
+            g_contacts[i].surface.bounce_vel = 1.1;
+            g_contacts[i].surface.soft_erp = 0.9;
+            g_contacts[i].surface.soft_cfm = 0.9;
+        }
+    }
 }
 
 namespace physics
@@ -61,12 +87,10 @@ namespace physics
                 static_cast<float>(contact.pos[2]) };
 
             hit.depth = contact.depth;
-
-            KI_INFO_OUT(fmt::format(""));
         }
     }
 
-    static void nearCallback(void* data, dGeomID o1, dGeomID o2)
+    static void collisionCallback(void* data, dGeomID o1, dGeomID o2)
     {
         // exit without doing anything if the two bodies are connected by a joint
         dBodyID b1 = dGeomGetBody(o1);
@@ -74,40 +98,26 @@ namespace physics
         if (b1 && b2 && dAreConnectedExcluding(b1, b2, dJointTypeContact))
             return;
 
-        // up to MAX_CONTACTS contacts per box-box
-        dContact contact[MAX_CONTACTS]{};
-        for (int i = 0; i < MAX_CONTACTS; i++)
-        {
-            contact[i].surface.mode = dContactBounce |
-                dContactSlip1 |
-                dContactSlip2 |
-                dContactSoftCFM |
-                dContactSoftERP |
-                dContactApprox1;
-            contact[i].surface.mu = 30;// dInfinity;
-            contact[i].surface.mu2 = 0;
-            contact[i].surface.slip1 = 0.7;
-            contact[i].surface.slip2 = 0.7;
-            contact[i].surface.bounce = 0.6;
-            contact[i].surface.bounce_vel = 1.1;
-            contact[i].surface.soft_erp = 0.9;
-            contact[i].surface.soft_cfm = 0.9;
-        }
+        PhysicsEngine* engine = (PhysicsEngine*)data;
 
-        if (int numc = dCollide(o1, o2, MAX_CONTACTS, &contact[0].geom, sizeof(dContact)))
+        const auto worldId = engine->m_worldId;
+        const auto groupId = engine->m_contactgroupId;
+
+        resetContactDefaults();
+
+        if (int count = dCollide(o1, o2, MAX_CONTACTS, &g_contacts[0].geom, sizeof(dContact)))
         {
-            PhysicsEngine* engine = (PhysicsEngine*)data;
             auto* obj1 = engine->m_geomToObject[o1];
             auto* obj2 = engine->m_geomToObject[o2];
 
-            dMatrix3 RI;
-            dRSetIdentity(RI);
+            //dMatrix3 RI;
+            //dRSetIdentity(RI);
 
-            for (int i = 0; i < numc; i++) {
+            for (int i = 0; i < count; i++) {
                 dJointID c = dJointCreateContact(
-                    engine->m_worldId,
-                    engine->m_contactgroupId,
-                    contact + i);
+                    worldId,
+                    groupId,
+                    g_contacts + i);
 
                 dJointAttach(c, b1, b2);
             }
@@ -116,7 +126,7 @@ namespace physics
 
     PhysicsEngine& PhysicsEngine::get() noexcept
     {
-        return s_engine;
+        return g_engine;
     }
 
     PhysicsEngine::PhysicsEngine()
@@ -210,7 +220,7 @@ namespace physics
             for (int i = 0; i < n; i++) {
                 if (!*m_alive) return;
 
-                dSpaceCollide(m_spaceId, this, &nearCallback);
+                dSpaceCollide(m_spaceId, this, &collisionCallback);
                 dWorldQuickStep(m_worldId, STEP_SIZE);
                 dJointGroupEmpty(m_contactgroupId);
             }

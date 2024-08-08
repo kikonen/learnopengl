@@ -85,7 +85,7 @@ namespace loader {
 
     SceneLoader::~SceneLoader()
     {
-        KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
+        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
     }
 
     void SceneLoader::destroy()
@@ -239,6 +239,15 @@ namespace loader {
 
         DagSort sorter;
         auto sorted = sorter.sort(resolvedNodes);
+
+        for (auto* resolved : sorted) {
+            if (!*m_ctx.m_alive) return;
+            if (resolved->scriptIds.empty()) continue;
+
+            m_loaders->m_scriptLoader.bindNodeScripts(
+                resolved->handle,
+                resolved->scriptIds);
+        }
 
         for (auto* resolved : sorted) {
             if (!*m_ctx.m_alive) return;
@@ -470,10 +479,15 @@ namespace loader {
             parentId = id;
         }
 
+        const auto scriptIds = m_loaders->m_scriptLoader.createScript(
+            handle,
+            nodeData.script);
+
         ResolvedNode resolved{
             parentId,
             handle,
-            nodeData
+            nodeData,
+            scriptIds
         };
 
         addResolvedNode(resolved);
@@ -910,10 +924,6 @@ namespace loader {
                 nodeData.text,
                 *m_loaders);
         }
-
-        l.m_scriptLoader.createScript(
-            node->toHandle(),
-            nodeData.script);
 
         {
             type->setCustomMaterial(

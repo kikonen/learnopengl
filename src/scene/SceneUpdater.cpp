@@ -1,5 +1,7 @@
 #include "SceneUpdater.h"
 
+#include "asset/Assets.h"
+
 #include "model/Node.h"
 
 #include "pool/NodeHandle.h"
@@ -17,6 +19,8 @@
 #include "engine/UpdateContext.h"
 
 #include "physics/PhysicsEngine.h"
+
+#include "script/ScriptEngine.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -40,6 +44,8 @@ void SceneUpdater::prepare()
 {
     if (m_prepared) return;
     Updater::prepare();
+
+    const auto& assets = Assets::get();
 
     std::lock_guard lock(m_prepareLock);
 
@@ -91,6 +97,31 @@ void SceneUpdater::prepare()
                 obj->m_nodeHandle = handle;
             }
         });
+
+    if (assets.useScript)
+    {
+        dispatcher->addListener(
+            event::Type::script_bind,
+            [this](const event::Event& e) {
+                auto& data = e.body.script;
+                auto handle = pool::NodeHandle::toHandle(data.target);
+                script::ScriptEngine::get().bindNodeScript(handle, data.id);
+            });
+
+        dispatcher->addListener(
+            event::Type::script_run,
+            [this](const event::Event& e) {
+                auto& data = e.body.script;
+                if (data.target) {
+                    if (auto* node = pool::NodeHandle::toNode(data.target)) {
+                        script::ScriptEngine::get().runNodeScript(node, data.id);
+                    }
+                }
+                else {
+                    script::ScriptEngine::get().runGlobalScript(data.id);
+                }
+            });
+    }
 
     m_prepared = true;
 }

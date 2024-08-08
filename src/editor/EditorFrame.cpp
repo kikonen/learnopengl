@@ -70,7 +70,9 @@ namespace editor {
         auto& debugContext = m_window.getEngine().m_debugContext;
 
         ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= 0
+            //| ImGuiConfigFlags_NavEnableKeyboard
+            | 0;
 
         // NOTE KI don't waste CPU if Edit window is collapsed
         bool* openPtr = nullptr;
