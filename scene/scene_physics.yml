@@ -138,8 +138,10 @@ nodes:
         size: [1, 2.75, 0]
         offset: [0, 0, -0.75]
     script: |
+      local sid = util:sid("master:Idle2")
+      printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
       cmd:animationPlay(
-        { name = "master:Idle2" });
+        { name = "master:Idle2" })
   - name: Directional light
     mesh:
       path: light
