@@ -327,6 +327,14 @@ PrepareContext RenderContext::toPrepareContext() const
     };
 }
 
+glm::vec3 RenderContext::getScreenDirection(
+    const glm::vec2& screenPoint) const
+{
+    const auto startPos = unproject(screenPoint, .01f);
+    const auto endPos = unproject(screenPoint, .8f);
+    return glm::normalize(endPos - startPos);
+}
+
 glm::vec3 RenderContext::unproject(const glm::vec2& screenPoint, float deviceZ) const
 {
     // Convert screenPoint to device coordinates (between -1 and +1)

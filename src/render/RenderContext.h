@@ -108,6 +108,9 @@ public:
     UpdateContext toUpdateContext() const;
     PrepareContext toPrepareContext() const;
 
+    glm::vec3 getScreenDirection(
+        const glm::vec2& screenPoint) const;
+
     // @https://gamedev.stackexchange.com/questions/140101/clip-space-normalized-device-coordinate-space-and-window-space-in-opengl
     //
     // Clip space is the objects' position in a coordinate system relative to the camera.
