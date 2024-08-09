@@ -18,11 +18,13 @@ namespace {
         if (g_categoryMapping.empty()) {
             g_categoryMapping.insert({
                 { "none", physics::Category::none },
+                { "all", physics::Category::all },
                 { "invalid", physics::Category::invalid },
                 // surroundings
                 { "ground", physics::Category::ground },
-                { "scenery", physics::Category::scenery },
                 { "water", physics::Category::water },
+                { "scenery", physics::Category::scenery },
+                { "prop", physics::Category::prop },
                 // characters and creatures
                 { "npc", physics::Category::npc },
                 { "player", physics::Category::player },

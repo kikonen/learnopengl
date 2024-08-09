@@ -458,10 +458,23 @@ nodes:
       path: airboat_fixed_colors
     program: g_tex
     scale: 1.0
+    physics:
+      body:
+        type: box
+        density: 0.3
+        rot: [0, 0, 0]
+      geom:
+        type: box
+        category: [prop, can_float]
+        collision: [ground, water, prop, npc]
+        size: [8, 5, 4]
     clones:
       - pos: [24.0, 11.0, 15.0]
       - pos: [6.0, 19.0, 22.0]
         scale: 0.5
+        physics:
+          geom:
+            size: [4, 2.5, 2]
   - xid: spyro
     mesh:
       path: spyro2
@@ -709,6 +722,9 @@ nodes:
         density: 0.07
       geom:
         type: sphere
+        category: [prop, can_float]
+        collision: [ground, water, prop, npc]
+        size: [1.3, 0, 0]
   - name: Bronze ball
     parent_id: ball_origo
     mesh:
@@ -825,6 +841,17 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [60, 0.2, 60]
     script_file: scripts/anim_water
   - id: pool_floor_{t}
     mesh:
@@ -1174,9 +1201,14 @@ nodes:
         type: capsule
         density: 0.01
         rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
       geom:
         type: capsule
-        size: [0.9, 4, 0]
+        category: [npc]
+        collision: [ground, prop, npc]
+        size: [1, 2.75, 0]
+        offset: [0, 0, -0.75]
     script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{t}_{c}
     mesh:
