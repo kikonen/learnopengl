@@ -37,22 +37,6 @@ namespace {
     const std::string GEOM_NONE{ "" };
 
     IdGenerator<ki::program_id> ID_GENERATOR;
-
-    std::string appendLineNumbers(const std::string& src)
-    {
-        std::stringstream sb;
-
-        std::istringstream f{ src };
-
-        int lineNumber = 1;
-        std::string line;
-        while (std::getline(f, line)) {
-            sb << fmt::format("{:<4}: ", lineNumber) << line << "\n";
-            lineNumber++;
-        }
-
-        return sb.str();
-    }
 }
 
 Program::Program(
@@ -232,7 +216,7 @@ int Program::compileSource(
                 shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
-                appendLineNumbers(source)));
+                util::appendLineNumbers(source)));
 
             glDeleteShader(shaderId);
             shaderId = -1;

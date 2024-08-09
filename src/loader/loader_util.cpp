@@ -15,6 +15,7 @@
 #include "util/Util.h"
 
 #include "ki/sid.h"
+#include "ki/sid_format.h"
 
 #include "loader/MaterialData.h"
 #include "loader/document.h"

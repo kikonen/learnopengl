@@ -20,14 +20,14 @@ namespace script
 
     // Wrapper for CommandEngine calls from script
     // => wrap reference to node so that no need to explicitly pass "id" from Lua
-    class CommandAPI final
+    class NodeCommandAPI final
     {
     public:
-        CommandAPI(
+        NodeCommandAPI(
             ScriptEngine* scriptEngine,
             CommandEngine* commandEngine,
             pool::NodeHandle handle);
-        ~CommandAPI();
+        ~NodeCommandAPI();
 
     public:
         int lua_cancel(

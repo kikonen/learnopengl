@@ -86,6 +86,8 @@ namespace util
     std::string joinPath(
         std::vector<std::string_view> paths);
 
+    std::string appendLineNumbers(const std::string& src);
+
     // https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11
     template <typename Enumeration>
     auto as_integer(Enumeration const value)

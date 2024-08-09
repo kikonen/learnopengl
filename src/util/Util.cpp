@@ -301,4 +301,19 @@ namespace util {
         return filePath.string();
     }
 
+    std::string appendLineNumbers(const std::string& src)
+    {
+        std::stringstream sb;
+
+        std::istringstream f{ src };
+
+        int lineNumber = 1;
+        std::string line;
+        while (std::getline(f, line)) {
+            sb << fmt::format("{:<4}: ", lineNumber) << line << "\n";
+            lineNumber++;
+        }
+
+        return sb.str();
+    }
 }

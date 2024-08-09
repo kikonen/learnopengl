@@ -215,6 +215,7 @@
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
     <ClCompile Include="src\ki\FpsCounter.cpp" />
+    <ClCompile Include="src\ki\sid.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
     <ClCompile Include="src\loader\ChannelTextureLoader.cpp" />
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
@@ -256,6 +257,7 @@
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\script\api\AnimationPlay.cpp" />
+    <ClCompile Include="src\script\UtilAPI.cpp" />
     <ClCompile Include="src\text\TextSystem.cpp" />
     <ClCompile Include="src\text\vao\AtlasTextureVBO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp" />
@@ -348,7 +350,7 @@
     <ClCompile Include="src\asset\Volume.cpp" />
     <ClCompile Include="src\script\api\Cancel.cpp" />
     <ClCompile Include="src\script\api\Command.cpp" />
-    <ClCompile Include="src\script\CommandAPI.cpp" />
+    <ClCompile Include="src\script\NodeCommandAPI.cpp" />
     <ClCompile Include="src\script\api\MoveSplineNode.cpp" />
     <ClCompile Include="src\script\api\NodeCommand.cpp" />
     <ClCompile Include="src\script\api\RotateNode.cpp" />
@@ -511,6 +513,7 @@
     <ClInclude Include="src\component\SplineCamera.h" />
     <ClInclude Include="src\editor\EditorState.h" />
     <ClInclude Include="src\event\Type.h" />
+    <ClInclude Include="src\ki\sid_format.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\CameraType.h" />
     <ClInclude Include="src\loader\ChannelTextureLoader.h" />
@@ -606,6 +609,7 @@
     <ClInclude Include="src\animation\BoneTransformSSBO.h" />
     <ClInclude Include="src\scene\Updater.h" />
     <ClInclude Include="src\script\api\AnimationPlay.h" />
+    <ClInclude Include="src\script\UtilAPI.h" />
     <ClInclude Include="src\text\TextSystem.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\vao\BoneEntry.h" />
@@ -773,7 +777,7 @@
     <ClInclude Include="src\registry\ProgramRegistry.h" />
     <ClInclude Include="src\script\api\Cancel.h" />
     <ClInclude Include="src\script\api\Command.h" />
-    <ClInclude Include="src\script\CommandAPI.h" />
+    <ClInclude Include="src\script\NodeCommandAPI.h" />
     <ClInclude Include="src\script\CommandEngine.h" />
     <ClInclude Include="src\script\api\MoveSplineNode.h" />
     <ClInclude Include="src\script\api\NodeCommand.h" />

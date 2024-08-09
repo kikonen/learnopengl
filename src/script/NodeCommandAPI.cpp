@@ -1,4 +1,4 @@
-#include "CommandAPI.h"
+#include "NodeCommandAPI.h"
 
 #include <fmt/format.h>
 
@@ -35,8 +35,8 @@ namespace {
     struct CommandOptions {
         script::command_id afterId = 0;
         int index = 0;
-        float duration = 0;
-        float speed = 1;
+        float duration = 0.f;
+        float speed = 1.f;
         bool relative = false;
         bool repeat = false;
         bool sync = false;
@@ -101,7 +101,7 @@ namespace {
 
 namespace script
 {
-    CommandAPI::CommandAPI(
+    NodeCommandAPI::NodeCommandAPI(
         ScriptEngine* scriptEngine,
         CommandEngine* commandEngine,
         pool::NodeHandle handle)
@@ -110,9 +110,9 @@ namespace script
         m_handle{ handle }
     {}
 
-    CommandAPI::~CommandAPI() = default;
+    NodeCommandAPI::~NodeCommandAPI() = default;
 
-    int CommandAPI::lua_cancel(
+    int NodeCommandAPI::lua_cancel(
         const sol::table& lua_opt,
         int commandId) noexcept
     {
@@ -128,7 +128,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_wait(
+    int NodeCommandAPI::lua_wait(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -142,7 +142,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_sync(
+    int NodeCommandAPI::lua_sync(
         const sol::table& lua_opt,
         const sol::table& lua_ids) noexcept
     {
@@ -159,7 +159,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_move(
+    int NodeCommandAPI::lua_move(
         const sol::table& lua_opt,
         const sol::table& lua_pos) noexcept
     {
@@ -178,7 +178,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_moveSpline(
+    int NodeCommandAPI::lua_moveSpline(
         const sol::table& lua_opt,
         const sol::table& lua_p,
         const sol::table& lua_pos) noexcept
@@ -200,7 +200,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_rotate(
+    int NodeCommandAPI::lua_rotate(
         const sol::table& lua_opt,
         const sol::table& lua_dir,
         const float lua_degrees) noexcept
@@ -221,7 +221,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_scale(
+    int NodeCommandAPI::lua_scale(
         const sol::table& lua_opt,
         const sol::table& lua_scale) noexcept
     {
@@ -240,7 +240,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_set_text(
+    int NodeCommandAPI::lua_set_text(
         const sol::table& lua_opt,
         const sol::table& lua_text) noexcept
     {
@@ -263,7 +263,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_audioPlay(
+    int NodeCommandAPI::lua_audioPlay(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -277,7 +277,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_audioPause(
+    int NodeCommandAPI::lua_audioPause(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -290,7 +290,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_audioStop(
+    int NodeCommandAPI::lua_audioStop(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -303,7 +303,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_animationPlay(
+    int NodeCommandAPI::lua_animationPlay(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -318,7 +318,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_start(
+    int NodeCommandAPI::lua_start(
         const sol::table& lua_opt,
         sol::function fn) noexcept
     {
@@ -339,7 +339,7 @@ namespace script
             });
     }
 
-    int CommandAPI::lua_resume_wrapper(
+    int NodeCommandAPI::lua_resume_wrapper(
         const sol::table& lua_opt,
         int coroutineID) noexcept
     {

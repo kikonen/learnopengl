@@ -13,7 +13,8 @@
 #include "engine/PrepareContext.h"
 
 #include "script/CommandEngine.h"
-#include "script/CommandAPI.h"
+#include "script/NodeCommandAPI.h"
+#include "script/UtilAPI.h"
 
 #include "model/Node.h"
 
@@ -45,6 +46,8 @@ namespace script
         const auto& assets = ctx.m_assets;
 
         m_commandEngine = commandEngine;
+
+        m_utilApi = std::make_unique<UtilAPI>();
 
         m_lua.open_libraries(
             sol::lib::base,
@@ -82,30 +85,37 @@ namespace script
 
     void ScriptEngine::registerTypes()
     {
-        // CommandAPI
+        // util
         {
-            m_lua.new_usertype<CommandAPI>("CommandAPI");
+            m_lua.new_usertype<UtilAPI>("UtilAPI");
+            const auto& ut = m_lua["UtilAPI"];
+            ut["sid"] = &UtilAPI::lua_sid;
+        }
 
-            const auto& ut = m_lua["CommandAPI"];
+        // NodeCommandAPI
+        {
+            m_lua.new_usertype<NodeCommandAPI>("NodeCommandAPI");
 
-            ut["cancel"] = &CommandAPI::lua_cancel;
-            ut["wait"] = &CommandAPI::lua_wait;
-            ut["sync"] = &CommandAPI::lua_sync;
+            const auto& ut = m_lua["NodeCommandAPI"];
 
-            ut["move"] = &CommandAPI::lua_move;
-            ut["moveSpline"] = &CommandAPI::lua_moveSpline;
-            ut["rotate"] = &CommandAPI::lua_rotate;
-            ut["scale"] = &CommandAPI::lua_scale;
-            ut["set_text"] = &CommandAPI::lua_set_text;
+            ut["cancel"] = &NodeCommandAPI::lua_cancel;
+            ut["wait"] = &NodeCommandAPI::lua_wait;
+            ut["sync"] = &NodeCommandAPI::lua_sync;
 
-            ut["audioPlay"] = &CommandAPI::lua_audioPlay;
-            ut["audioPause"] = &CommandAPI::lua_audioPause;
-            ut["audioStop"] = &CommandAPI::lua_audioStop;
+            ut["move"] = &NodeCommandAPI::lua_move;
+            ut["moveSpline"] = &NodeCommandAPI::lua_moveSpline;
+            ut["rotate"] = &NodeCommandAPI::lua_rotate;
+            ut["scale"] = &NodeCommandAPI::lua_scale;
+            ut["set_text"] = &NodeCommandAPI::lua_set_text;
 
-            ut["animationPlay"] = &CommandAPI::lua_animationPlay;
+            ut["audioPlay"] = &NodeCommandAPI::lua_audioPlay;
+            ut["audioPause"] = &NodeCommandAPI::lua_audioPause;
+            ut["audioStop"] = &NodeCommandAPI::lua_audioStop;
 
-            ut["resume"] = sol::yielding(&CommandAPI::lua_resume_wrapper);
-            ut["start"] = &CommandAPI::lua_start;
+            ut["animationPlay"] = &NodeCommandAPI::lua_animationPlay;
+
+            ut["resume"] = sol::yielding(&NodeCommandAPI::lua_resume_wrapper);
+            ut["start"] = &NodeCommandAPI::lua_start;
         }
 
         // Node
@@ -137,14 +147,14 @@ namespace script
         pool::NodeHandle handle,
         script::script_id scriptId)
     {
-        auto fnName = createNodeFunction(handle, scriptId);
+        const auto& fnName = createNodeFunction(handle, scriptId);
 
         if (fnName.empty()) return;
 
         std::unordered_map<script::script_id, std::string> fnMap{ { scriptId, fnName } };
         m_nodeFunctions.insert({ handle, fnMap });
 
-        m_apis.insert({ handle, std::make_unique<CommandAPI>(this, m_commandEngine, handle) });
+        m_commandApis.insert({ handle, std::make_unique<NodeCommandAPI>(this, m_commandEngine, handle) });
 
         //if (!m_luaNodes[nodeId]) {
         //    m_luaNodes[nodeId] = m_lua.create_table_with();
@@ -168,28 +178,54 @@ namespace script
         pool::NodeHandle handle,
         script::script_id scriptId)
     {
-        std::lock_guard lock(m_lock);
+        std::string scriptlet;
 
-        const auto it = m_scripts.find(scriptId);
-        if (it == m_scripts.end()) return "";
+        try {
+            std::lock_guard lock(m_lock);
 
-        const auto& script = it->second;
+            const auto it = m_scripts.find(scriptId);
+            if (it == m_scripts.end()) return "";
 
-        // NOTE KI unique wrapperFn for node
-        const std::string nodeFnName = fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
+            const auto& script = it->second;
 
-        // NOTE KI pass context as closure to Node
-        // - node, cmd, id
-        const auto scriptlet = fmt::format(R"(
-function {}(node, cmd, id)
+            // NOTE KI unique wrapperFn for node
+            const std::string nodeFnName = fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
+
+            // NOTE KI pass context as closure to Node
+            // - node, cmd, id
+            scriptlet = fmt::format(R"(
+function {}(node, util, cmd, id)
 nodes[id] = nodes[id] or {}
 local luaNode = nodes[id]
 {}
 end)", nodeFnName, "{}", script.m_source);
 
-        m_lua.script(scriptlet);
+            m_lua.script(scriptlet);
 
-        return nodeFnName;
+            return nodeFnName;
+        }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format(
+                "SCRIPT: {}\n{}",
+                ex.what(), util::appendLineNumbers(scriptlet)));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format(
+                "SCRIPT: {}\n{}",
+                ex, util::appendLineNumbers(scriptlet)));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format(
+                "SCRIPT: {}\n{}",
+                ex, util::appendLineNumbers(scriptlet)));
+        }
+        catch (...) {
+            KI_CRITICAL(fmt::format(
+                "SCRIPT: UNKNOWN_ERROR\n{}",
+                util::appendLineNumbers(scriptlet)));
+        }
+
+        return {};
     }
 
     void ScriptEngine::runGlobalScript(
@@ -204,7 +240,7 @@ end)", nodeFnName, "{}", script.m_source);
         {
             auto& fnName = fnIt->second;
             sol::function fn = m_lua[fnName];
-            fn(nullptr, nullptr, 0);
+            fn(nullptr, nullptr, nullptr, 0);
         }
     }
 
@@ -219,14 +255,29 @@ end)", nodeFnName, "{}", script.m_source);
 
         if (it == m_nodeFunctions.end()) return;
 
-        if (const auto& fnIt = it->second.find(scriptId);
-            fnIt != it->second.end())
-        {
+        try {
+            if (const auto& fnIt = it->second.find(scriptId);
+                fnIt != it->second.end())
+            {
+                auto& fnName = fnIt->second;
+                sol::function fn = m_lua[fnName];
 
-            auto& fnName = fnIt->second;
-            sol::function fn = m_lua[fnName];
-            auto* api = m_apis.find(handle)->second.get();
-            fn(std::ref(node), std::ref(api), handle.toId());
+                auto* utilApi = m_utilApi.get();
+                auto* cmdApi = m_commandApis.find(handle)->second.get();
+                fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());
+            }
+        }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex.what()));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+        }
+        catch (...) {
+            KI_CRITICAL("SCRIPT: UNKNOWN_ERROR");
         }
     }
 
@@ -249,11 +300,25 @@ end)", nodeFnName, "{}", script.m_source);
         //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->getId(), name));
         sol::table luaNode = m_luaNodes[handle.toId()];
 
-        sol::optional<sol::function> fnPtr = luaNode[name];
-        if (fnPtr != sol::nullopt) {
-            auto* api = m_apis.find(handle)->second.get();
-            auto& fn = fnPtr.value();
-            fn(std::ref(node), std::ref(api), handle.toId());
+        try {
+            sol::optional<sol::function> fnPtr = luaNode[name];
+            if (fnPtr != sol::nullopt) {
+                auto* api = m_commandApis.find(handle)->second.get();
+                auto& fn = fnPtr.value();
+                fn(std::ref(node), std::ref(api), handle.toId());
+            }
+        }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex.what()));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+        }
+        catch (...) {
+            KI_CRITICAL("SCRIPT: UNKNOWN_ERROR");
         }
     }
 }

@@ -14,9 +14,7 @@
 
 #include "physics/PhysicsEngine.h"
 
-#include "script/api/Command.h"
 #include "script/CommandEngine.h"
-#include "script/CommandAPI.h"
 #include "script/ScriptEngine.h"
 
 #include "particle/ParticleSystem.h"
