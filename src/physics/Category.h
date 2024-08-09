@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 namespace physics {
-    enum class Category {
+    enum class Category : uint32_t {
         none = 0,
         all = UINT_MAX,
         invalid = 1 << 1,
