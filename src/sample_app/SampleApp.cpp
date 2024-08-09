@@ -93,6 +93,8 @@ int SampleApp::onInit()
         debugContext.m_frustumEnabled = assets.frustumEnabled;
         debugContext.m_forceWireframe = assets.forceWireframe;
         debugContext.m_showNormals = assets.showNormals;
+
+        debugContext.m_physicsShowObjects = assets.physicsShowObjects;
     }
 
     return 0;

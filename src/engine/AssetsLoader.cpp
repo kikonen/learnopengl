@@ -535,6 +535,16 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "physics_initial_delay") {
+                data.physicsInitialDelay = readFloat(v);
+                continue;
+            }
+            if (k == "physics_show_objects") {
+                data.physicsShowObjects = readBool(v);
+                continue;
+            }
+        }
+        {
             if (k == "particle_enabled") {
                 data.particleEnabled = readBool(v);
                 continue;

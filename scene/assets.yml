@@ -126,6 +126,9 @@ assets:
   animation_once_only: false
   animation_max_count: 1000
 
+  physics_initial_delay: 3
+  physics_show_objects: true
+
   particle_enabled: true
   particle_max_count: 100000
 

@@ -104,6 +104,7 @@ namespace physics {
 
         bool m_enabled{ false };
         float m_initialDelay{ 0.f };
+        float m_elapsedTotal{ 0.f };
         float m_remainder{ 0.f };
 
         size_t m_invokeCount{ 0 };

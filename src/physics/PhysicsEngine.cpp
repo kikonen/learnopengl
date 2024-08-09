@@ -1,8 +1,11 @@
 #include "PhysicsEngine.h"
+#include "PhysicsEngine.h"
 
 #include <iostream>
 
 #include <fmt/format.h>
+
+#include "asset/Assets.h"
 
 #include "util/glm_format.h"
 #include "util/Util.h"
@@ -157,6 +160,11 @@ namespace physics
         m_prepared = true;
         m_alive = alive;
 
+        const auto& assets = Assets::get();
+
+        m_elapsedTotal = 0.f;
+        m_initialDelay = assets.physicsInitialDelay;
+
         dInitODE2(0);
         m_worldId = dWorldCreate();
         m_spaceId = dHashSpaceCreate(0);
@@ -185,8 +193,8 @@ namespace physics
     {
         if (!m_enabled) return;
 
-        m_initialDelay += ctx.m_clock.elapsedSecs;
-        if (m_initialDelay < 10) return;
+        m_elapsedTotal += ctx.m_clock.elapsedSecs;
+        if (m_elapsedTotal < m_initialDelay) return;
 
         std::lock_guard lock{ m_lock };
 

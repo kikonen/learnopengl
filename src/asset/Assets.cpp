@@ -190,6 +190,9 @@ Assets::Assets()
     animationOnceOnly = false;
     animationMaxCount = 1000;
 
+    physicsInitialDelay = 3.f;
+    physicsShowObjects = false;
+
     particleEnabled = true;
     particleMaxCount = 100000;
 

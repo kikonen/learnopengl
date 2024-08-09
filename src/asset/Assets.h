@@ -183,6 +183,9 @@ public:
     bool animationOnceOnly;
     int animationMaxCount;
 
+    float physicsInitialDelay;
+    bool physicsShowObjects;
+
     bool particleEnabled;
     int particleMaxCount;
 
