@@ -184,6 +184,7 @@ public:
 
     NodeGenerator* m_instancer{ nullptr };
 
+    audio::listener_id m_audioListenerId{ 0 };
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
 
     std::string m_name;

@@ -276,15 +276,18 @@ void NodeRegistry::attachListeners()
         event::Type::audio_listener_add,
         [this](const event::Event& e) {
             auto& data = e.blob->body.audioListener;
-            auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
+            auto* node = pool::NodeHandle::toNode(e.body.audioInit.target);
+            if (!node) return;
+
             auto& ae = audio::AudioEngine::get();
             auto id = ae.registerListener();
             if (id) {
+                node->m_audioListenerId = id;
                 auto* listener = ae.getListener(id);
 
                 listener->m_default = data.isDefault;
                 listener->m_gain = data.gain;
-                listener->m_nodeHandle = handle;
+                listener->m_nodeHandle = node->toHandle();
             }
         });
 
@@ -615,6 +618,13 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
     if (!node) return;
 
     m_activeNode = handle;
+
+    // NOTE KI active player is listener of audio
+    // (regardless what camera is active)
+    if (node->m_audioListenerId) {
+        auto& ae = audio::AudioEngine::get();
+        ae.setActiveListener(node->m_audioListenerId);
+    }
 }
 
 void NodeRegistry::setActiveCameraNode(pool::NodeHandle handle)
