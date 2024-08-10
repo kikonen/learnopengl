@@ -1,0 +1,62 @@
+---
+prefab:
+  meshes:
+    - id: lion
+      path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
+      lods:
+        - name: SK_Lion_LOD0
+          level: 0
+        - name: SK_Lion_LOD1
+          level: 1
+        - name: SK_Lion_LOD2
+          level: 2
+        - name: SK_Lion_LOD3
+          level: 3
+      material:
+        name: lion_pbr
+        map_pbr: lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+        xrender_back: true
+        xwireframe: true
+      animations:
+        - name: walk
+          path: anim/Lion@Walk.FBX
+        - name: jump
+          path: anim/Lion@Jump.FBX
+        - name: idle
+          path: anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: anim/Lion@Roar.FBX
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.0125
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 20
+    - level: 2
+      distance: 30
+    - level: 3
+      distance: 40
+  audio:
+    source:
+      path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+      reference_distance: 3
+      gain: 0.5
+  physics:
+    body:
+      type: capsule
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+    geom:
+      type: capsule
+      size: [0.75, 0.5, 0]
+      offset: [0, 0.75, 0.25]

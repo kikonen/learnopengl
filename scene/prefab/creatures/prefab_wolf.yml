@@ -1,0 +1,31 @@
+---
+prefab:
+  meshes:
+    - id: wolf
+      path: fbx/creatures/wolf/SK_Wolf.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+      material:
+        name: wolf_pbr
+        map_pbr: wolf_pbr
+        xrender_back: true
+        xwireframe: true
+      animations:
+        - name: walk
+          path: anim/ANIM_Wolf_Walk_RM.FBX
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.0125
+      base_rotation: [-90, 0, 0]
+  physics:
+    body:
+      type: capsule
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+    geom:
+      type: capsule
+      size: [0.5, 0.5, 0]
+      offset: [0, 0.5, 0]

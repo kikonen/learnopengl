@@ -89,6 +89,13 @@ nodes:
         sprites_x: 8
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    physics:
+      body:
+        type: sphere
+        kinematic: true
+      geom:
+        type: sphere
+        size: [1]
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
@@ -135,12 +142,19 @@ nodes:
             sprites_x: 9
             texture_spec:
               wrap: GL_CLAMP_TO_EDGE
+    physics:
+      body:
+        type: box
+        kinematic: true
+      geom:
+        type: box
+        size: [2]
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: 1
     pos: [20, 0.62, 20]
-    base_rotation: [0, -90, 0]
+    rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
     scale: 3
@@ -149,6 +163,8 @@ nodes:
       z_count: 2
       x_step: 7
       z_step: -7
+    physics:
+      update: true
     script: scripts/seq_skeleton_army
   - id: rock
     prefab:

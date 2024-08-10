@@ -1,0 +1,37 @@
+---
+prefab:
+  meshes:
+    - id: deinodonte
+      path: fbx/creatures/deinodonte/Deinodonte.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
+      material:
+        name: deinodonte_pbr
+        map_pbr: deinodonte_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+        xrender_back: true
+        xwireframe: true
+      animations:
+        - name: idle
+          path: anim/Deinodonte@IdleBreathe.FBX
+        - name: walk
+          path: anim/Deinodonte@Walk_RM.FBX
+        - name: attack_claw_left
+          path: anim/Deinodonte@ClawsAttackLeft.FBX
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.004
+  physics:
+    body:
+      type: capsule
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+    geom:
+      type: capsule
+      size: [0.85, 0.15, 0]
+      offset: [0, 0.8, 0]

@@ -42,223 +42,99 @@ nodes:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - id: wolf_{t}
-    mesh:
-      path: fbx/creatures/wolf/SK_Wolf.FBX
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-      material:
-        name: wolf_pbr
-        map_pbr: wolf_pbr
-        xrender_back: true
-        xwireframe: true
-      animations:
-        - name: walk
-          path: anim/ANIM_Wolf_Walk_RM.FBX
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.025
-    pos: [-30.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
-    base_rotation: [-90, 0, 0]
+  - id: wolf_{c}_{t}
+    prefab:
+      path: prefab/creatures/prefab_wolf.yml
+    pos: [-30.0, 0.5, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
+    script: |
+      cmd:animationPlay(
+        { name = "walk:Unreal Take" })
   - id: lion_{t}
-    mesh:
-      path: fbx/creatures/lion/SK_Lion.FBX
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-        z_up: true
-      lods:
-        - name: SK_Lion_LOD0
-          level: 0
-        - name: SK_Lion_LOD1
-          level: 1
-        - name: SK_Lion_LOD2
-          level: 2
-        - name: SK_Lion_LOD3
-          level: 3
-      material:
-        name: lion_pbr
-        map_pbr: lion_skin_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-        xrender_back: true
-        xwireframe: true
-      animations:
-        - name: walk
-          path: anim/Lion@Walk.FBX
-        - name: jump
-          path: anim/Lion@Jump.FBX
-        - name: idle
-          path: anim/Lion@IdleBreathe.FBX
-        - name: roar
-          path: anim/Lion@Roar.FBX
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.025
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 20
-      - level: 2
-        distance: 30
-      - level: 3
-        distance: 40
-    pos: [-20.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
-    xbase_rotation: [90, 0, 0]
-    xaudio:
-      source:
-        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
-        reference_distance: 3
-        gain: 0.5
+    prefab:
+      path: prefab/creatures/prefab_lion.yml
+    pos: [-20.0, 0.5, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
     xscript_file: scripts/cow_audio
+    script: |
+      cmd:animationPlay(
+        { name = "walk:Take 001" })
   - id: deinodonte_{t}
-    mesh:
-      path: fbx/creatures/deinodonte/Deinodonte.FBX
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-        z_up: true
-      material:
-        name: deinodonte_pbr
-        map_pbr: deinodonte_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-        xrender_back: true
-        xwireframe: true
-      animations:
-        - name: idle
-          path: anim/Deinodonte@IdleBreathe.FBX
-        - name: walk
-          path: anim/Deinodonte@Walk_RM.FBX
-        - name: attack_claw_left
-          path: anim/Deinodonte@ClawsAttackLeft.FBX
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.025
-    xpos: [-10.0, 8.0, -10.0]
-    pos: [-10.0, 0.0, -10.0]
-    rotation: [0, 0, 0]
-    xbase_rotation: [90, 0, 0]
+    prefab:
+      path: prefab/creatures/prefab_deinodonte.yml
+    pos: [-10.0, 0.5, -10.0]
+    scale: 4
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 20
       z_step: -20
+    script: |
+      cmd:animationPlay(
+        { name = "idle:Take 001" })
   - id: elf_{t}
-    mesh:
-      path: fbx/characters/elf/Elf Female.fbx
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-        z_up: true
-      material:
-        name: elf_pbr
-        map_pbr: elf_female_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-        xrender_back: true
-        xwireframe: true
-      animations:
-        - name: walk
-          path: anim/Elf Animations.FBX
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.025
-    pos: [0.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
-    xbase_rotation: [90, 0, 0]
+    prefab:
+      path: prefab/characters/prefab_elf.yml
+    pos: [0.0, 0.5, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
+    script: |
+      cmd:animationPlay(
+        { name = "walk:Idle" })
   - id: scavenger_{t}
-    mesh:
-      path: fbx/characters/scavenger/Scavenger.fbx
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-      materials:
-        - name: scavenger_body_pbr
-          alias: "Material #13"
-          map_pbr: scavenger_body_pbr
-          alpha: true
-          render_back: true
-          xwireframe: true
-        - name: scavenger_hair_pbr
-          alias: "Material #11"
-          map_pbr: scavenger_hair_pbr
-          alpha: true
-          render_back: true
-          xwireframe: true
-        - name: scavenger_backback_pbr
-          alias: 01 - Default
-          map_pbr: scavenger_body_pbr
-          alpha: true
-          render_back: true
-          xwireframe: true
-      xanimations:
-        - name: walk
-          path: Scavenger.fbx
-          xpath: anim/Humanoid@WalkForwardUnarmed.FBX
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.025
-    xpos: [10.0, 3.0, 0.0]
+    prefab:
+      path: prefab/characters/prefab_scavenger.yml
     pos: [10.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
-    xbase_rotation: [-90, 0, 0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
+    script: |
+      cmd:animationPlay(
+        { name = "master:Take 001" })
   - id: skeleton_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-        xrender_back: true
-        xwireframe: true
-      xanimations:
-        - name: walk
-          path: anim/Humanoid@WalkForwardUnarmed2.fbx
-      program: g_tex
-      shadow_program: simple_depth
-      base_scale: 0.05
-    xpos: [20.0, 2.0, 0.0]
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     pos: [20.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
-    scale: 1
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 5
       z_step: -5
+    physics:
+      enabled: true
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle" });
+  - id: object_{c}_{t}
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
+      material_modifier:
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.5
+    pos: [0.0, 0.5, 0.0]
+    clone_position_offset: [1.5, 0, 0]
+    clones:
+      - pos: [0.0, 0.5, 0.0]
+      - pos: [0.5, 1.5, 0.0]
+      - pos: [0, 2.5, 0.0]
+    xphysics:
+      body:
+        type: box
+        density: 0.1
+      geom:
+        type: box
+        size: [1]

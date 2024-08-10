@@ -60,13 +60,16 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     pos: [0, 0.5, 0]
-    scale: 3
+    rotation: [0, -90, 0]
+    scale: 1
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 10
       z_step: -10
     xscript: scripts/seq_skeleton
+    physics:
+      update: true
     script: |
       cmd:animationPlay(
         { name = "master:SwingNormal" });
