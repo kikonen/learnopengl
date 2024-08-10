@@ -74,7 +74,7 @@ nodes:
         type: capsule
         density: 0.01
         scale: 0.25
-        xrot: [90, 0, 0]
+        rot: [90, 0, 0]
         max_angular_velocity: 0
         force_axis: true
       geom:

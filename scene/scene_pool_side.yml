@@ -23,11 +23,11 @@ nodes:
       material_modifier:
         tiling_x: 30
         tiling_y: 2
-    program: g_tex
+        program: g_tex
     clones:
       - pos: [0.0, 0, -40]
-        scale: [60, 6, 0.3]
-    clonesx:
+        scale: [60, 6, 0.5]
+    xclones:
       - pos: [30.0, 4, -20]
         scale: [0.3, 6, 60]
       - pos: [-90.0, 4, -20]
