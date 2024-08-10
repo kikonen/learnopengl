@@ -52,11 +52,6 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
-    position: [0, 0, 0]
-    physics:
-      geom:
-        type: plane
-        rot: [0, 0, 0]
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
@@ -66,18 +61,6 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-    physics:
-      body:
-        type: capsule
-        density: 0.1
-        rot: [90, 0, 0]
-        scale: 0.25
-        max_angular_velocity: 0
-        force_axis: true
-      geom:
-        type: capsule
-        size: [1, 2.75, 0]
-        offset: [0, 0, -0.8]
     xscript: scripts/seq_skeleton
     script: |
       cmd:animationPlay(
@@ -106,8 +89,6 @@ nodes:
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
-        xrender_back: true
-        xwireframe: true
         program: g_tex
         shadow_program: simple_depth
       base_scale: 0.5

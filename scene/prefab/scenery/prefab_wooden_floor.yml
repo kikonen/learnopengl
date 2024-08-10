@@ -20,3 +20,6 @@ prefab:
       program: g_tex
   render_flags:
     no_shadow: true
+  physics:
+    geom:
+      type: plane

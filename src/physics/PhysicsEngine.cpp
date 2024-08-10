@@ -48,6 +48,9 @@ namespace {
 
     inline void resetContactDefaults()
     {
+        // http://monsterden.net/software/ragdoll-pyode-tutorial
+        // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
+
         // up to MAX_CONTACTS contacts per box-box
         for (int i = 0; i < MAX_CONTACTS; i++)
         {
