@@ -33,7 +33,7 @@ namespace loader {
         glm::vec3 baseScale{ 1.f };
 
         bool hasBaseRotation{ false };
-        glm::vec3 baseRotation{ 1.f };
+        glm::vec3 baseRotation{ 0.f };
 
         std::vector<LodData> lods;
         std::vector<SocketData> sockets;
