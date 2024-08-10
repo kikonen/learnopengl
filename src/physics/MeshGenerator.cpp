@@ -80,7 +80,7 @@ namespace physics {
         meshes->reserve(m_engine.m_objects.size());
 
         for (const auto& obj : m_engine.m_objects) {
-            if (!obj.m_geomId) continue;
+            if (!obj.m_geom.physicId) continue;
 
             auto mesh = generateObject(obj);
             if (mesh) {
@@ -94,7 +94,7 @@ namespace physics {
 
     std::unique_ptr<mesh::Mesh> MeshGenerator::generateObject(const Object& obj) const
     {
-        const auto geomId = obj.m_geomId;
+        const auto geomId = obj.m_geom.physicId;
         if (!geomId) return nullptr;
 
         glm::vec3 pos{ 0.f };
@@ -218,22 +218,9 @@ namespace physics {
             }
         }
 
-        if (mesh && obj.m_bodyId && obj.m_geom.type != GeomType::plane) {
-            const dReal* dpos = dGeomGetPosition(obj.m_geomId);
-
-            dQuaternion dquat;
-            dGeomGetQuaternion(obj.m_geomId, dquat);
-
-            pos = glm::vec3{
-                static_cast<float>(dpos[0]),
-                static_cast<float>(dpos[1]),
-                static_cast<float>(dpos[2]) };
-
-            rot = glm::quat{
-                static_cast<float>(dquat[0]),
-                static_cast<float>(dquat[1]),
-                static_cast<float>(dquat[2]),
-                static_cast<float>(dquat[3]) };
+        if (mesh && obj.m_geom.physicId && obj.m_geom.type != GeomType::plane) {
+            pos = obj.m_geom.getPhysicPosition();
+            rot = obj.m_geom.getPhysicRotation();
 
             //if (obj.m_geom.type == GeomType::box) {
             //    auto degrees = util::quatToDegrees(rot);

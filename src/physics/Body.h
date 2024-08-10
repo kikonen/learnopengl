@@ -1,11 +1,13 @@
 #pragma once
 
+#include <ode/ode.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace physics {
     enum class BodyType : std::underlying_type_t<std::byte> {
-        none,
+        none = 0,
         box,
         sphere,
         capsule,
@@ -13,13 +15,13 @@ namespace physics {
     };
 
     struct Body {
+        dBodyID physicId{ nullptr };
+
         // NOTE KI *SCALED* using scale of node
         // size{0] == radius
         // box = x, y, z
         // capsule/cylinder = radiux, half-length
         glm::vec3 size{ 1.f };
-
-        glm::vec3 scale{ 1.f };
 
         // initial values for physics
         glm::vec3 linearVelocity{ 0.f };
@@ -42,5 +44,12 @@ namespace physics {
         BodyType type{ BodyType::none };
 
         bool kinematic : 1{ false };
+
+        ~Body();
+
+        void create(
+            dWorldID worldId,
+            dSpaceID spaceId,
+            const glm::vec3& scale);
     };
 }

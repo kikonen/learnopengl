@@ -35,7 +35,7 @@ namespace physics {
         Object(Object&& b) noexcept;
         ~Object();
 
-        inline bool ready() const { return m_geomId || m_bodyId; }
+        inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 
         void prepare(
             dWorldID worldId,
@@ -46,9 +46,6 @@ namespace physics {
 
         Body m_body{};
         Geom m_geom{};
-
-        dBodyID m_bodyId{ nullptr };
-        dGeomID m_geomId{ nullptr };
 
         pool::NodeHandle m_nodeHandle{};
 

@@ -301,12 +301,10 @@ namespace physics
             auto& obj = m_objects[id - 1];
 
             obj.prepare(m_worldId, m_spaceId);
-            obj.updateToPhysics(false);
 
             auto* node = obj.m_nodeHandle.toNode();
             if (node) {
-                const auto level = node->getState().getMatrixLevel();
-                if (obj.m_matrixLevel == level) continue;
+                obj.updateToPhysics(false);
 
                 if (obj.m_update) {
                     m_updateObjects.push_back(&obj);
@@ -392,7 +390,7 @@ namespace physics
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
         state.setPosition(pos);
-        //state.setQuatRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
+        //state.setRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
 
         if (state.m_dirty) {
             state.updateModelMatrix(parent->getState());
@@ -478,13 +476,13 @@ namespace physics
         std::lock_guard lock{ m_lock };
 
         auto* ray = getObject(m_rayId);
-        if (!ray || !ray->m_geomId) return {};
+        if (!ray || !ray->m_geom.physicId) return {};
 
         KI_INFO_OUT(fmt::format(
             "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
             origin, dir, distance, categoryMask, collisionMask));
 
-        const auto rayGeomId = ray->m_geomId;
+        const auto rayGeomId = ray->m_geom.physicId;
 
         HitData hitData;
 
@@ -494,14 +492,14 @@ namespace physics
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         for (auto& obj : m_objects) {
-            if (rayGeomId == obj.m_geomId) continue;
-            if (!obj.m_geomId) continue;
+            if (rayGeomId == obj.m_geom.physicId) continue;
+            if (!obj.m_geom.physicId) continue;
             if (obj.m_nodeHandle == fromNode) continue;
 
             hitData.test = &obj;
 
             // NOTE KI dCollide  does not check category/collision bitmask
-            dSpaceCollide2(rayGeomId, obj.m_geomId, &hitData, &rayCallback);
+            dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
         }
 
         // NOTE KI set mask to "none" to prevent collisions after casting

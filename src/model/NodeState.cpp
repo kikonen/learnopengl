@@ -111,6 +111,8 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
     assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 
+    m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
+
     {
         const auto& wp = m_modelMatrix[3];
         m_worldPos.x = wp.x;

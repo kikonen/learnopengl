@@ -49,6 +49,7 @@ struct NodeState {
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
+    glm::quat m_modelRotation{ 1.f, 0.f, 0.f, 0.f };
 
     uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
@@ -269,6 +270,12 @@ struct NodeState {
     inline const glm::mat4& getModelMatrix() const noexcept {
         assert(!m_dirty);
         return m_modelMatrix;
+    }
+
+    inline const glm::quat& getModelRotation() const noexcept
+    {
+        assert(!m_dirty);
+        return m_modelRotation;
     }
 
     void updateRootMatrix() noexcept;

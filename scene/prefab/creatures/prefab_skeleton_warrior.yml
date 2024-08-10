@@ -119,9 +119,8 @@ prefab:
   physics:
     body:
       type: capsule
-      density: 0.1
+      density: 0.01
       rot: [90, 0, 0]
-      xscale: 0.25
       max_angular_velocity: 0
       force_axis: true
     geom:

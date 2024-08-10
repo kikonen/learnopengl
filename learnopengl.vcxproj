@@ -250,6 +250,8 @@
     <ClCompile Include="src\mesh\MeshSet.cpp" />
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\model\PivotPoint.cpp" />
+    <ClCompile Include="src\physics\Body.cpp" />
+    <ClCompile Include="src\physics\Geom.cpp" />
     <ClCompile Include="src\physics\MeshGenerator.cpp" />
     <ClCompile Include="src\registry\VaoRegistry.cpp" />
     <ClCompile Include="src\renderer\PhysicsRenderer.cpp" />

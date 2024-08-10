@@ -1,13 +1,17 @@
 #pragma once
 
+#include <ode/ode.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "Category.h"
 
 namespace physics {
+    struct Body;
+
     enum class GeomType : std::underlying_type_t<std::byte> {
-        none,
+        none = 0,
         ray,
         plane,
         box,
@@ -17,6 +21,8 @@ namespace physics {
     };
 
     struct Geom {
+        dGeomID physicId{ nullptr };
+
         // NOTE KI *SCALED* using scale of node
         // box:
         // - size == vec3
@@ -39,5 +45,34 @@ namespace physics {
         uint32_t contactFlags{ 0 };
 
         GeomType type{ GeomType::none };
+
+        ~Geom();
+
+        void create(
+            dWorldID worldId,
+            dSpaceID spaceId,
+            const glm::vec3& scale,
+            const Body& body);
+
+        glm::vec3 getPhysicPosition() const
+        {
+            const dReal* dpos = dGeomGetPosition(physicId);
+            return {
+                static_cast<float>(dpos[0]),
+                static_cast<float>(dpos[1]),
+                static_cast<float>(dpos[2]) };
+        }
+
+        glm::quat getPhysicRotation() const
+        {
+            dQuaternion dquat;
+            dGeomGetQuaternion(physicId, dquat);
+
+            return {
+                static_cast<float>(dquat[0]),
+                static_cast<float>(dquat[1]),
+                static_cast<float>(dquat[2]),
+                static_cast<float>(dquat[3]) };
+        }
     };
 }

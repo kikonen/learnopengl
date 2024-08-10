@@ -135,9 +135,6 @@ namespace loader {
             else if (k == "size") {
                 data.size = readVec3(v);
             }
-            else if (k == "scale") {
-                data.scale = readScale3(v);
-            }
             else if (k == "density") {
                 data.density = readFloat(v);
             }
