@@ -93,7 +93,7 @@ namespace loader {
         }
 
         // NOTE KI physics needs body or gem
-        if (useExplicitEnable && data.enabled) {
+        if (useExplicitEnable) {
             data.enabled = explicitEnable;
         }
     }

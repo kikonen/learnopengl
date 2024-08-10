@@ -2,6 +2,8 @@
 
 #include "ki/limits.h"
 
+#include "util/debug.h"
+
 #include "model/Node.h"
 
 #include "animation/RigContainer.h"
@@ -45,6 +47,11 @@ namespace script
                 break;
             }
         }
+
+        if (m_clipIndex < 0) {
+            KI_WARN_OUT(fmt::format("CMD_ANIM_PLAY: MISSING_CLIP={}", m_clipName));
+        }
+
         m_finished = m_clipIndex < 0;
     }
 

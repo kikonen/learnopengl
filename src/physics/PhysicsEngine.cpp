@@ -460,7 +460,9 @@ namespace physics
         auto& debugContext = render::DebugContext::modify();
 
         physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
-        debugContext.m_physicsMeshes = generator.generateMeshes();
+
+        auto meshes = generator.generateMeshes();
+        debugContext.m_physicsMeshes.swap(meshes);
     }
 
     std::vector<physics::RayHit> PhysicsEngine::rayCast(
