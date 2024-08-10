@@ -18,7 +18,7 @@ namespace {
 
 glm::vec3 NodeState::getDegreesRotation() const noexcept
 {
-    return util::quatToDegrees(m_quatRotation);
+    return util::quatToDegrees(m_rotation);
 }
 
 void NodeState::updateRootMatrix() noexcept
@@ -131,7 +131,7 @@ void NodeState::updateModelAxis() noexcept
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
     // => thus no "base quad" here!
     // NOTE KI w == 0; only rotation
-    m_viewFront = glm::normalize(glm::mat3(m_quatRotation) * m_front);
+    m_viewFront = glm::normalize(glm::mat3(m_rotation) * m_front);
     glm::vec3 viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
     m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
     //m_viewRight = viewRight;
@@ -141,6 +141,6 @@ void NodeState::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;
-    m_rotationMatrix = glm::toMat4(m_quatRotation) * glm::toMat4(m_baseRotation);
+    m_rotationMatrix = glm::toMat4(m_rotation) * glm::toMat4(m_baseRotation);
     m_dirtyRotation = false;
 }

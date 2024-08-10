@@ -308,7 +308,7 @@ namespace physics
         }
 
         state.setPosition(pos);
-        state.setQuatRotation(rot);
+        state.setRotation(rot);
         //m_node->updateModelMatrix();
     }
 }

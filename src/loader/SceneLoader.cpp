@@ -895,7 +895,7 @@ namespace loader {
         auto& state = node->modifyState();
         state.setPosition(pos);
 
-        state.setQuatRotation(util::degreesToQuat(nodeData.rotation));
+        state.setRotation(util::degreesToQuat(nodeData.rotation));
         state.setScale(nodeData.scale);
 
         state.setPivot(nodeData.pivot.resolve(type));

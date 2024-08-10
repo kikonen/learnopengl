@@ -37,7 +37,7 @@ struct NodeState {
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
+    glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
     glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
@@ -108,9 +108,9 @@ struct NodeState {
         return m_scale;
     }
 
-    inline const glm::quat& getQuatRotation() const noexcept
+    inline const glm::quat& getRotation() const noexcept
     {
-        return m_quatRotation;
+        return m_rotation;
     }
 
     inline void setPosition(const glm::vec3& pos) noexcept
@@ -189,26 +189,26 @@ struct NodeState {
         m_dirtyNormal = true;
     }
 
-    void setQuatRotation(const glm::quat& quat) noexcept
+    void setRotation(const glm::quat& quat) noexcept
     {
-        if (m_quatRotation != quat) {
-            m_quatRotation = quat;
+        if (m_rotation != quat) {
+            m_rotation = quat;
             m_dirtyRotation = true;
             m_dirty = true;
             m_dirtyNormal = true;
         }
     }
 
-    inline void adjustQuatRotation(const glm::quat& adjust) noexcept
+    inline void adjustRotation(const glm::quat& adjust) noexcept
     {
-        setQuatRotation(adjust * m_quatRotation);
+        setRotation(adjust * m_rotation);
     }
 
     glm::vec3 getDegreesRotation() const noexcept;
 
     void setDegreesRotation(const glm::vec3& rot) noexcept
     {
-        setQuatRotation(glm::quat(glm::radians(rot)));
+        setRotation(glm::quat(glm::radians(rot)));
     }
 
     inline const glm::vec3& getFront() const noexcept {

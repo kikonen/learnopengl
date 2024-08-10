@@ -48,7 +48,7 @@ bool VolumeController::updateWT(
     {
         auto& volumeState = volumeNode.modifyState();
         volumeState.setFront(state.getFront());
-        volumeState.setQuatRotation(state.getQuatRotation());
+        volumeState.setRotation(state.getRotation());
         volumeState.setPosition(pos);
         volumeState.setScale(volumeScale);
 

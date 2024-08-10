@@ -199,7 +199,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
         // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
         {
             auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
-            asteroid.adjustQuatRotation(rot);
+            asteroid.adjustRotation(rot);
         }
     }
 }

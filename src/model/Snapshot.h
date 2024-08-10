@@ -29,7 +29,7 @@ struct Snapshot {
     glm::vec3 m_worldPos{ 0.f };
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    glm::quat m_quatRotation{ 1.f, 0.f, 0.f, 0.f };
+    glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
@@ -76,7 +76,7 @@ struct Snapshot {
 
         m_worldPos = o.m_worldPos;
 
-        m_quatRotation = o.m_quatRotation;
+        m_rotation = o.m_rotation;
 
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
@@ -96,9 +96,9 @@ struct Snapshot {
 
     glm::vec3 getDegreesRotation() const noexcept;
 
-    inline const glm::quat& getQuatRotation() const noexcept
+    inline const glm::quat& getRotation() const noexcept
     {
-        return m_quatRotation;
+        return m_rotation;
     }
 
     inline const glm::vec3& getViewUp() const noexcept {
