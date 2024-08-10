@@ -150,47 +150,30 @@ namespace physics
         glm::vec3 pos{ 0.f };
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
         {
-            const dReal* dpos = dBodyGetPosition(m_body.physicId);
-            const dReal* dquat = dBodyGetQuaternion(m_body.physicId);
+            pos = m_body.getPhysicPosition();
+            rot = m_body.getPhysicRotation();
 
-            pos = glm::vec3{
-                static_cast<float>(dpos[0]),
-                static_cast<float>(dpos[1]),
-                static_cast<float>(dpos[2]) };
-
-            rot = glm::quat{
-                static_cast<float>(dquat[0]),
-                static_cast<float>(dquat[1]),
-                static_cast<float>(dquat[2]),
-                static_cast<float>(dquat[3]) };
-
-            if (pos.y < -400) {
-                pos.y = -400;
-                dBodySetPosition(m_body.physicId, pos[0], pos[1], pos[2]);
-            }
-            if (pos.y > 400) {
-                pos.y = 400;
-                dBodySetPosition(m_body.physicId, pos[0], pos[1], pos[2]);
-            }
+            // NOTE KI parent *SHOULD* be root (== null) for all physics nodes
+            // => otherwise math does not make sense
             pos -= parent->getState().getWorldPosition();
 
             // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
             rot = glm::normalize(rot * m_body.invBaseRotation);
 
-            // NOTE KI project rotation to XZ plane to keep nodes UP
-            // => nodes still travel backwards, but not rotating grazily
-            if (false) {
-                // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
-                const auto rotated = glm::mat3(rot) * state.m_front;
-                //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
-                const auto rads = glm::atan(rotated.x, rotated.z);
-                const auto degrees = glm::degrees(rads);
-                rot = util::radiansToQuat(glm::vec3(0, rads, 0));
+            //// NOTE KI project rotation to XZ plane to keep nodes UP
+            //// => nodes still travel backwards, but not rotating grazily
+            //if (false) {
+            //    // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
+            //    const auto rotated = glm::mat3(rot) * state.m_front;
+            //    //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
+            //    const auto rads = glm::atan(rotated.x, rotated.z);
+            //    const auto degrees = glm::degrees(rads);
+            //    rot = util::radiansToQuat(glm::vec3(0, rads, 0));
 
-                dQuaternion quat{ rot.w, rot.x, rot.y, rot.z };
-                dBodySetQuaternion(m_body.physicId, quat);
-            }
-            //const auto rotatedFront = rotBase * state.m_front;
+            //    dQuaternion quat{ rot.w, rot.x, rot.y, rot.z };
+            //    dBodySetQuaternion(m_body.physicId, quat);
+            //}
+            ////const auto rotatedFront = rotBase * state.m_front;
 
             //if (m_geom.type == GeomType::box) {
             //    auto degrees = util::quatToDegrees(rq);
@@ -201,7 +184,7 @@ namespace physics
         }
 
         state.setPosition(pos);
-        state.setRotation(rot);
+        state.setRotation(rot * glm::conjugate(state.m_baseRotation));
         //m_node->updateModelMatrix();
     }
 }

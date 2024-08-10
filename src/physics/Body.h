@@ -51,5 +51,25 @@ namespace physics {
             dWorldID worldId,
             dSpaceID spaceId,
             const glm::vec3& scale);
+
+        glm::vec3 getPhysicPosition() const
+        {
+            const dReal* dpos = dBodyGetPosition(physicId);
+            return {
+                static_cast<float>(dpos[0]),
+                static_cast<float>(dpos[1]),
+                static_cast<float>(dpos[2]) };
+        }
+
+        glm::quat getPhysicRotation() const
+        {
+            const dReal* dquat = dBodyGetQuaternion(physicId);
+
+            return {
+                static_cast<float>(dquat[0]),
+                static_cast<float>(dquat[1]),
+                static_cast<float>(dquat[2]),
+                static_cast<float>(dquat[3]) };
+        }
     };
 }
