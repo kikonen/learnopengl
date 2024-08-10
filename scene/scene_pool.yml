@@ -274,8 +274,6 @@ nodes:
     shadow_program: simple_depth
     priority: -20
     pos: [-100.0, 0.0, 140.0]
-    rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
     scale: 3
     render_flags:
       static_bounds: true

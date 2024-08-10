@@ -46,7 +46,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [0.0, -1.0, -8.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
   - id: window_2
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
@@ -59,7 +59,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [0.5, -1.0, -10.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
   - name: Blend cubes
     mesh:
       path: rubik_cube.fbx

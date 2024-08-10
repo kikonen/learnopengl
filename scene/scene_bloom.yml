@@ -41,9 +41,8 @@ nodes:
         program: g_tex
         shadow_program: simple_depth
       base_scale: 0.01
-    pos: [10, 4, -10]
-    rotation: [0.0, 90.0, 0.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+      base_rotation: [90.0, 90.0, 0.0]
+    pos: [10, 5, -10]
     scale: 2
     repeat:
       z_count: 10
@@ -90,58 +89,45 @@ nodes:
       x_step: 20
       z_step: -20
   - id: skeleton_army_grid_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_animation: true
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
-        ke: [0.0, 0.1, 0.0]
-        program: g_tex
-      base_scale: 0.028
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: 1
-    instanced: true
+    xinstanced: true
     pos: [20, 0.0, 20]
     rotation: [0, 45, 0]
-    base_rotation: [0, -90, 0]
+    rotation: [0, -90, 0]
     scale: 3
     render_flags:
       xdynamic_bounds: true
-    generator:
+    xgenerator:
       type: grid
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 10
-        z_step: -10
-  - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_animation: true
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
-        ke: [0.0, 0.1, 0.0]
-        program: g_tex
-        shadow_program: simple_depth
-      base_scale: 0.028
-    priority: 1
-    pos: [20, 0.0, 50]
-    base_rotation: [0, -90, 0]
-    render_flags:
-      xdynamic_bounds: true
-    scale: 3
     repeat:
       x_count: 2
       z_count: 2
       x_step: 10
       z_step: -10
+    script: |
+      cmd:animationPlay(
+        { name = "master:SwingNormal" });
+  - id: skeleton_army_2_{t}
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    priority: 1
+    pos: [20, 0.0, 50]
+    rotation: [0, -90, 0]
+    render_flags:
+      xdynamic_bounds: true
+    scale: 3
+    physics:
+      enabled: true
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle" });
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 5, 10]

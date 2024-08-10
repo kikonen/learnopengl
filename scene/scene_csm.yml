@@ -19,7 +19,7 @@ nodes:
       default: true
     controllers:
      - type: pawn
-      - type: camera_zoom
+     - type: camera_zoom
   - name: Other
     mesh:
       path: texture_cube
@@ -74,22 +74,11 @@ nodes:
       z_step: -10
     script: scripts/seq_skeleton
   - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_animation: true
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        metal: [0.3, 0.4, 0, 1]
-        ke: [0.0, 0.1, 0.0]
-        program: g_tex
-        shadow_program: simple_depth
-      base_scale: 0.028
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     pos: [20, 0.0, 50]
-    base_rotation: [0, -90, 0]
+    rotation: [0, -90, 0]
     render_flags:
       xdynamic_bounds: true
     scale: 3

@@ -282,7 +282,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [5.0, 10.0, -5.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - id: door_1
     mesh:
@@ -296,7 +296,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [-5.0, 10.0, -5.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - name: Window 1_1
     mesh:
@@ -310,7 +310,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [5.0, 8.0, 0.0]
-    base_rotation: [-90.0, -45.0, 0.0]
+    rotation: [-90.0, -45.0, 0.0]
     scale: 4
   - name: Window 2
     mesh:
@@ -324,7 +324,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [7.0, 14.0, -8.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - id: stained_windows_{t}
     mesh:
@@ -338,7 +338,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [-10.0, 20.0, 10.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
     scale: 2
     repeat:
       x_count: 10
@@ -509,7 +509,6 @@ nodes:
       base_scale: 0.01
     pos: [0.0, 35.0, 30.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
     scale: 2
     repeat:
       x_count: 2
@@ -1171,7 +1170,6 @@ nodes:
     priority: -20
     pos: [250, 10.0, -100.0]
     rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
     scale: 3
     render_flags:
       static_bounds: true
@@ -1189,7 +1187,7 @@ nodes:
     render_flags:
       dynamic_bounds: true
     scale: 3
-    base_rotation: [0, -180, 0]
+    rotation: [0, -180, 0]
     repeat:
       x_count: 10
       z_count: 10
@@ -1197,18 +1195,9 @@ nodes:
       z_step: 10
     physics:
       update: true
-      body:
-        type: capsule
-        density: 0.01
-        rot: [90, 0, 0]
-        max_angular_velocity: 0
-        force_axis: true
       geom:
-        type: capsule
         category: [npc]
         collision: [ground, prop, npc]
-        size: [1, 2.75, 0]
-        offset: [0, 0, -0.75]
     script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{t}_{c}
     mesh:

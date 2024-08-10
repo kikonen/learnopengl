@@ -43,8 +43,6 @@ nodes:
     program: g_tex
     shadow_program: simple_depth
     pos: [0.0, 0, 0]
-    rotation: [0, 0, 0]
-    base_rotation: [0, 0, 0]
     scale: 2
     base_scale: 0.01
     xrepeat:

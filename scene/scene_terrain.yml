@@ -190,7 +190,6 @@ nodes:
     program: g_tex
     pos: [0, 11.5, 0.0]
     scale: 0.1
-    base_rotation: [0, 0, 0]
     render_flags:
       dynamic_bounds: true
     repeat:

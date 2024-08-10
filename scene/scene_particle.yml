@@ -67,8 +67,8 @@ nodes:
     parent: player_fps
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
-    pos: [-1.35, -1.6, -1.2]
     base_rotation: [0, 90, 180]
+    pos: [-1.35, -1.6, -1.2]
     pivot:
       alignment: m
     script: scripts/fps_player

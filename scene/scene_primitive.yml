@@ -104,7 +104,6 @@ nodes:
         xslices: 16
         xsegments: 32
     scale: 1
-    xbase_rotation: [0, -135, 0]
     pos: [2, 2, -20]
   - id: primitive-2
     type: primitive
@@ -129,5 +128,4 @@ nodes:
         xsegments: 4
         xrings: 4
     scale: 1
-    xbase_rotation: [0, -135, 0]
     pos: [3, 2, -20]

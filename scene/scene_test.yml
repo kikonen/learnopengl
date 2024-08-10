@@ -49,7 +49,7 @@ nodes:
         render_back: true
     program: g_tex
     pos: [0.0, 0.0, -8.0]
-    base_rotation: [-90.0, 0.0, 0.0]
+    rotation: [-90.0, 0.0, 0.0]
     pivot:
       alignment: t
     scale: 2
@@ -73,7 +73,6 @@ nodes:
     shadow_program: simple_depth
     pos: [-2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
@@ -97,7 +96,6 @@ nodes:
     shadow_program: simple_depth
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
@@ -121,7 +119,6 @@ nodes:
     shadow_program: simple_depth
     pos: [2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
@@ -153,7 +150,6 @@ nodes:
     shadow_program: simple_depth
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [-90, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
@@ -189,7 +185,6 @@ nodes:
     shadow_program: simple_depth
     pos: [15.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [-90, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
@@ -225,7 +220,6 @@ nodes:
     shadow_program: simple_depth
     pos: [20.0, 3.0, 0.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [-90, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
@@ -260,7 +254,6 @@ nodes:
     shadow_program: simple_depth
     pos: [0.0, 0.0, -10.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
@@ -301,7 +294,6 @@ nodes:
     shadow_program: simple_depth
     pos: [5.0, 0.0, -10.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
@@ -342,7 +334,6 @@ nodes:
     shadow_program: simple_depth
     pos: [10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
-    xbase_rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 0.025
