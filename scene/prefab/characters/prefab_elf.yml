@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - id: elf
+    - id: prefab_elf
       path: fbx/characters/elf/Elf Female.fbx
       flags:
         use_bones: true

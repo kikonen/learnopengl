@@ -1,0 +1,11 @@
+---
+prefab:
+  meshes:
+    - id: prefab_weeping_angel
+      path: weeping_angel/weeping_angel.fbx
+      material:
+        map_kd: albedo.png
+        map_normal: normal.png
+        program: g_tex
+      base_scale: 0.5
+      base_rotation: [-90, 0, 0]

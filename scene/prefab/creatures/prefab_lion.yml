@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - id: lion
+    - id: prefab_lion
       path: fbx/creatures/lion/SK_Lion.FBX
       flags:
         use_bones: true

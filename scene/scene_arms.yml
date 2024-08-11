@@ -106,35 +106,17 @@ nodes:
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
     pos: [-1.35, -1.5, -1.0]
-    rotation: [0, 0, 0]
     pivot:
       alignment: m
     script:
       path: scripts/fps_player
   - id: SM_JungleGym_01a_{c}_{t}
-    mesh:
-      path: fbx/props/SM_JungleGym_01a/SM_JungleGym_01a.FBX
-      material:
-        map_kd: material/MI_JungleGym_01a_BaseColor.png
-        map_normal: material/MI_JungleGym_01a_Normal.png
-        map_channel:
-          - path: material/MI_JungleGym_01a_MetallicRoughness.png
-            channel: xRG
-          - path: material/MI_JungleGym_01a_Occlusion.png
-            channel: A
-        program: g_tex
-      base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+    prefab:
+      path: prefab/scenery/prefab_junglegym.yml
     pos: [0, 0, 0]
   - id: weeping_angel_{c}_{t}
-    mesh:
-      path: weeping_angel/weeping_angel.fbx
-      material:
-        map_kd: albedo.png
-        map_normal: normal.png
-        program: g_tex
-      base_scale: 0.5
-      base_rotation: [-90, 0, 0]
+    prefab:
+      path: prefab/creatures/prefab_weeping_angel.yml
     pos: [0, 0.75, 0]
     particle:
       material:

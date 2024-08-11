@@ -1,6 +1,7 @@
 ---
 prefab:
   mesh:
+    id: prefab_fps_arms
     path: fbx/characters/SK_Mannequin_Arms/SK_Mannequin_Arms.fbx
     flags:
       use_bones: true

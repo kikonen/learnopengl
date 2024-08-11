@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - id: scavenger
+    - id: prefab_scavenger
       path: fbx/characters/scavenger/Scavenger.fbx
       flags:
         use_bones: true
