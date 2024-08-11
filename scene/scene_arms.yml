@@ -58,6 +58,14 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
+    xphysics:
+      body:
+        type: capsule
+        density: 0.1
+        size: [0.5, 2.5, 0]
+      geom:
+        type: capsule
+        size: [0.5, 2.5, 0]
   - id: player_fps_point
     parent: player_fps
     mesh:
@@ -128,3 +136,45 @@ nodes:
         sprites_x: 8
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+  - id: world_x_minus
+    type: origo
+    pos: [-1200, 0, 0]
+    rot: [0, 0, -90]
+    physics:
+      geom:
+        type: plane
+  - id: world_x_plus
+    type: origo
+    pos: [850, 0, 0]
+    rot: [0, 0, 90]
+    physics:
+      geom:
+        type: plane
+  - id: world_y_minus
+    type: origo
+    pos: [0, -400, 0]
+    rot: [0, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_y_plus
+    type: origo
+    pos: [0, 400, 0]
+    rot: [180, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_z_minus
+    type: origo
+    pos: [0, 0, -900]
+    rot: [90, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_z_plus
+    type: origo
+    pos: [0, 0, 1150]
+    rot: [-90, 0, 0]
+    physics:
+      geom:
+        type: plane

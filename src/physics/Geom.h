@@ -54,6 +54,49 @@ namespace physics {
             const glm::vec3& scale,
             const Body& body);
 
+        void updatePhysic(const glm::vec3& pos, const glm::quat& rot) const
+        {
+            // NOTE KI handle bodiless geoms separately
+            //const auto& sz = size;
+            //const float radius = sz.x;
+            //const float length = sz.y * 2.f;
+
+            switch (type) {
+            case GeomType::plane: {
+                setPlane(pos, rot);
+                break;
+            }
+            //case GeomType::box: {
+            //    dGeomBoxSetLengths(m_geom.physicId, sz.x, sz.y, sz.z);
+            //    break;
+            //}
+            //case GeomType::sphere: {
+            //    dGeomSphereSetRadius(m_geom.physicId, radius);
+            //    break;
+            //}
+            //case GeomType::capsule: {
+            //    dGeomCapsuleSetParams(m_geom.physicId, radius, length);
+            //    break;
+            //}
+            //case GeomType::cylinder: {
+            //    dGeomCylinderSetParams(m_geom.physicId, radius, length);
+            //    break;
+            //}
+            }
+        }
+
+        void setPlane(const glm::vec3& pos, const glm::quat& rot) const
+        {
+            const glm::vec3 UP{ 0.f, 1.f, 0.f };
+
+            auto normal = rot * rotation * UP;
+
+            // NOTE KI distance into direction of plane normal
+            auto dist = glm::dot(normal, pos);
+
+            dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
+        }
+
         glm::vec3 getPhysicPosition() const
         {
             const dReal* dpos = dGeomGetPosition(physicId);

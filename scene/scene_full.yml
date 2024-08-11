@@ -457,12 +457,11 @@ nodes:
     mesh:
       path: airboat_fixed_colors
     program: g_tex
-    scale: 1.0
     physics:
       body:
         type: box
         density: 0.3
-        rot: [0, 0, 0]
+        size: [8, 5, 4]
       geom:
         type: box
         category: [prop, can_float]
@@ -472,9 +471,6 @@ nodes:
       - pos: [24.0, 11.0, 15.0]
       - pos: [6.0, 19.0, 22.0]
         scale: 0.5
-        physics:
-          geom:
-            size: [4, 2.5, 2]
   - xid: spyro
     mesh:
       path: spyro2
@@ -723,7 +719,6 @@ nodes:
         type: sphere
         category: [prop, can_float]
         collision: [ground, water, prop, npc]
-        size: [1.3, 0, 0]
   - name: Bronze ball
     parent_id: ball_origo
     mesh:
@@ -826,10 +821,10 @@ nodes:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
+      scale: 30
     priority: -5
     program: g_water
     pos: [0, 9.5, -10]
-    scale: 30
     render_flags:
       no_shadow: true
       water: true
@@ -874,13 +869,12 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - name: Pool floor plane
+  - id: pool_floor_plane_{c}_{t}
     type: origo
     pos: [0.0, 3.7, -10.0]
     physics:
       geom:
         type: plane
-        rot: [0, 0, 0]
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
@@ -1226,125 +1220,45 @@ nodes:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
-  - name: world_x_minus
+  - id: world_x_minus
     type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-    program: g_tex
-    scale: 1000
-    render_flags:
-      no_shadow: true
     pos: [-1200, 0, 0]
-    rot: [0, 90, 0]
+    rot: [0, 0, -90]
     physics:
       geom:
         type: plane
-        rot: [0, 0, 270]
-  - name: world_x_plus
+  - id: world_x_plus
     type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-    program: g_tex
-    scale: 1000
-    render_flags:
-      no_shadow: true
     pos: [850, 0, 0]
-    rot: [0, 270, 0]
+    rot: [0, 0, 90]
     physics:
       geom:
         type: plane
-        rot: [0, 0, 90]
-  - xname: world_y_minus
+  - id: world_y_minus
     type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-        alpha: true
-    program: g_tex
-    scale: 100
-    render_flags:
-      no_shadow: true
     pos: [0, -400, 0]
-    rot: [270, 0, 0]
-    physics:
-      geom:
-        type: plane
-        rot: [0, 0, 0]
-  - xname: world_y_plus
-    type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-        alpha: true
-    program: g_tex
-    scale: 100
-    render_flags:
-      no_shadow: true
-    pos: [0, 400, 0]
-    rot: [90, 0, 0]
-    physics:
-      geom:
-        type: plane
-        rot: [90, 0, 0]
-  - name: world_z_minus
-    type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-    program: g_tex
-    scale: 1000
-    render_flags:
-      no_shadow: true
-    pos: [0, 0, -900]
     rot: [0, 0, 0]
     physics:
       geom:
         type: plane
-        rot: [90, 0, 0]
-  - name: world_z_plus
+  - id: world_y_plus
     type: origo
-    xmesh:
-      path: quad
-      material:
-        name: pool_floor
-        kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
-        tiling: 8
-    program: g_tex
-    scale: 1000
-    render_flags:
-      no_shadow: true
-    pos: [0, 0, 1150]
+    pos: [0, 400, 0]
     rot: [180, 0, 0]
     physics:
       geom:
         type: plane
-        rot: [270, 0, 0]
+  - id: world_z_minus
+    type: origo
+    pos: [0, 0, -900]
+    rot: [90, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_z_plus
+    type: origo
+    pos: [0, 0, 1150]
+    rot: [-90, 0, 0]
+    physics:
+      geom:
+        type: plane

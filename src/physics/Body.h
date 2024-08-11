@@ -52,6 +52,17 @@ namespace physics {
             dSpaceID spaceId,
             const glm::vec3& scale);
 
+        void updatePhysic(const glm::vec3& pos, const glm::quat& rot) const
+        {
+            setPhysicPosition(pos);
+            setPhysicRotation(rot);
+        }
+
+        void setPhysicPosition(const glm::vec3& pos) const
+        {
+            dBodySetPosition(physicId, pos.x, pos.y, pos.z);
+        }
+
         glm::vec3 getPhysicPosition() const
         {
             const dReal* dpos = dBodyGetPosition(physicId);
@@ -59,6 +70,12 @@ namespace physics {
                 static_cast<float>(dpos[0]),
                 static_cast<float>(dpos[1]),
                 static_cast<float>(dpos[2]) };
+        }
+
+        void setPhysicRotation(const glm::quat& rot) const
+        {
+            dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
+            dBodySetQuaternion(physicId, dquat);
         }
 
         glm::quat getPhysicRotation() const

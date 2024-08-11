@@ -88,7 +88,7 @@ nodes:
     front: [0, 0, 1]
     render_flags:
       mirror: true
-  - name: Pool floor
+  - id: pool_floor_{c}_{t}
     mesh:
       path: quad
       material:
@@ -107,7 +107,7 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - name: Pool surface
+  - id: pool_surface__{c}_{t}
     mesh:
       path: plane
       material:
@@ -303,7 +303,7 @@ nodes:
     rotation: [270.0, 0.0, 0.0]
     render_flags:
       no_shadow: true
-  - name: Pool surface - SINGLE
+  - id: pool_surface_single
     mesh:
       path: plane
       material:

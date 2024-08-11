@@ -13,10 +13,6 @@
 #include "model/Node.h"
 
 namespace {
-    //constexpr int DIR_X = 1;
-    //constexpr int DIR_Y = 2;
-    //constexpr int DIR_Z = 3;
-
     inline glm::vec3 UP{ 0.f, 1.f, 0.f };
 
     const glm::quat IDENTITY_QUAT{ 0.f, 0.f, 0.f, 0.f };
@@ -78,59 +74,11 @@ namespace physics
         const auto& rot = state.getModelRotation() * m_body.baseRotation;
 
         if (m_body.physicId) {
-            dBodySetPosition(m_body.physicId, pos[0], pos[1], pos[2]);
-
-            dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
-            dBodySetQuaternion(m_body.physicId, dquat);
+            m_body.updatePhysic(pos, rot);
         }
         else if (m_geom.physicId)
         {
-            // NOTE KI handle bodiless geoms separately
-            const auto& sz = m_geom.size;
-            const float radius = sz.x;
-            const float length = sz.y * 2.f;
-
-            switch (m_geom.type) {
-            case GeomType::plane: {
-                //dVector4 result;
-                //dGeomPlaneGetParams(m_geom.physicId, result);
-
-                //const glm::vec4 plane{
-                //    static_cast<float>(result[0]),
-                //    static_cast<float>(result[1]),
-                //    static_cast<float>(result[2]),
-                //    static_cast<float>(result[3]) };
-                //glm::vec3 normal{ plane };
-
-                //KI_INFO_OUT(fmt::format("UPDATED_PLANE: n={}, d={} old_d={}",
-                //    normal, dist, plane.w));
-
-                glm::vec3 normal{ UP };
-                auto plane = rot * glm::vec4(normal, 1.f);
-
-                // NOTE KI distance into direction of plane normal
-                auto dist = glm::dot(normal, pos);
-
-                dGeomPlaneSetParams(m_geom.physicId, plane.x, plane.y, plane.z, dist);
-                break;
-            }
-            //case GeomType::box: {
-            //    dGeomBoxSetLengths(m_geom.physicId, sz.x, sz.y, sz.z);
-            //    break;
-            //}
-            //case GeomType::sphere: {
-            //    dGeomSphereSetRadius(m_geom.physicId, radius);
-            //    break;
-            //}
-            //case GeomType::capsule: {
-            //    dGeomCapsuleSetParams(m_geom.physicId, radius, length);
-            //    break;
-            //}
-            //case GeomType::cylinder: {
-            //    dGeomCylinderSetParams(m_geom.physicId, radius, length);
-            //    break;
-            //}
-            }
+            m_geom.updatePhysic(pos, rot);
         }
     }
 

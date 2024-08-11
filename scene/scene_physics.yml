@@ -41,7 +41,7 @@ nodes:
     front: [0, 0, -1]
     base_scale: 0.25
     base_rot: [90, 0, 0]
-  - id: player
+  - id: player_fps
     mesh:
       vertex:
         type: capsule
@@ -56,11 +56,12 @@ nodes:
         blend: true
       base_scale: 0.25
       base_rot: [90, 0, 0]
-    pos: [0, 25, 40]
-    front: [0, 0, -1]
+    pos: [1, 22, 40]
+    rotation: [0, 180, 0]
+    #active: true
     camera:
-      type: follow
-      distance: [4, 2, 20]
+      #default: true
+      type: fps
     controllers:
       - type: pawn
       - type: camera_zoom
@@ -73,18 +74,18 @@ nodes:
         kinematic: true
         type: capsule
         density: 0.01
-        scale: 0.25
         rot: [90, 0, 0]
         max_angular_velocity: 0
         force_axis: true
       geom:
         type: capsule
-        size: [1, 2, 0]
+        category: [player]
+        size: [0.25, 0.5, 0]
   - id: player_2
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     rotation: [0, 180, 0]
-    pos: [0, 25, 40]
+    pos: [0, 21, 40]
     active: true
     camera:
       type: follow
@@ -97,49 +98,36 @@ nodes:
       listener:
         default: true
     physics:
+      enabled: true
       update: true
       body:
-        kinematic: true
-        type: capsule
-        density: 0.1
-        scale: 0.25
-        rot: [90, 0, 0]
-        max_angular_velocity: 0
-        force_axis: true
+        xkinematic: true
       geom:
-        type: capsule
-        size: [1, 2.75, 0]
-        offset: [0, 0, -0.75]
+        category: [player]
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animationPlay(
         { after=wid, name = "master:Walk02" });
-  - id: pawn
+  - id: skeleton_1
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     pos: [5, 24, 28]
-    front: [0, 0, -1]
-    scale: 1
-    controller:
-      type: pawn
-    physics:
-      update: false
-      body:
-        type: capsule
-        density: 0.4
-        rot: [90, 0, 0]
-        scale: 0.25
-        max_angular_velocity: 0
-        force_axis: true
-      geom:
-        type: capsule
-        size: [1, 2.75, 0]
-        offset: [0, 0, -0.75]
     script: |
       local sid = util:sid("master:Idle2")
       printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
       cmd:animationPlay(
         { name = "master:Idle2" })
+    physics:
+      enabled: true
+  - id: skeleton_2
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    pos: [3, 25, 25]
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle" });
+    physics:
+      enabled: true
   - name: Directional light
     mesh:
       path: light
@@ -174,7 +162,7 @@ nodes:
   - id: ball_origo
     type: origo
     pos: [0.0, 25.0, 0.0]
-  - name: Basic ball
+  - id: basic_ball
     parent_id: ball_origo
     mesh:
       path: water_ball
@@ -191,8 +179,8 @@ nodes:
         density: 0.01
       geom:
         type: sphere
-        size: 1.3
-  - name: Gold ball
+        size: 1
+  - id: gold_ball
     parent_id: ball_origo
     mesh:
       path: water_ball
@@ -207,14 +195,14 @@ nodes:
     scale: 1.3
     controller:
       type: pawn
-    xphysics:
+    physics:
       body:
         type: sphere
         density: 0.1
       geom:
         type: sphere
-        size: 1.3
-  - name: Fence ball
+        size: 1
+  - id: fence_cylinder
     parent_id: ball_origo
     mesh:
       vertex:
@@ -237,12 +225,10 @@ nodes:
       body:
         type: cylinder
         density: 0.05
-        rot: [90, 0, 0]
-        scale: 1.3
       geom:
         type: cylinder
         size: [1, 1, 0]
-  - name: Plastic ball
+  - id: plastic_cylinder
     parent_id: ball_origo
     mesh:
       vertex:
@@ -262,12 +248,10 @@ nodes:
       body:
         type: cylinder
         density: 0.3
-        scale: 1.3
-        rot: [45, 0, 0]
       geom:
         type: cylinder
         size: [1, 1, 0]
-  - name: Rusted iron ball
+  - id: rusted_iron_ball
     parent_id: ball_origo
     mesh:
       path: water_ball
@@ -280,14 +264,13 @@ nodes:
     program: g_tex
     pos: [-10.0, 0.0, 20.0]
     scale: 1.3
-    xphysics:
+    physics:
       body:
         type: sphere
         density: 0.07
       geom:
         type: sphere
-        size: 1.3
-  - name: Old gold ball
+  - id: old_gold_capsule
     parent_id: ball_origo
     mesh:
       vertex:
@@ -310,7 +293,6 @@ nodes:
       body:
         type: capsule
         density: 0.05
-        rot: [90, 0, 0]
       geom:
         type: capsule
         size: [1, 1, 0]
@@ -322,7 +304,6 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [0, 0, 5]
     scale: 200
   - id: cube_origo
     type: origo
@@ -349,49 +330,28 @@ nodes:
         size: [2, 2, 2]
   - name: Fence
     mesh:
-      path: quad
+      vertex:
+        type: quad
       material:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_pbr: textures\Fence007A_4K-JPG
         xparallax_depth: 0.0
-        tiling: 1
+        tiling: 10
         alpha: true
         xxblend: true
         render_back: true
-    program: g_tex
-    pos: [-30.0, 0, -50]
-    scale: 5
-    rotation: [0, 270, 0]
-    repeat:
-      z_count: 10
-      y_count: 4
-      z_step: 10
-      y_step: 10
-    xphysics:
-      geom:
-        type: plane
-        rot: [0, 0, 270]
-  - id: skeleton_2
-    prefab:
-      path: prefab/creatures/prefab_skeleton.yml
-    pos: [3, 25, 25]
-    scale: 1
+        program: g_tex
+      base_rotation: [0, -90, 0]
+    pos: [-39.0, -15, 0]
+    scale: 80
     physics:
       body:
-        type: capsule
-        density: 0.1
-        rot: [90, 0, 0]
-        scale: 0.25
-        max_angular_velocity: 0
-        force_axis: true
+        type: box
+        kinematic: true
       geom:
-        type: capsule
-        size: [1, 2.75, 0]
-        offset: [0, 0, -0.75]
-    script: |
-      cmd:animationPlay(
-        { name = "master:Idle2" });
-  - name: world_x_minus
+        type: box
+        size: [0.0001, 1, 1]
+  - id: world_x_minus
     xtype: origo
     mesh:
       path: plane
@@ -410,8 +370,7 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [0, 0, -90]
-  - name: world_x_plus
+  - id: world_x_plus
     xtype: origo
     mesh:
       path: plane
@@ -430,8 +389,7 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [0, 0, 90]
-  - name: world_y_minus
+  - id: world_y_minus
     xtype: origo
     mesh:
       path: plane
@@ -450,8 +408,7 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [0, 0, 0]
-  - name: world_y_plus
+  - id: world_y_plus
     xtype: origo
     program: g_tex
     mesh:
@@ -470,8 +427,7 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [180, 0, 0]
-  - name: world_z_minus
+  - id: world_z_minus
     xtype: origo
     mesh:
       path: plane
@@ -490,8 +446,7 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [90, 0, 0]
-  - name: world_z_plus
+  - id: world_z_plus
     xtype: origo
     mesh:
       path: plane
@@ -510,4 +465,3 @@ nodes:
     physics:
       geom:
         type: plane
-        rot: [-90, 0, 0]
