@@ -9,7 +9,7 @@ class GridGenerator final : public NodeGenerator {
 public:
     GridGenerator();
 
-    virtual void prepare(
+    virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) override;
 

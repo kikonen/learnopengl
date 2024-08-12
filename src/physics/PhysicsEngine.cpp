@@ -300,7 +300,7 @@ namespace physics
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id - 1];
 
-            obj.prepare(m_worldId, m_spaceId);
+            obj.create(m_worldId, m_spaceId);
 
             auto* node = obj.m_nodeHandle.toNode();
             if (node) {
@@ -425,7 +425,13 @@ namespace physics
         return map.m_id;
     }
 
-    HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id)
+    const HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id) const
+    {
+        if (id < 1 || id > m_heightMaps.size()) return nullptr;
+        return &m_heightMaps[id - 1];
+    }
+
+    HeightMap* PhysicsEngine::modifyHeightMap(physics::height_map_id id)
     {
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
         return &m_heightMaps[id - 1];

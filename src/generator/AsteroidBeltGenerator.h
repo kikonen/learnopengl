@@ -9,7 +9,7 @@ class AsteroidBeltGenerator final : public NodeGenerator
 public:
     AsteroidBeltGenerator(int asteroidCount);
 
-    virtual void prepare(
+    virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) override;
 

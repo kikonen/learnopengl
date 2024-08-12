@@ -50,7 +50,7 @@ public:
     NodeGenerator() = default;
     virtual ~NodeGenerator();
 
-    virtual void prepare(
+    virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) {}
 

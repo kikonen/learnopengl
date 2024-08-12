@@ -52,7 +52,7 @@ namespace terrain {
         m_material = Material::createMaterial(BasicMaterial::gold);
     }
 
-    void TerrainGenerator::prepare(
+    void TerrainGenerator::prepareWT(
         const PrepareContext& ctx,
         Node& container)
     {
@@ -63,9 +63,9 @@ namespace terrain {
         m_poolSizeU = 4;
         m_poolSizeV = 4;
 
-        auto* heightMap = prepareHeightMap(ctx, container);
+        auto heightMapId = prepareHeightMap(ctx, container);
 
-        createTiles(ctx, container, heightMap);
+        createTiles(ctx, container, heightMapId);
         prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
     }
 
@@ -87,7 +87,7 @@ namespace terrain {
         m_containerMatrixLevel = state.getMatrixLevel();
     }
 
-    physics::HeightMap* TerrainGenerator::prepareHeightMap(
+    physics::height_map_id TerrainGenerator::prepareHeightMap(
         const PrepareContext& ctx,
         Node& container)
     {
@@ -95,14 +95,14 @@ namespace terrain {
         auto& registry = ctx.m_registry;
 
         ImageTexture* texture = loadTexture();
-        if (!texture) return nullptr;
-        if (!texture->isValid()) return nullptr;
+        if (!texture) return 0;
+        if (!texture->isValid()) return 0;
 
         m_heightMapTex = texture;
 
         auto& pe = physics::PhysicsEngine::get();
-        auto id = pe.registerHeightMap();
-        auto* heightMap = pe.getHeightMap(id);
+        auto heightMapId = pe.registerHeightMap();
+        auto* heightMap = pe.modifyHeightMap(heightMapId);
 
         {
             heightMap->m_origin = &container;
@@ -121,7 +121,7 @@ namespace terrain {
         }
         heightMap->prepare(texture->m_image.get(), true);
 
-        return heightMap;
+        return heightMapId;
     }
 
     ImageTexture* TerrainGenerator::loadTexture() {
@@ -181,12 +181,15 @@ namespace terrain {
     void TerrainGenerator::createTiles(
         const PrepareContext& ctx,
         Node& container,
-        physics::HeightMap* heightMap)
+        physics::height_map_id heightMapId)
     {
         const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
 
         auto& entityRegistry = EntityRegistry::get();
+
+        auto& pe = physics::PhysicsEngine::get();
+        const auto* heightMap = pe.getHeightMap(heightMapId);
 
         // NOTE scale.y == makes *FLAT* plane
         const glm::vec3 scale{ m_worldTileSize / 2.f, 1, m_worldTileSize / 2.f };

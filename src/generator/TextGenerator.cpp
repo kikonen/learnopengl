@@ -35,7 +35,7 @@ TextGenerator::TextGenerator()
 
 TextGenerator::~TextGenerator() = default;
 
-void TextGenerator::prepare(
+void TextGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {

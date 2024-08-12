@@ -31,13 +31,13 @@ namespace physics
         m_matrixLevel{ o.m_matrixLevel }
     {
         // NOTE KI o is moved now
-        o.m_geom.physicId = nullptr;
         o.m_body.physicId = nullptr;
+        o.m_geom.physicId = nullptr;
     }
 
     Object::~Object() = default;
 
-    void Object::prepare(
+    void Object::create(
         dWorldID worldId,
         dSpaceID spaceId)
     {

@@ -56,7 +56,8 @@ namespace physics {
         Object* getObject(physics::physics_id id);
 
         physics::height_map_id registerHeightMap();
-        HeightMap* getHeightMap(physics::height_map_id id);
+        const HeightMap* getHeightMap(physics::height_map_id id) const;
+        HeightMap* modifyHeightMap(physics::height_map_id id);
 
         float getWorldSurfaceLevel(const glm::vec3& pos);
 

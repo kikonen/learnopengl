@@ -5,16 +5,14 @@
 #include "asset/Material.h"
 #include "asset/Image.h"
 
+#include "physics/size.h"
+
 #include "TerrainTileInfo.h"
 
 class ImageTexture;
 
 namespace mesh {
     class ModelMesh;
-}
-
-namespace physics {
-    class HeightMap;
 }
 
 class Registry;
@@ -32,7 +30,7 @@ namespace terrain {
     public:
         TerrainGenerator();
 
-        virtual void prepare(
+        virtual void prepareWT(
             const PrepareContext& ctx,
             Node& container) override;
 
@@ -49,7 +47,7 @@ namespace terrain {
             const UpdateContext& ctx,
             Node& container);
 
-        physics::HeightMap* prepareHeightMap(
+        physics::height_map_id prepareHeightMap(
             const PrepareContext& ctx,
             Node& container);
 
@@ -58,7 +56,7 @@ namespace terrain {
         void createTiles(
             const PrepareContext& ctx,
             Node& container,
-            physics::HeightMap* heightMap);
+            physics::height_map_id heightMapId);
 
         pool::TypeHandle createType(
             Registry* registry,

@@ -25,7 +25,7 @@ public:
 
     ~TextGenerator();
 
-    virtual void prepare(
+    virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) override;
 

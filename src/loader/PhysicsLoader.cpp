@@ -92,6 +92,12 @@ namespace loader {
             }
         }
 
+        if (data.body.type == physics::BodyType::none && data.geom.type == physics::GeomType::none)
+        {
+            data.enabled = false;
+        }
+
+
         // NOTE KI physics needs body or gem
         if (useExplicitEnable) {
             data.enabled = explicitEnable;

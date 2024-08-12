@@ -109,7 +109,7 @@ void Node::prepareWT(
     }
 
     if (m_generator) {
-        m_generator->prepare(ctx, *this);
+        m_generator->prepareWT(ctx, *this);
     }
 
     if (m_particleGenerator) {

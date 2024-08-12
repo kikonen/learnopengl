@@ -18,7 +18,7 @@ GridGenerator::GridGenerator()
 {
 }
 
-void GridGenerator::prepare(
+void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {

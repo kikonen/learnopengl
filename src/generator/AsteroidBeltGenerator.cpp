@@ -33,11 +33,11 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
 {
 }
 
-void AsteroidBeltGenerator::prepare(
+void AsteroidBeltGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
-    NodeGenerator::prepare(ctx, container);
+    NodeGenerator::prepareWT(ctx, container);
 
     createAsteroids(ctx, container);
     prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
