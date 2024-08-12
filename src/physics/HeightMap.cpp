@@ -23,23 +23,26 @@ namespace physics {
         m_worldSizeV{ o.m_worldSizeV },
         m_verticalRange{ o.m_verticalRange },
         m_horizontalScale{ o.m_horizontalScale },
-        m_height{ o.m_height },
-        m_width{ o.m_width },
-        m_heights{ o.m_heights }
+        m_dataDepth{ o.m_dataDepth },
+        m_dataWidth{ o.m_dataWidth },
+        m_heightData{ o.m_heightData }
     {
         // NOTE KI o is moved now
-        o.m_heights = nullptr;
+        o.m_heightData = nullptr;
     }
 
     HeightMap::~HeightMap()
     {
-        delete[] m_heights;
+        if (m_heightData) {
+            delete[] m_heightData;
+        }
     }
 
     void HeightMap::prepare(
         Image* _image,
         bool flip)
     {
+        m_prepared = true;
         m_flip = flip;
 
         const auto& image = *_image;
@@ -63,20 +66,20 @@ namespace physics {
         float minY = 99999999.f;
         float maxY = -1.f;
 
-        m_heights = new float[size];
+        m_heightData = new float[size];
 
         const unsigned char* ptr = image.m_data;
         for (int v = 0; v < imageH; v++) {
             for (int u = 0; u < imageW; u++) {
                 unsigned short heightValue = *((unsigned short*)ptr);
-                float y = rangeYmin + (float)heightValue / entryScale * rangeY;
+                float y = rangeYmin + ((float)heightValue / entryScale) * rangeY;
 
                 if (heightValue < minH) minH = heightValue;
                 if (heightValue > maxH) maxH = heightValue;
                 if (y < minY) minY = y;
                 if (y > maxY) maxY = y;
 
-                m_heights[u + v * imageW] = y;
+                m_heightData[u + v * imageW] = y;
 
                 ptr += entrySize;
             }
@@ -87,21 +90,26 @@ namespace physics {
             minH, maxH, minY, maxY
         ));
 
-        m_width = imageW;
-        m_height = imageH;
+        m_minH = minH;
+        m_maxH = maxH;
+        m_minY = minY;
+        m_maxY = maxY;
+
+        m_dataWidth = imageW;
+        m_dataDepth = imageH;
     }
 
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
-        if (m_height == 0 || m_width == 0) return 0;
+        if (m_dataDepth == 0 || m_dataWidth == 0) return 0;
 
         if (m_flip) v = 1.f - v;
 
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"
 
-        const float mapX = ((float)(m_width)) * u;
-        const float mapY = ((float)(m_height)) * (1.f - v);
+        const float mapX = ((float)(m_dataWidth)) * u;
+        const float mapY = ((float)(m_dataDepth)) * (1.f - v);
 
         // floor
         int x = static_cast<int>(mapX);
@@ -110,16 +118,16 @@ namespace physics {
         const float fractX = mapX - x;
         const float fractY = mapY - y;
 
-        x = std::clamp(x, 0, m_width - 1);
-        y = std::clamp(y, 0, m_height - 1);
+        x = std::clamp(x, 0, m_dataWidth - 1);
+        y = std::clamp(y, 0, m_dataDepth - 1);
 
-        int nextX = std::clamp(x + 1, 0, m_width - 1);
-        int nextY = std::clamp(y + 1, 0, m_height - 1);
+        int nextX = std::clamp(x + 1, 0, m_dataWidth - 1);
+        int nextY = std::clamp(y + 1, 0, m_dataDepth - 1);
 
-        const float h00 = m_heights[m_width * y       + x];
-        const float h10 = m_heights[m_width * nextY   + x];
-        const float h01 = m_heights[m_width * y       + nextX];
-        const float h11 = m_heights[m_width * nextY   + nextX];
+        const float h00 = m_heightData[m_dataWidth * y       + x];
+        const float h10 = m_heightData[m_dataWidth * nextY   + x];
+        const float h01 = m_heightData[m_dataWidth * y       + nextX];
+        const float h11 = m_heightData[m_dataWidth * nextY   + nextX];
 
         const float bottomH = (h01 - h00) * fractX + h00;
         const float topH    = (h11 - h10) * fractX + h10;

@@ -47,17 +47,29 @@ namespace physics {
         Node* m_origin{ nullptr };
 
         int m_worldTileSize{ 0 };
+        // X -dir
         int m_worldSizeU{ 0 };
+        // Z -dir (depth)
         int m_worldSizeV{ 0 };
 
         glm::vec2 m_verticalRange{ 0.f, 32.f };
         float m_horizontalScale{ 1.f };
 
     private:
-        int m_height{ 0 };
-        int m_width{ 0 };
+        bool m_prepared{ false };
 
-        float* m_heights{ nullptr };
+        int m_minH{ 0 };
+        int m_maxH{ 0 };
+
+        float m_minY{ 0.f };
+        float m_maxY{ 0.f };
+
+        // X -dir (width) samples in m_heightData
+        int m_dataWidth{ 0 };
+        // Z -dir (depth) samples in m_heightData
+        int m_dataDepth{ 0 };
+
+        float* m_heightData{ nullptr };
         bool m_flip{ false };
 
         AABB m_aabb{};
