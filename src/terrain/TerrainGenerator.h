@@ -51,7 +51,7 @@ namespace terrain {
             const PrepareContext& ctx,
             Node& container);
 
-        ImageTexture* loadTexture();
+        ImageTexture* loadTexture(bool flipY);
 
         void createTiles(
             const PrepareContext& ctx,

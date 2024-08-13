@@ -83,11 +83,12 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
     std::string_view name,
     std::string_view path,
     bool gammaCorrect,
+    bool flipY,
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}-{}_{}-{}_{}_{}",
-        path, gammaCorrect,
+        "{}_{}_{}-{}_{}-{}_{}_{}",
+        path, gammaCorrect, flipY,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -98,7 +99,7 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, spec));
+    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, flipY, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -107,8 +108,10 @@ ImageTexture::ImageTexture(
     std::string_view name,
     std::string_view path,
     bool gammaCorrect,
+    bool flipY,
     const TextureSpec& spec)
     : Texture{ name, gammaCorrect, spec },
+    m_flipY{ flipY },
     m_path{ path }
 {
 }
@@ -283,7 +286,7 @@ void ImageTexture::prepareKtx()
 void ImageTexture::load() {
     m_hdri = util::matchAny(hdrMatchers, m_path);
 
-    m_image = std::make_unique<Image>(m_path, true, m_hdri);
+    m_image = std::make_unique<Image>(m_path, m_flipY, m_hdri);
     int res = m_image->load();
     if (res) {
         m_image.reset();

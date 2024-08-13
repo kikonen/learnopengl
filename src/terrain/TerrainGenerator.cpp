@@ -94,7 +94,8 @@ namespace terrain {
         const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
 
-        ImageTexture* texture = loadTexture();
+        bool flipY = false;
+        ImageTexture* texture = loadTexture(flipY);
         if (!texture) return 0;
         if (!texture->isValid()) return 0;
 
@@ -124,7 +125,7 @@ namespace terrain {
         return heightMapId;
     }
 
-    ImageTexture* TerrainGenerator::loadTexture() {
+    ImageTexture* TerrainGenerator::loadTexture(bool flipY) {
         const auto& texturePath = m_material.getTexturePath(m_heightMapFile);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 
@@ -142,6 +143,7 @@ namespace terrain {
                 texturePath,
                 texturePath,
                 false,
+                true,
                 spec);
 
             future.wait();

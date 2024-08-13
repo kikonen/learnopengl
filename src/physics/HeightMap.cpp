@@ -40,10 +40,10 @@ namespace physics {
 
     void HeightMap::prepare(
         Image* _image,
-        bool flip)
+        bool flipH)
     {
         m_prepared = true;
-        m_flip = flip;
+        m_flipH = flipH;
 
         const auto& image = *_image;
 
@@ -69,7 +69,10 @@ namespace physics {
         m_heightData = new float[size];
 
         const unsigned char* ptr = image.m_data;
-        for (int v = 0; v < imageH; v++) {
+        for (int vi = 0; vi < imageH; vi++) {
+            const int v = m_flipH ? imageH - vi - 1 : vi;
+            //const int v = vi;
+
             for (int u = 0; u < imageW; u++) {
                 unsigned short heightValue = *((unsigned short*)ptr);
                 float y = rangeYmin + ((float)heightValue / entryScale) * rangeY;
@@ -103,7 +106,7 @@ namespace physics {
     {
         if (m_dataDepth == 0 || m_dataWidth == 0) return 0;
 
-        if (m_flip) v = 1.f - v;
+        if (m_flipH) v = 1.f - v;
 
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"

@@ -70,7 +70,7 @@ namespace physics {
         int m_dataDepth{ 0 };
 
         float* m_heightData{ nullptr };
-        bool m_flip{ false };
+        bool m_flipH{ false };
 
         AABB m_aabb{};
     };

@@ -180,6 +180,7 @@ void Material::loadTextures()
     for (const auto& it : m_texturePaths) {
         const auto type = it.first;
         bool gammaCorrect = false;
+        bool flipY = true;
         bool usePlaceholder = false;
 
         if (type == TextureType::diffuse) {
@@ -190,7 +191,7 @@ void Material::loadTextures()
             gammaCorrect = true;
         }
 
-        loadTexture(type, gammaCorrect, usePlaceholder);
+        loadTexture(type, gammaCorrect, flipY, usePlaceholder);
     }
 
     loadChannelTexture(
@@ -203,6 +204,7 @@ void Material::loadTextures()
 void Material::loadTexture(
     TextureType type,
     bool gammaCorrect,
+    bool flipY,
     bool usePlaceholder)
 {
     const auto& it = m_texturePaths.find(type);
@@ -222,6 +224,7 @@ void Material::loadTexture(
         textureName,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
         gammaCorrect,
+        flipY,
         textureSpec);
 
     future.wait();
@@ -236,6 +239,7 @@ void Material::loadTexture(
             "tex-placeholder",
             placeholderPath,
             gammaCorrect,
+            flipY,
             textureSpec);
 
         future.wait();

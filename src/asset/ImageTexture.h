@@ -15,12 +15,14 @@ public:
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
+        bool flipY,
         const TextureSpec& spec);
 
     ImageTexture(
         std::string_view name,
         std::string_view path,
         bool gammaCorrect,
+        bool flipY,
         const TextureSpec& spec);
 
     virtual ~ImageTexture();
@@ -36,6 +38,7 @@ public:
 
 public:
     const std::string m_path;
+    const bool m_flipY{ false };
 
     std::unique_ptr<Image> m_image;
 

@@ -164,6 +164,7 @@ private:
     void loadTexture(
         TextureType type,
         bool gammaCorrect,
+        bool flipY,
         bool usePlaceholder);
 
     void loadChannelTexture(
