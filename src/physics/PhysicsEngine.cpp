@@ -382,7 +382,7 @@ namespace physics
         auto* parent = node.getParent();
 
         auto y = surfaceY - parent->getState().getWorldPosition().y;
-        y += state.getScale().y;
+        //y += state.getScale().y;
         pos.y = y;
 
         //KI_INFO_OUT(fmt::format(
@@ -444,6 +444,8 @@ namespace physics
 
         for (const auto& surface : m_heightMaps) {
             if (!surface.m_id) continue;
+            if (!surface.isReady()) continue;
+
             //if (!surface->withinBounds(pos)) continue;
 
             const float level = surface.getLevel(pos);

@@ -46,6 +46,8 @@ namespace physics {
 
         GeomType type{ GeomType::none };
 
+        bool placeable{ true };
+
         ~Geom();
 
         void create(
@@ -63,7 +65,7 @@ namespace physics {
 
             switch (type) {
             case GeomType::plane: {
-                setPlane(pos, rot);
+                setPlane(pos, rot * rotation);
                 break;
             }
             //case GeomType::box: {
@@ -89,12 +91,20 @@ namespace physics {
         {
             const glm::vec3 UP{ 0.f, 1.f, 0.f };
 
-            auto normal = rot * rotation * UP;
+            auto normal = rot * UP;
 
             // NOTE KI distance into direction of plane normal
             auto dist = glm::dot(normal, pos);
 
             dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
+        }
+
+
+        void setPhysicPosition(const glm::vec3& pos) const
+        {
+            if (placeable) {
+                dGeomSetPosition(physicId, pos.x, pos.y, pos.z);
+            }
         }
 
         glm::vec3 getPhysicPosition() const
@@ -104,6 +114,14 @@ namespace physics {
                 static_cast<float>(dpos[0]),
                 static_cast<float>(dpos[1]),
                 static_cast<float>(dpos[2]) };
+        }
+
+        void setPhysicRotation(const glm::quat& rot) const
+        {
+            if (placeable) {
+                dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
+                dGeomSetQuaternion(physicId, dquat);
+            }
         }
 
         glm::quat getPhysicRotation() const

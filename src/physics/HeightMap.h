@@ -16,6 +16,11 @@ namespace physics {
 
         ~HeightMap();
 
+        inline bool isReady() const noexcept
+        {
+            return m_prepared;
+        }
+
         void prepare(
             Image* image,
             bool flip);

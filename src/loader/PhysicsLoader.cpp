@@ -218,6 +218,9 @@ namespace loader {
             else if (k == "collision") {
                 loadMask(v, data.collisionMask);
             }
+            else if (k == "placeable") {
+                data.placeable = readBool(v);
+            }
             else {
                 reportUnknown("geom_entry", k, v);
             }
