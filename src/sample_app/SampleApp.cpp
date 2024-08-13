@@ -495,12 +495,7 @@ void SampleApp::raycastPlayer(
         auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
 
         for (auto& cmdId : g_rayMarkers) {
-            cmdId = script::CommandEngine::get().addCommand(
-                0,
-                script::Cancel{
-                    0,
-                    cmdId
-                });
+            script::CommandEngine::get().cancelCommand(cmdId);
         }
         g_rayMarkers.clear();
 

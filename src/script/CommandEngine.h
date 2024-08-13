@@ -32,6 +32,8 @@ namespace script
 
         void update(const UpdateContext& ctx);
 
+        void cancelCommand(script::command_id commandId);
+
         template<typename T>
         script::command_id addCommand(
             script::command_id afterId,

@@ -96,7 +96,8 @@ void PawnController::onKey(
             }
 
             if (changed) {
-                script::CommandEngine::get().addCommand(
+                cancelPending(m_pendingRotates);
+                auto cmdId = script::CommandEngine::get().addCommand(
                     0,
                     script::RotateNode{
                         m_nodeHandle,
@@ -105,6 +106,7 @@ void PawnController::onKey(
                         snapshot.getViewUp(),
                         adjust.y
                     });
+                m_pendingRotates.push_back(cmdId);
                 //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
                 actionTurn = true;
             }
@@ -154,7 +156,8 @@ void PawnController::onKey(
         }
 
         if (changed) {
-            script::CommandEngine::get().addCommand(
+            cancelPending(m_pendingMoves);
+            auto cmdId = script::CommandEngine::get().addCommand(
                 0,
                 script::MoveNode{
                     m_nodeHandle,
@@ -162,6 +165,7 @@ void PawnController::onKey(
                     true,
                     adjust
                 });
+            m_pendingMoves.push_back(cmdId);
 
             //glm::vec3 adjust = snapshot.getPosition();
             //m_node->getState().setPosition(pos);
@@ -207,7 +211,8 @@ void PawnController::onMouseMove(
     }
 
     if (changed) {
-        script::CommandEngine::get().addCommand(
+        cancelPending(m_pendingRotates);
+        auto cmdId = script::CommandEngine::get().addCommand(
             0,
             script::RotateNode{
                 m_nodeHandle,
@@ -216,6 +221,7 @@ void PawnController::onMouseMove(
                 snapshot.getViewUp(),
                 adjust.y
             });
+        m_pendingRotates.push_back(cmdId);
         //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
         actionTurn = true;
     }
@@ -234,4 +240,12 @@ void PawnController::toggleAudio(
 
     ae.toggleSource(walkId, actionWalk);
     ae.toggleSource(turnId, actionTurn && !actionWalk);
+}
+
+void PawnController::cancelPending(std::vector<script::command_id> pending)
+{
+    for (auto commandId : pending) {
+        script::CommandEngine::get().cancelCommand(commandId);
+    }
+    pending.clear();
 }

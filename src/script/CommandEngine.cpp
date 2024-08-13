@@ -101,6 +101,16 @@ namespace script
             });
     }
 
+    void CommandEngine::cancelCommand(script::command_id commandId)
+    {
+        addCommand(
+            0,
+            script::Cancel{
+                0,
+                commandId
+            });
+    }
+
     void CommandEngine::update(const UpdateContext& ctx)
     {
         //updateOldest();
