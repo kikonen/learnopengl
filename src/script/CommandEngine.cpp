@@ -267,8 +267,8 @@ namespace script
 
     void CommandEngine::processCleanup(const UpdateContext& ctx) noexcept
     {
-        auto blockedCleanup = (m_blocked.size() / (float)m_blockedDeadCount) < 0.5;
-        auto activeCleanup = (m_active.size() / (float)m_activeDeadCount) < 0.5;
+        auto blockedCleanup = ((float)m_blockedDeadCount / (float)m_blocked.size()) > 0.5f;
+        auto activeCleanup = ((float)m_activeDeadCount / (float)m_active.size()) > 0.5f;
 
         if (blockedCleanup) {
             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
