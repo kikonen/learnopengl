@@ -26,7 +26,7 @@ in VS_OUT {
   vec3 viewPos;
 
   flat uint materialIndex;
-  flat uint shapeIndex;
+  flat uint flags;
 
   flat uint shadowIndex;
   vec4 shadowPos;

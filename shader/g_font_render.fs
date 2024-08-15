@@ -28,7 +28,7 @@ in VS_OUT {
 
   flat uvec2 atlasHandle;
   flat uint materialIndex;
-  flat uint shapeIndex;
+  flat uint flags;
 
 #ifdef USE_TBN
   mat3 tbn;

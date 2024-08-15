@@ -13,6 +13,7 @@
 #include "model/Node.h"
 #include "model/NodeState.h"
 
+#include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -37,6 +38,8 @@ namespace {
     constexpr int CONTACT_GROUP_ID = 0;
 
     static physics::PhysicsEngine g_engine;
+
+    size_t debugCounter{ 0 };
 
     // NOTE KI shared, only single thread does checking
     dContact g_contacts[MAX_CONTACTS]{};
@@ -92,7 +95,7 @@ namespace physics
                 static_cast<float>(contact.pos[1]),
                 static_cast<float>(contact.pos[2]) };
 
-            hit.depth = contact.depth;
+            hit.depth = static_cast<float>(contact.depth);
         }
     }
 
@@ -190,6 +193,8 @@ namespace physics
             obj->m_geom.categoryMask = 0;
             obj->m_geom.collisionMask = 0;
         }
+
+        m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
     }
 
     void PhysicsEngine::update(const UpdateContext& ctx)
@@ -465,11 +470,13 @@ namespace physics
 
     void PhysicsEngine::generateObjectMeshes()
     {
+        debugCounter++;
+        //if (debugCounter < 2) return;
+        debugCounter = 0;
+
         auto& debugContext = render::DebugContext::modify();
 
-        physics::MeshGenerator generator{ physics::PhysicsEngine::get() };
-
-        auto meshes = generator.generateMeshes();
+        auto meshes = m_meshGenerator->generateMeshes();
         debugContext.m_physicsMeshes.swap(meshes);
     }
 

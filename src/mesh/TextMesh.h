@@ -18,7 +18,7 @@ namespace mesh {
         void clear();
 
         virtual const kigl::GLVertexArray* prepareVAO() override;
-        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao) override;
+        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;

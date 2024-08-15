@@ -25,15 +25,14 @@ namespace mesh {
 
         ~TransformRegistry();
 
-        uint32_t registerTransform(const glm::mat4& transform);
-
-        size_t getBaseIndex() { return m_transforms.size(); }
-
         void prepare();
 
         void updateRT(const UpdateContext& ctx);
 
     private:
+        uint32_t registerTransform(const glm::mat4& transform);
+        size_t getBaseIndex() { return m_transforms.size(); }
+
         void updateBuffer();
 
     private:

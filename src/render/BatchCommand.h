@@ -54,8 +54,8 @@ namespace render {
     };
 
     struct LodEntry {
+        const glm::mat4 m_transform;
         const uint32_t m_entityIndex;
-        const uint32_t m_meshIndex;
         const uint32_t m_materialIndex;
         const int32_t m_socketIndex;
     };

@@ -12,7 +12,7 @@ in VS_OUT {
 
   vec2 texCoord;
   flat uint materialIndex;
-  flat uint shapeIndex;
+  flat uint flags;
 } fs_in;
 
 #else

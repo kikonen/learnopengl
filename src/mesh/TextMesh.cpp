@@ -35,16 +35,18 @@ namespace mesh {
 
     const kigl::GLVertexArray* TextMesh::prepareVAO()
     {
-        if (m_preparedVAO) return m_vao;
-        m_preparedVAO = true;
-
         text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
-        return setupVAO(vao);
+        return setupVAO(vao, true);
     }
 
-    const kigl::GLVertexArray* TextMesh::setupVAO(mesh::TexturedVAO* vao)
+    const kigl::GLVertexArray* TextMesh::setupVAO(mesh::TexturedVAO* vao, bool shared)
     {
+        if (shared) {
+            if (m_preparedVAO) return m_vao;
+            m_preparedVAO = true;
+        }
+
         if (m_maxSize == 0) {
             m_maxSize = DEF_SIZE;
         }

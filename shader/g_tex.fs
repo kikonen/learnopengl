@@ -26,7 +26,7 @@ in VS_OUT {
 #endif
 
   flat uint materialIndex;
-  flat uint shapeIndex;
+  flat uint flags;
 
 #ifdef USE_TBN
   mat3 tbn;

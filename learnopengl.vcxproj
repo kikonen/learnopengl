@@ -530,6 +530,7 @@
     <ClInclude Include="src\loader\loader_util.h" />
     <ClInclude Include="src\loader\VertexData.h" />
     <ClInclude Include="src\loader\VertexLoader.h" />
+    <ClInclude Include="src\mesh\MeshInstance.h" />
     <ClInclude Include="src\mesh\RigJointTreeGenerator.h" />
     <ClInclude Include="src\mesh\InstanceFlags.h" />
     <ClInclude Include="src\mesh\PrimitiveMesh.h" />

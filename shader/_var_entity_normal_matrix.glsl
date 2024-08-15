@@ -8,8 +8,8 @@ if (instance.u_socketIndex >= 0) {
   normalMatrix =
     normalMatrix
     * mat3(u_socketTransforms[entity.u_socketBaseIndex + instance.u_socketIndex])
-    * mat3(u_meshTransforms[instance.u_meshIndex]);
+    * mat3(meshMatrix);
 
 } else {
-  normalMatrix *= mat3(u_meshTransforms[instance.u_meshIndex]);
+  normalMatrix *= mat3(meshMatrix);
 }

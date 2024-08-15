@@ -95,11 +95,12 @@ namespace mesh {
         uint32_t m_meshIndex{ 0 };
         int32_t m_socketIndex{ -1 };
 
-        glm::mat4 m_animationRigTransform{ 1.f };
-
         glm::vec3 m_scale{ 1.f };
         glm::vec3 m_baseScale{ 1.f };
         glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+
+        glm::mat4 m_animationRigTransform{ 1.f };
+        glm::mat4 m_transform{ 1.f };
 
         std::unique_ptr<Material> m_material;
         uint32_t m_materialIndex{ 0 };

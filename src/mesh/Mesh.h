@@ -57,7 +57,7 @@ namespace mesh {
 
         // @return VAO for mesh
         virtual const kigl::GLVertexArray* prepareVAO();
-        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao) = 0;
+        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) = 0;
 
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
@@ -87,6 +87,11 @@ namespace mesh {
 
         inline uint32_t getIndexCount() const noexcept {
             return static_cast<uint32_t>(m_indeces.size());
+        }
+
+        const kigl::GLVertexArray* getVAO() const
+        {
+            return m_vao;
         }
 
     public:

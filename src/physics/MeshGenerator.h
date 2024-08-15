@@ -1,9 +1,12 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include <mutex>
 #include <memory>
+
+#include "mesh/MeshInstance.h"
 
 namespace mesh {
     class Mesh;
@@ -18,12 +21,21 @@ namespace physics {
     public:
         MeshGenerator(const PhysicsEngine& engine);
 
-        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> generateMeshes() const;
+        void clear();
+        std::shared_ptr<std::vector<mesh::MeshInstance>> generateMeshes();
 
     private:
-        std::unique_ptr<mesh::Mesh> generateObject(const Object& obj) const;
+        mesh::MeshInstance generateObject(const Object& obj);
+
+        std::shared_ptr<mesh::Mesh> findMesh(const std::string& key);
+
+        std::shared_ptr<mesh::Mesh> saveMesh(
+            const std::string& key,
+            std::shared_ptr<mesh::Mesh> mesh);
 
     private:
         const PhysicsEngine& m_engine;
+
+        std::map<std::string, std::shared_ptr<mesh::Mesh>> m_cache;
     };
 }

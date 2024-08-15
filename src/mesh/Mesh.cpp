@@ -55,10 +55,6 @@ namespace mesh {
 
     const kigl::GLVertexArray* Mesh::prepareVAO()
     {
-        if (m_preparedVAO) return m_vao;
-        m_preparedVAO = true;
-
-        m_vao = setupVAO(VaoRegistry::get().getTexturedVao());
-        return m_vao;
+        return setupVAO(VaoRegistry::get().getTexturedVao(), true);
     }
 }

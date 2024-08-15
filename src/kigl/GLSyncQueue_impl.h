@@ -140,9 +140,9 @@ namespace kigl {
             m_buffer.flushRange(range.m_baseOffset, range.getUsedLength());
         }
         else {
-            if (m_useInvalidate) {
-                m_buffer.invalidateRange(range.m_baseOffset, range.getUsedLength());
-            }
+            //if (m_useInvalidate) {
+            //    m_buffer.invalidateRange(range.m_baseOffset, range.getUsedLength());
+            //}
             m_buffer.update(range.m_baseOffset, range.getUsedLength(), m_data + range.m_baseOffset);
         }
 

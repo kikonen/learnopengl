@@ -301,9 +301,9 @@ namespace backend {
                 m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
             }
 
-            m_indexBuffer.invalidateRange(
-                0 * sz,
-                totalCount * sz);
+            //m_indexBuffer.invalidateRange(
+            //    0 * sz,
+            //    totalCount * sz);
 
             m_indexBuffer.update(
                 0 * sz,

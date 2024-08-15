@@ -173,9 +173,9 @@ namespace animation
             updateCount = totalCount;
         }
 
-        if (m_useInvalidate) {
-            m_ssbo.invalidateRange(updateIndex * sz, updateCount * sz);
-        }
+        //if (m_useInvalidate) {
+        //    m_ssbo.invalidateRange(updateIndex * sz, updateCount * sz);
+        //}
 
         m_ssbo.update(
             updateIndex * sz,

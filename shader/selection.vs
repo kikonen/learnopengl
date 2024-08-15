@@ -24,7 +24,7 @@ layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 out VS_OUT {
   vec2 texCoord;
   flat uint materialIndex;
-  flat uint shapeIndex;
+  flat uint flags;
   flat uint highlightIndex;
 } vs_out;
 #else
@@ -56,7 +56,7 @@ void main() {
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
-  if ((instance.u_shapeIndex & INSTANCE_BILLBOARD_BIT) != 0) {
+  if ((instance.u_flags & INSTANCE_BILLBOARD_BIT) != 0) {
     vec3 entityPos = vec3(modelMatrix[3]);
     vec3 entityScale = vec3(entity.u_worldScale[0],
                             entity.u_worldScale[1],
@@ -78,7 +78,7 @@ void main() {
   const uint materialIndex = instance.u_materialIndex;
 
   vs_out.materialIndex = materialIndex;
-  vs_out.shapeIndex = instance.u_shapeIndex;
+  vs_out.flags = instance.u_flags;
   vs_out.texCoord = a_texCoord;
 #endif
 

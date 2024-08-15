@@ -48,9 +48,6 @@ namespace mesh {
 
     const kigl::GLVertexArray* PrimitiveMesh::prepareVAO()
     {
-        if (m_preparedVAO) return m_vao;
-        m_preparedVAO = true;
-
         TexturedVAO* vao;
 
         if (m_rig && !m_vertexBones.empty()) {
@@ -60,11 +57,16 @@ namespace mesh {
             vao = VaoRegistry::get().getTexturedVao();
         }
 
-        return setupVAO(vao);
+        return setupVAO(vao, true);
     }
 
-    const kigl::GLVertexArray* PrimitiveMesh::setupVAO(mesh::TexturedVAO* vao)
+    const kigl::GLVertexArray* PrimitiveMesh::setupVAO(mesh::TexturedVAO* vao, bool shared)
     {
+        if (shared) {
+            if (m_preparedVAO) return m_vao;
+            m_preparedVAO = true;
+        }
+
         m_vboIndex = vao->reserveVertices(m_vertices.size());
         m_eboIndex = vao->reserveIndeces(m_indeces.size());
 

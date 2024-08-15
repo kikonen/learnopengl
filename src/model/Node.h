@@ -125,7 +125,7 @@ public:
     }
 
     const Snapshot& getActiveSnapshot(Registry* registry) const noexcept;
-    Snapshot& modifyActiveSnapshot(Registry* registry) noexcept;
+    //Snapshot& modifyActiveSnapshot(Registry* registry) noexcept;
 
     void updateModelMatrix() noexcept;
 

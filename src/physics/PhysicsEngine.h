@@ -124,5 +124,7 @@ namespace physics {
         physics::physics_id m_rayId{ 0 };
 
         std::vector<HeightMap> m_heightMaps;
+
+        std::unique_ptr<physics::MeshGenerator> m_meshGenerator;
     };
 }

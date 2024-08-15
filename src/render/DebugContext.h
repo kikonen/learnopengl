@@ -8,7 +8,7 @@
 #include "ki/size.h"
 
 namespace mesh {
-    class Mesh;
+    struct MeshInstance;
 }
 
 namespace render {
@@ -52,6 +52,6 @@ namespace render {
 
         bool m_physicsShowObjects{ false };
 
-        std::shared_ptr<std::vector<std::unique_ptr<mesh::Mesh>>> m_physicsMeshes;
+        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshes;
     };
 }

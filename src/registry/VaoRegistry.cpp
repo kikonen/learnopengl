@@ -23,7 +23,8 @@ VaoRegistry& VaoRegistry::get() noexcept
 VaoRegistry::VaoRegistry()
     : m_texturedVao{ std::make_unique<mesh::TexturedVAO>("mesh_textured") },
     m_skinnedVao{ std::make_unique<mesh::SkinnedVAO>("mesh_skinned") },
-    m_primitiveVao{ std::make_unique<mesh::TexturedVAO>("mesh_primitive") }
+    m_sharedPrimitiveVao{ std::make_unique<mesh::TexturedVAO>("shared_primitive") },
+    m_dynamicPrimitiveVao{ std::make_unique<mesh::TexturedVAO>("dynamic_primitive") }
 {
 }
 
@@ -34,12 +35,14 @@ void VaoRegistry::prepare()
 {
     m_texturedVao->prepare();
     m_skinnedVao->prepare();
-    m_primitiveVao->prepare();
+    m_sharedPrimitiveVao->prepare();
+    m_dynamicPrimitiveVao->prepare();
 }
 
 void VaoRegistry::updateRT(const UpdateContext& ctx)
 {
     m_texturedVao->updateRT();
     m_skinnedVao->updateRT();
-    m_primitiveVao->updateRT();
+    m_sharedPrimitiveVao->updateRT();
+    m_dynamicPrimitiveVao->updateRT();
 }

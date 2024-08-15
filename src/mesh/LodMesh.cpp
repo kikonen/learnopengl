@@ -18,7 +18,6 @@
 #include "render/size.h"
 
 #include "registry/MaterialRegistry.h"
-#include "mesh/TransformRegistry.h"
 
 #include "Mesh.h"
 #include "InstanceFlags.h"
@@ -58,11 +57,14 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
-        m_meshIndex = o.m_meshIndex;
         m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
+        m_baseRotation = o.m_baseRotation;
+
+        m_animationRigTransform = o.m_animationRigTransform;
+        m_transform = o.m_transform;
 
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
@@ -77,8 +79,6 @@ namespace mesh {
         m_selectionProgram = o.m_selectionProgram;
         m_idProgram = o.m_idProgram;
         m_drawOptions = o.m_drawOptions;
-
-        m_animationRigTransform = o.m_animationRigTransform;
 
         m_flags = o.m_flags;
 
@@ -275,11 +275,10 @@ namespace mesh {
 
     void LodMesh::updateTransform() {
         // TODO KI rotate here causes very weird artifacts
-        const auto& transform =
+        m_transform =
             glm::mat4(m_baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
             m_mesh->m_rigTransform;
-        m_meshIndex = mesh::TransformRegistry::get().registerTransform(transform);
     }
 
     AABB LodMesh::calculateAABB() const noexcept

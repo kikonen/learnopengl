@@ -112,9 +112,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
             m_ssbo.flushRange(0, totalCount * sz);
         }
         else {
-            if (m_useInvalidate) {
-                m_ssbo.invalidateRange(0, totalCount * sz);
-            }
+            //if (m_useInvalidate) {
+            //    m_ssbo.invalidateRange(0, totalCount * sz);
+            //}
             m_ssbo.update(0, totalCount * sz, m_entries.data());
         }
         for (int i = 0; i < totalCount; i++) {
@@ -140,9 +140,9 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                     m_ssbo.flushRange(from * sz, count * sz);
                 }
                 else {
-                    if (m_useInvalidate) {
-                        m_ssbo.invalidateRange(from * sz, count * sz);
-                    }
+                    //if (m_useInvalidate) {
+                    //    m_ssbo.invalidateRange(from * sz, count * sz);
+                    //}
                     m_ssbo.update(from * sz, count * sz, &m_entries[from]);
                 }
 

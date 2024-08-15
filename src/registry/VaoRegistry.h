@@ -37,17 +37,25 @@ public:
         return m_skinnedVao.get();
     }
 
+    // Primitives which can be shared acros several incocations
+    // semi-permanent, but VAP can be flushed sometimes
+    mesh::TexturedVAO* getSharedPrimitiveVao()
+    {
+        return m_sharedPrimitiveVao.get();
+    }
+
     // NOTE KI primitive VAO is "throwaway" render meshes
     // which are recalculated on every render cycle again
     // => mostly useful for debug thus
-    mesh::TexturedVAO* getPrimitiveVao()
+    mesh::TexturedVAO* getDynamicPrimitiveVao()
     {
-        return m_primitiveVao.get();
+        return m_dynamicPrimitiveVao.get();
     }
 
 private:
     std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 
-    std::unique_ptr<mesh::TexturedVAO> m_primitiveVao;
+    std::unique_ptr<mesh::TexturedVAO> m_sharedPrimitiveVao;
+    std::unique_ptr<mesh::TexturedVAO> m_dynamicPrimitiveVao;
 };

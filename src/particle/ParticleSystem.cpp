@@ -152,9 +152,9 @@ namespace particle {
         //    0,
         //    totalCount * sz);
 
-        if (m_useInvalidate) {
-            m_ssbo.invalidateRange(0, totalCount * sz);
-        }
+        //if (m_useInvalidate) {
+        //    m_ssbo.invalidateRange(0, totalCount * sz);
+        //}
 
         m_ssbo.update(
             0,
