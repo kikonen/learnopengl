@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -34,6 +34,14 @@ namespace mesh {
 
         std::vector<glm::vec3> vertices;
         std::vector<int> indeces;
+
+        // NOTE KI height map data
+        // - size{x, z} world size for height map
+        // - data is assumed to already have proper Y value in coords matching size
+        int heightSamplesWidth{ 0 };
+        int heightSamplesDepth{ 0 };
+        const float* heightData{ nullptr };
+
 
         static PrimitiveGenerator none()
         {
@@ -117,6 +125,15 @@ namespace mesh {
                 .type = PrimitiveType::quad,
                 .name = "<quad>",
                 .alias = "quad"
+            };
+        }
+
+        static PrimitiveGenerator height_field()
+        {
+            return {
+                .type = PrimitiveType::height_field,
+                .name = "<height_field>",
+                .alias = "height_field"
             };
         }
 
@@ -437,6 +454,8 @@ namespace mesh {
                 return plane();
             case PrimitiveType::quad:
                 return quad();
+            case PrimitiveType::height_field:
+                return height_field();
             case PrimitiveType::box:
                 return box();
             case PrimitiveType::rounded_box:

@@ -33,6 +33,7 @@ namespace physics
         // NOTE KI o is moved now
         o.m_body.physicId = nullptr;
         o.m_geom.physicId = nullptr;
+        o.m_geom.heightDataId = nullptr;
     }
 
     Object::~Object() = default;
@@ -75,6 +76,11 @@ namespace physics
 
         if (m_body.physicId) {
             m_body.updatePhysic(pos, rot);
+
+            //dBodySetLinearVel(m_body.physicId, 0.f, 0.f, 0.f);
+            dBodySetAngularVel(m_body.physicId, 0.f, 0.f, 0.f);
+            //dBodySetForce(m_body.physicId, 0.f, 0.f, 0.f);
+            dBodySetTorque(m_body.physicId, 0.f, 0.f, 0.f);
         }
         else if (m_geom.physicId)
         {

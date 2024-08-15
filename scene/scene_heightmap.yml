@@ -1,0 +1,178 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player_fps
+    mesh:
+      vertex:
+        type: box
+        size: [2, 2, 2]
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
+      base_scale: 0.25
+      base_rot: [90, 0, 0]
+    pos: [1, 22, 40]
+    rotation: [0, 180, 0]
+    xactive: true
+    camera:
+      xdefault: true
+      type: follow
+      distance: [5, 2.5, 10]
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: box
+        density: 0.01
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: box
+        category: [player]
+        size: [1, 1, 1]
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: skeleton_army_{c}_{t}
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
+    pos: [0, 25, 0]
+    xrotation: [0, -90, 0]
+    scale: 1
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+    xscript: scripts/seq_skeleton
+    render_flags:
+      xdynamic_bounds: true
+    active: true
+    xaudio:
+      listener:
+        default: true
+    camera:
+      type: follow
+      distance: [5, 2.5, 10]
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    physics:
+      enabled: true
+      update: true
+      body:
+        xkinematic: true
+        density: 0.01
+    script: |
+      cmd:animationPlay(
+        { name = "master:SwingNormal" });
+  - id: object_{c}_{t}
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
+      material_modifier:
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.5
+    pos: [0.0, 0.5, 0.0]
+    rotation: [0, 0, 0]
+    clone_position_offset: [2, 0, 0]
+    clones:
+      - pos: [0.0, 0.5, 0.0]
+      - pos: [0.5, 1.5, 0.0]
+      - pos: [0, 2.5, 0.0]
+    physics:
+      body:
+        type: box
+        density: 0.1
+      geom:
+        type: box
+        size: [1]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    mesh:
+      material:
+        render_back: true
+    pos: [0.0, -70.0, 0.0]
+    pos: [0.0, -10.1, 0.0]
+    xphysics:
+      geom:
+        type: plane
+    scale: 200
+  - id: terrain_grass
+    priority: 20
+    type: container
+    pos: [-1024, 0, -1024]
+    pos: [-32, 0, -32]
+    front: [0, 1, 0]
+    render_flags:
+      pre_depth: true
+      xxwireframe: true
+      tessellation: true
+    instanced: true
+    generator:
+      type: terrain
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 64
+        tiles: [1, 0, 1]
+        vert_range: [-62.54, 221.9]
+        vert_range: [-4, 4]
+        horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        xplaceable: true
+        size: [64, 0, 64]
+        xrotation: [0, 180, 0]

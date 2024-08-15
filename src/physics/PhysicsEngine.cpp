@@ -309,6 +309,13 @@ namespace physics
 
             auto* node = obj.m_nodeHandle.toNode();
             if (node) {
+                for (auto& heightMap : m_heightMaps) {
+                    if (heightMap.m_origin == node) {
+                        obj.m_heightMapId = heightMap.m_id;
+                        heightMap.create(m_worldId, m_spaceId, obj);
+                    }
+                }
+
                 obj.updateToPhysics(false);
 
                 if (obj.m_update) {
@@ -465,6 +472,7 @@ namespace physics
     {
         auto* type = node->m_typeHandle.toType();
         if (!(type->m_flags.staticBounds || type->m_flags.dynamicBounds)) return;
+        if (!type->m_flags.staticBounds) return;
         m_pendingNodes.push_back(node->toHandle());
     }
 

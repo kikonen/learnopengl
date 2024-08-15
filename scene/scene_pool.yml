@@ -190,7 +190,7 @@ nodes:
     script: |
       cmd:animationPlay(
         { name = "master:Idle" });
-  - name: Terrain grass v2
+  - id: terrain_grass
     id: auto
     priority: 20
     type: container
@@ -221,6 +221,12 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        xplaceable: true
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
   - id: grass_{t}
     meshes:
       - path: fbx/scenery/foliage/SM_grass_bush_01.fbx

@@ -58,6 +58,12 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        xplaceable: true
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
   - id: grid_points
     mesh:
       path: glass_ball
@@ -89,6 +95,9 @@ nodes:
     render_flags:
       no_shadow: true
       water: true
+    physics:
+      geom:
+        type: plane
   - id: sea_floor
     mesh:
       path: plane
@@ -104,66 +113,12 @@ nodes:
     render_flags:
       no_shadow: true
   - id: palm_tree_forest_{t}
-    meshes:
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 0
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-            map_bump: textures/palm02_normal.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-            map_bump: textures/coconut palm leaf_Normal.png
-            render_back: true
-          - name: palm_trunk
-            alias: Tree_2Mat
-            map_kd: textures/palm02.png
-            map_bump: textures/palm02_normal.png
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 1
-          - name: Tree_1
-            level: 1
-          - name: Tree_2
-            level: []
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-            render_back: true
-      - path: fbx/scenery/trees/Palm_01.fbx
-        lods:
-          - level: 2
-          - name: Tree_1
-            level: 2
-          - name: Tree_2
-            level: []
-        materials:
-          - name: palm_trunk
-            alias: Tree_0Mat
-            map_kd: textures/palm02.png
-          - name: palm_leaf
-            alias: Tree_1Mat
-            map_kd: textures/coconut palm leaf.png
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 200
-      - level: 2
-        distance: 500
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
     priority: 1
-    program: g_tex
     pos: [150, 15.0, 150.0]
     render_flags:
       static_bounds: true
-    scale: 0.05
     instanced: true
     generator:
       type: grid
@@ -173,27 +128,61 @@ nodes:
         x_step: -20
         z_step: 20
   - id: skeleton_army_2_{t}
-    mesh:
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
-      flags:
-        use_bones: true
-        xuse_bones_debug: true
-        xuse_animation: true
-      material:
-        name: skeleton_pbr
-        map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
-    program: g_tex
-    shadow_program: simple_depth
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
     priority: 1
-    program: g_tex
-    pos: [0, 11.5, 0.0]
-    scale: 0.1
+    pos: [0, 100.5, 0.0]
     render_flags:
-      dynamic_bounds: true
+      xdynamic_bounds: true
+    physics:
+      enabled: true
     repeat:
       x_count: 10
-      z_count: 50
+      z_count: 10
       x_step: 4
       z_step: -4
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle" });
+  - id: world_x_minus
+    type: origo
+    pos: [-1200, 0, 0]
+    rot: [0, 0, -90]
+    physics:
+      geom:
+        type: plane
+  - id: world_x_plus
+    type: origo
+    pos: [850, 0, 0]
+    rot: [0, 0, 90]
+    physics:
+      geom:
+        type: plane
+  - id: world_y_minus
+    type: origo
+    pos: [0, -400, 0]
+    rot: [0, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_y_plus
+    type: origo
+    pos: [0, 400, 0]
+    rot: [180, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_z_minus
+    type: origo
+    pos: [0, 0, -900]
+    rot: [90, 0, 0]
+    physics:
+      geom:
+        type: plane
+  - id: world_z_plus
+    type: origo
+    pos: [0, 0, 1150]
+    rot: [-90, 0, 0]
+    physics:
+      geom:
+        type: plane

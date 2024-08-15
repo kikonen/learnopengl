@@ -10,6 +10,8 @@
 
 #include "model/Node.h"
 
+#include "physics/Object.h"
+
 namespace physics {
     HeightMap::HeightMap()
     {}
@@ -76,6 +78,10 @@ namespace physics {
             for (int u = 0; u < imageW; u++) {
                 unsigned short heightValue = *((unsigned short*)ptr);
                 float y = rangeYmin + ((float)heightValue / entryScale) * rangeY;
+                //y = rangeYmin;
+
+                //float t = (float)u / (float)imageW;
+                //y = rangeYmin + t * rangeY;
 
                 if (heightValue < minH) minH = heightValue;
                 if (heightValue > maxH) maxH = heightValue;
@@ -102,11 +108,34 @@ namespace physics {
         m_dataDepth = imageH;
     }
 
+    void HeightMap::create(
+        dWorldID worldId,
+        dSpaceID spaceId,
+        physics::Object& object) const
+    {
+        auto& geom = object.m_geom;
+
+        dGeomHeightfieldDataBuildSingle(
+            geom.heightDataId,
+            m_heightData,
+            true,    // copy
+            m_worldSizeU, // width
+            m_worldSizeV, // depth
+            m_dataWidth,      // widthSamples
+            m_dataDepth,      // depthSamples
+            1.f,     // scale
+            0.f,     // dReal offset,
+            10.1f,    //dReal thickness,
+            false);
+        // NOTE KI offset affects these & ODE seems to calculate this
+        //dGeomHeightfieldDataSetBounds(geom.heightDataId, m_minY, m_maxY);
+    }
+
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         if (m_dataDepth == 0 || m_dataWidth == 0) return 0;
 
-        if (m_flipH) v = 1.f - v;
+        //if (m_flipH) v = 1.f - v;
 
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"

@@ -10,6 +10,9 @@ namespace physics {
         if (physicId) {
             dGeomDestroy(physicId);
         }
+        if (heightDataId) {
+            dGeomHeightfieldDataDestroy(heightDataId);
+        }
     }
 
     void Geom::create(
@@ -37,6 +40,12 @@ namespace physics {
             auto plane = rotation * glm::vec4(normal, 1.f);
 
             physicId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, dist);
+            break;
+        }
+        case GeomType::height_field: {
+            heightDataId = dGeomHeightfieldDataCreate();
+            // NOTE KI placeable to allow setting origin
+            physicId = dCreateHeightfield(spaceId, heightDataId, placeable);
             break;
         }
         case GeomType::box: {
@@ -81,6 +90,16 @@ namespace physics {
             //    dGeomGetQuaternion(physicId, quat2);
             //    int x = 0;
             //}
+        }
+    }
+
+    void Geom::setHeightField(const glm::vec3& pos, const glm::quat& rot) const
+    {
+        if (placeable) {
+            // HACK KI match current terrain placement logic
+            // => would be better to change terrain to use "center point"?!?
+            setPhysicPosition(pos + size * 0.5f);
+            setPhysicRotation(rot);
         }
     }
 }

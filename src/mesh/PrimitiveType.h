@@ -10,6 +10,7 @@ namespace mesh {
         bezier,
         plane,
         quad,
+        height_field,
         box,
         rounded_box,
         dodeca_hedron,

@@ -50,6 +50,8 @@ namespace physics {
         pool::NodeHandle m_nodeHandle{};
 
         physics::physics_id m_id{ 0 };
+        physics::height_map_id m_heightMapId{ 0 };
+
         ki::level_id m_matrixLevel{ 0 };
         bool m_update : 1{ false };
     };

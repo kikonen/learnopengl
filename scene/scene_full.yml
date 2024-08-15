@@ -921,6 +921,12 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        xplaceable: true
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
   - id: grid_points_{t}
     mesh:
       path: glass_ball

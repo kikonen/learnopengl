@@ -220,6 +220,83 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> create_height_field(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        const auto sizeX = generator.size.x;
+        const auto sizeZ = generator.size.z;
+        const int countX = generator.heightSamplesWidth;
+        const int countZ = generator.heightSamplesDepth;
+        const auto* heightData = generator.heightData;
+        const auto stepX = generator.p;
+        const auto stepZ = generator.q;
+
+        const auto verticesX = countX / stepX;
+        const auto verticesZ = countZ / stepZ;
+
+        vertices.reserve(countX * countZ);
+        indeces.reserve(countX * countZ);
+
+        for (int vz = 0; vz < verticesZ; vz++) {
+            const auto realZ = vz * stepZ;
+            const auto tz = (float)(realZ) / (float)countZ;
+
+            for (int vx = 0; vx < verticesX; vx++) {
+                const auto realX = vx * stepX;
+                const auto tx = (float)(realX) / (float)countX;
+
+                const auto y = heightData[realX + realZ * countX];
+                auto& v = vertices.emplace_back();
+                v.pos = {
+                    tx,
+                    y,
+                    tz
+                };
+                v.normal = { 0, 1, 0 };
+                v.tangent = { 1, 0, 0 };
+                v.texCoord = {tx, tz};
+            }
+        }
+
+        for (int vz = 1; vz < verticesZ; vz++) {
+            for (int vx = 1; vx < verticesX; vx++) {
+                glm::ivec3 tri1{
+                    vx + vz * verticesZ,
+                    vx + (vz - 1) * verticesZ,
+                    (vx - 1) + (vz - 1) * verticesZ
+                };
+
+                glm::ivec3 tri2{
+                    vx + vz * verticesZ,
+                    (vx - 1) + (vz - 1) * verticesZ,
+                    (vx - 1) + vz * verticesZ
+                };
+
+                indeces.push_back(tri1.x);
+                indeces.push_back(tri1.y);
+                indeces.push_back(tri1.z);
+
+                indeces.push_back(tri2.x);
+                indeces.push_back(tri2.y);
+                indeces.push_back(tri2.z);
+            }
+        }
+
+        glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ sizeX, 1.f, sizeZ });
+        for (auto& vertex : vertices) {
+            vertex.pos = scaleMat * glm::vec4{ vertex.pos, 1.f };
+        }
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> create_box(
         mesh::PrimitiveGenerator generator)
     {
@@ -813,6 +890,8 @@ namespace mesh {
             return create_plane(*this);
         case PrimitiveType::quad:
             return create_quad(*this);
+        case PrimitiveType::height_field:
+            return create_height_field(*this);
         case PrimitiveType::box:
             return create_box(*this);
         case PrimitiveType::rounded_box:

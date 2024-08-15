@@ -184,6 +184,9 @@ namespace loader {
                 else if (type == "plane") {
                     data.type = physics::GeomType::plane;
                 }
+                else if (type == "height_field") {
+                    data.type = physics::GeomType::height_field;
+                }
                 else if (type == "box") {
                     data.type = physics::GeomType::box;
                 }

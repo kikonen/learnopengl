@@ -2,14 +2,23 @@
 
 #include <glm/glm.hpp>
 
+#include <ode/ode.h>
+
 #include "size.h"
 #include "asset/AABB.h"
+
+#include "size.h"
 
 class Image;
 class Node;
 
 namespace physics {
+    struct Object;
+    class MeshGenerator;
+
     class HeightMap {
+        friend class physics::MeshGenerator;
+
     public:
         HeightMap();
         HeightMap(HeightMap&& o);
@@ -24,6 +33,11 @@ namespace physics {
         void prepare(
             Image* image,
             bool flip);
+
+        void create(
+            dWorldID worldId,
+            dSpaceID spaceId,
+            physics::Object& object) const;
 
         const AABB& getAABB() const noexcept { return m_aabb; }
         void setAABB(const AABB& aabb) { m_aabb = aabb; }

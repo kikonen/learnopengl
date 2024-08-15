@@ -14,6 +14,7 @@ namespace physics {
         none = 0,
         ray,
         plane,
+        height_field,
         box,
         sphere,
         capsule,
@@ -22,6 +23,7 @@ namespace physics {
 
     struct Geom {
         dGeomID physicId{ nullptr };
+        dHeightfieldDataID heightDataId{ nullptr };
 
         // NOTE KI *SCALED* using scale of node
         // box:
@@ -68,6 +70,10 @@ namespace physics {
                 setPlane(pos, rot * rotation);
                 break;
             }
+            case GeomType::height_field: {
+                setHeightField(pos, rot * rotation);
+                break;
+            }
             //case GeomType::box: {
             //    dGeomBoxSetLengths(m_geom.physicId, sz.x, sz.y, sz.z);
             //    break;
@@ -99,6 +105,7 @@ namespace physics {
             dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
         }
 
+        void setHeightField(const glm::vec3& pos, const glm::quat& rot) const;
 
         void setPhysicPosition(const glm::vec3& pos) const
         {
@@ -107,6 +114,9 @@ namespace physics {
             }
         }
 
+        // NOTE KI  If the geom is attached to a body,
+        // the body's position / rotation pointers will be returned, i.e. the result
+        // will be identical to calling dBodyGetPosition or dBodyGetRotation.
         glm::vec3 getPhysicPosition() const
         {
             const dReal* dpos = dGeomGetPosition(physicId);
@@ -124,6 +134,9 @@ namespace physics {
             }
         }
 
+        // NOTE KI  If the geom is attached to a body,
+        // the body's position / rotation pointers will be returned, i.e. the result
+        // will be identical to calling dBodyGetPosition or dBodyGetRotation.
         glm::quat getPhysicRotation() const
         {
             dQuaternion dquat;
