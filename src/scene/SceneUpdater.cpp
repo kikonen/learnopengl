@@ -25,6 +25,7 @@
 #include "script/ScriptEngine.h"
 
 #include "registry/Registry.h"
+#include "registry/ControllerRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
 
@@ -147,35 +148,59 @@ void SceneUpdater::update(const UpdateContext& ctx)
     {
         //std::cout << count << '\n';
         if (m_loaded) {
-            KI_TIMER("command ");
             script::CommandEngine::get().update(ctx);
         }
 
         {
             KI_TIMER("registry");
             m_registry->updateWT(ctx);
-        }
+            }
 
         if (m_loaded) {
             {
-                KI_TIMER("node    ");
+                KI_TIMER("node1   ");
                 NodeRegistry::get().updateWT(ctx);
             }
             {
-                KI_TIMER("physics ");
-                physics::PhysicsEngine::get().update(ctx);
+                KI_TIMER("node2   ");
+                ControllerRegistry::get().updateWT(ctx);
+            }
+            {
+                KI_TIMER("node3   ");
+                NodeRegistry::get().updateModelMatrices();
             }
             {
                 KI_TIMER("audio   ");
                 audio::AudioEngine::get().update(ctx);
             }
+            {
+                KI_TIMER("physics1");
+                physics::PhysicsEngine::get().update(ctx);
+            }
+            {
+                KI_TIMER("physics2");
+                physics::PhysicsEngine::get().updateBounds(ctx);
+            }
         }
     }
 
     // NOTE KI sync to RT
-    m_registry->m_pendingSnapshotRegistry->copyFrom(
-        m_registry->m_workerSnapshotRegistry,
-        0, -1);
+    {
+        {
+            KI_TIMER("node4   ");
+            NodeRegistry::get().updateModelMatrices();
+        }
+        {
+            KI_TIMER("node5   ");
+            NodeRegistry::get().snapshotWT(*m_registry->m_workerSnapshotRegistry);
+        }
+        {
+            KI_TIMER("node7   ");
+            m_registry->m_pendingSnapshotRegistry->copyFrom(
+                m_registry->m_workerSnapshotRegistry,
+                0, -1);
+        }
+    }
 
     if (m_loaded) {
         physics::PhysicsEngine::get().setEnabled(true);

@@ -41,6 +41,10 @@ public:
         Registry* registry);
 
     void updateWT(const UpdateContext& ctx);
+
+    void updateModelMatrices();
+    void postUpdateWT();
+
     void updateRT(const UpdateContext& ctx);
     void updateEntity(const UpdateContext& ctx);
 

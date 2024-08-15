@@ -129,9 +129,6 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
     }
 
-    physics::PhysicsEngine::get().updateBounds(ctx);
-    ControllerRegistry::get().updateWT(ctx);
-
     {
         snapshotWT(*m_registry->m_workerSnapshotRegistry);
     }
@@ -142,6 +139,14 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     //}
 }
 
+void NodeRegistry::updateModelMatrices()
+{
+    for (auto* node : m_cachedNodesWT) {
+        if (!node) continue;
+        node->updateModelMatrix();
+    }
+}
+
 void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
 {
     //std::lock_guard lock(m_lock);
@@ -150,6 +155,7 @@ void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
         if (!node) continue;
 
         const auto& state = node->getState();
+        assert(!state.m_dirty);
 
         if (state.m_dirtySnapshot) {
             auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
