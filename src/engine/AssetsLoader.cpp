@@ -543,6 +543,102 @@ void AssetsLoader::loadAssets(
                 data.physicsShowObjects = readBool(v);
                 continue;
             }
+            if (k == "physics_dContactMu2") {
+                data.physics_dContactMu2 = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactSlip1") {
+                data.physics_dContactSlip1 = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactSlip2") {
+                data.physics_dContactSlip2 = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactBounce") {
+                data.physics_dContactBounce = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactMotion1") {
+                data.physics_dContactMotion1 = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactMotion2") {
+                data.physics_dContactMotion2 = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactMotionN") {
+                data.physics_dContactMotionN = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactSoftCFM") {
+                data.physics_dContactSoftCFM = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactSoftERP") {
+                data.physics_dContactSoftERP = readBool(v);
+                continue;
+            }
+            if (k == "physics_dContactApprox1") {
+                data.physics_dContactApprox1 = readBool(v);
+                continue;
+            }
+            if (k == "physics_mu") {
+                data.physics_mu = readFloat(v);
+                continue;
+            }
+            if (k == "physicsmu2") {
+                data.physics_mu2 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_rho") {
+                data.physics_rho = readFloat(v);
+                continue;
+            }
+            if (k == "physics_rho2") {
+                data.physics_rho2 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_rhoN") {
+                data.physics_rhoN = readFloat(v);
+                continue;
+            }
+            if (k == "physics_slip1") {
+                data.physics_slip1 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_slip2") {
+                data.physics_slip2 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_bounce") {
+                data.physics_bounce = readFloat(v);
+                continue;
+            }
+            if (k == "physics_bounce_vel") {
+                data.physics_bounce_vel = readFloat(v);
+                continue;
+            }
+            if (k == "physics_motion1") {
+                data.physics_motion1 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_motion2") {
+                data.physics_motion2 = readFloat(v);
+                continue;
+            }
+            if (k == "physics_motionN") {
+                data.physics_motionN = readFloat(v);
+                continue;
+            }
+            if (k == "physics_soft_erp") {
+                data.physics_soft_erp = readFloat(v);
+                continue;
+            }
+            if (k == "physics_soft_cfm") {
+                data.physics_soft_cfm = readFloat(v);
+                continue;
+            }
         }
         {
             if (k == "particle_enabled") {

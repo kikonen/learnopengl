@@ -79,7 +79,7 @@ public:
 
     std::unique_ptr<Window> m_window;
 
-    render::DebugContext& m_debugContext;
+    render::DebugContext& m_dbg;
 
 protected:
     ki::RenderClock m_clock;

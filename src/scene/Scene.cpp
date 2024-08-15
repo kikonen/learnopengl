@@ -265,7 +265,7 @@ void Scene::prepareRT()
 void Scene::updateRT(const UpdateContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    const auto& debugContext = ctx.m_debugContext;
+    const auto& dbg = ctx.m_dbg;
 
     m_registry->m_dispatcherView->dispatchEvents();
 
@@ -273,7 +273,7 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     m_renderData->update();
 
-    m_normalRenderer->setEnabled(debugContext.m_nodeDebugEnabled && debugContext.m_showNormals);
+    m_normalRenderer->setEnabled(dbg.m_nodeDebugEnabled && dbg.m_showNormals);
 
     m_batch->updateRT(ctx);
 }

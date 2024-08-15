@@ -46,9 +46,9 @@ void PhysicsRenderer::drawObjects(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& debugContext = render::DebugContext::get();
+    const auto& dbg = render::DebugContext::get();
 
-    if (!debugContext.m_physicsShowObjects) return;
+    if (!dbg.m_physicsShowObjects) return;
 
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
@@ -57,7 +57,7 @@ void PhysicsRenderer::drawObjects(
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
-    auto meshes = debugContext.m_physicsMeshes;
+    auto meshes = dbg.m_physicsMeshes;
 
     if (!meshes || meshes->empty()) return;
 

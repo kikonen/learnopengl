@@ -67,7 +67,7 @@ namespace editor {
 
     void EditorFrame::draw(const RenderContext& ctx)
     {
-        auto& debugContext = m_window.getEngine().m_debugContext;
+        auto& dbg = m_window.getEngine().m_dbg;
 
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= 0
@@ -80,7 +80,7 @@ namespace editor {
             | ImGuiWindowFlags_MenuBar
             | 0;
         if (!ImGui::Begin("Edit", openPtr, flags)) {
-            trackImGuiState(debugContext);
+            trackImGuiState(dbg);
             ImGui::End();
             return;
         }
@@ -92,51 +92,51 @@ namespace editor {
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         //}
 
-        renderMenuBar(ctx, debugContext);
+        renderMenuBar(ctx, dbg);
 
         //if (ImGui::CollapsingHeader("Status"))
         {
-            renderStatus(ctx, debugContext);
+            renderStatus(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Camera"))
         {
-            renderCameraDebug(ctx, debugContext);
+            renderCameraDebug(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Node"))
         {
-            renderNodeEdit(ctx, debugContext);
+            renderNodeEdit(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Animation"))
         {
-            renderAnimationDebug(ctx, debugContext);
+            renderAnimationDebug(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Viewport"))
         {
-            renderBufferDebug(ctx, debugContext);
+            renderBufferDebug(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Physics"))
         {
-            renderPhysicsDebug(ctx, debugContext);
+            renderPhysicsDebug(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Misc"))
         {
-            renderMiscDebug(ctx, debugContext);
+            renderMiscDebug(ctx, dbg);
         }
 
-        trackImGuiState(debugContext);
+        trackImGuiState(dbg);
 
         ImGui::End();
     }
 
 
     void EditorFrame::trackImGuiState(
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         m_window.m_input->imGuiHasKeyboard =
             ImGui::IsAnyItemActive() ||
@@ -151,7 +151,7 @@ namespace editor {
 
     void EditorFrame::renderMenuBar(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         if (ImGui::BeginMenuBar())
         {
@@ -177,7 +177,7 @@ namespace editor {
 
     void EditorFrame::renderStatus(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         const auto& fpsCounter = m_window.getEngine().getFpsCounter();
         //auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
@@ -187,7 +187,7 @@ namespace editor {
 
     void EditorFrame::renderCameraDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();
         const auto& cr = ControllerRegistry::get();
@@ -258,26 +258,26 @@ namespace editor {
 
     void EditorFrame::renderNodeEdit(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
-        renderNodeSelector(ctx, debugContext);
+        renderNodeSelector(ctx, dbg);
 
         if (ImGui::TreeNode("Node properties")) {
-            renderNodeProperties(ctx, debugContext);
-            renderTypeProperties(ctx, debugContext);
-            renderRigProperties(ctx, debugContext);
+            renderNodeProperties(ctx, dbg);
+            renderTypeProperties(ctx, dbg);
+            renderRigProperties(ctx, dbg);
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Node debug")) {
-            renderNodeDebug(ctx, debugContext);
+            renderNodeDebug(ctx, dbg);
             ImGui::TreePop();
         }
     }
 
     void EditorFrame::renderNodeSelector(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();
 
@@ -301,7 +301,7 @@ namespace editor {
 
     void EditorFrame::renderNodeProperties(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -334,7 +334,7 @@ namespace editor {
 
     void EditorFrame::renderTypeProperties(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -368,7 +368,7 @@ namespace editor {
 
     void EditorFrame::renderRigProperties(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         if (!m_state.m_selectedMesh) return;
 
@@ -477,65 +477,65 @@ namespace editor {
 
     void EditorFrame::renderNodeDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
-        ImGui::Checkbox("Node debug", &debugContext.m_nodeDebugEnabled);
+        ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
 
-        if (debugContext.m_nodeDebugEnabled) {
-            ImGui::Checkbox("Wireframe", &debugContext.m_forceWireframe);
-            ImGui::Checkbox("Show normals", &debugContext.m_showNormals);
-            ImGui::DragFloat3("Selection Axis", glm::value_ptr(debugContext.m_selectionAxis), -1.f, 1.f);
+        if (dbg.m_nodeDebugEnabled) {
+            ImGui::Checkbox("Wireframe", &dbg.m_forceWireframe);
+            ImGui::Checkbox("Show normals", &dbg.m_showNormals);
+            ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
         }
     }
 
     void EditorFrame::renderAnimationDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
 
-        ImGui::Checkbox("Pause", &debugContext.m_animationPaused);
-        ImGui::Checkbox("Animation debug", &debugContext.m_animationDebugEnabled);
+        ImGui::Checkbox("Pause", &dbg.m_animationPaused);
+        ImGui::Checkbox("Animation debug", &dbg.m_animationDebugEnabled);
 
-        if (debugContext.m_animationDebugEnabled) {
+        if (dbg.m_animationDebugEnabled) {
             ImGui::SeparatorText("Animation blending");
 
-            ImGui::Checkbox("Force first frame", &debugContext.m_animationForceFirstFrame);
-            if (!debugContext.m_animationForceFirstFrame) {
-                ImGui::Checkbox("Manual time", &debugContext.m_animationManualTime);
-                if (debugContext.m_animationManualTime) {
-                    ImGui::InputFloat("Current time", &debugContext.m_animationCurrentTime, 0.01f, 0.1f);
+            ImGui::Checkbox("Force first frame", &dbg.m_animationForceFirstFrame);
+            if (!dbg.m_animationForceFirstFrame) {
+                ImGui::Checkbox("Manual time", &dbg.m_animationManualTime);
+                if (dbg.m_animationManualTime) {
+                    ImGui::InputFloat("Current time", &dbg.m_animationCurrentTime, 0.01f, 0.1f);
                 }
             }
 
             ImGui::SeparatorText("Clip A");
-            ImGui::InputInt("Clip A", &debugContext.m_animationClipIndexA, 1, 10);
-            ImGui::InputFloat("Clip A start", &debugContext.m_animationStartTimeA, 0.01f, 0.1f);
-            ImGui::InputFloat("Clip A speed", &debugContext.m_animationSpeedA, 0.01f, 0.1f);
+            ImGui::InputInt("Clip A", &dbg.m_animationClipIndexA, 1, 10);
+            ImGui::InputFloat("Clip A start", &dbg.m_animationStartTimeA, 0.01f, 0.1f);
+            ImGui::InputFloat("Clip A speed", &dbg.m_animationSpeedA, 0.01f, 0.1f);
 
             ImGui::SeparatorText("Clip B");
-            ImGui::Checkbox("Blend animation", &debugContext.m_animationBlend);
+            ImGui::Checkbox("Blend animation", &dbg.m_animationBlend);
 
-            if (debugContext.m_animationBlend) {
-                ImGui::InputFloat("Blend factor", &debugContext.m_animationBlendFactor, 0.01f, 0.1f);
+            if (dbg.m_animationBlend) {
+                ImGui::InputFloat("Blend factor", &dbg.m_animationBlendFactor, 0.01f, 0.1f);
 
-                ImGui::InputInt("Clip B", &debugContext.m_animationClipIndexB, 1, 10);
-                ImGui::InputFloat("Clip B start", &debugContext.m_animationStartTimeB, 0.01f, 0.1f);
-                ImGui::InputFloat("Clip B speed", &debugContext.m_animationSpeedB, 0.01f, 0.1f);
+                ImGui::InputInt("Clip B", &dbg.m_animationClipIndexB, 1, 10);
+                ImGui::InputFloat("Clip B start", &dbg.m_animationStartTimeB, 0.01f, 0.1f);
+                ImGui::InputFloat("Clip B speed", &dbg.m_animationSpeedB, 0.01f, 0.1f);
             }
 
             if (assets.glslUseDebug) {
                 ImGui::SeparatorText("Bone visualization");
 
-                ImGui::Checkbox("Bone debug", &debugContext.m_animationDebugBoneWeight);
-                ImGui::InputInt("Bone index", &debugContext.m_animationBoneIndex, 1, 10);
+                ImGui::Checkbox("Bone debug", &dbg.m_animationDebugBoneWeight);
+                ImGui::InputInt("Bone index", &dbg.m_animationBoneIndex, 1, 10);
             }
         }
     }
 
     void EditorFrame::renderBufferDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
 
@@ -785,18 +785,22 @@ namespace editor {
 
     void EditorFrame::renderPhysicsDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
-        ImGui::Checkbox("Physics show objects", &debugContext.m_physicsShowObjects);
+        ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects);
+
+        //ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects)
+        //{
+        //}
     }
 
     void EditorFrame::renderMiscDebug(
         const RenderContext& ctx,
-        render::DebugContext& debugContext)
+        render::DebugContext& dbg)
     {
-        ImGui::Checkbox("Frustum enabled", &debugContext.m_frustumEnabled);
+        ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
 
-        ImGui::InputFloat("Parallax depth", &debugContext.m_parallaxDepth, 0.01f, 0.1f);
-        ImGui::InputInt("Parallax method", &debugContext.m_parallaxMethod, 1, 10);
+        ImGui::InputFloat("Parallax depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
+        ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
     }
 }

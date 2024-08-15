@@ -40,7 +40,7 @@ RenderContext::RenderContext(
         parent->m_farPlane,
         parent->m_resolution.x,
         parent->m_resolution.y,
-        parent->m_debugContext)
+        parent->m_dbg)
 {}
 
 RenderContext::RenderContext(
@@ -62,7 +62,7 @@ RenderContext::RenderContext(
         parent->m_farPlane,
         width,
         height,
-        parent->m_debugContext)
+        parent->m_dbg)
 {}
 
 RenderContext::RenderContext(
@@ -86,7 +86,7 @@ RenderContext::RenderContext(
         farPlane,
         width,
         height,
-        parent->m_debugContext)
+        parent->m_dbg)
 {}
 
 RenderContext::RenderContext(
@@ -102,7 +102,7 @@ RenderContext::RenderContext(
     float farPlane,
     int width,
     int height,
-    const render::DebugContext* const debugContext)
+    const render::DebugContext* const dbg)
     : m_name{ name },
     m_parent{ parent },
     m_assets{ Assets::get() },
@@ -118,7 +118,7 @@ RenderContext::RenderContext(
     m_resolution({ width, height }),
     m_aspectRatio{ (float)width / (float)height },
     m_depthFunc{ GL_LESS },
-    m_debugContext{ debugContext }
+    m_dbg{ dbg }
 {
     auto& assets = m_assets;
 
@@ -206,13 +206,13 @@ RenderContext::RenderContext(
         0, // shadowCount
     };
 
-    if (m_debugContext) {
+    if (m_dbg) {
         m_debug = {
-            m_debugContext->m_entityId,
-            m_debugContext->m_animationBoneIndex,
-            m_debugContext->m_animationDebugBoneWeight,
-            m_debugContext->m_parallaxDepth,
-            m_debugContext->m_parallaxMethod,
+            m_dbg->m_entityId,
+            m_dbg->m_animationBoneIndex,
+            m_dbg->m_animationDebugBoneWeight,
+            m_dbg->m_parallaxDepth,
+            m_dbg->m_parallaxMethod,
         };
     }
     else {

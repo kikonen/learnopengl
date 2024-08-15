@@ -51,27 +51,44 @@ namespace {
 
     inline void resetContactDefaults()
     {
+        auto& dbg = render::DebugContext::modify();
+
         // http://monsterden.net/software/ragdoll-pyode-tutorial
         // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
 
         // up to MAX_CONTACTS contacts per box-box
         for (int i = 0; i < MAX_CONTACTS; i++)
         {
-            g_contacts[i].surface.mode = 0 |
-                dContactBounce |
-                dContactSlip1 |
-                dContactSlip2 |
-                dContactSoftCFM |
-                dContactSoftERP |
-                dContactApprox1;
-            g_contacts[i].surface.mu = 30;// dInfinity;
-            g_contacts[i].surface.mu2 = 0;
-            g_contacts[i].surface.slip1 = 0.7;
-            g_contacts[i].surface.slip2 = 0.7;
-            g_contacts[i].surface.bounce = 0.6;
-            g_contacts[i].surface.bounce_vel = 1.1;
-            g_contacts[i].surface.soft_erp = 0.9;
-            g_contacts[i].surface.soft_cfm = 0.9;
+            auto& surface = g_contacts[i].surface;
+
+            int mode = 0;
+            if (dbg.m_physics_dContactMu2) mode |= dContactMu2;
+            if (dbg.m_physics_dContactSlip1) mode |= dContactSlip1;
+            if (dbg.m_physics_dContactSlip2) mode |= dContactSlip2;
+            if (dbg.m_physics_dContactBounce) mode |= dContactBounce;
+            if (dbg.m_physics_dContactMotion1) mode |= dContactMotion1;
+            if (dbg.m_physics_dContactMotion2) mode |= dContactMotion2;
+            if (dbg.m_physics_dContactMotionN) mode |= dContactMotionN;
+            if (dbg.m_physics_dContactSoftCFM) mode |= dContactSoftCFM;
+            if (dbg.m_physics_dContactSoftERP) mode |= dContactSoftERP;
+            if (dbg.m_physics_dContactApprox1) mode |= dContactApprox1;
+
+            surface.mode = mode;
+
+            surface.mu = dbg.m_physics_mu;
+            surface.mu2 = dbg.m_physics_mu2;
+            surface.rho = dbg.m_physics_rho;
+            surface.rho2 = dbg.m_physics_rho2;
+            surface.rhoN = dbg.m_physics_rhoN;
+            surface.slip1 = dbg.m_physics_slip1;
+            surface.slip2 = dbg.m_physics_slip2;
+            surface.bounce = dbg.m_physics_bounce;
+            surface.bounce_vel = dbg.m_physics_bounce_vel;
+            surface.motion1 = dbg.m_physics_motion1;
+            surface.motion2 = dbg.m_physics_motion2;
+            surface.motionN = dbg.m_physics_motionN;
+            surface.soft_erp = dbg.m_physics_soft_erp;
+            surface.soft_cfm = dbg.m_physics_soft_cfm;
         }
     }
 }
@@ -482,10 +499,10 @@ namespace physics
         //if (debugCounter < 2) return;
         debugCounter = 0;
 
-        auto& debugContext = render::DebugContext::modify();
+        auto& dbg = render::DebugContext::modify();
 
         auto meshes = m_meshGenerator->generateMeshes();
-        debugContext.m_physicsMeshes.swap(meshes);
+        dbg.m_physicsMeshes.swap(meshes);
     }
 
     std::vector<physics::RayHit> PhysicsEngine::rayCast(

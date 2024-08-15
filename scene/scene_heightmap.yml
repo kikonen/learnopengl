@@ -76,7 +76,7 @@ nodes:
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
-    pos: [0, 25, 0]
+    pos: [0, 15, 0]
     xrotation: [0, -90, 0]
     scale: 1
     xrepeat:

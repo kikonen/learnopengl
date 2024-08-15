@@ -75,7 +75,7 @@ public:
         float farPlane,
         int width,
         int height,
-        const render::DebugContext* const debugContext);
+        const render::DebugContext* const dbg);
 
     ~RenderContext();
 
@@ -130,7 +130,7 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
-    const render::DebugContext* const m_debugContext;
+    const render::DebugContext* const m_dbg;
 
     const Assets& m_assets;
     const ki::RenderClock& m_clock;

@@ -89,12 +89,38 @@ int SampleApp::onInit()
 
     {
         const auto& assets = Assets::get();
-        auto& debugContext = render::DebugContext::modify();
-        debugContext.m_frustumEnabled = assets.frustumEnabled;
-        debugContext.m_forceWireframe = assets.forceWireframe;
-        debugContext.m_showNormals = assets.showNormals;
+        auto& dbg = render::DebugContext::modify();
+        dbg.m_frustumEnabled = assets.frustumEnabled;
+        dbg.m_forceWireframe = assets.forceWireframe;
+        dbg.m_showNormals = assets.showNormals;
 
-        debugContext.m_physicsShowObjects = assets.physicsShowObjects;
+        dbg.m_physicsShowObjects = assets.physicsShowObjects;
+
+        dbg.m_physics_dContactMu2 = assets.physics_dContactMu2;
+        dbg.m_physics_dContactSlip1 = assets.physics_dContactSlip1;
+        dbg.m_physics_dContactSlip2 = assets.physics_dContactSlip2;
+        dbg.m_physics_dContactBounce = assets.physics_dContactBounce;
+        dbg.m_physics_dContactMotion1 = assets.physics_dContactMotion1;
+        dbg.m_physics_dContactMotion2 = assets.physics_dContactMotion2;
+        dbg.m_physics_dContactMotionN = assets.physics_dContactMotionN;
+        dbg.m_physics_dContactSoftERP = assets.physics_dContactSoftERP;
+        dbg.m_physics_dContactSoftCFM = assets.physics_dContactSoftCFM;
+        dbg.m_physics_dContactApprox1 = assets.physics_dContactApprox1;
+
+        dbg.m_physics_mu = assets.physics_mu;
+        dbg.m_physics_mu2 = assets.physics_mu2;
+        dbg.m_physics_rho = assets.physics_rho;
+        dbg.m_physics_rho2 = assets.physics_rho2;
+        dbg.m_physics_rhoN = assets.physics_rhoN;
+        dbg.m_physics_slip1 = assets.physics_slip1;
+        dbg.m_physics_slip2 = assets.physics_slip2;
+        dbg.m_physics_bounce = assets.physics_bounce;
+        dbg.m_physics_bounce_vel = assets.physics_bounce_vel;
+        dbg.m_physics_motion1 = assets.physics_motion1;
+        dbg.m_physics_motion2 = assets.physics_motion2;
+        dbg.m_physics_motionN = assets.physics_motionN;
+        dbg.m_physics_soft_erp = assets.physics_soft_erp;
+        dbg.m_physics_soft_cfm = assets.physics_soft_cfm;
     }
 
     return 0;
@@ -229,13 +255,13 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         assets.farPlane,
         size.x,
         size.y,
-        &m_debugContext);
+        &m_dbg);
     {
         ctx.m_forceWireframe = assets.forceWireframe;
         ctx.m_useLight = assets.useLight;
 
-        if (m_debugContext.m_nodeDebugEnabled) {
-            ctx.m_forceWireframe |= m_debugContext.m_forceWireframe;
+        if (m_dbg.m_nodeDebugEnabled) {
+            ctx.m_forceWireframe |= m_dbg.m_forceWireframe;
         }
 
         // https://paroj.github.io/gltut/apas04.html
@@ -586,7 +612,7 @@ void SampleApp::selectNode(
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-    auto& debugContext = render::DebugContext::modify();
+    auto& dbg = render::DebugContext::modify();
 
     const bool selectMode = inputState.ctrl;
 
@@ -628,13 +654,13 @@ void SampleApp::selectNode(
         KI_INFO(fmt::format("selected: {}", nodeId));
 
         if (node) {
-            if (m_debugContext.m_selectionAxis != glm::vec3{0.f}) {
+            if (m_dbg.m_selectionAxis != glm::vec3{0.f}) {
                 event::Event evt { event::Type::command_rotate };
                 evt.body.command = {
                     .target = node->getId(),
                     .duration = 5,
                     .relative = true,
-                    .data = m_debugContext.m_selectionAxis,
+                    .data = m_dbg.m_selectionAxis,
                     .data2 = { 360.f, 0, 0 },
                 };
                 ctx.m_registry->m_dispatcherWorker->send(evt);

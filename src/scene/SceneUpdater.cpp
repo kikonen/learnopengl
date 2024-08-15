@@ -1,5 +1,7 @@
 #include "SceneUpdater.h"
 
+#include "ki/Timer.h"
+
 #include "asset/Assets.h"
 
 #include "model/Node.h"
@@ -133,7 +135,7 @@ uint32_t SceneUpdater::getActiveCount() const noexcept
 
 void SceneUpdater::update(const UpdateContext& ctx)
 {
-    KI_TIMER("loop    ");
+    KI_TIMER("[loop]  ");
 
     {
         KI_TIMER("event   ");

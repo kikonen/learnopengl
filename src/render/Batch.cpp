@@ -305,9 +305,9 @@ namespace render {
         const UpdateContext& ctx)
     {
         const auto& assets = ctx.m_assets;
-        const auto& debugContext = ctx.m_debugContext;
+        const auto& dbg = ctx.m_dbg;
 
-        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && debugContext.m_frustumEnabled;
+        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && dbg.m_frustumEnabled;
     }
 
     void Batch::draw(

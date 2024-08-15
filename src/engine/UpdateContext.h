@@ -24,7 +24,7 @@ public:
 
 public:
     const Assets& m_assets;
-    const render::DebugContext& m_debugContext;
+    const render::DebugContext& m_dbg;
     const ki::RenderClock& m_clock;
 
     Registry* const m_registry;
