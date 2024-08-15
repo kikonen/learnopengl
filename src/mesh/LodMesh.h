@@ -92,7 +92,6 @@ namespace mesh {
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
 
-        uint32_t m_meshIndex{ 0 };
         int32_t m_socketIndex{ -1 };
 
         glm::vec3 m_scale{ 1.f };

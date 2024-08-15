@@ -95,7 +95,6 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
-        m_meshIndex = o.m_meshIndex;
         m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
@@ -128,9 +127,8 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: level={}, index={}, vao={}, mesh={}, material={}, socket={}>",
+            "<LOD_MESH: level={}, vao={}, mesh={}, material={}, socket={}>",
             m_levelMask,
-            m_meshIndex,
             m_vao ? *m_vao : -1,
             m_mesh ? m_mesh->str() : "N/A",
             m_materialIndex,
