@@ -98,6 +98,7 @@ void PhysicsRenderer::drawObjects(
 
     //ctx.m_state.setEnabled(GL_DEPTH_TEST, false);
     ctx.m_state.setDepthFunc(GL_LEQUAL);
+    ctx.m_state.setDepthMask(GL_FALSE);
 
     int baseInstance = 0;
     for (auto& meshInstance : *meshes)
@@ -143,4 +144,5 @@ void PhysicsRenderer::drawObjects(
 
     //ctx.m_state.setEnabled(GL_DEPTH_TEST, true);
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
+    ctx.m_state.setDepthMask(GL_TRUE);
 }
