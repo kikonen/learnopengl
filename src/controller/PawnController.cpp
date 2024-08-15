@@ -1,5 +1,7 @@
 #include "PawnController.h"
 
+#include <iostream>
+
 #include "asset/Assets.h"
 
 #include "util/glm_util.h"
@@ -12,14 +14,11 @@
 
 #include "component/FpsCamera.h"
 
-#include "script/CommandEngine.h"
-#include "script/api/RotateNode.h"
-#include "script/api/MoveNode.h"
-
 #include "audio/AudioEngine.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
+#include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
 
@@ -44,6 +43,28 @@ void PawnController::prepare(
     m_speedRotateRun = assets.cameraRotateRun;
 
     m_speedMouseSensitivity = assets.cameraMouseSensitivity;
+}
+
+bool PawnController::updateWT(
+    const UpdateContext& ctx,
+    Node& node)
+{
+    const auto dt = ctx.m_clock.elapsedSecs;
+    auto& state = node.modifyState();
+    bool changed = false;
+
+    if (m_angularVelocity != 0.f) {
+        auto rot = util::axisDegreesToQuat(state.getViewUp(), m_angularVelocity * dt);
+        state.adjustRotation(rot);
+        changed = true;
+    }
+
+    if (m_velocity != glm::vec3{ 0.f }) {
+        auto adjust = m_velocity * dt;
+        state.setPosition(state.getPosition() + adjust);
+        changed = true;
+    }
+    return changed;
 }
 
 void PawnController::onKey(
@@ -96,19 +117,11 @@ void PawnController::onKey(
             }
 
             if (changed) {
-                cancelPending(m_pendingRotates);
-                auto cmdId = script::CommandEngine::get().addCommand(
-                    0,
-                    script::RotateNode{
-                        m_nodeHandle,
-                        0.f,
-                        true,
-                        snapshot.getViewUp(),
-                        adjust.y
-                    });
-                m_pendingRotates.push_back(cmdId);
-                //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
+                m_angularVelocity = adjust.y / dt;
                 actionTurn = true;
+            }
+            else {
+                m_angularVelocity = 0.f;
             }
         }
     }
@@ -156,20 +169,10 @@ void PawnController::onKey(
         }
 
         if (changed) {
-            cancelPending(m_pendingMoves);
-            auto cmdId = script::CommandEngine::get().addCommand(
-                0,
-                script::MoveNode{
-                    m_nodeHandle,
-                    0.f,
-                    true,
-                    adjust
-                });
-            m_pendingMoves.push_back(cmdId);
-
-            //glm::vec3 adjust = snapshot.getPosition();
-            //m_node->getState().setPosition(pos);
+            m_velocity = adjust / dt;
             actionWalk = true;
+        } else{
+            m_velocity = { 0.f, 0.f, 0.f };
         }
     }
 
@@ -211,19 +214,11 @@ void PawnController::onMouseMove(
     }
 
     if (changed) {
-        cancelPending(m_pendingRotates);
-        auto cmdId = script::CommandEngine::get().addCommand(
-            0,
-            script::RotateNode{
-                m_nodeHandle,
-                0.f,
-                true,
-                snapshot.getViewUp(),
-                adjust.y
-            });
-        m_pendingRotates.push_back(cmdId);
-        //m_node->getState().adjustQuatRotation(util::degreesToQuat(adjust));
+        m_angularVelocity = adjust.y;
         actionTurn = true;
+    }
+    else {
+        m_angularVelocity = 0.f;
     }
 
     toggleAudio(node, actionWalk, actionTurn);
@@ -240,12 +235,4 @@ void PawnController::toggleAudio(
 
     ae.toggleSource(walkId, actionWalk);
     ae.toggleSource(turnId, actionTurn && !actionWalk);
-}
-
-void PawnController::cancelPending(std::vector<script::command_id> pending)
-{
-    for (auto commandId : pending) {
-        script::CommandEngine::get().cancelCommand(commandId);
-    }
-    pending.clear();
 }
