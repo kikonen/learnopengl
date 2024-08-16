@@ -85,8 +85,6 @@ nodes:
       x_step: 10
       z_step: -10
     xscript: scripts/seq_skeleton
-    render_flags:
-      xdynamic_bounds: true
     active: true
     xaudio:
       listener:

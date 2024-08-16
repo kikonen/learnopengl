@@ -132,8 +132,6 @@ nodes:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     pos: [0, 100.5, 0.0]
-    render_flags:
-      xdynamic_bounds: true
     physics:
       enabled: true
     repeat:

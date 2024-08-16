@@ -304,13 +304,6 @@ namespace physics
             // NOTE KI static is enforced only once (after initial model setup)
             m_enforceBoundsStatic.clear();
         }
-
-        if (!m_enforceBoundsDynamic.empty()) {
-            //std::cout << "dynamic: " << m_enforceBoundsDynamic.size() << '\n';
-            for (auto& handle : m_enforceBoundsDynamic) {
-                enforce(handle);
-            }
-        }
     }
 
     void PhysicsEngine::preparePending(const UpdateContext& ctx)
@@ -370,9 +363,6 @@ namespace physics
             auto* type = node->m_typeHandle.toType();
             if (type->m_flags.staticBounds) {
                 m_enforceBoundsStatic.push_back(handle);
-            }
-            else {
-                m_enforceBoundsDynamic.push_back(handle);
             }
 
             prepared.push_back(node->toHandle());
@@ -488,7 +478,6 @@ namespace physics
     void PhysicsEngine::handleNodeAdded(Node* node)
     {
         auto* type = node->m_typeHandle.toType();
-        if (!(type->m_flags.staticBounds || type->m_flags.dynamicBounds)) return;
         if (!type->m_flags.staticBounds) return;
         m_pendingNodes.push_back(node->toHandle());
     }

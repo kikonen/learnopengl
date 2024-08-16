@@ -64,8 +64,6 @@ nodes:
     priority: 1
     pos: [20, 0.0, 20]
     rotation: [0, -135, 0]
-    render_flags:
-      xdynamic_bounds: true
     scale: 3
     repeat:
       x_count: 2
@@ -79,8 +77,6 @@ nodes:
     priority: 1
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
-    render_flags:
-      xdynamic_bounds: true
     scale: 3
     repeat:
       x_count: 2

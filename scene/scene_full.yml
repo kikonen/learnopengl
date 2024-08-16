@@ -56,7 +56,6 @@ nodes:
     active: true
     render_flags:
       allow_normals: false
-      xdynamic_bounds: true
     audio:
       listener:
         default: true
@@ -1184,8 +1183,6 @@ nodes:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: -15
     pos: [35, 11.5, 60.0]
-    render_flags:
-      dynamic_bounds: true
     scale: 3
     rotation: [0, -180, 0]
     repeat:

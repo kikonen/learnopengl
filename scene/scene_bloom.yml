@@ -97,8 +97,6 @@ nodes:
     rotation: [0, 45, 0]
     rotation: [0, -90, 0]
     scale: 3
-    render_flags:
-      xdynamic_bounds: true
     xgenerator:
       type: grid
     repeat:
@@ -115,8 +113,6 @@ nodes:
     priority: 1
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
-    render_flags:
-      xdynamic_bounds: true
     scale: 3
     physics:
       enabled: true

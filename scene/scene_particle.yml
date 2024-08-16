@@ -155,8 +155,6 @@ nodes:
     priority: 1
     pos: [20, 0.62, 20]
     rotation: [0, -90, 0]
-    render_flags:
-      xdynamic_bounds: true
     scale: 3
     repeat:
       x_count: 2

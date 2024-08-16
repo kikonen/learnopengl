@@ -1023,9 +1023,8 @@ namespace loader {
 
         {
             flags.staticBounds = container.getFlag("static_bounds", flags.staticBounds);
-            flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
 
-            if (nodeData.physics.enabled || flags.staticBounds || flags.dynamicBounds) {
+            if (nodeData.physics.enabled || flags.staticBounds) {
                 flags.physics = true;
             }
         }
