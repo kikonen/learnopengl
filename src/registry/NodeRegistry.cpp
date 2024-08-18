@@ -362,10 +362,6 @@ void NodeRegistry::attachListeners()
                 auto handle = pool::NodeHandle::toHandle(data.target);
                 const auto& scripts = script::ScriptEngine::get().getNodeScripts(handle);
 
-                if (!scripts.empty()) {
-                    KI_INFO_OUT(fmt::format("trigger_scripts: {}", scripts.size()));
-                }
-
                 for (const auto& scriptId : scripts) {
                     {
                         event::Event evt { event::Type::script_run };

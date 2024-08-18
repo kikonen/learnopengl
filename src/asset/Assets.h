@@ -189,6 +189,7 @@ public:
     bool physics_dContactMu2;
     bool physics_dContactSlip1;
     bool physics_dContactSlip2;
+    bool physics_dContactRolling;
     bool physics_dContactBounce;
     bool physics_dContactMotion1;
     bool physics_dContactMotion2;
@@ -196,6 +197,7 @@ public:
     bool physics_dContactSoftCFM;
     bool physics_dContactSoftERP;
     bool physics_dContactApprox1;
+    bool physics_dContactFDir1;
 
     float physics_mu;
     float physics_mu2;

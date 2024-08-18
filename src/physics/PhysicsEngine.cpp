@@ -41,6 +41,8 @@ namespace {
 
     size_t debugCounter{ 0 };
 
+    dSurfaceParameters g_surfaceTemplate;
+
     // NOTE KI shared, only single thread does checking
     dContact g_contacts[MAX_CONTACTS]{};
 
@@ -49,46 +51,51 @@ namespace {
         std::vector<physics::RayHit> hits;
     };
 
-    inline void resetContactDefaults()
+    void initTemplates()
     {
         auto& dbg = render::DebugContext::modify();
+        auto& surface = g_surfaceTemplate;
 
         // http://monsterden.net/software/ragdoll-pyode-tutorial
         // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
 
-        // up to MAX_CONTACTS contacts per box-box
-        for (int i = 0; i < MAX_CONTACTS; i++)
+        int mode = 0;
+        if (dbg.m_physics_dContactMu2) mode |= dContactMu2;
+        if (dbg.m_physics_dContactSlip1) mode |= dContactSlip1;
+        if (dbg.m_physics_dContactSlip2) mode |= dContactSlip2;
+        if (dbg.m_physics_dContactRolling) mode |= dContactRolling;
+        if (dbg.m_physics_dContactBounce) mode |= dContactBounce;
+        if (dbg.m_physics_dContactMotion1) mode |= dContactMotion1;
+        if (dbg.m_physics_dContactMotion2) mode |= dContactMotion2;
+        if (dbg.m_physics_dContactMotionN) mode |= dContactMotionN;
+        if (dbg.m_physics_dContactSoftCFM) mode |= dContactSoftCFM;
+        if (dbg.m_physics_dContactSoftERP) mode |= dContactSoftERP;
+        if (dbg.m_physics_dContactApprox1) mode |= dContactApprox1;
+        if (dbg.m_physics_dContactFDir1) mode |= dContactFDir1;
+
+        surface.mode = mode;
+
+        surface.mu = dbg.m_physics_mu;
+        surface.mu2 = dbg.m_physics_mu2;
+        surface.rho = dbg.m_physics_rho;
+        surface.rho2 = dbg.m_physics_rho2;
+        surface.rhoN = dbg.m_physics_rhoN;
+        surface.slip1 = dbg.m_physics_slip1;
+        surface.slip2 = dbg.m_physics_slip2;
+        surface.bounce = dbg.m_physics_bounce;
+        surface.bounce_vel = dbg.m_physics_bounce_vel;
+        surface.motion1 = dbg.m_physics_motion1;
+        surface.motion2 = dbg.m_physics_motion2;
+        surface.motionN = dbg.m_physics_motionN;
+        surface.soft_erp = dbg.m_physics_soft_erp;
+        surface.soft_cfm = dbg.m_physics_soft_cfm;
+    }
+
+    inline void setContactSurface(dContact* contacts, size_t count)
+    {
+        for (int i = 0; i < count; i++)
         {
-            auto& surface = g_contacts[i].surface;
-
-            int mode = 0;
-            if (dbg.m_physics_dContactMu2) mode |= dContactMu2;
-            if (dbg.m_physics_dContactSlip1) mode |= dContactSlip1;
-            if (dbg.m_physics_dContactSlip2) mode |= dContactSlip2;
-            if (dbg.m_physics_dContactBounce) mode |= dContactBounce;
-            if (dbg.m_physics_dContactMotion1) mode |= dContactMotion1;
-            if (dbg.m_physics_dContactMotion2) mode |= dContactMotion2;
-            if (dbg.m_physics_dContactMotionN) mode |= dContactMotionN;
-            if (dbg.m_physics_dContactSoftCFM) mode |= dContactSoftCFM;
-            if (dbg.m_physics_dContactSoftERP) mode |= dContactSoftERP;
-            if (dbg.m_physics_dContactApprox1) mode |= dContactApprox1;
-
-            surface.mode = mode;
-
-            surface.mu = dbg.m_physics_mu;
-            surface.mu2 = dbg.m_physics_mu2;
-            surface.rho = dbg.m_physics_rho;
-            surface.rho2 = dbg.m_physics_rho2;
-            surface.rhoN = dbg.m_physics_rhoN;
-            surface.slip1 = dbg.m_physics_slip1;
-            surface.slip2 = dbg.m_physics_slip2;
-            surface.bounce = dbg.m_physics_bounce;
-            surface.bounce_vel = dbg.m_physics_bounce_vel;
-            surface.motion1 = dbg.m_physics_motion1;
-            surface.motion2 = dbg.m_physics_motion2;
-            surface.motionN = dbg.m_physics_motionN;
-            surface.soft_erp = dbg.m_physics_soft_erp;
-            surface.soft_cfm = dbg.m_physics_soft_cfm;
+            contacts[i].surface = g_surfaceTemplate;
         }
     }
 }
@@ -129,9 +136,9 @@ namespace physics
         const auto worldId = engine->m_worldId;
         const auto groupId = engine->m_contactgroupId;
 
-        resetContactDefaults();
+        dContact* contacts = g_contacts;
 
-        if (int count = dCollide(o1, o2, MAX_CONTACTS, &g_contacts[0].geom, sizeof(dContact)))
+        if (int count = dCollide(o1, o2, MAX_CONTACTS, &contacts[0].geom, sizeof(dContact)))
         {
             auto* obj1 = engine->m_geomToObject[o1];
             auto* obj2 = engine->m_geomToObject[o2];
@@ -139,11 +146,12 @@ namespace physics
             //dMatrix3 RI;
             //dRSetIdentity(RI);
 
+            setContactSurface(contacts, count);
             for (int i = 0; i < count; i++) {
                 dJointID c = dJointCreateContact(
                     worldId,
                     groupId,
-                    g_contacts + i);
+                    contacts + i);
 
                 dJointAttach(c, b1, b2);
             }
@@ -217,6 +225,8 @@ namespace physics
     void PhysicsEngine::update(const UpdateContext& ctx)
     {
         if (!m_enabled) return;
+
+        initTemplates();
 
         m_elapsedTotal += ctx.m_clock.elapsedSecs;
         if (m_elapsedTotal < m_initialDelay) return;

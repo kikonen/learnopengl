@@ -99,6 +99,7 @@ int SampleApp::onInit()
         dbg.m_physics_dContactMu2 = assets.physics_dContactMu2;
         dbg.m_physics_dContactSlip1 = assets.physics_dContactSlip1;
         dbg.m_physics_dContactSlip2 = assets.physics_dContactSlip2;
+        dbg.m_physics_dContactRolling = assets.physics_dContactRolling;
         dbg.m_physics_dContactBounce = assets.physics_dContactBounce;
         dbg.m_physics_dContactMotion1 = assets.physics_dContactMotion1;
         dbg.m_physics_dContactMotion2 = assets.physics_dContactMotion2;
@@ -106,6 +107,7 @@ int SampleApp::onInit()
         dbg.m_physics_dContactSoftERP = assets.physics_dContactSoftERP;
         dbg.m_physics_dContactSoftCFM = assets.physics_dContactSoftCFM;
         dbg.m_physics_dContactApprox1 = assets.physics_dContactApprox1;
+        dbg.m_physics_dContactFDir1 = assets.physics_dContactFDir1;
 
         dbg.m_physics_mu = assets.physics_mu;
         dbg.m_physics_mu2 = assets.physics_mu2;

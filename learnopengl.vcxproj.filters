@@ -927,6 +927,12 @@
     <ClCompile Include="src\ki\sid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\physics\Body.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\Geom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2106,6 +2112,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\sid_format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\MeshInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

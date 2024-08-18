@@ -76,7 +76,7 @@ namespace physics {
         }
 
         {
-            KI_INFO_OUT(fmt::format("cat={}, col={}", categoryMask, collisionMask));
+            //KI_INFO_OUT(fmt::format("cat={}, col={}", categoryMask, collisionMask));
             dGeomSetCategoryBits(physicId, categoryMask);
             dGeomSetCollideBits(physicId, collisionMask);
 

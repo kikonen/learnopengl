@@ -196,6 +196,7 @@ Assets::Assets()
     physics_dContactMu2 = true;
     physics_dContactSlip1 = true;
     physics_dContactSlip2 = true;
+    physics_dContactRolling = false;
     physics_dContactBounce = true;
     physics_dContactMotion1 = false;
     physics_dContactMotion2 = false;
@@ -203,6 +204,7 @@ Assets::Assets()
     physics_dContactSoftCFM = true;
     physics_dContactSoftERP = true;
     physics_dContactApprox1 = true;
+    physics_dContactFDir1 = false;
 
     physics_mu = 100;// dInfinity;
     physics_mu2 = 0;

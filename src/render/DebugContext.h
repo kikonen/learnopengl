@@ -55,6 +55,7 @@ namespace render {
         bool m_physics_dContactMu2;
         bool m_physics_dContactSlip1;
         bool m_physics_dContactSlip2;
+        bool m_physics_dContactRolling;
         bool m_physics_dContactMotion1;
         bool m_physics_dContactMotion2;
         bool m_physics_dContactMotionN;
@@ -62,6 +63,7 @@ namespace render {
         bool m_physics_dContactSoftCFM;
         bool m_physics_dContactSoftERP;
         bool m_physics_dContactApprox1;
+        bool m_physics_dContactFDir1;
 
         float m_physics_mu;
         float m_physics_mu2;

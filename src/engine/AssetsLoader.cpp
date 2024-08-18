@@ -555,6 +555,10 @@ void AssetsLoader::loadAssets(
                 data.physics_dContactSlip2 = readBool(v);
                 continue;
             }
+            if (k == "physics_dContactRolling") {
+                data.physics_dContactRolling = readBool(v);
+                continue;
+            }
             if (k == "physics_dContactBounce") {
                 data.physics_dContactBounce = readBool(v);
                 continue;
@@ -582,6 +586,9 @@ void AssetsLoader::loadAssets(
             if (k == "physics_dContactApprox1") {
                 data.physics_dContactApprox1 = readBool(v);
                 continue;
+            }
+            if (k == "physics_dContactFDir1") {
+                data.physics_dContactFDir1 = readBool(v);
             }
             if (k == "physics_mu") {
                 data.physics_mu = readFloat(v);
