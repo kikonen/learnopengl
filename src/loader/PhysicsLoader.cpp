@@ -215,13 +215,13 @@ namespace loader {
                 else if (type == "plane") {
                     data.type = physics::GeomType::plane;
                 }
-                else if (type == "height_field") {
+                else if (type == "height_field" || type == "height") {
                     data.type = physics::GeomType::height_field;
                 }
-                else if (type == "box") {
+                else if (type == "box" || type == "cube") {
                     data.type = physics::GeomType::box;
                 }
-                else if (type == "sphere") {
+                else if (type == "sphere" || type == "ball") {
                     data.type = physics::GeomType::sphere;
                 }
                 else if (type == "capsule") {
