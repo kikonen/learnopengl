@@ -470,7 +470,7 @@ nodes:
       - pos: [24.0, 11.0, 15.0]
       - pos: [6.0, 19.0, 22.0]
         scale: 0.5
-      - pos: [240.0, 10.0, -170.0]
+      - pos: [260.0, 5.0, -170.0]
   - xid: spyro
     mesh:
       path: spyro2
@@ -856,10 +856,10 @@ nodes:
         xxmap_kd: textures/Marble White_VH_512.PNG
         map_kd: textures/tiles_1024.png
         tiling: 8
+      scale: 30
     priority: -10
     program: g_tex
     pos: [0.0, 3.7, -10.0]
-    scale: 30
     render_flags:
       no_shadow: true
     repeat:
@@ -870,10 +870,16 @@ nodes:
       y_step: 0
       z_step: 60
     physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
       geom:
-        type: plane
+        type: box
         category: [terrain]
         collision: [can_terrain]
+        size: [60, 0.01, 60]
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
@@ -890,6 +896,16 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [2, 2, 2]
   - id: terrain_grass
     id: auto
     priority: 20
@@ -964,9 +980,9 @@ nodes:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
+      scale: 128
     program: g_water
     pos: [-1072, 0.0, -772]
-    scale: 128
     render_flags:
       no_shadow: true
       water: true
@@ -986,7 +1002,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [2, 0.01, 2]
+        size: [256, 0.01, 256]
   - id: sea_floor_{t}
     priority: -25
     mesh:

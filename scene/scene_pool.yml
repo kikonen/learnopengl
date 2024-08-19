@@ -171,6 +171,16 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [2, 2, 2]
   - id: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
@@ -357,6 +367,16 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [2, 2, 2]
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
