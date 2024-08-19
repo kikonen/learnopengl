@@ -23,8 +23,12 @@ namespace particle {
 
         GLuint m_materialIndex{ 0 };
 
+        float m_spriteSpeed{ 0.f };
+        // floor used for render
+        float  m_spriteActiveIndex{ 0.f };
+
+        uint8_t m_spriteBaseIndex{ 0 };
         uint8_t m_spriteCount{ 1 };
-        uint8_t m_spriteIndex{ 0 };
 
         bool update(const UpdateContext& ctx) noexcept;
 
@@ -35,8 +39,7 @@ namespace particle {
             ssbo.u_z = m_pos.z;
             ssbo.u_scale = m_scale;
             ssbo.u_materialIndex = m_materialIndex;
-            ssbo.u_spriteIndex = m_spriteIndex;
-            ssbo.u_materialIndex = m_materialIndex;
+            ssbo.u_spriteIndex = m_spriteBaseIndex + static_cast<uint8_t>(floor(m_spriteActiveIndex));
         }
     };
 }

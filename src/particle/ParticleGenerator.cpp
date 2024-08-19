@@ -55,9 +55,11 @@ namespace particle {
             particle.m_scale = 0.0001f + prnd(0.2f);
             particle.m_materialIndex = m_material.m_registeredIndex;
 
-            const int idx = static_cast<int>(floor(prnd(m_material.spriteCount)));
-
-            particle.m_spriteIndex = idx;
+            // NOTE KI start from idx, use full 0..spriteCount range
+            const float idx = prnd(m_material.spriteCount);
+            particle.m_spriteSpeed = 2 + prnd(18.f);
+            particle.m_spriteActiveIndex = idx;
+            particle.m_spriteBaseIndex = 0;
             particle.m_spriteCount = m_material.spriteCount;
 
             ps.addParticle(particle);
