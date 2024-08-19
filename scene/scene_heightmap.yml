@@ -44,7 +44,7 @@ nodes:
         force_axis: true
       geom:
         type: box
-        category: [player]
+        category: [player, can_terrain]
         size: [1, 1, 1]
   - name: Directional light
     type: origo
@@ -125,6 +125,8 @@ nodes:
         density: 0.1
       geom:
         type: box
+        category: [prop, can_terrain]
+        collision: [player]
         size: [1]
   - id: wooden_floor
     prefab:
@@ -134,9 +136,11 @@ nodes:
         render_back: true
     pos: [0.0, -70.0, 0.0]
     pos: [0.0, -10.1, 0.0]
-    xphysics:
+    physics:
       geom:
         type: plane
+        category: [terrain]
+        collision: [can_terrain]
     scale: 200
   - id: terrain_grass
     priority: 20
@@ -171,6 +175,8 @@ nodes:
     physics:
       geom:
         type: height_field
+        category: [terrain]
+        collision: [can_terrain]
         xplaceable: true
         size: [64, 0, 64]
         xrotation: [0, 180, 0]

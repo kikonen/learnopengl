@@ -464,7 +464,7 @@ nodes:
       geom:
         type: box
         category: [prop, can_float]
-        collision: [ground, water, prop, npc]
+        collision: [terrain, water, prop, npc]
         size: [8, 5, 4]
     clones:
       - pos: [24.0, 11.0, 15.0]
@@ -716,8 +716,8 @@ nodes:
         density: 0.07
       geom:
         type: sphere
-        category: [prop, can_float]
-        collision: [ground, water, prop, npc]
+        category: [prop, can_float, can_terrain]
+        collision: [terrain, water, prop, npc]
   - name: Bronze ball
     parent_id: ball_origo
     mesh:
@@ -868,6 +868,16 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [terrain]
+        collision: [can_terrain]
+        size: [60, 0.2, 60]
   - id: pool_floor_plane_{c}_{t}
     type: origo
     pos: [0.0, 3.7, -10.0]
@@ -998,6 +1008,9 @@ nodes:
       x_step: 256
       y_step: 0
       z_step: 256
+    physics:
+      geom:
+        type: plane
   - id: planet_origo
     type: origo
     pos: [10.0, 150.0, 200.0]
@@ -1193,8 +1206,8 @@ nodes:
     physics:
       update: true
       geom:
-        category: [npc]
-        collision: [ground, prop, npc]
+        category: [npc, can_terrain]
+        collision: [terrain, prop, npc]
     script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{t}_{c}
     mesh:

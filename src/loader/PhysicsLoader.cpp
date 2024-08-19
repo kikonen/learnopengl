@@ -4,7 +4,9 @@
 
 #include <ode/ode.h>
 
+#include "util/debug.h"
 #include "util/Util.h"
+#include "util/Log.h"
 #include "util/glm_util.h"
 
 #include "event/Dispatcher.h"
@@ -24,7 +26,7 @@ namespace {
                 { "all", physics::Category::all },
                 { "invalid", physics::Category::invalid },
                 // surroundings
-                { "ground", physics::Category::ground },
+                { "terrain", physics::Category::terrain },
                 { "water", physics::Category::water },
                 { "scenery", physics::Category::scenery },
                 { "prop", physics::Category::prop },
@@ -33,6 +35,7 @@ namespace {
                 { "player", physics::Category::player },
                 // characteristic
                 { "can_float", physics::Category::can_float },
+                { "can_terrain", physics::Category::can_terrain },
                 // ray
                 { "ray_player_fire", physics::Category::ray_player_fire },
                 { "ray_npc_fire", physics::Category::ray_npc_fire },
@@ -72,6 +75,7 @@ namespace {
         const auto& it = mapping.find(v);
         if (it != mapping.end()) return it->second;
         // NOTE KI for data tracking data mismatches
+        KI_WARN_OUT(fmt::format("PHYSICS: INVALID_CATEGORY - category={}", v));
         return physics::Category::invalid;
     }
 }
@@ -242,13 +246,13 @@ namespace loader {
             else if (k == "plane") {
                 data.plane = readVec4(v);
             }
-            else if (k == "category") {
+            else if (k == "category" || k == "cat") {
                 loadMask(v, data.categoryMask);
             }
-            else if (k == "collision") {
+            else if (k == "collision" || k == "collide" || k == "coll" || k == "col") {
                 loadMask(v, data.collisionMask);
             }
-            else if (k == "placeable") {
+            else if (k == "placeable" || k == "place") {
                 data.placeable = readBool(v);
             }
             else {

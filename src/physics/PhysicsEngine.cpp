@@ -47,14 +47,13 @@ namespace {
     dContact g_contacts[MAX_CONTACTS]{};
 
     struct HitData {
-        physics::Object* test;
-        std::vector<physics::RayHit> hits;
+        physics::Object* test{ nullptr };
+        std::vector<physics::RayHit> hits{};
     };
 
-    void initTemplates()
+    void initSurface(dSurfaceParameters& surface)
     {
         auto& dbg = render::DebugContext::modify();
-        auto& surface = g_surfaceTemplate;
 
         // http://monsterden.net/software/ragdoll-pyode-tutorial
         // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
@@ -89,6 +88,11 @@ namespace {
         surface.motionN = dbg.m_physics_motionN;
         surface.soft_erp = dbg.m_physics_soft_erp;
         surface.soft_cfm = dbg.m_physics_soft_cfm;
+    }
+
+    void initTemplates()
+    {
+        initSurface(g_surfaceTemplate);
     }
 
     inline void setContactSurface(dContact* contacts, size_t count)
@@ -140,8 +144,8 @@ namespace physics
 
         if (int count = dCollide(o1, o2, MAX_CONTACTS, &contacts[0].geom, sizeof(dContact)))
         {
-            auto* obj1 = engine->m_geomToObject[o1];
-            auto* obj2 = engine->m_geomToObject[o2];
+            //auto* obj1 = engine->m_geomToObject[o1];
+            //auto* obj2 = engine->m_geomToObject[o2];
 
             //dMatrix3 RI;
             //dRSetIdentity(RI);

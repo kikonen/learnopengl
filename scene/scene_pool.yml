@@ -139,7 +139,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [60, 0.2, 60]
+        size: [60, 0.02, 60]
     script_file: scripts/anim_water
   - id: pool_side_{t}_{c}
     mesh:
@@ -224,7 +224,8 @@ nodes:
     physics:
       geom:
         type: height_field
-        xplaceable: true
+        category: [terrain]
+        collide: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
   - id: grass_{t}

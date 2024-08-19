@@ -61,7 +61,8 @@ nodes:
     physics:
       geom:
         type: height_field
-        xplaceable: true
+        category: [terrain]
+        collision: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
   - id: grid_points
@@ -91,13 +92,20 @@ nodes:
     priority: -20
     program: g_water
     pos: [0, 30.0, 0]
-    scale: 1024
+    scale: [1024, 1, 1024]
     render_flags:
       no_shadow: true
       water: true
     physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
       geom:
-        type: plane
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [2, 0.02, 2]
   - id: sea_floor
     mesh:
       path: plane
@@ -112,6 +120,9 @@ nodes:
     scale: 1024
     render_flags:
       no_shadow: true
+    physics:
+      geom:
+        type: plane
   - id: palm_tree_forest_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml

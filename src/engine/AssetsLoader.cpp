@@ -589,12 +589,13 @@ void AssetsLoader::loadAssets(
             }
             if (k == "physics_dContactFDir1") {
                 data.physics_dContactFDir1 = readBool(v);
+                continue;
             }
             if (k == "physics_mu") {
                 data.physics_mu = readFloat(v);
                 continue;
             }
-            if (k == "physicsmu2") {
+            if (k == "physics_mu2") {
                 data.physics_mu2 = readFloat(v);
                 continue;
             }
