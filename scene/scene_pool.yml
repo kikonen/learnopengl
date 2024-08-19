@@ -48,30 +48,41 @@ nodes:
         tiling: 5
         program: g_tex
       scale: 2.5
-    pos: [0, 9.5, -10]
+    pos: [0, 12.5, -10]
     physics:
       body:
         type: box
-        density: 0.5
+        density: 2
         rot: [0, 0, 0]
       geom:
         type: box
         category: [can_float]
         collision: [water]
         size: [5, 5, 5]
-  - name: Cube map - mirror_ball
+  - id: cube_map_mirror_ball
+    parent_id: mirror_ball
     type: origo
-    pos: [0, 30.5, -10]
+    #pos: [0, 30.5, -10]
     render_flags:
       cube_map: true
-  - name: Mirror ball
+  - id: mirror_ball
     mesh:
       path: glass_ball
       material_modifier:
         reflection: 0.8
         program: g_tex
       scale: 10
-    pos: [0, 30.5, -10]
+    pos: [10, 30.5, -10]
+    physics:
+      body:
+        type: sphere
+        density: 0.0001
+        rot: [0, 0, 0]
+      geom:
+        type: sphere
+        category: [can_float]
+        collision: [water]
+        size: [10]
   - name: Big mirror 2
     mesh:
       path: quad
@@ -134,7 +145,7 @@ nodes:
       body:
         type: box
         kinematic: true
-        density: 0.5
+        density: 0.3
       geom:
         type: box
         category: [water]
