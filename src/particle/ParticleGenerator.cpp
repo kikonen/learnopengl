@@ -57,7 +57,7 @@ namespace particle {
 
             // NOTE KI start from idx, use full 0..spriteCount range
             const float idx = prnd(m_material.spriteCount);
-            particle.m_spriteSpeed = 2 + prnd(18.f);
+            particle.m_spriteSpeed = 20.f - prnd(40.f);
             particle.m_spriteActiveIndex = idx;
             particle.m_spriteBaseIndex = 0;
             particle.m_spriteCount = m_material.spriteCount;

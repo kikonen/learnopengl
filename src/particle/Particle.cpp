@@ -12,7 +12,15 @@ namespace particle {
         m_lifetime -= dt;
         if (m_lifetime <= 0) return false;
 
-        m_spriteActiveIndex += std::fmodf(dt * m_spriteSpeed, (float)m_spriteCount);
+        if (m_spriteSpeed >= 0) {
+            m_spriteActiveIndex += std::fmodf(dt * m_spriteSpeed, (float)m_spriteCount);
+        }
+        else {
+            m_spriteActiveIndex += dt * m_spriteSpeed;
+            if (m_spriteActiveIndex < 0) {
+                m_spriteActiveIndex = ((float)m_spriteCount) + m_spriteActiveIndex;
+            }
+        }
 
         //KI_INFO_OUT(fmt::format(
         //    "index={}, active={}, speed={}, count={}",
