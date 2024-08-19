@@ -463,13 +463,14 @@ nodes:
         size: [8, 5, 4]
       geom:
         type: box
-        category: [prop, can_float]
-        collision: [terrain, water, prop, npc]
+        category: [prop, can_float, can_terrain]
+        collision: [prop, npc]
         size: [8, 5, 4]
     clones:
       - pos: [24.0, 11.0, 15.0]
       - pos: [6.0, 19.0, 22.0]
         scale: 0.5
+      - pos: [240.0, 10.0, -170.0]
   - xid: spyro
     mesh:
       path: spyro2
@@ -717,7 +718,7 @@ nodes:
       geom:
         type: sphere
         category: [prop, can_float, can_terrain]
-        collision: [terrain, water, prop, npc]
+        collision: [prop, npc]
   - name: Bronze ball
     parent_id: ball_origo
     mesh:
@@ -844,7 +845,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [60, 0.2, 60]
+        size: [60, 0.01, 60]
     script_file: scripts/anim_water
   - id: pool_floor_{t}
     mesh:
@@ -869,21 +870,10 @@ nodes:
       y_step: 0
       z_step: 60
     physics:
-      body:
-        type: box
-        kinematic: true
-        density: 0.5
-      geom:
-        type: box
-        category: [terrain]
-        collision: [can_terrain]
-        size: [60, 0.2, 60]
-  - id: pool_floor_plane_{c}_{t}
-    type: origo
-    pos: [0.0, 3.7, -10.0]
-    physics:
       geom:
         type: plane
+        category: [terrain]
+        collision: [can_terrain]
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
@@ -933,9 +923,9 @@ nodes:
     physics:
       geom:
         type: height_field
-        xplaceable: true
+        category: [terrain]
+        collision: [can_terrain]
         size: [2048, 0, 2048]
-        xrotation: [0, 180, 0]
   - id: grid_points_{t}
     mesh:
       path: glass_ball
@@ -987,6 +977,16 @@ nodes:
       x_step: 256
       y_step: 0
       z_step: 256
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [2, 0.01, 2]
   - id: sea_floor_{t}
     priority: -25
     mesh:
@@ -1011,6 +1011,8 @@ nodes:
     physics:
       geom:
         type: plane
+        category: [terrain]
+        collision: [can_terrain]
   - id: planet_origo
     type: origo
     pos: [10.0, 150.0, 200.0]
@@ -1207,7 +1209,7 @@ nodes:
       update: true
       geom:
         category: [npc, can_terrain]
-        collision: [terrain, prop, npc]
+        collision: [prop, npc]
     script_file: scripts/seq_skeleton_army
   - xid: giant_wooden_box_{t}_{c}
     mesh:
