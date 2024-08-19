@@ -7,7 +7,6 @@ enum class NodeType : std::underlying_type_t<std::byte> {
     container,
     model,
     text,
-    primitive,
     terrain,
     skybox,
 };

@@ -46,7 +46,6 @@ nodes:
     scale: 100
     position: [0, 0, 0]
   - id: lines
-    type: primitive
     mesh:
       material:
         kd: [0.0, 0.0, 1.0, 1.0]
@@ -67,7 +66,6 @@ nodes:
     pos: [0, 2, 0]
     script: scripts/anim_lucy
   - id: points
-    type: primitive
     mesh:
       material:
         kd: [0.0, 1.0, 0.0, 1.0]
@@ -89,7 +87,6 @@ nodes:
     pos: [3, 2, 0]
     xscript: scripts/anim_lucy
   - id: primitive-1
-    type: primitive
     mesh:
       material:
         xkd: [0.0, 0.2, 0.0, 1.0]
@@ -106,7 +103,6 @@ nodes:
     scale: 1
     pos: [2, 2, -20]
   - id: primitive-2
-    type: primitive
     mesh:
       material:
         xkd: [0.0, 0.2, 0.0, 1.0]
