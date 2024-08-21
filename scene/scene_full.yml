@@ -460,12 +460,12 @@ nodes:
       body:
         type: box
         density: 0.3
-        size: [8, 5, 4]
+        size: [4, 2.5, 2]
       geom:
         type: box
         category: [prop, can_float, can_terrain]
         collision: [prop, npc]
-        size: [8, 5, 4]
+        size: [4, 2.5, 2]
     clones:
       - pos: [24.0, 11.0, 15.0]
       - pos: [6.0, 19.0, 22.0]
@@ -845,7 +845,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [60, 0.01, 60]
+        size: [30, 0.01, 30]
     script_file: scripts/anim_water
   - id: pool_floor_{t}
     mesh:
@@ -986,7 +986,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [2, 0.01, 2]
+        size: [1, 0.01, 1]
   - id: sea_floor_{t}
     priority: -25
     mesh:

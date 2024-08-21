@@ -60,7 +60,7 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     pos: [0, 0.5, 0]
-    rotation: [0, -90, 0]
+    #rotation: [0, -90, 0]
     scale: 1
     xrepeat:
       x_count: 2
@@ -113,4 +113,4 @@ nodes:
         density: 0.1
       geom:
         type: box
-        size: [1]
+        size: [0.5]

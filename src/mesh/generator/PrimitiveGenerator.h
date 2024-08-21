@@ -137,6 +137,10 @@ namespace mesh {
             };
         }
 
+        /// @param size Half of the side length in x (0), y (1) and z (2) direction.
+        /// @param segments The number of segments in x (0), y (1) and z (2)
+        /// directions. All should be >= 1. If any one is zero faces in that
+        /// direction are not genereted. If more than one is zero the mesh is empty.
         static PrimitiveGenerator box()
         {
             return {

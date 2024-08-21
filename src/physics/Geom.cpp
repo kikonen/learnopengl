@@ -49,7 +49,7 @@ namespace physics {
             break;
         }
         case GeomType::box: {
-            physicId = dCreateBox(spaceId, sz.x, sz.y, sz.z);
+            physicId = dCreateBox(spaceId, sz.x * 2.f, sz.y * 2.f, sz.z * 2.f);
             break;
         }
         case GeomType::sphere: {

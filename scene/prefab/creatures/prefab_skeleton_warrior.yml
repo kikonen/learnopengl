@@ -55,6 +55,8 @@ prefab:
             channel: A
         program: g_tex
         shadow_program: simple_depth
+      flags:
+        use_sockets: true
       base_scale: 0.00121
     - name: armor
       path: fbx\creatures\skeleton_knight\Armor.fbx
@@ -72,6 +74,8 @@ prefab:
             channel: A
         program: g_tex
         shadow_program: simple_depth
+      flags:
+        use_sockets: true
       base_scale: 0.000121
     - name: 2HandedSword
       path: fbx\creatures\skeleton_knight\2HandedSword.fbx
@@ -89,6 +93,8 @@ prefab:
             channel: A
         program: g_tex
         shadow_program: simple_depth
+      flags:
+        use_sockets: true
       base_scale: 0.000075
     - name: shield
       path: fbx\creatures\skeleton_knight\Shield.fbx
@@ -106,6 +112,8 @@ prefab:
             channel: A
         program: g_tex
         shadow_program: simple_depth
+      flags:
+        use_sockets: true
       base_scale: 0.0001
   attachments:
     - name: Helmet

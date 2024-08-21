@@ -16,5 +16,7 @@ namespace mesh {
         bool useBones : 1 {false};
         bool useBonesDebug : 1 {false};
         bool useAnimation : 1 {false};
+
+        bool useSockets : 1 {false};
     };
 }

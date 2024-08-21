@@ -11,7 +11,7 @@ nodes:
     mesh:
       vertex:
         type: box
-        size: [2, 2, 2]
+        size: [1]
       material:
         kd: [0.4, 0.4, 1, 0.75]
         map_pbr: textures\Metal008_1K-PNG
@@ -45,7 +45,7 @@ nodes:
       geom:
         type: box
         category: [player, can_terrain]
-        size: [1, 1, 1]
+        size: [1]
   - name: Directional light
     type: origo
     mesh:
