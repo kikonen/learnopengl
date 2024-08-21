@@ -239,7 +239,6 @@
     <ClCompile Include="src\mesh\PrimitiveMesh.cpp" />
     <ClCompile Include="src\mesh\LodMesh.cpp" />
     <ClCompile Include="src\animation\RigSocket.cpp" />
-    <ClCompile Include="src\mesh\TransformRegistry.cpp" />
     <ClCompile Include="src\mesh\mesh_util.cpp" />
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp" />
     <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp" />
@@ -554,7 +553,6 @@
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\animation\RigSocket.h" />
     <ClInclude Include="src\mesh\PrimitiveType.h" />
-    <ClInclude Include="src\mesh\TransformRegistry.h" />
     <ClInclude Include="src\mesh\TransformSSBO.h" />
     <ClInclude Include="src\mesh\mesh_util.h" />
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />
