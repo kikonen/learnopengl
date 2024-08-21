@@ -27,13 +27,13 @@ namespace physics {
 
         // NOTE KI *SCALED* using scale of node
         // box:
-        // - size == vec3
+        // - size == vec3 (half size of cube)
         // sphere:
         // - size.x == radius
         // capsule/cylinder:
         // - size.x == radius
         // - size.y == length (Half of the length between centers of the caps along the z-axis.)
-        glm::vec3 size{ 1.f };
+        glm::vec3 size{ 0.5f };
 
         glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 offset{ 0.f };

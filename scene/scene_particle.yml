@@ -148,7 +148,7 @@ nodes:
         kinematic: true
       geom:
         type: box
-        size: [2]
+        size: [1]
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml

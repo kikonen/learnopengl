@@ -1050,6 +1050,8 @@ namespace loader {
             if (!flags.useBones) {
                 flags.useBonesDebug = false;
             }
+
+            flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
         }
     }
 

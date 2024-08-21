@@ -4,8 +4,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "pool/TypeHandle.h"
-
 #include "Particle.h"
 #include "ParticleSSBO.h"
 
@@ -36,7 +34,7 @@ namespace particle {
             m_enabled = enabled;
         }
 
-        bool isEnabled() { return m_enabled; }
+        bool isEnabled() const noexcept { return m_enabled; }
 
         void addParticle(const Particle& particle);
 
@@ -63,8 +61,6 @@ namespace particle {
 
         size_t m_maxCount{ 0 };
         std::vector<Particle> m_particles;
-
-        pool::TypeHandle m_typeHandle{};
 
         std::vector<ParticleSSBO> m_snapshot;
         size_t m_snapshotCount{ 0 };

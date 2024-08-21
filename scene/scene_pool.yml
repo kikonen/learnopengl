@@ -58,7 +58,7 @@ nodes:
         type: box
         category: [can_float]
         collision: [water]
-        size: [5, 5, 5]
+        size: [2.5]
   - id: cube_map_mirror_ball
     parent_id: mirror_ball
     type: origo
@@ -150,7 +150,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [60, 0.02, 60]
+        size: [30, 0.02, 30]
     script_file: scripts/anim_water
   - id: pool_side_{t}_{c}
     mesh:
