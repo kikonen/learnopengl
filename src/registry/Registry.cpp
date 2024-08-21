@@ -21,7 +21,6 @@
 #include "animation/AnimationSystem.h"
 
 #include "terrain/TerrainTileRegistry.h"
-#include "mesh/TransformRegistry.h"
 
 #include "text/FontRegistry.h"
 #include "text/TextSystem.h"
@@ -70,7 +69,6 @@ void Registry::prepareShared()
     m_dispatcherWorker->prepare();
     m_dispatcherView->prepare();
 
-    mesh::TransformRegistry::get().prepare();
     MaterialRegistry::get().prepare();
     EntityRegistry::get().prepare();
     ModelRegistry::get().prepare(m_alive);
@@ -120,7 +118,6 @@ void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
 
-    mesh::TransformRegistry::get().updateRT(ctx);
     MaterialRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
