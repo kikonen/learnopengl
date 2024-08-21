@@ -37,7 +37,6 @@ namespace {
 
     const ki::program_id NULL_PROGRAM_ID = 0;
 
-    ParticleRenderer particleRenderer{ true };
 }
 
 namespace render {
@@ -56,7 +55,8 @@ namespace render {
     }
 
     NodeDraw::NodeDraw()
-        : m_textureQuad{ render::TextureQuad::get() }
+        : m_textureQuad{ render::TextureQuad::get() },
+        m_particleRenderer{ std::make_unique<ParticleRenderer>(true) }
     {}
 
     NodeDraw::~NodeDraw()
@@ -115,7 +115,7 @@ namespace render {
 
         m_timeElapsedQuery.create();
 
-        particleRenderer.prepareRT(ctx);
+        m_particleRenderer->prepareRT(ctx);
     }
 
     void NodeDraw::updateRT(const UpdateViewContext& ctx)
@@ -379,7 +379,7 @@ namespace render {
         if (!ctx.m_forceSolid)
         {
             state.setStencil({});
-            particleRenderer.render(ctx);
+            m_particleRenderer->render(ctx);
         }
 
         // pass 8 - screenspace effects

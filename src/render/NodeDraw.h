@@ -25,6 +25,7 @@ class RenderContext;
 
 class Node;
 
+class ParticleRenderer;
 namespace editor {
     class EditorFrame;
 }
@@ -127,6 +128,8 @@ namespace render {
         Program* m_hdrGammaProgram{ nullptr };
 
         query::TimeElapsedQuery m_timeElapsedQuery;
+
+        std::unique_ptr<ParticleRenderer> m_particleRenderer;
 
         // NodeDraw
         MeshTypeMap m_solidNodes;
