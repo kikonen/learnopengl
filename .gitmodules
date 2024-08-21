@@ -1,3 +1,6 @@
 [submodule "resources"]
 	path = resources
 	url = git@github.com:kikonen/learnopengl_assets.git
+[submodule "vendor_modules/assimp"]
+	path = vendor_modules/assimp
+	url = git@github.com:kikonen/assimp.git
