@@ -1145,58 +1145,9 @@ nodes:
         z_count: 40
         x_step: -20
         z_step: 20
-  - id: grass_{t}
-    meshes:
-      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-        lods:
-          - level: 0
-        materials:
-          - name: grass_bush_01_pbr
-            alias: M_atlas_grass_01
-            map_pbr: grass_01_pbr
-            alpha: true
-            blend: true
-            render_back: true
-        base_scale: 0.01
-      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-        lods:
-          - level: 1
-        materials:
-          - name: grass_bush_01_pbr
-            alias: M_atlas_grass_01
-            map_pbr: grass_01_pbr
-            alpha: true
-            render_back: true
-        base_scale: 0.01
-      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-        lods:
-          - level: 2
-        materials:
-          - name: grass_bush_01_pbr
-            alias: M_atlas_grass_01
-            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
-            render_back: true
-        base_scale: 0.01
-      - path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-        lods:
-          - level: 3
-        materials:
-          - name: grass_bush_01_pbr
-            alias: M_atlas_grass_01
-            map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
-        base_scale: 0.01
-    lod_levels:
-      - level: 0
-        distance: 0
-      - level: 1
-        distance: 50
-      - level: 2
-        distance: 80
-      - level: 3
-        distance: 200
-    mesh_scale: 0.01
-    program: g_tex
-    shadow_program: simple_depth
+  - id: grass_{t}_{c}
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
     priority: -20
     pos: [250, 10.0, -100.0]
     rotation: [0, 0, 0]

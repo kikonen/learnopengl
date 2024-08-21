@@ -1,0 +1,62 @@
+---
+prefab:
+  meshes:
+    - id: prefab_grass
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+      lods:
+        - level: 0
+      materials:
+        - name: grass_bush_01_pbr
+          alias: M_atlas_grass_01
+          map_pbr: grass_01_pbr
+          alpha: true
+          blend: true
+          render_back: true
+      scale: 0.01
+      program: g_tex
+      shadow_program: simple_depth
+    - id: prefab_grass
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+      lods:
+        - level: 1
+      materials:
+        - name: grass_bush_01_pbr
+          alias: M_atlas_grass_01
+          map_pbr: grass_01_pbr
+          alpha: true
+          render_back: true
+      scale: 0.01
+      program: g_tex
+      shadow_program: simple_depth
+    - id: prefab_grass
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+      lods:
+        - level: 2
+      materials:
+        - name: grass_bush_01_pbr
+          alias: M_atlas_grass_01
+          map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+          render_back: true
+      scale: 0.01
+      program: g_tex
+      shadow_program: simple_depth
+    - id: prefab_grass
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+      lods:
+        - level: 3
+      materials:
+        - name: grass_bush_01_pbr
+          alias: M_atlas_grass_01
+          map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+      scale: 0.01
+      program: g_tex
+      shadow_program: simple_depth
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 50
+    - level: 2
+      distance: 80
+    - level: 3
+      distance: 200
