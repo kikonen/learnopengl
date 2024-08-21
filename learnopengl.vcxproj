@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;C:\work\own\projects\external\opengl\fix\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;$(ProjectDir)\vendor_modules\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SupportJustMyCode>false</SupportJustMyCode>
@@ -150,14 +150,14 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)vendor\lib\assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)vendor_modules\assimp\lib\Debug\assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)vendor\lib\*.DLL" "$(TargetDir)" /D /K /Y
-XCOPY "$(SolutionDir)vcpkg_installed\x64-windows\x64-windows\debug\bin\*.dll" "$(TargetDir)" /D /K /Y
+      <Command>XCOPY "$(SolutionDir)vendor_modules\assimp\bin\Debug\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(SolutionDir)vcpkg_installed\x64-windows\x64-windows\Debug\bin\*.dll" "$(TargetDir)" /D /K /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -169,7 +169,7 @@ XCOPY "$(SolutionDir)vcpkg_installed\x64-windows\x64-windows\debug\bin\*.dll" "$
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;$(ProjectDir)\vendor_modules\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -184,12 +184,15 @@ XCOPY "$(SolutionDir)vcpkg_installed\x64-windows\x64-windows\debug\bin\*.dll" "$
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>$(SolutionDir)vendor_modules\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)"\vendor\lib\*.DLL "$(TargetDir)" /D /K /Y</Command>
+      <Command>XCOPY "$(SolutionDir)vendor_modules\assimp\bin\Release\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(SolutionDir)vcpkg_installed\x64-windows\x64-windows\bin\*.dll" "$(TargetDir)" /D /K /Y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
