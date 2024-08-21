@@ -80,4 +80,4 @@ prefab:
       distance: 500
     - level: 4
       distance: 500
-  base_rotation: [-90, 0, 0]
+  #base_rotation: [-90, 0, 0]

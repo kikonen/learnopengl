@@ -281,7 +281,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [5.0, 10.0, -5.0]
-    rotation: [-90.0, 0.0, 0.0]
+    #rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - id: door_1
     mesh:
@@ -295,7 +295,7 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [-5.0, 10.0, -5.0]
-    rotation: [-90.0, 0.0, 0.0]
+    #rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - name: Window 1_1
     mesh:
@@ -309,7 +309,8 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [5.0, 8.0, 0.0]
-    rotation: [-90.0, -45.0, 0.0]
+    #rotation: [-90.0, -45.0, 0.0]
+    rotation: [0.0, -45.0, 0.0]
     scale: 4
   - name: Window 2
     mesh:
@@ -323,7 +324,8 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [7.0, 14.0, -8.0]
-    rotation: [-90.0, 0.0, 0.0]
+    #rotation: [-90.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
     scale: 2
   - id: stained_windows_{t}
     mesh:
@@ -337,7 +339,8 @@ nodes:
         shadow_program: simple_depth
       base_scale: 0.01
     pos: [-10.0, 20.0, 10.0]
-    rotation: [-90.0, 0.0, 0.0]
+    #rotation: [-90.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
     scale: 2
     repeat:
       x_count: 10
