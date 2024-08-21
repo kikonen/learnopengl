@@ -46,7 +46,11 @@ namespace ki {
     std::string FpsCounter::formatSummary(std::string_view title) const noexcept
     {
         return fmt::format(
-            "{} - FPS: {} - RENDER: {:.3}ms",
+#ifdef _DEBUG
+            "Debug {} - FPS: {} - RENDER: {:.3}ms",
+#else
+            "Release {} - FPS: {} - RENDER: {:.3}ms",
+#endif
             title,
             round(m_fpsAvg),
             m_millisAvg);
