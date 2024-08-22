@@ -210,6 +210,8 @@
     <ClCompile Include="src\component\OrbitCamerra.cpp" />
     <ClCompile Include="src\component\Spline.cpp" />
     <ClCompile Include="src\component\SplineCamera.cpp" />
+    <ClCompile Include="src\decal\Decal.cpp" />
+    <ClCompile Include="src\decal\DecalSystem.cpp" />
     <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
@@ -253,6 +255,7 @@
     <ClCompile Include="src\physics\Geom.cpp" />
     <ClCompile Include="src\physics\MeshGenerator.cpp" />
     <ClCompile Include="src\registry\VaoRegistry.cpp" />
+    <ClCompile Include="src\renderer\DecalRenderer.cpp" />
     <ClCompile Include="src\renderer\PhysicsRenderer.cpp" />
     <ClCompile Include="src\render\DebugContext.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
@@ -512,6 +515,9 @@
     <ClInclude Include="src\component\OrbitCamera.h" />
     <ClInclude Include="src\component\Spline.h" />
     <ClInclude Include="src\component\SplineCamera.h" />
+    <ClInclude Include="src\decal\Decal.h" />
+    <ClInclude Include="src\decal\DecalSSBO.h" />
+    <ClInclude Include="src\decal\DecalSystem.h" />
     <ClInclude Include="src\editor\EditorState.h" />
     <ClInclude Include="src\event\Type.h" />
     <ClInclude Include="src\ki\sid_format.h" />
@@ -565,6 +571,7 @@
     <ClInclude Include="src\physics\MeshGenerator.h" />
     <ClInclude Include="src\physics\RayHit.h" />
     <ClInclude Include="src\registry\VaoRegistry.h" />
+    <ClInclude Include="src\renderer\DecalRenderer.h" />
     <ClInclude Include="src\renderer\PhysicsRenderer.h" />
     <ClInclude Include="src\render\DebugContext.h" />
     <ClInclude Include="src\render\size.h" />

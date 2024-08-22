@@ -119,9 +119,9 @@ namespace physics
                 static_cast<float>(contact.pos[2]) };
 
             hit.normal = {
-                static_cast<float>(contact.pos[0]),
-                static_cast<float>(contact.pos[1]),
-                static_cast<float>(contact.pos[2]) };
+                static_cast<float>(contact.normal[0]),
+                static_cast<float>(contact.normal[1]),
+                static_cast<float>(contact.normal[2]) };
 
             hit.depth = static_cast<float>(contact.depth);
         }

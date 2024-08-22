@@ -659,6 +659,16 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "decal_enabled") {
+                data.decalEnabled = readBool(v);
+                continue;
+            }
+            if (k == "decal_max_count") {
+                data.decalMaxCount = readInt(v);
+                continue;
+            }
+        }
+        {
             if (k == "shadow_map_enabled") {
                 data.shadowMapEnabled = readBool(v);
                 continue;

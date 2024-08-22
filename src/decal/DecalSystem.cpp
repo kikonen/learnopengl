@@ -1,4 +1,4 @@
-#include "ParticleSystem.h"
+#include "DecalSystem.h"
 
 #include "asset/Assets.h"
 #include "asset/SSBO.h"
@@ -14,40 +14,41 @@
 #include "registry/Registry.h"
 #include "registry/ProgramRegistry.h"
 
-#include "Particle.h"
-#include "ParticleGenerator.h"
+#include "Decal.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
 
-    static particle::ParticleSystem s_system;
+    static decal::DecalSystem g_system;
 }
 
-namespace particle {
-    ParticleSystem& ParticleSystem::get() noexcept
+namespace decal {
+    DecalSystem& DecalSystem::get() noexcept
     {
-        return s_system;
+        return g_system;
     }
 
-    ParticleSystem::ParticleSystem()
+    DecalSystem::DecalSystem()
     {
-        m_particles.reserve(1 * BLOCK_SIZE);
+        m_decals.reserve(1 * BLOCK_SIZE);
     }
 
-    void ParticleSystem::addParticle(const Particle& particle)
+    void DecalSystem::addDecal(const Decal& decal)
     {
+        if (!decal.m_parent) return;
+
         std::lock_guard lock(m_lock);
         if (isFull()) return;
 
-        m_particles.push_back(particle);
+        m_decals.push_back(decal);
     }
 
-    void ParticleSystem::prepare() {
+    void DecalSystem::prepare() {
         const auto& assets = Assets::get();
 
-        m_enabled = assets.particleEnabled;
-        m_maxCount = std::min<int>(assets.particleMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
+        m_enabled = assets.decalEnabled;
+        m_maxCount = std::min<int>(assets.decalMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
 
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
@@ -61,36 +62,36 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_PARTICLES);
+        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(DecalSSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.bindSSBO(SSBO_DECALS);
     }
 
-    void ParticleSystem::updateWT(const UpdateContext& ctx)
+    void DecalSystem::updateWT(const UpdateContext& ctx)
     {
         if (!isEnabled()) return;
 
         std::lock_guard lock(m_lock);
 
-        size_t size = m_particles.size();
+        size_t size = m_decals.size();
         for (size_t i = 0; i < size; i++) {
-            auto& particle = m_particles[i];
-            if (!particle.update(ctx)) {
+            auto& decal = m_decals[i];
+            if (!decal.update(ctx)) {
                 if (i < size - 1) {
-                    m_particles[i] = m_particles[size - 1];
+                    m_decals[i] = m_decals[size - 1];
                 }
                 size--;
                 i--;
             }
         }
 
-        if (size != m_particles.size()) {
-            m_particles.resize(size);
+        if (size != m_decals.size()) {
+            m_decals.resize(size);
         }
 
-        snapshotParticles();
+        snapshotDecals();
     }
 
-    void ParticleSystem::updateRT(const UpdateContext& ctx)
+    void DecalSystem::updateRT(const UpdateContext& ctx)
     {
         if (!isEnabled()) return;
         if (!m_updateReady) return;
@@ -101,34 +102,34 @@ namespace particle {
         }
         m_frameSkipCount = 0;
 
-        updateParticleBuffer();
+        updateDecalBuffer();
     }
 
-    void ParticleSystem::snapshotParticles()
+    void DecalSystem::snapshotDecals()
     {
         std::lock_guard lock(m_snapshotLock);
 
-        if (m_particles.empty()) {
+        if (m_decals.empty()) {
             m_snapshotCount = 0;
             return;
         }
 
-        constexpr size_t sz = sizeof(ParticleSSBO);
-        const size_t totalCount = m_particles.size();
+        constexpr size_t sz = sizeof(DecalSSBO);
+        const size_t totalCount = m_decals.size();
 
         if (m_snapshotCount != totalCount) {
             m_snapshot.resize(totalCount);
         }
 
         for (size_t i = 0; i < totalCount; i++) {
-             m_particles[i].updateSSBO(m_snapshot[i]);
+             m_decals[i].updateSSBO(m_snapshot[i]);
         }
 
         m_snapshotCount = totalCount;
         m_updateReady = true;
     }
 
-    void ParticleSystem::updateParticleBuffer()
+    void DecalSystem::updateDecalBuffer()
     {
         std::lock_guard lock(m_snapshotLock);
 
@@ -137,14 +138,14 @@ namespace particle {
             return;
         }
 
-        constexpr size_t sz = sizeof(ParticleSSBO);
+        constexpr size_t sz = sizeof(DecalSSBO);
         const size_t totalCount = m_snapshotCount;
 
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
             if (m_ssbo.resizeBuffer(bufferSize)) {
-                m_ssbo.bindSSBO(SSBO_PARTICLES);
+                m_ssbo.bindSSBO(SSBO_DECALS);
             }
         }
 

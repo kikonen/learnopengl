@@ -10,7 +10,7 @@
 
 #include "pool/TypeHandle.h"
 
-
+#include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
@@ -19,6 +19,7 @@
 #include "engine/PrepareContext.h"
 
 #include "renderer/ParticleRenderer.h"
+#include "renderer/DecalRenderer.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -36,7 +37,6 @@ namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
     const ki::program_id NULL_PROGRAM_ID = 0;
-
 }
 
 namespace render {
@@ -56,7 +56,8 @@ namespace render {
 
     NodeDraw::NodeDraw()
         : m_textureQuad{ render::TextureQuad::get() },
-        m_particleRenderer{ std::make_unique<ParticleRenderer>(true) }
+        m_particleRenderer{ std::make_unique<ParticleRenderer>(true) },
+        m_decalRenderer{ std::make_unique < DecalRenderer>(true) }
     {}
 
     NodeDraw::~NodeDraw()
@@ -116,6 +117,7 @@ namespace render {
         m_timeElapsedQuery.create();
 
         m_particleRenderer->prepareRT(ctx);
+        m_decalRenderer->prepareRT(ctx);
     }
 
     void NodeDraw::updateRT(const UpdateViewContext& ctx)
@@ -226,6 +228,10 @@ namespace render {
                     kindBits);
 
                 ctx.m_batch->flush(ctx);
+
+                {
+                    m_decalRenderer->render(ctx);
+                }
 
                 if (assets.prepassDepthEnabled) {
                     state.setDepthFunc(ctx.m_depthFunc);
@@ -374,7 +380,6 @@ namespace render {
                 nodeSelector);
             ctx.m_batch->flush(ctx);
         }
-
 
         if (!ctx.m_forceSolid)
         {
