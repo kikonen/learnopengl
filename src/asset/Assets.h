@@ -217,6 +217,9 @@ public:
     bool particleEnabled;
     int particleMaxCount;
 
+    bool decalEnabled;
+    int decalMaxCount;
+
     bool shadowMapEnabled;
 
     bool shadowPolygonOffsetEnabled;

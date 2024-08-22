@@ -9,6 +9,7 @@ const std::string SHADER_SELECTION{ "selection" };
 //const std::string SHADER_TERRAIN{ "terrain" };
 //const std::string SHADER_WATER{ "water" };
 const std::string SHADER_PARTICLE{ "particle" };
+const std::string SHADER_DECAL{ "g_decal" };
 const std::string SHADER_NORMAL{ "normal" };
 const std::string SHADER_OBJECT_ID{ "object_id" };
 //const std::string SHADER_LIGHT{ "light" };
@@ -55,6 +56,7 @@ const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 const std::string DEF_USE_BONES{ "USE_BONES" };
+const std::string DEF_USE_SOCKETS{ "USE_SOCKETS" };
 
 const std::string DEF_MAX_SHADOW_MAP_COUNT{ "MAX_SHADOW_MAP_COUNT" };
 

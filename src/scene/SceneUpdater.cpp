@@ -17,6 +17,7 @@
 #include "audio/AudioEngine.h"
 
 #include "animation/AnimationSystem.h"
+#include "decal/DecalSystem.h"
 
 #include "engine/UpdateContext.h"
 
@@ -200,6 +201,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 m_registry->m_workerSnapshotRegistry,
                 0, -1);
         }
+
+        decal::DecalSystem::get().updateWT(ctx);
     }
 
     if (m_loaded) {

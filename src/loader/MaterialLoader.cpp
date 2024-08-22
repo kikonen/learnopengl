@@ -445,11 +445,6 @@ namespace loader {
             }
         }
 
-        material.spritesY = material.spriteCount / material.spritesX;
-        if (material.spriteCount % material.spritesX != 0) {
-            material.spritesY++;
-        }
-
         if (material.hasRegisteredTex(TextureType::displacement_map)) {
             if (!fields.parallaxDepth) {
                 KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", DEF_PARALLAX_DEPTH));
@@ -716,7 +711,6 @@ namespace loader {
 
         if (f.spriteCount) m.spriteCount = mod.spriteCount;
         if (f.spritesX) m.spritesX = mod.spritesX;
-        if (f.spritesX) m.spritesY = mod.spritesY;
 
         if (f.ns) m.ns = mod.ns;
 

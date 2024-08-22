@@ -160,6 +160,9 @@ assets:
   particle_enabled: true
   particle_max_count: 100000
 
+  decal_enabled: true
+  decal_max_count: 4000
+
   shadow_map_enabled: true
 
   shadow_polygon_offset_enabled: true

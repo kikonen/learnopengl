@@ -316,4 +316,11 @@ namespace util {
 
         return sb.str();
     }
+
+    float prnd(float max)
+    {
+        // https://stackoverflow.com/questions/686353/random-float-number-generation
+        float r2 = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
+        return r2;
+    }
 }

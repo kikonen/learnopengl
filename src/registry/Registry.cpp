@@ -18,6 +18,7 @@
 #include "script/ScriptEngine.h"
 
 #include "particle/ParticleSystem.h"
+#include "decal/DecalSystem.h"
 #include "animation/AnimationSystem.h"
 
 #include "terrain/TerrainTileRegistry.h"
@@ -80,6 +81,7 @@ void Registry::prepareShared()
     physics::PhysicsEngine::get().prepare(m_alive);
 
     particle::ParticleSystem::get().prepare();
+    decal::DecalSystem::get().prepare();
     animation::AnimationSystem::get().prepare();
 
     terrain::TerrrainTileRegistry::get().prepare();
@@ -122,6 +124,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     NodeRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
     particle::ParticleSystem::get().updateRT(ctx);
+    decal::DecalSystem::get().updateRT(ctx);
     animation::AnimationSystem::get().updateRT(ctx);
     terrain::TerrrainTileRegistry::get().updateRT(ctx);
 

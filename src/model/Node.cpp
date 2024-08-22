@@ -165,6 +165,11 @@ void Node::bindBatch(
     }
 }
 
+const Snapshot& Node::getActiveSnapshot(const RenderContext& ctx) const noexcept
+{
+    return ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
+}
+
 const Snapshot& Node::getActiveSnapshot(Registry* registry) const noexcept
 {
     return registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);

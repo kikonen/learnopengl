@@ -26,6 +26,8 @@ class RenderContext;
 class Node;
 
 class ParticleRenderer;
+class DecalRenderer;
+
 namespace editor {
     class EditorFrame;
 }
@@ -130,6 +132,7 @@ namespace render {
         query::TimeElapsedQuery m_timeElapsedQuery;
 
         std::unique_ptr<ParticleRenderer> m_particleRenderer;
+        std::unique_ptr<DecalRenderer> m_decalRenderer;
 
         // NodeDraw
         MeshTypeMap m_solidNodes;

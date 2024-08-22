@@ -17,6 +17,7 @@
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
+#include "asset/Material.h"
 
 #include "backend/gl/PerformanceCounters.h"
 
@@ -28,7 +29,6 @@
 #include "script/api/Wait.h"
 #include "script/api/MoveNode.h"
 
-
 #include "event/Dispatcher.h"
 
 #include "audio/Source.h"
@@ -37,6 +37,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
@@ -60,6 +61,8 @@
 
 #include "gui/Input.h"
 #include "gui/Window.h"
+
+#include "decal/DecalSystem.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/RayHit.h"
@@ -184,6 +187,20 @@ int SampleApp::onSetup()
         engine.setActiveListener(listenerId);
 
         engine.playSource(sourceId);
+    }
+
+    {
+        m_bulletMaterial = std::make_unique<Material>();
+        auto& mat = *m_bulletMaterial;
+        mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
+        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
+        mat.spriteCount = 61;
+        mat.spritesX = 8;
+        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
+        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
+        mat.loadTextures();
+
+        MaterialRegistry::get().registerMaterial(mat);
     }
 
     return 0;
@@ -498,8 +515,10 @@ void SampleApp::raycastPlayer(
         if (!hits.empty()) {
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
+                if (!node) continue;
+
                 KI_INFO_OUT(fmt::format(
-                    "HIT: node={}, pos={}, normal={}, depth={}",
+                    "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
                     node ? node->getName() : "N/A",
                     hit.pos,
                     hit.normal,
@@ -586,7 +605,7 @@ void SampleApp::raycastPlayer(
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             startPos,
             dir,
-            10.f,
+            100.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
             player->toHandle());
@@ -595,11 +614,23 @@ void SampleApp::raycastPlayer(
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
                 KI_INFO_OUT(fmt::format(
-                    "HIT: node={}, pos={}, normal={}, depth={}",
+                    "UNPROJECT_HIT: node={}, pos={}, normal={}, depth={}",
                     node ? node->getName() : "N/A",
                     hit.pos,
                     hit.normal,
                     hit.depth));
+
+                auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
+                decal.m_materialIndex = m_bulletMaterial->m_registeredIndex;
+                //decal.m_materialIndex = 3;
+                decal.m_lifetime = 99999999999999.f;
+                decal::DecalSystem::get().addDecal(decal);
+
+                KI_INFO_OUT(fmt::format(
+                    "DECAL: node={}, pos={}, normal={}",
+                    node ? node->getName() : "N/A",
+                    decal.m_position,
+                    decal.m_normal));
             }
         }
     }

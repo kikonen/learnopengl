@@ -1,0 +1,59 @@
+---
+name: Origo
+viewports:
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    rotation: [0, 180, 0]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - name: Directional light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-25, 25, 20]
+    scale: 2.5
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    scale: 100
+  - id: brick_ball
+    mesh:
+      vertex:
+        type: box
+        size: [5, 3, 0.2]
+      material:
+        map_pbr: textures\Bricks007_1K-PNG
+        parallax_depth: 0.0
+        tiling_x: 2
+        program: g_tex
+    pos: [0, 1.5, 0]
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.1
+      geom:
+        type: box
+        size: [5, 3, 0.2]

@@ -224,6 +224,9 @@ Assets::Assets()
     particleEnabled = true;
     particleMaxCount = 100000;
 
+    decalEnabled = true;
+    decalMaxCount = 10000;
+
     shadowMapEnabled = true;
 
     shadowPolygonOffsetEnabled = true;

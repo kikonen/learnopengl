@@ -342,6 +342,11 @@ const MaterialSSBO Material::toSSBO() const
 {
     const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
 
+    uint8_t spritesY = spriteCount / spritesX;
+    if (spriteCount % spritesX != 0) {
+        spritesY++;
+    }
+
     return {
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,

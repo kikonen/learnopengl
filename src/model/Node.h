@@ -124,6 +124,7 @@ public:
         return m_state;
     }
 
+    const Snapshot& getActiveSnapshot(const RenderContext& ctx) const noexcept;
     const Snapshot& getActiveSnapshot(Registry* registry) const noexcept;
     //Snapshot& modifyActiveSnapshot(Registry* registry) noexcept;
 
