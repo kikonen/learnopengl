@@ -45,7 +45,7 @@ nodes:
       geom:
         type: box
         category: [player, can_terrain]
-        size: [1]
+        size: [0.25]
   - name: Directional light
     type: origo
     mesh:
