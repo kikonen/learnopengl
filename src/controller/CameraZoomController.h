@@ -20,15 +20,10 @@ public:
         const PrepareContext& ctx,
         Node& node) override;
 
-    virtual void onKey(
+    virtual void processInput(
         const InputContext& ctx) override;
 
-    virtual void onMouseMove(
-        const InputContext& ctx,
-        float xoffset,
-        float yoffset) override;
-
-    virtual void onMouseScroll(
+    virtual void onMouseWheel(
         const InputContext& ctx,
         float xoffset,
         float yoffset) override;

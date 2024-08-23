@@ -20,6 +20,7 @@ enum class Key : std::underlying_type_t<std::byte> {
 };
 
 enum class Modifier : std::underlying_type_t<std::byte> {
+    NONE,
     SHIFT,
     CONTROL,
     ALT,
@@ -45,14 +46,21 @@ public:
     void prepare();
 
     void updateKeyStates();
+    void updateMouseState();
 
     bool isKeyDown(Key key) const noexcept;
     bool isModifierDown(Modifier modifier) const noexcept;
 
     bool isModifierPressed(Modifier modifier) const noexcept;
 
+    // @param button GLFW_MOUSE_BUTTON_LEFT | GLFW_MOUSE_BUTTON_RIGHT
+    // @return true if button is pressed with modifier
+    bool isMouseButtonPressed(int button) const noexcept;
+
+    bool isMouseCaptured() const noexcept;
+
     void onMouseMove(float xpos, float ypos);
-    void onMouseButton(int button, int action, int modifiers);
+    void onMouseWheel(float xoffset, float yoffset);
 
     inline bool allowMouse() const noexcept
     {
@@ -65,11 +73,19 @@ public:
     }
 
 public:
-    float mouseX = 0;
-    float mouseY = 0;
+    float mouseX{ 0.f };
+    float mouseY{ 0.f };
 
-    float mouseXoffset = 0;
-    float mouseYoffset = 0;
+    float mousePreviousX{ 0.f };
+    float mousePreviousY{ 0.f };
+    bool mouseHasPosition{ false };
+
+    // relative to previous mouse position
+    float mouseRelativeX{ 0.f };
+    float mouseRelativeY{ 0.f };
+
+    float mouseWheelXOffset{ 0.f };
+    float mouseWheelYOffset{ 0.f };
 
     bool imGuiHasKeyboard{ false };
     bool imGuiHasMouse{ false };
@@ -88,5 +104,4 @@ private:
     std::unordered_map<Modifier, bool> m_modifierReleased;
 
     bool m_firstMouse = true;
-
 };

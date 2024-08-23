@@ -29,15 +29,10 @@ public:
         return false;
     }
 
-    virtual void onKey(
+    virtual void processInput(
         const InputContext& ctx) {};
 
-    virtual void onMouseMove(
-        const InputContext& ctx,
-        float xoffset,
-        float yoffset) {};
-
-    virtual void onMouseScroll(
+    virtual void onMouseWheel(
         const InputContext& ctx,
         float xoffset,
         float yoffset) {};

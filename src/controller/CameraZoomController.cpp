@@ -55,7 +55,7 @@ bool CameraZoomController::updateWT(
     return false;
 }
 
-void CameraZoomController::onKey(
+void CameraZoomController::processInput(
     const InputContext& ctx)
 {
     if (!ctx.allowKeyboard()) return;
@@ -108,37 +108,28 @@ void CameraZoomController::onKey(
             camera.adjustFov(zoomSpeed.z * dt);
         }
     }
-}
-
-void CameraZoomController::onMouseMove(
-    const InputContext& ctx,
-    float xoffset,
-    float yoffset)
-{
-    if (!ctx.allowMouse()) return;
-
-    auto* node = m_nodeHandle.toNode();
-    if (!node) return;
 
     auto* fpsCamera = dynamic_cast<FpsCamera*>(node->m_camera.get());
+    if (fpsCamera) {
+        float pitchSpeed = 0.f;
 
-    if (!fpsCamera) return;
+        if (input->isMouseCaptured()) {
+            const int maxMouseSpeed = 500;
+            const float maxPitchSpeed = std::numbers::pi_v<float> *8;
+            const float y = input->mouseRelativeY;
 
-    const int maxMouseSpeed = 500;
-    const float maxPitchSpeed = std::numbers::pi_v<float> * 8;
-    float pitchSpeed = 0.f;
-
-    if (yoffset != 0)
-    {
-        // Convert to ~[-1.0, 1.0]
-        pitchSpeed = yoffset / maxMouseSpeed;
-        pitchSpeed *= maxPitchSpeed;
+            if (y != 0.f)
+            {
+                // Convert to ~[-1.0, 1.0]
+                pitchSpeed = y / maxMouseSpeed;
+                pitchSpeed *= maxPitchSpeed;
+            }
+        }
+        fpsCamera->setPitchSpeed(pitchSpeed);
     }
-
-    fpsCamera->setPitchSpeed(pitchSpeed);
 }
 
-void CameraZoomController::onMouseScroll(
+void CameraZoomController::onMouseWheel(
     const InputContext& ctx,
     float xoffset,
     float yoffset)

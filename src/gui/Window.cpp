@@ -406,6 +406,7 @@ void Window::bindGLFWCallbacks()
 void Window::processInput(const InputContext& ctx)
 {
     m_input->updateKeyStates();
+    m_input->updateMouseState();
 
     if (m_input->isKeyDown(Key::EXIT)) {
         if (!m_was_EXIT) {
@@ -437,14 +438,14 @@ void Window::processInput(const InputContext& ctx)
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onKey(ctx);
+                controller->processInput(ctx);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onKey(ctx);
+                controller->processInput(ctx);
             }
         }
     }
@@ -464,38 +465,10 @@ void Window::onWindowResize(int width, int height)
 
 void Window::onMouseMove(float xpos, float ypos)
 {
-    const auto& assets = Assets::get();
-
-    const InputContext ctx{
-        m_engine.getClock(),
-        m_engine.getRegistry(),
-        m_input.get() };
-
     m_input->onMouseMove(xpos, ypos);
 
-    bool isAlt = m_input->isModifierDown(Modifier::ALT);
-    int state = glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT);
-
-    if ((isAlt || state == GLFW_PRESS) && ctx.m_input->allowMouse()) {
+    if (m_input->isMouseCaptured()) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-        auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
-        auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
-
-        {
-            if (nodeControllers) {
-                for (auto* controller : *nodeControllers) {
-                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
-                }
-            }
-        }
-        {
-            if (cameraControllers && cameraControllers != nodeControllers) {
-                for (auto* controller : *cameraControllers) {
-                    controller->onMouseMove(ctx, m_input->mouseXoffset, m_input->mouseYoffset);
-                }
-            }
-        }
     }
     else {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -504,11 +477,12 @@ void Window::onMouseMove(float xpos, float ypos)
 
 void Window::onMouseButton(int button, int action, int modifiers)
 {
-    m_input->onMouseButton(button, action, modifiers);
 }
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
+    m_input->onMouseWheel(xoffset, yoffset);
+
     const auto& assets = Assets::get();
 
     const InputContext ctx{
@@ -523,14 +497,14 @@ void Window::onMouseWheel(float xoffset, float yoffset)
     {
         if (nodeControllers) {
             for (auto* controller : *nodeControllers) {
-                controller->onMouseScroll(ctx, xoffset, yoffset);
+                controller->onMouseWheel(ctx, xoffset, yoffset);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
             for (auto* controller : *cameraControllers) {
-                controller->onMouseScroll(ctx, xoffset, yoffset);
+                controller->onMouseWheel(ctx, xoffset, yoffset);
             }
         }
     }

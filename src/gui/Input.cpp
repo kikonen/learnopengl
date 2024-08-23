@@ -71,6 +71,25 @@ void Input::updateKeyStates()
     }
 }
 
+void Input::updateMouseState()
+{
+    double xpos, ypos;
+    glfwGetCursorPos(window->m_glfwWindow, &xpos, &ypos);
+
+    if (mouseHasPosition) {
+        // NOTE KI Match world axis directions
+        mouseRelativeX = xpos - mouseX;
+        mouseRelativeY = mouseY - ypos;
+
+        mousePreviousX = mouseX;
+        mousePreviousY = mouseY;
+    }
+
+    mouseX = xpos;
+    mouseY = ypos;
+    mouseHasPosition = true;
+}
+
 bool Input::isKeyDown(Key key) const noexcept
 {
     const auto& it = m_keyMappings.find(key);
@@ -102,12 +121,27 @@ bool Input::isModifierDown(Modifier modifier) const noexcept {
 
 bool Input::isModifierPressed(Modifier modifier) const noexcept
 {
+    if (modifier == Modifier::NONE) return true;
     const auto& it = m_modifierPressed.find(modifier);
     return it != m_modifierPressed.end() ? it->second : false;
 }
 
+bool Input::isMouseButtonPressed(int button) const noexcept
+{
+    return glfwGetMouseButton(window->m_glfwWindow, button);
+}
+
+bool Input::isMouseCaptured() const noexcept
+{
+    return allowMouse() &&
+        isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) ||
+        isModifierDown(Modifier::ALT);
+}
+
 void Input::onMouseMove(float xpos, float ypos)
 {
+    return;
+
     if (m_firstMouse) {
         mouseX = xpos;
         mouseX = ypos;
@@ -115,13 +149,15 @@ void Input::onMouseMove(float xpos, float ypos)
     }
 
     // NOTE KI Match world axis directions
-    mouseXoffset = xpos - mouseX;
-    mouseYoffset = mouseY - ypos;
+    mouseRelativeX = xpos - mouseX;
+    mouseRelativeY = mouseY - ypos;
 
     mouseX = xpos;
     mouseY = ypos;
 }
 
-void Input::onMouseButton(int button, int action, int modifiers)
+void Input::onMouseWheel(float xoffset, float yoffset)
 {
+    mouseWheelXOffset = xoffset;
+    mouseWheelYOffset = yoffset;
 }

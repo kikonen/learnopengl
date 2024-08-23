@@ -53,8 +53,9 @@ bool PawnController::updateWT(
     auto& state = node.modifyState();
     bool changed = false;
 
-    if (m_angularVelocity != 0.f) {
-        auto rot = util::axisDegreesToQuat(state.getViewUp(), m_angularVelocity * dt);
+    float angularVelocity = m_angularVelocity;
+    if (angularVelocity != 0.f) {
+        auto rot = util::axisRadiansToQuat(state.getViewUp(), angularVelocity * dt);
         state.adjustRotation(rot);
         changed = true;
     }
@@ -67,7 +68,7 @@ bool PawnController::updateWT(
     return changed;
 }
 
-void PawnController::onKey(
+void PawnController::processInput(
     const InputContext& ctx)
 {
     if (!ctx.allowKeyboard()) return;
@@ -83,7 +84,7 @@ void PawnController::onKey(
     const auto& viewUp = glm::normalize(snapshot.getViewUp());
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
-    glm::vec3 rotateSpeed{ m_speedRotateNormal };
+    glm::vec3 rotateSpeed{ glm::radians(m_speedRotateNormal) };
 
     if (input->isModifierDown(Modifier::SHIFT)) {
         moveSpeed = m_speedMoveRun;
@@ -102,26 +103,23 @@ void PawnController::onKey(
     bool actionWalk = false;
     bool actionTurn = false;
 
+    float angularVelocity = 0.f;
+
     {
         if (true) {
             bool changed = false;
-            glm::vec3 adjust{ 0.f };
 
             if (input->isKeyDown(Key::ROTATE_LEFT)) {
-                adjust.y += rotateSpeed.y * dt;
+                angularVelocity += rotateSpeed.y;
                 changed = true;
             }
             if (input->isKeyDown(Key::ROTATE_RIGHT)) {
-                adjust.y += -rotateSpeed.y * dt;
+                angularVelocity += -rotateSpeed.y;
                 changed = true;
             }
 
             if (changed) {
-                m_angularVelocity = adjust.y / dt;
                 actionTurn = true;
-            }
-            else {
-                m_angularVelocity = 0.f;
             }
         }
     }
@@ -176,50 +174,24 @@ void PawnController::onKey(
         }
     }
 
-    if (actionWalk || actionTurn) {
-        // HACK KI try to avoid drifing camea due to camera pitch stuck into some value
-        auto* fpsCamera = dynamic_cast<FpsCamera*>(node->m_camera.get());
-        if (fpsCamera) {
-            fpsCamera->setPitchSpeed(0.f);
+    if (input->isMouseCaptured()) {
+        const float maxMouseSpeed = 500.f;
+        // Rotation/sec at maximum speed
+        const float maxAngularSpeed = std::numbers::pi_v<float> * 8.f;
+        const float x = input->mouseRelativeX;
+
+        if (x != 0.f) {
+            // Convert to ~[-1.0, 1.0]
+            float mouseAngularVelocity = -x / maxMouseSpeed;
+            // Multiply by rotation/sec
+            mouseAngularVelocity*= maxAngularSpeed;
+
+            angularVelocity += mouseAngularVelocity;
+            actionTurn = true;
         }
     }
 
-    toggleAudio(node, actionWalk, actionTurn);
-}
-
-void PawnController::onMouseMove(
-    const InputContext& ctx,
-    float xoffset,
-    float yoffset)
-{
-    if (!ctx.allowMouse()) return;
-
-    auto* node = m_nodeHandle.toNode();
-    if (!node) return;
-
-    bool changed = false;
-
-    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
-
-    glm::vec3 adjust{ 0.f };
-
-    bool actionWalk = false;
-    bool actionTurn = false;
-
-    if (xoffset != 0) {
-        auto yaw = -m_speedMouseSensitivity.x * xoffset;
-
-        adjust.y = static_cast<float>(yaw);
-        changed = true;
-    }
-
-    if (changed) {
-        m_angularVelocity = adjust.y;
-        actionTurn = true;
-    }
-    else {
-        m_angularVelocity = 0.f;
-    }
+    m_angularVelocity = angularVelocity;
 
     toggleAudio(node, actionWalk, actionTurn);
 }
