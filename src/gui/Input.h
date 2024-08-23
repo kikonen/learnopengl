@@ -57,6 +57,8 @@ public:
     // @return true if button is pressed with modifier
     bool isMouseButtonPressed(int button) const noexcept;
 
+    bool isHighPrecisionMode() const noexcept;
+
     bool isMouseCaptured() const noexcept;
 
     void onMouseMove(float xpos, float ypos);

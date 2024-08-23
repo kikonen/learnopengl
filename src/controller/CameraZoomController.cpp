@@ -123,6 +123,10 @@ void CameraZoomController::processInput(
                 // Convert to ~[-1.0, 1.0]
                 pitchSpeed = y / maxMouseSpeed;
                 pitchSpeed *= maxPitchSpeed;
+
+                if (input->isHighPrecisionMode()) {
+                    pitchSpeed *= 0.25f;
+                }
             }
         }
         fpsCamera->setPitchSpeed(pitchSpeed);

@@ -131,6 +131,10 @@ bool Input::isMouseButtonPressed(int button) const noexcept
     return glfwGetMouseButton(window->m_glfwWindow, button);
 }
 
+bool Input::isHighPrecisionMode() const noexcept {
+    return isModifierDown(Modifier::CONTROL);
+}
+
 bool Input::isMouseCaptured() const noexcept
 {
     return allowMouse() &&

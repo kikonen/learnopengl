@@ -88,16 +88,15 @@ void PawnController::processInput(
 
     if (input->isModifierDown(Modifier::SHIFT)) {
         moveSpeed = m_speedMoveRun;
-        rotateSpeed = m_speedRotateRun;
-
+        rotateSpeed = glm::radians(m_speedRotateRun);
     }
     if (input->isModifierDown(Modifier::ALT)) {
-        moveSpeed *= 10;
-        rotateSpeed *= 2;
+        moveSpeed *= 5.f;
+        rotateSpeed *= 2.f;
     }
-    if (input->isModifierDown(Modifier::CONTROL)) {
-        moveSpeed *= 0.1;
-        rotateSpeed *= 0.25;
+    if (input->isHighPrecisionMode()) {
+        moveSpeed *= 0.1f;
+        rotateSpeed *= 0.25f;
     }
 
     bool actionWalk = false;
@@ -184,7 +183,11 @@ void PawnController::processInput(
             // Convert to ~[-1.0, 1.0]
             float mouseAngularVelocity = -x / maxMouseSpeed;
             // Multiply by rotation/sec
-            mouseAngularVelocity*= maxAngularSpeed;
+            mouseAngularVelocity *= maxAngularSpeed;
+
+            if (input->isHighPrecisionMode()) {
+                mouseAngularVelocity *= 0.25f;
+            }
 
             angularVelocity += mouseAngularVelocity;
             actionTurn = true;
