@@ -879,7 +879,7 @@ nodes:
         type: box
         category: [terrain]
         collision: [can_terrain]
-        size: [60, 0.01, 60]
+        size: [30, 0.01, 30]
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
@@ -905,7 +905,7 @@ nodes:
         type: box
         category: [prop]
         collision: [npc]
-        size: [2, 2, 2]
+        size: [1, 1, 1]
   - id: terrain_grass
     id: auto
     priority: 20
@@ -1002,7 +1002,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [256, 0.01, 256]
+        size: [128, 0.01, 128]
   - id: sea_floor_{t}
     priority: -25
     mesh:

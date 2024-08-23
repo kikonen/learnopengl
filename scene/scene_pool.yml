@@ -180,7 +180,7 @@ nodes:
         type: box
         category: [prop]
         collision: [npc]
-        size: [2, 2, 2]
+        size: [1, 1, 1]
   - id: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
@@ -329,7 +329,7 @@ nodes:
         type: box
         category: [prop]
         collision: [npc]
-        size: [2, 2, 2]
+        size: [1, 1, 1]
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
