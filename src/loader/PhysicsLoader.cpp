@@ -54,7 +54,8 @@ namespace {
             g_maskMapping.insert({
                 { "world", physics::mask(
                     physics::Category::terrain,
-                    physics::Category::water,
+                    // NOTE KI things don't float by default
+                    //physics::Category::water,
                     physics::Category::scenery,
                     physics::Category::prop) },
                 { "character", physics::mask(
