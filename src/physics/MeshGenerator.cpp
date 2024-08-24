@@ -172,12 +172,11 @@ namespace physics {
                     "plane-{}",
                     size);
 
-                auto generator = mesh::PrimitiveGenerator::plane();
-                generator.name = cacheKey;
-                generator.size = glm::vec3{ size.x, size.y, 0.f };
-
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::plane();
+                    generator.name = cacheKey;
+                    generator.size = glm::vec3{ size.x, size.y, 0.f };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -192,25 +191,24 @@ namespace physics {
                         "height-{}",
                         heightMap->m_id);
 
-                    auto generator = mesh::PrimitiveGenerator::height_field();
-                    generator.name = cacheKey;
-                    generator.heightData = heightMap->m_heightData;
-                    generator.size = {
-                        heightMap->m_worldSizeU,
-                        0.f,
-                        heightMap->m_worldSizeV,
-                    };
-                    generator.heightSamplesWidth = heightMap->m_dataWidth;
-                    generator.heightSamplesDepth = heightMap->m_dataDepth;
-                    generator.p = 8;
-                    generator.q = 8;
-
-                    offset = { -generator.size.x * 0.5f, 0.f, -generator.size.z * 0.5f };
-
                     mesh = findMesh(cacheKey);
                     if (!mesh) {
+                        auto generator = mesh::PrimitiveGenerator::height_field();
+                        generator.name = cacheKey;
+                        generator.heightData = heightMap->m_heightData;
+                        generator.size = {
+                            heightMap->m_worldSizeU,
+                            0.f,
+                            heightMap->m_worldSizeV,
+                        };
+                        generator.heightSamplesWidth = heightMap->m_dataWidth;
+                        generator.heightSamplesDepth = heightMap->m_dataDepth;
+                        generator.p = 8;
+                        generator.q = 8;
                         mesh = saveMesh(cacheKey, generator.create());
                     }
+
+                    offset = { -heightMap->m_worldSizeU * 0.5f, 0.f, -heightMap->m_worldSizeV * 0.5f };
                 }
                 break;
             }
@@ -227,12 +225,12 @@ namespace physics {
                     "box-{}",
                     size);
 
-                auto generator = mesh::PrimitiveGenerator::box();
-                generator.name = cacheKey;
-                generator.size = size;
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::box();
+                    generator.name = cacheKey;
+                    generator.size = size;
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -245,14 +243,14 @@ namespace physics {
                     "sphere-{}",
                     radius);
 
-                auto generator = mesh::PrimitiveGenerator::sphere();
-                generator.name = cacheKey;
-                generator.radius = static_cast<float>(radius);
-                generator.slices = 16;
-                generator.segments = { 8, 0, 0 };
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::sphere();
+                    generator.name = cacheKey;
+                    generator.radius = static_cast<float>(radius);
+                    generator.slices = 16;
+                    generator.segments = { 8, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -267,15 +265,15 @@ namespace physics {
                     "capsule-{}-{}",
                     radius, length);
 
-                auto generator = mesh::PrimitiveGenerator::capsule();
-                generator.name = cacheKey;
-                generator.radius = static_cast<float>(radius);
-                generator.length = static_cast<float>(length * 0.5f);
-                generator.slices = 8;
-                generator.segments = { 4, 0, 0 };
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::capsule();
+                    generator.name = cacheKey;
+                    generator.radius = static_cast<float>(radius);
+                    generator.length = static_cast<float>(length * 0.5f);
+                    generator.slices = 8;
+                    generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -290,15 +288,14 @@ namespace physics {
                     "cylinder-{}-{}",
                     radius, length);
 
-                auto generator = mesh::PrimitiveGenerator::capped_cylinder();
-                generator.name = cacheKey;
-                generator.radius = static_cast<float>(radius);
-                generator.length = static_cast<float>(length * 0.5f);
-                generator.slices = 8;
-                generator.segments = { 4, 0, 0 };
-
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::capped_cylinder();
+                    generator.name = cacheKey;
+                    generator.radius = static_cast<float>(radius);
+                    generator.length = static_cast<float>(length * 0.5f);
+                    generator.slices = 8;
+                    generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
