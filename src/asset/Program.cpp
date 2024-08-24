@@ -16,7 +16,6 @@
 #include "asset/BufferInfoUBO.h"
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
-#include "asset/TextureUBO.h"
 
 #include "asset/ProgramBind.h"
 #include "asset/Shader.h"
@@ -322,7 +321,7 @@ int Program::initProgram() {
     setupUBO("Lights", UBO_LIGHTS, sizeof(LightsUBO));
     //setupUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));
     setupUBO("ClipPlanes", UBO_CLIP_PLANES, sizeof(ClipPlanesUBO));
-    setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
+    //setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 
     m_sources.clear();
 
