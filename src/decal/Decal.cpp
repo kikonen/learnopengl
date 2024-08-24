@@ -60,8 +60,9 @@ namespace decal {
         glm::mat4 rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, QUAD_NORMAL) };
         // NOTE KI inverse scale so that parent's scale won't affect decal size
         glm::mat4 invScaleMatrix = glm::scale(glm::mat4{ 1.f }, 1.f / state.getScale());
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scale });
 
-        return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix * invScaleMatrix;
+        return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix * invScaleMatrix * scaleMatrix;
     }
 
     Decal Decal::createForHit(
