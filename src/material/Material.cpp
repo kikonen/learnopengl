@@ -16,14 +16,11 @@
 #include "asset/Assets.h"
 #include "asset/Shader.h"
 
-#include "asset/ImageTexture.h"
-#include "asset/ChannelTexture.h"
-#include "asset/ColorTexture.h"
-
-#include "asset/MaterialSSBO.h"
-#include "asset/TextureUBO.h"
-
-#include "registry/MaterialRegistry.h"
+#include "ImageTexture.h"
+#include "ChannelTexture.h"
+#include "ColorTexture.h"
+#include "MaterialSSBO.h"
+#include "MaterialRegistry.h"
 
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
@@ -171,9 +168,9 @@ void Material::assign(const Material& o)
     m_id = oldId;
 }
 
-void Material::registerMaterial()
+int Material::registerMaterial()
 {
-    MaterialRegistry::get().registerMaterial(*this);
+    return MaterialRegistry::get().registerMaterial(*this);
 }
 
 void Material::loadTextures()

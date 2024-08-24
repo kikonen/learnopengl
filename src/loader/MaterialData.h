@@ -5,7 +5,7 @@
 
 #include "asset/Shader.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "MaterialField.h"
 
 namespace loader {

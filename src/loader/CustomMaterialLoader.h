@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "asset/CustomMaterial.h"
+#include "material/CustomMaterial.h"
 
 #include "BaseLoader.h"
 #include "CustomMaterialData.h"

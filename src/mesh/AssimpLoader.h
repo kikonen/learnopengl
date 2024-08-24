@@ -4,7 +4,7 @@
 #include <memory>
 #include <atomic>
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "mesh/ModelLoader.h"
 

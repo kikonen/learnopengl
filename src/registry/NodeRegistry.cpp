@@ -40,7 +40,6 @@
 
 #include "Registry.h"
 #include "MeshTypeRegistry.h"
-#include "MaterialRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
 #include "ControllerRegistry.h"
@@ -99,7 +98,7 @@ void NodeRegistry::prepare(
     m_registry = registry;
     m_selectionMaterial = std::make_unique<Material>();
     *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    MaterialRegistry::get().registerMaterial(*m_selectionMaterial);
+    m_selectionMaterial->registerMaterial();
 
     attachListeners();
 }

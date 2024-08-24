@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 namespace mesh {
     struct Vertex final

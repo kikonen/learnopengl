@@ -9,7 +9,6 @@
 #include "Particle.h"
 #include "ParticleSystem.h"
 
-#include "registry/MaterialRegistry.h"
 
 namespace {
 }
@@ -23,7 +22,7 @@ namespace particle {
 
     void ParticleGenerator::prepareWT()
     {
-        MaterialRegistry::get().registerMaterial(m_material);
+        m_material.registerMaterial();
     }
 
     void ParticleGenerator::updateWT(

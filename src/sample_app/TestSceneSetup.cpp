@@ -1,9 +1,10 @@
 #include "TestSceneSetup.h"
 
 #include "asset/Assets.h"
-#include "asset/PlainTexture.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
+
+#include "material/PlainTexture.h"
 
 #include "pool/NodeHandle.h"
 #include "ki/sid.h"

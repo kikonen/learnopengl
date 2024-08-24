@@ -8,8 +8,9 @@
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
 
-#include "asset/Image.h"
 #include "asset/Program.h"
+
+#include "material/Image.h"
 
 #include "render/TextureCube.h"
 #include "render/FrameBuffer.h"

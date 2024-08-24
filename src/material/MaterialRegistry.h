@@ -4,7 +4,7 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "kigl/GLBuffer.h"
 
@@ -24,7 +24,7 @@ public:
     ~MaterialRegistry();
 
     // Updates m_registeredIndex of Material
-    void registerMaterial(Material& material);
+    int registerMaterial(Material& material);
 
     size_t getBaseIndex() { return m_materials.size(); }
 

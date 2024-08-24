@@ -2,7 +2,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 
-#include "asset/MaterialSSBO.h"
+#include "material/MaterialSSBO.h"
 
 #include "util/thread.h"
 
@@ -26,7 +26,8 @@
 #include "text/FontRegistry.h"
 #include "text/TextSystem.h"
 
-#include "registry/MaterialRegistry.h"
+#include "material/MaterialRegistry.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"

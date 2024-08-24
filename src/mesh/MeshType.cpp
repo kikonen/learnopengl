@@ -2,8 +2,8 @@
 
 #include <fmt/format.h>
 
-#include "asset/CustomMaterial.h"
-#include "asset/Material.h"
+#include "material/CustomMaterial.h"
+#include "material/Material.h"
 
 #include "backend/DrawOptions.h"
 
@@ -19,7 +19,6 @@
 #include "model/EntityFlags.h"
 
 #include "registry/NodeRegistry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
 
 

@@ -18,7 +18,7 @@
 #include "kigl/GLState.h"
 #include "kigl/OpenGLInfo.h"
 
-#include "asset/MaterialSSBO.h"
+#include "material/MaterialSSBO.h"
 
 #include "engine/AsyncLoader.h"
 #include "engine/InputContext.h"

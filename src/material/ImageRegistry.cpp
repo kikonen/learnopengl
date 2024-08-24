@@ -1,6 +1,6 @@
 #include "imageRegistry.h"
 
-#include "asset/Image.h"
+#include "material/Image.h"
 
 
 namespace {

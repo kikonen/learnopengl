@@ -2,11 +2,9 @@
 
 #include "util/Util.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "particle/ParticleGenerator.h"
-
-#include "registry/MaterialRegistry.h"
 
 #include "loader/document.h"
 #include "loader_util.h"

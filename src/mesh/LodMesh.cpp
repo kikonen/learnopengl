@@ -8,7 +8,7 @@
 #include "util/glm_util.h"
 
 #include "asset/Assets.h"
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/Program.h"
 
 #include "util/Util.h"
@@ -16,8 +16,6 @@
 #include "kigl/GLVertexArray.h"
 
 #include "render/size.h"
-
-#include "registry/MaterialRegistry.h"
 
 #include "Mesh.h"
 #include "InstanceFlags.h"
@@ -232,9 +230,7 @@ namespace mesh {
                 material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
         }
 
-        MaterialRegistry::get().registerMaterial(*material);
-
-        m_materialIndex = material->m_registeredIndex;
+        m_materialIndex = material->registerMaterial();
 
         // TODO KI basically material could be deleted at this point
     }

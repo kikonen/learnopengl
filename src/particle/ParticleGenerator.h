@@ -2,7 +2,7 @@
 
 #include "ki/size.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "ParticleDefinition.h"
 

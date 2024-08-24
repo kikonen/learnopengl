@@ -7,7 +7,7 @@
 
 #include "ki/size.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "RigJoint.h"
 #include "RigSocket.h"

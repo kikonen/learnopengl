@@ -21,22 +21,12 @@ public:
 
     virtual void prepare() = 0;
 
-    static GLuint nextIndex();
-
-    // Reserve textureCount indexes which are consequetive from baseIndex
-    // (possibly overlapping with old assignments)
-    // @return Base index
-    static GLuint getUnitIndexBase(int textureCount);
-
-    static GLuint nextUnitIndex();
-
 public:
     const std::string m_name;
     const bool m_gammaCorrect : 1;
     const TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };
-    //int m_texIndex{ -1 };
     GLuint64 m_handle{ 0 };
 
     mutable bool m_sent : 1 { false };

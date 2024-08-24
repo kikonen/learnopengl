@@ -22,7 +22,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
@@ -59,9 +58,11 @@ void MirrorMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-    MaterialRegistry::get().registerMaterial(m_tagMaterial);
+    {
+        m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+        m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
+        m_tagMaterial.registerMaterial();
+    }
 
     m_renderFrameStart = assets.mirrorRenderFrameStart;
     m_renderFrameStep = assets.mirrorRenderFrameStep;

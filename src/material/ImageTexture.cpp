@@ -13,7 +13,7 @@
 
 #include <fmt/format.h>
 
-#include "asset/Image.h"
+#include "material/Image.h"
 
 #include "util/Util.h"
 #include "util/Log.h"

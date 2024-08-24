@@ -15,7 +15,7 @@
 #include "util/Util.h"
 #include "util/glm_util.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "render/DebugContext.h"
 
@@ -23,9 +23,8 @@
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
 
-#include "registry/MaterialRegistry.h"
-
 #include "PhysicsEngine.h"
+
 
 namespace {
     std::mutex g_materialLock;
@@ -52,7 +51,7 @@ namespace {
             });
 
             for (auto& [geom, material] : g_materials) {
-                MaterialRegistry::get().registerMaterial(material);
+                material.registerMaterial();
             }
         }
     }

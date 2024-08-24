@@ -10,7 +10,7 @@
 
 #include "backend/DrawOptions.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/Volume.h"
 #include "asset/AABB.h"
 

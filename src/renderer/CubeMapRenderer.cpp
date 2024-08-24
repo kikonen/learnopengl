@@ -21,7 +21,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/MaterialRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -107,9 +106,11 @@ void CubeMapRenderer::prepareRT(
     m_farPlane = assets.cubeMapFarPlane;
 
     m_tagId = assets.cubeMapId;
-    m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-    MaterialRegistry::get().registerMaterial(m_tagMaterial);
+    {
+        m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+        m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+        m_tagMaterial.registerMaterial();
+    }
 
     int size = assets.cubeMapSize;
 

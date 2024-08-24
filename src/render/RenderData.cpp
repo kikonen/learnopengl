@@ -1,7 +1,5 @@
 #include "RenderData.h"
 
-#include "asset/ImageTexture.h"
-#include "asset/ChannelTexture.h"
 
 #include "asset/MatricesUBO.h"
 #include "asset/DataUBO.h"
@@ -9,9 +7,11 @@
 #include "asset/BufferInfoUBO.h"
 #include "asset/ClipPlaneUBO.h"
 #include "asset/LightUBO.h"
-#include "asset/TextureUBO.h"
 
 #include "asset/UBO.h"
+
+#include "material/ImageTexture.h"
+#include "material/ChannelTexture.h"
 
 #include "kigl/GLSyncQueue_impl.h"
 

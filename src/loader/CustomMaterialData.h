@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "asset/CustomMaterial.h"
+#include "material/CustomMaterial.h"
 
 namespace loader {
     enum class CustomMaterialType : std::underlying_type_t<std::byte> {

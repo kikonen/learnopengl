@@ -6,7 +6,7 @@
 
 #include "ki/size.h"
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 namespace animation {
     struct RigContainer;

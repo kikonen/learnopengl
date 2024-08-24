@@ -6,7 +6,7 @@
 #include "util/Log.h"
 #include <fmt/format.h>
 
-#include "asset/Image.h"
+#include "material/Image.h"
 
 #include "model/Node.h"
 

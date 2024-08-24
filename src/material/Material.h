@@ -83,8 +83,13 @@ public:
     // => it's referred by verteces
     void assign(const Material& o);
 
-    void registerMaterial();
     void loadTextures();
+
+    // NOTE KI register can done only once, after which material
+    // is effectively *inmmutable*
+    // 
+    // @return m_registeredIndex
+    int registerMaterial();
 
     void prepare();
 

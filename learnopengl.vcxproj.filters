@@ -66,10 +66,10 @@
     <ClCompile Include="src\asset\Assets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Image.cpp">
+    <ClCompile Include="src\material\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Material.cpp">
+    <ClCompile Include="src\material\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller\NodeController.cpp">
@@ -84,7 +84,7 @@
     <ClCompile Include="src\gui\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Texture.cpp">
+    <ClCompile Include="src\material\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\Batch.cpp">
@@ -126,10 +126,10 @@
     <ClCompile Include="src\gui\FrameInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\PlainTexture.cpp">
+    <ClCompile Include="src\material\PlainTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\ImageTexture.cpp">
+    <ClCompile Include="src\material\ImageTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\ParticleRenderer.cpp">
@@ -213,10 +213,10 @@
     <ClCompile Include="src\asset\AABB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\ImageRegistry.cpp">
+    <ClCompile Include="src\material\ImageRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\MaterialRegistry.cpp">
+    <ClCompile Include="src\material\MaterialRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\OBB.cpp">
@@ -348,7 +348,7 @@
     <ClCompile Include="src\render\EffectBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\ChannelTexture.cpp">
+    <ClCompile Include="src\material\ChannelTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\TextureCube.cpp">
@@ -372,7 +372,7 @@
     <ClCompile Include="src\render\EnvironmentMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\HdriTexture.cpp">
+    <ClCompile Include="src\material\HdriTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\BrdfLutTexture.cpp">
@@ -603,7 +603,7 @@
     <ClCompile Include="src\terrain\TerrainTileRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\ColorTexture.cpp">
+    <ClCompile Include="src\material\ColorTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\AssimpLoader.cpp">
@@ -679,9 +679,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\MeshSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\TransformRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\MeshLoader.cpp">
@@ -933,6 +930,18 @@
     <ClCompile Include="src\physics\Geom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\decal\Decal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decal\DecalSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\physics_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\DecalRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -989,10 +998,10 @@
     <ClInclude Include="src\asset\Assets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Image.h">
+    <ClInclude Include="src\material\Image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Material.h">
+    <ClInclude Include="src\material\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\NodeController.h">
@@ -1007,7 +1016,7 @@
     <ClInclude Include="src\gui\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Texture.h">
+    <ClInclude Include="src\material\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Batch.h">
@@ -1058,10 +1067,10 @@
     <ClInclude Include="src\gui\FrameInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\PlainTexture.h">
+    <ClInclude Include="src\material\PlainTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ImageTexture.h">
+    <ClInclude Include="src\material\ImageTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Log.h">
@@ -1169,10 +1178,10 @@
     <ClInclude Include="src\kigl\GLVertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\ImageRegistry.h">
+    <ClInclude Include="src\material\ImageRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\MaterialRegistry.h">
+    <ClInclude Include="src\material\MaterialRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\OBB.h">
@@ -1214,7 +1223,7 @@
     <ClInclude Include="src\render\WindowBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialSSBO.h">
+    <ClInclude Include="src\material\MaterialSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLSyncQueue.h">
@@ -1236,9 +1245,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\MatricesUBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\asset\TextureUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\ClipPlaneUBO.h">
@@ -1283,7 +1289,7 @@
     <ClInclude Include="src\terrain\TerrainGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\TextureSpec.h">
+    <ClInclude Include="src\material\TextureSpec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\PhysicsEngine.h">
@@ -1337,7 +1343,7 @@
     <ClInclude Include="src\event\Dispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\CustomMaterial.h">
+    <ClInclude Include="src\material\CustomMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\ControllerRegistry.h">
@@ -1358,7 +1364,7 @@
     <ClInclude Include="src\render\EffectBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ChannelTexture.h">
+    <ClInclude Include="src\material\ChannelTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h">
@@ -1376,7 +1382,7 @@
     <ClInclude Include="src\render\EnvironmentMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\HdriTexture.h">
+    <ClInclude Include="src\material\HdriTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLRenderBufferHandle.h">
@@ -1799,7 +1805,7 @@
     <ClInclude Include="vendor\wrapper\include\lualib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ColorTexture.h">
+    <ClInclude Include="src\material\ColorTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\AssimpLoader.h">
@@ -1925,9 +1931,6 @@
     <ClInclude Include="src\loader\MeshData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TransformRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\mesh\TransformSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1940,7 +1943,7 @@
     <ClInclude Include="src\loader\FlagContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MaterialFlags.h">
+    <ClInclude Include="src\material\MaterialFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\size.h">
@@ -2039,16 +2042,16 @@
     <ClInclude Include="src\mesh\RigJointTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ChannelPart.h">
+    <ClInclude Include="src\material\ChannelPart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\ChannelTextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ChannelTextureDefinition.h">
+    <ClInclude Include="src\material\ChannelTextureDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\TextureType.h">
+    <ClInclude Include="src\material\TextureType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\EditorState.h">
@@ -2115,6 +2118,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MeshInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\Decal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\physics_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\DecalRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

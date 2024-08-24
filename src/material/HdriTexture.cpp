@@ -1,8 +1,8 @@
 #include "Hdritexture.h"
 
 #include "kigl/GLTextureHandle.h"
-#include "asset/Image.h"
-#include "registry/Registry.h"
+
+#include "material/Image.h"
 
 void HdriTexture::prepareRT(
     const PrepareContext& ctx)

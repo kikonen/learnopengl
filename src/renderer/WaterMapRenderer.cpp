@@ -18,7 +18,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 
 #include "engine/PrepareContext.h"
@@ -58,8 +57,10 @@ void WaterMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-    MaterialRegistry::get().registerMaterial(m_tagMaterial);
+    {
+        m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+        m_tagMaterial.registerMaterial();
+    }
 
     m_renderFrameStart = assets.waterRenderFrameStart;
     m_renderFrameStep = assets.waterRenderFrameStep;

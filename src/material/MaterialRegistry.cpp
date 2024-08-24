@@ -5,7 +5,7 @@
 #include "util/Thread.h"
 
 #include "asset/SSBO.h"
-#include "asset/MaterialSSBO.h"
+#include "material/MaterialSSBO.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 10;
@@ -33,9 +33,9 @@ MaterialRegistry::MaterialRegistry()
 
 MaterialRegistry::~MaterialRegistry() = default;
 
-void MaterialRegistry::registerMaterial(Material& material)
+int MaterialRegistry::registerMaterial(Material& material)
 {
-    if (material.m_registeredIndex >= 0) return;
+    if (material.m_registeredIndex >= 0) return material.m_registeredIndex;
 
     std::lock_guard lock(m_lock);
 
@@ -55,6 +55,8 @@ void MaterialRegistry::registerMaterial(Material& material)
 
     material.m_registeredIndex = (int)m_materials.size();
     m_materials.emplace_back(material);
+
+    return material.m_registeredIndex;
 }
 
 void MaterialRegistry::updateRT(const UpdateContext& ctx)

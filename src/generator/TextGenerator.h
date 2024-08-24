@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/AABB.h"
 
 #include "NodeGenerator.h"

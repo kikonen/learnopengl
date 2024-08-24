@@ -5,7 +5,7 @@
 #include "pool/NodeHandle.h"
 
 #include "asset/Assets.h"
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/Shader.h"
 
 #include "event/Dispatcher.h"

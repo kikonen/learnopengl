@@ -16,14 +16,15 @@
 #include "backend/DrawBuffer.h"
 #include "asset/Program.h"
 
-#include "registry/MaterialRegistry.h"
 #include "registry/ProgramRegistry.h"
 #include "registry/EntityRegistry.h"
 
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
-    m_fallbackMaterial = Material::createMaterial(BasicMaterial::yellow);
-    MaterialRegistry::get().registerMaterial(m_fallbackMaterial);
+    {
+        m_fallbackMaterial = Material::createMaterial(BasicMaterial::yellow);
+        m_fallbackMaterial.registerMaterial();
+    }
 
     m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
     m_objectProgram->prepareRT();

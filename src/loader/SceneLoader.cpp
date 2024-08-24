@@ -18,7 +18,7 @@
 #include "pool/TypeHandle.h"
 
 #include "asset/Assets.h"
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/Program.h"
 #include "asset/Shader.h"
 

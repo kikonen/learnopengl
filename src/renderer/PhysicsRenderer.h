@@ -1,6 +1,6 @@
 #pragma once
 
-#include "asset/Material.h"
+#include "material/Material.h"
 
 class Program;
 class RenderContext;

@@ -13,8 +13,9 @@
 #include "util/Perlin.h"
 
 #include "asset/Assets.h"
-#include "asset/ImageTexture.h"
 #include "asset/AABB.h"
+
+#include "material/ImageTexture.h"
 
 #include "model/Node.h"
 
@@ -34,7 +35,6 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/ModelRegistry.h"
 
 #include "TerrainTileRegistry.h"

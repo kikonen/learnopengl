@@ -17,7 +17,7 @@
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "backend/gl/PerformanceCounters.h"
 
@@ -37,7 +37,6 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeSnapshotRegistry.h"
@@ -528,7 +527,7 @@ void SampleApp::raycastPlayer(
         }
     }
 
-    if (player && inputState.mouseLeft) {
+    if (player && inputState.mouseRight) {
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);

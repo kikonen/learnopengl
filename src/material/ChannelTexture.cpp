@@ -7,9 +7,9 @@
 #include "util/glm_format.h"
 #include "util/Log.h"
 
-#include "asset/ImageTexture.h"
-#include "asset/Image.h"
-#include "asset/ChannelPart.h"
+#include "material/ImageTexture.h"
+#include "material/Image.h"
+#include "material/ChannelPart.h"
 
 
 namespace {

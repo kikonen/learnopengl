@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "asset/Material.h"
+#include "material/Material.h"
 #include "asset/Shader.h"
 
 #include "animation/RigContainer.h"

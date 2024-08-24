@@ -3,7 +3,7 @@
 #include "util/Util.h"
 
 #include "asset/Assets.h"
-#include "asset/Material.h"
+#include "material/Material.h"
 
 #include "model/Node.h"
 

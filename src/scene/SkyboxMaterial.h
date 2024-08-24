@@ -4,8 +4,8 @@
 #include <vector>
 #include <array>
 
-#include "asset/CustomMaterial.h"
-#include "asset/HdriTexture.h"
+#include "material/HdriTexture.h"
+#include "material/CustomMaterial.h"
 
 #include "render/CubeMap.h"
 #include "render/EnvironmentMap.h"

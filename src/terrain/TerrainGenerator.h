@@ -2,8 +2,8 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "asset/Material.h"
-#include "asset/Image.h"
+#include "material/Material.h"
+#include "material/Image.h"
 
 #include "physics/size.h"
 
