@@ -307,7 +307,10 @@ namespace physics {
             }
         }
 
-        if (mesh && obj.m_geom.physicId && obj.m_geom.type != GeomType::plane) {
+        if (mesh && obj.m_geom.physicId
+            && obj.m_geom.type != GeomType::ray
+            && obj.m_geom.type != GeomType::plane)
+        {
             pos = obj.m_geom.getPhysicPosition();
             rot = obj.m_geom.getPhysicRotation();
 

@@ -614,7 +614,7 @@ void SampleApp::raycastPlayer(
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
                 KI_INFO_OUT(fmt::format(
-                    "UNPROJECT_HIT: node={}, pos={}, normal={}, depth={}",
+                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
                     node ? node->getName() : "N/A",
                     hit.pos,
                     hit.normal,
