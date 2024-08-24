@@ -333,6 +333,16 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             }
         }
 
+        if (state.mouseRight != m_lastInputState.mouseRight &&
+            state.mouseRight == GLFW_PRESS &&
+            input->allowMouse())
+        {
+            if (state.shift)
+            {
+                raycastPlayer(ctx, scene, state, m_lastInputState);
+            }
+        }
+
         m_lastInputState = state;
     }
 
@@ -527,7 +537,7 @@ void SampleApp::raycastPlayer(
         }
     }
 
-    if (player && inputState.mouseRight) {
+    if (player) {
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);
