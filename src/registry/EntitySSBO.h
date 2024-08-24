@@ -74,20 +74,25 @@ struct EntitySSBO {
         bool updateNormal)
     {
         {
-            u_modelMatrixRow0[0] = mat[0][0];
-            u_modelMatrixRow0[1] = mat[1][0];
-            u_modelMatrixRow0[2] = mat[2][0];
-            u_modelMatrixRow0[3] = mat[3][0];
+            const auto& c0 = mat[0];
+            const auto& c1 = mat[1];
+            const auto& c2 = mat[2];
+            const auto& c3 = mat[3];
 
-            u_modelMatrixRow1[0] = mat[0][1];
-            u_modelMatrixRow1[1] = mat[1][1];
-            u_modelMatrixRow1[2] = mat[2][1];
-            u_modelMatrixRow1[3] = mat[3][1];
+            u_modelMatrixRow0[0] = c0[0];
+            u_modelMatrixRow0[1] = c1[0];
+            u_modelMatrixRow0[2] = c2[0];
+            u_modelMatrixRow0[3] = c3[0];
 
-            u_modelMatrixRow2[0] = mat[0][2];
-            u_modelMatrixRow2[1] = mat[1][2];
-            u_modelMatrixRow2[2] = mat[2][2];
-            u_modelMatrixRow2[3] = mat[3][2];
+            u_modelMatrixRow1[0] = c0[1];
+            u_modelMatrixRow1[1] = c1[1];
+            u_modelMatrixRow1[2] = c2[1];
+            u_modelMatrixRow1[3] = c3[1];
+
+            u_modelMatrixRow2[0] = c0[2];
+            u_modelMatrixRow2[1] = c1[2];
+            u_modelMatrixRow2[2] = c2[2];
+            u_modelMatrixRow2[3] = c3[2];
         }
 
         if (updateNormal) {

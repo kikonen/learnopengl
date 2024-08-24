@@ -41,8 +41,10 @@ namespace physics {
         ~PhysicsEngine();
 
         void prepare(std::shared_ptr<std::atomic<bool>> alive);
-        void update(const UpdateContext& ctx);
-        void updateBounds(const UpdateContext& ctx);
+
+        void updatePrepare(const UpdateContext& ctx);
+        void updateObjects(const UpdateContext& ctx);
+        void updateStaticBounds(const UpdateContext& ctx);
 
         inline bool isEnabled(bool enabled) const noexcept {
             return m_enabled;
@@ -82,7 +84,7 @@ namespace physics {
         void preparePending(const UpdateContext& ctx);
         void preparePendingNodes(const UpdateContext& ctx);
 
-        void enforceBounds(
+        void enforceStaticBounds(
             const UpdateContext& ctx,
             const mesh::MeshType* type,
             Node& node,

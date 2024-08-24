@@ -10,9 +10,9 @@
 //
 #pragma pack(push, 1)
 struct DecalSSBO {
-    glm::vec4 u_transformRow0{ 1.f, 0.f, 0.f, 0.f };
-    glm::vec4 u_transformRow1{ 0.f, 1.f, 0.f, 0.f };
-    glm::vec4 u_transformRow2{ 0.f, 0.f, 1.f, 0.f };
+    glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
+    glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
+    glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
     GLuint u_materialIndex;
     GLuint u_spriteIndex;
@@ -24,20 +24,27 @@ struct DecalSSBO {
     inline void setTransform(
         const glm::mat4& mat)
     {
-        u_transformRow0[0] = mat[0][0];
-        u_transformRow0[1] = mat[1][0];
-        u_transformRow0[2] = mat[2][0];
-        u_transformRow0[3] = mat[3][0];
+        {
+            const auto& c0 = mat[0];
+            const auto& c1 = mat[1];
+            const auto& c2 = mat[2];
+            const auto& c3 = mat[3];
 
-        u_transformRow1[0] = mat[0][1];
-        u_transformRow1[1] = mat[1][1];
-        u_transformRow1[2] = mat[2][1];
-        u_transformRow1[3] = mat[3][1];
+            u_transformMatrixRow0[0] = c0[0];
+            u_transformMatrixRow0[1] = c1[0];
+            u_transformMatrixRow0[2] = c2[0];
+            u_transformMatrixRow0[3] = c3[0];
 
-        u_transformRow2[0] = mat[0][2];
-        u_transformRow2[1] = mat[1][2];
-        u_transformRow2[2] = mat[2][2];
-        u_transformRow2[3] = mat[3][2];
+            u_transformMatrixRow1[0] = c0[1];
+            u_transformMatrixRow1[1] = c1[1];
+            u_transformMatrixRow1[2] = c2[1];
+            u_transformMatrixRow1[3] = c3[1];
+
+            u_transformMatrixRow2[0] = c0[2];
+            u_transformMatrixRow2[1] = c1[2];
+            u_transformMatrixRow2[2] = c2[2];
+            u_transformMatrixRow2[3] = c3[2];
+        }
     }
 };
 #pragma pack(pop)

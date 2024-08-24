@@ -888,7 +888,6 @@ namespace loader {
         state.setScale(nodeData.scale);
 
         state.setPivot(nodeData.pivot.resolve(type));
-        state.setOffset(nodeData.offset);
 
         state.setFront(nodeData.front);
 

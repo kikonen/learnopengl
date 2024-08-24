@@ -24,6 +24,7 @@ struct EntitySSBO;
 // Snapshot of transform for RT
 //
 struct Snapshot {
+private:
     glm::vec4 m_volume{ 0.f };
 
     glm::vec3 m_worldPos{ 0.f };
@@ -37,6 +38,8 @@ struct Snapshot {
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
 
+public:
+    // NOTE KI static member fields rather safe to access directly
     pool::NodeHandle m_handle;
 
     uint32_t m_tileIndex{ 0 };
@@ -50,6 +53,7 @@ struct Snapshot {
     mutable bool m_dirty : 1 { true };
     mutable bool m_dirtyNormal : 1 { true };
 
+public:
     ///////////////////////////////////////
     //
     Snapshot() = default;
@@ -87,6 +91,14 @@ struct Snapshot {
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;
+    }
+
+    void setVolume(const glm::vec4& volume) noexcept
+    {
+        if (m_volume != volume) {
+            m_dirty = true;
+            m_volume = volume;
+        }
     }
 
     inline const glm::vec4& getVolume() const noexcept

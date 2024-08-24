@@ -14,6 +14,14 @@
 #include "render/RenderContext.h"
 
 namespace {
+    const glm::vec3 ZERO_VEC{ 0.f };
+
+    // NOTE KI only *SINGLE* thread is allowed to do model updates
+    // => thus can use globally shared temp vars
+    static glm::mat4 g_translateMatrix{ 1.f };
+    static glm::mat4 g_scaleMatrix{ 1.f };
+    static glm::mat4 g_pivotMatrix{ 1.f };
+    static glm::mat4 g_invPivotMatrix{ 1.f };
 }
 
 glm::vec3 NodeState::getDegreesRotation() const noexcept
@@ -50,8 +58,6 @@ void NodeState::updateRootMatrix() noexcept
         m_worldPos.z = wp.z;
     }
 
-    updateModelAxis();
-
     m_matrixLevel++;
 
     m_dirty = false;
@@ -68,46 +74,52 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         m_matrixLevel++;
     }
 
-    // NOTE KI only *SINGLE* thread is allowed to do model updates
-    // => thus can use globally shared temp vars
-    static glm::mat4 s_translateMatrix{ 1.f };
-    static glm::mat4 s_scaleMatrix{ 1.f };
-    static glm::mat4 s_offsetMatrix{ 1.f };
-    static glm::mat4 s_pivotMatrix{ 1.f };
-    static glm::mat4 s_invPivotMatrix{ 1.f };
+    const auto hasPivot = m_pivot != ZERO_VEC;
+
     {
-        s_translateMatrix[3].x = m_position.x;
-        s_translateMatrix[3].y = m_position.y;
-        s_translateMatrix[3].z = m_position.z;
+        g_translateMatrix[3].x = m_position.x;
+        g_translateMatrix[3].y = m_position.y;
+        g_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_scale.x;
-        s_scaleMatrix[1].y = m_scale.y;
-        s_scaleMatrix[2].z = m_scale.z;
+        g_scaleMatrix[0].x = m_scale.x;
+        g_scaleMatrix[1].y = m_scale.y;
+        g_scaleMatrix[2].z = m_scale.z;
 
-        s_offsetMatrix[3].x = m_offset.x;
-        s_offsetMatrix[3].y = m_offset.y;
-        s_offsetMatrix[3].z = m_offset.z;
+        if (hasPivot) {
+            g_pivotMatrix[3].x = -m_pivot.x * m_scale.x;
+            g_pivotMatrix[3].y = -m_pivot.y * m_scale.y;
+            g_pivotMatrix[3].z = -m_pivot.z * m_scale.z;
 
-        s_pivotMatrix[3].x = -m_pivot.x * m_scale.x;
-        s_pivotMatrix[3].y = -m_pivot.y * m_scale.y;
-        s_pivotMatrix[3].z = -m_pivot.z * m_scale.z;
-
-        s_invPivotMatrix[3].x = m_pivot.x * m_scale.x;
-        s_invPivotMatrix[3].y = m_pivot.y * m_scale.y;
-        s_invPivotMatrix[3].z = m_pivot.z * m_scale.z;
+            g_invPivotMatrix[3].x = m_pivot.x * m_scale.x;
+            g_invPivotMatrix[3].y = m_pivot.y * m_scale.y;
+            g_invPivotMatrix[3].z = m_pivot.z * m_scale.z;
+        }
     }
 
-    bool wasDirtyRotation = m_dirtyRotation;
     updateRotationMatrix();
-    m_modelMatrix = parent.m_modelMatrix *
-        s_translateMatrix *
-        s_offsetMatrix *
-        s_invPivotMatrix *
-        m_rotationMatrix *
-        s_pivotMatrix *
-        s_scaleMatrix;
 
-    m_modelScale = glm::mat3{ s_scaleMatrix } * parent.m_modelScale;
+    if (hasPivot) {
+        m_modelMatrix = parent.m_modelMatrix *
+            g_translateMatrix *
+            g_invPivotMatrix *
+            m_rotationMatrix *
+            g_pivotMatrix *
+            g_scaleMatrix;
+    }
+    else {
+        //m_modelMatrix = parent.m_modelMatrix *
+        //    g_translateMatrix *
+        //    m_rotationMatrix *
+        //    g_scaleMatrix;
+
+        m_modelMatrix = parent.m_modelMatrix *
+            glm::scale(
+                g_translateMatrix * m_rotationMatrix,
+                m_scale);
+    }
+
+
+    m_modelScale = parent.m_modelScale * glm::mat3{ g_scaleMatrix };
 
     assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 
@@ -120,29 +132,28 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         m_worldPos.z = wp.z;
     }
 
-    if (wasDirtyRotation) {
-        updateModelAxis();
-    }
-
     m_dirty = false;
     m_dirtySnapshot = true;
 }
 
-void NodeState::updateModelAxis() noexcept
+void NodeState::updateModelAxis() const noexcept
 {
     // NOTE KI "base quat" is assumed to have establish "normal" front dir
-    // => thus no "base quad" here!
+    // => thus no "base quat" here!
     // NOTE KI w == 0; only rotation
-    m_viewFront = glm::normalize(glm::mat3(m_rotation) * m_front);
-    glm::vec3 viewRight = glm::normalize(glm::cross(m_viewFront, m_up));
+    m_viewFront = glm::normalize(glm::mat3(m_modelRotation * m_invBaseRotation) * m_front);
+    glm::vec3 viewRight = glm::cross(m_viewFront, m_up);
     m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
     //m_viewRight = viewRight;
+
+    m_dirtyAxis = false;
 }
 
 void NodeState::updateRotationMatrix() noexcept
 {
     ASSERT_WT();
     if (!m_dirtyRotation) return;
-    m_rotationMatrix = glm::toMat4(m_rotation) * glm::toMat4(m_baseRotation);
+    m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
     m_dirtyRotation = false;
+    m_dirtyAxis = true;
 }

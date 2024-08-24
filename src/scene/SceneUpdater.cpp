@@ -175,12 +175,16 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 audio::AudioEngine::get().update(ctx);
             }
             {
+                KI_TIMER("physics0");
+                physics::PhysicsEngine::get().updatePrepare(ctx);
+            }
+            {
                 KI_TIMER("physics1");
-                physics::PhysicsEngine::get().update(ctx);
+                physics::PhysicsEngine::get().updateStaticBounds(ctx);
             }
             {
                 KI_TIMER("physics2");
-                physics::PhysicsEngine::get().updateBounds(ctx);
+                physics::PhysicsEngine::get().updateObjects(ctx);
             }
         }
     }

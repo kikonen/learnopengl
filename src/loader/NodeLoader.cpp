@@ -189,9 +189,6 @@ namespace loader {
             else if (k == "mesh_scale" || k == "base_scale") {
                 data.meshScale = readScale3(v);
             }
-            else if (k == "offset") {
-                data.offset = readVec3(v);
-            }
             else if (k == "pivot") {
                 data.pivot = PivotLoader{}.load(v);
             }

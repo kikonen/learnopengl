@@ -13,6 +13,7 @@
 #include "util/glm_util.h"
 
 
+struct Snapshot;
 struct UpdateContext;
 class RenderContext;
 
@@ -23,18 +24,21 @@ class RenderContext;
 // rendering entity and node instance updated, with aim to use separate threads
 //
 struct NodeState {
+    friend struct Snapshot;
+
+private:
     Sphere m_volume;
 
     glm::vec3 m_position{ 0.f };
     glm::vec3 m_scale{ 1.f };
 
-    glm::vec3 m_offset{ 0.f };
     glm::vec3 m_pivot{ 0.f };
 
     glm::vec3 m_worldPos{ 0.f };
 
     // Base rotation for node
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+    glm::quat m_invBaseRotation{ 1.f, 0.f, 0.f, 0.f };
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
@@ -43,14 +47,16 @@ struct NodeState {
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
-    glm::vec3 m_viewUp{ 0.f };
-    glm::vec3 m_viewFront{ 0.f };
+    mutable glm::vec3 m_viewUp{ 0.f };
+    mutable glm::vec3 m_viewFront{ 0.f };
     //glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
     glm::quat m_modelRotation{ 1.f, 0.f, 0.f, 0.f };
 
+public:
+    // NOTE KI static member fields are rather safe to access frmo anywhere
     uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
@@ -60,23 +66,24 @@ struct NodeState {
     ki::level_id m_parentMatrixLevel{ 0 };
     ki::level_id m_matrixLevel{ 0 };
 
-    ki::level_id m_physicsLevel{ 0 };
-
     bool m_dirty : 1 {true};
     bool m_dirtyRotation : 1 {true};
 
     mutable bool m_dirtyNormal : 1 {true};
     mutable bool m_dirtySnapshot : 1 {true};
+    mutable bool m_dirtyAxis : 1 {true};
 
     ///////////////////////////////////////
     //
-
+public:
     void setBaseRotation(const glm::quat& rotation) noexcept
     {
         if (m_baseRotation != rotation) {
             m_baseRotation = rotation;
+            m_invBaseRotation = glm::conjugate(rotation);
             m_dirty = true;
             m_dirtyRotation = true;
+            m_dirtyAxis = true;
             m_dirtySnapshot = true;
         }
     }
@@ -84,6 +91,11 @@ struct NodeState {
     inline const glm::quat& getBaseRotation() const noexcept
     {
         return m_baseRotation;
+    }
+
+    inline const glm::quat& getInvBaseRotation() const noexcept
+    {
+        return m_invBaseRotation;
     }
 
     inline const glm::vec4 getVolume() const noexcept
@@ -149,20 +161,6 @@ struct NodeState {
         }
     }
 
-    inline const glm::vec3& getOffset() const noexcept
-    {
-        return m_offset;
-    }
-
-    inline void setOffset(const glm::vec3& offset) noexcept
-    {
-        if (m_offset != offset)
-        {
-            m_offset = offset;
-            m_dirty = true;
-        }
-    }
-
     inline const glm::vec3& getPivot() const noexcept
     {
         return m_pivot;
@@ -195,6 +193,7 @@ struct NodeState {
         if (m_rotation != quat) {
             m_rotation = quat;
             m_dirtyRotation = true;
+            m_dirtyAxis = true;
             m_dirty = true;
             m_dirtyNormal = true;
         }
@@ -226,16 +225,19 @@ struct NodeState {
 
     inline const glm::vec3& getViewUp() const noexcept {
         assert(!m_dirty);
+        updateModelAxis();
         return m_viewUp;
     }
 
     inline const glm::vec3& getViewFront() const noexcept {
         assert(!m_dirty);
+        updateModelAxis();
         return m_viewFront;
     }
 
     inline glm::vec3 getViewRight() const noexcept {
         //return m_viewRight;
+        updateModelAxis();
         return glm::cross(m_viewFront, m_viewUp);
     }
 
@@ -280,6 +282,6 @@ struct NodeState {
 
     void updateRootMatrix() noexcept;
     void updateModelMatrix(const NodeState& parent) noexcept;
-    void updateModelAxis() noexcept;
+    void updateModelAxis() const noexcept;
     void updateRotationMatrix() noexcept;
 };

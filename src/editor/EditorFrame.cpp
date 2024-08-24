@@ -309,7 +309,7 @@ namespace editor {
         auto& state = node->modifyState();
 
         {
-            glm::vec3 pos = state.m_position;
+            glm::vec3 pos = state.getPosition();
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
             if (ImGui::InputFloat3("Node position", glm::value_ptr(pos))) {
                 state.setPosition(pos);

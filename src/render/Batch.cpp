@@ -77,7 +77,7 @@ namespace render {
         if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
             const auto& frustum = ctx.m_camera->getFrustum();
 
-            if (m_frustumCPU && !inFrustum(frustum, snapshot.m_volume)) {
+            if (m_frustumCPU && !inFrustum(frustum, snapshot.getVolume())) {
                 m_skipCount++;
                 return;
             }
@@ -86,7 +86,7 @@ namespace render {
         m_drawCount++;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.m_worldPos);
+        const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.getWorldPosition());
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_flags.hidden) continue;
@@ -182,7 +182,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx].m_volume))
+                        if (!inFrustum(frustum, snapshots[idx].getVolume()))
                             idx = -1;
                     });
             }
@@ -192,7 +192,7 @@ namespace render {
                     s_accept.begin(),
                     s_accept.end(),
                     [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx].m_volume))
+                        if (!inFrustum(frustum, snapshots[idx].getVolume()))
                             idx = -1;
                     });
             }
@@ -205,7 +205,7 @@ namespace render {
                     continue;
                 }
 
-                const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].m_worldPos);
+                const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].getWorldPosition());
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_flags.hidden) continue;

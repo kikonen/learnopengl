@@ -69,7 +69,7 @@ void TextGenerator::updateEntity(
     const glm::vec4& volume = m_aabb.getVolume();
 
     state.setVolume(volume);
-    snapshot.m_volume = volume;
+    snapshot.setVolume(volume);
     entity->u_volume = volume;
 }
 

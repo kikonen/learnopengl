@@ -138,7 +138,7 @@ namespace physics
         }
 
         state.setPosition(pos);
-        state.setRotation(rot * glm::conjugate(state.m_baseRotation));
+        state.setRotation(rot * state.getInvBaseRotation());
         //m_node->updateModelMatrix();
     }
 }

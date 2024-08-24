@@ -69,6 +69,7 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
 
     m_rotation = o.m_rotation;
 
+    o.updateModelAxis();
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
     //m_viewRight = o.m_viewRight;

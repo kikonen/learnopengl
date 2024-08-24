@@ -239,7 +239,16 @@ namespace physics
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
     }
 
-    void PhysicsEngine::update(const UpdateContext& ctx)
+    void PhysicsEngine::updatePrepare(const UpdateContext& ctx)
+    {
+        if (!m_enabled) return;
+
+        std::lock_guard lock{ m_lock };
+
+        preparePending(ctx);
+    }
+
+    void PhysicsEngine::updateObjects(const UpdateContext& ctx)
     {
         if (!m_enabled) return;
 
@@ -250,49 +259,26 @@ namespace physics
 
         std::lock_guard lock{ m_lock };
 
-        preparePending(ctx);
-
         for (auto* obj : m_updateObjects) {
             obj->updateToPhysics(false);
         }
 
         const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
-        const int n = static_cast<int>(dtTotal / STEP_SIZE);
-        m_remainder = dtTotal - n * STEP_SIZE;
+        const int steps = static_cast<int>(dtTotal / STEP_SIZE);
+        m_remainder = dtTotal - steps * STEP_SIZE;
 
-        if (n > 0) {
+        if (steps > 0)
+        {
             m_invokeCount++;
-            m_stepCount += n;
+            m_stepCount += steps;
 
-            //std::cout << "n=" << n << '\n';
-
-            //std::cout << ctx.m_clock.elapsedSecs << " - " << n << '\n';
-
-            //std::cout << "[BEFORE]\n";
-            //for (const auto& it : m_objects) {
-            //    Object* obj = it.second;
-            //    if (!obj->m_bodyId) continue;
-
-            //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
-            //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
-            //}
-
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < steps; i++) {
                 if (!*m_alive) return;
 
                 dSpaceCollide(m_spaceId, this, &collisionCallback);
                 dWorldQuickStep(m_worldId, STEP_SIZE);
                 dJointGroupEmpty(m_contactgroupId);
             }
-
-            //std::cout << "[AFTER]\n";
-            //for (const auto& it : m_objects) {
-            //    Object* obj = it.second;
-            //    if (!obj->m_bodyId) continue;
-
-            //    const dReal* pos = dBodyGetPosition(obj->m_bodyId);
-            //    std::cout << pos[0] << ", " << pos[1] << ", " << pos[2] << '\n';
-            //}
 
             for (const auto& obj : m_objects) {
                 obj.updateFromPhysics();
@@ -302,35 +288,32 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::updateBounds(const UpdateContext& ctx)
+    void PhysicsEngine::updateStaticBounds(const UpdateContext& ctx)
     {
         if (!m_enabled) return;
         preparePendingNodes(ctx);
 
-        auto enforce = [&ctx, this](pool::NodeHandle handle) {
+        if (m_enforceBoundsStatic.empty()) return;
+
+        std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
+        for (auto& handle : m_enforceBoundsStatic) {
             auto* node = handle.toNode();
-            if (!node) return;
+            if (!node) continue;
 
             const auto* type = node->m_typeHandle.toType();
 
             if (node->m_instancer) {
                 for (auto& state : node->m_instancer->modifyStates()) {
-                    enforceBounds(ctx, type, *node, state);
+                    enforceStaticBounds(ctx, type, *node, state);
                 }
             }
             else {
-                enforceBounds(ctx, type, *node, node->modifyState());
+                enforceStaticBounds(ctx, type, *node, node->modifyState());
             }
-        };
-
-        if (!m_enforceBoundsStatic.empty()) {
-            std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
-            for (auto& handle : m_enforceBoundsStatic) {
-                enforce(handle);
-            }
-            // NOTE KI static is enforced only once (after initial model setup)
-            m_enforceBoundsStatic.clear();
         }
+
+        // NOTE KI static is enforced only once (after initial model setup)
+        m_enforceBoundsStatic.clear();
     }
 
     void PhysicsEngine::preparePending(const UpdateContext& ctx)
@@ -411,15 +394,13 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::enforceBounds(
+    void PhysicsEngine::enforceStaticBounds(
         const UpdateContext& ctx,
         const mesh::MeshType* type,
         Node& node,
         NodeState& state)
     {
-        if (state.m_matrixLevel == state.m_physicsLevel) return;
-        state.m_physicsLevel = state.m_matrixLevel;
-
+        // NOTE KI happens *only* once
         const auto& worldPos = state.getWorldPosition();
         glm::vec3 pos = state.getPosition();
 

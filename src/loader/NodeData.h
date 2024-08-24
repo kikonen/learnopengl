@@ -65,7 +65,6 @@ namespace loader {
         glm::vec3 front{ 0.f, 0.f, 1.f };
         glm::vec3 scale{ 1.f };
         glm::vec3 meshScale{ 1.f };
-        glm::vec3 offset{ 0.f };
 
         PivotPoint pivot;
 

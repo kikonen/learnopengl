@@ -504,10 +504,10 @@ void SampleApp::raycastPlayer(
     }
 
     if (player) {
-        const auto& state = player->getState();
+        const auto& snapshot = player->getActiveSnapshot(ctx);
         const auto& hits = physics::PhysicsEngine::get().rayCast(
-            state.getWorldPosition(),
-            state.getViewFront(),
+            snapshot.getWorldPosition(),
+            snapshot.getViewFront(),
             100.f,
             physics::mask(physics::Category::ray_player_fire),
             physics::mask(physics::Category::npc),
