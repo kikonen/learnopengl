@@ -12,6 +12,7 @@
 
 namespace {
     constexpr float DECAL_DIST = 0.002f;
+    inline glm::vec3 QUAD_NORMAL{ 0, 0, 1.f };
 }
 
 namespace decal {
@@ -54,23 +55,9 @@ namespace decal {
         const auto& localTranslateMatrix = glm::translate(glm::mat4{ 1.f }, m_position);
         // local rotate around Z
         const auto& localRotationMatrix = glm::mat4(util::axisRadiansToQuat(glm::vec3{ 0.f, 0.f, 1.f }, m_rotation));
-        //const auto& localRotationMatrix = glm::mat4(1.f);
 
-        glm::mat4 rotationMatrix = glm::mat4(1);
-        {
-            // TODO KI resolve what this actually does
-            const auto& n = m_normal;
-            float sign = copysignf(1.0f, n.z);
-            const float a = -1.0f / (sign + n.z);
-            const float b = n.x * n.y * a;
-            glm::vec3 b1 = glm::vec3{ 1.0f + sign * n.x * n.x * a, sign * b, -sign * n.x };
-            glm::vec3 b2 = glm::vec3{ b, sign + n.y * n.y * a, -n.y };
-
-            rotationMatrix[0] = glm::vec4{ b1, 0.f };
-            rotationMatrix[1] = glm::vec4{ b2, 0.f };
-            rotationMatrix[2] = glm::vec4{ n, 0.f };
-        }
-        rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, { 0, 0, 1.f }) };
+        // NOTE KI calculate rotation between Quad and parent node hit normal
+        glm::mat4 rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, QUAD_NORMAL) };
 
         return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix;
     }

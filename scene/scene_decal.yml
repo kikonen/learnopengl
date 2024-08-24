@@ -57,3 +57,22 @@ nodes:
       geom:
         type: box
         size: [5, 3, 0.2]
+  - id: ball
+    mesh:
+      vertex:
+        type: sphere
+        radius: 1
+      material:
+        map_pbr: textures\Metal007_1K-PNG
+        program: g_tex
+    pos: [0, 2.5, 0]
+    physics:
+      body:
+        type: sphere
+        kinematic: true
+        density: 0.0001
+      geom:
+        type: sphere
+        category: [prop, can_float]
+        collision: [world, ray]
+        size: [1]
