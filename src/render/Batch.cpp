@@ -12,9 +12,10 @@
 
 #include "util/glm_format.h"
 #include "asset/Assets.h"
-#include "asset/Program.h"
 #include "asset/Sphere.h"
 #include "asset/Frustum.h"
+
+#include "shader/Program.h"
 
 #include "backend/gl/DrawIndirectCommand.h"
 #include "backend/DrawRange.h"

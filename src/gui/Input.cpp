@@ -76,13 +76,18 @@ void Input::updateMouseState()
     double xpos, ypos;
     glfwGetCursorPos(window->m_glfwWindow, &xpos, &ypos);
 
-    if (mouseHasPosition) {
+    if (mouseHasPosition && isMouseCaptured()) {
         // NOTE KI Match world axis directions
         mouseRelativeX = xpos - mouseX;
         mouseRelativeY = mouseY - ypos;
 
         mousePreviousX = mouseX;
         mousePreviousY = mouseY;
+    }
+    else {
+        // NOTE KI reset relative offset if mouse has been released
+        mouseRelativeX = 0.f;
+        mouseRelativeY = 0.f;
     }
 
     mouseX = xpos;

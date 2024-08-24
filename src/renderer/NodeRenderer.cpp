@@ -2,23 +2,22 @@
 #include "NodeRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-#include "asset/Uniform.h"
+
+#include "shader/Program.h"
+#include "shader/ProgramUniforms.h"
+#include "shader/Shader.h"
+#include "shader/Uniform.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/GLState.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-
 #include "model/Node.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/MaterialRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"

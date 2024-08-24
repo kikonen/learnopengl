@@ -10,7 +10,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
-#include "registry/ProgramRegistry.h"
+#include "shader/ProgramRegistry.h"
 
 #include "loader/document.h"
 #include "loader_util.h"

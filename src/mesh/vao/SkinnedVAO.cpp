@@ -5,7 +5,7 @@
 
 #include "util/thread.h"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "mesh/ModelMesh.h"
 

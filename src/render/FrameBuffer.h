@@ -7,7 +7,7 @@
 
 #include "kigl/kigl.h"
 
-#include "asset/BufferInfoUBO.h"
+#include "shader/BufferInfoUBO.h"
 
 #include "FrameBufferAttachment.h"
 

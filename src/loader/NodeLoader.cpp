@@ -10,7 +10,7 @@
 #include "util/Util.h"
 #include "util/glm_format.h"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"

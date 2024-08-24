@@ -5,7 +5,7 @@
 
 #include "util/thread.h"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "mesh/vao/TextureEntry.h"
 #include "mesh/vao/VBO_impl.h"

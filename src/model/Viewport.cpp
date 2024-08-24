@@ -11,10 +11,10 @@
 
 #include "kigl/GLState.h"
 
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-#include "asset/Uniform.h"
+#include "shader/ProgramUniforms.h"
+#include "shader/Shader.h"
+#include "shader/Uniform.h"
+#include "shader/Program.h"
 
 #include "engine/UpdateViewContext.h"
 

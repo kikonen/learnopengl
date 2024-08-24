@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <fmt/format.h>
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "util/thread.h"
 

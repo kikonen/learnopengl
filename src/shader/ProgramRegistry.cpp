@@ -2,7 +2,7 @@
 
 #include "fmt/format.h"
 
-#include "asset/Program.h"
+#include "Program.h"
 
 namespace {
     static ProgramRegistry s_registry;

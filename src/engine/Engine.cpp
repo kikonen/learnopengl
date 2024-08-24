@@ -23,7 +23,8 @@
 #include "engine/AsyncLoader.h"
 #include "engine/InputContext.h"
 
-#include "registry/ProgramRegistry.h"
+#include "shader/ProgramRegistry.h"
+
 #include "registry/NodeSnapshotRegistry.h"
 
 #include "registry/SnapshotRegistry_impl.h"

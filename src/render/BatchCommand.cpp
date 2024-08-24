@@ -1,7 +1,8 @@
 #include "BatchCommand.h"
 
-#include "asset/Program.h"
 #include "kigl/GLVertexArray.h"
+
+#include "shader/Program.h"
 
 //#include "render/RenderContext.h"
 

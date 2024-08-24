@@ -7,19 +7,19 @@
 #include "util/Util.h"
 
 #include "asset/Assets.h"
-#include "asset/SSBO.h"
 
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-#include "asset/uniform.h"
+#include "shader/SSBO.h"
+#include "shader/Program.h"
+#include "shader/ProgramUniforms.h"
+#include "shader/Shader.h"
+#include "shader/uniform.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/GLSyncQueue_impl.h"
 
 #include "engine/PrepareContext.h"
 
 #include "registry/Registry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "backend/gl/DrawIndirectParameters.h"
 #include "backend/gl/PerformanceCounters.h"

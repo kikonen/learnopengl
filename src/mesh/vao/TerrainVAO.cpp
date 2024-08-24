@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "asset/Program.h"
+#include "shader/Program.h"
 
 #include "render/Batch.h"
 

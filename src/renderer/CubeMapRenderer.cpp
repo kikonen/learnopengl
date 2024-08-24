@@ -3,8 +3,9 @@
 #include <vector>
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
+
+#include "shader/Shader.h"
 
 #include "pool/NodeHandle.h"
 

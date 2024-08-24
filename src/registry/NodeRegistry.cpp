@@ -11,7 +11,8 @@
 #include "kigl/kigl.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
+
+#include "shader/Program.h"
 
 #include "model/Node.h"
 

@@ -1,10 +1,12 @@
 #include "ShadowMapRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-#include "asset/Uniform.h"
+
+#include "shader/Program.h"
+#include "shader/ProgramUniforms.h"
+#include "shader/Shader.h"
+#include "shader/Uniform.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/GLState.h"
 
@@ -17,7 +19,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "renderer/ShadowCascade.h"
 

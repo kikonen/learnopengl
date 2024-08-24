@@ -8,7 +8,7 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
 
-#include "asset/SSBO.h"
+#include "shader/SSBO.h"
 
 #include "EntitySSBO.h"
 

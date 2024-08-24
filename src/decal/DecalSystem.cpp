@@ -1,10 +1,11 @@
 #include "DecalSystem.h"
 
 #include "asset/Assets.h"
-#include "asset/SSBO.h"
 
 #include "kigl/GLState.h"
 
+#include "shader/SSBO.h"
+#include "shader/ProgramRegistry.h"
 
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"
@@ -12,7 +13,6 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "Decal.h"
 

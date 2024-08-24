@@ -14,7 +14,8 @@
 #include "util/thread.h"
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
 
 #include "ImageTexture.h"
 #include "ChannelTexture.h"

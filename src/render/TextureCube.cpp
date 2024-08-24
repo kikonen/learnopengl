@@ -2,7 +2,7 @@
 
 #include "kigl/GLState.h"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 namespace {
 #pragma pack(push, 1)

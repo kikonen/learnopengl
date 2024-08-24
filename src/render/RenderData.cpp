@@ -1,14 +1,12 @@
 #include "RenderData.h"
 
-
-#include "asset/MatricesUBO.h"
-#include "asset/DataUBO.h"
-#include "asset/DebugUBO.h"
-#include "asset/BufferInfoUBO.h"
-#include "asset/ClipPlaneUBO.h"
-#include "asset/LightUBO.h"
-
-#include "asset/UBO.h"
+#include "shader/UBO.h"
+#include "shader/MatricesUBO.h"
+#include "shader/DataUBO.h"
+#include "shader/DebugUBO.h"
+#include "shader/BufferInfoUBO.h"
+#include "shader/ClipPlaneUBO.h"
+#include "shader/LightUBO.h"
 
 #include "material/ImageTexture.h"
 #include "material/ChannelTexture.h"

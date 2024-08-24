@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "material/Material.h"
 #include "MaterialField.h"

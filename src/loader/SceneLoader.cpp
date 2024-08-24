@@ -18,9 +18,12 @@
 #include "pool/TypeHandle.h"
 
 #include "asset/Assets.h"
+
 #include "material/Material.h"
-#include "asset/Program.h"
-#include "asset/Shader.h"
+
+#include "shader/Program.h"
+#include "shader/Shader.h"
+#include "shader/ProgramRegistry.h"
 
 #include "mesh/mesh_util.h"
 
@@ -49,7 +52,6 @@
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/MeshTypeRegistry.h"
 
 #include <engine/AsyncLoader.h>

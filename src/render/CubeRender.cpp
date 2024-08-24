@@ -3,7 +3,7 @@
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
 
-#include "asset/Program.h"
+#include "shader/Program.h"
 
 #include "material/Image.h"
 

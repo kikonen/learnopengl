@@ -8,8 +8,10 @@
 #include "util/glm_util.h"
 
 #include "asset/Assets.h"
+
 #include "material/Material.h"
-#include "asset/Program.h"
+
+#include "shader/Program.h"
 
 #include "util/Util.h"
 

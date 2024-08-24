@@ -111,7 +111,7 @@
     <ClCompile Include="src\scene\Raycast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Program.cpp">
+    <ClCompile Include="src\shader\Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Perlin.cpp">
@@ -222,7 +222,7 @@
     <ClCompile Include="src\asset\OBB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\ProgramRegistry.cpp">
+    <ClCompile Include="src\shader\ProgramRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\FrustumNew.cpp">
@@ -288,7 +288,7 @@
     <ClCompile Include="src\model\InstancePhysics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Uniform.cpp">
+    <ClCompile Include="src\shader\Uniform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\Sync.cpp">
@@ -480,7 +480,7 @@
     <ClCompile Include="src\script\Script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\ProgramUniforms.cpp">
+    <ClCompile Include="src\shader\ProgramUniforms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\UpdateViewContext.cpp">
@@ -1046,7 +1046,7 @@
     <ClInclude Include="src\particle\ParticleGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Program.h">
+    <ClInclude Include="src\shader\Program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\ParticleRenderer.h">
@@ -1055,7 +1055,7 @@
     <ClInclude Include="src\util\Perlin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\UBO.h">
+    <ClInclude Include="src\shader\UBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\Viewport.h">
@@ -1100,7 +1100,7 @@
     <ClInclude Include="src\engine\AssetsLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ProgramBind.h">
+    <ClInclude Include="src\shader\ProgramBind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Volume.h">
@@ -1169,7 +1169,7 @@
     <ClInclude Include="src\asset\FrustumNew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\SSBO.h">
+    <ClInclude Include="src\shader\SSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLBuffer.h">
@@ -1187,7 +1187,7 @@
     <ClInclude Include="src\asset\OBB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\ProgramRegistry.h">
+    <ClInclude Include="src\shader\ProgramRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\GLState.h">
@@ -1238,16 +1238,16 @@
     <ClInclude Include="src\render\RenderData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\LightUBO.h">
+    <ClInclude Include="src\shader\LightUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\DataUBO.h">
+    <ClInclude Include="src\shader\DataUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\MatricesUBO.h">
+    <ClInclude Include="src\shader\MatricesUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ClipPlaneUBO.h">
+    <ClInclude Include="src\shader\ClipPlaneUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Util.h">
@@ -1310,10 +1310,10 @@
     <ClInclude Include="src\model\InstancePhysics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Shader.h">
+    <ClInclude Include="src\shader\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Uniform.h">
+    <ClInclude Include="src\shader\Uniform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\Sync.h">
@@ -1355,7 +1355,7 @@
     <ClInclude Include="src\render\OITBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\BufferInfoUBO.h">
+    <ClInclude Include="src\shader\BufferInfoUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\TextureQuad.h">
@@ -1577,7 +1577,7 @@
     <ClInclude Include="src\physics\Body.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\ProgramUniforms.h">
+    <ClInclude Include="src\shader\ProgramUniforms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\UpdateViewContext.h">
@@ -1976,7 +1976,7 @@
     <ClInclude Include="src\animation\BoneRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\DebugUBO.h">
+    <ClInclude Include="src\shader\DebugUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\DebugContext.h">

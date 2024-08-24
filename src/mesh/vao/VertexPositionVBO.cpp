@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "kigl/GLVertexArray.h"
 

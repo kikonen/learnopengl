@@ -10,21 +10,19 @@
 
 #include "asset/Assets.h"
 
-#include "asset/UBO.h"
-#include "asset/MatricesUBO.h"
-#include "asset/DataUBO.h"
-#include "asset/BufferInfoUBO.h"
-#include "asset/ClipPlaneUBO.h"
-#include "asset/LightUBO.h"
-
-#include "asset/ProgramBind.h"
-#include "asset/Shader.h"
-#include "asset/Uniform.h"
-
 #include "pool/IdGenerator.h"
 
 #include "kigl/GLState.h"
 
+#include "UBO.h"
+#include "MatricesUBO.h"
+#include "DataUBO.h"
+#include "BufferInfoUBO.h"
+#include "ClipPlaneUBO.h"
+#include "LightUBO.h"
+#include "ProgramBind.h"
+#include "Shader.h"
+#include "Uniform.h"
 #include "ProgramUniforms.h"
 
 

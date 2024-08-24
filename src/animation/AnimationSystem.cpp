@@ -9,7 +9,8 @@
 #include "util/glm_format.h"
 
 #include "asset/Assets.h"
-#include "asset/SSBO.h"
+
+#include "shader/SSBO.h"
 
 #include "engine/UpdateContext.h"
 

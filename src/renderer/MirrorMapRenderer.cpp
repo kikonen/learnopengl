@@ -1,7 +1,9 @@
 #include "MirrorMapRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
+#include "shader/ProgramRegistry.h"
 
 #include "pool/NodeHandle.h"
 
@@ -22,7 +24,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "renderer/WaterMapRenderer.h"
 

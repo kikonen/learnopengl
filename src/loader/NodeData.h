@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "model/NodeType.h"
 #include "model/PivotPoint.h"

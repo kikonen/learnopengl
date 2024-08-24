@@ -2,8 +2,8 @@
 
 #include <mutex>
 
-#include "asset/Program.h"
-#include "asset/Shader.h"
+#include "shader/Program.h"
+#include "shader/Shader.h"
 
 
 namespace {

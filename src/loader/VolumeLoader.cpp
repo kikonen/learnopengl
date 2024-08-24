@@ -11,7 +11,9 @@
 #include "pool/NodeHandle.h"
 
 #include "material/Material.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
+#include "shader/ProgramRegistry.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -27,7 +29,6 @@
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "loader/document.h"
 #include "loader_util.h"

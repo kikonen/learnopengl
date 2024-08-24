@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdio>
 
-#include "asset/LightUBO.h"
+#include "shader/LightUBO.h"
 
 #include "engine/UpdateContext.h"
 

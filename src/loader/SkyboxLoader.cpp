@@ -15,9 +15,10 @@
 
 #include "model/Node.h"
 
+#include "shader/ProgramRegistry.h"
+
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/MeshTypeRegistry.h"
 
 #include "scene/SkyboxMaterial.h"

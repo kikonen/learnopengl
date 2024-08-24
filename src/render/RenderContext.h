@@ -2,10 +2,10 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/MatricesUBO.h"
-#include "asset/DataUBO.h"
-#include "asset/ClipPlaneUBO.h"
-#include "asset/DebugUBO.h"
+#include "shader/MatricesUBO.h"
+#include "shader/DataUBO.h"
+#include "shader/ClipPlaneUBO.h"
+#include "shader/DebugUBO.h"
 
 #include "kigl/kigl.h"
 

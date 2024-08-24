@@ -1,6 +1,6 @@
 #include "TextSystem.h"
 
-#include "asset/Shader.h"
+#include "shader/Shader.h"
 
 #include "text/vao/TextVAO.h"
 

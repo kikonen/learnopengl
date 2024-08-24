@@ -7,10 +7,10 @@
 #include "util/thread.h"
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
 #include "asset/DynamicCubeMap.h"
 
-#include "asset/LightUBO.h"
+#include "shader/Shader.h"
+#include "shader/LightUBO.h"
 
 #include "model/Viewport.h"
 
@@ -18,13 +18,13 @@
 
 #include "controller/NodeController.h"
 
+#include "shader/ProgramRegistry.h"
+
 #include "registry/Registry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/MeshTypeRegistry.h"
 
 #include "engine/PrepareContext.h"

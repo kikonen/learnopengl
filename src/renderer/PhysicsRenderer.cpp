@@ -14,9 +14,10 @@
 
 #include "registry/VaoRegistry.h"
 #include "backend/DrawBuffer.h"
-#include "asset/Program.h"
 
-#include "registry/ProgramRegistry.h"
+#include "shader/Program.h"
+#include "shader/ProgramRegistry.h"
+
 #include "registry/EntityRegistry.h"
 
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)

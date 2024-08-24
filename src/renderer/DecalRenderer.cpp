@@ -1,8 +1,10 @@
 #include "DecalRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
+#include "shader/Program.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/kigl.h"
 #include "kigl/GLState.h"
@@ -20,7 +22,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 #include "registry/ModelRegistry.h"
 
 namespace {

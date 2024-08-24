@@ -1,7 +1,8 @@
 #include "BoneRegistry.h"
 
 #include "asset/Assets.h"
-#include "asset/SSBO.h"
+
+#include "shader/SSBO.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;

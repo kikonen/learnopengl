@@ -4,7 +4,8 @@
 
 #include "util/Thread.h"
 
-#include "asset/SSBO.h"
+#include "shader/SSBO.h"
+
 #include "material/MaterialSSBO.h"
 
 namespace {

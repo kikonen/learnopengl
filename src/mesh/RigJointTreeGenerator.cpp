@@ -3,7 +3,8 @@
 #include <map>
 
 #include "material/Material.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
 
 #include "animation/RigContainer.h"
 #include "animation/BoneInfo.h"

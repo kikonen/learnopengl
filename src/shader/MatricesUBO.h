@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "asset/Shader.h"
+#include "Shader.h"
 
 
 // NOTE KI align 16 for UBO struct

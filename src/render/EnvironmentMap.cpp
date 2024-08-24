@@ -7,13 +7,14 @@
 #include "kigl/GLState.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
+
+#include "shader/Program.h"
+#include "shader/ProgramRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "CubeRender.h"
 

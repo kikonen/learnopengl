@@ -1,8 +1,10 @@
 #include "TestSceneSetup.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/Shader.h"
+
+#include "shader/Program.h"
+#include "shader/Shader.h"
+#include "shader/ProgramRegistry.h"
 
 #include "material/PlainTexture.h"
 
@@ -20,9 +22,7 @@
 #include "registry/MeshTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MaterialRegistry.h"
 #include "registry/ViewportRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "engine/AsyncLoader.h"
 

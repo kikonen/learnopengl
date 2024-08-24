@@ -3,10 +3,12 @@
 #include "util/glm_format.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/ProgramUniforms.h"
-#include "asset/Shader.h"
-#include "asset/Uniform.h"
+
+#include "shader/Program.h"
+#include "shader/ProgramUniforms.h"
+#include "shader/Shader.h"
+#include "shader/Uniform.h"
+#include "shader/ProgramRegistry.h"
 
 #include "component/Light.h"
 
@@ -26,7 +28,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 
 namespace {

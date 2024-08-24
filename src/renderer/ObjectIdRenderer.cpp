@@ -1,11 +1,12 @@
 #include "ObjectIdRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Program.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
+#include "shader/Program.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/GLState.h"
-
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
@@ -21,7 +22,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 
 ki::node_id ObjectIdRenderer::getObjectId(

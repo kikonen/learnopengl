@@ -1,7 +1,9 @@
 #include "WaterMapRenderer.h"
 
 #include "asset/Assets.h"
-#include "asset/Shader.h"
+
+#include "shader/Shader.h"
+#include "shader/ProgramRegistry.h"
 
 #include "kigl/GLState.h"
 
@@ -18,7 +20,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ProgramRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
