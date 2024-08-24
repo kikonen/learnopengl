@@ -39,13 +39,15 @@ void AsteroidBeltGenerator::prepareWT(
 {
     NodeGenerator::prepareWT(ctx, container);
 
+    container.m_instancer = this;
+
     createAsteroids(ctx, container);
     prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
-    Node& container)
+    const Node& container)
 {
     if (done) return;
     const auto parentLevel = container.getParent()->getState().getMatrixLevel();
@@ -53,7 +55,7 @@ void AsteroidBeltGenerator::updateWT(
 
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
-        auto& state = container.modifyState();
+        auto& state = container.getState();
         state.m_dirtySnapshot = true;
     }
 
@@ -64,7 +66,7 @@ void AsteroidBeltGenerator::updateWT(
 
 void AsteroidBeltGenerator::updateAsteroids(
     const UpdateContext& ctx,
-    Node& container,
+    const Node& container,
     bool rotate)
 {
     auto* registry = ctx.m_registry;
@@ -79,13 +81,11 @@ void AsteroidBeltGenerator::updateAsteroids(
     {
         state.updateModelMatrix(parentState);
     }
-
-    container.m_instancer = this;
 }
 
 void AsteroidBeltGenerator::createAsteroids(
     const PrepareContext& ctx,
-    Node& container)
+    const Node& container)
 {
     auto& registry = ctx.m_registry;
 
@@ -95,7 +95,7 @@ void AsteroidBeltGenerator::createAsteroids(
     const auto* mesh = lodMesh->m_mesh;
     const auto& volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
 
-    auto& containerState = container.modifyState();
+    auto& containerState = container.getState();
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
@@ -107,7 +107,9 @@ void AsteroidBeltGenerator::createAsteroids(
     }
 
     initAsteroids(ctx, container);
-    containerState.setVolume(calculateVolume());
+
+    // TODO KI container volume is not actually used currently
+    //containerState.setVolume(calculateVolume());
 
     m_reservedCount = static_cast<uint32_t>(m_states.size());
     setActiveRange(0, m_reservedCount);
@@ -115,7 +117,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
 void AsteroidBeltGenerator::initAsteroids(
     const PrepareContext& ctx,
-    Node& container)
+    const Node& container)
 {
     // initialize random seed
     auto ts = duration_cast<std::chrono::seconds>(
@@ -180,7 +182,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
 void AsteroidBeltGenerator::rotateAsteroids(
     const UpdateContext& ctx,
-    Node& container)
+    const Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
     const size_t count = m_states.size();

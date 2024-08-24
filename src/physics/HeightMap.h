@@ -63,7 +63,7 @@ namespace physics {
 
         //const std::unique_ptr<Image> m_image;
 
-        Node* m_origin{ nullptr };
+        const Node* m_origin{ nullptr };
 
         int m_worldTileSize{ 0 };
         // X -dir

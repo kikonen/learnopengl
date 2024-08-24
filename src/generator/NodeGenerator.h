@@ -60,7 +60,9 @@ public:
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        Node& container) {}
+        const Node& container) {}
+
+    void updateModelMatrices(const Node& container) noexcept;
 
     void snapshotWT(
         NodeSnapshotRegistry& snapshotRegistry);
@@ -76,7 +78,7 @@ public:
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,
-        Node& container);
+        const Node& container);
 
     virtual void updateVAO(
         const RenderContext& ctx,

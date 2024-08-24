@@ -36,7 +36,7 @@ namespace terrain {
 
         virtual void updateWT(
             const UpdateContext& ctx,
-            Node& container) override;
+            const Node& container) override;
 
     private:
         virtual void prepareEntity(
@@ -45,17 +45,17 @@ namespace terrain {
 
         void updateTiles(
             const UpdateContext& ctx,
-            Node& container);
+            const Node& container);
 
         physics::height_map_id prepareHeightMap(
             const PrepareContext& ctx,
-            Node& container);
+            const Node& container);
 
         ImageTexture* loadTexture(bool flipY);
 
         void createTiles(
             const PrepareContext& ctx,
-            Node& container,
+            const Node& container,
             physics::height_map_id heightMapId);
 
         pool::TypeHandle createType(

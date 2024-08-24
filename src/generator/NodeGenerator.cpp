@@ -24,6 +24,14 @@
 
 NodeGenerator::~NodeGenerator() = default;
 
+void NodeGenerator::updateModelMatrices(const Node& container) noexcept
+{
+    const auto& parentState = container.getParent()->getState();
+    for (auto& state : m_states) {
+        state.updateModelMatrix(parentState);
+    }
+}
+
 std::span<const Snapshot> NodeGenerator::getSnapshots(
     NodeSnapshotRegistry& snapshotRegistry) const noexcept
 {
@@ -128,7 +136,7 @@ void NodeGenerator::bindBatch(
     const std::function<Program* (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
-    Node& container)
+    const Node& container)
 {
     if (m_activeCount == 0) return;
 

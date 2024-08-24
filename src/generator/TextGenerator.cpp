@@ -52,7 +52,7 @@ void TextGenerator::prepareRT(
 
 void TextGenerator::updateWT(
     const UpdateContext& ctx,
-    Node& container)
+    const Node& container)
 {
 }
 
@@ -135,7 +135,7 @@ void TextGenerator::bindBatch(
     const std::function<Program* (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
-    Node& container)
+    const Node& container)
 {
     m_draw->updateRT();
 

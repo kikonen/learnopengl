@@ -15,16 +15,16 @@ public:
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        Node& container) override;
+        const Node& container) override;
 
 private:
     void updateInstances(
         const UpdateContext& ctx,
-        Node& container);
+        const Node& container);
 
     void prepareInstances(
         const PrepareContext& ctx,
-        Node& container);
+        const Node& container);
 
 public:
     int m_xCount{ 1 };

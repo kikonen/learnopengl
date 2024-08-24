@@ -15,25 +15,25 @@ public:
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        Node& container) override;
+        const Node& container) override;
 
 private:
     void updateAsteroids(
         const UpdateContext& ctx,
-        Node& container,
+        const Node& container,
         bool rotate);
 
     void createAsteroids(
         const PrepareContext& ctx,
-        Node& container);
+        const Node& container);
 
     void initAsteroids(
         const PrepareContext& ctx,
-        Node& container);
+        const Node& container);
 
     void rotateAsteroids(
         const UpdateContext& ctx,
-        Node& container);
+        const Node& container);
 
 private:
     const int m_asteroidCount;

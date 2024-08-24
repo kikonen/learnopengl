@@ -35,7 +35,7 @@ public:
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        Node& container) override;
+        const Node& container) override;
 
     virtual void updateEntity(
         NodeSnapshotRegistry& snapshotRegistry,
@@ -52,7 +52,7 @@ public:
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,
-        Node& container) override;
+        const Node& container) override;
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 

@@ -22,6 +22,8 @@ void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
+    container.m_instancer = this;
+
     prepareInstances(
         ctx,
         container);
@@ -31,21 +33,21 @@ void GridGenerator::prepareWT(
 
 void GridGenerator::updateWT(
     const UpdateContext& ctx,
-    Node& container)
+    const Node& container)
 {
     const auto parentLevel = container.getParent()->getState().getMatrixLevel();
     if (m_containerMatrixLevel == parentLevel) return;
     updateInstances(
         ctx,
         container);
-    auto& state = container.modifyState();
+    auto& state = container.getState();
     state.m_dirtySnapshot = true;
     m_containerMatrixLevel = parentLevel;
 }
 
 void GridGenerator::updateInstances(
     const UpdateContext& ctx,
-    Node& container)
+    const Node& container)
 {
     const auto& parentState = container.getParent()->getState();
 
@@ -76,15 +78,13 @@ void GridGenerator::updateInstances(
 
     m_reservedCount = static_cast<uint32_t>(m_states.size());
     setActiveRange(0, m_reservedCount);
-
-    container.m_instancer = this;
 }
 
 void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
-    Node& node)
+    const Node& container)
 {
-    auto* type = node.m_typeHandle.toType();
+    auto* type = container.m_typeHandle.toType();
 
     const auto count = m_zCount * m_xCount * m_yCount;
 

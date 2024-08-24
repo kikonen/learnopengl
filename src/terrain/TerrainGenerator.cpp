@@ -77,9 +77,9 @@ namespace terrain {
 
     void TerrainGenerator::updateWT(
         const UpdateContext& ctx,
-        Node& container)
+        const Node& container)
     {
-        auto& state = container.modifyState();
+        const auto& state = container.getState();
         if (m_containerMatrixLevel == state.getMatrixLevel()) return;
 
         updateTiles(ctx, container);
@@ -89,7 +89,7 @@ namespace terrain {
 
     physics::height_map_id TerrainGenerator::prepareHeightMap(
         const PrepareContext& ctx,
-        Node& container)
+        const Node& container)
     {
         const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
@@ -158,7 +158,7 @@ namespace terrain {
 
     void TerrainGenerator::updateTiles(
         const UpdateContext& ctx,
-        Node& container)
+        const Node& container)
     {
         const auto& containerState = container.getState();
 
@@ -182,7 +182,7 @@ namespace terrain {
 
     void TerrainGenerator::createTiles(
         const PrepareContext& ctx,
-        Node& container,
+        const Node& container,
         physics::height_map_id heightMapId)
     {
         const auto& assets = ctx.m_assets;

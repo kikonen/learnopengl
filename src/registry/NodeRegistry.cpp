@@ -143,7 +143,12 @@ void NodeRegistry::updateModelMatrices()
 {
     for (auto* node : m_cachedNodesWT) {
         if (!node) continue;
+
         node->updateModelMatrix();
+
+        if (node->m_generator) {
+            node->m_generator->updateModelMatrices(*node);
+        }
     }
 }
 

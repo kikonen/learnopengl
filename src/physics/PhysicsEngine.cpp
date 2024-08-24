@@ -417,15 +417,6 @@ namespace physics
         //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
 
         state.setPosition(pos);
-        //state.setRotation(util::degreesToQuat({ 0.f, 0.f, 0.f }));
-
-        if (state.m_dirty) {
-            state.updateModelMatrix(parent->getState());
-            auto& nodeState = node.modifyState();
-            nodeState.m_dirtySnapshot = true;
-        }
-
-        //KI_INFO_OUT(fmt::format("LEVEL: nodeId={}, level={}", node.m_id, level));
     }
 
     physics::physics_id PhysicsEngine::registerObject()
