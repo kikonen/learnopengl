@@ -83,6 +83,7 @@ public:
     // => it's referred by verteces
     void assign(const Material& o);
 
+    void registerMaterial();
     void loadTextures();
 
     void prepare();

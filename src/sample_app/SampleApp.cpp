@@ -200,8 +200,7 @@ int SampleApp::onSetup()
         mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
         mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
         mat.loadTextures();
-
-        MaterialRegistry::get().registerMaterial(mat);
+        mat.registerMaterial();
     }
 
     return 0;

@@ -11,6 +11,7 @@
 #include "pool/IdGenerator.h"
 
 #include "util/Util.h"
+#include "util/thread.h"
 
 #include "asset/Assets.h"
 #include "asset/Shader.h"
@@ -22,6 +23,7 @@
 #include "asset/MaterialSSBO.h"
 #include "asset/TextureUBO.h"
 
+#include "registry/MaterialRegistry.h"
 
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
@@ -167,6 +169,11 @@ void Material::assign(const Material& o)
     auto oldId = m_id;
     *this = o;
     m_id = oldId;
+}
+
+void Material::registerMaterial()
+{
+    MaterialRegistry::get().registerMaterial(*this);
 }
 
 void Material::loadTextures()
@@ -328,6 +335,8 @@ std::string Material::getTexturePath(
 
 void Material::prepare()
 {
+    ASSERT_RT();
+
     if (m_prepared) return;
     m_prepared = true;
 
