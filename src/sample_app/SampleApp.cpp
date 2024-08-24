@@ -66,6 +66,7 @@
 
 #include "physics/PhysicsEngine.h"
 #include "physics/RayHit.h"
+#include "physics/physics_util.h"
 
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
@@ -508,8 +509,8 @@ void SampleApp::raycastPlayer(
             state.getWorldPosition(),
             state.getViewFront(),
             100.f,
-            util::as_integer(physics::Category::ray_player_fire),
-            util::as_integer(physics::Category::npc),
+            physics::mask(physics::Category::ray_player_fire),
+            physics::mask(physics::Category::npc),
             player->toHandle(),
             true);
 
@@ -606,9 +607,10 @@ void SampleApp::raycastPlayer(
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             startPos,
             dir,
-            100.f,
-            util::as_integer(physics::Category::ray_player_fire),
-            util::as_integer(physics::Category::npc),
+            400.f,
+            physics::mask(physics::Category::ray_player_fire),
+            //physics::mask(physics::Category::npc),
+            physics::mask(physics::Category::all),
             player->toHandle(),
             true);
 

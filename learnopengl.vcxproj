@@ -254,6 +254,7 @@
     <ClCompile Include="src\physics\Body.cpp" />
     <ClCompile Include="src\physics\Geom.cpp" />
     <ClCompile Include="src\physics\MeshGenerator.cpp" />
+    <ClCompile Include="src\physics\physics_util.cpp" />
     <ClCompile Include="src\registry\VaoRegistry.cpp" />
     <ClCompile Include="src\renderer\DecalRenderer.cpp" />
     <ClCompile Include="src\renderer\PhysicsRenderer.cpp" />
@@ -569,6 +570,7 @@
     <ClInclude Include="src\model\PrimitiveNode.h" />
     <ClInclude Include="src\physics\Category.h" />
     <ClInclude Include="src\physics\MeshGenerator.h" />
+    <ClInclude Include="src\physics\physics_util.h" />
     <ClInclude Include="src\physics\RayHit.h" />
     <ClInclude Include="src\registry\VaoRegistry.h" />
     <ClInclude Include="src\renderer\DecalRenderer.h" />

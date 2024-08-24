@@ -179,7 +179,7 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [npc]
+        collision: [npc, ray]
         size: [1, 1, 1]
   - id: maple_tree_forest_{c}_{t}
     prefab:

@@ -88,4 +88,7 @@ namespace loader {
 
     std::string renderNode(
         const loader::DocNode& v);
+
+    std::string renderNodes(
+        const std::vector<loader::DocNode>& nodes);
 }

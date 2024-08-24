@@ -580,4 +580,15 @@ namespace loader {
         ss << v.str();
         return ss.str();
     }
+
+    std::string renderNodes(
+        const std::vector<loader::DocNode>& nodes)
+    {
+        std::stringstream ss;
+        for (const auto& entry : nodes) {
+            ss << renderNode(entry);
+            ss << ", ";
+        }
+        return ss.str();
+    }
 }

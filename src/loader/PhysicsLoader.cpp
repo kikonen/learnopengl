@@ -14,8 +14,11 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+#include "physics/physics_util.h"
+
 namespace {
     std::unordered_map<std::string, physics::Category> g_categoryMapping;
+    std::unordered_map<std::string, uint32_t> g_maskMapping;
     std::unordered_map<std::string, uint32_t> g_contactMapping;
 
     const std::unordered_map<std::string, physics::Category>& getCategoryMapping()
@@ -25,7 +28,7 @@ namespace {
                 { "none", physics::Category::none },
                 { "all", physics::Category::all },
                 { "invalid", physics::Category::invalid },
-                // surroundings
+                // world
                 { "terrain", physics::Category::terrain },
                 { "water", physics::Category::water },
                 { "scenery", physics::Category::scenery },
@@ -43,6 +46,27 @@ namespace {
                 });
         }
         return g_categoryMapping;
+    }
+
+    const std::unordered_map<std::string, uint32_t>& getMaskMapping()
+    {
+        if (g_maskMapping.empty()) {
+            g_maskMapping.insert({
+                { "world", physics::mask(
+                    physics::Category::terrain,
+                    physics::Category::water,
+                    physics::Category::scenery,
+                    physics::Category::prop) },
+                { "character", physics::mask(
+                    physics::Category::player,
+                    physics::Category::npc) },
+                { "ray", physics::mask(
+                    physics::Category::ray_player_fire,
+                    physics::Category::ray_npc_fire,
+                    physics::Category::ray_hit) },
+                });
+        }
+        return g_maskMapping;
     }
 
     const std::unordered_map<std::string, uint32_t>& getContactMapping()
@@ -69,14 +93,22 @@ namespace {
         return g_contactMapping;
     }
 
-    physics::Category readCategory(std::string v)
+    uint32_t readCategoryMask(std::string v)
     {
-        const auto& mapping = getCategoryMapping();
-        const auto& it = mapping.find(v);
-        if (it != mapping.end()) return it->second;
+        {
+            const auto& mapping = getCategoryMapping();
+            const auto& it = mapping.find(v);
+            if (it != mapping.end()) return physics::mask(it->second);
+        }
+        {
+            const auto& mapping = getMaskMapping();
+            const auto& it = mapping.find(v);
+            if (it != mapping.end()) return it->second;
+        }
+
         // NOTE KI for data tracking data mismatches
-        KI_WARN_OUT(fmt::format("PHYSICS: INVALID_CATEGORY - category={}", v));
-        return physics::Category::invalid;
+        KI_WARN_OUT(fmt::format("PHYSICS: INVALID_CATEGORY_MASK - category={}", v));
+        return physics::mask(physics::Category::invalid);
     }
 }
 
@@ -267,9 +299,12 @@ namespace loader {
     {
         uint32_t m = 0;
         for (const auto& entry : node.getNodes()) {
-            const auto& category = readCategory(readString(entry));
-            m |= util::as_integer(category);
+            const auto mask = readCategoryMask(readString(entry));
+            m |= mask;
         }
+
+        KI_INFO_OUT(fmt::format("PHYSICS: MASK={}, nodes={}", m, renderNodes(node.getNodes())));
+
         mask = m;
     }
 
