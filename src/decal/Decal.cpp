@@ -58,8 +58,10 @@ namespace decal {
 
         // NOTE KI calculate rotation between Quad and parent node hit normal
         glm::mat4 rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, QUAD_NORMAL) };
+        // NOTE KI inverse scale so that parent's scale won't affect decal size
+        glm::mat4 invScaleMatrix = glm::scale(glm::mat4{ 1.f }, 1.f / state.getScale());
 
-        return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix;
+        return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix * invScaleMatrix;
     }
 
     Decal Decal::createForHit(

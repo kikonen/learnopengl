@@ -38,6 +38,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
   - id: brick_ball
     mesh:
       vertex:
