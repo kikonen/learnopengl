@@ -870,7 +870,6 @@ nodes:
       y_step: 0
       z_step: 60
     physics:
-      update: true
       body:
         type: box
         kinematic: true

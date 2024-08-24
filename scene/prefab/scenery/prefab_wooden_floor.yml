@@ -21,5 +21,8 @@ prefab:
   render_flags:
     no_shadow: true
   physics:
+    kinematic: true
     geom:
       type: plane
+      category: [terrain]
+      collision: [npc, player, prop]

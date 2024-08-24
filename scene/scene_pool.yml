@@ -101,14 +101,13 @@ nodes:
       mirror: true
   - id: pool_floor_{c}_{t}
     mesh:
-      path: quad
+      path: plane
       material:
         map_kd: textures/tiles_1024.png
         tiling: 8
         program: g_tex
       scale: 30
     pos: [0.0, 3.2, -10.0]
-    rotation: [270.0, 0.0, 0.0]
     render_flags:
       no_shadow: true
     repeat:
@@ -118,7 +117,17 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - id: pool_surface__{c}_{t}
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [terrain]
+        collision: [can_terrain]
+        size: [30, 0.01, 30]
+  - id: pool_surface_{c}_{t}
     mesh:
       path: plane
       material:
@@ -150,7 +159,7 @@ nodes:
         type: box
         category: [water]
         collision: [can_float]
-        size: [30, 0.02, 30]
+        size: [30, 0.01, 30]
     script_file: scripts/anim_water
   - id: pool_side_{t}_{c}
     mesh:
@@ -208,9 +217,13 @@ nodes:
       z_count: 1
       x_step: 10
       z_step: 0
-    script: |
+    physics:
+      enabled: true
+      update: true
+    xscript: |
       cmd:animationPlay(
         { name = "master:Idle" });
+    script: scripts/seq_skeleton_army
   - id: terrain_grass
     id: auto
     priority: 20
@@ -265,15 +278,27 @@ nodes:
       z_step: -12
   - id: cube_2
     mesh:
-      path: texture_cube
-      material_modifier:
-        tiling: 5
+      vertex:
+        type: sphere
+        radius: 1
+      material:
+        map_pbr: textures\Metal007_1K-PNG
         program: g_tex
-      scale: 2.5
-    pos: [160, 9.5, 20]
-  - name: Pool floor - SINGLE
+      scale: 5
+    pos: [160, 42.5, 20]
+    rotation: [0, 0, 45]
+    physics:
+      body:
+        type: sphere
+        density: 0.01
+      geom:
+        type: sphere
+        category: [prop]
+        collision: [world, ray]
+        size: [5]
+  - id: pool_floor_single_{c}_{t}
     mesh:
-      path: quad
+      path: plane
       material:
         map_kd: textures/tiles_1024.png
         tiling: 8
@@ -281,9 +306,18 @@ nodes:
       scale: 60
     priority: -10
     pos: [160.0, 3.2, 20.0]
-    rotation: [270.0, 0.0, 0.0]
     render_flags:
       no_shadow: true
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [terrain]
+        collision: [can_terrain]
+        size: [60, 0.01, 60]
   - id: pool_surface_single
     mesh:
       path: plane
@@ -300,6 +334,17 @@ nodes:
     render_flags:
       no_shadow: true
       water: true
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.01
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [60, 0.01, 60]
     xxscript_file: scripts/cycle_water
   - id: pool_side_single_{t}_{c}
     mesh:
