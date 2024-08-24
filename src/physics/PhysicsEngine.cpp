@@ -47,6 +47,7 @@ namespace {
     dContact g_contacts[MAX_CONTACTS]{};
 
     struct HitData {
+        bool onlyClosest{ false };
         physics::Object* test{ nullptr };
         std::vector<physics::RayHit> hits{};
     };
@@ -109,21 +110,33 @@ namespace physics
     static void rayCallback(void* data, dGeomID o1, dGeomID o2) {
         dContactGeom contact;
         if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
-            HitData* hitData = static_cast<HitData*>(data);
-            auto& hit = hitData->hits.emplace_back();
-            hit.handle = hitData->test->m_nodeHandle;
+            HitData& hitData = *static_cast<HitData*>(data);
 
-            hit.pos = {
+            RayHit* lastHit = hitData.hits.empty() ? nullptr : &hitData.hits[0];
+            RayHit* hit{ nullptr };
+
+            if (hitData.onlyClosest && lastHit) {
+                if (contact.depth < lastHit->depth) {
+                    hit = lastHit;
+                }
+            }
+            if (!hit) {
+                hit = &hitData.hits.emplace_back();
+            }
+
+            hit->handle = hitData.test->m_nodeHandle;
+
+            hit->pos = {
                 static_cast<float>(contact.pos[0]),
                 static_cast<float>(contact.pos[1]),
                 static_cast<float>(contact.pos[2]) };
 
-            hit.normal = {
+            hit->normal = {
                 static_cast<float>(contact.normal[0]),
                 static_cast<float>(contact.normal[1]),
                 static_cast<float>(contact.normal[2]) };
 
-            hit.depth = static_cast<float>(contact.depth);
+            hit->depth = static_cast<float>(contact.depth);
         }
     }
 
@@ -514,7 +527,8 @@ namespace physics
         float distance,
         uint32_t categoryMask,
         uint32_t collisionMask,
-        pool::NodeHandle fromNode)
+        pool::NodeHandle fromNode,
+        bool onlyClosest)
     {
         if (!m_enabled) return {};
 
@@ -530,6 +544,7 @@ namespace physics
         const auto rayGeomId = ray->m_geom.physicId;
 
         HitData hitData;
+        hitData.onlyClosest = onlyClosest;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
         dGeomRaySetLength(rayGeomId, distance);

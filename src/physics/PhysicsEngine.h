@@ -75,7 +75,8 @@ namespace physics {
             float distance,
             uint32_t categoryMask,
             uint32_t collisionMask,
-            pool::NodeHandle fromNode);
+            pool::NodeHandle fromNode,
+            bool onlyClosest);
 
     private:
         void preparePending(const UpdateContext& ctx);

@@ -510,7 +510,8 @@ void SampleApp::raycastPlayer(
             100.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
-            player->toHandle());
+            player->toHandle(),
+            true);
 
         if (!hits.empty()) {
             for (auto& hit : hits) {
@@ -608,7 +609,8 @@ void SampleApp::raycastPlayer(
             100.f,
             util::as_integer(physics::Category::ray_player_fire),
             util::as_integer(physics::Category::npc),
-            player->toHandle());
+            player->toHandle(),
+            true);
 
         if (!hits.empty()) {
             for (auto& hit : hits) {
