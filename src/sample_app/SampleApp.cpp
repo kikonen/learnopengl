@@ -609,8 +609,8 @@ void SampleApp::raycastPlayer(
             dir,
             400.f,
             physics::mask(physics::Category::ray_player_fire),
-            //physics::mask(physics::Category::npc),
-            physics::mask(physics::Category::all),
+            physics::mask(physics::Category::npc, physics::Category::prop),
+            //physics::mask(physics::Category::all),
             player->toHandle(),
             true);
 

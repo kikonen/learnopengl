@@ -56,8 +56,8 @@ nodes:
         rot: [0, 0, 0]
       geom:
         type: box
-        category: [can_float]
-        collision: [water]
+        category: [prop, can_float]
+        collision: [world, ray]
         size: [2.5]
   - id: cube_map_mirror_ball
     parent_id: mirror_ball
@@ -80,8 +80,8 @@ nodes:
         rot: [0, 0, 0]
       geom:
         type: sphere
-        category: [can_float]
-        collision: [water]
+        category: [prop, can_float]
+        collision: [world, ray]
         size: [10]
   - name: Big mirror 2
     mesh:
@@ -328,7 +328,7 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [npc]
+        collision: [npc, ray]
         size: [1, 1, 1]
   - id: palm_tree_forest_{c}_{t}
     prefab:
