@@ -11,6 +11,8 @@
 
 #include "mesh/PrimitiveMesh.h"
 
+#include "TangentCalculator.h"
+
 namespace {
     // NOTE KI normal, tangent, tex stored to allow normal g_tex shader
     const float QUAD_VERTICES[] = {
@@ -134,6 +136,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -325,6 +329,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -358,6 +364,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -389,6 +397,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -422,6 +432,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -454,6 +466,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -490,6 +504,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -523,6 +539,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -558,6 +576,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -591,6 +611,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -627,6 +649,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -662,6 +686,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -696,6 +722,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -733,6 +761,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -766,6 +796,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -801,6 +833,8 @@ namespace {
             indeces.push_back(tri.vertices[2]);
         }
 
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
         return mesh;
     }
 
@@ -834,6 +868,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
@@ -869,6 +905,8 @@ namespace {
             indeces.push_back(tri.vertices[1]);
             indeces.push_back(tri.vertices[2]);
         }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
 
         return mesh;
     }
