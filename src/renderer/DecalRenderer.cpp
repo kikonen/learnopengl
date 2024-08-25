@@ -38,12 +38,17 @@ void DecalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_decalProgram = ProgramRegistry::get().getProgram(
+    m_alphaDecalProgram = ProgramRegistry::get().getProgram(
         SHADER_DECAL,
         { { DEF_USE_ALPHA, "1" },
           { DEF_USE_BLEND, "1" } });
 
-    m_decalProgram->prepareRT();
+    m_alphaDecalProgram->prepareRT();
+
+    m_solidDecalProgram = ProgramRegistry::get().getProgram(
+        SHADER_DECAL);
+
+    m_solidDecalProgram->prepareRT();
 
     {
         auto generator = mesh::PrimitiveGenerator::quad();
@@ -66,8 +71,8 @@ void DecalRenderer::render(
 
 
     if (false) {
-    // NOTE KI decals don't update depth
-    state.setDepthMask(GL_FALSE);
+        // NOTE KI decals don't update depth
+        state.setDepthMask(GL_FALSE);
         state.setEnabled(GL_BLEND, true);
         //state.setEnabled(GL_CULL_FACE, false);
 
@@ -80,10 +85,16 @@ void DecalRenderer::render(
     }
 
     state.setEnabled(GL_CULL_FACE, false);
+
     const bool wireframe = ctx.m_forceWireframe;
     state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
-    m_decalProgram->bind();
+    if (wireframe) {
+        m_solidDecalProgram->bind();
+    }
+    else {
+        m_alphaDecalProgram->bind();
+    }
 
     state.bindVAO(*m_quad->getVAO());
 
@@ -98,9 +109,8 @@ void DecalRenderer::render(
 
     state.setEnabled(GL_CULL_FACE, true);
 
-
     if (false) {
-    state.setDepthMask(GL_TRUE);
+        state.setDepthMask(GL_TRUE);
         state.setEnabled(GL_BLEND, false);
     }
 }
