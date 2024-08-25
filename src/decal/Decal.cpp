@@ -70,7 +70,7 @@ namespace decal {
         glm::mat4 invScaleMatrix = glm::scale(ID_MAT, 1.f / scale);
         glm::mat4 scaleMatrix = glm::scale(ID_MAT, glm::vec3{ m_scale });
 
-        return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix * invScaleMatrix * scaleMatrix;
+        return parentMatrix * localTranslateMatrix * invScaleMatrix * rotationMatrix * localRotationMatrix * scaleMatrix;
     }
 
     Decal Decal::createForHit(
@@ -88,7 +88,7 @@ namespace decal {
         decal::Decal decal{};
         decal.m_parent = parent;
         decal.m_position = invModelMatrix * glm::vec4(hitPos + hitNormal * DECAL_DIST, 1.f);
-        decal.m_normal = glm::mat3(invModelMatrix) * hitNormal;
+        decal.m_normal = glm::normalize(glm::mat3(invModelMatrix) * hitNormal);
 
         decal.m_rotation = util::prnd(std::numbers::pi_v<float> / 2.f);
 

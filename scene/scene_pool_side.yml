@@ -36,3 +36,14 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [-30.0, 4, 40]
         scale: [60, 6, 0.3]
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc, ray]
+        size: [1, 1, 1]

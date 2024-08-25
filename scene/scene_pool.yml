@@ -50,6 +50,7 @@ nodes:
       scale: 2.5
     pos: [0, 12.5, -10]
     physics:
+      update: true
       body:
         type: box
         density: 2
