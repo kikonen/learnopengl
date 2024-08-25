@@ -50,6 +50,12 @@ private:
         const InputState& inputState,
         const InputState& lastInputState);
 
+    void shoot(
+        const RenderContext& ctx,
+        Scene* scene,
+        const InputState& inputState,
+        const InputState& lastInputState);
+
     void selectNode(
         const RenderContext& ctx,
         Scene* scene,

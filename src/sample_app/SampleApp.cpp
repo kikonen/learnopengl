@@ -192,10 +192,11 @@ int SampleApp::onSetup()
     {
         m_bulletMaterial = std::make_unique<Material>();
         auto& mat = *m_bulletMaterial;
-        mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
+        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
         //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
-        mat.spriteCount = 61;
-        mat.spritesX = 8;
+        mat.addTexPath(TextureType::diffuse, "particles/BulletHole_Plaster.png");
+        mat.spriteCount = 1;
+        mat.spritesX = 1;
         mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
         mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
         mat.loadTextures();
@@ -329,17 +330,16 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             }
             else if (state.shift)
             {
-                raycastPlayer(ctx, scene, state, m_lastInputState);
+                shoot(ctx, scene, state, m_lastInputState);
             }
         }
 
-        if (state.mouseRight != m_lastInputState.mouseRight &&
-            state.mouseRight == GLFW_PRESS &&
+        if (state.mouseRight == GLFW_PRESS &&
             input->allowMouse())
         {
             if (state.shift)
             {
-                raycastPlayer(ctx, scene, state, m_lastInputState);
+                shoot(ctx, scene, state, m_lastInputState);
             }
         }
 
@@ -605,16 +605,44 @@ void SampleApp::raycastPlayer(
             //physics::mask(physics::Category::all),
             player->toHandle(),
             true);
+    }
+}
+
+void SampleApp::shoot(
+    const RenderContext& ctx,
+    Scene* scene,
+    const InputState& inputState,
+    const InputState& lastInputState)
+{
+    auto* player = m_currentScene->getActiveNode();
+    if (!player) return;
+
+    {
+        glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
+
+        const auto startPos = ctx.unproject(screenPos, .01f);
+        const auto endPos = ctx.unproject(screenPos, .8f);
+        const auto dir = glm::normalize(endPos - startPos);
+
+        const auto& hits = physics::PhysicsEngine::get().rayCast(
+            startPos,
+            dir,
+            400.f,
+            physics::mask(physics::Category::ray_player_fire),
+            physics::mask(physics::Category::npc, physics::Category::prop),
+            //physics::mask(physics::Category::all),
+            player->toHandle(),
+            true);
 
         if (!hits.empty()) {
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
-                KI_INFO_OUT(fmt::format(
-                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
-                    node ? node->getName() : "N/A",
-                    hit.pos,
-                    hit.normal,
-                    hit.depth));
+                //KI_INFO_OUT(fmt::format(
+                //    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
+                //    node ? node->getName() : "N/A",
+                //    hit.pos,
+                //    hit.normal,
+                //    hit.depth));
 
                 auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
                 decal.m_materialIndex = m_bulletMaterial->m_registeredIndex;
@@ -624,13 +652,15 @@ void SampleApp::raycastPlayer(
                 decal.m_spriteBaseIndex = 0;
                 decal.m_spriteCount = m_bulletMaterial->spriteCount;
 
+                decal.m_scale = 0.01f + util::prnd(0.05f);
+
                 decal::DecalSystem::get().addDecal(decal);
 
-                KI_INFO_OUT(fmt::format(
-                    "DECAL: node={}, pos={}, normal={}",
-                    node ? node->getName() : "N/A",
-                    decal.m_position,
-                    decal.m_normal));
+                //KI_INFO_OUT(fmt::format(
+                //    "DECAL: node={}, pos={}, normal={}",
+                //    node ? node->getName() : "N/A",
+                //    decal.m_position,
+                //    decal.m_normal));
             }
         }
     }
