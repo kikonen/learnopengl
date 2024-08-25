@@ -49,8 +49,8 @@ nodes:
       material:
         map_pbr: textures\Bricks007_1K-PNG
         parallax_depth: 0.0
-        tiling_x: 1
-        tiling_y: 1
+        tiling_x: 1.25
+        tiling_y: 0.75
         program: g_tex
     pos: [-5, 1.5, 0]
     physics:

@@ -95,7 +95,7 @@ nodes:
         program: g_tex
         render_back: true
       vertex:
-        type: box
+        type: rounded_box
         xinner_radius: 0.25
         xradius: 0.25
         xslices: 16

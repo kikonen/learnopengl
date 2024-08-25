@@ -79,7 +79,7 @@ namespace mesh
             meshSet.m_filePath,
             //aiProcess_GenNormals |
             aiProcess_GenSmoothNormals |
-            aiProcess_ForceGenNormals |
+            //aiProcess_ForceGenNormals |
             //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
             aiProcess_Triangulate |
