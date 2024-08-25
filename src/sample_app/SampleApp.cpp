@@ -621,6 +621,9 @@ void SampleApp::raycastPlayer(
                 //decal.m_materialIndex = 3;
                 decal.m_lifetime = 99999999999999.f;
                 decal.m_scale = 0.5f + util::prnd(1.f);
+                decal.m_spriteBaseIndex = 0;
+                decal.m_spriteCount = m_bulletMaterial->spriteCount;
+
                 decal::DecalSystem::get().addDecal(decal);
 
                 KI_INFO_OUT(fmt::format(

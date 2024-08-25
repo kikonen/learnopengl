@@ -95,6 +95,8 @@ nodes:
         kinematic: true
       geom:
         type: sphere
+        category: [prop]
+        collision: [world, player, npc, ray]
         size: [1]
   - id: four_cubes_{t}_{c}
     mesh:
@@ -148,6 +150,8 @@ nodes:
         kinematic: true
       geom:
         type: box
+        category: [prop]
+        collision: [world, player, npc, ray]
         size: [1]
   - id: skeleton_army_{c}_{t}
     prefab:

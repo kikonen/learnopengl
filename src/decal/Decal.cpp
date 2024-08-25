@@ -24,7 +24,7 @@ namespace decal {
         if (m_lifetime <= 0) return false;
 
         if (m_spriteSpeed >= 0) {
-            m_spriteActiveIndex += std::fmodf(dt * m_spriteSpeed, (float)m_spriteCount);
+            m_spriteActiveIndex = std::fmodf(m_spriteActiveIndex + dt * m_spriteSpeed, (float)m_spriteCount);
         }
         else {
             m_spriteActiveIndex += dt * m_spriteSpeed;
