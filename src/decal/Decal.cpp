@@ -2,6 +2,7 @@
 
 #include <numbers>
 
+#include "util/debug.h"
 #include "util/glm_util.h"
 #include "util/Util.h"
 
@@ -13,6 +14,7 @@
 namespace {
     constexpr float DECAL_DIST = 0.002f;
     inline glm::vec3 QUAD_NORMAL{ 0, 0, 1.f };
+    inline glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace decal {
@@ -51,16 +53,22 @@ namespace decal {
         const auto& state = node->getState();
 
         const auto& parentMatrix = state.getModelMatrix();
+        const auto& scale = state.getScale();
+
+        //KI_INFO_OUT(fmt::format(
+        //    "DECAL: pos={}, normal={}, scale={}, parentScale={}, parent={}",
+        //    m_position, m_normal, m_scale, scale, parentMatrix));
 
         const auto& localTranslateMatrix = glm::translate(glm::mat4{ 1.f }, m_position);
-        // local rotate around Z
-        const auto& localRotationMatrix = glm::mat4(util::axisRadiansToQuat(glm::vec3{ 0.f, 0.f, 1.f }, m_rotation));
+        // local rotate around QUAD_NORMAL
+        const auto& localRotationMatrix = glm::mat4(util::axisRadiansToQuat(QUAD_NORMAL, m_rotation));
 
         // NOTE KI calculate rotation between Quad and parent node hit normal
         glm::mat4 rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, QUAD_NORMAL) };
         // NOTE KI inverse scale so that parent's scale won't affect decal size
-        glm::mat4 invScaleMatrix = glm::scale(glm::mat4{ 1.f }, 1.f / state.getScale());
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scale });
+        // (only model scale, no world scale)
+        glm::mat4 invScaleMatrix = glm::scale(ID_MAT, 1.f / scale);
+        glm::mat4 scaleMatrix = glm::scale(ID_MAT, glm::vec3{ m_scale });
 
         return parentMatrix * localTranslateMatrix * rotationMatrix * localRotationMatrix * invScaleMatrix * scaleMatrix;
     }

@@ -54,6 +54,7 @@ nodes:
         program: g_tex
     pos: [-5, 1.5, 0]
     physics:
+      update: true
       body:
         type: box
         kinematic: true
@@ -61,6 +62,12 @@ nodes:
       geom:
         type: box
         size: [5, 3, 0.2]
+    xscript: |
+      local wid = cmd:wait({ time=5 })
+      cmd:rotate(
+        { after=wid, time=10 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
   - id: ball
     mesh:
       vertex:
@@ -92,6 +99,7 @@ nodes:
         program: g_tex
     pos: [5, 1.5, 0]
     physics:
+      update: true
       body:
         type: box
         kinematic: true
@@ -99,3 +107,9 @@ nodes:
       geom:
         type: box
         size: [5, 3, 0.2]
+    xscript: |
+      local wid = cmd:wait({ time=5 })
+      cmd:rotate(
+        { after=wid, time=10 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
