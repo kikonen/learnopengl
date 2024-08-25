@@ -296,17 +296,31 @@ namespace loader {
 
     void PhysicsLoader::loadMask(
         const loader::DocNode& node,
-        uint32_t& mask) const
+        uint32_t& result) const
     {
-        uint32_t m = 0;
+        uint32_t mask = 0;
+        std::vector<std::string> negatedEntries;
+
         for (const auto& entry : node.getNodes()) {
-            const auto mask = readCategoryMask(readString(entry));
-            m |= mask;
+            const auto& value = readString(entry);
+            if (value[0] == '_') {
+                negatedEntries.push_back(value.substr(1, value.length() - 1));
+            }
+            else {
+                mask |= readCategoryMask(value);
+            }
         }
 
-        KI_INFO_OUT(fmt::format("PHYSICS: MASK={}, nodes={}", m, renderNodes(node.getNodes())));
+        if (!negatedEntries.empty()) {
+            if (mask == 0) mask = UINT_MAX;
+            for (const auto& value : negatedEntries) {
+                mask &= ~readCategoryMask(value);
+            }
+        }
 
-        mask = m;
+        KI_INFO_OUT(fmt::format("PHYSICS: MASK={}, nodes={}", mask, renderNodes(node.getNodes())));
+
+        result = mask;
     }
 
     void PhysicsLoader::createObject(
