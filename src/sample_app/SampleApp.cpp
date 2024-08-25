@@ -492,26 +492,10 @@ void SampleApp::raycastPlayer(
     const InputState& inputState,
     const InputState& lastInputState)
 {
-    const Node* player = nullptr;
+    auto* player = m_currentScene->getActiveNode();
+    if (!player) return;
 
-    if (!player)
     {
-        player = pool::NodeHandle::toNode(SID("player"));
-    }
-    if (!player)
-    {
-        player = pool::NodeHandle::toNode(SID("player_2"));
-    }
-    if (!player)
-    {
-        player = pool::NodeHandle::toNode(SID("fps_player"));
-    }
-    if (!player)
-    {
-        player = pool::NodeHandle::toNode(SID("fps_player_2"));
-    }
-
-    if (player) {
         const auto& snapshot = player->getActiveSnapshot(ctx);
         const auto& hits = physics::PhysicsEngine::get().rayCast(
             snapshot.getWorldPosition(),
@@ -537,7 +521,7 @@ void SampleApp::raycastPlayer(
         }
     }
 
-    if (player) {
+    {
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);
