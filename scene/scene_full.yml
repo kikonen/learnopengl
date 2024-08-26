@@ -1124,6 +1124,8 @@ nodes:
     instanced: true
     generator:
       type: grid
+      mode: random
+      seed: [424242, 121212, 333333]
       repeat:
         x_count: 40
         z_count: 40
@@ -1139,6 +1141,8 @@ nodes:
     instanced: true
     generator:
       type: grid
+      mode: random
+      seed: [424242, 121212, 333333]
       repeat:
         x_count: 40
         z_count: 40
@@ -1154,11 +1158,16 @@ nodes:
     render_flags:
       static_bounds: true
       no_shadow: true
-    repeat:
-      x_count: 80
-      z_count: 80
-      x_step: -9
-      z_step: 9
+    instanced: true
+    generator:
+      type: grid
+      mode: random
+      seed: [4242, 1212, 3333]
+      repeat:
+        x_count: 80
+        z_count: 80
+        x_step: -9
+        z_step: 9
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml

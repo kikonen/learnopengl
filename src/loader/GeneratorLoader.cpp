@@ -20,6 +20,35 @@
 
 #include "loader/Loaders.h"
 
+namespace {
+    std::unordered_map<std::string, GeneratorMode> g_modeMapping;
+
+    const std::unordered_map<std::string, GeneratorMode>& getModeMapping()
+    {
+        if (g_modeMapping.empty()) {
+            g_modeMapping.insert({
+                { "none", GeneratorMode::none },
+                { "grid", GeneratorMode::grid },
+                { "random", GeneratorMode::random },
+                });
+        }
+        return g_modeMapping;
+    }
+
+    GeneratorMode readMode(std::string v)
+    {
+        {
+            const auto& mapping = getModeMapping();
+            const auto& it = mapping.find(v);
+            if (it != mapping.end()) return it->second;
+        }
+
+        // NOTE KI for data tracking data mismatches
+        KI_WARN_OUT(fmt::format("GENERATOR: INVALID_MODE- mode={}", v));
+        return GeneratorMode::none;
+    }
+}
+
 namespace loader {
     GeneratorLoader::GeneratorLoader(
         Context ctx)
@@ -70,7 +99,10 @@ namespace loader {
                 data.radius = readFloat(v);
             }
             else if (k == "mode") {
-                data.mode = readInt(v);
+                data.mode = readMode(readString(v));
+            }
+            else if (k == "seed") {
+                data.seed = readUVec3(v);
             }
             else if (k == "repeat") {
                 loadRepeat(v, data.repeat);
@@ -147,6 +179,9 @@ namespace loader {
         }
         case GeneratorType::grid: {
             auto generator{ std::make_unique<GridGenerator>() };
+
+            generator->m_mode = data.mode;
+            generator->m_seed = data.seed;
             generator->m_xCount = data.repeat.xCount;
             generator->m_yCount = data.repeat.yCount;
             generator->m_zCount = data.repeat.zCount;

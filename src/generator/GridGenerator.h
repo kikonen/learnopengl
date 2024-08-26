@@ -22,11 +22,21 @@ private:
         const UpdateContext& ctx,
         const Node& container);
 
+    void updateGrid(
+        const UpdateContext& ctx,
+        const Node& container);
+
+    void updateRandom(
+        const UpdateContext& ctx,
+        const Node& container);
+
     void prepareInstances(
         const PrepareContext& ctx,
         const Node& container);
 
 public:
+    glm::uvec3 m_seed{ 0 };
+
     int m_xCount{ 1 };
     int m_yCount{ 1 };
     int m_zCount{ 1 };

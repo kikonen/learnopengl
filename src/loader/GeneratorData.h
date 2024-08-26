@@ -1,6 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "BaseData.h"
+
+#include "generator/GeneratorMode.h"
 
 #include "TerrainData.h"
 #include "MaterialData.h"
@@ -22,8 +26,11 @@ namespace loader {
         GeneratorType type{ GeneratorType::none };
 
         int count{ 0 };
-        int mode{ 0 };
         float radius{ 0.f };
+
+        GeneratorMode mode{ GeneratorMode::none };
+
+        glm::uvec3 seed{ 0 };
 
         Repeat repeat;
         Tiling tiling;

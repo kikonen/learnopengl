@@ -272,11 +272,16 @@ nodes:
     render_flags:
       static_bounds: true
       no_shadow: true
-    repeat:
-      x_count: 30
-      z_count: 20
-      x_step: 12
-      z_step: -12
+    instanced: true
+    generator:
+      type: grid
+      mode: random
+      seed: [4242, 1212, 3333]
+      repeat:
+        x_count: 30
+        z_count: 20
+        x_step: 12
+        z_step: -12
   - id: cube_2
     mesh:
       vertex:

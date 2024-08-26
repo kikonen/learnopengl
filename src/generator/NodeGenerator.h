@@ -11,6 +11,8 @@
 
 #include "kigl/kigl.h"
 
+#include "GeneratorMode.h"
+
 namespace kigl {
     struct GLVertexArray;
 }
@@ -114,6 +116,9 @@ protected:
     }
 
     glm::vec4 calculateVolume() const noexcept;
+
+public:
+    GeneratorMode m_mode{ GeneratorMode::none };
 
 protected:
     uint32_t m_poolSize = 0;

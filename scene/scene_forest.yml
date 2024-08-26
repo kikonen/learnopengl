@@ -43,6 +43,8 @@ nodes:
     instanced: true
     generator:
       type: grid
+      mode: random
+      seed: [23444242, 54351212, 4353333]
       repeat:
         x_count: 200
         z_count: 200
