@@ -121,6 +121,8 @@ public:
     GeneratorMode m_mode{ GeneratorMode::none };
 
 protected:
+    bool m_setupDone{ false };
+
     uint32_t m_poolSize = 0;
 
     uint32_t m_activeFirst = 0;

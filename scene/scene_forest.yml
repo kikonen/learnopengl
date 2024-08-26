@@ -53,30 +53,34 @@ nodes:
   - xid: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
-    pos: [-1000, 10.0, 0.0]
+    pos: [-250, 10.0, 0.0]
     render_flags:
       static_bounds: true
     instanced: true
     generator:
       type: grid
+      mode: random
+      seed: [23444242, 54351212, 4353333]
       repeat:
-        x_count: 200
-        z_count: 200
+        x_count: 50
+        z_count: 50
         x_step: 20
         z_step: -20
   - xid: pine_tree_forest_{t}
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
-    pos: [-1000, 0.0, 0.0]
+    pos: [-250, 0.0, 0.0]
     render_flags:
       xstatic_bounds: true
     scale: 2
     instanced: true
     generator:
       type: grid
+      mode: random
+      seed: [23444242, 54351212, 4353333]
       repeat:
-        x_count: 200
-        z_count: 200
+        x_count: 50
+        z_count: 50
         x_step: 20
         z_step: -20
   - id: wooden_floor

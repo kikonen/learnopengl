@@ -38,6 +38,9 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
+    if (m_setupDone) return;
+    m_setupDone = true;
+
     const auto parentLevel = container.getParent()->getState().getMatrixLevel();
     if (m_containerMatrixLevel == parentLevel) return;
     updateInstances(
@@ -118,7 +121,7 @@ void GridGenerator::updateRandom(
     std::mt19937 rngZ(devZ());
     rngZ.seed(m_seed.z);
 
-    constexpr int RANGE = 2 ^ 31;
+    constexpr int RANGE = INT_MAX;
     std::uniform_int_distribution<std::mt19937::result_type> uniform_dist(0, RANGE);
 
     const float maxX = m_xCount * m_xStep;
@@ -128,26 +131,66 @@ void GridGenerator::updateRandom(
     for (int idx = 0; idx < count; idx++) {
         auto& state = m_states[idx];
 
-        glm::vec3 d{
-            (float)uniform_dist(rngX) / (float)RANGE,
-            (float)uniform_dist(rngY) / (float)RANGE,
-            (float)uniform_dist(rngZ) / (float)RANGE
-        };
+        {
+            glm::uvec3 v{
+                uniform_dist(rngX),
+                uniform_dist(rngY),
+                uniform_dist(rngZ)
+            };
 
-        //KI_INFO_OUT(fmt::format("p={}", d));
+            glm::vec3 d{
+                static_cast<float>(v.x) / (float)RANGE,
+                static_cast<float>(v.y) / (float)RANGE,
+                static_cast<float>(v.z) / (float)RANGE,
+            };
 
-        const glm::vec3 pos{
-            maxX * d.x,
-            maxY * d.y,
-            maxZ * d.z };
+            //KI_INFO_OUT(fmt::format("r={}, v={}, p={}", RANGE, v, d));
 
-        state.setPosition(containerState.getPosition() + pos);
+            const glm::vec3 pos{
+                maxX * d.x,
+                maxY * d.y,
+                maxZ * d.z };
+
+            state.setPosition(containerState.getPosition() + pos);
+        }
+        {
+            glm::uvec3 v{
+                uniform_dist(rngX),
+                uniform_dist(rngY),
+                uniform_dist(rngZ)
+            };
+
+            glm::vec3 d{
+                static_cast<float>(v.x) / (float)RANGE,
+                static_cast<float>(v.y) / (float)RANGE,
+                static_cast<float>(v.z) / (float)RANGE,
+            };
+
+            float degrees = 360.f * d.y;
+            const auto rot = util::axisDegreesToQuat({ 0, 1.f, 0 }, degrees);
+
+            state.setBaseRotation(containerState.getBaseRotation());
+            state.setRotation(containerState.getRotation() * rot);
+        }
+        {
+            glm::uvec3 v{
+                uniform_dist(rngX),
+                uniform_dist(rngY),
+                uniform_dist(rngZ)
+            };
+
+            glm::vec3 d{
+                static_cast<float>(v.x) / (float)RANGE,
+                static_cast<float>(v.y) / (float)RANGE,
+                static_cast<float>(v.z) / (float)RANGE,
+            };
+
+            const float scale = 0.8f + 0.4f * d.y;
+
+            state.setScale(containerState.getScale() * scale);
+        }
 
         state.setVolume(containerState.getVolume());
-
-        state.setBaseRotation(containerState.getBaseRotation());
-        state.setRotation(containerState.getRotation());
-        state.setScale(containerState.getScale());
 
         state.updateModelMatrix(parentState);
     }
