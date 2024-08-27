@@ -108,18 +108,18 @@ void GridGenerator::updateRandom(
     const auto& containerState = container.getState();
     const auto count = m_zCount * m_xCount * m_yCount;
 
-    std::random_device devX;
-    std::random_device devY;
-    std::random_device devZ;
+    std::random_device devPos;
+    std::random_device devScale;
+    std::random_device devRot;
 
-    std::mt19937 rngX(devX());
-    rngX.seed(m_seed.x);
+    std::mt19937 rngPos(devPos());
+    rngPos.seed(m_seed.x);
 
-    std::mt19937 rngY(devY());
-    rngY.seed(m_seed.y);
+    std::mt19937 rngScale(devScale());
+    rngScale.seed(m_seed.y);
 
-    std::mt19937 rngZ(devZ());
-    rngZ.seed(m_seed.z);
+    std::mt19937 rngRot(devRot());
+    rngRot.seed(m_seed.z);
 
     constexpr int RANGE = INT_MAX;
     std::uniform_int_distribution<std::mt19937::result_type> uniform_dist(0, RANGE);
@@ -133,9 +133,9 @@ void GridGenerator::updateRandom(
 
         {
             glm::uvec3 v{
-                uniform_dist(rngX),
-                uniform_dist(rngY),
-                uniform_dist(rngZ)
+                uniform_dist(rngPos),
+                uniform_dist(rngPos),
+                uniform_dist(rngPos)
             };
 
             glm::vec3 d{
@@ -155,9 +155,9 @@ void GridGenerator::updateRandom(
         }
         {
             glm::uvec3 v{
-                uniform_dist(rngX),
-                uniform_dist(rngY),
-                uniform_dist(rngZ)
+                uniform_dist(rngRot),
+                uniform_dist(rngRot),
+                uniform_dist(rngRot)
             };
 
             glm::vec3 d{
@@ -174,9 +174,9 @@ void GridGenerator::updateRandom(
         }
         {
             glm::uvec3 v{
-                uniform_dist(rngX),
-                uniform_dist(rngY),
-                uniform_dist(rngZ)
+                uniform_dist(rngScale),
+                uniform_dist(rngScale),
+                uniform_dist(rngScale)
             };
 
             glm::vec3 d{
