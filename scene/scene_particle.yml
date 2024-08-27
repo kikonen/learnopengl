@@ -182,6 +182,41 @@ nodes:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
     position: [0, 0, 0]
+  - id: palm_tree_forest_{c}_{t}
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
+    scale: 0.5
+    pos: [-100, 0, -100]
+    render_flags:
+      static_bounds: true
+    instanced: true
+    generator:
+      type: grid
+      mode: random
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
+  - id: grass_{t}
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
+    priority: -20
+    pos: [-100, 0, -100]
+    render_flags:
+      static_bounds: true
+      no_shadow: true
+    instanced: true
+    generator:
+      type: grid
+      mode: random
+      seed: [4242, 1212, 3333]
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: 10
+        z_step: 10
   - name: Directional light
     mesh:
       path: light
