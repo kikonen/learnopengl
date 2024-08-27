@@ -203,6 +203,7 @@
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\HdriTexture.cpp" />
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
+    <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\shader\ProgramUniforms.cpp" />
     <ClCompile Include="src\component\CameraComponent.cpp" />
     <ClCompile Include="src\component\FollowCamera.cpp" />
@@ -511,6 +512,7 @@
     <ClInclude Include="src\material\ChannelPart.h" />
     <ClInclude Include="src\material\ChannelTextureDefinition.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
+    <ClInclude Include="src\physics\PhysicsMaterial.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />

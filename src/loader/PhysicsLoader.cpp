@@ -276,9 +276,9 @@ namespace loader {
             else if (k == "offset") {
                 data.offset = readVec3(v);
             }
-            else if (k == "plane") {
-                data.plane = readVec4(v);
-            }
+            //else if (k == "plane") {
+            //    data.plane = readVec4(v);
+            //}
             else if (k == "category" || k == "cat") {
                 loadMask(v, data.categoryMask);
             }

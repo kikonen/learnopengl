@@ -945,6 +945,9 @@
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\physics\PhysicsMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2142,6 +2145,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\generator\GeneratorMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\PhysicsMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
