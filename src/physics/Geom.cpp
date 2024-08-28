@@ -93,6 +93,38 @@ namespace physics {
         }
     }
 
+    void Geom::updatePhysic(
+        const glm::vec3& nodePivot,
+        const glm::vec3& nodePos,
+        const glm::quat& nodeRot) const
+    {
+        if (type == GeomType::none) return;
+
+        // NOTE KI handle bodiless geoms separately
+        //const auto& sz = size;
+        //const float radius = sz.x;
+        //const float length = sz.y * 2.f;
+
+        bool handled = false;
+        switch (type) {
+        case GeomType::plane: {
+            setPlane(nodePivot, nodeRot * rotation);
+            handled = true;
+            break;
+        }
+        case GeomType::height_field: {
+            setHeightField(nodePivot, nodeRot * rotation);
+            handled = true;
+            break;
+        }
+        }
+
+        if (!handled) {
+            setPhysicPosition(nodePivot);
+            setPhysicRotation(nodeRot);
+        }
+    }
+
     void Geom::setHeightField(const glm::vec3& pos, const glm::quat& rot) const
     {
         if (placeable) {

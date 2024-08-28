@@ -61,40 +61,10 @@ namespace physics {
             const glm::vec3& scale,
             const Body& body);
 
-        void updatePhysic(const glm::vec3& pos, const glm::quat& rot) const
-        {
-            // NOTE KI handle bodiless geoms separately
-            //const auto& sz = size;
-            //const float radius = sz.x;
-            //const float length = sz.y * 2.f;
-
-            switch (type) {
-            case GeomType::plane: {
-                setPlane(pos, rot * rotation);
-                break;
-            }
-            case GeomType::height_field: {
-                setHeightField(pos, rot * rotation);
-                break;
-            }
-            //case GeomType::box: {
-            //    dGeomBoxSetLengths(m_geom.physicId, sz.x, sz.y, sz.z);
-            //    break;
-            //}
-            //case GeomType::sphere: {
-            //    dGeomSphereSetRadius(m_geom.physicId, radius);
-            //    break;
-            //}
-            //case GeomType::capsule: {
-            //    dGeomCapsuleSetParams(m_geom.physicId, radius, length);
-            //    break;
-            //}
-            //case GeomType::cylinder: {
-            //    dGeomCylinderSetParams(m_geom.physicId, radius, length);
-            //    break;
-            //}
-            }
-        }
+        void updatePhysic(
+            const glm::vec3& nodePivot,
+            const glm::vec3& nodePos,
+            const glm::quat& nodeRot) const;
 
         void setPlane(const glm::vec3& pos, const glm::quat& rot) const
         {
@@ -129,9 +99,10 @@ namespace physics {
                 static_cast<float>(dpos[2]) };
         }
 
-        void setPhysicRotation(const glm::quat& rot) const
+        void setPhysicRotation(const glm::quat& nodeRot) const
         {
             if (placeable) {
+                const auto& rot = nodeRot * rotation;
                 dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
                 dGeomSetQuaternion(physicId, dquat);
             }

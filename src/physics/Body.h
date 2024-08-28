@@ -52,11 +52,10 @@ namespace physics {
             dSpaceID spaceId,
             const glm::vec3& scale);
 
-        void updatePhysic(const glm::vec3& pos, const glm::quat& rot) const
-        {
-            setPhysicPosition(pos);
-            setPhysicRotation(rot);
-        }
+        void updatePhysic(
+            const glm::vec3& nodePivot,
+            const glm::vec3& nodePos,
+            const glm::quat& nodeRot) const;
 
         void setPhysicPosition(const glm::vec3& pos) const
         {

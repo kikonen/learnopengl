@@ -34,6 +34,7 @@ private:
 
     glm::vec3 m_pivot{ 0.f };
 
+    glm::vec3 m_worldPivot{ 0.f };
     glm::vec3 m_worldPos{ 0.f };
 
     // Base rotation for node
@@ -239,6 +240,13 @@ public:
         //return m_viewRight;
         updateModelAxis();
         return glm::cross(m_viewFront, m_viewUp);
+    }
+
+    inline const glm::vec3& getWorldPivot() const noexcept
+    {
+        // TODO KI sync with physics
+        //assert(!m_dirty);
+        return m_worldPivot;
     }
 
     inline const glm::vec3& getWorldPosition() const noexcept

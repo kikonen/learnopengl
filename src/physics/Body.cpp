@@ -87,4 +87,13 @@ namespace physics {
             //}
         }
     }
+
+    void Body::updatePhysic(
+        const glm::vec3& nodePivot,
+        const glm::vec3& nodePos,
+        const glm::quat& nodeRot) const
+    {
+        setPhysicPosition(nodePos);
+        setPhysicRotation(nodeRot);
+    }
 }

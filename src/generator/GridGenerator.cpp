@@ -38,42 +38,74 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
-    if (m_setupDone) return;
-    m_setupDone = true;
+    //if (m_setupDone) return;
+    //m_setupDone = true;
 
-    const auto parentLevel = container.getParent()->getState().getMatrixLevel();
-    if (m_containerMatrixLevel == parentLevel) return;
+    const auto containerLevel = container.getState().getMatrixLevel();
+    if (m_containerMatrixLevel == containerLevel) return;
     updateInstances(
         ctx,
         container);
     auto& state = container.getState();
     state.m_dirtySnapshot = true;
-    m_containerMatrixLevel = parentLevel;
+    m_containerMatrixLevel = containerLevel;
 }
 
 void GridGenerator::updateInstances(
     const UpdateContext& ctx,
     const Node& container)
 {
+    const auto& containerState = container.getState();
+
+    for (auto& state : m_states)
+    {
+        state.setRotation(containerState.getRotation());
+        state.updateModelMatrix(containerState);
+    }
+}
+
+void GridGenerator::prepareInstances(
+    const PrepareContext& ctx,
+    const Node& container)
+{
+    auto* type = container.m_typeHandle.toType();
+    const auto& containerState = container.getState();
+
+    const auto count = m_zCount * m_xCount * m_yCount;
+
+    m_states.reserve(count);
+
+    for (int i = 0; i < count; i++) {
+        auto& state = m_states.emplace_back();
+        state.m_flags = type->resolveEntityFlags();
+        state.setPivot(containerState.getPivot());
+        state.setBaseRotation(containerState.getBaseRotation());
+        state.setRotation(containerState.getRotation());
+        state.setPosition(containerState.getPosition());
+        state.setScale(containerState.getScale());
+        state.setVolume(containerState.getVolume());
+    }
+
     switch (m_mode) {
     case GeneratorMode::grid:
-        updateGrid(ctx, container);
+        prepareGrid(container);
         break;
     case GeneratorMode::random:
-        updateRandom(ctx, container);
+        prepareRandom(container);
         break;
+    }
+
+    for (auto& state : m_states) {
+        state.updateModelMatrix(containerState);
     }
 
     m_reservedCount = static_cast<uint32_t>(m_states.size());
     setActiveRange(0, m_reservedCount);
 }
 
-void GridGenerator::updateGrid(
-    const UpdateContext& ctx,
+void GridGenerator::prepareGrid(
     const Node& container)
 {
-    const auto& parentState = container.getParent()->getState();
-
     const auto& containerState = container.getState();
     int idx = 0;
 
@@ -86,25 +118,15 @@ void GridGenerator::updateGrid(
 
                 state.setPosition(containerState.getPosition() + pos);
 
-                state.setVolume(containerState.getVolume());
-
-                state.setBaseRotation(containerState.getBaseRotation());
-                state.setRotation(containerState.getRotation());
-                state.setScale(containerState.getScale());
-
-                state.updateModelMatrix(parentState);
-
                 idx++;
             }
         }
     }
 }
 
-void GridGenerator::updateRandom(
-    const UpdateContext& ctx,
+void GridGenerator::prepareRandom(
     const Node& container)
 {
-    const auto& parentState = container.getParent()->getState();
     const auto& containerState = container.getState();
     const auto count = m_zCount * m_xCount * m_yCount;
 
@@ -169,7 +191,6 @@ void GridGenerator::updateRandom(
             float degrees = 360.f * d.y;
             const auto rot = util::axisDegreesToQuat({ 0, 1.f, 0 }, degrees);
 
-            state.setBaseRotation(containerState.getBaseRotation());
             state.setRotation(containerState.getRotation() * rot);
         }
         {
@@ -189,25 +210,5 @@ void GridGenerator::updateRandom(
 
             state.setScale(containerState.getScale() * scale);
         }
-
-        state.setVolume(containerState.getVolume());
-
-        state.updateModelMatrix(parentState);
-    }
-}
-
-void GridGenerator::prepareInstances(
-    const PrepareContext& ctx,
-    const Node& container)
-{
-    auto* type = container.m_typeHandle.toType();
-
-    const auto count = m_zCount * m_xCount * m_yCount;
-
-    m_states.reserve(count);
-
-    for (int i = 0; i < count; i++) {
-        auto& state = m_states.emplace_back();
-        state.m_flags = type->resolveEntityFlags();
     }
 }

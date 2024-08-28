@@ -71,11 +71,11 @@ namespace physics
         m_matrixLevel = level;
 
         const glm::vec3& pos = state.getWorldPosition();
-        const auto& scale = state.getScale();
+        const glm::vec3& pivot = state.getWorldPivot();
         const auto& rot = state.getModelRotation() * m_body.baseRotation;
 
         if (m_body.physicId) {
-            m_body.updatePhysic(pos, rot);
+            m_body.updatePhysic(pivot, pos, rot);
 
             //dBodySetLinearVel(m_body.physicId, 0.f, 0.f, 0.f);
             dBodySetAngularVel(m_body.physicId, 0.f, 0.f, 0.f);
@@ -84,12 +84,14 @@ namespace physics
         }
         else if (m_geom.physicId)
         {
-            m_geom.updatePhysic(pos, rot);
+            // NOTE KI for "geom only" nodes
+            m_geom.updatePhysic(pivot, pos, rot);
         }
     }
 
     void Object::updateFromPhysics() const
     {
+        // NOTE KI "geom only" is not updated back to node
         if (!m_body.physicId) return;
         if (m_body.kinematic) return;
 

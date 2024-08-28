@@ -22,12 +22,10 @@ private:
         const UpdateContext& ctx,
         const Node& container);
 
-    void updateGrid(
-        const UpdateContext& ctx,
+    void prepareGrid(
         const Node& container);
 
-    void updateRandom(
-        const UpdateContext& ctx,
+    void prepareRandom(
         const Node& container);
 
     void prepareInstances(

@@ -132,6 +132,10 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         m_worldPos.z = wp.z;
     }
 
+    {
+        m_worldPivot = m_modelMatrix * glm::vec4{ m_pivot, 1.f };
+    }
+
     m_dirty = false;
     m_dirtySnapshot = true;
 }
