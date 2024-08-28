@@ -93,7 +93,7 @@ namespace physics {
         const glm::vec3& nodePos,
         const glm::quat& nodeRot) const
     {
-        setPhysicPosition(nodePos);
+        setPhysicPosition(nodePivot);
         setPhysicRotation(nodeRot);
     }
 }

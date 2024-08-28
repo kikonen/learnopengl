@@ -111,7 +111,9 @@ namespace physics
 
             // NOTE KI parent *SHOULD* be root (== null) for all physics nodes
             // => otherwise math does not make sense
+            // => for NodeGenerator based nodes parent is generator container
             pos -= parent->getState().getWorldPosition();
+            pos -= (state.getWorldPivot() - state.getWorldPosition());
 
             // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
             rot = glm::normalize(rot * m_body.invBaseRotation);
