@@ -54,6 +54,11 @@ public:
     NodeGenerator() = default;
     virtual ~NodeGenerator();
 
+    inline bool isLightWeight() const noexcept
+    {
+        return m_lightWeight;
+    }
+
     virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) {}
@@ -72,7 +77,8 @@ public:
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,
-        const Node& container) {}
+        const Node& container,
+        const Snapshot& snapshot) {}
 
     virtual void updateVAO(
         const RenderContext& ctx,
@@ -82,7 +88,7 @@ public:
     GeneratorMode m_mode{ GeneratorMode::none };
 
 protected:
-    bool m_setupDone{ false };
+    bool m_lightWeight{ false };
 
     uint32_t m_poolSize = 0;
 

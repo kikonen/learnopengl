@@ -25,6 +25,7 @@
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 #include "mesh/InstanceFlags.h"
+#include "mesh/MeshTransform.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -150,10 +151,11 @@ namespace render {
         const mesh::MeshType* type,
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
-        std::span<const Snapshot> snapshots,
-        uint32_t entityBaseIndex) noexcept
+        const Snapshot& snapshot,
+        std::span<const mesh::MeshTransform> transforms,
+        uint32_t entityIndex) noexcept
     {
-        const uint32_t count = static_cast<uint32_t>(snapshots.size());
+        const uint32_t count = static_cast<uint32_t>(transforms.size());
 
         if (count <= 0) return;
 
@@ -161,7 +163,6 @@ namespace render {
 
         bool useFrustum = m_frustumCPU;
         {
-            auto& snapshot = snapshots[0];
             if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
                 useFrustum = false;
         }
@@ -169,7 +170,7 @@ namespace render {
         uint32_t instanceCount = count;
 
         if (useFrustum) {
-            s_accept.reserve(snapshots.size());
+            s_accept.reserve(transforms.size());
             s_accept.clear();
             for (uint32_t i = 0; i < count; i++) {
                 s_accept.push_back(i);
@@ -182,8 +183,8 @@ namespace render {
                     std::execution::par_unseq,
                     s_accept.begin(),
                     s_accept.end(),
-                    [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx].getVolume()))
+                    [this, &frustum, &transforms](uint32_t& idx) {
+                        if (!inFrustum(frustum, transforms[idx].getVolume()))
                             idx = -1;
                     });
             }
@@ -192,8 +193,8 @@ namespace render {
                     std::execution::unseq,
                     s_accept.begin(),
                     s_accept.end(),
-                    [this, &frustum, &snapshots](uint32_t& idx) {
-                        if (!inFrustum(frustum, snapshots[idx].getVolume()))
+                    [this, &frustum, &transforms](uint32_t& idx) {
+                        if (!inFrustum(frustum, transforms[idx].getVolume()))
                             idx = -1;
                     });
             }
@@ -206,7 +207,8 @@ namespace render {
                     continue;
                 }
 
-                const auto levelMask = type->getLodLevelMask(cameraPos, snapshots[i].getWorldPosition());
+                const auto& transform = transforms[i];
+                const auto levelMask = type->getLodLevelMask(cameraPos, transform.getWorldPosition());
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_flags.hidden) continue;
@@ -245,8 +247,8 @@ namespace render {
                     auto& lodInstances = top->m_lodInstances[lodKey];
                     lodInstances.reserve(100);
                     lodInstances.emplace_back(
-                        lodMesh.m_transform,
-                        entityBaseIndex + i,
+                        transform.getModelMatrix(),
+                        entityIndex,
                         lodMesh.m_materialIndex,
                         lodMesh.m_socketIndex);
                     m_pendingCount++;

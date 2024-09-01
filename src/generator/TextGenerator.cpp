@@ -134,19 +134,17 @@ void TextGenerator::bindBatch(
     const std::function<Program* (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
-    const Node& container)
+    const Node& container,
+    const Snapshot& snapshot)
 {
     m_draw->updateRT();
-
-    const auto* snapshot = container.getSnapshotRT();
-    if (!snapshot) return;
 
     batch.addSnapshot(
         ctx,
         type,
         programSelector,
         kindBits,
-        *snapshot,
+        snapshot,
         container.m_entityIndex);
 }
 

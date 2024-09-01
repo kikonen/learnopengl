@@ -148,24 +148,26 @@ void Node::bindBatch(
     const auto* snapshot = getSnapshotRT();
     if (!snapshot) return;
 
-    batch.addSnapshot(
-        ctx,
-        type,
-        programSelector,
-        kindBits,
-        *snapshot,
-        m_entityIndex);
+    if (m_generator && m_generator->isLightWeight()) {
+        m_generator->bindBatch(
+            ctx,
+            type,
+            programSelector,
+            kindBits,
+            batch,
+            *this,
+            *snapshot);
+    }
+    else {
+        batch.addSnapshot(
+            ctx,
+            type,
+            programSelector,
+            kindBits,
+            *snapshot,
+            m_entityIndex);
+    }
 }
-
-//void Node::updateModelMatrix() noexcept
-//{
-//    if (m_parent) {
-//        m_state.updateModelMatrix(getParent()->getState());
-//    }
-//    else {
-//        m_state.updateRootMatrix();
-//    }
-//}
 
 void Node::setTagMaterialIndex(int index)
 {

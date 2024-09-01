@@ -34,6 +34,7 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
     m_offset(20.5f),
     m_updateStep(3)
 {
+    m_lightWeight = true;
 }
 
 void AsteroidBeltGenerator::prepareWT(
@@ -42,7 +43,7 @@ void AsteroidBeltGenerator::prepareWT(
 {
     NodeGenerator::prepareWT(ctx, container);
 
-    container.m_visible = false;
+    //container.m_visible = false;
 
     createAsteroids(ctx, container);
 }
@@ -57,8 +58,6 @@ void AsteroidBeltGenerator::updateWT(
 
     if (rotate) {
         updateAsteroids(ctx, container, rotate);
-        auto& state = container.getState();
-        state.m_dirtySnapshot = true;
     }
 
     //done = true;
@@ -73,6 +72,11 @@ void AsteroidBeltGenerator::updateAsteroids(
 {
     if (rotate) {
         rotateAsteroids(ctx, container);
+
+        auto& parentMatrix = container.getParent()->getState().getModelMatrix();
+        for (auto& transform : m_transforms) {
+            transform.updateModelTransform(parentMatrix);
+        }
     }
 }
 
@@ -80,61 +84,26 @@ void AsteroidBeltGenerator::createAsteroids(
     const PrepareContext& ctx,
     const Node& container)
 {
-    auto& registry = ctx.m_registry;
-    auto& nodeRegistry = NodeRegistry::get();
-    auto& dispatcher = ctx.m_registry->m_dispatcherWorker;
-
     auto* type = container.m_typeHandle.toType();
-
     auto* lodMesh = type->getLodMesh(0);
     const auto* mesh = lodMesh->m_mesh;
     const auto& volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
-
-    auto& containerState = container.getState();
-
-    std::vector<NodeState> states;
-    states.reserve(m_asteroidCount);
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
 
-        auto& asteroid = states.emplace_back();
-        asteroid.m_flags = type->resolveEntityFlags();
+        auto& asteroid = m_transforms.emplace_back();
         asteroid.setVolume(volume);
     }
 
-    initAsteroids(ctx, container, states);
-
-    const auto parentId = container.getParent()->getId();
-
-    m_nodes.reserve(states.size());
-    for (int idx = 0; auto & state : states)
-    {
-        ki::node_id nodeId{ StringID::nextID() };
-        auto handle = pool::NodeHandle::allocate(nodeId);
-        auto* node = handle.toNode();
-        node->m_name = fmt::format("asteroid-", idx);
-        node->m_typeHandle = container.m_typeHandle;
-        m_nodes.push_back(handle);
-
-        event::Event evt { event::Type::node_add };
-        evt.blob = std::make_unique<event::BlobData>();
-        evt.blob->body.state = state;
-        evt.body.node = {
-            .target = handle.toId(),
-            .parentId = parentId,
-        };
-        assert(evt.body.node.target > 1);
-        dispatcher->send(evt);
-        idx++;
-    }
+    initAsteroids(ctx, container, m_transforms);
 }
 
 void AsteroidBeltGenerator::initAsteroids(
     const PrepareContext& ctx,
     const Node& container,
-    std::vector<NodeState>& states)
+    std::vector<mesh::MeshTransform>& transforms)
 {
     // initialize random seed
     auto ts = duration_cast<std::chrono::seconds>(
@@ -142,7 +111,7 @@ void AsteroidBeltGenerator::initAsteroids(
     );
     srand(static_cast<unsigned int>(ts.count()));
 
-    const size_t count = states.size();
+    const size_t count = transforms.size();
 
     const glm::vec3 center{ 0.f };
     const float radius = m_radius;
@@ -150,7 +119,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = states[i];
+        auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
         {
@@ -172,7 +141,8 @@ void AsteroidBeltGenerator::initAsteroids(
         {
             // 2. scale: scale between 0.05 and 0.25f
             float scale = (rand() % 20) / 100.0f + 0.05f;
-            asteroid.setScale({ scale, scale, scale });
+            asteroid.setScale(scale);
+            asteroid.m_volume.w *= scale;
         }
 
         {
@@ -222,4 +192,23 @@ void AsteroidBeltGenerator::rotateAsteroids(
             asteroid.adjustRotation(rot);
         }
     }
+}
+
+void AsteroidBeltGenerator::bindBatch(
+    const RenderContext& ctx,
+    mesh::MeshType* type,
+    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    uint8_t kindBits,
+    render::Batch& batch,
+    const Node& container,
+    const Snapshot& snapshot)
+{
+    batch.addSnapshotsInstanced(
+        ctx,
+        type,
+        programSelector,
+        kindBits,
+        snapshot,
+        m_transforms,
+        container.m_entityIndex);
 }

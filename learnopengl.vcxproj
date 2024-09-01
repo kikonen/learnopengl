@@ -512,6 +512,7 @@
     <ClInclude Include="src\material\ChannelPart.h" />
     <ClInclude Include="src\material\ChannelTextureDefinition.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
+    <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\physics\PhysicsMaterial.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />

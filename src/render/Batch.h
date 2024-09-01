@@ -16,6 +16,7 @@ namespace backend {
 namespace mesh {
     class MeshType;
     struct LodMesh;
+    struct MeshTransform;
 }
 
 class Program;
@@ -59,14 +60,15 @@ namespace render {
         //    std::span<const Snapshot> snapshots,
         //    std::span<uint32_t> entityIndeces) noexcept;
 
-        // NOTE KI snapshots starting from entityBaseIndex
+        // NOTE KI lightweigtht "transform only" meshes
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const mesh::MeshType* type,
             const std::function<Program* (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
-            std::span<const Snapshot> snapshots,
-            uint32_t entityBaseIndex) noexcept;
+            const Snapshot& snapshot,
+            std::span<const mesh::MeshTransform> transforms,
+            uint32_t entityIndex) noexcept;
 
         void bind() noexcept;
 

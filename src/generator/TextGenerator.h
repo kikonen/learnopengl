@@ -47,7 +47,8 @@ public:
         const std::function<Program* (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,
-        const Node& container) override;
+        const Node& container,
+        const Snapshot& snapshot) override;
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 

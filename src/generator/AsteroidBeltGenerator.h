@@ -2,6 +2,8 @@
 
 #include "NodeGenerator.h"
 
+#include "mesh/MeshTransform.h"
+
 struct PrepareContext;
 
 class AsteroidBeltGenerator final : public NodeGenerator
@@ -30,13 +32,24 @@ private:
     void initAsteroids(
         const PrepareContext& ctx,
         const Node& container,
-        std::vector<NodeState>& states);
+        std::vector<mesh::MeshTransform>& transforms);
 
     void rotateAsteroids(
         const UpdateContext& ctx,
         const Node& container);
 
+    virtual void bindBatch(
+        const RenderContext& ctx,
+        mesh::MeshType* type,
+        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        uint8_t kindBits,
+        render::Batch& batch,
+        const Node& container,
+        const Snapshot& snapshot) override;
+
 private:
+    std::vector<mesh::MeshTransform> m_transforms;
+
     const int m_asteroidCount;
     const float m_radius;
     const float m_offset;

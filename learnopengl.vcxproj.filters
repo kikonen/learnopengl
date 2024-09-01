@@ -2150,6 +2150,9 @@
     <ClInclude Include="src\physics\PhysicsMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mesh\MeshTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">
