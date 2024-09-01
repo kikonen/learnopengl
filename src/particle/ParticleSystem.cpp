@@ -37,10 +37,11 @@ namespace particle {
 
     void ParticleSystem::addParticle(const Particle& particle)
     {
-        std::lock_guard lock(m_lock);
-        if (isFull()) return;
+        std::lock_guard lock(m_pendingLock);
+        // TODO KI how to check full here?
+        //if (isFull()) return;
 
-        m_particles.push_back(particle);
+        m_pending.push_back(particle);
     }
 
     void ParticleSystem::prepare() {
@@ -70,6 +71,7 @@ namespace particle {
         if (!isEnabled()) return;
 
         std::lock_guard lock(m_lock);
+        preparePending();
 
         size_t size = m_particles.size();
         for (size_t i = 0; i < size; i++) {
@@ -102,6 +104,17 @@ namespace particle {
         m_frameSkipCount = 0;
 
         updateParticleBuffer();
+    }
+
+    void ParticleSystem::preparePending()
+    {
+        std::lock_guard lock(m_pendingLock);
+
+        for (const auto& particle : m_pending) {
+            if (isFull()) break;
+            m_particles.push_back(particle);
+        }
+        m_pending.clear();
     }
 
     void ParticleSystem::snapshotParticles()

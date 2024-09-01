@@ -47,12 +47,15 @@ namespace particle {
         }
 
     private:
+        void preparePending();
+
         void snapshotParticles();
         void updateParticleBuffer();
 
     private:
         bool m_enabled{ false };
 
+        std::mutex m_pendingLock{};
         std::mutex m_lock{};
         std::mutex m_snapshotLock{};
 
@@ -61,6 +64,8 @@ namespace particle {
 
         size_t m_maxCount{ 0 };
         std::vector<Particle> m_particles;
+
+        std::vector<Particle> m_pending;
 
         std::vector<ParticleSSBO> m_snapshot;
         size_t m_snapshotCount{ 0 };
