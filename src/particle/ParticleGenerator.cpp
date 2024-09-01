@@ -32,7 +32,7 @@ namespace particle {
         float x = m_definition.particlesPerSec * ctx.m_clock.elapsedSecs;
 
         auto& ps = ParticleSystem::get();
-        if (ps.isFull()) return;
+        //if (ps.isFull()) return;
 
         const auto& state = node.getState();
         glm::vec3 pos = state.getWorldPosition();
@@ -58,7 +58,7 @@ namespace particle {
             particle.m_spriteBaseIndex = 0;
             particle.m_spriteCount = m_material.spriteCount;
 
-            ps.addParticle(particle);
+            if (!ps.addParticle(particle)) break;
         }
     }
 }

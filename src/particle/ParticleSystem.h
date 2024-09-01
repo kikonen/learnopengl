@@ -36,7 +36,8 @@ namespace particle {
 
         bool isEnabled() const noexcept { return m_enabled; }
 
-        void addParticle(const Particle& particle);
+        // @return true if was added, false if full
+        bool addParticle(const Particle& particle);
 
         uint32_t getActiveParticleCount() const noexcept {
             return static_cast<uint32_t>(m_activeCount);

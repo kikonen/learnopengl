@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include <algorithm>>
+
 #include "asset/Assets.h"
 
 #include "shader/SSBO.h"
@@ -35,13 +37,14 @@ namespace particle {
         m_particles.reserve(1 * BLOCK_SIZE);
     }
 
-    void ParticleSystem::addParticle(const Particle& particle)
+    bool ParticleSystem::addParticle(const Particle& particle)
     {
         std::lock_guard lock(m_pendingLock);
-        // TODO KI how to check full here?
-        //if (isFull()) return;
+
+        if (!m_enabled && m_snapshotCount + m_pending.size() >= m_maxCount) return false;
 
         m_pending.push_back(particle);
+        return true;
     }
 
     void ParticleSystem::prepare() {
@@ -110,9 +113,13 @@ namespace particle {
     {
         std::lock_guard lock(m_pendingLock);
 
-        for (const auto& particle : m_pending) {
-            if (isFull()) break;
-            m_particles.push_back(particle);
+        auto count = std::min(
+            m_pending.size(),
+            m_maxCount - m_particles.size());
+
+        if (count > 0) {
+            //KI_INFO_OUT(fmt::format("PS: pending={}, copy={}, size={}", m_pending.size(), count, m_particles.size()));
+            m_particles.insert(m_particles.end(), m_pending.begin(), m_pending.begin() + count);
         }
         m_pending.clear();
     }
