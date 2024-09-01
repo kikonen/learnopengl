@@ -6,6 +6,7 @@
 
 #include <fmt/format.h>
 
+#include "util/debug.h"
 #include "util/thread.h"
 #include "ki/limits.h"
 #include "kigl/kigl.h"
@@ -39,6 +40,8 @@
 #include "physics/PhysicsEngine.h"
 #include "script/ScriptEngine.h"
 
+#include "EntitySSBO.h"
+
 #include "Registry.h"
 #include "MeshTypeRegistry.h"
 #include "EntityRegistry.h"
@@ -55,16 +58,30 @@ namespace {
 
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 
-    static NodeRegistry s_registry;
+    static NodeRegistry g_registry;
 }
 
 NodeRegistry& NodeRegistry::get() noexcept
 {
-    return s_registry;
+    return g_registry;
 }
 
 NodeRegistry::NodeRegistry()
 {
+    // NOTE KI declare index == 0 as NULL object
+    m_handles.emplace_back();
+    m_parentIndeces.push_back(0);
+
+    auto& nullState = m_states.emplace_back();
+    // TODO KI cannot update due to thread check
+    //nullState.updateRootMatrix();
+
+    m_snapshotsWT.emplace_back();
+    m_snapshotsPending.emplace_back();
+    m_snapshotsRT.emplace_back();
+
+    auto& nullEntity = m_entities.emplace_back();
+    nullEntity.setModelMatrix(glm::mat4(1.f), true, true);
 }
 
 NodeRegistry::~NodeRegistry()
@@ -84,9 +101,11 @@ NodeRegistry::~NodeRegistry()
         m_rootWT.reset();;
     }
 
-    m_allNodes.clear();
-    m_cachedNodesWT.clear();
-    m_cachedNodesRT.clear();
+    //m_nodes.clear();
+    //m_parentIndeces.clear();
+    //m_cachedNodesWT.clear();
+    //m_cachedNodesRT.clear();
+    //m_entities.clear();
 
     m_skybox.reset();
 
@@ -96,10 +115,14 @@ NodeRegistry::~NodeRegistry()
 void NodeRegistry::prepare(
     Registry* registry)
 {
+    const auto& assets = Assets::get();
+
     m_registry = registry;
     m_selectionMaterial = std::make_unique<Material>();
     *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
     m_selectionMaterial->registerMaterial();
+
+    m_rootId = assets.rootId;
 
     attachListeners();
 }
@@ -107,17 +130,20 @@ void NodeRegistry::prepare(
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
     if (m_cachedNodeLevel != m_nodeLevel) {
-        ctx.m_registry->m_workerSnapshotRegistry->cacheNodes(m_cachedNodesWT);
+        cacheNodes(m_cachedNodesWT);
         m_cachedNodeLevel = m_nodeLevel;
     }
 
     {
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
-        for (auto* node : m_cachedNodesWT) {
+        for (int i = 0; i < m_states.size(); i++) {
+            auto* node = m_cachedNodesWT[i];
             if (!node) continue;
 
-            node->updateModelMatrix();
+            auto& parentState = m_states[m_parentIndeces[i]];
+            auto& state = m_states[i];
+            state.updateModelMatrix(parentState);
 
             if (node->m_generator) {
                 node->m_generator->updateWT(ctx, *node);
@@ -129,9 +155,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         }
     }
 
-    {
-        snapshotWT(*m_registry->m_workerSnapshotRegistry);
-    }
+    //{
+    //    snapshotWT(*m_registry->m_workerSnapshotRegistry);
+    //}
 
     //{
     //    std::lock_guard lock(m_lock);
@@ -141,42 +167,78 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
 void NodeRegistry::updateModelMatrices()
 {
-    for (auto* node : m_cachedNodesWT) {
-        if (!node) continue;
+    {
+        auto& state = m_states[0];
+        state.updateRootMatrix();
+    }
+    {
+        auto& state = m_states[m_rootIndex];
+        state.updateRootMatrix();
+    }
 
-        node->updateModelMatrix();
+    for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
+        assert(m_parentIndeces[i] >= m_rootIndex);
+        m_states[i].updateModelMatrix(m_states[m_parentIndeces[i]]);
+    }
+}
 
-        if (node->m_generator) {
-            node->m_generator->updateModelMatrices(*node);
+void NodeRegistry::snapshotWT()
+{
+    std::lock_guard lock(m_snapshotLock);
+
+    const auto sz = m_states.size();
+    const auto forceAfter = m_snapshotsWT.size() - 1;
+
+    m_snapshotsWT.resize(sz);
+
+    for (int i = 0; i < sz; i++) {
+        const auto& state = m_states[i];
+        assert(!state.m_dirty);
+
+        if (i >= forceAfter || state.m_dirtySnapshot) {
+            m_snapshotsWT[i].applyFrom(state);
         }
     }
 }
 
-void NodeRegistry::snapshotWT(NodeSnapshotRegistry& snapshotRegistry)
+void NodeRegistry::snapshotPending()
 {
-    //std::lock_guard lock(m_lock);
+    snapshot(m_snapshotsWT, m_snapshotsPending);
+}
 
-    for (auto* node : m_cachedNodesWT) {
-        if (!node) continue;
+void NodeRegistry::snapshotRT()
+{
+    snapshot(m_snapshotsPending, m_snapshotsRT);
+    m_entities.resize(m_snapshotsRT.size());
+}
 
-        const auto& state = node->getState();
-        assert(!state.m_dirty);
+void NodeRegistry::snapshot(
+    std::vector<Snapshot>& src,
+    std::vector<Snapshot>& dst)
+{
+    std::lock_guard lock(m_snapshotLock);
 
-        if (state.m_dirtySnapshot) {
-            auto& snapshot = snapshotRegistry.modifySnapshot(node->m_snapshotIndex);
-            snapshot.applyFrom(state);
-        }
+    const auto sz = src.size();
+    const auto forceAfter = dst.size() - 1;
 
-        if (node->m_generator) {
-            node->m_generator->snapshotWT(snapshotRegistry);
+    dst.resize(sz);
+
+    for (int i = 0; i < sz; i++) {
+        const auto& snapshot = src[i];
+        if (i >= forceAfter || snapshot.m_dirty) {
+            dst[i].applyFrom(snapshot);
         }
     }
+}
+
+void NodeRegistry::prepareUpdateRT(const UpdateContext& ctx)
+{
+    snapshotRT();
+    cacheNodesRT();
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
-    ctx.m_registry->m_activeSnapshotRegistry->cacheNodes(m_cachedNodesRT);
-
     m_rootRT = m_rootWT;
 
     auto* root = getRootRT();
@@ -206,37 +268,45 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 void NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
-    auto& entityRegistry = EntityRegistry::get();
-
     //std::lock_guard lock(m_lock);
 
-    for (auto* node : m_cachedNodesRT) {
-        if (!node) continue;
-        if (node->m_entityIndex) {
-            const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-            if (snapshot.m_dirty) {
-                auto* entity = entityRegistry.modifyEntity(node->m_entityIndex, true);
+    for (int i = 0; i < m_snapshotsRT.size(); i++) {
+        auto* node = m_cachedNodesRT[i];
+        const auto& snapshot = m_snapshotsRT[i];
 
-                entity->u_objectID = node->getId();
-                entity->u_highlightIndex = node->getHighlightIndex();
+        if (!node || !snapshot.m_dirty) continue;
 
-                auto* textGenerator = node->getGenerator<TextGenerator>();
-                if (textGenerator) {
-                    entity->u_fontHandle = textGenerator->getAtlasTextureHandle();
-                }
+        auto& entity = m_entities[i];
 
-                snapshot.updateEntity(*entity);
-                snapshot.m_dirty = false;
-            }
+        entity.u_objectID = node->getId();
+        entity.u_highlightIndex = node->getHighlightIndex();
+
+        auto* textGenerator = node->getGenerator<TextGenerator>();
+        if (textGenerator) {
+            entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
         }
 
-        if (node->m_generator) {
-            node->m_generator->updateEntity(
-                snapshotRegistry,
-                entityRegistry,
-                *node);
-        }
+        snapshot.updateEntity(entity);
+        snapshot.m_dirty = false;
+    }
+}
+
+void NodeRegistry::cacheNodesWT()
+{
+    cacheNodes(m_cachedNodesWT);
+}
+
+void NodeRegistry::cacheNodesRT()
+{
+    std::lock_guard lock(m_snapshotLock);
+    cacheNodes(m_cachedNodesRT);
+}
+
+void NodeRegistry::cacheNodes(std::vector<Node*>& cache)
+{
+    cache.resize(m_handles.size());
+    for (size_t i = 0; i < m_handles.size(); i++) {
+        cache[i] = m_handles[i].toNode();
     }
 }
 
@@ -252,7 +322,8 @@ void NodeRegistry::attachListeners()
         [this](const event::Event& e) {
             attachNode(
                 e.body.node.target,
-                e.body.node.parentId);
+                e.body.node.parentId,
+                e.blob->body.state);
         });
 
     //dispatcher->addListener(
@@ -405,10 +476,6 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
     node->m_preparedRT = true;
 
-    if (type->hasMesh()) {
-        node->m_entityIndex = EntityRegistry::get().registerEntity();
-    }
-
     if (node->m_camera) {
         m_cameraNodes.push_back(handle);
         if (!m_activeCameraNode && node->m_camera->isDefault()) {
@@ -457,20 +524,19 @@ void NodeRegistry::selectNode(pool::NodeHandle handle, bool append) const noexce
 
 void NodeRegistry::attachNode(
     const ki::node_id nodeId,
-    const ki::node_id parentId) noexcept
+    const ki::node_id parentId,
+    const NodeState& state) noexcept
 {
-    const auto& assets = Assets::get();
-
     auto* node = pool::NodeHandle::toNode(nodeId);
 
     assert(node);
-    assert(parentId || nodeId == assets.rootId);
+    assert(parentId || nodeId == m_rootId);
 
-    auto* type = node->m_typeHandle.toType();
-
-    if (type->m_flags.skybox) {
-        return bindSkybox(node->toHandle());
+    if (nodeId != m_rootId) {
+        assert(parentId >= m_rootIndex);
     }
+
+    bindNode(nodeId, state);
 
     // NOTE KI ignore nodes without parent
     if (!bindParent(nodeId, parentId)) {
@@ -478,7 +544,11 @@ void NodeRegistry::attachNode(
         return;
     }
 
-    bindNode(nodeId);
+    auto* type = node->m_typeHandle.toType();
+
+    if (type->m_flags.skybox) {
+        return bindSkybox(node->toHandle());
+    }
 }
 
 int NodeRegistry::countTagged() const noexcept
@@ -515,41 +585,40 @@ void NodeRegistry::changeParent(
     const ki::node_id nodeId,
     const ki::node_id parentId) noexcept
 {
-    auto* node = pool::NodeHandle::toNode(nodeId);
-    auto* parent = pool::NodeHandle::toNode(parentId);
-
-    if (!node) return;
-    if (!parent) return;
-
-    node->setParent(parent->toHandle());
+    bindParent(nodeId, parentId);
 }
 
 void NodeRegistry::bindNode(
-    const ki::node_id nodeId)
+    const ki::node_id nodeId,
+    const NodeState& state)
 {
     Node* node = pool::NodeHandle::toNode(nodeId);
     if (!node) return;
-
-    const auto& assets = Assets::get();
 
     pool::NodeHandle handle = node->toHandle();
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    auto* type = node->m_typeHandle.toType();
+    auto* type = node->getType();
 
-    type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry });
+    node->m_entityIndex = static_cast<uint32_t>(m_handles.size());
 
     {
-        {
-            //std::lock_guard lock(m_lock);
-            m_allNodes.push_back(handle);
-            m_nodeLevel++;
-        }
+        m_handles.push_back(handle);
+        m_parentIndeces.push_back(0);
+        m_states.push_back(state);
+    }
 
-        if (nodeId == assets.rootId) {
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+
+    {
+        m_nodeLevel++;
+
+        if (nodeId == m_rootId) {
+            assert(!m_rootWT);
             m_rootWT = handle;
+            m_rootIndex = node->m_entityIndex;
         }
     }
 
@@ -557,9 +626,9 @@ void NodeRegistry::bindNode(
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
-    m_registry->m_pendingSnapshotRegistry->copyFrom(
-        m_registry->m_workerSnapshotRegistry,
-        node->m_snapshotIndex, 1);
+    //m_registry->m_pendingSnapshotRegistry->copyFrom(
+    //    m_registry->m_workerSnapshotRegistry,
+    //    node->m_snapshotIndex, 1);
 
     // NOTE KI type must be prepared *before* node
     {
@@ -581,23 +650,19 @@ bool NodeRegistry::bindParent(
     const ki::node_id nodeId,
     const ki::node_id parentId)
 {
-    const auto& assets = Assets::get();
-
     // NOTE KI everything else, except root requires parent
-    if (nodeId == assets.rootId) return true;
+    if (nodeId == m_rootId) return true;
 
-    auto* parent = pool::NodeHandle::toNode(parentId);
     auto* node = pool::NodeHandle::toNode(nodeId);
+    auto* parent = pool::NodeHandle::toNode(parentId);
 
-    if (!node) return false;
+    if (!node || !parent) return false;
 
-    if (!parent) {
-        return false;
-    }
+    assert(parent->m_entityIndex < node->m_entityIndex);
+
+    m_parentIndeces[node->m_entityIndex] = parent->m_entityIndex;
 
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parentId, nodeId));
-
-    node->setParent(parent->toHandle());
 
     return true;
 }
@@ -679,7 +744,7 @@ void NodeRegistry::bindSkybox(
     auto* type = node->m_typeHandle.toType();
 
     type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry });
+    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 
     m_skybox = handle;
 
@@ -687,5 +752,16 @@ void NodeRegistry::bindSkybox(
         event::Event evt { event::Type::type_prepare_view };
         evt.body.meshType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
+    }
+}
+
+void NodeRegistry::logDebugInfo(const std::string& err, uint32_t entityIndex) const
+{
+    if (entityIndex >= 0 && entityIndex < m_handles.size()) {
+        auto* node = m_handles[entityIndex].toNode();
+        KI_INFO_OUT(fmt::format("{}: index={}, node={}", err, entityIndex, node->str()));
+    }
+    else {
+        KI_INFO_OUT(fmt::format("{}: index={}, node={}", err, entityIndex, "N/A"));
     }
 }

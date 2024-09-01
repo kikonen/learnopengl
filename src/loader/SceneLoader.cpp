@@ -266,10 +266,13 @@ namespace loader {
 
         {
             event::Event evt { event::Type::node_add };
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.state = resolved.state;
             evt.body.node = {
                 .target = handle.toId(),
                 .parentId = resolved.parentId,
             };
+            assert(evt.body.node.target > 1);
             m_dispatcher->send(evt);
         }
 
@@ -462,7 +465,7 @@ namespace loader {
 
         if (!*m_ctx.m_alive) return typeHandle;
 
-        auto handle = createNode(
+        auto [handle, state] = createNode(
             typeHandle, rootId, nodeData,
             cloned, cloneIndex, tile,
             nodeData.clonePositionOffset,
@@ -489,6 +492,7 @@ namespace loader {
             parentId,
             handle,
             nodeData,
+            state,
             scriptIds
         };
 
@@ -840,7 +844,7 @@ namespace loader {
         }
     }
 
-    pool::NodeHandle SceneLoader::createNode(
+    std::pair<pool::NodeHandle, NodeState> SceneLoader::createNode(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
         const NodeData& nodeData,
@@ -878,12 +882,12 @@ namespace loader {
 
         assignNodeFlags(nodeData.nodeFlags, handle);
 
-        node->setCloneIndex(cloneIndex);
+        //node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
         glm::vec3 pos = nodeData.position + clonePositionOffset + tilePositionOffset;
 
-        auto& state = node->modifyState();
+        NodeState state;
         state.setPosition(pos);
 
         state.setRotation(util::degreesToQuat(nodeData.rotation));
@@ -926,7 +930,7 @@ namespace loader {
 
         resolveAttachments(typeHandle, handle, nodeData);
 
-        return handle;
+        return { handle, state };
     }
 
     void SceneLoader::resolveAttachments(

@@ -19,10 +19,12 @@ void FpsCamera::updateRT(const UpdateContext& ctx, Node& node)
 {
     if (!m_enabled) return;
 
-    const auto dt = ctx.m_clock.elapsedSecs;
-    const auto& snapshot = node.getActiveSnapshot(ctx.m_registry);
+    const auto* snapshot = node.getSnapshotRT();
+    if (!snapshot) return;
 
-    const auto& level = snapshot.getMatrixLevel();
+    const auto dt = ctx.m_clock.elapsedSecs;
+
+    const auto& level = snapshot->getMatrixLevel();
     const bool nodeChanged = m_nodeLevel != level;
     if (!nodeChanged) return;
 
@@ -34,10 +36,10 @@ void FpsCamera::updateRT(const UpdateContext& ctx, Node& node)
 
     // Make a quaternion representing pitch rotation,
     // which is about owner's right vector
-    glm::quat q = util::axisRadiansToQuat(snapshot.getViewRight(), m_pitch);
+    glm::quat q = util::axisRadiansToQuat(snapshot->getViewRight(), m_pitch);
 
-    const auto& cameraPos = snapshot.getWorldPosition();
-    const auto& cameraFront = q * snapshot.getViewFront();
+    const auto& cameraPos = snapshot->getWorldPosition();
+    const auto& cameraFront = q * snapshot->getViewFront();
 
     m_camera.setWorldPosition(cameraPos);
     m_camera.setAxis(cameraFront, UP);

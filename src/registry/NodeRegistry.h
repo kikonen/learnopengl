@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-//#include <mutex>
+#include <mutex>
 #include <functional>
 
 #include <fmt/format.h>
@@ -17,6 +17,9 @@
 #include "component/CameraComponent.h"
 #include "component/NodeComponent.h"
 
+#include "model/NodeState.h"
+#include "model/Snapshot.h"
+
 struct Material;
 
 struct UpdateContext;
@@ -24,6 +27,7 @@ struct UpdateContext;
 class Registry;
 class NodeSnapshotRegistry;
 
+struct EntitySSBO;
 
 class NodeRegistry final
 {
@@ -45,10 +49,17 @@ public:
     void updateModelMatrices();
     void postUpdateWT();
 
+    void prepareUpdateRT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
     void updateEntity(const UpdateContext& ctx);
 
-    void snapshotWT(NodeSnapshotRegistry& snapshotRegistry);
+    void snapshotWT();
+    void snapshotPending();
+    void snapshotRT();
+
+    void snapshot(
+        std::vector<Snapshot>& src,
+        std::vector<Snapshot>& dst);
 
     void attachListeners();
 
@@ -85,7 +96,7 @@ public:
 
     uint32_t getNodeCount() const noexcept
     {
-        return static_cast<uint32_t>(m_allNodes.size());
+        return static_cast<uint32_t>(m_handles.size());
     }
 
     const std::vector<Node*> getCachedNodesRT() const noexcept
@@ -121,16 +132,71 @@ public:
 
     //void withLock(const std::function<void(NodeRegistry&)>& fn);
 
+    pool::NodeHandle getParentHandle(uint32_t entityIndex) const noexcept
+    {
+        return m_handles[m_parentIndeces[entityIndex]];
+    }
+
+    const Node* getParent(uint32_t entityIndex) const noexcept
+    {
+        return m_handles[m_parentIndeces[entityIndex]].toNode();
+    }
+
+    NodeState& modifyState(uint32_t entityIndex) noexcept
+    {
+        return m_states[entityIndex];
+    }
+
+    const NodeState& getState(uint32_t entityIndex) const noexcept
+    {
+        return m_states[entityIndex];
+    }
+
+    const Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
+    {
+        return m_snapshotsWT.size() > entityIndex ? &m_snapshotsWT[entityIndex] : nullptr;
+    }
+
+    bool hasSnapshotWT(uint32_t entityIndex) const noexcept
+    {
+        return m_snapshotsWT.size() > entityIndex;
+    }
+
+    const Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
+    {
+        if (m_snapshotsRT.size() <= entityIndex) {
+            logDebugInfo("MISSING_SNAPSHOT", entityIndex);
+        }
+        return m_snapshotsRT.size() > entityIndex ? &m_snapshotsRT[entityIndex] : nullptr;
+    }
+
+    bool hasSnapshotRT(uint32_t entityIndex) const noexcept
+    {
+        return m_snapshotsRT.size() > entityIndex;
+    }
+
+    const std::vector<EntitySSBO>& getEntities() const noexcept
+    {
+        return m_entities;
+    }
+
+    void cacheNodesWT();
+    void cacheNodesRT();
+
+    void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
+
 private:
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 
     void attachNode(
         const ki::node_id nodeId,
-        const ki::node_id parentId) noexcept;
+        const ki::node_id parentId,
+        const NodeState& state) noexcept;
 
     void bindNode(
-        const ki::node_id nodeId);
+        const ki::node_id nodeId,
+        const NodeState& state);
 
     bool bindParent(
         const ki::node_id nodeId,
@@ -139,26 +205,37 @@ private:
     void bindSkybox(
         pool::NodeHandle handle) noexcept;
 
+    void cacheNodes(std::vector<Node*>& cache);
+
 public:
     pool::NodeHandle m_skybox{};
 
 private:
+    ki::node_id m_rootId{ 0 };
+
     pool::NodeHandle m_rootWT{};
     pool::NodeHandle m_rootRT{};
+    uint32_t m_rootIndex{ 0 };
     bool m_rootPreparedRT{ false };
 
-    // Internal tracking
-    std::vector<pool::NodeHandle> m_allNodes;
-
-    ki::level_id m_nodeLevel{ 0 };
-    ki::level_id m_cachedNodeLevel{ 0 };
+    // Entries matched by index
+    std::vector<pool::NodeHandle> m_handles;
+    std::vector<uint32_t> m_parentIndeces;
+    std::vector<NodeState> m_states;
+    std::vector<Snapshot> m_snapshotsWT;
+    std::vector<Snapshot> m_snapshotsPending;
+    std::vector<Snapshot> m_snapshotsRT;
+    std::vector<EntitySSBO> m_entities;
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;
 
+    ki::level_id m_nodeLevel{ 0 };
+    ki::level_id m_cachedNodeLevel{ 0 };
+
     Registry* m_registry{ nullptr };
 
-    //mutable std::mutex m_lock;
+    mutable std::mutex m_snapshotLock;
 
     //std::vector<NodeComponent<CameraComponent>> m_cameraComponents;
 

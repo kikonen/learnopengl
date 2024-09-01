@@ -17,6 +17,8 @@
 #include "model/NodeState.h"
 #include "model/NodeFlags.h"
 
+#include "registry/NodeRegistry.h"
+
 namespace backend {
     struct DrawOptions;
 }
@@ -87,7 +89,8 @@ public:
     }
 
     void prepareWT(
-        const PrepareContext& ctx);
+        const PrepareContext& ctx,
+        NodeState& state);
 
     void prepareRT(
         const PrepareContext& ctx);
@@ -101,35 +104,37 @@ public:
         uint8_t kindBits,
         render::Batch& batch) noexcept;
 
-    inline Node* getParent() const noexcept {
-        return m_parent.toNode();
+    inline pool::NodeHandle getParentHandle() const noexcept
+    {
+        return NodeRegistry::get().getParentHandle(m_entityIndex);
     }
 
-    inline void setParent(pool::NodeHandle parent) noexcept {
-        m_parent = parent;
+    inline const Node* getParent() const noexcept
+    {
+        return NodeRegistry::get().getParent(m_entityIndex);
     }
 
-    inline void setParent(const Node* parent) noexcept {
-        m_parent = parent;
+    inline NodeState& modifyState() const noexcept
+    {
+        return NodeRegistry::get().modifyState(m_entityIndex);
     }
 
-    inline void removeChild(pool::NodeHandle node) {
-        // TODO KI
+    inline const NodeState& getState() const noexcept
+    {
+        return NodeRegistry::get().getState(m_entityIndex);
     }
 
-    inline const NodeState& getState() const noexcept {
-        return m_state;
+    inline const Snapshot* getSnapshotWT() const noexcept
+    {
+        return NodeRegistry::get().getSnapshotWT(m_entityIndex);
     }
 
-    inline NodeState& modifyState() noexcept {
-        return m_state;
+    inline const Snapshot* getSnapshotRT() const noexcept
+    {
+        return NodeRegistry::get().getSnapshotRT(m_entityIndex);
     }
 
-    const Snapshot& getActiveSnapshot(const RenderContext& ctx) const noexcept;
-    const Snapshot& getActiveSnapshot(Registry* registry) const noexcept;
-    //Snapshot& modifyActiveSnapshot(Registry* registry) noexcept;
-
-    void updateModelMatrix() noexcept;
+    //void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
 
@@ -142,13 +147,13 @@ public:
     // @return -1 if no highlight color
     int getHighlightIndex() const noexcept;
 
-    inline int getCloneIndex() const noexcept {
-        return m_cloneIndex;
-    }
+    //inline int getCloneIndex() const noexcept {
+    //    return m_cloneIndex;
+    //}
 
-    inline void setCloneIndex(int cloneIndex) {
-        m_cloneIndex = cloneIndex;
-    }
+    //inline void setCloneIndex(int cloneIndex) {
+    //    m_cloneIndex = cloneIndex;
+    //}
 
     inline bool isHighlighted() const noexcept
     {
@@ -175,16 +180,14 @@ public:
 public:
     pool::TypeHandle m_typeHandle{};
 
-    uint32_t m_snapshotIndex{ 0 };
-    uint32_t m_entityIndex{ 0 };
-
     std::unique_ptr<CameraComponent> m_camera{ nullptr };
     std::unique_ptr<Light> m_light{ nullptr };
     std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
-    NodeGenerator* m_instancer{ nullptr };
+    // Index of node in NodeRegistry
+    uint32_t m_entityIndex{ 0 };
 
     audio::listener_id m_audioListenerId{ 0 };
     std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
@@ -192,15 +195,13 @@ public:
     std::string m_name;
 
 private:
-    NodeState m_state;
-
     pool::NodeHandle m_handle;
-    pool::NodeHandle m_parent;
 
-    int m_cloneIndex{ 0 };
+    //int m_cloneIndex{ 0 };
 
-    int m_tagMaterialIndex{ -1 };
-    int m_selectionMaterialIndex{ -1 };
+    // special materials are in range 0..255
+    int8_t m_tagMaterialIndex{ -1 };
+    int8_t m_selectionMaterialIndex{ -1 };
 
 public:
     NodeFlags m_flags;

@@ -22,8 +22,6 @@ namespace mesh {
     class MeshType;
 }
 
-struct NodeState;
-
 
 namespace physics {
     struct RayHit;
@@ -87,8 +85,7 @@ namespace physics {
         void enforceStaticBounds(
             const UpdateContext& ctx,
             const mesh::MeshType* type,
-            Node& node,
-            NodeState& state);
+            Node& node);
 
     public:
         dWorldID m_worldId{ nullptr };

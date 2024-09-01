@@ -5,16 +5,20 @@
 
 #include "util/debug.h"
 
+#include "ki/sid.h"
+
 #include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
 
 #include "model/Node.h"
 
+#include "event/Dispatcher.h"
+
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
-#include "registry/EntityRegistry.h"
+#include "registry/NodeRegistry.h"
 
 
 GridGenerator::GridGenerator()
@@ -25,13 +29,9 @@ void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
-    container.m_instancer = this;
-
     prepareInstances(
         ctx,
         container);
-
-    prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void GridGenerator::updateWT(
@@ -57,10 +57,13 @@ void GridGenerator::updateInstances(
 {
     const auto& containerState = container.getState();
 
-    for (auto& state : m_states)
+    for (auto& handle : m_nodes)
     {
+        auto* node = handle.toNode();
+        if (!node) continue;
+        auto& state = node->modifyState();
         state.setRotation(containerState.getRotation());
-        state.updateModelMatrix(containerState);
+        //state.updateModelMatrix(containerState);
     }
 }
 
@@ -68,15 +71,21 @@ void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     const Node& container)
 {
+    auto& nodeRegistry = NodeRegistry::get();
+    auto& dispatcher = ctx.m_registry->m_dispatcherWorker;
+
     auto* type = container.m_typeHandle.toType();
     const auto& containerState = container.getState();
 
+    const auto* parent = container.getParent();
+
     const auto count = m_zCount * m_xCount * m_yCount;
 
-    m_states.reserve(count);
+    std::vector<NodeState> states;
+    states.reserve(count);
 
     for (int i = 0; i < count; i++) {
-        auto& state = m_states.emplace_back();
+        auto& state = states.emplace_back();
         state.m_flags = type->resolveEntityFlags();
         state.setPivot(containerState.getPivot());
         state.setBaseRotation(containerState.getBaseRotation());
@@ -88,23 +97,39 @@ void GridGenerator::prepareInstances(
 
     switch (m_mode) {
     case GeneratorMode::grid:
-        prepareGrid(container);
+        prepareGrid(container, states);
         break;
     case GeneratorMode::random:
-        prepareRandom(container);
+        prepareRandom(container, states);
         break;
     }
 
-    for (auto& state : m_states) {
-        state.updateModelMatrix(containerState);
-    }
+    m_nodes.reserve(states.size());
+    for (int idx = 0; auto& state : states)
+    {
+        ki::node_id nodeId{ StringID::nextID() };
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
+        node->m_name = fmt::format("grid-", idx);
+        node->m_typeHandle = container.m_typeHandle;
+        m_nodes.push_back(handle);
 
-    m_reservedCount = static_cast<uint32_t>(m_states.size());
-    setActiveRange(0, m_reservedCount);
+        event::Event evt { event::Type::node_add };
+        evt.blob = std::make_unique<event::BlobData>();
+        evt.blob->body.state = state;
+        evt.body.node = {
+            .target = handle.toId(),
+            .parentId = container.getId(),
+        };
+        assert(evt.body.node.target > 1);
+        dispatcher->send(evt);
+        idx++;
+    }
 }
 
 void GridGenerator::prepareGrid(
-    const Node& container)
+    const Node& container,
+    std::vector<NodeState>& states) const
 {
     const auto& containerState = container.getState();
     int idx = 0;
@@ -112,11 +137,12 @@ void GridGenerator::prepareGrid(
     for (auto z = 0; z < m_zCount; z++) {
         for (auto y = 0; y < m_yCount; y++) {
             for (auto x = 0; x < m_xCount; x++) {
-                auto& state = m_states[idx];
+                auto& state = states[idx];
 
                 const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
 
-                state.setPosition(containerState.getPosition() + pos);
+                //state.setPosition(containerState.getPosition() + pos);
+                state.setPosition(pos);
 
                 idx++;
             }
@@ -125,7 +151,8 @@ void GridGenerator::prepareGrid(
 }
 
 void GridGenerator::prepareRandom(
-    const Node& container)
+    const Node& container,
+    std::vector<NodeState>& states) const
 {
     const auto& containerState = container.getState();
     const auto count = m_zCount * m_xCount * m_yCount;
@@ -151,7 +178,7 @@ void GridGenerator::prepareRandom(
     const float maxZ = m_zCount * m_zStep;
 
     for (int idx = 0; idx < count; idx++) {
-        auto& state = m_states[idx];
+        auto& state = states[idx];
 
         {
             glm::uvec3 v{

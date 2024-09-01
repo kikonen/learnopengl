@@ -275,8 +275,10 @@ bool WaterMapRenderer::render(
     const auto& parentCameraPos = parentCamera->getWorldPosition();
     const auto& parentCameraFov = parentCamera->getFov();
 
-    const auto& snapshot = closest->getActiveSnapshot(parentCtx.m_registry);
-    const auto& planePos = snapshot.getWorldPosition();
+    const auto* snapshot = closest->getSnapshotRT();
+    if (!snapshot) return false;
+
+    const auto& planePos = snapshot->getWorldPosition();
     const float sdist = parentCameraPos.y - planePos.y;
 
     // https://prideout.net/clip-planes
@@ -445,9 +447,11 @@ Node* WaterMapRenderer::findClosest(
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
+        const auto* snapshot = node->getSnapshotRT();
+        if (!snapshot) continue;
+
         //auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
-        auto dist2 = cameraPos.y - snapshot.getWorldPosition().y;
+        auto dist2 = cameraPos.y - snapshot->getWorldPosition().y;
 
         //glm::vec3 fromCamera = glm::normalize(ray);
         //float dot = glm::dot(fromCamera, cameraDir);

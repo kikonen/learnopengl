@@ -169,15 +169,15 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             clock.ts = static_cast<double>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            if (m_registry->m_pendingSnapshotRegistry->isDirty()) {
-                //KI_INFO("COPY: snapshot_dirty");
-                m_registry->m_pendingSnapshotRegistry->copyTo(
-                    m_registry->m_activeSnapshotRegistry,
-                    0, -1);
+            //if (m_registry->m_pendingSnapshotRegistry->isDirty()) {
+            //    //KI_INFO("COPY: snapshot_dirty");
+            //    m_registry->m_pendingSnapshotRegistry->copyTo(
+            //        m_registry->m_activeSnapshotRegistry,
+            //        0, -1);
+            ////}
+            ////else {
+            ////    KI_INFO("SKIP: snapshot_not_dirty");
             //}
-            //else {
-            //    KI_INFO("SKIP: snapshot_not_dirty");
-            }
 
             // input
             // -----

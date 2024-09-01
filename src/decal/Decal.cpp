@@ -50,7 +50,8 @@ namespace decal {
     // NOTE KI decal is rendered as Quad, so transform accordingly
     glm::mat4 Decal::getModelMatrix() const {
         const auto* node = m_parent.toNode();
-        const auto& state = node->getState();
+        //const auto& state = node->getState();
+        const NodeState state;
 
         const auto& parentMatrix = state.getModelMatrix();
         const auto& scale = state.getScale();
@@ -82,8 +83,10 @@ namespace decal {
         const auto* node = parent.toNode();
         if (!node) return {};
 
-        const auto& snapshot = node->getActiveSnapshot(ctx);
-        const auto invModelMatrix = glm::inverse(snapshot.getModelMatrix());
+        const auto* snapshot = node->getSnapshotRT();
+        if (!snapshot) return {};
+
+        const auto invModelMatrix = glm::inverse(snapshot->getModelMatrix());
 
         decal::Decal decal{};
         decal.m_parent = parent;

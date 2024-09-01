@@ -12,7 +12,6 @@ namespace event
 struct UpdateContext;
 
 class NodeRegistry;
-class NodeSnapshotRegistry;
 
 //
 // Container for all registries to simplify passing them around
@@ -43,18 +42,10 @@ private:
     std::unique_ptr<event::Dispatcher> m_dispatcherWorkerImpl;
     std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
 
-    std::unique_ptr<NodeSnapshotRegistry> m_workerSnapshotRegistryImpl;
-    std::unique_ptr<NodeSnapshotRegistry> m_pendingSnapshotRegistryImpl;
-    std::unique_ptr<NodeSnapshotRegistry> m_activeSnapshotRegistryImpl;
-
 public:
     // NOTE KI initialization order!
     event::Dispatcher* const m_dispatcherWorker;
     event::Dispatcher* const m_dispatcherView;
-
-    NodeSnapshotRegistry* const m_workerSnapshotRegistry;
-    NodeSnapshotRegistry* const m_pendingSnapshotRegistry;
-    NodeSnapshotRegistry* const m_activeSnapshotRegistry;
 
     NodeRegistry* const m_nodeRegistry;
 };

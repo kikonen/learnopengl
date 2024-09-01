@@ -18,7 +18,7 @@
 
 #include "engine/UpdateContext.h"
 #include "registry/Registry.h"
-#include "registry/NodeSnapshotRegistry.h"
+#include "registry/NodeRegistry.h"
 
 namespace {
 }
@@ -102,18 +102,26 @@ namespace audio
         preparePendingListeners(ctx);
         preparePendingSources(ctx);
 
-        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
+        auto& nodeRegistry = NodeRegistry::get();
 
         for (auto& listener : m_listeners) {
             const auto* node = listener.m_nodeHandle.toNode();
             if (!node) continue;
-            listener.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
+
+            const auto* snapshot = node->getSnapshotWT();
+            if (!snapshot) continue;
+
+            listener.updateFromSnapshot(*snapshot);
         }
 
         for (auto& source : m_sources) {
             const auto* node = source.m_nodeHandle.toNode();
             if (!node) continue;
-            source.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
+
+            const auto* snapshot = node->getSnapshotWT();
+            if (!snapshot) continue;
+
+            source.updateFromSnapshot(*snapshot);
         }
     }
 
@@ -271,7 +279,7 @@ namespace audio
     {
         if (m_pendingListeners.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
+        auto& nodeRegistry = NodeRegistry::get();
 
         std::unordered_map<audio::listener_id, bool> prepared;
 
@@ -280,7 +288,11 @@ namespace audio
 
             const auto* node = obj.m_nodeHandle.toNode();
             if (!node) continue;
-            obj.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
+
+            const auto* snapshot = node->getSnapshotWT();
+            if (!snapshot) continue;
+
+            obj.updateFromSnapshot(*snapshot);
 
             if (obj.isReady()) {
                 obj.update();
@@ -307,7 +319,7 @@ namespace audio
     {
         if (m_pendingSources.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
+        auto& nodeRegistry = NodeRegistry::get();
 
         std::unordered_map<audio::source_id, bool> prepared;
 
@@ -316,7 +328,11 @@ namespace audio
 
             const auto* node = obj.m_nodeHandle.toNode();
             if (!node) continue;
-            obj.updateFromSnapshot(snapshotRegistry.getSnapshot(node->m_snapshotIndex));
+
+            const auto* snapshot = node->getSnapshotWT();
+            if (!snapshot) continue;
+
+            obj.updateFromSnapshot(*snapshot);
 
             if (obj.isReady()) {
                 obj.update();

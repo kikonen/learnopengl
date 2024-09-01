@@ -496,10 +496,12 @@ void SampleApp::raycastPlayer(
     if (!player) return;
 
     {
-        const auto& snapshot = player->getActiveSnapshot(ctx);
+        const auto* snapshot = player->getSnapshotRT();
+        if (!snapshot) return;
+
         const auto& hits = physics::PhysicsEngine::get().rayCast(
-            snapshot.getWorldPosition(),
-            snapshot.getViewFront(),
+            snapshot->getWorldPosition(),
+            snapshot->getViewFront(),
             100.f,
             physics::mask(physics::Category::ray_player_fire),
             physics::mask(physics::Category::npc),

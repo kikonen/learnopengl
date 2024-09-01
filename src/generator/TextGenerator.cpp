@@ -39,7 +39,6 @@ void TextGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
-    container.m_instancer = this;
 }
 
 void TextGenerator::prepareRT(
@@ -56,22 +55,22 @@ void TextGenerator::updateWT(
 {
 }
 
-void TextGenerator::updateEntity(
-    NodeSnapshotRegistry& snapshotRegistry,
-    EntityRegistry& entityRegistry,
-    Node& container)
-{
-    auto& state = container.modifyState();
-    auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
-    auto* entity = entityRegistry.modifyEntity(container.m_entityIndex, true);
-
-    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
-    const glm::vec4& volume = m_aabb.getVolume();
-
-    state.setVolume(volume);
-    snapshot.setVolume(volume);
-    entity->u_volume = volume;
-}
+//void TextGenerator::updateEntity(
+//    NodeSnapshotRegistry& snapshotRegistry,
+//    EntityRegistry& entityRegistry,
+//    Node& container)
+//{
+//    auto& state = container.modifyState();
+//    auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
+//    auto* entity = entityRegistry.modifyEntity(container.m_entityIndex, true);
+//
+//    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
+//    const glm::vec4& volume = m_aabb.getVolume();
+//
+//    state.setVolume(volume);
+//    snapshot.setVolume(volume);
+//    entity->u_volume = volume;
+//}
 
 void TextGenerator::updateVAO(
     const RenderContext& ctx,
@@ -139,14 +138,15 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    const auto& snapshot = container.getActiveSnapshot(ctx.m_registry);
+    const auto* snapshot = container.getSnapshotRT();
+    if (!snapshot) return;
 
     batch.addSnapshot(
         ctx,
         type,
         programSelector,
         kindBits,
-        snapshot,
+        *snapshot,
         container.m_entityIndex);
 }
 

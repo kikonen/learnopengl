@@ -48,6 +48,7 @@ namespace physics {
         Geom m_geom{};
 
         pool::NodeHandle m_nodeHandle{};
+        int32_t m_instanceIndex{ -1 };
 
         physics::physics_id m_id{ 0 };
         physics::height_map_id m_heightMapId{ 0 };

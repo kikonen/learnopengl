@@ -23,6 +23,8 @@ struct StringID
     operator double() const noexcept {
         return static_cast<double>(m_sid);
     }
+
+    static uint32_t nextID();
 };
 
 #define SID(x) StringID{ x }

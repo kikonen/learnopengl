@@ -18,8 +18,6 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "registry/EntityRegistry.h"
-
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
     {
@@ -30,11 +28,11 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
     m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
     m_objectProgram->prepareRT();
 
-    m_entityIndex = EntityRegistry::get().registerEntity();
-    {
-        auto* entity = EntityRegistry::get().modifyEntity(m_entityIndex, true);
-        entity->setModelMatrix(glm::mat4(1.f), true, true);
-    }
+    //m_entityIndex = EntityRegistry::get().registerEntity();
+    //{
+    //    auto* entity = EntityRegistry::get().modifyEntity(m_entityIndex, true);
+    //    entity->setModelMatrix(glm::mat4(1.f), true, true);
+    //}
 }
 
 void PhysicsRenderer::render(

@@ -68,12 +68,13 @@ std::string Node::str() const noexcept
 {
     auto* type = m_typeHandle.toType();
     return fmt::format(
-        "<NODE: id={}, type={}>",
-        m_handle.str(), type ? type->str() : "<null>");
+        "<NODE: id={}, name={}, type={}>",
+        m_handle.str(), m_name, type ? type->str() : "<null>");
 }
 
 void Node::prepareWT(
-    const PrepareContext& ctx)
+    const PrepareContext& ctx,
+    NodeState& state)
 {
     auto& registry = ctx.m_registry;
 
@@ -83,15 +84,8 @@ void Node::prepareWT(
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
         {
-            m_state.m_flags = type->resolveEntityFlags();
+            state.m_flags = type->resolveEntityFlags();
         }
-    }
-
-    {
-        auto& snapshotRegistry = *ctx.m_registry->m_workerSnapshotRegistry;
-        m_snapshotIndex = snapshotRegistry.registerSnapshot();
-        auto& snapshot = snapshotRegistry.modifySnapshot(m_snapshotIndex);
-        snapshot.m_handle = toHandle();
     }
 
     {
@@ -102,8 +96,8 @@ void Node::prepareWT(
 
         if (rig) {
             auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
-            m_state.m_boneBaseIndex = boneBaseIndex;
-            m_state.m_socketBaseIndex = socketBaseIndex;
+            state.m_boneBaseIndex = boneBaseIndex;
+            state.m_socketBaseIndex = socketBaseIndex;
             //m_state.m_animationClipIndex = ;
         }
     }
@@ -122,9 +116,11 @@ void Node::prepareRT(
 {
     auto* type = m_typeHandle.toType();
 
-    const auto& snapshot = getActiveSnapshot(ctx.m_registry);
+    const auto* snapshot = getSnapshotRT();
+    if (!snapshot) return;
+
     if (m_camera) {
-        m_camera->snapToIdeal(snapshot);
+        m_camera->snapToIdeal(*snapshot);
     }
 }
 
@@ -137,8 +133,8 @@ bool Node::isEntity() const noexcept
 
 void Node::updateVAO(const RenderContext& ctx) noexcept
 {
-    if (m_instancer) {
-        m_instancer->updateVAO(ctx, *this);
+    if (m_generator) {
+        m_generator->updateVAO(ctx, *this);
     }
 }
 
@@ -149,57 +145,33 @@ void Node::bindBatch(
     uint8_t kindBits,
     render::Batch& batch) noexcept
 {
-    if (m_instancer) {
-        m_instancer->bindBatch(ctx, type, programSelector, kindBits, batch, *this);
-    }
-    else {
-        const auto& snapshot = getActiveSnapshot(ctx.m_registry);
+    const auto* snapshot = getSnapshotRT();
+    if (!snapshot) return;
 
-        batch.addSnapshot(
-            ctx,
-            type,
-            programSelector,
-            kindBits,
-            snapshot,
-            m_entityIndex);
-    }
+    batch.addSnapshot(
+        ctx,
+        type,
+        programSelector,
+        kindBits,
+        *snapshot,
+        m_entityIndex);
 }
 
-const Snapshot& Node::getActiveSnapshot(const RenderContext& ctx) const noexcept
-{
-    return ctx.m_registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
-}
-
-const Snapshot& Node::getActiveSnapshot(Registry* registry) const noexcept
-{
-    return registry->m_activeSnapshotRegistry->getSnapshot(m_snapshotIndex);
-}
-
-//Snapshot& Node::modifyActiveSnapshot(Registry* registry) noexcept
+//void Node::updateModelMatrix() noexcept
 //{
-//    return registry->m_activeSnapshotRegistry->modifySnapshot(m_snapshotIndex);
+//    if (m_parent) {
+//        m_state.updateModelMatrix(getParent()->getState());
+//    }
+//    else {
+//        m_state.updateRootMatrix();
+//    }
 //}
-
-void Node::updateModelMatrix() noexcept
-{
-    if (m_parent) {
-        m_state.updateModelMatrix(getParent()->getState());
-    }
-    else {
-        m_state.updateRootMatrix();
-    }
-}
 
 void Node::setTagMaterialIndex(int index)
 {
     if (m_tagMaterialIndex != index) {
         m_tagMaterialIndex = index;
-        m_state.m_dirtySnapshot = true;
-        if (m_generator) {
-            for (auto& state : m_generator->modifyStates()) {
-                state.m_dirtySnapshot = true;
-            }
-        }
+        getState().m_dirtySnapshot = true;
     }
 }
 
@@ -207,12 +179,7 @@ void Node::setSelectionMaterialIndex(int index)
 {
     if (m_selectionMaterialIndex != index) {
         m_selectionMaterialIndex = index;
-        m_state.m_dirtySnapshot = true;
-        if (m_generator) {
-            for (auto& state : m_generator->modifyStates()) {
-                state.m_dirtySnapshot = true;
-            }
-        }
+        getState().m_dirtySnapshot = true;
     }
 }
 
@@ -239,11 +206,12 @@ const std::string& Node::lua_getName() const noexcept
 
 int Node::lua_getCloneIndex() const noexcept
 {
-    return m_cloneIndex;
+    //return m_cloneIndex;
+    return 0;
 }
 
 const std::array<float, 3> Node::lua_getPos() const noexcept
 {
-    const auto& pos = m_state.getPosition();
+    const auto& pos = getState().getPosition();
     return { pos.x, pos.y, pos.z };
 }

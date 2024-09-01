@@ -39,10 +39,6 @@ namespace terrain {
             const Node& container) override;
 
     private:
-        virtual void prepareEntity(
-            EntitySSBO& entity,
-            uint32_t snapshotIndex) override;
-
         void updateTiles(
             const UpdateContext& ctx,
             const Node& container);

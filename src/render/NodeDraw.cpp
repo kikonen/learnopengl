@@ -25,7 +25,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 
 #include "render/Camera.h"
 #include "render/FrameBuffer.h"
@@ -711,8 +710,6 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
-        auto& snapshotRegistry = *ctx.m_registry->m_activeSnapshotRegistry;
-
         const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
 
         // TODO KI discards nodes if *same* distance
@@ -727,9 +724,12 @@ namespace render {
                 auto* node = handle.toNode();
                 if (!node || !nodeSelector(node)) continue;
 
-                const auto& snapshot = snapshotRegistry.getSnapshot(node->m_snapshotIndex);
-                const float distance = glm::length(viewPos - snapshot.getWorldPosition());
-                sorted[distance] = node;
+                const auto* snapshot = node->getSnapshotRT();
+                if (!snapshot) continue;
+
+                const auto& pos = snapshot->getWorldPosition();
+                const float dist2 = glm::distance2(viewPos, pos);
+                sorted[dist2] = node;
             }
         }
 

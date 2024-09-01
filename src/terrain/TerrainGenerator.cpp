@@ -41,7 +41,6 @@
 
 namespace {
     const std::string TERRAIN_QUAD_MESH_NAME{ "quad_terrain" };
-
 }
 
 namespace terrain {
@@ -66,13 +65,6 @@ namespace terrain {
         auto heightMapId = prepareHeightMap(ctx, container);
 
         createTiles(ctx, container, heightMapId);
-        prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
-    }
-
-    void TerrainGenerator::prepareEntity(
-        EntitySSBO& entity,
-        uint32_t index)
-    {
     }
 
     void TerrainGenerator::updateWT(
@@ -169,15 +161,12 @@ namespace terrain {
 
             const glm::vec3 pos{ step / 2 + info.m_tileU * step, 0, step / 2 + info.m_tileV * step };
 
-            auto& state = m_states[idx];
+            auto* node = m_nodes[idx].toNode();
+            auto& state = node->modifyState();
 
             state.setPosition(pos);
-
-            state.updateModelMatrix(containerState);
+            //state.updateModelMatrix(containerState);
         }
-
-        m_reservedCount = static_cast<uint32_t>(m_states.size());
-        setActiveRange(0, m_reservedCount);
     }
 
     void TerrainGenerator::createTiles(
@@ -187,6 +176,7 @@ namespace terrain {
     {
         const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
+        auto& dispatcher = registry->m_dispatcherWorker;
 
         auto& entityRegistry = EntityRegistry::get();
 
@@ -213,7 +203,9 @@ namespace terrain {
 
         const int tileCount = m_worldTilesU * m_worldTilesV;
 
-        m_states.reserve(tileCount);
+        std::vector<NodeState> states;
+        states.reserve(tileCount);
+
         m_tileInfos.reserve(tileCount);
 
         // Setup initial static values for entity
@@ -263,7 +255,7 @@ namespace terrain {
             }
 
             {
-                auto& state = m_states.emplace_back();
+                auto& state = states.emplace_back();
                 state.setVolume(tileVolume);
                 state.setScale(scale);
                 state.m_tileIndex = info.m_registeredIndex;
@@ -319,18 +311,43 @@ namespace terrain {
             node->m_typeHandle = typeHandle;
 
             node->modifyState().setVolume(minmax.getVolume());
-            node->m_instancer = this;
 
             m_nodeHandle = handle;
         }
 
         {
+            NodeState state{};
             event::Event evt { event::Type::node_add };
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.state = state;
             evt.body.node = {
                 .target = m_nodeHandle.toId(),
                 .parentId = container.getId(),
             };
-            registry->m_dispatcherWorker->send(evt);
+            assert(evt.body.node.target > 1);
+            dispatcher->send(evt);
+        }
+
+        m_nodes.reserve(states.size());
+        for (int idx = 0; auto& state : states)
+        {
+            ki::node_id nodeId{ StringID::nextID() };
+            auto handle = pool::NodeHandle::allocate(nodeId);
+            auto* node = handle.toNode();
+            node->m_name = fmt::format("tile-", idx);
+            node->m_typeHandle = typeHandle;
+            m_nodes.push_back(handle);
+
+            event::Event evt { event::Type::node_add };
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.state = state;
+            evt.body.node = {
+                .target = handle.toId(),
+                .parentId = m_nodeHandle.toId(),
+            };
+            assert(evt.body.node.target > 1);
+            dispatcher->send(evt);
+            idx++;
         }
     }
 

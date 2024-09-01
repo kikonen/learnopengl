@@ -172,11 +172,15 @@ namespace loader {
         node->m_typeHandle = typeHandle;
 
         {
+            NodeState state{};
             event::Event evt { event::Type::node_add };
+            evt.blob = std::make_unique<event::BlobData>();
+            evt.blob->body.state = state;
             evt.body.node = {
                 .target = assets.skyboxId,
                 .parentId = rootId,
             };
+            assert(evt.body.node.target > 1);
             m_dispatcher->send(evt);
         }
     }

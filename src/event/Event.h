@@ -9,6 +9,8 @@
 
 #include "ki/size.h"
 
+#include "model/NodeState.h"
+
 #include "audio/size.h"
 #include "audio/limits.h"
 
@@ -67,6 +69,7 @@ namespace event {
             PhysicsData physics;
             AudioSourceData audioSource;
             AudioListenerData audioListener;
+            NodeState state;
         } body;
     };
 

@@ -27,6 +27,9 @@
 
 
 namespace {
+    constexpr float SCALE = 1.0f;
+    constexpr float OFFSET = 0.0f;
+
     std::mutex g_materialLock;
     std::map<physics::GeomType, Material> g_materials;
 
@@ -207,7 +210,7 @@ namespace physics {
                         mesh = saveMesh(cacheKey, generator.create());
                     }
 
-                    offset = { -heightMap->m_worldSizeU * 0.5f, 0.f, -heightMap->m_worldSizeV * 0.5f };
+                    offset = { -heightMap->m_worldSizeU * 0.5f, 0.f + OFFSET, -heightMap->m_worldSizeV * 0.5f };
                 }
                 break;
             }
@@ -229,7 +232,7 @@ namespace physics {
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::box();
                     generator.name = cacheKey;
-                    generator.size = size;
+                    generator.size = size * SCALE;
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -247,7 +250,7 @@ namespace physics {
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::sphere();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius);
+                    generator.radius = static_cast<float>(radius) * SCALE;
                     generator.slices = 16;
                     generator.segments = { 8, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
@@ -269,8 +272,8 @@ namespace physics {
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::capsule();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius);
-                    generator.length = static_cast<float>(length * 0.5f);
+                    generator.radius = static_cast<float>(radius) * SCALE;
+                    generator.length = static_cast<float>(length * 0.5f) * SCALE;
                     generator.slices = 8;
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
@@ -291,8 +294,8 @@ namespace physics {
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::capped_cylinder();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius);
-                    generator.length = static_cast<float>(length * 0.5f);
+                    generator.radius = static_cast<float>(radius) * SCALE;
+                    generator.length = static_cast<float>(length * 0.5f) * SCALE;
                     generator.slices = 8;
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());

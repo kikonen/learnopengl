@@ -8,6 +8,8 @@
 
 #include "script/size.h"
 
+#include "model/NodeState.h"
+
 #include "NodeData.h"
 
 namespace loader {
@@ -15,6 +17,8 @@ namespace loader {
         ki::node_id parentId;
         pool::NodeHandle handle;
         const NodeData& data;
+
+        NodeState state;
 
         const std::vector<script::script_id> scriptIds;
     };

@@ -55,11 +55,6 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
         for (auto* controller : it.second) {
             changed |= controller->updateWT(ctx, *node);
         }
-
-        if (changed) {
-            // TODO KI *ALL* children must be updated also
-            node->updateModelMatrix();
-        }
     }
 }
 

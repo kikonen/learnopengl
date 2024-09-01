@@ -22,15 +22,17 @@ private:
         const UpdateContext& ctx,
         const Node& container);
 
-    void prepareGrid(
-        const Node& container);
-
-    void prepareRandom(
-        const Node& container);
-
     void prepareInstances(
         const PrepareContext& ctx,
         const Node& container);
+
+    void prepareGrid(
+        const Node& container,
+        std::vector<NodeState>& states) const;
+
+    void prepareRandom(
+        const Node& container,
+        std::vector<NodeState>& states) const;
 
 public:
     glm::uvec3 m_seed{ 0 };

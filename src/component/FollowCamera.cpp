@@ -21,8 +21,10 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
 {
     if (!m_enabled) return;
 
+    const auto* snapshot = node.getSnapshotRT();
+    if (!snapshot) return;
+
     const auto dt = ctx.m_clock.elapsedSecs;
-    const auto& snapshot = node.getActiveSnapshot(ctx.m_registry);
 
     //const auto& level = snapshot.getMatrixLevel();
     //const bool nodeChanged = m_nodeLevel != level;
@@ -32,7 +34,7 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     const float dampening = 2.0f * std::sqrt(m_springConstant);
 
     // Compute ideal position
-    const auto& idealPos = calculateCameraPos(snapshot);
+    const auto& idealPos = calculateCameraPos(*snapshot);
 
     // Compute acceleration of spring
     const auto diff = m_actualPos - idealPos;
@@ -45,8 +47,8 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     // Update actual camera position
     m_actualPos += m_velocity * dt;
 
-    glm::vec3 target = snapshot.getWorldPosition() +
-        snapshot.getViewFront() * m_distance.z;
+    glm::vec3 target = snapshot->getWorldPosition() +
+        snapshot->getViewFront() * m_distance.z;
 
     glm::vec3 cameraFront = glm::normalize(target - m_actualPos);
 

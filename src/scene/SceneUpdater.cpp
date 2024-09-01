@@ -35,7 +35,7 @@
 #define KI_TIMER(x)
 
 namespace {
-    size_t count = 0;
+    size_t g_count = 0;
 }
 
 SceneUpdater::SceneUpdater(
@@ -139,13 +139,16 @@ void SceneUpdater::update(const UpdateContext& ctx)
 {
     KI_TIMER("[loop]  ");
 
+    auto& nodeRegistry = NodeRegistry::get();
+    auto& physicsEngine = physics::PhysicsEngine::get();
+
     {
         KI_TIMER("event   ");
         m_registry->m_dispatcherWorker->dispatchEvents();
     }
 
-    count++;
-    //if (count < 100)
+    g_count++;
+    //if (g_count < 100)
     {
         //std::cout << count << '\n';
         if (m_loaded) {
@@ -155,20 +158,19 @@ void SceneUpdater::update(const UpdateContext& ctx)
         {
             KI_TIMER("registry");
             m_registry->updateWT(ctx);
-            }
+        }
 
         if (m_loaded) {
             {
                 KI_TIMER("node1   ");
-                NodeRegistry::get().updateWT(ctx);
+                nodeRegistry.updateWT(ctx);
+                nodeRegistry.updateModelMatrices();
+                nodeRegistry.snapshotWT();
             }
             {
                 KI_TIMER("node2   ");
                 ControllerRegistry::get().updateWT(ctx);
-            }
-            {
-                KI_TIMER("node3   ");
-                NodeRegistry::get().updateModelMatrices();
+                nodeRegistry.updateModelMatrices();
             }
             {
                 KI_TIMER("audio   ");
@@ -176,41 +178,43 @@ void SceneUpdater::update(const UpdateContext& ctx)
             }
             {
                 KI_TIMER("physics0");
-                physics::PhysicsEngine::get().updatePrepare(ctx);
+                physicsEngine.updatePrepare(ctx);
             }
             {
                 KI_TIMER("physics1");
-                physics::PhysicsEngine::get().updateStaticBounds(ctx);
+                physicsEngine.updateStaticBounds(ctx);
+                nodeRegistry.updateModelMatrices();
             }
             {
                 KI_TIMER("physics2");
-                physics::PhysicsEngine::get().updateObjects(ctx);
+                physicsEngine.updateObjects(ctx);
             }
         }
     }
 
     // NOTE KI sync to RT
     {
-        {
-            KI_TIMER("node4   ");
-            NodeRegistry::get().updateModelMatrices();
-        }
-        {
-            KI_TIMER("node5   ");
-            NodeRegistry::get().snapshotWT(*m_registry->m_workerSnapshotRegistry);
-        }
-        {
-            KI_TIMER("node7   ");
-            m_registry->m_pendingSnapshotRegistry->copyFrom(
-                m_registry->m_workerSnapshotRegistry,
-                0, -1);
-        }
+        KI_TIMER("node4   ");
+        nodeRegistry.updateModelMatrices();
+        nodeRegistry.snapshotWT();
+        nodeRegistry.snapshotPending();
+
+        //{
+        //    KI_TIMER("node5   ");
+        //    nodeRegistry.snapshotWT(*m_registry->m_workerSnapshotRegistry);
+        //}
+        //{
+        //    KI_TIMER("node7   ");
+        //    m_registry->m_pendingSnapshotRegistry->copyFrom(
+        //        m_registry->m_workerSnapshotRegistry,
+        //        0, -1);
+        //}
 
         decal::DecalSystem::get().updateWT(ctx);
     }
 
     if (m_loaded) {
-        physics::PhysicsEngine::get().setEnabled(true);
+        physicsEngine.setEnabled(true);
     }
 }
 

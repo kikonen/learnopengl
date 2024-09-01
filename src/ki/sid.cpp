@@ -12,6 +12,8 @@ namespace {
 
     const std::string MISSING = "";
 
+    uint32_t g_idSeq{ 0 };
+
     std::unordered_map<uint32_t, std::string> g_registeredIds;
 
     void registerName(uint32_t sid, const std::string& s)
@@ -27,6 +29,12 @@ namespace {
         std::lock_guard lock{ g_lock };
         const auto& it = g_registeredIds.find(sid);
         return it != g_registeredIds.end() ? it->second : MISSING;
+    }
+
+    uint32_t seqNext()
+    {
+        std::lock_guard lock{ g_lock };
+        return ++g_idSeq;
     }
 }
 
@@ -44,4 +52,10 @@ const std::string& StringID::getName() const noexcept
 StringID::operator std::string() const noexcept
 {
     return fmt::format("[SID:{}/{}]", m_sid, getName());
+}
+
+uint32_t StringID::nextID()
+{
+    StringID sid{ fmt::format("auto-{}", seqNext()) };
+    return sid;
 }

@@ -6,6 +6,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "event/Dispatcher.h"
+
 #include "mesh/Mesh.h"
 
 #include "mesh/LodMesh.h"
@@ -18,7 +20,6 @@
 #include "render/Batch.h"
 
 #include "registry/Registry.h"
-#include "registry/EntityRegistry.h"
 
 
 namespace {
@@ -39,10 +40,7 @@ void AsteroidBeltGenerator::prepareWT(
 {
     NodeGenerator::prepareWT(ctx, container);
 
-    container.m_instancer = this;
-
     createAsteroids(ctx, container);
-    prepareSnapshots(*ctx.m_registry->m_workerSnapshotRegistry);
 }
 
 void AsteroidBeltGenerator::updateWT(
@@ -50,7 +48,7 @@ void AsteroidBeltGenerator::updateWT(
     const Node& container)
 {
     if (done) return;
-    const auto parentLevel = container.getParent()->getState().getMatrixLevel();
+    const auto parentLevel = container.getState().getMatrixLevel();
     const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
 
     if (rotate) {
@@ -69,17 +67,8 @@ void AsteroidBeltGenerator::updateAsteroids(
     const Node& container,
     bool rotate)
 {
-    auto* registry = ctx.m_registry;
-
-    const auto& parentState = container.getParent()->getState();
-
     if (rotate) {
         rotateAsteroids(ctx, container);
-    }
-
-    for (auto& state : m_states)
-    {
-        state.updateModelMatrix(parentState);
     }
 }
 
@@ -97,27 +86,25 @@ void AsteroidBeltGenerator::createAsteroids(
 
     auto& containerState = container.getState();
 
+    std::vector<NodeState> states;
+    states.reserve(m_asteroidCount);
+
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
 
-        auto& asteroid = m_states.emplace_back();
+        auto& asteroid = states.emplace_back();
         asteroid.m_flags = type->resolveEntityFlags();
         asteroid.setVolume(volume);
     }
 
-    initAsteroids(ctx, container);
-
-    // TODO KI container volume is not actually used currently
-    //containerState.setVolume(calculateVolume());
-
-    m_reservedCount = static_cast<uint32_t>(m_states.size());
-    setActiveRange(0, m_reservedCount);
+    initAsteroids(ctx, container, states);
 }
 
 void AsteroidBeltGenerator::initAsteroids(
     const PrepareContext& ctx,
-    const Node& container)
+    const Node& container,
+    std::vector<NodeState>& states)
 {
     // initialize random seed
     auto ts = duration_cast<std::chrono::seconds>(
@@ -125,7 +112,7 @@ void AsteroidBeltGenerator::initAsteroids(
     );
     srand(static_cast<unsigned int>(ts.count()));
 
-    const size_t count = m_states.size();
+    const size_t count = states.size();
 
     const glm::vec3 center{ 0.f };
     const float radius = m_radius;
@@ -133,7 +120,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_states[i];
+        auto& asteroid = states[i];
         auto& physics = m_physics[i];
 
         {
@@ -185,11 +172,12 @@ void AsteroidBeltGenerator::rotateAsteroids(
     const Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = m_states.size();
+    const size_t count = m_nodes.size();
 
     for (size_t i = 0; i < count; i++)
     {
-        auto& asteroid = m_states[i];
+        auto* node = m_nodes[i].toNode();
+        auto& asteroid = node->modifyState();
         auto& physics = m_physics[i];
 
         {

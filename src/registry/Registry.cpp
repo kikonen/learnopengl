@@ -33,7 +33,6 @@
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/VaoRegistry.h"
 
@@ -44,15 +43,9 @@ Registry::Registry(
     // registries
     m_dispatcherWorkerImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
-    m_workerSnapshotRegistryImpl{std::make_unique<NodeSnapshotRegistry>()},
-    m_pendingSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
-    m_activeSnapshotRegistryImpl{ std::make_unique<NodeSnapshotRegistry>() },
     // pointers
     m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
-    m_workerSnapshotRegistry{ m_workerSnapshotRegistryImpl.get() },
-    m_pendingSnapshotRegistry{ m_pendingSnapshotRegistryImpl.get() },
-    m_activeSnapshotRegistry{ m_activeSnapshotRegistryImpl.get() },
     m_nodeRegistry{ &NodeRegistry::get() }
 {
 }

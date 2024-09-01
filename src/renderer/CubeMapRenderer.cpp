@@ -195,24 +195,26 @@ bool CubeMapRenderer::render(
             auto& nodeRegistry = *parentCtx.m_registry->m_nodeRegistry;
 
             const auto* rootNode = nodeRegistry.getRootRT();
-            const auto& snapshot = centerNode->getActiveSnapshot(parentCtx.m_registry);
-            const auto& rootSnapshot = rootNode->getActiveSnapshot(parentCtx.m_registry);
+            const auto* snapshot = centerNode->getSnapshotRT();
+            const auto* rootSnapshot = rootNode->getSnapshotRT();
 
-            const auto& rootPos = rootSnapshot.getWorldPosition();
-            const auto& centerPos = snapshot.getWorldPosition();
-            const auto tagPos = centerPos - rootPos;
+            if (snapshot && rootSnapshot) {
+                const auto& rootPos = rootSnapshot->getWorldPosition();
+                const auto& centerPos = snapshot->getWorldPosition();
+                const auto tagPos = centerPos - rootPos;
 
-            script::CommandEngine::get().addCommand(
-                0,
-                script::MoveNode{
-                    tagNode->toHandle(),
-                    0.f,
-                    false,
-                    tagPos
-                });
+                script::CommandEngine::get().addCommand(
+                    0,
+                    script::MoveNode{
+                        tagNode->toHandle(),
+                        0.f,
+                        false,
+                        tagPos
+                    });
 
-            tagNode->m_visible = true;
-            //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
+                tagNode->m_visible = true;
+                //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
+            }
         }
     }
 
@@ -236,8 +238,10 @@ bool CubeMapRenderer::render(
 
         // centerNode->getVolume()->getRadius();
 
-        const auto& snapshot = centerNode->getActiveSnapshot(parentCtx.m_registry);
-        const auto& center = snapshot.getWorldPosition();
+        const auto* snapshot = centerNode->getSnapshotRT();
+        if (!snapshot) continue;
+
+        const auto& center = snapshot->getWorldPosition();
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
 
@@ -382,11 +386,13 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         auto* node = handle.toNode();
         if (!node) continue;
 
-        const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
-        auto dist2 = glm::distance2(snapshot.getWorldPosition(), cameraPos);
+        const auto* snapshot = node->getSnapshotRT();
+        if (!snapshot) continue;
+
+        auto dist2 = glm::distance2(snapshot->getWorldPosition(), cameraPos);
 
         if (false) {
-            const glm::vec3 ray = snapshot.getWorldPosition() - cameraPos;
+            const glm::vec3 ray = snapshot->getWorldPosition() - cameraPos;
             const glm::vec3 fromCamera = glm::normalize(ray);
             const float dot = glm::dot(fromCamera, cameraDir);
             if (dot < 0) continue;

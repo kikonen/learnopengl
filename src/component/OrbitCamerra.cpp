@@ -22,8 +22,10 @@ void OrbitCamera::updateRT(const UpdateContext& ctx, Node& node)
 {
     if (!m_enabled) return;
 
+    const auto* snapshot = node.getSnapshotRT();
+    if (!snapshot) return;
+
     const auto dt = ctx.m_clock.elapsedSecs;
-    const auto& snapshot = node.getActiveSnapshot(ctx.m_registry);
 
     {
         // Create a quaternion for yaw about world up
@@ -49,7 +51,7 @@ void OrbitCamera::updateRT(const UpdateContext& ctx, Node& node)
     }
 
     // Compute transform matrix
-    const auto& target = snapshot.getWorldPosition();
+    const auto& target = snapshot->getWorldPosition();
 
     const auto& cameraPos = target + m_offset;
     const auto& cameraFront = glm::normalize(target - cameraPos);

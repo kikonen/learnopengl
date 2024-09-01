@@ -5,7 +5,6 @@
 #include "util/debug.h"
 
 #include "model/Node.h"
-#include "model/Snapshot.h"
 
 #include "render/Camera.h"
 
@@ -23,7 +22,6 @@ void SplineCamera::updateRT(const UpdateContext& ctx, Node& node)
     if (!m_enabled) return;
 
     const auto dt = ctx.m_clock.elapsedSecs;
-    const auto& snapshot = node.getActiveSnapshot(ctx.m_registry);
 
     if (!m_paused) {
         m_t += m_speed * dt;

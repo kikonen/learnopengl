@@ -39,8 +39,8 @@ private:
     glm::vec3 m_modelScale{ 1.f };
 
 public:
-    // NOTE KI static member fields rather safe to access directly
-    pool::NodeHandle m_handle;
+    //// NOTE KI static member fields rather safe to access directly
+    //pool::NodeHandle m_handle;
 
     uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
@@ -85,7 +85,7 @@ public:
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
         m_modelMatrix = o.m_modelMatrix;
-        m_handle = o.m_handle;
+        //m_handle = o.m_handle;
 
         m_modelScale = o.m_modelScale;
 

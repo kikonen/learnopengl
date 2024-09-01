@@ -29,7 +29,8 @@ private:
 
     void initAsteroids(
         const PrepareContext& ctx,
-        const Node& container);
+        const Node& container,
+        std::vector<NodeState>& states);
 
     void rotateAsteroids(
         const UpdateContext& ctx,

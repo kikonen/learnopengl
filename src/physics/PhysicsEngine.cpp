@@ -302,14 +302,7 @@ namespace physics
 
             const auto* type = node->m_typeHandle.toType();
 
-            if (node->m_instancer) {
-                for (auto& state : node->m_instancer->modifyStates()) {
-                    enforceStaticBounds(ctx, type, *node, state);
-                }
-            }
-            else {
-                enforceStaticBounds(ctx, type, *node, node->modifyState());
-            }
+            enforceStaticBounds(ctx, type, *node);
         }
 
         // NOTE KI static is enforced only once (after initial model setup)
@@ -325,10 +318,10 @@ namespace physics
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id - 1];
 
-            obj.create(m_worldId, m_spaceId);
-
             auto* node = obj.m_nodeHandle.toNode();
             if (node) {
+                obj.create(m_worldId, m_spaceId);
+
                 for (auto& heightMap : m_heightMaps) {
                     if (heightMap.m_origin == node) {
                         obj.m_heightMapId = heightMap.m_id;
@@ -341,8 +334,10 @@ namespace physics
                 if (obj.m_update) {
                     m_updateObjects.push_back(&obj);
                 }
-
                 prepared.insert({ id, true });
+            }
+            else {
+                obj.create(m_worldId, m_spaceId);
             }
         }
 
@@ -397,9 +392,10 @@ namespace physics
     void PhysicsEngine::enforceStaticBounds(
         const UpdateContext& ctx,
         const mesh::MeshType* type,
-        Node& node,
-        NodeState& state)
+        Node& node)
     {
+        auto& state = NodeRegistry::get().modifyState(node.m_entityIndex);
+
         // NOTE KI happens *only* once
         const auto& worldPos = state.getWorldPosition();
         glm::vec3 pos = state.getPosition();

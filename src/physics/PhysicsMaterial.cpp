@@ -18,19 +18,19 @@ namespace physics {
         physics_dContactApprox1 = true;
         physics_dContactFDir1 = false;
 
-        physics_mu = 100;// dInfinity;
-        physics_mu2 = 0;
-        physics_rho = 0;
-        physics_rho2 = 0;
-        physics_rhoN = 0;
-        physics_slip1 = 0.7;
-        physics_slip2 = 0.7;
-        physics_bounce = 0.6;
-        physics_bounce_vel = 1.1;
-        physics_motion1 = 0;
-        physics_motion2 = 0;
-        physics_motionN = 0;
-        physics_soft_erp = 0.9;
-        physics_soft_cfm = 0.9;
+        physics_mu = 100.f;// dInfinity;
+        physics_mu2 = 0.f;
+        physics_rho = 0.f;
+        physics_rho2 = 0.f;
+        physics_rhoN = 0.f;
+        physics_slip1 = 0.7f;
+        physics_slip2 = 0.7f;
+        physics_bounce = 0.6f;
+        physics_bounce_vel = 1.1f;
+        physics_motion1 = 0.f;
+        physics_motion2 = 0.f;
+        physics_motionN = 0.f;
+        physics_soft_erp = 0.9f;
+        physics_soft_cfm = 0.9f;
     };
 }

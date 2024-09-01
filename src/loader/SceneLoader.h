@@ -14,6 +14,8 @@
 struct Material;
 class Registry;
 
+struct NodeState;
+
 namespace text {
 }
 
@@ -176,7 +178,7 @@ namespace loader {
             const AnimationData& data,
             mesh::MeshSet& meshSet);
 
-        pool::NodeHandle createNode(
+        std::pair<pool::NodeHandle, NodeState> createNode(
             pool::TypeHandle typeHandle,
             const ki::node_id rootId,
             const NodeData& nodeData,

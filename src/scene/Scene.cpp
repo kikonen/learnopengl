@@ -267,6 +267,8 @@ void Scene::updateRT(const UpdateContext& ctx)
     const auto& assets = ctx.m_assets;
     const auto& dbg = ctx.m_dbg;
 
+    NodeRegistry::get().prepareUpdateRT(ctx);
+
     m_registry->m_dispatcherView->dispatchEvents();
 
     m_registry->updateRT(ctx);

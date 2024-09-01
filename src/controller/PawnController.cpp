@@ -21,6 +21,7 @@
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
+#include "registry/NodeRegistry.h"
 
 
 PawnController::PawnController()
@@ -50,7 +51,8 @@ bool PawnController::updateWT(
     Node& node)
 {
     const auto dt = ctx.m_clock.elapsedSecs;
-    auto& state = node.modifyState();
+
+    auto& state = NodeRegistry::get().modifyState(node.m_entityIndex);
     bool changed = false;
 
     float angularVelocity = m_angularVelocity;
@@ -76,12 +78,14 @@ void PawnController::processInput(
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
+    const auto* snapshot = node->getSnapshotRT();
+    if (!snapshot) return;
+
     const auto* input = ctx.m_input;
 
     const float dt = ctx.m_clock.elapsedSecs;
 
-    const auto& snapshot = node->getActiveSnapshot(ctx.m_registry);
-    const auto& viewUp = glm::normalize(snapshot.getViewUp());
+    const auto& viewUp = glm::normalize(snapshot->getViewUp());
 
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ glm::radians(m_speedRotateNormal) };
@@ -128,7 +132,7 @@ void PawnController::processInput(
         glm::vec3 adjust{ 0.f };
 
         {
-            const auto& viewFront = glm::normalize(snapshot.getViewFront());
+            const auto& viewFront = glm::normalize(snapshot->getViewFront());
 
             if (input->isKeyDown(Key::FORWARD)) {
                 adjust += viewFront * dt * moveSpeed.z;
@@ -141,7 +145,7 @@ void PawnController::processInput(
         }
 
         {
-            const auto& viewRight = glm::normalize(snapshot.getViewRight());
+            const auto& viewRight = glm::normalize(snapshot->getViewRight());
 
             if (input->isKeyDown(Key::LEFT)) {
                 adjust -= viewRight * dt * moveSpeed.x;

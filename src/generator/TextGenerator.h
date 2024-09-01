@@ -37,11 +37,6 @@ public:
         const UpdateContext& ctx,
         const Node& container) override;
 
-    virtual void updateEntity(
-        NodeSnapshotRegistry& snapshotRegistry,
-        EntityRegistry& entityRegistry,
-        Node& container) override;
-
     virtual void updateVAO(
         const RenderContext& ctx,
         const Node& container);

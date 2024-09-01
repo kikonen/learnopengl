@@ -7,7 +7,6 @@
 #include "gui/Input.h"
 
 #include "model/Node.h"
-#include "model/Snapshot.h"
 
 #include "component/FpsCamera.h"
 
