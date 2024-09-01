@@ -70,9 +70,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
     pos: [0, 0, 0]
-    instanced: true
     generator:
       type: asteroid_belt
+      mode: random
       count: 200000
   - name: Directional light
     mesh:

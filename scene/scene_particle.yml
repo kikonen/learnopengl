@@ -189,7 +189,6 @@ nodes:
     pos: [-100, 0, -100]
     render_flags:
       static_bounds: true
-    instanced: true
     generator:
       type: grid
       mode: random
@@ -207,7 +206,6 @@ nodes:
     render_flags:
       static_bounds: true
       no_shadow: true
-    instanced: true
     generator:
       type: grid
       mode: random

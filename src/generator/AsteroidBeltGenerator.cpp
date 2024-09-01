@@ -40,6 +40,8 @@ void AsteroidBeltGenerator::prepareWT(
 {
     NodeGenerator::prepareWT(ctx, container);
 
+    container.m_visible = false;
+
     createAsteroids(ctx, container);
 }
 

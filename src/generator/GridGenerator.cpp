@@ -29,6 +29,7 @@ void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
+    container.m_visible = false;
     prepareInstances(
         ctx,
         container);
@@ -119,7 +120,7 @@ void GridGenerator::prepareInstances(
         evt.blob->body.state = state;
         evt.body.node = {
             .target = handle.toId(),
-            .parentId = container.getId(),
+            .parentId = parent->getId(),
         };
         assert(evt.body.node.target > 1);
         dispatcher->send(evt);
@@ -141,8 +142,7 @@ void GridGenerator::prepareGrid(
 
                 const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
 
-                //state.setPosition(containerState.getPosition() + pos);
-                state.setPosition(pos);
+                state.setPosition(containerState.getPosition() + pos);
 
                 idx++;
             }

@@ -194,13 +194,13 @@ nodes:
   - id: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
-    instanced: true
     pos: [-40.0, 4, 70]
     scale: 2
     render_flags:
       static_bounds: true
     generator:
       type: grid
+      mode: grid
       repeat:
         x_count: 1
         z_count: 4
@@ -237,9 +237,9 @@ nodes:
       tessellation: true
       xxrender_back: true
       xxno_frustum: true
-    instanced: true
     generator:
       type: terrain
+      mode: grid
       material:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
@@ -272,7 +272,6 @@ nodes:
     render_flags:
       static_bounds: true
       no_shadow: true
-    instanced: true
     generator:
       type: grid
       mode: random
@@ -384,13 +383,13 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
-    instanced: true
     pos: [240.0, 14, 70]
     scale: 1.5
     render_flags:
       static_bounds: true
     generator:
       type: grid
+      mode: grid
       repeat:
         x_count: 1
         z_count: 4

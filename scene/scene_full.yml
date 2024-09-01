@@ -916,9 +916,9 @@ nodes:
       pre_depth: true
       xxwireframe: true
       tessellation: true
-    instanced: true
     generator:
       type: terrain
+      mode: grid
       material:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
@@ -1063,9 +1063,9 @@ nodes:
     parent_id: planet_origo
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
-    instanced: true
     generator:
       type: asteroid_belt
+      mode: random
       count: 1000
   - name: Scale 1
     mesh:
@@ -1121,7 +1121,6 @@ nodes:
     pos: [350, 10.0, 150.0]
     render_flags:
       static_bounds: true
-    instanced: true
     generator:
       type: grid
       mode: random
@@ -1138,7 +1137,6 @@ nodes:
     pos: [250, 10.0, 150.0]
     render_flags:
       static_bounds: true
-    instanced: true
     generator:
       type: grid
       mode: random
@@ -1158,7 +1156,6 @@ nodes:
     render_flags:
       static_bounds: true
       no_shadow: true
-    instanced: true
     generator:
       type: grid
       mode: random

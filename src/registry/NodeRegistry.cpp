@@ -546,6 +546,9 @@ void NodeRegistry::attachNode(
 
     auto* type = node->m_typeHandle.toType();
 
+    type->prepareWT({ m_registry });
+    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+
     if (type->m_flags.skybox) {
         return bindSkybox(node->toHandle());
     }
@@ -604,13 +607,12 @@ void NodeRegistry::bindNode(
     node->m_entityIndex = static_cast<uint32_t>(m_handles.size());
 
     {
+        std::lock_guard lock(m_snapshotLock);
+
         m_handles.push_back(handle);
         m_parentIndeces.push_back(0);
         m_states.push_back(state);
     }
-
-    type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 
     {
         m_nodeLevel++;

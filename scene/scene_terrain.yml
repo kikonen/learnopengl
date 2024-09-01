@@ -39,9 +39,9 @@ nodes:
     render_flags:
       pre_depth: true
       tessellation: true
-    instanced: true
     generator:
       type: terrain
+      mode: grid
       material:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
@@ -130,7 +130,6 @@ nodes:
     pos: [150, 15.0, 150.0]
     render_flags:
       static_bounds: true
-    instanced: true
     generator:
       type: grid
       mode: random

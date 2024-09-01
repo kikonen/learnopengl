@@ -92,13 +92,13 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: 1
-    xinstanced: true
     pos: [20, 0.0, 20]
     rotation: [0, 45, 0]
     rotation: [0, -90, 0]
     scale: 3
     xgenerator:
       type: grid
+      mode: grid
     repeat:
       x_count: 2
       z_count: 2

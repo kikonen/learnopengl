@@ -152,9 +152,9 @@ nodes:
       pre_depth: true
       xxwireframe: true
       tessellation: true
-    instanced: true
     generator:
       type: terrain
+      mode: grid
       material:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg

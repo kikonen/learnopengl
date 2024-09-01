@@ -55,6 +55,8 @@ namespace terrain {
         const PrepareContext& ctx,
         Node& container)
     {
+        container.m_visible = false;
+
         const auto& assets = ctx.m_assets;
 
         m_gridSize = assets.terrainGridSize;
