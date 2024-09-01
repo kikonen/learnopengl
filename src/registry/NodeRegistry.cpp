@@ -141,9 +141,15 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             auto* node = m_cachedNodesWT[i];
             if (!node) continue;
 
-            auto& parentState = m_states[m_parentIndeces[i]];
             auto& state = m_states[i];
-            state.updateModelMatrix(parentState);
+
+            if (i == m_rootIndex) {
+                state.updateRootMatrix();
+            }
+            else {
+                auto& parentState = m_states[m_parentIndeces[i]];
+                state.updateModelMatrix(parentState);
+            }
 
             if (node->m_generator) {
                 node->m_generator->updateWT(ctx, *node);

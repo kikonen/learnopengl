@@ -247,7 +247,7 @@ namespace render {
                     auto& lodInstances = top->m_lodInstances[lodKey];
                     lodInstances.reserve(100);
                     lodInstances.emplace_back(
-                        transform.getModelMatrix(),
+                        transform.getTransform(),
                         entityIndex,
                         lodMesh.m_materialIndex,
                         lodMesh.m_socketIndex);

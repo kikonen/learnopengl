@@ -52,17 +52,23 @@ void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
-    if (done) return;
-    const auto parentLevel = container.getState().getMatrixLevel();
-    const bool rotate = m_updateIndex% m_updateStep == 0 || parentLevel != m_containerMatrixLevel;
+    //if (done) return;
+    const auto containerLevel = container.getState().getMatrixLevel();
+    const bool rotate = m_updateIndex% m_updateStep == 0 || containerLevel != m_containerMatrixLevel;
 
-    if (rotate) {
+    if (!done) {
         updateAsteroids(ctx, container, rotate);
+    }
+
+    //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
+    const auto& parentMatrix = container.getState().getModelMatrix();
+    for (auto& transform : m_transforms) {
+        transform.updateTransform(parentMatrix);
     }
 
     //done = true;
     m_updateIndex++;
-    m_containerMatrixLevel = parentLevel;
+    m_containerMatrixLevel = containerLevel;
 }
 
 void AsteroidBeltGenerator::updateAsteroids(
@@ -72,11 +78,6 @@ void AsteroidBeltGenerator::updateAsteroids(
 {
     if (rotate) {
         rotateAsteroids(ctx, container);
-
-        auto& parentMatrix = container.getParent()->getState().getModelMatrix();
-        for (auto& transform : m_transforms) {
-            transform.updateModelTransform(parentMatrix);
-        }
     }
 }
 
@@ -84,10 +85,13 @@ void AsteroidBeltGenerator::createAsteroids(
     const PrepareContext& ctx,
     const Node& container)
 {
-    auto* type = container.m_typeHandle.toType();
-    auto* lodMesh = type->getLodMesh(0);
-    const auto* mesh = lodMesh->m_mesh;
-    const auto& volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
+    glm::vec4 volume;
+    {
+        auto* type = container.m_typeHandle.toType();
+        auto* lodMesh = type->getLodMesh(0);
+        const auto* mesh = lodMesh->m_mesh;
+        volume = mesh->calculateAABB(glm::mat4{ 1.f }).getVolume();
+    }
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
@@ -172,12 +176,11 @@ void AsteroidBeltGenerator::rotateAsteroids(
     const Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = m_nodes.size();
+    const size_t count = m_transforms.size();
 
     for (size_t i = 0; i < count; i++)
     {
-        auto* node = m_nodes[i].toNode();
-        auto& asteroid = node->modifyState();
+        auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
         {

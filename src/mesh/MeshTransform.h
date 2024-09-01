@@ -11,7 +11,10 @@ namespace mesh {
         float m_z{ 0.f };
         float m_scale{ 1.f };
         glm::vec4 m_volume{ 0.f };
-        glm::mat4 m_modelMatrix{ 1.f };
+        glm::mat4 m_transform{ 1.f };
+
+        //glm::vec4 m_worldPos2{ 1.f };
+        //glm::mat4 m_parentMatrix{ 1.f };
 
         inline glm::vec3 getPosition() const noexcept
         {
@@ -28,6 +31,11 @@ namespace mesh {
         inline void setScale(const float scale)
         {
             m_scale = scale;
+        }
+
+        inline void adjustRotation(const glm::quat& adjust) noexcept
+        {
+            setRotation(adjust * m_rotation);
         }
 
         inline void setDegreesRotation(const glm::vec3& degrees)
@@ -52,20 +60,26 @@ namespace mesh {
 
         inline glm::vec3 getWorldPosition() const noexcept
         {
-            const auto& c3 = m_modelMatrix[3];
-            return glm::vec3{ c3[0], c3[1], c3[2] };
+            return glm::vec3{ m_volume };
         }
 
-        inline const glm::mat4& getModelMatrix() const noexcept {
-            return m_modelMatrix;
+        inline const glm::mat4& getTransform() const noexcept {
+            return m_transform;
         }
 
-        inline void updateModelTransform(const glm::mat4& parentMatrix) noexcept
+        inline void updateTransform(const glm::mat4& parentMatrix) noexcept
         {
-            m_modelMatrix = parentMatrix *
-                glm::translate(glm::mat4{ 1.f }, getPosition()) *
+            m_transform = glm::translate(glm::mat4{ 1.f }, getPosition()) *
                 glm::mat4{ m_rotation } *
                 glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scale });
+
+            const auto& worldPos = (parentMatrix * m_transform)[3];
+            m_volume.x = worldPos.x;
+            m_volume.y = worldPos.y;
+            m_volume.z = worldPos.z;
+
+            //m_parentMatrix = parentMatrix;
+            //m_worldPos2 = m_transform[3];
         }
     };
 }
