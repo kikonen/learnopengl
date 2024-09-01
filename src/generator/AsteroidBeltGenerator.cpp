@@ -6,6 +6,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "ki/sid.h"
+
 #include "event/Dispatcher.h"
 
 #include "mesh/Mesh.h"
@@ -79,6 +81,8 @@ void AsteroidBeltGenerator::createAsteroids(
     const Node& container)
 {
     auto& registry = ctx.m_registry;
+    auto& nodeRegistry = NodeRegistry::get();
+    auto& dispatcher = ctx.m_registry->m_dispatcherWorker;
 
     auto* type = container.m_typeHandle.toType();
 
@@ -101,6 +105,30 @@ void AsteroidBeltGenerator::createAsteroids(
     }
 
     initAsteroids(ctx, container, states);
+
+    const auto parentId = container.getParent()->getId();
+
+    m_nodes.reserve(states.size());
+    for (int idx = 0; auto & state : states)
+    {
+        ki::node_id nodeId{ StringID::nextID() };
+        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
+        node->m_name = fmt::format("asteroid-", idx);
+        node->m_typeHandle = container.m_typeHandle;
+        m_nodes.push_back(handle);
+
+        event::Event evt { event::Type::node_add };
+        evt.blob = std::make_unique<event::BlobData>();
+        evt.blob->body.state = state;
+        evt.body.node = {
+            .target = handle.toId(),
+            .parentId = parentId,
+        };
+        assert(evt.body.node.target > 1);
+        dispatcher->send(evt);
+        idx++;
+    }
 }
 
 void AsteroidBeltGenerator::initAsteroids(

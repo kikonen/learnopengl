@@ -78,8 +78,6 @@ void GridGenerator::prepareInstances(
     auto* type = container.m_typeHandle.toType();
     const auto& containerState = container.getState();
 
-    const auto* parent = container.getParent();
-
     const auto count = m_zCount * m_xCount * m_yCount;
 
     std::vector<NodeState> states;
@@ -105,6 +103,8 @@ void GridGenerator::prepareInstances(
         break;
     }
 
+    const auto parentId = container.getParent()->getId();
+
     m_nodes.reserve(states.size());
     for (int idx = 0; auto& state : states)
     {
@@ -120,7 +120,7 @@ void GridGenerator::prepareInstances(
         evt.blob->body.state = state;
         evt.body.node = {
             .target = handle.toId(),
-            .parentId = parent->getId(),
+            .parentId = parentId,
         };
         assert(evt.body.node.target > 1);
         dispatcher->send(evt);
