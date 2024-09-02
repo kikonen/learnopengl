@@ -112,9 +112,9 @@ public:
         }
     }
 
-    inline const glm::vec3 getPosition() const noexcept
+    inline const glm::vec3& getPosition() const noexcept
     {
-        return m_position;;
+        return m_position;
     }
 
     inline const glm::vec3& getScale() const noexcept

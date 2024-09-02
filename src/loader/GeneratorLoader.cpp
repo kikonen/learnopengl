@@ -101,6 +101,12 @@ namespace loader {
             else if (k == "mode") {
                 data.mode = readMode(readString(v));
             }
+            else if (k == "offset") {
+                data.offset = readVec3(v);
+            }
+            else if (k == "scale") {
+                data.scale = readFloat(v);
+            }
             else if (k == "seed") {
                 data.seed = readUVec3(v);
             }
@@ -158,6 +164,10 @@ namespace loader {
             const auto& terrainData = data.terrainData;
             const auto& tiling = data.tiling;
 
+            generator->m_mode = data.mode;
+            generator->m_offset = data.offset;
+            generator->m_scale = data.scale;
+
             generator->m_modelsDir = assets.modelsDir;
             generator->m_worldTileSize = tiling.tile_size;
             generator->m_worldTilesU = tiling.tiles.x;
@@ -175,13 +185,23 @@ namespace loader {
         }
         case GeneratorType::asteroid_belt: {
             auto generator{ std::make_unique<AsteroidBeltGenerator>(data.count) };
+
+            generator->m_mode = data.mode;
+            generator->m_offset = data.offset;
+            generator->m_scale = data.scale;
+
             return generator;
         }
         case GeneratorType::grid: {
             auto generator{ std::make_unique<GridGenerator>() };
 
             generator->m_mode = data.mode;
+            generator->m_offset = data.offset;
+            generator->m_scale = data.scale;
+
             generator->m_seed = data.seed;
+
+            generator->m_count = data.count;
             generator->m_xCount = data.repeat.xCount;
             generator->m_yCount = data.repeat.yCount;
             generator->m_zCount = data.repeat.zCount;

@@ -30,6 +30,9 @@ namespace loader {
 
         GeneratorMode mode{ GeneratorMode::none };
 
+        glm::vec3 offset{ 0.f };
+        float scale{ 1.f };
+
         glm::uvec3 seed{ 0 };
 
         Repeat repeat;

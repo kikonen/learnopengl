@@ -21,6 +21,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
+#include "mesh/MeshTransform.h"
 
 #include "mesh/MeshSet.h"
 

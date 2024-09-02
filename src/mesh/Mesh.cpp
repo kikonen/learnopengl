@@ -44,9 +44,9 @@ namespace mesh {
             aabb.minmax(pos);
         }
 
-        KI_INFO_OUT(fmt::format(
-            "AABB: model={}, min={}, max={}",
-            m_name, aabb.m_min, aabb.m_max));
+        //KI_INFO_OUT(fmt::format(
+        //    "AABB: model={}, min={}, max={}",
+        //    m_name, aabb.m_min, aabb.m_max));
 
         aabb.updateVolume();
 

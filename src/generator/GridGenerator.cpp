@@ -9,6 +9,7 @@
 
 #include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
+#include "mesh/MeshTransform.h"
 
 #include "model/Node.h"
 
@@ -23,13 +24,14 @@
 
 GridGenerator::GridGenerator()
 {
+    m_lightWeight = true;
 }
 
 void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     Node& container)
 {
-    container.m_visible = false;
+    //container.m_visible = false;
     prepareInstances(
         ctx,
         container);
@@ -39,16 +41,19 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
-    //if (m_setupDone) return;
-    //m_setupDone = true;
-
-    const auto containerLevel = container.getState().getMatrixLevel();
+    auto& containerState = container.getState();
+    const auto containerLevel = containerState.getMatrixLevel();
     if (m_containerMatrixLevel == containerLevel) return;
+
     updateInstances(
         ctx,
         container);
-    auto& state = container.getState();
-    state.m_dirtySnapshot = true;
+
+    const auto& parentMatrix = containerState.getModelMatrix();
+    for (auto& transform : m_transforms) {
+        transform.updateTransform(parentMatrix, m_volume);
+    }
+
     m_containerMatrixLevel = containerLevel;
 }
 
@@ -56,93 +61,61 @@ void GridGenerator::updateInstances(
     const UpdateContext& ctx,
     const Node& container)
 {
-    const auto& containerState = container.getState();
-
-    for (auto& handle : m_nodes)
-    {
-        auto* node = handle.toNode();
-        if (!node) continue;
-        auto& state = node->modifyState();
-        state.setRotation(containerState.getRotation());
-        //state.updateModelMatrix(containerState);
-    }
 }
 
 void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     const Node& container)
 {
-    auto& nodeRegistry = NodeRegistry::get();
-    auto& dispatcher = ctx.m_registry->m_dispatcherWorker;
-
     auto* type = container.m_typeHandle.toType();
     const auto& containerState = container.getState();
 
-    const auto count = m_zCount * m_xCount * m_yCount;
+    m_volume = containerState.getVolume();
 
-    std::vector<NodeState> states;
-    states.reserve(count);
+    size_t count = 0;
 
+    switch (m_mode) {
+    case GeneratorMode::grid:
+        count = m_zCount * m_xCount * m_yCount;
+        break;
+    case GeneratorMode::random:
+        count = m_count > 0 ? m_count : m_zCount * m_xCount * m_yCount;
+        break;
+    }
+
+    m_transforms.reserve(count);
     for (int i = 0; i < count; i++) {
-        auto& state = states.emplace_back();
-        state.m_flags = type->resolveEntityFlags();
-        state.setPivot(containerState.getPivot());
-        state.setBaseRotation(containerState.getBaseRotation());
-        state.setRotation(containerState.getRotation());
-        state.setPosition(containerState.getPosition());
-        state.setScale(containerState.getScale());
-        state.setVolume(containerState.getVolume());
+        auto& transform = m_transforms.emplace_back();
+        transform.setPosition(m_offset);
+        transform.setScale(m_scale);
     }
 
     switch (m_mode) {
     case GeneratorMode::grid:
-        prepareGrid(container, states);
+        prepareGrid(container, m_transforms);
         break;
     case GeneratorMode::random:
-        prepareRandom(container, states);
+        prepareRandom(container, m_transforms);
         break;
-    }
-
-    const auto parentId = container.getParent()->getId();
-
-    m_nodes.reserve(states.size());
-    for (int idx = 0; auto& state : states)
-    {
-        ki::node_id nodeId{ StringID::nextID() };
-        auto handle = pool::NodeHandle::allocate(nodeId);
-        auto* node = handle.toNode();
-        node->m_name = fmt::format("grid-", idx);
-        node->m_typeHandle = container.m_typeHandle;
-        m_nodes.push_back(handle);
-
-        event::Event evt { event::Type::node_add };
-        evt.blob = std::make_unique<event::BlobData>();
-        evt.blob->body.state = state;
-        evt.body.node = {
-            .target = handle.toId(),
-            .parentId = parentId,
-        };
-        assert(evt.body.node.target > 1);
-        dispatcher->send(evt);
-        idx++;
     }
 }
 
 void GridGenerator::prepareGrid(
     const Node& container,
-    std::vector<NodeState>& states) const
+    std::vector<mesh::MeshTransform>& transforms) const
 {
-    const auto& containerState = container.getState();
+    //const auto& containerState = container.getState();
     int idx = 0;
 
     for (auto z = 0; z < m_zCount; z++) {
         for (auto y = 0; y < m_yCount; y++) {
             for (auto x = 0; x < m_xCount; x++) {
-                auto& state = states[idx];
+                auto& transform = transforms[idx];
 
-                const glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
+                glm::vec3 pos{ x * m_xStep, y * m_yStep, z * m_zStep };
+                pos += m_offset;
 
-                state.setPosition(containerState.getPosition() + pos);
+                transform.setPosition(pos);
 
                 idx++;
             }
@@ -152,10 +125,9 @@ void GridGenerator::prepareGrid(
 
 void GridGenerator::prepareRandom(
     const Node& container,
-    std::vector<NodeState>& states) const
+    std::vector<mesh::MeshTransform>& transforms) const
 {
-    const auto& containerState = container.getState();
-    const auto count = m_zCount * m_xCount * m_yCount;
+    const auto count = transforms.size();
 
     std::random_device devPos;
     std::random_device devScale;
@@ -173,12 +145,12 @@ void GridGenerator::prepareRandom(
     constexpr int RANGE = INT_MAX;
     std::uniform_int_distribution<std::mt19937::result_type> uniform_dist(0, RANGE);
 
-    const float maxX = m_xCount * m_xStep;
-    const float maxY = m_yCount * m_yStep;
-    const float maxZ = m_zCount * m_zStep;
+    const float maxX = m_xCount > 0 ? (m_xCount - 1) * m_xStep : 0.f;
+    const float maxY = m_yCount > 0 ? (m_yCount - 1) * m_yStep : 0.f;
+    const float maxZ = m_zCount > 0 ? (m_zCount - 1) * m_zStep : 0.f;
 
     for (int idx = 0; idx < count; idx++) {
-        auto& state = states[idx];
+        auto& transform = transforms[idx];
 
         {
             glm::uvec3 v{
@@ -195,12 +167,13 @@ void GridGenerator::prepareRandom(
 
             //KI_INFO_OUT(fmt::format("r={}, v={}, p={}", RANGE, v, d));
 
-            const glm::vec3 pos{
+            glm::vec3 pos{
                 maxX * d.x,
                 maxY * d.y,
                 maxZ * d.z };
+            pos += m_offset;
 
-            state.setPosition(containerState.getPosition() + pos);
+            transform.setPosition(pos);
         }
         {
             glm::uvec3 v{
@@ -218,7 +191,7 @@ void GridGenerator::prepareRandom(
             float degrees = 360.f * d.y;
             const auto rot = util::axisDegreesToQuat({ 0, 1.f, 0 }, degrees);
 
-            state.setRotation(containerState.getRotation() * rot);
+            transform.setRotation(rot);
         }
         {
             glm::uvec3 v{
@@ -233,9 +206,10 @@ void GridGenerator::prepareRandom(
                 static_cast<float>(v.z) / (float)RANGE,
             };
 
-            const float scale = 0.8f + 0.4f * d.y;
+            float scale = 0.8f + 0.4f * d.y;
+            scale *= m_scale;
 
-            state.setScale(containerState.getScale() * scale);
+            transform.setScale(scale);
         }
     }
 }

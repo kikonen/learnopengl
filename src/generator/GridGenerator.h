@@ -28,14 +28,18 @@ private:
 
     void prepareGrid(
         const Node& container,
-        std::vector<NodeState>& states) const;
+        std::vector<mesh::MeshTransform>& transforms) const;
 
     void prepareRandom(
         const Node& container,
-        std::vector<NodeState>& states) const;
+        std::vector<mesh::MeshTransform>& transforms) const;
 
 public:
     glm::uvec3 m_seed{ 0 };
+
+    // count for random
+    // 0 == use grid size
+    int m_count{ 0 };
 
     int m_xCount{ 1 };
     int m_yCount{ 1 };

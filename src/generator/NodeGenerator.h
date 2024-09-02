@@ -28,6 +28,7 @@ namespace render {
 
 namespace mesh {
     struct LodMesh;
+    struct MeshTransform;
 }
 
 class Program;
@@ -78,7 +79,7 @@ public:
         uint8_t kindBits,
         render::Batch& batch,
         const Node& container,
-        const Snapshot& snapshot) {}
+        const Snapshot& snapshot);
 
     virtual void updateVAO(
         const RenderContext& ctx,
@@ -87,6 +88,9 @@ public:
 public:
     GeneratorMode m_mode{ GeneratorMode::none };
 
+    glm::vec3 m_offset{ 0.f };
+    float m_scale{ 1.f };
+
 protected:
     bool m_lightWeight{ false };
 
@@ -94,6 +98,9 @@ protected:
 
     ki::level_id m_containerMatrixLevel{ 0 };
 
-    std::vector<pool::NodeHandle> m_nodes;
+    glm::vec4 m_volume{ 0.f };
+
+    std::vector<mesh::MeshTransform> m_transforms;
     std::vector<InstancePhysics> m_physics;
+    std::vector<pool::NodeHandle> m_nodes;
 };
