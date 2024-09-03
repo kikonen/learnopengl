@@ -185,34 +185,34 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
-    scale: 0.5
-    pos: [-100, 0, -100]
     render_flags:
       static_bounds: true
     generator:
       type: grid
       mode: random
+      offset: [-100, 0, -100]
+      scale: 0.5
       seed: [23444242, 54351212, 4353333]
       repeat:
-        x_count: 10
-        z_count: 10
+        x_count: 11
+        z_count: 11
         x_step: 20
         z_step: 20
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
-    pos: [-100, 0, -100]
     render_flags:
       static_bounds: true
       no_shadow: true
     generator:
       type: grid
       mode: random
+      offset: [-100, 0, -100]
       seed: [4242, 1212, 3333]
       repeat:
-        x_count: 20
-        z_count: 20
+        x_count: 21
+        z_count: 21
         x_step: 10
         z_step: 10
   - name: Directional light
