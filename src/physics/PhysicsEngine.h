@@ -44,7 +44,7 @@ namespace physics {
         void updateObjects(const UpdateContext& ctx);
         void updateStaticBounds(const UpdateContext& ctx);
 
-        inline bool isEnabled(bool enabled) const noexcept {
+        inline bool isEnabled() const noexcept {
             return m_enabled;
         }
 

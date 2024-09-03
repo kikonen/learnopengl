@@ -23,5 +23,6 @@ namespace physics {
         ray_player_fire = 1 << 25,
         ray_npc_fire = 1 << 26,
         ray_hit = 1 << 27,
+        ray_test = 1 << 28,
     };
 }

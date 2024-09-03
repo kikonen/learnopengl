@@ -18,6 +18,10 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
+#include "physics/PhysicsEngine.h"
+#include "physics/RayHit.h"
+#include "physics/physics_util.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -41,13 +45,12 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
-    auto& containerState = container.getState();
+    const auto& containerState = container.getState();
     const auto containerLevel = containerState.getMatrixLevel();
     if (m_containerMatrixLevel == containerLevel) return;
 
-    updateInstances(
-        ctx,
-        container);
+    updateStaticBounds(ctx, container);
+    updateInstances(ctx, container);
 
     const auto& parentMatrix = containerState.getModelMatrix();
     for (auto& transform : m_transforms) {
@@ -69,6 +72,8 @@ void GridGenerator::prepareInstances(
 {
     auto* type = container.m_typeHandle.toType();
     const auto& containerState = container.getState();
+
+    m_staticBounds = type->m_flags.staticBounds;
 
     m_volume = containerState.getVolume();
 
@@ -210,6 +215,43 @@ void GridGenerator::prepareRandom(
             scale *= m_scale;
 
             transform.setScale(scale);
+        }
+    }
+}
+
+void GridGenerator::updateStaticBounds(
+    const UpdateContext& ctx,
+    const Node& container)
+{
+    if (!m_staticBounds) return;
+
+    auto& physicsEngine = physics::PhysicsEngine::get();
+    if (!physicsEngine.isEnabled()) return;
+
+    if (m_staticBoundsSetup) return;
+
+    const auto& containerState = container.getState();
+    const auto& containerPos = containerState.getWorldPosition();
+
+    const glm::vec3 FRONT{ 0.f, -1.f, 0.f };
+    const auto& parentMatrix = containerState.getModelMatrix();
+    for (auto& transform : m_transforms) {
+        const auto& hits = physicsEngine.rayCast(
+            transform.getWorldPosition() + glm::vec3{ 0.f, 200.f, 0.f },
+            FRONT,
+            500.f,
+            physics::mask(physics::Category::ray_test),
+            physics::mask(physics::Category::terrain),
+            pool::NodeHandle::NULL_HANDLE,
+            true);
+
+        if (!hits.empty()) {
+            m_staticBoundsSetup = true;
+
+            const auto y = (hits[0].pos - containerPos).y;
+            auto newPos = transform.getPosition();
+            newPos.y = y;
+            transform.setPosition(newPos);
         }
     }
 }

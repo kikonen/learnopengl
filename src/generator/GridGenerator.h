@@ -34,6 +34,10 @@ private:
         const Node& container,
         std::vector<mesh::MeshTransform>& transforms) const;
 
+    void updateStaticBounds(
+        const UpdateContext& ctx,
+        const Node& container);
+
 public:
     glm::uvec3 m_seed{ 0 };
 
@@ -48,4 +52,8 @@ public:
     float m_xStep{ 0 };
     float m_yStep{ 0 };
     float m_zStep{ 0 };
+
+private:
+    bool m_staticBounds{ false };
+    bool m_staticBoundsSetup{ false };
 };

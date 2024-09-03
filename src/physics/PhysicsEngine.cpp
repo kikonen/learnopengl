@@ -472,9 +472,9 @@ namespace physics
 
     void PhysicsEngine::handleNodeAdded(Node* node)
     {
-        auto* type = node->m_typeHandle.toType();
-        if (!type->m_flags.staticBounds) return;
-        m_pendingNodes.push_back(node->toHandle());
+        //auto* type = node->m_typeHandle.toType();
+        //if (!type->m_flags.staticBounds) return;
+        //m_pendingNodes.push_back(node->toHandle());
     }
 
     void PhysicsEngine::generateObjectMeshes()
