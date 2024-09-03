@@ -54,7 +54,7 @@ nodes:
     scale: 0.8
     program: g_tex
     active: true
-    render_flags:
+    flags:
       allow_normals: false
     audio:
       listener:
@@ -86,12 +86,11 @@ nodes:
     shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
-    xrender_flags:
   - name: Player cube map 1
     type: origo
     parent_id: player
     pos: [0, 0, 1]
-    render_flags:
+    flags:
       cube_map: true
   - id: light_dir_origo
     parent_id: planet_origo
@@ -110,7 +109,7 @@ nodes:
           effect_sun: 1
     pos: [0, 0, 600]
     scale: 20
-    render_flags:
+    flags:
       effect: true
       no_shadow: true
     light:
@@ -148,7 +147,7 @@ nodes:
     pos: [0, 0, 0]
     scale: 0.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     clones:
       - pos: [0.0, 0.0, 10.0]
@@ -214,7 +213,7 @@ nodes:
     pos: [-10, 0, 0]
     scale: 0.5
     program: g_tex
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: point
@@ -243,7 +242,7 @@ nodes:
   - xname: Cube map 1
     type: origo
     pos: [0.0, 4.5, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - id: example_{t}
     mesh:
@@ -345,7 +344,7 @@ nodes:
   - xname: Cube map - brick_wood_wall
     type: origo
     pos: [-1.0, 13.5, 14.0]
-    render_flags:
+    flags:
       cube_map: true
   - id: brick_wall_{t}
     mesh:
@@ -361,7 +360,6 @@ nodes:
         render_back: true
     program: g_tex
     pos: [-5.0, 13.5, 14.0]
-    xrender_flags:
     repeat:
       x_count: 3
       x_step: 4
@@ -380,7 +378,6 @@ nodes:
     program: g_tex
     pos: [5.0, 13.5, 14.0]
     rotation: [0, 180, 0]
-    xrender_flags:
   - id: wood_wall_{t}
     mesh:
       path: quad
@@ -392,7 +389,6 @@ nodes:
         render_back: true
     program: g_tex
     pos: [-3.0, 13.5, 14.0]
-    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
@@ -410,7 +406,6 @@ nodes:
         parallax_depth: 0.02
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
-    xrender_flags:
     repeat:
       x_count: 2
       x_step: 4
@@ -430,7 +425,7 @@ nodes:
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
-    render_flags:
+    flags:
       mirror: true
     script_file: scripts/anim_mirror
   - name: Big mirror 2
@@ -449,7 +444,7 @@ nodes:
     rotation: [0.0, 215.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
-    render_flags:
+    flags:
       mirror: true
     script_file: scripts/anim_mirror
   - id: airboat_{t}_{c}
@@ -639,12 +634,12 @@ nodes:
   - xname: Cube map 2 - common
     type: origo
     pos: [0.0, 28.0, 8.0]
-    render_flags:
+    flags:
       cube_map: true
   - xname: Cube map 2 - refract ball
     type: origo
     pos: [5.0, 25.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Refract ball
     mesh:
@@ -659,7 +654,7 @@ nodes:
   - xname: Cube map 2 - refract ball
     type: origo
     pos: [-10.0, 25.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Reflect ball
     mesh:
@@ -756,7 +751,7 @@ nodes:
     #pos: [-5.0, 25.0, 5.0]
     pos: [0, 0, 0]
     scale: 2
-    render_flags:
+    flags:
       effect: true
       no_select: true
       no_shadow: true
@@ -825,7 +820,7 @@ nodes:
     priority: -5
     program: g_water
     pos: [0, 9.5, -10]
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     repeat:
@@ -860,7 +855,7 @@ nodes:
     priority: -10
     program: g_tex
     pos: [0.0, 3.7, -10.0]
-    render_flags:
+    flags:
       no_shadow: true
     repeat:
       x_count: 2
@@ -912,7 +907,7 @@ nodes:
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
     front: [0, 1, 0]
-    render_flags:
+    flags:
       pre_depth: true
       xxwireframe: true
       tessellation: true
@@ -982,7 +977,7 @@ nodes:
       scale: 128
     program: g_water
     pos: [-1072, 0.0, -772]
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     repeat:
@@ -1014,7 +1009,7 @@ nodes:
     program: g_tex
     pos: [-1072, -70.0, -772]
     scale: 128
-    render_flags:
+    flags:
       no_shadow: true
     repeat:
       x_count: 8
@@ -1046,7 +1041,7 @@ nodes:
     parent_id: planet_origo
     type: origo
     pos: [0.0, -50.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Rock
     parent_id: rock_origo
@@ -1119,7 +1114,7 @@ nodes:
       path: prefab/scenery/prefab_palm_tree.yml
     priority: -17
     pos: [350, 10.0, 150.0]
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid
@@ -1135,7 +1130,7 @@ nodes:
       path: prefab/scenery/prefab_maple_tree.yml
     priority: -17
     pos: [250, 10.0, 150.0]
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid
@@ -1153,7 +1148,7 @@ nodes:
     pos: [250, 10.0, -100.0]
     rotation: [0, 0, 0]
     scale: 3
-    render_flags:
+    flags:
       static_bounds: true
       no_shadow: true
     generator:
@@ -1194,7 +1189,7 @@ nodes:
         render_back: true
     program: g_tex
     clone_position_offset: [0, 40, 0]
-    render_flags:
+    flags:
       no_shadow: true
     scale: 100
     clones:

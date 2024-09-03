@@ -28,7 +28,7 @@ nodes:
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional

@@ -81,5 +81,5 @@ prefab:
     - level: 4
       distance: 200
   program: g_tex
-  render_flags:
+  flags:
     no_shadow: true

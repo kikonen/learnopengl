@@ -28,7 +28,7 @@ nodes:
     pos: [-300, 200, -400]
     scale: 2.5
     program: g_Tex
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -41,7 +41,7 @@ nodes:
     type: container
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
-    render_flags:
+    flags:
       pre_depth: true
       xxno_shadow: true
       tessellation: true
@@ -80,7 +80,7 @@ nodes:
     program: g_water
     pos: [-50, 14.5, -20]
     scale: 70
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     script_file: scripts/anim_water
@@ -96,7 +96,7 @@ nodes:
     program: g_water
     pos: [0, 14.0, 0]
     scale: 800
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     script_file: scripts/anim_water
@@ -112,5 +112,5 @@ nodes:
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 800
-    render_flags:
+    flags:
       no_shadow: true

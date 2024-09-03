@@ -25,7 +25,7 @@ nodes:
     pos: [0, 400, 500]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -36,7 +36,7 @@ nodes:
     type: container
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
-    render_flags:
+    flags:
       pre_depth: true
       tessellation: true
     generator:
@@ -93,7 +93,7 @@ nodes:
     program: g_water
     pos: [0, 30.0, 0]
     scale: [1024, 1, 1024]
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     physics:
@@ -118,7 +118,7 @@ nodes:
     program: g_tex
     pos: [0, -70, 0]
     scale: 1024
-    render_flags:
+    flags:
       no_shadow: true
     physics:
       geom:
@@ -128,7 +128,7 @@ nodes:
       path: prefab/scenery/prefab_palm_tree.yml
     priority: 1
     pos: [150, 15.0, 150.0]
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid

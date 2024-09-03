@@ -23,7 +23,7 @@ nodes:
   - name: Cube map 1
     type: origo
     pos: [0.0, 35.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Directional light
     mesh:
@@ -33,7 +33,7 @@ nodes:
     pos: [0, 55, 60]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -53,7 +53,7 @@ nodes:
     pos: [0.0, 0.1, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
   - name: Pool surface
     mesh:
@@ -68,7 +68,7 @@ nodes:
     program: g_water
     pos: [0, 3.1, 0]
     scale: 100
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     script_file: scripts/anim_water_lucy
@@ -136,5 +136,5 @@ nodes:
     pos: [30.0, 25.0, -40.0]
     rotation: [0.0, -45.0, 0.0]
     scale: 20.0
-    render_flags:
+    flags:
       mirror: true

@@ -47,7 +47,7 @@ nodes:
     pos: [0, 25, 40]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional

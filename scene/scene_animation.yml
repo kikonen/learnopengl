@@ -26,7 +26,7 @@ nodes:
     mesh:
       path: light
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -35,7 +35,7 @@ nodes:
   - xname: Cube map
     type: origo
     pos: [0, 5, 10]
-    render_flags:
+    flags:
       cube_map: true
   - id: wooden_floor
     prefab:

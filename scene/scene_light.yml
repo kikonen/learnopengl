@@ -32,7 +32,7 @@ nodes:
     pos: [0, 0, 0]
     scale: 0.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: point

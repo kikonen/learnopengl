@@ -22,7 +22,7 @@ nodes:
     scale: 2.5
     type: origo
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     material_modifier:
       kd: [0.8, 0.8, 0.6, 1.0]
@@ -36,7 +36,7 @@ nodes:
     type: container
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
-    render_flags:
+    flags:
       pre_depth: true
       xxno_shadow: true
       tessellation: true

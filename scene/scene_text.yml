@@ -16,7 +16,7 @@ nodes:
     pos: [2.5, 2, 3]
     front: [0, 0, -1]
     scale: 0.1
-    render_flags:
+    flags:
       allow_normals: false
     active: true
     camera:
@@ -68,7 +68,7 @@ nodes:
     program: font_atlas_demo
     shadow_program: font_atlas_demo
     pos: [2.0, 2.0, -5.0]
-    render_flags:
+    flags:
       xeffect: true
   - id: hello_world
     type: text
@@ -91,7 +91,7 @@ nodes:
       text: ÄÅÖ äåö - Hello world
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
-    render_flags:
+    flags:
       xeffect: true
     script_file: scripts/seq_hello_text
   - id: another_text
@@ -122,7 +122,7 @@ nodes:
     pos: [-15, 25, 40]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -141,7 +141,7 @@ nodes:
         tiling: 5
         render_back: true
     program: g_tex
-    render_flags:
+    flags:
       no_shadow: true
     pos: [-1, 2.5, -3.001]
     scale: 0.5
@@ -156,13 +156,13 @@ nodes:
         xmap_pbr: textures\planks_metal
         tiling: 20
     program: g_tex
-    render_flags:
+    flags:
       no_shadow: true
     scale: 100
   - id: cube_map_mirror_ball
     type: origo
     pos: [0, 2, -7]
-    render_flags:
+    flags:
       cube_map: true
   - id: mirror_ball
     mesh:
@@ -182,4 +182,4 @@ nodes:
     program: g_tex
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
-    xrender_flags:
+    xflags:

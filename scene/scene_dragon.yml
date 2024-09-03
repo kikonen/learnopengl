@@ -23,7 +23,7 @@ nodes:
   - name: Cube map 1
     type: origo
     pos: [0.0, 3.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Directional light
     mesh:
@@ -33,7 +33,7 @@ nodes:
     pos: [0, 25, 40]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -45,5 +45,5 @@ nodes:
     program: g_tex
     pos: [0.0, 0.0, -10.0]
     scale: 30.0
-    render_flags:
+    flags:
       render_back: true

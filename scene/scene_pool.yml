@@ -35,7 +35,7 @@ nodes:
         kd: [0.8, 0.8, 0.6, 1.0]
         program: g_tex
       scale: 2.5
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -64,7 +64,7 @@ nodes:
     parent_id: mirror_ball
     type: origo
     #pos: [0, 30.5, -10]
-    render_flags:
+    flags:
       cube_map: true
   - id: mirror_ball
     mesh:
@@ -98,7 +98,7 @@ nodes:
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     front: [0, 0, 1]
-    render_flags:
+    flags:
       mirror: true
   - id: pool_floor_{c}_{t}
     mesh:
@@ -109,7 +109,7 @@ nodes:
         program: g_tex
       scale: 30
     pos: [0.0, 3.2, -10.0]
-    render_flags:
+    flags:
       no_shadow: true
     repeat:
       x_count: 2
@@ -140,7 +140,7 @@ nodes:
         program: g_water
       scale: 30
     pos: [0, 9.0, -10]
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     repeat:
@@ -196,7 +196,7 @@ nodes:
       path: prefab/scenery/prefab_maple_tree.yml
     pos: [-40.0, 4, 70]
     scale: 2
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid
@@ -231,7 +231,7 @@ nodes:
     type: container
     pos: [-1024, 10, -1024]
     xxpos: [0, 0, 0]
-    render_flags:
+    flags:
       pre_depth: true
       xxno_shadow: true
       tessellation: true
@@ -269,7 +269,7 @@ nodes:
     priority: -20
     pos: [-100.0, 0.0, 140.0]
     scale: 3
-    render_flags:
+    flags:
       static_bounds: true
       no_shadow: true
     generator:
@@ -311,7 +311,7 @@ nodes:
       scale: 60
     priority: -10
     pos: [160.0, 3.2, 20.0]
-    render_flags:
+    flags:
       no_shadow: true
     physics:
       body:
@@ -336,7 +336,7 @@ nodes:
       scale: 60
     priority: -5
     pos: [160, 9.0, 20]
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     physics:
@@ -385,7 +385,7 @@ nodes:
       path: prefab/scenery/prefab_palm_tree.yml
     pos: [240.0, 14, 70]
     scale: 1.5
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid

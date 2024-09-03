@@ -13,7 +13,7 @@ nodes:
     front: [0, 0, -1]
     scale: 0.8
     program: g_tex
-    render_flags:
+    flags:
       allow_normals: false
     active: true
     audio:
@@ -37,7 +37,7 @@ nodes:
     program: g_water
     pos: [-30, 0, -30]
     scale: 30
-    render_flags:
+    flags:
       no_shadow: true
       water: true
     repeat:
@@ -58,7 +58,7 @@ nodes:
     pos: [-30, -4, -30]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
-    render_flags:
+    flags:
       no_shadow: true
     repeat:
       x_count: 2

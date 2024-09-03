@@ -39,7 +39,7 @@ nodes:
     pos: [-25, 25, 0]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -51,7 +51,7 @@ nodes:
     priority: 1
     pos: [20, 0.0, 0]
     rotation: [0, 279, 0]
-    xrender_flags:
+    xflags:
       static_bounds: true
     repeat:
       x_count: 2
@@ -86,7 +86,7 @@ nodes:
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 5, 10]
-    render_flags:
+    flags:
       cube_map: true
   - name: Mirror ball
     mesh:
@@ -113,7 +113,7 @@ nodes:
   - name: Cube map - wood_wall
     type: origo
     pos: [35.0, 2.5, 5.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Wood wall
     mesh:

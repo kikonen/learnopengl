@@ -90,7 +90,7 @@ nodes:
           effect_plasma: 1
     pos: [0, 4, -8]
     scale: 2
-    render_flags:
+    flags:
       effect: true
       no_select: true
       no_shadow: true
@@ -120,7 +120,7 @@ nodes:
     pos: [0, 25, 40]
     scale: 2.5
     program: g_light
-    render_flags:
+    flagss:
       no_shadow: true
     light:
       type: directional

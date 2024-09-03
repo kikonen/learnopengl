@@ -12,7 +12,7 @@ nodes:
     pos: [0, 4, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
-    render_flags:
+    flags:
       allow_normals: false
     active: true
     audio:
@@ -185,7 +185,7 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
-    render_flags:
+    flags:
       static_bounds: true
     generator:
       type: grid
@@ -202,7 +202,7 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
-    render_flags:
+    flags:
       static_bounds: true
       no_shadow: true
     generator:
@@ -223,7 +223,7 @@ nodes:
         program: g_light
     pos: [-25, 45, 0]
     scale: 1.5
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional

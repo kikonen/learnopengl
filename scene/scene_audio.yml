@@ -17,7 +17,7 @@ nodes:
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 0.5
-    render_flags:
+    flags:
       allow_normals: false
     active: true
     controllers:

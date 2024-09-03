@@ -36,7 +36,7 @@ nodes:
     pos: [0, 25, 40]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -100,7 +100,7 @@ nodes:
   - name: Cube map 1
     type: origo
     pos: [0.0, 3.0, 0.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Glass ball
     mesh:
@@ -151,7 +151,7 @@ nodes:
         render_back: true
     program: g_tex
     clone_position_offset: [0, 40, 0]
-    render_flags:
+    flags:
       no_shadow: true
     scale: 100
     enabled: false
@@ -183,7 +183,7 @@ nodes:
     xxrotation: [0.0, 90.0, 0.0]
     scale: 15.0
     front: [0, 0, 1]
-    render_flags:
+    flags:
       mirror: true
       no_reflect: true
       no_refract: true

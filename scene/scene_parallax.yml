@@ -40,7 +40,7 @@ nodes:
     pos: [-25, 25, 0]
     scale: 2.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -49,7 +49,7 @@ nodes:
   - name: Cube map - mirror_ball
     type: origo
     pos: [0, 5, 10]
-    render_flags:
+    flags:
       cube_map: true
   - name: Planet 1
     mesh:
@@ -68,7 +68,7 @@ nodes:
   - name: Cube map - wood_wall
     type: origo
     pos: [35.0, 2.5, 5.0]
-    render_flags:
+    flags:
       cube_map: true
   - name: Brick wall 2 - plain
     mesh:

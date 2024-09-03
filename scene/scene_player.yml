@@ -17,7 +17,7 @@ nodes:
     front: [0, 0, -1]
     rot: [0, 45, 0]
     scale: 1.0
-    render_flags:
+    flags:
       allow_normals: false
     active: true
     audio:
@@ -106,7 +106,7 @@ nodes:
         parallax_depth: 0.0
         tiling: 10
     program: g_tex
-    render_flags:
+    flags:
       no_shadow: true
     scale: 100
   - name: Directional light
@@ -117,7 +117,7 @@ nodes:
     pos: [-25, 45, 0]
     scale: 1.5
     program: g_light
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional

@@ -52,7 +52,7 @@ nodes:
       path: light
     program: g_light
     pos: [-15, 25, 25]
-    render_flags:
+    flags:
       no_shadow: true
     light:
       type: directional
@@ -71,7 +71,7 @@ nodes:
   - xname: Cube map
     type: origo
     pos: [0, 5, 10]
-    render_flags:
+    flags:
       cube_map: true
   - id: skeleton_army_{c}_{t}
     prefab:
@@ -148,7 +148,7 @@ nodes:
     pos: [-1024, 0, -1024]
     pos: [-32, 0, -32]
     front: [0, 1, 0]
-    render_flags:
+    flags:
       pre_depth: true
       xxwireframe: true
       tessellation: true

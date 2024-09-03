@@ -18,7 +18,7 @@ prefab:
       tiling: 60
       parallax_depth: 0.1
       program: g_tex
-  render_flags:
+  flags:
     no_shadow: true
   physics:
     geom:
