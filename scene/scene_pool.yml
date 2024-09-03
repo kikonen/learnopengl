@@ -194,13 +194,13 @@ nodes:
   - id: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
-    pos: [-40.0, 4, 70]
-    scale: 2
     flags:
       static_bounds: true
     generator:
       type: grid
       mode: grid
+      offset: [-40.0, 4, 70]
+      scale: 2
       repeat:
         x_count: 1
         z_count: 4
@@ -230,7 +230,6 @@ nodes:
     priority: 20
     type: container
     pos: [-1024, 10, -1024]
-    xxpos: [0, 0, 0]
     flags:
       pre_depth: true
       xxno_shadow: true
@@ -267,14 +266,14 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
-    pos: [-100.0, 0.0, 140.0]
-    scale: 3
     flags:
       static_bounds: true
       no_shadow: true
     generator:
       type: grid
       mode: random
+      offset: [-100.0, 0.0, 140.0]
+      scale: 3
       seed: [4242, 1212, 3333]
       repeat:
         x_count: 30
@@ -383,13 +382,13 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
-    pos: [240.0, 14, 70]
-    scale: 1.5
     flags:
       static_bounds: true
     generator:
       type: grid
       mode: grid
+      offset: [240.0, 14, 70]
+      scale: 1.5
       repeat:
         x_count: 1
         z_count: 4

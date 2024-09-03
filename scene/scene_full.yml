@@ -1113,12 +1113,12 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     priority: -17
-    pos: [350, 10.0, 150.0]
     flags:
       static_bounds: true
     generator:
       type: grid
       mode: random
+      offset: [350, 10.0, 150.0]
       seed: [424242, 121212, 333333]
       repeat:
         x_count: 40
@@ -1129,12 +1129,12 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     priority: -17
-    pos: [250, 10.0, 150.0]
     flags:
       static_bounds: true
     generator:
       type: grid
       mode: random
+      offset: [250, 10.0, 150.0]
       seed: [424242, 121212, 333333]
       repeat:
         x_count: 40
@@ -1145,15 +1145,14 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
-    pos: [250, 10.0, -100.0]
-    rotation: [0, 0, 0]
-    scale: 3
     flags:
       static_bounds: true
       no_shadow: true
     generator:
       type: grid
       mode: random
+      offset: [250, 10.0, -100.0]
+      scale: 3
       seed: [4242, 1212, 3333]
       repeat:
         x_count: 80

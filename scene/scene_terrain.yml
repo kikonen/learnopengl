@@ -127,12 +127,12 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     priority: 1
-    pos: [150, 15.0, 150.0]
     flags:
       static_bounds: true
     generator:
       type: grid
       mode: random
+      offset: [150, 15.0, 150.0]
       seed: [424242, 121212, 333333]
       repeat:
         x_count: 20
