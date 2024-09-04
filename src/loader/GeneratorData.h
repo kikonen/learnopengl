@@ -41,5 +41,8 @@ namespace loader {
         TerrainData terrainData;
 
         MaterialData materialData;
+
+        glm::vec3 boundsDir{ 0.f, -1.f, 0.f };
+        uint32_t boundsMask{ UINT_MAX };
     };
 }

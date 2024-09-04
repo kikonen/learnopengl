@@ -34,12 +34,15 @@ private:
         const Node& container,
         std::vector<mesh::MeshTransform>& transforms) const;
 
-    void updateStaticBounds(
+    void updateBounds(
         const UpdateContext& ctx,
         const Node& container);
 
 public:
     glm::uvec3 m_seed{ 0 };
+
+    glm::vec3 m_boundsDir{ 0.f, -1.f, 0.f };
+    uint32_t m_boundsMask{ UINT_MAX };
 
     // count for random
     // 0 == use grid size
@@ -54,6 +57,7 @@ public:
     float m_zStep{ 0 };
 
 private:
+    bool m_boundsSetupDone{ false };
+    bool m_dynamicBounds{ false };
     bool m_staticBounds{ false };
-    bool m_staticBoundsSetup{ false };
 };

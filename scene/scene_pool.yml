@@ -267,13 +267,14 @@ nodes:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
     flags:
-      static_bounds: true
+      dynamic_bounds: true
       no_shadow: true
     generator:
       type: grid
       mode: random
       offset: [-100.0, 0.0, 140.0]
       scale: 3
+      bounds: [water, terrain]
       seed: [4242, 1212, 3333]
       repeat:
         x_count: 30

@@ -199,6 +199,7 @@
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
+    <ClCompile Include="src\loader\PhysicsCategoryLoader.cpp" />
     <ClCompile Include="src\material\ChannelTexture.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\HdriTexture.cpp" />
@@ -509,6 +510,7 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
+    <ClInclude Include="src\loader\PhysicsCategoryLoader.h" />
     <ClInclude Include="src\material\ChannelPart.h" />
     <ClInclude Include="src\material\ChannelTextureDefinition.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />

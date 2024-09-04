@@ -14,7 +14,7 @@ namespace loader {
         physics::Body body;
         physics::Geom geom;
 
-        std::vector<physics::Category> categoryMask;
-        std::vector<physics::Category> collisionMask;
+        //std::vector<physics::Category> categoryMask;
+        //std::vector<physics::Category> collisionMask;
     };
 }

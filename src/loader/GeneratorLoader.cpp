@@ -15,10 +15,14 @@
 #include "generator/AsteroidBeltGenerator.h"
 #include "terrain/TerrainGenerator.h"
 
+#include "physics/Category.h"
+#include "physics/physics_util.h"
+
 #include "loader/document.h"
 #include "loader_util.h"
 
 #include "loader/Loaders.h"
+#include "loader/PhysicsCategoryLoader.h"
 
 namespace {
     std::unordered_map<std::string, GeneratorMode> g_modeMapping;
@@ -62,6 +66,8 @@ namespace loader {
         Loaders& loaders) const
     {
         data.enabled = true;
+
+        data.boundsMask = physics::mask(physics::Category::terrain);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -115,6 +121,13 @@ namespace loader {
             }
             else if (k == "tiling") {
                 loadTiling(v, data.tiling);
+            }
+            else if (k == "bounds_dir") {
+                data.boundsDir = readVec3(v);
+            }
+            else if (k == "bounds") {
+                PhysicsCategoryLoader loader;
+                loader.loadMask(v, data.boundsMask);
             }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData);
@@ -200,6 +213,9 @@ namespace loader {
             generator->m_scale = data.scale;
 
             generator->m_seed = data.seed;
+
+            generator->m_boundsDir = glm::normalize(data.boundsDir);
+            generator->m_boundsMask = data.boundsMask;
 
             generator->m_count = data.count;
             generator->m_xCount = data.repeat.xCount;

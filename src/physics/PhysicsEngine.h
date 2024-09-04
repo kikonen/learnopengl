@@ -67,7 +67,7 @@ namespace physics {
 
         std::vector<std::pair<bool, float>> getWorldSurfaceLevels(
             std::span<glm::vec3> positions,
-            uint32_t categoryMask,
+            const glm::vec3 dir,
             uint32_t collisionMask);
 
         uint32_t getObjectCount() const noexcept {

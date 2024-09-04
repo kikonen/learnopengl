@@ -30,6 +30,7 @@
 
 #include "physics/MeshGenerator.h"
 #include "physics/RayHit.h"
+#include "physics/physics_util.h"
 
 namespace {
     constexpr float STEP_SIZE = 0.03f;
@@ -391,21 +392,21 @@ namespace physics
 
     std::vector<std::pair<bool, float>> PhysicsEngine::getWorldSurfaceLevels(
         std::span<glm::vec3> positions,
-        uint32_t categoryMask,
+        const glm::vec3 dir,
         uint32_t collisionMask)
     {
         if (!isEnabled()) return {};
 
         std::vector<glm::vec3> origins;
         for (const auto& pos : positions) {
-            origins.push_back(pos + glm::vec3{ 0.f, 200.f, 0.f });
+            origins.push_back(pos - dir * glm::vec3{ 0.f, 200.f, 0.f });
         }
 
         const auto& castResult = rayCast(
             origins,
-            { 0.f, -1.f, 0.f },
+            dir,
             500.f,
-            categoryMask,
+            physics::mask(physics::Category::ray_test),
             collisionMask,
             pool::NodeHandle::NULL_HANDLE);
 
@@ -450,9 +451,9 @@ namespace physics
         auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
 
-        KI_INFO_OUT(fmt::format(
-            "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
-            origin, dir, distance, categoryMask, collisionMask));
+        //KI_INFO_OUT(fmt::format(
+        //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
+        //    origin, dir, distance, categoryMask, collisionMask));
 
         const auto rayGeomId = ray->m_geom.physicId;
 
@@ -508,9 +509,9 @@ namespace physics
         std::vector<std::pair<bool, physics::RayHit>> result;
 
         for (const auto& origin : origins) {
-            KI_INFO_OUT(fmt::format(
-                "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
-                origin, dir, distance, categoryMask, collisionMask));
+            //KI_INFO_OUT(fmt::format(
+            //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
+            //    origin, dir, distance, categoryMask, collisionMask));
 
             dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
 

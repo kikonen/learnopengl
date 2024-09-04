@@ -46,9 +46,11 @@ void GridGenerator::updateWT(
 {
     const auto& containerState = container.getState();
     const auto containerLevel = containerState.getMatrixLevel();
-    if (m_containerMatrixLevel == containerLevel) return;
 
-    updateStaticBounds(ctx, container);
+    // NOTE KI cannot skip for dynamic bounds, physics is assumed to be changing
+    if (m_staticBounds && m_containerMatrixLevel == containerLevel) return;
+
+    updateBounds(ctx, container);
     updateInstances(ctx, container);
 
     const auto& parentMatrix = containerState.getModelMatrix();
@@ -73,6 +75,7 @@ void GridGenerator::prepareInstances(
     const auto& containerState = container.getState();
 
     m_staticBounds = type->m_flags.staticBounds;
+    m_dynamicBounds = type->m_flags.dynamicBounds;
 
     m_volume = containerState.getVolume();
 
@@ -218,16 +221,16 @@ void GridGenerator::prepareRandom(
     }
 }
 
-void GridGenerator::updateStaticBounds(
+void GridGenerator::updateBounds(
     const UpdateContext& ctx,
     const Node& container)
 {
-    if (!m_staticBounds) return;
+    if (!m_staticBounds && !m_dynamicBounds) return;
 
     auto& physicsEngine = physics::PhysicsEngine::get();
     if (!physicsEngine.isEnabled()) return;
 
-    if (m_staticBoundsSetup) return;
+    if (m_boundsSetupDone) return;
 
     const auto& containerState = container.getState();
     const auto& containerPos = containerState.getWorldPosition();
@@ -239,8 +242,8 @@ void GridGenerator::updateStaticBounds(
 
     const auto& results = physicsEngine.getWorldSurfaceLevels(
         positions,
-        physics::mask(physics::Category::ray_test),
-        physics::mask(physics::Category::terrain));
+        m_boundsDir,
+        m_boundsMask);
 
     if (results.empty()) return;
 
@@ -248,7 +251,9 @@ void GridGenerator::updateStaticBounds(
         const auto& [success, level] = results[i];
 
         if (success) {
-            m_staticBoundsSetup = true;
+            if (m_staticBounds) {
+                m_boundsSetupDone = true;
+            }
 
             auto& transform = m_transforms[i];
             const auto y = level - containerPos.y;

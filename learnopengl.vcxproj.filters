@@ -948,6 +948,9 @@
     <ClCompile Include="src\physics\PhysicsMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\PhysicsCategoryLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2151,6 +2154,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\MeshTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\PhysicsCategoryLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
