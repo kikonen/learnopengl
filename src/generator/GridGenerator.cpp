@@ -19,7 +19,6 @@
 #include "engine/UpdateContext.h"
 
 #include "physics/PhysicsEngine.h"
-#include "physics/RayHit.h"
 #include "physics/physics_util.h"
 
 #include "registry/Registry.h"
@@ -233,22 +232,26 @@ void GridGenerator::updateStaticBounds(
     const auto& containerState = container.getState();
     const auto& containerPos = containerState.getWorldPosition();
 
-    const glm::vec3 FRONT{ 0.f, -1.f, 0.f };
-    const auto& parentMatrix = containerState.getModelMatrix();
+    std::vector<glm::vec3> positions;
     for (auto& transform : m_transforms) {
-        const auto& hits = physicsEngine.rayCast(
-            transform.getWorldPosition() + glm::vec3{ 0.f, 200.f, 0.f },
-            FRONT,
-            500.f,
-            physics::mask(physics::Category::ray_test),
-            physics::mask(physics::Category::terrain),
-            pool::NodeHandle::NULL_HANDLE,
-            true);
+        positions.push_back(transform.getWorldPosition());
+    }
 
-        if (!hits.empty()) {
+    const auto& results = physicsEngine.getWorldSurfaceLevels(
+        positions,
+        physics::mask(physics::Category::ray_test),
+        physics::mask(physics::Category::terrain));
+
+    if (results.empty()) return;
+
+    for (int i = 0; i < m_transforms.size(); i++) {
+        const auto& [success, level] = results[i];
+
+        if (success) {
             m_staticBoundsSetup = true;
 
-            const auto y = (hits[0].pos - containerPos).y;
+            auto& transform = m_transforms[i];
+            const auto y = level - containerPos.y;
             auto newPos = transform.getPosition();
             newPos.y = y;
             transform.setPosition(newPos);

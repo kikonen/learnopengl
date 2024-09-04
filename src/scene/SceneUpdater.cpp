@@ -177,13 +177,12 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 audio::AudioEngine::get().update(ctx);
             }
             {
-                KI_TIMER("physics0");
-                physicsEngine.updatePrepare(ctx);
+                KI_TIMER("decal   ");
+                decal::DecalSystem::get().updateWT(ctx);
             }
             {
-                KI_TIMER("physics1");
-                physicsEngine.updateStaticBounds(ctx);
-                nodeRegistry.updateModelMatrices();
+                KI_TIMER("physics0");
+                physicsEngine.updatePrepare(ctx);
             }
             {
                 KI_TIMER("physics2");
@@ -198,19 +197,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
         nodeRegistry.updateModelMatrices();
         nodeRegistry.snapshotWT();
         nodeRegistry.snapshotPending();
-
-        //{
-        //    KI_TIMER("node5   ");
-        //    nodeRegistry.snapshotWT(*m_registry->m_workerSnapshotRegistry);
-        //}
-        //{
-        //    KI_TIMER("node7   ");
-        //    m_registry->m_pendingSnapshotRegistry->copyFrom(
-        //        m_registry->m_workerSnapshotRegistry,
-        //        0, -1);
-        //}
-
-        decal::DecalSystem::get().updateWT(ctx);
     }
 
     if (m_loaded) {
@@ -222,6 +208,5 @@ void SceneUpdater::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    physics::PhysicsEngine::get().handleNodeAdded(node);
     animation::AnimationSystem::get().handleNodeAdded(node);
 }

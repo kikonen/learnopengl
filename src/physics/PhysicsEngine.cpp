@@ -288,27 +288,6 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::updateStaticBounds(const UpdateContext& ctx)
-    {
-        if (!m_enabled) return;
-        preparePendingNodes(ctx);
-
-        if (m_enforceBoundsStatic.empty()) return;
-
-        std::cout << "static: " << m_enforceBoundsStatic.size() << '\n';
-        for (auto& handle : m_enforceBoundsStatic) {
-            auto* node = handle.toNode();
-            if (!node) continue;
-
-            const auto* type = node->m_typeHandle.toType();
-
-            enforceStaticBounds(ctx, type, *node);
-        }
-
-        // NOTE KI static is enforced only once (after initial model setup)
-        m_enforceBoundsStatic.clear();
-    }
-
     void PhysicsEngine::preparePending(const UpdateContext& ctx)
     {
         if (m_pending.empty()) return;
@@ -353,68 +332,6 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::preparePendingNodes(const UpdateContext& ctx)
-    {
-        if (m_pendingNodes.empty()) return;
-
-        std::vector<pool::NodeHandle> prepared;
-
-        for (auto& handle : m_pendingNodes) {
-            auto* node = handle.toNode();
-            if (!node) continue;
-
-            if (node->getState().getMatrixLevel() == 0) continue;
-
-            auto* type = node->m_typeHandle.toType();
-            if (type->m_flags.staticBounds) {
-                m_enforceBoundsStatic.push_back(handle);
-            }
-
-            prepared.push_back(node->toHandle());
-        }
-
-        if (!prepared.empty()) {
-            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
-            const auto& it = std::remove_if(
-                m_pendingNodes.begin(),
-                m_pendingNodes.end(),
-                [&prepared](const auto& handle) {
-                    const auto& it = std::find_if(
-                        prepared.cbegin(),
-                        prepared.cend(),
-                        [handle](const auto& h) { return h == handle; });
-                    return it != prepared.end();
-                });
-            m_pendingNodes.erase(it, m_pendingNodes.end());
-        }
-    }
-
-    void PhysicsEngine::enforceStaticBounds(
-        const UpdateContext& ctx,
-        const mesh::MeshType* type,
-        Node& node)
-    {
-        auto& state = NodeRegistry::get().modifyState(node.m_entityIndex);
-
-        // NOTE KI happens *only* once
-        const auto& worldPos = state.getWorldPosition();
-        glm::vec3 pos = state.getPosition();
-
-        const auto surfaceY = getWorldSurfaceLevel(worldPos);
-
-        auto* parent = node.getParent();
-
-        auto y = surfaceY - parent->getState().getWorldPosition().y;
-        //y += state.getScale().y;
-        pos.y = y;
-
-        //KI_INFO_OUT(fmt::format(
-        //    "({},{}, {}) => {}, {}, {}",
-        //    worldPos.x, worldPos.z, worldPos.y, pos.x, pos.z, pos.y));
-
-        state.setPosition(pos);
-    }
-
     physics::physics_id PhysicsEngine::registerObject()
     {
         auto& obj = m_objects.emplace_back<Object>({});
@@ -451,30 +368,58 @@ namespace physics
         return &m_heightMaps[id - 1];
     }
 
-    float PhysicsEngine::getWorldSurfaceLevel(const glm::vec3& pos)
+    std::pair<bool, float> PhysicsEngine::getWorldSurfaceLevel(
+        const glm::vec3& pos,
+        uint32_t categoryMask,
+        uint32_t collisionMask)
     {
-        float min = 0.f;
-        bool hit = false;
+        if (!isEnabled()) return { false, 0.f };
 
-        for (const auto& surface : m_heightMaps) {
-            if (!surface.m_id) continue;
-            if (!surface.isReady()) continue;
+        const auto& hits = rayCast(
+            pos + glm::vec3{ 0.f, 200.f, 0.f },
+            { 0.f, -1.f, 0.f },
+            500.f,
+            categoryMask,
+            collisionMask,
+            pool::NodeHandle::NULL_HANDLE,
+            true);
 
-            //if (!surface->withinBounds(pos)) continue;
+        if (hits.empty()) return { false, 0.f };
 
-            const float level = surface.getLevel(pos);
-            if (!hit || level > min) min = level;
-            hit = true;
-        }
-
-        return hit ? min : 0.f;
+        return { true, hits[0].pos.y };
     }
 
-    void PhysicsEngine::handleNodeAdded(Node* node)
+    std::vector<std::pair<bool, float>> PhysicsEngine::getWorldSurfaceLevels(
+        std::span<glm::vec3> positions,
+        uint32_t categoryMask,
+        uint32_t collisionMask)
     {
-        //auto* type = node->m_typeHandle.toType();
-        //if (!type->m_flags.staticBounds) return;
-        //m_pendingNodes.push_back(node->toHandle());
+        if (!isEnabled()) return {};
+
+        std::vector<glm::vec3> origins;
+        for (const auto& pos : positions) {
+            origins.push_back(pos + glm::vec3{ 0.f, 200.f, 0.f });
+        }
+
+        const auto& castResult = rayCast(
+            origins,
+            { 0.f, -1.f, 0.f },
+            500.f,
+            categoryMask,
+            collisionMask,
+            pool::NodeHandle::NULL_HANDLE);
+
+        std::vector<std::pair<bool, float>> result;
+
+        for (const auto& [success, hit]: castResult) {
+            if (success) {
+                result.push_back({ true, hit.pos.y });
+            }
+            else {
+                result.emplace_back(false, 0.f);
+            }
+        }
+        return result;
     }
 
     void PhysicsEngine::generateObjectMeshes()
@@ -490,8 +435,8 @@ namespace physics
     }
 
     std::vector<physics::RayHit> PhysicsEngine::rayCast(
-        glm::vec3 origin,
-        glm::vec3 dir,
+        const glm::vec3& origin,
+        const glm::vec3& dir,
         float distance,
         uint32_t categoryMask,
         uint32_t collisionMask,
@@ -535,5 +480,64 @@ namespace physics
         dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
 
         return hitData.hits;
+    }
+
+    std::vector<std::pair<bool, physics::RayHit>> PhysicsEngine::rayCast(
+        std::span<glm::vec3> origins,
+        const glm::vec3& dir,
+        float distance,
+        uint32_t categoryMask,
+        uint32_t collisionMask,
+        pool::NodeHandle fromNode)
+    {
+        if (!m_enabled) return {};
+
+        std::lock_guard lock{ m_lock };
+
+        auto* ray = getObject(m_rayId);
+        if (!ray || !ray->m_geom.physicId) return {};
+
+        const auto rayGeomId = ray->m_geom.physicId;
+
+        dGeomRaySetLength(rayGeomId, distance);
+        dGeomSetCategoryBits(rayGeomId, categoryMask);
+        dGeomSetCollideBits(rayGeomId, collisionMask);
+
+        HitData hitData;
+        hitData.onlyClosest = true;
+        std::vector<std::pair<bool, physics::RayHit>> result;
+
+        for (const auto& origin : origins) {
+            KI_INFO_OUT(fmt::format(
+                "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
+                origin, dir, distance, categoryMask, collisionMask));
+
+            dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
+
+            for (auto& obj : m_objects) {
+                if (rayGeomId == obj.m_geom.physicId) continue;
+                if (!obj.m_geom.physicId) continue;
+                if (obj.m_nodeHandle == fromNode) continue;
+
+                hitData.test = &obj;
+
+                // NOTE KI dCollide  does not check category/collision bitmask
+                dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
+            }
+
+            if (hitData.hits.empty()) {
+                result.emplace_back();
+            }
+            else {
+                result.push_back({ true, hitData.hits[0] });
+            }
+            hitData.hits.clear();
+        }
+
+        // NOTE KI set mask to "none" to prevent collisions after casting
+        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
+        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
+
+        return result;
     }
 }

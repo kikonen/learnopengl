@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <mutex>
 #include <memory>
+#include <tuple>
+#include <span>
 
 #include <ode/ode.h>
 
@@ -42,7 +44,6 @@ namespace physics {
 
         void updatePrepare(const UpdateContext& ctx);
         void updateObjects(const UpdateContext& ctx);
-        void updateStaticBounds(const UpdateContext& ctx);
 
         inline bool isEnabled() const noexcept {
             return m_enabled;
@@ -59,9 +60,15 @@ namespace physics {
         const HeightMap* getHeightMap(physics::height_map_id id) const;
         HeightMap* modifyHeightMap(physics::height_map_id id);
 
-        float getWorldSurfaceLevel(const glm::vec3& pos);
+        std::pair<bool, float> getWorldSurfaceLevel(
+            const glm::vec3& pos,
+            uint32_t categoryMask,
+            uint32_t collisionMask);
 
-        void handleNodeAdded(Node* node);
+        std::vector<std::pair<bool, float>> getWorldSurfaceLevels(
+            std::span<glm::vec3> positions,
+            uint32_t categoryMask,
+            uint32_t collisionMask);
 
         uint32_t getObjectCount() const noexcept {
             return static_cast<uint32_t>(m_objects.size());
@@ -70,22 +77,24 @@ namespace physics {
         void generateObjectMeshes();
 
         std::vector<physics::RayHit> rayCast(
-            glm::vec3 origin,
-            glm::vec3 dir,
+            const glm::vec3& origin,
+            const glm::vec3& dir,
             float distance,
             uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode,
             bool onlyClosest);
 
+        std::vector<std::pair<bool, physics::RayHit>> rayCast(
+            std::span<glm::vec3> origin,
+            const glm::vec3& dir,
+            float distance,
+            uint32_t categoryMask,
+            uint32_t collisionMask,
+            pool::NodeHandle fromNode);
+
     private:
         void preparePending(const UpdateContext& ctx);
-        void preparePendingNodes(const UpdateContext& ctx);
-
-        void enforceStaticBounds(
-            const UpdateContext& ctx,
-            const mesh::MeshType* type,
-            Node& node);
 
     public:
         dWorldID m_worldId{ nullptr };
@@ -110,10 +119,6 @@ namespace physics {
 
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
-
-        std::vector<pool::NodeHandle> m_enforceBoundsStatic;
-
-        std::vector<pool::NodeHandle> m_pendingNodes;
 
         std::vector<physics::physics_id> m_pending;
 
