@@ -60,6 +60,9 @@ namespace physics {
         const HeightMap* getHeightMap(physics::height_map_id id) const;
         HeightMap* modifyHeightMap(physics::height_map_id id);
 
+        dGeomID addGeom(const physics::Geom& geom);
+        void removeGeom(dGeomID physicId);
+
         std::pair<bool, float> getWorldSurfaceLevel(
             const glm::vec3& pos,
             uint32_t categoryMask,

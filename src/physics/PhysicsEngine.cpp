@@ -7,6 +7,7 @@
 
 #include "asset/Assets.h"
 
+#include "util/thread.h"
 #include "util/glm_format.h"
 #include "util/Util.h"
 
@@ -367,6 +368,33 @@ namespace physics
     {
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
         return &m_heightMaps[id - 1];
+    }
+
+    dGeomID PhysicsEngine::addGeom(const physics::Geom& geom)
+    {
+        ASSERT_WT();
+
+        dGeomID physicId{ nullptr };
+        {
+            Geom g = geom;
+            g.create(
+                m_worldId,
+                m_spaceId,
+                glm::vec3{ 1.f },
+                nullptr);
+            physicId = g.physicId;
+            g.physicId = nullptr;
+        }
+
+        return physicId;
+    }
+
+    void PhysicsEngine::removeGeom(dGeomID physicId)
+    {
+        ASSERT_WT();
+        if (physicId) {
+            dGeomDestroy(physicId);
+        }
     }
 
     std::pair<bool, float> PhysicsEngine::getWorldSurfaceLevel(
