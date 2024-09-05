@@ -15,7 +15,7 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
-#include "loader/ChannelTextureLoader.h"
+#include "value/ChannelTextureValue.h"
 
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
@@ -336,7 +336,7 @@ namespace loader {
                     resolveTexturePath(line, true));
             }
             else if (k == "map_channel") {
-                ChannelTextureLoader loader;
+                ChannelTextureValue loader;
                 loader.loadParts(v, material);
             }
             else if (k == "metal") {

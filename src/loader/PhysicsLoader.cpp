@@ -5,8 +5,8 @@
 #include <ode/ode.h>
 
 #include "util/debug.h"
-#include "util/Util.h"
 #include "util/Log.h"
+#include "util/Util.h"
 #include "util/glm_util.h"
 
 #include "physics/physics_util.h"
@@ -16,7 +16,8 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
-#include "PhysicsCategoryLoader.h"
+#include "value/PhysicsCategoryValue.h"
+#include "value/PhysicsGeomValue.h"
 
 namespace {
 }
@@ -57,7 +58,8 @@ namespace loader {
             }
             else if (k == "geom") {
                 data.enabled = true;
-                loadGeom(v, data.geom);
+                PhysicsGeomValue loader;
+                loader.loadGeom(v, data.geom);
             }
             else {
                 reportUnknown("physics_entry", k, v);
@@ -136,70 +138,6 @@ namespace loader {
             }
             else {
                 reportUnknown("body_entry", k, v);
-            }
-        }
-    }
-
-    void PhysicsLoader::loadGeom(
-        const loader::DocNode& node,
-        physics::Geom& data) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& k = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            if (k == "type") {
-                std::string type = readString(v);
-                if (type == "none") {
-                    data.type = physics::GeomType::none;
-                }
-                else if (type == "plane") {
-                    data.type = physics::GeomType::plane;
-                }
-                else if (type == "height_field" || type == "height") {
-                    data.type = physics::GeomType::height_field;
-                }
-                else if (type == "box" || type == "cube") {
-                    data.type = physics::GeomType::box;
-                }
-                else if (type == "sphere" || type == "ball") {
-                    data.type = physics::GeomType::sphere;
-                }
-                else if (type == "capsule") {
-                    data.type = physics::GeomType::capsule;
-                }
-                else if (type == "cylinder") {
-                    data.type = physics::GeomType::cylinder;
-                }
-                else {
-                    reportUnknown("geom_type", k, v);
-                }
-            }
-            else if (k == "size") {
-                data.size = readVec3(v);
-            }
-            else if (k == "rot" || k == "rotation") {
-                data.rotation = util::degreesToQuat(readDegreesRotation(v));
-            }
-            else if (k == "offset") {
-                data.offset = readVec3(v);
-            }
-            //else if (k == "plane") {
-            //    data.plane = readVec4(v);
-            //}
-            else if (k == "category" || k == "cat") {
-                PhysicsCategoryLoader loader;
-                loader.loadMask(v, data.categoryMask);
-            }
-            else if (k == "collision" || k == "collide" || k == "coll" || k == "col") {
-                PhysicsCategoryLoader loader;
-                loader.loadMask(v, data.collisionMask);
-            }
-            else if (k == "placeable" || k == "place") {
-                data.placeable = readBool(v);
-            }
-            else {
-                reportUnknown("geom_entry", k, v);
             }
         }
     }

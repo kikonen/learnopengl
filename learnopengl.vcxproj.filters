@@ -396,7 +396,7 @@
     <ClCompile Include="src\loader\BaseLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\Contet.cpp">
+    <ClCompile Include="src\loader\Context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\CameraLoader.cpp">
@@ -750,7 +750,7 @@
     <ClCompile Include="src\mesh\RigJointTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\ChannelTextureLoader.cpp">
+    <ClCompile Include="src\loader\value\ChannelTextureValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\AnimationPlay.cpp">
@@ -948,7 +948,10 @@
     <ClCompile Include="src\physics\PhysicsMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\PhysicsCategoryLoader.cpp">
+    <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2054,7 +2057,7 @@
     <ClInclude Include="src\material\ChannelPart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\ChannelTextureLoader.h">
+    <ClInclude Include="src\loader\value\ChannelTextureValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\ChannelTextureDefinition.h">
@@ -2156,7 +2159,10 @@
     <ClInclude Include="src\mesh\MeshTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\PhysicsCategoryLoader.h">
+    <ClInclude Include="src\loader\value\PhysicsCategoryValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\value\PhysicsGeomValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,7 +10,7 @@
 #include "loader/document.h"
 
 namespace loader {
-    struct ChannelTextureLoader {
+    struct ChannelTextureValue {
         void loadParts(
             const loader::DocNode& node,
             Material& material) const;

@@ -1,4 +1,4 @@
-#include "ChannelTextureLoader.h"
+#include "ChannelTextureValue.h"
 
 #include <map>
 
@@ -7,7 +7,7 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
-#include "loader_util.h"
+#include "loader/loader_util.h"
 
 namespace {
     const std::string CHANNEL_NONE{ "X" };
@@ -99,7 +99,7 @@ namespace {
 }
 
 namespace loader {
-    void ChannelTextureLoader::loadParts(
+    void ChannelTextureValue::loadParts(
         const loader::DocNode& node,
         Material& material) const
     {
@@ -121,7 +121,7 @@ namespace loader {
         }
     }
 
-    void ChannelTextureLoader::loadPart(
+    void ChannelTextureValue::loadPart(
         const loader::DocNode& node,
         Material& material,
         TextureType type,

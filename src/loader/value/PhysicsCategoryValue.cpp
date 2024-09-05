@@ -1,4 +1,4 @@
-#include "PhysicsCategoryLoader.h"
+#include "PhysicsCategoryValue.h"
 
 #include <unordered_map>
 
@@ -10,7 +10,7 @@
 #include "physics/physics_util.h"
 
 #include "loader/document.h"
-#include "loader_util.h"
+#include "loader/loader_util.h"
 
 namespace {
     std::unordered_map<std::string, physics::Category> g_categoryMapping;
@@ -110,7 +110,7 @@ namespace {
 }
 
 namespace loader {
-    void PhysicsCategoryLoader::loadMask(
+    void PhysicsCategoryValue::loadMask(
         const loader::DocNode& node,
         uint32_t& result) const
     {

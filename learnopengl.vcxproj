@@ -199,7 +199,8 @@
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
-    <ClCompile Include="src\loader\PhysicsCategoryLoader.cpp" />
+    <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
+    <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
     <ClCompile Include="src\material\ChannelTexture.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\HdriTexture.cpp" />
@@ -222,7 +223,7 @@
     <ClCompile Include="src\ki\FpsCounter.cpp" />
     <ClCompile Include="src\ki\sid.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
-    <ClCompile Include="src\loader\ChannelTextureLoader.cpp" />
+    <ClCompile Include="src\loader\value\ChannelTextureValue.cpp" />
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
@@ -305,7 +306,7 @@
     <ClCompile Include="src\loader\BaseLoader.cpp" />
     <ClCompile Include="src\loader\BaseId.h" />
     <ClCompile Include="src\loader\CameraLoader.cpp" />
-    <ClCompile Include="src\loader\Contet.cpp" />
+    <ClCompile Include="src\loader\Context.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
     <ClCompile Include="src\loader\CubeMapLoader.cpp" />
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
@@ -510,7 +511,8 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
-    <ClInclude Include="src\loader\PhysicsCategoryLoader.h" />
+    <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
+    <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\ChannelPart.h" />
     <ClInclude Include="src\material\ChannelTextureDefinition.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
@@ -532,7 +534,7 @@
     <ClInclude Include="src\ki\sid_format.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\CameraType.h" />
-    <ClInclude Include="src\loader\ChannelTextureLoader.h" />
+    <ClInclude Include="src\loader\value\ChannelTextureValue.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />

@@ -25,10 +25,6 @@ namespace loader {
             const loader::DocNode& node,
             physics::Body& data) const;
 
-        void loadGeom(
-            const loader::DocNode& node,
-            physics::Geom& data) const;
-
         void createObject(
             const PhysicsData& data,
             const pool::NodeHandle handle);

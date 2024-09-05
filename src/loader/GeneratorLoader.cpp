@@ -22,7 +22,7 @@
 #include "loader_util.h"
 
 #include "loader/Loaders.h"
-#include "loader/PhysicsCategoryLoader.h"
+#include "value/PhysicsCategoryValue.h"
 
 namespace {
     std::unordered_map<std::string, GeneratorMode> g_modeMapping;
@@ -126,7 +126,7 @@ namespace loader {
                 data.boundsDir = readVec3(v);
             }
             else if (k == "bounds") {
-                PhysicsCategoryLoader loader;
+                PhysicsCategoryValue loader;
                 loader.loadMask(v, data.boundsMask);
             }
             else if (k == "material") {
