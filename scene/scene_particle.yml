@@ -210,6 +210,7 @@ nodes:
       mode: random
       offset: [-100, 0, -100]
       seed: [4242, 1212, 3333]
+      count: 400
       repeat:
         x_count: 21
         z_count: 21
@@ -229,3 +230,38 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
+  - id: pine_tree_forest_2_{c}_{t}
+    prefab:
+      xpath: prefab/scenery/prefab_palm_tree.yml
+      path: prefab/scenery/prefab_pine_tree.yml
+    flags:
+      static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1
+      seed: [23434242, 54341212, 4354333]
+      count: 50
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
+  - id: maple_tree_forest_2_{c}_{t}
+    prefab:
+      path: prefab/scenery/prefab_maple_tree.yml
+    flags:
+      static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1
+      seed: [244314242, 54444212, 4354123]
+      count: 50
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
