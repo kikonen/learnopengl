@@ -51,8 +51,7 @@ namespace terrain {
 
         void createTiles(
             const PrepareContext& ctx,
-            const Node& container,
-            physics::height_map_id heightMapId);
+            const Node& container);
 
         pool::TypeHandle createType(
             Registry* registry,

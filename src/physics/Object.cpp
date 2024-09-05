@@ -56,7 +56,7 @@ namespace physics
         }
 
         m_body.create(worldId, spaceId, scale);
-        m_geom.create(worldId, spaceId, scale, m_body);
+        m_geom.create(worldId, spaceId, scale, m_body.physicId);
     }
 
     void Object::updateToPhysics(bool force)

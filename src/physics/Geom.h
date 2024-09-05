@@ -59,7 +59,7 @@ namespace physics {
             dWorldID worldId,
             dSpaceID spaceId,
             const glm::vec3& scale,
-            const Body& body);
+            dBodyID bodyPhysicId);
 
         void updatePhysic(
             const glm::vec3& nodePivot,

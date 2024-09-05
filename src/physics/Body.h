@@ -15,35 +15,35 @@ namespace physics {
     };
 
     struct Body {
-        dBodyID physicId{ nullptr };
-
         // NOTE KI *SCALED* using scale of node
         // size{0] == radius
         // box = x, y, z
         // capsule/cylinder = radiux, half-length
         glm::vec3 size{ 1.f };
 
-        // initial values for physics
-        glm::vec3 linearVelocity{ 0.f };
-        glm::vec3 angularVelocity{ 0.f };
-
-        // default = dInfinity
-        // 0 = don't allow rotate
-        float maxAngulerVelocity{ 100.f };
-
         // NOTE KI base rotation to match base rotation of node
         glm::quat baseRotation{ 1.f, 0.f, 0.f, 0.f };
         // reverse rotation of baseRotation
         glm::quat invBaseRotation{ 1.f, 0.f, 0.f, 0.f };
 
+        // initial values for physics
+        glm::vec3 linearVelocity{ 0.f };
+        glm::vec3 angularVelocity{ 0.f };
+
         glm::vec3 axis{ 0.f, 1.f, 0.f };
-        bool forceAxis{ false };
+
+        // default = dInfinity
+        // 0 = don't allow rotate
+        float maxAngulerVelocity{ 100.f };
 
         float density{ 1.f };
 
+        dBodyID physicId{ nullptr };
+
         BodyType type{ BodyType::none };
 
-        bool kinematic : 1{ false };
+        bool forceAxis : 1 { false };
+        bool kinematic : 1 { false };
 
         ~Body();
 

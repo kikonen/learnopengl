@@ -67,7 +67,7 @@ namespace terrain {
 
         auto heightMapId = prepareHeightMap(ctx, container);
 
-        createTiles(ctx, container, heightMapId);
+        createTiles(ctx, container);
     }
 
     void TerrainGenerator::updateWT(
@@ -98,9 +98,9 @@ namespace terrain {
 
         auto& pe = physics::PhysicsEngine::get();
         auto heightMapId = pe.registerHeightMap();
-        auto* heightMap = pe.modifyHeightMap(heightMapId);
 
         {
+            auto* heightMap = pe.modifyHeightMap(heightMapId);
             heightMap->m_origin = &container;
             heightMap->m_verticalRange = m_verticalRange;
             heightMap->m_horizontalScale = m_horizontalScale;
@@ -109,13 +109,8 @@ namespace terrain {
             heightMap->m_worldSizeU = m_worldTileSize * m_worldTilesU;
             heightMap->m_worldSizeV = m_worldTileSize * m_worldTilesV;
 
-            glm::vec3 min{};
-            glm::vec3 max{};
-            AABB aabb{ min, max, false };
-
-            heightMap->setAABB(aabb);
+            heightMap->prepare(texture->m_image.get(), true);
         }
-        heightMap->prepare(texture->m_image.get(), true);
 
         return heightMapId;
     }
@@ -168,23 +163,18 @@ namespace terrain {
             auto& state = node->modifyState();
 
             state.setPosition(pos);
-            //state.updateModelMatrix(containerState);
         }
     }
 
     void TerrainGenerator::createTiles(
         const PrepareContext& ctx,
-        const Node& container,
-        physics::height_map_id heightMapId)
+        const Node& container)
     {
         const auto& assets = ctx.m_assets;
         auto& registry = ctx.m_registry;
         auto& dispatcher = registry->m_dispatcherWorker;
 
         auto& entityRegistry = EntityRegistry::get();
-
-        auto& pe = physics::PhysicsEngine::get();
-        const auto* heightMap = pe.getHeightMap(heightMapId);
 
         // NOTE scale.y == makes *FLAT* plane
         const glm::vec3 scale{ m_worldTileSize / 2.f, 1, m_worldTileSize / 2.f };
@@ -242,20 +232,6 @@ namespace terrain {
             const auto u = info.m_tileU;
             const auto v = info.m_tileV;
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
-
-            // TODO KI get height
-            {
-                glm::vec3 uvPos{
-                    pos.x / worldSizeU,
-                    0.f,
-                    1.f - pos.z / worldSizeV };
-                const auto height = heightMap ? heightMap->getTerrainHeight(uvPos.x, uvPos.z) : 0.f;
-                minmax.minmax({ pos.x, height, pos.z });
-
-                KI_INFO_OUT(fmt::format(
-                    "u={}, v={}, pos={}, uvPos={}, height={}, offsetU={}, offsetV={}, min={}, max={}",
-                    u, v, pos, uvPos, height, -1200 + v, -900 + u, minmax.m_min, minmax.m_max));
-            }
 
             {
                 auto& state = states.emplace_back();

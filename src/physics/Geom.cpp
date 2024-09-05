@@ -19,7 +19,7 @@ namespace physics {
         dWorldID worldId,
         dSpaceID spaceId,
         const glm::vec3& scale,
-        const Body& body)
+        dBodyID bodyPhysicId)
     {
         if (type == GeomType::none) return;
 
@@ -69,9 +69,9 @@ namespace physics {
         if (!physicId) return;
 
         // NOTE KI node updates only if body
-        if (body.physicId) {
+        if (bodyPhysicId) {
             const auto& so = scale * offset;
-            dGeomSetBody(physicId, body.physicId);
+            dGeomSetBody(physicId, bodyPhysicId);
             dGeomSetOffsetPosition(physicId, so.x, so.y, so.z);
         }
 
