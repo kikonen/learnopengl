@@ -54,10 +54,11 @@ namespace render {
     };
 
     struct LodEntry {
-        const glm::mat4 m_transform;
-        const uint32_t m_entityIndex;
-        const uint32_t m_materialIndex;
-        const int32_t m_socketIndex;
+        glm::mat4 m_transform;
+        float m_distance2;
+        uint32_t m_entityIndex;
+        uint32_t m_materialIndex;
+        int32_t m_socketIndex;
     };
 
     struct BatchCommand {

@@ -115,9 +115,7 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        uint8_t getLodLevelMask(
-            const glm::vec3& cameraPos,
-            const glm::vec3& worldPos) const;
+        uint8_t getLodLevelMask(float dist2) const;
 
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 

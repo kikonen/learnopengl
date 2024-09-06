@@ -87,8 +87,8 @@ namespace render {
 
         m_drawCount++;
 
-        const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const auto levelMask = type->getLodLevelMask (cameraPos, snapshot.getWorldPosition());
+        auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
+        const auto levelMask = type->getLodLevelMask (dist2);
 
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_flags.hidden) continue;
@@ -127,6 +127,7 @@ namespace render {
             lodInstances.reserve(100);
             lodInstances.emplace_back(
                 lodMesh.m_transform,
+                dist2,
                 entityIndex,
                 lodMesh.m_materialIndex,
                 lodMesh.m_socketIndex);
@@ -208,7 +209,9 @@ namespace render {
                 }
 
                 const auto& transform = transforms[i];
-                const auto levelMask = type->getLodLevelMask(cameraPos, transform.getWorldPosition());
+
+                auto dist2 = glm::distance2(transform.getWorldPosition(), cameraPos);
+                const auto levelMask = type->getLodLevelMask(dist2);
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_flags.hidden) continue;
@@ -248,6 +251,7 @@ namespace render {
                     lodInstances.reserve(100);
                     lodInstances.emplace_back(
                         transform.getTransform() * lodMesh.m_transform,
+                        dist2,
                         entityIndex,
                         lodMesh.m_materialIndex,
                         lodMesh.m_socketIndex);
@@ -354,18 +358,57 @@ namespace render {
     {
         size_t flushCount = 0;
 
+        // Sort instances
         {
-            m_entityIndeces.clear();
             for (auto& it : m_batches) {
                 const auto& key = it.first;
                 auto& curr = it.second;
 
-                for (const auto& lodInstance : curr.m_lodInstances) {
-                    const auto& lodKey = lodInstance.first;
-                    const auto& lodEntries = lodInstance.second;
+                for (auto& lodIt : curr.m_lodInstances) {
+                    const auto& lodKey = lodIt.first;
+                    auto& lodEntries = lodIt.second;
                     if (lodEntries.empty()) continue;
 
-                    curr.m_baseIndeces[lodInstance.first] = static_cast<uint32_t>(m_entityIndeces.size());
+                    //std::cout << "DIST: ";
+                    //for (const auto& lod : lodEntries) {
+                    //    std::cout << lod.m_distance2 << ", ";
+                    //}
+                    //std::cout << "\n";
+
+                    std::sort(
+                        lodEntries.begin(),
+                        lodEntries.end(),
+                        [](const auto& a, const auto& b) { return a.m_distance2 < b.m_distance2 ; });
+
+                    //std::cout << "SORT: ";
+                    //for (const auto& lod : lodEntries) {
+                    //    std::cout << lod.m_distance2 << ", ";
+                    //}
+                    //std::cout << "\n";
+                }
+            }
+        }
+
+        // Setup instances
+        {
+            m_entityIndeces.clear();
+
+            //std::cout << "[BATCH]\n";
+
+            for (auto& it : m_batches) {
+                const auto& key = it.first;
+                auto& curr = it.second;
+
+                for (const auto& lodIt : curr.m_lodInstances) {
+                    const auto& lodKey = lodIt.first;
+                    const auto& lodEntries = lodIt.second;
+                    if (lodEntries.empty()) continue;
+
+                    //std::cout << fmt::format(
+                    //    "FIRST: dist={}, count={}\n",
+                    //    lodEntries[0].m_distance2, lodEntries.size());
+
+                    curr.m_baseIndeces[lodKey] = static_cast<uint32_t>(m_entityIndeces.size());
                     for (auto& lodEntry : lodEntries) {
                         auto& instance = m_entityIndeces.emplace_back();
                         instance.u_entityIndex = lodEntry.m_entityIndex;
@@ -376,7 +419,7 @@ namespace render {
                         // NOTE KI BatchKey does not take in account m_flags
                         // => can draw different instances in same batch
                         //instance.u_shapeIndex = key.m_drawOptions.m_flags;
-                        instance.u_flags = lodInstance.first.m_flags;
+                        instance.u_flags = lodKey.m_flags;
                     }
                 }
             }

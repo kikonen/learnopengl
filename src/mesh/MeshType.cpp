@@ -127,9 +127,7 @@ namespace mesh {
         m_customMaterial = std::move(customMaterial);
     }
 
-    uint8_t MeshType::getLodLevelMask(
-        const glm::vec3& cameraPos,
-        const glm::vec3& worldPos) const
+    uint8_t MeshType::getLodLevelMask(float dist2) const
     {
         if (m_lodLevels.empty()) return 0;
         //if (m_lodLevels.size() == 1) return m_lodLevels[0].m_levelMask;
@@ -137,7 +135,6 @@ namespace mesh {
         for (auto i = m_lodLevels.size() - 1; i >= 0; i--)
         {
             const auto& lod = m_lodLevels[i];
-            auto dist2 = glm::distance2(worldPos, cameraPos);
             if (lod.m_distance2 <= dist2)
                 return lod.m_levelMask;
         }
