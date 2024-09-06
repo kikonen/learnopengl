@@ -107,6 +107,7 @@ nodes:
         map_kd: textures/tiles_1024.png
         tiling: 8
         program: g_tex
+        render_back: true
       scale: 30
     pos: [0.0, 3.2, -10.0]
     flags:
@@ -258,7 +259,7 @@ nodes:
     physics:
       geom:
         type: height_field
-        category: [terrain]
+        category: [ground, terrain]
         collide: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
@@ -308,6 +309,7 @@ nodes:
         map_kd: textures/tiles_1024.png
         tiling: 8
         program: g_tex
+        render_back: true
       scale: 60
     priority: -10
     pos: [160.0, 3.2, 20.0]
@@ -387,11 +389,12 @@ nodes:
       static_bounds: true
     generator:
       type: grid
-      mode: grid
-      offset: [240.0, 14, 70]
+      mode: random
+      offset: [-400, 0, -400]
       scale: 1.5
+      bounds: [ground]
       repeat:
-        x_count: 1
-        z_count: 4
-        x_step: 20
-        z_step: -40
+        x_count: 20
+        z_count: 20
+        x_step: 40
+        z_step: 40

@@ -26,6 +26,7 @@ namespace {
                 { "invalid", physics::Category::invalid },
                 // world
                 { "terrain", physics::Category::terrain },
+                { "ground", physics::Category::ground },
                 { "water", physics::Category::water },
                 { "scenery", physics::Category::scenery },
                 { "prop", physics::Category::prop },

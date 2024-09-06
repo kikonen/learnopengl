@@ -10,9 +10,10 @@ namespace physics {
         invalid = 1 << 1,
         // surroundings
         terrain = 1 << 3,
-        water = 1 << 4,
-        scenery = 1 << 5,
-        prop = 1 << 6,
+        ground = 1 << 4,
+        water = 1 << 5,
+        scenery = 1 << 6,
+        prop = 1 << 7,
         // characters and creatures
         npc = 1 << 10,
         player = 1 << 11,
