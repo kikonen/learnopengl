@@ -1,0 +1,37 @@
+---
+prefab:
+  meshes:
+    - id: prefab_bush01
+      path: fbx/scenery/bushes/Bush01/Bush01.fbx
+      lods:
+        - name: Bush01_LOD0
+          level: 0
+        - name: Bush01_LOD1
+          level: 1
+        - name: Bush01_LOD2
+          level: 2
+        - name: Bush01_LOD3
+          level: 3
+      materials:
+        - name: 'Material #25'
+          map_kd: T_Bush01_d.tga
+          map_bump: T_Bush01_n.tga
+          map_channel:
+            - path: T_Bush01_ao.tga
+              type: occlusion_map
+              channel: A
+          alpha: true
+          xblend: true
+          render_back: true
+      xscale: 0.01
+      program: g_tex
+      shadow_program: simple_depth
+  lod_levels:
+    - level: 0
+      distance: 0
+    - level: 1
+      distance: 10
+    - level: 2
+      distance: 20
+    - level: 3
+      distance: 30

@@ -185,6 +185,8 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
+    pivot:
+      offset: [0, 17, 0.6]
     flags:
       static_bounds: true
     generator:
@@ -198,6 +200,12 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
+    physics:
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player, ray]
+        size: [0.25, 0.75, 0]
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
@@ -211,6 +219,63 @@ nodes:
       offset: [-100, 0, -100]
       seed: [4242, 1212, 3333]
       count: 400
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
+  - id: bush01_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush01.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 30
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
+  - id: bush02_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush02.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 15
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
+  - id: bush03_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush03.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 200
       repeat:
         x_count: 21
         z_count: 21

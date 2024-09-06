@@ -1151,14 +1151,72 @@ nodes:
     generator:
       type: grid
       mode: random
-      offset: [250, 10.0, -100.0]
+      offset: [400, 10.0, -400.0]
       scale: 3
       seed: [4242, 1212, 3333]
+      count: 1000
       repeat:
-        x_count: 80
-        z_count: 80
+        x_count: 100
+        z_count: 150
         x_step: -9
         z_step: 9
+  - id: bush01_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush01.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 100
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - id: bush02_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush02.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 50
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - id: bush03_{t}
+    prefab:
+      path: prefab/scenery/prefab_bush03.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-300, 0, -300]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 600
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
