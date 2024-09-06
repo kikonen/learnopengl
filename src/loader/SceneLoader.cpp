@@ -768,7 +768,14 @@ namespace loader {
         lodMesh.m_priority = nodeData.priority;
 
         const auto* lod = meshData.findLod(mesh->m_name);
-        if (!lod) return nullptr;
+        if (!lod) {
+            // NOTE KI if lods defined then default to 0 mask
+            if (!meshData.lods.empty()) {
+                KI_WARN_OUT(fmt::format("SCENE: MISSING_LOD : mesh={}", mesh->m_name));
+                lodMesh.m_levelMask = 0;
+            }
+            return nullptr;
+        }
 
         lodMesh.m_levelMask = lod->getLevelMask();
         lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;

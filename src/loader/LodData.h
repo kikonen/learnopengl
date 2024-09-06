@@ -19,7 +19,8 @@ namespace loader {
         {
             uint8_t mask = 0;
             for (auto& level : levels) {
-                mask |= 1 << level;
+                if (level < 0) continue;
+                mask |= (1 << level);
             }
             return mask;
         }

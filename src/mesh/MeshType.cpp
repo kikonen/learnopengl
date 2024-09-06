@@ -28,7 +28,8 @@ namespace {
 namespace mesh {
     MeshType::MeshType()
         : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()},
-        m_lodLevels{ { 1, 0 } }
+        // LOD0 == bit 0
+        m_lodLevels{ { 1, 0.f } }
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
