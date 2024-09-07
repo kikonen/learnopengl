@@ -185,7 +185,7 @@ namespace physics {
                 break;
             }
             case GeomType::height_field: {
-                const auto* heightMap = m_engine.getHeightMap(obj.m_heightMapId);
+                const auto* heightMap = m_engine.getHeightMap(obj.m_geom.heightMapId);
                 if (heightMap) {
                     //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
 

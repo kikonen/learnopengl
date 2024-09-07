@@ -24,9 +24,6 @@ namespace physics {
     };
 
     struct Geom {
-        dGeomID physicId{ nullptr };
-        dHeightfieldDataID heightDataId{ nullptr };
-
         // NOTE KI *SCALED* using scale of node
         // box:
         // - size == vec3 (half size of cube)
@@ -42,8 +39,13 @@ namespace physics {
 
         //glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
 
+        dGeomID physicId{ nullptr };
+        dHeightfieldDataID heightDataId{ nullptr };
+
         uint32_t categoryMask{ UINT_MAX };
         uint32_t collisionMask{ UINT_MAX };
+
+        physics::height_map_id heightMapId{ 0 };
 
         // dContactXX flags for geom
         // TODO KI define "PhysicsMaterial" and refer to it from geom
@@ -51,7 +53,7 @@ namespace physics {
 
         GeomType type{ GeomType::none };
 
-        bool placeable{ true };
+        bool placeable : 1 { true };
 
         ~Geom();
 

@@ -142,6 +142,11 @@ public:
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
 
+    const NodeState& getParentState(uint32_t entityIndex) const noexcept
+    {
+        return m_states[m_parentIndeces[entityIndex]];
+    }
+
     NodeState& modifyState(uint32_t entityIndex) noexcept
     {
         return m_states[entityIndex];

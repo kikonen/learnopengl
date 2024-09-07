@@ -90,16 +90,12 @@ void SceneUpdater::prepare()
             auto& data = e.blob->body.physics;
             auto& pe = physics::PhysicsEngine::get();
             auto handle = pool::NodeHandle::toHandle(e.body.physics.target);
+            auto* node = handle.toNode();
 
-            auto id = pe.registerObject();
-
-            if (id) {
-                auto* obj = pe.getObject(id);
-                obj->m_update = data.update;
-                obj->m_body = data.body;
-                obj->m_geom = data.geom;
-                obj->m_nodeHandle = handle;
-            }
+            physics::Object obj;
+            obj.m_body = data.body;
+            obj.m_geom = data.geom;
+            pe.registerObject(handle, node->m_entityIndex, data.update, obj);
         });
 
     if (assets.useScript)

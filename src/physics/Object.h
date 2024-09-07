@@ -4,11 +4,10 @@
 
 #include "ki/size.h"
 
-#include "pool/NodeHandle.h"
-
-#include "size.h"
 #include "Body.h"
 #include "Geom.h"
+
+class NodeRegistry;
 
 namespace physics {
     class PhysicsEngine;
@@ -32,28 +31,29 @@ namespace physics {
     // other objects).
     struct Object {
         Object();
+        Object(const Object& b) noexcept;
         Object(Object&& b) noexcept;
         ~Object();
 
         inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 
         void create(
+            uint32_t entityIndex,
             dWorldID worldId,
-            dSpaceID spaceId);
+            dSpaceID spaceId,
+            NodeRegistry& nodeRegistry);
 
-        void updateToPhysics(bool force);
-        void updateFromPhysics() const;
+        void updateToPhysics(
+            uint32_t entityIndex,
+            NodeRegistry& nodeRegistry);
+
+        void updateFromPhysics(
+            uint32_t entityIndex,
+            NodeRegistry& nodeRegistry) const;
 
         Body m_body{};
         Geom m_geom{};
 
-        pool::NodeHandle m_nodeHandle{};
-        int32_t m_instanceIndex{ -1 };
-
-        physics::physics_id m_id{ 0 };
-        physics::height_map_id m_heightMapId{ 0 };
-
         ki::level_id m_matrixLevel{ 0 };
-        bool m_update : 1{ false };
     };
 }

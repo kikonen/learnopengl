@@ -50,7 +50,7 @@ namespace {
 
     struct HitData {
         bool onlyClosest{ false };
-        physics::Object* test{ nullptr };
+        pool::NodeHandle test{};
         std::vector<physics::RayHit> hits{};
     };
 
@@ -126,7 +126,7 @@ namespace physics
                 hit = &hitData.hits.emplace_back();
             }
 
-            hit->handle = hitData.test->m_nodeHandle;
+            hit->handle = hitData.test;
 
             hit->pos = {
                 static_cast<float>(contact.pos[0]),
@@ -184,6 +184,8 @@ namespace physics
 
     PhysicsEngine::PhysicsEngine()
     {
+        m_heightMaps.emplace_back();
+        registerObject({}, 0, false, {});
     }
 
     PhysicsEngine::~PhysicsEngine()
@@ -230,12 +232,12 @@ namespace physics
         dWorldSetGravity(m_worldId, m_gravity.x, m_gravity.y, m_gravity.z);
 
         {
-            m_rayId = registerObject();
-            auto* obj = getObject(m_rayId);
-            obj->m_geom.type = GeomType::ray;
-            obj->m_body.kinematic = true;
-            obj->m_geom.categoryMask = 0;
-            obj->m_geom.collisionMask = 0;
+            physics::Object obj{};
+            obj.m_geom.type = GeomType::ray;
+            obj.m_body.kinematic = true;
+            obj.m_geom.categoryMask = 0;
+            obj.m_geom.collisionMask = 0;
+            m_rayId = registerObject({}, 0, false, obj);
         }
 
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
@@ -261,8 +263,11 @@ namespace physics
 
         std::lock_guard lock{ m_lock };
 
-        for (auto* obj : m_updateObjects) {
-            obj->updateToPhysics(false);
+        auto& nodeRegistry = NodeRegistry::get();
+
+        for (const auto& id : m_updateObjects) {
+            auto& obj = m_objects[id];
+            obj.updateToPhysics(m_entityIndeces[id], nodeRegistry);
         }
 
         const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
@@ -282,8 +287,9 @@ namespace physics
                 dJointGroupEmpty(m_contactgroupId);
             }
 
-            for (const auto& obj : m_objects) {
-                obj.updateFromPhysics();
+            for (int i = 0; i < m_objects.size(); i++) {
+                auto& obj = m_objects[i];
+                obj.updateFromPhysics(m_entityIndeces[i], nodeRegistry);
             }
 
             generateObjectMeshes();
@@ -294,31 +300,29 @@ namespace physics
     {
         if (m_pending.empty()) return;
 
+        auto& nodeRegistry = NodeRegistry::get();
         std::unordered_map<physics::physics_id, bool> prepared;
 
         for (const auto& id : m_pending) {
-            auto& obj = m_objects[id - 1];
+            auto& obj = m_objects[id];
+            auto* node = m_nodeHandles[id].toNode();
 
-            auto* node = obj.m_nodeHandle.toNode();
             if (node) {
-                obj.create(m_worldId, m_spaceId);
+                auto entityIndex = m_entityIndeces[id];
+                obj.create(entityIndex, m_worldId, m_spaceId, nodeRegistry);
 
                 for (auto& heightMap : m_heightMaps) {
                     if (heightMap.m_origin == node) {
-                        obj.m_heightMapId = heightMap.m_id;
+                        obj.m_geom.heightMapId = heightMap.m_id;
                         heightMap.create(m_worldId, m_spaceId, obj);
                     }
                 }
 
-                obj.updateToPhysics(false);
-
-                if (obj.m_update) {
-                    m_updateObjects.push_back(&obj);
-                }
+                obj.updateToPhysics(entityIndex, nodeRegistry);
                 prepared.insert({ id, true });
             }
             else {
-                obj.create(m_worldId, m_spaceId);
+                obj.create(0, m_worldId, m_spaceId, nodeRegistry);
             }
         }
 
@@ -334,26 +338,35 @@ namespace physics
         }
     }
 
-    physics::physics_id PhysicsEngine::registerObject()
+    physics::physics_id PhysicsEngine::registerObject(
+        pool::NodeHandle nodeHandle,
+        uint32_t entityIndex,
+        bool update,
+        const physics::Object& src)
     {
-        auto& obj = m_objects.emplace_back<Object>({});
-        obj.m_id = static_cast<physics::physics_id>(m_objects.size());
+        auto id = static_cast<physics::physics_id>(m_objects.size());
 
-        m_pending.push_back(obj.m_id);
+        m_nodeHandles.push_back(nodeHandle);
+        m_entityIndeces.push_back(entityIndex);
+        m_objects.push_back(src);
+        m_pending.push_back(id);
+        if (update) {
+            m_updateObjects.push_back(id);
+        }
 
-        return obj.m_id;
+        return id;
     }
 
     Object* PhysicsEngine::getObject(physics::physics_id id)
     {
         if (id < 1 || id > m_objects.size()) return nullptr;
-        return &m_objects[id - 1];
+        return &m_objects[id];
     }
 
     physics::height_map_id PhysicsEngine::registerHeightMap()
     {
         auto& map = m_heightMaps.emplace_back<HeightMap>({});
-        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size());
+        map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size() - 1);
 
         return map.m_id;
     }
@@ -361,13 +374,13 @@ namespace physics
     const HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id) const
     {
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
-        return &m_heightMaps[id - 1];
+        return &m_heightMaps[id];
     }
 
     HeightMap* PhysicsEngine::modifyHeightMap(physics::height_map_id id)
     {
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
-        return &m_heightMaps[id - 1];
+        return &m_heightMaps[id];
     }
 
     dGeomID PhysicsEngine::addGeom(const physics::Geom& geom)
@@ -493,12 +506,15 @@ namespace physics
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
-        for (auto& obj : m_objects) {
+        for (int i = 0; i < m_objects.size(); i++) {
+            const auto& obj = m_objects[i];
+            const auto& nodeHandle = m_nodeHandles[i];
+
             if (rayGeomId == obj.m_geom.physicId) continue;
             if (!obj.m_geom.physicId) continue;
-            if (obj.m_nodeHandle == fromNode) continue;
+            if (nodeHandle == fromNode) continue;
 
-            hitData.test = &obj;
+            hitData.test = nodeHandle;
 
             // NOTE KI dCollide  does not check category/collision bitmask
             dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
@@ -543,12 +559,14 @@ namespace physics
 
             dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
 
-            for (auto& obj : m_objects) {
+            for (int i = 0; i < m_objects.size(); i++) {
+                const auto& obj = m_objects[i];
+                const auto& nodeHandle = m_nodeHandles[i];
+
                 if (rayGeomId == obj.m_geom.physicId) continue;
                 if (!obj.m_geom.physicId) continue;
-                if (obj.m_nodeHandle == fromNode) continue;
 
-                hitData.test = &obj;
+                hitData.test = nodeHandle;
 
                 // NOTE KI dCollide  does not check category/collision bitmask
                 dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);

@@ -270,6 +270,7 @@ nodes:
         density: 0.07
       geom:
         type: sphere
+        size: 1
   - id: old_gold_capsule
     parent_id: ball_origo
     mesh:

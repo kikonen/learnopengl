@@ -53,8 +53,13 @@ namespace physics {
             m_enabled = enabled;
         }
 
-        physics::physics_id registerObject();
-        Object* getObject(physics::physics_id id);
+        physics::physics_id registerObject(
+            pool::NodeHandle nodeHandle,
+            uint32_t entityIndex,
+            bool update,
+            const physics::Object& object);
+
+        physics::Object* getObject(physics::physics_id id);
 
         physics::height_map_id registerHeightMap();
         const HeightMap* getHeightMap(physics::height_map_id id) const;
@@ -125,8 +130,12 @@ namespace physics {
 
         std::vector<physics::physics_id> m_pending;
 
-        std::vector<Object*> m_updateObjects;
-        std::vector<Object> m_objects;
+        std::vector<pool::NodeHandle> m_nodeHandles;
+        std::vector<uint32_t> m_entityIndeces;
+        std::vector<physics::Object> m_objects;
+
+        std::vector<physics::physics_id> m_updateObjects;
+
         physics::physics_id m_rayId{ 0 };
 
         std::vector<HeightMap> m_heightMaps;

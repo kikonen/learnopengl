@@ -12,6 +12,8 @@
 
 #include "model/Node.h"
 
+#include "registry/NodeRegistry.h"
+
 namespace {
     inline glm::vec3 UP{ 0.f, 1.f, 0.f };
 
@@ -22,12 +24,20 @@ namespace physics
 {
     Object::Object() = default;
 
-    Object::Object(Object&& o) noexcept
-        : m_id{ o.m_id },
-        m_update { o.m_update },
-        m_body{ o.m_body },
+    Object::Object(const Object& o) noexcept
+        : m_body{ o.m_body },
         m_geom{ o.m_geom },
-        m_nodeHandle{ o.m_nodeHandle },
+        m_matrixLevel{ o.m_matrixLevel }
+    {
+        // NOTE KI cannot copy physics bindings
+        m_body.physicId = nullptr;
+        m_geom.physicId = nullptr;
+        m_geom.heightDataId = nullptr;
+    }
+
+    Object::Object(Object&& o) noexcept
+        : m_body{ o.m_body },
+        m_geom{ o.m_geom },
         m_matrixLevel{ o.m_matrixLevel }
     {
         // NOTE KI o is moved now
@@ -39,8 +49,10 @@ namespace physics
     Object::~Object() = default;
 
     void Object::create(
+        uint32_t entityIndex,
         dWorldID worldId,
-        dSpaceID spaceId)
+        dSpaceID spaceId,
+        NodeRegistry& nodeRegistry)
     {
         if (ready()) return;
 
@@ -49,26 +61,23 @@ namespace physics
         // NOtE KI assumping that parent scale does not affect node
         // => 99,9% true for physics nodes, i.e. does not make sense
         // for them to have parent node affecting scale
-        const auto* node = m_nodeHandle.toNode();
-        if (node) {
-            const auto& state = node->getState();
-            scale = state.getScale();
-        }
+        const auto& state = nodeRegistry.getState(entityIndex);
+        scale = state.getScale();
 
         m_body.create(worldId, spaceId, scale);
         m_geom.create(worldId, spaceId, scale, m_body.physicId);
     }
 
-    void Object::updateToPhysics(bool force)
+    void Object::updateToPhysics(
+        uint32_t entityIndex,
+        NodeRegistry& nodeRegistry)
     {
-        const auto* node = m_nodeHandle.toNode();
-        if (!node) return;
-
-        const auto& state = node->getState();
-
-        const auto level = state.getMatrixLevel();
-        if (!force && m_matrixLevel == level) return;
-        m_matrixLevel = level;
+        const auto& state = nodeRegistry.getState(entityIndex);
+        {
+            const auto level = state.getMatrixLevel();
+            if (m_matrixLevel == level) return;
+            m_matrixLevel = level;
+        }
 
         const glm::vec3& pos = state.getWorldPosition();
         const glm::vec3& pivot = state.getWorldPivot();
@@ -89,19 +98,16 @@ namespace physics
         }
     }
 
-    void Object::updateFromPhysics() const
+    void Object::updateFromPhysics(
+        uint32_t entityIndex,
+        NodeRegistry& nodeRegistry) const
     {
         // NOTE KI "geom only" is not updated back to node
         if (!m_body.physicId) return;
         if (m_body.kinematic) return;
 
-        auto* node = m_nodeHandle.toNode();
-        if (!node) return;
-
-        auto* parent = node->getParent();
-        if (!parent) return;
-
-        auto& state = node->modifyState();
+        auto& state = nodeRegistry.modifyState(entityIndex);
+        auto& parentState = nodeRegistry.getParentState(entityIndex);
 
         glm::vec3 pos{ 0.f };
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
@@ -112,7 +118,7 @@ namespace physics
             // NOTE KI parent *SHOULD* be root (== null) for all physics nodes
             // => otherwise math does not make sense
             // => for NodeGenerator based nodes parent is generator container
-            pos -= parent->getState().getWorldPosition();
+            pos -= parentState.getWorldPosition();
             pos -= (state.getWorldPivot() - state.getWorldPosition());
 
             // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
