@@ -26,8 +26,7 @@ namespace physics
 
     Object::Object(const Object& o) noexcept
         : m_body{ o.m_body },
-        m_geom{ o.m_geom },
-        m_matrixLevel{ o.m_matrixLevel }
+        m_geom{ o.m_geom }
     {
         // NOTE KI cannot copy physics bindings
         m_body.physicId = nullptr;
@@ -37,8 +36,7 @@ namespace physics
 
     Object::Object(Object&& o) noexcept
         : m_body{ o.m_body },
-        m_geom{ o.m_geom },
-        m_matrixLevel{ o.m_matrixLevel }
+        m_geom{ o.m_geom }
     {
         // NOTE KI o is moved now
         o.m_body.physicId = nullptr;
@@ -70,13 +68,14 @@ namespace physics
 
     void Object::updateToPhysics(
         uint32_t entityIndex,
+        ki::level_id& matrixLevel,
         NodeRegistry& nodeRegistry)
     {
         const auto& state = nodeRegistry.getState(entityIndex);
         {
             const auto level = state.getMatrixLevel();
-            if (m_matrixLevel == level) return;
-            m_matrixLevel = level;
+            if (matrixLevel == level) return;
+            matrixLevel = level;
         }
 
         const glm::vec3& pos = state.getWorldPosition();

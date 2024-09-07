@@ -45,6 +45,7 @@ namespace physics {
 
         void updateToPhysics(
             uint32_t entityIndex,
+            ki::level_id& matrixLevel,
             NodeRegistry& nodeRegistry);
 
         void updateFromPhysics(
@@ -54,6 +55,5 @@ namespace physics {
         Body m_body{};
         Geom m_geom{};
 
-        ki::level_id m_matrixLevel{ 0 };
     };
 }

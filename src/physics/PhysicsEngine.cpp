@@ -265,9 +265,9 @@ namespace physics
 
         auto& nodeRegistry = NodeRegistry::get();
 
-        for (const auto& id : m_updateObjects) {
+        for (const auto id : m_updateObjects) {
             auto& obj = m_objects[id];
-            obj.updateToPhysics(m_entityIndeces[id], nodeRegistry);
+            obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
         }
 
         const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
@@ -318,7 +318,7 @@ namespace physics
                     }
                 }
 
-                obj.updateToPhysics(entityIndex, nodeRegistry);
+                obj.updateToPhysics(entityIndex, m_matrixLevels[id], nodeRegistry);
                 prepared.insert({ id, true });
             }
             else {
@@ -350,6 +350,7 @@ namespace physics
         m_entityIndeces.push_back(entityIndex);
         m_objects.push_back(src);
         m_pending.push_back(id);
+        m_matrixLevels.push_back(0);
         if (update) {
             m_updateObjects.push_back(id);
         }

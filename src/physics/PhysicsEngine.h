@@ -134,6 +134,7 @@ namespace physics {
         std::vector<uint32_t> m_entityIndeces;
         std::vector<physics::Object> m_objects;
 
+        std::vector<ki::level_id> m_matrixLevels;
         std::vector<physics::physics_id> m_updateObjects;
 
         physics::physics_id m_rayId{ 0 };
