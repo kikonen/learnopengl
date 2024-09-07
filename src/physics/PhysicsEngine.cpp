@@ -506,7 +506,8 @@ namespace physics
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
-        for (int i = 0; i < m_objects.size(); i++) {
+        const auto count = m_objects.size();
+        for (int i = 0; i < count; i++) {
             const auto& obj = m_objects[i];
             const auto& nodeHandle = m_nodeHandles[i];
 
@@ -518,6 +519,8 @@ namespace physics
 
             // NOTE KI dCollide  does not check category/collision bitmask
             dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
+
+            if (onlyClosest && !hitData.hits.empty()) break;
         }
 
         // NOTE KI set mask to "none" to prevent collisions after casting
@@ -559,7 +562,8 @@ namespace physics
 
             dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
 
-            for (int i = 0; i < m_objects.size(); i++) {
+            const auto count = m_objects.size();
+            for (int i = 0; i < count; i++) {
                 const auto& obj = m_objects[i];
                 const auto& nodeHandle = m_nodeHandles[i];
 
@@ -570,6 +574,8 @@ namespace physics
 
                 // NOTE KI dCollide  does not check category/collision bitmask
                 dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
+
+                if (!hitData.hits.empty()) break;
             }
 
             if (hitData.hits.empty()) {

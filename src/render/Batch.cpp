@@ -172,9 +172,8 @@ namespace render {
 
         if (useFrustum) {
             s_accept.reserve(transforms.size());
-            s_accept.clear();
             for (uint32_t i = 0; i < count; i++) {
-                s_accept.push_back(i);
+                s_accept[i] = i;
             }
 
             const auto& frustum = ctx.m_camera->getFrustum();
