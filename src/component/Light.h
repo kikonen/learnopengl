@@ -69,8 +69,8 @@ public:
 
     float radius = 1.f;
 
-    glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
     float intensity = 1.f;
+    glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
 
 private:
     // dir = FROM pos to TARGET

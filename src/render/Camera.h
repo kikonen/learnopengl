@@ -127,12 +127,27 @@ namespace render {
         void updatePerspectiveFrustum() const noexcept;
 
     private:
-        bool m_orthagonal{ false };
         // left, right, bottom, top
         std::array<float, 4> m_viewport{ 0.f };
 
         float m_fov{ 45.f };
         float m_fovProjection = -1.0f;
+
+        float m_aspectRatio = -1;
+        float m_nearPlane = -1;
+        float m_farPlane = -1;
+
+        ki::level_id m_projectionLevel{ 0 };
+        ki::level_id m_projectedLevel{ 0 };
+        ki::level_id m_viewLevel{ 0 };
+
+        bool m_orthagonal : 1 { false };
+
+        glm::mat4 m_projectionMatrix{ 1.f };
+        mutable glm::mat4 m_projectedMatrix{ 1.f };
+        mutable glm::mat4 m_viewMatrix{ 1.f };
+
+        glm::vec3 m_worldPosition{ 0.f };
 
         // *DIRECTION* at camera is pointing at (== target)
         // *NOT* required to be orthogonal to up
@@ -142,21 +157,6 @@ namespace render {
         glm::vec3 m_viewUp{ 0.f, 1.f, 0.f };
 
         glm::vec3 m_viewRight{ 0.f, 0.f, 1.f };
-
-        float m_aspectRatio = -1;
-        float m_nearPlane = -1;
-        float m_farPlane = -1;
-
-        glm::mat4 m_projectionMatrix{ 1.f };
-        mutable glm::mat4 m_projectedMatrix{ 1.f };
-
-        mutable glm::mat4 m_viewMatrix{ 1.f };
-
-        ki::level_id m_projectionLevel{ 0 };
-        ki::level_id m_projectedLevel{ 0 };
-        ki::level_id m_viewLevel{ 0 };
-
-        glm::vec3 m_worldPosition{ 0.f };
 
         mutable Frustum m_frustum;
 
