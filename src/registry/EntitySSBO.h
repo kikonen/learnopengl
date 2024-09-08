@@ -34,9 +34,10 @@ struct EntitySSBO {
     // matrix is just N * vec4, thus vec4 is *largest*
     // NOTE KI encode in *ROW* order
     // last row is *ALWAYS* [0, 0, 0, 1]
-    glm::vec4 u_modelMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
-    glm::vec4 u_modelMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
-    glm::vec4 u_modelMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
+    //glm::vec4 u_modelMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
+    //glm::vec4 u_modelMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
+    //glm::vec4 u_modelMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
+    glm::mat4x3 u_modelMatrix;
 
     glm::vec3 u_normalMatrix0{ 1.f, 0.f, 0.f }; // 4 *  4 * 4 = 64
     //int pad1;
@@ -73,27 +74,28 @@ struct EntitySSBO {
         bool uniformScale,
         bool updateNormal)
     {
-        {
-            const auto& c0 = mat[0];
-            const auto& c1 = mat[1];
-            const auto& c2 = mat[2];
-            const auto& c3 = mat[3];
+        u_modelMatrix = mat;
+        //{
+        //    const auto& c0 = mat[0];
+        //    const auto& c1 = mat[1];
+        //    const auto& c2 = mat[2];
+        //    const auto& c3 = mat[3];
 
-            u_modelMatrixRow0[0] = c0[0];
-            u_modelMatrixRow0[1] = c1[0];
-            u_modelMatrixRow0[2] = c2[0];
-            u_modelMatrixRow0[3] = c3[0];
+        //    u_modelMatrixRow0[0] = c0[0];
+        //    u_modelMatrixRow0[1] = c1[0];
+        //    u_modelMatrixRow0[2] = c2[0];
+        //    u_modelMatrixRow0[3] = c3[0];
 
-            u_modelMatrixRow1[0] = c0[1];
-            u_modelMatrixRow1[1] = c1[1];
-            u_modelMatrixRow1[2] = c2[1];
-            u_modelMatrixRow1[3] = c3[1];
+        //    u_modelMatrixRow1[0] = c0[1];
+        //    u_modelMatrixRow1[1] = c1[1];
+        //    u_modelMatrixRow1[2] = c2[1];
+        //    u_modelMatrixRow1[3] = c3[1];
 
-            u_modelMatrixRow2[0] = c0[2];
-            u_modelMatrixRow2[1] = c1[2];
-            u_modelMatrixRow2[2] = c2[2];
-            u_modelMatrixRow2[3] = c3[2];
-        }
+        //    u_modelMatrixRow2[0] = c0[2];
+        //    u_modelMatrixRow2[1] = c1[2];
+        //    u_modelMatrixRow2[2] = c2[2];
+        //    u_modelMatrixRow2[3] = c3[2];
+        //}
 
         if (updateNormal) {
             if (uniformScale) {
