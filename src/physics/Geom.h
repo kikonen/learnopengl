@@ -68,18 +68,7 @@ namespace physics {
             const glm::vec3& nodePos,
             const glm::quat& nodeRot) const;
 
-        void setPlane(const glm::vec3& pos, const glm::quat& rot) const
-        {
-            const glm::vec3 UP{ 0.f, 1.f, 0.f };
-
-            auto normal = rot * UP;
-
-            // NOTE KI distance into direction of plane normal
-            auto dist = glm::dot(normal, pos);
-
-            dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
-        }
-
+        void setPlane(const glm::vec3& pos, const glm::quat& rot) const;
         void setHeightField(const glm::vec3& pos, const glm::quat& rot) const;
 
         void setPhysicPosition(const glm::vec3& pos) const

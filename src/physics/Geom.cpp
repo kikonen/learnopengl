@@ -125,6 +125,18 @@ namespace physics {
         }
     }
 
+    void Geom::setPlane(const glm::vec3& pos, const glm::quat& rot) const
+    {
+        const glm::vec3 UP{ 0.f, 1.f, 0.f };
+
+        auto normal = rot * UP;
+
+        // NOTE KI distance into direction of plane normal
+        auto dist = glm::dot(normal, pos);
+
+        dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
+    }
+
     void Geom::setHeightField(const glm::vec3& pos, const glm::quat& rot) const
     {
         if (placeable) {

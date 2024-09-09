@@ -326,17 +326,66 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::node_add,
         [this](const event::Event& e) {
+            auto handle = pool::NodeHandle::toHandle(e.body.node.target);
+            auto* node = handle.toNode();
+            if (!node) return;
+
             attachNode(
                 e.body.node.target,
                 e.body.node.parentId,
                 e.blob->body.state);
-        });
 
-    //dispatcher->addListener(
-    //    event::Type::node_change_parent,
-    //    [this](const event::Event& e) {
-    //        changeParent(e.body.node.target, e.body.node.parentId);
-    //    });
+            if (auto& data = e.blob->body.physics;
+                data.isValid())
+            {
+                auto& pe = physics::PhysicsEngine::get();
+
+                physics::Object obj;
+                obj.m_body = data.body;
+                obj.m_geom = data.geom;
+                pe.registerObject(handle, node->m_entityIndex, data.update, obj);
+            }
+
+            if (auto& data = e.blob->body.audioListener;
+                data.isValid())
+            {
+                auto& ae = audio::AudioEngine::get();
+                auto id = ae.registerListener();
+                if (id) {
+                    node->m_audioListenerId = id;
+                    auto* listener = ae.getListener(id);
+
+                    listener->m_default = data.isDefault;
+                    listener->m_gain = data.gain;
+                    listener->m_nodeHandle = node->toHandle();
+                }
+            }
+
+            for (int sourceIndex = 0;
+                auto & data : e.blob->body.audioSources)
+            {
+                auto& ae = audio::AudioEngine::get();
+                auto id = ae.registerSource(data.soundId);
+                if (id)
+                {
+                    node->m_audioSourceIds[sourceIndex] = id;
+
+                    auto* source = ae.getSource(id);
+
+                    source->m_autoPlay = data.isAutoPlay;
+                    source->m_referenceDistance = data.referenceDistance;
+                    source->m_maxDistance = data.maxDistance;
+                    source->m_rolloffFactor = data.rolloffFactor;
+                    source->m_minGain = data.minGain;
+                    source->m_maxGain = data.maxGain;
+                    source->m_looping = data.looping;
+                    source->m_gain = data.gain;
+                    source->m_pitch = data.pitch;
+                    source->m_nodeHandle = handle;
+                }
+                sourceIndex++;
+            }
+        });
 
     dispatcher->addListener(
         event::Type::node_select,
@@ -358,54 +407,6 @@ void NodeRegistry::attachListeners()
             auto handle = pool::NodeHandle::toHandle(e.body.node.target);
             if (!handle) handle = findDefaultCameraNode();
             setActiveCameraNode(handle);
-        });
-
-    dispatcher->addListener(
-        event::Type::audio_listener_add,
-        [this](const event::Event& e) {
-            auto& data = e.blob->body.audioListener;
-            auto* node = pool::NodeHandle::toNode(e.body.audioInit.target);
-            if (!node) return;
-
-            auto& ae = audio::AudioEngine::get();
-            auto id = ae.registerListener();
-            if (id) {
-                node->m_audioListenerId = id;
-                auto* listener = ae.getListener(id);
-
-                listener->m_default = data.isDefault;
-                listener->m_gain = data.gain;
-                listener->m_nodeHandle = node->toHandle();
-            }
-        });
-
-    dispatcher->addListener(
-        event::Type::audio_source_add,
-        [this](const event::Event& e) {
-            auto& data = e.blob->body.audioSource;
-            if (data.index < 0 || data.index >= ki::MAX_NODE_AUDIO_SOURCE) {
-                return;
-            }
-            auto handle = pool::NodeHandle::toHandle(e.body.audioInit.target);
-            auto& ae = audio::AudioEngine::get();
-            auto id = ae.registerSource(data.soundId);
-            if (id) {
-                auto* node = handle.toNode();
-                node->m_audioSourceIds[data.index] = id;
-
-                auto* source = ae.getSource(id);
-
-                source->m_autoPlay = data.isAutoPlay;
-                source->m_referenceDistance = data.referenceDistance;
-                source->m_maxDistance = data.maxDistance;
-                source->m_rolloffFactor = data.rolloffFactor;
-                source->m_minGain = data.minGain;
-                source->m_maxGain = data.maxGain;
-                source->m_looping = data.looping;
-                source->m_gain = data.gain;
-                source->m_pitch = data.pitch;
-                source->m_nodeHandle = handle;
-            }
         });
 
     dispatcher->addListener(

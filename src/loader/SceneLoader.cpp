@@ -267,7 +267,16 @@ namespace loader {
         {
             event::Event evt { event::Type::node_add };
             evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.state = resolved.state;
+            evt.blob->body = {
+                .state = resolved.state,
+                .physics = {
+                    .body = l.m_physicsLoader.createBody(nodeData.physics),
+                    .geom = l.m_physicsLoader.createGeom(nodeData.physics),
+                    .update = nodeData.physics.update
+                },
+                .audioListener = l.m_audioLoader.createListener(nodeData.audio.listener),
+                .audioSources = l.m_audioLoader.createSources(nodeData.audio.sources),
+            };
             evt.body.node = {
                 .target = handle.toId(),
                 .parentId = resolved.parentId,
@@ -327,10 +336,6 @@ namespace loader {
         //    m_dispatcher->send(evt);
         //}
 
-        {
-            l.m_audioLoader.createAudio(nodeData.audio, handle);
-            l.m_physicsLoader.createObject(nodeData.physics, handle);
-        }
     }
 
     void SceneLoader::addResolvedNode(

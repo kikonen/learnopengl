@@ -510,6 +510,7 @@
     <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />

@@ -10,7 +10,6 @@
 #include "audio/Listener.h"
 #include "audio/AudioEngine.h"
 
-#include "event/Dispatcher.h"
 #include "registry/Registry.h"
 
 #include "loader/document.h"
@@ -99,6 +98,9 @@ namespace loader
             else if (k == "autoplay") {
                 data.isAutoPlay = readBool(v);
             }
+            else if (k == "name") {
+                data.name = readString(v);
+            }
             else if (k == "path") {
                 data.path = readString(v);
             }
@@ -130,80 +132,59 @@ namespace loader
                 reportUnknown("source_entry", k, v);
             }
         }
-    }
 
-    void AudioLoader::createAudio(
-        const AudioData& data,
-        pool::NodeHandle handle)
-    {
-        createListener(data.listener, handle);
-        createSources(data.sources, handle);
-    }
-
-    void AudioLoader::createSources(
-        const std::vector<SourceData>& sources,
-        const pool::NodeHandle handle)
-    {
-        uint8_t index = 0;
-        for (const auto& data : sources) {
-            createSource(data, handle, index++);
+        if (data.name.empty()) {
+            data.name = data.path;
         }
     }
 
-    void AudioLoader::createSource(
-        const SourceData& data,
-        const pool::NodeHandle handle,
-        const uint8_t index)
+    std::vector<event::AudioSourceData> AudioLoader::createSources(
+        const std::vector<SourceData>& sources)
     {
-        if (!data.enabled) return;
+        std::vector<event::AudioSourceData> result;
+        uint8_t index = 0;
+        for (const auto& data : sources) {
+            const auto& src = createSource(data);
+            if (src.soundId) {
+                result.push_back(src);
+            }
+        }
+        return result;
+    }
 
+    event::AudioSourceData AudioLoader::createSource(
+        const SourceData& data)
+    {
         const auto& assets = Assets::get();
 
         std::string fullPath = util::joinPath(assets.assetsDir, data.path);
         auto soundId = audio::AudioEngine::get().registerSound(fullPath);
 
-        if (!soundId) return;
+        if (!soundId) return {};
 
-        {
-            event::Event evt { event::Type::audio_source_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.audioSource = {
-                .soundId = soundId,
-                .index = index,
-                .isAutoPlay = data.isAutoPlay,
-                .referenceDistance = data.referenceDistance,
-                .maxDistance = data.maxDistance,
-                .rolloffFactor = data.rolloffFactor,
-                .minGain = data.minGain,
-                .maxGain = data.maxGain,
-                .looping = data.looping,
-                .pitch = data.pitch,
-                .gain = data.gain,
-            };
-            auto& body = evt.body.audioInit = {
-                .target = handle.toId(),
-            };
-            m_dispatcher->send(evt);
-        }
+        return {
+            .soundId = soundId,
+            .name = data.name,
+            .isAutoPlay = data.isAutoPlay,
+            .referenceDistance = data.referenceDistance,
+            .maxDistance = data.maxDistance,
+            .rolloffFactor = data.rolloffFactor,
+            .minGain = data.minGain,
+            .maxGain = data.maxGain,
+            .looping = data.looping,
+            .pitch = data.pitch,
+            .gain = data.gain,
+        };
     }
 
-    void AudioLoader::createListener(
-        const ListenerData& data,
-        const pool::NodeHandle handle)
+    event::AudioListenerData AudioLoader::createListener(
+        const ListenerData& data)
     {
-        if (!data.enabled) return;
+        if (!data.enabled) return {};
 
-        {
-            event::Event evt { event::Type::audio_listener_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.audioListener = {
-                .isDefault = data.isDefault,
-                .gain = data.gain,
-            };
-            auto& body = evt.body.audioInit = {
-                .target = handle.toId(),
-            };
-            m_dispatcher->send(evt);
-        }
+         return {
+            .isDefault = data.isDefault,
+            .gain = data.gain,
+        };
     }
 }

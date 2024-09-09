@@ -142,24 +142,17 @@ namespace loader {
         }
     }
 
-    void PhysicsLoader::createObject(
-        const PhysicsData& data,
-        const pool::NodeHandle handle)
+    physics::Body PhysicsLoader::createBody(
+        const PhysicsData& data)
     {
-        if (!data.enabled) return;
+        if (!data.enabled) return {};
+        return data.body;
+    }
 
-        {
-            event::Event evt { event::Type::physics_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.physics = {
-                .update = data.update,
-                .body = data.body,
-                .geom = data.geom,
-            };
-            auto& body = evt.body.physics = {
-                .target = handle.toId(),
-            };
-            m_dispatcher->send(evt);
-        }
+    physics::Geom PhysicsLoader::createGeom(
+        const PhysicsData& data)
+    {
+        if (!data.enabled) return {};
+        return data.geom;
     }
 }

@@ -301,7 +301,7 @@ namespace physics
         if (m_pending.empty()) return;
 
         auto& nodeRegistry = NodeRegistry::get();
-        std::unordered_map<physics::physics_id, bool> prepared;
+        std::unordered_map<physics::object_id, bool> prepared;
 
         for (const auto& id : m_pending) {
             auto& obj = m_objects[id];
@@ -338,13 +338,13 @@ namespace physics
         }
     }
 
-    physics::physics_id PhysicsEngine::registerObject(
+    physics::object_id PhysicsEngine::registerObject(
         pool::NodeHandle nodeHandle,
         uint32_t entityIndex,
         bool update,
         const physics::Object& src)
     {
-        auto id = static_cast<physics::physics_id>(m_objects.size());
+        auto id = static_cast<physics::object_id>(m_objects.size());
 
         m_nodeHandles.push_back(nodeHandle);
         m_entityIndeces.push_back(entityIndex);
@@ -358,7 +358,7 @@ namespace physics
         return id;
     }
 
-    Object* PhysicsEngine::getObject(physics::physics_id id)
+    Object* PhysicsEngine::getObject(physics::object_id id)
     {
         if (id < 1 || id > m_objects.size()) return nullptr;
         return &m_objects[id];

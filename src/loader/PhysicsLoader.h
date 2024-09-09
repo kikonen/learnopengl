@@ -6,6 +6,9 @@
 
 #include "pool/NodeHandle.h"
 
+#include "physics/Body.h"
+#include "physics/Geom.h"
+
 #include "BaseLoader.h"
 
 #include "PhysicsData.h"
@@ -25,8 +28,10 @@ namespace loader {
             const loader::DocNode& node,
             physics::Body& data) const;
 
-        void createObject(
-            const PhysicsData& data,
-            const pool::NodeHandle handle);
+        physics::Body createBody(
+            const PhysicsData& data);
+
+        physics::Geom createGeom(
+            const PhysicsData& data);
     };
 }

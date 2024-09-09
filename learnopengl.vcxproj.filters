@@ -2165,6 +2165,9 @@
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\event\actions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

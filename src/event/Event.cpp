@@ -9,6 +9,7 @@ namespace event {
     BlobData::~BlobData()
     {}
 
-    BlobData::Body::~Body()
-    {}
+    Event::~Event()
+    {
+    }
 }

@@ -18,6 +18,7 @@ namespace loader
         bool enabled{ false };
         bool isAutoPlay{ false };
 
+        std::string name;
         std::string path;
 
         float referenceDistance{ audio::REFERENCE_DISTANCE };

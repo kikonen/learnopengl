@@ -9,7 +9,6 @@ namespace event
 
         node_add,
         node_added,
-        //node_change_parent,
         node_select,
         node_activate,
 
@@ -20,17 +19,11 @@ namespace event
 
         controller_add,
 
-        audio_listener_add,
-        audio_source_add,
-        audio_listener_update,
-        audio_source_update,
         audio_listener_activate,
 
         audio_source_play,
         audio_source_stop,
         audio_source_pause,
-
-        physics_add,
 
         command_wait,
         command_move,
