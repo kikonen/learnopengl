@@ -50,8 +50,7 @@ namespace decal {
     // NOTE KI decal is rendered as Quad, so transform accordingly
     glm::mat4 Decal::getModelMatrix() const {
         const auto* node = m_parent.toNode();
-        //const auto& state = node->getState();
-        const NodeState state;
+        const auto& state = node->getState();
 
         const auto& parentMatrix = state.getModelMatrix();
         const auto& scale = state.getScale();

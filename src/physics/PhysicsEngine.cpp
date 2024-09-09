@@ -419,9 +419,9 @@ namespace physics
         if (!isEnabled()) return { false, 0.f };
 
         const auto& hits = rayCast(
-            pos + glm::vec3{ 0.f, 200.f, 0.f },
+            pos + glm::vec3{ 0.f, 500.f, 0.f },
             { 0.f, -1.f, 0.f },
-            500.f,
+            1000.f,
             categoryMask,
             collisionMask,
             pool::NodeHandle::NULL_HANDLE,
@@ -521,7 +521,8 @@ namespace physics
             // NOTE KI dCollide  does not check category/collision bitmask
             dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
 
-            if (onlyClosest && !hitData.hits.empty()) break;
+            // NOTE KI *cannot* do early exit for onlyClosest
+            // since closest hit !== first hit
         }
 
         // NOTE KI set mask to "none" to prevent collisions after casting
@@ -576,7 +577,8 @@ namespace physics
                 // NOTE KI dCollide  does not check category/collision bitmask
                 dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
 
-                if (!hitData.hits.empty()) break;
+                // NOTE KI *cannot* do early exit for onlyClosest
+                // since closest hit !== first hit
             }
 
             if (hitData.hits.empty()) {
