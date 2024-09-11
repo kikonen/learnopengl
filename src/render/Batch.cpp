@@ -171,7 +171,7 @@ namespace render {
         uint32_t instanceCount = count;
 
         if (useFrustum) {
-            s_accept.reserve(transforms.size());
+            s_accept.resize(transforms.size());
             for (uint32_t i = 0; i < count; i++) {
                 s_accept[i] = i;
             }

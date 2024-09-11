@@ -5,15 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace physics {
-    enum class BodyType : std::underlying_type_t<std::byte> {
-        none = 0,
-        box,
-        sphere,
-        capsule,
-        cylinder,
-    };
+#include "size.h"
 
+namespace physics {
     struct Body {
         // NOTE KI *SCALED* using scale of node
         // size{0] == radius
@@ -40,7 +34,7 @@ namespace physics {
 
         dBodyID physicId{ nullptr };
 
-        BodyType type{ BodyType::none };
+        physics::BodyType type{ physics::BodyType::none };
 
         bool forceAxis : 1 { false };
         bool kinematic : 1 { false };

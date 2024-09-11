@@ -12,17 +12,6 @@
 namespace physics {
     struct Body;
 
-    enum class GeomType : std::underlying_type_t<std::byte> {
-        none = 0,
-        ray,
-        plane,
-        height_field,
-        box,
-        sphere,
-        capsule,
-        cylinder,
-    };
-
     struct Geom {
         // NOTE KI *SCALED* using scale of node
         // box:
@@ -51,7 +40,7 @@ namespace physics {
         // TODO KI define "PhysicsMaterial" and refer to it from geom
         physics::material_id materialId{ 0 };
 
-        GeomType type{ GeomType::none };
+        physics::GeomType type{ physics::GeomType::none };
 
         bool placeable : 1 { true };
 

@@ -50,6 +50,11 @@ namespace mesh {
             m_rotation = rotation;
         }
 
+        inline const glm::quat& getRotation() const noexcept
+        {
+            return m_rotation;
+        }
+
         inline const glm::vec4& getVolume() const noexcept
         {
             return m_volume;

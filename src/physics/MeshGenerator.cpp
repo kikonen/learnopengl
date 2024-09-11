@@ -91,9 +91,7 @@ namespace physics {
         meshes->reserve(m_engine.m_objects.size());
 
         for (const auto& obj : m_engine.m_objects) {
-            if (!obj.m_geom.physicId) continue;
-
-            auto instance = generateObject(obj);
+            auto instance = generateMesh(obj.m_geom);
             if (instance.m_mesh) {
                 instance.m_materialIndex = getMaterial(obj.m_geom.type).m_registeredIndex;
                 meshes->push_back(instance);
@@ -103,9 +101,9 @@ namespace physics {
         return meshes;
     }
 
-    mesh::MeshInstance MeshGenerator::generateObject(const Object& obj)
+    mesh::MeshInstance MeshGenerator::generateMesh(const physics::Geom& geom)
     {
-        const auto geomId = obj.m_geom.physicId;
+        const auto geomId = geom.physicId;
         if (!geomId) return {};
 
         glm::vec3 pos{ 0.f };
@@ -116,7 +114,7 @@ namespace physics {
 
         std::shared_ptr<mesh::Mesh> mesh;
         {
-            switch (obj.m_geom.type) {
+            switch (geom.type) {
             case GeomType::ray: {
                 dVector3 startOde;
                 dVector3 dirOde;
@@ -185,7 +183,7 @@ namespace physics {
                 break;
             }
             case GeomType::height_field: {
-                const auto* heightMap = m_engine.getHeightMap(obj.m_geom.heightMapId);
+                const auto* heightMap = m_engine.getHeightMap(geom.heightMapId);
                 if (heightMap) {
                     //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
 
@@ -244,7 +242,6 @@ namespace physics {
                 cacheKey = fmt::format(
                     "sphere-{}",
                     radius);
-
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -306,12 +303,12 @@ namespace physics {
             }
         }
 
-        if (mesh && obj.m_geom.physicId
-            && obj.m_geom.type != GeomType::ray
-            && obj.m_geom.type != GeomType::plane)
+        if (mesh && geom.physicId
+            && geom.type != GeomType::ray
+            && geom.type != GeomType::plane)
         {
-            pos = obj.m_geom.getPhysicPosition();
-            rot = obj.m_geom.getPhysicRotation();
+            pos = geom.getPhysicPosition();
+            rot = geom.getPhysicRotation();
 
             pos += offset;
 

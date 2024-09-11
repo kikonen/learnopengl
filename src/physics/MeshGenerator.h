@@ -15,7 +15,7 @@ namespace mesh {
 
 namespace physics {
     class PhysicsEngine;
-    struct Object;
+    struct Geom;
 
     class MeshGenerator {
     public:
@@ -25,7 +25,7 @@ namespace physics {
         std::shared_ptr<std::vector<mesh::MeshInstance>> generateMeshes();
 
     private:
-        mesh::MeshInstance generateObject(const Object& obj);
+        mesh::MeshInstance generateMesh(const physics::Geom& geom);
 
         std::shared_ptr<mesh::Mesh> findMesh(const std::string& key);
 
