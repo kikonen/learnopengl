@@ -41,6 +41,10 @@ namespace physics {
 
         ~Body();
 
+        bool isValid() const noexcept {
+            return type != BodyType::none;
+        }
+
         void create(
             dWorldID worldId,
             dSpaceID spaceId,

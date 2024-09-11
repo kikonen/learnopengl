@@ -46,6 +46,10 @@ namespace physics {
 
         ~Geom();
 
+        bool isValid() const noexcept {
+            return type != GeomType::none;
+        }
+
         void create(
             dWorldID worldId,
             dSpaceID spaceId,

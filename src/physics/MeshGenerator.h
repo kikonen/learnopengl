@@ -6,7 +6,11 @@
 #include <mutex>
 #include <memory>
 
+#include <ode/ode.h>
+
 #include "mesh/MeshInstance.h"
+
+#include "size.h"
 
 namespace mesh {
     class Mesh;
@@ -15,7 +19,6 @@ namespace mesh {
 
 namespace physics {
     class PhysicsEngine;
-    struct Geom;
 
     class MeshGenerator {
     public:
@@ -25,7 +28,9 @@ namespace physics {
         std::shared_ptr<std::vector<mesh::MeshInstance>> generateMeshes();
 
     private:
-        mesh::MeshInstance generateMesh(const physics::Geom& geom);
+        mesh::MeshInstance generateMesh(
+            physics::GeomType geomType,
+            dGeomID geomId);
 
         std::shared_ptr<mesh::Mesh> findMesh(const std::string& key);
 

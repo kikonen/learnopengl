@@ -24,6 +24,7 @@
 #include "mesh/MeshInstance.h"
 
 #include "PhysicsEngine.h"
+#include "ode_util.h"
 
 
 namespace {
@@ -90,10 +91,16 @@ namespace physics {
         auto meshes = std::make_shared<std::vector<mesh::MeshInstance>>();
         meshes->reserve(m_engine.m_objects.size());
 
-        for (const auto& obj : m_engine.m_objects) {
-            auto instance = generateMesh(obj.m_geom);
+        const auto spaceId = m_engine.m_spaceId;
+        auto geomCount = dSpaceGetNumGeoms(spaceId);
+
+        for (int i = 0; i < geomCount; i++) {
+            auto geomId = dSpaceGetGeom(spaceId, i);
+            auto geomType = getGeomType(dGeomGetClass(geomId));
+
+            auto instance = generateMesh(geomType, geomId);
             if (instance.m_mesh) {
-                instance.m_materialIndex = getMaterial(obj.m_geom.type).m_registeredIndex;
+                instance.m_materialIndex = getMaterial(geomType).m_registeredIndex;
                 meshes->push_back(instance);
             }
         }
@@ -101,10 +108,11 @@ namespace physics {
         return meshes;
     }
 
-    mesh::MeshInstance MeshGenerator::generateMesh(const physics::Geom& geom)
+    mesh::MeshInstance MeshGenerator::generateMesh(
+        physics::GeomType geomType,
+        dGeomID geomId)
     {
-        const auto geomId = geom.physicId;
-        if (!geomId) return {};
+        if (geomType == physics::GeomType::none) return {};
 
         glm::vec3 pos{ 0.f };
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
@@ -114,8 +122,8 @@ namespace physics {
 
         std::shared_ptr<mesh::Mesh> mesh;
         {
-            switch (geom.type) {
-            case GeomType::ray: {
+            switch (geomType) {
+            case physics::GeomType::ray: {
                 dVector3 startOde;
                 dVector3 dirOde;
 
@@ -147,7 +155,7 @@ namespace physics {
 
                 break;
             }
-            case GeomType::plane: {
+            case physics::GeomType::plane: {
                 dVector4 result;
                 dGeomPlaneGetParams(geomId, result);
                 const glm::vec4 plane{
@@ -182,8 +190,10 @@ namespace physics {
 
                 break;
             }
-            case GeomType::height_field: {
-                const auto* heightMap = m_engine.getHeightMap(geom.heightMapId);
+            case physics::GeomType::height_field: {
+                auto heightDataId = dGeomHeightfieldGetHeightfieldData(geomId);
+                //const auto* heightMap = m_engine.getHeightMap(geom.heightMapId);
+                const physics::HeightMap* heightMap = nullptr;
                 if (heightMap) {
                     //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
 
@@ -212,7 +222,7 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::box: {
+            case physics::GeomType::box: {
                 dVector3 lengths;
                 dGeomBoxGetLengths(geomId, lengths);
                 glm::vec3 size{
@@ -236,7 +246,7 @@ namespace physics {
 
                 break;
             }
-            case GeomType::sphere: {
+            case physics::GeomType::sphere: {
                 dReal radius = dGeomSphereGetRadius(geomId);
 
                 cacheKey = fmt::format(
@@ -255,7 +265,7 @@ namespace physics {
 
                 break;
             }
-            case GeomType::capsule: {
+            case physics::GeomType::capsule: {
                 dReal radius;
                 dReal length;
                 dGeomCapsuleGetParams(geomId, &radius, &length);
@@ -278,7 +288,7 @@ namespace physics {
 
                 break;
             }
-            case GeomType::cylinder: {
+            case physics::GeomType::cylinder: {
                 dReal radius;
                 dReal length;
                 dGeomCylinderGetParams(geomId, &radius, &length);
@@ -303,28 +313,15 @@ namespace physics {
             }
         }
 
-        if (mesh && geom.physicId
-            && geom.type != GeomType::ray
-            && geom.type != GeomType::plane)
+        if (mesh && geomId
+            && geomType != physics::GeomType::ray
+            && geomType != physics::GeomType::plane)
         {
-            pos = geom.getPhysicPosition();
-            rot = geom.getPhysicRotation();
+            pos = getPhysicPosition(geomId);
+            rot = getPhysicRotation(geomId);
 
             pos += offset;
-
-            //if (obj.m_geom.type == GeomType::box) {
-            //    auto degrees = util::quatToDegrees(rot);
-
-            //    KI_INFO_OUT(fmt::format(
-            //        "GET_GEOM: id={}, type={}, pos={}, rot={}, degrees={}",
-            //        obj.m_id, util::as_integer(obj.m_geom.type), pos, rot, degrees));
-            //}
         }
-
-        //if (mesh && obj.m_body.physicId) {
-        //    pos = obj.m_body.getPhysicPosition();
-        //    rot = obj.m_body.getPhysicRotation();
-        //}
 
         glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
             glm::mat4(rot);
