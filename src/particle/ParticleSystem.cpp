@@ -1,6 +1,6 @@
 #include "ParticleSystem.h"
 
-#include <algorithm>>
+#include <algorithm>
 
 #include "asset/Assets.h"
 
@@ -35,6 +35,13 @@ namespace particle {
     ParticleSystem::ParticleSystem()
     {
         m_particles.reserve(1 * BLOCK_SIZE);
+    }
+
+    uint32_t ParticleSystem::getFreespace() const noexcept
+    {
+        std::lock_guard lock(m_pendingLock);
+        uint32_t sz = static_cast<uint32_t>(m_maxCount - m_snapshotCount + m_pending.size());
+        return std::max((uint32_t)0, sz);
     }
 
     bool ParticleSystem::addParticle(const Particle& particle)
@@ -73,7 +80,6 @@ namespace particle {
     {
         if (!isEnabled()) return;
 
-        std::lock_guard lock(m_lock);
         preparePending();
 
         size_t size = m_particles.size();

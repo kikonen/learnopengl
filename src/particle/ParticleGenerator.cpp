@@ -29,15 +29,17 @@ namespace particle {
         const UpdateContext& ctx,
         Node& node)
     {
-        float x = m_definition.particlesPerSec * ctx.m_clock.elapsedSecs;
-
         auto& ps = ParticleSystem::get();
         //if (ps.isFull()) return;
+
+        const int freespace = ps.getFreespace();
+        int count = m_definition.rate * ctx.m_clock.elapsedSecs;
+        count = std::min(count, freespace);
 
         const auto& state = node.getState();
         glm::vec3 pos = state.getWorldPosition();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < count; i++) {
             Particle particle;
 
             particle.m_pos = {

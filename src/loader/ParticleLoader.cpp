@@ -41,12 +41,36 @@ namespace loader
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
-            //else if (k == "size") {
-            //    data.size = readFloat(v);
-            //}
-            //else if (k == "atlas_size") {
-            //    data.atlasSize = readVec2(v);
-            //}
+            else if (k == "dir") {
+                data.dir = readVec3(v);
+            }
+            else if (k == "dir_variation") {
+                data.dirVariation = readFloat(v);
+            }
+            else if (k == "lifetime") {
+                data.lifetime = readFloat(v);
+            }
+            else if (k == "radius") {
+                data.radius = readFloat(v);
+            }
+            else if (k == "velocity") {
+                data.velocity = readFloat(v);
+            }
+            else if (k == "velocity_variation") {
+                data.velocityVariation = readFloat(v);
+            }
+            else if (k == "size") {
+                data.size = readFloat(v);
+            }
+            else if (k == "size_variation") {
+                data.velocityVariation = readFloat(v);
+            }
+            else if (k == "rate") {
+                data.rate = readFloat(v);
+            }
+            else if (k == "rate_variation") {
+                data.rateVariation = readFloat(v);
+            }
             else {
                 reportUnknown("particle_entry", k, v);
             }
@@ -60,6 +84,23 @@ namespace loader
 
         auto generator = std::make_unique<particle::ParticleGenerator>();
 
+        particle::ParticleDefinition def;
+
+        def.dir = data.dir;
+        def.dirVariation = data.dirVariation;
+
+        def.lifetime = data.lifetime;
+        def.radius = data.radius;
+
+        def.velocity = data.velocity;
+        def.velocityVariation = data.velocityVariation;
+
+        def.size = data.size;
+        def.sizeVariation = data.sizeVariation;
+
+        def.rate = data.rate;
+
+        generator->setDefinition(def);
         generator->setMaterial(data.materialData.material);
         generator->getMaterial().loadTextures();
 

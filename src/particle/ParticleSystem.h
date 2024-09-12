@@ -43,6 +43,8 @@ namespace particle {
             return static_cast<uint32_t>(m_activeCount);
         }
 
+        uint32_t getFreespace() const noexcept;
+
         bool isFull() const noexcept {
             return !m_enabled || m_particles.size() >= m_maxCount;
         }
@@ -56,8 +58,7 @@ namespace particle {
     private:
         bool m_enabled{ false };
 
-        std::mutex m_pendingLock{};
-        std::mutex m_lock{};
+        mutable std::mutex m_pendingLock{};
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
