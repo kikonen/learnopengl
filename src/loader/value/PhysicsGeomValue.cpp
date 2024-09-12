@@ -11,7 +11,7 @@
 namespace loader {
     void PhysicsGeomValue::loadGeom(
         const loader::DocNode& node,
-        physics::Geom& data) const
+        loader::GeomData& data) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -48,7 +48,7 @@ namespace loader {
                 data.size = readVec3(v);
             }
             else if (k == "rot" || k == "rotation") {
-                data.rotation = util::degreesToQuat(readDegreesRotation(v));
+                data.rotation = readDegreesRotation(v);
             }
             else if (k == "offset") {
                 data.offset = readVec3(v);

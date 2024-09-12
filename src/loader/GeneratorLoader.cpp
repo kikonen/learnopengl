@@ -23,6 +23,7 @@
 
 #include "loader/Loaders.h"
 #include "value/PhysicsCategoryValue.h"
+#include "value/PhysicsGeomValue.h"
 
 namespace {
     std::unordered_map<std::string, GeneratorMode> g_modeMapping;
@@ -132,6 +133,10 @@ namespace loader {
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData);
             }
+            else if (k == "geom") {
+                PhysicsGeomValue loader;
+                loader.loadGeom(v, data.geom);
+            }
             else if (k == "terrain") {
                 loadTerrain(v, data.terrainData);
             }
@@ -225,6 +230,8 @@ namespace loader {
             generator->m_xStep = data.repeat.xStep;
             generator->m_yStep = data.repeat.yStep;
             generator->m_zStep = data.repeat.zStep;
+
+            generator->m_geometryTemplate = data.geom;
 
             return generator;
         }

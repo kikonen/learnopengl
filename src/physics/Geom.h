@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "loader/PhysicsData.h"
+
 #include "Category.h"
 
 #include "size.h"
@@ -28,8 +30,8 @@ namespace physics {
 
         //glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
 
-        dGeomID physicId{ nullptr };
-        dHeightfieldDataID heightDataId{ nullptr };
+        mutable dGeomID physicId{ nullptr };
+        mutable dHeightfieldDataID heightDataId{ nullptr };
 
         uint32_t categoryMask{ UINT_MAX };
         uint32_t collisionMask{ UINT_MAX };
@@ -42,7 +44,11 @@ namespace physics {
 
         bool placeable : 1 { true };
 
+        Geom();
+        Geom(Geom&& o) noexcept;
         ~Geom();
+
+        Geom* operator=(const loader::GeomData& o);
 
         bool isValid() const noexcept {
             return type != GeomType::none;

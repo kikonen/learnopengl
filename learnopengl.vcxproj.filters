@@ -954,6 +954,9 @@
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\event\actions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2166,6 +2169,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\actions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\ode_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

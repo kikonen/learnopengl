@@ -336,14 +336,16 @@ void NodeRegistry::attachListeners()
                 e.blob->body.state);
 
             if (auto& data = e.blob->body.physics;
-                data.isValid())
+                data.isValid() &&
+                !(node->m_generator &&
+                node->m_generator->isLightWeight()) )
             {
                 auto& pe = physics::PhysicsEngine::get();
 
                 physics::Object obj;
                 obj.m_body = data.body;
                 obj.m_geom = data.geom;
-                pe.registerObject(handle, node->m_entityIndex, data.update, obj);
+                pe.registerObject(handle, node->m_entityIndex, data.update, std::move(obj));
             }
 
             if (auto& data = e.blob->body.audioListener;

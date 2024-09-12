@@ -31,7 +31,6 @@ namespace physics {
     // other objects).
     struct Object {
         Object();
-        Object(const Object& b) noexcept;
         Object(Object&& b) noexcept;
         ~Object();
 

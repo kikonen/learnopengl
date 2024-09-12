@@ -5,6 +5,24 @@
 #include "Body.h"
 
 namespace physics {
+    Geom::Geom() {}
+
+    Geom::Geom(Geom&& o) noexcept
+        : size{ o.size },
+        rotation{ o.rotation },
+        offset{ o.offset },
+        physicId{ o.physicId },
+        heightDataId{ o.heightDataId },
+        categoryMask{ o.categoryMask },
+        collisionMask{ o.collisionMask },
+        materialId{ o.materialId },
+        type{ o.type },
+        placeable{ o.placeable }
+    {
+        o.physicId = nullptr;
+        o.heightDataId = nullptr;
+    }
+
     Geom::~Geom()
     {
         if (physicId) {
@@ -13,6 +31,19 @@ namespace physics {
         if (heightDataId) {
             dGeomHeightfieldDataDestroy(heightDataId);
         }
+    }
+
+    Geom* Geom::operator=(const loader::GeomData& o)
+    {
+        size = o.size;
+        rotation = util::degreesToQuat(o.rotation);
+        offset = o.offset;
+        categoryMask = o.categoryMask;
+        collisionMask = o.collisionMask;
+        type = o.type;
+        placeable = o.placeable;
+
+        return this;
     }
 
     void Geom::create(
@@ -120,7 +151,7 @@ namespace physics {
         }
 
         if (!handled) {
-            setPhysicPosition(nodePivot);
+            setPhysicPosition(nodePos);
             setPhysicRotation(nodeRot);
         }
     }

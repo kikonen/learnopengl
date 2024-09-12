@@ -26,12 +26,6 @@ namespace loader {
 
         void loadBody(
             const loader::DocNode& node,
-            physics::Body& data) const;
-
-        physics::Body createBody(
-            const PhysicsData& data);
-
-        physics::Geom createGeom(
-            const PhysicsData& data);
+            loader::BodyData& data) const;
     };
 }

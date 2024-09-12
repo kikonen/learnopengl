@@ -1,13 +1,13 @@
 #pragma once
 
-#include "physics/Geom.h"
-
 #include "loader/document.h"
+
+#include "loader/PhysicsData.h"
 
 namespace loader {
     struct PhysicsGeomValue {
         void loadGeom(
             const loader::DocNode& node,
-            physics::Geom& data) const;
+            loader::GeomData& data) const;
     };
 }

@@ -2,6 +2,8 @@
 
 #include "NodeGenerator.h"
 
+#include "physics/Geom.h"
+
 //
 // Instance node entities based into grid
 //
@@ -56,8 +58,12 @@ public:
     float m_yStep{ 0 };
     float m_zStep{ 0 };
 
+    physics::Geom m_geometryTemplate;
+
 private:
     bool m_boundsSetupDone{ false };
     bool m_dynamicBounds{ false };
     bool m_staticBounds{ false };
+
+    std::vector<physics::Geom> m_geometries;
 };

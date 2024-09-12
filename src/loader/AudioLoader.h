@@ -32,13 +32,13 @@ namespace loader {
             const loader::DocNode& node,
             SourceData& data) const;
 
-        std::vector<event::AudioSourceData> createSources(
+        std::vector<event::AudioSourceAttach> createSources(
             const std::vector<SourceData>& sources);
 
-        event::AudioSourceData createSource(
+        event::AudioSourceAttach createSource(
             const SourceData& data);
 
-        event::AudioListenerData createListener(
+        event::AudioListenerAttach createListener(
             const ListenerData& data);
     };
 }

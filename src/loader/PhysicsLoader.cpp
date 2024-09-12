@@ -80,7 +80,7 @@ namespace loader {
 
     void PhysicsLoader::loadBody(
         const loader::DocNode& node,
-        physics::Body& data) const
+        loader::BodyData& data) const
     {
         //data.baseRotation = glm::quat_identity<float, glm::packed_highp>();
 
@@ -128,7 +128,7 @@ namespace loader {
                 data.maxAngulerVelocity = readFloat(v);
             }
             else if (k == "rot" || k == "rotation") {
-                data.baseRotation = util::degreesToQuat(readDegreesRotation(v));
+                data.baseRotation = readDegreesRotation(v);
             }
             else if (k == "axis") {
                 data.axis = readVec3(v);
@@ -140,19 +140,5 @@ namespace loader {
                 reportUnknown("body_entry", k, v);
             }
         }
-    }
-
-    physics::Body PhysicsLoader::createBody(
-        const PhysicsData& data)
-    {
-        if (!data.enabled) return {};
-        return data.body;
-    }
-
-    physics::Geom PhysicsLoader::createGeom(
-        const PhysicsData& data)
-    {
-        if (!data.enabled) return {};
-        return data.geom;
     }
 }

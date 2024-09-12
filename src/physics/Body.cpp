@@ -19,6 +19,28 @@ namespace physics {
         }
     }
 
+    Body* Body::operator=(const loader::BodyData& o)
+    {
+        size = o.size;
+
+        baseRotation = util::degreesToQuat(o.baseRotation);
+
+        linearVelocity = o.linearVelocity;
+        angularVelocity = o.angularVelocity;
+
+        axis = o.axis;
+        maxAngulerVelocity = o.maxAngulerVelocity;
+
+        density = o.density;
+
+        type = o.type;
+
+        forceAxis = o.forceAxis;
+        kinematic = o.kinematic;
+
+        return this;
+    }
+
     void Body::create(
         dWorldID worldId,
         dSpaceID spaceId,

@@ -6,6 +6,7 @@
 
 #include "generator/GeneratorMode.h"
 
+#include "PhysicsData.h"
 #include "TerrainData.h"
 #include "MaterialData.h"
 
@@ -41,6 +42,8 @@ namespace loader {
         TerrainData terrainData;
 
         MaterialData materialData;
+
+        loader::GeomData geom;
 
         glm::vec3 boundsDir{ 0.f, -1.f, 0.f };
         uint32_t boundsMask{ UINT_MAX };

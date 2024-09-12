@@ -270,8 +270,9 @@ namespace loader {
             evt.blob->body = {
                 .state = resolved.state,
                 .physics = {
-                    .body = l.m_physicsLoader.createBody(nodeData.physics),
-                    .geom = l.m_physicsLoader.createGeom(nodeData.physics),
+                    .body = nodeData.physics.body,
+                    .geom = nodeData.physics.geom,
+                    .enabled = nodeData.physics.enabled,
                     .update = nodeData.physics.update
                 },
                 .audioListener = l.m_audioLoader.createListener(nodeData.audio.listener),

@@ -20,6 +20,7 @@
 
 #include "physics/PhysicsEngine.h"
 #include "physics/physics_util.h"
+#include "physics/Geom.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -53,9 +54,23 @@ void GridGenerator::updateWT(
     updateBounds(ctx, container);
     updateInstances(ctx, container);
 
+    const auto hasPhysics = !m_geometries.empty();
+    auto& pe = physics::PhysicsEngine::get();
+
     const auto& parentMatrix = containerState.getModelMatrix();
-    for (auto& transform : m_transforms) {
+    for (int i = 0; i < m_transforms.size(); i++) {
+        auto& transform = m_transforms[i];
         transform.updateTransform(parentMatrix, m_volume);
+
+        if (hasPhysics) {
+            const glm::vec3& pos = transform.getWorldPosition();
+            const glm::vec3 pivot{ 0.f };
+            const auto& rot = transform.getRotation();
+
+            auto& geom = m_geometries[i];
+            //geom.setPhysicPosition(transform.getWorldPosition());
+            geom.updatePhysic(pivot, pos, rot);
+        }
     }
 
     m_containerMatrixLevel = containerLevel;
@@ -90,11 +105,24 @@ void GridGenerator::prepareInstances(
         break;
     }
 
+    const auto hasPhysics = m_geometryTemplate.isValid();
     m_transforms.reserve(count);
+    if (hasPhysics) {
+        m_geometries.reserve(count);
+    }
+
+    auto& pe = physics::PhysicsEngine::get();
+
     for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
         transform.setPosition(m_offset);
         transform.setScale(m_scale);
+
+        {
+            m_geometries.push_back(std::move(m_geometryTemplate));
+            auto& geom = m_geometries[m_geometries.size() - 1];
+            pe.registerGeom(geom, glm::vec3{ m_scale });
+        }
     }
 
     switch (m_mode) {

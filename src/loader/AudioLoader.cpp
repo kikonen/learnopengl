@@ -138,10 +138,10 @@ namespace loader
         }
     }
 
-    std::vector<event::AudioSourceData> AudioLoader::createSources(
+    std::vector<event::AudioSourceAttach> AudioLoader::createSources(
         const std::vector<SourceData>& sources)
     {
-        std::vector<event::AudioSourceData> result;
+        std::vector<event::AudioSourceAttach> result;
         uint8_t index = 0;
         for (const auto& data : sources) {
             const auto& src = createSource(data);
@@ -152,7 +152,7 @@ namespace loader
         return result;
     }
 
-    event::AudioSourceData AudioLoader::createSource(
+    event::AudioSourceAttach AudioLoader::createSource(
         const SourceData& data)
     {
         const auto& assets = Assets::get();
@@ -177,7 +177,7 @@ namespace loader
         };
     }
 
-    event::AudioListenerData AudioLoader::createListener(
+    event::AudioListenerAttach AudioLoader::createListener(
         const ListenerData& data)
     {
         if (!data.enabled) return {};

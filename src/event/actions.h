@@ -15,8 +15,7 @@
 #include "audio/size.h"
 #include "audio/limits.h"
 
-#include "physics/Geom.h"
-#include "physics/Body.h"
+#include "loader/PhysicsData.h"
 
 #include "script/size.h"
 
@@ -28,7 +27,7 @@ struct UpdateContext;
 class NodeController;
 
 namespace event {
-    struct AudioSourceData {
+    struct AudioSourceAttach {
         audio::sound_id soundId{ 0 };
         std::string name;
 
@@ -50,7 +49,7 @@ namespace event {
         }
     };
 
-    struct AudioListenerData {
+    struct AudioListenerAttach {
         bool isDefault{ false };
         float gain{ 0.f };
 
@@ -59,22 +58,24 @@ namespace event {
         }
     };
 
-    struct PhysicsData {
-        physics::Body body;
-        physics::Geom geom;
+    struct PhysicsAttach {
+        loader::BodyData body;
+        loader::GeomData geom;
+        bool enabled{ false };
         bool update{ false };
 
         bool isValid() const noexcept {
-            return body.type != physics::BodyType::none ||
-                geom.type != physics::GeomType::none;
+            return enabled &&
+                (body.type != physics::BodyType::none ||
+                geom.type != physics::GeomType::none);
         }
     };
 
-    struct NodeData {
+    struct NodeAttach {
         NodeState state;
-        PhysicsData physics;
-        AudioListenerData audioListener;
-        std::vector<AudioSourceData> audioSources;
+        PhysicsAttach physics;
+        AudioListenerAttach audioListener;
+        std::vector<AudioSourceAttach> audioSources;
     };
 
     // Blobdata is for doing passing abnormally large event blobs
@@ -84,7 +85,7 @@ namespace event {
         BlobData() {};
         ~BlobData();
 
-        NodeData body;
+        NodeAttach body;
     };
 
     struct NodeAction {

@@ -57,16 +57,19 @@ namespace physics {
             pool::NodeHandle nodeHandle,
             uint32_t entityIndex,
             bool update,
-            const physics::Object& object);
+            physics::Object object);
 
         physics::Object* getObject(physics::object_id id);
 
         physics::height_map_id registerHeightMap();
         const HeightMap* getHeightMap(physics::height_map_id id) const;
+        const HeightMap* getHeightMap(dHeightfieldDataID heighgtDataId) const;
         HeightMap* modifyHeightMap(physics::height_map_id id);
 
-        dGeomID addGeom(const physics::Geom& geom);
-        void removeGeom(dGeomID physicId);
+        // Register geom into world
+        void registerGeom(
+            physics::Geom& geom,
+            const glm::vec3& scale);
 
         std::pair<bool, float> getWorldSurfaceLevel(
             const glm::vec3& pos,

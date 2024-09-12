@@ -237,7 +237,7 @@ namespace physics
             obj.m_body.kinematic = true;
             obj.m_geom.categoryMask = 0;
             obj.m_geom.collisionMask = 0;
-            m_rayId = registerObject({}, 0, false, obj);
+            m_rayId = registerObject({}, 0, false, std::move(obj));
         }
 
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
@@ -343,13 +343,13 @@ namespace physics
         pool::NodeHandle nodeHandle,
         uint32_t entityIndex,
         bool update,
-        const physics::Object& src)
+        physics::Object src)
     {
         auto id = static_cast<physics::object_id>(m_objects.size());
 
         m_nodeHandles.push_back(nodeHandle);
         m_entityIndeces.push_back(entityIndex);
-        m_objects.push_back(src);
+        m_objects.push_back(std::move(src));
         m_pending.push_back(id);
         m_matrixLevels.push_back(0);
         if (update) {
@@ -393,31 +393,17 @@ namespace physics
         return &m_heightMaps[id];
     }
 
-    dGeomID PhysicsEngine::addGeom(const physics::Geom& geom)
+    void PhysicsEngine::registerGeom(
+        physics::Geom& geom,
+        const glm::vec3& scale)
     {
         ASSERT_WT();
 
-        dGeomID physicId{ nullptr };
-        {
-            Geom g = geom;
-            g.create(
-                m_worldId,
-                m_spaceId,
-                glm::vec3{ 1.f },
-                nullptr);
-            physicId = g.physicId;
-            g.physicId = nullptr;
-        }
-
-        return physicId;
-    }
-
-    void PhysicsEngine::removeGeom(dGeomID physicId)
-    {
-        ASSERT_WT();
-        if (physicId) {
-            dGeomDestroy(physicId);
-        }
+        geom.create(
+            m_worldId,
+            m_spaceId,
+            scale,
+            nullptr);
     }
 
     std::pair<bool, float> PhysicsEngine::getWorldSurfaceLevel(

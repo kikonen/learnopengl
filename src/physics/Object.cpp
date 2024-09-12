@@ -24,19 +24,19 @@ namespace physics
 {
     Object::Object() = default;
 
-    Object::Object(const Object& o) noexcept
-        : m_body{ o.m_body },
-        m_geom{ o.m_geom }
-    {
-        // NOTE KI cannot copy physics bindings
-        m_body.physicId = nullptr;
-        m_geom.physicId = nullptr;
-        m_geom.heightDataId = nullptr;
-    }
+    //Object::Object(const Object& o) noexcept
+    //    : m_body{ o.m_body },
+    //    m_geom{ std::move(o.m_geom) }
+    //{
+    //    // NOTE KI cannot copy physics bindings
+    //    m_body.physicId = nullptr;
+    //    m_geom.physicId = nullptr;
+    //    m_geom.heightDataId = nullptr;
+    //}
 
     Object::Object(Object&& o) noexcept
         : m_body{ o.m_body },
-        m_geom{ o.m_geom }
+        m_geom{ std::move(o.m_geom) }
     {
         // NOTE KI o is moved now
         o.m_body.physicId = nullptr;
