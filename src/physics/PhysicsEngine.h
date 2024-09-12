@@ -141,6 +141,8 @@ namespace physics {
 
         std::vector<HeightMap> m_heightMaps;
 
+        std::unordered_map<dHeightfieldDataID, physics::height_map_id> m_heightMapIds;
+
         std::unique_ptr<physics::MeshGenerator> m_meshGenerator;
     };
 }

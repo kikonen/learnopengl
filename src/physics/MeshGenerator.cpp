@@ -192,8 +192,7 @@ namespace physics {
             }
             case physics::GeomType::height_field: {
                 auto heightDataId = dGeomHeightfieldGetHeightfieldData(geomId);
-                //const auto* heightMap = m_engine.getHeightMap(geom.heightMapId);
-                const physics::HeightMap* heightMap = nullptr;
+                const auto* heightMap = m_engine.getHeightMap(heightDataId);
                 if (heightMap) {
                     //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
 

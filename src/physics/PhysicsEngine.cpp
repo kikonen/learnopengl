@@ -313,17 +313,18 @@ namespace physics
 
                 for (auto& heightMap : m_heightMaps) {
                     if (heightMap.m_origin == node) {
-                        obj.m_geom.heightMapId = heightMap.m_id;
                         heightMap.create(m_worldId, m_spaceId, obj);
+                        m_heightMapIds.insert({ obj.m_geom.heightDataId, heightMap.m_id});
                     }
                 }
 
                 obj.updateToPhysics(entityIndex, m_matrixLevels[id], nodeRegistry);
-                prepared.insert({ id, true });
             }
             else {
                 obj.create(0, m_worldId, m_spaceId, nodeRegistry);
             }
+
+            prepared.insert({ id, true });
         }
 
         if (!prepared.empty()) {
@@ -376,6 +377,14 @@ namespace physics
     {
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
         return &m_heightMaps[id];
+    }
+
+    const HeightMap* PhysicsEngine::getHeightMap(dHeightfieldDataID heighgtDataId) const
+    {
+        const auto& it = m_heightMapIds.find(heighgtDataId);
+        if (it == m_heightMapIds.end()) return nullptr;
+
+        return &m_heightMaps[it->second];
     }
 
     HeightMap* PhysicsEngine::modifyHeightMap(physics::height_map_id id)

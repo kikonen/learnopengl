@@ -34,8 +34,6 @@ namespace physics {
         uint32_t categoryMask{ UINT_MAX };
         uint32_t collisionMask{ UINT_MAX };
 
-        physics::height_map_id heightMapId{ 0 };
-
         // dContactXX flags for geom
         // TODO KI define "PhysicsMaterial" and refer to it from geom
         physics::material_id materialId{ 0 };
