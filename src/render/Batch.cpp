@@ -411,7 +411,11 @@ namespace render {
                     for (auto& lodEntry : lodEntries) {
                         auto& instance = m_entityIndeces.emplace_back();
                         instance.u_entityIndex = lodEntry.m_entityIndex;
-                        instance.setTransform(lodEntry.m_transform);
+                        //instance.setTransform(lodEntry.m_transform);
+                        instance.setTransform(
+                            lodEntry.u_transformMatrixRow0,
+                            lodEntry.u_transformMatrixRow1,
+                            lodEntry.u_transformMatrixRow2);
                         instance.u_materialIndex = lodEntry.m_materialIndex;
                         instance.u_socketIndex = lodEntry.m_socketIndex;
 

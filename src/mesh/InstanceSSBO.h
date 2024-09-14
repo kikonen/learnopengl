@@ -46,6 +46,17 @@ namespace mesh {
                 u_transformMatrixRow2[3] = c3[2];
             }
         }
+
+        inline void setTransform(
+            const glm::vec4& row0,
+            const glm::vec4& row1,
+            const glm::vec4& row2)
+        {
+            u_transformMatrixRow0 = row0;
+            u_transformMatrixRow1 = row1;
+            u_transformMatrixRow2 = row2;
+        }
+
     };
 #pragma pack(pop)
 }
