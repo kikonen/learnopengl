@@ -358,7 +358,8 @@ namespace render {
         size_t flushCount = 0;
 
         // Sort instances
-        {
+        // TODO KI this can slowdown things if lot of objects
+        if (false) {
             for (auto& it : m_batches) {
                 const auto& key = it.first;
                 auto& curr = it.second;
