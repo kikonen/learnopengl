@@ -53,6 +53,8 @@ public:
     }
 
 private:
+    std::unique_ptr<kigl::GLVertexArray> m_nullVao;
+
     std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 

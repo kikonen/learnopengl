@@ -23,10 +23,11 @@ ProgramRegistry::ProgramRegistry()
 ProgramRegistry::~ProgramRegistry()
 {
     KI_INFO("PROGRAM_REGISTRY: delete");
-    for (auto& e : m_programs) {
+    for (auto& program : m_programs) {
+        if (!program) continue;
         KI_INFO(fmt::format(
             "PROGRAM_REGISTRY: delete PROGRAM {}",
-            e->m_key));
+            program->m_key));
     }
     m_programs.clear();
 }
@@ -117,6 +118,7 @@ ki::program_id ProgramRegistry::getProgramId(
 void ProgramRegistry::validate()
 {
     for (auto& program : m_programs) {
+        if (!program) continue;
         //assert(program->boundCount() == 0);
     }
 }

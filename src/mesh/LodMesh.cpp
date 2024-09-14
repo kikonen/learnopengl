@@ -70,7 +70,7 @@ namespace mesh {
         m_materialIndex = std::move(o.m_materialIndex);
 
         m_deleter = std::move(o.m_deleter);
-        m_vao = o.m_vao;
+        m_vaoId = o.m_vaoId;
 
         m_baseVertex = o.m_baseVertex;
         m_baseIndex = o.m_baseIndex;
@@ -107,7 +107,7 @@ namespace mesh {
         m_materialIndex = std::move(o.m_materialIndex);
 
         m_deleter = std::move(o.m_deleter);
-        m_vao = o.m_vao;
+        m_vaoId = o.m_vaoId;
 
         m_baseVertex = o.m_baseVertex;
         m_baseIndex = o.m_baseIndex;
@@ -135,7 +135,7 @@ namespace mesh {
         return fmt::format(
             "<LOD_MESH: level={}, vao={}, mesh={}, material={}, socket={}>",
             m_levelMask,
-            m_vao ? *m_vao : -1,
+            m_vaoId,
             m_mesh ? m_mesh->str() : "N/A",
             m_materialIndex,
             m_socketIndex);
@@ -246,7 +246,7 @@ namespace mesh {
     void LodMesh::prepareRT(const PrepareContext& ctx)
     {
         if (m_mesh) {
-            m_vao = m_mesh->prepareVAO();
+            m_vaoId = *m_mesh->prepareVAO();
             m_mesh->prepareLodMesh(*this);
 
             updateTransform();

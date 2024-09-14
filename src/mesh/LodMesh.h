@@ -64,8 +64,8 @@ namespace mesh {
 
         void setupDrawOptions();
 
-        inline const kigl::GLVertexArray* getVAO() const noexcept {
-            return m_vao;
+        inline GLuint getVaoId() const noexcept {
+            return m_vaoId;
         }
 
         inline const backend::DrawOptions& getDrawOptions() const noexcept {
@@ -99,7 +99,7 @@ namespace mesh {
 
         backend::DrawOptions m_drawOptions;
 
-        const kigl::GLVertexArray* m_vao{ nullptr };
+        GLuint m_vaoId{ 0 };
 
         uint32_t m_baseVertex{ 0 };
         uint32_t m_baseIndex{ 0 };

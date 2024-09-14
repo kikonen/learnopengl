@@ -6,8 +6,6 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/GLVertexArray.h"
-
 #include "backend/DrawOptions.h"
 
 
@@ -34,11 +32,9 @@ namespace render {
         uint32_t m_materialIndex;
         int32_t m_socketIndex;
 
-        //kigl::GLVertexArray* m_vao;
-
         backend::DrawOptions m_drawOptions;
+        GLuint m_vaoId;
         ki::program_id m_programId;
-        uint8_t m_vaoId;
         int8_t m_priority;
     };
 
@@ -50,13 +46,13 @@ namespace render {
         BatchKey(
             int8_t priority,
             const ki::program_id programId,
-            const kigl::GLVertexArray* vao,
+            GLuint vaoId,
             const backend::DrawOptions& drawOptions,
             bool forceSolid,
             bool forceWireframe) noexcept;
 
         bool operator<(const BatchKey& o) const noexcept;
-        const kigl::GLVertexArray* m_vao;
+        GLuint m_vaoId;
         backend::DrawOptions m_drawOptions;
         const ki::program_id m_programId;
         const int8_t m_priority;

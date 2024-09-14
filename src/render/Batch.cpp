@@ -93,7 +93,7 @@ namespace render {
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_flags.hidden) continue;
             if ((lodMesh.m_levelMask & levelMask) == 0) continue;
-            if (!lodMesh.m_vao) continue;
+            if (!lodMesh.m_vaoId) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -107,7 +107,7 @@ namespace render {
                 BatchKey key{
                     lodMesh.m_priority,
                     programId,
-                    lodMesh.m_vao,
+                    lodMesh.m_vaoId,
                     drawOptions,
                     ctx.m_forceSolid,
                     ctx.m_forceWireframe,
@@ -215,7 +215,7 @@ namespace render {
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_flags.hidden) continue;
                     if ((lodMesh.m_levelMask & levelMask) == 0) continue;
-                    if (!lodMesh.m_vao) continue;
+                    if (!lodMesh.m_vaoId) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
                     if (!drawOptions.isKind(kindBits)) continue;
@@ -229,7 +229,7 @@ namespace render {
                         BatchKey key{
                             lodMesh.m_priority,
                             programId,
-                            lodMesh.m_vao,
+                            lodMesh.m_vaoId,
                             drawOptions,
                             ctx.m_forceSolid,
                             ctx.m_forceWireframe,
@@ -451,7 +451,7 @@ namespace render {
             const auto& curr = it.second;
 
             backend::DrawRange drawRange = {
-                key.m_vao,
+                key.m_vaoId,
                 key.m_programId,
                 key.m_drawOptions,
             };

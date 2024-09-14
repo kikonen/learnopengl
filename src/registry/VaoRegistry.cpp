@@ -12,16 +12,17 @@
 #include "render/RenderContext.h"
 
 namespace {
-    static VaoRegistry s_registry;
+    static VaoRegistry g_registry;
 }
 
 VaoRegistry& VaoRegistry::get() noexcept
 {
-    return s_registry;
+    return g_registry;
 }
 
 VaoRegistry::VaoRegistry()
-    : m_texturedVao{ std::make_unique<mesh::TexturedVAO>("mesh_textured") },
+    : m_nullVao{ std::make_unique<kigl::GLVertexArray>() },
+    m_texturedVao{ std::make_unique<mesh::TexturedVAO>("mesh_textured") },
     m_skinnedVao{ std::make_unique<mesh::SkinnedVAO>("mesh_skinned") },
     m_sharedPrimitiveVao{ std::make_unique<mesh::TexturedVAO>("shared_primitive") },
     m_dynamicPrimitiveVao{ std::make_unique<mesh::TexturedVAO>("dynamic_primitive") }
@@ -33,6 +34,9 @@ VaoRegistry::~VaoRegistry() {
 
 void VaoRegistry::prepare()
 {
+    // NOTE KI ensure id == 0 is not used for actual VAOs
+    m_nullVao->create("NULL");
+
     m_texturedVao->prepare();
     m_skinnedVao->prepare();
     m_sharedPrimitiveVao->prepare();

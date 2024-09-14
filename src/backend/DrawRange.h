@@ -11,7 +11,7 @@ namespace kigl {
 namespace backend {
     struct DrawRange
     {
-        const kigl::GLVertexArray* m_vao{ nullptr };
+        GLuint m_vaoId{ 0 };
         ki::program_id m_programId{ 0 };
         DrawOptions m_drawOptions;
     };

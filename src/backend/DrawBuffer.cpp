@@ -218,7 +218,7 @@ namespace backend {
             const auto& cd = curr.m_drawOptions;
             const auto& sd = sendRange.m_drawOptions;
 
-            sameDraw = curr.m_vao == sendRange.m_vao &&
+            sameDraw = curr.m_vaoId == sendRange.m_vaoId &&
                 curr.m_programId == sendRange.m_programId &&
                 cd.m_renderBack == sd.m_renderBack &&
                 cd.m_wireframe == sd.m_wireframe &&
@@ -376,7 +376,7 @@ namespace backend {
         auto& state = kigl::GLState::get();
         const auto& drawOptions = drawRange.m_drawOptions;
 
-        state.bindVAO(*drawRange.m_vao);
+        state.bindVAO(drawRange.m_vaoId);
         state.useProgram(*Program::get(drawRange.m_programId));
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);

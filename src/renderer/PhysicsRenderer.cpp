@@ -118,7 +118,7 @@ void PhysicsRenderer::drawObjects(
         }
 
         backend::DrawRange drawRange{
-                mesh->getVAO(),
+                *mesh->getVAO(),
                 m_objectProgramId,
                 drawOptions,
         };
