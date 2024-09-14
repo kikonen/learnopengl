@@ -13,6 +13,22 @@ script:
   scripts:
     - path: lib/common
 nodes:
+  - name: origo
+    mesh:
+      path: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        program: g_tex
+      scale: 0.5
+    pos: [0.0, 10, 0.0]
+  - name: origo-2
+    mesh:
+      path: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        program: g_tex
+      scale: 0.5
+    pos: [-30, 10, -40]
   - id: player
     type: origo
     xxpos: [50, 30, 40]
@@ -144,6 +160,15 @@ nodes:
     flags:
       no_shadow: true
       water: true
+    particle:
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
     repeat:
       x_count: 2
       y_count: 1
@@ -268,20 +293,60 @@ nodes:
       path: prefab/scenery/prefab_grass.yml
     priority: -20
     flags:
-      dynamic_bounds: true
+      static_bounds: true
       no_shadow: true
     generator:
       type: grid
       mode: random
       offset: [-100.0, 0.0, 140.0]
       scale: 3
-      bounds: [water, terrain]
+      bounds: [terrain]
       seed: [4242, 1212, 3333]
       repeat:
         x_count: 30
         z_count: 20
         x_step: 12
         z_step: -12
+  - id: grass_floating_{t}
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
+    priority: -20
+    flags:
+      dynamic_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-30, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [121214, 444413, 676712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
+  - id: grass_floating_2_{t}
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [100, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [221214, 554413, 556712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
   - id: cube_2
     mesh:
       vertex:
