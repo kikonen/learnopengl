@@ -64,13 +64,13 @@ void main() {
   decal = u_decals[decalIndex];
 
   const vec4 VEC_W = vec4(0, 0, 0, 1);
-  // const mat4 modelMatrix = transpose(
-  //   mat4(
-  //     decal.u_transformRow0,
-  //     decal.u_transformRow1,
-  //     decal.u_transformRow2,
-  //     VEC_W));
-  const mat4 modelMatrix = mat4(decal.u_transform);
+  const mat4 modelMatrix = transpose(
+    mat4(
+      decal.u_transformRow0,
+      decal.u_transformRow1,
+      decal.u_transformRow2,
+      VEC_W));
+  // const mat4 modelMatrix = mat4(decal.u_transform);
   const mat3 normalMatrix = mat3(modelMatrix);
 
   const uint materialIndex = decal.u_materialIndex;
