@@ -37,10 +37,17 @@ namespace particle {
             ssbo.u_x = m_pos.x;
             ssbo.u_y = m_pos.y;
             ssbo.u_z = m_pos.z;
-            ssbo.u_scale = m_scale;
-            ssbo.u_materialIndex = m_materialIndex;
-            ssbo.u_spriteIndex = m_spriteBaseIndex +
+            //ssbo.u_scale = m_scale;
+            //ssbo.u_materialIndex = m_materialIndex;
+            //ssbo.u_spriteIndex = m_spriteBaseIndex +
+            //    static_cast<uint8_t>(std::max(0.f, m_spriteActiveIndex));
+
+            const auto spriteIndex = m_spriteBaseIndex +
                 static_cast<uint8_t>(std::max(0.f, m_spriteActiveIndex));
+            ssbo.setMaterialScaleSprite(
+                m_materialIndex,
+                m_scale,
+                spriteIndex);
         }
     };
 }

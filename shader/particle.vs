@@ -31,6 +31,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+const float MAX_SCALE = 5.0;
+
 Particle particle;
 
 #include fn_calculate_clipping.glsl
@@ -39,7 +41,10 @@ void main() {
   const uint particleIndex = gl_BaseInstance + gl_InstanceID;
   particle = u_particles[particleIndex];
 
-  const uint materialIndex = particle.u_materialIndex;
+  const uint msp = particle.u_msp;
+  const uint materialIndex = (msp >> 16);
+  const float scale = (float((msp >> 8) & 255) / 255.0) * MAX_SCALE;
+  const uint spriteIndex = msp & 255;
 
   const vec3 pos = vec3(particle.u_x, particle.u_y, particle.u_z);
   const vec4 worldPos = vec4(pos, 1.0);
@@ -47,13 +52,11 @@ void main() {
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  const float particleScale = particle.u_scale / gl_Position.w;
+  const float particleScale = scale / gl_Position.w;
   gl_PointSize = 2000 * particleScale;
 
   vs_out.diffuse = u_materials[materialIndex].diffuse;
   vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
-
-  const uint spriteIndex = particle.u_spriteIndex;
 
   const uint spritesX = u_materials[materialIndex].spritesX;
   const uint spritesY = u_materials[materialIndex].spritesY;

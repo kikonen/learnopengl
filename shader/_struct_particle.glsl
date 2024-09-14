@@ -5,8 +5,13 @@ struct Particle {
   float u_x;
   float u_y;
   float u_z;
-  float u_scale;
 
-  uint u_materialIndex;
-  uint u_spriteIndex;
+  // uint u_materialIndex;
+  // float u_scale;
+  // uint u_spriteIndex;
+
+  // material = 16bit
+  // scale = 8 bit
+  // index = 8 bit
+  uint u_msp;
 };
