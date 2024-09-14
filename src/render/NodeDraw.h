@@ -17,12 +17,11 @@
 
 #include "render/size.h"
 
-class Program;
-
 struct UpdateViewContext;
 struct PrepareContext;
 class RenderContext;
 
+class Program;
 class Node;
 
 class ParticleRenderer;
@@ -87,7 +86,7 @@ namespace render {
 
         void drawProgram(
             const RenderContext& ctx,
-            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits);
@@ -99,7 +98,7 @@ namespace render {
 
         bool drawNodesImpl(
             const RenderContext& ctx,
-            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits);

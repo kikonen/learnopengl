@@ -23,8 +23,8 @@ public:
         const RenderContext& ctx);
 
 private:
-    Program* m_alphaDecalProgram{ nullptr };
-    Program* m_solidDecalProgram{ nullptr };
+    ki::program_id m_alphaDecalProgram{ 0 };
+    ki::program_id m_solidDecalProgram{ 0 };
 
     std::unique_ptr<mesh::Mesh> m_quad;
 };

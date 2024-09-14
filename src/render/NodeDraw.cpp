@@ -89,29 +89,29 @@ namespace render {
 
             definitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
 
-            m_deferredProgram = ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS, definitions);
+            m_deferredProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS, definitions));
             m_deferredProgram->prepareRT();
         }
-
-        m_oitProgram = ProgramRegistry::get().getProgram(SHADER_OIT_PASS);
+        
+        m_oitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_OIT_PASS));
         m_oitProgram->prepareRT();
 
-        m_blendOitProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS);
+        m_blendOitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS));
         m_blendOitProgram->prepareRT();
 
-        m_bloomProgram = ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS);
+        m_bloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS));
         m_bloomProgram->prepareRT();
 
-        m_blendBloomProgram = ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS);
+        m_blendBloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS));
         m_blendBloomProgram->prepareRT();
 
-        m_emissionProgram = ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS);
+        m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
         m_emissionProgram->prepareRT();
 
-        m_fogProgram = ProgramRegistry::get().getProgram(SHADER_FOG_PASS);
+        m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
         m_fogProgram->prepareRT();
 
-        m_hdrGammaProgram = ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS);
+        m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
         m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
@@ -196,8 +196,8 @@ namespace render {
                     drawProgram(
                         ctx,
                         [this](const mesh::LodMesh& lodMesh) {
-                            if (!lodMesh.m_flags.preDepth) return (Program*)nullptr;
-                            return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgram : nullptr;
+                            if (!lodMesh.m_flags.preDepth) return (ki::program_id)0;
+                            return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgramId : (ki::program_id)0;
                         },
                         [&typeSelector](const mesh::MeshType* type) {
                             return typeSelector(type);
@@ -219,7 +219,7 @@ namespace render {
                 drawNodesImpl(
                     ctx,
                     [](const mesh::LodMesh& lodMesh) {
-                        return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_program : nullptr;
+                        return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
                     },
                     [&typeSelector](const mesh::MeshType* type) {
                         return !type->m_flags.effect && typeSelector(type);
@@ -285,8 +285,8 @@ namespace render {
                 ctx,
                 [](const mesh::LodMesh& lodMesh) {
                     return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
-                        ? lodMesh.m_program
-                        : nullptr;
+                        ? lodMesh.m_programId
+                        : (ki::program_id)0;
                 },
                 [&typeSelector](const mesh::MeshType* type) { return typeSelector(type); },
                 nodeSelector,
@@ -330,7 +330,7 @@ namespace render {
                 drawProgram(
                     ctx,
                     [this](const mesh::LodMesh& lodMesh) {
-                        return lodMesh.m_drawOptions.m_gbuffer ? m_oitProgram : nullptr;
+                        return lodMesh.m_drawOptions.m_gbuffer ? m_oitProgram->m_id : (ki::program_id)0;
                     },
                     [&typeSelector](const mesh::MeshType* type) {
                         return typeSelector(type);
@@ -647,7 +647,7 @@ namespace render {
 
     void NodeDraw::drawProgram(
         const RenderContext& ctx,
-        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         uint8_t kindBits)
@@ -657,7 +657,7 @@ namespace render {
 
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
-        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         const uint8_t kindBits)
@@ -742,7 +742,7 @@ namespace render {
             ctx.m_batch->draw(
                 ctx,
                 type,
-                [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_program; },
+                [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_programId; },
                 render::KIND_BLEND,
                 *node);
         }
@@ -767,7 +767,7 @@ namespace render {
         auto& batch = ctx.m_batch;
 
         auto* lodMesh = type->getLodMesh(0);
-        auto* program = lodMesh->m_program;
+        auto* program = Program::get(lodMesh->m_programId);
 
         state.setDepthFunc(GL_LEQUAL);
         program->bind();

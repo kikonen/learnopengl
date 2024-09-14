@@ -23,5 +23,5 @@ private:
     void drawNodes(const RenderContext& ctx);
 
 private:
-    Program* m_normalProgram{ nullptr };
+    ki::program_id m_normalProgramId{ 0 };
 };

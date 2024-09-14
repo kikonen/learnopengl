@@ -12,10 +12,8 @@ namespace render {
 }
 
 class Program;
-
 struct UpdateViewContext;
 class RenderContext;
-
 
 class Viewport final
 {
@@ -27,7 +25,7 @@ public:
         const glm::vec2& size,
         bool m_useDirectBlit,
         unsigned int textureId,
-        Program* program);
+        ki::program_id programId);
 
     ~Viewport();
 

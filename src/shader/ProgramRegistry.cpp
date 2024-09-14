@@ -31,27 +31,27 @@ ProgramRegistry::~ProgramRegistry()
     m_programs.clear();
 }
 
-Program* ProgramRegistry::getProgram(
+ki::program_id ProgramRegistry::getProgram(
     std::string_view name)
 {
     return getProgram(name, false, "", {});
 }
 
-Program* ProgramRegistry::getProgram(
+ki::program_id ProgramRegistry::getProgram(
     std::string_view name,
     const std::map<std::string, std::string, std::less<>>& defines)
 {
     return getProgram(name, false, "", defines);
 }
 
-Program* ProgramRegistry::getComputeProgram(
+ki::program_id ProgramRegistry::getComputeProgram(
     std::string_view name,
     const std::map<std::string, std::string, std::less<>>& defines)
 {
     return getProgram(name, true, "", defines);
 }
 
-Program* ProgramRegistry::getProgram(
+ki::program_id ProgramRegistry::getProgram(
     std::string_view name,
     const bool compute,
     std::string_view geometryType,
@@ -82,20 +82,36 @@ Program* ProgramRegistry::getProgram(
     }
 
     if (!program) {
-        const ki::program_id id = static_cast<ki::program_id>(m_programs.size());
+        ki::program_id programId = static_cast<ki::program_id>(m_programs.size());
         m_programs.push_back(std::make_unique<Program>(
+            programId,
             key,
             name,
             compute,
             geometryType,
             defines));
-        m_programIds[key] = id;
+        m_programIds[key] = programId;
         const auto& e = m_programIds.find(key);
         program = m_programs[e->second].get();
         program->load();
     }
 
-    return program;
+    return program->m_id;
+}
+
+ki::program_id ProgramRegistry::getProgramId(
+    std::string_view name)
+{
+    return getProgram(name);
+}
+
+ki::program_id ProgramRegistry::getProgramId(
+    std::string_view name,
+    const bool compute,
+    std::string_view geometryType,
+    const std::map<std::string, std::string, std::less<>>& defines)
+{
+    return getProgram(name, compute, geometryType, defines);
 }
 
 void ProgramRegistry::validate()

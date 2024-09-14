@@ -11,17 +11,18 @@
 #include "backend/DrawOptions.h"
 
 
-class Program;
 class RenderContext;
 
-namespace backend {
-    struct Lod;
+namespace mesh {
+    struct LodMesh;
 }
 
 namespace render {
     struct DrawElement {
-        Program* m_program;
-        kigl::GLVertexArray* m_vao;
+        //glm::mat4 m_transform;
+        glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
+        glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
+        glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
         uint32_t m_baseVertex;
         uint32_t m_baseIndex;
@@ -33,8 +34,11 @@ namespace render {
         uint32_t m_materialIndex;
         int32_t m_socketIndex;
 
-        backend::DrawOptions m_drawOptions;
+        //kigl::GLVertexArray* m_vao;
 
+        backend::DrawOptions m_drawOptions;
+        ki::program_id m_programId;
+        uint8_t m_vaoId;
         int8_t m_priority;
     };
 
@@ -45,19 +49,16 @@ namespace render {
     struct BatchKey {
         BatchKey(
             int8_t priority,
-            const Program* program,
+            const ki::program_id programId,
             const kigl::GLVertexArray* vao,
             const backend::DrawOptions& drawOptions,
             bool forceSolid,
             bool forceWireframe) noexcept;
 
         bool operator<(const BatchKey& o) const noexcept;
-
-        const Program* m_program;
         const kigl::GLVertexArray* m_vao;
-
         backend::DrawOptions m_drawOptions;
-
+        const ki::program_id m_programId;
         const int8_t m_priority;
     };
 
@@ -67,7 +68,7 @@ namespace render {
         const uint32_t m_indexCount;
         const uint32_t m_flags;
 
-        LodKey(const backend::Lod& lod, uint32_t flags);
+        LodKey(const mesh::LodMesh& lod, uint32_t flags);
 
         bool operator<(const LodKey& o) const noexcept;
     };

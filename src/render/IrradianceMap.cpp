@@ -47,7 +47,7 @@ namespace render {
         }
 
         {
-            auto* program = ProgramRegistry::get().getProgram(SHADER_IRRADIANCE_CUBE_MAP);
+            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_IRRADIANCE_CUBE_MAP));
             program->prepareRT();
 
             program->bind();

@@ -34,14 +34,14 @@ Viewport::Viewport(
     const glm::vec2& size,
     bool m_useDirectBlit,
     unsigned int textureId,
-    Program* program)
-    : m_name(name),
-    m_position(pos),
-    m_degreesRotation(degrees),
-    m_size(size),
-    m_useDirectBlit(false && m_useDirectBlit),
-    m_textureId(textureId),
-    m_program(program)
+    ki::program_id programId)
+    : m_name{ name },
+    m_position{ pos },
+    m_degreesRotation{ degrees },
+    m_size{ size },
+    m_useDirectBlit{ false && m_useDirectBlit },
+    m_textureId{ textureId },
+    m_program{ Program::get(programId) }
 {
     const glm::vec3 origPosition{ m_position };
     const glm::vec3 origDegrees{ m_degreesRotation };

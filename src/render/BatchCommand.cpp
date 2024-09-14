@@ -4,17 +4,19 @@
 
 #include "shader/Program.h"
 
+#include "mesh/LodMesh.h"
+
 //#include "render/RenderContext.h"
 
 namespace render {
     BatchKey::BatchKey(
         int8_t priority,
-        const Program* program,
+        const ki::program_id programId,
         const kigl::GLVertexArray* vao,
         const backend::DrawOptions& drawOptions,
         bool forceSolid,
         bool forceWireframe) noexcept
-        : m_program(program),
+        : m_programId{ programId },
         m_vao{ vao },
         m_priority( -priority ),
         m_drawOptions{ drawOptions }
@@ -37,12 +39,12 @@ namespace render {
         const auto& d = m_drawOptions;
         const auto& od = o.m_drawOptions;
         return
-            std::tie(  m_vao->m_id,  d.m_renderBack,   m_priority,   m_program->m_id,  d.m_blend,  d.m_wireframe,  d.m_type,  d.m_mode) <
-            std::tie(o.m_vao->m_id, od.m_renderBack, o.m_priority, o.m_program->m_id, od.m_blend, od.m_wireframe, od.m_type, od.m_mode);
+            std::tie(  m_vao->m_id,  d.m_renderBack,   m_priority,   m_programId,  d.m_blend,  d.m_wireframe,  d.m_type,  d.m_mode) <
+            std::tie(o.m_vao->m_id, od.m_renderBack, o.m_priority, o.m_programId, od.m_blend, od.m_wireframe, od.m_type, od.m_mode);
         //return tie ? true : (m_drawOptions < o.m_drawOptions);
     }
 
-    LodKey::LodKey(const backend::Lod& lod, uint32_t flags)
+    LodKey::LodKey(const mesh::LodMesh& lod, uint32_t flags)
         : m_baseVertex{ lod.m_baseVertex },
         m_baseIndex{ lod.m_baseIndex},
         m_indexCount{ lod.m_indexCount },

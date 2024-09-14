@@ -38,10 +38,10 @@ void ParticleRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_particleProgram = ProgramRegistry::get().getProgram(
+    m_particleProgram = Program::get(ProgramRegistry::get().getProgram(
         SHADER_PARTICLE,
         { { DEF_USE_ALPHA, "1" },
-          { DEF_USE_BLEND, "1" } });
+          { DEF_USE_BLEND, "1" } }));
 
     m_particleProgram->prepareRT();
 }

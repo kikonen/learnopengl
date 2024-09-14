@@ -47,11 +47,10 @@ namespace render {
         }
 
         {
-            auto* program = ProgramRegistry::get().getProgram(SHADER_BRDF_LUT);
+            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_BRDF_LUT));
+
             program->prepareRT();
-
             program->bind();
-
             render(program, m_texture, m_size);
 
             state.clear();

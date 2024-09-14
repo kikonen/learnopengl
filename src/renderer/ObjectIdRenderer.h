@@ -35,7 +35,7 @@ public:
     std::shared_ptr<Viewport> m_debugViewport;
 
 private:
-    Program* m_idProgram{ nullptr };
+    ki::program_id m_idProgramId{ 0 };
 
     std::unique_ptr<render::FrameBuffer> m_idBuffer{ nullptr };
 };

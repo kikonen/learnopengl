@@ -19,24 +19,33 @@ public:
 
     ~ProgramRegistry();
 
-    Program* getProgram(
+    ki::program_id getProgram(
         std::string_view name);
 
-    Program* getProgram(
+    ki::program_id getProgram(
         std::string_view name,
         const std::map<std::string, std::string, std::less<>>& defines);
 
-    Program* getComputeProgram(
+    ki::program_id getComputeProgram(
         std::string_view name,
         const std::map<std::string, std::string, std::less<>>& defines);
 
-    Program* getProgram(
+    ki::program_id getProgram(
         std::string_view name,
         const bool compute,
         std::string_view geometryType,
         const std::map<std::string, std::string, std::less<>>& defines);
 
-    const Program* getProgram(ki::program_id id) const noexcept
+    ki::program_id getProgramId(
+        std::string_view name);
+
+    ki::program_id getProgramId(
+        std::string_view name,
+        const bool compute,
+        std::string_view geometryType,
+        const std::map<std::string, std::string, std::less<>>& defines);
+
+    Program* getProgram(ki::program_id id) noexcept
     {
         return m_programs[id].get();
     }

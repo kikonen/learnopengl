@@ -160,10 +160,10 @@ public:
         return it != m_texturePaths.end() ? it->second : "";
     }
 
-    Program* getProgram(MaterialProgramType type) noexcept
+    ki::program_id getProgram(MaterialProgramType type) noexcept
     {
         const auto& it = m_programs.find(type);
-        return it != m_programs.end() ? it->second : nullptr;
+        return it != m_programs.end() ? it->second : (ki::program_id)0;
     }
 
 private:
@@ -286,7 +286,7 @@ public:
     std::unordered_map<MaterialProgramType, std::string> m_programNames{};
     std::map<std::string, std::string> m_programDefinitions{};
 
-    std::unordered_map<MaterialProgramType, Program*> m_programs{};
+    std::unordered_map<MaterialProgramType, ki::program_id> m_programs{};
 
 private:
     std::unordered_map<TextureType, BoundTexture> m_boundTextures{};

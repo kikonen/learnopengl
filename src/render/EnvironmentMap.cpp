@@ -45,9 +45,9 @@ namespace render {
         }
 
         {
-            auto* program = ProgramRegistry::get().getProgram(SHADER_HDRI_CUBE_MAP);
-            program->prepareRT();
+            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_HDRI_CUBE_MAP));
 
+            program->prepareRT();
             program->bind();
             state.bindTexture(UNIT_HDR_TEXTURE, m_hdriTextureID, false);
 

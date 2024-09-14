@@ -27,7 +27,7 @@ private:
 private:
     Material m_fallbackMaterial;
 
-    Program* m_objectProgram;
+    ki::program_id m_objectProgramId;
 
     uint32_t m_entityIndex{ 0 };
 };

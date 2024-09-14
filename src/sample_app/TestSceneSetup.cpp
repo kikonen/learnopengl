@@ -52,7 +52,7 @@ void TestSceneSetup::setup(
 void TestSceneSetup::setupEffectExplosion()
 {
     m_asyncLoader->addLoader(m_alive, [this]() {
-        Program* program = ProgramRegistry::get().getProgram(SHADER_EFFECT);
+        auto programId = ProgramRegistry::get().getProgram(SHADER_EFFECT);
 
         const auto& assets = Assets::get();
 

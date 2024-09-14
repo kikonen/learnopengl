@@ -69,15 +69,18 @@ namespace mesh {
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
 
-        m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
 
-        m_program = o.m_program;
-        m_shadowProgram = o.m_shadowProgram;
-        m_preDepthProgram = o.m_preDepthProgram;
-        m_selectionProgram = o.m_selectionProgram;
-        m_idProgram = o.m_idProgram;
+        m_baseVertex = o.m_baseVertex;
+        m_baseIndex = o.m_baseIndex;
+        m_indexCount = o.m_indexCount;
+
+        m_programId = o.m_programId;
+        m_shadowProgramId = o.m_shadowProgramId;
+        m_preDepthProgramId = o.m_preDepthProgramId;
+        m_selectionProgramId = o.m_selectionProgramId;
+        m_idProgramId = o.m_idProgramId;
         m_drawOptions = o.m_drawOptions;
 
         m_flags = o.m_flags;
@@ -103,15 +106,18 @@ namespace mesh {
         m_material = std::move(o.m_material);
         m_materialIndex = std::move(o.m_materialIndex);
 
-        m_lod = o.m_lod;
         m_deleter = std::move(o.m_deleter);
         m_vao = o.m_vao;
 
-        m_program = o.m_program;
-        m_shadowProgram = o.m_shadowProgram;
-        m_preDepthProgram = o.m_preDepthProgram;
-        m_selectionProgram = o.m_selectionProgram;
-        m_idProgram = o.m_idProgram;
+        m_baseVertex = o.m_baseVertex;
+        m_baseIndex = o.m_baseIndex;
+        m_indexCount = o.m_indexCount;
+
+        m_programId = o.m_programId;
+        m_shadowProgramId = o.m_shadowProgramId;
+        m_preDepthProgramId = o.m_preDepthProgramId;
+        m_selectionProgramId = o.m_selectionProgramId;
+        m_idProgramId = o.m_idProgramId;
         m_drawOptions = o.m_drawOptions;
 
         m_animationRigTransform = o.m_animationRigTransform;
@@ -178,11 +184,11 @@ namespace mesh {
             m_drawOptions.m_solid = true;
         }
 
-        m_program = material.getProgram(MaterialProgramType::shader);
-        m_shadowProgram = material.getProgram(MaterialProgramType::shadow);
-        m_preDepthProgram = material.getProgram(MaterialProgramType::pre_depth);
-        m_selectionProgram = material.getProgram(MaterialProgramType::selection);
-        m_idProgram = material.getProgram(MaterialProgramType::object_id);
+        m_programId = material.getProgram(MaterialProgramType::shader);
+        m_shadowProgramId = material.getProgram(MaterialProgramType::shadow);
+        m_preDepthProgramId = material.getProgram(MaterialProgramType::pre_depth);
+        m_selectionProgramId = material.getProgram(MaterialProgramType::selection);
+        m_idProgramId = material.getProgram(MaterialProgramType::object_id);
 
         if (m_flags.zUp) {
             const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
@@ -248,24 +254,24 @@ namespace mesh {
             if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
 
-        if (m_program) {
-            m_program->prepareRT();
+        if (m_programId) {
+            Program::get(m_programId)->prepareRT();
         }
 
-        if (m_shadowProgram) {
-            m_shadowProgram->prepareRT();
+        if (m_shadowProgramId) {
+            Program::get(m_shadowProgramId)->prepareRT();
         }
 
-        if (m_preDepthProgram) {
-            m_preDepthProgram->prepareRT();
+        if (m_preDepthProgramId) {
+            Program::get(m_preDepthProgramId)->prepareRT();
         }
 
-        if (m_selectionProgram) {
-            m_selectionProgram->prepareRT();
+        if (m_selectionProgramId) {
+            Program::get(m_selectionProgramId)->prepareRT();
         }
 
-        if (m_idProgram) {
-            m_idProgram->prepareRT();
+        if (m_idProgramId) {
+            Program::get(m_idProgramId)->prepareRT();
         }
     }
 

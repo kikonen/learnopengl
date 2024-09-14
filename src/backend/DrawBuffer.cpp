@@ -74,7 +74,7 @@ namespace backend {
 
         if (m_frustumGPU) {
             m_computeGroups = assets.computeGroups;
-            m_cullingCompute = ProgramRegistry::get().getComputeProgram(
+            m_cullingComputeId = ProgramRegistry::get().getComputeProgram(
                 CS_FRUSTUM_CULLING,
                 {
                     { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
@@ -82,7 +82,7 @@ namespace backend {
                     { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
                     { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
                 });
-
+            m_cullingCompute = Program::get(m_cullingComputeId);
             m_cullingCompute->prepareRT();
         }
 
@@ -219,7 +219,7 @@ namespace backend {
             const auto& sd = sendRange.m_drawOptions;
 
             sameDraw = curr.m_vao == sendRange.m_vao &&
-                curr.m_program == sendRange.m_program &&
+                curr.m_programId == sendRange.m_programId &&
                 cd.m_renderBack == sd.m_renderBack &&
                 cd.m_wireframe == sd.m_wireframe &&
                 cd.m_blend == sd.m_blend &&
@@ -377,7 +377,7 @@ namespace backend {
         const auto& drawOptions = drawRange.m_drawOptions;
 
         state.bindVAO(*drawRange.m_vao);
-        state.useProgram(*drawRange.m_program);
+        state.useProgram(*Program::get(drawRange.m_programId));
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 

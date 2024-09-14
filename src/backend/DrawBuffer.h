@@ -88,6 +88,7 @@ namespace backend {
 
         glm::uvec3 m_computeGroups{ 0 };
 
+        ki::program_id m_cullingComputeId{ 0 };
         Program* m_cullingCompute{ nullptr };
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };

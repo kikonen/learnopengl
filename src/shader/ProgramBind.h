@@ -5,10 +5,10 @@
 class ProgramBind final
 {
 public:
-    ProgramBind(Program* program) noexcept
-        : program(program)
+    ProgramBind(ki::program_id programId) noexcept
+        : m_program{ Program::get(programId) }
     {
-        if (program) program->bind();
+        if (m_program) m_program->bind();
     };
 
     ~ProgramBind() noexcept {
@@ -16,5 +16,5 @@ public:
     }
 
 public:
-    Program* program;
+    Program* m_program;
 };

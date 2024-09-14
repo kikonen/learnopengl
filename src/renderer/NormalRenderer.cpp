@@ -28,8 +28,8 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_normalProgram = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
-    m_normalProgram->prepareRT();
+    m_normalProgramId = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
+    Program::get(m_normalProgramId)->prepareRT();
 }
 
 void NormalRenderer::render(
@@ -53,8 +53,8 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (Program*)nullptr;
-                return m_normalProgram;
+                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
+                return m_normalProgramId;
             },
             [](const mesh::MeshType* type) {
                 return !type->m_flags.noNormals;

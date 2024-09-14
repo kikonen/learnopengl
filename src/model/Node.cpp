@@ -141,7 +141,7 @@ void Node::updateVAO(const RenderContext& ctx) noexcept
 void Node::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
-    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch) noexcept
 {

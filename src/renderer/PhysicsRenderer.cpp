@@ -25,8 +25,8 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
         m_fallbackMaterial.registerMaterial();
     }
 
-    m_objectProgram = ProgramRegistry::get().getProgram("g_tex");
-    m_objectProgram->prepareRT();
+    m_objectProgramId = ProgramRegistry::get().getProgram("g_tex");
+    Program::get(m_objectProgramId)->prepareRT();
 
     //m_entityIndex = EntityRegistry::get().registerEntity();
     //{
@@ -119,8 +119,9 @@ void PhysicsRenderer::drawObjects(
 
         backend::DrawRange drawRange{
                 mesh->getVAO(),
-                m_objectProgram,
-                drawOptions };
+                m_objectProgramId,
+                drawOptions,
+        };
 
         backend::gl::DrawIndirectCommand indirect{};
         {

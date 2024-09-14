@@ -88,11 +88,13 @@ void ShadowCascade::prepareRT(
     const auto& assets = ctx.m_assets;
     auto& registry = ctx.m_registry;
 
-    m_solidShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
-    m_alphaShadowProgram = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
+    {
+        m_solidShadowProgramId = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
+        m_alphaShadowProgramId = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
 
-    m_solidShadowProgram->prepareRT();
-    m_alphaShadowProgram->prepareRT();
+        Program::get(m_solidShadowProgramId)->prepareRT();
+        Program::get(m_alphaShadowProgramId)->prepareRT();
+    }
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
@@ -259,9 +261,9 @@ void ShadowCascade::drawNodes(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (Program*)nullptr;
-                if (lodMesh.m_shadowProgram) return lodMesh.m_shadowProgram;
-                return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgram : m_solidShadowProgram;
+                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
+                if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
+                return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
             typeFilter,
             nodeFilter,

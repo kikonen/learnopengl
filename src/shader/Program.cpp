@@ -25,6 +25,8 @@
 #include "Uniform.h"
 #include "ProgramUniforms.h"
 
+#include "ProgramRegistry.h"
+
 
 namespace {
     constexpr size_t LOG_SIZE = 4096;
@@ -32,17 +34,21 @@ namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
 
     const std::string GEOM_NONE{ "" };
+}
 
-    IdGenerator<ki::program_id> ID_GENERATOR;
+Program* Program::get(ki::program_id id) 
+{
+    return ProgramRegistry::get().getProgram(id);
 }
 
 Program::Program(
+    ki::program_id id,
     std::string_view key,
     std::string_view name,
     const bool compute,
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<> >& defines)
-    : m_id(ID_GENERATOR.nextId()),
+    : m_id{ id },
     m_key{ key },
     m_programName{ name },
     m_compute{ compute },
@@ -111,20 +117,15 @@ void Program::load()
     }
 }
 
-int Program::prepareRT()
+ki::program_id Program::prepareRT()
 {
-    if (m_prepared) return m_prepareResult;
+    if (m_prepared) return m_id;
     m_prepared = true;
 
-    if (createProgram()) {
-        m_prepareResult = -1;
-        return -1;
-    }
-
+    createProgram();
     m_uniforms = std::make_unique<ProgramUniforms>(*this);
 
-    m_prepareResult = 0;
-    return m_prepareResult;
+    return m_id;
 }
 
 GLint Program::getUniformLoc(std::string_view name)
@@ -228,7 +229,7 @@ int Program::compileSource(
     return shaderId;
 }
 
-int Program::createProgram() {
+void Program::createProgram() {
     KI_INFO_OUT(fmt::format("[PROGRAM_CREATE - {}]", m_key));
 
     // build and compile our shader program
@@ -277,15 +278,12 @@ int Program::createProgram() {
         }
     }
 
-    if (m_programId == -1) return -1;
-
     m_defines.clear();
     m_paths.clear();
     m_required.clear();
     m_sources.clear();
 
     initProgram();
-    return 0;
 }
 
 // https://community.khronos.org/t/samplers-of-different-types-use-the-same-textur/66329/4
@@ -309,7 +307,7 @@ void Program::validateProgram() const {
     }
 }
 
-int Program::initProgram() {
+void Program::initProgram() {
     KI_INFO_OUT(fmt::format("[PROGRAM - {}]", m_key));
 
     // NOTE KI set UBOs only once for program
@@ -322,8 +320,6 @@ int Program::initProgram() {
     //setupUBO("Textures", UBO_TEXTURES, sizeof(TexturesUBO));
 
     m_sources.clear();
-
-    return 0;
 }
 
 void Program::appendDefines(std::vector<std::string>& lines)

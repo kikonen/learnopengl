@@ -69,7 +69,7 @@ namespace render {
     void Batch::addSnapshot(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
@@ -99,14 +99,14 @@ namespace render {
             if (!drawOptions.isKind(kindBits)) continue;
             if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
-            auto* program = programSelector(lodMesh);
-            if (!program) continue;
+            auto programId = programSelector(lodMesh);
+            if (!programId) continue;
 
             BatchCommand* top;
             {
                 BatchKey key{
                     lodMesh.m_priority,
-                    program,
+                    programId,
                     lodMesh.m_vao,
                     drawOptions,
                     ctx.m_forceSolid,
@@ -122,7 +122,7 @@ namespace render {
                 }
             }
 
-            const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
+            const LodKey lodKey{ lodMesh, drawOptions.m_flags };
             auto& lodInstances = top->m_lodInstances[lodKey];
             lodInstances.reserve(100);
             lodInstances.emplace_back(
@@ -150,7 +150,7 @@ namespace render {
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
         const mesh::MeshType* type,
-        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         const Snapshot& snapshot,
         std::span<const mesh::MeshTransform> transforms,
@@ -221,14 +221,14 @@ namespace render {
                     if (!drawOptions.isKind(kindBits)) continue;
                     if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
-                    auto* program = programSelector(lodMesh);
-                    if (!program) continue;
+                    auto programId = programSelector(lodMesh);
+                    if (!programId) continue;
 
                     BatchCommand* top;
                     {
                         BatchKey key{
                             lodMesh.m_priority,
-                            program,
+                            programId,
                             lodMesh.m_vao,
                             drawOptions,
                             ctx.m_forceSolid,
@@ -245,7 +245,7 @@ namespace render {
                         }
                     }
 
-                    const LodKey lodKey{ lodMesh.m_lod, drawOptions.m_flags };
+                    const LodKey lodKey{ lodMesh, drawOptions.m_flags };
                     auto& lodInstances = top->m_lodInstances[lodKey];
                     lodInstances.reserve(100);
                     lodInstances.emplace_back(
@@ -319,7 +319,7 @@ namespace render {
     void Batch::draw(
         const RenderContext& ctx,
         mesh::MeshType* type,
-        const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         Node& node)
     {
@@ -452,7 +452,7 @@ namespace render {
 
             backend::DrawRange drawRange = {
                 key.m_vao,
-                key.m_program,
+                key.m_programId,
                 key.m_drawOptions,
             };
 

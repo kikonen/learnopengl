@@ -101,8 +101,8 @@ void ObjectIdRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_idProgram = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    m_idProgram->prepareRT();
+    m_idProgramId = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
+    Program::get(m_idProgramId)->prepareRT();
 
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",
@@ -175,8 +175,8 @@ void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (Program*)nullptr;
-                return lodMesh.m_idProgram ? lodMesh.m_idProgram : m_idProgram;
+                if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
+                return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
             },
             [](const mesh::MeshType* type) { return !type->m_flags.noSelect; },
             [](const Node* node) { return true; },

@@ -134,7 +134,7 @@ namespace loader {
             lodMesh->m_drawOptions.m_renderBack = true;
             //lodMesh->flags.gbuffer = false;// data.programName.starts_with("g_");
 
-            lodMesh->m_program = ProgramRegistry::get().getProgram(data.programName);
+            lodMesh->m_programId = ProgramRegistry::get().getProgram(data.programName);
         }
 
         type->m_nodeType = NodeType::skybox;

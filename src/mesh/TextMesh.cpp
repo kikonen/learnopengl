@@ -67,11 +67,9 @@ namespace mesh {
     void TextMesh::prepareLodMesh(
         mesh::LodMesh& lodMesh)
     {
-        auto& lod = lodMesh.m_lod;
-
-        lod.m_baseVertex = getBaseVertex();
-        lod.m_baseIndex = getBaseIndex();
-        lod.m_indexCount = getIndexCount();
+        lodMesh.m_baseVertex = getBaseVertex();
+        lodMesh.m_baseIndex = getBaseIndex();
+        lodMesh.m_indexCount = getIndexCount();
 
         auto& drawOptions = lodMesh.m_drawOptions;
         drawOptions.m_type = backend::DrawOptions::Type::elements;

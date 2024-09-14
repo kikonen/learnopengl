@@ -83,7 +83,6 @@ void TextGenerator::updateVAO(
     auto* type = container.m_typeHandle.toType();
 
     auto* lodMesh = type->modifyLodMesh(0);
-    auto& lod = lodMesh->m_lod;
     auto* mesh = lodMesh->getMesh<mesh::TextMesh>();
 
     mesh->clear();
@@ -112,7 +111,7 @@ void TextGenerator::updateVAO(
         mesh->m_vboIndex,
         mesh->m_atlasCoords);
 
-    lod.m_indexCount = mesh->getIndexCount();
+    lodMesh->m_indexCount = mesh->getIndexCount();
 
     //{
     //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
@@ -132,7 +131,7 @@ void TextGenerator::updateVAO(
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
     mesh::MeshType* type,
-    const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+    const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
     const Node& container,

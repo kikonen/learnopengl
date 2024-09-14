@@ -59,9 +59,10 @@ namespace render {
         }
 
         {
-            auto* program = ProgramRegistry::get().getProgram(SHADER_PREFILTER_CUBE_MAP);
-            program->prepareRT();
+            auto programId = ProgramRegistry::get().getProgram(SHADER_PREFILTER_CUBE_MAP);
+            auto* program = Program::get(programId);
 
+            program->prepareRT();
             program->bind();
             state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);
 

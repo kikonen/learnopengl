@@ -266,9 +266,9 @@ namespace terrain {
                 lodMesh->setMaterial(m_material);
                 lodMesh->registerMaterial();
 
-                lodMesh->m_program = m_material.getProgram(MaterialProgramType::shader);
-                lodMesh->m_shadowProgram = m_material.getProgram(MaterialProgramType::shadow);
-                lodMesh->m_preDepthProgram = m_material.getProgram(MaterialProgramType::pre_depth);
+                lodMesh->m_programId = m_material.getProgram(MaterialProgramType::shader);
+                lodMesh->m_shadowProgramId = m_material.getProgram(MaterialProgramType::shadow);
+                lodMesh->m_preDepthProgramId = m_material.getProgram(MaterialProgramType::pre_depth);
 
                 lodMesh->m_flags.tessellation = true;
                 lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;

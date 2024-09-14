@@ -7,8 +7,8 @@
 struct PrepareContext;
 class RenderContext;
 
-class CubeMap;
 class Program;
+class CubeMap;
 
 namespace render {
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636

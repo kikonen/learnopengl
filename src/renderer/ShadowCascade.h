@@ -65,6 +65,6 @@ private:
 
     render::Camera m_camera;
 
-    Program* m_solidShadowProgram{ nullptr };
-    Program* m_alphaShadowProgram{ nullptr };
+    ki::program_id m_solidShadowProgramId{ 0 };
+    ki::program_id m_alphaShadowProgramId{ 0 };
 };

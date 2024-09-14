@@ -9,6 +9,7 @@
 #include <glm/ext.hpp>
 
 #include "kigl/kigl.h"
+#include "ki/size.h"
 
 namespace uniform {
     class Uniform;
@@ -23,8 +24,11 @@ class Program final
     friend uniform::Subroutine;
 
 public:
+    static Program* get(ki::program_id id);
+
     // public due to shared_ptr
     Program(
+        ki::program_id id,
         std::string_view key,
         std::string_view name,
         const bool compute,
@@ -45,11 +49,11 @@ public:
     void validateProgram() const;
 
 public:
-    inline bool isReady() const { return m_prepareResult == 0; }
+    inline bool isReady() const { return m_prepared; }
 
     void load();
 
-    int prepareRT();
+    ki::program_id prepareRT();
 
     void bind() const noexcept;
 
@@ -73,8 +77,8 @@ private:
         const std::string& shaderPath,
         const std::string& source);
 
-    int createProgram();
-    int initProgram();
+    void createProgram();
+    void initProgram();
 
     void appendDefines(std::vector<std::string>& lines);
 
@@ -90,7 +94,7 @@ private:
     GLint getSubroutineIndex(std::string_view name, GLenum shadertype);
 
 public:
-    const int m_id;
+    const ki::program_id m_id;
 
     const std::string m_programName;
     const std::string m_key;
@@ -104,7 +108,6 @@ public:
     std::unique_ptr<ProgramUniforms> m_uniforms;
 
 private:
-    int m_prepareResult = -1;
     bool m_prepared = false;
 
     std::map<std::string, std::string, std::less<> > m_defines;

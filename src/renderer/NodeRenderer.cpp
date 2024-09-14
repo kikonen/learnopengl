@@ -44,7 +44,8 @@ void NodeRenderer::prepareRT(
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
 
-    m_selectionProgram = ProgramRegistry::get().getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    auto selectionProgramId = ProgramRegistry::get().getProgram(SHADER_SELECTION, { { DEF_USE_ALPHA, "1" } });
+    m_selectionProgram = Program::get(selectionProgramId);
     m_selectionProgram->prepareRT();
 }
 
@@ -144,12 +145,12 @@ void NodeRenderer::fillHighlightMask(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this, &program](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgram ? lodMesh.m_selectionProgram : program;
+                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 if (p != program) {
                     p->bind();
                     p->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
                 }
-                return p;
+                return p->m_id;
             },
             [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(); },
@@ -192,12 +193,12 @@ void NodeRenderer::renderHighlight(
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this, &program](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgram ? lodMesh.m_selectionProgram : program;
+                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 if (p != program) {
                     p->bind();
                     p->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
                 }
-                return p;
+                return p->m_id;
             },
             [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(); },

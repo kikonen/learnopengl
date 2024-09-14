@@ -11,7 +11,6 @@
 
 #include "asset/AABB.h"
 
-#include "backend/Lod.h"
 #include "backend/DrawOptions.h"
 
 #include "mesh/MeshFlags.h"
@@ -85,14 +84,8 @@ namespace mesh {
         void updateTransform();
 
     public:
-        backend::Lod m_lod;
-
-        const kigl::GLVertexArray* m_vao{ nullptr };
-
         Mesh* m_mesh{ nullptr };
         std::unique_ptr<Mesh> m_deleter;
-
-        int32_t m_socketIndex{ -1 };
 
         glm::vec3 m_scale{ 1.f };
         glm::vec3 m_baseScale{ 1.f };
@@ -106,11 +99,19 @@ namespace mesh {
 
         backend::DrawOptions m_drawOptions;
 
-        Program* m_program{ nullptr };
-        Program* m_shadowProgram{ nullptr };
-        Program* m_preDepthProgram{ nullptr };
-        Program* m_selectionProgram{ nullptr };
-        Program* m_idProgram{ nullptr };
+        const kigl::GLVertexArray* m_vao{ nullptr };
+
+        uint32_t m_baseVertex{ 0 };
+        uint32_t m_baseIndex{ 0 };
+        uint32_t m_indexCount{ 0 };
+
+        int32_t m_socketIndex{ -1 };
+
+        ki::program_id m_programId{ 0 };
+        ki::program_id m_shadowProgramId{ 0 };
+        ki::program_id m_preDepthProgramId{ 0 };
+        ki::program_id m_selectionProgramId{ 0 };
+        ki::program_id m_idProgramId{ 0 };
 
         // NOTE KI level == 0 by default enabled
         uint8_t m_levelMask{ 1 };

@@ -886,7 +886,7 @@ namespace loader {
                 definitions[DEF_USE_DEBUG] = "1";
             }
 
-            material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgram(
+            material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgramId(
                 shaderName,
                 false,
                 material.m_geometryType,
@@ -901,7 +901,7 @@ namespace loader {
                     shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
                 }
 
-                material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgram(
+                material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgramId(
                     shadowName,
                     false,
                     "",
@@ -909,7 +909,7 @@ namespace loader {
             }
 
             if (usePreDepth) {
-                material.m_programs[MaterialProgramType::pre_depth] = ProgramRegistry::get().getProgram(
+                material.m_programs[MaterialProgramType::pre_depth] = ProgramRegistry::get().getProgramId(
                     preDepthName,
                     false,
                     "",
@@ -917,7 +917,7 @@ namespace loader {
             }
 
             if (!selectionName.empty()) {
-                material.m_programs[MaterialProgramType::selection] = ProgramRegistry::get().getProgram(
+                material.m_programs[MaterialProgramType::selection] = ProgramRegistry::get().getProgramId(
                     selectionName,
                     false,
                     "",
@@ -925,7 +925,7 @@ namespace loader {
             }
 
             if (!objectIdName.empty()) {
-                material.m_programs[MaterialProgramType::object_id] = ProgramRegistry::get().getProgram(
+                material.m_programs[MaterialProgramType::object_id] = ProgramRegistry::get().getProgramId(
                     objectIdName,
                     false,
                     "",

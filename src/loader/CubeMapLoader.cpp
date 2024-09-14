@@ -70,7 +70,7 @@ namespace loader {
             material.gbuffer = SHADER_VOLUME.starts_with("g_");
 
             lodMesh->setMaterial(material);
-            lodMesh->m_program = ProgramRegistry::get().getProgram(SHADER_VOLUME);
+            lodMesh->m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
         }
 
         type->m_nodeType = NodeType::marker;

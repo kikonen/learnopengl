@@ -49,7 +49,7 @@ namespace render {
         void addSnapshot(
             const RenderContext& ctx,
             const mesh::MeshType* type,
-            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
@@ -64,7 +64,7 @@ namespace render {
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const mesh::MeshType* type,
-            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
             const Snapshot& snapshot,
             std::span<const mesh::MeshTransform> transforms,
@@ -83,7 +83,7 @@ namespace render {
         void draw(
             const RenderContext& ctx,
             mesh::MeshType* type,
-            const std::function<Program* (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
             Node& node);
 

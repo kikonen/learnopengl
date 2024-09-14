@@ -43,12 +43,12 @@ void DecalRenderer::prepareRT(
         { { DEF_USE_ALPHA, "1" },
           { DEF_USE_BLEND, "1" } });
 
-    m_alphaDecalProgram->prepareRT();
+    Program::get(m_alphaDecalProgram)->prepareRT();
 
     m_solidDecalProgram = ProgramRegistry::get().getProgram(
         SHADER_DECAL);
 
-    m_solidDecalProgram->prepareRT();
+    Program::get(m_solidDecalProgram)->prepareRT();
 
     {
         auto generator = mesh::PrimitiveGenerator::quad();
@@ -90,10 +90,10 @@ void DecalRenderer::render(
     state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
 
     if (wireframe) {
-        m_solidDecalProgram->bind();
+        Program::get(m_solidDecalProgram)->bind();
     }
     else {
-        m_alphaDecalProgram->bind();
+        Program::get(m_alphaDecalProgram)->bind();
     }
 
     state.bindVAO(*m_quad->getVAO());
