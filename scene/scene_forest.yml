@@ -83,5 +83,9 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+      xpath: prefab/scenery/prefab_cobblestone_floor.yml
+    mesh:
+      material:
+        tiling: 1000
     scale: 4000
     position: [0, 0, 0]
