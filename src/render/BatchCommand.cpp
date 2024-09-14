@@ -12,7 +12,7 @@ namespace render {
     BatchKey::BatchKey(
         int8_t priority,
         const ki::program_id programId,
-        GLuint vaoId,
+        const ki::vao_id vaoId,
         const backend::DrawOptions& drawOptions,
         bool forceSolid,
         bool forceWireframe) noexcept

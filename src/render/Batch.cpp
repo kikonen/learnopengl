@@ -451,9 +451,9 @@ namespace render {
             const auto& curr = it.second;
 
             backend::DrawRange drawRange = {
+                key.m_drawOptions,
                 key.m_vaoId,
                 key.m_programId,
-                key.m_drawOptions,
             };
 
             const auto& drawOptions = key.m_drawOptions;

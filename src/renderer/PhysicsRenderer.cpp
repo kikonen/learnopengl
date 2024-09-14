@@ -118,9 +118,9 @@ void PhysicsRenderer::drawObjects(
         }
 
         backend::DrawRange drawRange{
-                *mesh->getVAO(),
-                m_objectProgramId,
                 drawOptions,
+                static_cast<ki::vao_id>(*mesh->getVAO()),
+                m_objectProgramId,
         };
 
         backend::gl::DrawIndirectCommand indirect{};

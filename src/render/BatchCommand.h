@@ -33,7 +33,7 @@ namespace render {
         int32_t m_socketIndex;
 
         backend::DrawOptions m_drawOptions;
-        GLuint m_vaoId;
+        ki::vao_id m_vaoId;
         ki::program_id m_programId;
         int8_t m_priority;
     };
@@ -43,19 +43,20 @@ namespace render {
     // => i.e. vao, program & al.
     // @see DrawBuffer::bindDrawRange
     struct BatchKey {
+        backend::DrawOptions m_drawOptions;
+        const ki::vao_id m_vaoId;
+        const ki::program_id m_programId;
+        const int8_t m_priority;
+
         BatchKey(
             int8_t priority,
             const ki::program_id programId,
-            GLuint vaoId,
+            const ki::vao_id vaoId,
             const backend::DrawOptions& drawOptions,
             bool forceSolid,
             bool forceWireframe) noexcept;
 
         bool operator<(const BatchKey& o) const noexcept;
-        GLuint m_vaoId;
-        backend::DrawOptions m_drawOptions;
-        const ki::program_id m_programId;
-        const int8_t m_priority;
     };
 
     struct LodKey {

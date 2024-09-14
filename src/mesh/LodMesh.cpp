@@ -246,7 +246,7 @@ namespace mesh {
     void LodMesh::prepareRT(const PrepareContext& ctx)
     {
         if (m_mesh) {
-            m_vaoId = *m_mesh->prepareVAO();
+            m_vaoId = static_cast<ki::vao_id>(*m_mesh->prepareVAO());
             m_mesh->prepareLodMesh(*this);
 
             updateTransform();

@@ -36,11 +36,17 @@ void VaoRegistry::prepare()
 {
     // NOTE KI ensure id == 0 is not used for actual VAOs
     m_nullVao->create("NULL");
+    assert(*m_nullVao < 255);
 
     m_texturedVao->prepare();
     m_skinnedVao->prepare();
     m_sharedPrimitiveVao->prepare();
     m_dynamicPrimitiveVao->prepare();
+
+    assert(*m_texturedVao->getVAO() < 255);
+    assert(*m_skinnedVao->getVAO() < 255);
+    assert(*m_sharedPrimitiveVao->getVAO() < 255);
+    assert(*m_dynamicPrimitiveVao->getVAO() < 255);
 }
 
 void VaoRegistry::updateRT(const UpdateContext& ctx)

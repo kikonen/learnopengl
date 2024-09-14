@@ -64,7 +64,7 @@ namespace mesh {
 
         void setupDrawOptions();
 
-        inline GLuint getVaoId() const noexcept {
+        inline ki::vao_id getVaoId() const noexcept {
             return m_vaoId;
         }
 
@@ -99,13 +99,13 @@ namespace mesh {
 
         backend::DrawOptions m_drawOptions;
 
-        GLuint m_vaoId{ 0 };
-
         uint32_t m_baseVertex{ 0 };
         uint32_t m_baseIndex{ 0 };
         uint32_t m_indexCount{ 0 };
 
         int32_t m_socketIndex{ -1 };
+
+        ki::vao_id m_vaoId{ 0 };
 
         ki::program_id m_programId{ 0 };
         ki::program_id m_shadowProgramId{ 0 };
