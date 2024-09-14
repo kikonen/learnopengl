@@ -5,6 +5,8 @@
 #include <string>
 #include <mutex>
 
+#include "ki/size.h"
+
 class Program;
 
 class ProgramRegistry final
@@ -34,11 +36,16 @@ public:
         std::string_view geometryType,
         const std::map<std::string, std::string, std::less<>>& defines);
 
+    const Program* getProgram(ki::program_id id) const noexcept
+    {
+        return m_programs[id].get();
+    }
+
     void validate();
 
 private:
-    // name + geom
-    std::unordered_map<std::string, std::unique_ptr<Program>> m_programs;
+    std::vector<std::unique_ptr<Program>> m_programs;
+    std::unordered_map<std::string, ki::program_id> m_programIds;
 
     std::mutex m_programs_lock{};
 };

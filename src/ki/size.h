@@ -8,7 +8,9 @@ namespace ki
     typedef uint16_t mesh_id;
     typedef uint16_t type_id;
     typedef uint32_t material_id;
-    typedef uint16_t program_id;
+
+    typedef uint8_t program_id;
+    typedef uint8_t vao_id;
 
     typedef uint16_t size_t_entity_flags;
 

@@ -5,16 +5,19 @@
 #include "Program.h"
 
 namespace {
-    static ProgramRegistry s_registry;
+    static ProgramRegistry g_registry;
 }
 
 ProgramRegistry& ProgramRegistry::get() noexcept
 {
-    return s_registry;
+    return g_registry;
 }
 
 ProgramRegistry::ProgramRegistry()
 {
+    // NOTE KI no vector memory alloc, no lock needed during runtime
+    m_programs.reserve(255);
+    m_programs.emplace_back();
 }
 
 ProgramRegistry::~ProgramRegistry()
@@ -23,7 +26,7 @@ ProgramRegistry::~ProgramRegistry()
     for (auto& e : m_programs) {
         KI_INFO(fmt::format(
             "PROGRAM_REGISTRY: delete PROGRAM {}",
-            e.second->m_key));
+            e->m_key));
     }
     m_programs.clear();
 }
@@ -72,21 +75,23 @@ Program* ProgramRegistry::getProgram(
 
     Program* program = nullptr;
     {
-        const auto& e = m_programs.find(key);
-        if (e != m_programs.end()) {
-            program = e->second.get();
+        const auto& e = m_programIds.find(key);
+        if (e != m_programIds.end()) {
+            program = m_programs[e->second].get();
         }
     }
 
     if (!program) {
-        m_programs[key] = std::make_unique<Program>(
+        const ki::program_id id = static_cast<ki::program_id>(m_programs.size());
+        m_programs.push_back(std::make_unique<Program>(
             key,
             name,
             compute,
             geometryType,
-            defines);
-        const auto& e = m_programs.find(key);
-        program = e->second.get();
+            defines));
+        m_programIds[key] = id;
+        const auto& e = m_programIds.find(key);
+        program = m_programs[e->second].get();
         program->load();
     }
 
@@ -95,8 +100,7 @@ Program* ProgramRegistry::getProgram(
 
 void ProgramRegistry::validate()
 {
-    for (auto& e : m_programs) {
-        auto& program = e.second;
+    for (auto& program : m_programs) {
         //assert(program->boundCount() == 0);
     }
 }
