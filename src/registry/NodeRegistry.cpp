@@ -216,6 +216,7 @@ void NodeRegistry::snapshotRT()
 {
     snapshot(m_snapshotsPending, m_snapshotsRT);
     m_entities.resize(m_snapshotsRT.size());
+    m_dirtyEntities.resize(m_snapshotsRT.size());
 }
 
 void NodeRegistry::snapshot(
@@ -272,9 +273,11 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
     }
 }
 
-void NodeRegistry::updateEntity(const UpdateContext& ctx)
+std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
     //std::lock_guard lock(m_lock);
+    int minDirty = INT32_MAX;
+    int maxDirty = INT32_MIN;
 
     for (int i = 0; i < m_snapshotsRT.size(); i++) {
         auto* node = m_cachedNodesRT[i];
@@ -294,7 +297,13 @@ void NodeRegistry::updateEntity(const UpdateContext& ctx)
 
         snapshot.updateEntity(entity);
         snapshot.m_dirty = false;
+
+        m_dirtyEntities[i] = true;
+        if (i < minDirty) minDirty = i;
+        if (i > maxDirty) maxDirty = i;
     }
+
+    return { minDirty, maxDirty };
 }
 
 void NodeRegistry::cacheNodesWT()

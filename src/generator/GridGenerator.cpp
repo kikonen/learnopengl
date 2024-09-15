@@ -49,7 +49,7 @@ void GridGenerator::updateWT(
     const auto containerLevel = containerState.getMatrixLevel();
 
     // NOTE KI cannot skip for dynamic bounds, physics is assumed to be changing
-    if (m_staticBounds && m_containerMatrixLevel == containerLevel) return;
+    if (m_boundsSetupDone && m_staticBounds && m_containerMatrixLevel == containerLevel) return;
 
     updateBounds(ctx, container);
     updateInstances(ctx, container);

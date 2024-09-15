@@ -61,31 +61,28 @@ void EntityRegistry::prepare()
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
-    //if (!m_dirty) return;
+    auto [minDirty, maxDirty] = ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
 
-    processNodes(ctx);
-
-    //if (m_minDirty < 0) return;
+    if (minDirty > maxDirty) return;
 
     if (m_useFence) {
         m_fence.waitFence(m_useDebugFence);
     }
 
     constexpr size_t sz = sizeof(EntitySSBO);
-    const int maxCount = (m_maxDirty + 1) - m_minDirty;
+    const int maxCount = (maxDirty + 1) - minDirty;
 
     //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, min={}, max={}, maxCount={}", ctx.m_clock.frameCount, m_minDirty, m_maxDirty, maxCount));
 
-    int idx = m_minDirty;
+    int idx = minDirty;
     int from = -1;
     int skip = 0;
 
     auto& entries = NodeRegistry::get().getEntities();
+    auto& dirtyEntries = NodeRegistry::get().getDirtyEntities();
     const size_t totalCount = entries.size();
 
-    m_dirty.resize(totalCount);
-
-    bool refreshAll = true;
+    bool refreshAll = false;
     {
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
@@ -113,20 +110,17 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
             //}
             m_ssbo.update(0, totalCount * sz, entries.data());
         }
-        for (int i = 0; i < totalCount; i++) {
-            m_dirty[i] = false;
-        }
     }
     else {
-        while (idx <= m_maxDirty) {
-            if (!m_dirty[idx]) {
+        while (idx <= maxDirty) {
+            if (!dirtyEntries[idx]) {
                 skip++;
             }
             else {
                 if (from == -1) from = idx;
             }
 
-            if (from != -1 && (skip >= MAX_SKIP || idx == m_maxDirty)) {
+            if (from != -1 && (skip >= MAX_SKIP || idx == maxDirty)) {
                 int to = idx;
                 const int count = to + 1 - from;
 
@@ -142,10 +136,6 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                     m_ssbo.update(from * sz, count * sz, &entries[from]);
                 }
 
-                for (int i = 0; i < count; i++) {
-                    m_dirty[from + i] = false;
-                }
-
                 skip = 0;
                 from = -1;
                 updatedCount += count;
@@ -154,10 +144,11 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
         }
     }
 
-    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
+    for (int i = 0; i < totalCount; i++) {
+        dirtyEntries[i] = false;
+    }
 
-    m_minDirty = -1;
-    m_maxDirty = -1;
+    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
 }
 
 void EntityRegistry::postRT(const UpdateContext& ctx)
@@ -174,9 +165,4 @@ void EntityRegistry::bind(
     const RenderContext& ctx)
 {
     m_ssbo.bindSSBO(SSBO_ENTITIES);
-}
-
-void EntityRegistry::processNodes(const UpdateContext& ctx)
-{
-    ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
 }

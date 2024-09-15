@@ -51,7 +51,8 @@ public:
 
     void prepareUpdateRT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
-    void updateEntity(const UpdateContext& ctx);
+    // @return [min-dirty, max-dirty]
+    std::pair<int, int> updateEntity(const UpdateContext& ctx);
 
     void snapshotWT();
     void snapshotPending();
@@ -185,6 +186,11 @@ public:
         return m_entities;
     }
 
+    std::vector<bool>& getDirtyEntities() noexcept
+    {
+        return m_dirtyEntities;
+    }
+
     void cacheNodesWT();
     void cacheNodesRT();
 
@@ -231,6 +237,7 @@ private:
     std::vector<Snapshot> m_snapshotsPending;
     std::vector<Snapshot> m_snapshotsRT;
     std::vector<EntitySSBO> m_entities;
+    std::vector<bool> m_dirtyEntities;
 
     std::vector<Node*> m_cachedNodesWT;
     std::vector<Node*> m_cachedNodesRT;

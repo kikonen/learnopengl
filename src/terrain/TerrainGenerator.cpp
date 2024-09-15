@@ -150,6 +150,8 @@ namespace terrain {
         const UpdateContext& ctx,
         const Node& container)
     {
+        return;
+
         const auto& containerState = container.getState();
 
         const int step = m_worldTileSize;
@@ -238,6 +240,12 @@ namespace terrain {
                 state.setVolume(tileVolume);
                 state.setScale(scale);
                 state.m_tileIndex = info.m_registeredIndex;
+
+                const glm::vec3 pos{
+                    step / 2 + info.m_tileU * step,
+                    0,
+                    step / 2 + info.m_tileV * step };
+                state.setPosition(pos);
             }
         }
 
@@ -313,7 +321,7 @@ namespace terrain {
             ki::node_id nodeId{ StringID::nextID() };
             auto handle = pool::NodeHandle::allocate(nodeId);
             auto* node = handle.toNode();
-            node->m_name = fmt::format("tile-", idx);
+            node->setName(fmt::format("tile-{}", idx));
             node->m_typeHandle = typeHandle;
             m_nodes.push_back(handle);
 

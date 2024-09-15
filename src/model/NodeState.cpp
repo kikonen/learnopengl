@@ -32,8 +32,7 @@ glm::vec3 NodeState::getDegreesRotation() const noexcept
 void NodeState::updateRootMatrix() noexcept
 {
     ASSERT_WT();
-    // TODO KI why dirty track for root is not working?!?
-    //if (!m_dirty) return;
+    if (!m_dirty) return;
 
     updateRotationMatrix();
 

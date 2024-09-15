@@ -32,29 +32,7 @@ public:
     void postRT(const UpdateContext& ctx);
     void bind(const RenderContext& ctx);
 
-    inline void markDirty(int index) noexcept
-    {
-        //ASSERT_RT();
-        if (index < m_minDirty || m_minDirty == -1) {
-            m_minDirty = index;
-        }
-        if (index > m_maxDirty || m_maxDirty == -1) {
-            m_maxDirty = index;
-        }
-
-        m_dirty[index] = true;
-    }
-
 private:
-    void processNodes(const UpdateContext& ctx);
-
-private:
-    std::vector<bool> m_dirty;
-    int m_minDirty = -1;
-    int m_maxDirty = -1;
-
-    std::atomic<bool> m_dirtyFlag;
-
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
     kigl::GLFence m_fence{ "fence_entity" };
     bool m_useMapped{ false };
