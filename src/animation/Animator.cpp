@@ -320,10 +320,10 @@ namespace animation {
                 }
 
                 parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
-                const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
 
                 if (bone) {
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
+                    const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
                     bonePalette[bone->m_index] = inverseMeshRigTransform * globalTransform * bone->m_offsetMatrix;
                 }
             }

@@ -211,6 +211,7 @@ namespace mesh {
 
         m_flags.noVolume = m_mesh->m_flags.noVolume;
         m_flags.useBones = m_mesh->m_flags.useBones;
+        m_flags.boneVisualization = m_mesh->m_flags.boneVisualization;
 
         setMaterial(mesh->getMaterial());
     }

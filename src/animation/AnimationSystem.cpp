@@ -82,6 +82,30 @@ namespace animation
         uint32_t boneBaseIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
         uint32_t socketBaseIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
 
+        // Initialize bones
+        if (false) {
+            std::lock_guard lockBones(boneRegistry.m_lock);
+
+            auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig.m_boneContainer.size());
+
+            std::vector<glm::mat4> parentTransforms;
+            parentTransforms.resize(rig.m_joints.size() + 1);
+            parentTransforms[0] = glm::mat4{ 1.f };
+
+            for (const auto& rigJoint : rig.m_joints) {
+
+                const auto& jointTransform = rigJoint.m_transform;
+                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+
+                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
+                if (bone) {
+                    const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
+                    bonePalette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
+                }
+            }
+            boneRegistry.markDirty(boneBaseIndex, rig.m_boneContainer.size());
+        }
+
         // NOTE KI all bones are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
         {

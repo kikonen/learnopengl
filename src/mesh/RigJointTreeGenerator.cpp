@@ -22,6 +22,7 @@ namespace mesh {
         mesh->m_type = mesh::PrimitiveType::lines;
         mesh->m_flags.noVolume = true;
         mesh->m_flags.useBones = true;
+        mesh->m_flags.boneVisualization = true;
 
         auto& vertices = mesh->m_vertices;
         auto& vertexBones = mesh->m_vertexBones;
@@ -43,11 +44,15 @@ namespace mesh {
             if (rigJoint.m_boneIndex < 0) continue;
 
             jointToVertex.insert({ rigJoint.m_index, static_cast<int16_t>(vertices.size()) });
-            auto& vertex = vertices.emplace_back();
-            vertex.pos = rigJoint.m_globalTransform * glm::vec4{ 0, 0, 0, 1 };
-
-            auto& vertexBone = vertexBones.emplace_back();
-            vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+            {
+                auto& vertex = vertices.emplace_back();
+                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
+                vertex.pos = glm::inverse(bone->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
+            }
+            {
+                auto& vertexBone = vertexBones.emplace_back();
+                vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+            }
         }
 
         // generate lines: from child to parent
@@ -96,6 +101,7 @@ namespace mesh {
         mesh->m_type = mesh::PrimitiveType::points;
         mesh->m_flags.noVolume = true;
         mesh->m_flags.useBones = true;
+        mesh->m_flags.boneVisualization = true;
 
         auto& vertices = mesh->m_vertices;
         auto& vertexBones = mesh->m_vertexBones;
@@ -117,11 +123,15 @@ namespace mesh {
             if (rigJoint.m_boneIndex < 0) continue;
 
             jointToVertex.insert({ rigJoint.m_index, static_cast<int16_t>(vertices.size()) });
-            auto& vertex = vertices.emplace_back();
-            vertex.pos = rigJoint.m_globalTransform * glm::vec4{ 0, 0, 0, 1 };
-
-            auto& vertexBone = vertexBones.emplace_back();
-            vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+            {
+                auto& vertex = vertices.emplace_back();
+                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
+                vertex.pos = glm::inverse(bone->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
+            }
+            {
+                auto& vertexBone = vertexBones.emplace_back();
+                vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+            }
         }
 
         // generate points: one for each vertex
