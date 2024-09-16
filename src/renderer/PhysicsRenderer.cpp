@@ -18,6 +18,10 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
+namespace {
+    constexpr int ID_INDEX = 1;
+}
+
 void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
     {
@@ -28,6 +32,7 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
     m_objectProgramId = ProgramRegistry::get().getProgram("g_tex");
     Program::get(m_objectProgramId)->prepareRT();
 
+    m_entityIndex = ID_INDEX;
     //m_entityIndex = EntityRegistry::get().registerEntity();
     //{
     //    auto* entity = EntityRegistry::get().modifyEntity(m_entityIndex, true);

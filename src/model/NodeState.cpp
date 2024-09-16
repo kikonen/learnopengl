@@ -31,7 +31,7 @@ glm::vec3 NodeState::getDegreesRotation() const noexcept
 
 void NodeState::updateRootMatrix() noexcept
 {
-    ASSERT_WT();
+    //ASSERT_WT();
     if (!m_dirty) return;
 
     updateRotationMatrix();
@@ -155,7 +155,7 @@ void NodeState::updateModelAxis() const noexcept
 
 void NodeState::updateRotationMatrix() noexcept
 {
-    ASSERT_WT();
+    //ASSERT_WT();
     if (!m_dirtyRotation) return;
     m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
     m_dirtyRotation = false;

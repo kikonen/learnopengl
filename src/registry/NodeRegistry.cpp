@@ -54,6 +54,9 @@
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
+    constexpr int NULL_INDEX = 0;
+    constexpr int ID_INDEX = 1;
+
     const ki::program_id NULL_PROGRAM_ID = 0;
 
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
@@ -68,20 +71,29 @@ NodeRegistry& NodeRegistry::get() noexcept
 
 NodeRegistry::NodeRegistry()
 {
-    // NOTE KI declare index == 0 as NULL object
-    m_handles.emplace_back();
-    m_parentIndeces.push_back(0);
+    // NOTE KI keep NULL and IDENTITY as separate since
+    // logic *can* (and thus *will*) accidentally modify null state
+    // => that does not matter as long as NULL is not tried to be used
+    //    as identity matrix
+    // => in GPU side NULL state *may* (thus *will*) appear as entity
+    // => should somehow make NULL state immutable
+    {
+        // NOTE KI declare index == 0 as NULL object
+        auto& state = m_states.emplace_back();
+        state.updateRootMatrix();
 
-    auto& nullState = m_states.emplace_back();
-    // TODO KI cannot update due to thread check
-    //nullState.updateRootMatrix();
+        m_handles.emplace_back();
+        m_parentIndeces.push_back(0);
+    }
 
-    m_snapshotsWT.emplace_back();
-    m_snapshotsPending.emplace_back();
-    m_snapshotsRT.emplace_back();
+    {
+        // NOTE KI declare index == 1 as IDENTITY object
+        auto& state = m_states.emplace_back();
+        state.updateRootMatrix();
 
-    auto& nullEntity = m_entities.emplace_back();
-    nullEntity.setModelMatrix(glm::mat4(1.f), true, true);
+        m_handles.emplace_back();
+        m_parentIndeces.push_back(0);
+    }
 }
 
 NodeRegistry::~NodeRegistry()
@@ -135,21 +147,28 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     }
 
     {
+        {
+            auto& state = m_states[NULL_INDEX];
+            state.updateRootMatrix();
+        }
+        {
+            auto& state = m_states[ID_INDEX];
+            state.updateRootMatrix();
+        }
+        {
+            auto& state = m_states[m_rootIndex];
+            state.updateRootMatrix();
+        }
+
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
-        for (int i = 0; i < m_states.size(); i++) {
+        for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
             auto* node = m_cachedNodesWT[i];
             if (!node) continue;
 
             auto& state = m_states[i];
-
-            if (i == m_rootIndex) {
-                state.updateRootMatrix();
-            }
-            else {
-                auto& parentState = m_states[m_parentIndeces[i]];
-                state.updateModelMatrix(parentState);
-            }
+            auto& parentState = m_states[m_parentIndeces[i]];
+            state.updateModelMatrix(parentState);
 
             if (node->m_generator) {
                 node->m_generator->updateWT(ctx, *node);
@@ -174,7 +193,11 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 void NodeRegistry::updateModelMatrices()
 {
     {
-        auto& state = m_states[0];
+        auto& state = m_states[NULL_INDEX];
+        state.updateRootMatrix();
+    }
+    {
+        auto& state = m_states[ID_INDEX];
         state.updateRootMatrix();
     }
     {
@@ -283,16 +306,18 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
         auto* node = m_cachedNodesRT[i];
         const auto& snapshot = m_snapshotsRT[i];
 
-        if (!node || !snapshot.m_dirty) continue;
+        if (!snapshot.m_dirty) continue;
 
         auto& entity = m_entities[i];
 
-        entity.u_objectID = node->getId();
-        entity.u_highlightIndex = node->getHighlightIndex();
+        if (node) {
+            entity.u_objectID = node->getId();
+            entity.u_highlightIndex = node->getHighlightIndex();
 
-        auto* textGenerator = node->getGenerator<TextGenerator>();
-        if (textGenerator) {
-            entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
+            auto* textGenerator = node->getGenerator<TextGenerator>();
+            if (textGenerator) {
+                entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
+            }
         }
 
         snapshot.updateEntity(entity);
@@ -550,9 +575,10 @@ void NodeRegistry::attachNode(
     assert(node);
     assert(parentId || nodeId == m_rootId);
 
-    if (nodeId != m_rootId) {
-        assert(parentId >= m_rootIndex);
-    }
+    // NOTE KI id != index
+    //if (nodeId != m_rootId) {
+    //    assert(parentId >= m_rootIndex);
+    //}
 
     bindNode(nodeId, state);
 
@@ -678,6 +704,7 @@ bool NodeRegistry::bindParent(
 
     if (!node || !parent) return false;
 
+    assert(parent->m_entityIndex >= m_rootIndex);
     assert(parent->m_entityIndex < node->m_entityIndex);
 
     m_parentIndeces[node->m_entityIndex] = parent->m_entityIndex;
