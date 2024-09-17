@@ -246,6 +246,11 @@ namespace loader {
         generator.vertices = data.vertices;
         generator.indeces = data.indeces;
 
-        return generator.create();
+        auto mesh = generator.create();
+        if (!mesh->getMaterial()) {
+            const auto& material = Material::createMaterial(BasicMaterial::yellow);
+            mesh->setMaterial(&material);
+        }
+        return mesh;
     }
 }
