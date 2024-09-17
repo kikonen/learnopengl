@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "MeshRenderer.h"
 
 namespace mesh {
@@ -19,5 +21,5 @@ public:
         render::FrameBuffer* fbo) override;
 
 private:
-    std::unique_ptr<mesh::Mesh> m_mesh;
+    std::shared_ptr<mesh::Mesh> m_mesh;
 };
