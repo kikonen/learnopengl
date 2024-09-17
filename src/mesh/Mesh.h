@@ -16,7 +16,6 @@
 
 #include "registry/Registry.h"
 
-#include "mesh/MeshFlags.h"
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
 
@@ -89,9 +88,14 @@ namespace mesh {
             return static_cast<uint32_t>(m_indeces.size());
         }
 
-        const kigl::GLVertexArray* getVAO() const
+        const kigl::GLVertexArray* getVAO() const noexcept
         {
             return m_vao;
+        }
+
+        bool isJointVisualization() const noexcept
+        {
+            return m_name == "joint_tree" || m_name == "joint_points";
         }
 
     public:
@@ -114,8 +118,6 @@ namespace mesh {
 
         glm::mat4 m_rigTransform{ 1.f };
         glm::mat4 m_inverseRigTransform{ 1.f };
-
-        MeshFlags m_flags;
 
     protected:
         bool m_preparedVAO{ false };

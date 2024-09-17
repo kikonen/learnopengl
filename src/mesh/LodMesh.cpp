@@ -209,9 +209,11 @@ namespace mesh {
         m_mesh = mesh;
         if (!m_mesh) return;
 
-        m_flags.noVolume = m_mesh->m_flags.noVolume;
-        m_flags.useBones = m_mesh->m_flags.useBones;
-        m_flags.boneVisualization = m_mesh->m_flags.boneVisualization;
+        if (m_mesh->isJointVisualization()) {
+            m_flags.noVolume = true;
+            m_flags.useBones = true;
+            m_flags.boneVisualization = true;
+        }
 
         setMaterial(mesh->getMaterial());
     }
