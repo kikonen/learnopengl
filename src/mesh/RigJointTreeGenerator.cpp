@@ -83,7 +83,7 @@ namespace mesh {
         material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
         material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
         material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
-        mesh->setMaterial(material);
+        mesh->setMaterial(&material);
 
         return mesh;
     }
@@ -148,7 +148,7 @@ namespace mesh {
             material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
             material.layersDepth = 6.f;
 
-            mesh->setMaterial(material);
+            mesh->setMaterial(&material);
         }
 
         return mesh;

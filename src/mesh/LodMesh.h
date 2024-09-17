@@ -59,8 +59,10 @@ namespace mesh {
             std::unique_ptr<Mesh> mesh,
             bool umique) noexcept;
 
-        Material* getMaterial() noexcept;
-        void setMaterial(const Material& material) noexcept;
+        const Material* getMaterial() const noexcept;
+        Material* modifyMaterial() noexcept;
+        void setMaterial(const Material* material) noexcept;
+        void clearMaterial() noexcept;
 
         void setupDrawOptions();
 

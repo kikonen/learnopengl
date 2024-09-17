@@ -325,7 +325,7 @@ namespace physics {
         glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
             glm::mat4(rot);
 
-        return { !cacheKey.empty(), mesh, transform};
+        return { transform, mesh, -1, 0, !cacheKey.empty() };
     }
 
     std::shared_ptr<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)

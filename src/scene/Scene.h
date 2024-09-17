@@ -47,6 +47,7 @@ class ShadowMapRenderer;
 class ObjectIdRenderer;
 class NormalRenderer;
 class PhysicsRenderer;
+class VolumeRenderer;
 
 namespace editor {
     class EditorFrame;
@@ -128,6 +129,7 @@ private:
     std::unique_ptr<NormalRenderer> m_normalRenderer{ nullptr };
 
     std::unique_ptr<PhysicsRenderer> m_physicsRenderer{ nullptr };
+    std::unique_ptr<VolumeRenderer> m_volumeRenderer{ nullptr };
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 

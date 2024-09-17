@@ -106,7 +106,6 @@ void CubeMapRenderer::prepareRT(
     m_nearPlane = assets.cubeMapNearPlane;
     m_farPlane = assets.cubeMapFarPlane;
 
-    m_tagId = assets.cubeMapId;
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
         m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
@@ -190,7 +189,7 @@ bool CubeMapRenderer::render(
     if (!centerNode) return false;
 
     if (assets.showCubeMapCenter) {
-        Node* tagNode = getTagNode();
+        Node* tagNode = nullptr;// getTagNode();
         if (tagNode) {
             auto& nodeRegistry = *parentCtx.m_registry->m_nodeRegistry;
 
@@ -405,12 +404,4 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         return it->second;
     }
     return nullptr;
-}
-
-Node* CubeMapRenderer::getTagNode()
-{
-    if (!m_tagNode) {
-        m_tagNode = pool::NodeHandle::toHandle(m_tagId);
-    }
-    return m_tagNode.toNode();
 }

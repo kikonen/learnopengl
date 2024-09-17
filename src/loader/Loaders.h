@@ -6,8 +6,6 @@
 #include "RootLoader.h"
 #include "ScriptLoader.h"
 #include "SkyboxLoader.h"
-#include "VolumeLoader.h"
-#include "CubeMapLoader.h"
 #include "FontLoader.h"
 #include "MaterialLoader.h"
 #include "CustomMaterialLoader.h"
@@ -40,8 +38,6 @@ namespace loader {
         ScriptLoader m_scriptLoader;
 
         SkyboxLoader m_skyboxLoader;
-        VolumeLoader m_volumeLoader;
-        CubeMapLoader m_cubeMapLoader;
 
         NodeLoader m_nodeLoader;
         MeshLoader m_meshLoader;

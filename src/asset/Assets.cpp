@@ -284,8 +284,6 @@ Assets::Assets()
     //skyboxId  = SID("<skybox>");
 
     rootId = 1;
-    volumeId = 2;
-    cubeMapId = 3;
     skyboxId = 4;
 
     /////////////////////////

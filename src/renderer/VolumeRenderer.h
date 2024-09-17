@@ -1,0 +1,23 @@
+#pragma once
+
+#include "MeshRenderer.h"
+
+namespace mesh {
+    class Mesh;
+}
+
+class VolumeRenderer : public MeshRenderer
+{
+public:
+    VolumeRenderer();
+    ~VolumeRenderer();
+
+    virtual void prepareRT(const PrepareContext& ctx) override;
+
+    virtual void render(
+        const RenderContext& ctx,
+        render::FrameBuffer* fbo) override;
+
+private:
+    std::unique_ptr<mesh::Mesh> m_mesh;
+};

@@ -49,6 +49,7 @@
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
 #include "renderer/PhysicsRenderer.h"
+#include "renderer/VolumeRenderer.h"
 
 namespace {
 }
@@ -75,6 +76,7 @@ Scene::Scene(
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
         m_physicsRenderer = std::make_unique<PhysicsRenderer>();
+        m_volumeRenderer = std::make_unique<VolumeRenderer>();
 
         m_mainRenderer->setEnabled(true);
         m_rearRenderer->setEnabled(true);
@@ -176,6 +178,7 @@ void Scene::prepareRT()
     {
         m_normalRenderer->prepareRT(ctx);
         m_physicsRenderer->prepareRT(ctx);
+        m_volumeRenderer->prepareRT(ctx);
     }
 
     {
@@ -494,6 +497,7 @@ void Scene::drawScene(
         }
 
         m_physicsRenderer->render(ctx, nodeRenderer->m_buffer.get());
+        m_volumeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 }
 

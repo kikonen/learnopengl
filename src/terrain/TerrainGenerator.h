@@ -3,13 +3,13 @@
 #include "generator/NodeGenerator.h"
 
 #include "material/Material.h"
-#include "material/Image.h"
 
 #include "physics/size.h"
 
 #include "TerrainTileInfo.h"
 
 class ImageTexture;
+struct Material;
 
 namespace mesh {
     class ModelMesh;

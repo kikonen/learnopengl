@@ -274,8 +274,6 @@ public:
     glm::uvec3 computeGroups;
 
     ki::node_id rootId;
-    ki::node_id volumeId;
-    ki::node_id cubeMapId;
     ki::node_id skyboxId;
 
     // NOTE KI TEMPORARY HACKS

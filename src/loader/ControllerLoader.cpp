@@ -7,7 +7,6 @@
 
 #include "controller/PawnController.h"
 #include "controller/CameraZoomController.h"
-#include "controller/VolumeController.h"
 
 #include "loader/document.h"
 #include "loader_util.h"

@@ -10,7 +10,6 @@
 
 #include "backend/DrawOptions.h"
 
-#include "material/Material.h"
 #include "asset/Volume.h"
 #include "asset/AABB.h"
 
@@ -20,6 +19,7 @@
 #include "mesh/Vertex.h"
 
 struct PrepareContext;
+struct Material;
 
 namespace animation {
     struct RigContainer;
@@ -44,14 +44,22 @@ namespace mesh {
 
         AABB calculateAABB(const glm::mat4& transform) const;
 
-        void setMaterial(const Material& material) noexcept
+        void setMaterial(const Material* src) noexcept
         {
-            m_material = material;
+            if (!src) {
+                m_material.reset();
+                return;
+            }
+
+            if (!m_material) {
+                m_material = std::make_unique<Material>();
+            }
+            *m_material = *src;
         }
 
-        const Material& getMaterial() const noexcept
+        const Material* getMaterial() const noexcept
         {
-            return m_material;
+            return m_material.get();
         }
 
         // @return VAO for mesh
@@ -124,7 +132,7 @@ namespace mesh {
 
         const kigl::GLVertexArray* m_vao{ nullptr };
 
-        Material m_material;
+        std::unique_ptr<Material> m_material;
 
     private:
         std::unique_ptr<Volume> m_volume;

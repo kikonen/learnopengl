@@ -204,7 +204,7 @@
     <ClCompile Include="src\script\api\StartNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controller\VolumeController.cpp">
+    <ClCompile Include="src\renderer\VolumeRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\glad\src\glad.c">
@@ -418,12 +418,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\SkyboxLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\VolumeLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\CubeMapLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\BaseId.h">
@@ -957,6 +951,9 @@
     <ClCompile Include="src\event\actions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\MeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1169,7 +1166,7 @@
     <ClInclude Include="src\script\api\Wait.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controller\VolumeController.h">
+    <ClInclude Include="src\renderer\VolumeRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glad\include\glad\glad.h">
@@ -1473,12 +1470,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SkyboxLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\VolumeLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\CubeMapLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\NodeLoader.h">
@@ -2172,6 +2163,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\ode_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

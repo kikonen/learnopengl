@@ -216,8 +216,6 @@ namespace loader {
         l.m_scriptLoader.createScriptEngine(*m_scriptEngineData);
 
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
-        l.m_volumeLoader.attachVolume(root.rootId);
-        l.m_cubeMapLoader.attachCubeMap(root.rootId);
 
         {
             std::lock_guard lock(m_ready_lock);
@@ -565,7 +563,7 @@ namespace loader {
         const NodeData& nodeData,
         const MeshData& meshData)
     {
-        auto* lodMaterial = lodMesh.getMaterial();
+        auto* lodMaterial = lodMesh.modifyMaterial();
         if (!lodMaterial) return;
 
         auto& material = *lodMaterial;

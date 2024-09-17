@@ -8,7 +8,6 @@
 #include "engine/InputContext.h"
 
 #include "controller/NodeController.h"
-#include "controller/VolumeController.h"
 
 #include "asset/DynamicCubeMap.h"
 

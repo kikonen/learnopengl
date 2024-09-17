@@ -21,8 +21,6 @@
 
 #include "backend/gl/PerformanceCounters.h"
 
-#include "controller/VolumeController.h"
-
 #include "script/CommandEngine.h"
 #include "script/api/SetTextNode.h"
 #include "script/api/Cancel.h"
@@ -685,18 +683,9 @@ void SampleApp::selectNode(
     auto* node = pool::NodeHandle::toNode(nodeId);
 
     if (selectMode) {
-        auto* volumeNode = pool::NodeHandle::toNode(assets.volumeId);
-
         // deselect
         if (node && node->isSelected()) {
             nodeRegistry.selectNode(pool::NodeHandle::NULL_HANDLE, false);
-
-            if (volumeNode) {
-                auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);
-                if (controller) {
-                    controller->setTargetId(pool::NodeHandle::NULL_HANDLE);
-                }
-            }
 
             {
                 event::Event evt { event::Type::audio_source_pause };
@@ -710,12 +699,6 @@ void SampleApp::selectNode(
         // select
         nodeRegistry.selectNode(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE, inputState.shift);
 
-        if (volumeNode) {
-            auto* controller = ControllerRegistry::get().get<VolumeController>(volumeNode);
-            if (controller) {
-                controller->setTargetId(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE);
-            }
-        }
         KI_INFO(fmt::format("selected: {}", nodeId));
 
         if (node) {

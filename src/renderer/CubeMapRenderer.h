@@ -57,8 +57,6 @@ private:
     Node* findClosest(
         const RenderContext& ctx);
 
-    Node* getTagNode();
-
 public:
 
 private:
@@ -75,9 +73,6 @@ private:
     std::vector<render::Camera> m_cameras;
 
     Material m_tagMaterial;
-
-    ki::node_id m_tagId{ 0 };
-    pool::NodeHandle m_tagNode{};
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };

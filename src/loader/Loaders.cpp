@@ -5,8 +5,6 @@ namespace loader {
       : m_rootLoader(ctx),
         m_scriptLoader(ctx),
         m_skyboxLoader(ctx),
-        m_volumeLoader(ctx),
-        m_cubeMapLoader(ctx),
         m_fontLoader(ctx),
         m_materialLoader(ctx),
         m_customMaterialLoader(ctx),
@@ -32,8 +30,6 @@ namespace loader {
         m_rootLoader.setRegistry(registry);
         m_scriptLoader.setRegistry(registry);
         m_skyboxLoader.setRegistry(registry);
-        m_volumeLoader.setRegistry(registry);
-        m_cubeMapLoader.setRegistry(registry);
         m_audioLoader.setRegistry(registry);
         m_generatorLoader.setRegistry(registry);
         m_particleLoader.setRegistry(registry);

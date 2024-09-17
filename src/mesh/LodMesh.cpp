@@ -141,22 +141,37 @@ namespace mesh {
             m_socketIndex);
     }
 
-    Material* LodMesh::getMaterial() noexcept
+    const Material* LodMesh::getMaterial() const noexcept
     {
         return m_material.get();
     }
 
-    void LodMesh::setMaterial(const Material& src) noexcept
+    Material* LodMesh::modifyMaterial() noexcept
     {
+        return m_material.get();
+    }
+
+    void LodMesh::setMaterial(const Material* src) noexcept
+    {
+        if (!src) {
+            m_material.reset();
+            return;
+        }
+
         // NOTE KI copy of material for isntance
         // => material *is* per mesh type
         // => Sharing *might* be sometims possible, in practice tricky
         if (!m_material) {
             m_material = std::make_unique<Material>();
         }
-        *m_material = src;
+        *m_material = *src;
 
         setupDrawOptions();
+    }
+
+    void LodMesh::clearMaterial() noexcept
+    {
+        m_material.reset();
     }
 
     void LodMesh::setupDrawOptions()

@@ -207,6 +207,7 @@
     <ClCompile Include="src\material\HdriTexture.cpp" />
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
+    <ClCompile Include="src\renderer\MeshRenderer.cpp" />
     <ClCompile Include="src\shader\ProgramUniforms.cpp" />
     <ClCompile Include="src\component\CameraComponent.cpp" />
     <ClCompile Include="src\component\FollowCamera.cpp" />
@@ -309,7 +310,6 @@
     <ClCompile Include="src\loader\CameraLoader.cpp" />
     <ClCompile Include="src\loader\Context.cpp" />
     <ClCompile Include="src\loader\ControllerLoader.cpp" />
-    <ClCompile Include="src\loader\CubeMapLoader.cpp" />
     <ClCompile Include="src\loader\CustomMaterialLoader.cpp" />
     <ClCompile Include="src\loader\NodeLoader.cpp" />
     <ClCompile Include="src\loader\GeneratorLoader.cpp" />
@@ -319,7 +319,6 @@
     <ClCompile Include="src\loader\RootLoader.cpp" />
     <ClCompile Include="src\loader\ScriptLoader.cpp" />
     <ClCompile Include="src\loader\SkyboxLoader.cpp" />
-    <ClCompile Include="src\loader\VolumeLoader.cpp" />
     <ClCompile Include="src\physics\Object.cpp" />
     <ClCompile Include="src\render\BrdfLutTexture.cpp" />
     <ClCompile Include="src\render\CubeRender.cpp" />
@@ -370,7 +369,7 @@
     <ClCompile Include="src\script\CommandEngine.cpp" />
     <ClCompile Include="src\script\api\MoveNode.cpp" />
     <ClCompile Include="src\script\api\StartNode.cpp" />
-    <ClCompile Include="src\controller\VolumeController.cpp" />
+    <ClCompile Include="src\renderer\VolumeRenderer.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.h" />
     <ClCompile Include="src\renderer\ShadowCascade.cpp" />
@@ -521,6 +520,7 @@
     <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\physics\ode_util.h" />
     <ClInclude Include="src\physics\PhysicsMaterial.h" />
+    <ClInclude Include="src\renderer\MeshRenderer.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />
@@ -712,7 +712,6 @@
     <ClInclude Include="src\loader\Context.h" />
     <ClInclude Include="src\loader\ControllerData.h" />
     <ClInclude Include="src\loader\ControllerLoader.h" />
-    <ClInclude Include="src\loader\CubeMapLoader.h" />
     <ClInclude Include="src\loader\CustomMaterialData.h" />
     <ClInclude Include="src\loader\CustomMaterialLoader.h" />
     <ClInclude Include="src\loader\NodeRoot.h" />
@@ -731,7 +730,6 @@
     <ClInclude Include="src\loader\ScriptLoader.h" />
     <ClInclude Include="src\loader\SkyboxData.h" />
     <ClInclude Include="src\loader\SkyboxLoader.h" />
-    <ClInclude Include="src\loader\VolumeLoader.h" />
     <ClInclude Include="src\physics\Geom.h" />
     <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />
@@ -810,7 +808,7 @@
     <ClInclude Include="src\script\api\MoveNode.h" />
     <ClInclude Include="src\script\api\StartNode.h" />
     <ClInclude Include="src\script\api\Wait.h" />
-    <ClInclude Include="src\controller\VolumeController.h" />
+    <ClInclude Include="src\renderer\VolumeRenderer.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\render\BrdfLutTexture.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />

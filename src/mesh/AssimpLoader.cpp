@@ -384,7 +384,7 @@ namespace mesh
             if (!material) {
                 material = &m_defaultMaterial;
             }
-            modelMesh.setMaterial(*material);
+            modelMesh.setMaterial(material);
 
             //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }
