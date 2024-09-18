@@ -22,6 +22,9 @@ namespace {
     constexpr int ID_INDEX = 1;
 }
 
+MeshRenderer::MeshRenderer() = default;
+MeshRenderer::~MeshRenderer() = default;
+
 void MeshRenderer::prepareRT(const PrepareContext& ctx)
 {
     {
@@ -43,17 +46,17 @@ void MeshRenderer::drawObjects(
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
     // NOTE KI for troubleshooting
-    GLint drawFboId = 0, readFboId = 0;
-    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
-    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
+    //GLint drawFboId = 0, readFboId = 0;
+    //glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+    //glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
     auto* sharedVao = VaoRegistry::get().getSharedPrimitiveVao();
     auto* dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao();
     dynamicVao->clear();
 
-    PrepareContext prepareCtx{ ctx.m_registry };
+    m_instances.clear();
+    m_instances.reserve(meshes.size());
 
-    std::vector<mesh::InstanceSSBO> instances;
     for (const auto& meshInstance : meshes)
     {
         auto* mesh = meshInstance.m_mesh.get();
@@ -65,9 +68,12 @@ void MeshRenderer::drawObjects(
             mesh->setupVAO(dynamicVao, false);
         }
 
-        auto& instance = instances.emplace_back();
+        auto& instance = m_instances.emplace_back();
         // NOTE KI null entity/mesh are supposed to have ID mat model matrices
-        instance.setTransform(meshInstance.m_transform);
+        instance.setTransform(
+            meshInstance.m_transformMatrixRow0,
+            meshInstance.m_transformMatrixRow1,
+            meshInstance.m_transformMatrixRow2);
         instance.u_entityIndex = m_entityIndex;
         instance.u_materialIndex = meshInstance.m_materialIndex;
         if (instance.u_materialIndex < 0) {
@@ -80,39 +86,26 @@ void MeshRenderer::drawObjects(
 
     targetBuffer->bind(ctx);
 
-    drawBuffer->sendInstanceIndeces(instances);
+    drawBuffer->sendInstanceIndeces(m_instances);
 
-    ctx.m_state.setDepthFunc(GL_LEQUAL);
-    ctx.m_state.setDepthMask(GL_FALSE);
+    ctx.m_state.setDepthFunc(GL_LESS);
+    ctx.m_state.setDepthMask(GL_TRUE);
 
     int baseInstance = 0;
     for (auto& meshInstance : meshes)
     {
-        const auto& mesh = meshInstance.m_mesh;
-        const auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
-
-        backend::DrawOptions drawOptions;
-        {
-            drawOptions.m_mode = mesh->getDrawMode();
-            drawOptions.m_type = backend::DrawOptions::Type::elements;
-            drawOptions.m_solid = true;
-            drawOptions.m_wireframe = true;
-            drawOptions.m_renderBack = primitiveMesh
-                ? (primitiveMesh->m_type == mesh::PrimitiveType::plane || primitiveMesh->m_type == mesh::PrimitiveType::height_field)
-                : false;
-        }
+        const auto* mesh = meshInstance.m_mesh.get();
 
         backend::DrawRange drawRange{
-                drawOptions,
-                static_cast<ki::vao_id>(*mesh->getVAO()),
-                m_programId,
+            meshInstance.m_drawOptions,
+            static_cast<ki::vao_id>(*mesh->getVAO()),
+            meshInstance.m_programId > 0 ? meshInstance.m_programId : m_programId,
         };
 
         backend::gl::DrawIndirectCommand indirect{};
         {
             backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
 
-            //cmd.u_instanceCount = m_frustumGPU ? 0 : 1;
             cmd.u_instanceCount = 1;
             cmd.u_baseInstance = baseInstance;
 

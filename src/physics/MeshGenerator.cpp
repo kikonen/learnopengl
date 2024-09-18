@@ -21,6 +21,7 @@
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
+#include "mesh/PrimitiveMesh.h"
 #include "mesh/MeshInstance.h"
 
 #include "PhysicsEngine.h"
@@ -325,7 +326,18 @@ namespace physics {
         glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
             glm::mat4(rot);
 
-        return { transform, mesh, -1, 0, !cacheKey.empty() };
+        backend::DrawOptions drawOptions;
+        if (mesh) {
+            const auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
+
+            drawOptions.m_mode = mesh->getDrawMode();
+            drawOptions.m_type = backend::DrawOptions::Type::elements;
+            drawOptions.m_solid = true;
+            drawOptions.m_wireframe = true;
+            drawOptions.m_renderBack = geomType == GeomType::plane || geomType == GeomType::height_field;
+        }
+
+        return { transform, mesh, drawOptions, -1, 0, !cacheKey.empty() };
     }
 
     std::shared_ptr<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)

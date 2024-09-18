@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "material/Material.h"
 
 class Program;
@@ -9,6 +11,7 @@ struct PrepareContext;
 namespace mesh {
     struct MeshInstance;
     class Mesh;
+    struct InstanceSSBO;
 }
 
 namespace render {
@@ -18,6 +21,9 @@ namespace render {
 class MeshRenderer
 {
 public:
+    MeshRenderer();
+    ~MeshRenderer();
+
     virtual void prepareRT(const PrepareContext& ctx);
 
     virtual void render(
@@ -35,5 +41,8 @@ protected:
 
     ki::program_id m_programId;
 
+private:
     uint32_t m_entityIndex{ 0 };
+
+    std::vector<mesh::InstanceSSBO> m_instances;
 };

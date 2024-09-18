@@ -72,11 +72,21 @@ void VolumeRenderer::render(
             glm::translate(transform, glm::vec3{ volume }),
             glm::vec3{ volume.w });
 
+        backend::DrawOptions drawOptions;
+        {
+            drawOptions.m_mode = m_mesh->getDrawMode();
+            drawOptions.m_type = backend::DrawOptions::Type::elements;
+            drawOptions.m_solid = true;
+            drawOptions.m_wireframe = true;
+            drawOptions.m_renderBack = false;
+        }
+
         meshes.emplace_back(
             transform,
             m_mesh,
+            drawOptions,
             m_mesh->getMaterial()->m_registeredIndex,
-            0,
+            m_programId,
             true);
     }
 

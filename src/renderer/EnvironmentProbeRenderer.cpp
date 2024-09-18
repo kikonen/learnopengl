@@ -75,11 +75,21 @@ void EnvironmentProbeRenderer::render(
             glm::translate(transform, glm::vec3{ pos }),
             glm::vec3{ 2.5f });
 
+        backend::DrawOptions drawOptions;
+        {
+            drawOptions.m_mode = m_mesh->getDrawMode();
+            drawOptions.m_type = backend::DrawOptions::Type::elements;
+            drawOptions.m_solid = true;
+            drawOptions.m_wireframe = true;
+            drawOptions.m_renderBack = false;
+        }
+
         meshes.emplace_back(
             transform,
             m_mesh,
+            drawOptions,
             m_mesh->getMaterial()->m_registeredIndex,
-            0,
+            m_programId,
             true);
     }
 
