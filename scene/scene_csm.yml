@@ -9,8 +9,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - name: Origo
-    id: player
+  - id: player
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
@@ -20,7 +19,7 @@ nodes:
     controllers:
      - type: pawn
      - type: camera_zoom
-  - name: Other
+  - id: other_{c}_{t}
     mesh:
       path: texture_cube
       material_modifier:
@@ -83,12 +82,12 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - name: Cube map - mirror_ball
+  - id: cube_map_mirror_ball
     type: origo
-    pos: [0, 5, 10]
+    parent_id: mirror_ball
     flags:
       cube_map: true
-  - name: Mirror ball
+  - id: mirror_ball
     mesh:
       path: glass_ball
       material_modifier:
@@ -110,12 +109,13 @@ nodes:
     program: g_tex
     pos: [0, 3.5, 30]
     scale: 1
-  - name: Cube map - wood_wall
+  - id: cube_map_wood_wall
+    parent_id: wood_wall
     type: origo
-    pos: [35.0, 2.5, 5.0]
+    pos: [0, 0, 0.5]
     flags:
       cube_map: true
-  - name: Wood wall
+  - id: wood_wall
     mesh:
       path: quad
       material:

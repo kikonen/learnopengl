@@ -154,7 +154,7 @@ nodes:
   - id: cube_map_wood_wall
     parent_id: wood_wall
     type: origo
-    pos: [0, 0, 2]
+    pos: [0, 0, 0.5]
     flags:
       cube_map: true
   - id: wood_wall
