@@ -109,7 +109,7 @@ nodes:
     flags:
       no_shadow: true
     scale: 100
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:

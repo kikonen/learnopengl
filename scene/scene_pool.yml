@@ -43,7 +43,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     pos: [0, 45, 100]
     mesh:
       path: light

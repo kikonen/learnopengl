@@ -128,7 +128,7 @@ nodes:
         { name = "master:Idle" });
     physics:
       enabled: true
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:

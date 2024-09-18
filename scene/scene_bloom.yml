@@ -21,7 +21,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Other
+  - id: other_{c}_{t}
     mesh:
       path: texture_cube_4/texture_cube_4.obj
     program: g_tex
@@ -30,7 +30,7 @@ nodes:
     repeat:
       z_count: 20
       z_step: -10
-  - name: Stained windows
+  - id: stained_windows_{c}_{t}
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
@@ -47,7 +47,7 @@ nodes:
     repeat:
       z_count: 10
       z_step: 2
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:
@@ -124,12 +124,12 @@ nodes:
     script: |
       cmd:animationPlay(
         { name = "master:Idle" });
-  - name: Cube map - mirror_ball
+  - id: cube_map_mirror_ball
     type: origo
-    pos: [0, 5, 10]
+    parent_id: mirror_ball
     flags:
       cube_map: true
-  - name: Mirror ball
+  - id: mirror_ball
     mesh:
       path: glass_ball
       material_modifier:
@@ -151,12 +151,13 @@ nodes:
     program: g_tex
     pos: [0, 3.5, 30]
     scale: 1
-  - name: Cube map - wood_wall
+  - id: cube_map_wood_wall
+    parent_id: wood_wall
     type: origo
-    pos: [35.0, 2.5, 5.0]
+    pos: [0, 0, 2]
     flags:
       cube_map: true
-  - name: Wood wall
+  - id: wood_wall
     mesh:
       path: quad
       material:

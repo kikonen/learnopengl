@@ -74,7 +74,7 @@ nodes:
       type: asteroid_belt
       mode: random
       count: 200000
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:

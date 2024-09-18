@@ -17,7 +17,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     pos: [0, 400, 500]
     scale: 2.5
     type: origo

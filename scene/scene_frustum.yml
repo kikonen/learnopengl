@@ -38,7 +38,7 @@ nodes:
       z_count: 2
       x_step: 15
       z_step: -15
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     type: origo
     mesh:
       path: light

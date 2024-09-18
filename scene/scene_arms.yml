@@ -77,7 +77,7 @@ nodes:
         program: g_tex
       scale: 0.03
     pos: [0.0, 0.0, -0.1]
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     type: origo
     mesh:
       path: light

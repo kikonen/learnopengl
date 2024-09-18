@@ -20,7 +20,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     type: origo
     mesh:
       path: light

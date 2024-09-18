@@ -36,7 +36,7 @@ nodes:
     clones:
       - pos: [0.0, 0.0, 0.0]
       - pos: [20.0, 00.0, 0.0]
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     type: origo
     pos: [0, 25, 25]
     light:

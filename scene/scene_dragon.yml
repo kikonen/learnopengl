@@ -25,7 +25,7 @@ nodes:
     pos: [0.0, 3.0, 0.0]
     flags:
       cube_map: true
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:

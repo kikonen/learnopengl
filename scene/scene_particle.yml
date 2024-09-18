@@ -281,7 +281,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - name: Directional light
+  - id: dir_light_{c}_{t}
     mesh:
       path: light
       material_modifier:
