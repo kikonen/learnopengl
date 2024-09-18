@@ -188,35 +188,6 @@ bool CubeMapRenderer::render(
     }
     if (!centerNode) return false;
 
-    if (assets.showCubeMapCenter) {
-        Node* tagNode = nullptr;// getTagNode();
-        if (tagNode) {
-            auto& nodeRegistry = *parentCtx.m_registry->m_nodeRegistry;
-
-            const auto* rootNode = nodeRegistry.getRootRT();
-            const auto* snapshot = centerNode->getSnapshotRT();
-            const auto* rootSnapshot = rootNode->getSnapshotRT();
-
-            if (snapshot && rootSnapshot) {
-                const auto& rootPos = rootSnapshot->getWorldPosition();
-                const auto& centerPos = snapshot->getWorldPosition();
-                const auto tagPos = centerPos - rootPos;
-
-                script::CommandEngine::get().addCommand(
-                    0,
-                    script::MoveNode{
-                        tagNode->toHandle(),
-                        0.f,
-                        false,
-                        tagPos
-                    });
-
-                tagNode->m_visible = true;
-                //tagNode->m_tagMaterialIndex = m_tagMaterial.m_registeredIndex;
-            }
-        }
-    }
-
     // https://www.youtube.com/watch?v=lW_iqrtJORc
     // https://eng.libretexts.org/Bookshelves/Computer_Science/Book%3A_Introduction_to_Computer_Graphics_(Eck)/07%3A_3D_Graphics_with_WebGL/7.04%3A_Framebuffers
     // view-source:math.hws.edu/eck/cs424/graphicsbook2018/source/webgl/cube-camera.html

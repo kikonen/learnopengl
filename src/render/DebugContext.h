@@ -50,6 +50,10 @@ namespace render {
         float m_parallaxDepth{ 0.1f };
         int m_parallaxMethod{ 0 };
 
+        bool m_showVolume{ false };
+        bool m_showSelectionVolume{ false };
+        bool m_showEnvironmentProbe{ false };
+
         bool m_physicsShowObjects{ false };
 
         bool m_physics_dContactMu2{ false };

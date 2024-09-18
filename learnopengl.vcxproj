@@ -207,6 +207,7 @@
     <ClCompile Include="src\material\HdriTexture.cpp" />
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
+    <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />
     <ClCompile Include="src\shader\ProgramUniforms.cpp" />
     <ClCompile Include="src\component\CameraComponent.cpp" />
@@ -520,6 +521,7 @@
     <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\physics\ode_util.h" />
     <ClInclude Include="src\physics\PhysicsMaterial.h" />
+    <ClInclude Include="src\renderer\EnvironmentProbeRenderer.h" />
     <ClInclude Include="src\renderer\MeshRenderer.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />

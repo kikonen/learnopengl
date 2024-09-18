@@ -653,6 +653,11 @@ namespace loader {
             type->m_nodeType = NodeType::text;
             auto mesh = std::make_unique<mesh::TextMesh>();
 
+            if (!mesh->getMaterial()) {
+                const auto& material = Material::createMaterial(BasicMaterial::yellow);
+                mesh->setMaterial(&material);
+            }
+
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(std::move(mesh), true);
             type->addLodMesh(std::move(lodMesh));

@@ -95,6 +95,10 @@ int SampleApp::onInit()
         dbg.m_forceWireframe = assets.forceWireframe;
         dbg.m_showNormals = assets.showNormals;
 
+        dbg.m_showVolume = assets.showVolume;
+        dbg.m_showSelectionVolume = assets.showSelectionVolume;
+        dbg.m_showEnvironmentProbe = assets.showEnvironmentProbe;
+
         dbg.m_physicsShowObjects = assets.physicsShowObjects;
 
         dbg.m_physics_dContactMu2 = assets.physics_dContactMu2;

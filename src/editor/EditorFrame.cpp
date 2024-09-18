@@ -798,6 +798,10 @@ namespace editor {
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
+        ImGui::Checkbox("Show volume", &dbg.m_showVolume);
+        ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);
+        ImGui::Checkbox("Show environment probes", &dbg.m_showEnvironmentProbe);
+
         ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
 
         ImGui::InputFloat("Parallax depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);

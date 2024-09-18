@@ -48,6 +48,7 @@ class ObjectIdRenderer;
 class NormalRenderer;
 class PhysicsRenderer;
 class VolumeRenderer;
+class EnvironmentProbeRenderer;
 
 namespace editor {
     class EditorFrame;
@@ -130,6 +131,7 @@ private:
 
     std::unique_ptr<PhysicsRenderer> m_physicsRenderer{ nullptr };
     std::unique_ptr<VolumeRenderer> m_volumeRenderer{ nullptr };
+    std::unique_ptr<EnvironmentProbeRenderer> m_environmentProbeRenderer{ nullptr };
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 

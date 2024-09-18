@@ -377,7 +377,8 @@ namespace backend {
         const auto& drawOptions = drawRange.m_drawOptions;
 
         state.bindVAO(drawRange.m_vaoId);
-        state.useProgram(*Program::get(drawRange.m_programId));
+        auto* program = Program::get(drawRange.m_programId);
+        state.useProgram(*program);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 

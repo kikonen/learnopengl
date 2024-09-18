@@ -111,10 +111,10 @@ public:
 
     bool showVolume;
     bool showSelectionVolume;
+    bool showEnvironmentProbe;
 
     bool showHighlight;
     bool showSelection;
-    bool showCubeMapCenter;
     bool showTagged;
 
     bool rasterizerDiscard;

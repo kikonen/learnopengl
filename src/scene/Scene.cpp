@@ -50,6 +50,7 @@
 #include "renderer/NormalRenderer.h"
 #include "renderer/PhysicsRenderer.h"
 #include "renderer/VolumeRenderer.h"
+#include "renderer/EnvironmentProbeRenderer.h"
 
 namespace {
 }
@@ -77,6 +78,7 @@ Scene::Scene(
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
         m_physicsRenderer = std::make_unique<PhysicsRenderer>();
         m_volumeRenderer = std::make_unique<VolumeRenderer>();
+        m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>();
 
         m_mainRenderer->setEnabled(true);
         m_rearRenderer->setEnabled(true);
@@ -179,6 +181,7 @@ void Scene::prepareRT()
         m_normalRenderer->prepareRT(ctx);
         m_physicsRenderer->prepareRT(ctx);
         m_volumeRenderer->prepareRT(ctx);
+        m_environmentProbeRenderer->prepareRT(ctx);
     }
 
     {
@@ -498,6 +501,7 @@ void Scene::drawScene(
 
         m_physicsRenderer->render(ctx, nodeRenderer->m_buffer.get());
         m_volumeRenderer->render(ctx, nodeRenderer->m_buffer.get());
+        m_environmentProbeRenderer->render(ctx, nodeRenderer->m_buffer.get());
     }
 }
 

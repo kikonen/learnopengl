@@ -117,10 +117,10 @@ Assets::Assets()
 
     showVolume = false;
     showSelectionVolume = false;
+    showEnvironmentProbe = false;
 
     showHighlight = false;
     showSelection = false;
-    showCubeMapCenter = false;
     showTagged = false;
 
     useDebugColor = false;

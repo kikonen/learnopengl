@@ -1,4 +1,4 @@
-#include "VolumeRenderer.h"
+#include "EnvironmentProbeRenderer.h"
 
 #include <glm/glm.hpp>
 
@@ -12,6 +12,7 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
+#include "mesh/MeshType.h"
 
 #include "render/DebugContext.h"
 
@@ -21,15 +22,15 @@
 
 #include "registry/NodeRegistry.h"
 
-VolumeRenderer::VolumeRenderer() = default;
-VolumeRenderer::~VolumeRenderer() = default;
+EnvironmentProbeRenderer::EnvironmentProbeRenderer() = default;
+EnvironmentProbeRenderer::~EnvironmentProbeRenderer() = default;
 
-void VolumeRenderer::prepareRT(const PrepareContext& ctx)
+void EnvironmentProbeRenderer::prepareRT(const PrepareContext& ctx)
 {
     MeshRenderer::prepareRT(ctx);
 
     auto generator = mesh::PrimitiveGenerator::sphere();
-    generator.name = "<volume>";
+    generator.name = "<probe>";
     generator.radius = 1.f;
     generator.slices = 12;
     generator.segments = { 8, 0, 0 };
@@ -37,8 +38,8 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.m_name = "volume";
-        material.kd = glm::vec4(0.8f, 0.8f, 0.f, 1.f);
+        material.m_name = "probe";
+        material.kd = glm::vec4(0.2f, 0.8f, 0.1f, 1.f);
         material.registerMaterial();
         m_mesh->setMaterial(&material);
     }
@@ -47,12 +48,12 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
     Program::get(m_programId)->prepareRT();
 }
 
-void VolumeRenderer::render(
+void EnvironmentProbeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
     const auto& dbg = render::DebugContext::get();
-    if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;
+    if (!dbg.m_showEnvironmentProbe) return;
 
     auto& nodeRegistry = NodeRegistry::get();
 
@@ -60,17 +61,19 @@ void VolumeRenderer::render(
 
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
-        if (!dbg.m_showVolume && !node->isSelected()) continue;
+
+        auto* type = node->getType();
+        if (!type->m_flags.cubeMap) continue;
 
         const auto* snapshot = nodeRegistry.getSnapshotRT(node->m_entityIndex);
 
-        const auto& volume = snapshot->getVolume();
+        //const auto& volume = snapshot->getVolume();
         const auto& pos = snapshot->getWorldPosition();
 
         glm::mat4 transform{ 1.f };
         transform = glm::scale(
-            glm::translate(transform, glm::vec3{ volume }),
-            glm::vec3{ volume.w });
+            glm::translate(transform, glm::vec3{ pos }),
+            glm::vec3{ 2.5f });
 
         meshes.emplace_back(
             transform,

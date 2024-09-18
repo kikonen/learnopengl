@@ -8,6 +8,7 @@ struct PrepareContext;
 
 namespace mesh {
     struct MeshInstance;
+    class Mesh;
 }
 
 namespace render {

@@ -325,16 +325,16 @@ void AssetsLoader::loadAssets(
                 data.showSelectionVolume = readBool(v);
                 continue;
             }
+            if (k == "show_environment_probe") {
+                data.showEnvironmentProbe = readBool(v);
+                continue;
+            }
             if (k == "show_highlight") {
                 data.showHighlight = readBool(v);
                 continue;
             }
             if (k == "show_selection") {
                 data.showSelection = readBool(v);
-                continue;
-            }
-            if (k == "show_cube_map_center") {
-                data.showCubeMapCenter = readBool(v);
                 continue;
             }
             if (k == "show_tagged") {
