@@ -209,6 +209,8 @@
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />
+    <ClCompile Include="src\shader\FileEntry.cpp" />
+    <ClCompile Include="src\shader\ShaderSource.cpp" />
     <ClCompile Include="src\shader\ProgramUniforms.cpp" />
     <ClCompile Include="src\component\CameraComponent.cpp" />
     <ClCompile Include="src\component\FollowCamera.cpp" />
@@ -606,6 +608,8 @@
     <ClInclude Include="src\material\ColorTexture.h" />
     <ClInclude Include="src\material\CustomMaterial.h" />
     <ClInclude Include="src\loader\MaterialField.h" />
+    <ClInclude Include="src\shader\FileEntry.h" />
+    <ClInclude Include="src\shader\ShaderSource.h" />
     <ClInclude Include="src\shader\ProgramUniforms.h" />
     <ClInclude Include="src\asset\ViewportEffect.h" />
     <ClInclude Include="src\backend\Lod.h" />

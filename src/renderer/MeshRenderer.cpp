@@ -33,7 +33,7 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
     }
 
     m_programId = ProgramRegistry::get().getProgram("g_tex");
-    Program::get(m_programId)->prepareRT();
+    //Program::get(m_programId)->prepareRT();
 
     m_entityIndex = ID_INDEX;
 }

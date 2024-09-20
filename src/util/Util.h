@@ -6,6 +6,7 @@
 #include <regex>
 #include <functional>
 #include <ranges>
+#include <filesystem>
 
 namespace util
 {
@@ -57,6 +58,8 @@ namespace util
     bool fileExists(std::string_view basePath, std::string_view filePath);
     bool fileExists(std::string_view filePath);
     bool dirExists(std::string_view filePath);
+
+    std::filesystem::file_time_type fileModifiedAt(std::string_view filePath);
 
     std::string readFile(
         std::string_view basePath,

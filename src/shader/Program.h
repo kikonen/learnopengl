@@ -11,6 +11,8 @@
 #include "kigl/kigl.h"
 #include "ki/size.h"
 
+#include "ShaderSource.h"
+
 namespace uniform {
     class Uniform;
     class Subroutine;
@@ -46,12 +48,18 @@ public:
     // public due to shared_ptr
     ~Program();
 
-    void validateProgram() const;
-
 public:
     inline bool isReady() const { return m_prepared; }
 
+    bool isLoaded() const noexcept
+    {
+        return m_loaded;
+    }
+
+    bool isModified() const noexcept;
+
     void load();
+    void reload();
 
     ki::program_id prepareRT();
 
@@ -63,28 +71,30 @@ public:
     void setFloat(std::string_view name, float value) noexcept;
     void setMat4(std::string_view name, const glm::mat4& value) noexcept;
 
-    void setupUBO(
-        const char* name,
-        unsigned int UBO,
-        unsigned int expectedSize);
-
     operator int() const { return m_programId; }
+
+    const std::map<std::string, std::string, std::less<> >& getDefines() const
+    {
+        return m_defines;
+    }
 
 private:
     // @return shaderId
     int compileSource(
         GLenum shaderType,
-        const std::string& shaderPath,
-        const std::string& source);
+        const ShaderSource& source);
 
     void createProgram();
-    void initProgram();
 
-    void appendDefines(std::vector<std::string>& lines);
+    void initProgram(int programId) const;
+    void validateProgram(int programId) const;
 
-    std::string loadSource(std::string_view filename, bool optional);
-    std::vector<std::string> loadSourceLines(std::string_view path, bool optional);
-    std::vector<std::string> processInclude(std::string_view includePath, int lineNumber);
+    void validateUBO(
+        int programId,
+        const char* name,
+        unsigned int UBO,
+        unsigned int expectedSize) const;
+
 
     //void prepareTextureUniform();
     //void prepareTextureUniforms();
@@ -108,13 +118,12 @@ public:
     std::unique_ptr<ProgramUniforms> m_uniforms;
 
 private:
-    bool m_prepared = false;
+    bool m_loaded{ false };
+    bool m_prepared{ false };
 
     std::map<std::string, std::string, std::less<> > m_defines;
 
-    std::unordered_map<GLenum, std::string> m_paths;
-    std::unordered_map<GLenum, bool> m_required;
-    std::unordered_map<GLenum, std::string> m_sources;
+    std::unordered_map<GLenum, ShaderSource> m_sources;
 
     std::map<std::string, GLint, std::less<> > m_uniformLocations;
     std::unordered_map<GLenum, std::map<std::string, GLuint, std::less<>> > m_subroutineIndeces;

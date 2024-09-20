@@ -14,6 +14,8 @@
 
 #include "physics/PhysicsEngine.h"
 
+#include "shader/ProgramRegistry.h"
+
 #include "script/CommandEngine.h"
 #include "script/ScriptEngine.h"
 
@@ -113,6 +115,8 @@ void Registry::updateWT(const UpdateContext& ctx)
 void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
+
+    ProgramRegistry::get().updateRT(ctx);
 
     MaterialRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);

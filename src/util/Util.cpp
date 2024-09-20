@@ -160,6 +160,11 @@ namespace util {
         return std::filesystem::is_directory(filePath);
     }
 
+    std::filesystem::file_time_type fileModifiedAt(std::string_view filePath)
+    {
+        return std::filesystem::last_write_time(filePath);
+    }
+
     std::string readFile(std::string_view basePath, std::string_view filename)
     {
         std::stringstream buffer;

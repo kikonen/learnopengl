@@ -9,6 +9,8 @@
 
 class Program;
 
+struct UpdateContext;
+
 class ProgramRegistry final
 {
 public:
@@ -18,6 +20,8 @@ public:
     ProgramRegistry& operator=(const ProgramRegistry&) = delete;
 
     ~ProgramRegistry();
+
+    void updateRT(const UpdateContext& ctx);
 
     ki::program_id getProgram(
         std::string_view name);
@@ -57,4 +61,6 @@ private:
     std::unordered_map<std::string, ki::program_id> m_programIds;
 
     std::mutex m_programs_lock{};
+
+    float m_elapsedSecs{ 0.f };
 };

@@ -4,7 +4,10 @@
 
 #include "Program.h"
 
+#include "engine/UpdateContext.h"
+
 namespace {
+    constexpr float DIRTY_CHECK_FREQUENCY{ 2.f };
     static ProgramRegistry g_registry;
 }
 
@@ -18,6 +21,32 @@ ProgramRegistry::ProgramRegistry()
     // NOTE KI no vector memory alloc, no lock needed during runtime
     m_programs.reserve(255);
     m_programs.emplace_back();
+}
+
+void ProgramRegistry::updateRT(const UpdateContext& ctx)
+{
+    std::lock_guard lock(m_programs_lock);
+
+    m_elapsedSecs += ctx.m_clock.elapsedSecs;
+
+    if (m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
+        for (auto& program : m_programs) {
+            if (!program) continue;
+            if (program->isLoaded() && program->isModified()) {
+                KI_INFO_OUT(fmt::format("PROGRAM_RELOAD: {}", program->m_key));
+                program->reload();
+            }
+        }
+        m_elapsedSecs = 0.f;
+    }
+
+    for (auto& program : m_programs) {
+        if (!program) continue;
+        if (program->isLoaded() && !program->isReady()) {
+            KI_INFO_OUT(fmt::format("PROGRAM_PREPARE: {}", program->m_key));
+            program->prepareRT();
+        }
+    }
 }
 
 ProgramRegistry::~ProgramRegistry()
@@ -117,6 +146,8 @@ ki::program_id ProgramRegistry::getProgramId(
 
 void ProgramRegistry::validate()
 {
+    std::lock_guard lock(m_programs_lock);
+
     for (auto& program : m_programs) {
         if (!program) continue;
         //assert(program->boundCount() == 0);
