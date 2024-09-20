@@ -44,7 +44,6 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
     }
 
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
-    //Program::get(m_programId)->prepareRT();
 }
 
 void VolumeRenderer::render(

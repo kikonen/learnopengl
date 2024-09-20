@@ -29,7 +29,6 @@ void NormalRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     m_normalProgramId = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
-    Program::get(m_normalProgramId)->prepareRT();
 }
 
 void NormalRenderer::render(

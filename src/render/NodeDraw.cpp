@@ -92,27 +92,14 @@ namespace render {
             m_deferredProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_DEFERRED_PASS, definitions));
             m_deferredProgram->prepareRT();
         }
-        
+
         m_oitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_OIT_PASS));
-        m_oitProgram->prepareRT();
-
         m_blendOitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS));
-        m_blendOitProgram->prepareRT();
-
         m_bloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS));
-        m_bloomProgram->prepareRT();
-
         m_blendBloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS));
-        m_blendBloomProgram->prepareRT();
-
         m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
-        m_emissionProgram->prepareRT();
-
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
-        m_fogProgram->prepareRT();
-
         m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
-        m_hdrGammaProgram->prepareRT();
 
         m_timeElapsedQuery.create();
 

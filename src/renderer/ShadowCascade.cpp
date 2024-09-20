@@ -91,9 +91,6 @@ void ShadowCascade::prepareRT(
     {
         m_solidShadowProgramId = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH);
         m_alphaShadowProgramId = ProgramRegistry::get().getProgram(SHADER_SIMPLE_DEPTH, { { DEF_USE_ALPHA, "1" } });
-
-        Program::get(m_solidShadowProgramId)->prepareRT();
-        Program::get(m_alphaShadowProgramId)->prepareRT();
     }
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;

@@ -271,26 +271,6 @@ namespace mesh {
 
             if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
-
-        //if (m_programId) {
-        //    Program::get(m_programId)->prepareRT();
-        //}
-
-        //if (m_shadowProgramId) {
-        //    Program::get(m_shadowProgramId)->prepareRT();
-        //}
-
-        //if (m_preDepthProgramId) {
-        //    Program::get(m_preDepthProgramId)->prepareRT();
-        //}
-
-        //if (m_selectionProgramId) {
-        //    Program::get(m_selectionProgramId)->prepareRT();
-        //}
-
-        //if (m_idProgramId) {
-        //    Program::get(m_idProgramId)->prepareRT();
-        //}
     }
 
     void LodMesh::updateTransform() {

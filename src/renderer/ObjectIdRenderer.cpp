@@ -102,7 +102,6 @@ void ObjectIdRenderer::prepareRT(
     const auto& assets = ctx.m_assets;
 
     m_idProgramId = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
-    Program::get(m_idProgramId)->prepareRT();
 
     m_debugViewport = std::make_shared<Viewport>(
         "ObjectID",

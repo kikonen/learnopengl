@@ -14,7 +14,6 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
     MeshRenderer::prepareRT(ctx);
 
     m_programId = ProgramRegistry::get().getProgram("g_tex");
-    //Program::get(m_programId)->prepareRT();
 }
 
 void PhysicsRenderer::render(
