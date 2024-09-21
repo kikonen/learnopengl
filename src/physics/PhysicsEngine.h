@@ -59,7 +59,7 @@ namespace physics {
             bool update,
             physics::Object object);
 
-        physics::Object* getObject(physics::object_id id);
+        const physics::Object* getObject(physics::object_id id) const;
 
         physics::height_map_id registerHeightMap();
         const HeightMap* getHeightMap(physics::height_map_id id) const;
@@ -73,13 +73,13 @@ namespace physics {
 
         std::pair<bool, float> getWorldSurfaceLevel(
             const glm::vec3& pos,
-            uint32_t categoryMask,
-            uint32_t collisionMask);
+            const glm::vec3 dir,
+            uint32_t collisionMask) const;
 
         std::vector<std::pair<bool, float>> getWorldSurfaceLevels(
             std::span<glm::vec3> positions,
             const glm::vec3 dir,
-            uint32_t collisionMask);
+            uint32_t collisionMask) const;
 
         uint32_t getObjectCount() const noexcept {
             return static_cast<uint32_t>(m_objects.size());
@@ -94,7 +94,7 @@ namespace physics {
             uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode,
-            bool onlyClosest);
+            bool onlyClosest) const;
 
         std::vector<std::pair<bool, physics::RayHit>> rayCast(
             std::span<glm::vec3> origin,
@@ -102,7 +102,7 @@ namespace physics {
             float distance,
             uint32_t categoryMask,
             uint32_t collisionMask,
-            pool::NodeHandle fromNode);
+            pool::NodeHandle fromNode) const;
 
     private:
         void preparePending(const UpdateContext& ctx);
@@ -117,7 +117,7 @@ namespace physics {
     private:
         std::shared_ptr<std::atomic<bool>> m_alive;
 
-        std::mutex m_lock;
+        mutable std::mutex m_lock;
 
         bool m_prepared{ false };
 

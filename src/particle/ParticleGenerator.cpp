@@ -33,8 +33,9 @@ namespace particle {
         //if (ps.isFull()) return;
 
         const int freespace = ps.getFreespace();
-        int count = m_definition.rate * ctx.m_clock.elapsedSecs;
-        count = std::min(count, freespace);
+        const int count = std::min(
+            static_cast<int>(m_definition.rate * ctx.m_clock.elapsedSecs),
+            freespace);
 
         const auto& state = node.getState();
         glm::vec3 pos = state.getWorldPosition();

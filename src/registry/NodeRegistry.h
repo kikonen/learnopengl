@@ -29,6 +29,15 @@ class NodeSnapshotRegistry;
 
 struct EntitySSBO;
 
+namespace physics {
+    class PhysicsEngine;
+}
+
+namespace mesh
+{
+    class MeshYype;
+}
+
 class NodeRegistry final
 {
     friend class Node;
@@ -194,8 +203,6 @@ public:
     void cacheNodesWT();
     void cacheNodesRT();
 
-    void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
-
 private:
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
@@ -217,6 +224,15 @@ private:
         pool::NodeHandle handle) noexcept;
 
     void cacheNodes(std::vector<Node*>& cache);
+
+    void updateBounds(
+        const UpdateContext& ctx,
+        NodeState& state,
+        const NodeState& parentState,
+        const mesh::MeshType* type,
+        const physics::PhysicsEngine& physicsEngine);
+
+    void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
 
 public:
     pool::NodeHandle m_skybox{};

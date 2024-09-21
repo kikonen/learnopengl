@@ -38,6 +38,8 @@
 #include "audio/AudioEngine.h"
 
 #include "physics/PhysicsEngine.h"
+#include "physics/physics_util.h"
+
 #include "script/ScriptEngine.h"
 
 #include "EntitySSBO.h"
@@ -147,6 +149,8 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     }
 
     {
+        auto& physicsEngine = physics::PhysicsEngine::get();
+
         {
             auto& state = m_states[NULL_INDEX];
             state.updateRootMatrix();
@@ -167,11 +171,23 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             if (!node) continue;
 
             auto& state = m_states[i];
-            auto& parentState = m_states[m_parentIndeces[i]];
+            const auto& parentState = m_states[m_parentIndeces[i]];
+            auto* generator = node->m_generator.get();
+
+            if (physicsEngine.isEnabled() &&
+                (!generator || !generator->isLightWeight()))
+            {
+                const auto* type = node->getType();
+                if (type->m_flags.dynamicBounds || type->m_flags.staticBounds)
+                {
+                    updateBounds(ctx, state, parentState, type, physicsEngine);
+                }
+            }
+
             state.updateModelMatrix(parentState);
 
-            if (node->m_generator) {
-                node->m_generator->updateWT(ctx, *node);
+            if (generator) {
+                generator->updateWT(ctx, *node);
             }
 
             if (node->m_particleGenerator) {
@@ -799,6 +815,35 @@ void NodeRegistry::bindSkybox(
         event::Event evt { event::Type::type_prepare_view };
         evt.body.meshType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
+    }
+}
+
+void NodeRegistry::updateBounds(
+    const UpdateContext& ctx,
+    NodeState& state,
+    const NodeState& parentState,
+    const mesh::MeshType* type,
+    const physics::PhysicsEngine& physicsEngine)
+{
+    if (state.boundStaticDone) return;
+
+    const glm::vec3 dir{ 0, -1, 0 };
+    const uint32_t boundsMask = physics::mask(physics::Category::terrain);
+
+    const auto& [success, level] = physicsEngine.getWorldSurfaceLevel(
+        state.getWorldPosition(),
+        dir,
+        boundsMask);
+
+    if (success) {
+        if (type->m_flags.staticBounds) {
+            state.boundStaticDone = true;
+        }
+        const auto y = level - parentState.getWorldPosition().y;
+        glm::vec3 newPos = state.getPosition();
+        newPos.y = y;
+        //KI_INFO(fmt::format("NODE_LEVEL: node={}, level={}", node.m_name, y));
+        state.setPosition(newPos);
     }
 }
 

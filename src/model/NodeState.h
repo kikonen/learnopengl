@@ -74,6 +74,8 @@ public:
     mutable bool m_dirtySnapshot : 1 {true};
     mutable bool m_dirtyAxis : 1 {true};
 
+    bool boundStaticDone : 1 { false };
+
     ///////////////////////////////////////
     //
 public:

@@ -362,7 +362,7 @@ namespace physics
         return id;
     }
 
-    Object* PhysicsEngine::getObject(physics::object_id id)
+    const Object* PhysicsEngine::getObject(physics::object_id id) const
     {
         if (id < 1 || id > m_objects.size()) return nullptr;
         return &m_objects[id];
@@ -411,16 +411,16 @@ namespace physics
 
     std::pair<bool, float> PhysicsEngine::getWorldSurfaceLevel(
         const glm::vec3& pos,
-        uint32_t categoryMask,
-        uint32_t collisionMask)
+        const glm::vec3 dir,
+        uint32_t collisionMask) const
     {
         if (!isEnabled()) return { false, 0.f };
 
         const auto& hits = rayCast(
             pos + glm::vec3{ 0.f, 500.f, 0.f },
-            { 0.f, -1.f, 0.f },
+            dir,
             1000.f,
-            categoryMask,
+            physics::mask(physics::Category::ray_test),
             collisionMask,
             pool::NodeHandle::NULL_HANDLE,
             true);
@@ -433,7 +433,7 @@ namespace physics
     std::vector<std::pair<bool, float>> PhysicsEngine::getWorldSurfaceLevels(
         std::span<glm::vec3> positions,
         const glm::vec3 dir,
-        uint32_t collisionMask)
+        uint32_t collisionMask) const
     {
         if (!isEnabled()) return {};
 
@@ -460,6 +460,7 @@ namespace physics
                 result.emplace_back(false, 0.f);
             }
         }
+
         return result;
     }
 
@@ -482,13 +483,13 @@ namespace physics
         uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode,
-        bool onlyClosest)
+        bool onlyClosest) const
     {
         if (!m_enabled) return {};
 
         std::lock_guard lock{ m_lock };
 
-        auto* ray = getObject(m_rayId);
+        const auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
 
         //KI_INFO_OUT(fmt::format(
@@ -505,26 +506,6 @@ namespace physics
         dGeomRaySetLength(rayGeomId, distance);
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
-
-        if (false) {
-            const auto count = m_objects.size();
-            for (int i = 0; i < count; i++) {
-                const auto& obj = m_objects[i];
-                const auto& nodeHandle = m_nodeHandles[i];
-
-                if (rayGeomId == obj.m_geom.physicId) continue;
-                if (!obj.m_geom.physicId) continue;
-                if (nodeHandle == fromNode) continue;
-
-                //hitData.test = nodeHandle;
-
-                // NOTE KI dCollide  does not check category/collision bitmask
-                dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
-
-                // NOTE KI *cannot* do early exit for onlyClosest
-                // since closest hit !== first hit
-            }
-        }
 
         dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
 
@@ -555,13 +536,13 @@ namespace physics
         float distance,
         uint32_t categoryMask,
         uint32_t collisionMask,
-        pool::NodeHandle fromNode)
+        pool::NodeHandle fromNode) const
     {
         if (!m_enabled) return {};
 
         std::lock_guard lock{ m_lock };
 
-        auto* ray = getObject(m_rayId);
+        const auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
 
         const auto rayGeomId = ray->m_geom.physicId;
