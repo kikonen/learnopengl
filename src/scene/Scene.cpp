@@ -453,6 +453,9 @@ void Scene::drawUi(const RenderContext& parentCtx)
         m_uiRenderer->m_buffer->m_spec.width,
         m_uiRenderer->m_buffer->m_spec.height);
 
+    localCtx.m_layer = 1;
+    localCtx.m_useParticles = false;
+
     localCtx.copyShadowFrom(parentCtx);
     drawScene(localCtx, m_uiRenderer.get());
 }

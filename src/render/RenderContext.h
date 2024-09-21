@@ -166,6 +166,7 @@ public:
 
     mutable bool m_useLight : 1{ true };
     mutable bool m_shadow : 1 { false };
+    mutable bool m_useParticles : 1{ true };
 
     mutable bool m_forceSolid : 1{ false };
     mutable bool m_forceWireframe : 1{ false };

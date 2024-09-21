@@ -63,6 +63,7 @@ nodes:
         size: 36
     pos: [2.5, -1.8, -6]
     scale: 0.01
+    layer: 1
   - id: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:

@@ -72,7 +72,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
             {
                 w, h,
                 {
-                    // NOTE KI alpha NOT needed
+                    // NOTE KI alpha NEEDED for layers
                     render::FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
                     render::FrameBufferAttachment::getDepthStencilRbo(),
