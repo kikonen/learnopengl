@@ -200,12 +200,12 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-    physics:
       geom:
         type: cylinder
         category: [scenery]
         collision: [world, player, ray]
-        size: [0.25, 0.75, 0]
+        rotation: [90, 0, 0]
+        size: [0.75, 20, 0]
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
