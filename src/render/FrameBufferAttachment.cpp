@@ -236,6 +236,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -260,6 +261,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -298,6 +300,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -324,6 +327,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -346,11 +350,12 @@ namespace render {
     }
 
     // G buffer: metalness, roughness, displacement, ambient-occlusion
-    FrameBufferAttachment FrameBufferAttachment::getGBufferMetal16F(GLenum attachment)
+    FrameBufferAttachment FrameBufferAttachment::getGBufferMetal16(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA16F;
+        // NOTE KI metal values normalized to range [0, 1]
+        spec.internalFormat = GL_RGBA16;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
@@ -376,6 +381,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -438,6 +444,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI GL_RGBA16F to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -557,6 +564,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
+        // NOTE KI *can* accumulate over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.minFilter = GL_NEAREST;
         spec.magFilter = GL_NEAREST;
