@@ -57,6 +57,8 @@ void EntityRegistry::prepare()
     else {
         m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
     }
+
+    m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
@@ -159,10 +161,4 @@ void EntityRegistry::postRT(const UpdateContext& ctx)
             m_fence.setFence(m_useDebugFence);
         }
     }
-}
-
-void EntityRegistry::bind(
-    const RenderContext& ctx)
-{
-    m_ssbo.bindSSBO(SSBO_ENTITIES);
 }

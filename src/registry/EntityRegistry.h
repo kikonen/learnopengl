@@ -30,7 +30,6 @@ public:
     void prepare();
     void updateRT(const UpdateContext& ctx);
     void postRT(const UpdateContext& ctx);
-    void bind(const RenderContext& ctx);
 
 private:
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };

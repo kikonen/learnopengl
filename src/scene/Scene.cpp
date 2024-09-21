@@ -477,9 +477,6 @@ void Scene::drawScene(
 {
     const auto& assets = ctx.m_assets;
 
-    //MaterialRegistry::get().bind(ctx);
-    EntityRegistry::get().bind(ctx);
-
     if (m_cubeMapRenderer->isEnabled()) {
         m_cubeMapRenderer->bindTexture(ctx);
     }
