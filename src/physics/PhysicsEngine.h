@@ -146,6 +146,8 @@ namespace physics {
 
         std::unordered_map<dHeightfieldDataID, physics::height_map_id> m_heightMapIds;
 
+        std::unordered_map<dBodyID, physics::object_id> m_bodyToObject;
+
         std::unique_ptr<physics::MeshGenerator> m_meshGenerator;
     };
 }

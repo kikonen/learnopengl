@@ -50,8 +50,8 @@ namespace {
 
     struct HitData {
         bool onlyClosest{ false };
-        pool::NodeHandle test{};
-        std::vector<physics::RayHit> hits{};
+        dGeomID rayGeomId{ nullptr };
+        std::vector<physics::GeomHit> hits{};
     };
 
     void initSurface(dSurfaceParameters& surface)
@@ -114,19 +114,20 @@ namespace physics
         if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
             HitData& hitData = *static_cast<HitData*>(data);
 
-            RayHit* lastHit = hitData.hits.empty() ? nullptr : &hitData.hits[0];
-            RayHit* hit{ nullptr };
+            GeomHit* hit{ nullptr };
 
-            if (hitData.onlyClosest && lastHit) {
-                if (contact.depth < lastHit->depth) {
-                    hit = lastHit;
+            if (hitData.onlyClosest && !hitData.hits.empty()) {
+                hit = &hitData.hits[0];
+                if (contact.depth >= hit->depth) {
+                    // NOTE KI skip no need for update
+                    return;
                 }
             }
-            if (!hit) {
+            else {
                 hit = &hitData.hits.emplace_back();
             }
 
-            hit->handle = hitData.test;
+            hit->geomId = o1 == hitData.rayGeomId ? o2 : o1;
 
             hit->pos = {
                 static_cast<float>(contact.pos[0]),
@@ -310,6 +311,8 @@ namespace physics
             if (node) {
                 auto entityIndex = m_entityIndeces[id];
                 obj.create(entityIndex, m_worldId, m_spaceId, nodeRegistry);
+
+                m_bodyToObject.insert({ obj.m_body.physicId, id});
 
                 for (auto& heightMap : m_heightMaps) {
                     if (heightMap.m_origin == node) {
@@ -495,6 +498,7 @@ namespace physics
         const auto rayGeomId = ray->m_geom.physicId;
 
         HitData hitData;
+        hitData.rayGeomId = rayGeomId;
         hitData.onlyClosest = onlyClosest;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
@@ -502,29 +506,47 @@ namespace physics
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
-        const auto count = m_objects.size();
-        for (int i = 0; i < count; i++) {
-            const auto& obj = m_objects[i];
-            const auto& nodeHandle = m_nodeHandles[i];
+        if (false) {
+            const auto count = m_objects.size();
+            for (int i = 0; i < count; i++) {
+                const auto& obj = m_objects[i];
+                const auto& nodeHandle = m_nodeHandles[i];
 
-            if (rayGeomId == obj.m_geom.physicId) continue;
-            if (!obj.m_geom.physicId) continue;
-            if (nodeHandle == fromNode) continue;
+                if (rayGeomId == obj.m_geom.physicId) continue;
+                if (!obj.m_geom.physicId) continue;
+                if (nodeHandle == fromNode) continue;
 
-            hitData.test = nodeHandle;
+                //hitData.test = nodeHandle;
 
-            // NOTE KI dCollide  does not check category/collision bitmask
-            dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
+                // NOTE KI dCollide  does not check category/collision bitmask
+                dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
 
-            // NOTE KI *cannot* do early exit for onlyClosest
-            // since closest hit !== first hit
+                // NOTE KI *cannot* do early exit for onlyClosest
+                // since closest hit !== first hit
+            }
         }
+
+        dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
 
         // NOTE KI set mask to "none" to prevent collisions after casting
         dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
         dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
 
-        return hitData.hits;
+        std::vector<physics::RayHit> hits{};
+
+        for (const auto& geomHit : hitData.hits) {
+            dBodyID bodyId = dGeomGetBody(geomHit.geomId);
+            const auto& it = m_bodyToObject.find(bodyId);
+            if (it != m_bodyToObject.end()) {
+                hits.emplace_back(
+                    geomHit.pos,
+                    geomHit.normal,
+                    m_nodeHandles[it->second],
+                    geomHit.depth);
+            }
+        }
+
+        return hits;
     }
 
     std::vector<std::pair<bool, physics::RayHit>> PhysicsEngine::rayCast(
@@ -549,6 +571,7 @@ namespace physics
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         HitData hitData;
+        hitData.rayGeomId = rayGeomId;
         hitData.onlyClosest = true;
         std::vector<std::pair<bool, physics::RayHit>> result;
 
@@ -558,29 +581,26 @@ namespace physics
             //    origin, dir, distance, categoryMask, collisionMask));
 
             dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-
-            const auto count = m_objects.size();
-            for (int i = 0; i < count; i++) {
-                const auto& obj = m_objects[i];
-                const auto& nodeHandle = m_nodeHandles[i];
-
-                if (rayGeomId == obj.m_geom.physicId) continue;
-                if (!obj.m_geom.physicId) continue;
-
-                hitData.test = nodeHandle;
-
-                // NOTE KI dCollide  does not check category/collision bitmask
-                dSpaceCollide2(rayGeomId, obj.m_geom.physicId, &hitData, &rayCallback);
-
-                // NOTE KI *cannot* do early exit for onlyClosest
-                // since closest hit !== first hit
-            }
+            dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
 
             if (hitData.hits.empty()) {
                 result.emplace_back();
             }
             else {
-                result.push_back({ true, hitData.hits[0] });
+                const auto& geomHit = hitData.hits[0];
+                dBodyID bodyId = dGeomGetBody(geomHit.geomId);
+                const auto& it = m_bodyToObject.find(bodyId);
+                if (it != m_bodyToObject.end()) {
+                    result.emplace_back(
+                        true,
+                        physics::RayHit {
+                            geomHit.pos,
+                            geomHit.normal,
+                            m_nodeHandles[it->second],
+                            geomHit.depth
+                        });
+
+                }
             }
             hitData.hits.clear();
         }

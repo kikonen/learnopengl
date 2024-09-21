@@ -113,3 +113,23 @@ nodes:
         { after=wid, time=10 * 100 },
         { 0, 1, 0 },
         360 * 100)
+  - id: ball_2
+    mesh:
+      vertex:
+        type: sphere
+        radius: 1
+      material:
+        map_kd: [1, 2, 1, 1]
+        xmap_pbr: textures\Metal007_1K-PNG
+        program: g_tex
+    pos: [0, 4.5, 0]
+    physics:
+      body:
+        type: sphere
+        kinematic: true
+        density: 0.0001
+      geom:
+        type: sphere
+        category: [none]
+        collision: [none]
+        size: [1]
