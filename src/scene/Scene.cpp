@@ -38,7 +38,7 @@
 #include "render/WindowBuffer.h"
 #include "render/RenderData.h"
 
-#include "renderer/NodeRenderer.h"
+#include "renderer/LayerRenderer.h"
 #include "renderer/ViewportRenderer.h"
 
 #include "renderer/WaterMapRenderer.h"
@@ -64,8 +64,9 @@ Scene::Scene(
     const auto& assets = Assets::get();
 
     {
-        m_mainRenderer = std::make_unique<NodeRenderer>("main", true);
-        m_rearRenderer = std::make_unique<NodeRenderer>("rear", true);
+        m_uiRenderer = std::make_unique<LayerRenderer>("ui", true);
+        m_mainRenderer = std::make_unique<LayerRenderer>("main", true);
+        m_rearRenderer = std::make_unique<LayerRenderer>("rear", true);
 
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
@@ -80,6 +81,7 @@ Scene::Scene(
         m_volumeRenderer = std::make_unique<VolumeRenderer>();
         m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>();
 
+        m_uiRenderer->setEnabled(true);
         m_mainRenderer->setEnabled(true);
         m_rearRenderer->setEnabled(true);
 
@@ -145,6 +147,7 @@ void Scene::prepareRT()
     m_batch->prepareRT(ctx);
     m_nodeDraw->prepareRT(ctx);
 
+    m_uiRenderer->prepareRT(ctx);
     m_mainRenderer->prepareRT(ctx);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -189,8 +192,41 @@ void Scene::prepareRT()
     }
 
     {
-        m_mainViewport = std::make_shared<Viewport>(
+        auto vp = std::make_shared<Viewport>(
             "Node",
+            glm::vec3(-1.0f, 0.f, 0),
+            glm::vec3(0, 0, 0),
+            glm::vec2(1.f, 1.f),
+            false,
+            0,
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
+
+        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+            });
+
+        vp->setBindBefore([this](Viewport& vp) {
+            auto* buffer = m_uiRenderer->m_buffer.get();
+            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setSourceFrameBuffer(buffer);
+            });
+
+        vp->setOrder(150);
+        vp->setBlend(true);
+        vp->setBlendFactor(0.95f);
+
+        vp->setGammaCorrect(true);
+        vp->setHardwareGamma(true);
+
+        vp->setEffectEnabled(assets.viewportEffectEnabled);
+        vp->setEffect(assets.viewportEffect);
+
+        vp->prepareRT();
+
+        m_uiViewport = vp;
+        ViewportRegistry::get().addViewport(m_uiViewport);
+    }
+
+    {
         auto vp = std::make_shared<Viewport>(
             "Main",
             //glm::vec3(-0.75, 0.75, 0),
@@ -312,6 +348,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
         m_objectIdRenderer->updateRT(ctx);
     }
 
+    m_uiRenderer->updateRT(ctx);
     m_mainRenderer->updateRT(ctx);
 
     if (assets.showRearView) {
@@ -400,10 +437,24 @@ void Scene::draw(const RenderContext& ctx)
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)
     {
+        drawUi(ctx);
         drawMain(ctx);
         drawRear(ctx);
     }
     drawViewports(ctx);
+}
+
+void Scene::drawUi(const RenderContext& parentCtx)
+{
+    RenderContext localCtx(
+        "UI",
+        &parentCtx,
+        parentCtx.m_camera,
+        m_uiRenderer->m_buffer->m_spec.width,
+        m_uiRenderer->m_buffer->m_spec.height);
+
+    localCtx.copyShadowFrom(parentCtx);
+    drawScene(localCtx, m_uiRenderer.get());
 }
 
 void Scene::drawMain(const RenderContext& parentCtx)
@@ -482,7 +533,7 @@ void Scene::drawViewports(const RenderContext& ctx)
 
 void Scene::drawScene(
     const RenderContext& ctx,
-    NodeRenderer* nodeRenderer)
+    LayerRenderer* layerRenderer)
 {
     const auto& assets = ctx.m_assets;
 
@@ -496,18 +547,18 @@ void Scene::drawScene(
         m_mirrorMapRenderer->bindTexture(ctx);
     }
 
-    if (nodeRenderer->isEnabled()) {
-        nodeRenderer->render(ctx, nodeRenderer->m_buffer.get());
+    if (layerRenderer->isEnabled()) {
+        layerRenderer->render(ctx, layerRenderer->m_buffer.get());
     }
 
     if (ctx.m_allowDrawDebug) {
         if (m_normalRenderer->isEnabled()) {
-            m_normalRenderer->render(ctx, nodeRenderer->m_buffer.get());
+            m_normalRenderer->render(ctx, layerRenderer->m_buffer.get());
         }
 
-        m_physicsRenderer->render(ctx, nodeRenderer->m_buffer.get());
-        m_volumeRenderer->render(ctx, nodeRenderer->m_buffer.get());
-        m_environmentProbeRenderer->render(ctx, nodeRenderer->m_buffer.get());
+        m_physicsRenderer->render(ctx, layerRenderer->m_buffer.get());
+        m_volumeRenderer->render(ctx, layerRenderer->m_buffer.get());
+        m_environmentProbeRenderer->render(ctx, layerRenderer->m_buffer.get());
     }
 }
 

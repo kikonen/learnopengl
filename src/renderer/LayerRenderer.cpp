@@ -1,5 +1,4 @@
-#include "NodeRenderer.h"
-#include "NodeRenderer.h"
+#include "LayerRenderer.h"
 
 #include "asset/Assets.h"
 
@@ -31,7 +30,7 @@
 #include "kigl/GLStencilMode.h"
 
 
-void NodeRenderer::prepareRT(
+void LayerRenderer::prepareRT(
     const PrepareContext& ctx)
 {
     if (m_prepared) return;
@@ -49,7 +48,7 @@ void NodeRenderer::prepareRT(
     m_selectionProgram->prepareRT();
 }
 
-void NodeRenderer::updateRT(const UpdateViewContext& ctx)
+void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
 
@@ -88,7 +87,7 @@ void NodeRenderer::updateRT(const UpdateViewContext& ctx)
     m_height = h;
 }
 
-void NodeRenderer::render(
+void LayerRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
@@ -121,7 +120,7 @@ void NodeRenderer::render(
 }
 
 // Render selected nodes into stencil mask
-void NodeRenderer::fillHighlightMask(
+void LayerRenderer::fillHighlightMask(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
@@ -160,7 +159,7 @@ void NodeRenderer::fillHighlightMask(
 }
 
 // Render highlight over stencil masked nodes
-void NodeRenderer::renderHighlight(
+void LayerRenderer::renderHighlight(
     const RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {

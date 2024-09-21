@@ -425,7 +425,7 @@
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
     <ClCompile Include="src\render\FrameBuffer.cpp" />
-    <ClCompile Include="src\renderer\NodeRenderer.cpp" />
+    <ClCompile Include="src\renderer\LayerRenderer.cpp" />
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\kigl\kigl.cpp" />
@@ -870,7 +870,7 @@
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />
     <ClInclude Include="src\render\FrameBuffer.h" />
-    <ClInclude Include="src\renderer\NodeRenderer.h" />
+    <ClInclude Include="src\renderer\LayerRenderer.h" />
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\ki\ki.h" />

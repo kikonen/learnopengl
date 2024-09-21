@@ -130,6 +130,8 @@ RenderContext::RenderContext(
         m_forceWireframe = m_parent->m_forceWireframe;
 
         m_allowDrawDebug = m_parent->m_allowDrawDebug;
+
+        m_layer = parent->m_layer;
     }
 
     m_camera->setupProjection(
