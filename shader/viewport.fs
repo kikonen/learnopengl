@@ -21,6 +21,7 @@ subroutine vec4 sub_effect(vec4 color);
 
 layout(location = UNIFORM_TONE_HDRI) uniform bool u_toneHdri;
 layout(location = UNIFORM_GAMMA_CORRECT) uniform bool u_gammaCorrect;
+layout(location = UNIFORM_BLEND_FACTOR) uniform float u_blendFactor;
 
 layout(location = SUBROUTINE_EFFECT) subroutine uniform sub_effect u_effect;
 
@@ -199,5 +200,5 @@ void main()
     color = pow(color, vec3(1.0 / u_hdrGamma));
   }
 
-  o_fragColor = vec4(color, 0.9);
+  o_fragColor = vec4(color, u_blendFactor);
 }

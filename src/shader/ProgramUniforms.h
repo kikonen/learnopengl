@@ -34,5 +34,7 @@ struct ProgramUniforms {
     uniform::UInt u_materialIndex;
 
     uniform::Int u_stencilMode;
+
+    uniform::Float u_blendFactor;
 };
 

@@ -37,7 +37,6 @@
 #include "model/Viewport.h"
 
 #include "renderer/ObjectIdRenderer.h"
-#include "renderer/NodeRenderer.h"
 #include "renderer/WaterMapRenderer.h"
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"

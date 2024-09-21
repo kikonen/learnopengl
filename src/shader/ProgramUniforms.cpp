@@ -11,6 +11,7 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_modelMatrix{ "u_modelMatrix", UNIFORM_MODEL_MATRIX },
     u_materialIndex{ "u_materialIndex", UNIFORM_MATERIAL_INDEX },
     u_stencilMode{ "u_stencilMode", UNIFORM_STENCIL_MODE },
+    u_blendFactor{ "u_blendFactor", UNIFORM_BLEND_FACTOR },
     u_effectBloomIteration{ "u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION }
 {
     u_effect.init(&program);

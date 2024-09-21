@@ -191,6 +191,8 @@ void Scene::prepareRT()
     {
         m_mainViewport = std::make_shared<Viewport>(
             "Node",
+        auto vp = std::make_shared<Viewport>(
+            "Main",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
             glm::vec3(0, 0, 0),
@@ -200,27 +202,31 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        m_mainViewport->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
         });
 
-        m_mainViewport->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](Viewport& vp) {
             auto* buffer = m_mainRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
         });
 
-        m_mainViewport->setGammaCorrect(true);
-        m_mainViewport->setHardwareGamma(true);
+        vp->setOrder(50);
+        vp->setBlend(false);
+        vp->setGammaCorrect(true);
+        vp->setHardwareGamma(true);
 
-        m_mainViewport->setEffectEnabled(assets.viewportEffectEnabled);
-        m_mainViewport->setEffect(assets.viewportEffect);
+        vp->setEffectEnabled(assets.viewportEffectEnabled);
+        vp->setEffect(assets.viewportEffect);
 
-        m_mainViewport->prepareRT();
+        vp->prepareRT();
+
+        m_mainViewport = vp;
         ViewportRegistry::get().addViewport(m_mainViewport);
     }
 
     if (assets.showRearView) {
-        m_rearViewport = std::make_shared<Viewport>(
+        auto vp = std::make_shared<Viewport>(
             "Rear",
             glm::vec3(-1.f, -0.5f, 0),
             glm::vec3(0, 0, 0),
@@ -229,16 +235,19 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        m_rearViewport->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](Viewport& vp) {
             auto* buffer = m_rearRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[NodeRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
         });
 
-        m_rearViewport->setGammaCorrect(true);
-        m_rearViewport->setHardwareGamma(true);
+        vp->setOrder(60);
+        vp->setGammaCorrect(true);
+        vp->setHardwareGamma(true);
 
-        m_rearViewport->prepareRT();
+        vp->prepareRT();
+
+        m_rearViewport = vp;
         ViewportRegistry::get().addViewport(m_rearViewport);
     }
 
