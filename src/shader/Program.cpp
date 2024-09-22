@@ -267,6 +267,9 @@ int Program::compileSource(
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
                 util::appendLineNumbers(source.m_source)));
+            KI_ERROR(fmt::format(
+                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
+                shaderType, m_programName, shaderPath, infoLog));
 
             glDeleteShader(shaderId);
             shaderId = -1;

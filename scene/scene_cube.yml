@@ -8,7 +8,21 @@ script:
     - path: lib/common
 nodes:
   - id: player_fps
-    xtype: origo
+    type: origo
+    pos: [8, 1, 1]
+    active: true
+    rotation: [0, -90, 0]
+    camera:
+      default: true
+      type: fps
+      distance: [7, 2.5, 10]
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+  - id: cube
     mesh:
       vertex:
         type: box
@@ -19,21 +33,12 @@ nodes:
         tiling: 3
         xparallax_depth: 0.0
         program: g_tex
-        blend: true
-      base_rot: [90, 0, 0]
+        xblend: true
+        alpha: true
+        program_definitions:
+          TOY: 1
+      base_rot: [0, 0, 0]
     pos: [1, 1, 1]
-    rotation: [0, 180, 0]
-    active: true
-    camera:
-      default: true
-      type: follow
-      distance: [5, 2.5, 10]
-    controllers:
-      - type: pawn
-      - type: camera_zoom
-    audio:
-      listener:
-        default: true
     physics:
       update: true
       body:
@@ -44,7 +49,6 @@ nodes:
         force_axis: true
       geom:
         type: box
-        category: [player, can_terrain]
         size: [1]
   - id: dir_light_{c}_{t}
     type: origo

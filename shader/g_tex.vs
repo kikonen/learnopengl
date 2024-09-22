@@ -117,8 +117,20 @@ void main() {
 #endif
 
     #include tech_skinned_mesh_skin.glsl
-
+#ifdef TOY_2
+    // pos.x = pos.x + abs(sin(u_time)) * 0.5;// * cos(u_time * 0.5);
+    if (pos.y > 0) {
+      pos.x *= 1.2;
+      pos.z *= 1.2;
+    } else {
+      pos.x *= 0.1;
+      pos.z *= 0.1;
+    }
+    pos.y = pos.y + cos(u_time) * 0.5;// * cos(u_time * 0.5);
+    // worldPos.z = worldPos.z - 1;
+#endif
     worldPos = modelMatrix * pos;
+
     normal = normalize(normalMatrix * normal);
 #ifdef USE_TBN
     tangent = normalize(normalMatrix * tangent);
