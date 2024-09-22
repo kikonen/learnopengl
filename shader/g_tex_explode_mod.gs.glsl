@@ -19,7 +19,6 @@ in VS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
 
   flat uint materialIndex;
 
@@ -32,7 +31,6 @@ out VS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
 
   flat uint materialIndex;
 
@@ -71,7 +69,6 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.worldPos = vs_in[i].worldPos;
   gs_out.normal = vs_in[i].normal;
   gs_out.texCoord = vs_in[i].texCoord;
-  gs_out.vertexPos = vs_in[i].vertexPos;
 
   gs_out.materialIndex = vs_in[i].materialIndex;
 

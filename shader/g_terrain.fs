@@ -20,7 +20,6 @@ in TES_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
 
   flat uint materialIndex;
 

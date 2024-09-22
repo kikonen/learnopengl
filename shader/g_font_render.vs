@@ -31,9 +31,6 @@ out VS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-#ifdef USE_NORMAL_PATTERN
-  vec3 vertexPos;
-#endif
 
   vec2 atlasCoord;
 
@@ -121,10 +118,6 @@ void main() {
 #endif
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
-
-#ifdef USE_NORMAL_PATTERN
-  vs_out.vertexPos = a_pos;
-#endif
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normal;

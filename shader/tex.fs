@@ -22,7 +22,6 @@ in VS_OUT {
   vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
   vec3 viewPos;
 
   flat uint materialIndex;
@@ -58,7 +57,6 @@ ResolvedMaterial material;
 #include fn_calculate_point_light.glsl
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
-#include fn_calculate_normal_pattern.glsl
 #include fn_calculate_fog.glsl
 
 void main() {
@@ -80,12 +78,6 @@ void main() {
 #endif
 
   #include var_tex_material_normal.glsl
-
-#ifdef USE_NORMAL_PATTERN
-  if (material.pattern == 1) {
-    normal = calculateNormalPattern(fs_in.vertexPos, normal);
-  }
-#endif
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;

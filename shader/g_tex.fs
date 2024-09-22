@@ -21,9 +21,6 @@ in VS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-#ifdef USE_NORMAL_PATTERN
-  vec3 vertexPos;
-#endif
 
   flat uint materialIndex;
   flat uint flags;
@@ -62,7 +59,6 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include fn_calculate_normal_pattern.glsl
 #ifdef USE_PARALLAX
 #include fn_calculate_parallax_mapping.glsl
 #endif
@@ -85,10 +81,6 @@ void main() {
 #endif
 
   #include var_tex_material_normal.glsl
-
-//  if (material.pattern == 1) {
-//    normal = calculateNormalPattern(fs_in.vertexPos, normal);
-//  }
 
   if (!gl_FrontFacing) {
     normal = -normal;

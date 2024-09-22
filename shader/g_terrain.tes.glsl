@@ -47,7 +47,6 @@ out TES_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
 
   flat uint materialIndex;
 
@@ -128,7 +127,6 @@ void main()
   tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
-  tes_out.vertexPos = vertexPos;
   tes_out.materialIndex = tes_in[0].materialIndex;
 
 #ifdef USE_TBN

@@ -34,7 +34,6 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include fn_calculate_normal_pattern.glsl
 #include fn_gbuffer_encode.glsl
 
 void main() {
