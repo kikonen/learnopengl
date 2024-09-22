@@ -463,6 +463,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
     //localCtx.m_forceSolid = true;
 
     localCtx.copyShadowFrom(parentCtx);
+
     drawScene(localCtx, m_uiRenderer.get());
 }
 
@@ -556,18 +557,21 @@ void Scene::drawScene(
         m_mirrorMapRenderer->bindTexture(ctx);
     }
 
-    if (layerRenderer->isEnabled()) {
-        layerRenderer->render(ctx, layerRenderer->m_buffer.get());
-    }
-
-    if (ctx.m_allowDrawDebug) {
-        if (m_normalRenderer->isEnabled()) {
-            m_normalRenderer->render(ctx, layerRenderer->m_buffer.get());
+    {
+        auto* fb = layerRenderer->m_buffer.get();
+        if (layerRenderer->isEnabled()) {
+            layerRenderer->render(ctx, fb);
         }
 
-        m_physicsRenderer->render(ctx, layerRenderer->m_buffer.get());
-        m_volumeRenderer->render(ctx, layerRenderer->m_buffer.get());
-        m_environmentProbeRenderer->render(ctx, layerRenderer->m_buffer.get());
+        if (ctx.m_allowDrawDebug) {
+            if (m_normalRenderer->isEnabled()) {
+                m_normalRenderer->render(ctx, fb);
+            }
+
+            m_physicsRenderer->render(ctx, fb);
+            m_volumeRenderer->render(ctx, fb);
+            m_environmentProbeRenderer->render(ctx, fb);
+        }
     }
 }
 

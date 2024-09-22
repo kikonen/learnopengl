@@ -42,6 +42,8 @@ void MeshRenderer::drawObjects(
     render::FrameBuffer* targetBuffer,
     const std::vector<mesh::MeshInstance>& meshes)
 {
+    if (meshes.empty()) return;
+
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
     // NOTE KI for troubleshooting

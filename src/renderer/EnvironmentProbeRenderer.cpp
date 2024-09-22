@@ -69,10 +69,9 @@ void EnvironmentProbeRenderer::render(
         //const auto& volume = snapshot->getVolume();
         const auto& pos = snapshot->getWorldPosition();
 
-        glm::mat4 transform{ 1.f };
-        transform = glm::scale(
-            glm::translate(transform, glm::vec3{ pos }),
-            glm::vec3{ 2.5f });
+        const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ pos }) *
+            glm::toMat4(util::degreesToQuat(glm::vec3{ 90, 0, 0 })) *
+            glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.5f });
 
         backend::DrawOptions drawOptions;
         {
