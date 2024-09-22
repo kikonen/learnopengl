@@ -1,0 +1,83 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player_fps
+    xtype: origo
+    mesh:
+      vertex:
+        type: box
+        size: [1]
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
+      base_rot: [90, 0, 0]
+    pos: [1, 1, 1]
+    rotation: [0, 180, 0]
+    active: true
+    camera:
+      default: true
+      type: follow
+      distance: [5, 2.5, 10]
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: box
+        density: 0.01
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: box
+        category: [player, can_terrain]
+        size: [1]
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    mesh:
+      material:
+        render_back: true
+    pos: [0.0, 0.0, 0.0]
+    physics:
+      geom:
+        type: plane
+        category: [terrain]
+        collision: [can_terrain]
+    scale: 200

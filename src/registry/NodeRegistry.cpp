@@ -40,6 +40,8 @@
 #include "physics/PhysicsEngine.h"
 #include "physics/physics_util.h"
 
+#include "render/DebugContext.h"
+
 #include "script/ScriptEngine.h"
 
 #include "EntitySSBO.h"
@@ -248,22 +250,34 @@ void NodeRegistry::snapshotWT()
 
 void NodeRegistry::snapshotPending()
 {
+    std::lock_guard lock(m_snapshotLock);
+
     snapshot(m_snapshotsWT, m_snapshotsPending);
+
+    auto& dbg = render::DebugContext::modify();
+    dbg.m_physicsMeshesPending.swap(dbg.m_physicsMeshesWT);
+    dbg.m_physicsMeshesWT.reset();
 }
 
 void NodeRegistry::snapshotRT()
 {
+    snapshot(m_snapshotsWT, m_snapshotsPending);
+
     snapshot(m_snapshotsPending, m_snapshotsRT);
     m_entities.resize(m_snapshotsRT.size());
     m_dirtyEntities.resize(m_snapshotsRT.size());
+
+    auto& dbg = render::DebugContext::modify();
+    if (dbg.m_physicsMeshesPending) {
+        dbg.m_physicsMeshesRT.swap(dbg.m_physicsMeshesPending);
+        dbg.m_physicsMeshesPending.reset();
+    }
 }
 
 void NodeRegistry::snapshot(
     std::vector<Snapshot>& src,
     std::vector<Snapshot>& dst)
 {
-    std::lock_guard lock(m_snapshotLock);
-
     const auto sz = src.size();
     const auto forceAfter = dst.size() - 1;
 

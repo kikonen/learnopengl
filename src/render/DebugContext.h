@@ -84,6 +84,8 @@ namespace render {
         float m_physics_soft_erp{ 0.f };
         float m_physics_soft_cfm{ 0.f };
 
-        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshes;
+        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesWT;
+        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesPending;
+        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesRT;
     };
 }

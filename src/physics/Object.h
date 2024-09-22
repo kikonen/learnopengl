@@ -42,7 +42,7 @@ namespace physics {
             dSpaceID spaceId,
             NodeRegistry& nodeRegistry);
 
-        void updateToPhysics(
+        bool updateToPhysics(
             uint32_t entityIndex,
             ki::level_id& matrixLevel,
             NodeRegistry& nodeRegistry);

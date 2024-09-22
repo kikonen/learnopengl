@@ -266,9 +266,10 @@ namespace physics
 
         auto& nodeRegistry = NodeRegistry::get();
 
+        bool updatedPhysics = false;
         for (const auto id : m_updateObjects) {
             auto& obj = m_objects[id];
-            obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
+            updatedPhysics |= obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
         }
 
         const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
@@ -294,6 +295,12 @@ namespace physics
             }
 
             generateObjectMeshes();
+        }
+        else {
+            if (updatedPhysics) {
+                //std::cout << "PHYSICS_UPDATE" << "\n";
+                generateObjectMeshes();
+            }
         }
     }
 
@@ -473,7 +480,7 @@ namespace physics
         auto& dbg = render::DebugContext::modify();
 
         auto meshes = m_meshGenerator->generateMeshes();
-        dbg.m_physicsMeshes.swap(meshes);
+        dbg.m_physicsMeshesWT.swap(meshes);
     }
 
     std::vector<physics::RayHit> PhysicsEngine::rayCast(

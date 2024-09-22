@@ -66,7 +66,7 @@ namespace physics
         m_geom.create(worldId, spaceId, scale, m_body.physicId);
     }
 
-    void Object::updateToPhysics(
+    bool Object::updateToPhysics(
         uint32_t entityIndex,
         ki::level_id& matrixLevel,
         NodeRegistry& nodeRegistry)
@@ -74,7 +74,7 @@ namespace physics
         const auto& state = nodeRegistry.getState(entityIndex);
         {
             const auto level = state.getMatrixLevel();
-            if (matrixLevel == level) return;
+            if (matrixLevel == level) return false;
             matrixLevel = level;
         }
 
@@ -95,6 +95,8 @@ namespace physics
             // NOTE KI for "geom only" nodes
             m_geom.updatePhysic(pivot, pos, rot);
         }
+
+        return true;
     }
 
     void Object::updateFromPhysics(
