@@ -107,7 +107,7 @@ namespace render {
 
         // G buffer: metal
         static FrameBufferAttachment getGBufferMetal(GLenum attachment);
-        static FrameBufferAttachment getGBufferMetal16F(GLenum attachment);
+        static FrameBufferAttachment getGBufferMetal16(GLenum attachment);
 
         // G buffer: emission
         static FrameBufferAttachment getGBufferEmission(GLenum attachment);

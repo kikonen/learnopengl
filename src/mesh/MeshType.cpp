@@ -37,6 +37,7 @@ namespace mesh {
         m_name{ o.m_name },
         m_nodeType{ o.m_nodeType },
         m_flags{ o.m_flags },
+        m_layer{ o.m_layer },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },

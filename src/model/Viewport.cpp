@@ -174,6 +174,7 @@ void Viewport::bind(const RenderContext& ctx)
 
     uniforms->u_toneHdri.set(true);
     uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
+    uniforms->u_blendFactor.set(m_blend ? m_blendFactor : 1.0f);
 
     glm::mat4 transformed = m_projected * m_transformMatrix;
 
@@ -184,11 +185,6 @@ void Viewport::bind(const RenderContext& ctx)
     }
 
     invokeBindAfter();
-}
-
-void Viewport::unbind(const RenderContext& ctx)
-{
-    //m_program->unbind();
 }
 
 void Viewport::draw(const RenderContext& ctx)

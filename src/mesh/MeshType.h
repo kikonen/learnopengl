@@ -143,6 +143,7 @@ namespace mesh {
 
         TypeFlags m_flags;
 
+        uint8_t m_layer{ 0 };
 
         NodeType m_nodeType{ NodeType::origo };
 

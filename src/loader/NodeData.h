@@ -46,6 +46,7 @@ namespace loader {
 
         std::string prefabName;
 
+        uint8_t layer{ 0 };
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;

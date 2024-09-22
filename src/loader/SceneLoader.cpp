@@ -511,7 +511,9 @@ namespace loader {
     {
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
+
         type->setName(nodeData.baseId.m_path.empty() ? nodeData.name : nodeData.baseId.m_path);
+        type->m_layer = nodeData.layer;
 
         assignTypeFlags(nodeData, typeHandle);
 

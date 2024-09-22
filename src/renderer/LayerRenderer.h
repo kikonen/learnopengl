@@ -9,14 +9,14 @@ namespace render {
     class FrameBuffer;
 }
 
-class NodeRenderer final : public Renderer
+class LayerRenderer final : public Renderer
 {
 public:
     static const int ATT_ALBEDO_INDEX = 0;
     static const int ATT_DEPTH_INDEX = 1;
 
 public:
-    NodeRenderer(
+    LayerRenderer(
         std::string_view name,
         bool useFrameStep)
         : Renderer(name, useFrameStep) {}

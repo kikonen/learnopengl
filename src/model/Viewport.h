@@ -62,10 +62,10 @@ public:
     void updateRT(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
-    void unbind(const RenderContext& ctx);
     void draw(const RenderContext& ctx);
 
-    bool isEffectEnabled() {
+    bool isEffectEnabled() const
+    {
         return m_effectEnabled;
     }
 
@@ -73,7 +73,7 @@ public:
         m_effectEnabled = enabled;
     }
 
-    ViewportEffect getEffect() {
+    ViewportEffect getEffect() const {
         return m_effect;
     }
 
@@ -92,7 +92,8 @@ public:
         }
     }
 
-    const glm::vec3& getPosition() {
+    const glm::vec3& getPosition() const
+    {
         return m_position;
     }
 
@@ -103,7 +104,8 @@ public:
         }
     }
 
-    const glm::vec3& getDegreesRotation() {
+    const glm::vec3& getDegreesRotation() const
+    {
         return m_degreesRotation;
     }
 
@@ -114,7 +116,8 @@ public:
         }
     }
 
-    const glm::vec2& getSize() {
+    const glm::vec2& getSize() const
+    {
         return m_size;
     }
 
@@ -122,7 +125,8 @@ public:
         m_gammaCorrect = gammaCorrect;
     }
 
-    bool getGammaCorrect() {
+    bool getGammaCorrect() const
+    {
         return m_gammaCorrect;
     }
 
@@ -131,9 +135,39 @@ public:
         m_hardwareGamma = hardwareGamma;
     }
 
-    bool getHardwareGamma()
+    bool getHardwareGamma() const
     {
         return m_hardwareGamma;
+    }
+
+    int getOrder() const
+    {
+        return m_order;
+    }
+
+    void setOrder(int order)
+    {
+        m_order = order;
+    }
+
+    bool isBlend() const
+    {
+        return m_blend;
+    }
+
+    void setBlend(bool blend)
+    {
+        m_blend = blend;
+    }
+
+    float getBlendFactor() const
+    {
+        return m_blendFactor;
+    }
+
+    void setBlendFactor(float blendFactor)
+    {
+        m_blendFactor = blendFactor;
     }
 
 private:
@@ -156,6 +190,10 @@ private:
 
     bool m_gammaCorrect{ false };
     bool m_hardwareGamma{ false };
+
+    int m_order{ 100 };
+    bool m_blend{ true };
+    float m_blendFactor{ 0.9f };
 
     bool m_dirty{ true };
 

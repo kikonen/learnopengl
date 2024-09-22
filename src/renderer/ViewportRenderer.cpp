@@ -44,15 +44,11 @@ void ViewportRenderer::render(
 
     state.setDepthFunc(GL_LEQUAL);
 
-    // NOTE KI don't blend MAIN buffer
-    bool blend = false;
     for (auto& viewport : viewports) {
         viewport->setDestinationFrameBuffer(destinationBuffer);
         viewport->bind(ctx);
-        state.setEnabled(GL_BLEND, blend);
+        state.setEnabled(GL_BLEND, viewport->isBlend());
         viewport->draw(ctx);
-        viewport->unbind(ctx);
-        blend = true;
     }
 
     state.setEnabled(GL_BLEND, false);

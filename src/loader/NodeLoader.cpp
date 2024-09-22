@@ -130,6 +130,9 @@ namespace loader {
             else if (k == "active") {
                 data.active = readBool(v);
             }
+            else if (k == "layer") {
+                data.layer = readInt(v);
+            }
             else if (k == "priority") {
                 data.priority = readInt(v);
             }

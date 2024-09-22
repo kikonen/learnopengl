@@ -1,0 +1,305 @@
+---
+name: Material balls
+viewports:
+skybox:
+  program: g_skybox
+  xmaterial: skybox
+  material: skybox/polyhaven/borghese_gardens_2k.hdr
+  xmaterial: skybox/polyhaven/circus_arena_2k.hdr
+  xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  xmaterial: skybox/polyhaven/gray_pier_2k.hdr
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+lights: {}
+cube_maps: {}
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: origo
+    mesh:
+      path: water_ball
+      material:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      base_scale: 0.1
+    pos: [0.0, 0.0, 0.0]
+  - id: red_ball
+    mesh:
+      path: water_ball
+      material:
+        kd: [0.8, 0.2, 0.0, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      base_scale: 0.025
+    pos: [0.0, 0.0, 0.0]
+  - id: green_ball
+    mesh:
+      path: water_ball
+      material:
+        kd: [0.0, 0.8, 0.0, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      base_scale: 0.015
+    pos: [0.0, 0.0, 0.0]
+  - id: cap
+    parent_id: player_2
+    mesh:
+      vertex:
+        type: capsule
+        radius: 1
+        length: 1
+      material:
+        kd: [0.4, 1, 0.4, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        xblend: true
+    pos: [1, 3, 4]
+    front: [0, 0, -1]
+    base_scale: 0.25
+    base_rot: [90, 0, 0]
+  - xid: player
+    mesh:
+      vertex:
+        type: capsule
+        radius: 1
+        length: 1
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        tiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
+      base_scale: 0.25
+      base_rot: [90, 0, 0]
+    pos: [0, 3, 4]
+    front: [0, 0, -1]
+    active: true
+    camera:
+      type: orbit
+      distance: [4, 2, 20]
+      offset: [20, 1, 0]
+      yaw_speed: 0.1
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    xphysics:
+      update: true
+      body:
+        kinematic: true
+        type: capsule
+        density: 0.01
+        scale: 0.25
+        rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: capsule
+        category: [player]
+        collision: [terrain]
+        size: [1, 1, 0]
+  - id: player_2
+    type: origo
+    xprefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
+    rotation: [0, 180, 0]
+    pos: [0, 6, 4]
+    active: true
+    camera:
+      type: fps
+      distance: [4, 2, 10]
+      spring_constant: 2000
+      default: true
+    xcamera:
+      type: orbit
+      offset: [6, 2, 0]
+      pitch_speed: 1
+      yaw_speed: 3
+      default: true
+    xcamera:
+      type: spline
+      speed: 0.1
+      path:
+        - [0, 0, 0]
+        - [-50, 30, -50]
+        - [-10, 1 ,-10]
+        - [0, 30, 0]
+        - [20, 0 ,0]
+        - [0, 0, 0]
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    xphysics:
+      update: true
+      body:
+        xkinematic: true
+      geom:
+        category: [player]
+        collision: [terrain, npc]
+    xscript: |
+      cmd:animationPlay(
+        { name = "master:Walk02" });
+  - id: directional_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-25, 45, 0]
+    scale: 1.5
+    program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 20000
+  - xid: skeleton_{c}
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    mesh:
+      material:
+        ke: [0.0, 0.05, 0.0]
+    pos: [0, 2, 0]
+    scale: 1
+    physics:
+      enabled: true
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle2" });
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    xmesh:
+      material:
+        kd: [1, 1, 1, 0.8]
+        blend: true
+    pos: [0.0, 0.0, 0.0]
+    physics:
+      update: true
+      geom:
+        type: plane
+        rot: [0, 0, 0]
+    scale: 200
+    script: scripts/seq_shaky_ground
+  - id: palm_tree_forest_{c}_{t}
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
+    pivot:
+      offset: [0, 17, 0.6]
+    flags:
+      dynamic_bounds: true
+    generator:
+      type: grid
+      mode: grid
+      offset: [-10, 0, -10]
+      scale: 0.5
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: 20
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player, ray]
+        rotation: [90, 0, 0]
+        size: [0.75, 21, 0]
+  - xid: skeleton_{c}
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    mesh:
+      material:
+        ke: [0.0, 0.05, 0.0]
+    pos: [2, 2, 0]
+    scale: 1
+    physics:
+      update: true
+      enabled: true
+    script: |
+      cmd:animationPlay(
+        { name = "master:Idle2" });
+  - id: palm_tree_forest_2_{c}_{t}
+    prefab:
+      xpath: prefab/scenery/prefab_palm_tree.yml
+      path: prefab/scenery/prefab_pine_tree.yml
+    flags:
+      dynamic_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-20, 0, -20]
+      scale: 0.25
+      seed: [23444242, 54351212, 4353333]
+      count: 100
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 40
+        z_step: 40
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player, ray]
+        rotation: [90, 0, 0]
+        size: [0.75, 17, 0]
+  - id: palm_tree_forest_3_{c}_{t}
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
+    scale: 0.5
+    pos: [-5, 5.0, -5]
+    flags:
+      dynamic_bounds: true
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: 10
+  - id: terrain_grass
+    id: auto
+    priority: 20
+    type: container
+    pos: [-1024, 15, -1024]
+    flags:
+      pre_depth: true
+      xxno_shadow: true
+      tessellation: true
+      xxrender_back: true
+      xxno_frustum: true
+    generator:
+      type: terrain
+      mode: grid
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        category: [ground, terrain]
+        collide: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]

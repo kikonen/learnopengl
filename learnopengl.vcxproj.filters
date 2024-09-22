@@ -33,7 +33,7 @@
     <ClCompile Include="src\editor\EditorFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\NodeRenderer.cpp">
+    <ClCompile Include="src\renderer\LayerRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\NormalRenderer.cpp">
@@ -986,7 +986,7 @@
     <ClInclude Include="src\editor\EditorFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\NodeRenderer.h">
+    <ClInclude Include="src\renderer\LayerRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\NormalRenderer.h">

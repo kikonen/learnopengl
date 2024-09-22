@@ -16,10 +16,7 @@ public:
 
     void prepare();
 
-    void addViewport(std::shared_ptr<Viewport> viewport) noexcept
-    {
-        m_viewports.push_back(viewport);
-    }
+    void addViewport(std::shared_ptr<Viewport> viewport) noexcept;
 
     inline std::vector<std::shared_ptr<Viewport>>& getViewports() noexcept
     {

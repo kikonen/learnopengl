@@ -368,7 +368,7 @@ namespace render {
             ctx.m_batch->flush(ctx);
         }
 
-        if (!ctx.m_forceSolid)
+        if (!ctx.m_forceSolid && ctx.m_useParticles)
         {
             state.setStencil({});
             m_particleRenderer->render(ctx);
@@ -440,6 +440,7 @@ namespace render {
                 m_textureQuad.draw();
             }
             else {
+                secondaryBuffer->clearAll();
                 primaryBuffer->copy(
                     secondaryBuffer,
                     EffectBuffer::ATT_ALBEDO_INDEX,
@@ -453,6 +454,14 @@ namespace render {
             state.setEnabled(GL_DEPTH_TEST, true);
 
             state.setStencil({});
+        }
+
+        if (ctx.m_forceSolid) {
+            secondaryBuffer->clearAll();
+            primaryBuffer->copy(
+                secondaryBuffer,
+                EffectBuffer::ATT_ALBEDO_INDEX,
+                EffectBuffer::ATT_ALBEDO_INDEX);
         }
 
         // pass 11 - debug info
@@ -661,6 +670,7 @@ namespace render {
                 auto* type = it.first.m_typeHandle.toType();
 
                 if (!type->isReady()) continue;
+                if (type->m_layer != ctx.m_layer) continue;
                 if (!typeSelector(type)) continue;
 
                 auto& batch = ctx.m_batch;
@@ -705,6 +715,7 @@ namespace render {
             auto* type = map.first.m_typeHandle.toType();
 
             if (!type->isReady()) continue;
+            if (type->m_layer != ctx.m_layer) continue;
             if (!typeSelector(type)) continue;
 
             for (const auto& handle : map.second) {
@@ -750,6 +761,7 @@ namespace render {
         auto* type = node->m_typeHandle.toType();
 
         if (!type->isReady()) return;
+        if (type->m_layer != ctx.m_layer) return;
 
         auto& batch = ctx.m_batch;
 
