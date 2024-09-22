@@ -322,6 +322,9 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     NodeRegistry::get().prepareUpdateRT(ctx);
 
+    // NOTE KI race condition with program prepare and event processing
+    ProgramRegistry::get().updateRT(ctx);
+
     m_registry->m_dispatcherView->dispatchEvents();
 
     m_registry->updateRT(ctx);

@@ -171,6 +171,8 @@ namespace loader {
         node->setName("<skybox>");
         node->m_typeHandle = typeHandle;
 
+        //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
         {
             NodeState state{};
             event::Event evt { event::Type::node_add };

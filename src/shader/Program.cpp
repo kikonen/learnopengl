@@ -400,7 +400,7 @@ void Program::validateUBO(
     glGetActiveUniformBlockiv(programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &remoteSize);
 
     KI_INFO(fmt::format(
-        "PROGRAM_ERROR: UBO_SIZE program={}, UBO={}, local_size={}, remote_size={}",
+        "PROGRAM: UBO_SIZE program={}, UBO={}, local_size={}, remote_size={}",
         m_programName, name, localSize, remoteSize));
 
     if (localSize != remoteSize) {
