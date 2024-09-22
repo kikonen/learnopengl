@@ -116,6 +116,7 @@ nodes:
     pos: [-1.35, -1.5, -1.0]
     pivot:
       alignment: m
+    layer: 1
     script:
       path: scripts/fps_player
   - id: SM_JungleGym_01a_{c}_{t}
