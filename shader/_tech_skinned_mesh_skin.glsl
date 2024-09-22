@@ -30,11 +30,19 @@ if (entity.u_boneBaseIndex > 0) {
   // const mat4 b3 = mat4(1.f);
   // const mat4 b4 = mat4(1.f);
 
+  const float wx = boneWeight.x;
+  const float wy = boneWeight.y;
+  const float wz = boneWeight.z;
+  const float ww = boneWeight.w;
+
+  const vec4 ZERO = vec4(0);
+
   // Skin the position
-  const vec4 skinPos = (b1 * pos) * boneWeight.x
-    + (b2 * pos) * boneWeight.y
-    + (b3 * pos) * boneWeight.z
-    + (b4 * pos) * boneWeight.w;
+  vec4 skinPos =
+      (wx > 0 ? (b1 * pos) * wx : ZERO)
+    + (wy > 0 ? (b2 * pos) * wy : ZERO)
+    + (wz > 0 ? (b3 * pos) * wz : ZERO)
+    + (ww > 0 ? (b4 * pos) * ww : ZERO);
 
   // https://www.khronos.org/opengl/wiki/Skeletal_Animation
   pos = vec4(skinPos.xyz, 1.0);
@@ -43,10 +51,11 @@ if (entity.u_boneBaseIndex > 0) {
   // Skin the normal
   // NOTE KI w = 0.0 for w for normal
   vec4 skinNormal = vec4(normal, 0.f);
-  skinNormal = (b1 * skinNormal) * boneWeight.x
-    + (b2 * skinNormal) * boneWeight.y
-    + (b3 * skinNormal) * boneWeight.z
-    + (b4 * skinNormal) * boneWeight.w;
+  skinNormal =
+      (wx > 0 ? (b1 * skinNormal) * wx : ZERO)
+    + (wy > 0 ? (b2 * skinNormal) * wy : ZERO)
+    + (wz > 0 ? (b3 * skinNormal) * wz : ZERO)
+    + (ww > 0 ? (b4 * skinNormal) * ww : ZERO);
   normal = skinNormal.xyz;
 #endif
 
@@ -54,10 +63,11 @@ if (entity.u_boneBaseIndex > 0) {
   // Skin the tangent
   // NOTE KI w = 0.0 for w for tangent
   vec4 skinTangent = vec4(tangent, 0.f);
-  skinTangent = (b1 * skinTangent) * boneWeight.x
-    + (b2 * skinTangent) * boneWeight.y
-    + (b3 * skinTangent) * boneWeight.z
-    + (b4 * skinTangent) * boneWeight.w;
+  skinTangent =
+      (wx > 0 ? (b1 * skinTangent) * wx : ZERO)
+    + (wy > 0 ? (b2 * skinTangent) * wy : ZERO)
+    + (wz > 0 ? (b3 * skinTangent) * wz : ZERO)
+    + (ww > 0 ? (b4 * skinTangent) * ww : ZERO);
   tangent = skinTangent.xyz;
 #endif
 }
