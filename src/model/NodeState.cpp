@@ -157,6 +157,7 @@ void NodeState::updateRotationMatrix() noexcept
 {
     //ASSERT_WT();
     if (!m_dirtyRotation) return;
+    // TODO KI glm::mat4_Cast (is same as glm::toMat4)
     m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
     m_dirtyRotation = false;
     m_dirtyAxis = true;

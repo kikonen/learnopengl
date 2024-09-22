@@ -55,15 +55,18 @@ namespace util
     // https://gamedev.stackexchange.com/questions/149006/direction-vector-to-quaternion
     glm::quat axisRadiansToQuat(const glm::vec3& axis, float radians)
     {
-        const auto v = glm::normalize(axis);
-        const auto halfAngle = radians / 2.f;
-        const auto sinHalf = sin(halfAngle);
-        return glm::normalize(glm::quat{
-            cos(halfAngle),
-            v.x * sinHalf,
-            v.y * sinHalf,
-            v.z * sinHalf
-            });
+        // TODO KI glm::angleAxis(radians, axis)
+        return glm::angleAxis(radians, axis);
+
+        //const auto v = glm::normalize(axis);
+        //const auto halfAngle = radians / 2.f;
+        //const auto sinHalf = sin(halfAngle);
+        //return glm::normalize(glm::quat{
+        //    cos(halfAngle),
+        //    v.x * sinHalf,
+        //    v.y * sinHalf,
+        //    v.z * sinHalf
+        //    });
     }
 
     // https://forums.unrealengine.com/t/rotation-from-normal/11543/3
