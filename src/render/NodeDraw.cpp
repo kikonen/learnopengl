@@ -440,6 +440,7 @@ namespace render {
                 m_textureQuad.draw();
             }
             else {
+                secondaryBuffer->clearAll();
                 primaryBuffer->copy(
                     secondaryBuffer,
                     EffectBuffer::ATT_ALBEDO_INDEX,
@@ -453,6 +454,14 @@ namespace render {
             state.setEnabled(GL_DEPTH_TEST, true);
 
             state.setStencil({});
+        }
+
+        if (ctx.m_forceSolid) {
+            secondaryBuffer->clearAll();
+            primaryBuffer->copy(
+                secondaryBuffer,
+                EffectBuffer::ATT_ALBEDO_INDEX,
+                EffectBuffer::ATT_ALBEDO_INDEX);
         }
 
         // pass 11 - debug info
