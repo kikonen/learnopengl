@@ -72,6 +72,7 @@ nodes:
     pos: [-1.35, -1.6, -1.2]
     pivot:
       alignment: m
+    layer: 1
     script: scripts/fps_player
   - name: origo
     mesh:
@@ -166,6 +167,8 @@ nodes:
       z_count: 2
       x_step: 7
       z_step: -7
+    flags:
+      static_bounds: true
     physics:
       update: true
     script: scripts/seq_skeleton_army
@@ -182,7 +185,7 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
-    position: [0, 0, 0]
+    position: [0, -2, 0]
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
@@ -331,3 +334,40 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
+  - id: terrain_grass
+    id: auto
+    priority: 20
+    type: container
+    pos: [-1024, 10, -1024]
+    flags:
+      pre_depth: true
+      xxno_shadow: true
+      tessellation: true
+      xxrender_back: true
+      xxno_frustum: true
+    generator:
+      type: terrain
+      mode: grid
+      material:
+        name: terrain_grass_2
+        map_kd: textures/terrain_2/terrain_2_TX.jpg
+        map_ks: textures/terrain_2/terrain_2_SpecLM.png
+        map_bump: textures/terrain_2/terrain_2_TN.png
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        category: [ground, terrain]
+        collide: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]

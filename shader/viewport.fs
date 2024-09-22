@@ -186,7 +186,8 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  vec3 color = u_effect(textureLod(u_viewportTex, texCoord, 0)).rgb;
+  vec4 orig = u_effect(textureLod(u_viewportTex, texCoord, 0));
+  vec3 color = orig.rgb;
 
   if (u_toneHdri) {
     // reinhard
@@ -200,5 +201,5 @@ void main()
     color = pow(color, vec3(1.0 / u_hdrGamma));
   }
 
-  o_fragColor = vec4(color, u_blendFactor);
+  o_fragColor = vec4(color, orig.a * u_blendFactor);
 }

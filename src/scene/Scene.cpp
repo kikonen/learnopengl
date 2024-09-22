@@ -193,10 +193,12 @@ void Scene::prepareRT()
 
     {
         auto vp = std::make_shared<Viewport>(
-            "Node",
-            glm::vec3(-1.0f, 0.f, 0),
+            "UI",
+            //glm::vec3(-0.75, 0.75, 0),
+            glm::vec3(-1.0f, 1.f, 0),
             glm::vec3(0, 0, 0),
-            glm::vec2(1.f, 1.f),
+            //glm::vec2(1.5f, 1.5f),
+            glm::vec2(2.f, 2.f),
             false,
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
@@ -455,6 +457,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     localCtx.m_layer = 1;
     localCtx.m_useParticles = false;
+    //localCtx.m_forceSolid = true;
 
     localCtx.copyShadowFrom(parentCtx);
     drawScene(localCtx, m_uiRenderer.get());
