@@ -59,6 +59,7 @@ d 1.000000
 illum 2
 map_Kd textures/texture_cube_512.png
 */
+
 struct Material final
 {
 public:
@@ -87,9 +88,9 @@ public:
 
     // NOTE KI register can done only once, after which material
     // is effectively *inmmutable*
-    // 
+    //
     // @return m_registeredIndex
-    int registerMaterial();
+    ki::material_index registerMaterial();
 
     void prepare();
 
@@ -180,7 +181,7 @@ private:
         const glm::vec4& defaults);
 
 public:
-    mutable int m_registeredIndex = -1;
+    mutable ki::material_index m_registeredIndex{ -1 };
 
     TextureSpec textureSpec;
 
@@ -194,21 +195,21 @@ public:
 
     float map_bump_strength{ 1.f };
 
-    // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    // ranges between 0 and 1000
-    float ns = 0.0f;
+    //// The specular color is declared using Ks, and weighted using the specular exponent Ns.
+    //// ranges between 0 and 1000
+    //float ns = 0.0f;
 
-    // The ambient color of the material is declared using Ka.
-    // HACK KI a bit ambient even if forgotten
-    // => otherwise total blackness shall happen in few cases
-    glm::vec3 ka { 0.01f, 0.01f, 0.01f };
+    //// The ambient color of the material is declared using Ka.
+    //// HACK KI a bit ambient even if forgotten
+    //// => otherwise total blackness shall happen in few cases
+    //glm::vec3 ka { 0.01f, 0.01f, 0.01f };
 
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
     //std::string map_kd;
 
     // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    glm::vec3 ks { 0.f };
+    //glm::vec3 ks { 0.f };
     //std::string map_ks;
 
     // Ke/map_Ke     # emissive
@@ -229,14 +230,14 @@ public:
     //std::string map_displacement;
     //std::string map_opacity;
 
-    // A material can also have an optical density for its surface. This is also known as index of refraction.
-    float ni = 0.0f;
+    //// A material can also have an optical density for its surface. This is also known as index of refraction.
+    //float ni = 0.0f;
 
-    // Materials can be transparent. This is referred to as being dissolved. Unlike real transparency,
-    // the result does not depend upon the thickness of the object.
-    // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
-    // Dissolve works on all illumination models.
-    float d = 1.0f;
+    //// Materials can be transparent. This is referred to as being dissolved. Unlike real transparency,
+    //// the result does not depend upon the thickness of the object.
+    //// A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
+    //// Dissolve works on all illumination models.
+    //float d = 1.0f;
 
     int layers = 0;
     float layersDepth = 0.f;
@@ -254,7 +255,7 @@ public:
     // 8. Reflection on and Ray trace off
     // 9. Transparency : Glass on, Reflection : Ray trace off
     // 10. Casts shadows onto invisible surfaces
-    int illum = 0;
+    //int illum = 0;
 
     //std::string map_dudv;
     //std::string map_noise;

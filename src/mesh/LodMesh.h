@@ -97,7 +97,7 @@ namespace mesh {
         glm::mat4 m_transform{ 1.f };
 
         std::unique_ptr<Material> m_material;
-        uint32_t m_materialIndex{ 0 };
+        ki::material_index m_materialIndex{ 0 };
 
         backend::DrawOptions m_drawOptions;
 

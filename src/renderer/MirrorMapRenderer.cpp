@@ -46,7 +46,7 @@ namespace {
         {  0,  1,  0, 1 },
     };
 
-    static const int ATT_ALBEDO_INDEX = 0;
+    constexpr int ATT_ALBEDO_INDEX = 0;
 }
 
 void MirrorMapRenderer::prepareRT(

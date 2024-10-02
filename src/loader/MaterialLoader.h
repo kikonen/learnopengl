@@ -55,7 +55,7 @@ namespace loader {
         void loadTextureWrap(
             const std::string& k,
             const loader::DocNode& v,
-            GLint& wrapMode) const;
+            uint16_t& wrapMode) const;
 
         void modifyMaterial(
             Material& m,

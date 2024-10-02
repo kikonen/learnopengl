@@ -29,9 +29,9 @@ namespace {
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
 
-    float calculateAmbient(glm::vec3 ambient) {
-        return (ambient.x + ambient.y + ambient.z) / 3.f;
-    }
+    //float calculateAmbient(glm::vec3 ambient) {
+    //    return (ambient.x + ambient.y + ambient.z) / 3.f;
+    //}
 
     Material createDefaultMaterial() {
         Material mat;
@@ -169,7 +169,7 @@ void Material::assign(const Material& o)
     m_id = oldId;
 }
 
-int Material::registerMaterial()
+ki::material_index Material::registerMaterial()
 {
     return MaterialRegistry::get().registerMaterial(*this);
 }

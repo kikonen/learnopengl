@@ -198,38 +198,38 @@ namespace loader {
             else if (k == "modify") {
                 data.modifier = readBool(v);
             }
-            else if (k == "ns") {
-                material.ns = readFloat(v);
-                fields.ns = true;
-            }
-            else if (k == "ka") {
-                material.ka = readRGB(v);
-                fields.ka = true;
-            }
+            //else if (k == "ns") {
+            //    material.ns = readFloat(v);
+            //    fields.ns = true;
+            //}
+            //else if (k == "ka") {
+            //    material.ka = readRGB(v);
+            //    fields.ka = true;
+            //}
             else if (k == "kd") {
                 material.kd = readRGBA(v);
                 fields.kd = true;
             }
-            else if (k == "ks") {
-                material.ks = readRGB(v);
-                fields.ks = true;
-            }
+            //else if (k == "ks") {
+            //    material.ks = readRGB(v);
+            //    fields.ks = true;
+            //}
             else if (k == "ke") {
                 material.ke = glm::vec4(readRGB(v), 1.f);
                 fields.ke = true;
             }
-            else if (k == "ni") {
-                material.ni = readFloat(v);
-                fields.ni = true;
-            }
-            else if (k == "d") {
-                material.d = readFloat(v);
-                fields.d = true;
-            }
-            else if (k == "illum") {
-                material.d = readFloat(v);
-                fields.illum = true;
-            }
+            //else if (k == "ni") {
+            //    material.ni = readFloat(v);
+            //    fields.ni = true;
+            //}
+            //else if (k == "d") {
+            //    material.d = readFloat(v);
+            //    fields.d = true;
+            //}
+            //else if (k == "illum") {
+            //    material.d = readFloat(v);
+            //    fields.illum = true;
+            //}
             else if (k == "map_pbr") {
                 data.materialPbr = readString(v);
             }
@@ -672,7 +672,7 @@ namespace loader {
     void MaterialLoader::loadTextureWrap(
         const std::string& k,
         const loader::DocNode& v,
-        GLint& wrapMode) const
+        uint16_t& wrapMode) const
     {
         const std::string& wrap = readString(v);
         if (wrap == "GL_REPEAT") {
@@ -712,18 +712,19 @@ namespace loader {
         if (f.spriteCount) m.spriteCount = mod.spriteCount;
         if (f.spritesX) m.spritesX = mod.spritesX;
 
-        if (f.ns) m.ns = mod.ns;
+        //if (f.ns) m.ns = mod.ns;
 
-        if (f.ka) m.ka = mod.ka;
+        //if (f.ka) m.ka = mod.ka;
+
         if (f.kd) m.kd = mod.kd;
-        if (f.ks) m.ks = mod.ks;
+        //if (f.ks) m.ks = mod.ks;
         if (f.ke) m.ke = mod.ke;
 
         if (f.map_bump_strength) m.map_bump_strength = mod.map_bump_strength;
 
-        if (f.ni) m.ni = mod.ni;
-        if (f.d) m.d = mod.d;
-        if (f.illum) m.illum = mod.illum;
+        //if (f.ni) m.ni = mod.ni;
+        //if (f.d) m.d = mod.d;
+        //if (f.illum) m.illum = mod.illum;
 
         if (f.layers) m.layers = mod.layers;
         if (f.layersDepth) m.layersDepth = mod.layersDepth;

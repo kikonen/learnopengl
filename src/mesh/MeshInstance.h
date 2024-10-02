@@ -18,7 +18,7 @@ namespace mesh {
         glm::vec4 m_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
         std::shared_ptr<mesh::Mesh> m_mesh;
-        int m_materialIndex{ -1 };
+        ki::material_index m_materialIndex{ 0 };
         backend::DrawOptions m_drawOptions;
         ki::program_id m_programId{ 0 };
         bool m_shared : 1 { false };
@@ -29,7 +29,7 @@ namespace mesh {
             const glm::mat4& transform,
             std::shared_ptr<mesh::Mesh> mesh,
             backend::DrawOptions drawOptions,
-            int materialIndex,
+            ki::material_index materialIndex,
             ki::program_id programId,
             bool shared)
             : m_mesh{ mesh },

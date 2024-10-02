@@ -9,7 +9,8 @@
 #include "material/MaterialSSBO.h"
 
 namespace {
-    constexpr size_t BLOCK_SIZE = 10;
+    // NOTE KI int16_t
+    constexpr size_t BLOCK_SIZE = 32;
     constexpr size_t BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_COUNT = BLOCK_SIZE * BLOCK_COUNT;
@@ -26,27 +27,28 @@ MaterialRegistry::MaterialRegistry()
     m_materials.reserve(BLOCK_SIZE);
     m_materialEntries.reserve(BLOCK_SIZE);
 
-    // NOTE KI *reserve* index 0
-    // => multi-material needs to do "-index" trick, does not work for zero
-    Material zero = Material::createMaterial(BasicMaterial::basic);
-    registerMaterial(zero);
+    {
+        // NOTE KI *reserve* index 0
+        // => multi-material needs to do "-index" trick, does not work for zero
+        Material zero = Material::createMaterial(BasicMaterial::basic);
+        m_materials.emplace_back(zero);
+        registerMaterial(zero);
+    }
 }
 
 MaterialRegistry::~MaterialRegistry() = default;
 
-int MaterialRegistry::registerMaterial(Material& material)
+ki::material_index MaterialRegistry::registerMaterial(Material& material)
 {
     if (material.m_registeredIndex >= 0) return material.m_registeredIndex;
 
     std::lock_guard lock(m_lock);
 
-    const size_t count = 1;
-
-    if (m_materials.size() + count > MAX_COUNT)
+    if (m_materials.size() + 1 > MAX_COUNT)
         throw std::runtime_error{ fmt::format("MAX_MATERIAL_COUNT: {}", MAX_COUNT) };
 
     {
-        size_t size = m_materials.size() + std::max(BLOCK_SIZE, count) + BLOCK_SIZE;
+        size_t size = m_materials.size() + BLOCK_SIZE + BLOCK_SIZE;
         size += BLOCK_SIZE - size % BLOCK_SIZE;
         size = std::min(size, MAX_COUNT);
         if (size > m_materials.capacity()) {
@@ -54,15 +56,30 @@ int MaterialRegistry::registerMaterial(Material& material)
         }
     }
 
-    material.m_registeredIndex = (int)m_materials.size();
+    material.m_registeredIndex = static_cast<ki::material_index>(m_materials.size());
     m_materials.emplace_back(material);
+
+    m_dirtyFlag = true;
 
     return material.m_registeredIndex;
 }
 
+void MaterialRegistry::updateMaterial(const Material& material)
+{
+    // NOTE KI don't allow update of index == 0
+    if (material.m_registeredIndex <= 0) return;
+
+    std::lock_guard lock(m_lock);
+
+    m_materials[material.m_registeredIndex] = material;
+
+    m_dirtyMaterials.push_back(material.m_registeredIndex);
+    m_dirtyFlag = true;
+}
+
 void MaterialRegistry::updateRT(const UpdateContext& ctx)
 {
-    //if (!m_dirty) return;
+    if (!m_dirtyFlag) return;
     std::lock_guard lock(m_lock);
 
     updateMaterialBuffer();
@@ -73,12 +90,6 @@ void MaterialRegistry::prepare()
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
     m_ssbo.bindSSBO(SSBO_MATERIALS);
 }
-
-//void MaterialRegistry::bind(
-//    const RenderContext& ctx)
-//{
-//    m_ssbo.bindSSBO(SSBO_MATERIALS);
-//}
 
 void MaterialRegistry::updateMaterialBuffer()
 {
@@ -120,5 +131,23 @@ void MaterialRegistry::updateMaterialBuffer()
             &m_materialEntries[updateIndex]);
     }
 
+    // NOTE KI assuming there is only few updateable materials
+    // => thus one-by-one update is fine
+    // => if more, may need to specify logic to reserving
+    //    specific limited range to be used for updatable materials, to avoid random access
+    {
+        for (auto dirtyIndex : m_dirtyMaterials) {
+            m_materialEntries[dirtyIndex] = m_materials[dirtyIndex].toSSBO();
+
+            constexpr size_t sz = sizeof(MaterialSSBO);
+
+            m_ssbo.update(
+                dirtyIndex * sz,
+                dirtyIndex * sz,
+                &m_materialEntries[dirtyIndex]);
+        }
+    }
+
     m_lastSize = totalCount;
+    m_dirtyMaterials.clear();
 }

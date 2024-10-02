@@ -33,7 +33,7 @@ namespace decal {
 
         float m_lifetime{ 0.f };
 
-        uint32_t m_materialIndex{ 0 };
+        ki::material_index m_materialIndex{ 0 };
 
         float m_spriteSpeed{ 0.f };
         // floor used for render

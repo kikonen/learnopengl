@@ -24,18 +24,18 @@ public:
     ~MaterialRegistry();
 
     // Updates m_registeredIndex of Material
-    int registerMaterial(Material& material);
+    ki::material_index registerMaterial(Material& material);
 
-    size_t getBaseIndex() { return m_materials.size(); }
+    // Update data for already registered material
+    void updateMaterial(const Material& material);
 
     void prepare();
 
     void updateRT(const UpdateContext& ctx);
 
-    //void bind(
-    //    const RenderContext& ctx);
-
 private:
+    size_t getBaseIndex() { return m_materials.size(); }
+
     void updateMaterialBuffer();
 
 private:
@@ -43,9 +43,9 @@ private:
     std::mutex m_lock{};
 
     std::vector<Material> m_materials;
+    std::vector<uint32_t> m_dirtyMaterials;
 
     std::vector<MaterialSSBO> m_materialEntries;
-
     size_t m_lastSize = 0;
 
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };

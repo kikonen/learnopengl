@@ -67,7 +67,7 @@ namespace mesh {
         m_transform = o.m_transform;
 
         m_material = std::move(o.m_material);
-        m_materialIndex = std::move(o.m_materialIndex);
+        m_materialIndex = o.m_materialIndex;
 
         m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;
@@ -104,7 +104,7 @@ namespace mesh {
         m_baseScale = o.m_baseScale;
 
         m_material = std::move(o.m_material);
-        m_materialIndex = std::move(o.m_materialIndex);
+        m_materialIndex = o.m_materialIndex;
 
         m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;

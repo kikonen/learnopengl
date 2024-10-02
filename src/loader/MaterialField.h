@@ -15,9 +15,9 @@ namespace loader {
         bool spriteCount : 1 { false };
         bool spritesX : 1 { false };
 
-        bool ns : 1 { false };
+        //bool ns : 1 { false };
 
-        bool ka : 1 { false };
+        //bool ka : 1 { false };
 
         bool kd : 1 { false };
         bool ks : 1 { false };
@@ -25,9 +25,9 @@ namespace loader {
 
         bool map_bump_strength : 1 { false };
 
-        bool ni : 1 { false };
-        bool d : 1 { false };
-        bool illum : 1 { false };
+        //bool ni : 1 { false };
+        //bool d : 1 { false };
+        //bool illum : 1 { false };
 
         bool layers : 1 { false };
         bool layersDepth : 1 { false };

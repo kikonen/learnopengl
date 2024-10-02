@@ -6,12 +6,12 @@
 #include "mesh/MeshType.h"
 
 namespace {
-    static MeshTypeRegistry s_registry;
+    static MeshTypeRegistry g_registry;
 }
 
 MeshTypeRegistry& MeshTypeRegistry::get() noexcept
 {
-    return s_registry;
+    return g_registry;
 }
 
 MeshTypeRegistry::MeshTypeRegistry()

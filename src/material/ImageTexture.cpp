@@ -216,9 +216,9 @@ void ImageTexture::prepareNormal()
         glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-        const int mipMapLevels = std::min(
+        const uint8_t mipMapLevels = std::min(
             m_spec.mipMapLevels,
-            static_cast<int>(log2(std::max(m_image->m_width, m_image->m_height))));
+            static_cast<uint8_t>(log2(std::max(m_image->m_width, m_image->m_height))));
 
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_image->m_width, m_image->m_height);
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_image->m_width, m_image->m_height, m_format, m_pixelFormat, m_image->m_data);

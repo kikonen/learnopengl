@@ -21,7 +21,8 @@ namespace particle {
 
         float m_scale{ 1.f };
 
-        GLuint m_materialIndex{ 0 };
+        // NOTE KI particle materials required to be max 2^16
+        uint16_t m_materialIndex{ 0 };
 
         float m_spriteSpeed{ 0.f };
         // floor used for render

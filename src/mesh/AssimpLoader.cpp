@@ -533,17 +533,17 @@ namespace mesh
             }
         }
         {
-            aiColor4D specular;
-            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
-                material.ks = assimp_util::toVec4(specular);
-            }
+            //aiColor4D specular;
+            //if (aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
+            //    material.ks = assimp_util::toVec4(specular);
+            //}
         }
 
         {
-            aiColor4D ambient;
-            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient) == AI_SUCCESS) {
-                material.ka = assimp_util::toVec4(ambient);
-            }
+            //aiColor4D ambient;
+            //if (aiGetMaterialColor(src, AI_MATKEY_COLOR_AMBIENT, &ambient) == AI_SUCCESS) {
+            //    material.ka = assimp_util::toVec4(ambient);
+            //}
         }
         {
             aiColor4D emission;
@@ -553,10 +553,10 @@ namespace mesh
         }
 
         {
-            ai_real shininess;
-            if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS) {
-                material.ns = shininess;
-            }
+            //ai_real shininess;
+            //if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS) {
+            //    material.ns = shininess;
+            //}
 
             ai_real strength;
             if (aiGetMaterialFloat(src, AI_MATKEY_SHININESS_STRENGTH, &strength) == AI_SUCCESS) {
