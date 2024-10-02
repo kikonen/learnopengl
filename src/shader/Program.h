@@ -113,7 +113,7 @@ public:
 
     const std::string m_geometryType;
 
-    int m_programId = -1;
+    GLuint m_programId{ 0 };
 
     std::unique_ptr<ProgramUniforms> m_uniforms;
 

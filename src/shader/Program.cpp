@@ -153,7 +153,7 @@ ki::program_id Program::prepareRT()
         createProgram();
 
         if (m_programId != oldProgramId) {
-            if (oldProgramId != -1) {
+            if (oldProgramId) {
                 glDeleteProgram(oldProgramId);
             }
 
@@ -295,9 +295,12 @@ void Program::createProgram() {
     }
 
     // link shaders
-    int programId = -1;
+    GLuint programId = 0;
     {
         programId = glCreateProgram();
+
+        if (programId == 0)
+            throw std::runtime_error{ fmt::format("CREATE_PROGRAM: {}", programId) };
 
         kigl::setLabel(GL_PROGRAM, programId, m_key);
 
@@ -322,7 +325,7 @@ void Program::createProgram() {
                 KI_ERROR(msg);
 
                 glDeleteProgram(programId);
-                programId = -1;
+                programId = 0;
 
                 throw std::runtime_error{ msg };
             }
@@ -338,7 +341,7 @@ void Program::createProgram() {
         source.clear();
     }
 
-    if (programId != -1) {
+    if (programId) {
         validateProgram(programId);
         initProgram(programId);
 
@@ -348,7 +351,7 @@ void Program::createProgram() {
 
 // https://community.khronos.org/t/samplers-of-different-types-use-the-same-textur/66329/4
 void Program::validateProgram(int programId) const {
-    if (programId == -1) return;
+    if (programId == 0) return;
     glValidateProgram(programId);
 
     int success;
