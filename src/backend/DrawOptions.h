@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 #include "ki/size.h"
 #include "kigl/kigl.h"
 

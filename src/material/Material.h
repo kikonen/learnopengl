@@ -5,6 +5,7 @@
 #include <array>
 #include <map>
 #include <unordered_map>
+#include <type_traits>
 
 #include <glm/glm.hpp>
 

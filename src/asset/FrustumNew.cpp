@@ -1,7 +1,8 @@
 #include "FrustumNew.h"
 
-namespace {
+#include <type_traits>
 
+namespace {
     enum class Halfspace : std::underlying_type_t<std::byte>
     {
         NEGATIVE,

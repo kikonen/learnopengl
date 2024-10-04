@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 #include "material/CustomMaterial.h"
 

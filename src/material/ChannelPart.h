@@ -2,6 +2,7 @@
 
 #include <string>
 #include <array>
+#include <type_traits>
 #include <stdint.h>
 
 #include "TextureType.h"

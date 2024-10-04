@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 enum class ViewportEffect : std::underlying_type_t<std::byte> {
     none = 0,
     invert = 1,

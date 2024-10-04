@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <type_traits>
 
 class Window;
 
