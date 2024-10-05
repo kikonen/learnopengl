@@ -211,7 +211,7 @@ namespace loader {
                 loaders.m_audioLoader.loadAudio(v, data.audio);
             }
             else if (k == "custom_material") {
-                loaders.m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial);
+                loaders.m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial, loaders);
             }
             else if (k == "physics") {
                 loaders.m_physicsLoader.loadPhysics(v, data.physics);

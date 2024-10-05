@@ -20,6 +20,8 @@
 
 #include "shader/ProgramRegistry.h"
 
+#include "material/MaterialRegistry.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -385,7 +387,8 @@ void Scene::bind(const RenderContext& ctx)
         m_shadowMapRenderer->bind(ctx);
     }
 
-    MeshTypeRegistry::get().bind(ctx);
+    MeshTypeRegistry::get().updateMaterials(ctx);
+    MeshTypeRegistry::get().bindMaterials(ctx);
 
     m_renderData->bind();
 
@@ -421,6 +424,8 @@ void Scene::draw(const RenderContext& ctx)
 
     bool wasCubeMap = false;
     int renderCount = 0;
+
+    MaterialRegistry::get().renderMaterials(ctx);
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;

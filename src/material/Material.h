@@ -5,6 +5,7 @@
 #include <array>
 #include <map>
 #include <unordered_map>
+#include <memory>
 #include <type_traits>
 
 #include <glm/glm.hpp>
@@ -17,6 +18,7 @@
 //#include "MaterialSSBO.h"
 
 class Program;
+class MaterialUpdater;
 struct MaterialSSBO;
 
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
@@ -140,11 +142,7 @@ public:
         return it != m_boundTextures.end() ? &it->second : nullptr;
     }
 
-    GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept
-    {
-        const auto& it = m_boundTextures.find(type);
-        return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
-    }
+    GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept;
 
     const std::unordered_map<TextureType, std::string>& getTexturePaths() const noexcept
     {
@@ -289,6 +287,8 @@ public:
     std::map<std::string, std::string> m_programDefinitions{};
 
     std::unordered_map<MaterialProgramType, ki::program_id> m_programs{};
+
+    std::shared_ptr<MaterialUpdater> m_updater;
 
 private:
     std::unordered_map<TextureType, BoundTexture> m_boundTextures{};

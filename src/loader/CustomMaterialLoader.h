@@ -16,12 +16,12 @@ namespace loader {
 
         void loadCustomMaterial(
             const loader::DocNode& node,
-            CustomMaterialData& data) const;
+            CustomMaterialData& data,
+            Loaders& loaders) const;
 
         std::unique_ptr<CustomMaterial> createCustomMaterial(
             const CustomMaterialData& data,
-            const int cloneIndex,
-            const glm::uvec3& tile);
+            Loaders& loaders);
 
     };
 }

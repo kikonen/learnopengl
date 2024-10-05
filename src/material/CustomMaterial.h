@@ -16,11 +16,14 @@ public:
     {
     }
 
-    virtual ~CustomMaterial() = default;
+    virtual ~CustomMaterial();
 
-    virtual void prepareRT(
-        const PrepareContext& ctx) {}
+    virtual void prepareRT(const PrepareContext& ctx)
+    {
+        m_prepared = true;
+    }
 
+    // NOTE KI render, not update context required
     virtual void updateRT(
         const RenderContext& ctx)
     {
@@ -37,6 +40,7 @@ public:
     const bool m_gammaCorrect;
 
 protected:
+    bool m_prepared{ false };
     bool m_dirty{ true };
 
 };

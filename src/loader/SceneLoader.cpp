@@ -536,6 +536,13 @@ namespace loader {
             }
         }
 
+        {
+            type->setCustomMaterial(
+                m_loaders->m_customMaterialLoader.createCustomMaterial(
+                    nodeData.customMaterial,
+                    *m_loaders));
+        }
+
         resolveLodLevels(type, nodeData);
 
         return typeHandle;
@@ -612,6 +619,9 @@ namespace loader {
         }
 
         m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
+
+        material.m_updater = m_loaders->m_materialUpdaterLoader.createMaterialUpdater(
+            meshData.materialUpdaterData, *m_loaders);
     }
 
     void SceneLoader::resolveMeshes(
@@ -935,15 +945,6 @@ namespace loader {
                 type,
                 nodeData.text,
                 *m_loaders);
-        }
-
-        {
-            type->setCustomMaterial(
-                l.m_customMaterialLoader.createCustomMaterial(
-                    nodeData.customMaterial,
-                    cloneIndex,
-                    tile));
-            MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
         }
 
         resolveAttachments(typeHandle, handle, nodeData);

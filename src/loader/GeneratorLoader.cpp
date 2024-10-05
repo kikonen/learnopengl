@@ -131,7 +131,7 @@ namespace loader {
                 loader.loadMask(v, data.boundsMask);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
             else if (k == "geom") {
                 PhysicsGeomValue loader;

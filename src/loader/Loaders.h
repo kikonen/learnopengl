@@ -8,6 +8,7 @@
 #include "SkyboxLoader.h"
 #include "FontLoader.h"
 #include "MaterialLoader.h"
+#include "MaterialUpdaterLoader.h"
 #include "CustomMaterialLoader.h"
 #include "CameraLoader.h"
 #include "LightLoader.h"
@@ -47,6 +48,7 @@ namespace loader {
 
         FontLoader m_fontLoader;
         MaterialLoader m_materialLoader;
+        MaterialUpdaterLoader m_materialUpdaterLoader;
         CustomMaterialLoader m_customMaterialLoader;
 
         CameraLoader m_cameraLoader;

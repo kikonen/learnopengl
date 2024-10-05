@@ -39,7 +39,7 @@ namespace loader
                 data.enabled = readBool(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
             else if (k == "dir") {
                 data.dir = readVec3(v);

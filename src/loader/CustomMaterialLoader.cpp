@@ -2,8 +2,13 @@
 
 #include "util/Util.h"
 
+#include "mesh/MeshFlags.h"
+
+#include "material/FrameBufferMaterial.h"
+
 #include "loader/document.h"
 #include "loader_util.h"
+#include "loader/Loaders.h"
 
 namespace loader {
     CustomMaterialLoader::CustomMaterialLoader(
@@ -14,7 +19,8 @@ namespace loader {
 
     void CustomMaterialLoader::loadCustomMaterial(
         const loader::DocNode& node,
-        CustomMaterialData& data) const
+        CustomMaterialData& data,
+        Loaders& loaders) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -32,6 +38,9 @@ namespace loader {
                     reportUnknown("custom_material_type", k, v);
                 }
             }
+            else if (k == "material") {
+                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+            }
             else {
                 reportUnknown("custom_material_entry", k, v);
             }
@@ -40,12 +49,21 @@ namespace loader {
 
     std::unique_ptr<CustomMaterial> CustomMaterialLoader::createCustomMaterial(
         const CustomMaterialData& data,
-        const int cloneIndex,
-        const glm::uvec3& tile)
+        Loaders& loaders)
     {
-        if (data.type == CustomMaterialType::none) return nullptr;
+        //switch (data.type) {
+        //case CustomMaterialType::framebuffer: {
+        //    auto cm = std::make_unique<FrameBufferMaterial>("fbo", false);
+
+        //    cm->setMaterial(&data.materialData.material);
+        //    cm->m_material->loadTextures();
+
+        //    loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
+
+        //    return cm;
+        //}
+        //}
 
         return nullptr;
     }
-
 }

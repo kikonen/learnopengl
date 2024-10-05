@@ -161,8 +161,6 @@ namespace loader {
             material->m_faces = data.faces;
         }
 
-        MeshTypeRegistry::get().registerCustomMaterial(typeHandle);
-
         type->setCustomMaterial(std::move(material));
 
         auto handle = pool::NodeHandle::allocate(assets.skyboxId);

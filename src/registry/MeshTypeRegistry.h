@@ -23,7 +23,9 @@ public:
     void registerCustomMaterial(
         pool::TypeHandle typeHandle);
 
-    void bind(const RenderContext& ctx);
+    void updateMaterials(const RenderContext& ctx);
+
+    void bindMaterials(const RenderContext& ctx);
 
 private:
     mutable std::mutex m_lock{};

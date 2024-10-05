@@ -5,6 +5,8 @@
 
 #include "material/CustomMaterial.h"
 
+#include "MaterialData.h"
+
 namespace loader {
     enum class CustomMaterialType : std::underlying_type_t<std::byte> {
         none,
@@ -13,5 +15,7 @@ namespace loader {
 
     struct CustomMaterialData {
         CustomMaterialType type{ CustomMaterialType::none };
+
+        MaterialData materialData;
     };
 }

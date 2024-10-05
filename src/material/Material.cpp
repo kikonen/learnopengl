@@ -22,6 +22,7 @@
 #include "ColorTexture.h"
 #include "MaterialSSBO.h"
 #include "MaterialRegistry.h"
+#include "MaterialUpdater.h"
 
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
@@ -172,6 +173,16 @@ void Material::assign(const Material& o)
 ki::material_index Material::registerMaterial()
 {
     return MaterialRegistry::get().registerMaterial(*this);
+}
+
+GLuint64 Material::getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept
+{
+    if (m_updater) {
+        auto handle = m_updater->getTexHandle(type);
+        if (handle) return handle;
+    }
+    const auto& it = m_boundTextures.find(type);
+    return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
 }
 
 void Material::loadTextures()
@@ -342,6 +353,10 @@ void Material::prepare()
         auto& tex = it.second;
         if (tex.m_channelPart) continue;
         tex.m_texture->prepare();
+    }
+
+    if (m_updater) {
+        m_updater->prepareRT();
     }
 }
 

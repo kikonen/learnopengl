@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <filesystem>
+#include <memory>
 
 #include "BaseLoader.h"
 #include "MaterialData.h"
@@ -19,15 +20,18 @@ namespace loader {
 
         void loadMaterialModifiers(
             const loader::DocNode& node,
-            MaterialData& data) const;
+            MaterialData& data,
+            Loaders& loaders) const;
 
         void loadMaterials(
             const loader::DocNode& node,
-            std::vector<MaterialData>& materials) const;
+            std::vector<MaterialData>& materials,
+            Loaders& loaders) const;
 
         void loadMaterial(
             const loader::DocNode& node,
-            MaterialData& data) const;
+            MaterialData& data,
+            Loaders& loaders) const;
 
         void resolveMaterialPaths(
             const std::string& baseDir,

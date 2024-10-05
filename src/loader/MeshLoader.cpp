@@ -107,7 +107,7 @@ namespace loader {
                 data.programs[MaterialProgramType::object_id] = readString(v);
             }
             else if (k == "materials") {
-                loaders.m_materialLoader.loadMaterials(v, data.materials);
+                loaders.m_materialLoader.loadMaterials(v, data.materials, loaders);
             }
             else if (k == "material") {
                 if (data.materials.empty()) {
@@ -115,7 +115,7 @@ namespace loader {
                 }
                 auto& materialData = data.materials[0];
                 materialData.aliasName = "*";
-                loaders.m_materialLoader.loadMaterial(v, materialData);
+                loaders.m_materialLoader.loadMaterial(v, materialData, loaders);
                 materialData.materialName = materialData.material.m_name;
             }
             else if (k == "material_modifier") {
@@ -124,7 +124,10 @@ namespace loader {
                 }
                 auto& materialData = data.materials[0];
                 materialData.aliasName = "*";
-                loaders.m_materialLoader.loadMaterialModifiers(v, materialData);
+                loaders.m_materialLoader.loadMaterialModifiers(v, materialData, loaders);
+            }
+            else if (k == "material_updater") {
+                loaders.m_materialUpdaterLoader.loadMaterialUpdater(v, data.materialUpdaterData, loaders);
             }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {

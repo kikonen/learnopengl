@@ -9,6 +9,7 @@
 #include "SocketData.h"
 #include "AnimationData.h"
 #include "MaterialData.h"
+#include "MaterialUpdaterData.h"
 #include "VertexData.h"
 
 #include "MeshDataType.h"
@@ -42,6 +43,8 @@ namespace loader {
 
         std::vector<MaterialData> materials;
         std::vector<AnimationData> animations;
+
+        MaterialUpdaterData materialUpdaterData;
 
         loader::FlagContainer meshFlags;
 

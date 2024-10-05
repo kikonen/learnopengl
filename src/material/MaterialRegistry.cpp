@@ -7,6 +7,7 @@
 #include "shader/SSBO.h"
 
 #include "material/MaterialSSBO.h"
+#include "material/MaterialUpdater.h"
 
 namespace {
     // NOTE KI int16_t
@@ -77,11 +78,21 @@ void MaterialRegistry::updateMaterial(const Material& material)
     m_dirtyFlag = true;
 }
 
+void MaterialRegistry::renderMaterials(const RenderContext& ctx)
+{
+    std::lock_guard lock(m_lock);
+    for (auto& material : m_materials) {
+        if (!material.m_updater) continue;
+        material.m_updater->render(ctx);
+    }
+}
+
 void MaterialRegistry::updateRT(const UpdateContext& ctx)
 {
     if (!m_dirtyFlag) return;
     std::lock_guard lock(m_lock);
 
+    prepareMaterials();
     updateMaterialBuffer();
 }
 
@@ -89,6 +100,20 @@ void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
     m_ssbo.bindSSBO(SSBO_MATERIALS);
+}
+
+void MaterialRegistry::prepareMaterials()
+{
+    const size_t index = m_lastSize;
+    const size_t totalCount = m_materials.size();
+
+    if (index == totalCount) return;
+    if (totalCount == 0) return;
+
+    for (size_t i = index; i < totalCount; i++) {
+        auto& material = m_materials[i];
+        material.prepare();
+    }
 }
 
 void MaterialRegistry::updateMaterialBuffer()
@@ -105,8 +130,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // NOTE KI update m_materialsSSBO from *index*, not *updateIndex* point
         // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = index; i < totalCount; i++) {
-            auto& material = m_materials[i];
-            material.prepare();
+            const auto& material = m_materials[i];
             m_materialEntries.emplace_back(material.toSSBO());
         }
     }
@@ -146,8 +170,8 @@ void MaterialRegistry::updateMaterialBuffer()
                 dirtyIndex * sz,
                 &m_materialEntries[dirtyIndex]);
         }
+        m_dirtyMaterials.clear();
     }
 
     m_lastSize = totalCount;
-    m_dirtyMaterials.clear();
 }

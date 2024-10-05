@@ -38,7 +38,7 @@ namespace loader {
                 loaders.m_fontLoader.loadFont(v, data.fontData);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
             else {
                 reportUnknown("text_entry", k, v);

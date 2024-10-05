@@ -10,9 +10,13 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
+#include "material/MaterialUpdater.h"
+#include "material/FrameBufferMaterial.h"
+
 #include "shader/ProgramRegistry.h"
 
 #include "loader/document.h"
+#include "Loaders.h"
 #include "loader_util.h"
 
 #include "value/ChannelTextureValue.h"
@@ -156,29 +160,32 @@ namespace loader {
 
     void MaterialLoader::loadMaterialModifiers(
         const loader::DocNode& node,
-        MaterialData& data) const
+        MaterialData& data,
+        Loaders& loaders) const
     {
         data.enabled = true;
         data.modifier = true;
         data.material.m_name = "<modifier>";
 
-        loadMaterial(node, data);
+        loadMaterial(node, data, loaders);
     }
 
     void MaterialLoader::loadMaterials(
         const loader::DocNode& node,
-        std::vector<MaterialData>& materials) const
+        std::vector<MaterialData>& materials,
+        Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
-            loadMaterial(entry, data);
+            loadMaterial(entry, data, loaders);
             data.materialName = data.material.m_name;
         }
     }
 
     void MaterialLoader::loadMaterial(
         const loader::DocNode& node,
-        MaterialData& data) const
+        MaterialData& data,
+        Loaders& loaders) const
     {
         Material& material = data.material;
         auto& fields = data.fields;
@@ -949,5 +956,4 @@ namespace loader {
         }
         return found ? program : defaultValue;
     }
-
 }

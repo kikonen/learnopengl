@@ -7,6 +7,7 @@ namespace loader {
         m_skyboxLoader(ctx),
         m_fontLoader(ctx),
         m_materialLoader(ctx),
+        m_materialUpdaterLoader(ctx),
         m_customMaterialLoader(ctx),
         m_cameraLoader(ctx),
         m_lightLoader(ctx),
@@ -27,6 +28,8 @@ namespace loader {
     {
         m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
+        m_materialUpdaterLoader.setRegistry(registry);
+        m_customMaterialLoader.setRegistry(registry);
         m_rootLoader.setRegistry(registry);
         m_scriptLoader.setRegistry(registry);
         m_skyboxLoader.setRegistry(registry);

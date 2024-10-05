@@ -29,6 +29,8 @@ public:
     // Update data for already registered material
     void updateMaterial(const Material& material);
 
+    void renderMaterials(const RenderContext& ctx);
+
     void prepare();
 
     void updateRT(const UpdateContext& ctx);
@@ -36,6 +38,7 @@ public:
 private:
     size_t getBaseIndex() { return m_materials.size(); }
 
+    void prepareMaterials();
     void updateMaterialBuffer();
 
 private:

@@ -112,6 +112,13 @@ constexpr int VBO_BONE_BINDING = 5;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
 
+constexpr int UNIT_CHANNEL_0 = 40;
+constexpr int UNIT_CHANNEL_1 = 41;
+constexpr int UNIT_CHANNEL_2 = 42;
+constexpr int UNIT_CHANNEL_3 = 43;
+constexpr int UNIT_CHANNEL_4 = 44;
+constexpr int UNIT_CHANNEL_5 = 45;
+
 constexpr int UNIT_FONT_ATLAS = 48;
 
 constexpr int UNIT_HDR_TEXTURE = 49;

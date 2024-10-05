@@ -20,7 +20,7 @@
 
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
-
+#include "registry/MeshTypeRegistry.h"
 
 namespace {
 }
@@ -111,16 +111,13 @@ namespace mesh {
 
         if (m_customMaterial) {
             m_customMaterial->prepareRT(ctx);
+            MeshTypeRegistry::get().registerCustomMaterial(m_handle);
         }
     }
 
     void MeshType::bind(const RenderContext& ctx)
     {
         assert(isReady());
-
-        if (m_customMaterial) {
-            m_customMaterial->bindTextures(ctx);
-        }
     }
 
     void MeshType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
