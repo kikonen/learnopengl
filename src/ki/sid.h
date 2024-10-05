@@ -2,9 +2,16 @@
 
 #include <string>
 
+#include <ki/size.h>
+
 struct StringID
 {
-    uint32_t m_sid;
+    ki::sid m_sid;
+
+    // NULL ID
+    StringID()
+        : m_sid{ 0 }
+    {}
 
     StringID(std::string_view s);
 

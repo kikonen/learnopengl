@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+
+#include "ki/size.h"
 #include "kigl/kigl.h"
 
 #include "TextureType.h"
@@ -9,10 +12,14 @@ struct PrepareContext;
 
 class MaterialUpdater {
 public:
-    MaterialUpdater();
+    MaterialUpdater(
+        ki::sid id,
+        const std::string& name);
+
     ~MaterialUpdater();
 
-    virtual void prepareRT();
+    virtual void prepareRT(
+        const PrepareContext& ctx);
 
     virtual void render(
         const RenderContext& ctx);
@@ -22,7 +29,12 @@ public:
         return 0;
     }
 
+public:
+    ki::sid m_id{ 0 };
+
 protected:
     bool m_prepared{ false };
     bool m_dirty{ true };
+
+    std::string m_name;
 };

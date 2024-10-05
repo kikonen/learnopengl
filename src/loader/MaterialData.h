@@ -18,6 +18,8 @@ namespace loader {
 
         std::string materialPbr;
 
+        std::string updaterId;
+
         MaterialField fields;
         Material material;
     };

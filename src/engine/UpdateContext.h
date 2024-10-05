@@ -20,6 +20,11 @@ public:
         const ki::RenderClock& clock,
         Registry* registry);
 
+    operator PrepareContext() const
+    {
+        return toPrepareContext();
+    }
+
     PrepareContext toPrepareContext() const;
 
 public:

@@ -32,21 +32,12 @@ nodes:
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
-        xblend: true
+        blend: true
         alpha: true
         render_back: true
         program_definitions:
           APPLY_TOY: 1
-      material_updater:
-        type: framebuffer
-        material:
-          kd: [0.4, 0.4, 1, 0.75]
-          map_pbr: textures\Metal008_1K-PNG
-          xtiling: 3
-          alpha: true
-          program: shader_toy
-          program_definitions:
-            TOY_2: 1
+        updater: shader_toy_1
       base_rot: [0, 0, 0]
     pos: [1, 1.001, 1]
     physics:
@@ -71,21 +62,12 @@ nodes:
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
-        xblend: true
+        blend: true
         alpha: true
         render_back: true
         program_definitions:
           APPLY_TOY: 1
-      material_updater:
-        type: framebuffer
-        material:
-          kd: [0.4, 0.4, 1, 0.75]
-          map_pbr: textures\Metal008_1K-PNG
-          xtiling: 3
-          alpha: true
-          program: shader_toy
-          program_definitions:
-            TOY_1: 1
+        updater: shader_toy_2
       base_rot: [0, 0, 0]
     pos: [1, 1.001, 1]
     physics:
@@ -134,3 +116,28 @@ nodes:
         category: [terrain]
         collision: [can_terrain]
     scale: 200
+material_updaters:
+- id: shader_toy_1
+  type: framebuffer
+  size: 1024
+  frame_skip: 1
+  material:
+    kd: [0.4, 0.4, 1, 0.75]
+    map_pbr: textures\Metal008_1K-PNG
+    xtiling: 3
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      TOY_1: 1
+- id: shader_toy_2
+  type: framebuffer
+  size: 512
+  frame_skip: 1
+  material:
+    kd: [0.4, 0.4, 1, 0.75]
+    map_pbr: textures\Metal008_1K-PNG
+    xtiling: 3
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      TOY_2: 1

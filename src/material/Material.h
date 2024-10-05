@@ -288,7 +288,9 @@ public:
 
     std::unordered_map<MaterialProgramType, ki::program_id> m_programs{};
 
-    std::shared_ptr<MaterialUpdater> m_updater;
+    ki::sid m_updaterId;
+
+    MaterialUpdater* m_updater{ nullptr };
 
 private:
     std::unordered_map<TextureType, BoundTexture> m_boundTextures{};

@@ -130,6 +130,10 @@ namespace loader {
 
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
                 l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
+                l.m_materialUpdaterLoader.loadMaterialUpdaters(
+                    doc.findNode("material_updaters"),
+                    m_materialUpdaters,
+                    *m_loaders);
 
                 l.m_nodeLoader.loadNodes(
                     doc.findNode("nodes"),
@@ -216,6 +220,10 @@ namespace loader {
         l.m_scriptLoader.createScriptEngine(*m_scriptEngineData);
 
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
+
+        l.m_materialUpdaterLoader.createMaterialUpdaters(
+            m_materialUpdaters,
+            *m_loaders);
 
         {
             std::lock_guard lock(m_ready_lock);
@@ -619,9 +627,6 @@ namespace loader {
         }
 
         m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
-
-        material.m_updater = m_loaders->m_materialUpdaterLoader.createMaterialUpdater(
-            meshData.materialUpdaterData, *m_loaders);
     }
 
     void SceneLoader::resolveMeshes(

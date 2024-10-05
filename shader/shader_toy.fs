@@ -49,19 +49,26 @@ void main()
   vec4 fragColor = vec4(0);
   mainImage(fragColor, u_bufferResolution, u_time, gl_FragCoord.xy);
   if (fragColor.a < 0.9) {
-    discard;
-  } else {
-    color = fragColor;
-    color.a = 0.9;
-  }
+    // discard;
+    color.a = 0.2;
+    // color.rgb *= vec4(5, 0.4, 0.4, 1);
 #ifdef TOY_1
-  color.rgb *= vec4(5, 0.4, 0.4, 1);
+  color.rgb *= vec3(4, 4, 0.1);
 #endif
 #ifdef TOY_2
-  color.rgb *= vec4(0.4, 4, 0.4, 1);
+  color.rgb *= vec3(0.4, 8, 0.4);
 #endif
-  color.a = 1;
+  } else {
+    color = fragColor;
+#ifdef TOY_1
+  color.rgb *= vec3(30, 8, 0.4);
+#endif
+#ifdef TOY_2
+  color.rgb *= vec3(0.4, 0.4, 8);
+#endif
+  }
   // color = vec4(0, 0, 1, 1);
+  //color = material.diffuse;
 
   o_fragColor = color;
 }

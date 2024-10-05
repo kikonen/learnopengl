@@ -126,9 +126,6 @@ namespace loader {
                 materialData.aliasName = "*";
                 loaders.m_materialLoader.loadMaterialModifiers(v, materialData, loaders);
             }
-            else if (k == "material_updater") {
-                loaders.m_materialUpdaterLoader.loadMaterialUpdater(v, data.materialUpdaterData, loaders);
-            }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {
                     const auto& flagName = flagNode.getName();

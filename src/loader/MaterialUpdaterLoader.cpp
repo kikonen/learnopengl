@@ -5,6 +5,8 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
+#include "ki/sid.h"
+
 #include "mesh/MeshFlags.h"
 
 #include "material/MaterialUpdater.h"
@@ -22,6 +24,17 @@ namespace loader {
     {
     }
 
+    void MaterialUpdaterLoader::loadMaterialUpdaters(
+        const loader::DocNode& node,
+        std::vector<MaterialUpdaterData>& updaters,
+        Loaders& loaders) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            auto& data = updaters.emplace_back();
+            loadMaterialUpdater(entry, data, loaders);
+        }
+    }
+
     void MaterialUpdaterLoader::loadMaterialUpdater(
         const loader::DocNode& node,
         MaterialUpdaterData& data,
@@ -33,7 +46,10 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "type") {
+            if (k == "id") {
+                data.id = readString(v);
+            }
+            else if (k == "type") {
                 std::string type = readString(v);
                 if (type == "none") {
                     data.type = MaterialUpdaterType::none;
@@ -60,13 +76,24 @@ namespace loader {
         }
     }
 
-    std::shared_ptr<MaterialUpdater> MaterialUpdaterLoader::createMaterialUpdater(
+    void MaterialUpdaterLoader::createMaterialUpdaters(
+        const std::vector<MaterialUpdaterData>& updaters,
+        Loaders& loaders)
+    {
+        auto& mr = MaterialRegistry::get();
+        for (const auto& data : updaters) {
+            auto updater = createMaterialUpdater(data, loaders);
+            mr.addMaterialUpdater(std::move(updater));
+        }
+    }
+
+    std::unique_ptr<MaterialUpdater> MaterialUpdaterLoader::createMaterialUpdater(
         const MaterialUpdaterData& data,
         Loaders& loaders)
     {
         switch (data.type) {
         case MaterialUpdaterType::framebuffer: {
-            auto cm = std::make_unique<FrameBufferMaterial>();
+            auto cm = std::make_unique<FrameBufferMaterial>(SID(data.id), data.id);
 
             cm->m_size = data.size;
             cm->m_frameSkip = data.frameSkip;

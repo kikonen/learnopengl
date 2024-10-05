@@ -1,9 +1,16 @@
 #include "MaterialUpdater.h"
 
-MaterialUpdater::MaterialUpdater() = default;
+MaterialUpdater::MaterialUpdater(
+    ki::sid id,
+    const std::string& name)
+    : m_id{ id },
+    m_name{ name}
+{}
+
 MaterialUpdater::~MaterialUpdater() = default;
 
-void MaterialUpdater::prepareRT()
+void MaterialUpdater::prepareRT(
+    const PrepareContext& ctx)
 {
     m_prepared = true;
 }

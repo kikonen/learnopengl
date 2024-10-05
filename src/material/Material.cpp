@@ -354,10 +354,6 @@ void Material::prepare()
         if (tex.m_channelPart) continue;
         tex.m_texture->prepare();
     }
-
-    if (m_updater) {
-        m_updater->prepareRT();
-    }
 }
 
 const MaterialSSBO Material::toSSBO() const

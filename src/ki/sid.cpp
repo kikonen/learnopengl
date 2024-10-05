@@ -10,6 +10,7 @@
 namespace {
     std::mutex g_lock;
 
+    constexpr uint32_t NULL_ID{ 0 };
     const std::string MISSING = "";
 
     uint32_t g_idSeq{ 0 };
@@ -39,7 +40,7 @@ namespace {
 }
 
 StringID::StringID(std::string_view s)
-    : m_sid{ pool::IdHash::make32(s) }
+    : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
 {
     registerName(*this, std::string{ s });
 }

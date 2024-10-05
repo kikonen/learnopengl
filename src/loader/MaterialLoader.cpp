@@ -7,6 +7,8 @@
 #include "util/Log.h"
 #include "util/Util.h"
 
+#include "ki/sid.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
@@ -446,6 +448,9 @@ namespace loader {
                     const auto& defValue = readString(defNode.getNode());
                     material.m_programDefinitions[util::toUpper(defName)] = defValue;
                 }
+            }
+            else if (k == "updater") {
+                material.m_updaterId = SID(readString(v));
             }
             else {
                 reportUnknown("material_entry", k, v);

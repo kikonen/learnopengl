@@ -22,11 +22,14 @@ namespace render {
 class FrameBufferMaterial : public MaterialUpdater
 {
 public:
-    FrameBufferMaterial();
+    FrameBufferMaterial(
+        ki::sid id,
+        const std::string& name);
 
     ~FrameBufferMaterial();
 
-    virtual void prepareRT() override;
+    virtual void prepareRT(
+        const PrepareContext& ctx) override;
 
     virtual void render(
         const RenderContext& ctx) override;

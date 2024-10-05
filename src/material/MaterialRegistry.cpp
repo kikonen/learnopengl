@@ -6,6 +6,8 @@
 
 #include "shader/SSBO.h"
 
+#include "engine/UpdateContext.h"
+
 #include "material/MaterialSSBO.h"
 #include "material/MaterialUpdater.h"
 
@@ -78,12 +80,17 @@ void MaterialRegistry::updateMaterial(const Material& material)
     m_dirtyFlag = true;
 }
 
+void MaterialRegistry::addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater)
+{
+    std::lock_guard lock(m_lock);
+    m_updaters.insert({ updater->m_id, std::move(updater)});
+}
+
 void MaterialRegistry::renderMaterials(const RenderContext& ctx)
 {
     std::lock_guard lock(m_lock);
-    for (auto& material : m_materials) {
-        if (!material.m_updater) continue;
-        material.m_updater->render(ctx);
+    for (auto& [id, updater] : m_updaters) {
+        updater->render(ctx);
     }
 }
 
@@ -92,7 +99,9 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
     if (!m_dirtyFlag) return;
     std::lock_guard lock(m_lock);
 
-    prepareMaterials();
+    prepareMaterialUpdaters(ctx);
+    prepareMaterials(ctx);
+
     updateMaterialBuffer();
 }
 
@@ -102,7 +111,7 @@ void MaterialRegistry::prepare()
     m_ssbo.bindSSBO(SSBO_MATERIALS);
 }
 
-void MaterialRegistry::prepareMaterials()
+void MaterialRegistry::prepareMaterials(const PrepareContext& ctx)
 {
     const size_t index = m_lastSize;
     const size_t totalCount = m_materials.size();
@@ -113,6 +122,20 @@ void MaterialRegistry::prepareMaterials()
     for (size_t i = index; i < totalCount; i++) {
         auto& material = m_materials[i];
         material.prepare();
+
+        if (material.m_updaterId) {
+            const auto& it = m_updaters.find(material.m_updaterId);
+            if (it != m_updaters.end()) {
+                material.m_updater = it->second.get();
+            }
+        }
+    }
+}
+
+void MaterialRegistry::prepareMaterialUpdaters(const PrepareContext& ctx)
+{
+    for (auto& [id, updater] : m_updaters) {
+        updater->prepareRT(ctx);
     }
 }
 

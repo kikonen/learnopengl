@@ -1,17 +1,21 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 #include <mutex>
+#include <memory>
 #include <atomic>
 
 #include "material/Material.h"
 
 #include "kigl/GLBuffer.h"
 
+struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
 
 struct MaterialSSBO;
+class MaterialUpdater;
 
 
 class MaterialRegistry {
@@ -29,6 +33,8 @@ public:
     // Update data for already registered material
     void updateMaterial(const Material& material);
 
+    void addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater);
+
     void renderMaterials(const RenderContext& ctx);
 
     void prepare();
@@ -38,7 +44,8 @@ public:
 private:
     size_t getBaseIndex() { return m_materials.size(); }
 
-    void prepareMaterials();
+    void prepareMaterials(const PrepareContext& ctx);
+    void prepareMaterialUpdaters(const PrepareContext& ctx);
     void updateMaterialBuffer();
 
 private:
@@ -52,4 +59,6 @@ private:
     size_t m_lastSize = 0;
 
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };
+
+    std::unordered_map<ki::sid, std::unique_ptr<MaterialUpdater>> m_updaters;
 };

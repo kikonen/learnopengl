@@ -14,6 +14,9 @@ namespace loader {
     struct MaterialUpdaterData
     {
         MaterialUpdaterType type{ MaterialUpdaterType::none };
+
+        std::string id;
+
         glm::vec2 size{ 512.f, 512.f };
         int frameSkip{ 1 };
 

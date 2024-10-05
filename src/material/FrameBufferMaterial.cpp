@@ -27,8 +27,11 @@ namespace {
     constexpr int ID_INDEX = 1;
 }
 
-FrameBufferMaterial::FrameBufferMaterial()
-    : m_size{ 512, 512 },
+FrameBufferMaterial::FrameBufferMaterial(
+    ki::sid id,
+    const std::string& name)
+    : MaterialUpdater{id, name},
+    m_size{ 512, 512 },
     m_material{ std::make_unique<Material>() },
     m_textureQuad{ render::TextureQuad::get() }
 {}
@@ -40,7 +43,8 @@ FrameBufferMaterial::~FrameBufferMaterial()
     }
 }
 
-void FrameBufferMaterial::prepareRT()
+void FrameBufferMaterial::prepareRT(
+    const PrepareContext& ctx)
 {
     if (m_prepared) return;
     m_prepared = true;
