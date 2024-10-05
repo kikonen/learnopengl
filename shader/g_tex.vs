@@ -117,7 +117,7 @@ void main() {
 #endif
 
     #include tech_skinned_mesh_skin.glsl
-#ifdef TOY_2
+#ifdef TOY_NOPE
     // pos.x = pos.x + abs(sin(u_time)) * 0.5;// * cos(u_time * 0.5);
     if (pos.y > 0) {
       pos.x *= 1.2;

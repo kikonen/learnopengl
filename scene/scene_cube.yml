@@ -29,14 +29,14 @@ nodes:
       material:
         kd: [0.4, 0.4, 1, 0.75]
         map_pbr: textures\Metal008_1K-PNG
-        tiling: 3
+        xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
         xblend: true
         alpha: true
         render_back: true
         program_definitions:
-          xTOY: 1
+          APPLY_TOY: 1
       material_updater:
         type: framebuffer
         material:
@@ -46,7 +46,7 @@ nodes:
           alpha: true
           program: shader_toy
           program_definitions:
-            TOY: 1
+            TOY_2: 1
       base_rot: [0, 0, 0]
     pos: [1, 1.001, 1]
     physics:
@@ -85,7 +85,7 @@ nodes:
           alpha: true
           program: shader_toy
           program_definitions:
-            TOY: 1
+            TOY_1: 1
       base_rot: [0, 0, 0]
     pos: [1, 1.001, 1]
     physics:

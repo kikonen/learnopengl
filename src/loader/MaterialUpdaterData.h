@@ -15,6 +15,7 @@ namespace loader {
     {
         MaterialUpdaterType type{ MaterialUpdaterType::none };
         glm::vec2 size{ 512.f, 512.f };
+        int frameSkip{ 1 };
 
         MaterialData materialData;
     };

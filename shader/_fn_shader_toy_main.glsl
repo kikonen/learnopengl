@@ -1,4 +1,3 @@
-#ifdef TOY
 // shading 3D sphere
 void mainImage(
   out vec4 fragColor,
@@ -29,4 +28,3 @@ void mainImage(
   //output final color, and brighten
   fragColor = sphere*1.6;
 }
-#endif

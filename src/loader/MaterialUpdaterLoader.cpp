@@ -45,6 +45,12 @@ namespace loader {
                     reportUnknown("updater_type", k, v);
                 }
             }
+            else if (k == "size") {
+                data.size = readVec2(v);
+            }
+            else if (k == "frame_skip") {
+                data.frameSkip = readInt(v);
+            }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterialModifiers(v, data.materialData, loaders);
             }
@@ -62,6 +68,8 @@ namespace loader {
         case MaterialUpdaterType::framebuffer: {
             auto cm = std::make_unique<FrameBufferMaterial>();
 
+            cm->m_size = data.size;
+            cm->m_frameSkip = data.frameSkip;
             cm->setMaterial(&data.materialData.material);
             cm->m_material->loadTextures();
 

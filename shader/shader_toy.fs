@@ -54,7 +54,13 @@ void main()
     color = fragColor;
     color.a = 0.9;
   }
-  color.a = 0.9;
+#ifdef TOY_1
+  color.rgb *= vec4(5, 0.4, 0.4, 1);
+#endif
+#ifdef TOY_2
+  color.rgb *= vec4(0.4, 4, 0.4, 1);
+#endif
+  color.a = 1;
   // color = vec4(0, 0, 1, 1);
 
   o_fragColor = color;

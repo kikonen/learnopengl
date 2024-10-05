@@ -20,9 +20,6 @@
 #include "material/Material.h"
 #include "material/MaterialRegistry.h"
 
-#include "mesh/generator/PrimitiveGenerator.h"
-#include "mesh/Mesh.h"
-
 
 namespace {
     constexpr int ATT_ALBEDO_INDEX = 0;
@@ -32,7 +29,8 @@ namespace {
 
 FrameBufferMaterial::FrameBufferMaterial()
     : m_size{ 512, 512 },
-    m_material{ std::make_unique<Material>() }
+    m_material{ std::make_unique<Material>() },
+    m_textureQuad{ render::TextureQuad::get() }
 {}
 
 FrameBufferMaterial::~FrameBufferMaterial()
@@ -72,9 +70,7 @@ void FrameBufferMaterial::prepareRT()
     }
 
     {
-        auto generator = mesh::PrimitiveGenerator::quad();
-        m_quad = generator.create();
-        m_quad->prepareVAO();
+        m_textureQuad.prepare();
     }
 
     {
@@ -103,6 +99,11 @@ void FrameBufferMaterial::render(
     if (!m_dirty) return;
     //m_dirty = false;
 
+    if (m_frameCounter++ <= m_frameSkip) {
+        return;
+    }
+    m_frameCounter = 0;
+
     if (!m_material) return;
 
     auto programId = m_material->getProgram(MaterialProgramType::shader);
@@ -115,45 +116,14 @@ void FrameBufferMaterial::render(
 
     glBindSampler(UNIT_CHANNEL_0, m_samplerId);
 
-    state.bindVAO(*m_quad->getVAO());
     {
         auto* program = Program::get(programId);
         program->bind();
         program->m_uniforms->u_materialIndex.set(m_material->m_registeredIndex);
     }
 
-    backend::DrawOptions drawOptions;
     {
-        drawOptions.m_mode = m_quad->getDrawMode();
-        drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_solid = true;
-        drawOptions.m_wireframe = false;
-        drawOptions.m_renderBack = false;
-    }
-
-    {
-        const auto* mesh = m_quad.get();
-
-        backend::gl::DrawIndirectCommand indirect{};
-        {
-            backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
-
-            cmd.u_instanceCount = 1;
-            cmd.u_baseInstance = 0;
-
-            cmd.u_baseVertex = mesh->getBaseVertex();
-            cmd.u_firstIndex = mesh->getBaseIndex();
-            cmd.u_count = mesh->getIndexCount();
-        }
-
-        backend::DrawRange drawRange{
-            drawOptions,
-            static_cast<ki::vao_id>(*mesh->getVAO()),
-            programId,
-        };
-
-        backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
-        drawBuffer->sendDirect(drawRange, indirect);
+        m_textureQuad.draw();
     }
 }
 
