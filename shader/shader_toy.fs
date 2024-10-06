@@ -33,12 +33,21 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+#include var_shader_toy.glsl
+
+#ifdef TOY_1
 #include fn_shader_toy_main.glsl
+#endif
+#ifdef TOY_2
+#include fn_ray_march_part_1.glsl
+#endif
 
 ResolvedMaterial material;
 
 void main()
 {
+  #include init_shader_toy.glsl
+
   const uint materialIndex = u_materialIndex;
   const vec2 texCoord = fs_in.texCoord;
 
@@ -47,8 +56,8 @@ void main()
   vec4 color = material.diffuse;
 
   vec4 fragColor = vec4(0);
-  mainImage(fragColor, u_bufferResolution, u_time, gl_FragCoord.xy);
-  if (fragColor.a < 0.9) {
+  mainImage(fragColor, gl_FragCoord.xy);
+  if (fragColor.a < .0001) {
     // discard;
     color.a = 0.2;
     // color.rgb *= vec4(5, 0.4, 0.4, 1);
@@ -66,6 +75,7 @@ void main()
 #ifdef TOY_2
   color.rgb *= vec3(0.4, 0.4, 8);
 #endif
+  color.a = 1;
   }
   // color = vec4(0, 0, 1, 1);
   //color = material.diffuse;
