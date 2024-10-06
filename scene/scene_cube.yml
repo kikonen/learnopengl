@@ -21,11 +21,12 @@ nodes:
     audio:
       listener:
         default: true
-  - id: cube_1
+  - id: cube_1_{t}
     mesh:
       vertex:
-        type: box
+        type: sphere
         size: [1]
+        radius: 1
       material:
         kd: [0.4, 0.4, 1, 0.75]
         map_pbr: textures\Metal008_1K-PNG
@@ -44,14 +45,21 @@ nodes:
       xupdate: true
       body:
         xkinematic: true
-        type: box
+        type: sphere
         density: 0.01
         xmax_angular_velocity: 0
         xforce_axis: true
       geom:
-        type: box
+        type: sphere
         size: [1]
-  - id: cube_2
+    repeat:
+      x_count: 10
+      y_count: 5
+      z_count: 10
+      x_step: 4
+      y_step: 6
+      z_step: 4
+  - id: cube_2_{t}
     mesh:
       vertex:
         type: box
@@ -68,7 +76,7 @@ nodes:
         program_definitions:
           APPLY_TOY: 1
         updater: shader_toy_1
-      base_rot: [0, 0, 0]
+    rot: [10, 0, 10]
     pos: [1, 6.001, 1]
     physics:
       xupdate: true
@@ -81,7 +89,14 @@ nodes:
       geom:
         type: box
         size: [1]
-  - id: quad
+    repeat:
+      x_count: 10
+      y_count: 5
+      z_count: 10
+      x_step: 4
+      y_step: 6
+      z_step: 4
+  - id: quad_{t}
     mesh:
       vertex:
         type: sphere
@@ -112,6 +127,13 @@ nodes:
       geom:
         type: sphere
         size: [1, 2, 0.01]
+    repeat:
+      x_count: 10
+      y_count: 2
+      z_count: 10
+      x_step: 4
+      y_step: 20
+      z_step: 4
   - id: dir_light_{c}_{t}
     type: origo
     mesh:

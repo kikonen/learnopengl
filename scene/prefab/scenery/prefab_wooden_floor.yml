@@ -22,6 +22,7 @@ prefab:
     no_shadow: true
   physics:
     geom:
-      type: plane
+      type: box
       category: [terrain]
       collision: [npc, player, prop]
+      size: [1000, 0.2, 1000]
