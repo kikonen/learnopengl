@@ -24,7 +24,7 @@ nodes:
   - id: cube_1_{t}
     mesh:
       vertex:
-        type: sphere
+        type: box
         size: [1]
         radius: 1
       material:
@@ -45,17 +45,17 @@ nodes:
       xupdate: true
       body:
         xkinematic: true
-        type: sphere
+        type: box
         density: 0.01
         xmax_angular_velocity: 0
         xforce_axis: true
       geom:
-        type: sphere
+        type: box
         size: [1]
     repeat:
-      x_count: 10
+      x_count: 5
       y_count: 5
-      z_count: 10
+      z_count: 5
       x_step: 4
       y_step: 6
       z_step: 4
@@ -90,9 +90,9 @@ nodes:
         type: box
         size: [1]
     repeat:
-      x_count: 10
+      x_count: 5
       y_count: 5
-      z_count: 10
+      z_count: 5
       x_step: 4
       y_step: 6
       z_step: 4
@@ -128,9 +128,9 @@ nodes:
         type: sphere
         size: [1, 2, 0.01]
     repeat:
-      x_count: 10
+      x_count: 5
       y_count: 2
-      z_count: 10
+      z_count: 5
       x_step: 4
       y_step: 20
       z_step: 4
