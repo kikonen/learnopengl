@@ -116,6 +116,7 @@ void Registry::updateRT(const UpdateContext& ctx)
 {
     ASSERT_RT();
 
+    ProgramRegistry::get().dirtyCheck(ctx);
     ProgramRegistry::get().updateRT(ctx);
 
     MaterialRegistry::get().updateRT(ctx);

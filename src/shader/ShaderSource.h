@@ -9,12 +9,21 @@
 class Program;
 
 struct ShaderSource {
+    ShaderSource();
+
+    ShaderSource(
+        bool required,
+        std::string path);
+
     bool m_required;
     std::string m_path;
 
     std::string m_source;
-    std::vector<FileEntry> m_files;
 
+private:
+    std::vector<FileEntry*> m_files;
+
+public:
     bool empty() const {
         return m_source.empty();
     }

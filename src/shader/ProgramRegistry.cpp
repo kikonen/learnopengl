@@ -2,9 +2,10 @@
 
 #include "fmt/format.h"
 
-#include "Program.h"
-
 #include "engine/UpdateContext.h"
+
+#include "Program.h"
+#include "FileEntryCache.h"
 
 namespace {
     constexpr float DIRTY_CHECK_FREQUENCY{ 2.f };
@@ -23,32 +24,6 @@ ProgramRegistry::ProgramRegistry()
     m_programs.emplace_back();
 }
 
-void ProgramRegistry::updateRT(const UpdateContext& ctx)
-{
-    std::lock_guard lock(m_programs_lock);
-
-    m_elapsedSecs += ctx.m_clock.elapsedSecs;
-
-    if (m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
-        for (auto& program : m_programs) {
-            if (!program) continue;
-            if (program->isLoaded() && program->isModified()) {
-                KI_INFO_OUT(fmt::format("PROGRAM_RELOAD: {}", program->m_key));
-                program->reload();
-            }
-        }
-        m_elapsedSecs = 0.f;
-    }
-
-    for (auto& program : m_programs) {
-        if (!program) continue;
-        if (program->isLoaded() && !program->isReady()) {
-            KI_INFO_OUT(fmt::format("PROGRAM_PREPARE: {}", program->m_key));
-            program->prepareRT();
-        }
-    }
-}
-
 ProgramRegistry::~ProgramRegistry()
 {
     KI_INFO("PROGRAM_REGISTRY: delete");
@@ -59,6 +34,42 @@ ProgramRegistry::~ProgramRegistry()
             program->m_key));
     }
     m_programs.clear();
+}
+
+void ProgramRegistry::updateRT(const UpdateContext& ctx)
+{
+    std::lock_guard lock(m_programs_lock);
+
+    for (auto& program : m_programs) {
+        if (!program) continue;
+        if (program->isLoaded() && !program->isReady()) {
+            KI_INFO_OUT(fmt::format("PROGRAM_PREPARE: {}", program->m_key));
+            program->prepareRT();
+        }
+    }
+}
+
+void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
+{
+    std::lock_guard lock(m_programs_lock);
+
+    m_elapsedSecs += ctx.m_clock.elapsedSecs;
+
+    if (m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
+        auto& fileCache = FileEntryCache::get();
+        fileCache.markModified();
+
+        for (auto& program : m_programs) {
+            if (!program) continue;
+            if (program->isLoaded() && program->isModified()) {
+                KI_INFO_OUT(fmt::format("PROGRAM_RELOAD: {}", program->m_key));
+                program->reload();
+            }
+        }
+
+        fileCache.clearModified();
+        m_elapsedSecs = 0.f;
+    }
 }
 
 ki::program_id ProgramRegistry::getProgram(

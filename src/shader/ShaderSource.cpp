@@ -12,16 +12,30 @@
 #include "asset/Assets.h"
 
 #include "Program.h"
+#include "FileEntryCache.h"
 
 namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
 }
 
+ShaderSource::ShaderSource()
+    : m_required{ false }
+{
+}
+
+ShaderSource::ShaderSource(
+    bool required,
+    std::string path)
+    : m_required{ required },
+    m_path{ path }
+{}
+
 bool ShaderSource::modified() const
 {
     bool modified = false;
+    auto& fileCache = FileEntryCache::get();
     for (const auto& fe : m_files) {
-        modified |= fe.modified();
+        modified |= fileCache.isModified(fe->m_id);
     }
     return modified;
 }
@@ -30,7 +44,7 @@ bool ShaderSource::exists() const
 {
     bool exists = true;
     for (const auto& fe : m_files) {
-        exists &= fe.exists();
+        exists &= fe->exists();
     }
     return exists;
 }
@@ -69,9 +83,9 @@ std::vector<std::string> ShaderSource::loadSourceLines(
     bool optional,
     const Program& program)
 {
-    FileEntry fileEntry{ path };
+    FileEntry* fileEntry = FileEntryCache::get().getEntry(path);
 
-    if (!fileEntry.exists()) {
+    if (!fileEntry) {
         std::string msg = fmt::format("FILE_NOT_EXIST: {}", path);
         KI_INFO(msg);
         if (optional) {
@@ -80,7 +94,6 @@ std::vector<std::string> ShaderSource::loadSourceLines(
         throw std::runtime_error{ msg };
     }
 
-    fileEntry.mark();
     m_files.push_back(fileEntry);
 
     std::vector<std::string> lines;

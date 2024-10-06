@@ -23,6 +23,8 @@ public:
 
     void updateRT(const UpdateContext& ctx);
 
+    void dirtyCheck(const UpdateContext& ctx);
+
     ki::program_id getProgram(
         std::string_view name);
 

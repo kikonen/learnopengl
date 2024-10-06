@@ -2,6 +2,15 @@
 
 #include "util/Util.h"
 
+FileEntry::FileEntry()
+{}
+
+FileEntry::FileEntry(const std::string& path)
+    : m_path{ path }
+{}
+
+FileEntry::~FileEntry() = default;
+
 void FileEntry::mark()
 {
     m_modifiedAt = std::filesystem::last_write_time(m_path);
