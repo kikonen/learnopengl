@@ -35,48 +35,36 @@ SET_FLOAT_PRECISION;
 
 #include var_shader_toy.glsl
 
-#ifdef TOY_1
-#include fn_shader_toy_main.glsl
+#ifdef SHADER_1
+#include shader_toy_main.glsl
 #endif
-#ifdef TOY_2
-#include fn_ray_march_part_1.glsl
+#ifdef SHADER_2
+#include shader_toy_ray_march_part_1.glsl
 #endif
 
 ResolvedMaterial material;
 
 void main()
 {
-  #include init_shader_toy.glsl
-
   const uint materialIndex = u_materialIndex;
   const vec2 texCoord = fs_in.texCoord;
 
   #include var_tex_material.glsl
+  #include init_shader_toy.glsl
 
   vec4 color = material.diffuse;
 
   vec4 fragColor = vec4(0);
   mainImage(fragColor, gl_FragCoord.xy);
-  if (fragColor.a < .0001) {
-    // discard;
-    color.a = 0.2;
-    // color.rgb *= vec4(5, 0.4, 0.4, 1);
-#ifdef TOY_1
-  color.rgb *= vec3(4, 4, 0.1);
+  color = fragColor;
+
+// NOTE KI USE_BLEND does not make much sense here
+// => written into framebuffer, blend is property of material usign this texture
+#ifdef USE_ALPHA
+  if (fragColor.a < 0.05)
+    discard;
 #endif
-#ifdef TOY_2
-  color.rgb *= vec3(0.4, 8, 0.4);
-#endif
-  } else {
-    color = fragColor;
-#ifdef TOY_1
-  color.rgb *= vec3(30, 8, 0.4);
-#endif
-#ifdef TOY_2
-  color.rgb *= vec3(0.4, 0.4, 8);
-#endif
-  color.a = 1;
-  }
+
   // color = vec4(0, 0, 1, 1);
   //color = material.diffuse;
 

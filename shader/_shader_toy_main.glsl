@@ -28,4 +28,8 @@ void mainImage(
 
   // output final color, and brighten
   fragColor = sphere * 1.6;
+
+  if (fragColor.a > 0.01) {
+    fragColor.a = 1.0;
+  }
 }

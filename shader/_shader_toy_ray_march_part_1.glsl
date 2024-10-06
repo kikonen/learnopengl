@@ -16,7 +16,7 @@ const float EPSILON = 0.0001;
  * Signed distance function for a sphere centered at the origin with radius 1.0;
  */
 float sphereSDF(vec3 samplePoint) {
-  return length(samplePoint) - 1.0;
+  return length(samplePoint) - 1.0 + (0.5 + sin(iTime) * 0.5) * 0.5;
 }
 
 /**
@@ -78,9 +78,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
   if (dist > MAX_DIST - EPSILON) {
     // Didn't hit anything
-    fragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    // fragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    fragColor = vec4(1.0, 0.0, 0.0, 0.2);
     return;
   }
 
-  fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  fragColor = vec4(1, 0, 0, 1);
+  // fragColor.rgb *= iMaterial.diffuse.rgb;
 }

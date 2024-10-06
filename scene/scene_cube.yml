@@ -181,6 +181,7 @@ material_updaters:
     alpha: true
     program: shader_toy
     program_definitions:
+      SHADER_1: 1
       TOY_1: 1
 - id: shader_toy_2
   type: framebuffer
@@ -193,4 +194,5 @@ material_updaters:
     alpha: true
     program: shader_toy
     program_definitions:
+      SHADER_2: 1
       TOY_2: 1

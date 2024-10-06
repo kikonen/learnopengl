@@ -65,10 +65,6 @@ ResolvedMaterial material;
 #endif
 #include fn_gbuffer_encode.glsl
 
-#ifdef TOY
-#include fn_shader_toy_main.glsl
-#endif
-
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
