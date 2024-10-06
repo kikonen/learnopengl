@@ -21,7 +21,37 @@ nodes:
     audio:
       listener:
         default: true
-  - id: cube
+  - id: cube_1
+    mesh:
+      vertex:
+        type: box
+        size: [1]
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        xtiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        blend: true
+        alpha: true
+        render_back: true
+        program_definitions:
+          APPLY_TOY: 1
+        updater: shader_toy_2
+    rot: [45, 45, 0]
+    pos: [1, 9.001, 1]
+    physics:
+      xupdate: true
+      body:
+        xkinematic: true
+        type: box
+        density: 0.01
+        xmax_angular_velocity: 0
+        xforce_axis: true
+      geom:
+        type: box
+        size: [1]
+  - id: cube_2
     mesh:
       vertex:
         type: box
@@ -39,23 +69,24 @@ nodes:
           APPLY_TOY: 1
         updater: shader_toy_1
       base_rot: [0, 0, 0]
-    pos: [1, 1.001, 1]
+    pos: [1, 6.001, 1]
     physics:
-      update: true
+      xupdate: true
       body:
-        kinematic: true
+        xkinematic: true
         type: box
         density: 0.01
-        max_angular_velocity: 0
-        force_axis: true
+        xmax_angular_velocity: 0
+        xforce_axis: true
       geom:
         type: box
         size: [1]
   - id: quad
     mesh:
       vertex:
-        type: quad
+        type: sphere
         size: [1]
+        radius: 1
       material:
         kd: [0.4, 0.4, 1, 0.75]
         map_pbr: textures\Metal008_1K-PNG
@@ -69,18 +100,18 @@ nodes:
           APPLY_TOY: 1
         updater: shader_toy_2
       base_rot: [0, 0, 0]
-    pos: [1, 1.001, 1]
+    pos: [1, 3.001, 1]
     physics:
-      update: true
+      xupdate: true
       body:
-        kinematic: true
-        type: box
+        xkinematic: true
+        type: sphere
         density: 0.01
-        max_angular_velocity: 0
-        force_axis: true
+        xmax_angular_velocity: 0
+        xforce_axis: true
       geom:
-        type: box
-        size: [1, 1, 0.01]
+        type: sphere
+        size: [1, 2, 0.01]
   - id: dir_light_{c}_{t}
     type: origo
     mesh:

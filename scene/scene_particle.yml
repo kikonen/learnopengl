@@ -2,7 +2,10 @@
 name: Player
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  material: skybox/polyhaven/drakensberg_solitary_mountain_puresky_4k.hdr
+  xmaterial: skybox/polyhaven/belfast_sunset_puresky_4k.hdr
+  xmaterial: skybox/polyhaven/pizzo_pernice_puresky_4k.hdr
+
 script:
   scripts:
     - path: lib/common
