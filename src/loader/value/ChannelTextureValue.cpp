@@ -31,6 +31,7 @@ namespace {
         { "normal_map", TextureType::normal_map },
         { "dudv_map", TextureType::dudv_map },
         { "noise_map", TextureType::noise_map },
+        { "noise_2_map", TextureType::noise_2_map },
         { "metallness_map", TextureType::metallness_map },
         { "roughness_map", TextureType::roughness_map },
         { "occlusion_map", TextureType::occlusion_map },

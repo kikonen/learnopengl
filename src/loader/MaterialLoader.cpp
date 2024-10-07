@@ -282,6 +282,12 @@ namespace loader {
                     TextureType::noise_map,
                     resolveTexturePath(line, true));
             }
+            else if (k == "map_noise_2") {
+                std::string line = readString(v);
+                material.addTexPath(
+                    TextureType::noise_2_map,
+                    resolveTexturePath(line, true));
+            }
             else if (k == "map_roughness") {
                 if (!material.hasRegisteredTex(TextureType::roughness_map)) {
                     ChannelPart part{

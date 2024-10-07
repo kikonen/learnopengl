@@ -52,6 +52,7 @@ struct DataUBO {
     float u_effectBloomExposure;
 
     float u_time;
+    int u_frame;
     int u_shadowCount;
 
     // From *camera* view (not shadow view)
@@ -62,6 +63,6 @@ struct DataUBO {
     float u_shadowCascade_3;
 
     int pad1;
-    int pad2;
+    //int pad2;
 };
 #pragma pack(pop)

@@ -206,6 +206,8 @@ RenderContext::RenderContext(
         assets.effectBloomExposure,
 
         static_cast<float>(m_clock.ts),
+        static_cast<int>(m_clock.frameCount),
+
         0, // shadowCount
     };
 

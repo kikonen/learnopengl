@@ -38,6 +38,7 @@ struct MaterialSSBO {
 
     GLuint64 u_dudvMap;
     GLuint64 u_noiseMap;
+    GLuint64 u_noise2Map;
     GLuint64 u_opacityMap;
 
     GLuint64 u_metalMap;

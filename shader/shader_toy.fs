@@ -39,7 +39,9 @@ SET_FLOAT_PRECISION;
 #include shader_toy_main.glsl
 #endif
 #ifdef SHADER_2
-#include shader_toy_ray_march_part_1.glsl
+// #include shader_toy_ray_march_part_1.glsl
+//#include shader_toy_cloud_2.glsl
+#include shader_toy_sdf_shapes.glsl
 #endif
 
 ResolvedMaterial material;

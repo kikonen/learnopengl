@@ -12,6 +12,7 @@ struct Material {
 
   uvec2 dudvMapTex;
   uvec2 noiseMapTex;
+  uvec2 noise2MapTex;
   uvec2 opacityMapTex;
 
   uvec2 metalTex;
