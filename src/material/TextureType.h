@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <stdint.h>
 
-// channel = metalness, roughness, displacement, ambient - occlusion
+// metal_channel = metalness, roughness, displacement, ambient - occlusion
 enum class TextureType : std::underlying_type_t<std::byte> {
     none,
     diffuse,
