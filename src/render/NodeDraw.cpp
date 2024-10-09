@@ -77,7 +77,6 @@ namespace render {
         m_oitBuffer.prepare(&m_gBuffer);
         m_effectBuffer.prepare(&m_gBuffer);
 
-        m_plainQuad.prepare();
         m_textureQuad.prepare();
 
         {

@@ -13,6 +13,8 @@
 #include "engine/PrepareContext.h"
 #include "render/RenderContext.h"
 
+#include "registry/VaoRegistry.h"
+
 namespace {
     const std::array<std::string, 6> DEFAULT_FACES = {
         "right.jpg",
@@ -22,6 +24,10 @@ namespace {
         "front.jpg",
         "back.jpg",
     };
+
+    void bindDefaultVao() {
+        VaoRegistry::get().bindDefaultVao();
+    }
 }
 
 const std::array<std::string, 6>& SkyboxMaterial::getDefaultFaces() {
@@ -101,6 +107,8 @@ void SkyboxMaterial::prepareHdri(
             m_materialName);
     }
 
+    bindDefaultVao();
+
     m_hdriTexture.m_path = filePath;
     m_hdriTexture.prepareRT(ctx);
 }
@@ -111,6 +119,8 @@ void SkyboxMaterial::prepareSkybox(
     const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
+
+    bindDefaultVao();
 
     m_skyboxMap.m_hdriTextureID = m_hdriTexture;
     m_skyboxMap.prepareRT(ctx, assets.skyboxSize);
@@ -123,6 +133,8 @@ void SkyboxMaterial::prepareEnvironment(
 
     if (!(assets.environmentMapEnabled && m_hdriTexture.valid())) return;
 
+    bindDefaultVao();
+
     m_environmentMap.m_hdriTextureID = m_hdriTexture;
     m_environmentMap.prepareRT(ctx, assets.environmentMapSize);
 }
@@ -133,6 +145,8 @@ void SkyboxMaterial::prepareIrradiance(
     const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
+
+    bindDefaultVao();
 
     m_irradianceMap.m_envCubeMapID = m_environmentMap;
     m_irradianceMap.prepareRT(ctx);
@@ -145,6 +159,8 @@ void SkyboxMaterial::preparePrefilter(
 
     if (!(assets.environmentMapEnabled && m_environmentMap.valid())) return;
 
+    bindDefaultVao();
+
     m_prefilterMap.m_envCubeMapID = m_environmentMap;
     m_prefilterMap.prepareRT(ctx);
 }
@@ -155,6 +171,8 @@ void SkyboxMaterial::prepareBrdfLut(
     const auto& assets = ctx.m_assets;
 
     if (!(assets.environmentMapEnabled)) return;
+
+    bindDefaultVao();
 
     m_brdfLutTexture.prepareRT(ctx);
 }

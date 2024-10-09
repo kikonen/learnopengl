@@ -27,6 +27,8 @@ public:
 
     void updateRT(const UpdateContext& ctx);
 
+    void bindDefaultVao();
+
     mesh::TexturedVAO* getTexturedVao()
     {
         return m_texturedVao.get();

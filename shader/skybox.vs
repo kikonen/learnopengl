@@ -1,10 +1,12 @@
 #version 460 core
 
-layout (location = ATTR_POS) in vec3 a_pos;
+#include texture_quad.glsl
 
 #include uniform_matrices.glsl
 
-out vec3 texCoord;
+out VS_OUT {
+  vec3 texCoord;
+} vs_out;
 
 out float gl_ClipDistance[2];
 
@@ -13,7 +15,7 @@ out float gl_ClipDistance[2];
 ////////////////////////////////////////////////////////////
 
 void main() {
-  vec4 pos = vec4(a_pos, 1.0);
+  vec4 pos = vec4(POS[gl_VertexID], 1.0);
   pos.z = 1.0;
 
   // https://www.rioki.org/2013/03/07/glsl-skybox.html
@@ -25,7 +27,7 @@ void main() {
   vec4 v = u_viewMatrixSkybox * pos;
 
   gl_Position = pos.xyww;
-  texCoord = v.xyz;
+  vs_out.texCoord = v.xyz;
 
   gl_ClipDistance[0] = 1;
   gl_ClipDistance[1] = 1;

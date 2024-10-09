@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Renderer.h"
+#include <memory>
 
-#include "render/TextureQuad.h"
+#include "Renderer.h"
 
 namespace mesh {
     class Mesh;
 }
-
 
 class DecalRenderer final : public Renderer
 {

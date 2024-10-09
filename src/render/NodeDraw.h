@@ -9,7 +9,6 @@
 #include "GBuffer.h"
 #include "OITBuffer.h"
 #include "EffectBuffer.h"
-#include "PlainQuad.h"
 #include "TextureQuad.h"
 
 #include "backend/DrawOptions.h"
@@ -116,7 +115,6 @@ namespace render {
         OITBuffer m_oitBuffer;
         EffectBuffer m_effectBuffer;
 
-        PlainQuad m_plainQuad;
         TextureQuad& m_textureQuad;
 
         Program* m_deferredProgram{ nullptr };

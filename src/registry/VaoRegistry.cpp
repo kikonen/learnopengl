@@ -6,6 +6,8 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLState.h"
+
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
@@ -55,4 +57,9 @@ void VaoRegistry::updateRT(const UpdateContext& ctx)
     m_skinnedVao->updateRT();
     m_sharedPrimitiveVao->updateRT();
     m_dynamicPrimitiveVao->updateRT();
+}
+
+void VaoRegistry::bindDefaultVao()
+{
+    kigl::GLState::get().bindVAO(*m_texturedVao->getVAO());
 }

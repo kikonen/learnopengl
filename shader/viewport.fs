@@ -13,7 +13,9 @@
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
 
-in vec2 texCoord;
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
@@ -82,7 +84,7 @@ vec4 effectSharpen(in vec4 color)
        );
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, fs_in.texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -118,7 +120,7 @@ vec4 effectBlur(in vec4 color)
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, fs_in.texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -154,7 +156,7 @@ vec4 effectEdge(in vec4 color)
 
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++) {
-      sampleTex[i] = vec3(textureLod(u_viewportTex, texCoord.st + offsets[i], 0));
+      sampleTex[i] = vec3(textureLod(u_viewportTex, fs_in.texCoord.st + offsets[i], 0));
     }
 
     vec3 col = vec3(0.0);
@@ -186,7 +188,7 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  vec4 orig = u_effect(textureLod(u_viewportTex, texCoord, 0));
+  vec4 orig = u_effect(textureLod(u_viewportTex, fs_in.texCoord, 0));
   vec3 color = orig.rgb;
 
   if (u_toneHdri) {

@@ -2,8 +2,6 @@
 
 #include "Renderer.h"
 
-#include "render/TextureQuad.h"
-
 class Program;
 
 class ParticleRenderer final : public Renderer
