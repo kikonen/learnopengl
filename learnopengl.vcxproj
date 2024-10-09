@@ -390,7 +390,6 @@
     <ClCompile Include="src\render\PrefilterMap.cpp" />
     <ClCompile Include="src\render\PrefilterMap.h" />
     <ClCompile Include="src\render\TextureCube.cpp" />
-    <ClCompile Include="src\render\PlainQuad.cpp" />
     <ClCompile Include="src\render\TextureQuad.cpp" />
     <ClCompile Include="src\loader\SceneLoader.cpp" />
     <ClCompile Include="src\renderer\ObjectIdRenderer.cpp" />
@@ -835,7 +834,6 @@
     <ClInclude Include="src\render\NodeDraw.h" />
     <ClInclude Include="src\render\OITBuffer.h" />
     <ClInclude Include="src\render\TextureCube.h" />
-    <ClInclude Include="src\render\PlainQuad.h" />
     <ClInclude Include="src\render\TextureQuad.h" />
     <ClInclude Include="src\loader\SceneLoader.h" />
     <ClInclude Include="src\renderer\ObjectIdRenderer.h" />

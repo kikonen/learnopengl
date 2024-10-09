@@ -306,9 +306,6 @@
     <ClCompile Include="src\render\CubeMapBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\PlainQuad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\UpdateContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1365,9 +1362,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\CubeMapBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\PlainQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\UpdateContext.h">
