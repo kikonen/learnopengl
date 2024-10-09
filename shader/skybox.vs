@@ -15,7 +15,7 @@ out float gl_ClipDistance[2];
 ////////////////////////////////////////////////////////////
 
 void main() {
-  vec4 pos = vec4(POS[gl_VertexID], 1.0);
+  vec4 pos = vec4(VERTEX_POS[gl_VertexID], 1.0);
   pos.z = 1.0;
 
   // https://www.rioki.org/2013/03/07/glsl-skybox.html

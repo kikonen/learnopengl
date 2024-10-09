@@ -1,12 +1,6 @@
 #pragma once
 
-#include <memory>
-
 #include "Renderer.h"
-
-namespace mesh {
-    class Mesh;
-}
 
 class DecalRenderer final : public Renderer
 {
@@ -24,6 +18,4 @@ public:
 private:
     ki::program_id m_alphaDecalProgramId{ 0 };
     ki::program_id m_solidDecalProgramId{ 0 };
-
-    std::unique_ptr<mesh::Mesh> m_quad;
 };

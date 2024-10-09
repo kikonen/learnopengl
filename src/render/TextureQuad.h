@@ -12,5 +12,7 @@ namespace render {
         void prepare();
 
         void draw();
+
+        void drawInstanced(int instanceCount);
     };
 }

@@ -14,6 +14,7 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 
+#include "render/TextureQuad.h"
 #include "render/RenderContext.h"
 
 #include "backend/gl/DrawElementsIndirectCommand.h"
@@ -45,12 +46,6 @@ void DecalRenderer::prepareRT(
 
     m_solidDecalProgramId = ProgramRegistry::get().getProgram(
         SHADER_DECAL);
-
-    {
-        auto generator = mesh::PrimitiveGenerator::quad();
-        m_quad = generator.create();
-        m_quad->prepareVAO();
-    }
 }
 
 void DecalRenderer::render(
@@ -92,16 +87,7 @@ void DecalRenderer::render(
         Program::get(m_alphaDecalProgramId)->bind();
     }
 
-    state.bindVAO(*m_quad->getVAO());
-
-    glDrawElementsInstancedBaseVertexBaseInstance(
-        GL_TRIANGLES,
-        m_quad->getIndexCount(),
-        GL_UNSIGNED_INT,
-        (void*)(m_quad->getBaseIndex() * sizeof(GLuint)),
-        instanceCount,
-        m_quad->getBaseVertex(),
-        m_quad->getBaseIndex());
+    render::TextureQuad::get().drawInstanced(instanceCount);
 
     state.setEnabled(GL_CULL_FACE, true);
 

@@ -16,6 +16,6 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  vs_out.texCoord = TEX_COORD[gl_VertexID];
-  gl_Position = u_viewportTransform * vec4(POS[gl_VertexID], 1.0);
+  vs_out.texCoord = VERTEX_TEX_COORD[gl_VertexID];
+  gl_Position = u_viewportTransform * vec4(VERTEX_POS[gl_VertexID], 1.0);
 }

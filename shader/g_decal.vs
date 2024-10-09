@@ -2,12 +2,7 @@
 
 #define USE_BONES_NORMAL 1
 
-layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_NORMAL) in vec3 a_normal;
-#ifdef USE_TBN
-layout (location = ATTR_TANGENT) in vec3 a_tangent;
-#endif
-layout (location = ATTR_TEX) in vec2 a_texCoord;
+#include texture_quad.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -75,20 +70,20 @@ void main() {
 
   const uint materialIndex = decal.u_materialIndex;
 
-  vec4 pos = vec4(a_pos, 1.0);
+  vec4 pos = vec4(VERTEX_POS[gl_VertexID], 1.0);
 
   vec4 worldPos = modelMatrix * pos;
-  vec3 normal = normalize(normalMatrix * a_normal);
+  vec3 normal = normalize(normalMatrix * VERTEX_NORMAL);
 #ifdef USE_TBN
-  vec3 tangent = normalize(normalMatrix * a_tangent);
+  vec3 tangent = normalize(normalMatrix * VERTEX_TANGENT);
 #endif
 
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  vs_out.texCoord.x = VERTEX_TEX_COORD[gl_VertexID].x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = VERTEX_TEX_COORD[gl_VertexID].y * u_materials[materialIndex].tilingY;
 
   {
     const uint spriteIndex = decal.u_spriteIndex;
