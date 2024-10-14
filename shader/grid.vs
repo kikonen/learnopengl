@@ -8,8 +8,10 @@
 
 #include texture_plane.glsl
 #include uniform_matrices.glsl
+#include uniform_data.glsl
 
 out VS_OUT {
+  vec3 worldPos;
   vec2 texCoord;
   flat uint materialIndex;
 } vs_out;
@@ -36,12 +38,15 @@ void main()
 
   const uint idx = VERTEX_INDECES[gl_VertexID - gl_BaseVertex];
 
-  vec4 pos = vec4(VERTEX_POS[idx], 1.0);
+  vec4 pos = vec4(VERTEX_POS[idx] * entity.u_worldScale.xyz, 1.0);
+  pos.x += u_viewWorldPos.x;
+  pos.z += u_viewWorldPos.z;
 
-  vec4 worldPos = modelMatrix * pos;
+  vec4 worldPos = pos;
 
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.texCoord = VERTEX_TEX_COORD[idx];
   vs_out.materialIndex = materialIndex;
+  vs_out.worldPos = pos.xyz;
 }

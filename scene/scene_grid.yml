@@ -9,7 +9,7 @@ script:
 nodes:
   - id: player_fps
     type: origo
-    pos: [1, 1, 5]
+    pos: [0, 0.25, 1]
     active: true
     rotation: [0, 180, 0]
     camera:
@@ -51,10 +51,13 @@ nodes:
       material:
         #kd: [0, 0, 0.5, 1]
         map_kd: textures\Lava_VH_1024.png
-        program: non_vao_plane
+        program: grid
+        blend: true
+        alpha: true
         render_back: true
     flags:
       no_shadow: true
       no_frustum: true
+      effect: true
     pos: [0.0, 0.0, 0.0]
     scale: 100
