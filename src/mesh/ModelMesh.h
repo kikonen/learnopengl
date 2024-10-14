@@ -7,9 +7,9 @@
 
 #include "animation/VertexBone.h"
 
+#include "mesh/VaoMesh.h"
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
-#include "mesh/Mesh.h"
 
 namespace animation {
     struct RigContainer;
@@ -17,7 +17,7 @@ namespace animation {
 }
 
 namespace mesh {
-    class ModelMesh final : public Mesh {
+    class ModelMesh final : public VaoMesh {
         friend class ModelLoader;
         friend class AssimpLoader;
 

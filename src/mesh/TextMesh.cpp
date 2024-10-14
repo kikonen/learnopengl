@@ -19,7 +19,7 @@ namespace {
 
 namespace mesh {
     TextMesh::TextMesh()
-        : Mesh("text")
+        : VaoMesh("text")
     {
     }
 

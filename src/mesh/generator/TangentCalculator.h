@@ -2,9 +2,9 @@
 
 namespace mesh
 {
-    class Mesh;
+    class VaoMesh;
 
     struct TangentCalculator {
-        static void calculateTangents(mesh::Mesh& mesh);
+        static void calculateTangents(mesh::VaoMesh& mesh);
     };
 }

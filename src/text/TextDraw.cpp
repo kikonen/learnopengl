@@ -170,6 +170,9 @@ namespace text
 
         addText(mesh, font, text, pen, mesh->m_maxSize);
 
+        mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
+        mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());
+
         // HACK KI need to encode font somehow int drawOptions and/or VBO
         // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry
         m_lastFont = font;

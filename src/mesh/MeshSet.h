@@ -35,6 +35,12 @@ namespace mesh {
 
         std::vector<std::unique_ptr<mesh::Mesh>>& getMeshes() noexcept;
 
+        template<typename T>
+        inline const T* getMesh(size_t index) const noexcept
+        {
+            return dynamic_cast<T*>(m_meshes[index].get());
+        }
+
         AABB calculateAABB(const glm::mat4& transform) const noexcept;
 
     public:

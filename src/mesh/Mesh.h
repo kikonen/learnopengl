@@ -39,10 +39,13 @@ namespace mesh {
 
         bool isValid() const noexcept
         {
-            return !m_vertices.empty() && !m_indeces.empty();
+            return getVertexCount() > 0 && getIndexCount() > 0;
         }
 
-        AABB calculateAABB(const glm::mat4& transform) const;
+        virtual AABB calculateAABB(const glm::mat4& transform) const
+        {
+            return {};
+        }
 
         void setMaterial(const Material* src) noexcept
         {
@@ -69,11 +72,6 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
 
-        void setRigTransform(const glm::mat4& rigTransform) {
-            m_rigTransform = rigTransform;
-            m_inverseRigTransform = glm::inverse(rigTransform);
-        }
-
         virtual std::shared_ptr<animation::RigContainer> getRigContainer()
         {
             return nullptr;
@@ -88,20 +86,24 @@ namespace mesh {
             return m_vboIndex;
         }
 
+        uint32_t getVertexCount() const noexcept {
+            return m_vertexCount;
+        }
+
         inline uint32_t getBaseIndex() const noexcept {
             return m_eboIndex;
         }
 
-        inline uint32_t getIndexCount() const noexcept {
-            return static_cast<uint32_t>(m_indeces.size());
+        uint32_t getIndexCount() const noexcept {
+            return m_indexCount;
         }
 
-        const kigl::GLVertexArray* getVAO() const noexcept
+        virtual const kigl::GLVertexArray* getVAO() const noexcept
         {
-            return m_vao;
+            return nullptr;
         }
 
-        bool isJointVisualization() const noexcept
+        virtual bool isJointVisualization() const noexcept
         {
             return m_name == "joint_tree" || m_name == "joint_points";
         }
@@ -112,25 +114,22 @@ namespace mesh {
         const std::string m_name;
         std::string m_alias;
 
-        std::vector<mesh::Vertex> m_vertices;
-        std::vector<mesh::Index32> m_indeces;
-
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };
 
         // NOTE KI absolute index into EBO
         uint32_t m_eboIndex{ 0 };
 
-        // NOTE KI for debug
-        std::string m_rigJointName;
+        // vertex entries stored starting from m_vboIndex
+        uint32_t m_vertexCount{ 0 };
+
+        // index entries stored starting from m_eboIndex
+        uint32_t m_indexCount{ 0 };
 
         glm::mat4 m_rigTransform{ 1.f };
-        glm::mat4 m_inverseRigTransform{ 1.f };
 
     protected:
         bool m_preparedVAO{ false };
-
-        const kigl::GLVertexArray* m_vao{ nullptr };
 
         std::unique_ptr<Material> m_material;
 

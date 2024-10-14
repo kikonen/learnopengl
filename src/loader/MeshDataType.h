@@ -3,5 +3,6 @@
 enum class MeshDataType {
     none,
     mesh,
-    primitive
+    primitive,
+    non_vao
 };

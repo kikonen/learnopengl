@@ -4,7 +4,7 @@
 
 #include "animation/VertexBone.h"
 
-#include "mesh/Mesh.h"
+#include "mesh/VaoMesh.h"
 #include "mesh/PrimitiveType.h"
 #include "mesh/Index.h"
 #include "mesh/Vertex.h"
@@ -20,7 +20,7 @@ namespace mesh {
     // https://www.khronos.org/opengl/wiki/Primitive
     // https://stackoverflow.com/questions/39588937/when-drawing-lines-with-vbo-how-do-i-specify-indices
     //
-    class PrimitiveMesh final : public Mesh
+    class PrimitiveMesh final : public VaoMesh
     {
     public:
         PrimitiveMesh();

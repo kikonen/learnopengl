@@ -129,7 +129,7 @@ namespace mesh
             if (assets.animationJointTree)
             {
                 const auto offset = glm::translate(glm::mat4{ 1.f }, glm::vec3{ 20, 0, 0 }) *
-                    meshSet.getMeshes()[0]->m_rigTransform;
+                    meshSet.getMesh<mesh::VaoMesh>(0)->m_rigTransform;
 
                 RigJointTreeGenerator generator;
                 if (auto mesh = generator.generateTree(rig)) {

@@ -72,6 +72,9 @@ namespace loader {
                 else if (type == "primitive") {
                     data.type = MeshDataType::primitive;
                 }
+                else if (type == "non_vao") {
+                    data.type = MeshDataType::non_vao;
+                }
                 else {
                     reportUnknown("mesh_data_type", k, v);
                 }
@@ -169,6 +172,10 @@ namespace loader {
 
         if (data.vertexData.valid) {
             data.type = MeshDataType::primitive;
+            data.enabled = true;
+        }
+
+        if (data.type == MeshDataType::non_vao) {
             data.enabled = true;
         }
 

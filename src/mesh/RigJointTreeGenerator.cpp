@@ -12,7 +12,7 @@
 #include "mesh/PrimitiveMesh.h"
 
 namespace mesh {
-    std::unique_ptr<mesh::Mesh> RigJointTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigJointTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;
 
@@ -88,7 +88,7 @@ namespace mesh {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> RigJointTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigJointTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;
 

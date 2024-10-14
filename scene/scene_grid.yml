@@ -1,0 +1,60 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player_fps
+    type: origo
+    pos: [1, 1, 5]
+    active: true
+    rotation: [0, 180, 0]
+    camera:
+      default: true
+      type: fps
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: grid
+    mesh:
+      type: non_vao
+      xvertex:
+        type: quad
+      material:
+        #kd: [0, 0, 0.5, 1]
+        map_kd: textures\Lava_VH_1024.png
+        program: non_vao_plane
+        render_back: true
+    flags:
+      no_shadow: true
+      no_frustum: true
+    pos: [0.0, 0.0, 0.0]
+    scale: 100

@@ -93,7 +93,7 @@ namespace render {
         for (const auto& lodMesh : *type->m_lodMeshes) {
             if (lodMesh.m_flags.hidden) continue;
             if ((lodMesh.m_levelMask & levelMask) == 0) continue;
-            if (!lodMesh.m_vaoId) continue;
+            //if (!lodMesh.m_vaoId) continue;
 
             const auto& drawOptions = lodMesh.m_drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -215,7 +215,7 @@ namespace render {
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     if (lodMesh.m_flags.hidden) continue;
                     if ((lodMesh.m_levelMask & levelMask) == 0) continue;
-                    if (!lodMesh.m_vaoId) continue;
+                    //if (!lodMesh.m_vaoId) continue;
 
                     const auto& drawOptions = lodMesh.m_drawOptions;
                     if (!drawOptions.isKind(kindBits)) continue;
@@ -467,6 +467,9 @@ namespace render {
 
                 GLuint instanceCount = static_cast<GLuint>(lodEntries.size());
                 const auto& lodKey = lodEntry.first;
+
+                if (drawRange.m_vaoId == 0)
+                    int x = 0;
 
                 if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                     backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;

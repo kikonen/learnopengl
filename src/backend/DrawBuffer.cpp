@@ -376,7 +376,11 @@ namespace backend {
         auto& state = kigl::GLState::get();
         const auto& drawOptions = drawRange.m_drawOptions;
 
-        state.bindVAO(drawRange.m_vaoId);
+        // NOTE KI bind vao only if used for this draw
+        if (drawRange.m_vaoId) {
+            state.bindVAO(drawRange.m_vaoId);
+        }
+
         auto* program = Program::get(drawRange.m_programId);
         state.useProgram(*program);
 

@@ -2,7 +2,7 @@
 
 #include <limits>
 
-#include "mesh/Mesh.h"
+#include "mesh/VaoMesh.h"
 
 namespace {
     inline bool is_special_float(float in) {
@@ -20,7 +20,7 @@ namespace mesh {
     //
     // @see Assimp code/PostProcessing/CalcTangentsProcess.cpp
     //
-    void TangentCalculator::calculateTangents(mesh::Mesh& mesh) {
+    void TangentCalculator::calculateTangents(mesh::VaoMesh& mesh) {
         // we assume that the mesh is still in the verbose vertex format where each face has its own set
         // of vertices and no vertices are shared between faces. Sadly I don't know any quick test to
         // assert() it here.

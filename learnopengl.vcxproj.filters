@@ -975,6 +975,12 @@
     <ClCompile Include="src\shader\FileEntryCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\VaoMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\NonVaoMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2208,6 +2214,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader\FileEntryCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\VaoMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\NonVaoMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

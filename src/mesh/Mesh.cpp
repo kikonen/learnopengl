@@ -27,30 +27,13 @@ namespace mesh {
     std::string Mesh::str() const noexcept
     {
         return fmt::format(
-            "<MESH: id={}, name={}, indeces={}, vertices={}>",
+            "<MESH: id={}, name={}, baseVertex={}, baseIndex={}, vertexCount={}, indexCount={}>",
             m_id,
             m_name,
-            m_indeces.size(),
-            m_vertices.size());
-    }
-
-    AABB Mesh::calculateAABB(const glm::mat4& transform) const
-    {
-        AABB aabb{ true };
-
-        for (auto&& vertex : m_vertices)
-        {
-            const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
-            aabb.minmax(pos);
-        }
-
-        //KI_INFO_OUT(fmt::format(
-        //    "AABB: model={}, min={}, max={}",
-        //    m_name, aabb.m_min, aabb.m_max));
-
-        aabb.updateVolume();
-
-        return aabb;
+            getBaseVertex(),
+            getVertexCount(),
+            getBaseIndex(),
+            getIndexCount());
     }
 
     const kigl::GLVertexArray* Mesh::prepareVAO()

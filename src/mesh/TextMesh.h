@@ -2,14 +2,12 @@
 
 #include <string>
 
-#include "mesh/Mesh.h"
-
+#include "mesh/VaoMesh.h"
 #include "mesh/Index.h"
-
 #include "mesh/Vertex.h"
 
 namespace mesh {
-    class TextMesh final : public Mesh
+    class TextMesh final : public VaoMesh
     {
     public:
         TextMesh();

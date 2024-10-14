@@ -33,6 +33,7 @@
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/TextMesh.h"
+#include "mesh/NonVaoMesh.h"
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
@@ -749,6 +750,23 @@ namespace loader {
         }
         case MeshDataType::primitive: {
             auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
+
+            mesh::LodMesh lodMesh;
+            lodMesh.setMesh(std::move(mesh), true);
+            type->addLodMesh(std::move(lodMesh));
+
+            meshCount++;
+        }
+        case MeshDataType::non_vao: {
+            auto mesh = std::make_unique<mesh::NonVaoMesh>(type->getName());
+
+            if (meshData.materials.empty()) {
+                const auto& material = Material::createMaterial(BasicMaterial::yellow);
+                mesh->setMaterial(&material);
+            } else {
+                const auto* material = &meshData.materials[0].material;
+                mesh->setMaterial(material);
+            }
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(std::move(mesh), true);

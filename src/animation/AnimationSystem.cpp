@@ -269,9 +269,10 @@ namespace animation
         for (const auto& lodMesh : type->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
-            auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-            auto rig = mesh->getRigContainer().get();
+            auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
+            if (!mesh) continue;
 
+            auto rig = mesh->getRigContainer().get();
             if (!rig) continue;
 
             uint32_t boneBaseIndex;
