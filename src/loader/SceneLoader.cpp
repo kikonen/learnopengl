@@ -756,6 +756,7 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
 
             meshCount++;
+            break;
         }
         case MeshDataType::non_vao: {
             auto mesh = std::make_unique<mesh::NonVaoMesh>(type->getName());
@@ -773,6 +774,7 @@ namespace loader {
             type->addLodMesh(std::move(lodMesh));
 
             meshCount++;
+            break;
         }
         }
 
