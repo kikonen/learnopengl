@@ -129,6 +129,9 @@ void FrameBufferMaterial::render(
     {
         m_textureQuad.draw();
     }
+
+    //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+    glFlush();
 }
 
 GLuint64 FrameBufferMaterial::getTexHandle(TextureType type) const noexcept

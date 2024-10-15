@@ -730,6 +730,13 @@ namespace render {
             }
         }
 
+        if (!sorted.empty()) {
+            //glMemoryBarrier(GL_ALL_BARRIER_BITS);
+            glFlush();
+            //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+            //glFinish();
+        }
+
         // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
         // NOTE KI order = from furthest away to nearest
         for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
