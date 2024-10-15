@@ -152,7 +152,7 @@
 #define LAYOUT_G_BUFFER_OUT\
  layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
- layout (location = 2) out vec2 o_fragNormal;\
+ layout (location = 2) out vec3 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMetal;
 // layout (location = 1) out vec4 o_fragSpecular;\
 // layout (location = 3) out vec3 o_fragPosition;\
