@@ -28,29 +28,22 @@ SET_FLOAT_PRECISION;
 
 float log10(float x)
 {
-    float f = log(x) / log(10.0);
-    return f;
+  return log(x) / log(10.0);
 }
-
 
 float satf(float x)
 {
-    float f = clamp(x, 0.0, 1.0);
-    return f;
+  return clamp(x, 0.0, 1.0);
 }
-
 
 vec2 satv(vec2 x)
 {
-    vec2 v = clamp(x, vec2(0.0), vec2(1.0));
-    return v;
+  return clamp(x, vec2(0.0), vec2(1.0));
 }
-
 
 float max2(vec2 v)
 {
-    float f = max(v.x, v.y);
-    return f;
+  return max(v.x, v.y);
 }
 
 ResolvedMaterial material;
@@ -69,8 +62,8 @@ void main()
   // }
   // // o_fragColor = vec4(1, 0, 0, 1);
 
-  const vec3 WorldPos = fs_in.worldPos;
-  const vec3 gCameraWorldPos = u_viewWorldPos.xyz;
+  const vec3 worldPos = fs_in.worldPos;
+  const vec3 cameraWorldPos = u_viewWorldPos.xyz;
 
   const float gGridSize = 100.0;
   const float gGridMinPixelsBetweenCells = 2.0;
@@ -78,8 +71,8 @@ void main()
   const vec4 gGridColorThin = vec4(0.5, 0.5, 0.5, 1.0);
   const vec4 gGridColorThick = vec4(0.0, 0.0, 0.0, 1.0);
 
-  const vec2 dvx = vec2(dFdx(WorldPos.x), dFdy(WorldPos.x));
-  const vec2 dvy = vec2(dFdx(WorldPos.z), dFdy(WorldPos.z));
+  const vec2 dvx = vec2(dFdx(worldPos.x), dFdy(worldPos.x));
+  const vec2 dvy = vec2(dFdx(worldPos.z), dFdy(worldPos.z));
 
   const float lx = length(dvx);
   const float ly = length(dvy);
@@ -90,40 +83,40 @@ void main()
 
   const float LOD = max(0.0, log10(l * gGridMinPixelsBetweenCells / gGridCellSize) + 1.0);
 
-  const float GridCellSizeLod0 = gGridCellSize * pow(10.0, floor(LOD));
-  const float GridCellSizeLod1 = GridCellSizeLod0 * 10.0;
-  const float GridCellSizeLod2 = GridCellSizeLod1 * 10.0;
+  const float gridCellSizeLod0 = gGridCellSize * pow(10.0, floor(LOD));
+  const float gridCellSizeLod1 = gridCellSizeLod0 * 10.0;
+  const float gridCellSizeLod2 = gridCellSizeLod1 * 10.0;
 
   dudv *= 4.0;
 
-  vec2 mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod0) / dudv;
+  vec2 mod_div_dudv = mod(worldPos.xz, gridCellSizeLod0) / dudv;
   const float Lod0a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
 
-  mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod1) / dudv;
+  mod_div_dudv = mod(worldPos.xz, gridCellSizeLod1) / dudv;
   const float Lod1a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
 
-  mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod2) / dudv;
+  mod_div_dudv = mod(worldPos.xz, gridCellSizeLod2) / dudv;
   const float Lod2a = max2(vec2(1.0) - abs(satv(mod_div_dudv) * 2.0 - vec2(1.0)) );
 
   const float LOD_fade = fract(LOD);
-  vec4 Color;
+  vec4 color;
 
   if (Lod2a > 0.0) {
-    Color = gGridColorThick;
-    Color.a *= Lod2a;
+    color = gGridColorThick;
+    color.a *= Lod2a;
   } else {
     if (Lod1a > 0.0) {
-      Color = mix(gGridColorThick, gGridColorThin, LOD_fade);
-      Color.a *= Lod1a;
+      color = mix(gGridColorThick, gGridColorThin, LOD_fade);
+      color.a *= Lod1a;
     } else {
-      Color = gGridColorThin;
-      Color.a *= (Lod0a * (1.0 - LOD_fade));
+      color = gGridColorThin;
+      color.a *= (Lod0a * (1.0 - LOD_fade));
     }
   }
 
-  const float OpacityFalloff = (1.0 - satf(length(WorldPos.xz - gCameraWorldPos.xz) / gGridSize));
+  const float OpacityFalloff = 1.0 - satf(length(worldPos.xz - cameraWorldPos.xz) / gGridSize);
 
-  Color.a *= OpacityFalloff;
+  color.a *= OpacityFalloff;
 
-  o_fragColor = Color;
+  o_fragColor = color;
 }
