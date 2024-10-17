@@ -69,7 +69,7 @@ void main()
   const float gGridMinPixelsBetweenCells = 2.0;
   const float gGridCellSize = 0.025;
   const vec4 gGridColorThin = vec4(0.5, 0.5, 0.5, 1.0);
-  const vec4 gGridColorThick = vec4(0.0, 0.0, 0.0, 1.0);
+  const vec4 gGridColorThick = vec4(0.1, 0.1, 0.2, 1.0);
 
   const vec2 dvx = vec2(dFdx(worldPos.x), dFdy(worldPos.x));
   const vec2 dvy = vec2(dFdx(worldPos.z), dFdy(worldPos.z));
