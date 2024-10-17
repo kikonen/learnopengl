@@ -16,6 +16,7 @@
 
 namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
+    const std::string INC_GLOBAL_UTILS{ "global_utils.glsl" };
 }
 
 ShaderSource::ShaderSource()
@@ -117,9 +118,17 @@ std::vector<std::string> ShaderSource::loadSourceLines(
                 lines.push_back(line);
                 lines.push_back("#extension GL_ARB_bindless_texture : require");
                 appendDefines(lines, program);
+
+                // Globals
                 for (auto& l : processInclude(INC_GLOBALS, lineNumber, program)) {
                     lines.push_back(l);
                 }
+
+                // Global utility functions
+                for (auto& l : processInclude(INC_GLOBAL_UTILS, lineNumber, program)) {
+                    lines.push_back(l);
+                }
+
                 //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else if (k == "#include") {

@@ -86,7 +86,32 @@ void main() {
 
   const uint materialIndex = instance.u_materialIndex;
 
+  float scale = 1;
+  mat4 scaleMat = mat4(scale, 0, 0, 0,
+		       0, scale, 0, 0,
+		       0, 0, scale, 0,
+		       0, 0,     0, 1);
+
+  // mat4 scaleMat =  scale * mat4(1);
+
+  vec3 tranlate = vec3(0, 0, 0);
+  const mat4 transMat = mat4(1, 0, 0, 0,
+			     0, 1, 0, 0,
+			     0, 0, 1, 0,
+			     tranlate.x, tranlate.y, tranlate.z, 1);
+
+  modelMatrix = modelMatrix * transMat * scaleMat;
+
   vec4 pos = vec4(a_pos, 1.0);
+
+  // pos.xyz = rotateEuler(pos.xyz, vec3(45, 45, 0));
+  // vec3 euler = vec3(
+  //   45 * sin(u_time * 0.5),
+  //   45 * cos(u_time * 0.5),
+  //   45 * sin(u_time * 0.5));
+  // pos.xyz = rotateEuler(pos.xyz, euler);
+  // pos.x += sin(u_time * 0.4) * 0.5;
+  // pos.y += cos(u_time * 0.4) * 0.5;
 
   vec4 worldPos;
   vec3 normal;
