@@ -35,13 +35,22 @@ nodes:
       intensity: 30000
   - name: origo
     mesh:
-      path: water_ball
+      xpath: water_ball
+      vertex:
+        type: box
+        size: [0.5]
+        radius: 0.5
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
         metal: [0.2, 0.1, 0.0, 1.0]
         program: g_tex
-      scale: 0.05
+        render_back: true
+      flags:
+        clip: true
+      xscale: 0.05
+    flags:
+      no_frustum: true
     pos: [0.0, 0.0, 0.0]
   - id: grid
     mesh:

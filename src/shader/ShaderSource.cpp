@@ -87,12 +87,20 @@ std::vector<std::string> ShaderSource::loadSourceLines(
     FileEntry* fileEntry = FileEntryCache::get().getEntry(path);
 
     if (!fileEntry) {
-        std::string msg = fmt::format("FILE_NOT_EXIST: {}", path);
-        KI_INFO(msg);
-        if (optional) {
-            return {};
+        if (!optional) {
+            std::string msg = fmt::format("ERROR: FILE_NOT_EXIST: {}", path);
+            KI_WARN_OUT(msg);
+            return {
+                fmt::format("// {}", msg)
+            };
         }
-        throw std::runtime_error{ msg };
+
+        return {};
+
+        //if (optional) {
+        //    return {};
+        //}
+        //throw std::runtime_error{ msg };
     }
 
     m_files.push_back(fileEntry);

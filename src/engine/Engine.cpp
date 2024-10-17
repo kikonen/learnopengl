@@ -60,6 +60,8 @@ int Engine::setup() {
         GL_BLEND,
         GL_CLIP_DISTANCE0,
         GL_CLIP_DISTANCE1,
+        GL_CLIP_DISTANCE2,
+        GL_CLIP_DISTANCE3,
         GL_CULL_FACE,
         GL_DEPTH_TEST,
         GL_POLYGON_OFFSET_FILL,

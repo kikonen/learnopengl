@@ -403,6 +403,8 @@ namespace backend {
             }
         }
 
+        state.setEnabled(GL_CLIP_DISTANCE1, drawRange.m_drawOptions.m_clip);
+
         // HACK KI for primitive GL_LINES
         // OPENGL: API 0x7 (7) DEPRECATED MEDIUM - API_ID_LINE_WIDTH
         // deprecated behavior warning has been generated.

@@ -45,6 +45,8 @@ namespace backend {
 
         bool m_gbuffer : 1 {false};
 
+        bool m_clip : 1 {false};
+
         uint8_t m_flags : 3 { 0 };
 
         uint8_t m_kindBits : 3 { 0 };
@@ -83,14 +85,15 @@ namespace backend {
             return m_renderBack == o.m_renderBack &&
                 (forceWireframe ? true : m_wireframe == o.m_wireframe) &&
                 (forceSolid ? true : m_blend == o.m_blend) &&
+                m_clip == o.m_clip &&
                 m_mode == o.m_mode &&
                 m_type == o.m_type;
         }
 
         // NOTE KI for MeshTypeKey
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_blend, m_renderBack, m_wireframe, m_type, m_mode) <
-                std::tie(o.m_blend, o.m_renderBack, o.m_wireframe, o.m_type, o.m_mode);
+            return std::tie(m_blend, m_renderBack, m_clip, m_wireframe, m_type, m_mode) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_clip, o.m_wireframe, o.m_type, o.m_mode);
         }
     };
 }

@@ -1100,6 +1100,8 @@ namespace loader {
 
             flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
         }
+
+        flags.clip = container.getFlag("clip", flags.clip);
     }
 
     void SceneLoader::assignNodeFlags(

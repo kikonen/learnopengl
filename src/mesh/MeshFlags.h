@@ -19,5 +19,7 @@ namespace mesh {
         bool boneVisualization : 1 {false};
 
         bool useSockets : 1 {false};
+
+        bool clip : 1 {false};
     };
 }

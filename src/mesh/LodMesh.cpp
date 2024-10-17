@@ -199,6 +199,8 @@ namespace mesh {
             m_drawOptions.m_solid = true;
         }
 
+        m_drawOptions.m_clip = m_flags.clip;
+
         m_programId = material.getProgram(MaterialProgramType::shader);
         m_shadowProgramId = material.getProgram(MaterialProgramType::shadow);
         m_preDepthProgramId = material.getProgram(MaterialProgramType::pre_depth);
