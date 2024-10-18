@@ -55,11 +55,7 @@ nodes:
   - id: grid
     mesh:
       type: non_vao
-      xvertex:
-        type: quad
       material:
-        #kd: [0, 0, 0.5, 1]
-        map_kd: textures\Lava_VH_1024.png
         program: grid
         blend: true
         alpha: true
@@ -68,5 +64,5 @@ nodes:
       no_shadow: true
       no_frustum: true
       effect: true
-    pos: [0.0, 0.0, 0.0]
+    priority: -100
     scale: 100
