@@ -41,6 +41,7 @@ void main()
   vec4 pos = vec4(VERTEX_POS[idx] * entity.u_worldScale.xyz, 1.0);
   pos.x += u_viewWorldPos.x;
   pos.z += u_viewWorldPos.z;
+  pos.y += 0.0003;
 
   vec4 worldPos = pos;
 
