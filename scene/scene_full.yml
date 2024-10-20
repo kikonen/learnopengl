@@ -23,6 +23,8 @@ script:
   scripts:
     - path: lib/common
 nodes:
+  - prefab:
+      path: prefab/util/prefab_grid.yml
   - id: zero_origo
     type: origo
     pos: [0.0, 0.0, 0.0]

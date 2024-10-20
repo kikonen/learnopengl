@@ -1,0 +1,18 @@
+---
+prefab:
+  id: grid_{c}_{t}
+  mesh:
+    type: non_vao
+    material:
+      program: grid
+      blend: true
+      alpha: true
+      render_back: true
+  flags:
+    no_shadow: true
+    no_frustum: true
+    no_reflect: true
+    no_refract: true
+    effect: true
+  priority: -100
+  scale: 100

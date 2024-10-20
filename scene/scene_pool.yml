@@ -13,20 +13,8 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - id: grid
-    mesh:
-      type: non_vao
-      material:
-        program: grid
-        blend: true
-        alpha: true
-        render_back: true
-    flags:
-      no_shadow: true
-      no_frustum: true
-      effect: true
-    priority: -100
-    scale: 100
+  - prefab:
+      path: prefab/util/prefab_grid.yml
   - name: origo
     mesh:
       path: water_ball

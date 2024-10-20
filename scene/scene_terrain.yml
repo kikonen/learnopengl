@@ -7,6 +7,8 @@ script:
   scripts:
     - path: lib/common
 nodes:
+  - prefab:
+      path: prefab/util/prefab_grid.yml
   - id: player
     type: origo
     pos: [0, 200, 100]

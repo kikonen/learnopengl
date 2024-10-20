@@ -63,6 +63,8 @@ nodes:
     flags:
       no_shadow: true
       no_frustum: true
+      no_reflect: true
+      no_refract: true
       effect: true
     priority: -100
     scale: 100
