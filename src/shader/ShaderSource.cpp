@@ -194,12 +194,23 @@ std::vector<std::string> ShaderSource::processInclude(
     std::vector<std::string> lines = loadSourceLines(path, false, program);
 
     std::vector<std::string> result;
+
+    std::string key = simplifiedPath;
+    key = util::toUpper(key);
+    key = util::replace(key, ".", "_");
+    key = util::replace(key, "/", "_");
+    key = util::replace(key, "\\", "_");
+
+    result.push_back(fmt::format("#ifndef _{} // [START {}]", key, simplifiedPath));
+    result.push_back(fmt::format("#define _{}", key));
+
     //result.push_back("#line 1 " + std::to_string(lineNumber));
     result.push_back("// [START " + simplifiedPath + "]");
     for (auto& line : lines) {
         result.push_back(line);
     }
-    result.push_back("// [END " + simplifiedPath + "]");
+
+    result.push_back(fmt::format("#endif // [END {}]", key, simplifiedPath));
 
     return result;
 }

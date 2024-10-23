@@ -5,13 +5,15 @@
 namespace uniform {
 
     void Uniform::init(Program* program) {
-        if (m_locId == -1) {
+        if (m_locId == -1 && program->m_programId) {
             m_locId = program->getUniformLoc(m_name);
         }
+        m_valid = m_locId != -1 && program->m_programId;
     }
 
     void Subroutine::init(Program* program) {
         if (m_indeces) return;
+        if (!program->m_programId) return;
 
         if (m_locId == -1) {
             m_locId = program->getUniformSubroutineLoc(m_name, m_shaderType);
@@ -29,15 +31,16 @@ namespace uniform {
                 m_indeces[i] = 0;
             }
         }
+
+        m_valid = m_locId != -1 && m_indeces && program->m_programId;
     }
 
     void Subroutine::set(GLuint routineIndex, bool force) noexcept {
-        if (m_locId != -1 && (force || m_unassigned || routineIndex != m_lastValue)) {
+        if (m_valid && (force || m_unassigned || routineIndex != m_lastValue)) {
             m_indeces[m_locId] = routineIndex;
             glUniformSubroutinesuiv(m_shaderType, m_locId + 1, m_indeces);
             m_lastValue = routineIndex;
             //m_unassigned = force;
         }
     }
-
 }

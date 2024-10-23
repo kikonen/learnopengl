@@ -1,7 +1,7 @@
 #ifdef USE_PARALLAX
   float parallaxDepth = u_materials[materialIndex].parallaxDepth;
-  if (u_parallaxDepth >= 0) {
-    parallaxDepth = u_parallaxDepth;
+  if (Debug.u_parallaxDepth >= 0) {
+    parallaxDepth = Debug.u_parallaxDepth;
   } else {
     parallaxDepth = 0;
   }
@@ -9,7 +9,7 @@
 
   if (parallaxDepth > 0) {
     const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
-    if (u_parallaxMethod == 1)
+    if (Debug.u_parallaxMethod == 1)
     {
       texCoord = calculateParallaxOcclusionMapping(
 	materialIndex,
@@ -19,7 +19,7 @@
     }
 
     // https://www.reddit.com/r/GraphicsProgramming/comments/18qqz77/parallax_occlusion_mapping_revisited/
-    if (u_parallaxMethod == 0)
+    if (Debug.u_parallaxMethod == 0)
     {
       texCoord = parallaxMapMarch(
 	materialIndex,

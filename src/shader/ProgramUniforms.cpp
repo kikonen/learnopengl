@@ -15,5 +15,17 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_effectBloomIteration{ "u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION }
 {
     u_effect.init(&program);
+
+    u_nearPlane.init(&program);
+    u_farPlane.init(&program);
+    u_drawParametersIndex.init(&program);
+    u_toneHdri.init(&program);
+    u_gammaCorrect.init(&program);
+    u_viewportTransform.init(&program);
+    u_modelMatrix.init(&program);
+    u_materialIndex.init(&program);
+    u_stencilMode.init(&program);
+    u_blendFactor.init(&program);
+    u_effectBloomIteration.init(&program);
 }
 

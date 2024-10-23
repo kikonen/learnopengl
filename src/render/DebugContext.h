@@ -50,6 +50,9 @@ namespace render {
         float m_parallaxDepth{ 0.1f };
         int m_parallaxMethod{ 0 };
 
+        float m_wireframeLineWidth{ 1.f };
+        glm::vec3 m_wireframeLineColor{ 1, 1, 0 };
+
         bool m_showVolume{ false };
         bool m_showSelectionVolume{ false };
         bool m_showEnvironmentProbe{ false };

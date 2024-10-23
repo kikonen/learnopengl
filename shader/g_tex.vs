@@ -172,12 +172,12 @@ void main() {
 
 #ifdef USE_BONES
 #ifdef USE_DEBUG
-  if (u_debugBoneWeight) {
+  if (Debug.u_boneWeight) {
     vs_out.boneBaseIndex = entity.u_boneBaseIndex;
     vs_out.boneIndex = a_boneIndex;
     vs_out.boneWeight = a_boneWeight;
 
-    uint tbi = u_debugBoneIndex;
+    uint tbi = Debug.u_boneIndex;
     uvec4 bi = a_boneIndex;
     vec4 wi = a_boneWeight;
 

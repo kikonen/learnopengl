@@ -124,7 +124,7 @@ void main() {
   //   o_fragColor = vec3(0.0, 0.0, 1.0);
   // }
 #ifdef USE_DEBUG
-  if (u_debugBoneWeight) {
+  if (Debug.u_boneWeight) {
     vec3 c = fs_in.boneColor;
     float sum = c.x + c.y + c.z;
     if (sum > 0) {

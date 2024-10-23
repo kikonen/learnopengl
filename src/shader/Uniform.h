@@ -50,9 +50,10 @@ namespace uniform {
 
     protected:
         const std::string m_name;
-        GLint m_locId = -1;
+        GLint m_locId{ -1 };
 
-        bool m_unassigned = true;
+        bool m_valid{ false };
+        bool m_unassigned{ true };
     };
 
     class Subroutine final : public Uniform {
@@ -90,7 +91,7 @@ namespace uniform {
         }
 
         void set(const glm::mat4& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniformMatrix4fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
@@ -102,7 +103,7 @@ namespace uniform {
         }
 
         void set(const glm::mat3& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
@@ -114,7 +115,7 @@ namespace uniform {
         }
 
         void set(const glm::mat2& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
@@ -126,7 +127,7 @@ namespace uniform {
         }
 
         void set(const glm::vec4& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniform1fv(m_locId, 4, glm::value_ptr(value));
             }
         }
@@ -138,7 +139,7 @@ namespace uniform {
         }
 
         void set(const glm::vec3& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniform1fv(m_locId, 3, glm::value_ptr(value));
             }
         }
@@ -150,7 +151,7 @@ namespace uniform {
         }
 
         void set(const glm::vec2& value, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniform1fv(m_locId, 2, glm::value_ptr(value));
             }
         }
@@ -162,7 +163,7 @@ namespace uniform {
         }
 
         void set(int count, const float* values, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniform1fv(m_locId, count, values);
             }
         }
@@ -174,7 +175,7 @@ namespace uniform {
         }
 
         void set(int count, const GLint* values, bool force = false) noexcept {
-            if (m_locId != -1) {
+            if (m_valid) {
                 glUniform1iv(m_locId, count, values);
             }
         }
@@ -186,7 +187,7 @@ namespace uniform {
         }
 
         void set(const float value, bool force = false) noexcept {
-            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1f(m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
@@ -203,7 +204,7 @@ namespace uniform {
         }
 
         void set(const GLint value, bool force = false) noexcept {
-            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1i(m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
@@ -220,7 +221,7 @@ namespace uniform {
         }
 
         void set(const GLuint value, bool force = false) noexcept {
-            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1ui(m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
@@ -237,7 +238,7 @@ namespace uniform {
         }
 
         void set(const bool value, bool force = false) noexcept {
-            if (m_locId != -1 && (force || m_unassigned || value != m_lastValue)) {
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
                 glUniform1i(m_locId, (int)value);
                 m_lastValue = value;
                 m_unassigned = force;

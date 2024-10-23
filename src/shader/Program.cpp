@@ -78,6 +78,8 @@ Program::Program(
         m_sources[GL_TESS_CONTROL_SHADER] = { false, basePath + ".tcs.glsl" };
         m_sources[GL_TESS_EVALUATION_SHADER] = { false, basePath + ".tes.glsl" };
     }
+
+    m_uniforms = std::make_unique<ProgramUniforms>(*this);
 }
 
 Program::~Program()

@@ -1,9 +1,9 @@
 // @see https://en.wikipedia.org/wiki/Rotation_matrix
-vec3 rotateEuler(vec3 v, vec3 euler)
+vec3 rotateEuler(const in vec3 v, const in vec3 euler)
 {
-  float angleX = radians(euler.x);
-  float angleY = radians(euler.y);
-  float angleZ = radians(euler.z);
+  const float angleX = radians(euler.x);
+  const float angleY = radians(euler.y);
+  const float angleZ = radians(euler.z);
 
   mat4 rotX = mat4( vec4( 1,            0,             0.0,         0.0),
 		    vec4( 0,            cos(angleX),   sin(angleX), 0.0),
@@ -31,11 +31,23 @@ vec3 rotateEuler(vec3 v, vec3 euler)
 //
 // @param yaw radians rotate around Y-axis
 // @param pitch radians rotate around X-axis
-vec3 getDir(float yaw, float pitch)
+vec3 getDir(in float yaw, in float pitch)
 {
-  float x = sin(yaw);
-  float y = -(sin(pitch) * cos(yaw));
-  float z = -(cos(pitch) * cos(yaw));
+  const float x = sin(yaw);
+  const float y = -(sin(pitch) * cos(yaw));
+  const float z = -(cos(pitch) * cos(yaw));
 
   return vec3(x, y, z);
+}
+
+mat4 getViewportMatrix(vec2 size) {
+  const float w = size.x;
+  const float h = size.y;
+  const float w2 = w / 2.0f;
+  const float h2 = h / 2.0f;
+
+  return mat4( vec4(w2,   0.0f, 0.0f, 0.0f),
+	       vec4(0.0f, h2,   0.0f, 0.0f),
+	       vec4(0.0f, 0.0f, 1.0f, 0.0f),
+	       vec4(w2+0, h2+0, 0.0f, 1.0f));
 }

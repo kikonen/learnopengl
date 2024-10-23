@@ -218,6 +218,8 @@ RenderContext::RenderContext(
             m_dbg->m_animationDebugBoneWeight,
             m_dbg->m_parallaxDepth,
             m_dbg->m_parallaxMethod,
+            m_dbg->m_wireframeLineWidth,
+            m_dbg->m_wireframeLineColor,
         };
     }
     else {
