@@ -51,6 +51,13 @@
 
 class PawnController;
 
+namespace {
+    const char* GEOMETRY_TYPES[2] = {
+        "",
+        "wireframe_mod",
+    };
+}
+
 namespace editor {
     EditorFrame::EditorFrame(Window& window)
         : Frame(window)
@@ -481,6 +488,28 @@ namespace editor {
         ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
 
         if (dbg.m_nodeDebugEnabled) {
+            {
+                if (ImGui::BeginCombo("GeomMod", dbg.m_geometryType.c_str())) {
+                    for (const auto& name : GEOMETRY_TYPES) {
+
+                        ImGui::PushID((void*)name);
+                        const bool isSelected = dbg.m_geometryType == name;
+                        if (ImGui::Selectable(name, isSelected)) {
+                            dbg.m_geometryType = name;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                //ImGui::Checkbox("WireframeMode", &dbg.m_wireframeMode);
+                ImGui::DragFloat("WireframeWidth", &dbg.m_wireframeLineWidth, 0.f, 1.f);
+                ImGui::ColorEdit3("WireframeColor", glm::value_ptr(dbg.m_wireframeLineColor));
+            }
+
             ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
             ImGui::Checkbox("Show normals", &dbg.m_showNormals);
             ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);

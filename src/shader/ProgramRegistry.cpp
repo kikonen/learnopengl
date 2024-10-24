@@ -4,8 +4,11 @@
 
 #include "engine/UpdateContext.h"
 
+#include "render/DebugContext.h"
+
 #include "Program.h"
 #include "FileEntryCache.h"
+
 
 namespace {
     constexpr float DIRTY_CHECK_FREQUENCY{ 2.f };
@@ -57,7 +60,20 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 
     if (m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
         auto& fileCache = FileEntryCache::get();
-        fileCache.markModified();
+        const auto& dbg = render::DebugContext::get();
+
+        if (dbg.m_geometryType != m_debugGeometryType) {
+            m_debugGeometryType = dbg.m_geometryType;
+
+            for (auto& program : m_programs) {
+                if (!program) continue;
+                program->setDebugGeometryType(m_debugGeometryType);
+            }
+
+            fileCache.markAllModified();
+        }
+
+        fileCache.checkModified();
 
         for (auto& program : m_programs) {
             if (!program) continue;

@@ -48,7 +48,19 @@ FileEntry* FileEntryCache::getEntry(const std::string& path)
     return m_files[fileId].get();
 }
 
-void FileEntryCache::markModified()
+void FileEntryCache::markAllModified()
+{
+    std::lock_guard lock(m_lock);
+
+    for (const auto& fileEntry : m_files) {
+        if (fileEntry && fileEntry->exists()) {
+            fileEntry->mark();
+            m_modified.push_back(fileEntry->m_id);
+        }
+    }
+}
+
+void FileEntryCache::checkModified()
 {
     std::lock_guard lock(m_lock);
 

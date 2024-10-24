@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -50,6 +51,7 @@ namespace render {
         float m_parallaxDepth{ 0.1f };
         int m_parallaxMethod{ 0 };
 
+        std::string m_geometryType;
         float m_wireframeLineWidth{ 1.f };
         glm::vec3 m_wireframeLineColor{ 1, 1, 0 };
 

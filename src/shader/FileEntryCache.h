@@ -16,7 +16,10 @@ public:
     // @return file, null if not existing
     FileEntry* getEntry(const std::string& path);
 
-    void markModified();
+    // Tag all files as modified
+    void markAllModified();
+
+    void checkModified();
     void clearModified();
 
     bool isModified(int fileId);

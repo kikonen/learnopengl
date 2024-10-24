@@ -46,6 +46,10 @@ in VS_OUT {
   flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
+
+#ifdef USE_WIREFRAME_MOD
+  noperspective vec3 edgeDistance;
+#endif
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
@@ -105,6 +109,21 @@ void main() {
   } else {
     color = fragColor;
   }
+#endif
+
+#ifdef USE_WIREFRAME_MOD
+  const float d = min(
+    min(
+      fs_in.edgeDistance.x,
+      fs_in.edgeDistance.y),
+    fs_in.edgeDistance.z);
+
+  float lineWidth = Debug.u_wireframeLineWidth;
+  vec3 lineColor = Debug.u_wireframeLineColor;
+  // lineWidth = 0.5;
+
+  float mixVal = smoothstep(lineWidth - 1, lineWidth + 1, d);
+  color.rgb = mix( lineColor.rgb, color.rgb, mixVal );
 #endif
 
   // if (!gl_FrontFacing) {

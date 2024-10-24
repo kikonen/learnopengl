@@ -1,0 +1,109 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - prefab:
+      path: prefab/util/prefab_grid.yml
+  - id: player_fps
+    type: origo
+    pos: [1, 1, 5]
+    active: true
+    rotation: [0, 180, 0]
+    camera:
+      default: true
+      type: fps
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - xid: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    mesh:
+      material:
+        render_back: true
+    pos: [0.0, 0.0, 0.0]
+    physics:
+      geom:
+        type: plane
+        category: [terrain]
+        collision: [can_terrain]
+    scale: 200
+  - xid: cube_1_{t}
+    prefab:
+      path: prefab/creatures/prefab_lion.yml
+    script: |
+      cmd:animationPlay(
+        { name = "walk:Take 001" } )
+    mesh:
+      material:
+        geometry_type: wireframe_mod
+        program_definitions:
+          USE_WIREFRAME: 1
+    xmesh:
+      path: smooth_teapot
+      xvertex:
+        type: box
+        size: [1]
+        radius: 1
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        xtiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        geometry_type: wireframe_mod
+        # blend: true
+        # alpha: true
+        # render_back: true
+        program_definitions:
+          USE_GS: 1
+          USE_WIREFRAME: 1
+    pos: [1, 1, 1]
+  - id: cube_1_{t}
+    mesh:
+      path: smooth_teapot
+      xvertex:
+        type: box
+        size: [1]
+        radius: 1
+      material:
+        kd: [0.4, 0.4, 1, 0.75]
+        map_pbr: textures\Metal008_1K-PNG
+        xtiling: 3
+        xparallax_depth: 0.0
+        program: g_tex
+        # blend: true
+        # alpha: true
+        # render_back: true
+        xline_mode: true
+    pos: [1, 1, 1]

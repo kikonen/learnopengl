@@ -62,6 +62,8 @@ private:
     std::vector<std::unique_ptr<Program>> m_programs;
     std::unordered_map<std::string, ki::program_id> m_programIds;
 
+    std::string m_debugGeometryType;
+
     std::mutex m_programs_lock{};
 
     float m_elapsedSecs{ 0.f };

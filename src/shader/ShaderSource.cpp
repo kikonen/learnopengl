@@ -14,20 +14,30 @@
 #include "Program.h"
 #include "FileEntryCache.h"
 
+#include "render/DebugContext.h"
+
 namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
     const std::string INC_GLOBAL_UTILS{ "global_utils.glsl" };
 }
 
 ShaderSource::ShaderSource()
-    : m_required{ false }
+    : ShaderSource{ false, false, "" }
 {
 }
 
 ShaderSource::ShaderSource(
     bool required,
     std::string path)
-    : m_required{ required },
+    : ShaderSource{ false, required, path }
+{}
+
+ShaderSource::ShaderSource(
+    bool debug,
+    bool required,
+    std::string path)
+    : m_debug{ debug },
+    m_required { required },
     m_path{ path }
 {}
 
@@ -39,6 +49,11 @@ bool ShaderSource::modified() const
         modified |= fileCache.isModified(fe->m_id);
     }
     return modified;
+}
+
+bool ShaderSource::pathExists() const
+{
+    return util::fileExists(m_path);
 }
 
 bool ShaderSource::exists() const
@@ -219,7 +234,31 @@ void ShaderSource::appendDefines(
     std::vector<std::string>& lines,
     const Program& program)
 {
+    const auto& dbg = render::DebugContext::get();
     for (const auto& [key, value] : program.getDefines()) {
         lines.push_back(fmt::format("#define {} {}", key, value));
+    }
+
+    if (!dbg.m_geometryType.empty())
+    {
+        const auto& it = program.m_sources.find(GL_GEOMETRY_SHADER);
+
+        KI_INFO_OUT(fmt::format("[PROGRAM: {}]: CHECK_DBG geometryType={}", program.m_key, dbg.m_geometryType));
+
+        if (it != program.m_sources.end()) {
+            KI_INFO_OUT(fmt::format(
+                "[PROGRAM: {}]: CHECK_PATH path={}, exists={}, debug={}",
+                program.m_key, it->second.m_path, it->second.pathExists(), it->second.m_debug));
+
+            if (it->second.m_debug && it->second.pathExists())
+            {
+                KI_INFO_OUT(fmt::format(
+                    "[PROGRAM: {}]: USE_DBG geometryType={}",
+                    program.m_key, dbg.m_geometryType));
+
+                const auto key = util::toUpper(dbg.m_geometryType);
+                lines.push_back(fmt::format("#define USE_{} 1", key));
+            }
+        }
     }
 }

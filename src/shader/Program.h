@@ -22,8 +22,9 @@ struct ProgramUniforms;
 
 class Program final
 {
-    friend uniform::Uniform;
-    friend uniform::Subroutine;
+    friend class uniform::Uniform;
+    friend class uniform::Subroutine;
+    friend struct ShaderSource;
 
 public:
     static Program* get(ki::program_id id);
@@ -78,6 +79,9 @@ public:
         return m_defines;
     }
 
+    // NOTE KI apply "geom mod" for debugging (optional per shader)
+    void setDebugGeometryType(const std::string& geometryType);
+
 private:
     // @return shaderId
     int compileSource(
@@ -123,6 +127,7 @@ private:
 
     std::map<std::string, std::string, std::less<> > m_defines;
 
+    std::string m_basePath;
     std::unordered_map<GLenum, ShaderSource> m_sources;
 
     std::map<std::string, GLint, std::less<> > m_uniformLocations;

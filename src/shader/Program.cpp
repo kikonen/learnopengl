@@ -27,6 +27,8 @@
 
 #include "ProgramRegistry.h"
 
+#include "render/DebugContext.h"
+
 
 namespace {
     constexpr size_t LOG_SIZE = 4096;
@@ -55,28 +57,29 @@ Program::Program(
 {
     const auto& assets = Assets::get();
 
-    std::string basePath;
     {
-        basePath = util::joinPath(
+        m_basePath = util::joinPath(
             assets.shadersDir,
             name);
     }
 
     if (m_compute) {
-        m_sources[GL_COMPUTE_SHADER] = { true, basePath + ".cs.glsl" };
+        m_sources.insert({ GL_COMPUTE_SHADER, { true, m_basePath + ".cs.glsl" } });
     }
     else {
-        m_sources[GL_VERTEX_SHADER] = { true, basePath + ".vs" };
-        m_sources[GL_FRAGMENT_SHADER] = { true, basePath + ".fs" };
-        if (geometryType.empty()) {
-            m_sources[GL_GEOMETRY_SHADER] = { false, basePath + ".gs.glsl" };
+        m_sources.insert({ GL_VERTEX_SHADER, { true, m_basePath + ".vs" } });
+        m_sources.insert({ GL_FRAGMENT_SHADER, { true, m_basePath + ".fs"} });;
+
+        if (!geometryType.empty()) {
+            m_sources.insert({ GL_GEOMETRY_SHADER, { true, m_basePath + "_" + std::string{ geometryType } + ".gs.glsl"} });
         }
         else {
-            m_sources[GL_GEOMETRY_SHADER] = { true, basePath + "_" + std::string{ geometryType } + ".gs.glsl" };
+            const auto& path = m_basePath + ".gs.glsl";
+            m_sources.insert({ GL_GEOMETRY_SHADER, { false, util::fileExists(path), path}});
         }
 
-        m_sources[GL_TESS_CONTROL_SHADER] = { false, basePath + ".tcs.glsl" };
-        m_sources[GL_TESS_EVALUATION_SHADER] = { false, basePath + ".tes.glsl" };
+        m_sources.insert({ GL_TESS_CONTROL_SHADER, { false, m_basePath + ".tcs.glsl"} });
+        m_sources.insert({ GL_TESS_EVALUATION_SHADER, { false, m_basePath + ".tes.glsl"} });
     }
 
     m_uniforms = std::make_unique<ProgramUniforms>(*this);
@@ -240,6 +243,29 @@ GLint Program::getSubroutineIndex(std::string_view name, GLenum shaderType)
     return vi;
 }
 
+void Program::setDebugGeometryType(const std::string& geometryType)
+{
+    const auto& src = m_sources[GL_GEOMETRY_SHADER];
+
+    if (!src.m_required || src.m_debug) {
+        const auto& path = m_basePath + "_" + std::string{ geometryType } + ".gs.glsl";
+        if (util::fileExists(path)) {
+            KI_INFO_OUT(fmt::format("[PROGRAM: {}]: SET_DBG geometryType={}, path={}",
+                m_key, geometryType, path));
+            m_sources[GL_GEOMETRY_SHADER] = { true, false, path };
+
+            const auto& it = m_sources.find(GL_GEOMETRY_SHADER);
+            if (it != m_sources.end()) {
+                KI_INFO_OUT(fmt::format("[PROGRAM: {}]: VALID_DBG geometryType={}, path={}, exist={}",
+                    m_key, geometryType, it->second.m_path, it->second.pathExists()));
+            }
+        }
+        else {
+            m_sources[GL_GEOMETRY_SHADER] = { false, false, "" };
+        }
+    }
+}
+
 int Program::compileSource(
     GLenum shaderType,
     const ShaderSource& source)
@@ -267,7 +293,8 @@ int Program::compileSource(
                 "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
                 shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
-                "FAILED_SOURCE:\n-------------------\n{}\n-------------------",
+                "FAILED_SOURCE: {}\n-------------------\n{}\n-------------------",
+                source.m_path,
                 util::appendLineNumbers(source.m_source)));
             KI_ERROR(fmt::format(
                 "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
@@ -293,6 +320,7 @@ void Program::createProgram() {
     // ------------------------------------
     std::unordered_map<GLenum, int> shaderIds;
     for (auto& [type, source] : m_sources) {
+        if (source.m_path.empty()) continue;
         shaderIds[type] = compileSource(type, m_sources[type]);
     }
 
@@ -324,6 +352,18 @@ void Program::createProgram() {
                 const auto msg = fmt::format(
                     "PROGRAM_ERROR: PROGRAM::LINKING_FAILED program={}\n{}",
                     m_programName, infoLog);
+
+                for (auto& [type, shaderId] : shaderIds) {
+                    const auto& source = m_sources[type];
+                    if (source.m_path.empty()) continue;
+                    if (!source.pathExists()) continue;
+
+                    KI_ERROR(fmt::format(
+                        "LINK_SOURCE: {}\n-------------------\n{}\n-------------------",
+                        source.m_path,
+                        util::appendLineNumbers(source.m_source)));
+                }
+
                 KI_ERROR(msg);
 
                 glDeleteProgram(programId);

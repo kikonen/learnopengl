@@ -15,6 +15,12 @@ struct ShaderSource {
         bool required,
         std::string path);
 
+    ShaderSource(
+        bool debug,
+        bool required,
+        std::string path);
+
+    bool m_debug;
     bool m_required;
     std::string m_path;
 
@@ -28,6 +34,7 @@ public:
         return m_source.empty();
     }
 
+    bool pathExists() const;
     bool exists() const;
     bool modified() const;
 
