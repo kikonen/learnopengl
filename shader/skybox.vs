@@ -3,6 +3,7 @@
 #include texture_quad.glsl
 
 #include uniform_matrices.glsl
+#include uniform_data.glsl
 
 out VS_OUT {
   vec3 texCoord;
@@ -24,7 +25,9 @@ void main() {
   // m[3][2] = 0.0;
   // m[3][2] = 0.0;
   // vec4 v = inverse(m) * inverse(u_projectionMatrix) * pos;
+
   vec4 v = u_viewMatrixSkybox * pos;
+  // v.xyz = rotateEuler(v.xyz, vec3(0, u_time * 2, u_time * 10));
 
   gl_Position = pos.xyww;
   vs_out.texCoord = v.xyz;

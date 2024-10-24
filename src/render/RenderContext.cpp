@@ -150,6 +150,8 @@ RenderContext::RenderContext(
 
     m_matrices.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
 
+    m_matrices.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
+
     {
         // https://www.rioki.org/2013/03/07/glsl-skybox.html
         // NOTE KI remove translation from the view matrix for skybox

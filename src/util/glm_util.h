@@ -25,4 +25,7 @@ namespace util
         const glm::vec3& vec,
         const glm::mat4& transform,
         float w /*= 1.0f*/);
+
+    // Convert from clipspace to viewport
+    glm::mat4 getViewportMatrix(const glm::vec2& size);
 }

@@ -11,6 +11,8 @@ layout (std140, binding = UBO_MATRICES) uniform Matrices {
 
   mat4 u_viewMatrixSkybox;
 
+  mat4 u_viewportMatrix;
+
   mat4 u_shadowMatrix[MAX_SHADOW_MAP_COUNT_ABS];
 
   // top, bottom, left, right, near, far

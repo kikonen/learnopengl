@@ -101,4 +101,18 @@ namespace util
         }
         return result;
     }
+
+    glm::mat4 getViewportMatrix(const glm::vec2& size)
+    {
+        const float w = size.x;
+        const float h = size.y;
+        const float w2 = w / 2.0f;
+        const float h2 = h / 2.0f;
+
+        return glm::mat4{
+            glm::vec4{ w2, 0.0f, 0.0f, 0.0f },
+            glm::vec4{ 0.0f, h2, 0.0f, 0.0f },
+            glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f },
+            glm::vec4{ w2 + 0, h2 + 0, 0.0f, 1.0f } };
+    }
 }

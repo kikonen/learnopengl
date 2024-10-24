@@ -75,6 +75,7 @@ Instance instance;
 Entity entity;
 
 #include fn_calculate_clipping.glsl
+#include fn_calculate_custom_clipping.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -222,6 +223,7 @@ void main() {
   vs_out.normal = normal;
 
   calculateClipping(worldPos);
+  // calculateCustomClipping(worldPos);
 
 #ifdef USE_TBN
 
