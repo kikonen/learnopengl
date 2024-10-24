@@ -13,19 +13,19 @@ prefab:
           map_pbr: scavenger_body_pbr
           alpha: true
           render_back: true
-          xwireframe: true
+          xline_mode: true
         - name: scavenger_hair_pbr
           alias: "Material #11"
           map_pbr: scavenger_hair_pbr
           alpha: true
           render_back: true
-          xwireframe: true
+          xline_mode: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
           map_pbr: scavenger_body_pbr
           alpha: true
           render_back: true
-          xwireframe: true
+          xline_mode: true
       xanimations:
         - name: walk
           path: Scavenger.fbx

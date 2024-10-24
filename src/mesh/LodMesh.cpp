@@ -186,7 +186,7 @@ namespace mesh {
         m_drawOptions.m_gbuffer = material.gbuffer;
 
         m_drawOptions.m_renderBack = material.renderBack;
-        m_drawOptions.m_wireframe = material.wireframe;
+        m_drawOptions.m_lineMode = material.lineMode;
 
         if (m_drawOptions.m_alpha) {
             m_drawOptions.m_kindBits |= render::KIND_ALPHA;

@@ -14,7 +14,7 @@ prefab:
         xmetal: [0.3, 0.4, 0, 1]
         xtiling: 60
         xrender_back: true
-        xwireframe: true
+        xline_mode: true
       animations:
         - name: idle
           path: anim/Deinodonte@IdleBreathe.FBX

@@ -92,7 +92,7 @@ int SampleApp::onInit()
         const auto& assets = Assets::get();
         auto& dbg = render::DebugContext::modify();
         dbg.m_frustumEnabled = assets.frustumEnabled;
-        dbg.m_forceWireframe = assets.forceWireframe;
+        dbg.m_forceLineMode = assets.forceLineMode;
         dbg.m_showNormals = assets.showNormals;
 
         dbg.m_showVolume = assets.showVolume;
@@ -278,11 +278,11 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         size.y,
         &m_dbg);
     {
-        ctx.m_forceWireframe = assets.forceWireframe;
+        ctx.m_forceLineMode = assets.forceLineMode;
         ctx.m_useLight = assets.useLight;
 
         if (m_dbg.m_nodeDebugEnabled) {
-            ctx.m_forceWireframe |= m_dbg.m_forceWireframe;
+            ctx.m_forceLineMode |= m_dbg.m_forceLineMode;
         }
 
         // https://paroj.github.io/gltut/apas04.html

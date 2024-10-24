@@ -54,7 +54,7 @@ namespace render {
             const ki::vao_id vaoId,
             const backend::DrawOptions& drawOptions,
             bool forceSolid,
-            bool forceWireframe) noexcept;
+            bool forceLineMode) noexcept;
 
         bool operator<(const BatchKey& o) const noexcept;
     };

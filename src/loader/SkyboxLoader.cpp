@@ -130,7 +130,7 @@ namespace loader {
         auto* lodMesh = type->modifyLodMesh(0);
         {
             lodMesh->m_priority = data.priority;
-            lodMesh->m_drawOptions.m_wireframe = false;
+            lodMesh->m_drawOptions.m_lineMode = false;
             lodMesh->m_drawOptions.m_renderBack = true;
             //lodMesh->flags.gbuffer = false;// data.programName.starts_with("g_");
 

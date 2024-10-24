@@ -491,7 +491,7 @@ nodes:
           map_pbr: wyvern_pbr
           xalpha: true
           xrender_back: true
-          xwireframe: true
+          xline_mode: true
       animations:
         - name: fire
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
@@ -911,7 +911,7 @@ nodes:
     front: [0, 1, 0]
     flags:
       pre_depth: true
-      xxwireframe: true
+      xxline_mode: true
       tessellation: true
     generator:
       type: terrain

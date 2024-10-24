@@ -150,7 +150,7 @@ nodes:
     front: [0, 1, 0]
     flags:
       pre_depth: true
-      xxwireframe: true
+      xxline_mode: true
       tessellation: true
     generator:
       type: terrain

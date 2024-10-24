@@ -100,7 +100,7 @@ public:
     bool useScript;
     bool useLight;
 
-    bool forceWireframe;
+    bool forceLineMode;
 
     bool showNormals;
     bool showRearView;

@@ -77,10 +77,10 @@ void DecalRenderer::render(
 
     state.setEnabled(GL_CULL_FACE, false);
 
-    const bool wireframe = ctx.m_forceWireframe;
-    state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
+    const bool lineMode = ctx.m_forceLineMode;
+    state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
-    if (wireframe) {
+    if (lineMode) {
         Program::get(m_solidDecalProgramId)->bind();
     }
     else {

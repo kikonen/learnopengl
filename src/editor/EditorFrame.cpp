@@ -481,7 +481,7 @@ namespace editor {
         ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
 
         if (dbg.m_nodeDebugEnabled) {
-            ImGui::Checkbox("Wireframe", &dbg.m_forceWireframe);
+            ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
             ImGui::Checkbox("Show normals", &dbg.m_showNormals);
             ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
         }

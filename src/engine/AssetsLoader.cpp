@@ -287,8 +287,8 @@ void AssetsLoader::loadAssets(
                 data.useLight = readBool(v);
                 continue;
             }
-            if (k == "force_wireframe") {
-                data.forceWireframe = readBool(v);
+            if (k == "force_line_mode") {
+                data.forceLineMode = readBool(v);
                 continue;
             }
         }

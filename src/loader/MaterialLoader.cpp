@@ -426,9 +426,9 @@ namespace loader {
                 material.renderBack = readBool(v);
                 fields.renderBack = true;
             }
-            else if (k == "wireframe") {
-                material.wireframe = readBool(v);
-                fields.wireframe = true;
+            else if (k == "line_mode") {
+                material.lineMode = readBool(v);
+                fields.lineMode = true;
             }
             else if (k == "program" || k == "shader") {
                 material.m_programNames[MaterialProgramType::shader] = readString(v);
@@ -754,7 +754,7 @@ namespace loader {
         if (f.blend) m.blend = mod.blend;
 
         if (f.renderBack) m.renderBack = mod.renderBack;
-        if (f.wireframe) m.wireframe = mod.wireframe;
+        if (f.lineMode) m.lineMode = mod.lineMode;
 
         if (f.gbuffer) m.gbuffer = mod.gbuffer;
 

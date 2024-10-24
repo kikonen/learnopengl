@@ -164,7 +164,7 @@ void LayerRenderer::renderHighlight(
     render::FrameBuffer* targetBuffer)
 {
     RenderContext ctx{ "local", &parentCtx };
-    ctx.m_forceWireframe = true;
+    ctx.m_forceLineMode = true;
 
     const auto& assets = ctx.m_assets;
 

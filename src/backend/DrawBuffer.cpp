@@ -221,7 +221,7 @@ namespace backend {
             sameDraw = curr.m_vaoId == sendRange.m_vaoId &&
                 curr.m_programId == sendRange.m_programId &&
                 cd.m_renderBack == sd.m_renderBack &&
-                cd.m_wireframe == sd.m_wireframe &&
+                cd.m_lineMode == sd.m_lineMode &&
                 cd.m_blend == sd.m_blend &&
                 cd.m_mode == sd.m_mode &&
                 cd.m_type == sd.m_type;
@@ -386,15 +386,15 @@ namespace backend {
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
 
-        const bool wireframe = drawOptions.m_wireframe;
+        const bool lineMode = drawOptions.m_lineMode;
 
-        state.polygonFrontAndBack(wireframe ? GL_LINE : GL_FILL);
+        state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
         if (drawOptions.m_mode == DrawOptions::Mode::patches) {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !wireframe && drawOptions.m_blend;
+        const bool blend = !lineMode && drawOptions.m_blend;
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             // NOTE KI no blend mode with OIT blend

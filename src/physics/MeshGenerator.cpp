@@ -333,7 +333,7 @@ namespace physics {
             drawOptions.m_mode = mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;
             drawOptions.m_solid = true;
-            drawOptions.m_wireframe = true;
+            drawOptions.m_lineMode = true;
             drawOptions.m_renderBack = geomType == GeomType::plane || geomType == GeomType::height_field;
         }
 

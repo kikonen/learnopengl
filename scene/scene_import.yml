@@ -51,7 +51,7 @@ nodes:
         xuse_animation: true
       material_modifier:
         xrender_back: true
-        xwireframe: true
+        xline_mode: true
       program: g_tex
       shadow_program: simple_depth
       base_scale: 0.01
@@ -75,7 +75,7 @@ nodes:
           map_pbr: pine_leaf_pbr
           alpha: true
           render_back: true
-          xwireframe: true
+          xline_mode: true
       program: g_tex
       shadow_program: simple_depth
       base_scale: 0.01

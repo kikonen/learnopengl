@@ -38,8 +38,8 @@ void ViewportRenderer::render(
 
     auto& state = ctx.m_state;
 
-    bool forceWireframe = ctx.m_forceWireframe;
-    ctx.m_forceWireframe = false;
+    bool forceLineMode = ctx.m_forceLineMode;
+    ctx.m_forceLineMode = false;
     ctx.bindDefaults();
 
     state.setDepthFunc(GL_LEQUAL);
@@ -54,6 +54,6 @@ void ViewportRenderer::render(
     state.setEnabled(GL_BLEND, false);
     state.setDepthFunc(ctx.m_depthFunc);
 
-    ctx.m_forceWireframe = forceWireframe;
+    ctx.m_forceLineMode = forceLineMode;
     ctx.bindDefaults();
 }

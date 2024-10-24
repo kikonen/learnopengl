@@ -104,7 +104,7 @@ Assets::Assets()
     useScript = true;
     useLight = true;
 
-    forceWireframe = false;
+    forceLineMode = false;
 
     rasterizerDiscard = false;
 

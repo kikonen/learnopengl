@@ -274,7 +274,7 @@ public:
     bool blend : 1 {false};
 
     bool renderBack : 1 {false};
-    bool wireframe : 1 {false};
+    bool lineMode : 1 {false};
 
     bool gbuffer : 1 {false};
     bool inmutable : 1 {false};

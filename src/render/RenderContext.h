@@ -169,7 +169,7 @@ public:
     mutable bool m_useParticles : 1{ true };
 
     mutable bool m_forceSolid : 1{ false };
-    mutable bool m_forceWireframe : 1{ false };
+    mutable bool m_forceLineMode : 1{ false };
 
     mutable bool m_allowDrawDebug : 1{ false };
 };

@@ -54,7 +54,7 @@ assets:
   use_script: true
   use_light: true
 
-  #force_wireframe: false
+  #force_line_mode: false
 
   #show_normals: false
   show_rear_view: false

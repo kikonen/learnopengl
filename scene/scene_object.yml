@@ -47,7 +47,7 @@ nodes:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
         xrender_back: true
-        xwireframe: true
+        xline_mode: true
         program: g_tex
         shadow_program: simple_depth
       scale: 0.5

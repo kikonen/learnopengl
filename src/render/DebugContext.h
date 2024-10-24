@@ -21,7 +21,7 @@ namespace render {
         int m_entityId{ 0 };
 
         bool m_nodeDebugEnabled{ false };
-        bool m_forceWireframe{ false };
+        bool m_forceLineMode{ false };
         bool m_showNormals{ false };
 
         glm::vec3 m_selectionAxis{ 0.f };

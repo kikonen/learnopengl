@@ -41,7 +41,7 @@ namespace backend {
         bool m_blend : 1 {false};
 
         bool m_renderBack : 1 {false};
-        bool m_wireframe : 1 {false};
+        bool m_lineMode : 1 {false};
 
         bool m_gbuffer : 1 {false};
 
@@ -80,10 +80,10 @@ namespace backend {
         inline bool isSameMultiDraw(
             const DrawOptions& o,
             bool forceSolid,
-            bool forceWireframe) const noexcept
+            bool forceLineMode) const noexcept
         {
             return m_renderBack == o.m_renderBack &&
-                (forceWireframe ? true : m_wireframe == o.m_wireframe) &&
+                (forceLineMode ? true : m_lineMode == o.m_lineMode) &&
                 (forceSolid ? true : m_blend == o.m_blend) &&
                 m_clip == o.m_clip &&
                 m_mode == o.m_mode &&
@@ -92,8 +92,8 @@ namespace backend {
 
         // NOTE KI for MeshTypeKey
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_blend, m_renderBack, m_clip, m_wireframe, m_type, m_mode) <
-                std::tie(o.m_blend, o.m_renderBack, o.m_clip, o.m_wireframe, o.m_type, o.m_mode);
+            return std::tie(m_blend, m_renderBack, m_clip, m_lineMode, m_type, m_mode) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_type, o.m_mode);
         }
     };
 }

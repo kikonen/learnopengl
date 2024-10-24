@@ -33,7 +33,7 @@ nodes:
           kd: [0.5075, 0.5075, 0.5075, 1.0]
           map_kd: textures/Dirt_vh_1024.png
           tiling: 1
-          xxwireframe: true
+          xxline_mode: true
           xxrender_back: true
         program: g_tex
       - material:
@@ -59,7 +59,7 @@ nodes:
       material_modifier:
         map_pbr: textures/Plastic 01 [4K]
         xmap_pbr: textures\Metal007_1K-PNG
-        xxwireframe: true
+        xxline_mode: true
     program: g_tex
     priority: 1
     pos: [0, 0, 0]

@@ -11,7 +11,7 @@ prefab:
         name: wolf_pbr
         map_pbr: wolf_pbr
         xrender_back: true
-        xwireframe: true
+        xline_mode: true
       animations:
         - name: walk
           path: anim/ANIM_Wolf_Walk_RM.FBX

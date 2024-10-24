@@ -127,7 +127,7 @@ RenderContext::RenderContext(
         m_shadow = m_parent->m_shadow;
 
         m_forceSolid = m_parent->m_forceSolid;
-        m_forceWireframe = m_parent->m_forceWireframe;
+        m_forceLineMode = m_parent->m_forceLineMode;
 
         m_allowDrawDebug = m_parent->m_allowDrawDebug;
 

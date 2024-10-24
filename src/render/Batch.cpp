@@ -110,7 +110,7 @@ namespace render {
                     lodMesh.m_vaoId,
                     drawOptions,
                     ctx.m_forceSolid,
-                    ctx.m_forceWireframe,
+                    ctx.m_forceLineMode,
                 };
 
                 const auto& it = m_batches.find(key);
@@ -232,7 +232,7 @@ namespace render {
                             lodMesh.m_vaoId,
                             drawOptions,
                             ctx.m_forceSolid,
-                            ctx.m_forceWireframe,
+                            ctx.m_forceLineMode,
                         };
 
                         const auto& it = m_batches.find(key);
