@@ -123,7 +123,8 @@ public:
     void addTexPath(TextureType type, const std::string& path) noexcept
     {
         if (path.empty()) return;
-        m_texturePaths.insert({ type, path });
+        //m_texturePaths.insert({ type, path });
+        m_texturePaths[type] = path;
     }
 
     bool hasRegisteredTex(TextureType type) const noexcept
