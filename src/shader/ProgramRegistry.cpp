@@ -60,8 +60,9 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 
     std::vector<ki::program_id> dirty;
 
-    if (dbg.m_geometryType != m_debugGeometryType) {
+    if (dbg.m_geometryType != m_debugGeometryType || dbg.m_wireframeOnly != m_debugWireframeOnly) {
         m_debugGeometryType = dbg.m_geometryType;
+        m_debugWireframeOnly = dbg.m_wireframeOnly;
 
         for (auto& program : m_programs) {
             if (!program) continue;

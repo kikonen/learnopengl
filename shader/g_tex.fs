@@ -123,7 +123,11 @@ void main() {
   // lineWidth = 0.5;
 
   float mixVal = smoothstep(lineWidth - 1, lineWidth + 1, d);
-  color.rgb = mix( lineColor.rgb, color.rgb, mixVal );
+  color.rgb = mix(lineColor.rgb, saveColor.rgb, mixVal);
+#ifdef USE_ALPHA
+  if (Debug.u_wireframeOnly && mixVal > 0.9) discard;
+  // color.rgb = saveColor.rgb;
+#endif
 #endif
 
   // if (!gl_FrontFacing) {

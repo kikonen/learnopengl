@@ -63,6 +63,7 @@ private:
     std::unordered_map<std::string, ki::program_id> m_programIds;
 
     std::string m_debugGeometryType;
+    bool m_debugWireframeOnly{ false };
 
     std::mutex m_programs_lock{};
 

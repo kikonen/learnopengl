@@ -508,6 +508,7 @@ namespace editor {
                 //ImGui::Checkbox("WireframeMode", &dbg.m_wireframeMode);
                 ImGui::DragFloat("WireframeWidth", &dbg.m_wireframeLineWidth, 0.f, 1.f);
                 ImGui::ColorEdit3("WireframeColor", glm::value_ptr(dbg.m_wireframeLineColor));
+                ImGui::Checkbox("WireframeOnly", &dbg.m_wireframeOnly);
             }
 
             ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);

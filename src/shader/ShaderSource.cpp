@@ -253,11 +253,14 @@ void ShaderSource::appendDefines(
             if (it->second.m_debug && it->second.pathExists())
             {
                 KI_INFO_OUT(fmt::format(
-                    "[PROGRAM: {}]: USE_DBG geometryType={}",
-                    program.m_key, dbg.m_geometryType));
+                    "[PROGRAM: {}]: USE_DBG geometryType={}, wireframeOnly={}",
+                    program.m_key, dbg.m_geometryType, dbg.m_wireframeOnly));
 
                 const auto key = util::toUpper(dbg.m_geometryType);
                 lines.push_back(fmt::format("#define USE_{} 1", key));
+                if (dbg.m_wireframeOnly) {
+                    lines.push_back("#define USE_ALPHA 1");
+                }
             }
         }
     }

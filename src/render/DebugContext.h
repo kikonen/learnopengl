@@ -54,6 +54,7 @@ namespace render {
         std::string m_geometryType;
         float m_wireframeLineWidth{ 1.f };
         glm::vec3 m_wireframeLineColor{ 1, 1, 0 };
+        bool m_wireframeOnly{ false };
 
         bool m_showVolume{ false };
         bool m_showSelectionVolume{ false };

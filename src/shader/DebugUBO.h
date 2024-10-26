@@ -15,6 +15,7 @@ struct DebugUBO {
     float u_parallaxDepth;
     int u_parallaxMethod;
 
+    int u_wireframeOnly;
     float u_wireframeLineWidth;
     glm::vec3 u_wireframeLineColor;
 };
