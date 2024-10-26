@@ -222,6 +222,73 @@ int SampleApp::onSetup()
         mat.addTexPath(TextureType::normal_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg");
         mat.addTexPath(TextureType::opacity_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg");
 
+        mat.addTexPath(TextureType::metallness_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg");
+        mat.addTexPath(TextureType::displacement_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg");
+        mat.addTexPath(TextureType::roughness_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg");
+
+        mat.map_channelParts.push_back({
+            TextureType::metallness_map,
+            { ChannelPart::Channel::red }
+            });
+
+        mat.map_channelParts.push_back({
+            TextureType::roughness_map,
+            { ChannelPart::Channel::green }
+            });
+
+        mat.map_channelParts.push_back({
+            TextureType::displacement_map,
+            { ChannelPart::Channel::blue }
+            });
+
+        mat.parallaxDepth = 0.1f;
+
+        mat.spriteCount = 1;
+        mat.spritesX = 1;
+        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
+        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
+        mat.loadTextures();
+        mat.registerMaterial();
+    }
+    {
+        m_rubbleMaterial = std::make_unique<Material>();
+        auto& mat = *m_rubbleMaterial;
+        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
+        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
+        //mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
+
+        std::string base = "decals/rubble_tbcs3qo_2k/";
+        mat.addTexPath(TextureType::diffuse, base + "Rubble_tbcs3qo_2K_BaseColor.jpg");
+        mat.addTexPath(TextureType::normal_map, base + "Rubble_tbcs3qo_2K_Normal.jpg");
+        mat.addTexPath(TextureType::opacity_map, base + "Rubble_tbcs3qo_2K_Opacity.jpg");
+
+        mat.addTexPath(TextureType::metallness_map, base + "Rubble_tbcs3qo_2K_Gloss.jpg");
+        mat.addTexPath(TextureType::roughness_map, base + "Rubble_tbcs3qo_2K_Roughness.jpg");
+        mat.addTexPath(TextureType::occlusion_map, base + "Rubble_tbcs3qo_2K_AO.jpg");
+        mat.addTexPath(TextureType::displacement_map, base + "Rubble_tbcs3qo_2K_Cavity.jpg");
+
+        mat.map_channelParts.push_back({
+            TextureType::metallness_map,
+            { ChannelPart::Channel::red }
+            });
+
+        mat.map_channelParts.push_back({
+            TextureType::roughness_map,
+            { ChannelPart::Channel::green }
+            });
+
+        mat.map_channelParts.push_back({
+            TextureType::displacement_map,
+            { ChannelPart::Channel::blue }
+            });
+
+        mat.map_channelParts.push_back({
+            TextureType::occlusion_map,
+            { ChannelPart::Channel::alpha }
+            });
+
+        mat.parallaxDepth = 0.1f;
+
         mat.spriteCount = 1;
         mat.spritesX = 1;
         mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
@@ -689,7 +756,7 @@ void SampleApp::shoot(
                 decal.m_rotation = util::prnd(std::numbers::pi_v<float> * 2.f);
 
                 decal.m_scale = 0.01f + util::prnd(0.05f);
-                decal.m_scale = 0.5f + util::prnd(1.f);
+                decal.m_scale = 1.f + util::prnd(2.f);
 
                 decal::DecalSystem::get().addDecal(decal);
 
