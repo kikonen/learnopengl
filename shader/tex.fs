@@ -33,6 +33,10 @@ in VS_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 } fs_in;
 
 layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
@@ -68,13 +72,8 @@ void main() {
   const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
 
 #ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (material.diffuse.a < 0.95)
+  if (material.diffuse.a < ALPHA_THRESHOLD)
     discard;
-#else
-  if (material.diffuse.a < 0.01)
-    discard;
-#endif
 #endif
 
   #include var_tex_material_normal.glsl
@@ -92,13 +91,8 @@ void main() {
     fs_in.shadowIndex);
 
 #ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (material.diffuse.a < 0.95)
+  if (material.diffuse.a < ALPHA_THRESHOLD)
     discard;
-#else
-  if (material.diffuse.a < 0.01)
-    discard;
-#endif
 #endif
 
 #ifndef USE_BLEND
@@ -111,7 +105,8 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  texColor = calculateFog(fs_in.viewPos, texColor);
+  // texColor = calculateFog(fs_in.viewPos, texColor);
 
   o_fragColor = texColor;
+  // o_fragColor.g = 1.0;
 }

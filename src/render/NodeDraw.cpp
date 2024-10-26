@@ -215,10 +215,6 @@ namespace render {
 
                 ctx.m_batch->flush(ctx);
 
-                {
-                    m_decalRenderer->render(ctx);
-                }
-
                 if (assets.prepassDepthEnabled) {
                     state.setDepthFunc(ctx.m_depthFunc);
                 }
@@ -365,6 +361,10 @@ namespace render {
                 },
                 nodeSelector);
             ctx.m_batch->flush(ctx);
+
+            {
+                m_decalRenderer->renderBlend(ctx);
+            }
         }
 
         if (!ctx.m_forceSolid && ctx.m_useParticles)

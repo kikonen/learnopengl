@@ -71,10 +71,10 @@ void main()
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (material.diffuse.a < 0.95)
+  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD)
     discard;
 #else
-  if (material.diffuse.a < 0.05)
+  if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)
     discard;
 #endif
 #endif

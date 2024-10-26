@@ -1,5 +1,7 @@
 #include "SampleApp.h"
 
+#include <numbers>
+
 #include <fmt/format.h>
 
 #include <glm/glm.hpp>
@@ -71,6 +73,9 @@ namespace {
     ki::node_id fpsNodeId = SID("fps_counter");
 
     std::vector<script::command_id> g_rayMarkers;
+
+    constexpr float HIT_RATE = 0.25f;
+    float g_hitElapsed = 0.f;
 }
 
 SampleApp::SampleApp()
@@ -350,16 +355,16 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             {
                 selectNode(ctx, scene, state, m_lastInputState);
             }
-            else if (state.shift)
-            {
-                shoot(ctx, scene, state, m_lastInputState);
-            }
+            //else if (state.shift)
+            //{
+            //    shoot(ctx, scene, state, m_lastInputState);
+            //}
         }
 
         if (state.mouseRight == GLFW_PRESS &&
             input->allowMouse())
         {
-            if (state.shift)
+            if (state.ctrl)
             {
                 shoot(ctx, scene, state, m_lastInputState);
             }
@@ -658,15 +663,19 @@ void SampleApp::shoot(
             player->toHandle(),
             true);
 
-        if (!hits.empty()) {
+        g_hitElapsed += ctx.m_clock.elapsedSecs;
+
+        if (!hits.empty() && g_hitElapsed >= HIT_RATE) {
+            g_hitElapsed -= HIT_RATE;
+
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
-                KI_INFO_OUT(fmt::format(
-                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
-                    node ? node->getName() : "N/A",
-                    hit.pos,
-                    hit.normal,
-                    hit.depth));
+                //KI_INFO_OUT(fmt::format(
+                //    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
+                //    node ? node->getName() : "N/A",
+                //    hit.pos,
+                //    hit.normal,
+                //    hit.depth));
                 const auto* mat = m_bloodMaterial.get();
 
                 auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
@@ -676,6 +685,8 @@ void SampleApp::shoot(
                 decal.m_scale = 0.5f + util::prnd(1.f);
                 decal.m_spriteBaseIndex = 0;
                 decal.m_spriteCount = mat->spriteCount;
+
+                decal.m_rotation = util::prnd(std::numbers::pi_v<float> * 2.f);
 
                 decal.m_scale = 0.01f + util::prnd(0.05f);
                 decal.m_scale = 0.5f + util::prnd(1.f);

@@ -63,7 +63,7 @@ void main()
 // NOTE KI USE_BLEND does not make much sense here
 // => written into framebuffer, blend is property of material usign this texture
 #ifdef USE_ALPHA
-  if (fragColor.a < 0.05)
+  if (fragColor.a < ALPHA_THRESHOLD)
     discard;
 #endif
 

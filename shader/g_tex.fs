@@ -77,10 +77,10 @@ void main() {
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (material.diffuse.a < 0.7)
+  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD)
     discard;
 #else
-  if (material.diffuse.a < 0.05)
+  if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)
     discard;
 #endif
 #endif
@@ -112,7 +112,9 @@ void main() {
 #endif
 
 #ifdef USE_WIREFRAME_MOD
-  const float d = min(
+  vec3 saveColor = color.rgb;
+
+  float d = min(
     min(
       fs_in.edgeDistance.x,
       fs_in.edgeDistance.y),

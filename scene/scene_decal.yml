@@ -51,7 +51,7 @@ nodes:
         parallax_depth: 0.0
         tiling_x: 1.25
         tiling_y: 0.75
-        program: g_tex
+        program: tex
     pos: [-5, 1.5, 0]
     physics:
       update: true

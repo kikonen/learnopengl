@@ -12,7 +12,7 @@
 #include "engine/UpdateContext.h"
 
 namespace {
-    constexpr float DECAL_DIST = 0.002f;
+    constexpr float DECAL_DIST = 0.003f;
     inline glm::vec3 QUAD_NORMAL{ 0, 0, 1.f };
     inline glm::mat4 ID_MAT{ 1.f };
 }

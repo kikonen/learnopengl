@@ -10,7 +10,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - prefab:
+  - xprefab:
       path: prefab/util/prefab_grid.yml
   - id: player_fps
     type: origo

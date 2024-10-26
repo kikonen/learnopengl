@@ -1,7 +1,5 @@
 #version 460 core
 
-#define USE_BONES_NORMAL 1
-
 #include texture_quad.glsl
 
 #include struct_material.glsl
@@ -19,9 +17,7 @@
 #include uniform_debug.glsl
 
 out VS_OUT {
-#ifdef USE_CUBE_MAP
   vec3 worldPos;
-#endif
   flat vec2 spriteCoord;
   flat vec2 spriteSize;
 
@@ -30,6 +26,9 @@ out VS_OUT {
   vec2 texCoord;
 
   flat uint materialIndex;
+
+  flat uint shadowIndex;
+  vec4 shadowPos;
 
 #ifdef USE_TBN
   mat3 tbn;
@@ -53,6 +52,7 @@ const vec3 UP = vec3(0, 1, 0);
 Decal decal;
 
 #include fn_calculate_clipping.glsl
+#include fn_calculate_shadow_index.glsl
 
 void main() {
   const uint decalIndex = gl_BaseInstance + gl_InstanceID;
@@ -77,6 +77,9 @@ void main() {
 #ifdef USE_TBN
   vec3 tangent = normalize(normalMatrix * VERTEX_TANGENT);
 #endif
+
+  const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
+  const uint shadowIndex = calculateShadowIndex(viewPos);
 
   gl_Position = u_projectedMatrix * worldPos;
 
@@ -107,23 +110,18 @@ void main() {
     vs_out.texCoord.y = vs_out.spriteCoord.y + vs_out.texCoord.y * vs_out.spriteSize.y;
   }
 
-#ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
-#endif
-
-  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
+  vs_out.viewPos = viewPos;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = normal;
 
   calculateClipping(worldPos);
 
-  for (int i = 0; i < CLIP_COUNT; i++) {
-    gl_ClipDistance[i] = -1.0;
-  }
+  vs_out.shadowIndex = shadowIndex;
+  vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_TBN
-
   if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
@@ -141,7 +139,4 @@ void main() {
 #endif
   }
 #endif
-
-  // HACK KI for primitive GL_POINTS
-  gl_PointSize = u_materials[materialIndex].layersDepth;
 }

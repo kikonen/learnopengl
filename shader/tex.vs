@@ -40,6 +40,10 @@ out VS_OUT {
 #ifdef USE_TBN
   mat3 tbn;
 #endif
+#ifdef USE_PARALLAX
+  flat vec3 viewTangentPos;
+  vec3 tangentPos;
+#endif
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -122,8 +126,8 @@ void main() {
   vs_out.shadowIndex = shadowIndex;
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
-#ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0)
+#ifdef USE_TBN
+  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -132,6 +136,12 @@ void main() {
     const vec3 bitangent = cross(normal, tangent);
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
+
+#ifdef USE_PARALLAX
+    const mat3 invTBN = transpose(vs_out.tbn);
+    vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
+    vs_out.tangentPos  = invTBN * worldPos.xyz;
+#endif
   }
 #endif
 }

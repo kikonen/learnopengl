@@ -39,16 +39,20 @@ void DecalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_alphaDecalProgramId = ProgramRegistry::get().getProgram(
-        SHADER_DECAL,
+    m_blendDecalProgramId = ProgramRegistry::get().getProgram(
+        SHADER_BLEND_DECAL,
         { { DEF_USE_ALPHA, "1" },
           { DEF_USE_BLEND, "1" } });
 
+    m_alphaDecalProgramId = ProgramRegistry::get().getProgram(
+        SHADER_SOLID_DECAL,
+        { { DEF_USE_ALPHA, "1" } });
+
     m_solidDecalProgramId = ProgramRegistry::get().getProgram(
-        SHADER_DECAL);
+        SHADER_SOLID_DECAL);
 }
 
-void DecalRenderer::render(
+void DecalRenderer::renderSolid(
     const RenderContext& ctx)
 {
     if (!isEnabled()) return;
@@ -58,40 +62,48 @@ void DecalRenderer::render(
     const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
     if (instanceCount == 0) return;
 
-    //KI_INFO_OUT(fmt::format("DECAL: count={}", instanceCount));
+    const bool lineMode = ctx.m_forceLineMode;
+    state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
+    Program::get(m_alphaDecalProgramId)->bind();
 
-    if (false) {
+    render::TextureQuad::get().drawInstanced(instanceCount);
+}
+
+void DecalRenderer::renderBlend(
+    const RenderContext& ctx)
+{
+    if (!isEnabled()) return;
+
+    const bool lineMode = ctx.m_forceLineMode;
+
+    auto& state = ctx.m_state;
+
+    const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
+    if (instanceCount == 0) return;
+
+    if (!lineMode) {
         // NOTE KI decals don't update depth
         state.setDepthMask(GL_FALSE);
         state.setEnabled(GL_BLEND, true);
-        //state.setEnabled(GL_CULL_FACE, false);
-
-        //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         // https://stackoverflow.com/questions/31850635/opengl-additive-blending-get-issue-when-no-background
-        //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA });
-        state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
-        //glBlendFunc(GL_ONE, GL_ONE);
+        //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
+        state.setBlendMode({});
     }
 
-    state.setEnabled(GL_CULL_FACE, false);
-
-    const bool lineMode = ctx.m_forceLineMode;
     state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
     if (lineMode) {
         Program::get(m_solidDecalProgramId)->bind();
     }
     else {
-        Program::get(m_alphaDecalProgramId)->bind();
+        Program::get(m_blendDecalProgramId)->bind();
     }
 
     render::TextureQuad::get().drawInstanced(instanceCount);
 
-    state.setEnabled(GL_CULL_FACE, true);
-
-    if (false) {
+    if (!lineMode) {
         state.setDepthMask(GL_TRUE);
         state.setEnabled(GL_BLEND, false);
     }

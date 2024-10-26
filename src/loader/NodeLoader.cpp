@@ -295,9 +295,9 @@ namespace loader {
             if (data.type == NodeType::none) {
                 auto msg = fmt::format("INVALID: type missing - id={}, name={}", data.baseId, data.name);
                 KI_INFO_OUT(msg);
-                throw msg;
+                //throw msg;
+                data.enabled = false;
             }
-
         }
 
         if (data.type == NodeType::text) {
