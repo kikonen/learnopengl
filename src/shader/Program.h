@@ -80,7 +80,8 @@ public:
     }
 
     // NOTE KI apply "geom mod" for debugging (optional per shader)
-    void setDebugGeometryType(const std::string& geometryType);
+    // @return true if program needs re-compile
+    bool setDebugGeometryType(const std::string& geometryType);
 
 private:
     // @return shaderId

@@ -243,26 +243,29 @@ GLint Program::getSubroutineIndex(std::string_view name, GLenum shaderType)
     return vi;
 }
 
-void Program::setDebugGeometryType(const std::string& geometryType)
+bool Program::setDebugGeometryType(const std::string& geometryType)
 {
     const auto& src = m_sources[GL_GEOMETRY_SHADER];
 
-    if (!src.m_required || src.m_debug) {
-        const auto& path = m_basePath + "_" + std::string{ geometryType } + ".gs.glsl";
-        if (util::fileExists(path)) {
-            KI_INFO_OUT(fmt::format("[PROGRAM: {}]: SET_DBG geometryType={}, path={}",
-                m_key, geometryType, path));
-            m_sources[GL_GEOMETRY_SHADER] = { true, false, path };
+    if (src.m_required) return false;
 
-            const auto& it = m_sources.find(GL_GEOMETRY_SHADER);
-            if (it != m_sources.end()) {
-                KI_INFO_OUT(fmt::format("[PROGRAM: {}]: VALID_DBG geometryType={}, path={}, exist={}",
-                    m_key, geometryType, it->second.m_path, it->second.pathExists()));
-            }
+    const auto& path = m_basePath + "_" + std::string{ geometryType } + ".gs.glsl";
+    if (util::fileExists(path)) {
+        KI_INFO_OUT(fmt::format("[PROGRAM: {}]: SET_DBG geometryType={}, path={}",
+            m_key, geometryType, path));
+        m_sources[GL_GEOMETRY_SHADER] = { true, false, path };
+
+        const auto& it = m_sources.find(GL_GEOMETRY_SHADER);
+        if (it != m_sources.end()) {
+            KI_INFO_OUT(fmt::format("[PROGRAM: {}]: VALID_DBG geometryType={}, path={}, exist={}",
+                m_key, geometryType, it->second.m_path, it->second.pathExists()));
         }
-        else {
-            m_sources[GL_GEOMETRY_SHADER] = { false, false, "" };
-        }
+        return true;
+    }
+    else {
+        bool wasDebug = src.m_debug;
+        m_sources[GL_GEOMETRY_SHADER] = { false, false, "" };
+        return wasDebug;
     }
 }
 

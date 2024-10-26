@@ -56,28 +56,34 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 {
     std::lock_guard lock(m_programs_lock);
 
+    const auto& dbg = render::DebugContext::get();
+
+    std::vector<ki::program_id> dirty;
+
+    if (dbg.m_geometryType != m_debugGeometryType) {
+        m_debugGeometryType = dbg.m_geometryType;
+
+        for (auto& program : m_programs) {
+            if (!program) continue;
+            if (program->setDebugGeometryType(m_debugGeometryType)) {
+                dirty.push_back(program->m_id);
+            }
+        }
+    }
+
     m_elapsedSecs += ctx.m_clock.elapsedSecs;
 
-    if (m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
+    if (!dirty.empty() || m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
         auto& fileCache = FileEntryCache::get();
-        const auto& dbg = render::DebugContext::get();
-
-        if (dbg.m_geometryType != m_debugGeometryType) {
-            m_debugGeometryType = dbg.m_geometryType;
-
-            for (auto& program : m_programs) {
-                if (!program) continue;
-                program->setDebugGeometryType(m_debugGeometryType);
-            }
-
-            fileCache.markAllModified();
-        }
 
         fileCache.checkModified();
 
         for (auto& program : m_programs) {
             if (!program) continue;
-            if (program->isLoaded() && program->isModified()) {
+            if (!program->isLoaded()) continue;
+
+            const auto isDirty = std::find(dirty.begin(), dirty.end(), program->m_id) != dirty.end();
+            if (isDirty || program->isModified()) {
                 KI_INFO_OUT(fmt::format("PROGRAM_RELOAD: {}", program->m_key));
                 program->reload();
             }
