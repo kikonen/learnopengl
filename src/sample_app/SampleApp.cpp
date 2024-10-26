@@ -196,7 +196,27 @@ int SampleApp::onSetup()
         auto& mat = *m_bulletMaterial;
         //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
         //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
-        mat.addTexPath(TextureType::diffuse, "particles/BulletHole_Plaster.png");
+        mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
+
+        mat.spriteCount = 1;
+        mat.spritesX = 1;
+        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
+        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
+        mat.loadTextures();
+        mat.registerMaterial();
+    }
+    {
+        m_bloodMaterial = std::make_unique<Material>();
+        auto& mat = *m_bloodMaterial;
+        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
+        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
+        //mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
+
+        std::string base = "decals/high_velocity_blood_spatter_sgepbixp_2k/";
+        mat.addTexPath(TextureType::diffuse, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg");
+        mat.addTexPath(TextureType::normal_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg");
+        mat.addTexPath(TextureType::opacity_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg");
+
         mat.spriteCount = 1;
         mat.spritesX = 1;
         mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
@@ -641,22 +661,24 @@ void SampleApp::shoot(
         if (!hits.empty()) {
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
-                //KI_INFO_OUT(fmt::format(
-                //    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
-                //    node ? node->getName() : "N/A",
-                //    hit.pos,
-                //    hit.normal,
-                //    hit.depth));
+                KI_INFO_OUT(fmt::format(
+                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
+                    node ? node->getName() : "N/A",
+                    hit.pos,
+                    hit.normal,
+                    hit.depth));
+                const auto* mat = m_bloodMaterial.get();
 
                 auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
-                decal.m_materialIndex = m_bulletMaterial->m_registeredIndex;
+                decal.m_materialIndex = mat->m_registeredIndex;
                 //decal.m_materialIndex = 3;
                 decal.m_lifetime = 99999999999999.f;
                 decal.m_scale = 0.5f + util::prnd(1.f);
                 decal.m_spriteBaseIndex = 0;
-                decal.m_spriteCount = m_bulletMaterial->spriteCount;
+                decal.m_spriteCount = mat->spriteCount;
 
                 decal.m_scale = 0.01f + util::prnd(0.05f);
+                decal.m_scale = 0.5f + util::prnd(1.f);
 
                 decal::DecalSystem::get().addDecal(decal);
 
