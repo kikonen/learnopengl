@@ -331,16 +331,28 @@ std::string Material::getTexturePath(
 {
     if (textureName.empty()) return {};
 
-    std::string texturePath;
-    {
-        const auto& assets = Assets::get();
+    const auto& assets = Assets::get();
 
+    std::string texturePath;
+
+    if (!m_basePath.empty())
+    {
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        texturePath = util::joinPathExt(
+            assets.assetsDir,
+            m_path,
+            m_basePath,
+            textureName, "");
+    }
+
+    if (!util::fileExists(texturePath)) {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
             assets.assetsDir,
             m_path,
             textureName, "");
     }
+
     return texturePath;
 }
 

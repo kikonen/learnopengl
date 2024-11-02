@@ -279,6 +279,7 @@ public:
     bool inmutable : 1 {false};
 
     std::string m_geometryType;
+    std::string m_basePath;
 
     std::vector<ChannelPart> map_channelParts;
 

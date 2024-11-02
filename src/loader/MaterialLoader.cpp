@@ -208,6 +208,9 @@ namespace loader {
             else if (k == "modify") {
                 data.modifier = readBool(v);
             }
+            else if (k == "base" || k == "base_path") {
+                material.m_basePath = readString(v);
+            }
             //else if (k == "ns") {
             //    material.ns = readFloat(v);
             //    fields.ns = true;
