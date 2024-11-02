@@ -4,7 +4,8 @@
 
 #include "asset/Assets.h"
 
-#include "util/Util.h"
+#include "util/util.h"
+#include "util/file.h"
 
 #include "audio/Source.h"
 #include "audio/Listener.h"

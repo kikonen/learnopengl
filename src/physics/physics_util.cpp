@@ -1,6 +1,6 @@
 #include "physics_util.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 namespace physics {
 }

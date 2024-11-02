@@ -7,7 +7,8 @@
 #include <assimp/postprocess.h>
 
 #include "util/glm_format.h"
-#include "util/Util.h"
+#include "util/util.h"
+#include "util/file.h"
 #include "util/Log.h"
 #include "util/assimp_util.h"
 

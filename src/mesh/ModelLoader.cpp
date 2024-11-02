@@ -1,6 +1,6 @@
 #include "ModelLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "mesh/MeshSet.h"
 

@@ -4,7 +4,7 @@
 
 #include "util/debug.h"
 #include "util/glm_util.h"
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"

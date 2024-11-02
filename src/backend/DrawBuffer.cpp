@@ -4,7 +4,7 @@
 
 #include "kigl/GLState.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "asset/Assets.h"
 

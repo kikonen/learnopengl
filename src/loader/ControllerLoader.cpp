@@ -1,7 +1,7 @@
 #include "ControllerLoader.h"
 
 #include "util/glm_util.h"
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "model/Node.h"
 

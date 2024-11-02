@@ -1,7 +1,8 @@
 #pragma once
 
 #include "assimp_util.h"
-#include <util/Util.h>
+#include <util/util.h>
+#include "util/file.h"
 
 namespace {
     const std::string SUPPORTED_TYPES[]{

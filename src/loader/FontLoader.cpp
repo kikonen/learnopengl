@@ -1,6 +1,6 @@
 #include "FontLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "text/FontAtlas.h"
 #include "text/FontRegistry.h"

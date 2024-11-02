@@ -1,6 +1,6 @@
 #include "FileEntry.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 FileEntry::FileEntry()
 {}

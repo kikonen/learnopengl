@@ -13,7 +13,7 @@
 
 #include "shader/Program.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "kigl/GLVertexArray.h"
 

@@ -1,6 +1,6 @@
 #include "ParticleLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "material/Material.h"
 

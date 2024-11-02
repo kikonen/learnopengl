@@ -1,6 +1,6 @@
 #include "ParticleGenerator.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "engine/UpdateContext.h"
 

@@ -13,7 +13,8 @@
 #include "util/Log.h"
 #include "ki/sid.h"
 
-#include "util/Util.h"
+#include "util/util.h"
+#include "util/file.h"
 
 #include "engine/AsyncLoader.h"
 

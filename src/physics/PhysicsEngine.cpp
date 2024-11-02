@@ -9,7 +9,7 @@
 
 #include "util/thread.h"
 #include "util/glm_format.h"
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "model/Node.h"
 #include "model/NodeState.h"

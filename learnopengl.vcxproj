@@ -452,7 +452,7 @@
     <ClCompile Include="src\material\Material.cpp" />
     <ClCompile Include="src\shader\Program.cpp" />
     <ClCompile Include="src\util\thread.cpp" />
-    <ClCompile Include="src\util\Util.cpp" />
+    <ClCompile Include="src\util\util_impl.cpp" />
     <ClCompile Include="vendor\generator\src\AnyMesh.cpp" />
     <ClCompile Include="vendor\generator\src\AnyPath.cpp" />
     <ClCompile Include="vendor\generator\src\AnyShape.cpp" />
@@ -857,6 +857,7 @@
     <ClInclude Include="src\util\debug.h" />
     <ClInclude Include="src\util\DirtyVector.h" />
     <ClInclude Include="src\util\DirtyVector_impl.h" />
+    <ClInclude Include="src\util\file.h" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
     <ClInclude Include="src\pool\IdGenerator.h" />
@@ -898,7 +899,7 @@
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\util\thread.h" />
-    <ClInclude Include="src\util\Util.h" />
+    <ClInclude Include="src\util\util.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\stb_image\src\stb_image.h" />

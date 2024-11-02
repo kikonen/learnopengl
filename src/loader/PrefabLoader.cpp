@@ -1,6 +1,6 @@
 #include "PrefabLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/glm_util.h"
 
 #include "loader/document.h"

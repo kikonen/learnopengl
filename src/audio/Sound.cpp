@@ -4,7 +4,7 @@
 #include <AudioFile.h>
 
 #include "util/log.h"
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "al_call.h"
 

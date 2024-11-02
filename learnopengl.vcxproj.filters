@@ -252,7 +252,7 @@
     <ClCompile Include="src\render\RenderData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\Util.cpp">
+    <ClCompile Include="src\util\util_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\Registry.cpp">
@@ -1289,7 +1289,7 @@
     <ClInclude Include="src\shader\ClipPlaneUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\Util.h">
+    <ClInclude Include="src\util\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\RenderClock.h">
@@ -2220,6 +2220,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\NonVaoMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

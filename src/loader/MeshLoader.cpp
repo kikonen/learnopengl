@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/glm_format.h"
 
 #include "shader/Shader.h"

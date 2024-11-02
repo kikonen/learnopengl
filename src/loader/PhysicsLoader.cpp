@@ -6,7 +6,7 @@
 
 #include "util/debug.h"
 #include "util/Log.h"
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/glm_util.h"
 
 #include "physics/physics_util.h"

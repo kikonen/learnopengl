@@ -1,4 +1,5 @@
-#include "Util.h"
+#include "util/util.h"
+#include "util/file.h"
 
 #include <iostream>
 #include <fstream>
@@ -229,6 +230,45 @@ namespace util {
 
         if (!parentDir.empty()) {
             std::string path{ parentDir };
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!baseName.empty()) {
+            std::string path{ baseName };
+            if (!fileExt.empty()) {
+                path += fileExt;
+            }
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        return filePath.string();
+    }
+
+    std::string joinPathExt(
+        std::string_view rootDir,
+        std::string_view parentDir,
+        std::string_view basePath,
+        std::string_view baseName,
+        std::string_view fileExt)
+    {
+        std::filesystem::path filePath;
+
+        if (!rootDir.empty()) {
+            std::string path{ rootDir };
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!parentDir.empty()) {
+            std::string path{ parentDir };
+            std::replace(path.begin(), path.end(), '/', '\\');
+            filePath /= path;
+        }
+
+        if (!basePath.empty()) {
+            std::string path{ basePath };
             std::replace(path.begin(), path.end(), '/', '\\');
             filePath /= path;
         }

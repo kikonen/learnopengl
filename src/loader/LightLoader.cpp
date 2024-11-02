@@ -1,6 +1,6 @@
 #include "LightLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "component/Light.h"
 

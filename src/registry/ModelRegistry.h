@@ -8,7 +8,7 @@
 
 #include "glm/glm.hpp"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 struct Material;
 

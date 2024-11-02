@@ -5,7 +5,7 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "al_call.h"
 

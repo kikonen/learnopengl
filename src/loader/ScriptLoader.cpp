@@ -2,7 +2,7 @@
 
 #include "asset/Assets.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "model/Node.h"
 

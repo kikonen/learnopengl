@@ -15,7 +15,7 @@
 
 #include "material/Image.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/Log.h"
 
 #include "kigl/kigl.h"

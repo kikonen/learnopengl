@@ -1,6 +1,6 @@
 #include "GeneratorLoader.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "asset/Assets.h"
 #include "material/Material.h"

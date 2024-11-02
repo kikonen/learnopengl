@@ -1,6 +1,6 @@
 #include "animation_util.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 
 namespace animation
 {

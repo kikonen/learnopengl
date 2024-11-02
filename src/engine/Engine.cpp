@@ -7,7 +7,7 @@
 
 #include "imgui.h"
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/Log.h"
 
 #include "asset/Assets.h"

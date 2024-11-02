@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 #include <generator/generator.hpp>
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "util/Log.h"
 #include "util/glm_util.h"
 #include "util/glm_format.h"

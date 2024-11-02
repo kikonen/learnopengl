@@ -8,7 +8,8 @@
 
 #include <fmt/format.h>
 
-#include "util/Util.h"
+#include "util/util.h"
+#include "util/file.h"
 #include "util/glm_format.h"
 #include "util/glm_util.h"
 

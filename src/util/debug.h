@@ -5,4 +5,4 @@
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 #include "util/Log.h"
-#include "util/Util.h"
+#include "util/util.h"

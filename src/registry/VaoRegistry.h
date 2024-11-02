@@ -4,7 +4,7 @@
 
 #include "glm/glm.hpp"
 
-#include "util/Util.h"
+#include "util/util.h"
 #include "kigl/GLVertexArray.h"
 
 struct UpdateContext;

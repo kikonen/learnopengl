@@ -7,7 +7,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "util/Util.h"
+#include "util/util.h"
 
 #include "kigl/GLState.h"
 

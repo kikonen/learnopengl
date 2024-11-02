@@ -6,7 +6,8 @@
 
 #include <fmt/format.h>
 
-#include "util/Util.h"
+#include "util/util.h"
+#include "util/file.h"
 
 #include "asset/Assets.h"
 
@@ -492,4 +493,3 @@ void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
         glUniformMatrix4fv(vi, 1, GL_FALSE, glm::value_ptr(value));
     }
 }
-
