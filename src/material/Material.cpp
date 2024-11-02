@@ -211,7 +211,7 @@ void Material::loadTextures()
     }
 
     loadChannelTexture(
-        TextureType::metal_channel_map,
+        TextureType::map_metal_channel,
         fmt::format("material_{}_metal", m_registeredIndex),
         map_channelParts,
         metal);
@@ -369,18 +369,18 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::metal_channel_map) ? WHITE_RGBA : metal,
+        hasBoundTex(TextureType::map_metal_channel) ? WHITE_RGBA : metal,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, whitePx),
 
-        getTexHandle(TextureType::normal_map, 0),
-        getTexHandle(TextureType::dudv_map, 0),
-        getTexHandle(TextureType::noise_map, 0),
-        getTexHandle(TextureType::noise_2_map, 0),
+        getTexHandle(TextureType::map_normal, 0),
+        getTexHandle(TextureType::map_dudv, 0),
+        getTexHandle(TextureType::map_noise, 0),
+        getTexHandle(TextureType::map_noise_2, 0),
 
-        getTexHandle(TextureType::opacity_map, whitePx),
-        getTexHandle(TextureType::metal_channel_map, whitePx),
+        getTexHandle(TextureType::map_opacity, whitePx),
+        getTexHandle(TextureType::map_metal_channel, whitePx),
 
         pattern,
 

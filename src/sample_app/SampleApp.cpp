@@ -219,25 +219,25 @@ int SampleApp::onSetup()
 
         std::string base = "decals/high_velocity_blood_spatter_sgepbixp_2k/";
         mat.addTexPath(TextureType::diffuse, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg");
-        mat.addTexPath(TextureType::normal_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg");
-        mat.addTexPath(TextureType::opacity_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg");
+        mat.addTexPath(TextureType::map_normal, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg");
+        mat.addTexPath(TextureType::map_opacity, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg");
 
-        mat.addTexPath(TextureType::metallness_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg");
-        mat.addTexPath(TextureType::displacement_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg");
-        mat.addTexPath(TextureType::roughness_map, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg");
+        mat.addTexPath(TextureType::map_metallness, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg");
+        mat.addTexPath(TextureType::map_displacement, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg");
+        mat.addTexPath(TextureType::map_roughness, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg");
 
         mat.map_channelParts.push_back({
-            TextureType::metallness_map,
+            TextureType::map_metallness,
             { ChannelPart::Channel::red }
             });
 
         mat.map_channelParts.push_back({
-            TextureType::roughness_map,
+            TextureType::map_roughness,
             { ChannelPart::Channel::green }
             });
 
         mat.map_channelParts.push_back({
-            TextureType::displacement_map,
+            TextureType::map_displacement,
             { ChannelPart::Channel::blue }
             });
 
@@ -259,31 +259,31 @@ int SampleApp::onSetup()
 
         std::string base = "decals/rubble_tbcs3qo_2k/";
         mat.addTexPath(TextureType::diffuse, base + "Rubble_tbcs3qo_2K_BaseColor.jpg");
-        mat.addTexPath(TextureType::normal_map, base + "Rubble_tbcs3qo_2K_Normal.jpg");
-        mat.addTexPath(TextureType::opacity_map, base + "Rubble_tbcs3qo_2K_Opacity.jpg");
+        mat.addTexPath(TextureType::map_normal, base + "Rubble_tbcs3qo_2K_Normal.jpg");
+        mat.addTexPath(TextureType::map_opacity, base + "Rubble_tbcs3qo_2K_Opacity.jpg");
 
-        mat.addTexPath(TextureType::metallness_map, base + "Rubble_tbcs3qo_2K_Gloss.jpg");
-        mat.addTexPath(TextureType::roughness_map, base + "Rubble_tbcs3qo_2K_Roughness.jpg");
-        mat.addTexPath(TextureType::occlusion_map, base + "Rubble_tbcs3qo_2K_AO.jpg");
-        mat.addTexPath(TextureType::displacement_map, base + "Rubble_tbcs3qo_2K_Cavity.jpg");
+        mat.addTexPath(TextureType::map_metallness, base + "Rubble_tbcs3qo_2K_Gloss.jpg");
+        mat.addTexPath(TextureType::map_roughness, base + "Rubble_tbcs3qo_2K_Roughness.jpg");
+        mat.addTexPath(TextureType::map_occlusion, base + "Rubble_tbcs3qo_2K_AO.jpg");
+        mat.addTexPath(TextureType::map_displacement, base + "Rubble_tbcs3qo_2K_Cavity.jpg");
 
         mat.map_channelParts.push_back({
-            TextureType::metallness_map,
+            TextureType::map_metallness,
             { ChannelPart::Channel::red }
             });
 
         mat.map_channelParts.push_back({
-            TextureType::roughness_map,
+            TextureType::map_roughness,
             { ChannelPart::Channel::green }
             });
 
         mat.map_channelParts.push_back({
-            TextureType::displacement_map,
+            TextureType::map_displacement,
             { ChannelPart::Channel::blue }
             });
 
         mat.map_channelParts.push_back({
-            TextureType::occlusion_map,
+            TextureType::map_occlusion,
             { ChannelPart::Channel::alpha }
             });
 

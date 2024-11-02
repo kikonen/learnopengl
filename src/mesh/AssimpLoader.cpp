@@ -580,7 +580,7 @@ namespace mesh
             aiString bumpPath;
             if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
                 material.addTexPath(
-                    TextureType::normal_map,
+                    TextureType::map_normal,
                     findTexturePath(meshSet, bumpPath.C_Str()));
             }
         }
@@ -589,7 +589,7 @@ namespace mesh
             aiString normalPath;
             if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
                 material.addTexPath(
-                    TextureType::normal_map,
+                    TextureType::map_normal,
                     findTexturePath(meshSet, normalPath.C_Str()));
             }
         }
