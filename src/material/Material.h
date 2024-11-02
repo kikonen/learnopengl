@@ -109,13 +109,13 @@ public:
         std::string_view name,
         std::vector<Material>& materials);
 
-    static Material* findID(
-        const ki::material_id id,
-        std::vector<Material>& materials);
+    //static Material* findID(
+    //    const ki::material_id id,
+    //    std::vector<Material>& materials);
 
-    static const Material* findID(
-        const ki::material_id id,
-        const std::vector<Material>& materials);
+    //static const Material* findID(
+    //    const ki::material_id id,
+    //    const std::vector<Material>& materials);
 
     std::string getTexturePath(
         std::string_view textureName);
@@ -260,12 +260,10 @@ public:
     //std::string map_dudv;
     //std::string map_noise;
 
-    static const ki::material_id DEFAULT_ID = 0;
+    //static const ki::material_id DEFAULT_ID = 0;
 
     std::string m_name;
     std::string m_path;
-
-    ki::material_id m_id;
 
     uint8_t spriteCount = 1;
     uint8_t spritesX = 1;
@@ -296,6 +294,8 @@ public:
 private:
     std::unordered_map<TextureType, BoundTexture> m_boundTextures{};
     std::unordered_map<TextureType, std::string> m_texturePaths{};
+
+    ki::material_id m_id;
 
     bool m_prepared : 1 {false};
     bool m_loaded : 1 {false};

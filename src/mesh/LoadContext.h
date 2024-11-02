@@ -21,6 +21,8 @@ namespace mesh {
         std::shared_ptr<animation::RigContainer> m_rig;
 
         std::vector<Material> m_materials;
-        std::map<size_t, ki::material_id> m_materialMapping;
+
+        // { assimp-material-index, m_materials-index }
+        std::map<size_t, size_t> m_materialMapping;
     };
 }

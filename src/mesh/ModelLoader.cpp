@@ -29,9 +29,9 @@ namespace mesh {
             m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
         }
 
-        {
-            m_defaultMaterial.m_id = Material::DEFAULT_ID;
-        }
+        //{
+        //    m_defaultMaterial.m_id = Material::DEFAULT_ID;
+        //}
 
         m_forceDefaultMaterial = forceDefaultMaterial;
 

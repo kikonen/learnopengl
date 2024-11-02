@@ -96,7 +96,7 @@ namespace mesh {
         void processMaterials(
             const MeshSet& meshSet,
             std::vector<Material>& materials,
-            std::map<size_t, ki::material_id>& materialMapping,
+            std::map<size_t, size_t>& materialMapping,
             const aiScene* scene);
 
         Material processMaterial(

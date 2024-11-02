@@ -122,30 +122,31 @@ Material* Material::find(
     return it != materials.end() ? &(*it) : nullptr;
 }
 
-Material* Material::findID(
-    const ki::material_id id,
-    std::vector<Material>& materials)
-{
-    const auto& it = std::find_if(
-        materials.begin(),
-        materials.end(),
-        [id](Material& m) { return m.m_id == id; });
-    return it != materials.end() ? &(*it) : nullptr;
-}
-
-const Material* Material::findID(
-    const ki::material_id id,
-    const std::vector<Material>& materials)
-{
-    const auto& it = std::find_if(
-        materials.begin(),
-        materials.end(),
-        [id](const Material& m) { return m.m_id == id; });
-    return it != materials.end() ? &(*it) : nullptr;
-}
+//Material* Material::findID(
+//    const ki::material_id id,
+//    std::vector<Material>& materials)
+//{
+//    const auto& it = std::find_if(
+//        materials.begin(),
+//        materials.end(),
+//        [id](Material& m) { return m.m_id == id; });
+//    return it != materials.end() ? &(*it) : nullptr;
+//}
+//
+//const Material* Material::findID(
+//    const ki::material_id id,
+//    const std::vector<Material>& materials)
+//{
+//    const auto& it = std::find_if(
+//        materials.begin(),
+//        materials.end(),
+//        [id](const Material& m) { return m.m_id == id; });
+//    return it != materials.end() ? &(*it) : nullptr;
+//}
 
 Material::Material()
-    : m_id(ID_GENERATOR.nextId())
+    : m_id( ID_GENERATOR.nextId() ),
+    m_updaterId{ 0 }
 {
 }
 

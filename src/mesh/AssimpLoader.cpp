@@ -379,9 +379,9 @@ namespace mesh
 
         {
             const auto& it = ctx.m_materialMapping.find(mesh->mMaterialIndex);
-            auto materialId = it != ctx.m_materialMapping.end() ? it->second : 0;
-            material = Material::findID(materialId, ctx.m_materials);
-            if (!material) {
+            if (it != ctx.m_materialMapping.end()) {
+                material = &ctx.m_materials[it->second];
+            } else {
                 material = &m_defaultMaterial;
             }
             modelMesh.setMaterial(material);
@@ -493,14 +493,14 @@ namespace mesh
     void AssimpLoader::processMaterials(
         const MeshSet& meshSet,
         std::vector<Material>& materials,
-        std::map<size_t, ki::material_id>& materialMapping,
+        std::map<size_t, size_t>& materialMapping,
         const aiScene* scene)
     {
         for (size_t n = 0; n < scene->mNumMaterials; ++n)
         {
             auto material = processMaterial(meshSet, scene, scene->mMaterials[n]);
             materials.push_back(material);
-            materialMapping.insert({ n, material.m_id });
+            materialMapping.insert({ n, materials.size() - 1});
         }
     }
 
