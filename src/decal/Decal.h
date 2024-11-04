@@ -47,11 +47,5 @@ namespace decal {
         void updateSSBO(DecalSSBO& ssbo) const noexcept;
 
         glm::mat4 getModelMatrix() const;
-
-        static Decal createForHit(
-            const RenderContext& ctx,
-            pool::NodeHandle parent,
-            const glm::vec3& hitPos,
-            const glm::vec3& hitNormal);
     };
 }

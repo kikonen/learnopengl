@@ -5,6 +5,8 @@
 #include "ki/sid.h"
 #include "ki/size.h"
 
+#include "Decal.h"
+
 namespace decal
 {
     struct DecalDefinition {
@@ -26,5 +28,11 @@ namespace decal
         operator bool() const noexcept {
             return m_sid;
         }
+
+        Decal createForHit(
+            const RenderContext& ctx,
+            pool::NodeHandle parent,
+            const glm::vec3& hitPos,
+            const glm::vec3& hitNormal);
     };
 }

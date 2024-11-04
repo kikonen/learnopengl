@@ -199,6 +199,7 @@
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
+    <ClCompile Include="src\decal\DecalDefinition.cpp" />
     <ClCompile Include="src\decal\DecalRegisry.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />

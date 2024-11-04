@@ -73,8 +73,6 @@ private:
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
     std::unique_ptr<Material> m_bulletMaterial;
-    std::unique_ptr<Material> m_bloodMaterial;
-    std::unique_ptr<Material> m_rubbleMaterial;
 
     size_t m_drawCount = 0;
     size_t m_skipCount = 0;

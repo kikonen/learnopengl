@@ -211,92 +211,6 @@ int SampleApp::onSetup()
         mat.loadTextures();
         mat.registerMaterial();
     }
-    {
-        m_bloodMaterial = std::make_unique<Material>();
-        auto& mat = *m_bloodMaterial;
-        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
-        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
-        //mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
-
-        std::string base = "decals/high_velocity_blood_spatter_sgepbixp_2k/";
-        mat.addTexPath(TextureType::diffuse, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg");
-        mat.addTexPath(TextureType::map_normal, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg");
-        mat.addTexPath(TextureType::map_opacity, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg");
-
-        mat.addTexPath(TextureType::map_metallness, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg");
-        mat.addTexPath(TextureType::map_displacement, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg");
-        mat.addTexPath(TextureType::map_roughness, base + "High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg");
-
-        mat.map_channelParts.push_back({
-            TextureType::map_metallness,
-            { ChannelPart::Channel::red }
-            });
-
-        mat.map_channelParts.push_back({
-            TextureType::map_roughness,
-            { ChannelPart::Channel::green }
-            });
-
-        mat.map_channelParts.push_back({
-            TextureType::map_displacement,
-            { ChannelPart::Channel::blue }
-            });
-
-        mat.parallaxDepth = 0.1f;
-
-        mat.spriteCount = 1;
-        mat.spritesX = 1;
-        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
-        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
-        mat.loadTextures();
-        mat.registerMaterial();
-    }
-    {
-        m_rubbleMaterial = std::make_unique<Material>();
-        auto& mat = *m_rubbleMaterial;
-        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
-        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
-        //mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
-
-        std::string base = "decals/rubble_tbcs3qo_2k/";
-        mat.addTexPath(TextureType::diffuse, base + "Rubble_tbcs3qo_2K_BaseColor.jpg");
-        mat.addTexPath(TextureType::map_normal, base + "Rubble_tbcs3qo_2K_Normal.jpg");
-        mat.addTexPath(TextureType::map_opacity, base + "Rubble_tbcs3qo_2K_Opacity.jpg");
-
-        mat.addTexPath(TextureType::map_metallness, base + "Rubble_tbcs3qo_2K_Gloss.jpg");
-        mat.addTexPath(TextureType::map_roughness, base + "Rubble_tbcs3qo_2K_Roughness.jpg");
-        mat.addTexPath(TextureType::map_occlusion, base + "Rubble_tbcs3qo_2K_AO.jpg");
-        mat.addTexPath(TextureType::map_displacement, base + "Rubble_tbcs3qo_2K_Cavity.jpg");
-
-        mat.map_channelParts.push_back({
-            TextureType::map_metallness,
-            { ChannelPart::Channel::red }
-            });
-
-        mat.map_channelParts.push_back({
-            TextureType::map_roughness,
-            { ChannelPart::Channel::green }
-            });
-
-        mat.map_channelParts.push_back({
-            TextureType::map_displacement,
-            { ChannelPart::Channel::blue }
-            });
-
-        mat.map_channelParts.push_back({
-            TextureType::map_occlusion,
-            { ChannelPart::Channel::alpha }
-            });
-
-        mat.parallaxDepth = 0.1f;
-
-        mat.spriteCount = 1;
-        mat.spritesX = 1;
-        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
-        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
-        mat.loadTextures();
-        mat.registerMaterial();
-    }
 
     return 0;
 }
@@ -744,23 +658,14 @@ void SampleApp::shoot(
                 //    hit.pos,
                 //    hit.normal,
                 //    hit.depth));
-                const auto* mat = m_bloodMaterial.get();
 
-                auto df = decal::DecalRegistry::get().getDecal(SID("blood_1"));
-                KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", "blood_1", df ? true : false));
+                auto sid = SID("blood_1");
+                auto df = decal::DecalRegistry::get().getDecal(sid);
+                KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
 
-                auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
-                decal.m_materialIndex = mat->m_registeredIndex;
-                //decal.m_materialIndex = 3;
-                decal.m_lifetime = 99999999999999.f;
-                decal.m_scale = 0.5f + util::prnd(1.f);
-                decal.m_spriteBaseIndex = 0;
-                decal.m_spriteCount = mat->spriteCount;
-
+                auto decal = df.createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
                 decal.m_rotation = util::prnd(std::numbers::pi_v<float> * 2.f);
-
-                decal.m_scale = 0.01f + util::prnd(0.05f);
-                decal.m_scale = 1.f + util::prnd(2.f);
+                decal.m_scale += util::prnd(2.f);
 
                 decal::DecalSystem::get().addDecal(decal);
 

@@ -28,6 +28,11 @@ namespace ki
 
         const std::string& getName() const noexcept;
 
+        const std::string& str() const noexcept
+        {
+            return getName();
+        }
+
         operator std::string() const noexcept;
 
         operator uint32_t() const noexcept {

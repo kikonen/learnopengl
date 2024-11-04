@@ -38,6 +38,21 @@ namespace loader {
             if (k == "name") {
                 data.name = readString(v);
             }
+            else if (k == "lifetime") {
+                data.lifetime = readFloat(v);
+            }
+            else if (k == "scale") {
+                data.scale = readFloat(v);
+            }
+            else if (k == "rotation") {
+                data.rotation = readFloat(v);
+            }
+            else if (k == "sprite_base_index") {
+                data.spriteBaseIndex = readInt(v);
+            }
+            else if (k == "sprite_count") {
+                data.spriteCount = readInt(v);
+            }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
@@ -60,8 +75,19 @@ namespace loader {
         const loader::DecalData& data,
         Loaders& loaders) const
     {
+        auto mat = data.materialData.material;
+        mat.loadTextures();
+        mat.registerMaterial();
+
         decal::DecalDefinition df;
         df.m_sid = SID(data.name);
+        df.m_materialIndex = mat.m_registeredIndex;
+        df.m_lifetime = data.lifetime;
+        df.m_rotation = data.rotation;
+        df.m_scale = data.scale;
+        df.m_spriteBaseIndex = data.spriteBaseIndex;
+        df.m_spriteCount = data.spriteCount;
+        df.m_spriteSpeed = data.spriteSpeed;
 
         decal::DecalRegistry::get().addDecal(df);
     }

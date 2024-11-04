@@ -135,19 +135,55 @@ nodes:
         size: [1]
 decals:
   - name: blood_1
+    lifetime: 99999
+    scale: 1
+    rotation: 0
+    sprite_base_index: 0
+    sprite_count: 1
     material:
       base: decals/high_velocity_blood_spatter_sgepbixp_2k
       map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
       map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
+      map_opacity: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
       map_channel:
-        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
-          type: opacity_map
         - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg
-          type: metal_map
-        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg
-          type: displacement_map
+          type: map_metalness
+          channel: R
         - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg
-          type: roughness_map
+          type: map_roughness
+          channel: G
+        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg
+          type: map_displacement
+          channel: B
+      parallax_depth: 0.1
+      sprite_count: 1
+      sprites_x: 1
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+  - name: rubble_1
+    lifetime: 99999
+    scale: 1
+    rotation: 0
+    sprite_base_index: 0
+    sprite_count: 1
+    material:
+      base: decals/rubble_tbcs3qo_2k
+      map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
+      map_normal: Rubble_tbcs3qo_2K_Normal.jpg
+      map_opacity: Rubble_tbcs3qo_2K_Opacity.jpg
+      map_channel:
+        - path: Rubble_tbcs3qo_2K_Gloss.jpg
+          type: map_metalness
+          channel: R
+        - path: Rubble_tbcs3qo_2K_Roughness.jpg
+          type: map_roughness
+          channel: G
+        - path: Rubble_tbcs3qo_2K_Cavity.jpg
+          type: map_displacement
+          channel: B
+        - path: Rubble_tbcs3qo_2K_AO.jpg
+          type: map_occlusion
+          channel: A
       parallax_depth: 0.1
       sprite_count: 1
       sprites_x: 1
