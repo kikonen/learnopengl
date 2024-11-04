@@ -16,6 +16,7 @@
 #include "AudioLoader.h"
 #include "GeneratorLoader.h"
 #include "ParticleLoader.h"
+#include "DecalLoader.h"
 #include "PhysicsLoader.h"
 #include "PrefabLoader.h"
 #include "NodeLoader.h"
@@ -57,6 +58,7 @@ namespace loader {
         AudioLoader m_audioLoader;
         GeneratorLoader m_generatorLoader;
         ParticleLoader m_particleLoader;
+        DecalLoader m_decalLoader;
         PhysicsLoader m_physicsLoader;
 
         PrefabLoader m_prefabLoader;

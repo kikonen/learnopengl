@@ -15,6 +15,7 @@ namespace loader {
         m_controllerLoader(ctx),
         m_generatorLoader(ctx),
         m_particleLoader(ctx),
+        m_decalLoader(ctx),
         m_physicsLoader(ctx),
         m_nodeLoader(ctx),
         m_meshLoader(ctx),
@@ -36,6 +37,7 @@ namespace loader {
         m_audioLoader.setRegistry(registry);
         m_generatorLoader.setRegistry(registry);
         m_particleLoader.setRegistry(registry);
+        m_decalLoader.setRegistry(registry);
         m_physicsLoader.setRegistry(registry);
         m_nodeLoader.setRegistry(registry);
         m_meshLoader.setRegistry(registry);

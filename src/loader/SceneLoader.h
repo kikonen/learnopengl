@@ -43,6 +43,7 @@ namespace loader {
     struct AnimationData;
     struct ResolvedNode;
     struct MaterialData;
+    struct DecalData;
     struct MaterialUpdaterData;
 
     struct FlagContainer;
@@ -248,6 +249,7 @@ namespace loader {
 
         std::unique_ptr<Material> m_defaultMaterial;
 
+        std::vector<DecalData> m_decals;
         std::vector<MaterialUpdaterData> m_materialUpdaters;
 
         std::unique_ptr<Loaders> m_loaders;

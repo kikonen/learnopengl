@@ -981,6 +981,12 @@
     <ClCompile Include="src\mesh\NonVaoMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\DecalLoaderr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decal\DecalRegisry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2220,6 +2226,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\NonVaoMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\DecalData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\DecalLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\file.h">

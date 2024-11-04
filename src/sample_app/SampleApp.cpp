@@ -62,6 +62,7 @@
 #include "gui/Window.h"
 
 #include "decal/DecalSystem.h"
+#include "decal/DecalRegistry.h"
 
 #include "physics/PhysicsEngine.h"
 #include "physics/RayHit.h"
@@ -744,6 +745,9 @@ void SampleApp::shoot(
                 //    hit.normal,
                 //    hit.depth));
                 const auto* mat = m_bloodMaterial.get();
+
+                auto df = decal::DecalRegistry::get().getDecal(SID("blood_1"));
+                KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", "blood_1", df ? true : false));
 
                 auto decal = decal::Decal::createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
                 decal.m_materialIndex = mat->m_registeredIndex;

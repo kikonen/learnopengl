@@ -63,6 +63,7 @@
 #include "Loaders.h"
 #include "NodeRoot.h"
 #include "ResolvedNode.h"
+#include "DecalData.h"
 
 #include "converter/YamlConverter.h"
 
@@ -140,6 +141,11 @@ namespace loader {
                 l.m_nodeLoader.loadNodes(
                     doc.findNode("nodes"),
                     m_nodes,
+                    l);
+
+                l.m_decalLoader.loadDecals(
+                    doc.findNode("decals"),
+                    m_decals,
                     l);
 
                 validate(*m_root);
@@ -226,6 +232,10 @@ namespace loader {
         l.m_materialUpdaterLoader.createMaterialUpdaters(
             m_materialUpdaters,
             *m_loaders);
+
+        l.m_decalLoader.createDecals(
+            m_decals,
+            l);
 
         {
             std::lock_guard lock(m_ready_lock);

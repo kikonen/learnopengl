@@ -199,7 +199,9 @@
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
+    <ClCompile Include="src\decal\DecalRegisry.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
+    <ClCompile Include="src\loader\DecalLoaderr.cpp" />
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
@@ -519,8 +521,13 @@
     <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\decal\DecalDefinition.h" />
+    <ClInclude Include="src\decal\DecalRegistry.h" />
+    <ClInclude Include="src\decal\DecalType.h" />
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
+    <ClInclude Include="src\loader\DecalData.h" />
+    <ClInclude Include="src\loader\DecalLoader.h" />
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
