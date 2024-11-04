@@ -8,6 +8,7 @@
 #include "kigl/kigl.h"
 
 #include "ki/size.h"
+#include "ki/sid.h"
 
 #include "render/TextureQuad.h"
 
@@ -23,7 +24,7 @@ class FrameBufferMaterial : public MaterialUpdater
 {
 public:
     FrameBufferMaterial(
-        ki::sid id,
+        ki::StringID id,
         const std::string& name);
 
     ~FrameBufferMaterial();

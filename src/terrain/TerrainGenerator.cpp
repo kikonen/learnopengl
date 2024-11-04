@@ -314,7 +314,7 @@ namespace terrain {
         m_nodes.reserve(states.size());
         for (int idx = 0; auto& state : states)
         {
-            ki::node_id nodeId{ StringID::nextID() };
+            ki::node_id nodeId{ ki::StringID::nextID() };
             auto handle = pool::NodeHandle::allocate(nodeId);
             auto* node = handle.toNode();
             node->setName(fmt::format("tile-{}", idx));

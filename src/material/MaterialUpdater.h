@@ -3,6 +3,8 @@
 #include <string>
 
 #include "ki/size.h"
+#include "ki/sid.h"
+
 #include "kigl/kigl.h"
 
 #include "TextureType.h"
@@ -13,7 +15,7 @@ struct PrepareContext;
 class MaterialUpdater {
 public:
     MaterialUpdater(
-        ki::sid id,
+        ki::StringID id,
         const std::string& name);
 
     ~MaterialUpdater();
@@ -30,7 +32,7 @@ public:
     }
 
 public:
-    ki::sid m_id{ 0 };
+    ki::StringID m_id{ 0 };
 
 protected:
     bool m_prepared{ false };

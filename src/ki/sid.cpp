@@ -39,24 +39,26 @@ namespace {
     }
 }
 
-StringID::StringID(std::string_view s)
-    : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
-{
-    registerName(*this, std::string{ s });
-}
+namespace ki {
+    StringID::StringID(std::string_view s)
+        : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
+    {
+        registerName(*this, std::string{ s });
+    }
 
-const std::string& StringID::getName() const noexcept
-{
-    return findName(*this);
-}
+    const std::string& StringID::getName() const noexcept
+    {
+        return findName(*this);
+    }
 
-StringID::operator std::string() const noexcept
-{
-    return fmt::format("[SID:{}/{}]", m_sid, getName());
-}
+    StringID::operator std::string() const noexcept
+    {
+        return fmt::format("[SID:{}/{}]", m_sid, getName());
+    }
 
-uint32_t StringID::nextID()
-{
-    StringID sid{ fmt::format("auto-{}", seqNext()) };
-    return sid;
+    uint32_t StringID::nextID()
+    {
+        StringID sid{ fmt::format("auto-{}", seqNext()) };
+        return sid;
+    }
 }

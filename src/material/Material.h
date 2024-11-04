@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ki/sid.h"
+
 #include "Texture.h"
 
 #include "TextureType.h"
@@ -288,7 +290,7 @@ public:
 
     std::unordered_map<MaterialProgramType, ki::program_id> m_programs{};
 
-    ki::sid m_updaterId;
+    ki::StringID m_updaterId;
 
     MaterialUpdater* m_updater{ nullptr };
 

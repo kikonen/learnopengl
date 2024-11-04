@@ -4,7 +4,7 @@
 
 namespace ki
 {
-    typedef uint32_t sid;
+    typedef uint32_t sid_t;
 
     typedef uint32_t node_id;
     typedef uint16_t mesh_id;

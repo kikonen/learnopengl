@@ -28,7 +28,7 @@ namespace {
 }
 
 FrameBufferMaterial::FrameBufferMaterial(
-    ki::sid id,
+    ki::StringID id,
     const std::string& name)
     : MaterialUpdater{id, name},
     m_size{ 512, 512 },

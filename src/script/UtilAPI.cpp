@@ -68,7 +68,7 @@ namespace script
     double UtilAPI::lua_sid(
         std::string id) noexcept
     {
-        StringID sid{ id };
+        ki::StringID sid{ id };
         return static_cast<double>(sid);
     }
 }
