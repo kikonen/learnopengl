@@ -15,7 +15,6 @@ namespace loader {
         float spriteSpeed{ 0.f };
 
         uint8_t spriteBaseIndex{ 0 };
-        uint8_t spriteCount{ 1 };
 
         MaterialData materialData;
     };

@@ -50,9 +50,6 @@ namespace loader {
             else if (k == "sprite_base_index") {
                 data.spriteBaseIndex = readInt(v);
             }
-            else if (k == "sprite_count") {
-                data.spriteCount = readInt(v);
-            }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
@@ -86,7 +83,7 @@ namespace loader {
         df.m_rotation = data.rotation;
         df.m_scale = data.scale;
         df.m_spriteBaseIndex = data.spriteBaseIndex;
-        df.m_spriteCount = data.spriteCount;
+        df.m_spriteCount = mat.spriteCount;
         df.m_spriteSpeed = data.spriteSpeed;
 
         decal::DecalRegistry::get().addDecal(df);
