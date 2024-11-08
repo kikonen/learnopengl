@@ -48,6 +48,9 @@ const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
 const std::string DEF_USE_DEBUG{ "USE_DEBUG" };
 
+const std::string DEF_USE_PARTICLE{ "USE_PARTICLE" };
+const std::string DEF_USE_DECAL{ "USE_DECAL" };
+
 const std::string DEF_USE_TBN{ "USE_TBN" };
 const std::string DEF_USE_DUDV_TEX{ "USE_DUDV_TEX" };
 const std::string DEF_USE_HEIGHT_TEX{ "USE_HEIGHT_TEX" };

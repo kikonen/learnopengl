@@ -26,7 +26,7 @@
 
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
-    constexpr float DEF_PARALLAX_DEPTH = 0.1f;
+    constexpr float DEF_PARALLAX_DEPTH = 0.01f;
 
     const std::vector<std::regex> texturesMatchers{
         std::regex("textures"),

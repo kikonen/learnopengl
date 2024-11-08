@@ -109,7 +109,7 @@ vec2 parallaxMapMarch (
 
   vec2 pomUV = texCoord, optimalUV = texCoord;
 
-  vec2 tanSpaceMarchDir = normalize(viewTangentDir.xy) / length(vec2(textureSize(sampler, 0).xy));
+  vec2 tanSpaceMarchDir = normalize(viewTangentDir.xy) / length(textureSize(sampler, 0).xy);
 
   // Smaller samples at oblique angles
   tanSpaceMarchDir *= abs(normalize(viewTangentDir).z);

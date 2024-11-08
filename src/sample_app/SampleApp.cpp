@@ -659,7 +659,7 @@ void SampleApp::shoot(
                 //    hit.normal,
                 //    hit.depth));
 
-                auto sid = SID("blood_1");
+                auto sid = SID("concrete_damage_1");
                 auto df = decal::DecalRegistry::get().getDecal(sid);
                 KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
 

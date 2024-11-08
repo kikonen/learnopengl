@@ -20,7 +20,7 @@ prefab:
           type: occlusion_map
           channel: A
         tiling: 4
-        parallax_depth: 0.1
+        parallax_depth: 0.015
     - path: rock2/rock_lod_1
       lod:
         level: 1

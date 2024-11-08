@@ -41,12 +41,22 @@ void DecalRenderer::prepareRT(
 
     m_blendDecalProgramId = ProgramRegistry::get().getProgram(
         SHADER_BLEND_DECAL,
-        { { DEF_USE_ALPHA, "1" },
-          { DEF_USE_BLEND, "1" } });
+        { { DEF_USE_DECAL, "1" },
+          { DEF_USE_ALPHA, "1" },
+          { DEF_USE_BLEND, "1" },
+          { DEF_USE_NORMAL_TEX, "1" },
+          { DEF_USE_TBN, "1" },
+          { DEF_USE_PARALLAX, "1" },
+        });
 
     m_alphaDecalProgramId = ProgramRegistry::get().getProgram(
         SHADER_SOLID_DECAL,
-        { { DEF_USE_ALPHA, "1" } });
+        { { DEF_USE_DECAL, "1" },
+          { DEF_USE_ALPHA, "1" },
+          { DEF_USE_NORMAL_TEX, "1" },
+          { DEF_USE_TBN, "1" },
+          { DEF_USE_PARALLAX, "1" },
+        });
 
     m_solidDecalProgramId = ProgramRegistry::get().getProgram(
         SHADER_SOLID_DECAL);
