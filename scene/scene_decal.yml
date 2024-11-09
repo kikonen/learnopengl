@@ -34,9 +34,16 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: wooden_floor
+  - xid: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+    scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
+  - id: concrete_floor
+    prefab:
+      path: prefab/scenery/prefab_rough_concrete_wall.yml
     scale: 100
     physics:
       geom:
@@ -223,6 +230,31 @@ decals:
           type: map_displacement
           channel: B
         - path: Concrete_Damage_tdildcjb_2K_AO.jpg
+          type: map_occlusion
+          channel: A
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: concrete_hole_1
+    lifetime: 99999
+    scale: 0.25
+    material:
+      base:  decals/hole_in_concrete_sfvodqg_2k
+      map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
+      map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
+      map_opacity: Hole_in_Concrete_sfvodqg_2K_Opacity.jpg
+      map_channel:
+        - path: Hole_in_Concrete_sfvodqg_2K_Gloss.jpg
+          type: map_metalness
+          channel: R
+        - path: Hole_in_Concrete_sfvodqg_2K_Roughness.jpg
+          type: map_roughness
+          channel: G
+        - path: Hole_in_Concrete_sfvodqg_2K_Displacement.jpg
+          type: map_displacement
+          channel: B
+        - path: Hole_in_Concrete_sfvodqg_2K_AO.jpg
           type: map_occlusion
           channel: A
       parallax_depth: 0.05

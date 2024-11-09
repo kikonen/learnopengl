@@ -1,0 +1,29 @@
+---
+prefab:
+  mesh:
+    path: plane
+    material:
+      base: textures/rough_concrete_wall_vh2ifg1_2k
+      map_kd: Rough_Concrete_Wall_vh2ifg1_2K_BaseColor.jpg
+      map_normal: Rough_Concrete_Wall_vh2ifg1_2K_Normal.jpg
+      map_channel:
+        - path: Rough_Concrete_Wall_vh2ifg1_2K_Roughness.jpg
+          type: roughness_map
+          channel: G
+        - path: Rough_Concrete_Wall_vh2ifg1_2K_Displacement.jpg
+          type: displacement_map
+          channel: B
+        - path: Rough_Concrete_Wall_vh2ifg1_2K_AO.jpg
+          type: occlusion_map
+          channel: A
+      tiling: 20
+      parallax_depth: 0.01
+      program: g_tex
+  flags:
+    no_shadow: true
+  physics:
+    geom:
+      type: plane
+      category: [terrain]
+      collision: [npc, player, prop, ray]
+      size: [1000, 0.2, 1000]
