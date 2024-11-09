@@ -72,6 +72,9 @@ vec2 calculateParallaxOcclusionMapping(
 
   // get initial values
   vec2  currentTexCoord     = texCoord;
+  currentTexCoord.x = 1.0 - currentTexCoord.x;
+  currentTexCoord.y = 1.0 - currentTexCoord.y;
+
   float currentDepthMapValue = texture(sampler, currentTexCoord).b;
 
   while(currentLayerDepth < currentDepthMapValue)

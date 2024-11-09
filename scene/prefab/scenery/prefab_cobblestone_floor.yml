@@ -17,7 +17,7 @@ prefab:
           type: occlusion_map
           channel: A
       tiling: 60
-      parallax_depth: 0.015
+      parallax_depth: 0.025
       program: g_tex
   flags:
     no_shadow: true

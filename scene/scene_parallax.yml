@@ -185,7 +185,7 @@ nodes:
         xalpha: true
         render_back: true
     program: g_tex
-    pos: [30.0, 2.5, 5.0]
+    pos: [30.0, 2.5, 5.5]
     scale: 2.5
     rotation: [0, 270, 0]
     repeat:
