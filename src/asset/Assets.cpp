@@ -221,6 +221,9 @@ Assets::Assets()
     physics_soft_erp = 0.9f;
     physics_soft_cfm = 0.9f;
 
+    parallaxMethod = 1;
+    parallaxDepth = 0.01;
+
     particleEnabled = true;
     particleMaxCount = 100000;
 

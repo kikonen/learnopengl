@@ -26,7 +26,6 @@
 
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
-    constexpr float DEF_PARALLAX_DEPTH = 0.01f;
 
     const std::vector<std::regex> texturesMatchers{
         std::regex("textures"),
@@ -469,8 +468,9 @@ namespace loader {
 
         if (material.hasRegisteredTex(TextureType::map_displacement)) {
             if (!fields.parallaxDepth) {
-                KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", DEF_PARALLAX_DEPTH));
-                material.parallaxDepth = DEF_PARALLAX_DEPTH;
+                const auto& assets = Assets::get();
+                KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", assets.parallaxDepth));
+                material.parallaxDepth = assets.parallaxDepth;
                 fields.parallaxDepth = true;
             }
         }

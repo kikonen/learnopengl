@@ -649,6 +649,16 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "parallax_method") {
+                data.parallaxMethod = readInt(v);
+                continue;
+            }
+            if (k == "parallax_depth") {
+                data.parallaxDepth = readFloat(v);
+                continue;
+            }
+        }
+        {
             if (k == "particle_enabled") {
                 data.particleEnabled = readBool(v);
                 continue;
