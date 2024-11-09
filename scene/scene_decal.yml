@@ -48,7 +48,7 @@ nodes:
         size: [5, 3, 0.2]
       material:
         map_pbr: textures\Bricks007_1K-PNG
-        parallax_depth: 0.0
+        parallax_depth: 0.02
         tiling_x: 1.25
         tiling_y: 0.75
         program: tex
@@ -93,7 +93,7 @@ nodes:
       base_scale: [5, 3, 0.2]
       material:
         map_pbr: textures\Bricks007_1K-PNG
-        parallax_depth: 0.0
+        parallax_depth: 0.02
         tiling_x: 5
         tiling_y: 3
         program: g_tex
@@ -152,7 +152,7 @@ decals:
         - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg
           type: map_displacement
           channel: B
-      parallax_depth: 0.01
+      parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
   - name: rubble_1
@@ -176,7 +176,7 @@ decals:
         - path: Rubble_tbcs3qo_2K_AO.jpg
           type: map_occlusion
           channel: A
-      parallax_depth: 0.01
+      parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
   - name: ivy_1
@@ -200,7 +200,7 @@ decals:
         - path: Ivy_thdjv1h_2K_AO.jpg
           type: map_occlusion
           channel: A
-      parallax_depth: 0.01
+      parallax_depth: 0.1
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
 
@@ -225,6 +225,6 @@ decals:
         - path: Concrete_Damage_tdildcjb_2K_AO.jpg
           type: map_occlusion
           channel: A
-      parallax_depth: 0.01
+      parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE

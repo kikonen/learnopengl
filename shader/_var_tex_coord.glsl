@@ -2,10 +2,13 @@
   float parallaxDepth = u_materials[materialIndex].parallaxDepth;
   if (Debug.u_parallaxDepth >= 0) {
     parallaxDepth = Debug.u_parallaxDepth;
-  } else {
-    parallaxDepth = 0;
   }
   vec2 texCoord;
+
+#ifdef USE_DECAL
+// parallaxDepth = 0.1;
+#endif
+// parallaxDepth = 0.0;
 
   if (parallaxDepth > 0) {
     const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);

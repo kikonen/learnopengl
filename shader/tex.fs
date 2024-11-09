@@ -7,6 +7,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_debug.glsl
 #include uniform_lights.glsl
 #include ssbo_materials.glsl
 
@@ -62,6 +63,10 @@ ResolvedMaterial material;
 #include fn_calculate_spot_light.glsl
 #include fn_calculate_light.glsl
 #include fn_calculate_fog.glsl
+
+#ifdef USE_PARALLAX
+#include fn_calculate_parallax_mapping.glsl
+#endif
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;

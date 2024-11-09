@@ -48,7 +48,7 @@ namespace render {
         int m_animationBoneIndex{ 0 };
         bool m_animationDebugBoneWeight{ false };
 
-        float m_parallaxDepth{ 0.1f };
+        float m_parallaxDepth{ -1.f };
         int m_parallaxMethod{ 0 };
 
         std::string m_geometryType;
