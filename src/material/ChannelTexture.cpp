@@ -271,12 +271,20 @@ void ChannelTexture::load()
 
             auto channel = part.m_mapping[srcChannelIndex];
 
-            int dstChannelIndex = ChannelPart::getChannelIndex(channel);
+            const int dstChannelIndex = ChannelPart::getChannelIndex(channel);
             if (dstChannelIndex == -1) continue;
+
+            const bool dstChannelReverse = ChannelPart::isReversed(channel);
 
             if (dstChannelIndex >= m_channelCount) continue;
 
-            int defaultValue = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 65535 : 255));
+            int defaultValue;
+            if (dstChannelReverse) {
+                defaultValue = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 0 : 0));
+            }
+            else {
+                defaultValue = (int)(m_defaults[dstChannelIndex] * (m_is16Bbit ? 65535 : 255));
+            }
 
             filled[dstChannelIndex] = true;
 
@@ -288,10 +296,16 @@ void ChannelTexture::load()
                     if (srcByteData) {
                         value = srcByteData[srcIndex];
                         value = (int)(value * pixelRatio);
+                        if (dstChannelReverse) {
+                            value = 255 - value;
+                        }
                     }
                     else if (srcShortData) {
                         value = srcShortData[srcIndex];
                         value = (int)(value * pixelRatio);
+                        if (dstChannelReverse) {
+                            value = 65535 - value;
+                        }
                     }
                     else {
                         value = defaultValue;

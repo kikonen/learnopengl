@@ -19,7 +19,11 @@ struct ChannelPart {
         red,
         green,
         blue,
-        alpha
+        alpha,
+        red_rev,
+        green_rev,
+        blue_rev,
+        alpha_rev
     };
 
     TextureType m_type;
@@ -41,7 +45,30 @@ struct ChannelPart {
                 return 2;
             case ChannelPart::Channel::alpha:
                 return 3;
+            case ChannelPart::Channel::red_rev:
+                return 0;
+            case ChannelPart::Channel::green_rev:
+                return 1;
+            case ChannelPart::Channel::blue_rev:
+                return 2;
+            case ChannelPart::Channel::alpha_rev:
+                return 3;
         }
         return -1;
+    }
+
+    static int isReversed(ChannelPart::Channel channel)
+    {
+        switch (channel) {
+            case ChannelPart::Channel::red_rev:
+                return true;
+            case ChannelPart::Channel::green_rev:
+                return true;
+            case ChannelPart::Channel::blue_rev:
+                return true;
+            case ChannelPart::Channel::alpha_rev:
+                return true;
+        }
+        return false;
     }
 };

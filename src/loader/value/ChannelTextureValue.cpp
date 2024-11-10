@@ -16,12 +16,21 @@ namespace {
     const std::string CHANNEL_BLUE{ "B" };
     const std::string CHANNEL_ALPHA{ "A" };
 
+    const std::string CHANNEL_RED_REV{ "r" };
+    const std::string CHANNEL_GREEN_REV{ "g" };
+    const std::string CHANNEL_BLUE_REV{ "b" };
+    const std::string CHANNEL_ALPHA_REV{ "a" };
+
     std::map<std::string, ChannelPart::Channel> g_channels{
         { CHANNEL_NONE, ChannelPart::Channel::none },
         { CHANNEL_RED, ChannelPart::Channel::red },
         { CHANNEL_GREEN, ChannelPart::Channel::green},
         { CHANNEL_BLUE, ChannelPart::Channel::blue},
         { CHANNEL_ALPHA, ChannelPart::Channel::alpha},
+        { CHANNEL_RED_REV, ChannelPart::Channel::red_rev },
+        { CHANNEL_GREEN_REV, ChannelPart::Channel::green_rev},
+        { CHANNEL_BLUE_REV, ChannelPart::Channel::blue_rev},
+        { CHANNEL_ALPHA_REV, ChannelPart::Channel::alpha_rev},
     };
 
     std::map<std::string, TextureType> g_textureTypes{
@@ -92,7 +101,8 @@ namespace {
 
         for (int i = 0; i < str.size(); i++) {
             std::string p{ str[i] };
-            vec.push_back(resolveChannel(util::toUpper(p)));
+            //vec.push_back(resolveChannel(util::toUpper(p)));
+            vec.push_back(resolveChannel(p));
         }
 
         while (vec.size() < 4) {
