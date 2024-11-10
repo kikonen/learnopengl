@@ -48,6 +48,13 @@ nodes:
     physics:
       geom:
         collision: [world, ray]
+  - xid: rock_forest_floor_1
+    prefab:
+      path: prefab/scenery/prefab_rock_forest_floor_1.yml
+    scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
   - id: brick_wall
     mesh:
       vertex:
@@ -141,6 +148,26 @@ nodes:
         collision: [none]
         size: [1]
 decals:
+  - name: bullet_1
+    lifetime: 99999
+    scale: 0.025
+    material:
+      base: decals
+      map_kd: BulletHole_Plaster.png
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: firespin_1
+    lifetime: 99999
+    scale: 0.025
+    material:
+      base: particles
+      map_kd: 7_firespin_spritesheet.png
+      sprites: 61
+      sprites_x: 8
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
   - name: blood_1
     lifetime: 99999
     scale: 1

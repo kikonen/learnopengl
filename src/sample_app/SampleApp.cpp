@@ -136,6 +136,8 @@ int SampleApp::onInit()
         dbg.m_physics_soft_cfm = assets.physics_soft_cfm;
 
         dbg.m_parallaxMethod = assets.parallaxMethod;
+
+        dbg.m_decalId = SID("blood_1");
     }
 
     return 0;
@@ -197,21 +199,6 @@ int SampleApp::onSetup()
         engine.setActiveListener(listenerId);
 
         engine.playSource(sourceId);
-    }
-
-    {
-        m_bulletMaterial = std::make_unique<Material>();
-        auto& mat = *m_bulletMaterial;
-        //mat.addTexPath(TextureType::diffuse, "particles/7_firespin_spritesheet.png");
-        //mat.addTexPath(TextureType::diffuse, "textures/matrix_512.png");
-        mat.addTexPath(TextureType::diffuse, "decals/BulletHole_Plaster.png");
-
-        mat.spriteCount = 1;
-        mat.spritesX = 1;
-        mat.textureSpec.wrapS = GL_CLAMP_TO_EDGE;
-        mat.textureSpec.wrapT = GL_CLAMP_TO_EDGE;
-        mat.loadTextures();
-        mat.registerMaterial();
     }
 
     return 0;
@@ -631,6 +618,8 @@ void SampleApp::shoot(
     if (!player) return;
 
     {
+        const auto& dbg = render::DebugContext::get();
+
         glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);
@@ -661,7 +650,7 @@ void SampleApp::shoot(
                 //    hit.normal,
                 //    hit.depth));
 
-                auto sid = SID("concrete_hole_1");
+                auto sid = dbg.m_decalId;
                 auto df = decal::DecalRegistry::get().getDecal(sid);
                 KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
 

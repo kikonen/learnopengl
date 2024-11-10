@@ -37,4 +37,18 @@ namespace decal {
         if (it == m_nameToIndex.end()) return {};
         return m_definitions[it->second];
     }
+
+    std::vector<ki::StringID> DecalRegistry::getDecalIds() const
+    {
+        std::vector<ki::StringID> ids;
+
+        {
+            std::lock_guard lock{ m_lock };
+            for (auto [k, v] : m_nameToIndex) {
+                ids.push_back(k);
+            }
+        }
+
+        return ids;
+    }
 }

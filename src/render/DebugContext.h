@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
+#include "ki/sid.h"
 
 namespace mesh {
     struct MeshInstance;
@@ -50,6 +51,8 @@ namespace render {
 
         float m_parallaxDepth{ -1.f };
         int m_parallaxMethod{ 0 };
+
+        ki::StringID m_decalId{ 0 };
 
         std::string m_geometryType;
         float m_wireframeLineWidth{ 1.f };

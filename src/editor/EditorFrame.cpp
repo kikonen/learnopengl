@@ -28,6 +28,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
 
+#include "decal/DecalRegistry.h"
 
 #include "render/RenderContext.h"
 
@@ -835,5 +836,24 @@ namespace editor {
 
         ImGui::InputFloat("Parallax depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
         ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
+
+        {
+            if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
+                for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
+                    const auto& name = decalId.str().c_str();
+
+                    ImGui::PushID((void*)name);
+                    const bool isSelected = dbg.m_decalId == decalId;
+                    if (ImGui::Selectable(name, isSelected)) {
+                        dbg.m_decalId = decalId;
+                    }
+                    ImGui::PopID();
+
+                    //if (isSelected)
+                    //    ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+        }
     }
 }

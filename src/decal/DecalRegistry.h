@@ -20,8 +20,10 @@ namespace decal
         // @return decal with null id if not valid
         decal::DecalDefinition getDecal(const ki::StringID& name);
 
+        std::vector<ki::StringID> getDecalIds() const;
+
     private:
-        std::mutex m_lock{};
+        mutable std::mutex m_lock{};
 
         std::vector<decal::DecalDefinition> m_definitions;
         std::unordered_map<ki::StringID, size_t> m_nameToIndex;

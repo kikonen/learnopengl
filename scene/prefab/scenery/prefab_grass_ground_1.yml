@@ -1,0 +1,32 @@
+---
+prefab:
+  mesh:
+    path: plane
+    material:
+      base: textures/grass_and_rubble_pjwdj0_2k
+      map_kd: Grass_And_Rubble_pjwdJ0_2K_BaseColor.jpg
+      map_normal: Grass_And_Rubble_pjwdJ0_2K_Normal.jpg
+      map_channel:
+        - path: Grass_And_Rubble_pjwdJ0_2K_Gloss.jpg
+          type: metalness_map
+          channel: R
+        - path: Grass_And_Rubble_pjwdJ0_2K_Roughness.jpg
+          type: roughness_map
+          channel: G
+        - path: Grass_And_Rubble_pjwdJ0_2K_Displacement.jpg
+          type: displacement_map
+          channel: B
+        - path: Grass_And_Rubble_pjwdJ0_2K_AO.jpg
+          type: occlusion_map
+          channel: A
+      tiling: 20
+      parallax_depth: 0.03
+      program: g_tex
+  flags:
+    no_shadow: true
+  physics:
+    geom:
+      type: plane
+      category: [terrain]
+      collision: [npc, player, prop, ray]
+      size: [1000, 0.2, 1000]
