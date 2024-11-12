@@ -11,6 +11,12 @@
 
 namespace {
     constexpr float DECAL_DIST = 0.003f;
+
+    float variant(float base, glm::vec2 variation)
+    {
+        const auto range = variation.y - variation.x;
+        return base + variation.x + util::prnd(1.f) * range;
+    }
 }
 
 namespace decal {
@@ -31,20 +37,15 @@ namespace decal {
         decal::Decal decal{};
         {
             decal.m_materialIndex = m_materialIndex;
-            decal.m_lifetime = m_lifetime;
             decal.m_scale = m_scale;
             decal.m_rotation = m_rotation;
             decal.m_spriteBaseIndex = m_spriteBaseIndex;
             decal.m_spriteCount = m_spriteCount;
 
-            const auto rotationRange = m_rotationVariation.y - m_rotationVariation.x;
-            decal.m_rotation = glm::radians(m_rotation + m_rotationVariation.x + util::prnd(1.f) * rotationRange);
-
-            const auto scaleRange = m_scaleVariation.y - m_scaleVariation.x;
-            decal.m_scale = m_scale  + m_scaleVariation.x + util::prnd(1.f) * scaleRange;
-
-            const auto speedRange = m_spriteSpeedVariation.y - m_spriteSpeedVariation.x;
-            decal.m_spriteSpeed = m_spriteSpeed + m_spriteSpeedVariation.x + util::prnd(1.f) * speedRange;
+            decal.m_lifetime = variant(m_lifetime, m_lifetimeVariation);
+            decal.m_rotation = glm::radians(variant(m_rotation, m_rotationVariation));
+            decal.m_scale = variant(m_scale, m_scaleVariation);
+            decal.m_spriteSpeed = variant(m_spriteSpeed, m_spriteSpeedVariation);
         }
 
         decal.m_parent = parent;
