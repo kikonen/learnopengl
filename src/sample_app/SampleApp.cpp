@@ -655,8 +655,6 @@ void SampleApp::shoot(
                 KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
 
                 auto decal = df.createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
-                decal.m_rotation = util::prnd(std::numbers::pi_v<float> * 2.f);
-                decal.m_scale += util::prnd(2.f);
 
                 decal::DecalSystem::get().addDecal(decal);
 

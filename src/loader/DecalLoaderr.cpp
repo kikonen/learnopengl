@@ -47,8 +47,23 @@ namespace loader {
             else if (k == "rotation") {
                 data.rotation = readFloat(v);
             }
+            else if (k == "sprite_speed") {
+                data.spriteSpeed = readFloat(v);
+            }
             else if (k == "sprite_base_index") {
                 data.spriteBaseIndex = readInt(v);
+            }
+            else if (k == "rotation_variation") {
+                data.rotationVariation = readVec2(v);
+            }
+            else if (k == "scale_variation") {
+                data.scaleVariation = readVec2(v);
+            }
+            else if (k == "lifetime_variation") {
+                data.lifetimeVariation = readVec2(v);
+            }
+            else if (k == "sprite_speed_variation") {
+                data.spriteSpeedVariation = readVec2(v);
             }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
@@ -85,6 +100,11 @@ namespace loader {
         df.m_spriteBaseIndex = data.spriteBaseIndex;
         df.m_spriteCount = mat.spriteCount;
         df.m_spriteSpeed = data.spriteSpeed;
+
+        df.m_rotationVariation = data.rotationVariation;
+        df.m_scaleVariation = data.scaleVariation;
+        df.m_lifetimeVariation = data.lifetimeVariation;
+        df.m_spriteSpeedVariation = data.spriteSpeedVariation;
 
         decal::DecalRegistry::get().addDecal(df);
     }

@@ -21,9 +21,13 @@ namespace decal
         ki::material_index m_materialIndex{ 0 };
 
         float m_spriteSpeed{ 0.f };
-
         uint8_t m_spriteBaseIndex{ 0 };
         uint8_t m_spriteCount{ 1 };
+
+        glm::vec2 m_rotationVariation{ 0.f };
+        glm::vec2 m_scaleVariation{ 0.f };
+        glm::vec2 m_lifetimeVariation{ 0.f };
+        glm::vec2 m_spriteSpeedVariation{ 0.f };
 
         operator bool() const noexcept {
             return m_sid;

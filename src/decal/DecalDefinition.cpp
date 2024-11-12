@@ -36,16 +36,20 @@ namespace decal {
             decal.m_rotation = m_rotation;
             decal.m_spriteBaseIndex = m_spriteBaseIndex;
             decal.m_spriteCount = m_spriteCount;
+
+            const auto rotationRange = m_rotationVariation.y - m_rotationVariation.x;
+            decal.m_rotation = glm::radians(m_rotation + m_rotationVariation.x + util::prnd(1.f) * rotationRange);
+
+            const auto scaleRange = m_scaleVariation.y - m_scaleVariation.x;
+            decal.m_scale = m_scale  + m_scaleVariation.x + util::prnd(1.f) * scaleRange;
+
+            const auto speedRange = m_spriteSpeedVariation.y - m_spriteSpeedVariation.x;
+            decal.m_spriteSpeed = m_spriteSpeed + m_spriteSpeedVariation.x + util::prnd(1.f) * speedRange;
         }
 
         decal.m_parent = parent;
         decal.m_position = invModelMatrix * glm::vec4(hitPos + hitNormal * DECAL_DIST, 1.f);
         decal.m_normal = glm::normalize(glm::mat3(invModelMatrix) * hitNormal);
-
-        decal.m_rotation = util::prnd(std::numbers::pi_v<float> / 2.f);
-
-        float sign = util::prnd(10.f) > 5.f ? 1.f : -1.f;
-        decal.m_spriteSpeed = sign * (5 + util::prnd(20.f));
 
         return decal;
     }

@@ -41,7 +41,7 @@ nodes:
     physics:
       geom:
         collision: [world, ray]
-  - id: concrete_floor
+  - xid: concrete_floor
     prefab:
       path: prefab/scenery/prefab_rough_concrete_wall.yml
     scale: 100
@@ -51,6 +51,20 @@ nodes:
   - xid: rock_forest_floor_1
     prefab:
       path: prefab/scenery/prefab_rock_forest_floor_1.yml
+    scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
+  - xid: prefab_cobblestone_wall_1
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_wall_1.yml
+    scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
+  - id: prefab_diamond_plate_2
+    prefab:
+      path: prefab/scenery/prefab_diamond_plate_2.yml
     scale: 100
     physics:
       geom:
@@ -151,15 +165,21 @@ decals:
   - name: bullet_1
     lifetime: 99999
     scale: 0.025
+    scale_variation: [-0.01, 0.01]
+    rotation_variation: [0, 360]
     material:
       base: decals
       map_kd: BulletHole_Plaster.png
+      map_normal: BulletHole_Plaster_normal.png
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
 
   - name: firespin_1
     lifetime: 99999
-    scale: 0.025
+    scale: 0.4
+    scale_variation: [-0.2, 0.2]
+    sprite_speed: 0
+    sprite_speed_variation: [-10, 10]
     material:
       base: particles
       map_kd: 7_firespin_spritesheet.png
@@ -171,6 +191,8 @@ decals:
   - name: blood_1
     lifetime: 99999
     scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
     material:
       base: decals/high_velocity_blood_spatter_sgepbixp_2k
       map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
@@ -186,12 +208,15 @@ decals:
         - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg
           type: map_displacement
           channel: B
-      parallax_depth: 0.05
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
   - name: rubble_1
     lifetime: 99999
     scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
     material:
       base: decals/rubble_tbcs3qo_2k
       map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
@@ -210,12 +235,15 @@ decals:
         - path: Rubble_tbcs3qo_2K_AO.jpg
           type: map_occlusion
           channel: A
-      parallax_depth: 0.05
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
   - name: ivy_1
     lifetime: 99999
     scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
     material:
       base: decals/ivy_thdjv1h_2k
       map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
@@ -241,6 +269,8 @@ decals:
   - name: concrete_damage_1
     lifetime: 99999
     scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
     material:
       base: decals/concrete_damage_tdildcjb_2k
       map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
@@ -266,6 +296,8 @@ decals:
   - name: concrete_hole_1
     lifetime: 99999
     scale: 0.25
+    scale_variation: [-0.1, 0.1]
+    rotation_variation: [-90, 90]
     material:
       base:  decals/hole_in_concrete_sfvodqg_2k
       map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
