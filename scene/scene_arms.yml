@@ -37,16 +37,25 @@ nodes:
       listener:
         default: true
       sources:
-        - path: audio/Wheeze 1_B2356390_normal.wav
+        - name: idle_1
+          path: audio/Wheeze 1_B2356390_normal.wav
           reference_distance: 0.1
           gain: 0.4
           loop: true
-        - path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+        - name: walk_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
           reference_distance: 0.1
           gain: 1.0
-          pitch: 1.2
-          loop: trueS
-        - path: audio/Steps In Grass_6D932A6E_normal.wav
+          pitch: 1.4
+          loop: true
+        - name: run_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 3.2
+          loop: true
+        - name: turn_1
+          path: audio/Steps In Grass_6D932A6E_normal.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 1.5
