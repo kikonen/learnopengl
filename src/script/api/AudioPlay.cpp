@@ -14,7 +14,7 @@ namespace script
 {
     AudioPlay::AudioPlay(
         pool::NodeHandle handle,
-        unsigned int id,
+        audio::source_id id,
         bool sync) noexcept
         : NodeCommand(handle, 0, false),
         m_id(id),

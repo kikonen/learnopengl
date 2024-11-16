@@ -15,7 +15,7 @@ namespace script
 {
     AudioStop::AudioStop(
         pool::NodeHandle handle,
-        unsigned int id) noexcept
+        audio::source_id id) noexcept
         : NodeCommand(handle, 0, false),
         m_id(id)
     {

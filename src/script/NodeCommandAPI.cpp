@@ -5,6 +5,8 @@
 #include "util/Log.h"
 #include "util/glm_format.h"
 
+#include "ki/size.h"
+
 #include "model/Node.h"
 
 #include "ScriptEngine.h"
@@ -35,7 +37,7 @@ namespace {
     struct CommandOptions {
         script::command_id afterId = 0;
         int index = 0;
-        unsigned int sid = 0;
+        ki::sid_t sid = 0;
         float duration = 0.f;
         float speed = 1.f;
         bool relative = false;

@@ -13,7 +13,7 @@ namespace script
     public:
         AudioPlay(
             pool::NodeHandle handle,
-            unsigned int id,
+            audio::source_id id,
             bool sync) noexcept;
 
         virtual void execute(

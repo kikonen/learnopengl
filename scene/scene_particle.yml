@@ -24,16 +24,25 @@ nodes:
       listener:
         default: true
       sources:
-        - path: audio/Wheeze 1_B2356390_normal.wav
+        - name: idle_1
+          path: audio/Wheeze 1_B2356390_normal.wav
           reference_distance: 0.1
           gain: 0.4
           loop: true
-        - path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+        - name: walk_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
           reference_distance: 0.1
           gain: 1.0
-          pitch: 1.2
-          loop: trueS
-        - path: audio/Steps In Grass_6D932A6E_normal.wav
+          pitch: 1.6
+          loop: true
+        - name: run_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 2.8
+          loop: true
+        - name: turn_1
+          path: audio/Steps In Grass_6D932A6E_normal.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 1.5
@@ -46,7 +55,7 @@ nodes:
       - type: camera_zoom
     script: |
       cmd:audioPlay(
-        { sync=true, sid=sid("idle_1") })
+        { sync=true, sid=util:sid("idle_1") })
   - id: fps_counter
     parent_id: player_fps
     type: text

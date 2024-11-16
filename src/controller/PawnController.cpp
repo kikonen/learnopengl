@@ -23,6 +23,11 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+namespace {
+    const auto walkId = SID("walk_2");
+    const auto runId = SID("run_2");
+    const auto turnId = SID("turn_1");
+}
 
 PawnController::PawnController()
 {
@@ -216,10 +221,6 @@ void PawnController::toggleAudio(
     bool actionRun,
     bool actionTurn)
 {
-    const auto walkId = SID("walk_2");
-    const auto runId = SID("run_2");
-    const auto turnId = SID("turn_1");
-
     if (auto* src = node->getAudioSource(walkId); src) {
         src->toggle(actionWalk && !actionRun);
     }
