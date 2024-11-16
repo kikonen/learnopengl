@@ -14,7 +14,7 @@
 
 #include "component/FpsCamera.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/Source.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/InputContext.h"
@@ -90,20 +90,26 @@ void PawnController::processInput(
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ glm::radians(m_speedRotateNormal) };
 
+    bool runningSpeed = false;
+
     if (input->isModifierDown(Modifier::SHIFT)) {
         moveSpeed = m_speedMoveRun;
         rotateSpeed = glm::radians(m_speedRotateRun);
+        runningSpeed = true;
     }
     if (input->isModifierDown(Modifier::ALT)) {
         moveSpeed *= 5.f;
         rotateSpeed *= 2.f;
+        runningSpeed = true;
     }
     if (input->isHighPrecisionMode()) {
         moveSpeed *= 0.1f;
         rotateSpeed *= 0.25f;
+        runningSpeed = false;
     }
 
     bool actionWalk = false;
+    bool actionRun = false;
     bool actionTurn = false;
 
     float angularVelocity = 0.f;
@@ -172,6 +178,7 @@ void PawnController::processInput(
         if (changed) {
             m_velocity = adjust / dt;
             actionWalk = true;
+            actionRun = runningSpeed;
         } else{
             m_velocity = { 0.f, 0.f, 0.f };
         }
@@ -200,18 +207,28 @@ void PawnController::processInput(
 
     m_angularVelocity = angularVelocity;
 
-    toggleAudio(node, actionWalk, actionTurn);
+    toggleAudio(node, actionWalk, actionRun, actionTurn);
 }
 
 void PawnController::toggleAudio(
     Node* node,
     bool actionWalk,
+    bool actionRun,
     bool actionTurn)
 {
-    auto& ae = audio::AudioEngine::get();
-    const auto walkId = node->m_audioSourceIds[1];
-    const auto turnId = node->m_audioSourceIds[2];
+    const auto walkId = SID("walk_2");
+    const auto runId = SID("run_2");
+    const auto turnId = SID("turn_1");
 
-    ae.toggleSource(walkId, actionWalk);
-    ae.toggleSource(turnId, actionTurn && !actionWalk);
+    if (auto* src = node->getAudioSource(walkId); src) {
+        src->toggle(actionWalk && !actionRun);
+    }
+
+    if (auto* src = node->getAudioSource(runId); src) {
+        src->toggle(actionRun);
+    }
+
+    if (auto* src = node->getAudioSource(turnId); src) {
+        src->toggle(actionTurn && !(actionWalk || actionRun));
+    }
 }

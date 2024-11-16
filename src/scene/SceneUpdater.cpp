@@ -14,8 +14,6 @@
 
 #include "script/CommandEngine.h"
 
-#include "audio/AudioEngine.h"
-
 #include "animation/AnimationSystem.h"
 #include "decal/DecalSystem.h"
 
@@ -153,10 +151,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 KI_TIMER("node2   ");
                 ControllerRegistry::get().updateWT(ctx);
                 nodeRegistry.updateModelMatrices();
-            }
-            {
-                KI_TIMER("audio   ");
-                audio::AudioEngine::get().update(ctx);
             }
             {
                 KI_TIMER("decal   ");

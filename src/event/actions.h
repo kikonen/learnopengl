@@ -27,37 +27,6 @@ struct UpdateContext;
 class NodeController;
 
 namespace event {
-    struct AudioSourceAttach {
-        audio::sound_id soundId{ 0 };
-        std::string name;
-
-        bool isAutoPlay{ false };
-
-        float referenceDistance{ audio::REFERENCE_DISTANCE };
-        float maxDistance{ audio::MAX_DISTANCE };
-        float rolloffFactor{ audio::ROLLOFF_FACTOR };
-
-        float minGain{ audio::MIN_GAIN };
-        float maxGain{ audio::MAX_GAIN };
-
-        bool looping{ false };
-        float pitch{ 1.f };
-        float gain{ 1.f };
-
-        bool isValid() const noexcept {
-            return soundId > 0.f;
-        }
-    };
-
-    struct AudioListenerAttach {
-        bool isDefault{ false };
-        float gain{ 0.f };
-
-        bool isValid() const noexcept {
-            return gain > 0.f;
-        }
-    };
-
     struct PhysicsAttach {
         loader::BodyData body;
         loader::GeomData geom;
@@ -74,8 +43,6 @@ namespace event {
     struct NodeAttach {
         NodeState state;
         PhysicsAttach physics;
-        AudioListenerAttach audioListener;
-        std::vector<AudioSourceAttach> audioSources;
     };
 
     // Blobdata is for doing passing abnormally large event blobs
@@ -103,11 +70,12 @@ namespace event {
     };
 
     struct AudioSourceAction {
+        ki::node_id target{ 0 };
         audio::source_id id{ 0 };
     };
 
     struct AudioListenerAction {
-        audio::listener_id id{ 0 };
+        ki::node_id target{ 0 };
     };
 
     struct CommandAction {

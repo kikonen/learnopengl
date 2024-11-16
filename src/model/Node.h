@@ -39,6 +39,11 @@ namespace particle {
     class ParticleGenerator;
 }
 
+namespace audio {
+    struct Listener;
+    struct Source;
+}
+
 class Program;
 class CameraComponent;
 class Light;
@@ -134,6 +139,8 @@ public:
         return NodeRegistry::get().getSnapshotRT(m_entityIndex);
     }
 
+    audio::Source* getAudioSource(audio::source_id) const;
+
     //void updateModelMatrix() noexcept;
 
     bool isEntity() const noexcept;
@@ -189,8 +196,8 @@ public:
     // Index of node in NodeRegistry
     uint32_t m_entityIndex{ 0 };
 
-    audio::listener_id m_audioListenerId{ 0 };
-    std::array<audio::source_id, ki::MAX_NODE_AUDIO_SOURCE> m_audioSourceIds{ 0, 0, 0, 0 };
+    std::unique_ptr<audio::Listener> m_audioListener;
+    std::unique_ptr<std::vector<audio::Source>> m_audioSources;
 
     std::string m_name;
 

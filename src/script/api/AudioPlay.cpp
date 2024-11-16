@@ -6,7 +6,7 @@
 
 #include "engine/UpdateContext.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/Source.h"
 
 #include "registry/Registry.h"
 
@@ -14,10 +14,10 @@ namespace script
 {
     AudioPlay::AudioPlay(
         pool::NodeHandle handle,
-        int index,
+        unsigned int id,
         bool sync) noexcept
         : NodeCommand(handle, 0, false),
-        m_index(index),
+        m_id(id),
         m_sync(sync)
     {
     }
@@ -25,18 +25,15 @@ namespace script
     void AudioPlay::execute(
         const UpdateContext& ctx) noexcept
     {
-        if (m_index < 0 || m_index >= ki::MAX_NODE_AUDIO_SOURCE)
-        {
-            m_finished = true;
-            return;
+        audio::Source* source = source = getNode()->getAudioSource(m_id);
+
+        if (!m_started) {
+            if (source) {
+                source->play();
+                m_started = true;
+            }
         }
 
-        auto& ae = audio::AudioEngine::get();
-        const auto sourceId = getNode()->m_audioSourceIds[m_index];
-        if (!m_started) {
-            ae.playSource(sourceId);
-            m_started = true;
-        }
-        m_finished = m_sync ? !ae.isPlaying(sourceId) : true;
+        m_finished = source && m_sync ? !source->isPlaying() : true;
     }
 }

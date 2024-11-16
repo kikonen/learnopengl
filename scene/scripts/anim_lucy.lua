@@ -5,8 +5,8 @@ local function animation_rotate(coid)
   local cid = 0
   local dir = 1
 
-  local AUDIO_WIND = 0
-  local AUDIO_ROTATE = 1
+  local AUDIO_WIND = util:sid("wind")
+  local AUDIO_ROTATE = util:sid("rotate")
 
   -- prepause
   cid = cmd:wait({ after=cid, time=1 })
@@ -15,7 +15,7 @@ local function animation_rotate(coid)
     wid = cmd:wait({ after=cid, time=0.5 })
 
     cid = cmd:audioPlay(
-      { after=cid, index=AUDIO_ROTATE })
+      { after=cid, sid=AUDIO_ROTATE })
 
     cid = cmd:rotate(
       { after=wid, time=40, relative=true },
@@ -23,10 +23,10 @@ local function animation_rotate(coid)
       dir * 720 * 2)
 
     cid = cmd:audioPause(
-      { after=cid, index=AUDIO_ROTATE })
+      { after=cid, sid=AUDIO_ROTATE })
 
     cid = cmd:audioPlay(
-      { after=cid, index=AUDIO_WIND, sync=true })
+      { after=cid, sid=AUDIO_WIND, sync=true })
 
     cid = cmd:resume({ after=cid }, coid)
     dir = -dir

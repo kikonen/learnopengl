@@ -22,6 +22,7 @@ private:
     void toggleAudio(
         Node* node,
         bool actionWalk,
+        bool actionRun,
         bool actionTurn);
 
 private:

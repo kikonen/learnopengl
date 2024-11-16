@@ -25,7 +25,7 @@ namespace audio
         audio::sound_id registerSound(std::string_view fullPath);
 
     private:
-        std::unordered_map<std::string, audio::sound_id> m_pathToId;
+        std::unordered_map<ki::StringID, audio::sound_id> m_sidToId;
         std::vector<Sound> m_sounds;
 
         std::shared_mutex m_lock;

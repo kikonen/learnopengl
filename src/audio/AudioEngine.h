@@ -32,7 +32,6 @@ namespace audio
         ~AudioEngine();
 
         void prepare();
-        void update(const UpdateContext& ctx);
 
         inline bool isEnabled(bool enabled) const {
             return m_enabled;
@@ -42,44 +41,21 @@ namespace audio
             m_enabled = enabled;
         }
 
-        void playSource(audio::source_id id);
-        void stopSource(audio::source_id id);
-        void pauseSource(audio::source_id id);
-        void toggleSource(audio::source_id id, bool play);
+        void setActiveListenerId(ki::node_id nodeId);
 
+        ki::node_id getActiveListenerId() const noexcept
+        {
+            return m_activeListenerId;
+        }
 
-        bool isPlaying(audio::source_id);
-        bool isPaused(audio::source_id);
+        bool isActiveListener(ki::node_id nodeId) const noexcept
+        {
+            return m_activeListenerId == nodeId;
+        }
 
-        void setActiveListener(audio::listener_id id);
-
-        audio::listener_id registerListener();
-
-        Listener* getListener(
-            audio::listener_id id);
-
-        void setListenerPos(
-            audio::source_id id,
-            const glm::vec3& pos,
-            const glm::vec3& front,
-            const glm::vec3& up);
-
-        audio::source_id registerSource(
-            audio::sound_id soundId);
-
-        Source* getSource(
-            audio::source_id id);
-
-        void setSourcePos(
-            audio::source_id id,
-            const glm::vec3& pos,
-            const glm::vec3& front);
+        void prepareSource(audio::Source& source);
 
         audio::sound_id registerSound(std::string_view fullPath);
-
-    private:
-        void preparePendingListeners(const UpdateContext& ctx);
-        void preparePendingSources(const UpdateContext& ctx);
 
     private:
         bool m_prepared{ false };
@@ -88,13 +64,7 @@ namespace audio
         ALCdevice* m_device{ nullptr };
         ALCcontext* m_context{ nullptr };
 
-        audio::listener_id m_activeListenerId{ 0 };
-
-        std::vector<Listener>  m_listeners;
-        std::vector<Source> m_sources;
-
-        std::vector<audio::listener_id> m_pendingListeners;
-        std::vector<audio::source_id> m_pendingSources;
+        ki::node_id m_activeListenerId{ 0 };
 
         std::unique_ptr<SoundRegistry> m_soundRegistry;
     };

@@ -9,9 +9,7 @@
 #include "size.h"
 #include "limits.h"
 
-#include "pool/NodeHandle.h"
-
-struct Snapshot;
+struct NodeState;
 
 namespace audio
 {
@@ -27,26 +25,19 @@ namespace audio
         Source& operator=(Source& o) = delete;
         Source& operator=(Source&& o) noexcept;
 
-        inline bool isReady() const { return m_matrixLevel > -1; }
-
         void prepare(const Sound* sound);
 
-        void updateFromSnapshot(const Snapshot& snapshot);
-
-        void update();
-        void updatePos();
+        void update(const NodeState& state);
 
         void play() const;
         void stop() const;
         void pause() const;
+        void toggle(bool play) const;
 
         bool isPlaying() const;
         bool isPaused() const;
 
         audio::source_id m_id{ 0 };
-
-        ALuint m_sourceId{ 0 };
-
         audio::sound_id m_soundId{ 0 };
 
         bool m_autoPlay{ false };
@@ -74,11 +65,7 @@ namespace audio
         // AL_CONE_INNER_ANGLE
         // AL_CONE_OUTER_ANGL
 
-        glm::vec3 m_pos{ 0.f };
-        glm::vec3 m_vel{ 0.f };
-        glm::vec3 m_dir{ 0.f };
-
-        pool::NodeHandle m_nodeHandle{};
+        ALuint m_sourceId{ 0 };
 
         ki::level_id m_matrixLevel{ 0 };
     };

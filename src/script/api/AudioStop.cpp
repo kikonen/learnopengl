@@ -6,7 +6,7 @@
 
 #include "engine/UpdateContext.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/Source.h"
 
 #include "registry/Registry.h"
 
@@ -15,24 +15,20 @@ namespace script
 {
     AudioStop::AudioStop(
         pool::NodeHandle handle,
-        int index) noexcept
+        unsigned int id) noexcept
         : NodeCommand(handle, 0, false),
-        m_index(index)
+        m_id(id)
     {
     }
 
     void AudioStop::execute(
         const UpdateContext& ctx) noexcept
     {
-        if (m_index < 0 || m_index >= ki::MAX_NODE_AUDIO_SOURCE)
-        {
-            m_finished = true;
-            return;
-        }
+        auto* source = getNode()->getAudioSource(m_id);
 
-        auto& ae = audio::AudioEngine::get();
-        const auto sourceId = getNode()->m_audioSourceIds[m_index];
-        ae.stopSource(sourceId);
+        if (source) {
+            source->stop();
+        }
 
         m_finished = true;
     }

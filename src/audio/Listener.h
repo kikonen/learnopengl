@@ -8,9 +8,7 @@
 
 #include "size.h"
 
-#include "pool/NodeHandle.h"
-
-struct Snapshot;
+struct NodeState;
 
 namespace audio
 {
@@ -24,27 +22,11 @@ namespace audio
         Listener& operator=(Listener& o) = delete;
         Listener& operator=(Listener&& o) noexcept;
 
-        inline bool isReady() const { return m_matrixLevel > -1; }
-
-        void prepare();
-
-        void updateFromSnapshot(const Snapshot& snapshot);
-
-        void update();
-        void updatePos();
+        void updateActive(const NodeState& state) const;
 
         audio::listener_id m_id{ 0 };
 
         bool m_default{ false };
         float m_gain{ 1.f };
-
-        glm::vec3 m_pos{ 0.f };
-        glm::vec3 m_vel{ 0.f };
-
-        glm::vec3 m_front{ 0.f, 0.f, -1.f };
-        glm::vec3 m_up{ 0.f, 1.f, 0.f };
-
-        ki::level_id m_matrixLevel{ 0 };
-        pool::NodeHandle m_nodeHandle{};
     };
 }

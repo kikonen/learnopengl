@@ -4,6 +4,7 @@
 
 #include "NodeCommand.h"
 
+#include "audio/size.h"
 
 namespace script
 {
@@ -12,12 +13,12 @@ namespace script
     public:
         AudioStop(
             pool::NodeHandle handle,
-            int index) noexcept;
+            unsigned int id) noexcept;
 
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 
     private:
-        int m_index;
+        audio::source_id m_id;
     };
 }

@@ -139,53 +139,63 @@ namespace loader
         }
     }
 
-    std::vector<event::AudioSourceAttach> AudioLoader::createSources(
+    std::unique_ptr<std::vector<audio::Source>> AudioLoader::createSources(
         const std::vector<SourceData>& sources)
     {
-        std::vector<event::AudioSourceAttach> result;
-        uint8_t index = 0;
+        std::unique_ptr<std::vector<audio::Source>> result =
+            std::make_unique<std::vector<audio::Source>>();
+
         for (const auto& data : sources) {
-            const auto& src = createSource(data);
-            if (src.soundId) {
-                result.push_back(src);
+            auto& src = result->emplace_back();
+            createSource(data, src);
+            if (!src.m_soundId) {
+                result->pop_back();
             }
         }
-        return result;
+        return result->empty() ? nullptr : std::move(result);
     }
 
-    event::AudioSourceAttach AudioLoader::createSource(
-        const SourceData& data)
+    void AudioLoader::createSource(
+        const SourceData& data,
+        audio::Source& source)
     {
         const auto& assets = Assets::get();
 
-        std::string fullPath = util::joinPath(assets.assetsDir, data.path);
-        auto soundId = audio::AudioEngine::get().registerSound(fullPath);
+        audio::sound_id soundId;
+        {
+            std::string fullPath = util::joinPath(assets.assetsDir, data.path);
+            soundId = audio::AudioEngine::get().registerSound(fullPath);
 
-        if (!soundId) return {};
+            if (!soundId) return;
+        }
 
-        return {
-            .soundId = soundId,
-            .name = data.name,
-            .isAutoPlay = data.isAutoPlay,
-            .referenceDistance = data.referenceDistance,
-            .maxDistance = data.maxDistance,
-            .rolloffFactor = data.rolloffFactor,
-            .minGain = data.minGain,
-            .maxGain = data.maxGain,
-            .looping = data.looping,
-            .pitch = data.pitch,
-            .gain = data.gain,
-        };
+        source.m_id = SID(data.name);
+        source.m_soundId = soundId;
+        source.m_autoPlay = data.isAutoPlay;
+
+        source.m_referenceDistance = data.referenceDistance;
+        source.m_maxDistance = data.maxDistance;
+        source.m_rolloffFactor = data.rolloffFactor;
+
+        source.m_minGain = data.minGain;
+        source.m_maxGain = data.maxGain;
+
+        source.m_looping = data.looping;
+
+        source.m_pitch = data.pitch;
+        source.m_gain = data.gain;
     }
 
-    event::AudioListenerAttach AudioLoader::createListener(
+    std::unique_ptr<audio::Listener> AudioLoader::createListener(
         const ListenerData& data)
     {
-        if (!data.enabled) return {};
+        if (!data.enabled) return nullptr;
 
-         return {
-            .isDefault = data.isDefault,
-            .gain = data.gain,
-        };
+        std::unique_ptr<audio::Listener> listener = std::make_unique<audio::Listener>();
+
+        listener->m_default = data.isDefault;
+        listener->m_gain = data.gain;
+
+        return listener;
     }
 }

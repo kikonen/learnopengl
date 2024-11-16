@@ -31,18 +31,20 @@ namespace audio
     {
         std::unique_lock lock(m_lock);
 
-        const auto& it = m_pathToId.find(std::string{ fullPath });
-        if (it != m_pathToId.end()) return it->second;
+        const auto sid = SID(fullPath);
 
-        auto& sound = m_sounds.emplace_back<Sound>({});
+        const auto& it = m_sidToId.find(sid);
+        if (it != m_sidToId.end()) return it->second;
+
+        audio::Sound& sound = m_sounds.emplace_back();
         sound.m_id = static_cast<audio::sound_id>(m_sounds.size() - 1);
 
-        if (!sound.load(fullPath)) {
+        if (!sound.load(std::string{ fullPath })) {
             m_sounds.pop_back();
             return 0;
         }
 
-        m_pathToId.insert({ std::string{ fullPath }, sound.m_id });
+        m_sidToId.insert({ sid, sound.m_id});
 
         return sound.m_id;
     }

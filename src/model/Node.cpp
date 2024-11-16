@@ -29,6 +29,8 @@
 
 #include "model/EntityFlags.h"
 
+#include "audio/Source.h"
+#include "audio/Listener.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -194,6 +196,21 @@ int Node::getHighlightIndex() const noexcept
         if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
     }
     return -1;
+}
+
+audio::Source* Node::getAudioSource(audio::source_id id) const
+{
+    audio::Source* source{ nullptr };
+
+    if (m_audioSources) {
+        for (auto& src : *m_audioSources) {
+            if (src.m_id == id) {
+                return &src;
+            }
+        }
+    }
+
+    return nullptr;
 }
 
 ki::node_id Node::lua_getId() const noexcept

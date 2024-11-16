@@ -3,6 +3,8 @@
 #include "ki/size.h"
 
 #include "audio/size.h"
+#include "audio/Source.h"
+#include "audio/Listener.h"
 
 #include "event/actions.h"
 
@@ -32,13 +34,14 @@ namespace loader {
             const loader::DocNode& node,
             SourceData& data) const;
 
-        std::vector<event::AudioSourceAttach> createSources(
+        std::unique_ptr<std::vector<audio::Source>> createSources(
             const std::vector<SourceData>& sources);
 
-        event::AudioSourceAttach createSource(
-            const SourceData& data);
+        void createSource(
+            const SourceData& data,
+            audio::Source& source);
 
-        event::AudioListenerAttach createListener(
+        std::unique_ptr<audio::Listener> createListener(
             const ListenerData& data);
     };
 }

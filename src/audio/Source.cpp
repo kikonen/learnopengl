@@ -5,7 +5,7 @@
 
 #include "util/Log.h"
 
-#include "model/Snapshot.h"
+#include "model/NodeState.h"
 
 #include "Sound.h"
 
@@ -25,12 +25,7 @@ namespace audio
         m_maxGain{ o.m_maxGain },
         m_looping{ o.m_looping },
         m_pitch{ o.m_pitch },
-        m_gain{ o.m_gain },
-        m_pos{ o.m_pos },
-        m_vel{ o.m_vel },
-        m_dir{ o.m_dir },
-        m_matrixLevel{ o.m_matrixLevel},
-        m_nodeHandle{ o.m_nodeHandle }
+        m_gain{ o.m_gain }
     {
         // NOTE KI o is moved now
         o.m_sourceId = 0;
@@ -58,11 +53,6 @@ namespace audio
         m_looping = o.m_looping;
         m_pitch = o.m_pitch;
         m_gain = o.m_gain;
-        m_pos = o.m_pos;
-        m_vel = o.m_vel;
-        m_dir = o.m_dir;
-        m_matrixLevel = o.m_matrixLevel;
-        m_nodeHandle = o.m_nodeHandle;
 
         o.m_sourceId = 0;
 
@@ -76,6 +66,19 @@ namespace audio
 
         alGenSources(1, &m_sourceId);
         alSourcei(m_sourceId, AL_BUFFER, sound->m_bufferId);
+
+        {
+            alSourcef(m_sourceId, AL_REFERENCE_DISTANCE, m_referenceDistance);
+            alSourcef(m_sourceId, AL_MAX_DISTANCE, m_maxDistance);
+            alSourcef(m_sourceId, AL_ROLLOFF_FACTOR, m_rolloffFactor);
+
+            alSourcef(m_sourceId, AL_MIN_GAIN, m_minGain);
+            alSourcef(m_sourceId, AL_MAX_GAIN, m_maxGain);
+
+            alSourcei(m_sourceId, AL_LOOPING, m_looping ? AL_TRUE : AL_FALSE);
+            alSourcef(m_sourceId, AL_PITCH, m_pitch);
+            alSourcef(m_sourceId, AL_GAIN, m_gain);
+        }
 
         {
             ALfloat referenceDistance;
@@ -95,44 +98,25 @@ namespace audio
                     "SOURCE: id={}, soundId={}, referenceDistance={}, maxDistance={}, rolloffFactor={}, minGain={}, maxGain={}",
                     m_id, m_soundId, referenceDistance, maxDistance, rolloffFactor, minGain, maxGain));
         }
-
-        //// NOTE KI ensure defaults are in place
-        //update();
     }
 
-    void Source::updateFromSnapshot(const Snapshot& snapshot)
+    void Source::update(const NodeState& state)
     {
-        const auto level = snapshot.m_matrixLevel;
+        if (!m_sourceId) return;
+
+        const auto level = state.m_matrixLevel;
         if (m_matrixLevel == level) return;
         m_matrixLevel = level;
 
-        m_pos = snapshot.getWorldPosition();
-        m_dir = glm::normalize(snapshot.getViewFront());
+        const auto& pos = state.getWorldPosition();
+        const auto& dir = glm::normalize(state.getViewFront());
+        const auto& vel = glm::vec3{ 0.f };
 
-        updatePos();
-    }
-
-    void Source::update() {
-        if (!m_sourceId) return;
-
-        alSourcef(m_sourceId, AL_REFERENCE_DISTANCE, m_referenceDistance);
-        alSourcef(m_sourceId, AL_MAX_DISTANCE, m_maxDistance);
-        alSourcef(m_sourceId, AL_ROLLOFF_FACTOR, m_rolloffFactor);
-
-        alSourcef(m_sourceId, AL_MIN_GAIN, m_minGain);
-        alSourcef(m_sourceId, AL_MAX_GAIN, m_maxGain);
-
-        alSourcei(m_sourceId, AL_LOOPING, m_looping ? AL_TRUE : AL_FALSE);
-        alSourcef(m_sourceId, AL_PITCH, m_pitch);
-        alSourcef(m_sourceId, AL_GAIN, m_gain);
-
-        updatePos();
-    }
-
-    void Source::updatePos() {
-        alSource3f(m_sourceId, AL_POSITION, m_pos.x, m_pos.y, m_pos.z);
-        alSource3f(m_sourceId, AL_VELOCITY, m_vel.x, m_vel.y, m_vel.z);
-        alSource3f(m_sourceId, AL_DIRECTION, m_dir.x, m_dir.y, m_dir.z);
+        {
+            alSource3f(m_sourceId, AL_POSITION, pos.x, pos.y, pos.z);
+            alSource3f(m_sourceId, AL_VELOCITY, vel.x, vel.y, vel.z);
+            alSource3f(m_sourceId, AL_DIRECTION, dir.x, dir.y, dir.z);
+        }
     }
 
     void Source::play() const
@@ -149,6 +133,16 @@ namespace audio
     void Source::pause() const
     {
         alSourcePause(m_sourceId);
+    }
+
+    void Source::toggle(bool isPlay) const
+    {
+        if (isPlay) {
+            play();
+        }
+        else {
+            stop();
+        }
     }
 
     bool Source::isPlaying() const

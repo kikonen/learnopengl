@@ -195,6 +195,18 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             if (node->m_particleGenerator) {
                 node->m_particleGenerator->updateWT(ctx, *node);
             }
+
+            if (node->m_audioListener) {
+                if (audio::AudioEngine::get().isActiveListener(node->getId())) {
+                    node->m_audioListener->updateActive(state);
+                }
+            }
+
+            if (node->m_audioSources) {
+                for (auto& src : *node->m_audioSources) {
+                    src.update(state);
+                }
+            }
         }
     }
 
@@ -412,44 +424,10 @@ void NodeRegistry::attachListeners()
                 pe.registerObject(handle, node->m_entityIndex, data.update, std::move(obj));
             }
 
-            if (auto& data = e.blob->body.audioListener;
-                data.isValid())
-            {
-                auto& ae = audio::AudioEngine::get();
-                auto id = ae.registerListener();
-                if (id) {
-                    node->m_audioListenerId = id;
-                    auto* listener = ae.getListener(id);
-
-                    listener->m_default = data.isDefault;
-                    listener->m_gain = data.gain;
-                    listener->m_nodeHandle = node->toHandle();
+            if (auto& sources = node->m_audioSources; sources) {
+                for (auto& src : *sources) {
+                    audio::AudioEngine::get().prepareSource(src);
                 }
-            }
-
-            for (int sourceIndex = 0;
-                auto & data : e.blob->body.audioSources)
-            {
-                auto& ae = audio::AudioEngine::get();
-                auto id = ae.registerSource(data.soundId);
-                if (id)
-                {
-                    node->m_audioSourceIds[sourceIndex] = id;
-
-                    auto* source = ae.getSource(id);
-
-                    source->m_autoPlay = data.isAutoPlay;
-                    source->m_referenceDistance = data.referenceDistance;
-                    source->m_maxDistance = data.maxDistance;
-                    source->m_rolloffFactor = data.rolloffFactor;
-                    source->m_minGain = data.minGain;
-                    source->m_maxGain = data.maxGain;
-                    source->m_looping = data.looping;
-                    source->m_gain = data.gain;
-                    source->m_pitch = data.pitch;
-                    source->m_nodeHandle = handle;
-                }
-                sourceIndex++;
             }
         });
 
@@ -470,37 +448,56 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::camera_activate,
         [this](const event::Event& e) {
-            auto handle = pool::NodeHandle::toHandle(e.body.node.target);
+            auto& data = e.body.node;
+            auto handle = pool::NodeHandle::toHandle(data.target);
             if (!handle) handle = findDefaultCameraNode();
             setActiveCameraNode(handle);
         });
 
-    dispatcher->addListener(
-        event::Type::audio_listener_activate,
-        [this](const event::Event& e) {
-            auto& data = e.body.audioSource;
-            audio::AudioEngine::get().setActiveListener(data.id);
-        });
+    //dispatcher->addListener(
+    //    event::Type::audio_listener_activate,
+    //    [this](const event::Event& e) {
+    //        auto& data = e.body.audioListener;
+    //        audio::AudioEngine::get().setActiveListener(data.target);
+    //    });
 
     dispatcher->addListener(
         event::Type::audio_source_play,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            audio::AudioEngine::get().playSource(data.id);
+            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
+            if (!node) return;
+
+            auto* source = node->getAudioSource(data.id);
+            if (source) {
+                source->play();
+            }
         });
 
     dispatcher->addListener(
         event::Type::audio_source_stop,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            audio::AudioEngine::get().stopSource(data.id);
+            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
+            if (!node) return;
+
+            auto* source = node->getAudioSource(data.id);
+            if (source) {
+                source->stop();
+            }
         });
 
     dispatcher->addListener(
         event::Type::audio_source_pause,
         [this](const event::Event& e) {
             auto& data = e.body.audioSource;
-            audio::AudioEngine::get().pauseSource(data.id);
+            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
+            if (!node) return;
+
+            auto* source = node->getAudioSource(data.id);
+            if (source) {
+                source->pause();
+            }
         });
 
     if (assets.useScript) {
@@ -770,9 +767,9 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
 
     // NOTE KI active player is listener of audio
     // (regardless what camera is active)
-    if (node->m_audioListenerId) {
+    if (node->m_audioListener) {
         auto& ae = audio::AudioEngine::get();
-        ae.setActiveListener(node->m_audioListenerId);
+        ae.setActiveListenerId(node->getId());
     }
 }
 

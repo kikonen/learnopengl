@@ -23,9 +23,12 @@ namespace audio
         void prepare();
 
         // worker thread
-        bool load(std::string_view fullPath);
+        bool load(const std::string& fullPath);
+
+        bool m_prepared{ false };
 
         audio::sound_id m_id{ 0 };
+
         ALuint m_bufferId{ 0 };
 
         int m_sampleRate{ 0 };

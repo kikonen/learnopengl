@@ -35,6 +35,7 @@ namespace {
     struct CommandOptions {
         script::command_id afterId = 0;
         int index = 0;
+        unsigned int sid = 0;
         float duration = 0.f;
         float speed = 1.f;
         bool relative = false;
@@ -56,6 +57,9 @@ namespace {
             const auto& k = key.as<std::string>();
             if (k == "after") {
                 opt.afterId = value.as<script::command_id>();
+            }
+            else if (k == "sid") {
+                opt.sid = value.as<unsigned int>();
             }
             else if (k == "index") {
                 opt.index = value.as<int>();
@@ -272,7 +276,7 @@ namespace script
             opt.afterId,
             AudioPlay{
                 m_handle,
-                opt.index,
+                opt.sid,
                 opt.sync
             });
     }
@@ -286,7 +290,7 @@ namespace script
             opt.afterId,
             AudioPause{
                 m_handle,
-                opt.index
+                opt.sid
             });
     }
 
@@ -299,7 +303,7 @@ namespace script
             opt.afterId,
             AudioStop{
                 m_handle,
-                opt.index
+                opt.sid
             });
     }
 

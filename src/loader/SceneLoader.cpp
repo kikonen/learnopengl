@@ -293,8 +293,6 @@ namespace loader {
                     .enabled = nodeData.physics.enabled,
                     .update = nodeData.physics.update
                 },
-                .audioListener = l.m_audioLoader.createListener(nodeData.audio.listener),
-                .audioSources = l.m_audioLoader.createSources(nodeData.audio.sources),
             };
             evt.body.node = {
                 .target = handle.toId(),
@@ -943,6 +941,9 @@ namespace loader {
 
         node->setName(resolvedSID);
         node->m_typeHandle = typeHandle;
+
+        node->m_audioListener = l.m_audioLoader.createListener(nodeData.audio.listener);
+        node->m_audioSources = l.m_audioLoader.createSources(nodeData.audio.sources);
 
         assignNodeFlags(nodeData.nodeFlags, handle);
 

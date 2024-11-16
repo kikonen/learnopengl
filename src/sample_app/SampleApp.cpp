@@ -183,23 +183,23 @@ int SampleApp::onSetup()
         m_editor->prepare(ctx);
     }
 
-    if (false) {
-        auto& engine = audio::AudioEngine::get();
-        audio::sound_id soundId = engine.registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
+    //if (false) {
+    //    auto& engine = audio::AudioEngine::get();
+    //    audio::sound_id soundId = engine.registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
 
-        audio::source_id sourceId = engine.registerSource(soundId);
-        auto* source = engine.getSource(sourceId);
-        if (source) {
-            // TODO KI spatial left/right requires *MONO* sound
-            source->m_pos = { 0.1f, 0.0f, 0.0f };
-            source->update();
-        }
+    //    audio::source_id sourceId = engine.registerSource(soundId);
+    //    auto* source = engine.getSource(sourceId);
+    //    if (source) {
+    //        // TODO KI spatial left/right requires *MONO* sound
+    //        source->m_pos = { 0.1f, 0.0f, 0.0f };
+    //        source->update();
+    //    }
 
-        audio::listener_id listenerId = engine.registerListener();
-        engine.setActiveListener(listenerId);
+    //    audio::listener_id listenerId = engine.registerListener();
+    //    engine.setActiveListener(listenerId);
 
-        engine.playSource(sourceId);
-    }
+    //    engine.playSource(sourceId);
+    //}
 
     return 0;
 }
@@ -689,11 +689,11 @@ void SampleApp::selectNode(
         if (node && node->isSelected()) {
             nodeRegistry.selectNode(pool::NodeHandle::NULL_HANDLE, false);
 
-            {
-                event::Event evt { event::Type::audio_source_pause };
-                evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
+            //{
+            //    event::Event evt { event::Type::audio_source_pause };
+            //    evt.body.audioSource.id = node->m_audioSourceIds[0];
+            //    ctx.m_registry->m_dispatcherWorker->send(evt);
+            //}
 
             return;
         }
@@ -716,11 +716,11 @@ void SampleApp::selectNode(
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
-            {
-                event::Event evt { event::Type::audio_source_play };
-                evt.body.audioSource.id = node->m_audioSourceIds[0];
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
+            //{
+            //    event::Event evt { event::Type::audio_source_play };
+            //    evt.body.audioSource.id = node->m_audioSourceIds[0];
+            //    ctx.m_registry->m_dispatcherWorker->send(evt);
+            //}
 
             m_editor->getState().m_selectedNode = node->toHandle();
         }

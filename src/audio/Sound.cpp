@@ -61,6 +61,9 @@ namespace audio
 
     void Sound::prepare()
     {
+        if (m_prepared) return;
+        m_prepared = true;
+
         // empty == either fail or prepared
         if (m_data.empty()) return;
 
@@ -74,10 +77,10 @@ namespace audio
         m_data.clear();
     }
 
-    bool Sound::load(std::string_view fullPath)
+    bool Sound::load(const std::string& fullPath)
     {
         AudioFile<float> audioFile;
-        audioFile.load(std::string{ fullPath });
+        audioFile.load(fullPath);
 
         {
             m_sampleRate = audioFile.getSampleRate();
