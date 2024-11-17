@@ -4,7 +4,9 @@
 
 #include "util/debug.h"
 #include "util/glm_util.h"
+#include "util/glm_format.h"
 #include "util/util.h"
+#include "util/log.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -13,6 +15,7 @@
 
 namespace {
     inline glm::vec3 QUAD_NORMAL{ 0, 0, 1.f };
+    inline glm::vec3 UP{ 0, 1.f, 0 };
     inline glm::mat4 ID_MAT{ 1.f };
 }
 
@@ -54,21 +57,27 @@ namespace decal {
         const auto& parentMatrix = state.getModelMatrix();
         const auto& scale = state.getScale();
 
-        //KI_INFO_OUT(fmt::format(
-        //    "DECAL: pos={}, normal={}, scale={}, parentScale={}, parent={}",
-        //    m_position, m_normal, m_scale, scale, parentMatrix));
-
         const auto& localTranslateMatrix = glm::translate(glm::mat4{ 1.f }, m_position);
+
         // local rotate around QUAD_NORMAL
-        const auto& localRotationMatrix = glm::mat4(util::axisRadiansToQuat(QUAD_NORMAL, m_rotation));
+        const auto& localRotation = util::axisRadiansToQuat(QUAD_NORMAL, m_rotation);
 
         // NOTE KI calculate rotation between Quad and parent node hit normal
-        glm::mat4 rotationMatrix = glm::mat4{ util::normalToRotation(m_normal, QUAD_NORMAL) };
+        const auto& rotation = glm::rotation(QUAD_NORMAL, m_normal);
+
+        const glm::mat4 rotationMatrix = glm::mat4{ rotation * localRotation };
+
         // NOTE KI inverse scale so that parent's scale won't affect decal size
         // (only model scale, no world scale)
-        glm::mat4 invScaleMatrix = glm::scale(ID_MAT, 1.f / scale);
-        glm::mat4 scaleMatrix = glm::scale(ID_MAT, glm::vec3{ m_scale });
+        const glm::mat4 invParentcaleMatrix = glm::scale(ID_MAT, 1.f / scale);
+        const glm::mat4 scaleMatrix = glm::scale(ID_MAT, glm::vec3{ m_scale });
 
-        return parentMatrix * localTranslateMatrix * invScaleMatrix * rotationMatrix * localRotationMatrix * scaleMatrix;
+        const auto& mat = parentMatrix * localTranslateMatrix * invParentcaleMatrix * rotationMatrix * scaleMatrix;
+
+        //KI_INFO_OUT(fmt::format(
+        //    "DECAL: pos={}, normal={}, scale={}, parentScale={}, parent={}, mat={}",
+        //    m_position, m_normal, m_scale, scale, parentMatrix, mat));
+
+        return mat;
     }
 }

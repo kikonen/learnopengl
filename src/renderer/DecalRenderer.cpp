@@ -103,6 +103,7 @@ void DecalRenderer::renderBlend(
     }
 
     state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
+    //state.setEnabled(GL_CULL_FACE, false);
 
     if (lineMode) {
         Program::get(m_solidDecalProgramId)->bind();

@@ -79,6 +79,11 @@ namespace util
         // Identity rotation if exactly same dir (avoid NaN in acosf)
         if (thetaCos == 1.f) return glm::quat{ 1.f, 0.f, 0.f, 0.f };
 
+        // 180 rotation exactly opposite dir (avoid NaN in acosf)
+        //if (thetaCos == -1.f) {
+        //    return util::axisRadiansToQuat(normal, 0.f);
+        //}
+
         const auto axis = glm::normalize(glm::cross(up, normal));
         const float theta = acosf(thetaCos);
 
