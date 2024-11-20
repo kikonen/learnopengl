@@ -122,18 +122,17 @@ namespace render {
             const RenderContext& ctx,
             FrameBuffer* targetBuffer);
 
-        void passEffectBlend(
+        void passEffect(
             const RenderContext& ctx,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
             FrameBuffer* targetBuffer);
 
-        void passDecalBlend(
+        void passDecal(
             const RenderContext& ctx,
             FrameBuffer* targetBuffer);
 
-        void passParticleBlend(
+        void passParticle(
             const RenderContext& ctx,
             FrameBuffer* targetBuffer);
 
@@ -170,13 +169,6 @@ namespace render {
 
         void passCleanup(
             const RenderContext& ctx);
-
-    private:
-        void drawBlended(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector);
 
     private:
         void insertNode(
