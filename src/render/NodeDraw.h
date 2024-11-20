@@ -67,21 +67,11 @@ namespace render {
 
         void drawNodes(
             const RenderContext& ctx,
-            FrameBuffer* targetBuffer,
+            FrameBuffer* dstBuffer,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits,
             GLbitfield copyMask);
-
-        void drawDebug(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void drawBlended(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector);
 
         void drawProgram(
             const RenderContext& ctx,
@@ -89,6 +79,104 @@ namespace render {
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits);
+
+    private:
+        void passDeferred(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits,
+            FrameBuffer* targetBuffer);
+
+        void passDeferredPreDepth(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits);
+
+        void passDeferredDraw(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits);
+
+        void passDeferredCombine(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passForward(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits,
+            FrameBuffer* targetBuffer);
+
+        void passOit(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits,
+            FrameBuffer* targetBuffer);
+
+        void passSkybox(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passEffectBlend(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits,
+            FrameBuffer* targetBuffer);
+
+        void passDecalBlend(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passParticleBlend(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passScreenspace(
+            const RenderContext& ctx,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector,
+            uint8_t kindBits,
+            FrameBuffer* srcBuffer,
+            FrameBuffer* finalBuffer);
+
+        void passFogBlend(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passOitBlend(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passBloom(
+            const RenderContext& ctx,
+            FrameBuffer* srcBuffer,
+            FrameBuffer* finalBuffer);
+
+        void passCopy(
+            const RenderContext& ctx,
+            FrameBuffer* srcBuffer,
+            FrameBuffer* dstBuffer,
+            GLbitfield copyMask);
+
+        void passDebug(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
+        void passCleanup(
+            const RenderContext& ctx);
+
+    private:
+        void drawBlended(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer,
+            const std::function<bool(const mesh::MeshType*)>& typeSelector,
+            const std::function<bool(const Node*)>& nodeSelector);
 
     private:
         void insertNode(
@@ -139,5 +227,13 @@ namespace render {
         MeshTypeMap m_blendedNodes;
         // OBSOLETTE
         MeshTypeMap m_invisibleNodes;
+
+        int m_effectBloomIterations{ 0 };
+        bool m_drawDebug{ false };
+        bool m_glUseInvalidate{ false };
+        bool m_prepassDepthEnabled{ false };
+        bool m_effectOitEnabled{ true };
+        bool m_effectFogEnabled{ true };
+        bool m_effectBloomEnabled{ true };
     };
 }

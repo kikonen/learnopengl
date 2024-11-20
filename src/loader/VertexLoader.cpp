@@ -62,6 +62,9 @@ namespace loader {
                 else if (type == "sphere") {
                     data.type = mesh::PrimitiveType::sphere;
                 }
+                else if (type == "ball") {
+                    data.type = mesh::PrimitiveType::sphere;
+                }
                 else if (type == "capsule") {
                     data.type = mesh::PrimitiveType::capsule;
                 }
