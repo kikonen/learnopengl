@@ -30,6 +30,7 @@
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/DebugContext.h"
 
 #include "size.h"
 
@@ -158,6 +159,17 @@ namespace render {
         uint8_t kindBits,
         GLbitfield copyMask)
     {
+        {
+            const auto& dbg = *ctx.m_dbg;
+
+            m_drawDebug = dbg.m_drawDebug;
+            m_prepassDepthEnabled = dbg.m_prepassDepthEnabled;
+            m_effectOitEnabled = dbg.m_effectOitEnabled;
+            m_effectFogEnabled = dbg.m_effectFogEnabled;
+            m_effectBloomEnabled = dbg.m_effectBloomEnabled;
+            m_effectBloomIterations = dbg.m_effectBloomIterations;
+        }
+
         // https://community.khronos.org/t/selectively-writing-to-buffers/71054
         auto* const targetBuffer = m_effectBuffer.m_primary.get();
         auto* const finalBuffer = m_effectBuffer.m_secondary.get();
@@ -287,6 +299,7 @@ namespace render {
             targetBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
             targetBuffer->bind(ctx);
+            // NOTE KI Intel requires FBO bind for clear
             targetBuffer->clearAll();
         }
 
@@ -475,7 +488,6 @@ namespace render {
         FrameBuffer* finalBuffer)
     {
         if (ctx.m_forceSolid) {
-            finalBuffer->clearAll();
             srcBuffer->copy(
                 finalBuffer,
                 EffectBuffer::ATT_ALBEDO_INDEX,
@@ -491,10 +503,13 @@ namespace render {
 
         {
             state.setEnabled(GL_BLEND, true);
-            state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
             passFogBlend(ctx, srcBuffer);
             passOitBlend(ctx, srcBuffer);
+
+            glBlendFunci(0, GL_ONE, GL_ONE);
+            glBlendFunci(1, GL_ONE, GL_ONE);
+            state.invalidateBlendMode();
 
             state.setEnabled(GL_BLEND, false);
         }
@@ -515,6 +530,7 @@ namespace render {
 
         auto& state = ctx.m_state;
         state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
+        state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         targetBuffer->bind(ctx);
         m_fogProgram->bind();
@@ -529,6 +545,7 @@ namespace render {
 
         auto& state = ctx.m_state;
         state.setStencil(kigl::GLStencilMode::only_non_zero(STENCIL_OIT));
+        state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         targetBuffer->bind(ctx);
         m_blendOitProgram->bind();
@@ -544,9 +561,10 @@ namespace render {
     {
         auto& state = ctx.m_state;
 
+        state.setStencil({});
+
         if (!m_effectBloomEnabled)
         {
-            finalBuffer->clearAll();
             srcBuffer->copy(
                 finalBuffer,
                 EffectBuffer::ATT_ALBEDO_INDEX,
@@ -556,27 +574,28 @@ namespace render {
 
         srcBuffer->bind(ctx);
 
-        state.setStencil({});
+        {
+            //srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+            //srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
 
-        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
-
-        //m_emissionProgram->bind();
-        //m_textureQuad.draw(ctx);
+            //m_emissionProgram->bind();
+            //m_textureQuad.draw(ctx);
+        }
 
         m_bloomProgram->bind();
+
+        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
         srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
-        bool cleared[2]{ false, false };
+        for (auto& buffer : m_effectBuffer.m_buffers) {
+            buffer->bind(ctx);
+            // NOTE KI Intel requires FBO bind for clear
+            buffer->clearAll();
+        }
 
         for (int i = 0; i < m_effectBloomIterations; i++) {
             auto& buf = m_effectBuffer.m_buffers[i % 2];
             buf->bind(ctx);
-
-            if (!cleared[i % 2]) {
-                cleared[i % 2] = true;
-                buf->clearAll();
-            }
 
             m_bloomProgram->m_uniforms->u_effectBloomIteration.set(i);
             m_textureQuad.draw();
@@ -584,11 +603,14 @@ namespace render {
             buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
         }
 
-        finalBuffer->bind(ctx);
-        finalBuffer->clearAll();
+        {
+            finalBuffer->bind(ctx);
+            // NOTE KI Intel requires FBO bind for clear
+            finalBuffer->clearAll();
 
-        m_blendBloomProgram->bind();
-        m_textureQuad.draw();
+            m_blendBloomProgram->bind();
+            m_textureQuad.draw();
+        }
     }
 
     void NodeDraw::passCopy(
@@ -634,25 +656,14 @@ namespace render {
                     EffectBuffer::ATT_ALBEDO_INDEX);
             }
             else {
-                // NOTE KI hdri tone & gamma correct done at the viewport render
-                bool hdr = false;// targetFormat != GL_RGB16F && targetFormat != GL_RGBA16F;
-
-                if (hdr) {
-                    dstBuffer->bind(ctx);
-                    m_hdrGammaProgram->bind();
-                    srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-                    m_textureQuad.draw();
-                }
-                else {
-                    srcBuffer->blit(
-                        dstBuffer,
-                        GL_COLOR_BUFFER_BIT,
-                        GL_COLOR_ATTACHMENT0,
-                        GL_COLOR_ATTACHMENT0,
-                        { -1.f, 1.f },
-                        { 2.f, 2.f },
-                        GL_LINEAR);
-                }
+                srcBuffer->blit(
+                    dstBuffer,
+                    GL_COLOR_BUFFER_BIT,
+                    GL_COLOR_ATTACHMENT0,
+                    GL_COLOR_ATTACHMENT0,
+                    { -1.f, 1.f },
+                    { 2.f, 2.f },
+                    GL_LINEAR);
             }
         }
     }
