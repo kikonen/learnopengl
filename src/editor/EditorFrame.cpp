@@ -274,16 +274,20 @@ namespace editor {
     {
         renderNodeSelector(ctx, dbg);
 
-        if (ImGui::TreeNode("Node properties")) {
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+
             renderNodeProperties(ctx, dbg);
             renderTypeProperties(ctx, dbg);
             renderRigProperties(ctx, dbg);
-            ImGui::TreePop();
         }
 
-        if (ImGui::TreeNode("Node debug")) {
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+
             renderNodeDebug(ctx, dbg);
-            ImGui::TreePop();
         }
     }
 
@@ -511,15 +515,25 @@ namespace editor {
                     ImGui::EndCombo();
                 }
 
-                //ImGui::Checkbox("WireframeMode", &dbg.m_wireframeMode);
-                ImGui::DragFloat("WireframeWidth", &dbg.m_wireframeLineWidth, 0.f, 1.f);
-                ImGui::ColorEdit3("WireframeColor", glm::value_ptr(dbg.m_wireframeLineColor));
-                ImGui::Checkbox("WireframeOnly", &dbg.m_wireframeOnly);
+                {
+                    ImGui::Spacing();
+                    ImGui::Separator();
+
+                    //ImGui::Checkbox("WireframeMode", &dbg.m_wireframeMode);
+                    ImGui::DragFloat("WireframeWidth", &dbg.m_wireframeLineWidth, 0.f, 1.f);
+                    ImGui::ColorEdit3("WireframeColor", glm::value_ptr(dbg.m_wireframeLineColor));
+                    ImGui::Checkbox("WireframeOnly", &dbg.m_wireframeOnly);
+                }
             }
 
-            ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
-            ImGui::Checkbox("Show normals", &dbg.m_showNormals);
-            ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
+                ImGui::Checkbox("Show normals", &dbg.m_showNormals);
+                ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
+            }
         }
     }
 
@@ -833,49 +847,66 @@ namespace editor {
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
-        ImGui::Checkbox("Gamma correct", &dbg.m_gammaCorrect);
-        ImGui::Checkbox("Hardware gamma", &dbg.m_hardwareGamma);
+        {
+            ImGui::Checkbox("Gamma correct", &dbg.m_gammaCorrect);
+            ImGui::Checkbox("Hardware gamma", &dbg.m_hardwareGamma);
+        }
 
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::InputFloat("HDR gamma", &dbg.m_hdrGamma, 0.01f, 0.1f);
-        ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::InputFloat("HDR gamma", &dbg.m_hdrGamma, 0.01f, 0.1f);
+            ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
+        }
 
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
-        ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
-        ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
-        ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
-        ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
+            ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
+            ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
+            ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
+            ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
+        }
 
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
-        ImGui::InputFloat("Bloom exposure", &dbg.m_effectBloomExposure, 0.01f, 0.1f);
-        ImGui::InputInt("Bloom iterations", &dbg.m_effectBloomIterations, 1, 10);
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
+            ImGui::InputFloat("Bloom exposure", &dbg.m_effectBloomExposure, 0.01f, 0.1f);
+            ImGui::InputInt("Bloom iterations", &dbg.m_effectBloomIterations, 1, 10);
+        }
 
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
-        ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
-        ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
+            ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
+            ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
+        }
     }
 
     void EditorFrame::renderMiscDebug(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
-        ImGui::Checkbox("Show volume", &dbg.m_showVolume);
-        ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);
-        ImGui::Checkbox("Show environment probes", &dbg.m_showEnvironmentProbe);
-
-        ImGui::Separator();
-        ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
-        ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
-
-        ImGui::Separator();
         {
+            ImGui::Checkbox("Show volume", &dbg.m_showVolume);
+            ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);
+            ImGui::Checkbox("Show environment probes", &dbg.m_showEnvironmentProbe);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
+            ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+
             if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
                 for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
                     const auto& name = decalId.str().c_str();
