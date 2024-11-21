@@ -141,8 +141,9 @@ assets:
   physics_soft_erp: 0.9
   physics_soft_cfm: 0.9
 
-  parallax_method: 1
+  parallax_debug_enabled: true
   parallax_depth: 0.01
+  parallax_method: 1
 
   particle_enabled: true
   particle_max_count: 100000

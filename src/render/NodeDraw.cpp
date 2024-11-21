@@ -163,11 +163,18 @@ namespace render {
             const auto& dbg = *ctx.m_dbg;
 
             m_drawDebug = dbg.m_drawDebug;
+
+            m_particleEnabled = dbg.m_particleEnabled;
+            m_decalEnabled = dbg.m_decalEnabled;
+
             m_prepassDepthEnabled = dbg.m_prepassDepthEnabled;
             m_effectOitEnabled = dbg.m_effectOitEnabled;
             m_effectFogEnabled = dbg.m_effectFogEnabled;
             m_effectBloomEnabled = dbg.m_effectBloomEnabled;
             m_effectBloomIterations = dbg.m_effectBloomIterations;
+
+            m_particleRenderer->setEnabled(m_particleEnabled);
+            m_decalRenderer->setEnabled(m_decalEnabled);
         }
 
         // https://community.khronos.org/t/selectively-writing-to-buffers/71054
@@ -413,7 +420,7 @@ namespace render {
         FrameBuffer* targetBuffer)
     {
         if (ctx.m_forceSolid) return;
-        if (!ctx.m_useDecals) return;
+        if (!ctx.m_useDecals && m_decalEnabled) return;
 
         auto& state = ctx.m_state;
 
@@ -427,7 +434,7 @@ namespace render {
         FrameBuffer* targetBuffer)
     {
         if (ctx.m_forceSolid) return;
-        if (!ctx.m_useParticles) return;
+        if (!ctx.m_useParticles && m_particleEnabled) return;
 
         auto& state = ctx.m_state;
 

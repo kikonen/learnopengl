@@ -214,6 +214,7 @@ public:
     float physics_soft_erp;
     float physics_soft_cfm;
 
+    bool parallaxDebugEnabled;
     int parallaxMethod;
     float parallaxDepth;
 

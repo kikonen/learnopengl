@@ -846,6 +846,8 @@ namespace editor {
         ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
         ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
         ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
+        ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
+        ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -855,7 +857,8 @@ namespace editor {
 
         ImGui::Spacing();
         ImGui::Separator();
-        ImGui::InputFloat("Parallax depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
+        ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
+        ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
         ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
     }
 

@@ -223,6 +223,10 @@ namespace render {
         int m_effectBloomIterations{ 0 };
         bool m_drawDebug{ false };
         bool m_glUseInvalidate{ false };
+
+        bool m_particleEnabled{ true };
+        bool m_decalEnabled{ true };
+
         bool m_prepassDepthEnabled{ false };
         bool m_effectOitEnabled{ true };
         bool m_effectFogEnabled{ true };

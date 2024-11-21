@@ -136,6 +136,8 @@ int SampleApp::onInit()
         dbg.m_physics_soft_erp = assets.physics_soft_erp;
         dbg.m_physics_soft_cfm = assets.physics_soft_cfm;
 
+        dbg.m_parallaxDebugEnabled = assets.parallaxDebugEnabled;
+        dbg.m_parallaxDepth = assets.parallaxDepth;
         dbg.m_parallaxMethod = assets.parallaxMethod;
 
         dbg.m_decalId = SID("blood_1");
@@ -152,6 +154,9 @@ int SampleApp::onInit()
         dbg.m_effectBloomEnabled = assets.effectBloomEnabled;
         dbg.m_effectBloomExposure = assets.effectBloomExposure;
         dbg.m_effectBloomIterations = assets.effectBloomIterations;
+
+        dbg.m_particleEnabled = assets.particleEnabled;
+        dbg.m_decalEnabled = assets.decalEnabled;
     }
 
     return 0;

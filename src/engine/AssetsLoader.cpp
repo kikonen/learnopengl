@@ -649,6 +649,10 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "parallax_debug_enabled") {
+                data.parallaxDebugEnabled = readBool(v);
+                continue;
+            }
             if (k == "parallax_method") {
                 data.parallaxMethod = readInt(v);
                 continue;

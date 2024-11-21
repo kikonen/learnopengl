@@ -221,6 +221,7 @@ Assets::Assets()
     physics_soft_erp = 0.9f;
     physics_soft_cfm = 0.9f;
 
+    parallaxDebugEnabled = true;
     parallaxMethod = 1;
     parallaxDepth = 0.01;
 

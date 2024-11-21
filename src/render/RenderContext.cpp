@@ -219,7 +219,7 @@ RenderContext::RenderContext(
             m_dbg->m_entityId,
             m_dbg->m_animationBoneIndex,
             m_dbg->m_animationDebugBoneWeight,
-            m_dbg->m_parallaxDepth,
+            m_dbg->m_parallaxDebugEnabled ? m_dbg->m_parallaxDepth : -1.f,
             m_dbg->m_parallaxMethod,
             m_dbg->m_wireframeOnly,
             m_dbg->m_wireframeLineWidth,
