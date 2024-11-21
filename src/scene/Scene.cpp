@@ -346,6 +346,27 @@ void Scene::postRT(const UpdateContext& ctx)
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
+    const auto& dbg = render::DebugContext::get();
+
+    {
+        auto gamma = dbg.m_gammaCorrect;
+        auto hw = dbg.m_hardwareGamma;
+
+        if (m_uiViewport) {
+            m_uiViewport->setGammaCorrect(gamma);
+            m_uiViewport->setHardwareGamma(hw);
+        }
+
+        if (m_mainViewport) {
+            m_mainViewport->setGammaCorrect(gamma);
+            m_mainViewport->setHardwareGamma(hw);
+        }
+
+        if (m_rearViewport) {
+            m_rearViewport->setGammaCorrect(gamma);
+            m_rearViewport->setHardwareGamma(hw);
+        }
+    }
 
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->updateRT(ctx);

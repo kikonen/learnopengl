@@ -202,14 +202,15 @@ RenderContext::RenderContext(
         assets.fogEnd,
         assets.fogDensity,
 
-        assets.hdrGamma,
-        assets.hdrExposure,
-        // NOTE KI u_shadowPlanes not initialized
-        assets.effectBloomExposure,
+        dbg->m_hdrGamma,
+        dbg->m_hdrExposure,
+
+        dbg->m_effectBloomExposure,
 
         static_cast<float>(m_clock.ts),
         static_cast<int>(m_clock.frameCount),
 
+        // NOTE KI u_shadowPlanes not initialized
         0, // shadowCount
     };
 

@@ -54,6 +54,22 @@ namespace render {
 
         ki::StringID m_decalId{ 0 };
 
+        bool m_drawDebug{ false };
+
+        bool m_gammaCorrect{ true };
+        bool m_hardwareGamma{ true };
+
+        bool m_prepassDepthEnabled{ false };
+        bool m_effectOitEnabled{ true };
+        bool m_effectFogEnabled{ true };
+
+        float m_hdrGamma{ 2.2f };
+        float m_hdrExposure{ 1.f };
+
+        bool m_effectBloomEnabled{ false };
+        float m_effectBloomExposure{ 1.0f };
+        int m_effectBloomIterations{ 1 };
+
         std::string m_geometryType;
         float m_wireframeLineWidth{ 1.f };
         glm::vec3 m_wireframeLineColor{ 1, 1, 0 };

@@ -97,6 +97,7 @@ int SampleApp::onInit()
     {
         const auto& assets = Assets::get();
         auto& dbg = render::DebugContext::modify();
+
         dbg.m_frustumEnabled = assets.frustumEnabled;
         dbg.m_forceLineMode = assets.forceLineMode;
         dbg.m_showNormals = assets.showNormals;
@@ -138,6 +139,19 @@ int SampleApp::onInit()
         dbg.m_parallaxMethod = assets.parallaxMethod;
 
         dbg.m_decalId = SID("blood_1");
+
+        dbg.m_drawDebug = assets.drawDebug;
+
+        dbg.m_prepassDepthEnabled = assets.prepassDepthEnabled;
+        dbg.m_effectOitEnabled = assets.effectOitEnabled;
+        dbg.m_effectFogEnabled = assets.effectFogEnabled;
+
+        dbg.m_hdrGamma = assets.hdrGamma;
+        dbg.m_hdrExposure = assets.hdrExposure;
+
+        dbg.m_effectBloomEnabled = assets.effectBloomEnabled;
+        dbg.m_effectBloomExposure = assets.effectBloomExposure;
+        dbg.m_effectBloomIterations = assets.effectBloomIterations;
     }
 
     return 0;

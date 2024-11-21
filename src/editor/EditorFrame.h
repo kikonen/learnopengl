@@ -74,6 +74,10 @@ namespace editor {
             const RenderContext& ctx,
             render::DebugContext& dbg);
 
+        void renderEffectDebug(
+            const RenderContext& ctx,
+            render::DebugContext& dbg);
+
         void renderMiscDebug(
             const RenderContext& ctx,
             render::DebugContext& dbg);
