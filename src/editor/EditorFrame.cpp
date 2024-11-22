@@ -865,8 +865,35 @@ namespace editor {
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
             ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
-            ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
             ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
+
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
+                    for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
+                        const auto& name = decalId.str().c_str();
+
+                        ImGui::PushID((void*)name);
+                        const bool isSelected = dbg.m_decalId == decalId;
+                        if (ImGui::Selectable(name, isSelected)) {
+                            dbg.m_decalId = decalId;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+            }
         }
 
         {
@@ -880,9 +907,10 @@ namespace editor {
         {
             ImGui::Spacing();
             ImGui::Separator();
-            ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
-            ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDepth, 0.01f, 0.1f);
+            ImGui::Checkbox("Parallax enabled", &dbg.m_parallaxEnabled);
             ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
+            ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
+            ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDebugDepth, 0.01f, 0.1f);
         }
     }
 
@@ -901,28 +929,6 @@ namespace editor {
             ImGui::Separator();
             ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
             ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
-        }
-
-        {
-            ImGui::Spacing();
-            ImGui::Separator();
-
-            if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
-                for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
-                    const auto& name = decalId.str().c_str();
-
-                    ImGui::PushID((void*)name);
-                    const bool isSelected = dbg.m_decalId == decalId;
-                    if (ImGui::Selectable(name, isSelected)) {
-                        dbg.m_decalId = decalId;
-                    }
-                    ImGui::PopID();
-
-                    //if (isSelected)
-                    //    ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
         }
     }
 }

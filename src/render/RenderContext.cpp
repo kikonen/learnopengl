@@ -215,11 +215,19 @@ RenderContext::RenderContext(
     };
 
     if (m_dbg) {
+        float parallaxDepth = -1.f;
+        if (!m_dbg->m_parallaxEnabled) {
+            parallaxDepth = 0;
+        }
+        else if (m_dbg->m_parallaxDebugEnabled) {
+            parallaxDepth = m_dbg->m_parallaxDebugDepth;
+        }
+
         m_debug = {
             m_dbg->m_entityId,
             m_dbg->m_animationBoneIndex,
             m_dbg->m_animationDebugBoneWeight,
-            m_dbg->m_parallaxDebugEnabled ? m_dbg->m_parallaxDepth : -1.f,
+            parallaxDepth,
             m_dbg->m_parallaxMethod,
             m_dbg->m_wireframeOnly,
             m_dbg->m_wireframeLineWidth,

@@ -649,16 +649,24 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "parallax_debug_enabled") {
-                data.parallaxDebugEnabled = readBool(v);
+            if (k == "parallax_enabled") {
+                data.parallaxEnabled = readBool(v);
+                continue;
+            }
+            if (k == "parallax_depth") {
+                data.parallaxDepth = readFloat(v);
                 continue;
             }
             if (k == "parallax_method") {
                 data.parallaxMethod = readInt(v);
                 continue;
             }
-            if (k == "parallax_depth") {
-                data.parallaxDepth = readFloat(v);
+            if (k == "parallax_debug_enabled") {
+                data.parallaxDebugEnabled = readBool(v);
+                continue;
+            }
+            if (k == "parallax_debug_depth") {
+                data.parallaxDebugDepth = readFloat(v);
                 continue;
             }
         }

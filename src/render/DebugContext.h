@@ -49,9 +49,10 @@ namespace render {
         int m_animationBoneIndex{ 0 };
         bool m_animationDebugBoneWeight{ false };
 
-        bool m_parallaxDebugEnabled{ true };
-        float m_parallaxDepth{ 0.01f };
+        bool m_parallaxEnabled{ true };
         int m_parallaxMethod{ 0 };
+        bool m_parallaxDebugEnabled{ true };
+        float m_parallaxDebugDepth{ 0.01f };
 
         ki::StringID m_decalId{ 0 };
 

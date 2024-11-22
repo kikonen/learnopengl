@@ -214,9 +214,11 @@ public:
     float physics_soft_erp;
     float physics_soft_cfm;
 
-    bool parallaxDebugEnabled;
+    bool parallaxEnabled;
     int parallaxMethod;
     float parallaxDepth;
+    bool parallaxDebugEnabled;
+    float parallaxDebugDepth;
 
     bool particleEnabled;
     int particleMaxCount;
