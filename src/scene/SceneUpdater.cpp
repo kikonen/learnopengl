@@ -26,9 +26,6 @@
 #include "registry/Registry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
-
-#include "registry/SnapshotRegistry_impl.h"
 
 #define KI_TIMER(x)
 

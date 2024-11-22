@@ -39,7 +39,6 @@
 
 #include "registry/NodeRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 
 #include "engine/AssetsLoader.h"
 

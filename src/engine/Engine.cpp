@@ -25,10 +25,6 @@
 
 #include "shader/ProgramRegistry.h"
 
-#include "registry/NodeSnapshotRegistry.h"
-
-#include "registry/SnapshotRegistry_impl.h"
-
 #include "gui/Window.h"
 
 

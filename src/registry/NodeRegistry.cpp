@@ -51,9 +51,6 @@
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
 #include "ControllerRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
-
-#include "registry/SnapshotRegistry_impl.h"
 
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
@@ -243,7 +240,7 @@ void NodeRegistry::updateModelMatrices()
 
 void NodeRegistry::snapshotWT()
 {
-    std::lock_guard lock(m_snapshotLock);
+    //std::lock_guard lock(m_snapshotLock);
 
     const auto sz = m_states.size();
     const auto forceAfter = m_snapshotsWT.size() - 1;
@@ -273,9 +270,10 @@ void NodeRegistry::snapshotPending()
 
 void NodeRegistry::snapshotRT()
 {
-    snapshot(m_snapshotsWT, m_snapshotsPending);
+    std::lock_guard lock(m_snapshotLock);
 
     snapshot(m_snapshotsPending, m_snapshotsRT);
+
     m_entities.resize(m_snapshotsRT.size());
     m_dirtyEntities.resize(m_snapshotsRT.size());
 

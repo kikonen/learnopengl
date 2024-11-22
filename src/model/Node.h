@@ -129,10 +129,10 @@ public:
         return NodeRegistry::get().getState(m_entityIndex);
     }
 
-    inline const Snapshot* getSnapshotWT() const noexcept
-    {
-        return NodeRegistry::get().getSnapshotWT(m_entityIndex);
-    }
+    //inline const Snapshot* getSnapshotWT() const noexcept
+    //{
+    //    return NodeRegistry::get().getSnapshotWT(m_entityIndex);
+    //}
 
     inline const Snapshot* getSnapshotRT() const noexcept
     {

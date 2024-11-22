@@ -34,7 +34,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 
 #include "engine/UpdateContext.h"

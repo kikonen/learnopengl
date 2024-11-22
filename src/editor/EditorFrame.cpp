@@ -44,7 +44,6 @@
 #include "renderer/ShadowMapRenderer.h"
 
 #include "registry/NodeRegistry.h"
-#include "registry/NodeSnapshotRegistry.h"
 #include "registry/ControllerRegistry.h"
 
 #include "render/FrameBuffer.h"

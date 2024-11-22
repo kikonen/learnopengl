@@ -25,7 +25,6 @@ struct Material;
 struct UpdateContext;
 
 class Registry;
-class NodeSnapshotRegistry;
 
 struct EntitySSBO;
 
@@ -167,15 +166,15 @@ public:
         return m_states[entityIndex];
     }
 
-    const Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
-    {
-        return m_snapshotsWT.size() > entityIndex ? &m_snapshotsWT[entityIndex] : nullptr;
-    }
+    //const Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
+    //{
+    //    return m_snapshotsWT.size() > entityIndex ? &m_snapshotsWT[entityIndex] : nullptr;
+    //}
 
-    bool hasSnapshotWT(uint32_t entityIndex) const noexcept
-    {
-        return m_snapshotsWT.size() > entityIndex;
-    }
+    //bool hasSnapshotWT(uint32_t entityIndex) const noexcept
+    //{
+    //    return m_snapshotsWT.size() > entityIndex;
+    //}
 
     const Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
     {

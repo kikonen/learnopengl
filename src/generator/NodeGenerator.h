@@ -41,7 +41,6 @@ struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
 
-class NodeSnapshotRegistry;
 class EntityRegistry;
 
 struct NodeState;

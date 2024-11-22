@@ -20,7 +20,6 @@
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeSnapshotRegistry.h"
 #include "registry/EntityRegistry.h"
 
 #include "text/FontRegistry.h"
@@ -57,7 +56,6 @@ void TextGenerator::updateWT(
 }
 
 //void TextGenerator::updateEntity(
-//    NodeSnapshotRegistry& snapshotRegistry,
 //    EntityRegistry& entityRegistry,
 //    Node& container)
 //{
