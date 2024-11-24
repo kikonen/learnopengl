@@ -47,7 +47,7 @@ namespace loader {
                 else if (type == "quad") {
                     data.type = mesh::PrimitiveType::quad;
                 }
-                else if (type == "box") {
+                else if (type == "box" || type == "cube") {
                     data.type = mesh::PrimitiveType::box;
                 }
                 else if (type == "rounded_box") {

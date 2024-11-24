@@ -234,12 +234,6 @@ namespace render {
 
         ctx.setForceSolid(wasForceSolid);
 
-        m_gBuffer.m_buffer->copy(
-            m_gBuffer.m_depthTexture.get(),
-            GBuffer::ATT_DEPTH_INDEX);
-
-        m_gBuffer.bindTexture(ctx);
-
         passDeferredCombine(ctx, targetBuffer);
     }
 
@@ -305,10 +299,16 @@ namespace render {
         {
             targetBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
 
-            targetBuffer->bind(ctx);
             // NOTE KI Intel requires FBO bind for clear
+            targetBuffer->bind(ctx);
             targetBuffer->clearAll();
         }
+
+        m_gBuffer.m_buffer->copy(
+            m_gBuffer.m_depthTexture.get(),
+            GBuffer::ATT_DEPTH_INDEX);
+
+        m_gBuffer.bindTexture(ctx);
 
         auto& state = ctx.m_state;
         state.setStencil(kigl::GLStencilMode::only_non_zero());
