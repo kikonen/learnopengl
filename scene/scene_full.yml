@@ -148,7 +148,7 @@ nodes:
       path: light
     pos: [0, 0, 0]
     scale: 0.5
-    program: g_light
+    program: light
     flags:
       no_shadow: true
     clones:
@@ -167,8 +167,7 @@ nodes:
             kd: [0.8, 0.0, 0.0, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.0, 1.0]
-          enabled: false
-        enabled: false
+        enabled: true
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_6
         mesh:
@@ -176,8 +175,7 @@ nodes:
             kd: [0.0, 0.9, 0.0, 1.0]
         light:
           diffuse: [0.0, 0.9, 0.0, 1.0]
-          enabled: false
-        enabled: false
+        enabled: true
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_7
         mesh:
@@ -185,8 +183,7 @@ nodes:
             kd: [0.0, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.0, 0.0, 0.9, 1.0]
-          enabled: false
-        enabled: false
+        enabled: true
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_8
         mesh:
@@ -194,8 +191,7 @@ nodes:
             kd: [0.9, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.9, 1.0]
-          enabled: false
-        enabled: false
+        enabled: true
     light:
       type: point
       linear: 0.09
@@ -203,6 +199,55 @@ nodes:
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
+  - id: moving_point_light_halo_{t}_{c}
+    parent_id: zero_origo
+    mesh:
+      vertex:
+        type: box
+        size: 1
+      material:
+        kd: [0.6, 0.6, 0.1, 1.0]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+    pos: [0, 0, 0]
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_1
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_2
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_3
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_4
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_5
+        mesh:
+          material_modifier:
+            kd: [0.8, 0.0, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_6
+        mesh:
+          material_modifier:
+            kd: [0.0, 0.9, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_7
+        mesh:
+          material_modifier:
+            kd: [0.0, 0.0, 0.9, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_8
+        mesh:
+          material_modifier:
+            kd: [0.9, 0.0, 0.9, 1.0]
+        enabled: true
   - id: rock_light_origo
     parent_id: rock_origo
     type: origo
@@ -739,20 +784,18 @@ nodes:
     program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-  - name: Plasma ball
+  - id: plasma_ball
     parent_id: cube-3
     mesh:
-      path: ball_volume
+      vertex:
+        type: box
+        size: 3
       material:
-        name: plasma_ball
-        map_kd: textures/noise_256.png
+        kd: [0.8, 0.3, 0, 1]
+        program: effect_halo
         blend: true
-        program: ball_effect
-        program_definitions:
-          effect_plasma: 1
-    #pos: [-5.0, 25.0, 5.0]
+        reverse_front_face: true
     pos: [0, 0, 0]
-    scale: 2
     flags:
       effect: true
       no_select: true

@@ -5,7 +5,7 @@ local function animation(coid)
   while true do
     local delay = math.random() * 6
 
-    printf("moo: delay=%f, id=%i\n", delay, id)
+    -- printf("moo: delay=%f, id=%i\n", delay, id)
 
     wid = cmd:wait({ after=cid, time=delay })
 
