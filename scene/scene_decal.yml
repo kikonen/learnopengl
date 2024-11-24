@@ -203,6 +203,21 @@ nodes:
         category: [none]
         collision: [none]
         size: [1]
+  - id: ball_2_halo
+    parent: ball_2
+    mesh:
+      vertex:
+        type: box
+        size: 2
+      material:
+        kd: [0.2, 0.7, 0.2, 0.5]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
   - id: lamp_origo
     type: origo
     pos: [4, 3, 3]
