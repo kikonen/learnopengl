@@ -58,12 +58,12 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_viewRight * a_pos.x * entityScale.x
+                    + u_cameraRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_viewFront;
-    tangent = u_viewRight;
+    normal = -u_cameraFront;
+    tangent = u_cameraRight;
   } else {
     normal = a_normal;
     tangent = a_tangent;

@@ -92,7 +92,7 @@ void main() {
   }
 
 #ifdef USE_CUBE_MAP
-  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_cameraPos - fs_in.worldPos);
 
   #include var_calculate_cube_map_diffuse.glsl
 #endif

@@ -63,7 +63,7 @@ void main()
   // // o_fragColor = vec4(1, 0, 0, 1);
 
   const vec3 worldPos = fs_in.worldPos;
-  const vec3 cameraWorldPos = u_viewWorldPos.xyz;
+  const vec3 cameraWorldPos = u_cameraPos.xyz;
 
   const float gGridSize = 100.0;
   const float gGridMinPixelsBetweenCells = 2.0;

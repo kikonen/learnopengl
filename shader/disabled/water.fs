@@ -86,7 +86,7 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec3 viewDir = normalize(u_viewWorldPos - fs_in.worldPos);
+  const vec3 viewDir = normalize(u_cameraPos - fs_in.worldPos);
 
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);

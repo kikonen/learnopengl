@@ -836,7 +836,7 @@ namespace render {
     {
         if (m_blendedNodes.empty()) return;
 
-        const glm::vec3& viewPos = ctx.m_camera->getWorldPosition();
+        const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();
 
         // TODO KI discards nodes if *same* distance
         std::map<float, Node*> sorted;
@@ -855,7 +855,7 @@ namespace render {
                 if (!snapshot) continue;
 
                 const auto& pos = snapshot->getWorldPosition();
-                const float dist2 = glm::distance2(viewPos, pos);
+                const float dist2 = glm::distance2(eyePos, pos);
                 sorted[dist2] = node;
             }
         }

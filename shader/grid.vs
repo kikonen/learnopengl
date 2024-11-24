@@ -39,8 +39,8 @@ void main()
   const uint idx = VERTEX_INDECES[gl_VertexID - gl_BaseVertex];
 
   vec4 pos = vec4(VERTEX_POS[idx] * entity.u_worldScale.xyz, 1.0);
-  pos.x += u_viewWorldPos.x;
-  pos.z += u_viewWorldPos.z;
+  pos.x += u_cameraPos.x;
+  pos.z += u_cameraPos.z;
   pos.y += 0.0003;
 
   vec4 worldPos = pos;

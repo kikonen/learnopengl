@@ -5,29 +5,29 @@
 // NOTE KI align 16 for UBO struct
 #pragma pack(push, 1)
 struct DataUBO {
-    glm::vec3 u_viewPos;
-    //int pad_u_viewPos;
+    glm::vec3 u_cameraPos;
+    //int pad_u_cameraPos;
 
-    glm::vec3 u_viewFront;
-    //int pad_u_viewFront;
+    glm::vec3 u_cameraFront;
+    //int pad_u_cameraFront;
 
-    glm::vec3 u_viewUp;
-    //int pad_u_viewUp;
+    glm::vec3 u_cameraUp;
+    //int pad_u_cameraUp;
 
-    glm::vec3 u_viewRight;
-    //int pad_u_viewRight;
+    glm::vec3 u_cameraRight;
+    //int pad_u_cameraRight;
 
-    glm::vec3 u_mainViewPos;
-    //int pad_u_mainViewPos;
+    glm::vec3 u_mainCameraPos;
+    //int pad_u_mainCameraPos;
 
-    glm::vec3 u_mainViewFront;
-    //int pad_u_mainViewFront;
+    glm::vec3 u_mainCameraFront;
+    //int pad_u_mainCameraFront;
 
-    glm::vec3 u_mainViewUp;
-    //int pad_u_mainViewUp;
+    glm::vec3 u_mainCameraUp;
+    //int pad_u_mainCameraUp;
 
-    glm::vec3 u_mainViewRight;
-    //int pad_u_mainViewRight;
+    glm::vec3 u_mainCameraRight;
+    //int pad_u_mainCameraRight;
 
     glm::vec4 u_fogColor;
 

@@ -86,13 +86,13 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_viewRight * a_pos.x * entityScale.x
+                    + u_cameraRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_viewFront;
+    normal = -u_cameraFront;
 #ifdef USE_TBN
-    tangent = u_viewRight;
+    tangent = u_cameraRight;
 #endif
   } else {
     worldPos = modelMatrix * pos;
@@ -139,7 +139,7 @@ void main() {
 
 #ifdef USE_PARALLAX
     const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.viewTangentPos  = invTBN * u_viewWorldPos;
+    vs_out.viewTangentPos  = invTBN * u_cameraPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif
   }

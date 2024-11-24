@@ -1,13 +1,13 @@
 layout(std140, binding = UBO_DATA) uniform Data {
-  vec3 u_viewWorldPos;
-  vec3 u_viewFront;
-  vec3 u_viewUp;
-  vec3 u_viewRight;
+  vec3 u_cameraPos;
+  vec3 u_cameraFront;
+  vec3 u_cameraUp;
+  vec3 u_cameraRight;
 
-  vec3 u_mainViewWorldPos;
-  vec3 u_mainViewFront;
-  vec3 u_mainViewUp;
-  vec3 u_mainViewRight;
+  vec3 u_mainCameraPos;
+  vec3 u_mainCameraFront;
+  vec3 u_mainCameraUp;
+  vec3 u_mainCameraRight;
 
   vec4 u_fogColor;
 
