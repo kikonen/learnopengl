@@ -97,6 +97,8 @@ int SampleApp::onInit()
         const auto& assets = Assets::get();
         auto& dbg = render::DebugContext::modify();
 
+        dbg.m_glfwSwapInterval = assets.glfwSwapInterval;
+
         dbg.m_frustumEnabled = assets.frustumEnabled;
         dbg.m_forceLineMode = assets.forceLineMode;
         dbg.m_showNormals = assets.showNormals;
@@ -186,10 +188,6 @@ int SampleApp::onSetup()
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    if (assets.glfwSwapInterval >= 0) {
-        glfwSwapInterval(assets.glfwSwapInterval);
-    }
-
     //state.setEnabled(GL_MULTISAMPLE, false);
 
     if (assets.useImGui) {
@@ -233,6 +231,12 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
             m_currentScene->m_registry.get());
 
         scene->updateRT(ctx);
+    }
+
+    {
+        auto& dbg = render::DebugContext::modify();
+
+        glfwSwapInterval(dbg.m_glfwSwapInterval);
     }
 
     return 0;

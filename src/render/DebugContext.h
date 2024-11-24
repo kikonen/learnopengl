@@ -18,6 +18,8 @@ namespace render {
         static const render::DebugContext& get() noexcept;
         static render::DebugContext& modify() noexcept;
 
+        int m_glfwSwapInterval{ 1 };
+
         bool m_frustumEnabled{ true };
 
         int m_entityId{ 0 };

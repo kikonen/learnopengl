@@ -926,6 +926,7 @@ namespace editor {
         {
             ImGui::Spacing();
             ImGui::Separator();
+            ImGui::InputInt("Swap interval", &dbg.m_glfwSwapInterval, 1, 10);
             ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
             ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
         }
