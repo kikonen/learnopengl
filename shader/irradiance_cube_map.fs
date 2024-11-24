@@ -14,8 +14,6 @@ layout(location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-const float PI = 3.14159265359;
-
 const float MIN_COL_VALUE = 0.0;
 const float MAX_COL_VALUE = 400.0;
 

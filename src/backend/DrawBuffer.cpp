@@ -388,6 +388,13 @@ namespace backend {
 
         const bool lineMode = drawOptions.m_lineMode;
 
+        if (drawOptions.m_reverseFrontFace) {
+            state.frontFace(GL_CW);
+        }
+        else {
+            state.frontFace(GL_CCW);
+        }
+
         state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
         if (drawOptions.m_mode == DrawOptions::Mode::patches) {

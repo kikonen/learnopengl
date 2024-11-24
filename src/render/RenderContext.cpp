@@ -8,6 +8,7 @@
 
 #include "util/Log.h"
 #include "util/glm_util.h"
+#include "util/glm_format.h"
 
 #include "kigl/GLState.h"
 

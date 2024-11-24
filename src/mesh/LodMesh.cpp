@@ -187,6 +187,7 @@ namespace mesh {
 
         m_drawOptions.m_renderBack = material.renderBack;
         m_drawOptions.m_lineMode = material.lineMode;
+        m_drawOptions.m_reverseFrontFace = material.reverseFrontFace;
 
         if (m_drawOptions.m_alpha) {
             m_drawOptions.m_kindBits |= render::KIND_ALPHA;

@@ -433,6 +433,10 @@ namespace loader {
                 material.lineMode = readBool(v);
                 fields.lineMode = true;
             }
+            else if (k == "reverse_front_face") {
+                material.reverseFrontFace = readBool(v);
+                fields.reverseFrontFace = true;
+            }
             else if (k == "program" || k == "shader") {
                 material.m_programNames[MaterialProgramType::shader] = readString(v);
             }
@@ -759,6 +763,7 @@ namespace loader {
 
         if (f.renderBack) m.renderBack = mod.renderBack;
         if (f.lineMode) m.lineMode = mod.lineMode;
+        if (f.reverseFrontFace) m.reverseFrontFace = mod.reverseFrontFace;
 
         if (f.gbuffer) m.gbuffer = mod.gbuffer;
 

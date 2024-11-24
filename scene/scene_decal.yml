@@ -203,6 +203,46 @@ nodes:
         category: [none]
         collision: [none]
         size: [1]
+  - id: lamp_origo
+    type: origo
+    pos: [4, 3, 3]
+  - id: lamp
+    parent: lamp_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.01
+      material:
+        kd: [0.2, 0.7, 0.2, 0.5]
+        program: g_tex
+    flags:
+      no_shadow: true
+  - id: lamp_halo
+    parent: lamp_origo
+    mesh:
+      vertex:
+        type: box
+        size: 1
+      material:
+        kd: [0.2, 0.7, 0.2, 0.5]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+  - id: light
+    parent: lamp_origo
+    type: origo
+    light:
+      type: point
+      linear: 0.14
+      quadratic: 0.07
+      cutoff_angle: 12.5
+      outer_cutoff_angle: 25.0
+      diffuse: [0.2, 0.8, 0.2, 1.0]
+      intensity: 200
 decals:
   - name: bullet_1
     lifetime: 120

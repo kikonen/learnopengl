@@ -2,8 +2,6 @@
 // from LearnOpenGL
 //
 
-const float PI = 3.14159265359;
-
 // ----------------------------------------------------------------------------
 // Easy trick to get tangent-normals to world-space to keep PBR code simplified.
 // Don't worry if you don't get what's going on; you generally want to do normal
