@@ -24,7 +24,7 @@ struct ProgramUniforms {
 
     uniform::UInt u_drawParametersIndex;
 
-    uniform::UInt u_effectBloomIteration;
+    uniform::Bool u_effectBloomHorizontal;
 
     uniform::Bool u_toneHdri;
     uniform::Bool u_gammaCorrect;

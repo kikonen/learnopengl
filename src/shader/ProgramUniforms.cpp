@@ -12,7 +12,7 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_materialIndex{ "u_materialIndex", UNIFORM_MATERIAL_INDEX },
     u_stencilMode{ "u_stencilMode", UNIFORM_STENCIL_MODE },
     u_blendFactor{ "u_blendFactor", UNIFORM_BLEND_FACTOR },
-    u_effectBloomIteration{ "u_effectBloomIteration", UNIFORM_EFFECT_BLOOM_ITERATION }
+    u_effectBloomHorizontal{ "u_effectBloomHorizontal", UNIFORM_EFFECT_BLOOM_HORIZONTAL}
 {
     u_effect.init(&program);
 
@@ -26,6 +26,6 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_materialIndex.init(&program);
     u_stencilMode.init(&program);
     u_blendFactor.init(&program);
-    u_effectBloomIteration.init(&program);
+    u_effectBloomHorizontal.init(&program);
 }
 

@@ -799,8 +799,8 @@ namespace editor {
             }
         }
         {
+            int bufferIndex = 0;
             for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
-                int bufferIndex = 0;
                 for (const auto& att : fb->m_spec.attachments) {
                     if (att.drawBufferIndex < 0) continue;
 
@@ -899,7 +899,6 @@ namespace editor {
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
-            ImGui::InputFloat("Bloom exposure", &dbg.m_effectBloomExposure, 0.01f, 0.1f);
             ImGui::InputInt("Bloom iterations", &dbg.m_effectBloomIterations, 1, 10);
         }
 

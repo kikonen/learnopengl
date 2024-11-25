@@ -275,7 +275,6 @@ Assets::Assets()
     hdrExposure = 1.0f;
 
     effectBloomEnabled = true;
-    effectBloomExposure = 1.0f;
     effectBloomIterations = 5;
 
     effectOitEnabled = true;

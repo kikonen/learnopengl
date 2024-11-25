@@ -841,10 +841,6 @@ void AssetsLoader::loadAssets(
                 data.effectBloomEnabled = readBool(v);
                 continue;
             }
-            if (k == "effect_bloom_exposure") {
-                data.effectBloomExposure = readFloat(v);
-                continue;
-            }
             if (k == "effect_bloom_iterations") {
                 data.effectBloomIterations = readInt(v);
                 continue;

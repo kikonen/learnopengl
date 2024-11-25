@@ -105,11 +105,11 @@ void main()
   }
 
   const vec3 T = vec3(0.2126, 0.7152, 0.0722);
-  const float brightness = dot(color.xyz, T);
+  const float brightness = dot(color.rgb, T);
 
   if (emission) {
     o_fragBright = vec4(material.emission.rgb, 1.0);
-  } else if (brightness > 1.0) {
+  } else if (brightness > 1.9) {
     o_fragBright = vec4(color.rgb, 1.0);
   } else {
     o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);

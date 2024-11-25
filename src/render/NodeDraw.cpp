@@ -95,8 +95,8 @@ namespace render {
 
         m_oitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_OIT_PASS));
         m_blendOitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS));
-        m_bloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_PASS));
-        m_blendBloomProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_BLOOM_PASS));
+        m_bloomBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_BLUR_PASS));
+        m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
         m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
         m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
@@ -107,6 +107,7 @@ namespace render {
         m_decalRenderer->prepareRT(ctx);
 
         m_effectBloomIterations = assets.effectBloomIterations;
+
         m_drawDebug = assets.drawDebug;
         m_glUseInvalidate = assets.glUseInvalidate;
         m_prepassDepthEnabled = assets.prepassDepthEnabled;
@@ -170,6 +171,7 @@ namespace render {
             m_prepassDepthEnabled = dbg.m_prepassDepthEnabled;
             m_effectOitEnabled = dbg.m_effectOitEnabled;
             m_effectFogEnabled = dbg.m_effectFogEnabled;
+
             m_effectBloomEnabled = dbg.m_effectBloomEnabled;
             m_effectBloomIterations = dbg.m_effectBloomIterations;
 
@@ -591,33 +593,36 @@ namespace render {
             //m_textureQuad.draw(ctx);
         }
 
-        m_bloomProgram->bind();
-
-        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
-        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
+        m_bloomBlurProgram->bind();
 
         for (auto& buffer : m_effectBuffer.m_buffers) {
-            buffer->bind(ctx);
             // NOTE KI Intel requires FBO bind for clear
+            buffer->bind(ctx);
             buffer->clearAll();
         }
 
+        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
+
+        bool horizontal = false;
         for (int i = 0; i < m_effectBloomIterations; i++) {
             auto& buf = m_effectBuffer.m_buffers[i % 2];
             buf->bind(ctx);
 
-            m_bloomProgram->m_uniforms->u_effectBloomIteration.set(i);
+            m_bloomBlurProgram->m_uniforms->u_effectBloomHorizontal.set(horizontal);
             m_textureQuad.draw();
 
             buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
+            horizontal = !horizontal;
         }
 
         {
-            finalBuffer->bind(ctx);
             // NOTE KI Intel requires FBO bind for clear
+            finalBuffer->bind(ctx);
             finalBuffer->clearAll();
 
-            m_blendBloomProgram->bind();
+            srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+
+            m_bloomFinalProgram->bind();
             m_textureQuad.draw();
         }
     }

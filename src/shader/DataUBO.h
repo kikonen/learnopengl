@@ -49,7 +49,6 @@ struct DataUBO {
 
     float u_hdrGamma;
     float u_hdrExposure;
-    float u_effectBloomExposure;
 
     float u_time;
     int u_frame;

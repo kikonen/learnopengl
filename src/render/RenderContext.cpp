@@ -206,8 +206,6 @@ RenderContext::RenderContext(
         dbg->m_hdrGamma,
         dbg->m_hdrExposure,
 
-        dbg->m_effectBloomExposure,
-
         static_cast<float>(m_clock.ts),
         static_cast<int>(m_clock.frameCount),
 

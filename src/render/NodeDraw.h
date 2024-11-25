@@ -200,8 +200,8 @@ namespace render {
         Program* m_deferredProgram{ nullptr };
         Program* m_oitProgram{ nullptr };
         Program* m_blendOitProgram{ nullptr };
-        Program* m_bloomProgram{ nullptr };
-        Program* m_blendBloomProgram{ nullptr };
+        Program* m_bloomBlurProgram{ nullptr };
+        Program* m_bloomFinalProgram{ nullptr };
         Program* m_emissionProgram{ nullptr };
         Program* m_fogProgram{ nullptr };
         Program* m_hdrGammaProgram{ nullptr };
@@ -221,6 +221,7 @@ namespace render {
         MeshTypeMap m_invisibleNodes;
 
         int m_effectBloomIterations{ 0 };
+
         bool m_drawDebug{ false };
         bool m_glUseInvalidate{ false };
 
