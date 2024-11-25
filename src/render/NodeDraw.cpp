@@ -94,7 +94,8 @@ namespace render {
         }
 
         m_oitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_OIT_PASS));
-        m_blendOitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS));
+        m_oitBlendProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLEND_OIT_PASS));
+        m_bloomInitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_INIT_PASS));
         m_bloomBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_BLUR_PASS));
         m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
         m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
@@ -559,7 +560,7 @@ namespace render {
         state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         targetBuffer->bind(ctx);
-        m_blendOitProgram->bind();
+        m_oitBlendProgram->bind();
         m_oitBuffer.bindTexture(ctx);
 
         m_textureQuad.draw();
@@ -583,7 +584,22 @@ namespace render {
             return;
         }
 
-        srcBuffer->bind(ctx);
+        for (auto& buffer : m_effectBuffer.m_buffers) {
+            // NOTE KI Intel requires FBO bind for clear
+            buffer->bind(ctx);
+            buffer->clearAll();
+        }
+
+        {
+            srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
+
+            auto& buf = m_effectBuffer.m_buffers[1];
+            buf->bind(ctx);
+            buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
+
+            m_bloomInitProgram->bind();
+            m_textureQuad.draw();
+        }
 
         {
             //srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
@@ -594,14 +610,6 @@ namespace render {
         }
 
         m_bloomBlurProgram->bind();
-
-        for (auto& buffer : m_effectBuffer.m_buffers) {
-            // NOTE KI Intel requires FBO bind for clear
-            buffer->bind(ctx);
-            buffer->clearAll();
-        }
-
-        srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_WORK);
 
         bool horizontal = false;
         for (int i = 0; i < m_effectBloomIterations; i++) {
@@ -895,8 +903,6 @@ namespace render {
     void NodeDraw::drawSkybox(
         const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
-
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
         auto* node = nodeRegistry.m_skybox.toNode();
         if (!node) return;
@@ -911,6 +917,7 @@ namespace render {
         auto* lodMesh = type->getLodMesh(0);
         auto* program = Program::get(lodMesh->m_programId);
 
+        auto& state = ctx.m_state;
         state.setDepthFunc(GL_LEQUAL);
         state.frontFace(GL_CCW);
 

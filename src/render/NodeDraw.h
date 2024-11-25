@@ -199,7 +199,8 @@ namespace render {
 
         Program* m_deferredProgram{ nullptr };
         Program* m_oitProgram{ nullptr };
-        Program* m_blendOitProgram{ nullptr };
+        Program* m_oitBlendProgram{ nullptr };
+        Program* m_bloomInitProgram{ nullptr };
         Program* m_bloomBlurProgram{ nullptr };
         Program* m_bloomFinalProgram{ nullptr };
         Program* m_emissionProgram{ nullptr };

@@ -30,7 +30,6 @@ layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_
 
 
 layout (location = 0) out vec4 o_fragColor;
-layout (location = 1) out vec4 o_fragBright;
 
 ////////////////////////////////////////////////////////////
 //
@@ -102,17 +101,6 @@ void main()
     if (u_shadowVisual) {
       color += CASCADE_COLORS[shadowIndex];
     }
-  }
-
-  const vec3 T = vec3(0.2126, 0.7152, 0.0722);
-  const float brightness = dot(color.rgb, T);
-
-  if (emission) {
-    o_fragBright = vec4(material.emission.rgb, 1.0);
-  } else if (brightness > 1.9) {
-    o_fragBright = vec4(color.rgb, 1.0);
-  } else {
-    o_fragBright = vec4(0.0, 0.0, 0.0, 1.0);
   }
 
   o_fragColor = color;
