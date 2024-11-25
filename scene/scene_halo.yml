@@ -92,3 +92,9 @@ nodes:
       outer_cutoff_angle: 25.0
       diffuse: [0.2, 0.8, 0.2, 1.0]
       intensity: 200
+  - id: four_cubes_{t}_{c}
+    parent: lamp_origo
+    mesh:
+      path: texture_cube_3
+      scale: 0.25
+    program: g_tex

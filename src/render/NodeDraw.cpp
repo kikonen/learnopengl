@@ -314,6 +314,7 @@ namespace render {
         state.setStencil(kigl::GLStencilMode::only_non_zero());
         state.setEnabled(GL_DEPTH_TEST, false);
         state.polygonFrontAndBack(GL_FILL);
+        state.frontFace(GL_CCW);
 
         m_deferredProgram->bind();
         m_textureQuad.draw();
@@ -507,6 +508,7 @@ namespace render {
         state.setEnabled(GL_DEPTH_TEST, false);
         // NOTE KI do NOT modify depth with blend (likely redundant)
         state.setDepthMask(GL_FALSE);
+        state.frontFace(GL_CCW);
 
         {
             state.setEnabled(GL_BLEND, true);
@@ -905,6 +907,8 @@ namespace render {
         auto* program = Program::get(lodMesh->m_programId);
 
         state.setDepthFunc(GL_LEQUAL);
+        state.frontFace(GL_CCW);
+
         program->bind();
         m_textureQuad.draw();
         state.setDepthFunc(ctx.m_depthFunc);
