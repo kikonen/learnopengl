@@ -151,6 +151,7 @@ nodes:
     program: light
     flags:
       no_shadow: true
+    clone_mesh: false
     clones:
       - pos: [0.0, 0.0, 10.0]
         parent_id: light_1
@@ -163,7 +164,7 @@ nodes:
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_5
         mesh:
-          material_modifier:
+          material:
             kd: [0.8, 0.0, 0.0, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.0, 1.0]
@@ -171,7 +172,7 @@ nodes:
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_6
         mesh:
-          material_modifier:
+          material:
             kd: [0.0, 0.9, 0.0, 1.0]
         light:
           diffuse: [0.0, 0.9, 0.0, 1.0]
@@ -179,7 +180,7 @@ nodes:
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_7
         mesh:
-          material_modifier:
+          material:
             kd: [0.0, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.0, 0.0, 0.9, 1.0]
@@ -187,7 +188,7 @@ nodes:
       - pos: [0.0, 0.0, 15.0]
         parent_id: light_8
         mesh:
-          material_modifier:
+          material:
             kd: [0.9, 0.0, 0.9, 1.0]
         light:
           diffuse: [0.9, 0.0, 0.9, 1.0]
@@ -215,6 +216,7 @@ nodes:
       effect: true
       no_select: true
       no_shadow: true
+    clone_mesh: false
     clones:
       - pos: [0.0, 0.0, 10.0]
         parent_id: light_1

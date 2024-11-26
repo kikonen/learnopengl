@@ -1,0 +1,167 @@
+---
+meta:
+  name: Full
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+root:
+  type: origo
+  pos: [200, 0, 200]
+  xxscript_file: scripts/seq_spin_root
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - prefab:
+      path: prefab/util/prefab_grid.yml
+  - id: player
+    type: origo
+    pos: [-10, 12, -20.0]
+    rotation: [0, 180, 0.0]
+    front: [0, 0, -1]
+    active: true
+    flags:
+      allow_normals: false
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: zero_origo
+    type: origo
+    pos: [0.0, 0.0, 0.0]
+    xscript_file: scripts/seq_zero_origo
+  - id: moving_point_light_origo_{t}_{c}
+    parent_id: zero_origo
+    type: origo
+    pos: [0, 14, 0]
+    clones:
+      - pos: [-15.0, 14.0, -15.0]
+        id: light_1
+      - pos: [15.0, 14.0, -15.0]
+        id: light_2
+      - pos: [-15.0, 14.0, 15.0]
+        id: light_3
+      - pos: [15.0, 14.0, 15.0]
+        id: light_4
+      - pos: [-25.0, 10.0, -25.0]
+        id: light_5
+      - pos: [25.0, 10.0, -25.0]
+        id: light_6
+      - pos: [-25, 10.0, 25.0]
+        id: light_7
+      - pos: [25.0, 10.0, 25.0]
+        id: light_8
+    script_file: scripts/anim_moving_point_light
+  - id: moving_point_light_{t}_{c}
+    desc: "NOTE overriding material in clones is *NOT* supported"
+    parent_id: zero_origo
+    mesh:
+      path: light
+    pos: [0, 0, 0]
+    scale: 0.5
+    program: light
+    flags:
+      no_shadow: true
+    clone_mesh: false
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_1
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_2
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_3
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_4
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_5
+        mesh:
+          material:
+            kd: [0.8, 0.0, 0.0, 1.0]
+        light:
+          diffuse: [0.9, 0.0, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_6
+        mesh:
+          material:
+            kd: [0.0, 0.9, 0.0, 1.0]
+        light:
+          diffuse: [0.0, 0.9, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_7
+        mesh:
+          material:
+            kd: [0.0, 0.0, 0.9, 1.0]
+        light:
+          diffuse: [0.0, 0.0, 0.9, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_8
+        mesh:
+          material:
+            kd: [0.9, 0.0, 0.9, 1.0]
+        light:
+          diffuse: [0.9, 0.0, 0.9, 1.0]
+        enabled: true
+    light:
+      type: point
+      linear: 0.09
+      quadratic: 0.032
+      target_id: ROOT
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      intensity: 1000
+  - id: moving_point_light_halo_{t}_{c}
+    parent_id: zero_origo
+    mesh:
+      vertex:
+        type: box
+        size: 1
+      material:
+        kd: [0.6, 0.6, 0.1, 1.0]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+    pos: [0, 0, 0]
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+    clone_mesh: false
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_1
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_2
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_3
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_4
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_5
+        mesh:
+          material_modifier:
+            kd: [0.8, 0.0, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_6
+        mesh:
+          material_modifier:
+            kd: [0.0, 0.9, 0.0, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_7
+        mesh:
+          material_modifier:
+            kd: [0.0, 0.0, 0.9, 1.0]
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        parent_id: light_8
+        mesh:
+          material_modifier:
+            kd: [0.9, 0.0, 0.9, 1.0]
+        enabled: true
