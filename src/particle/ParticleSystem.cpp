@@ -13,6 +13,7 @@
 #include "engine/PrepareContext.h"
 
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 
 #include "registry/Registry.h"
 
@@ -98,13 +99,17 @@ namespace particle {
             m_particles.resize(size);
         }
 
-        snapshotParticles();
+        if (ctx.m_dbg.m_particleEnabled) {
+            snapshotParticles();
+        }
     }
 
     void ParticleSystem::updateRT(const UpdateContext& ctx)
     {
         if (!isEnabled()) return;
         if (!m_updateReady) return;
+
+        if (!ctx.m_dbg.m_particleEnabled) return;
 
         m_frameSkipCount++;
         if (m_frameSkipCount < 2) {
