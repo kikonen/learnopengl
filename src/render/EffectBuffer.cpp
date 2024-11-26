@@ -87,7 +87,7 @@ namespace render {
                 auto buffer = new FrameBuffer(
                     fmt::format("effect_worker_{}", i),
                     {
-                        w, h,
+                        static_cast<int>(w * 0.5f), static_cast<int>(h * 0.5f),
                         {
                         // src - diffuse from previous pass
                         FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
