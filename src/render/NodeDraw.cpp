@@ -409,6 +409,7 @@ namespace render {
         auto& state = ctx.m_state;
 
         state.setStencil({});
+        state.setDepthMask(GL_FALSE);
 
         drawBlendedImpl(
             ctx,
@@ -420,6 +421,8 @@ namespace render {
             },
             nodeSelector);
         ctx.m_batch->flush(ctx);
+
+        state.setDepthMask(GL_TRUE);
     }
 
     void NodeDraw::passDecal(
