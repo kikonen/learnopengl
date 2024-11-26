@@ -66,6 +66,8 @@ nodes:
         tiling: 5
         program: g_tex
       scale: 2.5
+      flags:
+        pre_depth: true
     pos: [0, 12.5, -10]
     physics:
       update: true
@@ -113,6 +115,8 @@ nodes:
         render_back: true
         program: g_mirror
       scale: 10.0
+      flags:
+        pre_depth: true
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
     front: [0, 0, 1]
@@ -127,6 +131,8 @@ nodes:
         program: g_tex
         render_back: true
       scale: 30
+      flags:
+        pre_depth: true
     pos: [0.0, 3.2, -10.0]
     flags:
       no_shadow: true
@@ -199,6 +205,8 @@ nodes:
         map_pbr: textures\Planks 09 [8K]
         tiling_x: 30
         tiling_y: 4
+      flags:
+        pre_depth: true
     program: g_tex
     clones:
       - pos: [-30.0, 4, 20]
@@ -378,6 +386,8 @@ nodes:
         program: g_tex
         render_back: true
       scale: 60
+      flags:
+        pre_depth: true
     priority: -10
     pos: [160.0, 3.2, 20.0]
     flags:
@@ -430,6 +440,8 @@ nodes:
         tiling_x: 30
         tiling_y: 4
         program: g_tex
+      flags:
+        pre_depth: true
     clones:
       - pos: [100.0, 4, 20]
         scale: [0.3, 6, 60]

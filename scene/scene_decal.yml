@@ -122,6 +122,8 @@ nodes:
         tiling_x: 1.25
         tiling_y: 0.75
         program: tex
+      flags:
+        pre_depth: true
     pos: [-5, 1.5, 0]
     physics:
       update: true
@@ -167,6 +169,8 @@ nodes:
         tiling_x: 5
         tiling_y: 3
         program: g_tex
+      flags:
+        pre_depth: true
     pos: [5, 1.5, 0]
     physics:
       update: true

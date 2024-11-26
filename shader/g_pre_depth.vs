@@ -44,6 +44,7 @@ void main()
                     + u_mainCameraRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
+  } else {
     worldPos = modelMatrix * vec4(a_pos, 1.0);
   }
 

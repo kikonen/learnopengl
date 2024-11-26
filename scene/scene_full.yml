@@ -405,6 +405,8 @@ nodes:
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [-5.0, 13.5, 14.0]
     repeat:
@@ -422,6 +424,8 @@ nodes:
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [5.0, 13.5, 14.0]
     rotation: [0, 180, 0]
@@ -434,6 +438,8 @@ nodes:
         map_kd: textures/wood_1024.png
         xreflection: 0.1
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [-3.0, 13.5, 14.0]
     repeat:
@@ -451,6 +457,8 @@ nodes:
       material_modifier:
         map_bump: textures/wood_1024_normal.png
         parallax_depth: 0.02
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [-3.0, 15.5, 14.0]
     repeat:
@@ -467,6 +475,8 @@ nodes:
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
         render_back: true
+      flags:
+        pre_depth: true
     program: g_mirror
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
@@ -486,6 +496,8 @@ nodes:
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
         render_back: true
+      flags:
+        pre_depth: true
     program: g_mirror
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
@@ -806,12 +818,16 @@ nodes:
       material_modifier:
         tiling_x: 2
         tiling_y: 2
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [5.0, 25.0, 5.0]
     scale: 1
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
+      flags:
+        pre_depth: true
     program: g_tex
     scale: 1
     camera:
@@ -846,6 +862,8 @@ nodes:
   - name: Wooden matrix Cube
     mesh:
       path: texture_cube_4/texture_cube_4.obj
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [-5.0, 25.0, 5.0]
     rotation: [0, 180, 0]
@@ -897,6 +915,8 @@ nodes:
         map_kd: textures/tiles_1024.png
         tiling: 8
       scale: 30
+      flags:
+        pre_depth: true
     priority: -10
     program: g_tex
     pos: [0.0, 3.7, -10.0]
@@ -925,6 +945,8 @@ nodes:
       material_modifier:
         tiling_x: 100
         tiling_y: 10
+      flags:
+        pre_depth: true
     program: g_tex
     clones:
       - pos: [-30.0, 4, 20]
@@ -1051,6 +1073,8 @@ nodes:
         map_kd: textures/tiles_1024.png
         tiling: 2
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [-1072, -70.0, -772]
     scale: 128
@@ -1077,6 +1101,8 @@ nodes:
       path: planet/planet
       material_modifier:
         map_bump: planet/mars_normal.png
+      flags:
+        pre_depth: true
     program: g_tex
     pos: [0, 0, 0]
     scale: 10
@@ -1134,6 +1160,8 @@ nodes:
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     scale: 2
     pos: [10, 11.5, 20.0]
@@ -1150,6 +1178,8 @@ nodes:
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
+      flags:
+        pre_depth: true
     program: g_tex
     scale: 3
     pos: [5, 11.5, 20.0]
