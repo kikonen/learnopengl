@@ -104,6 +104,22 @@ nodes:
         category: [prop, can_float]
         collision: [world, ray]
         size: [10]
+  - id: mirror_ball_halo
+    parent: mirror_ball
+    mesh:
+      vertex:
+        type: box
+        size: 14
+      material:
+        kd: [0.9, 0.9, 0.2, 0.5]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+      xno_reflect: true
   - name: Big mirror 2
     mesh:
       path: quad

@@ -215,10 +215,9 @@ namespace render {
         //if (false)
         state.setStencil({});
 
-        // NOTE KI intel requires FBO to be bound to clearing draw buffers
-        // (nvidia seemingly does not)
-        m_gBuffer.bind(ctx);
+        m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
         m_gBuffer.clearAll();
+        m_gBuffer.bind(ctx);
 
         // NOTE KI no blend in G-buffer
         auto wasForceSolid = ctx.setForceSolid(true);
@@ -304,9 +303,6 @@ namespace render {
         // pass 2 - target effectBuffer
         {
             targetBuffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
-
-            // NOTE KI Intel requires FBO bind for clear
-            targetBuffer->bind(ctx);
             targetBuffer->clearAll();
         }
 
@@ -321,6 +317,8 @@ namespace render {
         state.setEnabled(GL_DEPTH_TEST, false);
         state.polygonFrontAndBack(GL_FILL);
         state.frontFace(GL_CCW);
+
+        targetBuffer->bind(ctx);
 
         m_deferredProgram->bind();
         m_textureQuad.draw();
@@ -349,8 +347,8 @@ namespace render {
         state.setDepthMask(GL_FALSE);
         state.setEnabled(GL_BLEND, true);
 
-        m_oitBuffer.bind(ctx);
         m_oitBuffer.clearAll();
+        m_oitBuffer.bind(ctx);
 
         // NOTE KI different blend mode for each draw buffer
         glBlendFunci(0, GL_ONE, GL_ONE);
@@ -591,8 +589,6 @@ namespace render {
         }
 
         for (auto& buffer : m_effectBuffer.m_buffers) {
-            // NOTE KI Intel requires FBO bind for clear
-            buffer->bind(ctx);
             buffer->clearAll();
         }
 
@@ -630,9 +626,8 @@ namespace render {
         }
 
         {
-            // NOTE KI Intel requires FBO bind for clear
-            finalBuffer->bind(ctx);
             finalBuffer->clearAll();
+            finalBuffer->bind(ctx);
 
             srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
 
