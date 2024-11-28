@@ -395,6 +395,13 @@ namespace backend {
             state.frontFace(GL_CCW);
         }
 
+        if (drawOptions.m_noDepth) {
+            state.setEnabled(GL_DEPTH_TEST, false);
+        }
+        else {
+            state.setEnabled(GL_DEPTH_TEST, true);
+        }
+
         state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
         if (drawOptions.m_mode == DrawOptions::Mode::patches) {

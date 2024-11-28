@@ -421,6 +421,7 @@ namespace render {
         ctx.m_batch->flush(ctx);
 
         state.setDepthMask(GL_TRUE);
+        state.setEnabled(GL_DEPTH_TEST, true);
     }
 
     void NodeDraw::passDecal(

@@ -211,6 +211,7 @@ nodes:
         program: effect_halo
         blend: true
         reverse_front_face: true
+        no_depth: true
     pos: [0, 0, 0]
     flags:
       effect: true
@@ -809,6 +810,7 @@ nodes:
         program: effect_halo
         blend: true
         reverse_front_face: true
+        no_depth: true
     pos: [0, 0, 0]
     flags:
       effect: true

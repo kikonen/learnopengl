@@ -41,6 +41,7 @@ namespace loader {
         bool renderBack : 1 {false};
         bool lineMode : 1 {false};
         bool reverseFrontFace : 1{false};
+        bool noDepth : 1 {false};
 
         bool gbuffer : 1 {false};
     };

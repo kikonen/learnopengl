@@ -44,6 +44,7 @@ namespace backend {
         bool m_lineMode : 1 {false};
         // GL_CCW vs GL_CW (GL_CCW == normal)
         bool m_reverseFrontFace : 1 {false};
+        bool m_noDepth : 1 {false};
 
         bool m_gbuffer : 1 {false};
 
@@ -88,6 +89,7 @@ namespace backend {
                 (forceLineMode ? true : m_lineMode == o.m_lineMode) &&
                 (forceSolid ? true : m_blend == o.m_blend) &&
                 m_reverseFrontFace == o.m_reverseFrontFace &&
+                m_noDepth == o.m_noDepth &&
                 m_clip == o.m_clip &&
                 m_mode == o.m_mode &&
                 m_type == o.m_type;
@@ -95,8 +97,8 @@ namespace backend {
 
         // NOTE KI for MeshTypeKey
         inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_blend, m_renderBack, m_clip, m_lineMode, m_reverseFrontFace, m_type, m_mode) <
-                std::tie(o.m_blend, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_reverseFrontFace, o.m_type, o.m_mode);
+            return std::tie(m_blend, m_renderBack, m_clip, m_lineMode, m_noDepth, m_reverseFrontFace, m_type, m_mode) <
+                std::tie(o.m_blend, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_noDepth, o.m_reverseFrontFace, o.m_type, o.m_mode);
         }
     };
 }
