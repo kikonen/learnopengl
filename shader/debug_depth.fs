@@ -2,8 +2,8 @@
 
 in vec2 texCoord;
 
-layout(location = UNIFORM_NEAR_PLANE) uniform float u_nearPlane;
-layout(location = UNIFORM_FAR_PLANE) uniform float u_farPlane;
+layout(location = UNIFORM_SHADOW_NEAR_PLANE) uniform float u_shadowNearPlane;
+layout(location = UNIFORM_SHADOW_FAR_PLANE) uniform float u_shadowFarPlane;
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
@@ -19,7 +19,9 @@ SET_FLOAT_PRECISION;
 float LinearizeDepth(float depth)
 {
   float z = depth * 2.0 - 1.0; // Back to NDC
-  return (2.0 * u_nearPlane * u_farPlane) / (u_farPlane + u_nearPlane - z * (u_farPlane - u_nearPlane));
+  const float near = u_shadowNearPlane;
+  const float far = u_shadowFarPlane;
+  return (2.0 * near * far) / (far + near - z * (far - near));
 }
 
 void main()

@@ -19,8 +19,8 @@ struct ProgramUniforms {
 
     uniform::Subroutine u_effect;
 
-    uniform::Float u_nearPlane;
-    uniform::Float u_farPlane;
+    uniform::Float u_shadowNearPlane;
+    uniform::Float u_shadowFarPlane;
 
     uniform::UInt u_drawParametersIndex;
 

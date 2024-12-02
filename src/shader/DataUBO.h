@@ -31,10 +31,8 @@ struct DataUBO {
 
     glm::vec4 u_fogColor;
 
-    // NOTE KI std140
-    // "Both the size and alignment are twice"
-    // "the size of the underlying scalar type."
-    glm::vec2 u_screenResolution;
+    float u_nearPlane;
+    float u_farPlane;
 
     int u_cubeMapExist; // bool as 4 bytes
     int u_skyboxExist; // bool as 4 bytes
@@ -62,6 +60,6 @@ struct DataUBO {
     float u_shadowCascade_3;
 
     int pad1;
-    //int pad2;
+    int pad2;
 };
 #pragma pack(pop)

@@ -2,8 +2,8 @@
 
 ProgramUniforms::ProgramUniforms(Program& program)
     : u_effect{ "u_effect", GL_FRAGMENT_SHADER, SUBROUTINE_EFFECT },
-    u_nearPlane{ "u_nearPlane", UNIFORM_NEAR_PLANE },
-    u_farPlane{ "u_farPlane", UNIFORM_FAR_PLANE },
+    u_shadowNearPlane{ "u_shadowNearPlane", UNIFORM_SHADOW_NEAR_PLANE },
+    u_shadowFarPlane{ "u_shadowFarPlane", UNIFORM_SHADOW_FAR_PLANE },
     u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX },
     u_toneHdri{ "u_toneHdri", UNIFORM_TONE_HDRI },
     u_gammaCorrect{ "u_gammaCorrect", UNIFORM_GAMMA_CORRECT },
@@ -16,8 +16,8 @@ ProgramUniforms::ProgramUniforms(Program& program)
 {
     u_effect.init(&program);
 
-    u_nearPlane.init(&program);
-    u_farPlane.init(&program);
+    u_shadowNearPlane.init(&program);
+    u_shadowFarPlane.init(&program);
     u_drawParametersIndex.init(&program);
     u_toneHdri.init(&program);
     u_gammaCorrect.init(&program);

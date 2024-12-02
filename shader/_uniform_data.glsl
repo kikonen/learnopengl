@@ -11,7 +11,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   vec4 u_fogColor;
 
-  vec2 u_screenResolution;
+  float u_nearPlane;
+  float u_farPlane;
 
   bool u_cubeMapExist;
   bool u_skyboxExist;
@@ -35,4 +36,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_shadowCascade_1;
   float u_shadowCascade_2;
   float u_shadowCascade_3;
+
+  int pad1;
+  int pad2;
 };

@@ -9,8 +9,8 @@
 
 constexpr int UNIFORM_PROJECTION_MATRIX = 1;
 constexpr int UNIFORM_VIEW_MATRIX = 2;
-constexpr int UNIFORM_NEAR_PLANE = 3;
-constexpr int UNIFORM_FAR_PLANE = 4;
+constexpr int UNIFORM_SHADOW_NEAR_PLANE = 3;
+constexpr int UNIFORM_SHADOW_FAR_PLANE = 4;
 constexpr int UNIFORM_DRAW_PARAMETERS_INDEX = 6;
 constexpr int UNIFORM_STENCIL_MODE = 7;
 constexpr int UNIFORM_SHADOW_MAP_INDEX = 8;
