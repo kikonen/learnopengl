@@ -3,7 +3,7 @@ name: Origo
 viewports:
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/circus_arena_2k.hdr
+  material: skybox/polyhaven/circus_arena_4k.hdr
 script:
   scripts:
     - path: lib/common

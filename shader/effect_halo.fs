@@ -126,12 +126,13 @@ void main() {
   // halo *= 5;
   // halo = 1;
   float blend = halo;
-  if (false)
+  // if (false)
   {
     if (halo > 0.00001) {
       // color = vec4(0, 0, 0);
       // color.rg = fs_in.texCoord;
-      blend = 0.8;
+      // TODO KI somehow need to configure halo range in material
+      blend = 0.1 + halo * 0.9;
     }
   }
 
