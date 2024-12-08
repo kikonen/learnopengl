@@ -426,6 +426,19 @@ namespace render {
         return spec;
     }
 
+    // G buffer: viewZ
+    FrameBufferAttachment FrameBufferAttachment::getGBufferViewZ(GLenum attachment)
+    {
+        FrameBufferAttachment spec;
+        spec.type = FrameBufferAttachmentType::texture;
+        spec.internalFormat = GL_R32F;
+        spec.attachment = attachment;
+        spec.useDrawBuffer = true;
+        spec.clearMask = GL_COLOR_BUFFER_BIT;
+
+        return spec;
+    }
+
     // Effect buffer: diffuse.rgba
     FrameBufferAttachment FrameBufferAttachment::getEffectTexture(GLenum attachment)
     {

@@ -33,6 +33,7 @@ out VS_OUT {
 
   vec4 shadowPos;
 
+  mat4 invModel;
   vec3 pos;
   vec3 cameraObjectPos;
   vec3 cameraObjectFront;
@@ -82,7 +83,8 @@ void main() {
 
   // NOTE volume radius is from center of cube to corner
   // => halo radius is cube width / 2
-  vs_out.radius = entity.u_volume.a * sin(PI / 4);
+  // vs_out.radius = entity.u_volume.a * sin(PI / 4);
+  vs_out.radius = entity.u_volume.a / 1.7;
 
   calculateClipping(worldPos);
 
@@ -90,6 +92,7 @@ void main() {
 
   vs_out.pos = a_pos;
   const mat4 invModel = inverse(modelMatrix);
+  vs_out.invModel = invModel;
   vs_out.cameraObjectPos = (invModel * vec4(u_cameraPos, 1)).xyz;
-  vs_out.cameraObjectFront = normalize((invModel * vec4(u_cameraFront, 1)).xyz);
+  vs_out.cameraObjectFront = normalize((mat3(invModel) * u_cameraFront).xyz);
 }

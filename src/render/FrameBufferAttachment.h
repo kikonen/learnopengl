@@ -121,6 +121,8 @@ namespace render {
         // G buffer: normal
         static FrameBufferAttachment getGBufferNormal(GLenum attachment);
 
+        static FrameBufferAttachment getGBufferViewZ(GLenum attachment);
+
         // Effect buffer: diffuse
         static FrameBufferAttachment getEffectTexture(GLenum attachment);
         static FrameBufferAttachment getEffectTextureHdr(GLenum attachment);

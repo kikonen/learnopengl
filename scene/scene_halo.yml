@@ -56,6 +56,7 @@ nodes:
     type: origo
     xpos: [4, 3, 3]
     pos: [1, 0, 0]
+    xpos: [0]
   - id: lamp
     parent: lamp_origo
     mesh:

@@ -7,7 +7,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-//#include uniform_buffer_info.glsl
+#include uniform_buffer_info.glsl
 #include uniform_lights.glsl
 
 // NOTE KI depth is *not* used
@@ -55,10 +55,17 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
           vec4(0.2, 0.0, 0.2, 0.0)
           );
 
+float linearizeDepth(float depth) {
+  return linearizeDepth(depth, u_nearPlane, u_farPlane);
+}
+
 void main()
 {
   //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  vec2 texCoord = fs_in.texCoord;
+
+  // const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
+  // texCoord = pixCoord;
 
   // https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
@@ -100,6 +107,23 @@ void main()
 
     if (u_shadowVisual) {
       color += CASCADE_COLORS[shadowIndex];
+    }
+  }
+
+  if (false)
+  {
+    // float dp = textureLod(g_depth, texCoord, 0).x;
+    // float depth = linearizeDepth(dp);
+    // dp = 1.0 - (dp - 0.99) * 100.0;
+
+    float z = textureLod(g_viewZ, texCoord, 0).x;
+    float dp = -textureLod(g_viewZ, texCoord, 0).x;
+    dp /= u_farPlane;
+    dp = 1.0 - dp;
+
+    color.rgb = vec3(dp);
+    if (z < 0) {
+      color.rgb = vec3(1, 0, 0);
     }
   }
 

@@ -49,6 +49,7 @@ namespace render {
                         //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                         FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
                         FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT3),
+                        FrameBufferAttachment::getGBufferViewZ(GL_COLOR_ATTACHMENT4),
                         // depth needed
                         FrameBufferAttachment::getDepthStencilTexture(),
                     }
@@ -83,6 +84,7 @@ namespace render {
         //m_buffer->bindTexture(ctx, ATT_POSITION_INDEX, UNIT_G_POSITION);
         m_buffer->bindTexture(ctx, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
         m_buffer->bindTexture(ctx, ATT_METAL_INDEX, UNIT_G_METAL);
+        m_buffer->bindTexture(ctx, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
         //m_buffer->bindTexture(ctx, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 
         m_depthTexture->bindTexture(ctx, UNIT_G_DEPTH);
@@ -96,6 +98,7 @@ namespace render {
         //m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
         m_buffer->unbindTexture(ctx, UNIT_G_METAL);
         m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
+        m_buffer->unbindTexture(ctx, UNIT_G_VIEW_Z);
         m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);
 
         m_depthTexture->unbindTexture(ctx, UNIT_G_DEPTH);

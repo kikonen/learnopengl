@@ -27,6 +27,7 @@ in VS_OUT {
 
   vec4 shadowPos;
 
+  mat4 invModel;
   vec3 pos;
   vec3 cameraObjectPos;
   vec3 cameraObjectFront;
@@ -44,6 +45,10 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+float linearizeDepth(float depth) {
+  return linearizeDepth2(depth, u_nearPlane, u_farPlane);
+}
+
 // R = halo radius
 // R2 = R^2
 // recipR2 = 1 / R^2
@@ -54,7 +59,7 @@ float calculateHaloBrightness(
   const in vec3 cameraObjectPos,
   const in vec3 cameraObjectFront,
   const in vec3 pos,
-  const in vec2 pixelCoord)
+  const in vec2 pixCoord)
 {
   const float R = radius; // Radius of the volumetric point light halo.
   const float R2 = R * R;
@@ -70,10 +75,22 @@ float calculateHaloBrightness(
   const float m = sqrt(max(pv * pv - v2 * (p2 - R2), 0.0));
 
   // Read z0 from the structure buffer.
-  // const vec2 depth = vec2(1, 1); //texture(structureBuffer, pixelCoord).zw;
-  const float depth = 1000;//textureLod(g_depth, pixelCoord, 0).x * 2.0 - 1.0;
-  float t0 = 1.0 + (depth) / dot(cameraObjectFront, vdir);
-  t0 = 0;
+  // const vec2 depth = vec2(1, 1); //texture(structureBuffer, pixCoord).zw;
+  float d;
+  {
+    // float depth = textureLod(g_depth, pixCoord, 0).x * 2.0 - 1.0;
+
+    // vec4 clip = vec4(pixCoord.x * 2.0 - 1.0, pixCoord.y * 2.0 - 1.0, depth, 1.0);
+    // vec4 viewW  = u_invProjectionMatrix * clip;
+    // vec3 viewPos  = viewW.xyz / viewW.w;
+    // d = viewPos.z;
+
+    d = -textureLod(g_viewZ, pixCoord, 0).x;
+  }
+  float t0 = 1.0 + (d) / dot(cameraObjectFront, vdir);
+  if (d == 0) {
+    t0 = 0;
+  }
 
   // Calculate clamped limits of integration.
   const float t1 = clamp((pv - m) / v2, t0, 1.0);
@@ -94,26 +111,53 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  const vec2 pixelCoord = vec2(
-    gl_FragCoord.x / u_bufferResolution.x,
-    gl_FragCoord.y / u_bufferResolution.y);
+  const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
 
-  vec4 color = material.diffuse;
+  vec3 color = material.diffuse.rgb;
+  // color = vec3(0, 0, 1);
 
   float halo = calculateHaloBrightness(
     fs_in.radius,
     fs_in.cameraObjectPos,
-    fs_in.cameraObjectFront,
+    normalize(fs_in.cameraObjectFront),
     fs_in.pos,
-    pixelCoord);
+    pixCoord);
+
   // halo *= 5;
   // halo = 1;
   float blend = halo;
-  // if (halo < 0.1) {
-  //   color = vec4(0, 0, 0, 1);
-  //   color.rg = fs_in.texCoord;
-  //   blend = 1;
-  // }
+  if (false)
+  {
+    if (halo > 0.00001) {
+      // color = vec4(0, 0, 0);
+      // color.rg = fs_in.texCoord;
+      blend = 0.8;
+    }
+  }
+
+  if (false)
+  {
+    // float dp = textureLod(g_depth, pixCoord, 0).x;
+    // float depth = linearizeDepth(dp);
+    // dp = 1.0 - (dp - 0.99) * 100.0;
+    // color.rgb = vec3(dp);
+    // if (depth < 0) {
+    //   color.rgb = vec3(1, 0, 0);
+    // }
+
+    float d = textureLod(g_viewZ, pixCoord, 0).x;
+    color.rgb = vec3(-d / u_farPlane);
+
+    color.rgb = -fs_in.cameraObjectFront;
+    color.rgb = fs_in.normal * 0.5 + 0.5;
+
+    blend = 1;
+    if (halo > 0.0000001) {
+      color.rgb = vec3(0, 1, 0);
+      blend = halo;
+      blend = 0.8;
+    }
+  }
 
 #ifdef USE_BLEND
   o_fragColor = vec4(color.rgb, blend);

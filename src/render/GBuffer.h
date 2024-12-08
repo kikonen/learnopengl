@@ -16,7 +16,8 @@ namespace render {
         static const int ATT_EMISSION_INDEX = 1;
         static const int ATT_NORMAL_INDEX = 2;
         static const int ATT_METAL_INDEX = 3;
-        static const int ATT_DEPTH_INDEX = 4;
+        static const int ATT_VIEW_Z_INDEX = 4;
+        static const int ATT_DEPTH_INDEX = 5;
 
     public:
         GBuffer() {}

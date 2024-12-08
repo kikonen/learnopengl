@@ -135,6 +135,7 @@ constexpr int UNIT_G_EMISSION = 52;
 constexpr int UNIT_G_METAL = 53;
 constexpr int UNIT_G_NORMAL = 54;
 constexpr int UNIT_G_DEPTH = 55;
+constexpr int UNIT_G_VIEW_Z = 51;
 
 constexpr int UNIT_OIT_ACCUMULATOR = 56;
 constexpr int UNIT_OIT_REVEAL = 57;

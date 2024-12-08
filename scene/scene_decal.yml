@@ -22,25 +22,29 @@ nodes:
           gain: 0.4
           loop: true
         - name: walk_1
-          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 1.8
           loop: true
         - name: run_1
-          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 3.8
           loop: true
         - name: walk_2
-          path: audio/metal-footsteps-14727.wav
+          xpath: audio/metal-footsteps-14727.wav
+          path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 1.8
           loop: true
         - name: run_2
-          path: audio/metal-footsteps-14727.wav
+          xpath: audio/metal-footsteps-14727.wav
+          path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
           reference_distance: 0.1
           gain: 1.0
           pitch: 3.8
@@ -107,6 +111,9 @@ nodes:
   - id: prefab_diamond_plate_2
     prefab:
       path: prefab/scenery/prefab_diamond_plate_2.yml
+    mesh:
+      material:
+        render_back: true
     scale: 100
     physics:
       geom:
@@ -121,7 +128,7 @@ nodes:
         parallax_depth: 0.02
         tiling_x: 1.25
         tiling_y: 0.75
-        program: tex
+        program: g_tex
       flags:
         pre_depth: true
     pos: [-5, 1.5, 0]
@@ -187,7 +194,12 @@ nodes:
         { after=wid, time=10 * 100 },
         { 0, 1, 0 },
         360 * 100)
+  - id: ball_2_origo
+    type: origo
+    pos: [0, 4.5, 0]
+    xpos: [0]
   - id: ball_2
+    parent: ball_2_origo
     mesh:
       vertex:
         type: sphere
@@ -196,7 +208,6 @@ nodes:
         map_kd: [1, 2, 1, 1]
         xmap_pbr: textures\Metal007_1K-PNG
         program: g_tex
-    pos: [0, 4.5, 0]
     physics:
       body:
         type: sphere
@@ -208,7 +219,7 @@ nodes:
         collision: [none]
         size: [1]
   - id: ball_2_halo
-    parent: ball_2
+    parent: ball_2_origo
     mesh:
       vertex:
         type: box
@@ -226,6 +237,8 @@ nodes:
   - id: lamp_origo
     type: origo
     pos: [4, 3, 3]
+    xpos: [0, 4.5, 0]
+    xpos: [0]
   - id: lamp
     parent: lamp_origo
     mesh:
