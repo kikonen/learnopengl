@@ -201,6 +201,8 @@ local luaNode = nodes[id]
 {}
 end)", nodeFnName, "{}", script.m_source);
 
+            KI_INFO_OUT(util::appendLineNumbers(scriptlet));
+
             m_lua.script(scriptlet);
 
             return nodeFnName;
