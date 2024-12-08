@@ -1,0 +1,102 @@
+---
+name: Origo
+viewports:
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    rotation: [0, 180, 0]
+    active: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-25, 25, 20]
+    scale: 2.5
+    program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    pos: [0, -2, 0]
+    scale: 100
+    physics:
+      geom:
+        collision: [world, ray]
+  - name: origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.01
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+    flags:
+      no_frustum: true
+    pos: [0.0, 0.0, 0.0]
+  - id: lamp_origo
+    type: origo
+    xpos: [4, 3, 3]
+    pos: [1, 0, 0]
+    xpos: [0]
+  - id: lamp
+    parent: lamp_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.01
+      material:
+        program: g_light
+    flags:
+      no_shadow: true
+  - id: lamp_halo
+    parent: lamp_origo
+    mesh:
+      vertex:
+        type: box
+        size: 1
+      material:
+        kd: [0.2, 0.7, 0.2, 0.5]
+        program: effect_shaft_box
+        blend: true
+        reverse_front_face: true
+        no_depth: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+  - id: light
+    parent: lamp_origo
+    type: origo
+    light:
+      type: point
+      linear: 0.14
+      quadratic: 0.07
+      cutoff_angle: 12.5
+      outer_cutoff_angle: 25.0
+      diffuse: [0.2, 0.8, 0.2, 1.0]
+      intensity: 200
+  - id: four_cubes_{t}_{c}
+    parent: lamp_origo
+    mesh:
+      path: texture_cube_3
+      scale: 0.25
+    program: g_tex
