@@ -467,48 +467,74 @@ nodes:
     repeat:
       x_count: 2
       x_step: 4
-  - name: Big mirror 1
-    mesh:
-      path: quad
-      material:
-        name: mirror
-        kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
-        reflection: 0.5
-        refraction: 0.05
-        refraction_ratio: [1.0, 1.52]
-        render_back: true
-      flags:
-        pre_depth: true
-    program: g_mirror
+  - id: big_mirror_1_origo
+    type: origo
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
-    scale: 15.0
-    front: [0, 0, 1]
-    flags:
-      mirror: true
     script_file: scripts/anim_mirror
-  - name: Big mirror 2
+  - id: big_mirror_1_front
+    parent: big_mirror_1_origo
     mesh:
       path: quad
       material:
-        name: mirror
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/Marble White_VH_512.PNG
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
-        render_back: true
+        program: g_mirror
+      base_scale: 15.0
       flags:
         pre_depth: true
-    program: g_mirror
-    pos: [55.0, 25.0, 10.0]
-    rotation: [0.0, 215.0, 0.0]
-    scale: 15.0
-    front: [0, 0, 1]
     flags:
       mirror: true
+  - id: big_mirror_1_back
+    parent: big_mirror_1_origo
+    ignored_by: big_mirror_1_front
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 1.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512.PNG
+        program: g_tex
+      base_scale: 15.0
+      base_rotation: [0, 180, 0]
+      flags:
+        pre_depth: true
+  - id: big_mirror_2_origo
+    type: origo
+    pos: [55.0, 25.0, 10.0]
+    rotation: [0.0, 215.0, 0.0]
     script_file: scripts/anim_mirror
+  - id: big_mirror_2_front
+    parent: big_mirror_2_origo
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512.PNG
+        reflection: 0.5
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
+        program: g_mirror
+      base_scale: 15.0
+      flags:
+        pre_depth: true
+    flags:
+      mirror: true
+  - id: big_mirror_2_back
+    parent: big_mirror_2_origo
+    ignored_by: big_mirror_2_front
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 0.800000, 1.800000, 1.0]
+        map_kd: textures/Marble White_VH_512.PNG
+        program: g_tex
+      base_scale: 15.0
+      base_rotation: [0, 180, 0]
+      flags:
+        pre_depth: true
   - id: airboat_{t}_{c}
     mesh:
       path: airboat_fixed_colors

@@ -942,6 +942,19 @@ namespace loader {
         node->setName(resolvedSID);
         node->m_typeHandle = typeHandle;
 
+        {
+            ki::node_id ignoredBy{ 0 };
+            if (!nodeData.ignoredByBaseId.empty()) {
+                auto [id, _] = resolveId(
+                    nodeData.ignoredByBaseId,
+                    cloneIndex,
+                    tile,
+                    false);
+                ignoredBy = id;
+            }
+            node->m_ignoredBy = ignoredBy;
+        }
+
         node->m_audioListener = l.m_audioLoader.createListener(nodeData.audio.listener);
         node->m_audioSources = l.m_audioLoader.createSources(nodeData.audio.sources);
 

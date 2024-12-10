@@ -106,6 +106,7 @@ nodes:
         size: [5]
   - id: mirror_ball_halo
     parent: mirror_ball
+    ignored_by: mirror_ball
     mesh:
       vertex:
         type: box
@@ -122,7 +123,12 @@ nodes:
       no_select: true
       no_shadow: true
       xno_reflect: true
-  - name: Big mirror 2
+  - id: big_mirror_2_origo
+    type: origo
+    pos: [50, 20.5, -10]
+    rotation: [0.0, -60.0, 0.0]
+  - id: big_mirror_2_front
+    parent: big_mirror_2_origo
     mesh:
       path: quad
       material:
@@ -130,16 +136,25 @@ nodes:
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
-        render_back: true
         program: g_mirror
       scale: 10.0
       flags:
         pre_depth: true
-    pos: [50, 20.5, -10]
-    rotation: [0.0, -60.0, 0.0]
-    front: [0, 0, 1]
     flags:
       mirror: true
+  - id: big_mirror_2_back
+    parent: big_mirror_2_origo
+    ignored_by: big_mirror_2_front
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 2.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512.PNG
+        program: g_tex
+      scale: 10.0
+      base_rotation: [0, 180, 0]
+      flags:
+        pre_depth: true
   - id: pool_floor_{c}_{t}
     mesh:
       path: plane

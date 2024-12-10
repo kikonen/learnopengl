@@ -426,7 +426,8 @@ void WaterMapRenderer::drawNodes(
             },
             [current, sourceNode](const Node* node) {
                 return node != current &&
-                    node != sourceNode;
+                    node != sourceNode &&
+                    node->m_ignoredBy != current->getId();
             },
             render::KIND_ALL,
             GL_COLOR_BUFFER_BIT);

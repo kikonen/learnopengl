@@ -114,6 +114,9 @@ namespace loader {
             else if (k == "parent_id" || k == "parent") {
                 data.parentBaseId = readId(v);
             }
+            else if (k == "ignored_by") {
+                data.ignoredByBaseId = readId(v);
+            }
             else if (k == "xxname" || k == "xname") {
 				// NOTE quick disable logic
                 data.name = readString(v);

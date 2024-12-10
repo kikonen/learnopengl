@@ -201,6 +201,8 @@ public:
 
     std::string m_name;
 
+    ki::node_id m_ignoredBy{ 0 };
+
 private:
     pool::NodeHandle m_handle;
 
