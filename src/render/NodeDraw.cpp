@@ -57,6 +57,7 @@ namespace render {
 
     NodeDraw::NodeDraw()
         : m_textureQuad{ render::TextureQuad::get() },
+        m_screenTri{ render::ScreenTri::get() },
         m_particleRenderer{ std::make_unique<ParticleRenderer>(true) },
         m_decalRenderer{ std::make_unique < DecalRenderer>(true) }
     {}
@@ -321,7 +322,7 @@ namespace render {
         targetBuffer->bind(ctx);
 
         m_deferredProgram->bind();
-        m_textureQuad.draw();
+        m_screenTri.draw();
 
         targetBuffer->resetDrawBuffers(1);
 
@@ -552,7 +553,7 @@ namespace render {
 
         targetBuffer->bind(ctx);
         m_fogProgram->bind();
-        m_textureQuad.draw();
+        m_screenTri.draw();
     }
 
     void NodeDraw::passOitBlend(
@@ -569,7 +570,7 @@ namespace render {
         m_oitBlendProgram->bind();
         m_oitBuffer.bindTexture(ctx);
 
-        m_textureQuad.draw();
+        m_screenTri.draw();
     }
 
     void NodeDraw::passBloom(
@@ -602,7 +603,7 @@ namespace render {
             buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
 
             m_bloomInitProgram->bind();
-            m_textureQuad.draw();
+            m_screenTri.draw();
         }
 
         {
@@ -610,7 +611,7 @@ namespace render {
             //srcBuffer->bindTexture(ctx, EffectBuffer::ATT_BRIGHT_INDEX, UNIT_EFFECT_BRIGHT);
 
             //m_emissionProgram->bind();
-            //m_textureQuad.draw(ctx);
+            //m_screenTri.draw(ctx);
         }
 
         m_bloomBlurProgram->bind();
@@ -621,7 +622,7 @@ namespace render {
             buf->bind(ctx);
 
             m_bloomBlurProgram->m_uniforms->u_effectBloomHorizontal.set(horizontal);
-            m_textureQuad.draw();
+            m_screenTri.draw();
 
             buf->bindTexture(ctx, EffectBuffer::ATT_WORK_INDEX, UNIT_EFFECT_WORK);
             horizontal = !horizontal;
@@ -634,7 +635,7 @@ namespace render {
             srcBuffer->bindTexture(ctx, EffectBuffer::ATT_ALBEDO_INDEX, UNIT_EFFECT_ALBEDO);
 
             m_bloomFinalProgram->bind();
-            m_textureQuad.draw();
+            m_screenTri.draw();
         }
     }
 

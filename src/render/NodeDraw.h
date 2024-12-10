@@ -10,6 +10,7 @@
 #include "OITBuffer.h"
 #include "EffectBuffer.h"
 #include "TextureQuad.h"
+#include "ScreenTri.h"
 
 #include "backend/DrawOptions.h"
 #include "query/TimeElapsedQuery.h"
@@ -196,6 +197,7 @@ namespace render {
         EffectBuffer m_effectBuffer;
 
         TextureQuad& m_textureQuad;
+        ScreenTri& m_screenTri;
 
         Program* m_deferredProgram{ nullptr };
         Program* m_oitProgram{ nullptr };
