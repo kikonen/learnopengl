@@ -517,6 +517,7 @@ namespace render {
         // NOTE KI do NOT modify depth with blend (likely redundant)
         state.setDepthMask(GL_FALSE);
         state.frontFace(GL_CCW);
+        state.polygonFrontAndBack(GL_FILL);
 
         {
             state.setEnabled(GL_BLEND, true);
