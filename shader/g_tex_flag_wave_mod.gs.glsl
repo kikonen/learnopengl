@@ -3,8 +3,10 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-#include uniform_matrices.glsl
+#include struct_clip_plane.glsl
+
 #include uniform_data.glsl
+#include uniform_clip_planes.glsl
 
 in gl_PerVertex
 {
@@ -79,8 +81,6 @@ out VS_OUT {
   flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
-
-  noperspective vec3 edgeDistance;
 } gs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -91,8 +91,14 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
-void emitVertex(const uint i)
-{
+
+void sendVertex(in int i, in vec4 pos) {
+  vec3 op = gs_in[i].objectPos;
+  gl_Position = pos;
+  gl_Position.y += sin(op.x + op.y) * sin(u_time) * 0.4;
+  gl_Position.x += cos(op.x) * sin(u_time * 2) * 0.3;
+  // gl_Position.z += sin(op.x) * sin(u_time);
+
 #ifdef USE_CUBE_MAP
   gs_out.worldPos = gs_in[i].worldPos;
 #endif
@@ -125,43 +131,20 @@ void emitVertex(const uint i)
   gs_out.socketIndex = gs_in[i].socketIndex;
 #endif
 
-  gl_Position = gl_in[i].gl_Position;
-
-  for (int ci = 0; ci < CLIP_COUNT; ci++) {
-    gl_ClipDistance[ci] = gl_in[i].gl_ClipDistance[ci];
+  for (int ci = 0; ci < u_clipCount; ci++) {
+    gl_ClipDistance[ci] = gl_in[ci].gl_ClipDistance[ci];
   }
 
   EmitVertex();
 }
 
+////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////
+
 void main() {
-  // Transform each vertex into viewport space
-  const vec3 p0 = vec3(u_viewportMatrix * (gl_in[0].gl_Position /
-					   gl_in[0].gl_Position.w));
-  const vec3 p1 = vec3(u_viewportMatrix * (gl_in[1].gl_Position /
-					   gl_in[1].gl_Position.w));
-  const vec3 p2 = vec3(u_viewportMatrix * (gl_in[2].gl_Position /
-					   gl_in[2].gl_Position.w));
-
-  // Find the altitudes (ha, hb and hc)
-  const float a = length(p1 - p2);
-  const float b = length(p2 - p0);
-  const float c = length(p1 - p0);
-  const float alpha = acos( (b * b + c * c - a * a) / (2.0 * b * c) );
-  const float beta = acos( (a * a + c * c - b * b) / (2.0 * a * c) );
-  const float ha = abs( c * sin( beta ) );
-  const float hb = abs( c * sin( alpha ) );
-  const float hc = abs( b * sin( alpha ) );
-
-  // Send the triangle along with the edge distances
-  gs_out.edgeDistance = vec3( ha, 0, 0 );
-  emitVertex(0);
-
-  gs_out.edgeDistance = vec3( 0, hb, 0 );
-  emitVertex(1);
-
-  gs_out.edgeDistance = vec3( 0, 0, hc );
-  emitVertex(2);
-
+  for (int i = 0; i < gs_in.length(); i++) {
+    sendVertex(i, gl_in[i].gl_Position);
+  }
   EndPrimitive();
 }

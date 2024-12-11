@@ -67,4 +67,5 @@ nodes:
       material:
         map_kd: textures/flags/fi.png
         program: g_tex
+        geometry_type: flag_wave_mod
         render_back: true

@@ -19,6 +19,7 @@ in VS_OUT {
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
 #endif
+  vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;

@@ -32,6 +32,7 @@ out VS_OUT {
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
 #endif
+  vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -216,7 +217,7 @@ void main() {
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
 #endif
-
+  vs_out.objectPos = a_pos;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
