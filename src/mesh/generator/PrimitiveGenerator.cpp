@@ -301,6 +301,39 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> create_plane_grid(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::PlaneMesh shape{
+            glm::dvec2{ generator.size },
+            glm::ivec2{ generator.segments }};
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                glm::vec3{0, 0, 1 },
+                glm::vec3{ 0, 1, 0 });
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> create_box(
         mesh::PrimitiveGenerator generator)
     {
@@ -930,6 +963,8 @@ namespace mesh {
             return create_quad(*this);
         case PrimitiveType::height_field:
             return create_height_field(*this);
+        case PrimitiveType::plane_grid:
+            return create_plane_grid(*this);
         case PrimitiveType::box:
             return create_box(*this);
         case PrimitiveType::rounded_box:

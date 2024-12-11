@@ -216,9 +216,8 @@ namespace loader {
                 a.push_back(a[0]);
             }
             else if (a.size() == 2) {
-                // FILL x, 0, z
-                a.push_back(a[1]);
-                a[1] = 0.f;
+                // FILL 0 (more predictable then (x, 0, z) plane)
+                a.push_back(0);
             }
             return glm::vec3{ a[0], a[1], a[2] };
         }

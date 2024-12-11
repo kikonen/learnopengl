@@ -47,6 +47,9 @@ namespace loader {
                 else if (type == "quad") {
                     data.type = mesh::PrimitiveType::quad;
                 }
+                else if (type == "plane_grid") {
+                    data.type = mesh::PrimitiveType::plane_grid;
+                }
                 else if (type == "box" || type == "cube") {
                     data.type = mesh::PrimitiveType::box;
                 }

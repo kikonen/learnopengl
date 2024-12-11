@@ -24,6 +24,7 @@ namespace mesh {
         int q{ 0 };
         int slices{ 32 };
         glm::ivec3 segments{ 4 };
+        glm::ivec3 sub_segments{ 2 };
         int rings{ 8 };
 
         glm::vec3 origin{ 0.f };
@@ -134,6 +135,19 @@ namespace mesh {
                 .type = PrimitiveType::height_field,
                 .name = "<height_field>",
                 .alias = "height_field"
+            };
+        }
+
+        /// @param size Half of the side length in x (0) and y (1) direction.
+        /// @param segments Number of subdivisions in the x (0) and y (1) direction.
+        static PrimitiveGenerator plane_grid()
+        {
+            return {
+                .type = PrimitiveType::plane_grid,
+                .name = "<plane_grid>",
+                .alias = "plane_grid",
+                .size{ 0.5f, 0.5f, 0.5f },
+                .segments{ 1, 1, 1},
             };
         }
 
@@ -460,6 +474,8 @@ namespace mesh {
                 return quad();
             case PrimitiveType::height_field:
                 return height_field();
+            case PrimitiveType::plane_grid:
+                return plane_grid();
             case PrimitiveType::box:
                 return box();
             case PrimitiveType::rounded_box:

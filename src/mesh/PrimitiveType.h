@@ -11,6 +11,7 @@ namespace mesh {
         plane,
         quad,
         height_field,
+        plane_grid,
         box,
         rounded_box,
         dodeca_hedron,
