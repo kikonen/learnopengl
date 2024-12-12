@@ -993,6 +993,9 @@
     <ClCompile Include="src\render\ScreenTri.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\NodeCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2253,6 +2256,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\ScreenTri.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\NodeCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

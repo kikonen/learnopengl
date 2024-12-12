@@ -16,6 +16,7 @@
 #include "query/TimeElapsedQuery.h"
 
 #include "render/size.h"
+#include "render/NodeCollection.h"
 
 struct UpdateViewContext;
 struct PrepareContext;
@@ -27,31 +28,12 @@ class Node;
 class ParticleRenderer;
 class DecalRenderer;
 
-namespace editor {
-    class EditorFrame;
-}
-
 namespace mesh {
     class MeshType;
     struct LodMesh;
 }
 
 namespace render {
-    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    struct MeshTypeKey {
-        // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-        MeshTypeKey(pool::TypeHandle typeHandle)
-            : m_typeHandle(typeHandle)
-        {}
-
-        bool operator<(const MeshTypeKey& o) const;
-
-        const pool::TypeHandle m_typeHandle;
-    };
-
-    using NodeVector = std::vector<pool::NodeHandle>;
-    using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
-
     class NodeDraw final {
         friend class editor::EditorFrame;
 
@@ -63,8 +45,6 @@ namespace render {
             const PrepareContext& ctx);
 
         void updateRT(const UpdateViewContext& ctx);
-
-        void handleNodeAdded(Node* node);
 
         void drawNodes(
             const RenderContext& ctx,
@@ -172,12 +152,9 @@ namespace render {
             const RenderContext& ctx);
 
     private:
-        void insertNode(
-            MeshTypeMap* map,
-            Node* node);
-
         bool drawNodesImpl(
             const RenderContext& ctx,
+            render::NodeCollection& collection,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
@@ -185,11 +162,15 @@ namespace render {
 
         void drawBlendedImpl(
             const RenderContext& ctx,
+            render::NodeCollection& collection,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector);
 
         void drawSkybox(
             const RenderContext& ctx);
+
+    public:
+        render::NodeCollection m_collection;
 
     private:
         GBuffer m_gBuffer;
@@ -213,15 +194,6 @@ namespace render {
 
         std::unique_ptr<ParticleRenderer> m_particleRenderer;
         std::unique_ptr<DecalRenderer> m_decalRenderer;
-
-        // NodeDraw
-        MeshTypeMap m_solidNodes;
-        // NodeDraw
-        MeshTypeMap m_alphaNodes;
-        // NodeDraw
-        MeshTypeMap m_blendedNodes;
-        // OBSOLETTE
-        MeshTypeMap m_invisibleNodes;
 
         int m_effectBloomIterations{ 0 };
 

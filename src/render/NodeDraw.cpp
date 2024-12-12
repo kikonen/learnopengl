@@ -64,9 +64,6 @@ namespace render {
 
     NodeDraw::~NodeDraw()
     {
-        m_solidNodes.clear();
-        m_blendedNodes.clear();
-        m_invisibleNodes.clear();
     }
 
     void NodeDraw::prepareRT(
@@ -123,35 +120,6 @@ namespace render {
         m_gBuffer.updateRT(ctx);
         m_oitBuffer.updateRT(ctx);
         m_effectBuffer.updateRT(ctx);
-    }
-
-    void NodeDraw::handleNodeAdded(Node* node)
-    {
-        auto* type = node->m_typeHandle.toType();
-
-        if (type->m_flags.invisible) {
-            insertNode(&m_invisibleNodes, node);
-        }
-         else {
-             if (type->m_flags.anySolid) {
-                 insertNode(&m_solidNodes, node);
-             }
-             if (type->m_flags.anyAlpha) {
-                 insertNode(&m_alphaNodes, node);
-             }
-             if (type->m_flags.anyBlend) {
-                 insertNode(&m_blendedNodes, node);
-             }
-        }
-    }
-
-    void NodeDraw::insertNode(
-        MeshTypeMap* map,
-        Node* node)
-    {
-        auto& list = (*map)[node->m_typeHandle];
-        list.reserve(100);
-        list.push_back(node->toHandle());
     }
 
     void NodeDraw::drawNodes(
@@ -285,6 +253,7 @@ namespace render {
 
         drawNodesImpl(
             ctx,
+            m_collection,
             [](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
             },
@@ -412,6 +381,7 @@ namespace render {
 
         drawBlendedImpl(
             ctx,
+            m_collection,
             [&typeSelector](const mesh::MeshType* type) {
                 return
                     type->m_flags.anyBlend &&
@@ -472,6 +442,7 @@ namespace render {
 
         drawNodesImpl(
             ctx,
+            m_collection,
             [](const mesh::LodMesh& lodMesh) {
                 return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
                     ? lodMesh.m_programId
@@ -796,11 +767,12 @@ namespace render {
         const std::function<bool(const Node*)>& nodeSelector,
         uint8_t kindBits)
     {
-        drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
+        drawNodesImpl(ctx, m_collection, programSelector, typeSelector, nodeSelector, kindBits);
     }
 
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
+        render::NodeCollection& collection,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
@@ -834,15 +806,15 @@ namespace render {
         };
 
         if (kindBits & render::KIND_SOLID) {
-            renderTypes(m_solidNodes, render::KIND_SOLID);
+            renderTypes(collection.m_solidNodes, render::KIND_SOLID);
         }
 
         if (kindBits & render::KIND_ALPHA) {
-            renderTypes(m_alphaNodes, render::KIND_ALPHA);
+            renderTypes(collection.m_alphaNodes, render::KIND_ALPHA);
         }
 
         if (kindBits & render::KIND_BLEND) {
-            renderTypes(m_blendedNodes, render::KIND_BLEND);
+            renderTypes(collection.m_blendedNodes, render::KIND_BLEND);
         }
 
         return rendered;
@@ -850,16 +822,17 @@ namespace render {
 
     void NodeDraw::drawBlendedImpl(
         const RenderContext& ctx,
+        render::NodeCollection& collection,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
-        if (m_blendedNodes.empty()) return;
+        if (collection.m_blendedNodes.empty()) return;
 
         const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();
 
         // TODO KI discards nodes if *same* distance
         std::map<float, Node*> sorted;
-        for (const auto& map : m_blendedNodes) {
+        for (const auto& map : collection.m_blendedNodes) {
             auto* type = map.first.m_typeHandle.toType();
 
             if (!type->isReady()) continue;

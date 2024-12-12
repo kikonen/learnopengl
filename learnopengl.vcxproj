@@ -218,6 +218,7 @@
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />
+    <ClCompile Include="src\render\NodeCollection.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
@@ -546,6 +547,7 @@
     <ClInclude Include="src\physics\PhysicsMaterial.h" />
     <ClInclude Include="src\renderer\EnvironmentProbeRenderer.h" />
     <ClInclude Include="src\renderer\MeshRenderer.h" />
+    <ClInclude Include="src\render\NodeCollection.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
