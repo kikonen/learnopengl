@@ -466,6 +466,13 @@ namespace loader {
                     material.m_programDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
+            else if (k == "shadow_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_shadowDefinitions[util::toUpper(defName)] = defValue;
+                }
+                }
             else if (k == "updater") {
                 material.m_updaterId = SID(readString(v));
             }
@@ -863,6 +870,12 @@ namespace loader {
                 definitions[k] = v;
             }
 
+            // NOTE KI *NOT* same as program, to allow maximal reuse of shadow program
+            // i.e. most defs don't affect shadow
+            for (const auto& [k, v] : material.m_shadowDefinitions) {
+                shadowDefinitions[k] = v;
+            }
+
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
 
             bool usePreDepth = meshFlags.preDepth;
@@ -969,7 +982,7 @@ namespace loader {
 
     std::string MaterialLoader::selectProgram(
         MaterialProgramType type,
-        const std::unordered_map<MaterialProgramType, std::string> programs,
+        const std::map<MaterialProgramType, std::string> programs,
         const std::string& defaultValue)
     {
         std::string program;

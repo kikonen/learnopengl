@@ -34,7 +34,7 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    pos: [0, -2, 0]
+    pos: [0, 0, 0]
     scale: 100
     physics:
       geom:
@@ -45,7 +45,6 @@ nodes:
         type: sphere
         radius: 0.1
       material:
-        name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
         metal: [0.2, 0.1, 0.0, 1.0]
         program: g_tex
@@ -54,9 +53,12 @@ nodes:
     pos: [0.0, 0.0, 0.0]
   - id: flag_origo
     type: origo
-    xpos: [4, 3, 3]
-    pos: [0, 1, 0]
-    xpos: [0]
+    pos: [0]
+    script: |
+      cmd:rotate(
+        { time=60 * 10, relative=true },
+        { 0, 1, 0 },
+        1 * 360 * 10)
   - id: flag
     parent: flag_origo
     mesh:
@@ -67,5 +69,36 @@ nodes:
       material:
         map_kd: textures/flags/fi.png
         program: g_tex
-        geometry_type: flag_wave_mod
+        shadow_program: simple_depth
+        xgeometry_type: flag_wave_mod
         render_back: true
+        program_definitions:
+          USE_FLAG_WAVE: 1
+        shadow_definitions:
+          USE_FLAG_WAVE: 1
+    pos: [1.08, 3.2, 0]
+  - name: flag_top
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.15
+      material:
+        kd: [0.3, 0.3, 0.5, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+    flags:
+      no_frustum: true
+    pos: [0, 4, 0]
+  - id: flag_pole
+    parent: flag_origo
+    mesh:
+      vertex:
+        type: capped_cylinder
+        radius: 0.08
+        length: 2
+      base_rotation: [90, 0, 0]
+      material:
+        kd: [0.4, 0.4, 0.6]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+    pos: [0, 2, 0]

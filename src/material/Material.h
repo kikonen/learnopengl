@@ -4,7 +4,6 @@
 #include <vector>
 #include <array>
 #include <map>
-#include <unordered_map>
 #include <memory>
 #include <type_traits>
 
@@ -147,12 +146,12 @@ public:
 
     GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept;
 
-    const std::unordered_map<TextureType, std::string>& getTexturePaths() const noexcept
+    const std::map<TextureType, std::string>& getTexturePaths() const noexcept
     {
         return m_texturePaths;
     }
 
-    std::unordered_map<TextureType, std::string>& modifyTexturePaths() noexcept
+    std::map<TextureType, std::string>& modifyTexturePaths() noexcept
     {
         return m_texturePaths;
     }
@@ -287,18 +286,19 @@ public:
 
     std::vector<ChannelPart> map_channelParts;
 
-    std::unordered_map<MaterialProgramType, std::string> m_programNames{};
+    std::map<MaterialProgramType, std::string> m_programNames{};
     std::map<std::string, std::string> m_programDefinitions{};
+    std::map<std::string, std::string> m_shadowDefinitions{};
 
-    std::unordered_map<MaterialProgramType, ki::program_id> m_programs{};
+    std::map<MaterialProgramType, ki::program_id> m_programs{};
 
     ki::StringID m_updaterId;
 
     MaterialUpdater* m_updater{ nullptr };
 
 private:
-    std::unordered_map<TextureType, BoundTexture> m_boundTextures{};
-    std::unordered_map<TextureType, std::string> m_texturePaths{};
+    std::map<TextureType, BoundTexture> m_boundTextures{};
+    std::map<TextureType, std::string> m_texturePaths{};
 
     ki::material_id m_id;
 

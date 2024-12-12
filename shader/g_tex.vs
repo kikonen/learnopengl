@@ -77,6 +77,7 @@ Entity entity;
 
 #include fn_calculate_clipping.glsl
 #include fn_calculate_custom_clipping.glsl
+#include fn_wave_flag.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -144,18 +145,10 @@ void main() {
 #endif
 
     #include tech_skinned_mesh_skin.glsl
-#ifdef TOY_NOPE
-    // pos.x = pos.x + abs(sin(u_time)) * 0.5;// * cos(u_time * 0.5);
-    if (pos.y > 0) {
-      pos.x *= 1.2;
-      pos.z *= 1.2;
-    } else {
-      pos.x *= 0.1;
-      pos.z *= 0.1;
-    }
-    pos.y = pos.y + cos(u_time) * 0.5;// * cos(u_time * 0.5);
-    // worldPos.z = worldPos.z - 1;
+#ifdef USE_FLAG_WAVE
+    wave_flag(pos);
 #endif
+
     worldPos = modelMatrix * pos;
 
     normal = normalize(normalMatrix * normal);

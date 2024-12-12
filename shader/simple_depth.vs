@@ -30,6 +30,8 @@ out VS_OUT {
 
 SET_FLOAT_PRECISION;
 
+#include fn_wave_flag.glsl
+
 const vec3 UP = vec3(0, 1, 0);
 
 Instance instance;
@@ -58,6 +60,10 @@ void main()
                     1.0);
   } else {
     #include tech_skinned_mesh_skin.glsl
+
+#ifdef USE_FLAG_WAVE
+    wave_flag(pos);
+#endif
 
     worldPos = modelMatrix * pos;
   }

@@ -75,7 +75,7 @@ namespace loader {
 
         std::string selectProgram(
             MaterialProgramType type,
-            const std::unordered_map<MaterialProgramType, std::string> programs,
+            const std::map<MaterialProgramType, std::string> programs,
             const std::string& defaultValue = "");
     };
 }
