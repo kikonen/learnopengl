@@ -154,7 +154,6 @@ namespace render {
     private:
         bool drawNodesImpl(
             const RenderContext& ctx,
-            render::NodeCollection& collection,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
@@ -162,7 +161,6 @@ namespace render {
 
         void drawBlendedImpl(
             const RenderContext& ctx,
-            render::NodeCollection& collection,
             const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector);
 

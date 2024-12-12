@@ -33,6 +33,16 @@ namespace render {
                 insertNode(&m_blendedNodes, node);
             }
         }
+
+        if (type->m_flags.water) {
+            m_waterNodes.push_back(node->toHandle());
+        }
+        if (type->m_flags.mirror) {
+            m_mirrorNodes.push_back(node->toHandle());
+        }
+        if (type->m_flags.cubeMap) {
+            m_cubeMapNodes.push_back(node->toHandle());
+        }
     }
 
     void NodeCollection::insertNode(

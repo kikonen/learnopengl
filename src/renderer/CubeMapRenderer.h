@@ -41,8 +41,6 @@ public:
     bool render(
         const RenderContext& ctx);
 
-    void handleNodeAdded(Node* node);
-
 private:
     void clearCubeMap(
         const RenderContext& ctx,
@@ -76,6 +74,4 @@ private:
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
-
-    std::vector<pool::NodeHandle> m_nodes;
 };

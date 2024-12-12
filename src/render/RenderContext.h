@@ -20,6 +20,7 @@ namespace render {
     class RenderData;
     struct DebugContext;
     class Camera;
+    class NodeCollection;
 }
 
 namespace kigl {
@@ -67,6 +68,7 @@ public:
         const RenderContext* parent,
         const ki::RenderClock& clock,
         Registry* registry,
+        render::NodeCollection* collection,
         render::RenderData* renderData,
         render::NodeDraw* nodeDraw,
         render::Batch* batch,
@@ -137,6 +139,7 @@ public:
 
     kigl::GLState& m_state;
 
+    render::NodeCollection* const m_collection;
     render::RenderData* const m_renderData;
     render::NodeDraw* const m_nodeDraw;
     render::Batch* const m_batch;

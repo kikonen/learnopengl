@@ -253,7 +253,6 @@ namespace render {
 
         drawNodesImpl(
             ctx,
-            m_collection,
             [](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
             },
@@ -381,7 +380,6 @@ namespace render {
 
         drawBlendedImpl(
             ctx,
-            m_collection,
             [&typeSelector](const mesh::MeshType* type) {
                 return
                     type->m_flags.anyBlend &&
@@ -442,7 +440,6 @@ namespace render {
 
         drawNodesImpl(
             ctx,
-            m_collection,
             [](const mesh::LodMesh& lodMesh) {
                 return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
                     ? lodMesh.m_programId
@@ -767,12 +764,11 @@ namespace render {
         const std::function<bool(const Node*)>& nodeSelector,
         uint8_t kindBits)
     {
-        drawNodesImpl(ctx, m_collection, programSelector, typeSelector, nodeSelector, kindBits);
+        drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
     }
 
     bool NodeDraw::drawNodesImpl(
         const RenderContext& ctx,
-        render::NodeCollection& collection,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
@@ -780,6 +776,7 @@ namespace render {
     {
         bool rendered{ false };
 
+        auto& collection = *ctx.m_collection;
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
         auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector, &rendered](
@@ -822,10 +819,11 @@ namespace render {
 
     void NodeDraw::drawBlendedImpl(
         const RenderContext& ctx,
-        render::NodeCollection& collection,
         const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
+        auto& collection = *ctx.m_collection;
+
         if (collection.m_blendedNodes.empty()) return;
 
         const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();

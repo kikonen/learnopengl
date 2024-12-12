@@ -397,9 +397,6 @@ void Scene::handleNodeAdded(Node* node)
 
     NodeRegistry::get().handleNodeAdded(node);
     m_nodeDraw->m_collection.handleNodeAdded(node);
-    m_mirrorMapRenderer->handleNodeAdded(node);
-    m_waterMapRenderer->handleNodeAdded(node);
-    m_cubeMapRenderer->handleNodeAdded(node);
 }
 
 void Scene::bind(const RenderContext& ctx)

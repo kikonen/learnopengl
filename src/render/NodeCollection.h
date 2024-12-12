@@ -32,8 +32,13 @@ namespace render {
     using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 
 
+    // Collection of nodes in *single* scene
+    // i.e. vs NodeRegistry which holds data over all scenes
     class NodeCollection {
         friend class NodeDraw;
+        friend class WaterMapRenderer;
+        friend class MirrorMapRenderer;
+        friend class CubeMapMapRenderer;
 
     public:
         NodeCollection();
@@ -55,5 +60,9 @@ namespace render {
         MeshTypeMap m_blendedNodes;
         // OBSOLETTE
         MeshTypeMap m_invisibleNodes;
+
+        std::vector<pool::NodeHandle> m_waterNodes;
+        std::vector<pool::NodeHandle> m_mirrorNodes;
+        std::vector<pool::NodeHandle> m_cubeMapNodes;
     };
 }

@@ -24,6 +24,7 @@
 #include "registry/NodeRegistry.h"
 
 #include "render/RenderContext.h"
+#include "render/NodeCollection.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
@@ -250,24 +251,6 @@ bool CubeMapRenderer::render(
     return true;
 }
 
-void CubeMapRenderer::handleNodeAdded(Node* node)
-{
-    if (!isEnabled()) return;
-
-    auto* type = node->m_typeHandle.toType();
-
-    if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->handleNodeAdded(node);
-    }
-    if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->handleNodeAdded(node);
-    }
-
-    if (type->m_flags.cubeMap) {
-        m_nodes.push_back(node->toHandle());
-    }
-}
-
 void CubeMapRenderer::clearCubeMap(
     const RenderContext& ctx,
     DynamicCubeMap& cube)
@@ -348,14 +331,16 @@ void CubeMapRenderer::drawNodes(
 
 Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
-    if (m_nodes.empty()) return nullptr;
+    auto& nodes = ctx.m_collection->m_cubeMapNodes;
+
+    if (nodes.empty()) return nullptr;
 
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& handle : m_nodes) {
+    for (const auto& handle : nodes) {
         auto* node = handle.toNode();
         if (!node) continue;
 

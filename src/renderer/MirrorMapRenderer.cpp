@@ -18,6 +18,7 @@
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
+#include "render/NodeCollection.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
@@ -291,22 +292,6 @@ bool MirrorMapRenderer::render(
     return true;
 }
 
-void MirrorMapRenderer::handleNodeAdded(
-    Node* node)
-{
-    if (!isEnabled()) return;
-
-    auto* type = node->m_typeHandle.toType();
-
-    if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->handleNodeAdded(node);
-    }
-
-    if (type->m_flags.mirror) {
-        m_nodes.push_back(node->toHandle());
-    }
-}
-
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
@@ -369,14 +354,16 @@ void MirrorMapRenderer::drawNodes(
 
 Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
-    if (m_nodes.empty()) return nullptr;
+    auto& nodes = ctx.m_collection->m_mirrorNodes;
+
+    if (nodes.empty()) return nullptr;
 
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
     std::map<float, Node*> sorted;
 
-    for (const auto& handle : m_nodes) {
+    for (const auto& handle : nodes) {
         auto* node = handle.toNode();
         if (!node) continue;
 

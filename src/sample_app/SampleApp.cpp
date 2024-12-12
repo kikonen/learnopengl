@@ -47,6 +47,7 @@
 #include "engine/UpdateViewContext.h"
 
 #include "render/RenderContext.h"
+#include "render/NodeDraw.h"
 
 #include "loader/SceneLoader.h"
 
@@ -286,6 +287,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         nullptr,
         clock,
         m_currentScene->m_registry.get(),
+        &m_currentScene->m_nodeDraw.get()->m_collection,
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
