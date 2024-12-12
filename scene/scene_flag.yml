@@ -70,12 +70,32 @@ nodes:
         map_kd: textures/flags/fi.png
         program: g_tex
         shadow_program: simple_depth
-        xgeometry_type: flag_wave_mod
         render_back: true
         program_definitions:
           USE_FLAG_WAVE: 1
         shadow_definitions:
           USE_FLAG_WAVE: 1
+    pos: [1.08, 3.2, 0]
+  - xid: flag_2
+    parent: flag_origo
+    mesh:
+      vertex:
+        type: plane_grid
+        size: [1, 0.6]
+        segments: [10, 6, 6]
+      material:
+        map_kd: textures/flags/fi.png
+        program: g_tex
+        shadow_program: simple_depth
+        blend: true
+        alpha: true
+        render_back: true
+        program_definitions:
+          USE_FLAG_WAVE: 1
+          APPLY_TOY: 1
+        shadow_definitions:
+          USE_FLAG_WAVE: 1
+        updater: shader_toy_1
     pos: [1.08, 3.2, 0]
   - name: flag_top
     mesh:
@@ -102,3 +122,44 @@ nodes:
         metal: [0.2, 0.1, 0.0, 1.0]
         program: g_tex
     pos: [0, 2, 0]
+material_updaters:
+- id: shader_toy_1
+  type: framebuffer
+  size: 1024
+  frame_skip: 1
+  material:
+    kd: [0.4, 0.4, 1, 0.75]
+    map_pbr: textures\Metal008_1K-PNG
+    xtiling: 3
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_1: 1
+      TOY_1: 1
+- id: shader_toy_2
+  type: framebuffer
+  size: 512
+  frame_skip: 1
+  material:
+    kd: [0.4, 0.4, 1, 0.75]
+    map_pbr: textures\Metal008_1K-PNG
+    xtiling: 3
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_2: 1
+      TOY_2: 1
+- id: shader_toy_3
+  type: framebuffer
+  size: 512
+  frame_skip: 1
+  material:
+    kd: [0.4, 0.4, 1, 0.75]
+    map_pbr: textures\Metal008_1K-PNG
+    map_noise: textures\noise\noise_1.png
+    map_noise_2: textures\noise\noise_2.png
+    xtiling: 3
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_2: 1
