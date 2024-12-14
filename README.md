@@ -6,9 +6,25 @@ This is just scatchpad app for following OpenGL tutorial at learnopengl.com.
 # SETUP
 
 ## Sub modules
+
 ```bash
 git submodule init
 git submodule update --init  --recursive
+```
+
+## vcpkg-registry
+
+### Clone vcpkg-registry
+```bash
+# into same level as learnopengl repo
+cd $ROOT
+git clone git@github.com:kikonen/vcpkg-registry.git
+```
+### Test vcpkg-registry
+```powershell
+# NOTE KI in *POWERSHELL** not bash
+cd learnopengl
+vcpkg install --feature-flags=registries,manifests
 ```
 
 ## opengl GLAD setup
