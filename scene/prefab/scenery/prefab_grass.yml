@@ -14,7 +14,7 @@ prefab:
           render_back: true
       scale: 0.01
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
       lods:
@@ -27,7 +27,7 @@ prefab:
           render_back: true
       scale: 0.01
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
       lods:
@@ -39,7 +39,7 @@ prefab:
           render_back: true
       scale: 0.01
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
       lods:
@@ -50,7 +50,7 @@ prefab:
           map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
       scale: 0.01
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
   lod_levels:
     - level: 0
       distance: 0

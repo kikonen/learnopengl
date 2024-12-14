@@ -41,7 +41,7 @@ nodes:
         - name: fly
           path: anim/Wyvern@FlyStationary.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [0.0, 0, 0]
     scale: 2
     base_scale: 0.01

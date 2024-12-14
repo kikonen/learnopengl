@@ -31,7 +31,7 @@ prefab:
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.01
   physics:
     body:

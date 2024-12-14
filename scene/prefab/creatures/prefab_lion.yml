@@ -34,7 +34,7 @@ prefab:
         - name: roar
           path: anim/Lion@Roar.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.0125
   lod_levels:
     - level: 0

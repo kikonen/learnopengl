@@ -81,8 +81,8 @@ namespace mesh {
         auto material = Material::createMaterial(BasicMaterial::blue);
         material.inmutable = true;
         material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
-        material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
-        material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
+        material.m_programNames.insert({ MaterialProgramType::shader, SHADER_G_TEX });
+        material.m_programNames.insert({ MaterialProgramType::shadow, SHADER_SHADOW });
         mesh->setMaterial(&material);
 
         return mesh;
@@ -144,8 +144,8 @@ namespace mesh {
 
             material.inmutable = true;
             material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
-            material.m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
-            material.m_programNames.insert({ MaterialProgramType::shadow, "simple_depth" });
+            material.m_programNames.insert({ MaterialProgramType::shader, SHADER_G_TEX });
+            material.m_programNames.insert({ MaterialProgramType::shadow, SHADER_SHADOW });
             material.layersDepth = 6.f;
 
             mesh->setMaterial(&material);

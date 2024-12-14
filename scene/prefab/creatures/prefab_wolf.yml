@@ -16,7 +16,7 @@ prefab:
         - name: walk
           path: anim/ANIM_Wolf_Walk_RM.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.0125
       base_rotation: [-90, 0, 0]
   physics:

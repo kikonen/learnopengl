@@ -23,7 +23,7 @@ prefab:
         - name: attack_claw_left
           path: anim/Deinodonte@ClawsAttackLeft.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.004
   physics:
     body:

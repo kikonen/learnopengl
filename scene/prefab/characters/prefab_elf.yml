@@ -19,7 +19,7 @@ prefab:
         - name: walk
           path: anim/Elf Animations.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.01
   physics:
     body:

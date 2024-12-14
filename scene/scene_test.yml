@@ -70,7 +70,7 @@ nodes:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [-2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -93,7 +93,7 @@ nodes:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -116,7 +116,7 @@ nodes:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -147,7 +147,7 @@ nodes:
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -182,7 +182,7 @@ nodes:
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [15.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -217,7 +217,7 @@ nodes:
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [20.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -251,7 +251,7 @@ nodes:
         - name: roar
           path: anim/Lion@Roar.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [0.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:
@@ -291,7 +291,7 @@ nodes:
         - name: roar
           path: anim/Lion@Roar.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [5.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:
@@ -331,7 +331,7 @@ nodes:
         - name: roar
           path: anim/Lion@Roar.FBX
     program: g_tex
-    shadow_program: simple_depth
+    shadow_program: shadow
     pos: [10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:

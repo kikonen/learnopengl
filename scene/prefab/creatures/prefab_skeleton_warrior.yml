@@ -31,7 +31,7 @@ prefab:
             type: metallness_map
             channel: xxxR
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01375
       scale: 2
       xlods:
@@ -54,7 +54,7 @@ prefab:
             type: occlusion_map
             channel: A
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       flags:
         use_sockets: true
       base_scale: 0.00121
@@ -73,7 +73,7 @@ prefab:
             type: occlusion_map
             channel: A
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       flags:
         use_sockets: true
       base_scale: 0.000121
@@ -92,7 +92,7 @@ prefab:
             type: occlusion_map
             channel: A
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       flags:
         use_sockets: true
       base_scale: 0.000075
@@ -111,7 +111,7 @@ prefab:
             type: occlusion_map
             channel: A
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       flags:
         use_sockets: true
       base_scale: 0.0001

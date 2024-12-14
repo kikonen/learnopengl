@@ -327,7 +327,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [5.0, 10.0, -5.0]
     rotation: [-90.0, 0.0, 0.0]
@@ -341,7 +341,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [-5.0, 10.0, -5.0]
     rotation: [-90.0, 0.0, 0.0]
@@ -355,7 +355,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [5.0, 8.0, 0.0]
     rotation: [-90.0, -45.0, 0.0]
@@ -369,7 +369,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [7.0, 14.0, -8.0]
     rotation: [-90.0, 0.0, 0.0]
@@ -383,7 +383,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [-10.0, 20.0, 10.0]
     rotation: [-90.0, 0.0, 0.0]
@@ -584,7 +584,7 @@ nodes:
         - name: fly
           path: anim/Wyvern@FlyStationary.FBX
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
       base_scale: 0.01
     pos: [0.0, 35.0, 30.0]
     rotation: [0, 0, 0]

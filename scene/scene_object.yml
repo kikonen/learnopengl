@@ -49,7 +49,7 @@ nodes:
         xrender_back: true
         xline_mode: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       scale: 0.5
     pos: [0.0, 1.0, 0.0]
     rotation: [0, 0, 0]

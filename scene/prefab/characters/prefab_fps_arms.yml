@@ -14,7 +14,7 @@ prefab:
         - path: material/M_UE4Man_Body_MetallicRoughness.png
           channel: xRG
       program: g_tex
-      shadow_program: simple_depth
+      shadow_program: shadow
     animations:
       - name: idle
         path: anim/FirstPerson_Idle.FBX

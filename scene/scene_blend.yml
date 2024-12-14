@@ -43,7 +43,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [0.0, -1.0, -8.0]
     rotation: [-90.0, 0.0, 0.0]
@@ -56,7 +56,7 @@ nodes:
         alpha: true
         blend: true
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.01
     pos: [0.5, -1.0, -10.0]
     rotation: [-90.0, 0.0, 0.0]

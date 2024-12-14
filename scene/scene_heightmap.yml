@@ -110,7 +110,7 @@ nodes:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
       base_scale: 0.5
     pos: [0.0, 0.5, 0.0]
     rotation: [0, 0, 0]

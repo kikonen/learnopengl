@@ -3,6 +3,7 @@
 #include <string>
 
 const std::string SHADER_TEXTURE{ "tex" };
+const std::string SHADER_G_TEX{ "g_tex" };
 
 const std::string SHADER_SELECTION{ "selection" };
 
@@ -14,7 +15,7 @@ const std::string SHADER_BLEND_DECAL{ "blend_decal" };
 const std::string SHADER_NORMAL{ "normal" };
 const std::string SHADER_OBJECT_ID{ "object_id" };
 //const std::string SHADER_LIGHT{ "light" };
-const std::string SHADER_SIMPLE_DEPTH{ "simple_depth" };
+const std::string SHADER_SHADOW{ "shadow" };
 const std::string SHADER_DEBUG_DEPTH{ "debug_depth" };
 const std::string SHADER_EFFECT{ "effect" };
 const std::string SHADER_VIEWPORT{ "viewport" };

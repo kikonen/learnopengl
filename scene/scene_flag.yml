@@ -69,7 +69,7 @@ nodes:
       material:
         map_kd: textures/flags/fi.png
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
         selection_program: selection
         render_back: true
         program_definitions:
@@ -89,7 +89,7 @@ nodes:
       material:
         map_kd: textures/flags/fi.png
         program: g_tex
-        shadow_program: simple_depth
+        shadow_program: shadow
         selection_program: selection
         blend: true
         alpha: true
