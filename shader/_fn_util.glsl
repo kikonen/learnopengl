@@ -1,5 +1,5 @@
 // @see https://en.wikipedia.org/wiki/Rotation_matrix
-vec3 rotateEuler(const in vec3 v, const in vec3 euler)
+mat4 rotateEulerMatrix(const in vec3 euler)
 {
   const float angleX = radians(euler.x);
   const float angleY = radians(euler.y);
@@ -20,7 +20,13 @@ vec3 rotateEuler(const in vec3 v, const in vec3 euler)
 		    vec4( 0.0,          0.0,           1.0,         0.0),
 		    vec4( 0.0,          0.0,           0.0,         1.0));
 
-  return (rotX * rotY * rotZ * vec4(v, 1)).xyz;
+  return rotX * rotY * rotZ;
+}
+
+// @see https://en.wikipedia.org/wiki/Rotation_matrix
+vec3 rotateEuler(const in vec3 v, const in vec3 euler)
+{
+  return (rotateEulerMatrix(euler) * vec4(v, 1)).xyz;
 }
 
 // Yaw/Pitch opengl

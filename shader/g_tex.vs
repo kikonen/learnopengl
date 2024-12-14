@@ -77,7 +77,7 @@ Entity entity;
 
 #include fn_calculate_clipping.glsl
 #include fn_calculate_custom_clipping.glsl
-#include fn_wave_flag.glsl
+#include fn_mod_flag_wave.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -118,9 +118,7 @@ void main() {
 
   vec4 worldPos;
   vec3 normal;
-#ifdef USE_TBN
   vec3 tangent;
-#endif
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
@@ -147,7 +145,7 @@ void main() {
     #include tech_skinned_mesh_skin.glsl
 
 #ifdef USE_FLAG_WAVE
-    wave_flag(pos);
+    mod_flag_wave(pos, normal, tangent);
 #endif
 
     worldPos = modelMatrix * pos;
