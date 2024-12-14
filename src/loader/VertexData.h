@@ -23,6 +23,7 @@ namespace loader {
         int q{ 0 };
         int slices{ 32 };
         glm::ivec3 segments{ 4 };
+        glm::ivec3 sub_segments{ 1 };
         int rings{ 8 };
 
         glm::vec3 origin{ 0.f, 0.f, 0.f };
@@ -36,6 +37,7 @@ namespace loader {
         bool has_q{ false };
         bool has_slices{ false };
         bool has_segments{ false };
+        bool has_sub_segments{ false };
         bool has_rings{ false };
 
         bool has_origin{ false };

@@ -140,6 +140,10 @@ namespace loader {
                 data.segments = readUVec3(v);
                 data.has_segments = true;
             }
+            else if (k == "sub_segments") {
+                data.sub_segments = readUVec3(v);
+                data.has_sub_segments = true;
+            }
             else if (k == "rings") {
                 data.rings = readInt(v);
                 data.has_rings = true;
@@ -242,6 +246,7 @@ namespace loader {
         if (data.has_q) generator.q = data.q;
         if (data.has_slices) generator.slices = data.slices;
         if (data.has_segments) generator.segments = data.segments;
+        if (data.has_sub_segments) generator.sub_segments = data.sub_segments;
         if (data.has_rings) generator.rings = data.rings;
         if (data.has_origin) generator.origin = data.origin;
         if (data.has_dir) generator.dir = data.dir;

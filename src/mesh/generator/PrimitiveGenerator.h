@@ -147,6 +147,7 @@ namespace mesh {
                 .name = "<plane_grid>",
                 .alias = "plane_grid",
                 .size{ 0.5f, 0.5f, 0.5f },
+                // NOTE KI by default just one segement needed
                 .segments{ 1, 1, 1},
             };
         }
@@ -162,6 +163,7 @@ namespace mesh {
                 .name = "<box>",
                 .alias = "box",
                 .size{ 0.5f, 0.5f, 0.5f },
+                // NOTE KI by default just one segement needed
                 .segments{ 1, 1, 1 },
             };
         }
@@ -261,7 +263,8 @@ namespace mesh {
                 .radius = 0.5f,
                 .length= 0.5f,
                 .slices = 32,
-                .segments = { 8, 0, 0 },
+                // NOTE KI by default just one segement needed
+                .segments = { 1, 0, 0 },
             };
         }
 
@@ -278,7 +281,8 @@ namespace mesh {
                 .radius = 0.5f,
                 .length = 0.5f,
                 .slices = 32,
-                .segments = { 8, 0, 0 },
+                // NOTE KI by default just one segement needed
+                .segments = { 1, 0, 0 },
             };
         }
 
@@ -354,7 +358,8 @@ namespace mesh {
                 .radius = 0.5f,
                 .length = 0.5f,
                 .slices = 32,
-                .segments = { 8, 0, 0 },
+                // NOTE KI by default just one segement needed
+                .segments = { 1, 0, 0 },
             };
         }
 
@@ -376,7 +381,8 @@ namespace mesh {
                 .radius = 0.5f,
                 .length = 0.5f,
                 .slices = 32,
-                .segments = { 8, 0, 0 },
+                // NOTE KI by default just one segement needed
+                .segments = { 1, 0, 0 },
                 .rings = 1,
             };
         }
