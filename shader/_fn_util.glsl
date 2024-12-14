@@ -1,9 +1,18 @@
 // @see https://en.wikipedia.org/wiki/Rotation_matrix
-mat4 rotateEulerMatrix(const in vec3 euler)
+mat4 translateMatrix(const in vec3 offset)
 {
-  const float angleX = radians(euler.x);
-  const float angleY = radians(euler.y);
-  const float angleZ = radians(euler.z);
+  return mat4( vec4( 1.0,      0.0,      0.0,      0.0),
+	       vec4( 0.0,      1.0,      0.0,      0.0),
+	       vec4( 0.0,      0.0,      1.0,      0.0),
+	       vec4( offset.x, offset.y, offset.z, 1.0));
+}
+
+// @see https://en.wikipedia.org/wiki/Rotation_matrix
+mat4 rotateMatrix(const in vec3 angle)
+{
+  const float angleX = angle.x;
+  const float angleY = angle.y;
+  const float angleZ = angle.z;
 
   mat4 rotX = mat4( vec4( 1,            0,             0.0,         0.0),
 		    vec4( 0,            cos(angleX),   sin(angleX), 0.0),
@@ -21,6 +30,20 @@ mat4 rotateEulerMatrix(const in vec3 euler)
 		    vec4( 0.0,          0.0,           0.0,         1.0));
 
   return rotX * rotY * rotZ;
+}
+
+// @see https://en.wikipedia.org/wiki/Rotation_matrix
+mat4 rotateEulerMatrix(const in vec3 euler)
+{
+  const float angleX = radians(euler.x);
+  const float angleY = radians(euler.y);
+  const float angleZ = radians(euler.z);
+
+  return rotateMatrix(
+    vec3(
+      angleX,
+      angleY,
+      angleZ));
 }
 
 // @see https://en.wikipedia.org/wiki/Rotation_matrix

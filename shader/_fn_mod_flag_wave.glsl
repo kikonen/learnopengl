@@ -4,31 +4,32 @@ void mod_flag_wave(
   inout vec3 normal,
   inout vec3 tangent)
 {
-  float time = 20;
+  float time = u_time;
 
   float x = 0.5 + pos.x * 0.5;
   float y = pos.y;
 
-  pos.y += x * (sin(x + x) * sin(time * 1.5) * 0.4);
-  pos.x += x * (sin(x * x) * cos(time * 1.7) * 0.4);
-  pos.z += x * (cos(x * y) + sin(time) * 0.4);
+  vec3 offset = vec3(
+    2.2 * x * (sin(x + x) * sin(time * 1.5) * 0.4),
+    2.2 * x * (sin(x * x) * cos(time * 1.7) * 0.4),
+    0.2 * x * (cos(x * y) + sin(time) * 0.4));
 
-  normal = rotateEuler(normal, vec3(0, -30, 0));
+  mat4 transform = rotateMatrix(offset);
+
+  pos = transform * pos;
+
+  mat3 normalMatrix = mat3(transpose(inverse(transform)));
+  normal =  normalMatrix * normal;
 
 #ifdef USE_TBN
+  normal = normalMatrix * tangent;
 #endif
 }
 
 void mod_flag_wave(
   inout vec4 pos)
 {
-  float time = 20;
-
-  float x = 0.5 + pos.x * 0.5;
-  float y = pos.y;
-
-  pos.y += x * (sin(x + x) * sin(time * 1.5) * 0.4);
-  pos.x += x * (sin(x * x) * cos(time * 1.7) * 0.4);
-  pos.z += x * (cos(x * y) + sin(time) * 0.4);
+  vec3 dummy = vec3(0);
+  mod_flag_wave(pos, dummy, dummy);
 }
 #endif
