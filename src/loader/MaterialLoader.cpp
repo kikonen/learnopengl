@@ -472,7 +472,14 @@ namespace loader {
                     const auto& defValue = readString(defNode.getNode());
                     material.m_shadowDefinitions[util::toUpper(defName)] = defValue;
                 }
+            }
+            else if (k == "selection_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_selectionDefinitions[util::toUpper(defName)] = defValue;
                 }
+            }
             else if (k == "updater") {
                 material.m_updaterId = SID(readString(v));
             }
@@ -790,6 +797,14 @@ namespace loader {
         for (const auto& progIt : mod.m_programDefinitions) {
             m.m_programDefinitions[progIt.first] = progIt.second;
         }
+
+        for (const auto& progIt : mod.m_shadowDefinitions) {
+            m.m_shadowDefinitions[progIt.first] = progIt.second;
+        }
+
+        for (const auto& progIt : mod.m_selectionDefinitions) {
+            m.m_selectionDefinitions[progIt.first] = progIt.second;
+        }
     }
 
     void MaterialLoader::resolveMaterial(
@@ -874,6 +889,10 @@ namespace loader {
             // i.e. most defs don't affect shadow
             for (const auto& [k, v] : material.m_shadowDefinitions) {
                 shadowDefinitions[k] = v;
+            }
+
+            for (const auto& [k, v] : material.m_selectionDefinitions) {
+                selectionDefinitions[k] = v;
             }
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;

@@ -289,6 +289,7 @@ public:
     std::map<MaterialProgramType, std::string> m_programNames{};
     std::map<std::string, std::string> m_programDefinitions{};
     std::map<std::string, std::string> m_shadowDefinitions{};
+    std::map<std::string, std::string> m_selectionDefinitions{};
 
     std::map<MaterialProgramType, ki::program_id> m_programs{};
 

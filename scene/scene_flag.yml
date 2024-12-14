@@ -70,10 +70,13 @@ nodes:
         map_kd: textures/flags/fi.png
         program: g_tex
         shadow_program: simple_depth
+        selection_program: selection
         render_back: true
         program_definitions:
           USE_FLAG_WAVE: 1
         shadow_definitions:
+          USE_FLAG_WAVE: 1
+        selection_definitions:
           USE_FLAG_WAVE: 1
     pos: [1.08, 3.2, 0]
   - xid: flag_2
@@ -87,6 +90,7 @@ nodes:
         map_kd: textures/flags/fi.png
         program: g_tex
         shadow_program: simple_depth
+        selection_program: selection
         blend: true
         alpha: true
         render_back: true
@@ -94,6 +98,8 @@ nodes:
           USE_FLAG_WAVE: 1
           APPLY_TOY: 1
         shadow_definitions:
+          USE_FLAG_WAVE: 1
+        selection_definitions:
           USE_FLAG_WAVE: 1
         updater: shader_toy_1
     pos: [1.08, 3.2, 0]
