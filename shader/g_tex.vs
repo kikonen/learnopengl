@@ -145,6 +145,7 @@ void main() {
 #endif
 
     #include tech_skinned_mesh_skin.glsl
+
 #ifdef USE_FLAG_WAVE
     wave_flag(pos);
 #endif

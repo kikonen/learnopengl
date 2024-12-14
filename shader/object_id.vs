@@ -44,6 +44,7 @@ Instance instance;
 Entity entity;
 
 #include fn_convert_object_id.glsl
+#include fn_wave_flag.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -68,6 +69,10 @@ void main() {
                     1.0);
   } else {
     #include tech_skinned_mesh_skin.glsl
+
+#ifdef USE_FLAG_WAVE
+    wave_flag(pos);
+#endif
 
     worldPos = modelMatrix * pos;
   }

@@ -81,6 +81,7 @@ namespace mesh {
         m_preDepthProgramId = o.m_preDepthProgramId;
         m_selectionProgramId = o.m_selectionProgramId;
         m_idProgramId = o.m_idProgramId;
+        m_normalProgramId = o.m_normalProgramId;
         m_drawOptions = o.m_drawOptions;
 
         m_flags = o.m_flags;
@@ -118,6 +119,7 @@ namespace mesh {
         m_preDepthProgramId = o.m_preDepthProgramId;
         m_selectionProgramId = o.m_selectionProgramId;
         m_idProgramId = o.m_idProgramId;
+        m_normalProgramId = o.m_normalProgramId;
         m_drawOptions = o.m_drawOptions;
 
         m_animationRigTransform = o.m_animationRigTransform;
@@ -208,6 +210,7 @@ namespace mesh {
         m_preDepthProgramId = material.getProgram(MaterialProgramType::pre_depth);
         m_selectionProgramId = material.getProgram(MaterialProgramType::selection);
         m_idProgramId = material.getProgram(MaterialProgramType::object_id);
+        m_normalProgramId = material.getProgram(MaterialProgramType::normal);
 
         if (m_flags.zUp) {
             const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });

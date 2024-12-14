@@ -456,6 +456,9 @@ namespace loader {
             else if (k == "id_program") {
                 material.m_programNames[MaterialProgramType::object_id] = readString(v);
             }
+            else if (k == "normal_program") {
+                material.m_programNames[MaterialProgramType::normal] = readString(v);
+            }
             else if (k == "geometry_type") {
                 material.m_geometryType = readString(v);
             }
@@ -478,6 +481,20 @@ namespace loader {
                     const auto& defName = defNode.getName();
                     const auto& defValue = readString(defNode.getNode());
                     material.m_selectionDefinitions[util::toUpper(defName)] = defValue;
+                }
+            }
+            else if (k == "id_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_idDefinitions[util::toUpper(defName)] = defValue;
+                }
+            }
+            else if (k == "normal_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_normalDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
             else if (k == "updater") {
@@ -805,6 +822,14 @@ namespace loader {
         for (const auto& progIt : mod.m_selectionDefinitions) {
             m.m_selectionDefinitions[progIt.first] = progIt.second;
         }
+
+        for (const auto& progIt : mod.m_idDefinitions) {
+            m.m_idDefinitions[progIt.first] = progIt.second;
+        }
+
+        for (const auto& progIt : mod.m_normalDefinitions) {
+            m.m_normalDefinitions[progIt.first] = progIt.second;
+        }
     }
 
     void MaterialLoader::resolveMaterial(
@@ -875,11 +900,17 @@ namespace loader {
             material.m_programNames,
             SHADER_OBJECT_ID);
 
+        const auto& normalName = selectProgram(
+            MaterialProgramType::normal,
+            material.m_programNames,
+            SHADER_NORMAL);
+
         if (!shaderName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
             std::map<std::string, std::string, std::less<>> shadowDefinitions;
             std::map<std::string, std::string, std::less<>> selectionDefinitions;
             std::map<std::string, std::string, std::less<>> idDefinitions;
+            std::map<std::string, std::string, std::less<>> normalDefinitions;
 
             for (const auto& [k, v] : material.m_programDefinitions) {
                 definitions[k] = v;
@@ -893,6 +924,14 @@ namespace loader {
 
             for (const auto& [k, v] : material.m_selectionDefinitions) {
                 selectionDefinitions[k] = v;
+            }
+
+            for (const auto& [k, v] : material.m_idDefinitions) {
+                idDefinitions[k] = v;
+            }
+
+            for (const auto& [k, v] : material.m_normalDefinitions) {
+                normalDefinitions[k] = v;
             }
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
@@ -940,12 +979,14 @@ namespace loader {
                 shadowDefinitions[DEF_USE_BONES] = "1";
                 selectionDefinitions[DEF_USE_BONES] = "1";
                 idDefinitions[DEF_USE_BONES] = "1";
+                normalDefinitions[DEF_USE_BONES] = "1";
             }
             if (useSockets) {
                 definitions[DEF_USE_SOCKETS] = "1";
                 shadowDefinitions[DEF_USE_SOCKETS] = "1";
                 selectionDefinitions[DEF_USE_SOCKETS] = "1";
                 idDefinitions[DEF_USE_SOCKETS] = "1";
+                normalDefinitions[DEF_USE_SOCKETS] = "1";
             }
             if (useDebug) {
                 definitions[DEF_USE_DEBUG] = "1";
@@ -995,6 +1036,14 @@ namespace loader {
                     false,
                     "",
                     idDefinitions);
+            }
+
+            if (!normalName.empty()) {
+                material.m_programs[MaterialProgramType::normal] = ProgramRegistry::get().getProgramId(
+                    normalName,
+                    false,
+                    "",
+                    normalDefinitions);
             }
         }
     }

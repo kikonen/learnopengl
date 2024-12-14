@@ -42,7 +42,8 @@ enum class MaterialProgramType : std::underlying_type_t<std::byte> {
     shadow,
     pre_depth,
     selection,
-    object_id
+    object_id,
+    normal,
 };
 
 /*
@@ -290,6 +291,8 @@ public:
     std::map<std::string, std::string> m_programDefinitions{};
     std::map<std::string, std::string> m_shadowDefinitions{};
     std::map<std::string, std::string> m_selectionDefinitions{};
+    std::map<std::string, std::string> m_idDefinitions{};
+    std::map<std::string, std::string> m_normalDefinitions{};
 
     std::map<MaterialProgramType, ki::program_id> m_programs{};
 

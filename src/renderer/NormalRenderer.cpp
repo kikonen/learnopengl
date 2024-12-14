@@ -28,6 +28,7 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
+    // NOTE KI bones are pare case, but for conveniency it's global here
     m_normalProgramId = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
 }
 
@@ -53,7 +54,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
-                return m_normalProgramId;
+                return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
             },
             [](const mesh::MeshType* type) {
                 return !type->m_flags.noNormals;
