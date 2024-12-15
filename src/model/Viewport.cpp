@@ -180,9 +180,7 @@ void Viewport::bind(const RenderContext& ctx)
 
     uniforms->u_viewportTransform.set(transformed);
 
-    if (m_effectEnabled) {
-        uniforms->u_effect.set(util::as_integer(m_effect));
-    }
+    uniforms->u_effect.set(m_effectEnabled ? util::as_integer(m_effect) : 0);
 
     invokeBindAfter();
 }

@@ -572,7 +572,7 @@ void Scene::drawViewports(const RenderContext& ctx)
     m_windowBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
-        { 0.9f, 0.9f, 0.0f, 0.0f });
+        { 0.f, 0.f, 0.f, 0.f });
 
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->render(ctx, m_windowBuffer.get());
