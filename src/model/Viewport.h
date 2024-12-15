@@ -193,7 +193,7 @@ private:
 
     int m_order{ 100 };
     bool m_blend{ true };
-    float m_blendFactor{ 0.9f };
+    float m_blendFactor{ 1.f };
 
     bool m_dirty{ true };
 

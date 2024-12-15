@@ -9,6 +9,8 @@
 #include "ki/size.h"
 #include "ki/sid.h"
 
+#include "asset/ViewportEffect.h"
+
 namespace mesh {
     struct MeshInstance;
 }
@@ -19,6 +21,16 @@ namespace render {
         static render::DebugContext& modify() noexcept;
 
         int m_glfwSwapInterval{ 1 };
+
+        bool m_viewportLayer1EffectEnabled{ false };
+        ViewportEffect m_viewportLayer1Effect{ ViewportEffect::none };
+        bool m_viewportLayer1BlendEnabled{ false };
+        float m_viewportLayer1BlendFactor{ 1.0 };
+
+        bool m_viewportLayer2EffectEnabled{ false };
+        ViewportEffect m_viewportLayer2Effect{ ViewportEffect::none };
+        bool m_viewportLayer2BlendEnabled{ false };
+        float m_viewportLayer2BlendFactor{ 1.0 };
 
         bool m_frustumEnabled{ true };
 

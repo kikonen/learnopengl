@@ -268,8 +268,15 @@ Assets::Assets()
     prefilterMapSize = 128;
     brdfLutSize = 512;
 
-    viewportEffectEnabled = false;
-    viewportEffect = ViewportEffect::none;
+    viewportLayer1EffectEnabled = false;
+    viewportLayer1Effect = ViewportEffect::none;
+    viewportLayer1BlendEnabled = false;
+    viewportLayer1BlendFactor = 1.f;
+
+    viewportLayer2EffectEnabled = false;
+    viewportLayer2Effect = ViewportEffect::none;
+    viewportLayer2BlendEnabled = false;
+    viewportLayer2BlendFactor = 1.f;
 
     hdrGamma = 2.2f;
     hdrExposure = 1.0f;

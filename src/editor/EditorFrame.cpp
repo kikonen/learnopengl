@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
+#include "util/util.h"
 
 #include "asset/Assets.h"
 #include "asset/DynamicCubeMap.h"
@@ -55,6 +56,15 @@ namespace {
     const char* GEOMETRY_TYPES[2] = {
         "",
         "wireframe_mod",
+    };
+
+    const std::vector<std::pair<ViewportEffect, std::string>> g_viewportEffects = {
+        { ViewportEffect::none, "none"},
+        { ViewportEffect::invert, "invert"},
+        { ViewportEffect::gray_scale, "gray_scale"},
+        { ViewportEffect::sharpen, "sharpen"},
+        { ViewportEffect::blur, "blur"},
+        { ViewportEffect::edge, "edge"},
     };
 }
 
@@ -909,6 +919,51 @@ namespace editor {
             ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
             ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
             ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDebugDepth, 0.01f, 0.1f);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("VP 1 - Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
+            {
+                auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer1Effect)];
+
+                if (ImGui::BeginCombo("VP 1 - Effect", curr.second.c_str())) {
+                    for (const auto& [effect, name] : g_viewportEffects) {
+                        ImGui::PushID((void*)effect);
+                        if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
+                            dbg.m_viewportLayer1Effect = effect;
+                        }
+                        ImGui::PopID();
+                    }
+
+                    ImGui::EndCombo();
+                }
+            }
+            ImGui::Checkbox("VP 1 - Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
+            ImGui::InputFloat("VP 1 - Blend factor", &dbg.m_viewportLayer1BlendFactor);
+        }
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Checkbox("VP 2 - Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
+            {
+                auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer2Effect)];
+
+                if (ImGui::BeginCombo("VP 2 - Effect", curr.second.c_str())) {
+                    for (const auto& [effect, name] : g_viewportEffects) {
+                        ImGui::PushID((void*)effect);
+                        if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
+                            dbg.m_viewportLayer2Effect = effect;
+                        }
+                        ImGui::PopID();
+                    }
+
+                    ImGui::EndCombo();
+                }
+            }
+            ImGui::Checkbox("VP 2 - Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
+            ImGui::InputFloat("VP 2 - Blend factor", &dbg.m_viewportLayer2BlendFactor);
         }
     }
 

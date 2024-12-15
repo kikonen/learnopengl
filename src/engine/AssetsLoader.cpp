@@ -797,39 +797,30 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "viewport_effect_enabled") {
-                data.viewportEffectEnabled = readBool(v);
+            if (k == "viewport_layer_1_effect_enabled") {
+                data.viewportLayer1EffectEnabled = readBool(v);
                 continue;
             }
-            if (k == "viewport_effect") {
-                std::string effect = readString(v);
-
-                if (effect == "none") {
-                    data.viewportEffect = ViewportEffect::none;
-                    continue;
-                }
-                if (effect == "blur") {
-                    data.viewportEffect = ViewportEffect::blur;
-                    continue;
-                }
-                if (effect == "edge") {
-                    data.viewportEffect = ViewportEffect::edge;
-                    continue;
-                }
-                if (effect == "gray_scale") {
-                    data.viewportEffect = ViewportEffect::grayScale;
-                    continue;
-                }
-                if (effect == "invert") {
-                    data.viewportEffect = ViewportEffect::invert;
-                    continue;
-                }
-                if (effect == "sharpen") {
-                    data.viewportEffect = ViewportEffect::sharpen;
-                    continue;
-                }
-
-                reportUnknown("viewport_effect", k, v);
+            if (k == "viewport_layer_1_effect") {
+                data.viewportLayer1Effect = readViewportEffect(k, v);
+            }
+            if (k == "viewport_layer_1_blend_factor") {
+                data.viewportLayer1BlendFactor = readFloat(v);
+            }
+        }
+        {
+            if (k == "viewport_layer_2_effect_enabled") {
+                data.viewportLayer2EffectEnabled = readBool(v);
+                continue;
+            }
+            if (k == "viewport_layer_2_effect") {
+                data.viewportLayer2Effect = readViewportEffect(k, v);
+            }
+            if (k == "viewport_layer_2_blend_enabled") {
+                data.viewportLayer2BlendEnabled = readBool(v);
+            }
+            if (k == "viewport_layer_2_blend_factor") {
+                data.viewportLayer2BlendFactor = readFloat(v);
             }
         }
         {
@@ -977,6 +968,38 @@ glm::vec2 AssetsLoader::readScale2(const YAML::Node& node) const
 
     auto scale = readFloat(node);
     return glm::vec3{ scale };
+}
+
+ViewportEffect AssetsLoader::readViewportEffect(
+    const std::string& key,
+    const YAML::Node& node) const
+{
+    ViewportEffect effect = ViewportEffect::none;
+
+    std::string v = readString(node);
+
+    if (v == "none") {
+        return ViewportEffect::none;
+    }
+    if (v == "blur") {
+        return ViewportEffect::blur;
+    }
+    if (v == "edge") {
+        return ViewportEffect::edge;
+    }
+    if (v == "gray_scale") {
+        return ViewportEffect::gray_scale;
+    }
+    if (v == "invert") {
+        return ViewportEffect::invert;
+    }
+    if (v == "sharpen") {
+        return ViewportEffect::sharpen;
+    }
+
+    reportUnknown("viewport_effect", key, node);
+
+    return ViewportEffect::none;
 }
 
 void AssetsLoader::reportUnknown(

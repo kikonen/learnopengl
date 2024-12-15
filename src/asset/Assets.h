@@ -264,8 +264,15 @@ public:
     int prefilterMapSize;
     int brdfLutSize;
 
-    bool viewportEffectEnabled;
-    ViewportEffect viewportEffect;
+    bool viewportLayer1EffectEnabled;
+    ViewportEffect viewportLayer1Effect;
+    bool viewportLayer1BlendEnabled;
+    float viewportLayer1BlendFactor;
+
+    bool viewportLayer2EffectEnabled;
+    ViewportEffect viewportLayer2Effect;
+    bool viewportLayer2BlendEnabled;
+    float viewportLayer2BlendFactor;
 
     float hdrGamma;
     float hdrExposure;

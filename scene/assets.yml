@@ -203,8 +203,15 @@ assets:
   prefilter_map_size: 128
   brdf_lut_size: 512
 
-  viewport_effect_enabled: true
-  viewport_effect: none
+  viewport_layer_1_effect_enabled: false
+  viewport_layer_1_effect: none
+  viewport_layer_1_blend_enabled: false
+  viewport_layer_1_blend_factor: 1.0
+
+  viewport_layer_2_effect_enabled: false
+  viewport_layer_2_effect: none
+  viewport_layer_2_blend_enabled: true
+  viewport_layer_2_blend_factor: 0.95
 
   hdr_gamma: 2.2
   hdr_exposure: 1.0

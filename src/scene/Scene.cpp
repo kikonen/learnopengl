@@ -118,6 +118,7 @@ void Scene::destroy()
 void Scene::prepareRT()
 {
     const auto& assets = Assets::get();
+    const auto& dbg = render::DebugContext::get();
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
@@ -215,14 +216,14 @@ void Scene::prepareRT()
             });
 
         vp->setOrder(150);
-        vp->setBlend(true);
-        vp->setBlendFactor(0.95f);
 
         vp->setGammaCorrect(true);
         vp->setHardwareGamma(true);
 
-        vp->setEffectEnabled(assets.viewportEffectEnabled);
-        vp->setEffect(assets.viewportEffect);
+        vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
+        vp->setEffect(dbg.m_viewportLayer2Effect);
+        vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
+        vp->setBlendFactor(dbg.m_viewportLayer2BlendFactor);
 
         vp->prepareRT();
 
@@ -252,12 +253,13 @@ void Scene::prepareRT()
         });
 
         vp->setOrder(50);
-        vp->setBlend(false);
         vp->setGammaCorrect(true);
         vp->setHardwareGamma(true);
 
-        vp->setEffectEnabled(assets.viewportEffectEnabled);
-        vp->setEffect(assets.viewportEffect);
+        vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
+        vp->setEffect(dbg.m_viewportLayer1Effect);
+        vp->setBlend(dbg.m_viewportLayer1BlendEnabled);
+        vp->setBlendFactor(dbg.m_viewportLayer1BlendFactor);
 
         vp->prepareRT();
 
@@ -352,19 +354,32 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
         auto gamma = dbg.m_gammaCorrect;
         auto hw = dbg.m_hardwareGamma;
 
-        if (m_uiViewport) {
-            m_uiViewport->setGammaCorrect(gamma);
-            m_uiViewport->setHardwareGamma(hw);
+        if (auto* vp = m_uiViewport.get(); vp)
+        {
+            vp->setGammaCorrect(gamma);
+            vp->setHardwareGamma(hw);
+
+            vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
+            vp->setEffect(dbg.m_viewportLayer2Effect);
+            vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
+            vp->setBlendFactor(dbg.m_viewportLayer2BlendFactor);
         }
 
-        if (m_mainViewport) {
-            m_mainViewport->setGammaCorrect(gamma);
-            m_mainViewport->setHardwareGamma(hw);
+        if (auto* vp = m_mainViewport.get(); vp)
+        {
+            vp->setGammaCorrect(gamma);
+            vp->setHardwareGamma(hw);
+
+            vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
+            vp->setEffect(dbg.m_viewportLayer1Effect);
+            vp->setBlend(dbg.m_viewportLayer1BlendEnabled);
+            vp->setBlendFactor(dbg.m_viewportLayer1BlendFactor);
         }
 
-        if (m_rearViewport) {
-            m_rearViewport->setGammaCorrect(gamma);
-            m_rearViewport->setHardwareGamma(hw);
+        if (auto* vp = m_rearViewport.get(); vp)
+        {
+            vp->setGammaCorrect(gamma);
+            vp->setHardwareGamma(hw);
         }
     }
 

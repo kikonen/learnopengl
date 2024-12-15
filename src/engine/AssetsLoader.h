@@ -41,6 +41,10 @@ private:
 
     glm::vec2 readScale2(const YAML::Node& node) const;
 
+    ViewportEffect readViewportEffect(
+        const std::string& key,
+        const YAML::Node& node) const;
+
     void reportUnknown(
         std::string_view scope,
         std::string_view k,
