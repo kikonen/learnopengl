@@ -2,6 +2,8 @@
 
 #include "kigl/GLState.h"
 
+#include "util/file.h"
+
 #include "asset/Assets.h"
 
 #include "engine/Engine.h"
@@ -10,6 +12,7 @@
 #include "controller/NodeController.h"
 
 #include "asset/DynamicCubeMap.h"
+#include "material/Image.h"
 
 #include "registry/Registry.h"
 
@@ -357,6 +360,23 @@ void Window::createGLFWWindow()
         glfwTerminate();
         KI_ERROR("Failed to initialize GLAD");
         return;
+    }
+
+    if (!assets.windowIcon.empty()) {
+        const auto& texturePath = util::joinPath(
+            assets.assetsDir,
+            assets.windowIcon);
+
+        Image image{ texturePath, false };
+        if (image.load() == 0) {
+            GLFWimage images{
+                image.m_width,
+                image.m_height,
+                image.m_data,
+            };
+
+            glfwSetWindowIcon(m_glfwWindow, 1, &images);
+        }
     }
 
     bindGLFWCallbacks();

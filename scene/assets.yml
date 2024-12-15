@@ -23,6 +23,7 @@ assets:
   water_refraction_buffer_scale: 0.25
   mirror_reflection_buffer_scale: 0.25
 
+  window_icon: textures/kari_512.png
   window_size: [800, 600]
   window_maximized: true
   window_full_screen: false

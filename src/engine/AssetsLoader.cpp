@@ -125,6 +125,10 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "window_icon") {
+                data.windowIcon = readString(v);
+                continue;
+            }
             if (k == "window_size") {
                 data.windowSize = readUVec2(v);
                 continue;
