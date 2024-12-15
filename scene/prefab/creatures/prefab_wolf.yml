@@ -18,7 +18,7 @@ prefab:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.0125
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
   physics:
     body:
       type: capsule

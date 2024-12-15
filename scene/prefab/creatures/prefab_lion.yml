@@ -7,7 +7,7 @@ prefab:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-        z_up: true
+        #z_up: true
       lods:
         - name: SK_Lion_LOD0
           level: 0

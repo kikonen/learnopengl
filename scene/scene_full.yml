@@ -318,7 +318,7 @@ nodes:
       x_step: 3
       y_step: 0
       z_step: 3
-  - name: Window 1
+  - id: window_1
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
@@ -329,8 +329,8 @@ nodes:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01
+      #base_rotation: [-90.0, 0.0, 0.0]
     pos: [5.0, 10.0, -5.0]
-    rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - id: door_1
     mesh:
@@ -343,10 +343,10 @@ nodes:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01
+      #base_rotation: [-90.0, 0.0, 0.0]
     pos: [-5.0, 10.0, -5.0]
-    rotation: [-90.0, 0.0, 0.0]
     scale: 2
-  - name: Window 1_1
+  - id: window_1_1
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
@@ -357,10 +357,11 @@ nodes:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01
+      #base_rotation: [-90.0, 0, 0.0]
     pos: [5.0, 8.0, 0.0]
-    rotation: [-90.0, -45.0, 0.0]
+    rotation: [0, -45.0, 0.0]
     scale: 4
-  - name: Window 2
+  - id: window_2
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
@@ -371,8 +372,8 @@ nodes:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01
+      #base_rotation: [-90.0, 0.0, 0.0]
     pos: [7.0, 14.0, -8.0]
-    rotation: [-90.0, 0.0, 0.0]
     scale: 2
   - id: stained_windows_{t}
     mesh:
@@ -385,8 +386,8 @@ nodes:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01
+      #base_rotation: [-90.0, 0.0, 0.0]
     pos: [-10.0, 20.0, 10.0]
-    rotation: [-90.0, 0.0, 0.0]
     scale: 2
     repeat:
       x_count: 10
@@ -570,7 +571,7 @@ nodes:
         xuse_bones: true
         xuse_bones_debug: true
         use_animation: true
-        z_up: true
+        ##z_up: true
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern

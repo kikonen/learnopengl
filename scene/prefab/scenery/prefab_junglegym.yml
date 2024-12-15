@@ -13,4 +13,4 @@ prefab:
             channel: A
         program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]

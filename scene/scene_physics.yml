@@ -342,7 +342,7 @@ nodes:
         xxblend: true
         render_back: true
         program: g_tex
-      base_rotation: [0, -90, 0]
+      #base_rotation: [0, -90, 0]
     pos: [-39.0, -15, 0]
     scale: 80
     physics:

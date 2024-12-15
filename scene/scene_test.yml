@@ -47,9 +47,9 @@ nodes:
         map_pbr: door_glass_1_pbr
         blend: true
         render_back: true
+      #base_rotation: [-90.0, 0.0, 0.0]
     program: g_tex
     pos: [0.0, 0.0, -8.0]
-    rotation: [-90.0, 0.0, 0.0]
     pivot:
       alignment: t
     scale: 2
@@ -235,7 +235,7 @@ nodes:
         xuse_bones: true
         xuse_bones_debug: true
         xuse_animation: true
-        z_up: true
+        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -275,7 +275,7 @@ nodes:
         use_bones: true
         xuse_bones_debug: true
         xuse_animation: true
-        z_up: true
+        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -315,7 +315,7 @@ nodes:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-        z_up: true
+        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr

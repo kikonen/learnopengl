@@ -27,7 +27,7 @@ nodes:
         xuse_bones: true
         xuse_bones_debug: true
         use_animation: true
-        z_up: true
+        #z_up: true
       materials:
         - name: wyvern_pbr
           alias: M_Wyvern

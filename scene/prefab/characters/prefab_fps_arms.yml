@@ -6,7 +6,7 @@ prefab:
     flags:
       use_bones: true
       use_animation: true
-      z_up: true
+      #z_up: true
     material:
       map_kd: material/M_UE4Man_Body_BaseColor.png
       map_normal: material/M_UE4Man_Body_Normal.png
@@ -23,6 +23,6 @@ prefab:
       - name: fire
         path: anim/FirstPerson_Fire.FBX
     base_scale: 0.01
-  base_rotation: [0, 90, 180]
+    base_rotation: [0, 90, 0]
   flags:
     no_frustum: true

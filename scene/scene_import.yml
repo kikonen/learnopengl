@@ -79,7 +79,7 @@ nodes:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     scale: 1

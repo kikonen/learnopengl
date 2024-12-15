@@ -30,4 +30,4 @@ prefab:
       category: [npc]
       collision: [world, player, ray]
       size: [0.25, 0.75, 0]
-      offset: [0, 0, -0.75]
+      offset: [0, 0, -0.35]

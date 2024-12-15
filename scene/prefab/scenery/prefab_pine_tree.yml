@@ -16,7 +16,7 @@ prefab:
           render_back: true
       program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lods:
         - level: 1
@@ -31,7 +31,7 @@ prefab:
           render_back: true
       program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lods:
         - level: 2
@@ -46,7 +46,7 @@ prefab:
           render_back: true
       program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lods:
         - level: 3
@@ -60,7 +60,7 @@ prefab:
           alpha: true
       program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lods:
         - level: 4
@@ -73,7 +73,7 @@ prefab:
           map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
       program: g_tex
       base_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      #base_rotation: [-90, 0, 0]
   lod_levels:
     - level: 0
       distance: 0
