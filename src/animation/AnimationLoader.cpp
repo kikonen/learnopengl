@@ -121,13 +121,15 @@ namespace animation {
                 const animation::BoneChannel* prev{ nullptr };
                 for (const auto& channel : animation.m_channels) {
                     if (prev) {
-                        assert(channel.m_positionKeyTimes.size() == prev->m_positionKeyTimes.size());
-                        assert(channel.m_rotationKeyTimes.size() == prev->m_rotationKeyTimes.size());
-                        assert(channel.m_scaleKeyTimes.size() == prev->m_scaleKeyTimes.size());
+                        // NOTE KI *NOT* true always
+                        //assert(channel.m_positionKeyTimes.size() == prev->m_positionKeyTimes.size());
+                        //assert(channel.m_rotationKeyTimes.size() == prev->m_rotationKeyTimes.size());
+                        //assert(channel.m_scaleKeyTimes.size() == prev->m_scaleKeyTimes.size());
                     }
 
-                    assert(channel.m_positionKeyTimes.size() == channel.m_rotationKeyTimes.size());
-                    assert(channel.m_positionKeyTimes.size() == channel.m_scaleKeyTimes.size());
+                    // NOTE KI *NOT* true always
+                    //assert(channel.m_positionKeyTimes.size() == channel.m_rotationKeyTimes.size());
+                    //assert(channel.m_positionKeyTimes.size() == channel.m_scaleKeyTimes.size());
 
                     prev = &channel;
                 }
