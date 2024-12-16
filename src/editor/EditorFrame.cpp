@@ -857,20 +857,28 @@ namespace editor {
         render::DebugContext& dbg)
     {
         {
-            ImGui::Checkbox("Gamma correct", &dbg.m_gammaCorrect);
-            ImGui::Checkbox("Hardware gamma", &dbg.m_hardwareGamma);
+            ImGui::Spacing();
+            ImGui::SeparatorText("Gamma / HDR");
+            ImGui::Spacing();
+
+            {
+                ImGui::Checkbox("Gamma correct", &dbg.m_gammaCorrect);
+                ImGui::Checkbox("Hardware gamma", &dbg.m_hardwareGamma);
+            }
+
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::InputFloat("HDR gamma", &dbg.m_hdrGamma, 0.01f, 0.1f);
+                ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
+            }
         }
 
         {
             ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::InputFloat("HDR gamma", &dbg.m_hdrGamma, 0.01f, 0.1f);
-            ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
-        }
-
-        {
+            ImGui::SeparatorText("Misc effects");
             ImGui::Spacing();
-            ImGui::Separator();
+
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
             ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
@@ -879,7 +887,9 @@ namespace editor {
 
         {
             ImGui::Spacing();
-            ImGui::Separator();
+            ImGui::SeparatorText("Decals");
+            ImGui::Spacing();
+
             ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
 
             {
@@ -907,14 +917,18 @@ namespace editor {
 
         {
             ImGui::Spacing();
-            ImGui::Separator();
+            ImGui::SeparatorText("Bloom");
+            ImGui::Spacing();
+
             ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
             ImGui::InputInt("Bloom iterations", &dbg.m_effectBloomIterations, 1, 10);
         }
 
         {
             ImGui::Spacing();
-            ImGui::Separator();
+            ImGui::SeparatorText("Parallax");
+            ImGui::Spacing();
+
             ImGui::Checkbox("Parallax enabled", &dbg.m_parallaxEnabled);
             ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
             ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
@@ -923,12 +937,14 @@ namespace editor {
 
         {
             ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Checkbox("VP 1: Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
+            ImGui::SeparatorText("Layer 1");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("L1: Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
             {
                 auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer1Effect)];
 
-                if (ImGui::BeginCombo("VP 1: Effect", curr.second.c_str())) {
+                if (ImGui::BeginCombo("L1: Effect", curr.second.c_str())) {
                     for (const auto& [effect, name] : g_viewportEffects) {
                         ImGui::PushID((void*)effect);
                         if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
@@ -940,17 +956,19 @@ namespace editor {
                     ImGui::EndCombo();
                 }
             }
-            ImGui::Checkbox("VP 1: Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
-            ImGui::InputFloat("VP 1: Blend factor", &dbg.m_viewportLayer1BlendFactor, 0.01f, 0.1f);
+            ImGui::Checkbox("L1: Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
+            ImGui::InputFloat("L1: Blend factor", &dbg.m_viewportLayer1BlendFactor, 0.01f, 0.1f);
         }
         {
             ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Checkbox("VP 2: Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
+            ImGui::SeparatorText("Layer 2");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("L2: Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
             {
                 auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer2Effect)];
 
-                if (ImGui::BeginCombo("VP 2: Effect", curr.second.c_str())) {
+                if (ImGui::BeginCombo("L2: Effect", curr.second.c_str())) {
                     for (const auto& [effect, name] : g_viewportEffects) {
                         ImGui::PushID((void*)effect);
                         if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
@@ -962,8 +980,8 @@ namespace editor {
                     ImGui::EndCombo();
                 }
             }
-            ImGui::Checkbox("VP 2: Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
-            ImGui::InputFloat("VP 2: Blend factor", &dbg.m_viewportLayer2BlendFactor, 0.01f, 0.1f);
+            ImGui::Checkbox("L2: Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
+            ImGui::InputFloat("L2: Blend factor", &dbg.m_viewportLayer2BlendFactor, 0.01f, 0.1f);
         }
     }
 
