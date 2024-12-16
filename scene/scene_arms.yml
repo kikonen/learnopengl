@@ -62,7 +62,7 @@ nodes:
           loop: true
     camera:
       type: fps
-      distance: [4, 2, 20]
+      xdistance: [4, 1.5, 20]
       default: true
     controllers:
       - type: pawn
@@ -122,7 +122,7 @@ nodes:
     parent: player_fps
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
-    xpos: [-1.35, -1.5, -1.0]
+    pos: [-0.14, -1.59, -0.2]
     pivot:
       alignment: m
     layer: 1
