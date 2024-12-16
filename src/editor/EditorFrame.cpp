@@ -924,11 +924,11 @@ namespace editor {
         {
             ImGui::Spacing();
             ImGui::Separator();
-            ImGui::Checkbox("VP 1 - Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
+            ImGui::Checkbox("VP 1: Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
             {
                 auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer1Effect)];
 
-                if (ImGui::BeginCombo("VP 1 - Effect", curr.second.c_str())) {
+                if (ImGui::BeginCombo("VP 1: Effect", curr.second.c_str())) {
                     for (const auto& [effect, name] : g_viewportEffects) {
                         ImGui::PushID((void*)effect);
                         if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
@@ -940,17 +940,17 @@ namespace editor {
                     ImGui::EndCombo();
                 }
             }
-            ImGui::Checkbox("VP 1 - Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
-            ImGui::InputFloat("VP 1 - Blend factor", &dbg.m_viewportLayer1BlendFactor);
+            ImGui::Checkbox("VP 1: Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
+            ImGui::InputFloat("VP 1: Blend factor", &dbg.m_viewportLayer1BlendFactor, 0.01f, 0.1f);
         }
         {
             ImGui::Spacing();
             ImGui::Separator();
-            ImGui::Checkbox("VP 2 - Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
+            ImGui::Checkbox("VP 2: Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
             {
                 auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer2Effect)];
 
-                if (ImGui::BeginCombo("VP 2 - Effect", curr.second.c_str())) {
+                if (ImGui::BeginCombo("VP 2: Effect", curr.second.c_str())) {
                     for (const auto& [effect, name] : g_viewportEffects) {
                         ImGui::PushID((void*)effect);
                         if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
@@ -962,8 +962,8 @@ namespace editor {
                     ImGui::EndCombo();
                 }
             }
-            ImGui::Checkbox("VP 2 - Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
-            ImGui::InputFloat("VP 2 - Blend factor", &dbg.m_viewportLayer2BlendFactor);
+            ImGui::Checkbox("VP 2: Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
+            ImGui::InputFloat("VP 2: Blend factor", &dbg.m_viewportLayer2BlendFactor, 0.01f, 0.1f);
         }
     }
 

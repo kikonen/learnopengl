@@ -11,7 +11,7 @@
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-layout(early_fragment_tests) in;
+// layout(early_fragment_tests) in;
 
 in VS_OUT {
   vec2 texCoord;
@@ -19,7 +19,7 @@ in VS_OUT {
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
-subroutine vec4 sub_effect(vec4 color);
+subroutine vec3 sub_effect(vec3 color);
 
 layout(location = UNIFORM_TONE_HDRI) uniform bool u_toneHdri;
 layout(location = UNIFORM_GAMMA_CORRECT) uniform bool u_gammaCorrect;
@@ -39,29 +39,29 @@ const float offset = 1.0 / 300.0;
 
 layout (index = EFF_NONE)
 subroutine (sub_effect)
-vec4 effectNone(in vec4 color)
+vec3 effectNone(in vec3 color)
 {
   return color;
 }
 
 layout (index = EFF_INVERT)
 subroutine (sub_effect)
-vec4 effectInvert(in vec4 color)
+vec3 effectInvert(in vec3 color)
 {
-  return vec4(vec3(1.0 - color), color.a);
+  return vec3(1.0 - color);
 }
 
 layout (index = EFF_GRAY_SCALE)
 subroutine (sub_effect)
-vec4 effectGrayScale(in vec4 color)
+vec3 effectGrayScale(in vec3 color)
 {
     float avg = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
-    return vec4(avg, avg, avg, color.a);
+    return vec3(avg, avg, avg);
 }
 
 layout (index = EFF_SHARPEN)
 subroutine (sub_effect)
-vec4 effectSharpen(in vec4 color)
+vec3 effectSharpen(in vec3 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -91,12 +91,12 @@ vec4 effectSharpen(in vec4 color)
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    return vec4(col, 1.0);
+    return col;
 }
 
 layout (index = EFF_BLUR)
 subroutine (sub_effect)
-vec4 effectBlur(in vec4 color)
+vec3 effectBlur(in vec3 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -127,12 +127,12 @@ vec4 effectBlur(in vec4 color)
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    return vec4(col, 1.0);
+    return col;
 }
 
 layout (index = EFF_EDGE)
 subroutine (sub_effect)
-vec4 effectEdge(in vec4 color)
+vec3 effectEdge(in vec3 color)
 {
     vec2 offsets[9] = vec2[]
       (
@@ -163,14 +163,14 @@ vec4 effectEdge(in vec4 color)
     for(int i = 0; i < 9; i++) {
       col += sampleTex[i] * kernel[i];
     }
-    return vec4(col, 1.0);
+    return col;
 }
 
 /*
 subroutine (sub_effect)
-vec4 effectX(in vec4 color)
+vec3 effectX(in vec3 color)
 {
-  vec4 color;
+  vec3 color;
   if (u_effect == EFF_INVERT) {
     color = effectInvert(color);
   } else if (u_effect == EFF_GRAY_SCALE) {
@@ -188,8 +188,8 @@ vec4 effectX(in vec4 color)
 
 void main()
 {
-  vec4 orig = u_effect(textureLod(u_viewportTex, fs_in.texCoord, 0));
-  vec3 color = orig.rgb;
+  vec4 orig = textureLod(u_viewportTex, fs_in.texCoord, 0);
+  vec3 color = u_effect(orig.rgb);
 
   if (u_toneHdri) {
     // reinhard
@@ -203,5 +203,8 @@ void main()
     color = pow(color, vec3(1.0 / u_hdrGamma));
   }
 
-  o_fragColor = vec4(color, orig.a * u_blendFactor);
+  float factor = u_blendFactor;
+  float blend = orig.a * factor;
+
+  o_fragColor = vec4(color, blend);
 }

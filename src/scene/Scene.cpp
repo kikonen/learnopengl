@@ -559,8 +559,6 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
 void Scene::drawViewports(const RenderContext& ctx)
 {
-    m_windowBuffer->bind(ctx);
-
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
     // => Stencil is not supposed to exist here
     // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
@@ -572,7 +570,7 @@ void Scene::drawViewports(const RenderContext& ctx)
     m_windowBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
-        { 0.f, 0.f, 0.f, 0.f });
+        { 0.f, 0.f, 0.f, 1.f });
 
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->render(ctx, m_windowBuffer.get());

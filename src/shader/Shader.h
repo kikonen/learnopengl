@@ -2,6 +2,8 @@
 
 #include <string>
 
+const std::string SHADER_WINDOW_BLIT{ "window_blit" };
+
 const std::string SHADER_TEXTURE{ "tex" };
 const std::string SHADER_G_TEX{ "g_tex" };
 

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+
+#include "ki/size.h"
+
 #include "Renderer.h"
 
 namespace render {
@@ -20,4 +24,11 @@ public:
     void render(
         const RenderContext& ctx,
         render::FrameBuffer* destinationBuffer);
+
+private:
+    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    int m_width{ -1 };
+    int m_height{ -1 };
+
+    ki::program_id m_blitterId;
 };

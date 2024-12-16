@@ -19,7 +19,6 @@ namespace render {
     class NodeDraw;
     class Batch;
     class RenderData;
-    class FrameBuffer;
     class WindowBuffer;
 }
 

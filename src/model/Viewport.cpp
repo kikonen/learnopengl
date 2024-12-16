@@ -174,7 +174,9 @@ void Viewport::bind(const RenderContext& ctx)
 
     uniforms->u_toneHdri.set(true);
     uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
-    uniforms->u_blendFactor.set(m_blend ? m_blendFactor : 1.0f);
+
+    float blendFactor = std::max(std::min(m_blendFactor, 1.f), 0.f);
+    uniforms->u_blendFactor.set(m_blend ? blendFactor : 1.0f);
 
     glm::mat4 transformed = m_projected * m_transformMatrix;
 
