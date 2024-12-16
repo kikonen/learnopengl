@@ -217,9 +217,6 @@ void Scene::prepareRT()
 
         vp->setOrder(150);
 
-        vp->setGammaCorrect(true);
-        vp->setHardwareGamma(true);
-
         vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
         vp->setEffect(dbg.m_viewportLayer2Effect);
         vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
@@ -253,8 +250,6 @@ void Scene::prepareRT()
         });
 
         vp->setOrder(50);
-        vp->setGammaCorrect(true);
-        vp->setHardwareGamma(true);
 
         vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
         vp->setEffect(dbg.m_viewportLayer1Effect);
@@ -284,8 +279,6 @@ void Scene::prepareRT()
         });
 
         vp->setOrder(60);
-        vp->setGammaCorrect(true);
-        vp->setHardwareGamma(true);
 
         vp->prepareRT();
 
@@ -354,11 +347,13 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
         auto gamma = dbg.m_gammaCorrect;
         auto hw = dbg.m_hardwareGamma;
 
+        m_viewportRenderer->setGammaCorrect(gamma);
+        m_viewportRenderer->setHardwareGamma(hw);
+    }
+
+    {
         if (auto* vp = m_uiViewport.get(); vp)
         {
-            vp->setGammaCorrect(gamma);
-            vp->setHardwareGamma(hw);
-
             vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
             vp->setEffect(dbg.m_viewportLayer2Effect);
             vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
@@ -367,9 +362,6 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
         if (auto* vp = m_mainViewport.get(); vp)
         {
-            vp->setGammaCorrect(gamma);
-            vp->setHardwareGamma(hw);
-
             vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
             vp->setEffect(dbg.m_viewportLayer1Effect);
             vp->setBlend(dbg.m_viewportLayer1BlendEnabled);
@@ -378,8 +370,6 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
         if (auto* vp = m_rearViewport.get(); vp)
         {
-            vp->setGammaCorrect(gamma);
-            vp->setHardwareGamma(hw);
         }
     }
 

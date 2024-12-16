@@ -99,9 +99,6 @@ void MirrorMapRenderer::prepareRT(
             vp.setSourceFrameBuffer(buffer.get());
             });
 
-        m_reflectionDebugViewport->setGammaCorrect(true);
-        m_reflectionDebugViewport->setHardwareGamma(true);
-
         m_reflectionDebugViewport->prepareRT();
     }
 

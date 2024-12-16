@@ -172,9 +172,6 @@ void Viewport::bind(const RenderContext& ctx)
 
     auto* uniforms = m_program->m_uniforms.get();
 
-    uniforms->u_toneHdri.set(true);
-    uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
-
     float blendFactor = std::max(std::min(m_blendFactor, 1.f), 0.f);
     uniforms->u_blendFactor.set(m_blend ? blendFactor : 1.0f);
 
@@ -200,14 +197,6 @@ void Viewport::draw(const RenderContext& ctx)
 
         auto& quad = render::TextureQuad::get();
         quad.prepare();
-
-        if (m_gammaCorrect && m_hardwareGamma) {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-            quad.draw();
-            glDisable(GL_FRAMEBUFFER_SRGB);
-        }
-        else {
-            quad.draw();
-        }
+        quad.draw();
     }
 }

@@ -14,10 +14,18 @@
 #include "registry/Registry.h"
 #include "registry/ViewportRegistry.h"
 
+#include "shader/ProgramUniforms.h"
 #include "shader/Shader.h"
+#include "shader/Uniform.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
+
+ViewportRenderer::ViewportRenderer(bool useFrameStep) :
+    Renderer("main", useFrameStep) {
+}
+
+ViewportRenderer::~ViewportRenderer() = default;
 
 void ViewportRenderer::prepareRT(
     const PrepareContext& ctx)
@@ -28,6 +36,9 @@ void ViewportRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     m_blitterId = ProgramRegistry::get().getProgram(SHADER_WINDOW_BLIT);
+
+    setGammaCorrect(true);
+    setHardwareGamma(true);
 }
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
@@ -58,8 +69,8 @@ void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
                     {
                         w, h,
                         {
-                            render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
-                            render::FrameBufferAttachment::getDepthStencilTexture(),
+                            render::FrameBufferAttachment::getTextureRGBAHdr(GL_COLOR_ATTACHMENT0),
+                            render::FrameBufferAttachment::getDepthRbo(),
                         }
                     });
 
@@ -120,7 +131,20 @@ void ViewportRenderer::render(
 
         destinationBuffer->bind(ctx);
         program->bind();
-        render::ScreenTri::get().draw();
+
+        auto* uniforms = program->m_uniforms.get();
+
+        uniforms->u_toneHdri.set(true);
+        uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
+
+        if (m_gammaCorrect && m_hardwareGamma) {
+            glEnable(GL_FRAMEBUFFER_SRGB);
+            render::ScreenTri::get().draw();
+            glDisable(GL_FRAMEBUFFER_SRGB);
+        }
+        else {
+            render::ScreenTri::get().draw();
+        }
 
         state.setEnabled(GL_DEPTH_TEST, true);
     }

@@ -94,9 +94,6 @@ void WaterMapRenderer::prepareRT(
             vp.setSourceFrameBuffer(buffer.get());
             });
 
-        m_reflectionDebugViewport->setGammaCorrect(true);
-        m_reflectionDebugViewport->setHardwareGamma(true);
-
         m_reflectionDebugViewport->prepareRT();
     }
 
@@ -115,9 +112,6 @@ void WaterMapRenderer::prepareRT(
             vp.setTextureId(buffer->m_spec.attachments[0].textureID);
             vp.setSourceFrameBuffer(buffer.get());
             });
-
-        m_refractionDebugViewport->setGammaCorrect(true);
-        m_refractionDebugViewport->setHardwareGamma(true);
 
         m_refractionDebugViewport->prepareRT();
     }

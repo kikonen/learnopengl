@@ -21,8 +21,6 @@ layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
 subroutine vec3 sub_effect(vec3 color);
 
-layout(location = UNIFORM_TONE_HDRI) uniform bool u_toneHdri;
-layout(location = UNIFORM_GAMMA_CORRECT) uniform bool u_gammaCorrect;
 layout(location = UNIFORM_BLEND_FACTOR) uniform float u_blendFactor;
 
 layout(location = SUBROUTINE_EFFECT) subroutine uniform sub_effect u_effect;
@@ -190,18 +188,6 @@ void main()
 {
   vec4 orig = textureLod(u_viewportTex, fs_in.texCoord, 0);
   vec3 color = u_effect(orig.rgb);
-
-  if (u_toneHdri) {
-    // reinhard
-    // vec3 result = hdrColor / (hdrColor + vec3(1.0));
-    // exposure
-    color = vec3(1.0) - exp(-color * u_hdrExposure);
-  }
-
-  if (u_gammaCorrect) {
-    // also gamma correct while we're at it
-    color = pow(color, vec3(1.0 / u_hdrGamma));
-  }
 
   float factor = u_blendFactor;
   float blend = orig.a * factor;
