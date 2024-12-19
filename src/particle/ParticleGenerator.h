@@ -1,6 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "ki/size.h"
+
+#include "util/Random.h"
 
 #include "material/Material.h"
 
@@ -43,5 +47,9 @@ namespace particle {
         ParticleDefinition m_definition;
 
         float m_lastTs = -1;
+
+        float m_pendingCount{ 0.f };
+
+        std::unique_ptr<util::Random> m_random;
     };
 }

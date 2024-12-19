@@ -15,6 +15,7 @@
 
 namespace loader {
     struct MeshData {
+        bool explicitEnabled{ false };
         bool enabled{ false };
 
         MeshDataType type{ MeshDataType::mesh };

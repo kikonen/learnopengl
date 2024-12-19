@@ -53,6 +53,7 @@ namespace loader {
             const auto k = util::toLower(key);
 
             if (k == "enabled") {
+                data.explicitEnabled = true;
                 data.enabled = readBool(v);
             }
             else if (k == "id") {
@@ -170,13 +171,18 @@ namespace loader {
             data.name = data.path;
         }
 
-        if (data.vertexData.valid) {
-            data.type = MeshDataType::primitive;
-            data.enabled = true;
-        }
+        if (data.explicitEnabled) {
+            data.enabled &= data.type != MeshDataType::none;
+        } else
+        {
+            if (data.vertexData.valid) {
+                data.type = MeshDataType::primitive;
+                data.enabled = true;
+            }
 
-        if (data.type == MeshDataType::non_vao) {
-            data.enabled = true;
+            if (data.type == MeshDataType::non_vao) {
+                data.enabled = true;
+            }
         }
 
         // NOTE KI ensure assigns are before modifiers

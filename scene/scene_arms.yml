@@ -132,11 +132,41 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_junglegym.yml
     pos: [0, 0, 0]
-  - id: weeping_angel_{c}_{t}
+  - id: weeping_angel
     prefab:
       path: prefab/creatures/prefab_weeping_angel.yml
     pos: [0, 0.75, 0]
+  - id: weeping_angel_particle_origin
+    parent_id: weeping_angel
+    mesh:
+      vertex:
+        type: ball
+        radius: 1
+      material:
+        kd: [0.5, 0.5, 0.0, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      base_scale: 0.1
+    pos: [0, 20, 0]
     particle:
+      lifetime: 5
+      lifetime_variation: 2
+      area_type: point
+      area_radius: 10
+      area_variation: 1
+      dir: [1, -1, 0]
+      dir_variation: 10
+      velocity: 4
+      velocity_variation: 2
+      size: 1
+      size_variation: 1
+      rate: 2
+      rate_variation: 1
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: 61
+      sprite_speed: 10
+      sprite_speed_variation: 20
       material:
         name: particle_firespin
         kd: [1, 1, 1, 1]

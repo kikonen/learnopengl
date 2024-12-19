@@ -2,25 +2,39 @@
 
 #include <glm/glm.hpp>
 
+#include "AreaType.h"
+
 namespace particle {
     struct ParticleDefinition {
+        int m_seed{ 0 };
+
+        particle::AreaType m_areaType{ particle::AreaType::none };
+        float m_areaRadius{ 0.f };
+        glm::vec3 m_areaSize{ 0.f };
+        float m_areaVariation{ 0.f };
+
         // angle degrees
-        glm::vec3 dir{ 0.f };
-        float dirVariation{ 0.f };
+        glm::vec3 m_dir{ 0.f };
+        float m_dirVariation{ 0.f };
 
         // secs
-        float lifetime{ 0.f };
+        float m_lifetime{ 0.f };
+        float m_lifetimeVariation{ 0.f };
 
-        float radius{ 0.f };
+        float m_velocity{ 0.f };
+        float m_velocityVariation{ 0.f };
 
-        float velocity{ 0.f };
-        float velocityVariation{ 0.f };
-
-        float size{ 1.f };
-        float sizeVariation{ 0.f };
+        float m_size{ 1.f };
+        float m_sizeVariation{ 0.f };
 
         // particles per sec
-        float rate{ 1.f };
-        float rateVariation{ 0.f };
+        float m_rate{ 1.f };
+        float m_rateVariation{ 0.f };
+
+        int m_spriteBase{ 0 };
+        float m_spriteBaseVariation{ 0.f };
+        int m_spriteCount{ 1 };
+        float m_spriteSpeed{ 0.f };
+        float m_spriteSpeedVariation{ 0.f };
     };
 }

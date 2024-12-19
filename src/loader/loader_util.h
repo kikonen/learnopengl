@@ -81,6 +81,8 @@ namespace loader {
         std::string_view name,
         const std::vector<MaterialData>& materials);
 
+    bool isIgnore(std::string_view k);
+
     void reportUnknown(
         std::string_view scope,
         std::string_view k,

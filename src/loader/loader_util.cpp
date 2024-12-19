@@ -564,6 +564,11 @@ namespace loader {
         return it != materials.end() ? &(it->material) : nullptr;
     }
 
+    bool isIgnore(std::string_view k)
+    {
+        return k.empty() || k[0] == 'x';
+    }
+
     void reportUnknown(
         std::string_view scope,
         std::string_view k,
