@@ -44,6 +44,9 @@ namespace loader
             else if (k == "seed") {
                 data.seed = readInt(v);
             }
+            else if (k == "gravity") {
+                data.gravity = readVec3(v);
+            }
             else if (k == "lifetime") {
                 data.lifetime = readFloat(v);
             }
@@ -83,11 +86,11 @@ namespace loader
             else if (k == "dir_variation") {
                 data.dirVariation = readFloat(v);
             }
-            else if (k == "velocity") {
-                data.velocity = readFloat(v);
+            else if (k == "speed") {
+                data.speed = readFloat(v);
             }
-            else if (k == "velocity_variation") {
-                data.velocityVariation = readFloat(v);
+            else if (k == "speed_variation") {
+                data.speedVariation = readFloat(v);
             }
             else if (k == "size") {
                 data.size = readFloat(v);
@@ -136,6 +139,7 @@ namespace loader
         particle::ParticleDefinition df;
 
         df.m_seed = data.seed;
+        df.m_gravity = data.gravity;
 
         df.m_lifetime = data.lifetime;
         df.m_lifetimeVariation = data.lifetimeVariation;
@@ -151,8 +155,8 @@ namespace loader
         df.m_dir = glm::normalize(data.dir);
         df.m_dirVariation = data.dirVariation;
 
-        df.m_velocity = data.velocity;
-        df.m_velocityVariation = data.velocityVariation;
+        df.m_speed = data.speed;
+        df.m_speedVariation = data.speedVariation;
 
         df.m_size = data.size;
         df.m_sizeVariation = data.sizeVariation;

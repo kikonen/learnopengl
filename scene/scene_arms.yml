@@ -136,6 +136,39 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_weeping_angel.yml
     pos: [0, 0.75, 0]
+    particle:
+      seed: 1
+      gravity: [0, -9.81, 0]
+      lifetime: 3
+      lifetime_variation: 2
+      area_type: point
+      area_radius: 10
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 8
+      speed_variation: 4
+      size: 0.1
+      size_variation: 0.1
+      rate: 10000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: 28
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_firespin
+        kd: [1, 1, 1, 1]
+        xkd: [0.5, 1.5, 0.2, 0.2]
+        #map_kd: particles/7_firespin_spritesheet.png
+        #sprites: 61
+        #sprites_x: 8
+        map_kd: particles/bones_1_spritesheet.png
+        sprites: 28
+        sprites_x: 4
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: weeping_angel_particle_origin
     parent_id: weeping_angel
     mesh:
@@ -149,31 +182,36 @@ nodes:
       base_scale: 0.1
     pos: [0, 20, 0]
     particle:
-      lifetime: 5
+      seed: 1
+      gravity: [0, -9.81, 0]
+      lifetime: 3
       lifetime_variation: 2
       area_type: point
       area_radius: 10
-      area_variation: 1
+      area_variation: 0.1
       dir: [1, -1, 0]
-      dir_variation: 10
-      velocity: 4
-      velocity_variation: 2
-      size: 1
-      size_variation: 1
-      rate: 2
+      dir_variation: 1
+      speed: 4
+      speed_variation: 2
+      size: 0.5
+      size_variation: 0.5
+      rate: 1000
       rate_variation: 1
       sprite_base: 0
       sprite_base_variation: 0
-      sprite_count: 61
+      sprite_count: 29
       sprite_speed: 10
       sprite_speed_variation: 20
       material:
         name: particle_firespin
         kd: [1, 1, 1, 1]
         xkd: [0.5, 1.5, 0.2, 0.2]
-        map_kd: particles/7_firespin_spritesheet.png
-        sprites: 61
-        sprites_x: 8
+        #map_kd: particles/7_firespin_spritesheet.png
+        #sprites: 61
+        #sprites_x: 8
+        map_kd: particles/bones_2_spritesheet.png
+        sprites: 29
+        sprites_x: 4
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
   - id: world_x_minus

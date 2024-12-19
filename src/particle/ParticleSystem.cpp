@@ -47,6 +47,9 @@ namespace particle {
 
     bool ParticleSystem::addParticle(const Particle& particle)
     {
+        // NOTE KI directly ignore invalid particles
+        if (!particle.valid()) return true;
+
         std::lock_guard lock(m_pendingLock);
 
         if (!m_enabled && m_snapshotCount + m_pending.size() >= m_maxCount) return false;

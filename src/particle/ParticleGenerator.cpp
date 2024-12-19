@@ -56,71 +56,19 @@ namespace particle {
             Particle particle;
 
             {
-                const auto var = df.m_areaVariation;
-                const float variationX = var * rnd.rnd();
-                const float variationY = var * rnd.rnd();
-                const float variationZ = var * rnd.rnd();
+                particle.m_materialIndex = m_material.m_registeredIndex;
 
-                particle.m_pos = {
-                    pos.x - var + 2.f * variationX,
-                    pos.y - var + 2.f * variationY,
-                    pos.z - var + 2.f * variationZ
-                };
-            }
+                particle.m_gravity = df.m_gravity;
 
-            {
-                const auto& normal = df.m_dir;
-                const auto var = df.m_dirVariation;
-                const auto variation = glm::radians(var * rnd.rnd());
-                const float theta = glm::radians(360 * rnd.rnd());
+                particle.m_pos = pos + df.randomPosition(rnd);
+                particle.m_velocity = df.randomDirection(rnd) * df.randomSpeed(rnd);
+                particle.m_lifetime = df.randomLifetime(rnd);
+                particle.m_scale = df.randomSize(rnd);
 
-                particle.m_dir = df.m_dir;
-            }
-            {
-                const auto velocity = df.m_velocity;
-                const auto var = df.m_velocityVariation;
-                const auto variation = var * rnd.rnd();
-                particle.m_velocity = velocity - var + 2.f * variation;
-            }
-            {
-                const auto lifetime = df.m_lifetime;
-                const auto var = df.m_lifetimeVariation;
-                const auto variation = var * rnd.rnd();
-                particle.m_lifetime = lifetime - var + 2.f * variation;
-            }
-            {
-                const auto size = df.m_size;
-                const auto var = df.m_sizeVariation;
-                const auto variation = var * rnd.rnd();
-                particle.m_scale = size - var + 2.f * variation;
-            }
-            {
-                // const auto sprite = df.m_sprite;
-                // const auto var = df.m_sizeVariation;
-                // const auto variation = var * rnd.rnd();
-                // particle.m_s = size - var + 2.f * variation;
-            }
-
-            particle.m_materialIndex = m_material.m_registeredIndex;
-
-            {
                 particle.m_spriteBaseIndex = df.m_spriteBase;
                 particle.m_spriteCount = df.m_spriteCount;
-            }
-            {
-                // NOTE KI start from idx, use full 0..spriteCount range
-                const float idx = rnd.rnd(m_material.spriteCount);
-
-                const auto base = df.m_spriteBase;
-                const auto var = df.m_spriteBaseVariation;
-                const auto variation = var * rnd.rnd();
-                particle.m_spriteActiveIndex = base - var + 2.f * variation;
-            }
-            {
-                const auto speed = df.m_spriteSpeed;
-                const auto var = df.m_spriteSpeedVariation;
-                const auto variation = var * rnd.rnd();
-                particle.m_spriteSpeed = speed - var + 2.f * variation;
+                particle.m_spriteActiveIndex = df.randomSpriteIndex(rnd);
+                particle.m_spriteSpeed = df.randomSpriteSpeed(rnd);
             }
 
             if (!ps.addParticle(particle)) break;

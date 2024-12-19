@@ -215,6 +215,7 @@
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
     <ClCompile Include="src\mesh\NonVaoMesh.cpp" />
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
+    <ClCompile Include="src\particle\ParticleDefinition.cpp" />
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />

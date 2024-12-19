@@ -26,7 +26,8 @@ namespace particle {
         //    "index={}, active={}, speed={}, count={}",
         //    m_spriteBaseIndex + static_cast<uint8_t>(m_spriteActiveIndex), m_spriteActiveIndex, m_spriteSpeed, m_spriteCount));
 
-        m_pos += m_dir * m_velocity * dt;
+        m_velocity += m_gravity * dt;
+        m_pos += m_velocity * dt;
         return true;
     }
 }

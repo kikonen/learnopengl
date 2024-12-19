@@ -17,9 +17,14 @@ namespace loader {
 
         int seed{ 0 };
 
+        glm::vec3 gravity{ 0.f };
+
         // angle degrees
         glm::vec3 dir{ 0.f };
         float dirVariation{ 0.f };
+
+        float speed{ 0.f };
+        float speedVariation{ 0.f };
 
         // secs
         float lifetime{ 0.f };
@@ -29,9 +34,6 @@ namespace loader {
         float areaRadius{ 0.f };
         glm::vec3 areaSize{ 0.f };
         float areaVariation{ 0.f };
-
-        float velocity{ 0.f };
-        float velocityVariation{ 0.f };
 
         float size{ 1.f };
         float sizeVariation{ 0.f };

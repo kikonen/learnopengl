@@ -13,23 +13,29 @@ struct UpdateContext;
 namespace particle {
     struct Particle final
     {
-        glm::vec3 m_pos{ 0.f };
-        glm::vec3 m_dir{ 0.f };
+        glm::vec3 m_gravity{ 0.f };
 
-        float m_velocity{ 0.f };
+        glm::vec3 m_pos{ 0.f };
+        glm::vec3 m_velocity{ 0.f };
+
         float m_lifetime{ 0.f };
 
         float m_scale{ 1.f };
-
-        // NOTE KI particle materials required to be max 2^16
-        uint16_t m_materialIndex{ 0 };
 
         float m_spriteSpeed{ 0.f };
         // floor used for render
         float  m_spriteActiveIndex{ 0.f };
 
+        // NOTE KI particle materials required to be max 2^16
+        uint16_t m_materialIndex{ 0 };
+
         uint8_t m_spriteBaseIndex{ 0 };
         uint8_t m_spriteCount{ 1 };
+
+        bool valid() const noexcept
+        {
+            return m_scale > 0.f && m_lifetime > 0.f && m_materialIndex > 0;
+        }
 
         bool update(const UpdateContext& ctx) noexcept;
 
