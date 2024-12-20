@@ -11,7 +11,7 @@
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
-// layout(early_fragment_tests) in;
+layout(early_fragment_tests) in;
 
 in VS_OUT {
   vec2 texCoord;
@@ -187,6 +187,8 @@ vec3 effectX(in vec3 color)
 void main()
 {
   vec4 orig = textureLod(u_viewportTex, fs_in.texCoord, 0);
+  if (orig.a == 0) discard;
+
   vec3 color = u_effect(orig.rgb);
 
   float factor = u_blendFactor;

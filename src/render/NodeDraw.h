@@ -186,7 +186,7 @@ namespace render {
         Program* m_bloomFinalProgram{ nullptr };
         Program* m_emissionProgram{ nullptr };
         Program* m_fogProgram{ nullptr };
-        Program* m_hdrGammaProgram{ nullptr };
+        // Program* m_hdrGammaProgram{ nullptr };
 
         query::TimeElapsedQuery m_timeElapsedQuery;
 

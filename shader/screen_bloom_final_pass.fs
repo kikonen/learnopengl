@@ -22,10 +22,11 @@ void main()
 {
   const vec2 texCoord = fs_in.texCoord;
 
-  vec3 hdrColor = texture(scene_albedo, texCoord).rgb;
+  vec4 orig = texture(scene_albedo, texCoord);
+  vec3 hdrColor = orig.rgb;
   vec3 bloomColor = texture(effect_bloomBlur, texCoord).rgb;
 
   hdrColor += bloomColor;
 
-  o_fragColor = vec4(hdrColor, 1.0);
+  o_fragColor = vec4(hdrColor, orig.a);
 }

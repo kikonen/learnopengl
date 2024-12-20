@@ -488,7 +488,10 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     localCtx.m_layer = 1;
     localCtx.m_useParticles = false;
-    //localCtx.m_forceSolid = true;
+    localCtx.m_useDecals = false;
+    localCtx.m_useFog = false;
+    localCtx.m_useBloom = false;
+    //localCtx.m_useScreenspaceEffects = false;
 
     localCtx.copyShadowFrom(parentCtx);
 

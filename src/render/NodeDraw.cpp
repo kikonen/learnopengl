@@ -98,7 +98,7 @@ namespace render {
         m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
         m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
-        m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
+        // m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
 
         m_timeElapsedQuery.create();
 
@@ -398,7 +398,7 @@ namespace render {
         FrameBuffer* targetBuffer)
     {
         if (ctx.m_forceSolid) return;
-        if (!ctx.m_useDecals && m_decalEnabled) return;
+        if (!ctx.m_useDecals || !m_decalEnabled) return;
 
         auto& state = ctx.m_state;
 
@@ -412,7 +412,7 @@ namespace render {
         FrameBuffer* targetBuffer)
     {
         if (ctx.m_forceSolid) return;
-        if (!ctx.m_useParticles && m_particleEnabled) return;
+        if (!ctx.m_useParticles || !m_particleEnabled) return;
 
         auto& state = ctx.m_state;
 
@@ -472,7 +472,7 @@ namespace render {
         FrameBuffer* srcBuffer,
         FrameBuffer* finalBuffer)
     {
-        if (ctx.m_forceSolid) {
+        if (ctx.m_forceSolid || !ctx.m_useScreenspaceEffects) {
             srcBuffer->copy(
                 finalBuffer,
                 EffectBuffer::ATT_ALBEDO_INDEX,
@@ -501,6 +501,8 @@ namespace render {
             state.setEnabled(GL_BLEND, false);
         }
 
+        state.setStencil({});
+
         passBloom(ctx, srcBuffer, finalBuffer);
 
         state.setDepthMask(GL_TRUE);
@@ -514,6 +516,7 @@ namespace render {
         FrameBuffer* targetBuffer)
     {
         if (!m_effectFogEnabled) return;
+        if (!ctx.m_useFog) return;
 
         auto& state = ctx.m_state;
         state.setStencil(kigl::GLStencilMode::only(STENCIL_FOG, STENCIL_FOG));
@@ -548,9 +551,7 @@ namespace render {
     {
         auto& state = ctx.m_state;
 
-        state.setStencil({});
-
-        if (!m_effectBloomEnabled)
+        if (!m_effectBloomEnabled || !ctx.m_useBloom)
         {
             srcBuffer->copy(
                 finalBuffer,
