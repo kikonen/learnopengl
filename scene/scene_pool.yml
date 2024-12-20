@@ -201,15 +201,6 @@ nodes:
     flags:
       no_shadow: true
       water: true
-    particle:
-      material:
-        name: particle_casting
-        kd: [1, 1, 1, 1]
-        map_kd: particles/4_casting_spritesheet.png
-        sprites: 73
-        sprites_x: 9
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
     repeat:
       x_count: 2
       y_count: 1
@@ -229,6 +220,39 @@ nodes:
         collision: [can_float]
         size: [30, 0.01, 30]
     script_file: scripts/anim_water
+  - id: pool_surface_2_particle_origin
+    parent_id: pool_surface_{c}_{t}
+    type: origo
+    pos: [0, 20, 0]
+    particle:
+      seed: 1
+      gravity: [0, -0.81, 0]
+      lifetime: 20
+      lifetime_variation: 5
+      area_type: point
+      area_radius: 10
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 5
+      speed_variation: 2
+      size: 0.2
+      size_variation: 0.1
+      rate: 10000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick

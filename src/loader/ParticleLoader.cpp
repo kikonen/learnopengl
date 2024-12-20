@@ -164,6 +164,9 @@ namespace loader
         df.m_spriteBase = data.spriteBase;
         df.m_spriteBaseVariation = data.spriteBaseVariation;
         df.m_spriteCount = data.spriteCount;
+        if (data.spriteCount < 1) {
+            df.m_spriteCount = data.materialData.material.spriteCount;
+        }
         df.m_spriteSpeed = data.spriteSpeed;
         df.m_spriteSpeedVariation = data.spriteSpeedVariation;
 

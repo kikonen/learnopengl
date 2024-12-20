@@ -154,7 +154,7 @@ nodes:
       rate_variation: 50
       sprite_base: 0
       sprite_base_variation: 0
-      sprite_count: 28
+      sprite_count: -1
       sprite_speed: 10
       sprite_speed_variation: 20
       material:
@@ -199,7 +199,7 @@ nodes:
       rate_variation: 1
       sprite_base: 0
       sprite_base_variation: 0
-      sprite_count: 29
+      sprite_count: -1
       sprite_speed: 10
       sprite_speed_variation: 20
       material:
