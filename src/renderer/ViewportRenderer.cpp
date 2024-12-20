@@ -130,6 +130,20 @@ void ViewportRenderer::render(
         state.setEnabled(GL_DEPTH_TEST, false);
 
         destinationBuffer->bind(ctx);
+
+        // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
+        // => Stencil is not supposed to exist here
+        // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
+        // => *BUT* if glDraw is used instead then clear *IS* needed for depth
+        //
+        // NOTE KI *CLEAR* buffer
+        // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
+        //
+        destinationBuffer->clear(
+            ctx,
+            GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+            { 0.f, 0.f, 0.f, 1.f });
+
         program->bind();
 
         auto* uniforms = program->m_uniforms.get();
