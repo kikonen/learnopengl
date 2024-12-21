@@ -101,11 +101,12 @@ namespace particle {
         const auto variationZ = var * rnd.rnd();
         const float theta = glm::radians(360 * rnd.rnd());
 
-        return {
+        glm::vec3 n{
             normal.x - var + 2.f * variationX,
             normal.y - var + 2.f * variationY,
             normal.z - var + 2.f * variationZ
         };
+        return glm::normalize(n);
     }
 
     float ParticleDefinition::randomSpeed(const util::Random& rnd) const
