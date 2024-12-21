@@ -229,8 +229,9 @@ nodes:
       gravity: [0, -0.81, 0]
       lifetime: 20
       lifetime_variation: 5
-      area_type: point
+      area_type: box
       area_radius: 10
+      area_size: [30, 0, 30]
       area_variation: 0.1
       dir: [0, 1, 0]
       dir_variation: 0.5

@@ -101,16 +101,17 @@ nodes:
       gravity: [0, -9.81, 0]
       lifetime: 10
       lifetime_variation: 5
-      area_type: point
-      area_radius: 10
+      area_type: disc_line
+      area_radius: 1
+      area_size: [1, 0, 1]
       area_variation: 0.1
       dir: [0, 1, 0]
-      dir_variation: 0.5
+      dir_variation: 0.2
       speed: 20
       speed_variation: 4
       size: 0.1
       size_variation: 0.1
-      rate: 10000
+      rate: 5000
       rate_variation: 50
       sprite_base: 0
       sprite_base_variation: 0
@@ -147,8 +148,9 @@ nodes:
           gravity: [0, -9.81, 0]
           lifetime: 10
           lifetime_variation: 5
-          area_type: point
-          area_radius: 10
+          area_type: box_line
+          area_radius: 1
+          area_size: [1, 0, 1]
           area_variation: 0.1
           dir: [0, 1, 0]
           dir_variation: 0.5
@@ -156,7 +158,7 @@ nodes:
           speed_variation: 4
           size: 0.1
           size_variation: 0.1
-          rate: 10000
+          rate: 5000
           rate_variation: 50
           sprite_base: 0
           sprite_base_variation: 0
@@ -177,8 +179,9 @@ nodes:
           gravity: [0, -9.81, 0]
           lifetime: 10
           lifetime_variation: 5
-          area_type: point
-          area_radius: 10
+          area_type: box_line
+          area_radius: 1
+          area_size: [1, 0, 1]
           area_variation: 0.1
           dir: [0, 1, 0]
           dir_variation: 0.5
@@ -186,7 +189,7 @@ nodes:
           speed_variation: 4
           size: 0.1
           size_variation: 0.1
-          rate: 10000
+          rate: 5000
           rate_variation: 50
           sprite_base: 0
           sprite_base_variation: 0
@@ -207,8 +210,9 @@ nodes:
           gravity: [0, -9.81, 0]
           lifetime: 10
           lifetime_variation: 5
-          area_type: point
-          area_radius: 10
+          area_type: box_line
+          area_radius: 1
+          area_size: [1, 0, 1]
           area_variation: 0.1
           dir: [0, 1, 0]
           dir_variation: 0.5
@@ -216,7 +220,7 @@ nodes:
           speed_variation: 4
           size: 0.1
           size_variation: 0.1
-          rate: 10000
+          rate: 5000
           rate_variation: 50
           sprite_base: 0
           sprite_base_variation: 0
@@ -234,19 +238,20 @@ nodes:
       - pos: [5.0, 2.0, 5.0]
         particle:
           seed: 1
-          gravity: [0, -9.81, 0]
+          #gravity: [0, -9.81, 0]
           lifetime: 10
           lifetime_variation: 5
-          area_type: point
-          area_radius: 10
+          area_type: box_line
+          area_radius: 1
+          area_size: [1, 1, 1]
           area_variation: 0.1
           dir: [0, 1, 0]
           dir_variation: 0.5
-          speed: 20
-          speed_variation: 4
+          speed: 0
+          speed_variation: 0
           size: 0.1
           size_variation: 0.1
-          rate: 10000
+          rate: 1000
           rate_variation: 50
           sprite_base: 0
           sprite_base_variation: 0
