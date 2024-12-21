@@ -25,7 +25,7 @@ public:
 
 public:
     // Maximum pitch deviation from forward
-    float m_maxPitch{ std::numbers::pi_v<float> / 3.f };
+    float m_maxPitch{ std::numbers::pi_v<float> / 2.1f };
 
 private:
     // Rotation/sec speed of pitch
