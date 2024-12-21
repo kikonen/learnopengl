@@ -7,7 +7,11 @@ namespace particle {
     enum class AreaType : std::underlying_type_t<std::byte> {
         none,
         point,
+        sphere,
+        sphere_line,
         disc,
-        plane,
+        disc_line,
+        box,
+        box_line,
     };
 }

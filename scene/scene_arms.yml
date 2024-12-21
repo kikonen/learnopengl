@@ -18,21 +18,22 @@ nodes:
       scale: 0.05
     pos: [0, 1, 15]
     front: [0, 0, -1]
-    xactive: true
+    active: true
     audio:
       listener:
         xdefault: true
     camera:
-      type: follow
-      distance: [2, 1, 5]
-      xdefault: true
+      type: fps
+      xdistance: [2, 1, 5]
+      default: true
     controllers:
       - type: pawn
+      - type: camera_zoom
   - id: player_fps
     type: origo
     pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
+    xactive: true
     audio:
       listener:
         default: true
@@ -63,7 +64,7 @@ nodes:
     camera:
       type: fps
       xdistance: [4, 1.5, 20]
-      default: true
+      xdefault: true
     controllers:
       - type: pawn
       - type: camera_zoom
@@ -138,19 +139,22 @@ nodes:
     pos: [0, 0.75, 0]
     particle:
       seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 3
+      xgravity: [0, -9.81, 0]
+      gravity: [0]
+      lifetime: 10
       lifetime_variation: 2
-      area_type: point
-      area_radius: 10
-      area_variation: 0.1
+      area_type: sphere_line
+      area_radius: 5
+      area_size: [5, 0.8, 5]
+      area_variation: [0.5, 0.5, 0.5]
+      xarea_variation: 0
       dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 8
-      speed_variation: 4
-      size: 0.1
-      size_variation: 0.1
-      rate: 10000
+      dir_variation: 1
+      speed: 1
+      speed_variation: 1
+      size: 0.2
+      size_variation: 0
+      rate: 5000
       rate_variation: 50
       sprite_base: 0
       sprite_base_variation: 0
@@ -169,7 +173,7 @@ nodes:
         sprites_x: 4
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-  - id: weeping_angel_particle_origin
+  - xid: weeping_angel_particle_origin
     parent_id: weeping_angel
     mesh:
       vertex:
@@ -183,19 +187,19 @@ nodes:
     pos: [0, 20, 0]
     particle:
       seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 3
+      gravity: [0, -0.81, 0]
+      lifetime: 10
       lifetime_variation: 2
-      area_type: point
-      area_radius: 10
+      area_type: disc
+      area_radius: 5
       area_variation: 0.1
-      dir: [1, -1, 0]
-      dir_variation: 1
-      speed: 4
-      speed_variation: 2
+      dir: [0, -1, 0]
+      dir_variation: 0
+      speed: 1
+      speed_variation: 1
       size: 0.5
       size_variation: 0.5
-      rate: 1000
+      rate: 100
       rate_variation: 1
       sprite_base: 0
       sprite_base_variation: 0

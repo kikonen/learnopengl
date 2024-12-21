@@ -1,18 +1,95 @@
 #include "ParticleDefinition.h"
 
+#include <numbers>
+
+namespace {
+    const float FULL_CIRCLE_RADIANS = std::numbers::pi_v<float> * 2.f;
+}
+
 namespace particle {
     glm::vec3 ParticleDefinition::randomPosition(const util::Random& rnd) const
     {
-        const auto var = m_areaVariation;
-        const float variationX = var * rnd.rnd();
-        const float variationY = var * rnd.rnd();
-        const float variationZ = var * rnd.rnd();
+        glm::vec3 p{ 0.f };
 
-        return {
-            var + 2.f * variationX,
-            var + 2.f * variationY,
-            var + 2.f * variationZ
-        };
+        if (m_areaType == particle::AreaType::point) {
+            // nothing
+        }
+        else if (m_areaType == particle::AreaType::sphere) {
+            auto radius = m_areaRadius * rnd.rnd();
+            glm::vec3 n{
+                -0.5f + rnd.rnd(),
+                -0.5f + rnd.rnd(),
+                -0.5f + rnd.rnd()
+            };
+            p = glm::normalize(n) * radius;
+        }
+        else if (m_areaType == particle::AreaType::sphere_line) {
+            auto radius = m_areaRadius;
+            glm::vec3 n{
+                -0.5f + rnd.rnd(),
+                -0.5f + rnd.rnd(),
+                -0.5f + rnd.rnd()
+            };
+            p = glm::normalize(n) * radius;
+        }
+        else if (m_areaType == particle::AreaType::disc) {
+            auto radius = m_areaRadius * rnd.rnd();
+            auto radiansY = FULL_CIRCLE_RADIANS * rnd.rnd();
+            glm::vec3 n{
+                cos(radiansY),
+                0.f,
+                sin(radiansY),
+            };
+            p = n * radius;
+        }
+        else if (m_areaType == particle::AreaType::disc_line) {
+            auto radius = m_areaRadius;
+            auto radiansY = FULL_CIRCLE_RADIANS * rnd.rnd();
+            glm::vec3 n{
+                cos(radiansY),
+                0.f,
+                sin(radiansY),
+            };
+            p = n * radius;
+        }
+        else if (m_areaType == particle::AreaType::box) {
+            const auto var = m_areaSize;
+            p = {
+                -var.x + 2.f * var.x * rnd.rnd(),
+                -var.y + 2.f * var.y * rnd.rnd(),
+                -var.z + 2.f * var.z * rnd.rnd()
+            };
+        }
+        else if (m_areaType == particle::AreaType::box_line) {
+            const auto var = m_areaSize;
+            p = {
+                -var.x + 2.f * var.x * rnd.rnd(),
+                -var.y + 2.f * var.y * rnd.rnd(),
+                -var.z + 2.f * var.z * rnd.rnd()
+            };
+
+            const auto side = rnd.rnd();
+            if (side < 1.f / 3.f) {
+                p.x = rnd.rnd() < 0.5f ? -var.x : var.x;
+            } else  if (side > 2.f * 1.f / 3.f) {
+                p.z = rnd.rnd() < 0.5f ? -var.z : var.z;
+            }
+            else {
+                p.y = rnd.rnd() < 0.5f ? -var.y : var.y;
+            }
+        }
+
+        glm::vec3 v;
+        {
+            const auto var = m_areaVariation;
+            v = {
+                -var.x + 2.f * var.x * rnd.rnd(),
+                -var.y + 2.f * var.y * rnd.rnd(),
+                -var.z + 2.f * var.z * rnd.rnd()
+            };
+        }
+
+        return p + v;
     }
 
     glm::vec3 ParticleDefinition::randomDirection(const util::Random& rnd) const

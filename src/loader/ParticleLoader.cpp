@@ -61,11 +61,23 @@ namespace loader
                 else if (type == "point") {
                     data.areaType = particle::AreaType::point;
                 }
+                else if (type == "sphere" || type == "ball") {
+                    data.areaType = particle::AreaType::sphere;
+                }
+                else if (type == "sphere_line" || type == "ball_line") {
+                    data.areaType = particle::AreaType::sphere_line;
+                }
                 else if (type == "disc") {
                     data.areaType = particle::AreaType::disc;
                 }
-                else if (type == "plane") {
-                    data.areaType = particle::AreaType::plane;
+                else if (type == "disc_line" || type == "circle") {
+                    data.areaType = particle::AreaType::disc_line;
+                }
+                else if (type == "box") {
+                    data.areaType = particle::AreaType::box;
+                }
+                else if (type == "box_line") {
+                    data.areaType = particle::AreaType::box_line;
                 }
                 else {
                     reportUnknown("area_type", k, v);
@@ -78,7 +90,7 @@ namespace loader
                 data.areaSize = readVec3(v);
             }
             else if (k == "area_variation") {
-                data.areaVariation = readFloat(v);
+                data.areaVariation = readVec3(v);
             }
             else if (k == "dir") {
                 data.dir = readVec3(v);
