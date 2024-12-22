@@ -885,6 +885,36 @@ nodes:
       fov: 80
     controllers:
       - type: camera_zoom
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 20
+      lifetime_variation: 20
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 1, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.1
+      size_variation: 0.1
+      rate: 200
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/anim_four_cubes
     clones:
       - pos: [-5.0, 20.0, -5.0]

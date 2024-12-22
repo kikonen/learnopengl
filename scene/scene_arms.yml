@@ -154,7 +154,7 @@ nodes:
       speed_variation: 1
       size: 0.2
       size_variation: 0
-      rate: 5000
+      rate: 2000
       rate_variation: 50
       sprite_base: 0
       sprite_base_variation: 0
@@ -173,7 +173,7 @@ nodes:
         sprites_x: 4
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-  - xid: weeping_angel_particle_origin
+  - id: weeping_angel_particle_origin
     parent_id: weeping_angel
     mesh:
       vertex:
@@ -190,16 +190,16 @@ nodes:
       gravity: [0, -0.81, 0]
       lifetime: 10
       lifetime_variation: 2
-      area_type: disc
-      area_radius: 5
+      area_type: disc_line
+      area_radius: 10
       area_variation: 0.1
       dir: [0, -1, 0]
       dir_variation: 0
       speed: 1
       speed_variation: 1
-      size: 0.5
-      size_variation: 0.5
-      rate: 100
+      size: 0.2
+      size_variation: 0.2
+      rate: 2000
       rate_variation: 1
       sprite_base: 0
       sprite_base_variation: 0

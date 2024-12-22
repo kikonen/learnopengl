@@ -1,0 +1,95 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        xdefault: true
+    camera:
+      type: fps
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: particle_cube_origo
+    type: origo
+    pos: [0, 2, 0]
+    xscript: |
+      cmd:rotate(
+        { time=10 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
+  - id: particle_cube
+    parent: particle_cube_origo
+    mesh:
+      path: texture_cube_3
+      program: g_tex
+      base_rot: [-90, 45, 0]
+    pos: [5, 0, 0]
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 3
+      lifetime_variation: 3
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 1, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.1
+      size_variation: 0.1
+      rate: 10000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
