@@ -33,6 +33,7 @@ namespace loader {
         particle::AreaType areaType{ particle::AreaType::point };
         float areaRadius{ 0.f };
         glm::vec3 areaSize{ 0.f };
+        glm::vec3 areaOffset{ 0.f };
         glm::vec3 areaVariation{ 0.f };
 
         float size{ 1.f };

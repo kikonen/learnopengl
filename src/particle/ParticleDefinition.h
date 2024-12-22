@@ -15,6 +15,7 @@ namespace particle {
         particle::AreaType m_areaType{ particle::AreaType::none };
         float m_areaRadius{ 0.f };
         glm::vec3 m_areaSize{ 0.f };
+        glm::vec3 m_areaOffset{ 0.f };
         glm::vec3 m_areaVariation{ 0.f };
 
         // angle degrees

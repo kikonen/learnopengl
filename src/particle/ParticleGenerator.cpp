@@ -48,7 +48,7 @@ namespace particle {
         if (count == 0) return;
 
         const auto& state = node.getState();
-        glm::vec3 pos = state.getWorldPosition();
+        //glm::vec3 pos = state.getWorldPosition();
 
         const auto& rnd = *m_random.get();
 
@@ -60,7 +60,8 @@ namespace particle {
 
                 particle.m_gravity = df.m_gravity;
 
-                particle.m_pos = pos + df.randomPosition(rnd);
+                const auto pos = glm::vec4{ df.randomPosition(rnd), 1.f };
+                particle.m_pos = state.getModelMatrix() * pos;
                 particle.m_velocity = df.randomDirection(rnd) * df.randomSpeed(rnd);
                 particle.m_lifetime = df.randomLifetime(rnd);
                 particle.m_scale = df.randomSize(rnd);

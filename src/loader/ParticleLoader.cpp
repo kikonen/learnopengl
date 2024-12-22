@@ -61,17 +61,20 @@ namespace loader
                 else if (type == "point") {
                     data.areaType = particle::AreaType::point;
                 }
-                else if (type == "sphere" || type == "ball") {
-                    data.areaType = particle::AreaType::sphere;
+                else if (type == "sphere_fill") {
+                    data.areaType = particle::AreaType::sphere_fill;
                 }
-                else if (type == "sphere_line" || type == "ball_line") {
-                    data.areaType = particle::AreaType::sphere_line;
+                else if (type == "sphere") {
+                    data.areaType = particle::AreaType::sphere;
                 }
                 else if (type == "disc") {
                     data.areaType = particle::AreaType::disc;
                 }
-                else if (type == "disc_line" || type == "circle") {
+                else if (type == "disc_line") {
                     data.areaType = particle::AreaType::disc_line;
+                }
+                else if (type == "box_fill") {
+                    data.areaType = particle::AreaType::box_fill;
                 }
                 else if (type == "box") {
                     data.areaType = particle::AreaType::box;
@@ -88,6 +91,9 @@ namespace loader
             }
             else if (k == "area_size") {
                 data.areaSize = readVec3(v);
+            }
+            else if (k == "area_offset") {
+                data.areaOffset = readVec3(v);
             }
             else if (k == "area_variation") {
                 data.areaVariation = readVec3(v);
@@ -162,6 +168,7 @@ namespace loader
         df.m_areaType = data.areaType;
         df.m_areaRadius = data.areaRadius;
         df.m_areaSize = data.areaSize;
+        df.m_areaOffset = data.areaOffset;
         df.m_areaVariation = data.areaVariation;
 
         df.m_dir = glm::normalize(data.dir);

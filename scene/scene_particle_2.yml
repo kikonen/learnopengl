@@ -51,7 +51,7 @@ nodes:
   - id: particle_cube_origo
     type: origo
     pos: [0, 2, 0]
-    xscript: |
+    script: |
       cmd:rotate(
         { time=10 * 100 },
         { 0, 1, 0 },
@@ -61,7 +61,8 @@ nodes:
     mesh:
       path: texture_cube_3
       program: g_tex
-      base_rot: [-90, 45, 0]
+      base_rot: [-90, 0, 0]
+    rot: [0, 45, 0]
     pos: [5, 0, 0]
     particle:
       seed: 1
@@ -70,15 +71,16 @@ nodes:
       lifetime_variation: 3
       area_type: box_line
       area_radius: 1
-      area_size: [1, 1, 1]
+      area_size: [1, 1, 0]
       area_variation: 0.1
+      area_offset: [0, 0, 1]
       dir: [0, 1, 0]
       dir_variation: 0.5
       speed: 0
       speed_variation: 0
       size: 0.1
       size_variation: 0.1
-      rate: 10000
+      rate: 20000
       rate_variation: 50
       sprite_base: 0
       sprite_base_variation: 0
@@ -93,3 +95,8 @@ nodes:
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script: |
+      cmd:rotate(
+        { time=50 * 100 },
+        { 0, 0, 1 },
+        360 * 100)
