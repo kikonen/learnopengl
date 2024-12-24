@@ -48,15 +48,33 @@ nodes:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - id: particle_cube_origo
+  - id: particle_cube_origo_3
     type: origo
-    pos: [0, 2, 0]
+    pos: [0, 3, 0]
+    script: |
+      cmd:rotate(
+        { time=40 * 100 },
+        { 1, 1, 0 },
+        360 * 100)
+  - id: particle_cube_origo_2
+    parent: particle_cube_origo_3
+    type: origo
+    pos: [0, 0, 1]
+    xscript: |
+      cmd:rotate(
+        { time=20 * 100 },
+        { 0, 1, 0 },
+        -360 * 100)
+  - id: particle_cube_origo
+    parent: particle_cube_origo_2
+    type: origo
+    pos: [1, 0, 0]
     script: |
       cmd:rotate(
         { time=10 * 100 },
         { 0, 1, 0 },
         360 * 100)
-  - id: particle_cube
+  - id: particle_tree
     parent: particle_cube_origo
     mesh:
       path: christmas_card/christmas_tree.fbx
@@ -73,16 +91,32 @@ nodes:
           blend: true
       base_scale: 0.01
     pos: [5, 2, 0]
+    xcamera:
+      type: orbit
+      default: true
+    script: |
+      cmd:rotate(
+        { time=50 * 100 },
+        { 0, 0, 1 },
+        360 * 100)
+      cmd:rotate(
+        { time=30 * 100 },
+        { 1, 1, 0 },
+        360 * 100)
+  - id: particle_tree_particle_generator_1
+    parent: particle_tree
+    type: origo
+    pos: [0, 3, 0]
     particle:
       seed: 1
       #gravity: [0, -9.81, 0]
-      lifetime: 40
-      lifetime_variation: 10
+      lifetime: 60
+      lifetime_variation: 20
       area_type: point
       area_radius: 1
       area_size: [1, 1, 0]
       area_variation: 0.3
-      area_offset: [0, 3, 0]
+      area_offset: [0, 0, 0]
       dir: [0, 1, 0]
       dir_variation: 0.5
       speed: 0
@@ -97,21 +131,80 @@ nodes:
       sprite_speed: 10
       sprite_speed_variation: 20
       material:
-        name: particle_casting
         kd: [1, 1, 1, 1]
         map_kd: particles/4_casting_spritesheet.png
         sprites: 73
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-    xcamera:
-      type: orbit
-      default: true
-    script: |
-      cmd:rotate(
-        { time=50 * 100 },
-        { 0, 0, 1 },
-        360 * 100)
+  - id: particle_tree_particle_generator_2
+    parent: particle_tree
+    type: origo
+    pos: [0, 0, 0]
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 50
+      lifetime_variation: 20
+      area_type: point
+      area_radius: 1
+      area_size: [1, 1, 0]
+      area_variation: 0.3
+      area_offset: [0, 0, 0]
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.04
+      size_variation: 0.04
+      rate: 1000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 5
+      sprite_speed_variation: 10
+      material:
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_3_spritesheet.png
+        sprites: 28
+        sprites_x: 5
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+  - id: particle_tree_particle_generator_3
+    parent: particle_tree
+    type: origo
+    pos: [0, 1.5, 0]
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 50
+      lifetime_variation: 20
+      area_type: point
+      area_radius: 1
+      area_size: [1, 1, 0]
+      area_variation: 0.3
+      area_offset: [0, 0, 0]
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.04
+      size_variation: 0.04
+      rate: 1000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 5
+      sprite_speed_variation: 10
+      material:
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_2_spritesheet.png
+        sprites: 29
+        sprites_x: 4
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
   - id: merry_christmas
     type: text
     mesh:
@@ -127,6 +220,8 @@ nodes:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+      flags:
+        billboard: true
     text:
       font:
         xpath: fonts/LuckiestGuy.ttf
