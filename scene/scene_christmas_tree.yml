@@ -1,0 +1,140 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 4, 20]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        xdefault: true
+    camera:
+      type: fps
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: particle_cube_origo
+    type: origo
+    pos: [0, 2, 0]
+    script: |
+      cmd:rotate(
+        { time=10 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
+  - id: particle_cube
+    parent: particle_cube_origo
+    mesh:
+      path: christmas_card/christmas_tree.fbx
+      program: g_tex
+      materials:
+        - name: bq_Leaf_Larix-decidua
+          kd: [0.2, 0.9, 0.2, 1]
+          blend: true
+        - name: bq_Bark_Larix-decidua
+          kd: [0.6588, 0.4980, 0.3686, 1]
+          blend: true
+        - name: bq_Snow
+          kd: [0.9, 0.9, 0.9, 1]
+          blend: true
+      base_scale: 0.01
+    pos: [5, 2, 0]
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 40
+      lifetime_variation: 10
+      area_type: point
+      area_radius: 1
+      area_size: [1, 1, 0]
+      area_variation: 0.3
+      area_offset: [0, 3, 0]
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.1
+      size_variation: 0.1
+      rate: 2000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+    xcamera:
+      type: orbit
+      default: true
+    script: |
+      cmd:rotate(
+        { time=50 * 100 },
+        { 0, 0, 1 },
+        360 * 100)
+  - id: merry_christmas
+    type: text
+    mesh:
+      material:
+        name: hello
+        xkd: [0, 1, 0]
+        map_pbr: textures\Plastic 01 [4K]
+        xmap_pbr: textures\Fence007A_4K-JPG
+        map_pbr: textures\Metal007_1K-PNG
+        tiling: 1
+        alpha: true
+        xblend: true
+        render_back: true
+        program: g_font_render
+        shadow_program: shadow_font_render
+    text:
+      font:
+        xpath: fonts/LuckiestGuy.ttf
+        path: fonts/Lobster-Regular.ttf
+        size: 128
+      text: . . .
+    pos: [-4.0, 8.0, 0.0]
+    scale: 0.015
+    flags:
+      xeffect: true
+    script_file: scripts/seq_merry_christmas_text
