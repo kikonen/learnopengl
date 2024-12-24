@@ -88,8 +88,11 @@ namespace kigl {
 
         size_t index = sb.find("GL_INVALID_OPERATION");
 
+        bool severe = false;
+
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
+            severe = true;
             KI_ERROR(sb);
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
@@ -102,7 +105,7 @@ namespace kigl {
             KI_DEBUG(sb);
         };
 
-        if (index >= 0) {
+        if (index >= 0 && severe) {
             KI_FLUSH();
             int x = 0;
         }
