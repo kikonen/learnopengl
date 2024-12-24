@@ -128,7 +128,7 @@ void main() {
 
     // TODO KI "vs_out.vertexPos" might be incorrect
     worldPos = vec4(entityPos
-                    + u_cameraRight * pos.x * entityScale.x
+                    + u_mainCameraRight * pos.x * entityScale.x
                     + UP * pos.y * entityScale.y,
                     1.0);
 

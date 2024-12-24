@@ -69,6 +69,7 @@ nodes:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+        selection_program: selection_font_render
     text:
       text: "- fps"
       fonts:

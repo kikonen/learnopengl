@@ -29,8 +29,11 @@ constexpr int UNIFORM_BLEND_FACTOR = 15;
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;
 
-constexpr int STENCIL_MODE_MASK = 1;
-constexpr int STENCIL_MODE_HIGHLIGHT = 2;
+constexpr int STENCIL_MODE_SHIFT_NONE = 0;
+constexpr int STENCIL_MODE_SHIFT_UP = 1;
+constexpr int STENCIL_MODE_SHIFT_LEFT = 2;
+constexpr int STENCIL_MODE_SHIFT_RIGHT = 3;
+constexpr int STENCIL_MODE_SHIFT_DOWN = 4;
 
 class Program;
 

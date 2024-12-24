@@ -78,14 +78,15 @@ nodes:
         xmetal: [1.0, 0.0, 0, 1]
         alpha: true
         render_back: true
+        program: g_font_render
+        shadow_program: shadow_font_render
+        selection_program: selection_font_render
     text:
       text: "- fps"
       fonts:
         name: fps_font
         path: fonts/Vera.ttf
         size: 36
-    program: g_font_render
-    shadow_program: shadow_font_render
     pos: [-1.8, 0.95, -2.5]
     scale: 0.0025
   - name: Player cube map 1

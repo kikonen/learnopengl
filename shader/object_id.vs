@@ -64,7 +64,7 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_cameraRight * a_pos.x * entityScale.x
+                    + u_mainCameraRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
   } else {

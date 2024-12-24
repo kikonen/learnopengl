@@ -16,6 +16,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_buffer_info.glsl
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
@@ -44,6 +45,7 @@ Instance instance;
 Entity entity;
 
 #include fn_mod_flag_wave.glsl
+#include fn_render_outline.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -64,7 +66,7 @@ void main() {
                             entity.u_worldScale[2]);
 
     worldPos = vec4(entityPos
-                    + u_cameraRight * a_pos.x * entityScale.x
+                    + u_mainCameraRight * a_pos.x * entityScale.x
                     + UP * a_pos.y * entityScale.y,
                     1.0);
   } else {
@@ -78,6 +80,7 @@ void main() {
   }
 
   gl_Position = u_projectedMatrix * worldPos;
+  renderOutline(u_stencilMode);
 
 #ifdef USE_ALPHA
   const uint materialIndex = instance.u_materialIndex;

@@ -8,14 +8,18 @@
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_buffer_info.glsl
 #include uniform_data.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
+layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
+
 out VS_OUT {
   vec2 atlasCoord;
   flat uvec2 atlasHandle;
+  flat uint highlightIndex;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -28,6 +32,8 @@ const vec3 UP = vec3(0, 1, 0);
 
 Instance instance;
 Entity entity;
+
+#include fn_render_outline.glsl
 
 void main()
 {
@@ -56,6 +62,8 @@ void main()
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;
+  vs_out.highlightIndex = entity.u_highlightIndex;
 
   gl_Position = u_projectedMatrix * worldPos;
+  renderOutline(u_stencilMode);
 }

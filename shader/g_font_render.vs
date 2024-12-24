@@ -72,6 +72,7 @@ void main() {
 
   const uint materialIndex = instance.u_materialIndex;
 
+  vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
   vec3 normal;
 #ifdef USE_TBN
@@ -85,8 +86,8 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_cameraRight * a_pos.x * entityScale.x
-                    + UP * a_pos.y * entityScale.y,
+                    + u_cameraRight * pos.x * entityScale.x
+                    + UP * pos.y * entityScale.y,
                     1.0);
 
     normal = -u_cameraFront;
@@ -94,7 +95,7 @@ void main() {
     tangent = u_cameraRight;
 #endif
   } else {
-    worldPos = modelMatrix * vec4(a_pos, 1.0);
+    worldPos = modelMatrix * pos;
 
     normal = normalize(normalMatrix * a_normal);
 #ifdef USE_TBN

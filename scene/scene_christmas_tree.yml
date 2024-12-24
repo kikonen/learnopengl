@@ -220,6 +220,7 @@ nodes:
         render_back: true
         program: g_font_render
         shadow_program: shadow_font_render
+        selection_program: selection_font_render
       flags:
         billboard: true
     text:
@@ -233,3 +234,16 @@ nodes:
     flags:
       xeffect: true
     script_file: scripts/seq_merry_christmas_text
+  - id: merry_christmas_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.1
+      material:
+        name: hello
+        map_pbr: textures\Metal007_1K-PNG
+        tiling: 1
+        program: g_tex
+      flags:
+        billboard: true
+    pos: [-4.0, 8.0, 0.0]

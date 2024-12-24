@@ -138,17 +138,15 @@ void LayerRenderer::fillHighlightMask(
     // draw entity data mask
     {
         auto* program = m_selectionProgram;
-        program->bind();
-        program->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
+        //program->bind();
+        //program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this, &program](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
-                if (p != program) {
-                    p->bind();
-                    p->m_uniforms->u_stencilMode.set(STENCIL_MODE_MASK);
-                }
+                p->bind();
+                p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
             },
             [](const mesh::MeshType* type) { return true; },
@@ -164,7 +162,6 @@ void LayerRenderer::renderHighlight(
     render::FrameBuffer* targetBuffer)
 {
     RenderContext ctx{ "local", &parentCtx };
-    ctx.m_forceLineMode = true;
 
     const auto& assets = ctx.m_assets;
 
@@ -178,34 +175,37 @@ void LayerRenderer::renderHighlight(
     state.setEnabled(GL_DEPTH_TEST, false);
     state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
 
-    glLineWidth(4.f);
+    const int SHIFTS[] = {
+        //STENCIL_MODE_SHIFT_NONE,
+        STENCIL_MODE_SHIFT_UP,
+        STENCIL_MODE_SHIFT_LEFT,
+        STENCIL_MODE_SHIFT_RIGHT,
+        STENCIL_MODE_SHIFT_DOWN,
+    };
 
     // draw selection color (scaled a bit bigger)
     // https://www.reddit.com/r/opengl/comments/14jisvu/how_can_i_outline_selected_meshes/
     // https://ameye.dev/notes/rendering-outlines/
-    {
+    // NOTE KI using "shift mode" approach, based into "hell engine"
+    for (const auto shift : SHIFTS) {
         auto* program = m_selectionProgram;
-        program->bind();
-        program->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
+        //program->bind();
+        //program->m_uniforms->u_stencilMode.set(shift);
 
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
-            [this, &program](const mesh::LodMesh& lodMesh) {
+            [this, &program, shift](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
-                if (p != program) {
-                    p->bind();
-                    p->m_uniforms->u_stencilMode.set(STENCIL_MODE_HIGHLIGHT);
-                }
+                p->bind();
+                p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
             },
             [](const mesh::MeshType* type) { return true; },
             [&ctx](const Node* node) { return node->isHighlighted(); },
             render::KIND_ALL);
+        ctx.m_batch->flush(ctx);
     }
-    ctx.m_batch->flush(ctx);
-
-    glLineWidth(1.f);
 
     state.setEnabled(GL_DEPTH_TEST, true);
 }
