@@ -17,6 +17,10 @@ prefab:
           render_back: true
       base_scale: 0.02
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
     - path: fbx/scenery/trees/Maple_02.fbx
       lods:
         - level: 1
@@ -30,6 +34,10 @@ prefab:
           render_back: true
       base_scale: 0.02
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
     - path: fbx/scenery/trees/Maple_02.fbx
       lods:
         - level: 2
@@ -42,6 +50,10 @@ prefab:
           map_kd: textures/leaf maple.png
       base_scale: 0.02
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
     - path: fbx/scenery/trees/Maple_02.fbx
       lods:
         - level: 3
@@ -53,6 +65,10 @@ prefab:
           map_kd: textures/bark02.png
       base_scale: 0.02
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
   lod_levels:
     - level: 0
       distance: 0

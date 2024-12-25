@@ -288,6 +288,26 @@ nodes:
   - id: maple_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
+    mesh:
+      material_modifiers:
+        - alias: maple_trunk
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
+        - alias: maple_leaf
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:
@@ -522,6 +542,26 @@ nodes:
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
+    mesh:
+      material_modifiers:
+        - alias: palm_trunk
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
+        - alias: palm_leaf
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:

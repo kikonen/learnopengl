@@ -15,6 +15,10 @@ prefab:
           blend: true
           render_back: true
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
@@ -30,6 +34,10 @@ prefab:
           alpha: true
           render_back: true
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
@@ -45,6 +53,10 @@ prefab:
           alpha: true
           render_back: true
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
@@ -59,6 +71,10 @@ prefab:
           map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
           alpha: true
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
@@ -72,6 +88,10 @@ prefab:
           alias: MI_PineTree_01a
           map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
       program: g_tex
+      oit_program: oit_pass
+      shadow_program: shadow
+      id_program: object_id
+      selection_program: selection
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
   lod_levels:

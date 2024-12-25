@@ -45,6 +45,26 @@ nodes:
   - id: pine_tree_forest_{t}
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
+    mesh:
+      material_modifiers:
+        - alias: pine_trunk_pbr
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
+        - alias: pine_leaf_pbr
+          program_definitions:
+            USE_TREE_WIND: 1
+          oit_definitions:
+            USE_TREE_WIND: 1
+          shadow_definitions:
+            USE_TREE_WIND: 1
+          selection_definitions:
+            USE_TREE_WIND: 1
     pos: [0.0, 0.0, 0.0]
     rotation: [0, 0, 0]
     scale: [1.3, 1, 1.3]
