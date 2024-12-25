@@ -40,7 +40,8 @@ void main() {
     #include var_tex_material_alpha.glsl
 
     // NOtE KI experimental value; depends from few aspects in blended windows
-    if (alpha < 0.4)
+    // NOTE KI this works badly for blended objects if threshold too big
+    if (alpha < 0.1)
       discard;
   }
 #endif

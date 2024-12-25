@@ -40,7 +40,8 @@ void main() {
 
     #include var_tex_material_alpha.glsl
 
-    if (alpha < 0.6)
+    // NOTE KI this works badly for blended objects if threshold too big
+    if (alpha < 0.1)
       discard;
   }
 #endif

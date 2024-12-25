@@ -1,5 +1,4 @@
 ---
-name: Test
 skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
@@ -20,14 +19,14 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Cube Gbuffer
+  - id: cube_gbuffer
     mesh:
       path: texture_cube
       material_modifier:
         tiling: 5
     program: g_tex
     pos: [0.0, 1.5, -14.0]
-  - name: Cube Forward
+  - id: cube_forward
     mesh:
       path: texture_cube
       material_modifier:
@@ -38,7 +37,6 @@ nodes:
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
       material:
-        name: door_glass_1_pbr
         map_pbr: door_glass_1_pbr
         alpha: true
         blend: true
@@ -51,7 +49,6 @@ nodes:
     mesh:
       path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
       material:
-        name: door_glass_2_pbr
         map_pbr: door_glass_2_pbr
         alpha: true
         blend: true
@@ -60,7 +57,7 @@ nodes:
       base_scale: 0.01
       #base_rotation: [-90.0, 0.0, 0.0]
     pos: [0.5, -1.0, -10.0]
-  - name: Blend cubes
+  - id: blend_cube_{c}_{t}
     mesh:
       path: rubik_cube.fbx
       material_modifier:
@@ -77,11 +74,10 @@ nodes:
       x_step: 8
       z_step: -8
     script_file: scripts/anim_rotate_object
-  - name: Plasma ball
+  - id: plasma_ball
     mesh:
       path: ball_volume
       material:
-        name: plasma_ball
         map_kd: textures/noise_256.png
         alpha: true
         blend: true
@@ -94,7 +90,7 @@ nodes:
       effect: true
       no_select: true
       no_shadow: true
-  - name: Hello world
+  - id: hello_world
     type: text
     mesh:
       material:

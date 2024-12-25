@@ -160,8 +160,11 @@ void ObjectIdRenderer::render(
     m_idBuffer->unbind(ctx);
 }
 
-void ObjectIdRenderer::drawNodes(const RenderContext& ctx)
+void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
 {
+    RenderContext ctx{ "local", &parentCtx };
+    ctx.m_forceSolid = true;
+
     auto& state = ctx.m_state;
 
     state.setEnabled(GL_DEPTH_TEST, true);

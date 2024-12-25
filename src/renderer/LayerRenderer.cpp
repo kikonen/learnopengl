@@ -121,9 +121,12 @@ void LayerRenderer::render(
 
 // Render selected nodes into stencil mask
 void LayerRenderer::fillHighlightMask(
-    const RenderContext& ctx,
+    const RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
+    RenderContext ctx{ "local", &parentCtx };
+    ctx.m_forceSolid = true;
+
     const auto& assets = ctx.m_assets;
 
     if (!assets.showHighlight) return;
@@ -162,6 +165,7 @@ void LayerRenderer::renderHighlight(
     render::FrameBuffer* targetBuffer)
 {
     RenderContext ctx{ "local", &parentCtx };
+    ctx.m_forceSolid = true;
 
     const auto& assets = ctx.m_assets;
 
