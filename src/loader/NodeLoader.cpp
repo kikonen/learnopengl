@@ -259,10 +259,12 @@ namespace loader {
                     hasClones = true;
             }
             else if (k == "script") {
-                loaders.m_scriptLoader.loadScript(v, data.script, false);
+                auto& scriptData = data.scripts.emplace_back();
+                loaders.m_scriptLoader.loadScript(v, scriptData, false);
             }
             else if (k == "script_file") {
-                loaders.m_scriptLoader.loadScript(v, data.script, true);
+                auto& scriptData = data.scripts.emplace_back();
+                loaders.m_scriptLoader.loadScript(v, scriptData, true);
             }
             else if (k == "meshes") {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);

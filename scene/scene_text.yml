@@ -84,8 +84,6 @@ nodes:
   - id: hello_world
     type: text
     mesh:
-      flags:
-        billboard: true
       material:
         map_pbr: textures\Plastic 01 [4K]
         xmap_pbr: textures\Fence007A_4K-JPG
@@ -97,6 +95,8 @@ nodes:
         program: g_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
+      xflags:
+        billboard: true
     text:
       font:
         path: fonts/LuckiestGuy.ttf
@@ -110,6 +110,12 @@ nodes:
     flags:
       xeffect: true
     script_file: scripts/seq_hello_text
+    script: |
+      printf("text rotate: %d", id)
+      cmd:rotate(
+        { time=60 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
   - id: another_text
     type: text
     mesh:

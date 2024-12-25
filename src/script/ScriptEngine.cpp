@@ -152,8 +152,13 @@ namespace script
 
         if (fnName.empty()) return;
 
-        std::unordered_map<script::script_id, std::string> fnMap{ { scriptId, fnName } };
-        m_nodeFunctions.insert({ handle, fnMap });
+        auto it = m_nodeFunctions.find(handle);
+        if (it == m_nodeFunctions.end()) {
+            std::unordered_map<script::script_id, std::string> fnMap;
+            m_nodeFunctions.insert({ handle, fnMap });
+            it = m_nodeFunctions.find(handle);
+        }
+        it->second.insert({ scriptId, fnName });
 
         m_commandApis.insert({ handle, std::make_unique<NodeCommandAPI>(this, m_commandEngine, handle) });
 
@@ -165,7 +170,7 @@ namespace script
     std::vector<script::script_id> ScriptEngine::getNodeScripts(
         pool::NodeHandle handle)
     {
-        const auto it = m_nodeFunctions.find(handle);
+        const auto& it = m_nodeFunctions.find(handle);
         if (it == m_nodeFunctions.end()) return {};
 
         std::vector<script::script_id> scripts;

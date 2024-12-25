@@ -139,7 +139,9 @@ namespace loader {
             std::string filename = data.path + ".lua";
             scripts.push_back(readFile(filename));
         }
-        scripts.push_back(data.script);
+        if (!data.script.empty()) {
+            scripts.push_back(data.script);
+        }
 
         for (const auto& script : scripts) {
             if (script.empty()) continue;

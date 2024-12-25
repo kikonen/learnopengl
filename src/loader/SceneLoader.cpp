@@ -506,9 +506,9 @@ namespace loader {
             parentId = id;
         }
 
-        const auto scriptIds = m_loaders->m_scriptLoader.createScript(
+        const auto scriptIds = m_loaders->m_scriptLoader.createScripts(
             handle,
-            nodeData.script);
+            nodeData.scripts);
 
         ResolvedNode resolved{
             parentId,

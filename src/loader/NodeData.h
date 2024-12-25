@@ -83,7 +83,7 @@ namespace loader {
 
         Repeat repeat;
 
-        ScriptData script;
+        std::vector<ScriptData> scripts;
 
         std::vector<ControllerData> controllers;
         CameraData camera;
