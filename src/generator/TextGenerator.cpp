@@ -112,6 +112,9 @@ void TextGenerator::updateVAO(
 
     lodMesh->m_indexCount = mesh->getIndexCount();
 
+    // TODO KI threading violation
+    container.modifyState().setVolume(m_aabb.getVolume());
+
     //{
     //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
     //    mesh->m_positionVboOffset = m_vao.m_positionVbo.addEntries(mesh->m_positions);
