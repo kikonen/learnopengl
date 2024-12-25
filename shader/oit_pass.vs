@@ -40,6 +40,7 @@ Instance instance;
 Entity entity;
 
 #include fn_calculate_clipping.glsl
+#include fn_mod.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -50,6 +51,7 @@ void main() {
 
   const uint materialIndex = instance.u_materialIndex;
 
+  vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
@@ -59,11 +61,13 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_mainCameraRight * a_pos.x * entityScale.x
-                    + UP * a_pos.y * entityScale.y,
+                    + u_mainCameraRight * pos.x * entityScale.x
+                    + UP * pos.y * entityScale.y,
                     1.0);
   } else {
-    worldPos = modelMatrix * vec4(a_pos, 1.0);
+    #include apply_mod_simple.glsl
+
+    worldPos = modelMatrix * pos;
   }
 
   gl_Position = u_projectedMatrix * worldPos;

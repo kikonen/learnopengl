@@ -454,6 +454,9 @@ namespace loader {
             else if (k == "program" || k == "shader") {
                 material.m_programNames[MaterialProgramType::shader] = readString(v);
             }
+            else if (k == "oit_program") {
+                material.m_programNames[MaterialProgramType::oit] = readString(v);
+            }
             else if (k == "shadow_program") {
                 material.m_programNames[MaterialProgramType::shadow] = readString(v);
             }
@@ -477,6 +480,13 @@ namespace loader {
                     const auto& defName = defNode.getName();
                     const auto& defValue = readString(defNode.getNode());
                     material.m_programDefinitions[util::toUpper(defName)] = defValue;
+                }
+            }
+            else if (k == "oit_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_oitDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
             else if (k == "shadow_definitions") {
@@ -825,6 +835,10 @@ namespace loader {
             m.m_programDefinitions[progIt.first] = progIt.second;
         }
 
+        for (const auto& progIt : mod.m_oitDefinitions) {
+            m.m_oitDefinitions[progIt.first] = progIt.second;
+        }
+
         for (const auto& progIt : mod.m_shadowDefinitions) {
             m.m_shadowDefinitions[progIt.first] = progIt.second;
         }
@@ -896,6 +910,10 @@ namespace loader {
             material.m_programNames,
             SHADER_PRE_DEPTH_PASS);
 
+        const auto& oitName = selectProgram(
+            MaterialProgramType::oit,
+            material.m_programNames);
+
         const auto& shadowName = selectProgram(
             MaterialProgramType::shadow,
             material.m_programNames);
@@ -917,6 +935,7 @@ namespace loader {
 
         if (!shaderName.empty()) {
             std::map<std::string, std::string, std::less<>> definitions;
+            std::map<std::string, std::string, std::less<>> oitDefinitions;
             std::map<std::string, std::string, std::less<>> shadowDefinitions;
             std::map<std::string, std::string, std::less<>> selectionDefinitions;
             std::map<std::string, std::string, std::less<>> idDefinitions;
@@ -924,6 +943,10 @@ namespace loader {
 
             for (const auto& [k, v] : material.m_programDefinitions) {
                 definitions[k] = v;
+            }
+
+            for (const auto& [k, v] : material.m_oitDefinitions) {
+                oitDefinitions[k] = v;
             }
 
             // NOTE KI *NOT* same as program, to allow maximal reuse of shadow program
@@ -953,6 +976,7 @@ namespace loader {
 
             if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
+                oitDefinitions[DEF_USE_ALPHA] = "1";
                 shadowDefinitions[DEF_USE_ALPHA] = "1";
                 selectionDefinitions[DEF_USE_ALPHA] = "1";
                 idDefinitions[DEF_USE_ALPHA] = "1";
@@ -986,6 +1010,7 @@ namespace loader {
             }
             if (useBones) {
                 definitions[DEF_USE_BONES] = "1";
+                oitDefinitions[DEF_USE_BONES] = "1";
                 shadowDefinitions[DEF_USE_BONES] = "1";
                 selectionDefinitions[DEF_USE_BONES] = "1";
                 idDefinitions[DEF_USE_BONES] = "1";
@@ -993,6 +1018,7 @@ namespace loader {
             }
             if (useSockets) {
                 definitions[DEF_USE_SOCKETS] = "1";
+                oitDefinitions[DEF_USE_SOCKETS] = "1";
                 shadowDefinitions[DEF_USE_SOCKETS] = "1";
                 selectionDefinitions[DEF_USE_SOCKETS] = "1";
                 idDefinitions[DEF_USE_SOCKETS] = "1";
@@ -1007,6 +1033,14 @@ namespace loader {
                 false,
                 material.m_geometryType,
                 definitions);
+
+            if (!oitName.empty()) {
+                material.m_programs[MaterialProgramType::oit] = ProgramRegistry::get().getProgramId(
+                    oitName,
+                    false,
+                    "",
+                    oitDefinitions);
+            }
 
             if (!shadowName.empty()) {
                 {

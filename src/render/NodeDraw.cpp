@@ -325,16 +325,18 @@ namespace render {
         glBlendEquation(GL_FUNC_ADD);
 
         // only "blend OIT" nodes
-        drawProgram(
+        drawNodesImpl(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
-                return lodMesh.m_drawOptions.m_gbuffer ? m_oitProgram->m_id : (ki::program_id)0;
+                if (!lodMesh.m_drawOptions.m_gbuffer) return (ki::program_id)0;
+                if (lodMesh.m_oitProgramId) return lodMesh.m_oitProgramId;
+                return m_oitProgram->m_id;
             },
             [&typeSelector](const mesh::MeshType* type) {
                 return typeSelector(type);
             },
             nodeSelector,
-            kindBits & render::KIND_BLEND);
+            kindBits& render::KIND_BLEND);
 
         ctx.m_batch->flush(ctx);
 

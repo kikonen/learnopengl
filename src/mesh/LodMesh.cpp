@@ -77,6 +77,7 @@ namespace mesh {
         m_indexCount = o.m_indexCount;
 
         m_programId = o.m_programId;
+        m_oitProgramId = o.m_oitProgramId;
         m_shadowProgramId = o.m_shadowProgramId;
         m_preDepthProgramId = o.m_preDepthProgramId;
         m_selectionProgramId = o.m_selectionProgramId;
@@ -115,6 +116,7 @@ namespace mesh {
         m_indexCount = o.m_indexCount;
 
         m_programId = o.m_programId;
+        m_oitProgramId = o.m_oitProgramId;
         m_shadowProgramId = o.m_shadowProgramId;
         m_preDepthProgramId = o.m_preDepthProgramId;
         m_selectionProgramId = o.m_selectionProgramId;
@@ -206,6 +208,7 @@ namespace mesh {
         m_drawOptions.m_clip = m_flags.clip;
 
         m_programId = material.getProgram(MaterialProgramType::shader);
+        m_oitProgramId = material.getProgram(MaterialProgramType::oit);
         m_shadowProgramId = material.getProgram(MaterialProgramType::shadow);
         m_preDepthProgramId = material.getProgram(MaterialProgramType::pre_depth);
         m_selectionProgramId = material.getProgram(MaterialProgramType::selection);

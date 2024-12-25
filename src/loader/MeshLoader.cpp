@@ -98,6 +98,9 @@ namespace loader {
             else if (k == "program") {
                 data.programs[MaterialProgramType::shader] = readString(v);
             }
+            else if (k == "oit_program") {
+                data.programs[MaterialProgramType::oit] = readString(v);
+            }
             else if (k == "shadow_program") {
                 data.programs[MaterialProgramType::shadow] = readString(v);
             }

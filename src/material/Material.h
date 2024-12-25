@@ -39,6 +39,7 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
 
 enum class MaterialProgramType : std::underlying_type_t<std::byte> {
     shader,
+    oit,
     shadow,
     pre_depth,
     selection,
@@ -288,7 +289,9 @@ public:
     std::vector<ChannelPart> map_channelParts;
 
     std::map<MaterialProgramType, std::string> m_programNames{};
+
     std::map<std::string, std::string> m_programDefinitions{};
+    std::map<std::string, std::string> m_oitDefinitions{};
     std::map<std::string, std::string> m_shadowDefinitions{};
     std::map<std::string, std::string> m_selectionDefinitions{};
     std::map<std::string, std::string> m_idDefinitions{};

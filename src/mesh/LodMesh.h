@@ -110,6 +110,7 @@ namespace mesh {
         ki::vao_id m_vaoId{ 0 };
 
         ki::program_id m_programId{ 0 };
+        ki::program_id m_oitProgramId{ 0 };
         ki::program_id m_shadowProgramId{ 0 };
         ki::program_id m_preDepthProgramId{ 0 };
         ki::program_id m_selectionProgramId{ 0 };
