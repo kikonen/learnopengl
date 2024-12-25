@@ -1,11 +1,11 @@
 local TEXTS = {
   "Christmas\n" ..
-    "    Time\n",
-    "Time of relax\n" ..
-    "  for full day",
-  "   Merry\n" ..
+  "Time\n",
+  "Time of relax\n" ..
+  "for full day",
+  "Merry\n" ..
   "Christmas\n" ..
-  "   to All!",
+  "to All!",
   "With best wishes\n" ..
   "from the land of snow",
 }

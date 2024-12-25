@@ -1,5 +1,4 @@
 ---
-name: Origo
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
@@ -33,11 +32,10 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material:
-        name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
         metal: [0.2, 0.1, 0.0, 1.0]
         program: g_tex
@@ -209,7 +207,6 @@ nodes:
     type: text
     mesh:
       material:
-        name: hello
         xkd: [0, 1, 0]
         map_pbr: textures\Plastic 01 [4K]
         xmap_pbr: textures\Fence007A_4K-JPG
@@ -224,12 +221,14 @@ nodes:
       flags:
         billboard: true
     text:
+      align_horizontal: center
+      align_vertical: center
       font:
         xpath: fonts/LuckiestGuy.ttf
         path: fonts/Lobster-Regular.ttf
         size: 128
       text: . . .
-    pos: [-4.0, 8.0, 0.0]
+    pos: [0.0, 8.0, 0.0]
     scale: 0.015
     flags:
       xeffect: true
@@ -240,10 +239,7 @@ nodes:
         type: sphere
         radius: 0.1
       material:
-        name: hello
-        map_pbr: textures\Metal007_1K-PNG
+        map_pbr: textures\Plastic 01 [4K]
         tiling: 1
         program: g_tex
-      flags:
-        billboard: true
-    pos: [-4.0, 8.0, 0.0]
+    pos: [0.0, 8.0, 0.0]

@@ -39,8 +39,7 @@ namespace
         text::Align alignVertical,
         size_t maxCount)
     {
-        const glm::vec2 penOrigin = pivot;
-        glm::vec2 pen{ 0.f };
+        if (text.empty()) return;
 
         if (alignHorizontal == text::Align::none) {
             alignHorizontal = text::Align::left;
@@ -49,125 +48,140 @@ namespace
             alignVertical = text::Align::top;
         }
 
-        const glm::vec3 normal{ 0.f, 0.f, 1.f };
-        const glm::vec3 tangent{ 1.f, 0.f, 0.f };
-        const char* prev = { nullptr };
-
-        auto* font = fontAtlas->getFont()->m_font;
-
-        // @see freetype-gl/text-buffer.c
-        const auto line_ascender = font->ascender;
-        const auto line_descender = font->descender;
-        const auto line_height = line_ascender - line_descender;
-
-        //pen.y += line_ascender;
-
-        const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
-        const float glyphMaxW = glyph->s1 - glyph->s0;
-        const float glyphMaxH = glyph->t1 - glyph->t0;
-
         std::vector<size_t> lineOffsets;
         std::vector<size_t> lineLenghts;
+        std::vector<float> lineHeights;
         std::vector<const ftgl::texture_glyph_t*> glyphs;
-        lineOffsets.push_back(mesh->m_vertices.size());
-        lineLenghts.push_back(0);
         size_t lineCount = 0;
+        float lineHeight = 0.f;
 
-        size_t textIndex = 0;
-        // https://stackoverflow.com/questions/9438209/for-every-character-in-string
-        for (const char& ch : text) {
-            if (textIndex >= maxCount) break;
+        {
+            const glm::vec2 penOrigin = pivot;
+            glm::vec2 pen{ 0.f };
 
-            float line_top = pen.y + line_ascender;
+            const glm::vec3 normal{ 0.f, 0.f, 1.f };
+            const glm::vec3 tangent{ 1.f, 0.f, 0.f };
+            const char* prev = { nullptr };
 
-            if (ch == '\n') {
-                pen.x = penOrigin.x;
-                pen.y -= line_height;
-                //pen.y += line_descender;
+            auto* font = fontAtlas->getFont()->m_font;
 
-                lineOffsets.push_back(mesh->m_vertices.size());
-                lineLenghts.push_back(0);
-                lineCount++;
+            // @see freetype-gl/text-buffer.c
+            const auto line_ascender = font->ascender;
+            const auto line_descender = font->descender;
+            const auto line_height = line_ascender - line_descender;
 
-                continue;
+            //pen.y += line_ascender;
+
+            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
+            const float glyphMaxW = glyph->s1 - glyph->s0;
+            const float glyphMaxH = glyph->t1 - glyph->t0;
+
+            lineOffsets.push_back(mesh->m_vertices.size());
+            lineLenghts.push_back(0);
+            lineHeight = line_height;
+            lineCount = 1;
+
+            size_t textIndex = 0;
+            // https://stackoverflow.com/questions/9438209/for-every-character-in-string
+            for (const char& ch : text) {
+                if (textIndex >= maxCount) break;
+
+                float line_top = pen.y + line_ascender;
+
+                if (ch == '\n') {
+                    pen.x = penOrigin.x;
+                    pen.y -= line_height;
+                    //pen.y += line_descender;
+
+                    lineOffsets.push_back(mesh->m_vertices.size());
+                    lineLenghts.push_back(0);
+                    lineCount++;
+
+                    continue;
+                }
+
+                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
+
+                if (!glyph) {
+                    glyph = texture_font_get_glyph(font, MISSING_CH);
+                }
+                if (!glyph) continue;
+
+                float kerning = 0.0f;
+                if (prev)
+                {
+                    kerning = ftgl::texture_glyph_get_kerning(glyph, prev);
+                }
+                pen.x += kerning;
+
+                // Actual glyph
+                const float x0 = (pen.x + glyph->offset_x);
+                const float y0 = (float)((int)(pen.y + glyph->offset_y));
+                const float x1 = (x0 + glyph->width);
+                const float y1 = (float)((int)(y0 - glyph->height));
+                const float s0 = glyph->s0;
+                const float t0 = glyph->t0;
+                const float s1 = glyph->s1;
+                const float t1 = glyph->t1;
+
+                const float glyphW = glyph->s1 - glyph->s0;
+                const float glyphH = glyph->t1 - glyph->t0;
+
+                const GLuint index = (GLuint)mesh->m_vertices.size();
+
+                const glm::vec3 positions[4]{
+                    { x0, y0, 0.f },
+                    { x0, y1, 0.f },
+                    { x1, y1, 0.f },
+                    { x1, y0, 0.f },
+                };
+                const glm::vec2 atlasCoords[4]{
+                    { s0, t0 },
+                    { s0, t1 },
+                    { s1, t1 },
+                    { s1, t0 },
+                };
+
+                const glm::vec2 materialCoords[4]{
+                    { 0, 0 },
+                    { 0,                  glyphH / glyphMaxH },
+                    { glyphW / glyphMaxW, glyphH / glyphMaxH },
+                    { glyphW / glyphMaxW, 0 },
+                };
+
+                const mesh::Index32 indeces[2 * 3]{
+                    index, index + 1, index + 2,
+                    index, index + 2, index + 3,
+                };
+
+                for (int i = 0; i < 4; i++) {
+                    mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent);
+                    mesh->m_atlasCoords.emplace_back(atlasCoords[i]);
+                }
+
+                for (const auto& v : indeces) {
+                    mesh->m_indeces.push_back(v);
+                }
+
+                pen.x += glyph->advance_x;
+                prev = &ch;
+
+                glyphs.push_back(glyph);
+                lineLenghts[lineCount - 1]++;
+
+                textIndex++;
             }
 
-            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
-
-            if (!glyph) {
-                glyph = texture_font_get_glyph(font, MISSING_CH);
+            if (textIndex == 0) {
+                // NOTE KI no actual text written
+                return;
             }
-            if (!glyph) continue;
-
-            float kerning = 0.0f;
-            if (prev)
-            {
-                kerning = ftgl::texture_glyph_get_kerning(glyph, prev);
-            }
-            pen.x += kerning;
-
-            // Actual glyph
-            const float x0 = (pen.x + glyph->offset_x);
-            const float y0 = (float)((int)(pen.y + glyph->offset_y));
-            const float x1 = (x0 + glyph->width);
-            const float y1 = (float)((int)(y0 - glyph->height));
-            const float s0 = glyph->s0;
-            const float t0 = glyph->t0;
-            const float s1 = glyph->s1;
-            const float t1 = glyph->t1;
-
-            const float glyphW = glyph->s1 - glyph->s0;
-            const float glyphH = glyph->t1 - glyph->t0;
-
-            const GLuint index = (GLuint)mesh->m_vertices.size();
-
-            const glm::vec3 positions[4] {
-                { x0, y0, 0.f },
-                { x0, y1, 0.f },
-                { x1, y1, 0.f },
-                { x1, y0, 0.f },
-            };
-            const glm::vec2 atlasCoords[4] {
-                { s0, t0 },
-                { s0, t1 },
-                { s1, t1 },
-                { s1, t0 },
-            };
-
-            const glm::vec2 materialCoords[4]{
-                { 0, 0 },
-                { 0,                  glyphH / glyphMaxH },
-                { glyphW / glyphMaxW, glyphH / glyphMaxH },
-                { glyphW / glyphMaxW, 0 },
-            };
-
-            const mesh::Index32 indeces[2 * 3] {
-                index, index + 1, index + 2,
-                index, index + 2, index + 3,
-            };
-
-            for (int i = 0; i < 4; i++) {
-                mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent);
-                mesh->m_atlasCoords.emplace_back(atlasCoords[i]);
-            }
-
-            for (const auto& v : indeces) {
-                mesh->m_indeces.push_back(v);
-            }
-
-            pen.x += glyph->advance_x;
-            prev = &ch;
-
-            glyphs.push_back(glyph);
-            lineLenghts[lineCount]++;
-
-            textIndex++;
         }
 
-        // TODO KI align horizontal
-        for (size_t lineIndex = 0; lineIndex <= lineCount; lineIndex++) {
-            auto offset = lineOffsets[lineIndex];
-            auto lineLen = lineLenghts[lineIndex];
+        // NOTE KI align horizontal
+        for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+            const auto offset = lineOffsets[lineIndex];
+            const auto lineLen = lineLenghts[lineIndex];
 
             float lineW = 0.f;
             for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
@@ -195,7 +209,33 @@ namespace
             }
         }
 
-        // TODO KI align vertical
+        // NOTE KI align vertical
+        const auto totalHeight = lineCount * lineHeight;
+
+        for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+            const auto offset = lineOffsets[lineIndex];
+            const auto lineLen = lineLenghts[lineIndex];
+
+            float adjustY = 0.f;
+
+            switch (alignVertical) {
+            case text::Align::top:
+                // NOTE KI nothing
+                adjustY = -lineHeight;
+                break;
+            case text::Align::bottom:
+                adjustY += totalHeight - lineHeight;
+                break;
+            case text::Align::center:
+                adjustY += totalHeight * 0.5f - lineHeight;
+                break;
+            }
+
+            for (size_t chIndex = 0; chIndex < lineLen * 4; chIndex++) {
+                auto& vertex = mesh->m_vertices[offset + chIndex];
+                vertex.pos.y += adjustY;
+            }
+        }
     }
 }
 
