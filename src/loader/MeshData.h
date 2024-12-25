@@ -42,6 +42,7 @@ namespace loader {
         std::unordered_map<MaterialProgramType, std::string> programs;
 
         std::vector<MaterialData> materials;
+        std::vector<MaterialData> materialModifiers;
         std::vector<AnimationData> animations;
 
         loader::FlagContainer meshFlags;

@@ -68,7 +68,7 @@ namespace loader {
                 data.frameSkip = readInt(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterialModifiers(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
             else {
                 reportUnknown("updater_entry", k, v);

@@ -123,12 +123,14 @@ namespace loader {
                 materialData.materialName = materialData.material.m_name;
             }
             else if (k == "material_modifier") {
-                if (data.materials.empty()) {
-                    data.materials.emplace_back();
+                if (data.materialModifiers.empty()) {
+                    data.materialModifiers.emplace_back();
                 }
-                auto& materialData = data.materials[0];
-                materialData.aliasName = "*";
-                loaders.m_materialLoader.loadMaterialModifiers(v, materialData, loaders);
+                auto& materialData = data.materialModifiers[0];
+                loaders.m_materialLoader.loadMaterialModifier(v, materialData, loaders);
+            }
+            else if (k == "material_modifiers") {
+                loaders.m_materialLoader.loadMaterialModifiers(v, data.materialModifiers, loaders);
             }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {
@@ -185,13 +187,12 @@ namespace loader {
             }
         }
 
-        // NOTE KI ensure assigns are before modifiers
-        std::sort(
-            data.materials.begin(),
-            data.materials.end(),
-            [](auto& a, auto& b) { return a.modifier < b.modifier; });
-
         for (auto& materialData : data.materials) {
+            loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);
+            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
+        }
+
+        for (auto& materialData : data.materialModifiers) {
             loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);
             loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
         }

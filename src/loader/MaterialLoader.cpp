@@ -162,14 +162,27 @@ namespace loader {
 
     void MaterialLoader::loadMaterialModifiers(
         const loader::DocNode& node,
+        std::vector<MaterialData>& materials,
+        Loaders& loaders) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            MaterialData& data = materials.emplace_back();
+            loadMaterialModifier(entry, data, loaders);
+        }
+    }
+
+    void MaterialLoader::loadMaterialModifier(
+        const loader::DocNode& node,
         MaterialData& data,
         Loaders& loaders) const
     {
         data.enabled = true;
-        data.modifier = true;
-        data.material.m_name = "<modifier>";
+        data.aliasName = "*";
 
         loadMaterial(node, data, loaders);
+
+        data.material.m_name = "<modifier>";
+        data.materialName = data.material.m_name;
     }
 
     void MaterialLoader::loadMaterials(
@@ -203,9 +216,6 @@ namespace loader {
             }
             else if (k == "alias") {
                 data.aliasName = readString(v);
-            }
-            else if (k == "modify") {
-                data.modifier = readBool(v);
             }
             else if (k == "base" || k == "base_path") {
                 material.m_basePath = readString(v);

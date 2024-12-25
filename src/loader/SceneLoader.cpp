@@ -599,23 +599,31 @@ namespace loader {
         {
             auto& l = *m_loaders;
 
-            // NOTE KI assuming that modifiers are *after* assigns
             for (auto& materialData : meshData.materials) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
 
-                KI_INFO_OUT(fmt::format(
-                    "MAT_REF: model={}, material={}, name={}, alias={}",
-                    type->str(), material.m_name, name, alias));
+                if (name == material.m_name || alias == material.m_name || alias == "*")
+                {
+                    KI_INFO_OUT(fmt::format(
+                        "MAT_ASSIGN: model={}, material={}, name={}, alias={}",
+                        type->str(), material.m_name, name, alias));
+
+                    material.assign(materialData.material);
+                }
+            }
+
+            for (auto& materialData : meshData.materialModifiers) {
+                const auto& alias = materialData.aliasName;
+                const auto& name = materialData.materialName;
 
                 if (name == material.m_name || alias == material.m_name || alias == "*")
                 {
-                    if (materialData.modifier) {
-                        l.m_materialLoader.modifyMaterial(material, materialData);
-                    }
-                    else {
-                        material.assign(materialData.material);
-                    }
+                    KI_INFO_OUT(fmt::format(
+                        "MAT_MODIFY: model={}, material={}, name={}, alias={}",
+                        type->str(), material.m_name, name, alias));
+
+                    l.m_materialLoader.modifyMaterial(material, materialData);
                 }
             }
         }

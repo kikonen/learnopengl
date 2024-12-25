@@ -20,6 +20,11 @@ namespace loader {
 
         void loadMaterialModifiers(
             const loader::DocNode& node,
+            std::vector<MaterialData>& materials,
+            Loaders& loaders) const;
+
+        void loadMaterialModifier(
+            const loader::DocNode& node,
             MaterialData& data,
             Loaders& loaders) const;
 
