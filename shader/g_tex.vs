@@ -77,7 +77,7 @@ Entity entity;
 
 #include fn_calculate_clipping.glsl
 #include fn_calculate_custom_clipping.glsl
-#include fn_mod_flag_wave.glsl
+#include fn_mod.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -143,10 +143,7 @@ void main() {
 #endif
 
     #include tech_skinned_mesh_skin.glsl
-
-#ifdef USE_FLAG_WAVE
-    mod_flag_wave(pos, normal, tangent);
-#endif
+    #include apply_mod.glsl
 
     worldPos = modelMatrix * pos;
 

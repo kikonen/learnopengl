@@ -34,7 +34,7 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
-#include fn_mod_flag_wave.glsl
+#include fn_mod.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
@@ -71,10 +71,7 @@ void main() {
     tangent = a_tangent;
 
     #include tech_skinned_mesh_skin.glsl
-
-#ifdef USE_FLAG_WAVE
-    mod_flag_wave(pos, normal, tangent);
-#endif
+    #include apply_mod.glsl
 
     worldPos = modelMatrix * pos;
 
