@@ -91,8 +91,19 @@ nodes:
   - id: skeleton_army_grid_2_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
+    mesh:
+      material_modifier:
+        kd: [0.8, 1.5, 0.8, 0.5]
+        blend: true
+        alpha: true
+        render_back: true
+        program: g_tex
+        oit_program: oit_pass
+        shadow_program: shadow
+        id_program: object_id
+        selection_program: selection
     priority: 1
-    pos: [20, 0.0, 20]
+    pos: [20, 0.5, 20]
     rotation: [0, 45, 0]
     rotation: [0, -90, 0]
     scale: 3
