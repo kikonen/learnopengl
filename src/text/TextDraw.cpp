@@ -34,10 +34,21 @@ namespace
         mesh::TextMesh* mesh,
         text::FontAtlas* fontAtlas,
         std::string_view text,
-        glm::vec2& pen,
+        const glm::vec2& pivot,
+        text::Align alignHorizontal,
+        text::Align alignVertical,
         size_t maxCount)
     {
-        const auto penOrigin = pen;
+        const glm::vec2 penOrigin = pivot;
+        glm::vec2 pen{ 0.f };
+
+        if (alignHorizontal == text::Align::none) {
+            alignHorizontal = text::Align::left;
+        }
+        if (alignVertical == text::Align::none) {
+            alignVertical = text::Align::top;
+        }
+
         const glm::vec3 normal{ 0.f, 0.f, 1.f };
         const glm::vec3 tangent{ 1.f, 0.f, 0.f };
         const char* prev = { nullptr };
@@ -51,9 +62,16 @@ namespace
 
         //pen.y += line_ascender;
 
-        const ftgl::texture_glyph_t* m_glyph = texture_font_get_glyph(font, M_CH);
-        const float glyphMaxW = m_glyph->s1 - m_glyph->s0;
-        const float glyphMaxH = m_glyph->t1 - m_glyph->t0;
+        const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
+        const float glyphMaxW = glyph->s1 - glyph->s0;
+        const float glyphMaxH = glyph->t1 - glyph->t0;
+
+        std::vector<size_t> lineOffsets;
+        std::vector<size_t> lineLenghts;
+        std::vector<const ftgl::texture_glyph_t*> glyphs;
+        lineOffsets.push_back(mesh->m_vertices.size());
+        lineLenghts.push_back(0);
+        size_t lineCount = 0;
 
         size_t textIndex = 0;
         // https://stackoverflow.com/questions/9438209/for-every-character-in-string
@@ -66,13 +84,19 @@ namespace
                 pen.x = penOrigin.x;
                 pen.y -= line_height;
                 //pen.y += line_descender;
+
+                lineOffsets.push_back(mesh->m_vertices.size());
+                lineLenghts.push_back(0);
+                lineCount++;
+
                 continue;
             }
+
             const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
+
             if (!glyph) {
                 glyph = texture_font_get_glyph(font, MISSING_CH);
             }
-
             if (!glyph) continue;
 
             float kerning = 0.0f;
@@ -134,8 +158,44 @@ namespace
             pen.x += glyph->advance_x;
             prev = &ch;
 
+            glyphs.push_back(glyph);
+            lineLenghts[lineCount]++;
+
             textIndex++;
         }
+
+        // TODO KI align horizontal
+        for (size_t lineIndex = 0; lineIndex <= lineCount; lineIndex++) {
+            auto offset = lineOffsets[lineIndex];
+            auto lineLen = lineLenghts[lineIndex];
+
+            float lineW = 0.f;
+            for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
+                auto* glyph = glyphs[chIndex];
+                lineW += glyph->advance_x;
+            }
+
+            float adjustX = 0.f;
+
+            switch (alignHorizontal) {
+            case text::Align::left:
+                // NOTE KI nothing
+                break;
+            case text::Align::right:
+                adjustX = -lineW;
+                break;
+            case text::Align::center:
+                adjustX = -lineW * 0.5f;
+                break;
+            }
+
+            for (size_t chIndex = 0; chIndex < lineLen * 4; chIndex++) {
+                auto& vertex = mesh->m_vertices[offset + chIndex];
+                vertex.pos.x += adjustX;
+            }
+        }
+
+        // TODO KI align vertical
     }
 }
 
@@ -162,13 +222,15 @@ namespace text
     void TextDraw::render(
         text::font_id fontId,
         std::string_view text,
-        glm::vec2& pen,
+        const glm::vec2& pivot,
+        text::Align alignHorizontal,
+        text::Align alignVertical,
         mesh::TextMesh* mesh)
     {
         auto* font = text::FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(mesh, font, text, pen, mesh->m_maxSize);
+        addText(mesh, font, text, pivot, alignHorizontal, alignVertical, mesh->m_maxSize);
 
         mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
         mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());

@@ -667,6 +667,7 @@
     <ClInclude Include="src\scene\Updater.h" />
     <ClInclude Include="src\script\api\AnimationPlay.h" />
     <ClInclude Include="src\script\UtilAPI.h" />
+    <ClInclude Include="src\text\Align.h" />
     <ClInclude Include="src\text\TextSystem.h" />
     <ClInclude Include="src\util\assimp_util.h" />
     <ClInclude Include="src\mesh\vao\BoneEntry.h" />

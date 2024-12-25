@@ -71,13 +71,22 @@ nodes:
     pos: [2.0, 2.0, -5.0]
     flags:
       xeffect: true
+  - id: hello_world_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.1
+      material:
+        map_pbr: textures\Plastic 01 [4K]
+        tiling: 1
+        program: g_tex
+    pos: [0.0, 4.0, -3.0]
   - id: hello_world
     type: text
     mesh:
       flags:
         billboard: true
       material:
-        name: hello
         map_pbr: textures\Plastic 01 [4K]
         xmap_pbr: textures\Fence007A_4K-JPG
         map_pbr: textures\Metal007_1K-PNG
@@ -93,11 +102,14 @@ nodes:
         path: fonts/LuckiestGuy.ttf
         size: 72
       text: ÄÅÖ äåö - Hello world
+      pivot: [0, 0]
+      align_horizontal: center
+      align_vertical: center
     pos: [0.0, 4.0, -3.0]
     scale: 0.01
     flags:
       xeffect: true
-    xscript_file: scripts/seq_hello_text
+    script_file: scripts/seq_hello_text
   - id: another_text
     type: text
     mesh:

@@ -10,6 +10,24 @@
 #include "generator/TextGenerator.h"
 #include "loader_util.h"
 
+namespace {
+    std::map<std::string, text::Align> g_alignments{
+    { "left", text::Align::left},
+    { "right", text::Align::right},
+    { "center", text::Align::center},
+    { "top", text::Align::top},
+    { "bottom", text::Align::bottom},
+    };
+
+    text::Align readAlign(const loader::DocNode& node) {
+        const auto& v = readString(node);
+        const auto& it = g_alignments.find(v);
+        if (it != g_alignments.end()) return it->second;
+        KI_WARN_OUT(fmt::format("LOADER_TEXT: missing_alignment={}", v));
+        return text::Align::none;
+    }
+}
+
 namespace loader {
     TextLoader::TextLoader(
         Context ctx)
@@ -37,6 +55,15 @@ namespace loader {
             else if (k == "font") {
                 loaders.m_fontLoader.loadFont(v, data.fontData);
             }
+            else if (k == "pivot") {
+                data.pivot = readVec2(v);
+            }
+            else if (k == "align_horizontal") {
+                data.alignHorizontal = readAlign(v);
+            }
+            else if (k == "align_vertical") {
+                data.alignVertical = readAlign(v);
+            }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
@@ -60,6 +87,9 @@ namespace loader {
         auto fontId = loaders.m_fontLoader.resolveFont(data.fontData);
         generator->setFontId(fontId);
         generator->setText(data.text);
+        generator->setPivot(data.pivot);
+        generator->setAlignHorizontal(data.alignHorizontal);
+        generator->setAlignVertical(data.alignVertical);
 
         generator->m_material = data.materialData.material;
         generator->m_material.loadTextures();

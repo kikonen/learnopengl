@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "text/size.h"
+#include "text/align.h"
 
 namespace mesh {
     class TextMesh;
@@ -31,7 +32,9 @@ namespace text
         void render(
             text::font_id fontId,
             std::string_view text,
-            glm::vec2& pen,
+            const glm::vec2& pivot,
+            text::Align alignHorizontal,
+            text::Align alignVertical,
             mesh::TextMesh* mesh);
 
         void clear();

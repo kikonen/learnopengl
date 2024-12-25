@@ -25,6 +25,7 @@
 #include "text/FontRegistry.h"
 #include "text/FontAtlas.h"
 
+#include "text/Align.h"
 #include "text/TextDraw.h"
 #include "text/TextSystem.h"
 #include "text/vao/TextVAO.h"
@@ -85,12 +86,12 @@ void TextGenerator::updateVAO(
 
     mesh->clear();
 
-    glm::vec2 pen{ 0.f };
-
     m_draw->render(
         m_fontId,
         m_text,
-        pen,
+        m_pivot,
+        m_alignHorizontal,
+        m_alignVertical,
         mesh);
 
     m_aabb = mesh->calculateAABB(glm::mat4{1.f});

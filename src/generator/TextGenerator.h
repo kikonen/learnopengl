@@ -10,6 +10,7 @@
 #include "backend/DrawOptions.h"
 
 #include "text/size.h"
+#include "text/Align.h"
 
 namespace mesh {
     class TextMesh;
@@ -68,6 +69,27 @@ public:
         }
     }
 
+    void setPivot(const glm::vec2& pivot) {
+        if (m_pivot != pivot) {
+            m_pivot = pivot;
+            m_dirty = true;
+        }
+    }
+
+    void setAlignHorizontal(text::Align align) {
+        if (m_alignHorizontal != align) {
+            m_alignHorizontal = align;
+            m_dirty = true;
+        }
+    }
+
+    void setAlignVertical(text::Align align) {
+        if (m_alignVertical != align) {
+            m_alignVertical = align;
+            m_dirty = true;
+        }
+    }
+
     GLuint64 getAtlasTextureHandle() const noexcept;
 
     void clear();
@@ -83,5 +105,10 @@ private:
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };
+
+    glm::vec2 m_pivot{ 0.f };
+    text::Align m_alignHorizontal{ text::Align::none };
+    text::Align m_alignVertical{ text::Align::none };
+
     std::string m_text;
 };
