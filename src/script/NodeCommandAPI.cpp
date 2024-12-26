@@ -396,7 +396,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             StartNode{
-                getHandle(opt.nodeId, m_handle),
+                m_handle,
                 coroutine
             });
     }
