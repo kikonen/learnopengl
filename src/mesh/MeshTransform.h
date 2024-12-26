@@ -12,7 +12,7 @@ namespace mesh {
         float m_scale{ 1.f };
 
         glm::vec4 m_volume{ 0.f };
-        glm::vec4 m_worldPos{ 0.f };
+        glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
         glm::mat4 m_transform{ 1.f };
 
         //glm::vec4 m_worldPos2{ 1.f };
