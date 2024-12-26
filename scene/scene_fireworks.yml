@@ -74,8 +74,8 @@ nodes:
           gain: 1
         - name: explode
           path: audio/explosions/explode_rocket.wav
-          reference_distance: 40
-          gain: 1
+          reference_distance: 10
+          gain: 0.8
     particle:
       seed: 1
       gravity: [0, -4.81, 0]
@@ -112,7 +112,6 @@ nodes:
         { time=50 * 100 },
         { 0, 0, 1 },
         360 * 100)
-    script_file: scripts/seq_firework
     clone_mesh: false
     clones:
       - pos: [-5, 0, -5]
@@ -171,8 +170,8 @@ nodes:
         particle:
           material:
             kd: [0.3, 1.8, 0.4, 1]
-  - xid: rocket_message
-    parent: rocket
+    script_file: scripts/seq_firework
+  - id: rocket_message
     type: text
     mesh:
       material:
@@ -190,5 +189,6 @@ nodes:
         path: fonts/Lobster-Regular.ttf
         size: 128
       text: ""
-    pos: [0.0, 1.0, 0.0]
+    pos: [0.0, 15.0, 0.0]
     scale: 0.015
+    script_file: scripts/seq_firework_message
