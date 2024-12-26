@@ -5,6 +5,9 @@
 
 namespace script
 {
+    // @see references
+    // - https://sol2.readthedocs.io/en/latest/api/coroutine.html
+    // - https://github.com/ThePhD/sol2/issues/528
     class Coroutine {
     public:
         Coroutine(
