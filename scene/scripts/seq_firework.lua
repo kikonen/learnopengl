@@ -1,5 +1,7 @@
 printf("EMIT\n")
 
+local rnd = math.random
+
 local shoot_sid = util:sid("shoot")
 local explode_sid = util:sid("explode")
 local text_node_sid = util:sid("rocket_message")
@@ -7,13 +9,14 @@ local text_node_sid = util:sid("rocket_message")
 local function animation(coid)
   local orig_pos = node:get_pos()
 
-  local cid = 0;
-  local cid2 = 0;
-  local wid = 0;
-  local wid2 = 0;
+  local cid = 0
+  local cid2 = 0
+  local explode_cid = 0
+  local wid = 0
+  local wid2 = 0
 
   cid = cmd:wait(
-    { after=cid, time=10 })
+    { after=cid, time=5 + rnd(5) })
 
   while true do
     cid = cmd:move(
@@ -38,8 +41,8 @@ local function animation(coid)
       { after=wid, sync=true, sid=shoot_sid })
 
     cid = cmd:move(
-      { after=wid, time=3 },
-      {0, 15, 0})
+      { after=wid, time=2 + rnd(100)/100.0, relative=true },
+      {0, 10 + rnd(10), 0})
 
     wid = cmd:wait(
       { after=cid, time = 0.2 })
@@ -49,9 +52,9 @@ local function animation(coid)
       false)
 
     cid2 = cmd:particle_emit(
-      { after=wid, count=50 * 1000 })
+      { after=wid, count=(30 + rnd(50)) * 1000 })
 
-    cid = cmd:audio_play(
+    explode_cid = cmd:audio_play(
       { after=cid2, sync=true, sid=explode_sid })
 
     wid2 = cmd:wait(
@@ -74,7 +77,7 @@ local function animation(coid)
       360)
 
     wid = cmd:wait(
-      { after=cid, time=1 })
+      { after=cid, time=0.3 })
 
     cid = cmd:resume({ after=wid }, coid)
   end

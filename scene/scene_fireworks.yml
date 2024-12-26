@@ -1,15 +1,16 @@
 ---
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/aristea_wreck_puresky_4k.hdr
+  xmaterial: skybox/polyhaven/dikhololo_night_4k.hdr
+  material: skybox/polyhaven/kloppenheim_02_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
 nodes:
   - id: player
     type: origo
-    pos: [0, 1, 15]
-    front: [0, 0, -1]
+    pos: [0, 1, 30]
+    front: [0, 0.35, -1]
     active: true
     audio:
       listener:
@@ -55,14 +56,14 @@ nodes:
         { time=10 * 100 },
         { 0, 1, 0 },
         360 * 100)
-  - id: rocket
+  - id: rocket_{c}_{t}
     parent: rocket_origo
     mesh:
       vertex:
         type: sphere
         radius: 0.2
       material:
-        kd: [1, 0, 1, 1]
+        kd: [1.8, 0.3, 0.4, 1]
         program: g_tex
     pos: [5, 0, 0]
     audio:
@@ -112,7 +113,65 @@ nodes:
         { 0, 0, 1 },
         360 * 100)
     script_file: scripts/seq_firework
-  - id: rocket_message
+    clone_mesh: false
+    clones:
+      - pos: [-5, 0, -5]
+        mesh:
+         material:
+           kd: [1.8, 0.3, 0.4, 1]
+        particle:
+          material:
+            kd: [1.8, 0.3, 0.4, 1]
+      - pos: [-5, 0,  5]
+        mesh:
+          material:
+            kd: [1.8, 1.8, 0.3, 1]
+        particle:
+          material:
+            kd: [1.8, 1.8, 0.3, 1]
+      - pos: [ 5, 0, -5]
+        mesh:
+          material:
+            kd: [0.3, 1.8, 0.4, 1]
+        particle:
+          material:
+            kd: [0.3, 1.8, 0.4, 1]
+      - pos: [ 5, 0,  5]
+        mesh:
+          material:
+            kd: [0.4, 0.3, 1.8, 1]
+        particle:
+          material:
+            kd: [0.4, 0.3, 1.8, 1]
+      - pos: [-10, 0, -10]
+        mesh:
+          material:
+            kd: [1.8, 1.8, 0.3, 1]
+        particle:
+          material:
+            kd: [1.8, 1.8, 0.3, 1]
+      - pos: [-10, 0,  10]
+        mesh:
+         material:
+           kd: [1.8, 0.3, 0.4, 1]
+        particle:
+          material:
+            kd: [1.8, 0.3, 0.4, 1]
+      - pos: [ 10, 0, -10]
+        mesh:
+          material:
+            kd: [0.4, 0.3, 1.8, 1]
+        particle:
+          material:
+            kd: [0.4, 0.3, 1.8, 1]
+      - pos: [ 10, 0,  10]
+        mesh:
+          material:
+            kd: [0.3, 1.8, 0.4, 1]
+        particle:
+          material:
+            kd: [0.3, 1.8, 0.4, 1]
+  - xid: rocket_message
     parent: rocket
     type: text
     mesh:
