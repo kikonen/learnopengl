@@ -104,21 +104,22 @@ namespace script
             ut["sync"] = &NodeCommandAPI::lua_sync;
 
             ut["move"] = &NodeCommandAPI::lua_move;
-            ut["move_spline"] = &NodeCommandAPI::lua_moveSpline;
+            ut["move_spline"] = &NodeCommandAPI::lua_move_spline;
             ut["rotate"] = &NodeCommandAPI::lua_rotate;
             ut["scale"] = &NodeCommandAPI::lua_scale;
             ut["set_text"] = &NodeCommandAPI::lua_set_text;
 
-            ut["audio_play"] = &NodeCommandAPI::lua_audioPlay;
-            ut["audio_pause"] = &NodeCommandAPI::lua_audioPause;
-            ut["audio_stop"] = &NodeCommandAPI::lua_audioStop;
+            ut["audio_play"] = &NodeCommandAPI::lua_audio_play;
+            ut["audio_pause"] = &NodeCommandAPI::lua_audio_pause;
+            ut["audio_stop"] = &NodeCommandAPI::lua_audio_stop;
 
-            ut["particle_emit"] = &NodeCommandAPI::lua_particleEmit;
-            ut["particle_stop"] = &NodeCommandAPI::lua_particleStop;
+            ut["particle_emit"] = &NodeCommandAPI::lua_particle_emit;
+            ut["particle_stop"] = &NodeCommandAPI::lua_particle_stop;
 
-            ut["animation_play"] = &NodeCommandAPI::lua_animationPlay;
+            ut["animation_play"] = &NodeCommandAPI::lua_animation_play;
 
             ut["resume"] = sol::yielding(&NodeCommandAPI::lua_resume_wrapper);
+
             ut["start"] = &NodeCommandAPI::lua_start;
         }
 

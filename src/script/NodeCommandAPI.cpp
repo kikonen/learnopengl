@@ -191,7 +191,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_moveSpline(
+    int NodeCommandAPI::lua_move_spline(
         const sol::table& lua_opt,
         const sol::table& lua_p,
         const sol::table& lua_pos) noexcept
@@ -271,12 +271,11 @@ namespace script
             opt.afterId,
             SetTextNode{
                 m_handle,
-                opt.duration,
                 text
             });
     }
 
-    int NodeCommandAPI::lua_audioPlay(
+    int NodeCommandAPI::lua_audio_play(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -290,7 +289,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_audioPause(
+    int NodeCommandAPI::lua_audio_pause(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -303,7 +302,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_audioStop(
+    int NodeCommandAPI::lua_audio_stop(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -316,7 +315,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_animationPlay(
+    int NodeCommandAPI::lua_animation_play(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -331,7 +330,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_particleEmit(
+    int NodeCommandAPI::lua_particle_emit(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -345,7 +344,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_particleStop(
+    int NodeCommandAPI::lua_particle_stop(
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);

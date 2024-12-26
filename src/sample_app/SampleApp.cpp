@@ -450,7 +450,6 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
         0,
         script::SetTextNode{
             handle,
-            0.f,
             fpsText
         });
 }

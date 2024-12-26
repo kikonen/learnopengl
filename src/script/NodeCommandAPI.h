@@ -45,7 +45,7 @@ namespace script
             const sol::table& lua_opt,
             const sol::table& pos) noexcept;
 
-        int lua_moveSpline(
+        int lua_move_spline(
             const sol::table& lua_opt,
             const sol::table& p,
             const sol::table& pos) noexcept;
@@ -63,22 +63,22 @@ namespace script
             const sol::table& lua_opt,
             const sol::table& lua_text) noexcept;
 
-        int lua_audioPlay(
+        int lua_audio_play(
             const sol::table& lua_opt) noexcept;
 
-        int lua_audioPause(
+        int lua_audio_pause(
             const sol::table& lua_opt) noexcept;
 
-        int lua_audioStop(
+        int lua_audio_stop(
             const sol::table& lua_opt) noexcept;
 
-        int lua_animationPlay(
+        int lua_animation_play(
             const sol::table& lua_opt) noexcept;
 
-        int lua_particleEmit(
+        int lua_particle_emit(
             const sol::table& lua_opt) noexcept;
 
-        int lua_particleStop(
+        int lua_particle_stop(
             const sol::table& lua_opt) noexcept;
 
         int lua_start(

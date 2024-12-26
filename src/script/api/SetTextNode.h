@@ -9,7 +9,6 @@ namespace script
     public:
         SetTextNode(
             pool::NodeHandle handle,
-            float duration,
             std::string text) noexcept;
 
         virtual std::string getName() const noexcept override
