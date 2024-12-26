@@ -1,10 +1,10 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local function animation(coid)
   local wid = 0
   local cid = 0
 
-  local origPos = node:getPos()
+  local orig_pos = node:get_pos()
 
   while true do
     wid = cmd:wait({ after=cid, time=5 })

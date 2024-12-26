@@ -598,7 +598,7 @@ nodes:
       z_step: -100
     script: |
       local wid = cmd:wait({ time=2 })
-      cmd:animationPlay(
+      cmd:animation_play(
         { after=wid, name = "fire:Take 001" });
   - name: Backback
     mesh:

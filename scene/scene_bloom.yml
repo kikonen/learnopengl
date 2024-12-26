@@ -62,7 +62,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 50000
-  - id: maple_tree_forest_{t}
+  - id: maple_tree_forest_{c}_{t}
     mesh:
       path: fbx/scenery/trees/Maple_02.fbx
       materials:
@@ -116,7 +116,7 @@ nodes:
       x_step: 10
       z_step: -10
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:SwingNormal" });
   - id: skeleton_army_2_{t}
     prefab:
@@ -133,7 +133,7 @@ nodes:
       x_step: 10
       z_step: -10
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
   - id: cube_map_mirror_ball
     type: origo

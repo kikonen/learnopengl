@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local function animation(coid)
   print("cow run")
@@ -9,7 +9,7 @@ local function animation(coid)
 
     wid = cmd:wait({ after=cid, time=delay })
 
-    cid = cmd:audioPlay(
+    cid = cmd:audio_play(
       { after=wid, sync=true })
 
     cid = cmd:resume({ after=wid }, coid)

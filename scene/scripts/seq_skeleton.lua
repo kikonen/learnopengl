@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local rnd = math.random
 
@@ -36,7 +36,7 @@ local function idle(wid)
   --print(string.format("idle: %d", id))
 
   local cid;
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=wid, name = randomIdle() } )
 
   return cid;
@@ -47,7 +47,7 @@ local function attack(wid)
 
   local cid;
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=wid, name = randomAttack() } )
 
   return cid;

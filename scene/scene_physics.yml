@@ -106,7 +106,7 @@ nodes:
         category: [player]
     script: |
       local wid = cmd:wait({ time=2 })
-      cmd:animationPlay(
+      cmd:animation_play(
         { after=wid, name = "master:Walk02" });
   - id: skeleton_1
     prefab:
@@ -115,7 +115,7 @@ nodes:
     script: |
       local sid = util:sid("master:Idle2")
       printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle2" })
     physics:
       enabled: true
@@ -124,7 +124,7 @@ nodes:
       path: prefab/creatures/prefab_skeleton.yml
     pos: [3, 25, 25]
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
     physics:
       enabled: true

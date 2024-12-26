@@ -54,7 +54,7 @@ nodes:
       x_step: 4
       z_step: -7
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "walk:Unreal Take" })
   - id: lion_{t}
     prefab:
@@ -67,7 +67,7 @@ nodes:
       z_step: -7
     xscript_file: scripts/cow_audio
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "walk:Take 001" })
   - id: deinodonte_{t}
     prefab:
@@ -80,7 +80,7 @@ nodes:
       x_step: 20
       z_step: -20
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "idle:Take 001" })
   - id: elf_{t}
     prefab:
@@ -92,7 +92,7 @@ nodes:
       x_step: 5
       z_step: -5
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "walk:Idle" })
   - id: scavenger_{t}
     prefab:
@@ -104,7 +104,7 @@ nodes:
       x_step: 5
       z_step: -5
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Take 001" })
   - id: skeleton_{t}
     prefab:
@@ -119,7 +119,7 @@ nodes:
     physics:
       enabled: true
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
   - id: object_{c}_{t}
     mesh:

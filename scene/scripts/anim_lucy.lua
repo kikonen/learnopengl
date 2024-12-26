@@ -1,4 +1,4 @@
-printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local function animation_rotate(coid)
   local wid = 0
@@ -14,7 +14,7 @@ local function animation_rotate(coid)
   while true do
     wid = cmd:wait({ after=cid, time=0.5 })
 
-    cid = cmd:audioPlay(
+    cid = cmd:audio_play(
       { after=cid, sid=AUDIO_ROTATE })
 
     cid = cmd:rotate(
@@ -22,10 +22,10 @@ local function animation_rotate(coid)
       { 0, 1, 0 },
       dir * 720 * 2)
 
-    cid = cmd:audioPause(
+    cid = cmd:audio_pause(
       { after=cid, sid=AUDIO_ROTATE })
 
-    cid = cmd:audioPlay(
+    cid = cmd:audio_play(
       { after=cid, sid=AUDIO_WIND, sync=true })
 
     cid = cmd:resume({ after=cid }, coid)

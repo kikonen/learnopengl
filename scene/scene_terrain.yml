@@ -154,7 +154,7 @@ nodes:
       x_step: 4
       z_step: -4
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
   - id: world_x_minus
     type: origo

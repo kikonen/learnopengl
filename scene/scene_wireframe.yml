@@ -64,7 +64,7 @@ nodes:
     prefab:
       path: prefab/creatures/prefab_lion.yml
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "walk:Take 001" } )
     mesh:
       material:

@@ -54,7 +54,7 @@ nodes:
       - type: pawn
       - type: camera_zoom
     script: |
-      cmd:audioPlay(
+      cmd:audio_play(
         { sync=true, sid=util:sid("idle_1") })
   - id: fps_counter
     parent_id: player_fps

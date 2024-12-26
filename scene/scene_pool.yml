@@ -336,7 +336,7 @@ nodes:
       enabled: true
       update: true
     xscript: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
     script: scripts/seq_skeleton_army
   - id: terrain_grass

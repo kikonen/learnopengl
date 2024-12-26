@@ -148,7 +148,7 @@ nodes:
         category: [player]
         collision: [terrain, npc]
     xscript: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Walk02" });
   - id: directional_light
     mesh:
@@ -175,7 +175,7 @@ nodes:
     physics:
       enabled: true
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle2" });
   - id: wooden_floor
     prefab:
@@ -228,7 +228,7 @@ nodes:
       update: true
       enabled: true
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle2" });
   - id: palm_tree_forest_2_{c}_{t}
     prefab:

@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local rnd = math.random
 
@@ -6,7 +6,7 @@ local function animationTranslate(coid)
   local wid = 0
   local cid = 0
 
-  local center = node:getPos()
+  local center = node:get_pos()
 
   --print(string.format("center: %d, %d, %d", center[1], center[2], center[3]))
 
@@ -23,7 +23,7 @@ local function animationTranslate(coid)
 
     --print(string.format("pos: %d, %d, %d", pos[1], pos[2], pos[3]))
 
-    cid = cmd:moveSpline(
+    cid = cmd:move_spline(
       { after=wid, time=5, relative=false },
       { rnd(20) - 10 , rnd(10) - 5, rnd(10) - 5},
       pos)
@@ -38,7 +38,7 @@ local function animationRotate(coid)
   local wid = 0
   local cid = 0
 
-  local origPos = node:getPos()
+  local orig_pos = node:get_pos()
 
   while true do
     wid = cmd:wait({ after=cid, time=0 })
@@ -76,7 +76,7 @@ local function animationScale(coid)
   local wid = 0
   local cid = 0
 
-  local origPos = node:getPos()
+  local orig_pos = node:get_pos()
 
   while true do
     wid = cmd:wait({ after=cid, time=0 })

@@ -103,7 +103,7 @@ nodes:
         xkinematic: true
         density: 0.01
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:SwingNormal" });
   - id: object_{c}_{t}
     mesh:

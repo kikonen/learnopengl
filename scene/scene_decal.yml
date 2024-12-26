@@ -64,7 +64,7 @@ nodes:
       printf("here-script\n")
       local sid = util:sid("idle_1")
       printf("SID: %s\n", sid)
-      cmd:audioPlay(
+      cmd:audio_play(
         { sync=true, sid=sid })
   - id: dir_light_{c}_{t}
     mesh:

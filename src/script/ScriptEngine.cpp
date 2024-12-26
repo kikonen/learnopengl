@@ -104,16 +104,16 @@ namespace script
             ut["sync"] = &NodeCommandAPI::lua_sync;
 
             ut["move"] = &NodeCommandAPI::lua_move;
-            ut["moveSpline"] = &NodeCommandAPI::lua_moveSpline;
+            ut["move_spline"] = &NodeCommandAPI::lua_moveSpline;
             ut["rotate"] = &NodeCommandAPI::lua_rotate;
             ut["scale"] = &NodeCommandAPI::lua_scale;
             ut["set_text"] = &NodeCommandAPI::lua_set_text;
 
-            ut["audioPlay"] = &NodeCommandAPI::lua_audioPlay;
-            ut["audioPause"] = &NodeCommandAPI::lua_audioPause;
-            ut["audioStop"] = &NodeCommandAPI::lua_audioStop;
+            ut["audio_play"] = &NodeCommandAPI::lua_audioPlay;
+            ut["audio_pause"] = &NodeCommandAPI::lua_audioPause;
+            ut["audio_stop"] = &NodeCommandAPI::lua_audioStop;
 
-            ut["animationPlay"] = &NodeCommandAPI::lua_animationPlay;
+            ut["animation_play"] = &NodeCommandAPI::lua_animationPlay;
 
             ut["resume"] = sol::yielding(&NodeCommandAPI::lua_resume_wrapper);
             ut["start"] = &NodeCommandAPI::lua_start;
@@ -125,12 +125,12 @@ namespace script
 
             const auto& ut = m_lua["Node"];
 
-            ut["getId"] = &Node::lua_getId;
-            ut["getName"] = &Node::lua_getName;
+            ut["get_id"] = &Node::lua_getId;
+            ut["get_name"] = &Node::lua_getName;
 
-            ut["getCloneIndex"] = &Node::lua_getCloneIndex;
+            ut["get_clone_index"] = &Node::lua_getCloneIndex;
 
-            ut["getPos"] = &Node::lua_getPos;
+            ut["get_pos"] = &Node::lua_getPos;
         }
     }
 

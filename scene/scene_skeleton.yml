@@ -71,7 +71,7 @@ nodes:
     physics:
       update: true
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:SwingNormal" });
   - id: helmet_{t}
     meshes:

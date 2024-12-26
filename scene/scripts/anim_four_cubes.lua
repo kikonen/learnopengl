@@ -1,14 +1,14 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
-local cloneIndex = node:getCloneIndex()
-local origPos = node:getPos()
+local clone_index = node:get_clone_index()
+local orig_pos = node:get_pos()
 
 local function animationMove(coid)
   local wid = 0
   local cid = 0
 
   local dir = 1
-  if cloneIndex % 2 == 0 then
+  if clone_index % 2 == 0 then
     dir = -1
   end
 
@@ -31,11 +31,11 @@ local function animationRotate(coid)
   local cid = 0
 
   local dir = 1
-  if cloneIndex % 2 == 0 then
+  if clone_index % 2 == 0 then
     dir = -1
   end
 
-  local speed = 120 / ((cloneIndex + 1) * 0.5)
+  local speed = 120 / ((clone_index + 1) * 0.5)
 
   while true do
     wid = cmd:wait({ after=cid, time=2 })

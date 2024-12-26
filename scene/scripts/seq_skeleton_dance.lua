@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d", node:getName(), id, node:getCloneIndex())
+--printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
 
 local rnd = math.random
 
@@ -52,7 +52,7 @@ local function attack(wid)
 
   local cid = 0
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=wid, name = randomMove() } )
 
   wid = cmd:wait({ after=0, time=3 + rnd(5) })
@@ -60,16 +60,16 @@ local function attack(wid)
 
   cmd:cancel({ after=0, time=0 }, cid)
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=cid, name = randomMove() } )
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=cid, name = randomAttack() } )
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=cid, name = randomIdle() } )
 
-  cid = cmd:animationPlay(
+  cid = cmd:animation_play(
     { after=cid, name = randomIdle() } )
 
   return cid;

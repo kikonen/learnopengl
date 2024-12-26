@@ -78,7 +78,7 @@ nodes:
     physics:
       enabled: false
     script: |
-      cmd:animationPlay(
+      cmd:animation_play(
         { name = "master:Idle" });
   - name: Cube map 1
     type: origo
