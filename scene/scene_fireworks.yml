@@ -47,16 +47,16 @@ nodes:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - id: particle_cube_origo
+  - id: rocket_origo
     type: origo
     pos: [0, 2, 0]
-    xscript: |
+    script: |
       cmd:rotate(
         { time=10 * 100 },
         { 0, 1, 0 },
         360 * 100)
-  - id: particle_cube
-    parent: particle_cube_origo
+  - id: rocket
+    parent: rocket_origo
     mesh:
       vertex:
         type: sphere
@@ -111,6 +111,25 @@ nodes:
         { time=50 * 100 },
         { 0, 0, 1 },
         360 * 100)
-      cmd:particle_emit(
-        { count=50 * 1000 })
     script_file: scripts/seq_firework
+  - id: rocket_message
+    parent: rocket
+    type: text
+    mesh:
+      material:
+        map_pbr: textures\Metal007_1K-PNG
+        tiling: 1
+        alpha: true
+        render_back: true
+        program: g_font_render
+        shadow_program: shadow_font_render
+        selection_program: selection_font_render
+    text:
+      align_horizontal: center
+      align_vertical: center
+      font:
+        path: fonts/Lobster-Regular.ttf
+        size: 128
+      text: ""
+    pos: [0.0, 1.0, 0.0]
+    scale: 0.015

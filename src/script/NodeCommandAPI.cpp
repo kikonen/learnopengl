@@ -43,6 +43,7 @@ namespace {
         script::command_id afterId = 0;
         int index = 0;
         ki::sid_t sid = 0;
+        ki::node_id nodeId = 0;
         float duration = 0.f;
         float speed = 1.f;
         float count = 0.f;
@@ -68,6 +69,9 @@ namespace {
             }
             else if (k == "sid") {
                 opt.sid = value.as<unsigned int>();
+            }
+            else if (k == "node") {
+                opt.nodeId = value.as<unsigned int>();
             }
             else if (k == "index") {
                 opt.index = value.as<int>();
@@ -98,6 +102,10 @@ namespace {
             }
             });
         return opt;
+    }
+
+    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) {
+        return nodeId > 0 ? pool::NodeHandle::toHandle(nodeId) : handle;
     }
 
     glm::vec3 readVec3(const sol::table& v) noexcept {
@@ -186,7 +194,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.duration,
                 opt.relative,
                 pos
@@ -207,7 +215,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveSplineNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.duration,
                 opt.relative,
                 p,
@@ -217,21 +225,21 @@ namespace script
 
     int NodeCommandAPI::lua_rotate(
         const sol::table& lua_opt,
-        const sol::table& lua_dir,
+        const sol::table& lua_axis,
         const float lua_degrees) noexcept
     {
         const auto opt = readOptions(lua_opt);
-        const auto dir = readVec3(lua_dir);
+        const auto axis = readVec3(lua_axis);
 
         //KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_nodeId, rot, opt.str()));
 
         return m_commandEngine->addCommand(
             opt.afterId,
             RotateNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.duration,
                 opt.relative,
-                dir,
+                axis,
                 lua_degrees
             });
     }
@@ -248,7 +256,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             ScaleNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.duration,
                 opt.relative,
                 scale
@@ -272,7 +280,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             SetTextNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 text
             });
     }
@@ -286,7 +294,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             SetVisibleNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 visible
             });
     }
@@ -299,7 +307,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPlay{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.sid,
                 opt.sync
             });
@@ -313,7 +321,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPause{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.sid
             });
     }
@@ -326,7 +334,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioStop{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.sid
             });
     }
@@ -339,7 +347,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             AnimationPlay{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.name,
                 opt.speed,
                 opt.repeat
@@ -354,7 +362,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleEmit{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 opt.count,
                 opt.sync
             });
@@ -368,7 +376,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleStop{
-                m_handle
+                getHandle(opt.nodeId, m_handle)
             });
     }
 
@@ -388,7 +396,7 @@ namespace script
         return m_commandEngine->addCommand(
             opt.afterId,
             StartNode{
-                m_handle,
+                getHandle(opt.nodeId, m_handle),
                 coroutine
             });
     }

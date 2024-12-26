@@ -2,12 +2,15 @@ printf("EMIT\n")
 
 local shoot_sid = util:sid("shoot")
 local explode_sid = util:sid("explode")
+local text_node_sid = util:sid("rocket_message")
 
 local function animation(coid)
   local orig_pos = node:get_pos()
 
   local cid = 0;
+  local cid2 = 0;
   local wid = 0;
+  local wid2 = 0;
 
   cid = cmd:wait(
     { after=cid, time=10 })
@@ -21,6 +24,13 @@ local function animation(coid)
       { after=cid },
       true)
 
+    cmd:set_visible(
+      { after=cid, node=text_node_sid },
+      false)
+
+    cid = cmd:set_text({ after=cid, node=text_node_sid },
+      { text="" })
+
     wid = cmd:wait(
       { after=cid, time=0.5 })
 
@@ -29,22 +39,44 @@ local function animation(coid)
 
     cid = cmd:move(
       { after=wid, time=3 },
-      {0, 20, 0})
+      {0, 15, 0})
 
     wid = cmd:wait(
       { after=cid, time = 0.2 })
 
-    cid = cmd:set_visible(
+    cmd:set_visible(
       { after=wid },
       false)
 
-    cid = cmd:particle_emit(
+    cid2 = cmd:particle_emit(
       { after=wid, count=50 * 1000 })
 
     cid = cmd:audio_play(
-      { after=cid, sync=true, sid=explode_sid })
+      { after=cid2, sync=true, sid=explode_sid })
 
-    cid = cmd:resume({ after=cid }, coid)
+    wid2 = cmd:wait(
+      { after=cid2, time = 1 })
+
+    cmd:set_visible(
+      { after=wid2, node=text_node_sid },
+      true)
+
+    cid = cmd:set_text(
+      { after=wid2, node=text_node_sid },
+      { text="Happy new year!!!" })
+
+    wid = cmd:wait(
+      { after=cid, time=0.3 })
+
+    cid = cmd:rotate(
+      { after=wid, node=text_node_sid, time=1 },
+      { 0, 1, 0 },
+      360)
+
+    wid = cmd:wait(
+      { after=cid, time=1 })
+
+    cid = cmd:resume({ after=wid }, coid)
   end
 end
 
