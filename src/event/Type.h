@@ -25,6 +25,8 @@ namespace event
         audio_source_stop,
         audio_source_pause,
 
+        particle_emit,
+
         command_wait,
         command_move,
         command_rotate,

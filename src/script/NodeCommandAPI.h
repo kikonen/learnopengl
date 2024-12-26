@@ -75,6 +75,12 @@ namespace script
         int lua_animationPlay(
             const sol::table& lua_opt) noexcept;
 
+        int lua_particleEmit(
+            const sol::table& lua_opt) noexcept;
+
+        int lua_particleStop(
+            const sol::table& lua_opt) noexcept;
+
         int lua_start(
             const sol::table& lua_opt,
             sol::function fn) noexcept;

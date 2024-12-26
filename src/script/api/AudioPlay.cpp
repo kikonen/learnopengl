@@ -1,5 +1,10 @@
 #include "AudioPlay.h"
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
+#include "ki/sid.h"
 #include "ki/limits.h"
 
 #include "model/Node.h"
@@ -32,6 +37,13 @@ namespace script
                 source->play();
                 m_started = true;
             }
+        }
+
+        if (!source) {
+            auto* node = getNode();
+            KI_WARN_OUT(fmt::format(
+                "CMD: missing_audio: node={}, sid={}, name={}",
+                getNode()->getName(), m_id, SID_NAME(m_id)));
         }
 
         m_finished = source && m_sync ? !source->isPlaying() : true;

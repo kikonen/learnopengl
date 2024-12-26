@@ -40,6 +40,11 @@ namespace {
 }
 
 namespace ki {
+    const std::string& StringID::getName(ki::sid_t sid) noexcept
+    {
+        return findName(sid);
+    }
+
     StringID::StringID(std::string_view s)
         : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
     {

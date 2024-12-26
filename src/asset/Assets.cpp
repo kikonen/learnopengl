@@ -223,9 +223,9 @@ Assets::Assets()
 
     parallaxEnabled = true;
     parallaxMethod = 1;
-    parallaxDepth = 0.01;
+    parallaxDepth = 0.01f;
     parallaxDebugEnabled = true;
-    parallaxDebugDepth = 0.01;
+    parallaxDebugDepth = 0.01f;
 
     particleEnabled = true;
     particleMaxCount = 100000;

@@ -30,12 +30,17 @@ namespace particle {
         const UpdateContext& ctx,
         Node& node)
     {
+        if (m_requestedCount <= 0.f && m_pendingCount <= 0.f) return;
+
         auto& ps = ParticleSystem::get();
         //if (ps.isFull()) return;
 
         const auto& df = m_definition;
 
-        m_pendingCount += df.m_rate * ctx.m_clock.elapsedSecs;
+        float emitCount = std::min(m_requestedCount, df.m_rate * ctx.m_clock.elapsedSecs);
+        m_requestedCount = std::max(m_requestedCount - emitCount, 0.f);
+
+        m_pendingCount += emitCount;
 
         if (m_pendingCount < 1.f) return;
 

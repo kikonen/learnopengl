@@ -803,9 +803,11 @@ void AssetsLoader::loadAssets(
             }
             if (k == "viewport_layer_1_effect") {
                 data.viewportLayer1Effect = readViewportEffect(k, v);
+                continue;
             }
             if (k == "viewport_layer_1_blend_factor") {
                 data.viewportLayer1BlendFactor = readFloat(v);
+                continue;
             }
         }
         {
@@ -815,12 +817,15 @@ void AssetsLoader::loadAssets(
             }
             if (k == "viewport_layer_2_effect") {
                 data.viewportLayer2Effect = readViewportEffect(k, v);
+                continue;
             }
             if (k == "viewport_layer_2_blend_enabled") {
                 data.viewportLayer2BlendEnabled = readBool(v);
+                continue;
             }
             if (k == "viewport_layer_2_blend_factor") {
                 data.viewportLayer2BlendFactor = readFloat(v);
+                continue;
             }
         }
         {

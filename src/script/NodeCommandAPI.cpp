@@ -31,6 +31,9 @@
 #include "api/AudioPause.h"
 #include "api/AudioStop.h"
 
+#include "api/ParticleEmit.h"
+#include "api/ParticleStop.h"
+
 #include "api/AnimationPlay.h"
 
 namespace {
@@ -40,6 +43,7 @@ namespace {
         ki::sid_t sid = 0;
         float duration = 0.f;
         float speed = 1.f;
+        float count = 0.f;
         bool relative = false;
         bool repeat = false;
         bool sync = false;
@@ -74,6 +78,9 @@ namespace {
             }
             else if (k == "speed") {
                 opt.speed = value.as<float>();
+            }
+            else if (k == "count") {
+                opt.count = value.as<float>();
             }
             else if (k == "relative") {
                 opt.relative = value.as<bool>();
@@ -321,6 +328,32 @@ namespace script
                 opt.name,
                 opt.speed,
                 opt.repeat
+            });
+    }
+
+    int NodeCommandAPI::lua_particleEmit(
+        const sol::table& lua_opt) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            ParticleEmit{
+                m_handle,
+                opt.count,
+                opt.sync
+            });
+    }
+
+    int NodeCommandAPI::lua_particleStop(
+        const sol::table& lua_opt) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            ParticleStop{
+                m_handle
             });
     }
 

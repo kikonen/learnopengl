@@ -1,5 +1,10 @@
 #include "AudioStop.h"
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
+#include "ki/sid.h"
 #include "ki/limits.h"
 
 #include "model/Node.h"
@@ -28,6 +33,12 @@ namespace script
 
         if (source) {
             source->stop();
+        }
+
+        if (!source) {
+            KI_WARN_OUT(fmt::format(
+                "CMD: missing_audio: node={}, sid={}, name={}",
+                getNode()->getName(), m_id, SID_NAME(m_id)));
         }
 
         m_finished = true;

@@ -9,6 +9,8 @@ namespace ki
 {
     struct StringID
     {
+        static const std::string& getName(ki::sid_t sid) noexcept;
+
         ki::sid_t m_sid;
 
         // NULL ID
@@ -76,3 +78,4 @@ struct std::hash<ki::StringID>
 };
 
 #define SID(x) ki::StringID{ x }
+#define SID_NAME(x) ki::StringID::getName(x)

@@ -42,12 +42,29 @@ namespace particle {
             m_definition = definition;
         }
 
+        void emit(float count)
+        {
+            m_requestedCount += count;
+        }
+
+        bool isEmitting() const noexcept
+        {
+            return m_requestedCount > 0.f;
+        }
+
+        void clear()
+        {
+            m_requestedCount = 0.f;
+            m_pendingCount = 0.f;
+        }
+
     private:
         Material m_material;
         ParticleDefinition m_definition;
 
         float m_lastTs = -1;
 
+        float m_requestedCount{ 0.f };
         float m_pendingCount{ 0.f };
 
         std::unique_ptr<util::Random> m_random;

@@ -113,6 +113,9 @@ namespace script
             ut["audio_pause"] = &NodeCommandAPI::lua_audioPause;
             ut["audio_stop"] = &NodeCommandAPI::lua_audioStop;
 
+            ut["particle_emit"] = &NodeCommandAPI::lua_particleEmit;
+            ut["particle_stop"] = &NodeCommandAPI::lua_particleStop;
+
             ut["animation_play"] = &NodeCommandAPI::lua_animationPlay;
 
             ut["resume"] = sol::yielding(&NodeCommandAPI::lua_resume_wrapper);

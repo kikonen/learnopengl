@@ -1,0 +1,142 @@
+---
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/aristea_wreck_puresky_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      type: fps
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: particle_cube_origo
+    type: origo
+    pos: [0, 2, 0]
+    xscript: |
+      cmd:rotate(
+        { time=10 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
+  - id: particle_cube
+    parent: particle_cube_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.2
+      material:
+        kd: [1, 0, 1, 1]
+        program: g_tex
+    pos: [5, 0, 0]
+    audio:
+      sources:
+        - name: shoot
+          path: audio/explosions/shoot_rocket.wav
+          reference_distance: 40
+          gain: 1
+        - name: explode
+          path: audio/explosions/explode_rocket.wav
+          reference_distance: 40
+          gain: 1
+    particle:
+      seed: 1
+      gravity: [0, -4.81, 0]
+      lifetime: 0.5
+      lifetime_variation: 0.49
+      area_type: sphere
+      area_radius: 0.2
+      area_size: [1, 1, 0]
+      area_variation: 0.2
+      area_offset: [0, 0, 1]
+      dir: [0, 1, 0]
+      dir_variation: 360
+      speed: 5
+      speed_variation: 5
+      size: 0.2
+      size_variation: 0.2
+      rate: 50000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1.8, 0.3, 0.4, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+    xscript: |
+      cmd:rotate(
+        { time=50 * 100 },
+        { 0, 0, 1 },
+        360 * 100)
+      cmd:particle_emit(
+        { count=50 * 1000 })
+    script: |
+      printf("EMIT\n")
+
+      local shoot_sid = util:sid("shoot")
+      local explode_sid = util:sid("explode")
+
+      local cid = 0;
+      local wid = 0;
+
+      wid = cmd:wait(
+        { after=cid, time = 10 })
+
+      cid = cmd:audio_play(
+        { after=wid, sync=true, sid=shoot_sid })
+
+      cid = cmd:move(
+        { after=wid, time=4 },
+        {0, 20, 0})
+
+      wid = cmd:wait(
+        { after=cid, time = 0.2 })
+
+      cid = cmd:particle_emit(
+        { after=wid, count=50 * 1000 })
+
+      cid = cmd:audio_play(
+        { after=cid, sync=true, sid=explode_sid })
