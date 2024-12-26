@@ -25,7 +25,9 @@
 #include "api/ScaleNode.h"
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
+
 #include "api/SetTextNode.h"
+#include "api/SetVisibleNode.h"
 
 #include "api/AudioPlay.h"
 #include "api/AudioPause.h"
@@ -272,6 +274,20 @@ namespace script
             SetTextNode{
                 m_handle,
                 text
+            });
+    }
+
+    int NodeCommandAPI::lua_set_visible(
+        const sol::table& lua_opt,
+        bool visible) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            SetVisibleNode{
+                m_handle,
+                visible
             });
     }
 

@@ -107,7 +107,9 @@ namespace script
             ut["move_spline"] = &NodeCommandAPI::lua_move_spline;
             ut["rotate"] = &NodeCommandAPI::lua_rotate;
             ut["scale"] = &NodeCommandAPI::lua_scale;
+
             ut["set_text"] = &NodeCommandAPI::lua_set_text;
+            ut["set_visible"] = &NodeCommandAPI::lua_set_visible;
 
             ut["audio_play"] = &NodeCommandAPI::lua_audio_play;
             ut["audio_pause"] = &NodeCommandAPI::lua_audio_pause;

@@ -113,30 +113,4 @@ nodes:
         360 * 100)
       cmd:particle_emit(
         { count=50 * 1000 })
-    script: |
-      printf("EMIT\n")
-
-      local shoot_sid = util:sid("shoot")
-      local explode_sid = util:sid("explode")
-
-      local cid = 0;
-      local wid = 0;
-
-      wid = cmd:wait(
-        { after=cid, time = 10 })
-
-      cid = cmd:audio_play(
-        { after=wid, sync=true, sid=shoot_sid })
-
-      cid = cmd:move(
-        { after=wid, time=4 },
-        {0, 20, 0})
-
-      wid = cmd:wait(
-        { after=cid, time = 0.2 })
-
-      cid = cmd:particle_emit(
-        { after=wid, count=50 * 1000 })
-
-      cid = cmd:audio_play(
-        { after=cid, sync=true, sid=explode_sid })
+    script_file: scripts/seq_firework

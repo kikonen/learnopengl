@@ -18,7 +18,9 @@
 #include "api/RotateNode.h"
 #include "api/ScaleNode.h"
 #include "api/StartNode.h"
+
 #include "api/SetTextNode.h"
+#include "api/SetVisibleNode.h"
 
 #include "api/AudioPlay.h"
 #include "api/AudioPause.h"
@@ -51,6 +53,7 @@ namespace script
         sizeof(script::ResumeNode),
         sizeof(script::StartNode),
         sizeof(script::SetTextNode),
+        sizeof(script::SetVisibleNode),
         });
 
     class CommandHandle;

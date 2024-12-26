@@ -63,6 +63,10 @@ namespace script
             const sol::table& lua_opt,
             const sol::table& lua_text) noexcept;
 
+        int lua_set_visible(
+            const sol::table& lua_opt,
+            bool visible) noexcept;
+
         int lua_audio_play(
             const sol::table& lua_opt) noexcept;
 

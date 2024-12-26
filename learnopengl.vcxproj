@@ -223,6 +223,7 @@
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
+    <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
     <ClCompile Include="src\shader\ShaderSource.cpp" />
@@ -556,6 +557,7 @@
     <ClInclude Include="src\render\ScreenTri.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
+    <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />
