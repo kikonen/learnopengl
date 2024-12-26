@@ -13,6 +13,11 @@ namespace script
             pool::NodeHandle handle,
             std::string_view functionName) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "invoke_lua_function";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

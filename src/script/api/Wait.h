@@ -10,6 +10,11 @@ namespace script
         Wait(
             float duration) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "wait";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

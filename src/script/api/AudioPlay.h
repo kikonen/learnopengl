@@ -16,6 +16,11 @@ namespace script
             audio::source_id id,
             bool sync) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "audio_play";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

@@ -15,6 +15,11 @@ namespace script
             pool::NodeHandle handle,
             audio::source_id id) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "audio_pause";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

@@ -15,6 +15,11 @@ namespace script
             pool::NodeHandle handle,
             Coroutine* coroutine) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "resume_node";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

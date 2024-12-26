@@ -12,6 +12,11 @@ namespace script
             float duration,
             script::command_id commandId) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "stop";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

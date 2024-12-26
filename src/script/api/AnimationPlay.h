@@ -15,6 +15,11 @@ namespace script
             float speed,
             bool repeat) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "animation_play";
+        }
+
         virtual void bind(const UpdateContext& ctx) noexcept;
 
         virtual void execute(

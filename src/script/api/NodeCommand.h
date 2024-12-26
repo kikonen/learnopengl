@@ -14,6 +14,11 @@ namespace script
             float duration,
             bool relative) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "node_command";
+        }
+
         virtual bool isNode() noexcept override final { return true; };
 
         virtual void bind(const UpdateContext& ctx) noexcept;

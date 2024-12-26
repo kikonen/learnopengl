@@ -12,6 +12,11 @@ namespace script
             float duration,
             std::string text) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "set_text_node";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

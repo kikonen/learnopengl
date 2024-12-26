@@ -104,7 +104,7 @@ namespace script
         }
 
         template<typename T>
-        void set(T&& o) noexcept
+        void set(T&& o)
         {
             moveCommand(&o, false);
         }

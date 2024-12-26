@@ -16,6 +16,11 @@ namespace script
             const glm::vec3& controlPoint,
             const glm::vec3& position) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "move_spline_node";
+        }
+
         virtual void bind(
             const UpdateContext& ctx) noexcept override;
 

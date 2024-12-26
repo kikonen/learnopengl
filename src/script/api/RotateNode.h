@@ -17,6 +17,11 @@ namespace script
             const glm::vec3& axis,
             const float degrees) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "rotate_node";
+        }
+
         virtual void bind(
             const UpdateContext& ctx) noexcept override;
 

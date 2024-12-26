@@ -20,6 +20,11 @@ namespace script
             bool relative,
             const glm::vec3& position) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "move_node";
+        }
+
         virtual void bind(
             const UpdateContext& ctx) noexcept override;
 

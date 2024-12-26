@@ -1,5 +1,7 @@
 #include "CommandEntry.h"
 
+#include "fmt/format.h"
+
 namespace {
     template<typename T>
     T* assign(uint8_t* dst, T* src)
@@ -56,6 +58,12 @@ namespace script {
             }
             else if (auto* src = dynamic_cast<SetTextNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
+            }
+            else {
+                const auto msg = fmt::format(
+                    "COMMAND_ERROR: INVALID_COMMAND CMD={}",
+                    other_cmd->getName());
+                throw std::runtime_error{ msg };
             }
 
             // NOTE KI virtual destructor works via calling base class

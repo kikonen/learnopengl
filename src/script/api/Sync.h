@@ -12,6 +12,11 @@ namespace script
             float duration,
             const std::vector<script::command_id>& commandIds) noexcept;
 
+        virtual std::string getName() const noexcept override
+        {
+            return "sync";
+        }
+
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 

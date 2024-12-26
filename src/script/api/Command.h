@@ -24,6 +24,11 @@ namespace script
             m_id = 0;
         }
 
+        virtual std::string getName() const noexcept
+        {
+            return "command";
+        }
+
         inline bool isCompleted() const noexcept
         {
             return m_finished;
