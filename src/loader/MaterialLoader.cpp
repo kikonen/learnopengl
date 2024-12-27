@@ -451,6 +451,10 @@ namespace loader {
                 material.noDepth = readBool(v);
                 fields.noDepth = true;
             }
+            else if (k == "default_programs") {
+                material.m_defaultPrograms = readBool(v);
+                fields.defaultPrograms = true;
+            }
             else if (k == "program" || k == "shader") {
                 material.m_programNames[MaterialProgramType::shader] = readString(v);
             }
@@ -474,6 +478,13 @@ namespace loader {
             }
             else if (k == "geometry_type") {
                 material.m_geometryType = readString(v);
+            }
+            else if (k == "shared_definitions") {
+                for (const auto& defNode : v.getNodes()) {
+                    const auto& defName = defNode.getName();
+                    const auto& defValue = readString(defNode.getNode());
+                    material.m_sharedDefinitions[util::toUpper(defName)] = defValue;
+                }
             }
             else if (k == "program_definitions") {
                 for (const auto& defNode : v.getNodes()) {
@@ -823,12 +834,18 @@ namespace loader {
 
         if (f.gbuffer) m.gbuffer = mod.gbuffer;
 
+        if (f.defaultPrograms) m.m_defaultPrograms = mod.m_defaultPrograms;
+
         for (const auto& it : mod.getTexturePaths()) {
             m.addTexPath(it.first, it.second);
         }
 
         for (const auto& progIt : mod.m_programNames) {
             m.m_programNames[progIt.first] = progIt.second;
+        }
+
+        for (const auto& progIt : mod.m_sharedDefinitions) {
+            m.m_sharedDefinitions[progIt.first] = progIt.second;
         }
 
         for (const auto& progIt : mod.m_programDefinitions) {
@@ -863,7 +880,8 @@ namespace loader {
         {
             const auto& shaderName = selectProgram(
                 MaterialProgramType::shader,
-                material.m_programNames);
+                material.m_programNames,
+                material.m_defaultPrograms ? SHADER_G_TEX : "");
 
             if (shaderName.starts_with("g_")) {
                 material.gbuffer = true;
@@ -903,7 +921,8 @@ namespace loader {
 
         const auto& shaderName = selectProgram(
             MaterialProgramType::shader,
-            material.m_programNames);
+            material.m_programNames,
+            material.m_defaultPrograms ? SHADER_G_TEX : "");
 
         auto preDepthName = selectProgram(
             MaterialProgramType::pre_depth,
@@ -912,11 +931,13 @@ namespace loader {
 
         const auto& oitName = selectProgram(
             MaterialProgramType::oit,
-            material.m_programNames);
+            material.m_programNames,
+            material.m_defaultPrograms ? SHADER_OIT_PASS : "");
 
         const auto& shadowName = selectProgram(
             MaterialProgramType::shadow,
-            material.m_programNames);
+            material.m_programNames,
+            material.m_defaultPrograms ? SHADER_SHADOW : "");
 
         const auto& selectionName = selectProgram(
             MaterialProgramType::selection,
@@ -940,6 +961,15 @@ namespace loader {
             std::map<std::string, std::string, std::less<>> selectionDefinitions;
             std::map<std::string, std::string, std::less<>> idDefinitions;
             std::map<std::string, std::string, std::less<>> normalDefinitions;
+
+            for (const auto& [k, v] : material.m_sharedDefinitions) {
+                definitions[k] = v;
+                oitDefinitions[k] = v;
+                shadowDefinitions[k] = v;
+                selectionDefinitions[k] = v;
+                idDefinitions[k] = v;
+                normalDefinitions[k] = v;
+            }
 
             for (const auto& [k, v] : material.m_programDefinitions) {
                 definitions[k] = v;

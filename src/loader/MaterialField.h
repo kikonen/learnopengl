@@ -44,5 +44,7 @@ namespace loader {
         bool noDepth : 1 {false};
 
         bool gbuffer : 1 {false};
+
+        bool defaultPrograms : 1{false};
     };
 }

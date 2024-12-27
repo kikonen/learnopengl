@@ -95,6 +95,9 @@ namespace loader {
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
             }
+            else if (k == "default_programs") {
+                data.defaultPrograms = readBool(v);
+            }
             else if (k == "program") {
                 data.programs[MaterialProgramType::shader] = readString(v);
             }

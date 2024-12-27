@@ -288,8 +288,10 @@ public:
 
     std::vector<ChannelPart> map_channelParts;
 
+    bool m_defaultPrograms{ false };
     std::map<MaterialProgramType, std::string> m_programNames{};
 
+    std::map<std::string, std::string> m_sharedDefinitions{};
     std::map<std::string, std::string> m_programDefinitions{};
     std::map<std::string, std::string> m_oitDefinitions{};
     std::map<std::string, std::string> m_shadowDefinitions{};

@@ -599,6 +599,7 @@ namespace loader {
         {
             auto& l = *m_loaders;
 
+            // ASSIGN
             for (auto& materialData : meshData.materials) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
@@ -613,6 +614,28 @@ namespace loader {
                 }
             }
 
+            // NOTE KI settings from mesh to material *AFTER* assign, *BEFORE* modify
+            if (meshData.defaultPrograms) {
+                material.m_defaultPrograms = true;
+            }
+
+            {
+                for (const auto& srcIt : nodeData.programs) {
+                    const auto& dstIt = material.m_programNames.find(srcIt.first);
+                    if (dstIt == material.m_programNames.end()) {
+                        material.m_programNames[srcIt.first] = srcIt.second;
+                    }
+                }
+
+                for (const auto& srcIt : meshData.programs) {
+                    const auto& dstIt = material.m_programNames.find(srcIt.first);
+                    if (dstIt == material.m_programNames.end()) {
+                        material.m_programNames[srcIt.first] = srcIt.second;
+                    }
+                }
+            }
+
+            // MODIFY
             for (auto& materialData : meshData.materialModifiers) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
@@ -624,22 +647,6 @@ namespace loader {
                         type->str(), material.m_name, name, alias));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
-                }
-            }
-        }
-
-        {
-            for (const auto& srcIt : nodeData.programs) {
-                const auto& dstIt = material.m_programNames.find(srcIt.first);
-                if (dstIt == material.m_programNames.end()) {
-                    material.m_programNames[srcIt.first] = srcIt.second;
-                }
-            }
-
-            for (const auto& srcIt : meshData.programs) {
-                const auto& dstIt = material.m_programNames.find(srcIt.first);
-                if (dstIt == material.m_programNames.end()) {
-                    material.m_programNames[srcIt.first] = srcIt.second;
                 }
             }
         }
