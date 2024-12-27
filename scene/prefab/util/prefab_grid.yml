@@ -13,6 +13,7 @@ prefab:
     no_frustum: true
     no_reflect: true
     no_refract: true
+    no_select: true
     effect: true
   priority: -100
   scale: 100
