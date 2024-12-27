@@ -16,7 +16,7 @@ local function animation(coid)
   local wid2 = 0
 
   cid = cmd:wait(
-    { after=cid, time=5 + rnd(5) })
+    { after=cid, time=8 + rnd(5) })
 
   while true do
     cid = cmd:move(

@@ -1,5 +1,7 @@
 local TEXTS = {
-  "Happy new year\n",
+  "Happy new year\n" ..
+  "\n" ..
+  "2025",
   "Have the best\n" ..
   "year coming\n" ..
   "to you!",
@@ -9,6 +11,7 @@ local TEXTS = {
   "and be kind",
   "With best wishes\n" ..
   "to all",
+  ""
 }
 
 local function animateText(coid)
@@ -22,11 +25,13 @@ local function animateText(coid)
     { after=wid },
     false)
 
-  wid = cmd:wait({ after=cid, time=10 })
+  wid = cmd:wait({ after=cid, time=15 })
 
-  cmd:set_visible(
+  cid = cmd:set_visible(
     { after=wid },
     true)
+
+  cid = cmd:resume({ after=cid }, coid)
 
   while true do
     wid = cmd:wait({ after=cid, time=5 })
@@ -39,10 +44,10 @@ local function animateText(coid)
 
     if idx == 0 then
       cid = cmd:rotate(
-        { after=wid, time=2 },
+        { after=wid, time=2.5 },
         { 0, 1, 0 },
         360)
-      wid = cmd:wait({ after=cid, time=1.5 })
+      wid = cmd:wait({ after=cid, time=2.5 })
     end
 
     cid = cmd:resume({ after=wid }, coid)
