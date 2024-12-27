@@ -6,6 +6,7 @@
 
 #include "engine/UpdateViewContext.h"
 
+#include "render/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/FrameBufferAttachment.h"
@@ -21,11 +22,13 @@ namespace render {
     void GBuffer::updateRT(const UpdateViewContext& ctx)
     {
         const auto& assets = ctx.m_assets;
+        auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
+        const auto bufferScale = dbg.getGBufferScale();
 
-        int w = (int)(assets.gBufferScale * res.x);
-        int h = (int)(assets.gBufferScale * res.y);
+        int w = (int)(bufferScale * res.x);
+        int h = (int)(bufferScale * res.y);
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 

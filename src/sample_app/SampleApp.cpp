@@ -99,6 +99,7 @@ int SampleApp::onInit()
         auto& dbg = render::DebugContext::modify();
 
         dbg.m_glfwSwapInterval = assets.glfwSwapInterval;
+        dbg.m_gBufferScale = assets.gBufferScale;
 
         dbg.m_viewportLayer1EffectEnabled = assets.viewportLayer1EffectEnabled;
         dbg.m_viewportLayer1Effect = assets.viewportLayer1Effect;

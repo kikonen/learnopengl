@@ -21,6 +21,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "render/DebugContext.h"
 #include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
@@ -51,12 +52,14 @@ void LayerRenderer::prepareRT(
 void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
+    auto& dbg = render::DebugContext::get();
 
     const auto& res = ctx.m_resolution;
+    const auto bufferScale = dbg.getGBufferScale();
 
     // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = (int)(assets.gBufferScale * res.x);
-    int h = (int)(assets.gBufferScale * res.y);
+    int w = (int)(bufferScale * res.x);
+    int h = (int)(bufferScale * res.y);
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 

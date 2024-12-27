@@ -22,6 +22,8 @@ namespace render {
 
         int m_glfwSwapInterval{ 1 };
 
+        float m_gBufferScale{ 0.5f };
+
         bool m_viewportLayer1EffectEnabled{ false };
         ViewportEffect m_viewportLayer1Effect{ ViewportEffect::none };
         bool m_viewportLayer1BlendEnabled{ false };
@@ -130,5 +132,12 @@ namespace render {
         std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesWT;
         std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesPending;
         std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesRT;
+
+        float getGBufferScale() const noexcept
+        {
+            return std::max(
+                std::min(m_gBufferScale, 2.f),
+                0.01f);
+        }
     };
 }
