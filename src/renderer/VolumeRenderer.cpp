@@ -76,7 +76,7 @@ void VolumeRenderer::render(
             drawOptions.m_type = backend::DrawOptions::Type::elements;
             drawOptions.m_solid = true;
             drawOptions.m_lineMode = true;
-            drawOptions.m_renderBack = false;
+            drawOptions.m_renderBack = true;
         }
 
         meshes.emplace_back(
