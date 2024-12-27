@@ -1,0 +1,30 @@
+---
+prefab:
+  meshes:
+    - id: prefab_SM_Desert_Dandelion_01e
+      path: fbx/scenery/foliage/VOL10_YardPlants/Meshes/LP/SM_Desert_Dandelion_01e.FBX
+      materials:
+        - name: MI_DesertDandelion_01a
+          base_path: fbx/scenery/foliage/VOL10_YardPlants/Textures
+          map_kd: TX_DesertDandelion_01a_ALB.PNG
+          map_bump: TX_DesertDandelion_01a_NRM.PNG
+          xmap_channel:
+            - path: TX_DesertDandelion_01a_RMA.PNG
+              type: occlusion_map
+              channel: A
+          alpha: true
+          blend: true
+          render_back: true
+        - name: DefaultMaterial
+          base_path: fbx/scenery/foliage/VOL10_YardPlants/Textures
+          map_kd: TX_DesertDandelion_01a_ALB.PNG
+          map_bump: TX_DesertDandelion_01a_NRM.PNG
+          xmap_channel:
+            - path: TX_DesertDandelion_01a_RMA.PNG
+              type: occlusion_map
+              channel: A
+          alpha: true
+          blend: true
+          render_back: true
+      default_programs: true
+      base_scale: 0.01

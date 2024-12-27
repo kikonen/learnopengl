@@ -19,7 +19,7 @@ prefab:
         - path: Grass_And_Rubble_pjwdJ0_2K_AO.jpg
           type: occlusion_map
           channel: A
-      tiling: 20
+      tiling: 60
       parallax_depth: 0.03
       program: g_tex
     flags:

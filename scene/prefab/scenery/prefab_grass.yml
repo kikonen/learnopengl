@@ -48,7 +48,7 @@ prefab:
         - name: grass_bush_01_pbr
           alias: M_atlas_grass_01
           map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
-      scale: 0.01
+      base_scale: 0.01
       program: g_tex
       shadow_program: shadow
   lod_levels:

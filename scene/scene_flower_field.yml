@@ -1,0 +1,63 @@
+---
+name: Test
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 3, 7]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    pos: [0, 25, 40]
+    scale: 2.5
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 30000
+  - id: ground
+    prefab:
+      path: prefab/scenery/prefab_grass_ground_1.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: flower_{t}
+    prefab:
+      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-5, 0, -5]
+      seed: [12, 13, 14]
+      count: 500
+      repeat:
+        x_count: 5
+        z_count: 5
+        x_step: 10
+        z_step: 10
