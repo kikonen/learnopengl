@@ -19,11 +19,7 @@ prefab:
           map_kd: textures/palm02.png
           map_bump: textures/palm02_normal.png
       base_scale: 0.05
-      program: g_tex
-      oit_program: oit_pass
-      shadow_program: shadow
-      id_program: object_id
-      selection_program: selection
+      default_programs: true
     - path: fbx/scenery/trees/Palm_01.fbx
       lods:
         - level: 1
@@ -40,11 +36,7 @@ prefab:
           map_kd: textures/coconut palm leaf.png
           render_back: true
       base_scale: 0.05
-      program: g_tex
-      oit_program: oit_pass
-      shadow_program: shadow
-      id_program: object_id
-      selection_program: selection
+      default_programs: true
     - path: fbx/scenery/trees/Palm_01.fbx
       lods:
         - level: 2
@@ -60,11 +52,7 @@ prefab:
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
       base_scale: 0.05
-      program: g_tex
-      oit_program: oit_pass
-      shadow_program: shadow
-      id_program: object_id
-      selection_program: selection
+      default_programs: true
   lod_levels:
     - level: 0
       distance: 0

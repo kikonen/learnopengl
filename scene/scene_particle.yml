@@ -311,25 +311,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
-      material_modifiers:
-        - alias: palm_trunk
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: palm_leaf
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     pivot:
       offset: [0, 17, 0.6]
     flags:
@@ -354,6 +338,10 @@ nodes:
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -372,6 +360,10 @@ nodes:
   - id: bush01_{t}
     prefab:
       path: prefab/scenery/prefab_bush01.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -391,6 +383,10 @@ nodes:
   - id: bush02_{t}
     prefab:
       path: prefab/scenery/prefab_bush02.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -410,6 +406,10 @@ nodes:
   - id: bush03_{t}
     prefab:
       path: prefab/scenery/prefab_bush03.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -444,25 +444,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     mesh:
-      material_modifiers:
-        - alias: pine_trunk_pbr
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: pine_leaf_pbr
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:
@@ -481,25 +465,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
-      material_modifiers:
-        - alias: maple_trunk
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: maple_leaf
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:
@@ -509,6 +477,51 @@ nodes:
       scale: 1
       seed: [244314242, 54444212, 4354123]
       count: 50
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
+  - id: dandelion_{t}
+    prefab:
+      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      seed: [12, 13, 14]
+      count: 500
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
+  - id: flower_{t}
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    #scale: 5
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      seed: [45, 67, 99]
+      count: 500
       repeat:
         x_count: 11
         z_count: 11
