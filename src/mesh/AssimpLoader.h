@@ -43,6 +43,7 @@ namespace mesh {
     private:
         void collectJoints(
             mesh::LoadContext& ctx,
+            MeshSet& meshSet,
             std::vector<const aiNode*>& assimpNodes,
             const aiScene* scene,
             const aiNode* node,
@@ -52,10 +53,12 @@ namespace mesh {
             const glm::mat4& parentInvTransform);
 
         void dumpMetaData(
+            MeshSet& meshSet,
             const std::vector<animation::RigJoint>& joints,
             const std::vector<const aiNode*>& assimpNodes);
 
         void dumpMetaData(
+            MeshSet& meshSet,
             const animation::RigJoint& rigJoint,
             const aiNode* node);
 
@@ -73,6 +76,7 @@ namespace mesh {
 
         void processMesh(
             mesh::LoadContext& ctx,
+            MeshSet& meshSet,
             animation::RigJoint& rigJoint,
             ModelMesh& modelMesh,
             size_t meshIndex,
@@ -88,6 +92,7 @@ namespace mesh {
 
         void processMeshBone(
             mesh::LoadContext& ctx,
+            MeshSet& meshSet,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh,

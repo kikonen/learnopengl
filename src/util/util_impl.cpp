@@ -211,7 +211,25 @@ namespace util {
         std::replace(path.begin(), path.end(), '/', '\\');
 
         std::filesystem::path p{ path };
-        return p.string();
+        return p.filename().string();
+    }
+
+    std::string stem(std::string_view filePath)
+    {
+        std::string path{ filePath };
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        std::filesystem::path p{ path };
+        return p.stem().string();
+    }
+
+    std::string extension(std::string_view filePath)
+    {
+        std::string path{ filePath };
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        std::filesystem::path p{ path };
+        return p.extension().string();
     }
 
     std::string joinPathExt(

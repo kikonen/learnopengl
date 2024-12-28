@@ -68,10 +68,15 @@ namespace mesh
 
         const auto& assets = Assets::get();
 
-        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE path={}", meshSet.m_filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE mesh_set={}, path={}",
+            meshSet.m_name,
+            meshSet.m_filePath));
 
         if (!util::fileExists(meshSet.m_filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", meshSet.m_filePath) };
+            throw std::runtime_error{ fmt::format(
+                "FILE_NOT_EXIST: mesh_set={}, path={}",
+                meshSet.m_name,
+                meshSet.m_filePath) };
         }
 
         Assimp::Importer importer;
@@ -100,7 +105,8 @@ namespace mesh
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
+            "ASSIMP: SCENE scene={}, mesh_set={}, meshes={}, anims={}, materials={}, textures={}",
+            meshSet.m_name,
             meshSet.m_filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
@@ -113,8 +119,8 @@ namespace mesh
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectJoints(ctx, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
-        dumpMetaData(rig->m_joints, assimpNodes);
+        collectJoints(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
+        dumpMetaData(meshSet, rig->m_joints, assimpNodes);
 
         processMeshes(
             ctx,
@@ -153,12 +159,15 @@ namespace mesh
         }
 
         for (auto& mesh : meshSet.m_meshes) {
-            KI_INFO_OUT(fmt::format("MESH: {}", mesh->str()));
+            KI_INFO_OUT(fmt::format("MESH: mesh_set={}, mesh={}",
+                meshSet.m_name,
+                mesh->str()));
         }
     }
 
     void AssimpLoader::collectJoints(
         mesh::LoadContext& ctx,
+        MeshSet& meshSet,
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
@@ -194,7 +203,8 @@ namespace mesh
             rigJoint.m_globalInvTransform = globalInvTransform;
 
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: NODE node={}.{}, name={}, children={}, meshes={}\nT: {}\nG: {}\nI: {}",
+                "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nT: {}\nG: {}\nI: {}",
+                meshSet.m_name,
                 parentIndex,
                 jointIndex,
                 node->mName.C_Str(),
@@ -207,20 +217,22 @@ namespace mesh
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectJoints(ctx, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform, globalInvTransform);
+            collectJoints(ctx, meshSet, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform, globalInvTransform);
         }
     }
 
     void AssimpLoader::dumpMetaData(
+        MeshSet& meshSet,
         const std::vector<animation::RigJoint>& joints,
         const std::vector<const aiNode*>& assimpNodes)
     {
         for (int i = 0; i < joints.size(); i++) {
-            dumpMetaData(joints[i], assimpNodes[i]);
+            dumpMetaData(meshSet, joints[i], assimpNodes[i]);
         }
     }
 
     void AssimpLoader::dumpMetaData(
+        MeshSet& meshSet,
         const animation::RigJoint& rigJoint,
         const aiNode* node)
     {
@@ -287,7 +299,8 @@ namespace mesh
             }
 
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: META node={}.{}, name={}, key={}, value={}",
+                "ASSIMP: META mesh_set={}, node={}.{}, name={}, key={}, value={}",
+                meshSet.m_name,
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
                 rigJoint.m_name,
@@ -345,6 +358,7 @@ namespace mesh
 
                     processMesh(
                         ctx,
+                        meshSet,
                         rigJoint,
                         *modelMesh,
                         meshIndex,
@@ -368,6 +382,7 @@ namespace mesh
 
     void AssimpLoader::processMesh(
         mesh::LoadContext& ctx,
+        MeshSet& meshSet,
         animation::RigJoint& rigJoint,
         ModelMesh& modelMesh,
         size_t meshIndex,
@@ -391,7 +406,8 @@ namespace mesh
         }
 
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
+            meshSet.m_name,
             rigJoint.m_parentIndex,
             rigJoint.m_index,
             modelMesh.m_name,
@@ -429,7 +445,7 @@ namespace mesh
         }
 
         for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
-            processMeshBone(ctx, modelMesh, meshIndex, mesh, mesh->mBones[boneIdx]);
+            processMeshBone(ctx, meshSet, modelMesh, meshIndex, mesh, mesh->mBones[boneIdx]);
         }
     }
 
@@ -451,6 +467,7 @@ namespace mesh
 
     void AssimpLoader::processMeshBone(
         mesh::LoadContext& ctx,
+        MeshSet& meshSet,
         ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh,
@@ -459,7 +476,8 @@ namespace mesh
         auto& bi = ctx.m_rig->registerBone(bone);
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE joint={}, bone={}, name={}, mesh={}, weights={}",
+            "ASSIMP: BONE mesh_set={}, joint={}, bone={}, name={}, mesh={}, weights={}",
+            meshSet.m_name,
             bi.m_jointIndex,
             bi.m_index,
             bi.m_jointName,
@@ -482,7 +500,8 @@ namespace mesh
             vb.addBone(bi.m_index, vw.mWeight);
 
             //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
+            //    "ASSIMP: BONE mesh_set={}, mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
+            //    meshSet.m_name,
             //    meshIndex,
             //    bi.m_index,
             //    vertexIndex,
@@ -512,7 +531,8 @@ namespace mesh
     {
         const auto name = const_cast<aiMaterial*>(src)->GetName().C_Str();
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL name={}, properties={}, allocated={}",
+        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
+            meshSet.m_name,
             name,
             src->mNumProperties,
             src->mNumAllocated));
@@ -635,7 +655,10 @@ namespace mesh
                 filePath.length() - rootDir.length() - 1);
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: TEX path={}, was={}", assetPath, origPath));
+        KI_INFO_OUT(fmt::format("ASSIMP: TEX mesh_set={}, path={}, was={}",
+            meshSet.m_name,
+            assetPath,
+            origPath));
 
         return assetPath;
     }

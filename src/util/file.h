@@ -22,6 +22,8 @@ namespace util {
     std::string dirName(std::string_view filePath);
 
     std::string baseName(std::string_view filePath);
+    std::string stem(std::string_view filePath);
+    std::string extension(std::string_view filePath);
 
     // Join path and fileExt into end
     std::string joinPathExt(

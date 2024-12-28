@@ -14,7 +14,10 @@
 namespace {
     std::string extractName(std::string_view meshPath) {
         auto filePath = util::joinPath("", meshPath);
-        return util::baseName(filePath);
+        KI_INFO_OUT(fmt::format("EXTRACT_NAME: path={}, mesh_set={}",
+            std::string{ filePath },
+            util::stem(filePath)));
+        return util::stem(filePath);
     }
 }
 
