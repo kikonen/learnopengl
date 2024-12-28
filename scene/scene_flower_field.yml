@@ -39,7 +39,7 @@ nodes:
       path: prefab/scenery/prefab_grass_ground_1.yml
     scale: 100
     position: [0, 0, 0]
-  - id: flower_{t}
+  - id: dandelion_{t}
     prefab:
       path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
     mesh:
@@ -55,6 +55,29 @@ nodes:
       mode: random
       offset: [-5, 0, -5]
       seed: [12, 13, 14]
+      count: 500
+      repeat:
+        x_count: 5
+        z_count: 5
+        x_step: 10
+        z_step: 10
+  - id: flower_{t}
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    #scale: 5
+    generator:
+      type: grid
+      mode: random
+      offset: [-5, 0, -5]
+      seed: [45, 67, 99]
       count: 500
       repeat:
         x_count: 5
