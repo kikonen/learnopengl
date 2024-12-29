@@ -54,7 +54,7 @@ nodes:
   - id: planet
     parent_id: planet_origo
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
       scale: 2
     program: g_tex
     pos: [0, 0, 0]

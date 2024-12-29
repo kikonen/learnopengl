@@ -4,7 +4,7 @@ prefab:
     - id: prefab_cylon_raider
       path: fbx/vehicles/battlestar_galactica_cylon_raider/battlestar_galactica_ship.FBX
       material:
-        base_path: fbx/vehicles/battlestar_galactica_cylon_raider/textures
+        base_dir: textures
         map_kd: Material _1sdsss_BaseColor.jpg
         map_normal: Material _1sdsss_Normal.jpg
         map_ke: Material _1sdsss_Emissive.jpg

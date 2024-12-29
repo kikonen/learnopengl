@@ -45,6 +45,7 @@ namespace mesh {
 
     public:
         const std::string m_rootDir;
+        const std::string m_dir;
         const std::string m_path;
         const std::string m_name;
 

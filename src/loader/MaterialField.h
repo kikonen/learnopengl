@@ -4,6 +4,9 @@ namespace loader {
     struct MaterialField {
         bool textureSpec : 1 { false };
 
+        bool baseDir : 1{false};
+        bool geometryType : 1 {false};
+
         bool pattern : 1 { false };
         bool reflection : 1 { false };
         bool refraction : 1 { false };

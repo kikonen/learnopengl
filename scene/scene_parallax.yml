@@ -53,13 +53,13 @@ nodes:
       cube_map: true
   - name: Planet 1
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
       material_modifier:
         map_bump: mars_normal.png
     program: g_tex

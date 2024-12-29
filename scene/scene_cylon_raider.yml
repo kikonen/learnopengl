@@ -9,7 +9,7 @@ script:
 nodes:
   - id: player
     type: origo
-    pos: [0, 3, 7]
+    pos: [-2, 3, 20]
     front: [0, 0, -1]
     active: true
     audio:
@@ -44,3 +44,13 @@ nodes:
       path: prefab/vehicles/prefab_cylon_raider.yml
     priority: -20
     position: [0, 2, 0]
+  - id: planet
+    mesh:
+      path: planet/planet.obj
+      material_modifier:
+        map_bump: mars_normal.png
+      flags:
+        pre_depth: true
+    program: g_tex
+    pos: [0, 25, -25]
+    scale: 5

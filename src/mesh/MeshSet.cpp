@@ -27,6 +27,7 @@ namespace mesh {
         std::string_view path)
         : m_rootDir{ rootDir },
         m_path{ path },
+        m_dir{ util::dirName(path) },
         m_name{ extractName(path) }
 
     {}
@@ -36,8 +37,8 @@ namespace mesh {
     std::string MeshSet::str() const noexcept
     {
         return fmt::format(
-            "<MESH_SET: rootDir={}, meshPath={}, name={}>",
-            m_rootDir, m_path, m_name);
+            "<MESH_SET: meshPath={}, name={}>",
+            m_path, m_name);
     }
 
     bool MeshSet::isEmpty() const noexcept

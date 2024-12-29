@@ -266,7 +266,6 @@ public:
     //static const ki::material_id DEFAULT_ID = 0;
 
     std::string m_name;
-    std::string m_path;
 
     uint8_t spriteCount = 1;
     uint8_t spritesX = 1;
@@ -284,7 +283,8 @@ public:
     bool inmutable : 1 {false};
 
     std::string m_geometryType;
-    std::string m_basePath;
+    std::string m_baseDir;
+    std::string m_modelDir;
 
     std::vector<ChannelPart> map_channelParts;
 

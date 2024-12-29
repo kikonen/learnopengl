@@ -168,8 +168,10 @@ Material& Material::operator=(Material&& o) = default;
 void Material::assign(const Material& o)
 {
     auto oldId = m_id;
+    auto oldModelDir = m_modelDir;
     *this = o;
     m_id = oldId;
+    m_modelDir = oldModelDir;
 }
 
 ki::material_index Material::registerMaterial()
@@ -335,22 +337,40 @@ std::string Material::getTexturePath(
 
     std::string texturePath;
 
-    if (!m_basePath.empty())
+    if (!m_baseDir.empty())
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
             assets.assetsDir,
-            m_path,
-            m_basePath,
+            m_modelDir,
+            m_baseDir,
             textureName, "");
     }
 
-    if (!util::fileExists(texturePath)) {
+    if (!util::fileExists(texturePath))
+    {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = util::joinPathExt(
             assets.assetsDir,
-            m_path,
+            m_modelDir,
             textureName, "");
+    }
+
+    if (!util::fileExists(texturePath) && !m_baseDir.empty())
+    {
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        texturePath = util::joinPathExt(
+            assets.assetsDir,
+            m_baseDir,
+            textureName, "");
+    }
+
+    if (!util::fileExists(texturePath) && m_baseDir.empty())
+    {
+        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        texturePath = util::joinPath(
+            assets.assetsDir,
+            textureName);
     }
 
     return texturePath;

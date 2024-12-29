@@ -5,7 +5,7 @@ prefab:
       path: fbx/scenery/foliage/VOL10_YardPlants/Meshes/LP/SM_Flower_01c.FBX
       materials:
         - name: MI_Flower_01a
-          base_path: fbx/scenery/foliage/VOL10_YardPlants/Textures
+          base_dir: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_bump: TX_Flower_01_NRM.PNG
           xmap_channel:
@@ -16,7 +16,7 @@ prefab:
           xblend: true
           render_back: true
         - name: DefaultMaterial
-          base_path: fbx/scenery/foliage/VOL10_YardPlants/Textures
+          base_dir: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_bump: TX_Flower_01_NRM.PNG
           xmap_channel:

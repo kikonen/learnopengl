@@ -3,7 +3,7 @@ prefab:
   mesh:
     path: plane
     material:
-      base_path: textures\PavingStones115C_1K-PNG
+      base_dir: textures\PavingStones115C_1K-PNG
       map_kd: PavingStones115C_1K_Color.png
       map_normal: PavingStones115C_1K_NormalGL.png
       map_channel:

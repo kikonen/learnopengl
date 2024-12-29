@@ -157,15 +157,15 @@ nodes:
     scale: 1
   - name: Planet 1
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
       material_modifier:
-        map_bump: planet/mars_normal.png
+        map_bump: mars_normal.png
     program: g_tex
     pos: [0, 3.5, 30]
     scale: 1

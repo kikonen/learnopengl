@@ -3,7 +3,7 @@ prefab:
   mesh:
     path: plane
     material:
-      base_path: textures/DiamondPlate002_1K-PNG
+      base_dir: textures/DiamondPlate002_1K-PNG
       map_kd: DiamondPlate002_1K_Color.png
       map_normal: DiamondPlate002_1K_NormalGL.png
       map_channel:

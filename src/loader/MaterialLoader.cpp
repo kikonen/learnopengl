@@ -217,8 +217,8 @@ namespace loader {
             else if (k == "alias") {
                 data.aliasName = readString(v);
             }
-            else if (k == "base" || k == "base_path") {
-                material.m_basePath = readString(v);
+            else if (k == "base" || k == "base_dir") {
+                material.m_baseDir = readString(v);
             }
             //else if (k == "ns") {
             //    material.ns = readFloat(v);
@@ -792,6 +792,9 @@ namespace loader {
         const Material & mod = data.material;
 
         if (f.textureSpec) m.textureSpec = mod.textureSpec;
+
+        if (f.baseDir) m.m_baseDir = mod.m_baseDir;
+        if (f.geometryType) m.m_geometryType = mod.m_geometryType;
 
         if (f.pattern) m.pattern = mod.pattern;
         if (f.reflection) m.reflection = mod.reflection;

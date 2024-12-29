@@ -1185,9 +1185,9 @@ nodes:
   - name: Planet
     parent_id: planet_origo
     mesh:
-      path: planet/planet
+      path: planet/planet.obj
       material_modifier:
-        map_bump: planet/mars_normal.png
+        map_bump: mars_normal.png
       flags:
         pre_depth: true
     program: g_tex

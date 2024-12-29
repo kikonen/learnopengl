@@ -538,6 +538,7 @@ namespace mesh
             src->mNumAllocated));
 
         Material material;
+        material.m_modelDir = meshSet.m_dir;
         material.m_name = name;
 
         {
