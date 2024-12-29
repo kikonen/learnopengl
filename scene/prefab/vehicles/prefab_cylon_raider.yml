@@ -1,0 +1,33 @@
+---
+prefab:
+  meshes:
+    - id: prefab_cylon_raider
+      path: fbx/vehicles/battlestar_galactica_cylon_raider/battlestar_galactica_ship.FBX
+      material:
+        base_path: fbx/vehicles/battlestar_galactica_cylon_raider/textures
+        map_kd: Material _1sdsss_BaseColor.jpg
+        map_normal: Material _1sdsss_Normal.jpg
+        map_ke: Material _1sdsss_Emissive.jpg
+        map_channel:
+          - path: Material _1sdsss_metalness.jpg
+            type: metalness_map
+            channel: R
+          - path: Material _1sdsss_Roughness.jpg
+            type: roughness_map
+            channel: G
+          - path: Material _1sdsss_Mixed_AO.jpg
+            type: occlusion_map
+            channel: A
+      default_programs: true
+      base_rotation: [0, -90, 0]
+      base_scale: 0.0001
+  xphysics:
+    body:
+      type: capsule
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+    geom:
+      type: capsule
+      size: [0.85, 0.15, 0]
+      offset: [0, 0.8, 0]

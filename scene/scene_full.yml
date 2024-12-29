@@ -626,7 +626,7 @@ nodes:
     pos: [-15.0, 25.0, 0.0]
     scale: 30.0
     enabled: false
-  - id: shuttle
+  - xid: shuttle
     mesh:
       path: opengl_book/NasaShuttle/shuttle
       material_modifier:
@@ -634,6 +634,11 @@ nodes:
     program: g_tex
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
+  - id: cylon_ship
+    prefab:
+      path: prefab/vehicles/prefab_cylon_raider.yml
+    pos: [20.0, 40.0, -50.0]
+    rotation: [0, 180, 0]
   - name: Sword 2
     mesh:
       path: sword2
