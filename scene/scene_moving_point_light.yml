@@ -3,7 +3,7 @@ meta:
   name: Full
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 root:
   type: origo
   pos: [200, 0, 200]

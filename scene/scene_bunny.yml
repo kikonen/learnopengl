@@ -2,7 +2,7 @@
 name: Bunny
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/borghese_gardens_2k.hdr
+  material: skybox/polyhaven/borghese_gardens_4k.hdr
 script:
   scripts:
     - path: lib/common

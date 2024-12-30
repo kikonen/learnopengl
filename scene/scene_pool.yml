@@ -3,7 +3,7 @@ name: Pool
 viewports:
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   hdri: true
 prefab_dirs:
   - prefab

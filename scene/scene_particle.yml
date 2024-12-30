@@ -2,8 +2,8 @@
 name: Player
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
-  xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_puresky_4k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+  xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   xmaterial: skybox/polyhaven/belfast_sunset_puresky_4k.hdr
   xmaterial: skybox/polyhaven/pizzo_pernice_puresky_4k.hdr
 script:

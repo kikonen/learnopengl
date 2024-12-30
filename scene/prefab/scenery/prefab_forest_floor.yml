@@ -1,0 +1,27 @@
+---
+prefab:
+  mesh:
+    path: plane
+    material:
+      map_kd: textures\Ground037_2K-PNG/Ground037_2K-PNG_Color.png
+      map_normal: textures\Ground037_2K-PNG/Ground037_2K-PNG_NormalGL.png
+      map_channel:
+        - path: textures\Ground037_2K-PNG/Ground037_2K-PNG_Roughness.png
+          type: roughness_map
+          channel: G
+        - path: textures\Ground037_2K-PNG/Ground037_2K-PNG_Displacement.png
+          type: displacement_map
+          channel: B
+        - path: textures\Ground037_2K-PNG/Ground037_2K-PNG_AmbientOcclusion.png
+          type: occlusion_map
+          channel: A
+      tiling: 60
+      parallax_depth: 0.1
+      program: g_tex
+  flags:
+    no_shadow: true
+  physics:
+    geom:
+      type: plane
+      category: [terrain]
+      collision: [npc, player, prop]

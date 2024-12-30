@@ -2,7 +2,7 @@
 name: Audio
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common

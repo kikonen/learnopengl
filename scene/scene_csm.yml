@@ -2,7 +2,7 @@
 name: Origo
 viewports:
 skybox:
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 lights: {}
 cube_maps: {}
 script:

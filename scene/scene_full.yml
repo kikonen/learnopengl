@@ -14,7 +14,7 @@ skybox:
     - Down_Tex.png
     - Front_Tex.png
     - Back_Tex.png
-  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 root:
   type: origo
   pos: [200, 0, 200]
