@@ -89,7 +89,7 @@ nodes:
         type: ico_sphere
         radius: 20
         segments: [10, 0, 0]
-      path: textures/planets/planet.obj
+      path: planets/planet.obj
       xmaterial:
         base_dir: textures/planets/earth_like_1
         map_kd: Terrestrial-EQUIRECTANGULAR-1-4096x2048.png
@@ -101,7 +101,7 @@ nodes:
   - id: planet_cloud
     parent: planet_origo
     mesh:
-      path: textures/planets/planet.obj
+      path: planets/planet.obj
       xmaterial:
         kd: [1, 1, 1, 0.3]
         base_dir: textures/planets/earth_like_1
@@ -115,7 +115,7 @@ nodes:
         alpha: true
         blend: true
       default_programs: true
-      base_scale: 11.5
+      base_scale: 10.5
     flags:
       no_shadow: true
     script: |
