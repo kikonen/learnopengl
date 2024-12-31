@@ -1,6 +1,29 @@
 #pragma once
 
 namespace mesh {
+    //
+    // TODO KI missinsg from https://github.com/ilmola/generator
+    // MESHES:
+    // ConvexPolygonMesh
+    // ParametricMesh
+    // SphericalTriangleMesh
+    // TeapotMesh
+    // TriangleMesh
+    //
+    // SHAPES:
+    // BezierShape
+    // CircleShape
+    // GridShape
+    // LineShape
+    // ParametricShape
+    // RectangleShape
+    // RoundedRectangleShape
+    //
+    // PATHS:
+    // HelixPath
+    // KnotPath
+    // LinePath
+    // ParametricPath
     enum class PrimitiveType {
         none,
         points,
@@ -15,6 +38,7 @@ namespace mesh {
         box,
         rounded_box,
         dodeca_hedron,
+        icosa_hedron,
         ico_sphere,
         sphere,
         capsule,

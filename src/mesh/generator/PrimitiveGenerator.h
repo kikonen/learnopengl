@@ -203,6 +203,19 @@ namespace mesh {
             };
         }
 
+        /// @param radius The radius of the enclosing sphere.
+        /// @param segments The number segments along each edge. Must be >= 1.
+        static PrimitiveGenerator icosa_hedron()
+        {
+            return {
+                .type = PrimitiveType::icosa_hedron,
+                .name = "<icosa_hedron>",
+                .alias = "icosa_hedron",
+                .radius = 0.5f,
+                .segments = { 1, 0, 0 },
+            };
+        }
+
         /// @param radius The radius of the containing sphere.
         /// @param segments The number of segments per icosahedron edge. Must be >= 1.
         static PrimitiveGenerator ico_sphere()
@@ -488,6 +501,8 @@ namespace mesh {
                 return rounded_box();
             case PrimitiveType::dodeca_hedron:
                 return dodeca_hedron();
+            case PrimitiveType::icosa_hedron:
+                return icosa_hedron();
             case PrimitiveType::ico_sphere:
                 return ico_sphere();
             case PrimitiveType::sphere:

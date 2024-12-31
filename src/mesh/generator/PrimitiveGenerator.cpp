@@ -436,6 +436,40 @@ namespace {
         return mesh;
     }
 
+    std::unique_ptr<mesh::Mesh> create_icosa_hedron(
+        mesh::PrimitiveGenerator generator)
+    {
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        generator::IcosahedronMesh shape{
+            generator.radius,
+            generator.segments.x,
+        };
+
+        for (const auto& vertex : shape.vertices()) {
+            auto& v = vertices.emplace_back(
+                vertex.position,
+                vertex.texCoord,
+                vertex.normal,
+                vertex.normal);
+        }
+
+        for (const auto& tri : shape.triangles()) {
+            indeces.push_back(tri.vertices[0]);
+            indeces.push_back(tri.vertices[1]);
+            indeces.push_back(tri.vertices[2]);
+        }
+
+        mesh::TangentCalculator::calculateTangents(*mesh);
+
+        return mesh;
+    }
+
     std::unique_ptr<mesh::Mesh> create_ico_sphere(
         mesh::PrimitiveGenerator generator)
     {
@@ -971,6 +1005,8 @@ namespace mesh {
             return create_rounded_box(*this);
         case PrimitiveType::dodeca_hedron:
             return create_dodeca_hedron(*this);
+        case PrimitiveType::icosa_hedron:
+            return create_icosa_hedron(*this);
         case PrimitiveType::ico_sphere:
             return create_ico_sphere(*this);
         case PrimitiveType::sphere:
