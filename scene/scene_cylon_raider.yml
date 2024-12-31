@@ -2,7 +2,8 @@
 name: Test
 skybox:
   program: g_skybox
-  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+  #material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+  material: skybox/polyhaven/drakensberg_solitary_mountain_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
@@ -34,23 +35,91 @@ nodes:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: ground
+  - xid: ground
     prefab:
       path: prefab/scenery/prefab_grass_ground_1.yml
     scale: 100
     position: [0, 0, 0]
+  - id: planet_origo
+    type: origo
+    pos: [0, 25, -25]
+    script: |
+      cmd:rotate(
+        { time=60 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
+  - id: cylon_origo
+    parent: planet_origo
+    type: origo
+    script: |
+      cmd:rotate(
+        { time=60 * 100 },
+        { 0, 1, 0 },
+        360 * 200)
   - id: cylon_ship_{t}
+    parent: cylon_origo
     prefab:
       path: prefab/vehicles/prefab_cylon_raider.yml
     priority: -20
-    position: [0, 2, 0]
+    scale: 0.125
+    rotation: [0, -90, 0]
+    position: [0, 1, 13]
+    audio:
+      sources:
+        - name: fly
+          path: audio/fab/noise_static_pass_by_sweetener_037.wav
+          reference_distance: 20
+          gain: 1
+          loop: true
+    repeat:
+      x_count: 2
+      x_step: 6
+      y_step: 2
+      z_count: 2
+      z_step: 6
+    script: |
+      local fly_sid = util:sid("fly")
+      cid = cmd:audio_play(
+        { sid=fly_sid })
+
   - id: planet
+    parent: planet_origo
     mesh:
-      path: planet/planet.obj
-      material_modifier:
-        map_bump: mars_normal.png
-      flags:
-        pre_depth: true
-    program: g_tex
-    pos: [0, 25, -25]
-    scale: 5
+      xvertex:
+        type: ico_sphere
+        radius: 20
+        segments: [10, 0, 0]
+      path: textures/planets/planet.obj
+      xmaterial:
+        base_dir: textures/planets/earth_like_1
+        map_kd: Terrestrial-EQUIRECTANGULAR-1-4096x2048.png
+      material:
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_daymap.jpg
+      default_programs: true
+      base_scale: 10
+  - id: planet_cloud
+    parent: planet_origo
+    mesh:
+      path: textures/planets/planet.obj
+      xmaterial:
+        kd: [1, 1, 1, 0.3]
+        base_dir: textures/planets/earth_like_1
+        map_kd: Clouds-EQUIRECTANGULAR-1-4096x2048.png
+        alpha: true
+        blend: true
+      material:
+        kd: [1, 1, 1, 0.3]
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_clouds.jpg
+        alpha: true
+        blend: true
+      default_programs: true
+      base_scale: 11.5
+    flags:
+      no_shadow: true
+    script: |
+      cmd:rotate(
+        { time=40 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
