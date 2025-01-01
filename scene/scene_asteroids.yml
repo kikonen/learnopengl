@@ -51,7 +51,7 @@ nodes:
     type: origo
     pos: [0.0, 0.0, 0.0]
     script_file: scripts/anim_asteroids_roll
-  - id: planet
+  - xid: planet
     parent_id: planet_origo
     mesh:
       path: planet/planet.obj
@@ -86,6 +86,40 @@ nodes:
         sprites_x: 8
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+  - id: planet
+    parent: planet_origo
+    mesh:
+      path: planets/planet.obj
+      material:
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_daymap.jpg
+        map_normal: 2k_earth_daymap_normal.png
+      default_programs: true
+      base_scale: 20
+    script: |
+      cmd:rotate(
+        { time=60 * 100 },
+        { 0, 1, 0 },
+        360 * 30)
+  - id: planet_cloud
+    parent: planet_origo
+    mesh:
+      path: planets/planet.obj
+      material:
+        kd: [1, 1, 1.3, 0.3]
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_clouds.jpg
+        alpha: true
+        blend: true
+      default_programs: true
+      base_scale: 21
+    flags:
+      no_shadow: true
+    script: |
+      cmd:rotate(
+        { time=40 * 100 },
+        { 0, 1, 0 },
+        360 * 50)
   - id: asteroid_belt
     parent_id: planet_origo
     prefab:

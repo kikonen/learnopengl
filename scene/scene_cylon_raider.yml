@@ -4,6 +4,7 @@ skybox:
   program: g_skybox
   #material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   material: skybox/polyhaven/drakensberg_solitary_mountain_puresky_4k.hdr
+  #material: skybox/polyhaven/quarry_01_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
@@ -47,7 +48,7 @@ nodes:
       cmd:rotate(
         { time=60 * 100 },
         { 0, 1, 0 },
-        360 * 100)
+        360 * 50)
   - id: cylon_origo
     parent: planet_origo
     type: origo
@@ -81,7 +82,10 @@ nodes:
       local fly_sid = util:sid("fly")
       cid = cmd:audio_play(
         { sid=fly_sid })
-
+      cmd:rotate(
+        { time=60 * 100 },
+        { 1, 0, 0 },
+        360 * 30)
   - id: planet
     parent: planet_origo
     mesh:
@@ -96,6 +100,7 @@ nodes:
       material:
         base_dir: textures/planets/earth
         map_kd: 2k_earth_daymap.jpg
+        map_normal: 2k_earth_daymap_normal.png
       default_programs: true
       base_scale: 10
   - id: planet_cloud
