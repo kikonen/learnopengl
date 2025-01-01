@@ -94,5 +94,10 @@ namespace loader {
         GeneratorData generator;
 
         ParticleData particle;
+
+        const std::string& str() const noexcept
+        {
+            return baseId.str();
+        }
     };
 }

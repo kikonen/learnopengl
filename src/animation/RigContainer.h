@@ -60,6 +60,8 @@ namespace animation {
 
         const animation::RigSocket* findSocket(const std::string& socketName) const noexcept;
 
+        std::vector<std::string> getSocketNames() const noexcept;
+
         bool hasSockets() const noexcept
         {
             return !m_sockets.empty();

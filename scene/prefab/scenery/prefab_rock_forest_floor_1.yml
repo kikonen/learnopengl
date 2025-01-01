@@ -8,7 +8,7 @@ prefab:
       map_normal: Rocky_Forest_Floor_vl0lecrlw_2K_Normal.jpg
       map_channel:
         - path: Rocky_Forest_Floor_vl0lecrlw_2K_Gloss.jpg
-          type: metalness_map
+          type: metallness_map
           channel: R
         - path: Rocky_Forest_Floor_vl0lecrlw_2K_Roughness.jpg
           type: roughness_map

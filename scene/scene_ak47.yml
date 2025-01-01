@@ -39,7 +39,7 @@ nodes:
       path: prefab/scenery/prefab_grass_ground_1.yml
     scale: 100
     position: [0, 0, 0]
-  - id: ak47_{t}
+  - id: ak47_{c}_{t}
     prefab:
       path: prefab/weapons/prefab_ak47.yml
     pos: [0, 1, 0]
@@ -55,4 +55,37 @@ nodes:
         pos: [0, 1.5, 0]
         mesh:
           material_modifier:
-            map_kd: T_KA47_Gold_ALB.TGA
+            map_kd: T_KA47_Gold_ALB_2048.png
+  - id: automatic_rifle_{c}_{t}
+    prefab:
+      path: prefab/weapons/prefab_automatic_rifle_basic.yml
+    pos: [1, 1, 0]
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    #scale: 5
+    clone_mesh: false
+    clones:
+      - pos: [1, 1, 0]
+      - pos: [1, 1.5, 0]
+        mesh:
+          material_modifier:
+            map_kd: T_Automatic_Rifle_01_Albedo_02_2048.png
+  - id: automatic_rifle_hands_{c}_{t}
+    prefab:
+      path: prefab/weapons/prefab_automatic_rifle_hands.yml
+    pos: [2, 1, 0]
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    #scale: 5
+    clone_mesh: false
+    clones:
+      - pos: [2, 1, 0]
+      # - pos: [2, 1.5, 0]
+      #   mesh:
+      #     material_modifier:
+      #       map_kd: T_Hands_04_Albedo_06_2048.png
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )

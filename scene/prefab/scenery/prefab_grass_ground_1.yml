@@ -8,7 +8,7 @@ prefab:
       map_normal: Grass_And_Rubble_pjwdJ0_2K_Normal.jpg
       map_channel:
         - path: Grass_And_Rubble_pjwdJ0_2K_Gloss.jpg
-          type: metalness_map
+          type: metallness_map
           channel: R
         - path: Grass_And_Rubble_pjwdJ0_2K_Roughness.jpg
           type: roughness_map

@@ -6,10 +6,10 @@ prefab:
       materials:
         - alias: "*"
           base_dir: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
-          map_kd: T_KA47_ALB.TGA
-          map_bump: T_KA47_NRM.TGA
+          map_kd: T_KA47_ALB_2048.png
+          map_bump: T_KA47_NRM_2048.png
           xmap_channel:
-            - path: TX_Flower_01_RSA.PNG
+            - path: T_KA47_M_MSK_2048.png
               type: occlusion_map
               channel: A
           alpha: true

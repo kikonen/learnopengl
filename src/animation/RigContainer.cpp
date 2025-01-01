@@ -173,6 +173,16 @@ namespace animation {
         return &(*it);
     }
 
+    std::vector<std::string> RigContainer::getSocketNames() const noexcept
+    {
+        std::vector<std::string> names;
+
+        for (auto& socket : m_sockets) {
+            names.push_back(socket.m_name);
+        }
+        return names;
+    }
+
     void RigContainer::registerMesh(
         uint16_t jointIndex,
         mesh::ModelMesh* mesh)

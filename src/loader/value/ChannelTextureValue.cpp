@@ -42,6 +42,8 @@ namespace {
         { "noise_map", TextureType::map_noise },
         { "noise_2_map", TextureType::map_noise_2 },
         { "metallness_map", TextureType::map_metallness },
+        // NOTE KI common typo "metalness"
+        { "metalness_map", TextureType::map_metallness },
         { "roughness_map", TextureType::map_roughness },
         { "occlusion_map", TextureType::map_occlusion },
         { "displacement_map", TextureType::map_displacement },

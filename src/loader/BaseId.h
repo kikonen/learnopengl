@@ -13,6 +13,11 @@ namespace loader {
     struct BaseId {
         std::string m_path;
 
+        const std::string& str() const noexcept
+        {
+            return m_path;
+        }
+
         bool empty() const {
             return m_path.empty();
         }

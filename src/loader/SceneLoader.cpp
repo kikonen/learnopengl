@@ -1030,8 +1030,8 @@ namespace loader {
         auto rig = mesh::findRig(lodMeshes);
         if (!rig) {
             KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_ERROR: {} - rig_missing",
-                nodeData.name));
+                "SOCKET_BIND_ERROR: rig_missing - node={}",
+                nodeData.str()));
             return;
         }
 
@@ -1040,28 +1040,37 @@ namespace loader {
 
             mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
             if (!lodMesh) {
+                const auto& names = mesh::getLodMeshNames(attachment.name, lodMeshes);
+                const auto& aliases = mesh::getLodMeshNames(attachment.name, lodMeshes);
                 KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: {} - mesh_missing, socket={}, mesh={}",
-                    nodeData.name,
+                    "SOCKET_BIND_ERROR: mesh_missing - node={}, rig={}, socket={}, mesh={}, mesh_names=[{}], mesh_aliases=[{}]",
+                    nodeData.str(),
+                    rig->m_name,
                     attachment.socket,
-                    attachment.name));
+                    attachment.name,
+                    util::join(names, ", "),
+                    util::join(aliases, ", ")));
                 continue;
             }
 
             const auto* socket = rig->findSocket(attachment.socket);
             if (!socket) {
+                const auto& names = rig->getSocketNames();
                 KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: {} - socket_missing, socket={}, mesh={}",
-                    nodeData.name,
+                    "SOCKET_BIND_ERROR: socket_missing - node={}, rig={}, socket={}, mesh={}, socket_names=[{}]",
+                    nodeData.str(),
+                    rig->m_name,
                     attachment.socket,
-                    attachment.name));
+                    attachment.name,
+                    util::join(names, ", ")));
                 continue;
             }
 
             lodMesh->m_socketIndex = socket->m_index;
 
             KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_OK: {} - joint={}.{}, socket={}.{}, mesh={}",
+                "SOCKET_BIND_OK: node={}, rig={}, joint={}.{}, socket={}.{}, mesh={}",
+                nodeData.str(),
                 rig->m_name,
                 socket->m_jointIndex,
                 socket->m_jointName,

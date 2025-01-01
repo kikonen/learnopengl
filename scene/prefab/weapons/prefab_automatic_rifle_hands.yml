@@ -1,0 +1,49 @@
+---
+prefab:
+  meshes:
+    - id: prefab_SK_Hands_04
+      path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Mesh/Hands/SK_Hands_04.FBX
+      materials:
+        - alias: "*"
+          base_dir: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Hands_04
+          map_kd: T_Hands_04_Albedo_01_2048.png
+          map_bump: T_Hands_04_Normals_2048.png
+          map_channel:
+            - path: T_Hands_04_Metallic_2048.png
+              type: metallness_map
+              channel: R
+            - path: T_Hands_04_Ao_2048.png
+              type: occlusion_map
+              channel: A
+      sockets:
+        - name: rifle
+          joint: hand_l
+          offset: [0, 0, 0]
+          rotation: [0, 0, 0]
+      animations:
+        - name: idle_aim
+          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Idle_Aim.FBX
+      default_programs: true
+      base_scale: 0.01
+      flags:
+        use_bones: true
+        use_animation: true
+    - name: rifle
+      alias: rifle
+      path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Mesh/Automatic_Rifle_01/SK_Automatic_Rifle_01_Basic.FBX
+      materials:
+        - alias: "*"
+          base_dir: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Automatic_Rifle_01
+          map_kd: T_Automatic_Rifle_01_Albedo_01_2048.png
+          map_bump: T_Automatic_Rifle_01_Normals_2048.png
+          map_channel:
+            - path: T_Automatic_Rifle_01_Metallic_2048.png
+              type: metallness_map
+              channel: R
+      default_programs: true
+      base_scale: 0.01
+      flags:
+        use_sockets: true
+  attachments:
+    - name: SK_Automatic_Rifle_01_Basic
+      socket: rifle
