@@ -18,8 +18,8 @@ prefab:
       sockets:
         - name: rifle
           joint: hand_l
-          offset: [0, 0, 0]
-          rotation: [0, 0, 0]
+          offset: [-9, 14, 8]
+          rotation: [-89, 0, -120]
       animations:
         - name: idle_aim
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Idle_Aim.FBX
