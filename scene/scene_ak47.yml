@@ -1,0 +1,58 @@
+---
+name: Test
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 3, 7]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    pos: [0, 25, 40]
+    scale: 2.5
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 30000
+  - id: ground
+    prefab:
+      path: prefab/scenery/prefab_grass_ground_1.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: ak47_{t}
+    prefab:
+      path: prefab/weapons/prefab_ak47.yml
+    pos: [0, 1, 0]
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    #scale: 5
+    clone_mesh: false
+    clones:
+      - id: ak47_{t}
+        pos: [0, 1, 0]
+      - id: gold_ak47_{t}
+        pos: [0, 1.5, 0]
+        mesh:
+          material_modifier:
+            map_kd: T_KA47_Gold_ALB.TGA

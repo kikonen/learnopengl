@@ -1,0 +1,19 @@
+---
+prefab:
+  meshes:
+    - id: prefab_ak47
+      path: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SK_KA47.FBX
+      materials:
+        - alias: "*"
+          base_dir: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
+          map_kd: T_KA47_ALB.TGA
+          map_bump: T_KA47_NRM.TGA
+          xmap_channel:
+            - path: TX_Flower_01_RSA.PNG
+              type: occlusion_map
+              channel: A
+          alpha: true
+          xblend: true
+          render_back: true
+      default_programs: true
+      base_scale: 0.01
