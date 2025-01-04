@@ -281,7 +281,7 @@ public:
     int effectBloomIterations;
 
     bool effectOitEnabled;
-    bool effectGlowEnabled;
+    bool effectEmissionEnabled;
     bool effectFogEnabled;
 
     glm::uvec3 computeGroups;

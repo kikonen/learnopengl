@@ -285,7 +285,7 @@ Assets::Assets()
     effectBloomIterations = 5;
 
     effectOitEnabled = true;
-    effectGlowEnabled = true;
+    effectEmissionEnabled = true;
     effectFogEnabled = true;
 
     computeGroups = { 1, 1, 1 };

@@ -849,8 +849,8 @@ void AssetsLoader::loadAssets(
                 data.effectOitEnabled = readBool(v);
                 continue;
             }
-            if (k == "effect_glow_enabled") {
-                data.effectGlowEnabled = readBool(v);
+            if (k == "effect_emission_enabled") {
+                data.effectEmissionEnabled = readBool(v);
                 continue;
             }
             if (k == "effect_fog_enabled") {

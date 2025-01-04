@@ -11,6 +11,8 @@ public:
     static const ColorTexture& getWhiteRGB();
     static const ColorTexture& getWhiteR();
 
+    static const ColorTexture& getBlackRGBA();
+
     ColorTexture(
         std::string_view name,
         glm::vec4 color,

@@ -141,7 +141,7 @@ void main() {
 
   o_fragColor = color.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.rgb;
+  o_fragEmission = material.emission;
 
 #ifdef USE_BONES
   // o_fragColor = vec3(1.0, 0.0, 0.0);

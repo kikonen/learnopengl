@@ -146,7 +146,7 @@ void main() {
 
   o_fragColor = color.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.rgb;
+  o_fragEmission = material.emission;
 
   //o_fragPosition = fs_in.worldPos;
   o_fragNormal = encodeGNormal(normal, fs_in.viewPos);

@@ -37,6 +37,8 @@ namespace render {
         // FrameBuffer::RESET_DRAW_ALL reset to default all buffers
         void resetDrawBuffers(int activeCount);
 
+        void setDrawBuffer(int attachmentIndex);
+
         virtual void bind(const RenderContext& ctx);
         void unbind(const RenderContext& ctx);
 

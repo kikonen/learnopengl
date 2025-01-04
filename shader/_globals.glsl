@@ -84,6 +84,9 @@
 #define UNIT_CHANNEL_4 44
 #define UNIT_CHANNEL_5 45
 
+#define UNIT_SOURCE 46
+#define UNIT_DESTINATION 47
+
 #define UNIT_FONT_ATLAS 48
 
 #define UNIT_HDR_TEXTURE 49
@@ -162,7 +165,7 @@
 
 #define LAYOUT_G_BUFFER_OUT\
  layout (location = 0) out vec3 o_fragColor;\
- layout (location = 1) out vec3 o_fragEmission;\
+ layout (location = 1) out vec4 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMetal;\
  layout (location = 4) out float o_fragViewZ;

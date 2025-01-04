@@ -43,6 +43,10 @@ const std::string SHADER_HDR_GAMMA_PASS{ "g_hdr_gamma_pass" };
 
 const std::string SHADER_OIT_PASS{ "oit_pass" };
 
+const std::string SHADER_BLUR_VERTICAL{ "screen_blur_vertical_pass" };
+const std::string SHADER_BLUR_HORIZONTAL{ "screen_blur_horizontal_pass" };
+const std::string SHADER_BLUR_FINAL{ "screen_blur_final_pass" };
+
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
 const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
@@ -126,6 +130,9 @@ constexpr int UNIT_CHANNEL_2 = 42;
 constexpr int UNIT_CHANNEL_3 = 43;
 constexpr int UNIT_CHANNEL_4 = 44;
 constexpr int UNIT_CHANNEL_5 = 45;
+
+constexpr int UNIT_SOURCE = 46;
+constexpr int UNIT_DESTINATION = 47;
 
 constexpr int UNIT_FONT_ATLAS = 48;
 
