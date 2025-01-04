@@ -65,7 +65,6 @@ void ParticleRenderer::render(
     // https://stackoverflow.com/questions/31850635/opengl-additive-blending-get-issue-when-no-background
     //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA });
     state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
-    //glBlendFunc(GL_ONE, GL_ONE);
 
     m_particleProgram->bind();
 

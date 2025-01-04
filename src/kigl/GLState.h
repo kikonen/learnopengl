@@ -61,7 +61,13 @@ namespace kigl {
         bool setViewport(const glm::vec4& viewport);
         void clearViewport();
 
-        GLBlendMode setBlendMode(const GLBlendMode& mode);
+        GLBlendMode setBlendMode(
+            const GLBlendMode& mode);
+
+        GLBlendMode setBlendMode(
+            GLuint drawBuffer,
+            const GLBlendMode& mode);
+
         void invalidateBlendMode();
 
         //void enableStencil(const GLStencilMode& mode);
@@ -97,7 +103,8 @@ namespace kigl {
 
         glm::vec4 m_viewport{ 0.f };
 
-        GLBlendMode m_blendMode{ 0, 0, 0, 0, 0 };
+        GLBlendMode m_blendMode;
+        std::array<GLBlendMode, 4> m_blendModes;
 
         GLStencilOp m_stencilOp;
         GLStencilFunc m_stencilFunc;

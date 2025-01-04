@@ -35,7 +35,7 @@ namespace kigl {
 
         m_viewport = { 0.f, 0.f, 0.f, 0.f };
 
-        m_blendMode = { 0, 0, 0, 0, 0 };
+        invalidateBlendMode();
 
         m_stencilOp = { 0, 0, 0 };
         m_stencilFunc = { 0, 0, 0 };
@@ -204,11 +204,15 @@ namespace kigl {
         m_viewport = { 0.f, 0.f, 0.f, 0.f };
     }
 
-    GLBlendMode GLState::setBlendMode(const GLBlendMode& mode)
+    GLBlendMode GLState::setBlendMode(
+        const GLBlendMode& mode)
     {
-        GLBlendMode old = m_blendMode;
+        for (auto& o : m_blendModes) {
+            o.invalidate();
+        }
 
-        if (m_blendMode != mode)
+        GLBlendMode old = m_blendMode;
+        if (old != mode)
         {
             m_blendMode = mode;
             m_blendMode.apply();
@@ -217,9 +221,28 @@ namespace kigl {
         return old;
     }
 
+    GLBlendMode GLState::setBlendMode(
+        GLuint drawBuffer,
+        const GLBlendMode& mode)
+    {
+        m_blendMode.invalidate();
+
+        GLBlendMode old = m_blendModes[drawBuffer];
+        if (old != mode)
+        {
+            m_blendModes[drawBuffer] = mode;
+            m_blendModes[drawBuffer].apply(drawBuffer);
+        }
+
+        return old;
+    }
+
     void GLState::invalidateBlendMode()
     {
-        m_blendMode = { 0, 0, 0, 0 };
+        m_blendMode.invalidate();
+        for (auto& o : m_blendModes) {
+            o.invalidate();
+        }
     }
 
     //void GLState::enableStencil(const GLStencilMode& mode)

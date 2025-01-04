@@ -327,9 +327,8 @@ namespace render {
         m_oitBuffer.bind(ctx);
 
         // NOTE KI different blend mode for each draw buffer
-        glBlendFunci(0, GL_ONE, GL_ONE);
-        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
+        state.setBlendMode(0, { GL_ONE, GL_ONE });
+        state.setBlendMode(1, { GL_ZERO, GL_ONE_MINUS_SRC_COLOR });
 
         // only "blend OIT" nodes
         drawNodesImpl(
@@ -350,8 +349,8 @@ namespace render {
         {
             // NOTE KI *MUST* reset blend mode (especially for attachment 1)
             // ex. if not done OIT vs. bloom works strangely
-            glBlendFunci(0, GL_ONE, GL_ONE);
-            glBlendFunci(1, GL_ONE, GL_ONE);
+            state.setBlendMode(0, {});
+            state.setBlendMode(1, {});
             state.invalidateBlendMode();
 
             state.setEnabled(GL_BLEND, false);
@@ -507,8 +506,8 @@ namespace render {
             passFogBlend(ctx, srcBuffer);
             passOitBlend(ctx, srcBuffer);
 
-            glBlendFunci(0, GL_ONE, GL_ONE);
-            glBlendFunci(1, GL_ONE, GL_ONE);
+            state.setBlendMode(0, {});
+            state.setBlendMode(1, {});
             state.invalidateBlendMode();
 
             state.setEnabled(GL_BLEND, false);
@@ -595,13 +594,12 @@ namespace render {
             targetBuffer->bind(ctx);
 
             state.setEnabled(GL_BLEND, true);
-            state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+            state.setBlendMode({ GL_FUNC_ADD, GL_ONE, GL_ONE });
 
             m_blurFinalProgram->bind();
             m_screenTri.draw();
 
-            glBlendFunci(0, GL_ONE, GL_ONE);
-            state.invalidateBlendMode();
+            state.setBlendMode({});
             state.setEnabled(GL_BLEND, false);
         }
     }

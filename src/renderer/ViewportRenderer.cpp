@@ -110,8 +110,6 @@ void ViewportRenderer::render(
 
         state.setDepthFunc(GL_LEQUAL);
 
-        glBlendFunci(0, GL_ONE, GL_ONE);
-        glBlendFunci(1, GL_ONE, GL_ONE);
         state.invalidateBlendMode();
         state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
