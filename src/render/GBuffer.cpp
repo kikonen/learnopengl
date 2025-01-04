@@ -126,4 +126,9 @@ namespace render {
     {
         m_buffer->invalidateAll();
     }
+
+    FrameBufferAttachment* GBuffer::getAttachment(int attachmentIndex)
+    {
+        return &m_buffer->m_spec.attachments[attachmentIndex];
+    }
 }

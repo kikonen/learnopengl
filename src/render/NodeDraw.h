@@ -190,7 +190,7 @@ namespace render {
         Program* m_bloomInitProgram{ nullptr };
         Program* m_bloomBlurProgram{ nullptr };
         Program* m_bloomFinalProgram{ nullptr };
-        Program* m_emissionProgram{ nullptr };
+        //Program* m_emissionProgram{ nullptr };
         Program* m_fogProgram{ nullptr };
         Program* m_blurVerticalProgram{ nullptr };
         Program* m_blurHorizontalProgram{ nullptr };

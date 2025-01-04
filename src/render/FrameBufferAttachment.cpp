@@ -199,12 +199,18 @@ namespace render {
         state.bindTexture(unitIndex, 0, true);
     }
 
-    FrameBufferAttachment FrameBufferAttachment::getShared(FrameBufferAttachment* shared)
+    FrameBufferAttachment FrameBufferAttachment::getShared(
+        FrameBufferAttachment* shared,
+        GLenum attachment)
     {
         FrameBufferAttachment spec{ *shared };
         spec.type = FrameBufferAttachmentType::shared;
         spec.shared = shared;
         // NOTE KI no clearMask on shared; cannot clear as part as shared
+
+        if (attachment) {
+            spec.attachment = attachment;
+        }
 
         return spec;
     }

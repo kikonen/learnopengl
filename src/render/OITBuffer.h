@@ -13,6 +13,7 @@ namespace render {
     public:
         static const int ATT_ACCUMULATOR_INDEX = 0;
         static const int ATT_REVEAL_INDEX = 1;
+        static const int ATT_EMISSION_INDEX = 2;
 
     public:
         OITBuffer() {}

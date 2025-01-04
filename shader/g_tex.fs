@@ -79,10 +79,7 @@ void main() {
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
   if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD) {
-    vec3 emission = material.emission.rgb;
-    if (emission.r == 0 || emission.g == 0 || emission.b == 0) {
       discard;
-    }
   }
 #else
   if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)

@@ -88,7 +88,10 @@ namespace render {
         bool valid() { return textureID > 0 || rbo > 0; }
         operator int() const { return textureID || rbo; }
 
-        static FrameBufferAttachment getShared(FrameBufferAttachment* shared);
+        static FrameBufferAttachment getShared(
+            FrameBufferAttachment* shared,
+            GLenum attachment = 0);
+
         static FrameBufferAttachment getDrawBuffer(GLenum attachment = GL_COLOR_ATTACHMENT0);
 
         static FrameBufferAttachment getTextureRGBA(GLenum attachment = GL_COLOR_ATTACHMENT0);

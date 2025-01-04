@@ -46,6 +46,8 @@ namespace render {
         void clearAll();
         void invalidateAll();
 
+        FrameBufferAttachment* getAttachment(int attachmentIndex);
+
     public:
         std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
         std::unique_ptr<FrameBufferAttachment> m_depthTexture;

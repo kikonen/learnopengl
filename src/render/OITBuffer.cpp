@@ -46,6 +46,9 @@ namespace render {
                     {
                         FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
                         FrameBufferAttachment::getOITRevealTexture(GL_COLOR_ATTACHMENT1),
+                        FrameBufferAttachment::getShared(
+                            m_gBuffer->getAttachment(GBuffer::ATT_EMISSION_INDEX),
+                            GL_COLOR_ATTACHMENT2),
                         // NOTE KI *SHARE* depth with gbuffer
                         FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
                     }

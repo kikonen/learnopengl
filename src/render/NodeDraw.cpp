@@ -97,7 +97,7 @@ namespace render {
         m_bloomInitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_INIT_PASS));
         m_bloomBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_BLUR_PASS));
         m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
-        m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
+        //m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
         m_blurVerticalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_VERTICAL));
         m_blurHorizontalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_HORIZONTAL));

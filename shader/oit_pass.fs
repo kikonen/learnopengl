@@ -47,4 +47,6 @@ void main()
 
   o_accum = vec4(color.rgb * alpha, alpha) * weight;
   o_reveal = alpha;
+
+  o_fragEmission = material.emission;
 }

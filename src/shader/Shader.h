@@ -31,12 +31,11 @@ const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
 const std::string SHADER_BRDF_LUT{ "brdf_lut" };
 
 const std::string SHADER_PRE_DEPTH_PASS{ "g_pre_depth" };
-const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
+//const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
 const std::string SHADER_DEFERRED_PASS{ "g_deferred_pass" };
 const std::string SHADER_BLOOM_INIT_PASS{ "screen_bloom_init_pass" };
 const std::string SHADER_BLOOM_BLUR_PASS{ "screen_bloom_blur_pass" };
 const std::string SHADER_BLOOM_FINAL_PASS{ "screen_bloom_final_pass" };
-const std::string SHADER_EMISSION_PASS{ "g_emission_pass" };
 const std::string SHADER_FOG_PASS{ "screen_fog_pass" };
 const std::string SHADER_BLEND_OIT_PASS{ "screen_oit_blend_pass" };
 const std::string SHADER_HDR_GAMMA_PASS{ "g_hdr_gamma_pass" };

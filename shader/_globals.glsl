@@ -184,7 +184,8 @@
 
 #define LAYOUT_OIT_OUT\
  layout (location = 0) out vec4 o_accum;\
- layout (location = 1) out float o_reveal;
+ layout (location = 1) out float o_reveal;\
+ layout (location = 2) out vec4 o_fragEmission;
 
 #define LAYOUT_OIT_SAMPLERS\
  layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;\
