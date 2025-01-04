@@ -85,12 +85,18 @@ namespace render {
         // work buffers
         {
             m_buffers.clear();
+
+            int workW = static_cast<int>(w * 0.5f);
+            int workH = static_cast<int>(h * 0.5f);
+            if (workW < 1) workW = 1;
+            if (workH < 1) workH = 1;
+
             for (int i = 0; i < 2; i++) {
                 // NOTE KI alpha NOT needed
                 auto buffer = new FrameBuffer(
                     fmt::format("effect_worker_{}", i),
                     {
-                        static_cast<int>(w * 0.5f), static_cast<int>(h * 0.5f),
+                        workW, workH,
                         {
                         // src - diffuse from previous pass
                         FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
