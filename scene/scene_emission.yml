@@ -60,8 +60,9 @@ nodes:
       material:
         map_kd: textures/stone_01_512.png
         map_normal: textures/stone_01_normal_512.png
-        map_ke: textures/glow_map_001_512.png
-        map_ke: textures/matrix_512.png
+        #map_ke: textures/glow_map_001_512.png
+        #map_ke: textures/matrix_512.png
+        map_ke: textures/stay_alive_emission.png
     program: g_tex
     pos: [0.0, 2.0, 0.0]
   - id: blend_cube_{c}_{t}

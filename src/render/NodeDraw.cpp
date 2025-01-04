@@ -595,6 +595,7 @@ namespace render {
 
             state.setEnabled(GL_BLEND, true);
             state.setBlendMode({ GL_FUNC_ADD, GL_ONE, GL_ONE });
+            state.setBlendMode({ GL_FUNC_ADD, GL_MAX, GL_SRC_COLOR, GL_DST_COLOR, GL_SRC_ALPHA, GL_DST_ALPHA });
 
             m_blurFinalProgram->bind();
             m_screenTri.draw();
