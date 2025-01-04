@@ -45,14 +45,14 @@ namespace render {
                 {
                     w, h,
                     {
-                        FrameBufferAttachment::getGBufferAlbedoHdr(GL_COLOR_ATTACHMENT0),
+                        FrameBufferAttachment::getGBufferAlbedoHdr(ATT_ALBEDO),
                         // NOTE KI no specular in metal workflow
                         //FrameBufferAttachment::getGBufferSpecularHdr(GL_COLOR_ATTACHMENT1),
-                        FrameBufferAttachment::getGBufferEmission(GL_COLOR_ATTACHMENT1),
+                        FrameBufferAttachment::getGBufferEmissionHdr(ATT_EMISSION),
                         //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
-                        FrameBufferAttachment::getGBufferNormal(GL_COLOR_ATTACHMENT2),
-                        FrameBufferAttachment::getGBufferMetal(GL_COLOR_ATTACHMENT3),
-                        FrameBufferAttachment::getGBufferViewZ(GL_COLOR_ATTACHMENT4),
+                        FrameBufferAttachment::getGBufferNormal(ATT_NORMAL),
+                        FrameBufferAttachment::getGBufferMetal(ATT_METAL),
+                        FrameBufferAttachment::getGBufferViewZ(ATT_VIEW_Z),
                         // depth needed
                         FrameBufferAttachment::getDepthStencilTexture(),
                     }

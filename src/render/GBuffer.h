@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "kigl/kigl.h"
+
 struct UpdateViewContext;
 class RenderContext;
 
@@ -11,6 +13,12 @@ namespace render {
 
     class GBuffer {
     public:
+        static const int ATT_ALBEDO = GL_COLOR_ATTACHMENT0;
+        static const int ATT_EMISSION = GL_COLOR_ATTACHMENT1;
+        static const int ATT_NORMAL = GL_COLOR_ATTACHMENT2;
+        static const int ATT_METAL = GL_COLOR_ATTACHMENT3;
+        static const int ATT_VIEW_Z = GL_COLOR_ATTACHMENT4;
+
         static const int ATT_ALBEDO_INDEX = 0;
         //static const int ATT_SPECULAR_INDEX = 1;
         static const int ATT_EMISSION_INDEX = 1;

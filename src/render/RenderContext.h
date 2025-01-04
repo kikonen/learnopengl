@@ -171,6 +171,7 @@ public:
     mutable bool m_shadow : 1 { false };
     mutable bool m_useParticles : 1{ true };
     mutable bool m_useDecals : 1{ true };
+    mutable bool m_useEmission : 1{ true };
     mutable bool m_useFog : 1{ true };
     mutable bool m_useBloom : 1{ true };
     mutable bool m_useScreenspaceEffects : 1{ true };

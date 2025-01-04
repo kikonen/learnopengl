@@ -78,8 +78,12 @@ void main() {
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD)
-    discard;
+  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD) {
+    vec3 emission = material.emission.rgb;
+    if (emission.r == 0 || emission.g == 0 || emission.b == 0) {
+      discard;
+    }
+  }
 #else
   if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)
     discard;
@@ -141,7 +145,7 @@ void main() {
 
   o_fragColor = color.rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.rgb;
+  o_fragEmission = material.emission;
 
 #ifdef USE_BONES
   // o_fragColor = vec3(1.0, 0.0, 0.0);

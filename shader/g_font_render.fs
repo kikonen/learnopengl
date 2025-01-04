@@ -123,6 +123,6 @@ void main()
 
   o_fragColor = rgb;
   o_fragMetal = material.metal;
-  o_fragEmission = material.emission.rgb;
+  o_fragEmission = material.emission;
   o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
 }

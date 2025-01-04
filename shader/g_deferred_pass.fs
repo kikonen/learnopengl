@@ -92,6 +92,7 @@ void main()
 
     material.emission = textureLod(g_emission, texCoord, 0);
     material.emission.a = 1.0;
+    material.emission = vec4(0, 0, 0, 0);
 
     material.metal = textureLod(g_metal, texCoord, 0);
   }

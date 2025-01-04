@@ -42,6 +42,16 @@ const ColorTexture& ColorTexture::getWhiteR()
     return s_whitePixel;
 }
 
+const ColorTexture& ColorTexture::getBlackRGBA()
+{
+    static ColorTexture s_blackPixel{
+        "BLACK_RGBA",
+        glm::vec4{ 0.f },
+        GL_RGBA8,
+        true };
+    return s_blackPixel;
+}
+
 ColorTexture::ColorTexture(
     std::string_view name,
     glm::vec4 color,

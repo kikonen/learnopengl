@@ -393,6 +393,7 @@ void Material::prepare()
 const MaterialSSBO Material::toSSBO() const
 {
     const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
+    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
 
     uint8_t spritesY = spriteCount / spritesX;
     if (spriteCount % spritesX != 0) {
@@ -406,7 +407,7 @@ const MaterialSSBO Material::toSSBO() const
         hasBoundTex(TextureType::map_metal_channel) ? WHITE_RGBA : metal,
 
         getTexHandle(TextureType::diffuse, whitePx),
-        getTexHandle(TextureType::emission, whitePx),
+        getTexHandle(TextureType::emission, blackPx),
 
         getTexHandle(TextureType::map_normal, 0),
         getTexHandle(TextureType::map_dudv, 0),

@@ -75,6 +75,7 @@ namespace render {
         m_gBuffer.prepare();
         m_oitBuffer.prepare(&m_gBuffer);
         m_effectBuffer.prepare(&m_gBuffer);
+        m_blurBuffer.prepare();
 
         m_textureQuad.prepare();
 
@@ -98,6 +99,9 @@ namespace render {
         m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
         m_emissionProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_EMISSION_PASS));
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
+        m_blurVerticalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_VERTICAL));
+        m_blurHorizontalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_HORIZONTAL));
+        m_blurFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_FINAL));
         // m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
 
         m_timeElapsedQuery.create();
@@ -111,6 +115,7 @@ namespace render {
         m_glUseInvalidate = assets.glUseInvalidate;
         m_prepassDepthEnabled = assets.prepassDepthEnabled;
         m_effectOitEnabled = assets.effectOitEnabled;
+        m_effectEmissionEnabled = assets.effectEmissionEnabled;
         m_effectFogEnabled = assets.effectFogEnabled;
         m_effectBloomEnabled = assets.effectBloomEnabled;
     }
@@ -120,6 +125,7 @@ namespace render {
         m_gBuffer.updateRT(ctx);
         m_oitBuffer.updateRT(ctx);
         m_effectBuffer.updateRT(ctx);
+        m_blurBuffer.updateRT(ctx);
     }
 
     void NodeDraw::drawNodes(
@@ -140,6 +146,7 @@ namespace render {
 
             m_prepassDepthEnabled = dbg.m_prepassDepthEnabled;
             m_effectOitEnabled = dbg.m_effectOitEnabled;
+            m_effectEmissionEnabled = dbg.m_effectEmissionEnabled;
             m_effectFogEnabled = dbg.m_effectFogEnabled;
 
             m_effectBloomEnabled = dbg.m_effectBloomEnabled;
@@ -491,6 +498,10 @@ namespace render {
         state.polygonFrontAndBack(GL_FILL);
 
         {
+            passEmission(ctx, srcBuffer);
+        }
+
+        {
             state.setEnabled(GL_BLEND, true);
 
             passFogBlend(ctx, srcBuffer);
@@ -511,6 +522,88 @@ namespace render {
         state.setEnabled(GL_DEPTH_TEST, true);
 
         state.setStencil({});
+    }
+
+    void NodeDraw::passEmission(
+        const RenderContext& ctx,
+        FrameBuffer* targetBuffer)
+    {
+        if (!m_effectEmissionEnabled) return;
+        if (!ctx.m_useEmission) return;
+
+        for (auto& buffer : m_blurBuffer.m_buffers) {
+            buffer->clearAll();
+        }
+
+        auto& state = ctx.m_state;
+
+        {
+            auto* buffer = m_blurBuffer.m_buffers[0].get();
+
+            m_gBuffer.m_buffer->blit(
+                buffer,
+                GL_COLOR_BUFFER_BIT,
+                GBuffer::ATT_EMISSION,
+                BlurBuffer::ATT_COLOR_A,
+                { -1.f, 1.f },
+                { 2.f, 2.f },
+                GL_LINEAR);
+        }
+
+        FrameBuffer* prev = nullptr;
+        for (int i = 0; i < m_blurBuffer.m_buffers.size(); i++)
+        {
+            auto* buffer = m_blurBuffer.m_buffers[i].get();
+            buffer->bind(ctx);
+
+            if (prev) {
+                prev->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
+                buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_A_INDEX);
+
+                m_blurHorizontalProgram->bind();
+                m_screenTri.draw();
+            }
+
+            buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+            buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
+
+            m_blurVerticalProgram->bind();
+            m_screenTri.draw();
+
+            prev = buffer;
+        }
+
+        {
+            const int channels[] = {
+                UNIT_CHANNEL_0,
+                UNIT_CHANNEL_1,
+                UNIT_CHANNEL_2,
+                UNIT_CHANNEL_3,
+            };
+
+            for (int i = 0; i < m_blurBuffer.m_buffers.size(); i++) {
+                auto* buffer = m_blurBuffer.m_buffers[i].get();
+                buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
+            }
+
+            {
+                auto* buffer = m_blurBuffer.m_buffers[0].get();
+                buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+            }
+            //targetBuffer->bindTexture(ctx, 0, UNIT_DESTINATION);
+
+            targetBuffer->bind(ctx);
+
+            state.setEnabled(GL_BLEND, true);
+            state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
+
+            m_blurFinalProgram->bind();
+            m_screenTri.draw();
+
+            glBlendFunci(0, GL_ONE, GL_ONE);
+            state.invalidateBlendMode();
+            state.setEnabled(GL_BLEND, false);
+        }
     }
 
     void NodeDraw::passFogBlend(

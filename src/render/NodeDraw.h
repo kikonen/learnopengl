@@ -8,6 +8,7 @@
 
 #include "GBuffer.h"
 #include "OITBuffer.h"
+#include "BlurBuffer.h"
 #include "EffectBuffer.h"
 #include "TextureQuad.h"
 #include "ScreenTri.h"
@@ -125,6 +126,10 @@ namespace render {
             FrameBuffer* srcBuffer,
             FrameBuffer* finalBuffer);
 
+        void passEmission(
+            const RenderContext& ctx,
+            FrameBuffer* targetBuffer);
+
         void passFogBlend(
             const RenderContext& ctx,
             FrameBuffer* targetBuffer);
@@ -174,6 +179,7 @@ namespace render {
         GBuffer m_gBuffer;
         OITBuffer m_oitBuffer;
         EffectBuffer m_effectBuffer;
+        BlurBuffer m_blurBuffer;
 
         TextureQuad& m_textureQuad;
         ScreenTri& m_screenTri;
@@ -186,6 +192,9 @@ namespace render {
         Program* m_bloomFinalProgram{ nullptr };
         Program* m_emissionProgram{ nullptr };
         Program* m_fogProgram{ nullptr };
+        Program* m_blurVerticalProgram{ nullptr };
+        Program* m_blurHorizontalProgram{ nullptr };
+        Program* m_blurFinalProgram{ nullptr };
         // Program* m_hdrGammaProgram{ nullptr };
 
         query::TimeElapsedQuery m_timeElapsedQuery;
@@ -203,6 +212,7 @@ namespace render {
 
         bool m_prepassDepthEnabled{ false };
         bool m_effectOitEnabled{ true };
+        bool m_effectEmissionEnabled{ true };
         bool m_effectFogEnabled{ true };
         bool m_effectBloomEnabled{ true };
     };

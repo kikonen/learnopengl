@@ -170,6 +170,14 @@ namespace render {
         }
     }
 
+    void FrameBuffer::setDrawBuffer(int attachmentIndex)
+    {
+        GLenum drawBuffers[] = {
+            m_spec.attachments[attachmentIndex].attachment
+        };
+        glNamedFramebufferDrawBuffers(m_fbo, 1, drawBuffers);
+    }
+
     void FrameBuffer::bind(const RenderContext& ctx)
     {
         auto& state = ctx.m_state;
