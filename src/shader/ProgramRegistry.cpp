@@ -45,7 +45,7 @@ void ProgramRegistry::updateRT(const UpdateContext& ctx)
 
     for (auto& program : m_programs) {
         if (!program) continue;
-        if (program->isLoaded() && !program->isReady()) {
+        if (program->isLoaded() && !program->isPrepared()) {
             KI_INFO_OUT(fmt::format("PROGRAM_PREPARE: {}", program->m_key));
             program->prepareRT();
         }

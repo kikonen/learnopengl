@@ -219,6 +219,24 @@ namespace render {
         state.bindTexture(unitIndex, 0, true);
     }
 
+    void FrameBuffer::bindImageTexture(
+        const RenderContext& ctx,
+        int attachmentIndex,
+        int binding)
+    {
+        auto& state = ctx.m_state;
+        const auto& att = m_spec.attachments[attachmentIndex];
+
+        glBindImageTexture(
+            0,
+            att.textureID,
+            0,
+            GL_FALSE,
+            0,
+            GL_READ_WRITE,
+            att.internalFormat);
+    }
+
     // mask = GL_COLOR_BUFFER_BIT,
     void FrameBuffer::blit(
         FrameBuffer* target,

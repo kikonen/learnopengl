@@ -529,6 +529,7 @@ namespace render {
     {
         if (!m_effectEmissionEnabled) return;
         if (!ctx.m_useEmission) return;
+        if (!m_blurFinalProgram->isReady()) return;
 
         for (auto& buffer : m_blurBuffer.m_buffers) {
             buffer->clearAll();

@@ -50,7 +50,13 @@ public:
     ~Program();
 
 public:
-    inline bool isReady() const { return m_prepared; }
+    inline bool isPrepared() const {
+        return m_prepared;
+    }
+
+    inline bool isReady() const {
+        return m_prepared && m_programId > 0;
+    }
 
     bool isLoaded() const noexcept
     {

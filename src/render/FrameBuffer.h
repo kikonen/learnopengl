@@ -48,6 +48,11 @@ namespace render {
         // NOTE KI *force* unbind
         void unbindTexture(const RenderContext& ctx, int unitIndex);
 
+        void bindImageTexture(
+            const RenderContext& ctx,
+            int attachmentIndex,
+            int binding);
+
         // TODO KI does NOT support blit for depth only color
         void blit(
             FrameBuffer* target,
@@ -93,6 +98,11 @@ namespace render {
         }
 
         FrameBufferAttachment* getDepthAttachment();
+
+        glm::vec2 getSize() const noexcept
+        {
+            return { m_spec.width, m_spec.height };
+        }
 
         operator int() const { return m_fbo; }
 

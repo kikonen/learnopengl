@@ -97,7 +97,9 @@ Program::~Program()
 void Program::bind() const noexcept
 {
     assert(isReady());
-    kigl::GLState::get().useProgram(m_programId);
+    if (isReady()) {
+        kigl::GLState::get().useProgram(m_programId);
+    }
 }
 
 bool Program::isModified() const noexcept
