@@ -75,6 +75,8 @@
 
 #define UNIFORM_BLEND_FACTOR 15
 
+#define UNIFORM_VIEWPORT 16
+
 #define SUBROUTINE_EFFECT 0
 
 #define UNIT_0 0

@@ -2,8 +2,7 @@
 
 layout (local_size_x = 16, local_size_y = 14, local_size_z = 1) in;
 
-#include uniform_data.glsl
-#include uniform_buffer_info.glsl
+layout(location = UNIFORM_VIEWPORT) uniform vec2 u_viewport;
 
 layout(rgba16f, binding = UNIT_0) uniform image2D u_destinationTex;
 
@@ -23,8 +22,7 @@ SET_FLOAT_PRECISION;
 void main()
 {
   ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
-  vec2 viewport = u_bufferResolution;
-  vec2 uv = vec2(texel.x / viewport.x, texel.y / viewport.y);
+  vec2 uv = vec2(texel.x / u_viewport.x, texel.y / u_viewport.y);
 
   vec4 orig = imageLoad(u_destinationTex, texel);
   vec3 color = orig.rgb;

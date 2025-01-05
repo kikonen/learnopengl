@@ -36,5 +36,7 @@ struct ProgramUniforms {
     uniform::Int u_stencilMode;
 
     uniform::Float u_blendFactor;
+
+    uniform::Vec2 u_viewport;
 };
 

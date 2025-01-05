@@ -608,12 +608,12 @@ namespace render {
                 // NOTE KI image textures cannot be bound into high units for some reason
                 targetBuffer->bindImageTexture(ctx, 0, UNIT_0);
 
-                // TODO KI binding buffer shold be redundant
-                // => bound due to buffer info update
-                targetBuffer->bind(ctx);
                 m_blurFinalProgramCS->bind();
 
                 const auto& viewport = targetBuffer->getSize();
+                auto* uniforms = m_blurFinalProgramCS->m_uniforms.get();
+                uniforms->u_viewport.set(viewport);
+
                 glDispatchCompute(viewport.x / 16, viewport.y / 4, 1);
             }
         }
