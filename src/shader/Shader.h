@@ -45,6 +45,7 @@ const std::string SHADER_OIT_PASS{ "oit_pass" };
 const std::string SHADER_BLUR_VERTICAL{ "screen_blur_vertical_pass" };
 const std::string SHADER_BLUR_HORIZONTAL{ "screen_blur_horizontal_pass" };
 const std::string SHADER_BLUR_FINAL{ "screen_blur_final_pass" };
+const std::string CS_BLUR_FINAL{ "screen_blur_final_pass" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
@@ -122,6 +123,8 @@ constexpr int VBO_BONE_BINDING = 5;
 //constexpr int ATTR_INSTANCE_HIGHLIGHT_INDEX = 14;
 //constexpr int ATTR_INSTANCE_ENTITY_INDEX = 15;
 //constexpr int ATTR_INSTANCE_MATERIAL_INDEX = ATTR_MATERIAL_INDEX;
+
+constexpr int UNIT_0 = 0;
 
 constexpr int UNIT_CHANNEL_0 = 40;
 constexpr int UNIT_CHANNEL_1 = 41;

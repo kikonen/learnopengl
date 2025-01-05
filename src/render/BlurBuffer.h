@@ -17,6 +17,8 @@ namespace render
     class BlurBuffer
     {
     public:
+        static const int BUFFER_COUNT = 4;
+
         static const int ATT_COLOR_A = GL_COLOR_ATTACHMENT0;
         static const int ATT_COLOR_B = GL_COLOR_ATTACHMENT1;
 

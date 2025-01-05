@@ -102,6 +102,7 @@ namespace render {
         m_blurVerticalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_VERTICAL));
         m_blurHorizontalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_HORIZONTAL));
         m_blurFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_FINAL));
+        m_blurFinalProgramCS = Program::get(ProgramRegistry::get().getComputeProgram(CS_BLUR_FINAL, {}));
         // m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
 
         m_timeElapsedQuery.create();
@@ -529,7 +530,6 @@ namespace render {
     {
         if (!m_effectEmissionEnabled) return;
         if (!ctx.m_useEmission) return;
-        if (!m_blurFinalProgram->isReady()) return;
 
         for (auto& buffer : m_blurBuffer.m_buffers) {
             buffer->clearAll();
@@ -551,7 +551,7 @@ namespace render {
         }
 
         FrameBuffer* prev = nullptr;
-        for (int i = 0; i < m_blurBuffer.m_buffers.size(); i++)
+        for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++)
         {
             auto* buffer = m_blurBuffer.m_buffers[i].get();
             buffer->bind(ctx);
@@ -574,35 +574,48 @@ namespace render {
         }
 
         {
-            const int channels[] = {
+            const int channels[BlurBuffer::BUFFER_COUNT] = {
                 UNIT_CHANNEL_0,
                 UNIT_CHANNEL_1,
                 UNIT_CHANNEL_2,
                 UNIT_CHANNEL_3,
             };
 
-            for (int i = 0; i < m_blurBuffer.m_buffers.size(); i++) {
+            for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++) {
                 auto* buffer = m_blurBuffer.m_buffers[i].get();
                 buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
             }
 
-            {
-                auto* buffer = m_blurBuffer.m_buffers[0].get();
-                buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+            //{
+            //    auto* buffer = m_blurBuffer.m_buffers[0].get();
+            //    buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+            //}
+
+            if (false) {
+                targetBuffer->bind(ctx);
+
+                state.setEnabled(GL_BLEND, true);
+                state.setBlendMode({ GL_FUNC_ADD, GL_MAX, GL_SRC_COLOR, GL_DST_COLOR, GL_SRC_ALPHA, GL_DST_ALPHA });
+
+                m_blurFinalProgram->bind();
+                m_screenTri.draw();
+
+                state.setBlendMode({});
+                state.setEnabled(GL_BLEND, false);
+            } else {
+                if (!m_blurFinalProgramCS->isReady()) return;
+
+                // NOTE KI image textures cannot be bound into high units for some reason
+                targetBuffer->bindImageTexture(ctx, 0, UNIT_0);
+
+                // TODO KI binding buffer shold be redundant
+                // => bound due to buffer info update
+                targetBuffer->bind(ctx);
+                m_blurFinalProgramCS->bind();
+
+                const auto& viewport = targetBuffer->getSize();
+                glDispatchCompute(viewport.x / 16, viewport.y / 4, 1);
             }
-            //targetBuffer->bindTexture(ctx, 0, UNIT_DESTINATION);
-
-            targetBuffer->bind(ctx);
-
-            state.setEnabled(GL_BLEND, true);
-            state.setBlendMode({ GL_FUNC_ADD, GL_ONE, GL_ONE });
-            state.setBlendMode({ GL_FUNC_ADD, GL_MAX, GL_SRC_COLOR, GL_DST_COLOR, GL_SRC_ALPHA, GL_DST_ALPHA });
-
-            m_blurFinalProgram->bind();
-            m_screenTri.draw();
-
-            state.setBlendMode({});
-            state.setEnabled(GL_BLEND, false);
         }
     }
 

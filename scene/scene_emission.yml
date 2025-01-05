@@ -40,7 +40,7 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
-  - xid: cube_1_{c}_{t}
+  - id: cube_1_{c}_{t}
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
@@ -50,9 +50,9 @@ nodes:
         map_ke: textures/glow_map_001_512.png
         map_ke: textures/matrix_512.png
     program: g_tex
-    pos: [0.0, 2.0, 0.0]
+    pos: [-4.0, 2.0, 0.0]
     xrotation: [0, 90, 0]
-  - xid: cube_2_{c}_{t}
+  - id: cube_2_{c}_{t}
     mesh:
       vertex:
         type: box
@@ -80,5 +80,5 @@ nodes:
           render_back: true
       base_scale: 1
       program: g_tex
-    pos: [0.0, 2.0, 0.0]
+    pos: [4.0, 2.0, 0.0]
     rotation: [0, 0, 180]

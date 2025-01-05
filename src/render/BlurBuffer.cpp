@@ -12,7 +12,6 @@
 #include "render/FrameBufferAttachment.h"
 
 namespace {
-    constexpr size_t BUFFER_COUNT = 4;
 }
 
 namespace render {

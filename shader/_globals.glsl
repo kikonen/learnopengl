@@ -77,6 +77,8 @@
 
 #define SUBROUTINE_EFFECT 0
 
+#define UNIT_0 0
+
 #define UNIT_CHANNEL_0 40
 #define UNIT_CHANNEL_1 41
 #define UNIT_CHANNEL_2 42
