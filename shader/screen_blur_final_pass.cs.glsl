@@ -22,6 +22,11 @@ SET_FLOAT_PRECISION;
 void main()
 {
   ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
+
+  // NOTE KI no processing outside of viewport
+  if (texel.x > u_viewport.x) return;
+  if (texel.y > u_viewport.y) return;
+
   vec2 uv = vec2(texel.x / u_viewport.x, texel.y / u_viewport.y);
 
   vec4 orig = imageLoad(u_destinationTex, texel);

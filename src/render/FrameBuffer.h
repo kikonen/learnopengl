@@ -99,7 +99,7 @@ namespace render {
 
         FrameBufferAttachment* getDepthAttachment();
 
-        glm::vec2 getSize() const noexcept
+        glm::ivec2 getSize() const noexcept
         {
             return { m_spec.width, m_spec.height };
         }

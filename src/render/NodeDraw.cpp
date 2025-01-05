@@ -614,7 +614,11 @@ namespace render {
                 auto* uniforms = m_blurFinalProgramCS->m_uniforms.get();
                 uniforms->u_viewport.set(viewport);
 
-                glDispatchCompute(viewport.x / 16, viewport.y / 4, 1);
+                // NOTE KI need to process also non-aligned portion of viewport
+                int groupX = viewport.x / 16 + (viewport.x % 16 != 0 ? 1 : 0);
+                int groupY = viewport.y / 4  + (viewport.y % 4 != 0 ? 1 : 0);
+
+                glDispatchCompute(groupX, groupY, 1);
             }
         }
     }
