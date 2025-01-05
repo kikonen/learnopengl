@@ -490,6 +490,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
+    localCtx.m_useEmission = false;
     localCtx.m_useBloom = false;
     //localCtx.m_useScreenspaceEffects = false;
 
