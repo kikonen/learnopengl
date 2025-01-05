@@ -41,6 +41,8 @@ class Program;
 
 namespace uniform {
 
+    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glProgramUniform.xhtml
     class Uniform {
     protected:
         // NOTE KI "location=N" is not really feasible due to limitations
@@ -56,6 +58,7 @@ namespace uniform {
     protected:
         const std::string m_name;
         GLint m_locId{ -1 };
+        GLuint m_programId{ 0 };
 
         bool m_valid{ false };
         bool m_unassigned{ true };
@@ -97,7 +100,7 @@ namespace uniform {
 
         void set(const glm::mat4& value, bool force = false) noexcept {
             if (m_valid) {
-                glUniformMatrix4fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
+                glProgramUniformMatrix4fv(m_programId, m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
     };
@@ -109,7 +112,7 @@ namespace uniform {
 
         void set(const glm::mat3& value, bool force = false) noexcept {
             if (m_valid) {
-                glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
+                glProgramUniformMatrix3fv(m_programId, m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
     };
@@ -121,12 +124,11 @@ namespace uniform {
 
         void set(const glm::mat2& value, bool force = false) noexcept {
             if (m_valid) {
-                glUniformMatrix3fv(m_locId, 1, GL_FALSE, glm::value_ptr(value));
+                glProgramUniformMatrix3fv(m_programId, m_locId, 1, GL_FALSE, glm::value_ptr(value));
             }
         }
     };
 
-    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec4 final : public Uniform {
     public:
         Vec4(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
@@ -134,7 +136,7 @@ namespace uniform {
 
         void set(const glm::vec4& value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform4fv(m_locId, 1, glm::value_ptr(value));
+                glProgramUniform4fv(m_programId, m_locId, 1, glm::value_ptr(value));
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -143,7 +145,6 @@ namespace uniform {
         glm::vec4 m_lastValue{ 0.f };
     };
 
-    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec3 final : public Uniform {
     public:
         Vec3(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
@@ -151,7 +152,7 @@ namespace uniform {
 
         void set(const glm::vec3& value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform3fv(m_locId, 1, glm::value_ptr(value));
+                glProgramUniform3fv(m_programId, m_locId, 1, glm::value_ptr(value));
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -160,7 +161,6 @@ namespace uniform {
         glm::vec3 m_lastValue{ 0.f };
     };
 
-    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec2 final : public Uniform {
     public:
         Vec2(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
@@ -168,7 +168,7 @@ namespace uniform {
 
         void set(const glm::vec2& value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform2fv(m_locId, 1, glm::value_ptr(value));
+                glProgramUniform2fv(m_programId, m_locId, 1, glm::value_ptr(value));
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -185,7 +185,7 @@ namespace uniform {
 
         void set(int count, const float* values, bool force = false) noexcept {
             if (m_valid) {
-                glUniform1fv(m_locId, count, values);
+                glProgramUniform1fv(m_programId, m_locId, count, values);
             }
         }
     };
@@ -197,7 +197,7 @@ namespace uniform {
 
         void set(int count, const GLint* values, bool force = false) noexcept {
             if (m_valid) {
-                glUniform1iv(m_locId, count, values);
+                glProgramUniform1iv(m_programId, m_locId, count, values);
             }
         }
     };
@@ -209,7 +209,7 @@ namespace uniform {
 
         void set(const float value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform1f(m_locId, value);
+                glProgramUniform1f(m_programId, m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -226,7 +226,7 @@ namespace uniform {
 
         void set(const GLint value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform1i(m_locId, value);
+                glProgramUniform1i(m_programId, m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -243,7 +243,7 @@ namespace uniform {
 
         void set(const GLuint value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform1ui(m_locId, value);
+                glProgramUniform1ui(m_programId, m_locId, value);
                 m_lastValue = value;
                 m_unassigned = force;
             }
@@ -260,7 +260,7 @@ namespace uniform {
 
         void set(const bool value, bool force = false) noexcept {
             if (m_valid && (force || m_unassigned || value != m_lastValue)) {
-                glUniform1i(m_locId, (int)value);
+                glProgramUniform1i(m_programId, m_locId, (int)value);
                 m_lastValue = value;
                 m_unassigned = force;
             }

@@ -474,7 +474,7 @@ void Program::setInt(std::string_view name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
-        glUniform1i(vi, value);
+        glProgramUniform1i(m_programId, vi, value);
     }
 }
 
@@ -482,7 +482,7 @@ void Program::setFloat(std::string_view name, float value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
-        glUniform1f(vi, value);
+        glProgramUniform1f(m_programId, vi, value);
     }
 }
 
@@ -490,6 +490,6 @@ void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
-        glUniformMatrix4fv(vi, 1, GL_FALSE, glm::value_ptr(value));
+        glProgramUniformMatrix4fv(m_programId, vi, 1, GL_FALSE, glm::value_ptr(value));
     }
 }

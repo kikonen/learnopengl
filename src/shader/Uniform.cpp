@@ -9,6 +9,10 @@ namespace uniform {
             m_locId = program->getUniformLoc(m_name);
         }
         m_valid = m_locId != -1 && program->m_programId;
+
+        if (m_valid) {
+            m_programId = program->m_programId;
+        }
     }
 
     void Subroutine::init(Program* program) {
@@ -33,8 +37,12 @@ namespace uniform {
         }
 
         m_valid = m_locId != -1 && m_indeces && program->m_programId;
+        if (m_valid) {
+            m_programId = program->m_programId;
+        }
     }
 
+    // NOTE KI requires *BIND* for program first
     void Subroutine::set(GLuint routineIndex, bool force) noexcept {
         if (m_valid && (force || m_unassigned || routineIndex != m_lastValue)) {
             m_indeces[m_locId] = routineIndex;
