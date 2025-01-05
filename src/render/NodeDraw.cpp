@@ -101,7 +101,6 @@ namespace render {
         m_fogProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
         m_blurVerticalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_VERTICAL));
         m_blurHorizontalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_HORIZONTAL));
-        m_blurFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_FINAL));
         m_blurFinalProgramCS = Program::get(ProgramRegistry::get().getComputeProgram(CS_BLUR_FINAL, {}));
         // m_hdrGammaProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_HDR_GAMMA_PASS));
 
@@ -591,18 +590,7 @@ namespace render {
             //    buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
             //}
 
-            if (false) {
-                targetBuffer->bind(ctx);
-
-                state.setEnabled(GL_BLEND, true);
-                state.setBlendMode({ GL_FUNC_ADD, GL_MAX, GL_SRC_COLOR, GL_DST_COLOR, GL_SRC_ALPHA, GL_DST_ALPHA });
-
-                m_blurFinalProgram->bind();
-                m_screenTri.draw();
-
-                state.setBlendMode({});
-                state.setEnabled(GL_BLEND, false);
-            } else {
+            {
                 if (!m_blurFinalProgramCS->isReady()) return;
 
                 // NOTE KI image textures cannot be bound into high units for some reason

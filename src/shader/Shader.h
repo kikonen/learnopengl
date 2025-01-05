@@ -44,7 +44,6 @@ const std::string SHADER_OIT_PASS{ "oit_pass" };
 
 const std::string SHADER_BLUR_VERTICAL{ "screen_blur_vertical_pass" };
 const std::string SHADER_BLUR_HORIZONTAL{ "screen_blur_horizontal_pass" };
-const std::string SHADER_BLUR_FINAL{ "screen_blur_final_pass" };
 const std::string CS_BLUR_FINAL{ "screen_blur_final_pass" };
 
 const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };

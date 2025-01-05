@@ -194,7 +194,6 @@ namespace render {
         Program* m_fogProgram{ nullptr };
         Program* m_blurVerticalProgram{ nullptr };
         Program* m_blurHorizontalProgram{ nullptr };
-        Program* m_blurFinalProgram{ nullptr };
         Program* m_blurFinalProgramCS{ nullptr };
         // Program* m_hdrGammaProgram{ nullptr };
 
