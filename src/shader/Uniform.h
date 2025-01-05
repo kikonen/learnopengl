@@ -124,40 +124,56 @@ namespace uniform {
         }
     };
 
+    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec4 final : public Uniform {
     public:
         Vec4(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec4& value, bool force = false) noexcept {
-            if (m_valid) {
-                glUniform1fv(m_locId, 4, glm::value_ptr(value));
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
+                glUniform4fv(m_locId, 1, glm::value_ptr(value));
+                m_lastValue = value;
+                m_unassigned = force;
             }
         }
+    private:
+        glm::vec4 m_lastValue{ 0.f };
     };
 
+    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec3 final : public Uniform {
     public:
         Vec3(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec3& value, bool force = false) noexcept {
-            if (m_valid) {
-                glUniform1fv(m_locId, 3, glm::value_ptr(value));
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
+                glUniform3fv(m_locId, 1, glm::value_ptr(value));
+                m_lastValue = value;
+                m_unassigned = force;
             }
         }
+    private:
+        glm::vec3 m_lastValue{ 0.f };
     };
 
+    // https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
     class Vec2 final : public Uniform {
     public:
         Vec2(std::string_view name, GLint locId = -1) : Uniform(name, locId) {
         }
 
         void set(const glm::vec2& value, bool force = false) noexcept {
-            if (m_valid) {
-                glUniform1fv(m_locId, 2, glm::value_ptr(value));
+            if (m_valid && (force || m_unassigned || value != m_lastValue)) {
+                glUniform2fv(m_locId, 1, glm::value_ptr(value));
+                m_lastValue = value;
+                m_unassigned = force;
             }
         }
+
+    private:
+        glm::vec2 m_lastValue{ 0.f };
     };
 
     class FloatArray final : public Uniform {
