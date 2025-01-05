@@ -48,7 +48,7 @@ nodes:
       cmd:rotate(
         { time=60 * 100 },
         { 0, 1, 0 },
-        360 * 50)
+        360 * 40)
   - id: cylon_origo
     parent: planet_origo
     type: origo
@@ -56,7 +56,7 @@ nodes:
       cmd:rotate(
         { time=60 * 100 },
         { 0, 1, 0 },
-        360 * 200)
+        360 * 50)
   - id: cylon_ship_{t}
     parent: cylon_origo
     prefab:
@@ -127,4 +127,4 @@ nodes:
       cmd:rotate(
         { time=40 * 100 },
         { 0, 1, 0 },
-        360 * 100)
+        360 * 50)
