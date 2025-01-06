@@ -11,7 +11,7 @@ layout(rgba16f, binding = UNIT_0) uniform image2D u_destinationTex;
 layout(binding = UNIT_CHANNEL_0) uniform sampler2D u_channel0;
 layout(binding = UNIT_CHANNEL_1) uniform sampler2D u_channel1;
 layout(binding = UNIT_CHANNEL_2) uniform sampler2D u_channel2;
-layout(binding = UNIT_CHANNEL_3) uniform sampler2D u_channel3;
+// layout(binding = UNIT_CHANNEL_3) uniform sampler2D u_channel3;
 
 ////////////////////////////////////////////////////////////
 //
@@ -34,7 +34,7 @@ void main()
   color += texture(u_channel0, uv).rgb;
   color += texture(u_channel1, uv).rgb;
   color += texture(u_channel2, uv).rgb;
-  color += texture(u_channel3, uv).rgb;
+  // color += texture(u_channel3, uv).rgb;
   // color = texture(u_sourceTex, uv).rgb * vec3(2, 2, 2);
 
   imageStore(u_destinationTex, texel, vec4(color, orig.a));

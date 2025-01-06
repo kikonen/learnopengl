@@ -539,18 +539,18 @@ namespace render {
 
         auto& state = ctx.m_state;
 
-        {
-            auto* buffer = m_blurBuffer.m_buffers[0].get();
+        //{
+        //    auto* buffer = m_blurBuffer.m_buffers[0].get();
 
-            m_gBuffer.m_buffer->blit(
-                buffer,
-                GL_COLOR_BUFFER_BIT,
-                GBuffer::ATT_EMISSION,
-                BlurBuffer::ATT_COLOR_A,
-                { -1.f, 1.f },
-                { 2.f, 2.f },
-                GL_LINEAR);
-        }
+        //    m_gBuffer.m_buffer->blit(
+        //        buffer,
+        //        GL_COLOR_BUFFER_BIT,
+        //        GBuffer::ATT_EMISSION_ENUM,
+        //        BlurBuffer::ATT_COLOR_A_ENUM,
+        //        { -1.f, 1.f },
+        //        { 2.f, 2.f },
+        //        GL_LINEAR);
+        //}
 
         FrameBuffer* prev = nullptr;
         for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++)
@@ -558,19 +558,28 @@ namespace render {
             auto* buffer = m_blurBuffer.m_buffers[i].get();
             buffer->bind(ctx);
 
-            if (prev) {
-                prev->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
+            {
+                if (prev) {
+                    prev->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
+                }
+                else {
+                    // NOTE KI for first step, use *original* as source
+                    m_gBuffer.m_buffer->bindTexture(ctx, GBuffer::ATT_EMISSION_INDEX, UNIT_SOURCE);
+                }
+
                 buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_A_INDEX);
 
                 m_blurHorizontalProgram->bind();
                 m_screenTri.draw();
             }
 
-            buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
-            buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
+            {
+                buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+                buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
 
-            m_blurVerticalProgram->bind();
-            m_screenTri.draw();
+                m_blurVerticalProgram->bind();
+                m_screenTri.draw();
+            }
 
             prev = buffer;
         }
@@ -580,7 +589,7 @@ namespace render {
                 UNIT_CHANNEL_0,
                 UNIT_CHANNEL_1,
                 UNIT_CHANNEL_2,
-                UNIT_CHANNEL_3,
+                //UNIT_CHANNEL_3,
             };
 
             for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++) {

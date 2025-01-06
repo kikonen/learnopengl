@@ -47,22 +47,22 @@ namespace render {
 
         for (int i = 0; i < BUFFER_COUNT; i++)
         {
+            currW = static_cast<int>(std::round(currW * 0.5f));
+            currH = static_cast<int>(std::round(currH * 0.5f));
+            if (currW < 1) currW = 1;
+            if (currH < 1) currH = 1;
+
             auto fb = new FrameBuffer(
                 fmt::format("blur_buffer_{}", i),
                 {
                     w, h,
                     {
-                        FrameBufferAttachment::getGBufferEmissionHdr(ATT_COLOR_A),
-                        FrameBufferAttachment::getGBufferEmissionHdr(ATT_COLOR_B),
+                        FrameBufferAttachment::getGBufferEmissionHdr(ATT_COLOR_A_ENUM),
+                        FrameBufferAttachment::getGBufferEmissionHdr(ATT_COLOR_B_ENUM),
                     }
                 });
 
             m_buffers.push_back(std::unique_ptr<FrameBuffer>(fb));
-
-            currW = std::round(currW * 0.5f);
-            currH = std::round(currH * 0.5f);
-            if (currW < 1) currW = 1;
-            if (currH < 1) currH = 1;
         }
 
         for (auto& buf : m_buffers) {

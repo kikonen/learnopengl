@@ -401,12 +401,12 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGB16F to go over 1.0
-        spec.internalFormat = GL_RGB16F;
+        // NOTE KI float nor normalized to allow going over 1.0
+        spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "emission_RGB16F";
+        spec.name = "emission_R11F_G11F_B10F";
 
         return spec;
     }
