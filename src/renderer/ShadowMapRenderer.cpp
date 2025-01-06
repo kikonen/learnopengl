@@ -81,8 +81,9 @@ void ShadowMapRenderer::prepareRT(
 
         m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
-            vp.getProgram()->m_uniforms->u_shadowNearPlane.set(active->getNearPlane());
-            vp.getProgram()->m_uniforms->u_shadowFarPlane.set(active->getFarPlane());
+            auto* uniforms = vp.getProgram()->m_uniforms.get();
+            uniforms->u_shadowNearPlane.set(active->getNearPlane());
+            uniforms->u_shadowFarPlane.set(active->getFarPlane());
             });
 
         m_debugViewport->setEffectEnabled(false);

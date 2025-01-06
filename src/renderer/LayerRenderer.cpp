@@ -144,14 +144,11 @@ void LayerRenderer::fillHighlightMask(
     // draw entity data mask
     {
         auto* program = m_selectionProgram;
-        //program->bind();
-        //program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
 
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this, &program](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
-                p->bind();
                 p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
             },
@@ -196,15 +193,12 @@ void LayerRenderer::renderHighlight(
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
         auto* program = m_selectionProgram;
-        //program->bind();
-        //program->m_uniforms->u_stencilMode.set(shift);
 
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
             [this, &program, shift](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
-                p->bind();
                 p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
             },

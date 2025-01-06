@@ -181,8 +181,6 @@ namespace backend {
         }
 
         if (m_frustumGPU) {
-            m_cullingCompute->bind();
-
             m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
 
             //const int maxX = m_computeGroups[0];
@@ -195,6 +193,7 @@ namespace backend {
             //}
             //glDispatchCompute(m_computeGroups[0], groupY, 1);
 
+            m_cullingCompute->bind();
             glDispatchCompute(drawCount, 1, 1);
         }
 
