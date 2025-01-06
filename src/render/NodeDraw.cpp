@@ -329,6 +329,8 @@ namespace render {
         // NOTE KI different blend mode for each draw buffer
         state.setBlendMode(0, { GL_ONE, GL_ONE });
         state.setBlendMode(1, { GL_ZERO, GL_ONE_MINUS_SRC_COLOR });
+        // NOTE KI no alpha for emission; override existing value
+        state.setBlendMode(2, { GL_ONE, GL_ZERO });
 
         // only "blend OIT" nodes
         drawNodesImpl(
@@ -351,6 +353,7 @@ namespace render {
             // ex. if not done OIT vs. bloom works strangely
             state.setBlendMode(0, {});
             state.setBlendMode(1, {});
+            state.setBlendMode(2, {});
             state.invalidateBlendMode();
 
             state.setEnabled(GL_BLEND, false);
