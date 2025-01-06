@@ -36,7 +36,7 @@ namespace render {
         auto& att = *this;
 
         {
-            std::string attName = fmt::format("{}_att_{}", name, att.index);
+            std::string attName = fmt::format("{}_att_{}_{}", name, att.index, att.name);
 
             if (att.type == FrameBufferAttachmentType::shared) {
                 // NOTE KI nothing
@@ -48,7 +48,7 @@ namespace render {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
-                KI_INFO(fmt::format("CREATE_TEX: FBO={}, TEX={}", name, att.textureID));
+                KI_INFO(fmt::format("CREATE_TEX: name={}, TEX={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -64,7 +64,7 @@ namespace render {
                 glCreateRenderbuffers(1, &att.rbo);
                 kigl::setLabel(GL_RENDERBUFFER, att.rbo, attName);
 
-                KI_INFO(fmt::format("CREATE_RBO: FBO={}, RBO={}", name, att.rbo));
+                KI_INFO(fmt::format("CREATE_RBO: name={}, RBO={}", attName, att.rbo));
 
                 glNamedRenderbufferStorage(att.rbo, att.internalFormat, width, height);
             }
@@ -72,7 +72,7 @@ namespace render {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
-                KI_INFO(fmt::format("CREATE_DEPTH: FBO={}, DEPTH={}", name, att.textureID));
+                KI_INFO(fmt::format("CREATE_DEPTH: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -88,7 +88,7 @@ namespace render {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
-                KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: FBO={}, DEPTH={}", name, att.textureID));
+                KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -104,7 +104,7 @@ namespace render {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
 
-                KI_INFO(fmt::format("CREATE_SHADOW: FBO={}, DEPTH={}", name, att.textureID));
+                KI_INFO(fmt::format("CREATE_SHADOW: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -206,6 +206,7 @@ namespace render {
         FrameBufferAttachment spec{ *shared };
         spec.type = FrameBufferAttachmentType::shared;
         spec.shared = shared;
+        spec.name = fmt::format("{}_shared", spec.name);
         // NOTE KI no clearMask on shared; cannot clear as part as shared
 
         if (attachment) {
@@ -222,6 +223,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearType = ClearType::NONE;
+        spec.name = "draw";
 
         return spec;
     }
@@ -234,6 +236,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "texture_RGBA8";
 
         return spec;
     }
@@ -247,6 +250,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "texture_RGBA16F";
 
         return spec;
     }
@@ -259,6 +263,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "texture_RGB8";
 
         return spec;
     }
@@ -272,6 +277,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "texture_RGB16F";
 
         return spec;
     }
@@ -284,6 +290,7 @@ namespace render {
         spec.attachment = GL_COLOR_ATTACHMENT0;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "object_id";
 
         return spec;
     }
@@ -297,6 +304,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "albedo_RGB8";
 
         return spec;
     }
@@ -311,6 +319,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "albedo_RGB16F";
 
         return spec;
     }
@@ -324,6 +333,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "specular_RGBA8";
 
         return spec;
     }
@@ -338,6 +348,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "specular_RGBA16F";
 
         return spec;
     }
@@ -351,6 +362,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "metal_RGBA8";
 
         return spec;
     }
@@ -365,6 +377,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "metal_RGBA16";
 
         return spec;
     }
@@ -378,6 +391,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "emission_RGB8";
 
         return spec;
     }
@@ -392,6 +406,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "emission_RGB16F";
 
         return spec;
     }
@@ -406,6 +421,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "position_RGB32F";
 
         return spec;
     }
@@ -428,6 +444,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "normal_RGB16F";
 
         return spec;
     }
@@ -441,6 +458,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "view_z_R32F";
 
         return spec;
     }
@@ -454,6 +472,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "ettect_RGBA8";
 
         return spec;
     }
@@ -468,6 +487,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "ettect_RGBA16F";
 
         return spec;
     }
@@ -491,6 +511,7 @@ namespace render {
         spec.clearType = ClearType::DEPTH;
 
         spec.clearMask = GL_DEPTH_BUFFER_BIT;
+        spec.name = "depth_24";
 
         return spec;
     }
@@ -514,6 +535,7 @@ namespace render {
         // NOTE KI (depth, clear, _, _)
         spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+        spec.name = "depth_stencil_24_8";
 
         return spec;
     }
@@ -543,6 +565,7 @@ namespace render {
         spec.clearType = ClearType::DEPTH;
 
         spec.clearMask = GL_DEPTH_BUFFER_BIT;
+        spec.name = "shadow_24";
 
         return spec;
     }
@@ -559,6 +582,7 @@ namespace render {
         spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
         spec.clearMask = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+        spec.name = "depth_stencil_24_8";
 
         return spec;
     }
@@ -575,6 +599,7 @@ namespace render {
         spec.clearColor = { 1.f, 0.f, 0.f, 0.f };
 
         spec.clearMask = GL_DEPTH_BUFFER_BIT;
+        spec.name = "depth_rbo_24";
 
         return spec;
     }
@@ -594,6 +619,7 @@ namespace render {
         spec.borderColor = { 0.f, 0.f, 0.f, 0.f };
 
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "oit_acc_RGBA16F";
 
         return spec;
     }
@@ -612,6 +638,7 @@ namespace render {
         spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
 
         spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "oit_reveal_R8";
 
         return spec;
     }

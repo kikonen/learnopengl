@@ -769,7 +769,7 @@ namespace editor {
             for (const auto& att : fb->m_spec.attachments) {
                 if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("OIT - Buffer {}", bufferIndex);
+                const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
                     bufferTex(*fb, att.index, true);
                     ImGui::TreePop();
@@ -784,7 +784,7 @@ namespace editor {
             for (const auto& att : fb->m_spec.attachments) {
                 if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("Effect primary - Buffer {}", bufferIndex);
+                const auto& name = fmt::format("Effect primary: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
                     bufferTex(*fb, att.index, true);
                     ImGui::TreePop();
@@ -799,7 +799,7 @@ namespace editor {
             for (const auto& att : fb->m_spec.attachments) {
                 if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("Effect secondary - Buffer {}", bufferIndex);
+                const auto& name = fmt::format("Effect secondary: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
                     bufferTex(*fb, att.index, true);
                     ImGui::TreePop();
@@ -814,7 +814,7 @@ namespace editor {
                 for (const auto& att : fb->m_spec.attachments) {
                     if (att.drawBufferIndex < 0) continue;
 
-                    const auto& name = fmt::format("Effect buffers - Buffer {}", bufferIndex);
+                    const auto& name = fmt::format("Effect buffers: {} - {}", bufferIndex, att.name);
                     if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
                         bufferTex(*fb, att.index, true);
                         ImGui::TreePop();
@@ -830,7 +830,7 @@ namespace editor {
             for (const auto& att : fb->m_spec.attachments) {
                 if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("GBuffer - Buffer {}", bufferIndex);
+                const auto& name = fmt::format("GBuffer: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
                     bufferTex(*fb, att.index, true);
                     ImGui::TreePop();

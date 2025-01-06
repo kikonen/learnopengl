@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <type_traits>
 
 #include <glm/glm.hpp>
@@ -62,6 +63,8 @@ namespace render {
 
         bool externalDelete{ false };
         FrameBufferAttachment* shared{ nullptr };
+
+        std::string name;
 
         FrameBufferAttachment();
         ~FrameBufferAttachment();
