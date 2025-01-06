@@ -245,7 +245,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -272,7 +272,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -314,7 +314,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -343,7 +343,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -401,7 +401,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI float nor normalized to allow going over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
@@ -482,7 +482,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
+        // NOTE KI float, not normalized, to go over 1.0
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
