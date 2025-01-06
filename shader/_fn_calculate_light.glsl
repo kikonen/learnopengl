@@ -78,7 +78,8 @@ vec4 calculateLightPbr(
     ambient = (kD * diffuse + specular) * ao;
   }
 
-  vec3 color = ambient + Lo + material.emission.rgb;
+  vec3 color = ambient + Lo;
+  // vec3 color = ambient + Lo + material.emission.rgb;
   //color = Lo + material.emission.rgb;
   //color = Lo;
   //Color = ambient;

@@ -374,7 +374,7 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA8;
+        spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
@@ -387,8 +387,8 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        // NOTE KI GL_RGBA16F to go over 1.0
-        spec.internalFormat = GL_RGBA16F;
+        // NOTE KI GL_RGB16F to go over 1.0
+        spec.internalFormat = GL_RGB16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;

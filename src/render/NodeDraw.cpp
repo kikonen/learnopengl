@@ -602,11 +602,18 @@ namespace render {
                 auto* uniforms = m_blurFinalProgramCS->m_uniforms.get();
                 uniforms->u_viewport.set(viewport);
 
-                // NOTE KI need to process also non-aligned portion of viewport
-                int groupX = viewport.x / 16 + (viewport.x % 16 != 0 ? 1 : 0);
-                int groupY = viewport.y / 4  + (viewport.y % 4 != 0 ? 1 : 0);
+                if (false) {
+                    // NOTE KI need to process also non-aligned portion of viewport
+                    int groupX = viewport.x / 15 + (viewport.x % 15 != 0 ? 1 : 0);
+                    int groupY = viewport.y / 4 + (viewport.y % 4 != 0 ? 1 : 0);
 
-                glDispatchCompute(groupX, groupY, 1);
+                    glDispatchCompute(groupX, groupY, 1);
+                }
+                else {
+                    glDispatchCompute(viewport.x, viewport.y, 1);
+                }
+
+                //glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
             }
         }
     }

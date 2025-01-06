@@ -1,6 +1,6 @@
 struct ResolvedMaterial {
   vec4 diffuse;
-  vec4 emission;
+  vec3 emission;
 
   // G buffer: metalness, roughness, displacement, ambient-occlusion
   vec4 metal;

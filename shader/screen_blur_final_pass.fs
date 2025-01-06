@@ -35,8 +35,9 @@ void main()
 
   // o_fragColor = orig * vec4(52, 52, 52, 1);
 
-  vec4 color = vec4(0);
   vec4 src = texture(u_sourceTex, fs_in.texCoord);
+
+  vec3 color = vec3(0);
   // color = src.rgb;
   color += texture(u_channel0, fs_in.texCoord).rgba;
   color += texture(u_channel1, fs_in.texCoord).rgba;
@@ -44,7 +45,7 @@ void main()
   color += texture(u_channel3, fs_in.texCoord).rgba;
   // color = src.rgb;
   o_fragColor = vec4(color.rgb, 1);
-  o_fragColor = color;
+  // o_fragColor = color;
   // o_fragColor *= vec4(4, 4, 4, 0.55 + 0.25 * sin(u_time * 2.5) * 0.5);
   // o_fragColor.a = 0.7;
   // o_fragColor = vec4(src.rgb, 0.7);

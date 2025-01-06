@@ -169,7 +169,7 @@
 
 #define LAYOUT_G_BUFFER_OUT\
  layout (location = 0) out vec3 o_fragColor;\
- layout (location = 1) out vec4 o_fragEmission;\
+ layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMetal;\
  layout (location = 4) out float o_fragViewZ;
@@ -178,18 +178,18 @@
 
 #define LAYOUT_G_BUFFER_SAMPLERS\
  layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;\
- layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
  layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
  layout(binding = UNIT_G_METAL) uniform sampler2D g_metal;
+// layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
 // layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;\
 
 #define LAYOUT_OIT_OUT\
  layout (location = 0) out vec4 o_accum;\
  layout (location = 1) out float o_reveal;\
- layout (location = 2) out vec4 o_fragEmission;
+ layout (location = 2) out vec3 o_fragEmission;
 
 #define LAYOUT_OIT_SAMPLERS\
  layout(binding = UNIT_OIT_ACCUMULATOR) uniform sampler2D oit_accumulator;\

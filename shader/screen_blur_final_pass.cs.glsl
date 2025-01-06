@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (local_size_x = 16, local_size_y = 14, local_size_z = 1) in;
+layout (local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 layout(location = UNIFORM_VIEWPORT) uniform vec2 u_viewport;
 

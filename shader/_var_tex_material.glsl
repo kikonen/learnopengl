@@ -11,8 +11,8 @@
 
   material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
 
-  material.emission = u_materials[i].emission *
-    texture(sampler2D(u_materials[i].emissionTex), texCoord + vec2(0, u_time) * -0);
+  material.emission = u_materials[i].emission.rgb *
+    texture(sampler2D(u_materials[i].emissionTex), texCoord + vec2(0, u_time) * -0).rgb;
 
   material.metal = u_materials[i].metal *
     texture(sampler2D(u_materials[i].metalTex), texCoord);

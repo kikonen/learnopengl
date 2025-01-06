@@ -14,6 +14,8 @@ out VS_OUT {
 
 SET_FLOAT_PRECISION;
 
+// https://www.youtube.com/watch?v=uZlwbWqQKpc
+// https://vodacek.zvb.cz/archiv/251.html
 void main()
 {
   // https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
