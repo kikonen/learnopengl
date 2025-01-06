@@ -71,7 +71,7 @@ namespace loader{
             else if (k == "outer_cutoff_angle") {
                 data.outerCutoffAngle = readFloat(v);
             }
-            else if (k == "diffuse") {
+            else if (k == "diffuse" || k == "kd") {
                 data.diffuse = readRGB(v);
             }
             else if (k == "intensity") {

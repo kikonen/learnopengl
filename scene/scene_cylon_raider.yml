@@ -22,14 +22,15 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
-    pos: [0, 25, 40]
-    scale: 2.5
+  - id: dir_light
     mesh:
-      path: light
-      material_modifier:
+      vertex:
+        type: sphere
+        radius: 2.5
+      material:
         kd: [0.8, 0.8, 0.6, 1.0]
-    program: g_light
+        program: g_light
+    pos: [0, 25, 40]
     flags:
       no_shadow: true
     light:
