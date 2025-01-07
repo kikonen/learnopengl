@@ -308,6 +308,12 @@ bool WaterMapRenderer::render(
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);
 
+        localCtx.m_useParticles = false;
+        localCtx.m_useDecals = false;
+        localCtx.m_useFog = false;
+        localCtx.m_useEmission = false;
+        localCtx.m_useBloom = false;
+
         localCtx.copyShadowFrom(parentCtx);
 
         {
@@ -349,6 +355,12 @@ bool WaterMapRenderer::render(
             m_farPlane,
             refractionBuffer->m_spec.width,
             refractionBuffer->m_spec.height);
+
+        localCtx.m_useParticles = false;
+        localCtx.m_useDecals = false;
+        localCtx.m_useFog = false;
+        localCtx.m_useEmission = false;
+        localCtx.m_useBloom = false;
 
         localCtx.copyShadowFrom(parentCtx);
 

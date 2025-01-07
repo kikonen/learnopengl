@@ -264,6 +264,12 @@ bool MirrorMapRenderer::render(
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);
 
+        localCtx.m_useParticles = false;
+        localCtx.m_useDecals = false;
+        localCtx.m_useFog = false;
+        localCtx.m_useEmission = false;
+        localCtx.m_useBloom = false;
+
         localCtx.copyShadowFrom(parentCtx);
 
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
