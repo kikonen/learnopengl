@@ -97,19 +97,19 @@ void main()
   vec3 rgb;
   {
     sampler2D atlas = sampler2D(fs_in.atlasHandle);
-    vec4  atlasValue = texture2D(atlas, fs_in.atlasCoord.st);
+    vec4  atlasValue = textureLod(atlas, fs_in.atlasCoord.st, 0);
 
     float dist  = atlasValue.r;
     float width = fwidth(dist);
-    float alpha = smoothstep(glyph_center-width, glyph_center+width, dist);
+    float alpha = smoothstep(glyph_center - width, glyph_center + width, dist);
 
     vec3 glyph_color = materialColor.rgb;
 
     rgb = mix(glow_color, glyph_color, alpha);
     float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
 
-    vec4 color = vec4(rgb, max(alpha,mu));
-    float beta = smoothstep(outline_center-width, outline_center+width, dist);
+    vec4 color = vec4(rgb, max(alpha, mu));
+    float beta = smoothstep(outline_center - width, outline_center + width, dist);
     rgb = mix(outline_color, color.rgb, beta);
 
     float a = max(color.a, beta);

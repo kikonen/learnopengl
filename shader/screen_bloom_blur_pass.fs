@@ -37,17 +37,17 @@ void main()
   const vec2 texCoord = fs_in.texCoord;
 
   vec2 offset = 1.0 / textureSize(effect_work, 0);
-  vec3 color = texture(effect_work, texCoord).rgb * weight[0];
+  vec3 color = textureLod(effect_work, texCoord, 0).rgb * weight[0];
 
   if (u_effectBloomHorizontal) {
     for (int i = 1; i < 5; ++i) {
-      color += texture(effect_work, texCoord + vec2(offset.x * i, 0.0)).rgb * weight[i];
-      color += texture(effect_work, texCoord - vec2(offset.x * i, 0.0)).rgb * weight[i];
+      color += textureLod(effect_work, texCoord + vec2(offset.x * i, 0.0), 0).rgb * weight[i];
+      color += textureLod(effect_work, texCoord - vec2(offset.x * i, 0.0), 0).rgb * weight[i];
     }
   } else {
     for (int i = 1; i < 5; ++i) {
-      color += texture(effect_work, texCoord + vec2(0.0, offset.y * i)).rgb * weight[i];
-      color += texture(effect_work, texCoord - vec2(0.0, offset.y * i)).rgb * weight[i];
+      color += textureLod(effect_work, texCoord + vec2(0.0, offset.y * i), 0).rgb * weight[i];
+      color += textureLod(effect_work, texCoord - vec2(0.0, offset.y * i), 0).rgb * weight[i];
     }
   }
 

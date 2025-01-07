@@ -31,11 +31,11 @@ void main()
 
   vec4 orig = imageLoad(u_destinationTex, texel);
   vec3 color = orig.rgb;
-  color += texture(u_channel0, uv).rgb;
-  color += texture(u_channel1, uv).rgb;
-  color += texture(u_channel2, uv).rgb;
-  // color += texture(u_channel3, uv).rgb;
-  // color = texture(u_sourceTex, uv).rgb * vec3(2, 2, 2);
+  color += textureLod(u_channel0, uv, 0).rgb;
+  color += textureLod(u_channel1, uv, 0).rgb;
+  color += textureLod(u_channel2, uv, 0).rgb;
+  // color += textureLod(u_channel3, uv, 0).rgb;
+  // color = textureLod(u_sourceTex, uv, 0).rgb * vec3(2, 2, 2);
 
   imageStore(u_destinationTex, texel, vec4(color, orig.a));
   // imageStore(u_destinationTex, texCoord, vec4(uv.x, 0, 0, 1));

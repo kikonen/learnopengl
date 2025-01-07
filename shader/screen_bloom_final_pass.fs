@@ -22,9 +22,9 @@ void main()
 {
   const vec2 texCoord = fs_in.texCoord;
 
-  vec4 orig = texture(scene_albedo, texCoord);
+  vec4 orig = textureLod(scene_albedo, texCoord, 0);
   vec3 hdrColor = orig.rgb;
-  vec3 bloomColor = texture(effect_bloomBlur, texCoord).rgb;
+  vec3 bloomColor = textureLod(effect_bloomBlur, texCoord, 0).rgb;
 
   hdrColor += bloomColor;
 
