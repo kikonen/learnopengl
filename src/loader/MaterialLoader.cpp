@@ -13,9 +13,6 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
-#include "material/MaterialUpdater.h"
-#include "material/FrameBufferMaterial.h"
-
 #include "shader/ProgramRegistry.h"
 
 #include "loader/document.h"

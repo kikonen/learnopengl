@@ -38,8 +38,5 @@ namespace text
             mesh::TextMesh* mesh);
 
         void clear();
-
-    private:
-        text::FontAtlas* m_lastFont{ nullptr };
     };
 }

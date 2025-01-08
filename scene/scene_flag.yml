@@ -134,7 +134,7 @@ nodes:
     pos: [0, 2, 0]
 material_updaters:
 - id: shader_toy_1
-  type: framebuffer
+  type: shader
   size: 1024
   frame_skip: 1
   material:
@@ -147,7 +147,7 @@ material_updaters:
       SHADER_1: 1
       TOY_1: 1
 - id: shader_toy_2
-  type: framebuffer
+  type: shader
   size: 512
   frame_skip: 1
   material:
@@ -160,7 +160,7 @@ material_updaters:
       SHADER_2: 1
       TOY_2: 1
 - id: shader_toy_3
-  type: framebuffer
+  type: shader
   size: 512
   frame_skip: 1
   material:

@@ -12,10 +12,6 @@ namespace render {
         return g_instance;
     }
 
-    void TextureQuad::prepare()
-    {
-    }
-
     void TextureQuad::draw()
     {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

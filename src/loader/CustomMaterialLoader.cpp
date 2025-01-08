@@ -4,8 +4,6 @@
 
 #include "mesh/MeshFlags.h"
 
-#include "material/FrameBufferMaterial.h"
-
 #include "loader/document.h"
 #include "loader_util.h"
 #include "loader/Loaders.h"
@@ -51,19 +49,6 @@ namespace loader {
         const CustomMaterialData& data,
         Loaders& loaders)
     {
-        //switch (data.type) {
-        //case CustomMaterialType::framebuffer: {
-        //    auto cm = std::make_unique<FrameBufferMaterial>("fbo", false);
-
-        //    cm->setMaterial(&data.materialData.material);
-        //    cm->m_material->loadTextures();
-
-        //    loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
-
-        //    return cm;
-        //}
-        //}
-
         return nullptr;
     }
 }

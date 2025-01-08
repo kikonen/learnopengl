@@ -125,14 +125,4 @@ namespace text
 
         m_usedAtlasSize = currentAtlasSize;
     }
-
-    void FontAtlas::bindTextures()
-    {
-        m_texture.bindTexture(UNIT_FONT_ATLAS);
-    }
-
-    void FontAtlas::unbindTextures()
-    {
-        m_texture.unbindTexture(UNIT_FONT_ATLAS);
-    }
 }

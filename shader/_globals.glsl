@@ -91,8 +91,6 @@
 #define UNIT_SOURCE 46
 #define UNIT_DESTINATION 47
 
-#define UNIT_FONT_ATLAS 48
-
 #define UNIT_HDR_TEXTURE 49
 
 #define UNIT_G_ALBEDO 50

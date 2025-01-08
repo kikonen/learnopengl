@@ -254,9 +254,6 @@ namespace text
 
     void TextDraw::updateRT()
     {
-        if (m_lastFont) {
-            m_lastFont->bindTextures();
-        }
     }
 
     void TextDraw::render(
@@ -274,10 +271,6 @@ namespace text
 
         mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
         mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());
-
-        // HACK KI need to encode font somehow int drawOptions and/or VBO
-        // => can use VBO, sinse are not shared mesh VBOs like in ModelRegistry
-        m_lastFont = font;
     }
 
     void TextDraw::clear()

@@ -10,8 +10,6 @@
 #include "ki/size.h"
 #include "ki/sid.h"
 
-#include "render/TextureQuad.h"
-
 #include "material/MaterialUpdater.h"
 
 struct Material;
@@ -20,14 +18,14 @@ namespace render {
     class FrameBuffer;
 }
 
-class FrameBufferMaterial : public MaterialUpdater
+class ShaderMaterialUpdater : public MaterialUpdater
 {
 public:
-    FrameBufferMaterial(
+    ShaderMaterialUpdater(
         ki::StringID id,
         const std::string& name);
 
-    ~FrameBufferMaterial();
+    ~ShaderMaterialUpdater();
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;
@@ -36,8 +34,6 @@ public:
         const RenderContext& ctx) override;
 
     virtual GLuint64 getTexHandle(TextureType type) const noexcept override;
-
-    void setMaterial(const Material* material) noexcept;
 
 public:
     glm::ivec2 m_size;
@@ -53,6 +49,4 @@ private:
     GLuint m_samplerId{ 0 };
 
     int m_frameCounter{ 0 };
-
-    render::TextureQuad& m_textureQuad;
 };

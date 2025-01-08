@@ -31,9 +31,6 @@ namespace text
 
         void update();
 
-        void bindTextures();
-        void unbindTextures();
-
         FontHandle* getFont() {
             return m_fontHandle.get();
         }

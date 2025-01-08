@@ -209,7 +209,8 @@
     <ClCompile Include="src\material\ChannelTexture.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\CustomMaterial.cpp" />
-    <ClCompile Include="src\material\FrameBufferMaterial.cpp" />
+    <ClCompile Include="src\material\FontAtlasMaterialUpdater.cpp" />
+    <ClCompile Include="src\material\ShaderMaterialUpdater.cpp" />
     <ClCompile Include="src\material\HdriTexture.cpp" />
     <ClCompile Include="src\material\MaterialUpdater.cpp" />
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
@@ -543,7 +544,8 @@
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\ChannelPart.h" />
     <ClInclude Include="src\material\ChannelTextureDefinition.h" />
-    <ClInclude Include="src\material\FrameBufferMaterial.h" />
+    <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
+    <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\MeshTransform.h" />

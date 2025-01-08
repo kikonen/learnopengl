@@ -195,8 +195,6 @@ void Viewport::draw(const RenderContext& ctx)
     {
         if (m_textureId == 0) return;
 
-        auto& quad = render::TextureQuad::get();
-        quad.prepare();
-        quad.draw();
+        render::TextureQuad::get().draw();
     }
 }

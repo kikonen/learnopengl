@@ -10,7 +10,8 @@
 #include "mesh/MeshFlags.h"
 
 #include "material/MaterialUpdater.h"
-#include "material/FrameBufferMaterial.h"
+#include "material/ShaderMaterialUpdater.h"
+#include "material/FontAtlasMaterialUpdater.h"
 #include "material/MaterialRegistry.h"
 
 #include "loader/document.h"
@@ -54,8 +55,11 @@ namespace loader {
                 if (type == "none") {
                     data.type = MaterialUpdaterType::none;
                 }
-                else if (type == "framebuffer") {
-                    data.type = MaterialUpdaterType::framebuffer;
+                else if (type == "shader") {
+                    data.type = MaterialUpdaterType::shader;
+                }
+                else if (type == "font_atlas") {
+                    data.type = MaterialUpdaterType::font_atlas;
                 }
                 else {
                     reportUnknown("updater_type", k, v);
@@ -83,6 +87,7 @@ namespace loader {
         auto& mr = MaterialRegistry::get();
         for (const auto& data : updaters) {
             auto updater = createMaterialUpdater(data, loaders);
+            if (!updater) continue;
             mr.addMaterialUpdater(std::move(updater));
         }
     }
@@ -92,13 +97,23 @@ namespace loader {
         Loaders& loaders)
     {
         switch (data.type) {
-        case MaterialUpdaterType::framebuffer: {
-            auto cm = std::make_unique<FrameBufferMaterial>(SID(data.id), data.id);
+        case MaterialUpdaterType::shader: {
+            auto cm = std::make_unique<ShaderMaterialUpdater>(SID(data.id), data.id);
 
             cm->m_size = data.size;
             cm->m_frameSkip = data.frameSkip;
             cm->setMaterial(&data.materialData.material);
             cm->m_material->loadTextures();
+
+            loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
+            MaterialRegistry::get().registerMaterial(*cm->m_material);
+
+            return cm;
+        }
+        case MaterialUpdaterType::font_atlas: {
+            auto cm = std::make_unique<FontAtlasMaterialUpdater>(SID(data.id), data.id);
+
+            cm->setMaterial(&data.materialData.material);
 
             loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
             MaterialRegistry::get().registerMaterial(*cm->m_material);

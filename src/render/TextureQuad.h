@@ -9,8 +9,6 @@ namespace render {
         TextureQuad() = default;
         ~TextureQuad() = default;
 
-        void prepare();
-
         void draw();
 
         void drawInstanced(int instanceCount);

@@ -135,8 +135,6 @@ constexpr int UNIT_CHANNEL_5 = 45;
 constexpr int UNIT_SOURCE = 46;
 constexpr int UNIT_DESTINATION = 47;
 
-constexpr int UNIT_FONT_ATLAS = 48;
-
 constexpr int UNIT_HDR_TEXTURE = 49;
 
 constexpr int UNIT_G_ALBEDO = 50;

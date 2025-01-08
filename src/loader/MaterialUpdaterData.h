@@ -8,7 +8,8 @@
 namespace loader {
     enum class MaterialUpdaterType : std::underlying_type_t<std::byte> {
         none,
-        framebuffer,
+        shader,
+        font_atlas,
     };
 
     struct MaterialUpdaterData

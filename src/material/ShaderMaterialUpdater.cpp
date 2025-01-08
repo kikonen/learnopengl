@@ -1,4 +1,4 @@
-#include "FrameBufferMaterial.h"
+#include "ShaderMaterialUpdater.h"
 
 #include <fmt/format.h>
 
@@ -16,10 +16,10 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
+#include "render/TextureQuad.h"
 
 #include "material/Material.h"
 #include "material/MaterialRegistry.h"
-
 
 namespace {
     constexpr int ATT_ALBEDO_INDEX = 0;
@@ -27,23 +27,22 @@ namespace {
     constexpr int ID_INDEX = 1;
 }
 
-FrameBufferMaterial::FrameBufferMaterial(
+ShaderMaterialUpdater::ShaderMaterialUpdater(
     ki::StringID id,
     const std::string& name)
     : MaterialUpdater{id, name},
     m_size{ 512, 512 },
-    m_material{ std::make_unique<Material>() },
-    m_textureQuad{ render::TextureQuad::get() }
+    m_material{ std::make_unique<Material>() }
 {}
 
-FrameBufferMaterial::~FrameBufferMaterial()
+ShaderMaterialUpdater::~ShaderMaterialUpdater()
 {
     if (m_samplerId) {
         glDeleteSamplers(1, &m_samplerId);
     }
 }
 
-void FrameBufferMaterial::prepareRT(
+void ShaderMaterialUpdater::prepareRT(
     const PrepareContext& ctx)
 {
     if (m_prepared) return;
@@ -74,10 +73,6 @@ void FrameBufferMaterial::prepareRT(
     }
 
     {
-        m_textureQuad.prepare();
-    }
-
-    {
         // MaterialRegistry::get().registerMaterial(*m_material);
 
         glGenSamplers(1, &m_samplerId);
@@ -97,7 +92,7 @@ void FrameBufferMaterial::prepareRT(
     }
 }
 
-void FrameBufferMaterial::render(
+void ShaderMaterialUpdater::render(
     const RenderContext& ctx)
 {
     if (!m_dirty) return;
@@ -127,31 +122,18 @@ void FrameBufferMaterial::render(
     }
 
     {
-        m_textureQuad.draw();
+        render::TextureQuad::get().draw();
     }
 
     //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
     glFlush();
 }
 
-GLuint64 FrameBufferMaterial::getTexHandle(TextureType type) const noexcept
+GLuint64 ShaderMaterialUpdater::getTexHandle(TextureType type) const noexcept
 {
     if (type == TextureType::diffuse) {
         return m_handle;
         //return m_samplerId;
     }
     return 0;
-}
-
-void FrameBufferMaterial::setMaterial(const Material* src) noexcept
-{
-    if (!src) {
-        m_material.reset();
-        return;
-    }
-
-    if (!m_material) {
-        m_material = std::make_unique<Material>();
-    }
-    *m_material = *src;
 }

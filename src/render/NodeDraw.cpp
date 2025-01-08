@@ -77,8 +77,6 @@ namespace render {
         m_effectBuffer.prepare(&m_gBuffer);
         m_blurBuffer.prepare();
 
-        m_textureQuad.prepare();
-
         {
             std::map<std::string, std::string, std::less<>> definitions;
 
