@@ -50,4 +50,6 @@ void shapeFont(
     color.a = glyphAlpha;
     color.rgb = glyphColor;
   }
+
+  color.a *= material.diffuse.a;
 }

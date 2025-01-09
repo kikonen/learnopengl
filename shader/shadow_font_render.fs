@@ -19,6 +19,8 @@ ResolvedMaterial material;
 
 void main()
 {
+  material.diffuse = vec4(1, 1, 1, 1);
+
   vec4 color;
   shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
 

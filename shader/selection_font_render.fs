@@ -31,18 +31,13 @@ ResolvedMaterial material;
 
 void main()
 {
+  material.diffuse = vec4(1, 1, 1, 1);
+
   vec4 color;
   shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
 
-#ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (color.a < OIT_MAX_BLEND_THRESHOLD)
+  if (color.a < 0.65)
     discard;
-#else
-  if (color.a < GBUFFER_ALPHA_THRESHOLD)
-    discard;
-#endif
-#endif
 
   const uint materialIndex = fs_in.highlightIndex;
   o_fragColor = u_materials[materialIndex].diffuse;
