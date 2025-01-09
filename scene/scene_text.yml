@@ -54,11 +54,13 @@ nodes:
       path: quad
       material:
         name: metal
-        kd: [0.8, 0.0, 0.0, 1.0]
+        kd: [0.8, 0.8, 0.0, 1.0]
         metal: [1.0, 0.0, 0, 1]
         alpha: true
-        xblend: true
         render_back: true
+        updater: font_atlas_1
+      program: font_atlas_demo
+      shadow_program: font_atlas_demo
     text:
       font:
         path: fonts/LuckiestGuy.ttf
@@ -66,8 +68,6 @@ nodes:
     custom_material:
       type: text
       font: hello_font
-    program: font_atlas_demo
-    shadow_program: font_atlas_demo
     pos: [2.0, 2.0, -5.0]
     flags:
       xeffect: true
@@ -206,3 +206,6 @@ nodes:
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
     xflags:
+material_updaters:
+- id: font_atlas_1
+  type: font_atlas

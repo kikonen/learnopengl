@@ -34,11 +34,24 @@ void FontAtlasMaterialUpdater::prepareRT(
 
 }
 
+void FontAtlasMaterialUpdater::render(
+    const RenderContext& ctx)
+{
+    if (m_handle) return;
+
+    const auto* atlas = text::FontRegistry::get().getFont(1);
+    auto handle = atlas ? atlas->getTextureHandle() : 0;
+
+    if (m_handle != handle) {
+        m_handle = handle;
+        setNeedUpdate(true);
+    }
+}
+
 GLuint64 FontAtlasMaterialUpdater::getTexHandle(TextureType type) const noexcept
 {
     if (type == TextureType::diffuse) {
-        const auto* atlas = text::FontRegistry::get().getFont(1);
-        return atlas ? atlas->getTextureHandle() : 0;
+        return m_handle;
     }
     return 0;
 }

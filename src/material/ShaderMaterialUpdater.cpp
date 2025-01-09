@@ -31,8 +31,7 @@ ShaderMaterialUpdater::ShaderMaterialUpdater(
     ki::StringID id,
     const std::string& name)
     : MaterialUpdater{id, name},
-    m_size{ 512, 512 },
-    m_material{ std::make_unique<Material>() }
+    m_size{ 512, 512 }
 {}
 
 ShaderMaterialUpdater::~ShaderMaterialUpdater()
@@ -95,12 +94,11 @@ void ShaderMaterialUpdater::prepareRT(
 void ShaderMaterialUpdater::render(
     const RenderContext& ctx)
 {
-    if (!m_dirty) return;
-    //m_dirty = false;
+    m_dirty |= m_frameCounter++ > m_frameSkip;
 
-    if (m_frameCounter++ <= m_frameSkip) {
-        return;
-    }
+    if (!m_dirty) return;
+
+    m_dirty = false;
     m_frameCounter = 0;
 
     if (!m_material) return;
@@ -127,6 +125,8 @@ void ShaderMaterialUpdater::render(
 
     //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
     glFlush();
+
+    setNeedUpdate(true);
 }
 
 GLuint64 ShaderMaterialUpdater::getTexHandle(TextureType type) const noexcept

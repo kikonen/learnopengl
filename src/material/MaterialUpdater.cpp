@@ -6,8 +6,7 @@ MaterialUpdater::MaterialUpdater(
     ki::StringID id,
     const std::string& name)
     : m_id{ id },
-    m_name{ name},
-    m_material{ std::make_unique<Material>() }
+    m_name{ name}
 {}
 
 MaterialUpdater::~MaterialUpdater() = default;
@@ -21,7 +20,7 @@ void MaterialUpdater::prepareRT(
 void MaterialUpdater::render(
     const RenderContext& ctx)
 {
-    m_dirty = true;
+    //markDirty();
 }
 
 void MaterialUpdater::setMaterial(const Material* src) noexcept

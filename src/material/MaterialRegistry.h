@@ -32,6 +32,7 @@ public:
 
     // Update data for already registered material
     void updateMaterial(const Material& material);
+    void markDirty(ki::material_index m_registeredIndex);
 
     void addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater);
 
@@ -47,6 +48,7 @@ private:
     void prepareMaterials(const PrepareContext& ctx);
     void prepareMaterialUpdaters(const PrepareContext& ctx);
     void updateMaterialBuffer();
+    void updateDirtyMaterialBuffer();
 
 private:
     std::atomic<bool> m_dirtyFlag;

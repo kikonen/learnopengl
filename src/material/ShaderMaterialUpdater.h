@@ -40,8 +40,6 @@ public:
     float m_updateSpeed{ 0.f };
     int m_frameSkip{ 1 };
 
-    std::unique_ptr<Material> m_material;
-
 private:
     std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
 

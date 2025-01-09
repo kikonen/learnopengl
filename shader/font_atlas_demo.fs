@@ -33,7 +33,7 @@ void main() {
   #include var_tex_material.glsl
 
   float d = material.diffuse.r;
-  if (d == 0) {
+  if (d < 0.1) {
     discard;
   }
 

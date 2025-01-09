@@ -28,9 +28,11 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
+    virtual void render(
+        const RenderContext& ctx) override;
+
     virtual GLuint64 getTexHandle(TextureType type) const noexcept override;
 
 private:
-    //GLuint64 m_handle{ 0 };
-    //GLuint m_samplerId{ 0 };
+    GLuint64 m_handle{ 0 };
 };

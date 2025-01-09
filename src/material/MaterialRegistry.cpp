@@ -75,8 +75,12 @@ void MaterialRegistry::updateMaterial(const Material& material)
     std::lock_guard lock(m_lock);
 
     m_materials[material.m_registeredIndex] = material;
+    markDirty(material.m_registeredIndex);
+}
 
-    m_dirtyMaterials.push_back(material.m_registeredIndex);
+void MaterialRegistry::markDirty(ki::material_index registeredIndex)
+{
+    m_dirtyMaterials.push_back(registeredIndex);
     m_dirtyFlag = true;
 }
 
@@ -91,6 +95,12 @@ void MaterialRegistry::renderMaterials(const RenderContext& ctx)
     std::lock_guard lock(m_lock);
     for (auto& [id, updater] : m_updaters) {
         updater->render(ctx);
+        if (updater->isBeedUpdate()) {
+            for (auto& registeredIndex : updater->m_dependentMaterials) {
+                markDirty(registeredIndex);
+                updater->setNeedUpdate(false);
+            }
+        }
     }
 }
 
@@ -103,6 +113,7 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
     prepareMaterials(ctx);
 
     updateMaterialBuffer();
+    updateDirtyMaterialBuffer();
 }
 
 void MaterialRegistry::prepare()
@@ -126,7 +137,9 @@ void MaterialRegistry::prepareMaterials(const PrepareContext& ctx)
         if (material.m_updaterId) {
             const auto& it = m_updaters.find(material.m_updaterId);
             if (it != m_updaters.end()) {
-                material.m_updater = it->second.get();
+                auto* updater = it->second.get();
+                material.m_updater = updater;
+                updater->m_dependentMaterials.push_back(material.m_registeredIndex);
             }
         }
     }
@@ -178,23 +191,24 @@ void MaterialRegistry::updateMaterialBuffer()
             &m_materialEntries[updateIndex]);
     }
 
+    m_lastSize = totalCount;
+}
+
+void MaterialRegistry::updateDirtyMaterialBuffer()
+{
     // NOTE KI assuming there is only few updateable materials
     // => thus one-by-one update is fine
     // => if more, may need to specify logic to reserving
     //    specific limited range to be used for updatable materials, to avoid random access
-    {
-        for (auto dirtyIndex : m_dirtyMaterials) {
-            m_materialEntries[dirtyIndex] = m_materials[dirtyIndex].toSSBO();
+    for (auto dirtyIndex : m_dirtyMaterials) {
+        m_materialEntries[dirtyIndex] = m_materials[dirtyIndex].toSSBO();
 
-            constexpr size_t sz = sizeof(MaterialSSBO);
+        constexpr size_t sz = sizeof(MaterialSSBO);
 
-            m_ssbo.update(
-                dirtyIndex * sz,
-                dirtyIndex * sz,
-                &m_materialEntries[dirtyIndex]);
-        }
-        m_dirtyMaterials.clear();
+        m_ssbo.update(
+            dirtyIndex * sz,
+            1 * sz,
+            &m_materialEntries[dirtyIndex]);
     }
-
-    m_lastSize = totalCount;
+    m_dirtyMaterials.clear();
 }
