@@ -53,8 +53,7 @@ nodes:
     mesh:
       path: quad
       material:
-        name: metal
-        kd: [0.8, 0.8, 0.0, 1.0]
+        kd: [1, 1, 1, 1]
         metal: [1.0, 0.0, 0, 1]
         alpha: true
         render_back: true

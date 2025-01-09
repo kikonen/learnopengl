@@ -18,6 +18,7 @@ enum class TextureType : std::underlying_type_t<std::byte> {
     map_occlusion,
     map_displacement,
     map_opacity,
+    map_custom_1,
     map_channel_part_1,
     map_channel_part_2,
     map_channel_part_3,

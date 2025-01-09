@@ -415,6 +415,7 @@ const MaterialSSBO Material::toSSBO() const
         getTexHandle(TextureType::map_noise_2, 0),
 
         getTexHandle(TextureType::map_opacity, whitePx),
+        getTexHandle(TextureType::map_custom_1, 0),
         getTexHandle(TextureType::map_metal_channel, whitePx),
 
         pattern,

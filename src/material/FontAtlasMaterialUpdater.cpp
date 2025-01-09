@@ -50,7 +50,7 @@ void FontAtlasMaterialUpdater::render(
 
 GLuint64 FontAtlasMaterialUpdater::getTexHandle(TextureType type) const noexcept
 {
-    if (type == TextureType::diffuse) {
+    if (type == TextureType::map_custom_1) {
         return m_handle;
     }
     return 0;
