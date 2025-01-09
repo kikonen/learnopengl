@@ -44,7 +44,8 @@ namespace text
         std::string m_name;
 
         std::string m_fontPath{ "fonts/Vera.ttf" };
-        float m_fontSize{ 36.f };
+        float m_fontSize{ 64.f };
+        int m_padding{ 8 };
         glm::uvec2 m_atlasSize{ 1024 };
 
     private:

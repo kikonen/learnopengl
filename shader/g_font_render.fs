@@ -47,13 +47,13 @@ LAYOUT_G_BUFFER_OUT;
 SET_FLOAT_PRECISION;
 
 //vec3 glyph_color    = vec3(1.0, 1.0, 1.0);
-const float glyph_center   = 0.50;
+const float glyph_center   = 0.5;
 
-vec3 outline_color  = vec3(0.0, 0.0, 0.0);
-const float outline_center = 0.55;
+// vec3 outline_color  = vec3(1.0, 0.0, 0.0);
+// const float outline_center = 1.2;
 
 vec3 glow_color     = vec3(1.0, 1.0, 1.0);
-const float glow_center    = 1.25;
+const float glow_center    = 2.25;
 
 ResolvedMaterial material;
 
@@ -97,29 +97,45 @@ void main()
   vec3 rgb;
   {
     sampler2D atlas = sampler2D(fs_in.atlasHandle);
-    vec4  atlasValue = textureLod(atlas, fs_in.atlasCoord.st, 0);
 
-    float dist  = atlasValue.r;
-    float width = fwidth(dist);
-    float alpha = smoothstep(glyph_center - width, glyph_center + width, dist);
+    float dist  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st, 0).r;
+    float width = 0.1;
+    float edge = 0.9;
 
-    vec3 glyph_color = materialColor.rgb;
+    float glyphAlpha = 1.0 - smoothstep(width, width + edge, dist);
 
-    rgb = mix(glow_color, glyph_color, alpha);
-    float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
+    vec3 glyphColor = materialColor.rgb;
 
-    vec4 color = vec4(rgb, max(alpha, mu));
-    float beta = smoothstep(outline_center - width, outline_center + width, dist);
-    rgb = mix(outline_color, color.rgb, beta);
+    // rgb = mix(glow_color, glyphColor, glyphAlpha);
+    // float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
+    // rgb = glyphColor;
 
-    float a = max(color.a, beta);
+    // vec4 color = vec4(rgb, max(glyphAlpha, mu));
+
+    vec3 borderColor  = vec3(1.0, 0.0, 0.0);
+    vec2 borderOffset = vec2(0, 0);
+    float borderWidth = 0.2;
+    float borderEdge = 0.4;
+
+    float dist2  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st + borderOffset, 0).r;
+
+    float borderAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdge, dist2);
+
+    float alpha = glyphAlpha + (1.0 - glyphAlpha) * glyphAlpha;
+    rgb = mix(borderColor, glyphColor, glyphAlpha / alpha);
+
 #ifdef USE_ALPHA
-    if (a < 0.7) {
+#ifdef USE_BLEND
+  if (alpha < OIT_MAX_BLEND_THRESHOLD) {
       discard;
-    }
+  }
+#else
+  if (alpha < GBUFFER_ALPHA_THRESHOLD)
+    discard;
+#endif
 #endif
   }
-  rgb = materialColor.rgb;
+  // rgb = materialColor.rgb;
 
   o_fragColor = rgb;
   o_fragMetal = material.metal;

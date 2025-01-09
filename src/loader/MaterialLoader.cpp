@@ -360,6 +360,12 @@ namespace loader {
                     TextureType::map_opacity,
                     resolveTexturePath(line, true));
             }
+            else if (k == "map_custom_1") {
+                std::string line = readString(v);
+                material.addTexPath(
+                    TextureType::map_custom_1,
+                    resolveTexturePath(line, true));
+            }
             else if (k == "map_channel") {
                 ChannelTextureValue loader;
                 loader.loadParts(v, material);

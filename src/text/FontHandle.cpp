@@ -48,7 +48,8 @@ namespace text
 
     void FontHandle::create(
         const std::string& fullPath,
-        float fontSize)
+        float fontSize,
+        int padding)
     {
         m_font = ftgl::texture_font_new_from_file(
             m_atlasHandle->m_atlas,
@@ -58,6 +59,8 @@ namespace text
         if (!m_font) return;
 
         m_font->rendermode = ftgl::RENDER_SIGNED_DISTANCE_FIELD;
+        m_font->padding = padding;
+
         ftgl::texture_font_load_glyphs(m_font, CACHE);
     }
 }

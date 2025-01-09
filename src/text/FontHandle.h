@@ -18,7 +18,8 @@ namespace text
 
         void create(
             const std::string& fullPath,
-            float fontSize);
+            float fontSize,
+            int padding);
 
         AtlasHandle* m_atlasHandle;
         ftgl::texture_font_t* m_font{ nullptr };

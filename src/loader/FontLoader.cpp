@@ -42,6 +42,9 @@ namespace loader {
             else if (k == "size") {
                 data.size = readFloat(v);
             }
+            else if (k == "padding") {
+                data.padding = readInt(v);
+            }
             else if (k == "atlas_size") {
                 data.atlasSize = readVec2(v);
             }
@@ -60,6 +63,7 @@ namespace loader {
         font.m_name = data.name;
         font.m_fontPath = data.path;
         font.m_fontSize = data.size;
+        font.m_padding = data.padding;
         font.m_atlasSize = data.atlasSize;
 
         return fr.registerFont(std::move(font));

@@ -64,7 +64,8 @@ namespace text
             m_fontHandle = std::make_unique<FontHandle>(m_atlasHandle.get());
             m_fontHandle->create(
                 util::joinPath(assets.assetsDir, m_fontPath),
-                m_fontSize);
+                m_fontSize,
+                m_padding);
         }
 
 

@@ -46,7 +46,6 @@ nodes:
       text: "- fps"
       font:
         path: fonts/Vera.ttf
-        size: 36
     pos: [1.0, 0.75, -0.75]
     scale: 0.01
   - id: font_atlas
@@ -54,6 +53,7 @@ nodes:
       path: quad
       material:
         kd: [1, 1, 1, 1]
+        #map_custom_1: fonts/blade_runner.png
         metal: [1.0, 0.0, 0, 1]
         alpha: true
         render_back: true
@@ -63,7 +63,6 @@ nodes:
     text:
       font:
         path: fonts/LuckiestGuy.ttf
-        size: 72
     custom_material:
       type: text
       font: hello_font
@@ -89,18 +88,19 @@ nodes:
         map_pbr: textures\Metal007_1K-PNG
         tiling: 1
         alpha: true
-        xblend: true
+        blend: true
         render_back: true
         program: g_font_render
+        oit_program: oit_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
       xflags:
         billboard: true
     text:
       font:
-        path: fonts/LuckiestGuy.ttf
-        size: 72
-      text: ÄÅÖ äåö - Hello world
+        #path: fonts/LuckiestGuy.ttf
+        path: fonts/BLADRMF_.TTF
+      text: Hello world
       pivot: [0, 0]
       align_horizontal: center
       align_vertical: center
@@ -125,6 +125,7 @@ nodes:
         map_pbr: textures\Leather037_1K
         tiling: 1
         alpha: true
+        blend: true
         xrender_back: true
         program: g_font_render
         shadow_program: shadow_font_render
@@ -132,7 +133,6 @@ nodes:
     text:
       font:
         path: fonts/Lobster-Regular.ttf
-        size: 36
       text: Look at ME
     pos: [0, 4, -8]
     scale: 0.01
