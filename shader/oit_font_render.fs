@@ -32,6 +32,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include fn_shape_font.glsl
+
 void main()
 {
   const uint materialIndex = fs_in.materialIndex;
@@ -39,43 +41,14 @@ void main()
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
-  // Font shaping
-  vec3 color;
-  vec3 rgb;
-  float alpha;
-  {
-    sampler2D atlas = sampler2D(fs_in.atlasHandle);
+  vec4 color;
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
 
-    float dist  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st, 0).r;
-    float width = 0.1;
-    float edge = 0.9;
-
-    float glyphAlpha = 1.0 - smoothstep(width, width + edge, dist);
-
-    vec3 glyphColor = material.diffuse.rgb;
-
-    // rgb = mix(glow_color, glyphColor, glyphAlpha);
-    // float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
-    // rgb = glyphColor;
-
-    // vec4 color = vec4(rgb, max(glyphAlpha, mu));
-
-    vec3 borderColor  = vec3(1.0, 0.0, 0.0);
-    vec2 borderOffset = vec2(0, 0);
-    float borderWidth = 0.2;
-    float borderEdge = 0.4;
-
-    float dist2  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st + borderOffset, 0).r;
-
-    float borderAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdge, dist2);
-
-    alpha = glyphAlpha + (1.0 - glyphAlpha) * borderAlpha;
-    color = mix(borderColor, glyphColor, glyphAlpha / alpha);
+  if (color.a < OIT_MIN_BLEND_THRESHOLD || color.a >= OIT_MAX_BLEND_THRESHOLD) {
+    discard;
   }
 
-  if (alpha < OIT_MIN_BLEND_THRESHOLD || alpha >= OIT_MAX_BLEND_THRESHOLD)
-    discard;
-
+  float alpha = color.a;
   float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 
   o_accum = vec4(color.rgb * alpha, alpha) * weight;

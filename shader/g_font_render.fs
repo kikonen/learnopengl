@@ -22,8 +22,8 @@ in VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-
   flat uvec2 atlasHandle;
+
   flat uint materialIndex;
   flat uint flags;
 
@@ -46,21 +46,13 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
-//vec3 glyph_color    = vec3(1.0, 1.0, 1.0);
-const float glyph_center   = 0.5;
-
-// vec3 outline_color  = vec3(1.0, 0.0, 0.0);
-// const float outline_center = 1.2;
-
-vec3 glow_color     = vec3(1.0, 1.0, 1.0);
-const float glow_center    = 2.25;
-
 ResolvedMaterial material;
 
 #ifdef USE_PARALLAX
 #include fn_calculate_parallax_mapping.glsl
 #endif
 #include fn_gbuffer_encode.glsl
+#include fn_shape_font.glsl
 
 void main()
 {
@@ -68,16 +60,6 @@ void main()
 
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
-
-#ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD)
-    discard;
-#else
-  if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)
-    discard;
-#endif
-#endif
 
   #include var_tex_material_normal.glsl
 
@@ -90,54 +72,20 @@ void main()
   #include var_calculate_cube_map_diffuse.glsl
 #endif
 
-  vec4 materialColor = material.diffuse;
-  clamp_color(materialColor);
-
-  // Font shaping
-  vec3 rgb;
-  {
-    sampler2D atlas = sampler2D(fs_in.atlasHandle);
-
-    float dist  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st, 0).r;
-    float width = 0.1;
-    float edge = 0.9;
-
-    float glyphAlpha = 1.0 - smoothstep(width, width + edge, dist);
-
-    vec3 glyphColor = materialColor.rgb;
-
-    // rgb = mix(glow_color, glyphColor, glyphAlpha);
-    // float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
-    // rgb = glyphColor;
-
-    // vec4 color = vec4(rgb, max(glyphAlpha, mu));
-
-    vec3 borderColor  = vec3(1.0, 0.0, 0.0);
-    vec2 borderOffset = vec2(0, 0);
-    float borderWidth = 0.2;
-    float borderEdge = 0.4;
-
-    float dist2  = 1.0 - textureLod(atlas, fs_in.atlasCoord.st + borderOffset, 0).r;
-
-    float borderAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdge, dist2);
-
-    float alpha = glyphAlpha + (1.0 - glyphAlpha) * glyphAlpha;
-    rgb = mix(borderColor, glyphColor, glyphAlpha / alpha);
+  vec4 color;
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (alpha < OIT_MAX_BLEND_THRESHOLD) {
-      discard;
-  }
+  if (color.a < OIT_MAX_BLEND_THRESHOLD)
+    discard;
 #else
-  if (alpha < GBUFFER_ALPHA_THRESHOLD)
+  if (color.a < GBUFFER_ALPHA_THRESHOLD)
     discard;
 #endif
 #endif
-  }
-  // rgb = materialColor.rgb;
 
-  o_fragColor = rgb;
+  o_fragColor = color.rgb;
   o_fragMetal = material.metal;
   o_fragEmission = material.emission;
   o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
