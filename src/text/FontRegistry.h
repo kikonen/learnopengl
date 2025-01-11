@@ -31,12 +31,6 @@ namespace text {
             return &m_fonts[id - 1];
         }
 
-        bool bindFont(
-            text::font_id id);
-
-        bool unbindFont(
-            text::font_id id);
-
         text::font_id registerFont(
             text::FontAtlas&& src);
 

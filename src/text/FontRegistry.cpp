@@ -50,26 +50,6 @@ namespace text {
     //    return &m_fonts[id - 1];
     //}
 
-    bool FontRegistry::bindFont(
-        text::font_id id)
-    {
-        auto* font = getFont(id);
-        //if (font) {
-        //    font->bindTextures();
-        //}
-        return font;
-    }
-
-    bool FontRegistry::unbindFont(
-        text::font_id id)
-    {
-        auto* font = getFont(id);
-        //if (font) {
-        //    font->unbindTextures();
-        //}
-        return font;
-    }
-
     text::font_id FontRegistry::registerFont(
         text::FontAtlas&& src)
     {
@@ -91,9 +71,7 @@ namespace text {
         const auto& it = std::find_if(
             m_fonts.begin(), m_fonts.end(),
             [&src](const auto& font) {
-                return font.m_fontPath == src.m_fontPath &&
-                    font.m_fontSize == src.m_fontSize &&
-                    font.m_atlasSize == src.m_atlasSize;
+                return font == src;
             });
 
         return it != m_fonts.end() ? it->m_id : 0;

@@ -47,6 +47,14 @@ namespace text
     {
     }
 
+    bool FontAtlas::operator==(const FontAtlas& o) const noexcept
+    {
+        return m_fontPath == o.m_fontPath &&
+            m_fontSize == o.m_fontSize &&
+            m_padding == o.m_padding &&
+            m_atlasSize == o.m_atlasSize;
+    }
+
     void FontAtlas::prepare()
     {
         if (m_prepared) return;
