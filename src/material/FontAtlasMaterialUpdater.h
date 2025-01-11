@@ -35,4 +35,6 @@ public:
 
 private:
     GLuint64 m_handle{ 0 };
+
+    int m_fontId{ -1 };
 };

@@ -38,6 +38,8 @@ namespace render {
 
         int m_entityId{ 0 };
 
+        int m_showFontId{ 1 };
+
         bool m_nodeDebugEnabled{ false };
         bool m_forceLineMode{ false };
         bool m_showNormals{ false };

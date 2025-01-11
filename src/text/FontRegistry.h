@@ -26,7 +26,7 @@ namespace text {
             if (id < 1) return nullptr;
 
             std::shared_lock lock(m_lock);
-            assert(id > 0 && id <= m_fonts.size());
+            if (id < 1 || id > m_fonts.size()) return nullptr;
 
             return &m_fonts[id - 1];
         }

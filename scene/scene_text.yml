@@ -59,15 +59,9 @@ nodes:
         metal: [1.0, 0.0, 0, 1]
         alpha: true
         render_back: true
-        updater: font_atlas_1
+        updater_id: font_atlas_1
       program: font_atlas_demo
       shadow_program: font_atlas_demo
-    text:
-      font:
-        path: fonts/LuckiestGuy.ttf
-    custom_material:
-      type: text
-      font: hello_font
     pos: [2.0, 2.0, -5.0]
     flags:
       xeffect: true
@@ -86,10 +80,9 @@ nodes:
     mesh:
       material:
         #map_pbr: textures\Plastic 01 [4K]
-        #xmap_pbr: textures\Fence007A_4K-JPG
-        #map_pbr: textures\Metal007_1K-PNG
-        map_pbr: textures\Fence007A_4K-JPG
-        tiling: 1
+        #map_pbr: textures\Fence007A_4K-JPG
+        map_pbr: textures\Metal007_1K-PNG
+        tiling: 2
         alpha: true
         blend: true
         render_back: true
@@ -98,7 +91,6 @@ nodes:
         shadow_program: shadow_font_render
         selection_program: selection_font_render
         id_program: object_id_font_render
-        tiling: 2
       xflags:
         billboard: true
     text:

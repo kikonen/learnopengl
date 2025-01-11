@@ -997,6 +997,10 @@ namespace editor {
         }
 
         {
+            ImGui::InputInt("Show Font", &dbg.m_showFontId, 1, 10);
+        }
+
+        {
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::InputInt("Swap interval", &dbg.m_glfwSwapInterval, 1, 10);

@@ -531,7 +531,7 @@ namespace loader {
                     material.m_normalDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
-            else if (k == "updater") {
+            else if (k == "updater_id") {
                 material.m_updaterId = SID(readString(v));
             }
             else {

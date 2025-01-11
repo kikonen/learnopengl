@@ -8,6 +8,7 @@
 #include "kigl/GLState.h"
 
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 
 #include "text/FontAtlas.h"
 #include "text/FontRegistry.h"
@@ -37,14 +38,20 @@ void FontAtlasMaterialUpdater::prepareRT(
 void FontAtlasMaterialUpdater::render(
     const RenderContext& ctx)
 {
-    if (m_handle) return;
+    const auto& dbg = render::DebugContext::get();
 
-    const auto* atlas = text::FontRegistry::get().getFont(1);
-    auto handle = atlas ? atlas->getTextureHandle() : 0;
+    bool changed = m_fontId != dbg.m_showFontId;
 
-    if (m_handle != handle) {
-        m_handle = handle;
-        setNeedUpdate(true);
+    if (changed || !m_handle) {
+        m_fontId = dbg.m_showFontId;
+
+        const auto* atlas = text::FontRegistry::get().getFont(m_fontId);
+        auto handle = atlas ? atlas->getTextureHandle() : 0;
+
+        if (m_handle != handle) {
+            m_handle = handle;
+            setNeedUpdate(true);
+        }
     }
 }
 
