@@ -86,13 +86,13 @@ void main() {
     vec3 entityScale = entity.u_worldScale.xyz;
 
     worldPos = vec4(entityPos
-                    + u_cameraRight * pos.x * entityScale.x
+                    + u_mainCameraRight * pos.x * entityScale.x
                     + UP * pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_cameraFront;
+    normal = -u_mainCameraFront;
 #ifdef USE_TBN
-    tangent = u_cameraRight;
+    tangent = u_mainCameraRight;
 #endif
   } else {
     worldPos = modelMatrix * pos;

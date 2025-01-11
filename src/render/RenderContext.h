@@ -128,6 +128,8 @@ public:
     // @param z [0, 1]
     glm::vec3 unproject(const glm::vec2& screenPoint, float deviceZ) const;
 
+    render::Camera* const getMainCamera() const noexcept;
+
 public:
     const std::string m_name;
     const RenderContext* const m_parent;

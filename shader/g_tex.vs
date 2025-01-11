@@ -132,9 +132,9 @@ void main() {
                     + UP * pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_cameraFront;
+    normal = -u_mainCameraFront;
 #ifdef USE_TBN
-    tangent = u_cameraRight;
+    tangent = u_mainCameraRight;
 #endif
   } else {
     normal = a_normal;

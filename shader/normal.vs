@@ -64,8 +64,8 @@ void main() {
                     + UP * a_pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_cameraFront;
-    tangent = u_cameraRight;
+    normal = -u_mainCameraFront;
+    tangent = u_mainCameraRight;
   } else {
     normal = a_normal;
     tangent = a_tangent;

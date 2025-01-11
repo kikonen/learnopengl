@@ -175,6 +175,8 @@ RenderContext::RenderContext(
             std::begin(m_matrices.u_frustumPlanes));
     }
 
+    auto* mainCamera = getMainCamera();
+
     m_data = {
         m_camera->getWorldPosition(),
         //0,
@@ -184,13 +186,13 @@ RenderContext::RenderContext(
         //0,
         m_camera->getViewRight(),
         //0,
-        m_parent ? m_parent->m_camera->getWorldPosition() : m_camera->getWorldPosition(),
+        mainCamera->getWorldPosition(),
         //0,
-        m_parent ? m_parent->m_camera->getViewFront() : m_camera->getViewFront(),
+        mainCamera->getViewFront(),
         //0,
-        m_parent ? m_parent->m_camera->getViewUp() : m_camera->getViewUp(),
+        mainCamera->getViewUp(),
         //0,
-        m_parent ? m_parent->m_camera->getViewRight() : m_camera->getViewRight(),
+        mainCamera->getViewRight(),
         //0,
         assets.fogColor,
         // NOTE KI keep original screen resolution across the board
@@ -375,4 +377,13 @@ glm::vec3 RenderContext::unproject(const glm::vec2& screenPoint, float deviceZ) 
     glm::mat4 unprojection = glm::inverse(m_camera->getProjected());
 
     return util::transformWithPerspDiv(deviceCoord, unprojection, 1);
+}
+
+render::Camera* const RenderContext::getMainCamera() const noexcept
+{
+    auto* curr = this;
+    while (curr->m_parent) {
+        curr = curr->m_parent;
+    }
+    return curr->m_camera;
 }

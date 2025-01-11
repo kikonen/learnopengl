@@ -90,9 +90,9 @@ void main() {
                     + UP * a_pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_cameraFront;
+    normal = -u_mainCameraFront;
 #ifdef USE_TBN
-    tangent = u_cameraRight;
+    tangent = u_mainCameraRight;
 #endif
   } else {
     worldPos = modelMatrix * pos;
