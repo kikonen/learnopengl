@@ -159,9 +159,10 @@ namespace render {
         auto* const finalBuffer = m_effectBuffer.m_secondary.get();
 
         passDeferred(ctx, typeSelector, nodeSelector, kindBits, targetBuffer);
+        passForward(ctx, typeSelector, nodeSelector, kindBits, targetBuffer);
+
         passOit(ctx, typeSelector, nodeSelector, kindBits, targetBuffer);
 
-        passForward(ctx, typeSelector, nodeSelector, kindBits, targetBuffer);
         passSkybox(ctx, targetBuffer);
 
         passDecal(ctx, targetBuffer);
