@@ -321,6 +321,9 @@ namespace render {
         // NOTE KI do NOT modify depth with blend
         state.setDepthMask(GL_FALSE);
         state.setEnabled(GL_BLEND, true);
+        state.setDepthFunc(GL_LESS);
+        state.polygonOffset({ 0.25f, 0.15f });
+        state.setEnabled(GL_POLYGON_OFFSET_FILL, true);
 
         m_oitBuffer.clearAll();
         m_oitBuffer.bind(ctx);
@@ -357,6 +360,7 @@ namespace render {
 
             state.setEnabled(GL_BLEND, false);
             state.setDepthMask(GL_TRUE);
+            state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
         }
     }
 

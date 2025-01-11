@@ -20,7 +20,7 @@ namespace text
     class FontAtlas
     {
     public:
-        FontAtlas() {}
+        FontAtlas();
         FontAtlas(FontAtlas& o) = delete;
         FontAtlas& operator=(FontAtlas& o) = delete;
         FontAtlas& operator=(FontAtlas&& o) noexcept;
@@ -45,10 +45,10 @@ namespace text
         text::font_id m_id{ 0 };
         std::string m_name;
 
-        std::string m_fontPath{ "fonts/Vera.ttf" };
-        float m_fontSize{ 64.f };
-        int m_padding{ 8 };
-        glm::uvec2 m_atlasSize{ 1024 };
+        std::string m_fontPath;
+        float m_fontSize;
+        int m_padding;
+        glm::uvec2 m_atlasSize;
 
     private:
         bool m_prepared{ false };

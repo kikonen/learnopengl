@@ -42,7 +42,7 @@ void main()
   #include var_tex_material.glsl
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
 
   if (color.a < OIT_MIN_BLEND_THRESHOLD || color.a >= OIT_MAX_BLEND_THRESHOLD) {
     discard;

@@ -3,6 +3,8 @@
 #include <freetype-gl/texture-atlas.h>
 #include <freetype-gl/texture-font.h>
 
+#include "glm/ext.hpp"
+
 #include "util/util.h"
 #include "util/file.h"
 
@@ -14,16 +16,25 @@
 #include "FontHandle.h"
 
 namespace {
+    glm::vec3 BLACK{ 0.f };
 }
 
 namespace text
 {
+    FontAtlas::FontAtlas()
+        : m_fontPath{ "fonts/Vera.ttf" },
+        m_fontSize{ 64.f },
+        m_padding{ 64 },
+        m_atlasSize{ 2048, 2048 }
+    {}
+
     FontAtlas& FontAtlas::operator=(FontAtlas&& o) noexcept
     {
         m_id = o.m_id;
         m_name = o.m_name;
         m_fontPath = o.m_fontPath;
         m_fontSize = o.m_fontSize;
+        m_padding = o.m_padding;
         m_atlasSize = o.m_atlasSize;
         m_texture = std::move(o.m_texture);
         m_atlasHandle = std::move(o.m_atlasHandle);
@@ -37,6 +48,7 @@ namespace text
         m_name{ o.m_name },
         m_fontPath{ o.m_fontPath },
         m_fontSize{ o.m_fontSize},
+        m_padding{ o.m_padding },
         m_atlasSize{ o.m_atlasSize },
         m_texture{ std::move(o.m_texture) },
         m_atlasHandle{ std::move(o.m_atlasHandle) },
@@ -104,6 +116,7 @@ namespace text
             glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
 
             //const int mipMapLevels = static_cast<int>(log2(std::max(w, h)));
             glTextureStorage2D(texId, 1, internalFormat, w, h);

@@ -34,10 +34,10 @@ nodes:
       flags:
         billboard: true
       material:
-        name: fps_text
         kd: [0.0, 0.8, 0.0, 1.0]
         xmetal: [1.0, 0.0, 0, 1]
         alpha: true
+        xblend: true
         render_back: true
         program: g_font_render
         oit_program: oit_font_render
@@ -46,23 +46,24 @@ nodes:
         id_program: object_id_font_render
     text:
       text: "- fps"
-      font:
+      fonts:
         path: fonts/Vera.ttf
-    pos: [1.0, 0.75, -0.75]
-    scale: 0.01
+    pos: [1.75, -1.35, -6]
+    scale: 0.007
+    layer: 1
   - id: font_atlas
     mesh:
       path: quad
       material:
         kd: [1, 1, 1, 1]
         #map_custom_1: fonts/blade_runner.png
-        metal: [1.0, 0.0, 0, 1]
-        alpha: true
+        #metal: [1.0, 0.0, 0, 1]
+        #alpha: true
         render_back: true
         updater_id: font_atlas_1
       program: font_atlas_demo
       shadow_program: font_atlas_demo
-    pos: [2.0, 2.0, -5.0]
+    pos: [4.0, 2.0, -5.0]
     flags:
       xeffect: true
   - id: hello_world_origo
@@ -95,8 +96,8 @@ nodes:
         billboard: true
     text:
       font:
-        #path: fonts/LuckiestGuy.ttf
-        path: fonts/BLADRMF_.TTF
+        path: fonts/LuckiestGuy.ttf
+        xpath: fonts/BLADRMF_.TTF
       text: Hello world
       pivot: [0, 0]
       align_horizontal: center
@@ -105,8 +106,8 @@ nodes:
     scale: 0.01
     flags:
       xeffect: true
-    script_file: scripts/seq_hello_text
-    script: |
+    xscript_file: scripts/seq_hello_text
+    xscript: |
       printf("text rotate: %d", id)
       cmd:rotate(
         { time=60 * 100 },
@@ -123,7 +124,7 @@ nodes:
         tiling: 1
         alpha: true
         blend: true
-        xrender_back: true
+        render_back: true
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render
@@ -133,7 +134,7 @@ nodes:
       font:
         path: fonts/Lobster-Regular.ttf
       text: Look at ME
-    pos: [0, 4, -8]
+    pos: [2, 5, -8.5]
     scale: 0.01
   - id: directional_light
     mesh:

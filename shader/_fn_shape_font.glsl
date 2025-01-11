@@ -5,51 +5,72 @@
 void shapeFont(
   in uvec2 atlasHandle,
   in vec2 atlasCoord,
-  out vec4 color)
+  in bool useBlend,
+  out vec4 outColor)
 {
   sampler2D atlas = sampler2D(atlasHandle);
 
-  //vec3 glyph_color    = vec3(1.0, 1.0, 1.0);
-  const float glyph_center   = 0.5;
+  const float glyphCenter = 0.5;
+  const float outlineCenter = 0.55;
+  const float glowCenter = 1.05;
+  const vec2 glowOffset = vec2(0, 0);
+  // const vec2 glowOffset = vec2(0.003 * cos(u_time), 0.003 * sin(u_time));
 
-  // vec3 outline_color  = vec3(1.0, 0.0, 0.0);
-  // const float outline_center = 1.2;
+  const vec3 fontColor = material.diffuse.rgb;
+  const vec3 outlineColor  = vec3(0.0, 0.0, 1.0);
+  const vec3 glowColor  = vec3(0.0, 1.0, 0.0);
 
-  vec3 glow_color     = vec3(1.0, 1.0, 1.0);
-  const float glow_center    = 2.25;
+  const float dist  = textureLod(atlas, atlasCoord, 0).r;
+  const float width = fwidth(dist);
 
+  const float alpha = smoothstep(
+    glyphCenter - width,
+    glyphCenter + width,
+    dist);
 
-  float dist  = 1.0 - textureLod(atlas, atlasCoord, 0).r;
-  float width = 0.4;
-  float edge = 0.3;
+  vec3 rgb;
 
-  float glyphAlpha = 1.0 - smoothstep(width, width + edge, dist);
+  if (useBlend) {
+    const float beta = smoothstep(
+      outlineCenter - width,
+      outlineCenter + width,
+      dist);
 
-  vec3 glyphColor = material.diffuse.rgb;
+    const float glowDist  = textureLod(atlas, atlasCoord + glowOffset, 0).r;
+    const float glowWidth = fwidth(glowDist);
+    const float glowAlpha = smoothstep(
+      glowCenter - glowWidth,
+      glowCenter + glowWidth,
+      glowDist);
 
-  // rgb = mix(glow_color, glyphColor, glyphAlpha);
-  // float mu = smoothstep(glyph_center, glow_center, sqrt(dist));
-  // rgb = glyphColor;
-
-  // vec4 color = vec4(rgb, max(glyphAlpha, mu));
-
-  float outlineWidth = 0.2;
-  float outlineEdge = 0.4;
-
-  if (outlineWidth > 0) {
-    vec3 outlineColor  = vec3(0.0, 1.0, 0.0);
-    vec2 outlineOffset = vec2(0, 0);
-
-    float dist2  = 1.0 - textureLod(atlas, atlasCoord + outlineOffset, 0).r;
-
-    float outlineAlpha = 1.0 - smoothstep(outlineWidth, outlineWidth + outlineEdge, dist2);
-
-    color.a = glyphAlpha + (1.0 - glyphAlpha) * glyphAlpha;
-    color.rgb = mix(outlineColor, glyphColor, glyphAlpha / color.a);
+    rgb = mix(glowColor, fontColor, alpha);
+    float mu = smoothstep(glyphCenter, glowCenter, sqrt(glowDist));
+    outColor.rgb = rgb;
+    outColor.a = max(alpha, mu);
   } else {
-    color.a = glyphAlpha;
-    color.rgb = glyphColor;
+    rgb = fontColor;
+    outColor.rgb = rgb;
+    outColor.a = alpha;
   }
 
-  color.a *= material.diffuse.a;
+  // if (glowCenter > 0) {
+  //   vec3 glowColor  = vec3(0.0, 1.0, 0.0);
+
+  //   float glowDist  = 1.0 - textureLod(atlas, atlasCoord + glowOffset, 0).r;
+  //   float glowWidth = fwidth(glowDist);
+
+  //   float glowAlpha = 1.0 - smoothstep(glowCenter - glowWidth, glowCenter - glowWidth, glowDist);
+
+  //   outColor.a = glyphAlpha + (1.0 - alpha) * alpha;
+  //   outColor.rgb = mix(color, color, alpha / color.a);
+  // } else {
+  //   outColor.a = alpha;
+  //   outColor.rgb = color;
+  // }
+
+  outColor.a *= material.diffuse.a;
+
+  if (dist >= 0.9) {
+    // outColor = vec4(1, 0, 0, 1);
+  }
 }

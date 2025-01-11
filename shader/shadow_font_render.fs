@@ -1,6 +1,7 @@
 #version 460 core
 
 #include struct_resolved_material.glsl
+#include uniform_data.glsl
 
 in VS_OUT {
   vec2 atlasCoord;
@@ -22,7 +23,7 @@ void main()
   material.diffuse = vec4(1, 1, 1, 1);
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, false, color);
 
   if (color.a < 0.65)
     discard;

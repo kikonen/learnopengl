@@ -33,9 +33,9 @@ void main() {
   #include var_tex_material.glsl
 
   float d = textureLod(sampler2D(u_materials[materialIndex].custom1Tex), texCoord, 0).r;
-  if (d < 0.1) {
-    discard;
-  }
+  // if (d < 0.1) {
+  //   discard;
+  // }
 
-  o_fragColor = vec4(d, d, d, 1) * material.diffuse;
+  o_fragColor = vec4(d, d, d, 1);// * material.diffuse;
 }

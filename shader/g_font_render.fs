@@ -73,7 +73,7 @@ void main()
 #endif
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, color);
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
