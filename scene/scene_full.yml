@@ -66,29 +66,11 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - xid: fps_counter
+  - id: fps_counter
     parent_id: player
-    type: text
-    mesh:
-      flags:
-        billboard: true
-      material:
-        name: fps_text
-        kd: [0.0, 0.8, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
-        alpha: true
-        render_back: true
-        program: g_font_render
-        shadow_program: shadow_font_render
-        selection_program: selection_font_render
-    text:
-      text: "- fps"
-      fonts:
-        name: fps_font
-        path: fonts/Vera.ttf
-        size: 36
-    pos: [-1.8, 0.95, -2.5]
-    scale: 0.0025
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    pos: [1.75, -1.35, -6]
   - name: Player cube map 1
     type: origo
     parent_id: player

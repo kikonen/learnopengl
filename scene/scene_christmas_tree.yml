@@ -213,11 +213,13 @@ nodes:
         map_pbr: textures\Metal007_1K-PNG
         tiling: 1
         alpha: true
-        xblend: true
+        blend: true
         render_back: true
         program: g_font_render
+        oit_program: oit_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
+        id_program: object_id_font_render
       flags:
         billboard: true
     text:
@@ -226,8 +228,9 @@ nodes:
       font:
         xpath: fonts/LuckiestGuy.ttf
         path: fonts/Lobster-Regular.ttf
-        size: 128
       text: . . .
+      align_horizontal: center
+      align_vertical: center
     pos: [0.0, 8.0, 0.0]
     scale: 0.015
     flags:

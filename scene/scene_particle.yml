@@ -58,29 +58,9 @@ nodes:
         { sync=true, sid=util:sid("idle_1") })
   - id: fps_counter
     parent_id: player_fps
-    type: text
-    mesh:
-      flags:
-        billboard: true
-      material:
-        kd: [0.0, 0.8, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
-        alpha: true
-        render_back: true
-        program: g_font_render
-        oit_program: oit_font_render
-        shadow_program: shadow_font_render
-        selection_program: selection_font_render
-        id_program: object_id_font_render
-    text:
-      text: "- fps"
-      fonts:
-        name: fps_font
-        path: fonts/Vera.ttf
-        size: 36
-    pos: [2.5, -1.8, -6]
-    scale: 0.01
-    layer: 1
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    pos: [1.75, -1.35, -6]
   - id: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:

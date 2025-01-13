@@ -29,28 +29,9 @@ nodes:
         default: true
   - id: fps_counter
     parent_id: player
-    type: text
-    mesh:
-      flags:
-        billboard: true
-      material:
-        kd: [0.0, 0.8, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
-        alpha: true
-        xblend: true
-        render_back: true
-        program: g_font_render
-        oit_program: oit_font_render
-        shadow_program: shadow_font_render
-        selection_program: selection_font_render
-        id_program: object_id_font_render
-    text:
-      text: "- fps"
-      fonts:
-        path: fonts/Vera.ttf
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
     pos: [1.75, -1.35, -6]
-    scale: 0.007
-    layer: 1
   - id: font_atlas
     mesh:
       path: quad
@@ -81,8 +62,8 @@ nodes:
     mesh:
       material:
         #map_pbr: textures\Plastic 01 [4K]
-        #map_pbr: textures\Fence007A_4K-JPG
-        map_pbr: textures\Metal007_1K-PNG
+        map_pbr: textures\Fence007A_4K-JPG
+        #map_pbr: textures\Metal007_1K-PNG
         tiling: 2
         alpha: true
         blend: true
@@ -98,6 +79,7 @@ nodes:
       font:
         path: fonts/LuckiestGuy.ttf
         xpath: fonts/BLADRMF_.TTF
+        size: 32
       text: Hello world
       pivot: [0, 0]
       align_horizontal: center
@@ -134,6 +116,8 @@ nodes:
       font:
         path: fonts/Lobster-Regular.ttf
       text: Look at ME
+      align_horizontal: center
+      align_vertical: center
     pos: [2, 5, -8.5]
     scale: 0.01
   - id: directional_light

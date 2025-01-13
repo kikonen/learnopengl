@@ -27,50 +27,6 @@ nodes:
     audio:
       listener:
         default: true
-  - xid: fps_counter
-    parent_id: player
-    type: text
-    mesh:
-      flags:
-        billboard: true
-      material:
-        name: fps_text
-        kd: [0.0, 0.8, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
-        alpha: true
-        render_back: true
-        program: g_font_render
-        shadow_program: shadow_font_render
-        selection_program: selection_font_render
-    text:
-      text: "- fps"
-      font:
-        path: fonts/Vera.ttf
-        size: 36
-    pos: [1.0, 0.75, -0.75]
-    scale: 0.01
-  - id: font_atlas
-    mesh:
-      path: quad
-      material:
-        name: metal
-        kd: [0.8, 0.0, 0.0, 1.0]
-        metal: [1.0, 0.0, 0, 1]
-        alpha: true
-        xblend: true
-        render_back: true
-    text:
-      font:
-        path: fonts/LuckiestGuy.ttf
-        size: 72
-    custom_material:
-      type: text
-      font: hello_font
-    program: font_atlas_demo
-    shadow_program: font_atlas_demo
-    pos: [2.0, 2.0, -5.0]
-    flags:
-      xeffect: true
   - id: hello_world
     type: text
     mesh:
@@ -82,16 +38,19 @@ nodes:
         map_pbr: textures\Metal007_1K-PNG
         tiling: 1
         alpha: true
-        xblend: true
+        blend: true
         render_back: true
         program: g_font_render
+        oit_program: oit_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
+        id_program: object_id_font_render
     text:
       font:
         path: fonts/LuckiestGuy.ttf
-        size: 72
       text: . . .
+      align_horizontal: center
+      align_vertical: center
     pos: [0.0, 6.0, -3.0]
     scale: 0.01
     flags:
@@ -107,15 +66,19 @@ nodes:
         map_pbr: textures\Leather037_1K
         tiling: 1
         alpha: true
-        xrender_back: true
+        blend: true
+        render_back: true
         program: g_font_render
+        oit_program: oit_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
+        id_program: object_id_font_render
     text:
       font:
         path: fonts/Lobster-Regular.ttf
-        size: 36
       text: from KI
+      align_horizontal: center
+      align_vertical: center
     pos: [0, 4, -8]
     scale: 0.01
   - id: directional_light

@@ -29,9 +29,13 @@ void main()
   material.diffuse = vec4(1, 1, 1, 1);
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, false, color);
+  bool blend = false;
+#ifdef USE_BLEND
+  blend = true;
+#endif
+  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, blend, color);
 
-  if (color.a < 0.65)
+  if (color.a < 0.01)
     discard;
 
   const uint materialIndex = fs_in.highlightIndex;

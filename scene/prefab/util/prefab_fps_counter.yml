@@ -1,0 +1,27 @@
+---
+prefab:
+  id: prepab_fps_counter
+  type: text
+  mesh:
+    flags:
+      billboard: true
+    material:
+      kd: [0.0, 0.8, 0.0, 1.0]
+      xmetal: [1.0, 0.0, 0, 1]
+      alpha: true
+      blend: true
+      render_back: true
+      program: g_font_render
+      oit_program: oit_font_render
+      shadow_program: shadow_font_render
+      selection_program: selection_font_render
+      id_program: object_id_font_render
+  text:
+    text: "NA fps"
+    font:
+      path: fonts/Vera.ttf
+      size: 32
+  flags:
+    no_shadow: true
+  scale: 0.01
+  layer: 1

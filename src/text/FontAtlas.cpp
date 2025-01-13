@@ -17,15 +17,27 @@
 
 namespace {
     glm::vec3 BLACK{ 0.f };
+
+    glm::uvec2 resolveAtlasSize(float fontSize, float padding)
+    {
+        if (fontSize < 8.f) fontSize = 8.f;
+
+        // 16 = glyphs per row == 16 * 16 = 256 glyphs
+        constexpr float glyphsPerRow = 18.f;
+        const float pz = fontSize + padding;
+        const float b = pz * glyphsPerRow + pz;
+
+        return glm::vec2{ b, b };
+    }
 }
 
 namespace text
 {
     FontAtlas::FontAtlas()
         : m_fontPath{ "fonts/Vera.ttf" },
-        m_fontSize{ 64.f },
-        m_padding{ 64 },
-        m_atlasSize{ 2048, 2048 }
+        m_fontSize{ 32.f },
+        m_padding{ 32 },
+        m_atlasSize{ 0 }
     {}
 
     FontAtlas& FontAtlas::operator=(FontAtlas&& o) noexcept
@@ -74,7 +86,12 @@ namespace text
 
         const auto& assets = Assets::get();
 
-        const size_t depth = 1;
+        if (m_fontSize <= 0) return;
+
+        m_padding = static_cast<int>(m_fontSize);
+        m_atlasSize = resolveAtlasSize(m_fontSize, m_padding);
+
+        constexpr size_t depth = 1;
         {
             m_atlasHandle = std::make_unique<AtlasHandle>();
             m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, depth);

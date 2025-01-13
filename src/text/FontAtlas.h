@@ -46,12 +46,14 @@ namespace text
         std::string m_name;
 
         std::string m_fontPath;
+        // in points
         float m_fontSize;
-        int m_padding;
-        glm::uvec2 m_atlasSize;
 
     private:
         bool m_prepared{ false };
+
+        int m_padding;
+        glm::uvec2 m_atlasSize;
 
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
         size_t m_usedAtlasSize{ 0 };

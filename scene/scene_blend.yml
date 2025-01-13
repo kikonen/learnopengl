@@ -96,17 +96,21 @@ nodes:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
         alpha: true
+        blend: true
         render_back: true
         program: g_font_render
+        oit_program: oit_font_render
         shadow_program: shadow_font_render
         selection_program: selection_font_render
+        id_program: object_id_font_render
     text:
       text: Hello world
-      fonts:
-        name: hello_font
+      font:
         path: fonts/LuckiestGuy.ttf
-        size: 72
-    pos: [-2.5, 0.0, -9.0]
+        size: 16
+      align_horizontal: center
+      align_vertical: center
+    pos: [0, 0.0, -9.0]
     scale: 0.01
     xscript_file: scripts/anim_rotate_object
   - id: dir_light_{c}_{t}
