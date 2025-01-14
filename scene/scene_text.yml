@@ -28,13 +28,16 @@ nodes:
       listener:
         default: true
   - id: fps_counter
-    parent_id: player
     prefab:
       path: prefab/util/prefab_fps_counter.yml
-    pos: [1.75, -1.35, -6]
+    #pos: [5.75, 5.25, 0.2]
+    pos: [1.8, -0.8, -1]
+    scale: 0.0025
+    layer: 1
   - id: font_atlas
     mesh:
       path: quad
+      base_scale: 0.5
       material:
         kd: [1, 1, 1, 1]
         #map_custom_1: fonts/blade_runner.png
@@ -44,9 +47,16 @@ nodes:
         updater_id: font_atlas_1
       program: font_atlas_demo
       shadow_program: font_atlas_demo
-    pos: [4.0, 2.0, -5.0]
+    #pos: [4.0, 2.0, 0.2]
+    pos: [1.5, 0.5, -4]
     flags:
       xeffect: true
+    layer: 1
+    xscript: |
+      cmd:rotate(
+        { time=60 * 100 },
+        { 0, 1, 0 },
+        360 * 100)
   - id: hello_world_origo
     mesh:
       vertex:

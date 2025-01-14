@@ -93,8 +93,8 @@ namespace loader
             else if (k == "pos") {
                 throw std::runtime_error{ fmt::format("POS obsolete: {}", renderNode(node)) };
             }
-            else if (k == "orthagonal") {
-                data.orthagonal = readBool(v);
+            else if (k == "orthogonal") {
+                data.orthogonal = readBool(v);
             }
             else if (k == "viewport") {
                 const auto& vec = readVec4(v);
@@ -160,7 +160,7 @@ namespace loader
 
         {
             auto& camera = component->getCamera();
-            if (data.orthagonal) {
+            if (data.orthogonal) {
                 camera.setViewport(data.viewport);
             }
             camera.setAxis(data.front, data.up);

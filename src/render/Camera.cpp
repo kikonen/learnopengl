@@ -14,7 +14,7 @@ namespace {
 namespace render {
     Camera::Camera()
     {
-        setAxis({ 0.f, -1.f, 0.f }, {0.f, 1.f, 0.f});
+        setAxis({ 0.f, 0.f, -1.f }, {0.f, 1.f, 0.f});
     }
 
     Camera::Camera(
@@ -33,7 +33,7 @@ namespace render {
         const std::array<float, 4>& viewport)
     {
         m_viewport = viewport;
-        m_orthagonal = true;
+        m_orthogonal = true;
         m_dirty = true;
     }
 
@@ -52,7 +52,7 @@ namespace render {
         m_farPlane = farPlane;
         m_fovProjection = m_fov;
 
-        if (m_orthagonal) {
+        if (m_orthogonal) {
             m_projectionMatrix = glm::ortho(
                 m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3],
                 m_nearPlane,
@@ -191,15 +191,15 @@ namespace render {
 
     void Camera::updateFrustum() const noexcept
     {
-        if (m_orthagonal) {
-            updateOrthagonalFrustum();
+        if (m_orthogonal) {
+            updateOrthogonalFrustum();
         }
         else {
             updatePerspectiveFrustum();
         }
     }
 
-    void Camera::updateOrthagonalFrustum() const noexcept
+    void Camera::updateOrthogonalFrustum() const noexcept
     {
         const auto& viewport = getViewport();
         const auto& pos = getWorldPosition();

@@ -14,7 +14,7 @@ namespace loader {
 
         bool isDefault{ false };
 
-        bool orthagonal{ false };
+        bool orthogonal{ false };
         std::array<float, 4> viewport{ 0.f };
 
         float fov{ 45.f };

@@ -28,14 +28,17 @@ namespace render {
 
         ~Camera();
 
-        bool isOrthagonal() const noexcept {
-            return m_orthagonal;
+        // NOtE KI setup via setViewport
+        bool isOrthogonal() const noexcept
+        {
+            return m_orthogonal;
         }
 
         const std::array<float, 4>& getViewport() const noexcept {
             return m_viewport;
         }
 
+        // NOTE KI set orthogonal viewport
         // left, right, bottom, top
         void setViewport(
             const std::array<float, 4>& viewport);
@@ -123,10 +126,11 @@ namespace render {
     private:
         void updateFov(float fov) noexcept;
 
-        void updateOrthagonalFrustum() const noexcept;
+        void updateOrthogonalFrustum() const noexcept;
         void updatePerspectiveFrustum() const noexcept;
 
     private:
+        // NOTE KI *ONLY* for orthogonal
         // left, right, bottom, top
         std::array<float, 4> m_viewport{ 0.f };
 
@@ -141,7 +145,7 @@ namespace render {
         ki::level_id m_projectedLevel{ 0 };
         ki::level_id m_viewLevel{ 0 };
 
-        bool m_orthagonal : 1 { false };
+        bool m_orthogonal : 1 { false };
 
         glm::mat4 m_projectionMatrix{ 1.f };
         mutable glm::mat4 m_projectedMatrix{ 1.f };

@@ -33,6 +33,7 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "render/Camera.h"
 #include "render/DebugContext.h"
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
@@ -479,12 +480,33 @@ void Scene::draw(const RenderContext& ctx)
 
 void Scene::drawUi(const RenderContext& parentCtx)
 {
+    render::Camera camera{};
+
+    auto aspectRatio = (float)m_uiRenderer->m_buffer->m_spec.width /
+        (float)m_uiRenderer->m_buffer->m_spec.height;
+
+    float w = 4.f;
+    float h = w / aspectRatio;
+    float mw = w * 0.5f;
+    float mh = h * 0.5f;
+    camera.setViewport({-mw, mw, -mh, mh});
+
+    // NOTE KI UI is "top level" context (i.e. main camera)
     RenderContext localCtx(
         "UI",
-        &parentCtx,
-        parentCtx.m_camera,
+        nullptr,
+        parentCtx.m_clock,
+        m_registry.get(),
+        &m_nodeDraw.get()->m_collection,
+        m_renderData.get(),
+        m_nodeDraw.get(),
+        m_batch.get(),
+        &camera,
+        0.1f,
+        5.f,
         m_uiRenderer->m_buffer->m_spec.width,
-        m_uiRenderer->m_buffer->m_spec.height);
+        m_uiRenderer->m_buffer->m_spec.height,
+        parentCtx.m_dbg);
 
     localCtx.m_layer = 1;
     localCtx.m_useParticles = false;
@@ -496,7 +518,13 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     localCtx.copyShadowFrom(parentCtx);
 
+    localCtx.updateMatricesUBO();
+    localCtx.updateDataUBO();
+
     drawScene(localCtx, m_uiRenderer.get());
+
+    parentCtx.updateMatricesUBO();
+    parentCtx.updateDataUBO();
 }
 
 void Scene::drawMain(const RenderContext& parentCtx)
