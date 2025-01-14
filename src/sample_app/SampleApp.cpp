@@ -101,15 +101,7 @@ int SampleApp::onInit()
         dbg.m_glfwSwapInterval = assets.glfwSwapInterval;
         dbg.m_gBufferScale = assets.gBufferScale;
 
-        dbg.m_viewportLayer1EffectEnabled = assets.viewportLayer1EffectEnabled;
-        dbg.m_viewportLayer1Effect = assets.viewportLayer1Effect;
-        dbg.m_viewportLayer1BlendEnabled = assets.viewportLayer1BlendEnabled;
-        dbg.m_viewportLayer1BlendFactor = assets.viewportLayer1BlendFactor;
-
-        dbg.m_viewportLayer2EffectEnabled = assets.viewportLayer2EffectEnabled;
-        dbg.m_viewportLayer2Effect = assets.viewportLayer2Effect;
-        dbg.m_viewportLayer2BlendEnabled = assets.viewportLayer2BlendEnabled;
-        dbg.m_viewportLayer2BlendFactor = assets.viewportLayer2BlendFactor;
+        dbg.m_layers = assets.layers;
 
         dbg.m_frustumEnabled = assets.frustumEnabled;
         dbg.m_forceLineMode = assets.forceLineMode;

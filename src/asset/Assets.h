@@ -7,7 +7,7 @@
 
 #include "ki/size.h"
 
-#include "ViewportEffect.h"
+#include "LayerInfo.h"
 
 
 // configure assets locations
@@ -264,15 +264,7 @@ public:
     int prefilterMapSize;
     int brdfLutSize;
 
-    bool viewportLayer1EffectEnabled;
-    ViewportEffect viewportLayer1Effect;
-    bool viewportLayer1BlendEnabled;
-    float viewportLayer1BlendFactor;
-
-    bool viewportLayer2EffectEnabled;
-    ViewportEffect viewportLayer2Effect;
-    bool viewportLayer2BlendEnabled;
-    float viewportLayer2BlendFactor;
+    std::vector<LayerInfo> layers;
 
     float hdrGamma;
     float hdrExposure;

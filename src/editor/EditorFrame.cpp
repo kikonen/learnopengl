@@ -145,6 +145,11 @@ namespace editor {
             renderEffectDebug(ctx, dbg);
         }
 
+        if (ImGui::CollapsingHeader("Layers"))
+        {
+            renderLayersDebug(ctx, dbg);
+        }
+
         if (ImGui::CollapsingHeader("Misc"))
         {
             renderMiscDebug(ctx, dbg);
@@ -935,21 +940,39 @@ namespace editor {
             ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
             ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDebugDepth, 0.01f, 0.1f);
         }
+    }
 
+    void EditorFrame::renderLayersDebug(
+        const RenderContext& ctx,
+        render::DebugContext& dbg)
+    {
+        for (auto& layer : dbg.m_layers)
         {
+            const auto idx = layer.m_index;
+
             ImGui::Spacing();
-            ImGui::SeparatorText("Layer 1");
+            ImGui::SeparatorText(fmt::format("Layer {}", layer.m_name).c_str());
             ImGui::Spacing();
 
-            ImGui::Checkbox("L1: Effect enabled", &dbg.m_viewportLayer1EffectEnabled);
+            ImGui::InputInt(
+                fmt::format("L{}: Order", idx).c_str(),
+                &layer.m_order, 0, 10);
+
+            ImGui::Checkbox(
+                fmt::format("L{}: Effect enabled", idx).c_str(),
+                &layer.m_effectEnabled);
+
             {
-                auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer1Effect)];
+                auto& curr = g_viewportEffects[util::as_integer(layer.m_effect)];
 
-                if (ImGui::BeginCombo("L1: Effect", curr.second.c_str())) {
+                if (ImGui::BeginCombo(
+                    fmt::format("L{}: Effect", idx).c_str(),
+                    curr.second.c_str()))
+                {
                     for (const auto& [effect, name] : g_viewportEffects) {
                         ImGui::PushID((void*)effect);
                         if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
-                            dbg.m_viewportLayer1Effect = effect;
+                            layer.m_effect = effect;
                         }
                         ImGui::PopID();
                     }
@@ -957,32 +980,14 @@ namespace editor {
                     ImGui::EndCombo();
                 }
             }
-            ImGui::Checkbox("L1: Blend enabled", &dbg.m_viewportLayer1BlendEnabled);
-            ImGui::InputFloat("L1: Blend factor", &dbg.m_viewportLayer1BlendFactor, 0.01f, 0.1f);
-        }
-        {
-            ImGui::Spacing();
-            ImGui::SeparatorText("Layer 2");
-            ImGui::Spacing();
 
-            ImGui::Checkbox("L2: Effect enabled", &dbg.m_viewportLayer2EffectEnabled);
-            {
-                auto& curr = g_viewportEffects[util::as_integer(dbg.m_viewportLayer2Effect)];
+            ImGui::Checkbox(
+                fmt::format("L{}: Blend enabled", idx).c_str(),
+                &layer.m_blendEnabled);
 
-                if (ImGui::BeginCombo("L2: Effect", curr.second.c_str())) {
-                    for (const auto& [effect, name] : g_viewportEffects) {
-                        ImGui::PushID((void*)effect);
-                        if (ImGui::Selectable(name.c_str(), effect == curr.first)) {
-                            dbg.m_viewportLayer2Effect = effect;
-                        }
-                        ImGui::PopID();
-                    }
-
-                    ImGui::EndCombo();
-                }
-            }
-            ImGui::Checkbox("L2: Blend enabled", &dbg.m_viewportLayer2BlendEnabled);
-            ImGui::InputFloat("L2: Blend factor", &dbg.m_viewportLayer2BlendFactor, 0.01f, 0.1f);
+            ImGui::InputFloat(
+                fmt::format("L{}: Blend factor", idx).c_str(),
+                &layer.m_blendFactor, 0.01f, 0.1f);
         }
     }
 

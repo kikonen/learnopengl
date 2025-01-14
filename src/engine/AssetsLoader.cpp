@@ -797,34 +797,8 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "viewport_layer_1_effect_enabled") {
-                data.viewportLayer1EffectEnabled = readBool(v);
-                continue;
-            }
-            if (k == "viewport_layer_1_effect") {
-                data.viewportLayer1Effect = readViewportEffect(k, v);
-                continue;
-            }
-            if (k == "viewport_layer_1_blend_factor") {
-                data.viewportLayer1BlendFactor = readFloat(v);
-                continue;
-            }
-        }
-        {
-            if (k == "viewport_layer_2_effect_enabled") {
-                data.viewportLayer2EffectEnabled = readBool(v);
-                continue;
-            }
-            if (k == "viewport_layer_2_effect") {
-                data.viewportLayer2Effect = readViewportEffect(k, v);
-                continue;
-            }
-            if (k == "viewport_layer_2_blend_enabled") {
-                data.viewportLayer2BlendEnabled = readBool(v);
-                continue;
-            }
-            if (k == "viewport_layer_2_blend_factor") {
-                data.viewportLayer2BlendFactor = readFloat(v);
+            if (k == "layers") {
+                loadLayers(v, data.layers);
                 continue;
             }
         }
@@ -867,6 +841,50 @@ void AssetsLoader::loadAssets(
     }
 
     data.frustumAny = data.frustumEnabled && (data.frustumCPU || data.frustumGPU);
+}
+
+void AssetsLoader::loadLayers(
+    const YAML::Node& node,
+    std::vector<LayerInfo>& layers)
+{
+    int index = 0;
+    for (const auto& entry : node) {
+        LayerInfo& data = layers.emplace_back();
+        data.m_index = index++;
+        loadLayer(entry, data);
+    }
+}
+
+void AssetsLoader::loadLayer(
+    const YAML::Node& node,
+    LayerInfo& data)
+{
+    for (const auto& pair : node) {
+        const std::string& k = pair.first.as<std::string>();
+        const YAML::Node& v = pair.second;
+
+        if (k == "name") {
+            data.m_name = readString(v);
+        }
+        else if (k == "order") {
+            data.m_order = readBool(v);
+        }
+        else if (k == "effect_enabled") {
+            data.m_effectEnabled = readBool(v);
+        }
+        else if (k == "effect") {
+            data.m_effect = readViewportEffect(k, v);
+        }
+        else if (k == "blend_enabled") {
+            data.m_blendEnabled = readBool(v);
+        }
+        else if (k == "blend_factor") {
+            data.m_blendFactor = readFloat(v);
+        }
+        else {
+            reportUnknown("layer", k, v);
+        }
+    }
 }
 
 std::string AssetsLoader::readString(const YAML::Node& node) const

@@ -33,7 +33,7 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [1.8, -0.8, -1]
     scale: 0.0025
-    layer: 1
+    layer: 2
   - id: font_atlas
     mesh:
       path: quad
@@ -51,7 +51,7 @@ nodes:
     pos: [1.5, 0.5, -4]
     flags:
       xeffect: true
-    layer: 1
+    layer: 2
     xscript: |
       cmd:rotate(
         { time=60 * 100 },

@@ -81,6 +81,7 @@ public:
     void draw(const RenderContext& ctx);
 
     void drawUi(const RenderContext& ctx);
+    void drawPlayer(const RenderContext& ctx);
     void drawMain(const RenderContext& ctx);
     void drawRear(const RenderContext& ctx);
     void drawViewports(const RenderContext& ctx);
@@ -99,6 +100,7 @@ public:
 
 public:
     std::shared_ptr<Viewport> m_uiViewport{ nullptr };
+    std::shared_ptr<Viewport> m_playerViewport{ nullptr };
     std::shared_ptr<Viewport> m_mainViewport{ nullptr };
     std::shared_ptr<Viewport> m_rearViewport{ nullptr };
 
@@ -117,8 +119,9 @@ private:
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::unique_ptr<LayerRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };
+    std::unique_ptr<LayerRenderer> m_playerRenderer{ nullptr };
+    std::unique_ptr<LayerRenderer> m_mainRenderer{ nullptr };
     std::unique_ptr<LayerRenderer> m_rearRenderer{ nullptr };
 
     std::unique_ptr<ViewportRenderer> m_viewportRenderer{ nullptr };

@@ -551,6 +551,7 @@
     <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\mesh\NonVaoMesh.h" />
     <ClInclude Include="src\mesh\VaoMesh.h" />
+    <ClInclude Include="src\asset\LayerInfo.h" />
     <ClInclude Include="src\particle\AreaType.h" />
     <ClInclude Include="src\physics\ode_util.h" />
     <ClInclude Include="src\physics\PhysicsMaterial.h" />

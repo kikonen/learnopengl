@@ -2306,6 +2306,9 @@
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\asset\LayerInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

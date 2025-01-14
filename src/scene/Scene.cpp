@@ -68,6 +68,7 @@ Scene::Scene(
 
     {
         m_uiRenderer = std::make_unique<LayerRenderer>("ui", true);
+        m_playerRenderer = std::make_unique<LayerRenderer>("player", true);
         m_mainRenderer = std::make_unique<LayerRenderer>("main", true);
         m_rearRenderer = std::make_unique<LayerRenderer>("rear", true);
 
@@ -85,6 +86,7 @@ Scene::Scene(
         m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>();
 
         m_uiRenderer->setEnabled(true);
+        m_playerRenderer->setEnabled(true);
         m_mainRenderer->setEnabled(true);
         m_rearRenderer->setEnabled(true);
 
@@ -152,6 +154,7 @@ void Scene::prepareRT()
     m_nodeDraw->prepareRT(ctx);
 
     m_uiRenderer->prepareRT(ctx);
+    m_playerRenderer->prepareRT(ctx);
     m_mainRenderer->prepareRT(ctx);
 
     // NOTE KI OpenGL does NOT like interleaved draw and prepare
@@ -216,17 +219,51 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
             });
 
-        vp->setOrder(150);
-
-        vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
-        vp->setEffect(dbg.m_viewportLayer2Effect);
-        vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
-        vp->setBlendFactor(dbg.m_viewportLayer2BlendFactor);
+        const auto& layer = dbg.m_layers[2];
+        vp->setOrder(layer.m_order);
+        vp->setEffectEnabled(layer.m_effectEnabled);
+        vp->setEffect(layer.m_effect);
+        vp->setBlend(layer.m_blendEnabled);
+        vp->setBlendFactor(layer.m_blendFactor);
 
         vp->prepareRT();
 
         m_uiViewport = vp;
         ViewportRegistry::get().addViewport(m_uiViewport);
+    }
+
+    {
+        auto vp = std::make_shared<Viewport>(
+            "player",
+            //glm::vec3(-0.75, 0.75, 0),
+            glm::vec3(-1.0f, 1.f, 0),
+            glm::vec3(0, 0, 0),
+            //glm::vec2(1.5f, 1.5f),
+            glm::vec2(2.f, 2.f),
+            false,
+            0,
+            ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
+
+        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+            });
+
+        vp->setBindBefore([this](Viewport& vp) {
+            auto* buffer = m_playerRenderer->m_buffer.get();
+            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setSourceFrameBuffer(buffer);
+            });
+
+        const auto& layer = dbg.m_layers[1];
+        vp->setOrder(layer.m_order);
+        vp->setEffectEnabled(layer.m_effectEnabled);
+        vp->setEffect(layer.m_effect);
+        vp->setBlend(layer.m_blendEnabled);
+        vp->setBlendFactor(layer.m_blendFactor);
+
+        vp->prepareRT();
+
+        m_playerViewport = vp;
+        ViewportRegistry::get().addViewport(m_playerViewport);
     }
 
     {
@@ -250,12 +287,13 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
         });
 
-        vp->setOrder(50);
 
-        vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
-        vp->setEffect(dbg.m_viewportLayer1Effect);
-        vp->setBlend(dbg.m_viewportLayer1BlendEnabled);
-        vp->setBlendFactor(dbg.m_viewportLayer1BlendFactor);
+        const auto& layer = dbg.m_layers[0];
+        vp->setOrder(layer.m_order);
+        vp->setEffectEnabled(layer.m_effectEnabled);
+        vp->setEffect(layer.m_effect);
+        vp->setBlend(layer.m_blendEnabled);
+        vp->setBlendFactor(layer.m_blendFactor);
 
         vp->prepareRT();
 
@@ -355,18 +393,32 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     {
         if (auto* vp = m_uiViewport.get(); vp)
         {
-            vp->setEffectEnabled(dbg.m_viewportLayer2EffectEnabled);
-            vp->setEffect(dbg.m_viewportLayer2Effect);
-            vp->setBlend(dbg.m_viewportLayer2BlendEnabled);
-            vp->setBlendFactor(dbg.m_viewportLayer2BlendFactor);
+            const auto& layer = dbg.m_layers[2];
+            vp->setOrder(layer.m_order);
+            vp->setEffectEnabled(layer.m_effectEnabled);
+            vp->setEffect(layer.m_effect);
+            vp->setBlend(layer.m_blendEnabled);
+            vp->setBlendFactor(layer.m_blendFactor);
+        }
+
+        if (auto* vp = m_playerViewport.get(); vp)
+        {
+            const auto& layer = dbg.m_layers[1];
+            vp->setOrder(layer.m_order);
+            vp->setEffectEnabled(layer.m_effectEnabled);
+            vp->setEffect(layer.m_effect);
+            vp->setBlend(layer.m_blendEnabled);
+            vp->setBlendFactor(layer.m_blendFactor);
         }
 
         if (auto* vp = m_mainViewport.get(); vp)
         {
-            vp->setEffectEnabled(dbg.m_viewportLayer1EffectEnabled);
-            vp->setEffect(dbg.m_viewportLayer1Effect);
-            vp->setBlend(dbg.m_viewportLayer1BlendEnabled);
-            vp->setBlendFactor(dbg.m_viewportLayer1BlendFactor);
+            const auto& layer = dbg.m_layers[0];
+            vp->setOrder(layer.m_order);
+            vp->setEffectEnabled(layer.m_effectEnabled);
+            vp->setEffect(layer.m_effect);
+            vp->setBlend(layer.m_blendEnabled);
+            vp->setBlendFactor(layer.m_blendFactor);
         }
 
         if (auto* vp = m_rearViewport.get(); vp)
@@ -383,6 +435,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     }
 
     m_uiRenderer->updateRT(ctx);
+    m_playerRenderer->updateRT(ctx);
     m_mainRenderer->updateRT(ctx);
 
     if (assets.showRearView) {
@@ -471,9 +524,10 @@ void Scene::draw(const RenderContext& ctx)
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)
     {
-        drawUi(ctx);
         drawMain(ctx);
         drawRear(ctx);
+        drawPlayer(ctx);
+        drawUi(ctx);
     }
     drawViewports(ctx);
 }
@@ -525,6 +579,28 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
+}
+
+void Scene::drawPlayer(const RenderContext& parentCtx)
+{
+    RenderContext localCtx(
+        "player",
+        &parentCtx,
+        parentCtx.m_camera,
+        m_playerRenderer->m_buffer->m_spec.width,
+        m_playerRenderer->m_buffer->m_spec.height);
+
+    localCtx.m_layer = 1;
+    localCtx.m_useParticles = false;
+    localCtx.m_useDecals = false;
+    localCtx.m_useFog = false;
+    localCtx.m_useEmission = false;
+    localCtx.m_useBloom = false;
+    //localCtx.m_useScreenspaceEffects = false;
+
+    localCtx.copyShadowFrom(parentCtx);
+
+    drawScene(localCtx, m_playerRenderer.get());
 }
 
 void Scene::drawMain(const RenderContext& parentCtx)

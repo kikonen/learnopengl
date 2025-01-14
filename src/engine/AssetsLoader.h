@@ -24,6 +24,14 @@ private:
         const YAML::Node& node,
         Assets& data);
 
+    void loadLayers(
+        const YAML::Node& node,
+        std::vector<LayerInfo>& layers);
+
+    void loadLayer(
+        const YAML::Node& node,
+        LayerInfo& layer);
+
     std::string readString(const YAML::Node& node) const;
     bool readBool(const YAML::Node& node) const;
     int readInt(const YAML::Node& node) const;
