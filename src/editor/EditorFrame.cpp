@@ -950,6 +950,8 @@ namespace editor {
         {
             const auto idx = layer.m_index;
 
+            if (idx == LayerInfo::LAYER_NONE) continue;
+
             ImGui::Spacing();
             ImGui::SeparatorText(fmt::format("Layer {}", layer.m_name).c_str());
             ImGui::Spacing();

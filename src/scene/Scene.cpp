@@ -219,7 +219,7 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
             });
 
-        const auto& layer = dbg.m_layers[2];
+        const auto& layer = dbg.m_layers[LayerInfo::LAYER_UI];
         vp->setOrder(layer.m_order);
         vp->setEffectEnabled(layer.m_effectEnabled);
         vp->setEffect(layer.m_effect);
@@ -253,7 +253,7 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
             });
 
-        const auto& layer = dbg.m_layers[1];
+        const auto& layer = dbg.m_layers[LayerInfo::LAYER_PLAYER];
         vp->setOrder(layer.m_order);
         vp->setEffectEnabled(layer.m_effectEnabled);
         vp->setEffect(layer.m_effect);
@@ -288,7 +288,7 @@ void Scene::prepareRT()
         });
 
 
-        const auto& layer = dbg.m_layers[0];
+        const auto& layer = dbg.m_layers[LayerInfo::LAYER_MAIN];
         vp->setOrder(layer.m_order);
         vp->setEffectEnabled(layer.m_effectEnabled);
         vp->setEffect(layer.m_effect);
@@ -393,7 +393,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     {
         if (auto* vp = m_uiViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[2];
+            const auto& layer = dbg.m_layers[LayerInfo::LAYER_UI];
             vp->setOrder(layer.m_order);
             vp->setEffectEnabled(layer.m_effectEnabled);
             vp->setEffect(layer.m_effect);
@@ -403,7 +403,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
         if (auto* vp = m_playerViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[1];
+            const auto& layer = dbg.m_layers[LayerInfo::LAYER_PLAYER];
             vp->setOrder(layer.m_order);
             vp->setEffectEnabled(layer.m_effectEnabled);
             vp->setEffect(layer.m_effect);
@@ -413,7 +413,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
         if (auto* vp = m_mainViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[0];
+            const auto& layer = dbg.m_layers[LayerInfo::LAYER_MAIN];
             vp->setOrder(layer.m_order);
             vp->setEffectEnabled(layer.m_effectEnabled);
             vp->setEffect(layer.m_effect);
@@ -524,10 +524,10 @@ void Scene::draw(const RenderContext& ctx)
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)
     {
+        drawUi(ctx);
+        drawPlayer(ctx);
         drawMain(ctx);
         drawRear(ctx);
-        drawPlayer(ctx);
-        drawUi(ctx);
     }
     drawViewports(ctx);
 }
@@ -562,7 +562,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
         m_uiRenderer->m_buffer->m_spec.height,
         parentCtx.m_dbg);
 
-    localCtx.m_layer = 1;
+    localCtx.m_layer = LayerInfo::LAYER_UI;
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
@@ -590,7 +590,7 @@ void Scene::drawPlayer(const RenderContext& parentCtx)
         m_playerRenderer->m_buffer->m_spec.width,
         m_playerRenderer->m_buffer->m_spec.height);
 
-    localCtx.m_layer = 1;
+    localCtx.m_layer = LayerInfo::LAYER_PLAYER;
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
@@ -612,6 +612,7 @@ void Scene::drawMain(const RenderContext& parentCtx)
         m_mainRenderer->m_buffer->m_spec.width,
         m_mainRenderer->m_buffer->m_spec.height);
 
+    localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
     localCtx.copyShadowFrom(parentCtx);
 
     localCtx.m_allowDrawDebug = true;
@@ -643,6 +644,8 @@ void Scene::drawRear(const RenderContext& parentCtx)
         &camera,
         m_rearRenderer->m_buffer->m_spec.width,
         m_rearRenderer->m_buffer->m_spec.height);
+
+    localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
 
     localCtx.copyShadowFrom(parentCtx);
 
