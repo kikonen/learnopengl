@@ -41,6 +41,16 @@ namespace text
             return m_textureHandle;
         }
 
+        int getPadding() const noexcept
+        {
+            return m_padding;
+        }
+
+        glm::uvec2 getAtlasSize() const noexcept
+        {
+            return m_atlasSize;
+        }
+
     public:
         text::font_id m_id{ 0 };
         std::string m_name;

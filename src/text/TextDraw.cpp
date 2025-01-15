@@ -27,6 +27,14 @@ namespace
     const char* MISSING_CH = "?";
     const char* M_CH = "M";
 
+    // NOTE KI Y-axis goes UP, not DOWN
+    struct LineInfo {
+        float left{ 10000000.f };
+        float right{ -1.f };
+        float top{ -1.f };
+        float bottom{ 10000000.f };
+    };
+
     //
     // Generate verteces for glyphs into buffer
     //
@@ -37,6 +45,8 @@ namespace
         const glm::vec2& pivot,
         text::Align alignHorizontal,
         text::Align alignVertical,
+        float padX,
+        float padY,
         size_t maxCount)
     {
         if (text.empty()) return;
@@ -52,6 +62,7 @@ namespace
         std::vector<size_t> lineLenghts;
         std::vector<float> lineHeights;
         std::vector<const ftgl::texture_glyph_t*> glyphs;
+        std::vector<LineInfo> lineInfos;
         size_t lineCount = 0;
         float lineHeight = 0.f;
 
@@ -78,6 +89,7 @@ namespace
 
             lineOffsets.push_back(mesh->m_vertices.size());
             lineLenghts.push_back(0);
+            lineInfos.emplace_back();
             lineHeight = line_height;
             lineCount = 1;
 
@@ -85,6 +97,8 @@ namespace
             // https://stackoverflow.com/questions/9438209/for-every-character-in-string
             for (const char& ch : text) {
                 if (textIndex >= maxCount) break;
+
+                auto& lineInfo = lineInfos[lineCount - 1];
 
                 float line_top = pen.y + line_ascender;
 
@@ -95,6 +109,7 @@ namespace
 
                     lineOffsets.push_back(mesh->m_vertices.size());
                     lineLenghts.push_back(0);
+                    lineInfos.emplace_back();
                     lineCount++;
 
                     continue;
@@ -166,6 +181,12 @@ namespace
                 pen.x += glyph->advance_x;
                 prev = &ch;
 
+                lineInfo.left = std::min(lineInfo.left, x0);
+                lineInfo.right = std::max(lineInfo.left, x1);
+                // NOTE KI Y-axis goes UP, not DOWN
+                lineInfo.top = std::max(lineInfo.top, y0);
+                lineInfo.bottom = std::min(lineInfo.bottom, y1);
+
                 glyphs.push_back(glyph);
                 lineLenghts[lineCount - 1]++;
 
@@ -178,16 +199,24 @@ namespace
             }
         }
 
+        float top = -1.f;
+        float bottom = 1000000.f;
+
         // NOTE KI align horizontal
         for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+            const auto& lineInfo = lineInfos[lineIndex];
+
+            top = std::max(top, lineInfo.top);
+            bottom = std::min(bottom, lineInfo.bottom);
+
             const auto offset = lineOffsets[lineIndex];
             const auto lineLen = lineLenghts[lineIndex];
 
-            float lineW = 0.f;
-            for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
-                auto* glyph = glyphs[chIndex];
-                lineW += glyph->advance_x;
-            }
+            float lineW = lineInfo.right - lineInfo.left - padX * 1.f;
+            //for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
+            //    auto* glyph = glyphs[chIndex];
+            //    lineW += glyph->advance_x;
+            //}
 
             float adjustX = 0.f;
 
@@ -210,9 +239,12 @@ namespace
         }
 
         // NOTE KI align vertical
-        const auto totalHeight = lineCount * lineHeight;
+        // NOTE KI Y-axis goes UP, not DOWN
+        const auto totalHeight = abs(bottom - top) - padY * 1.f;
 
         for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+            const auto& lineInfo = lineInfos[lineIndex];
+
             const auto offset = lineOffsets[lineIndex];
             const auto lineLen = lineLenghts[lineIndex];
 
@@ -221,13 +253,13 @@ namespace
             switch (alignVertical) {
             case text::Align::top:
                 // NOTE KI nothing
-                adjustY = -lineHeight;
+                adjustY = 0.f;
                 break;
             case text::Align::bottom:
-                adjustY += totalHeight - lineHeight;
+                adjustY = totalHeight;
                 break;
             case text::Align::center:
-                adjustY += totalHeight * 0.5f - lineHeight;
+                adjustY = totalHeight * 0.5f;
                 break;
             }
 
@@ -267,7 +299,18 @@ namespace text
         auto* font = text::FontRegistry::get().getFont(fontId);
         if (!font) return;
 
-        addText(mesh, font, text, pivot, alignHorizontal, alignVertical, mesh->m_maxSize);
+        const auto atlasPad = font->getPadding();
+        const auto atlasSize = font->getAtlasSize();
+
+        addText(
+            mesh, font, text, pivot,
+            alignHorizontal,
+            alignVertical,
+            //static_cast<float>(atlasPad / atlasSize.x),
+            //static_cast<float>(atlasPad / atlasSize.y),
+            static_cast<float>(atlasPad),
+            static_cast<float>(atlasPad),
+            mesh->m_maxSize);
 
         mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
         mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());

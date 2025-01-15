@@ -89,7 +89,7 @@ namespace text
         if (m_fontSize <= 0) return;
 
         m_padding = static_cast<int>(m_fontSize);
-        m_atlasSize = resolveAtlasSize(m_fontSize, m_padding);
+        m_atlasSize = resolveAtlasSize(m_fontSize, static_cast<float>(m_padding));
 
         constexpr size_t depth = 1;
         {

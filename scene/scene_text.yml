@@ -7,6 +7,17 @@ script:
   scripts:
     - path: lib/common
 nodes:
+  - id: ui_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.05
+      material:
+        kd: [1, 1, 0, 1]
+        #map_pbr: textures\Plastic 01 [4K]
+        program: g_tex
+    pos: [0, 0, -2]
+    layer: 3
   - id: player
     mesh:
       path: water_ball
@@ -31,7 +42,7 @@ nodes:
     prefab:
       path: prefab/util/prefab_fps_counter.yml
     #pos: [5.75, 5.25, 0.2]
-    pos: [1.8, -0.8, -1]
+    pos: [2, -2, -1]
     scale: 0.0025
     layer: 3
   - id: font_atlas

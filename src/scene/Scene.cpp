@@ -540,7 +540,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
         (float)m_uiRenderer->m_buffer->m_spec.height;
 
     float w = 4.f;
-    float h = w / aspectRatio;
+    float h = w;// / aspectRatio;
     float mw = w * 0.5f;
     float mh = h * 0.5f;
     camera.setViewport({-mw, mw, -mh, mh});
