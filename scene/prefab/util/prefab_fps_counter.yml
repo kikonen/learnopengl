@@ -3,8 +3,6 @@ prefab:
   id: prepab_fps_counter
   type: text
   mesh:
-    xflags:
-      billboard: true
     material:
       kd: [0.0, 0.8, 0.0, 1.0]
       xmetal: [1.0, 0.0, 0, 1]
@@ -16,10 +14,12 @@ prefab:
       shadow_program: shadow_font_render
       selection_program: selection_font_render
       id_program: object_id_font_render
+      shared_definitions:
+        USE_OUTLINE: 1
   text:
     text: "NA fps"
     font:
-      path: fonts/Vera.ttf
+      path: fonts/aliee13.ttf
       size: 64
     align_horizontal: right
     align_vertical: bottom

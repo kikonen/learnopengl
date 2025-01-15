@@ -72,8 +72,8 @@ nodes:
     mesh:
       material:
         #map_pbr: textures\Plastic 01 [4K]
-        map_pbr: textures\Fence007A_4K-JPG
-        #map_pbr: textures\Metal007_1K-PNG
+        #map_pbr: textures\Fence007A_4K-JPG
+        map_pbr: textures\Metal007_1K-PNG
         tiling: 2
         alpha: true
         blend: true
@@ -83,6 +83,9 @@ nodes:
         shadow_program: shadow_font_render
         selection_program: selection_font_render
         id_program: object_id_font_render
+        shared_definitions:
+          USE_GLOW: 1
+          USE_OUTLINE: 1
       xflags:
         billboard: true
     text:
