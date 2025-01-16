@@ -72,7 +72,7 @@ nodes:
     mesh:
       vertex:
         type: sphere
-        radius: 0.1
+        radius: 0.05
       material:
         map_pbr: textures\Plastic 01 [4K]
         tiling: 1
@@ -104,7 +104,7 @@ nodes:
         path: fonts/LuckiestGuy.ttf
         xpath: fonts/BLADRMF_.TTF
         size: 32
-      text: Hello world
+      text: "HelloÖAÄworld\nSecond\nThird\nand last"
       pivot: [0, 0]
       align_horizontal: center
       align_vertical: center

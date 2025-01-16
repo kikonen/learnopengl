@@ -20,6 +20,8 @@ prefab:
     text: "NA fps"
     font:
       path: fonts/aliee13.ttf
+      #path: fonts/LuckiestGuy.ttf
+      #path: fonts/BLADRMF_.TTF
       size: 64
     align_horizontal: right
     align_vertical: bottom

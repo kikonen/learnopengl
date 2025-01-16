@@ -61,7 +61,7 @@ namespace
         std::vector<size_t> lineOffsets;
         std::vector<size_t> lineLenghts;
         std::vector<float> lineHeights;
-        std::vector<const ftgl::texture_glyph_t*> glyphs;
+        //std::vector<const ftgl::texture_glyph_t*> glyphs;
         std::vector<LineInfo> lineInfos;
         size_t lineCount = 0;
         float lineHeight = 0.f;
@@ -83,9 +83,13 @@ namespace
 
             //pen.y += line_ascender;
 
-            const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
-            const float glyphMaxW = glyph->s1 - glyph->s0;
-            const float glyphMaxH = glyph->t1 - glyph->t0;
+            float glyphMaxW;
+            float glyphMaxH;
+            {
+                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
+                glyphMaxW = glyph->s1 - glyph->s0;
+                glyphMaxH = glyph->t1 - glyph->t0;
+            }
 
             lineOffsets.push_back(mesh->m_vertices.size());
             lineLenghts.push_back(0);
@@ -130,17 +134,18 @@ namespace
                 pen.x += kerning;
 
                 // Actual glyph
-                const float x0 = (pen.x + glyph->offset_x);
-                const float y0 = (float)((int)(pen.y + glyph->offset_y));
-                const float x1 = (x0 + glyph->width);
-                const float y1 = (float)((int)(y0 - glyph->height));
+                // NOTE KI offset by padding
+                const float x0 = pen.x + static_cast<float>(glyph->offset_x);
+                const float y0 = pen.y + static_cast<float>(glyph->offset_y);
+                const float x1 = x0 + static_cast<float>(glyph->width);
+                const float y1 = y0 - static_cast<float>(glyph->height);
                 const float s0 = glyph->s0;
                 const float t0 = glyph->t0;
                 const float s1 = glyph->s1;
                 const float t1 = glyph->t1;
 
-                const float glyphW = glyph->s1 - glyph->s0;
-                const float glyphH = glyph->t1 - glyph->t0;
+                const float glyphW = s1 - s0;
+                const float glyphH = t1 - t0;
 
                 const GLuint index = (GLuint)mesh->m_vertices.size();
 
@@ -178,17 +183,17 @@ namespace
                     mesh->m_indeces.push_back(v);
                 }
 
-                pen.x += glyph->advance_x;
-                prev = &ch;
-
                 lineInfo.left = std::min(lineInfo.left, x0);
-                lineInfo.right = std::max(lineInfo.left, x1);
+                lineInfo.right = x0 + glyph->advance_x;
                 // NOTE KI Y-axis goes UP, not DOWN
                 lineInfo.top = std::max(lineInfo.top, y0);
-                lineInfo.bottom = std::min(lineInfo.bottom, y1);
+                lineInfo.bottom = y0 - line_height;
 
-                glyphs.push_back(glyph);
+                //glyphs.push_back(glyph);
                 lineLenghts[lineCount - 1]++;
+
+                pen.x += glyph->advance_x;
+                prev = &ch;
 
                 textIndex++;
             }
@@ -212,23 +217,23 @@ namespace
             const auto offset = lineOffsets[lineIndex];
             const auto lineLen = lineLenghts[lineIndex];
 
-            float lineW = lineInfo.right - lineInfo.left - padX * 1.f;
+            float lineW = lineInfo.right - lineInfo.left;
             //for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
             //    auto* glyph = glyphs[chIndex];
             //    lineW += glyph->advance_x;
             //}
 
-            float adjustX = 0.f;
+            float adjustX = -padX;
 
             switch (alignHorizontal) {
             case text::Align::left:
                 // NOTE KI nothing
                 break;
             case text::Align::right:
-                adjustX = -lineW;
+                adjustX += -lineW;
                 break;
             case text::Align::center:
-                adjustX = -lineW * 0.5f;
+                adjustX += -lineW * 0.5f;
                 break;
             }
 
@@ -240,7 +245,7 @@ namespace
 
         // NOTE KI align vertical
         // NOTE KI Y-axis goes UP, not DOWN
-        const auto totalHeight = abs(bottom - top) - padY * 1.f;
+        const auto totalHeight = abs(bottom - top);
 
         for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
             const auto& lineInfo = lineInfos[lineIndex];
@@ -248,18 +253,17 @@ namespace
             const auto offset = lineOffsets[lineIndex];
             const auto lineLen = lineLenghts[lineIndex];
 
-            float adjustY = 0.f;
+            float adjustY = padY - lineHeight;
 
             switch (alignVertical) {
             case text::Align::top:
                 // NOTE KI nothing
-                adjustY = 0.f;
                 break;
             case text::Align::bottom:
-                adjustY = totalHeight;
+                adjustY += totalHeight;
                 break;
             case text::Align::center:
-                adjustY = totalHeight * 0.5f;
+                adjustY += totalHeight * 0.5f;
                 break;
             }
 
