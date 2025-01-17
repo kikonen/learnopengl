@@ -35,6 +35,9 @@ namespace
         float right{ -1.f };
         float top{ -1.f };
         float bottom{ 10000000.f };
+
+        size_t vertexOffset{ 0 };
+        size_t glyphCount{ 0 };
     };
 
     //
@@ -60,13 +63,9 @@ namespace
             alignVertical = text::Align::top;
         }
 
-        std::vector<size_t> lineOffsets;
-        std::vector<size_t> lineLenghts;
-        std::vector<float> lineHeights;
-        //std::vector<const ftgl::texture_glyph_t*> glyphs;
         std::vector<LineInfo> lineInfos;
-        size_t lineCount = 0;
         float lineHeight = 0.f;
+        size_t lineCount = 0;
 
         {
             const glm::vec2 penOrigin = pivot;
@@ -93,23 +92,25 @@ namespace
                 glyphMaxH = glyph->t1 - glyph->t0;
             }
 
-            lineOffsets.push_back(mesh->m_vertices.size());
-            lineLenghts.push_back(0);
-            lineInfos.emplace_back();
+            {
+                auto& info = lineInfos.emplace_back();
+                info.vertexOffset = mesh->m_vertices.size();
+            }
             lineHeight = line_height;
-            lineCount = 1;
 
-            size_t textIndex = 0;
             // https://stackoverflow.com/questions/9438209/for-every-character-in-string
             const size_t textLen = text.length();
             const char* textIter = text.data();
+            size_t currLine = 0;
+            size_t renderedCount = 0;
+
             for (size_t i = 0; i < textLen; i += util::utf8_surrogate_len(textIter + i))
             {
                 const char* codePoint = textIter + i;
 
-                if (textIndex >= maxCount) break;
+                if (renderedCount >= maxCount) break;
 
-                auto& lineInfo = lineInfos[lineCount - 1];
+                auto& lineInfo = lineInfos[currLine];
 
                 float line_top = pen.y + line_ascender;
 
@@ -118,10 +119,9 @@ namespace
                     pen.y -= line_height;
                     //pen.y += line_descender;
 
-                    lineOffsets.push_back(mesh->m_vertices.size());
-                    lineLenghts.push_back(0);
-                    lineInfos.emplace_back();
-                    lineCount++;
+                    auto& info = lineInfos.emplace_back();
+                    info.vertexOffset = mesh->m_vertices.size();
+                    currLine++;
 
                     continue;
                 }
@@ -196,19 +196,20 @@ namespace
                 lineInfo.top = std::max(lineInfo.top, y0);
                 lineInfo.bottom = y0 - line_height;
 
-                //glyphs.push_back(glyph);
-                lineLenghts[lineCount - 1]++;
+                lineInfo.glyphCount++;
 
                 pen.x += glyph->advance_x;
                 prev = codePoint;
 
-                textIndex++;
+                renderedCount++;
             }
 
-            if (textIndex == 0) {
+            if (renderedCount == 0) {
                 // NOTE KI no actual text written
                 return;
             }
+
+            lineCount = currLine + 1;
         }
 
         float top = -1.f;
@@ -221,15 +222,10 @@ namespace
             top = std::max(top, lineInfo.top);
             bottom = std::min(bottom, lineInfo.bottom);
 
-            const auto offset = lineOffsets[lineIndex];
-            const auto lineLen = lineLenghts[lineIndex];
+            const auto vertexOffset = lineInfo.vertexOffset;
+            const auto glyphCount = lineInfo.glyphCount;
 
             float lineW = lineInfo.right - lineInfo.left;
-            //for (size_t chIndex = 0; chIndex < lineLen; chIndex++) {
-            //    auto* glyph = glyphs[chIndex];
-            //    lineW += glyph->advance_x;
-            //}
-
             float adjustX = -padX;
 
             switch (alignHorizontal) {
@@ -244,8 +240,8 @@ namespace
                 break;
             }
 
-            for (size_t chIndex = 0; chIndex < lineLen * 4; chIndex++) {
-                auto& vertex = mesh->m_vertices[offset + chIndex];
+            for (size_t glyphIndex = 0; glyphIndex < lineInfo.glyphCount * 4; glyphIndex++) {
+                auto& vertex = mesh->m_vertices[vertexOffset + glyphIndex];
                 vertex.pos.x += adjustX;
             }
         }
@@ -257,8 +253,8 @@ namespace
         for (size_t lineIndex = 0; lineIndex < lineCount; lineIndex++) {
             const auto& lineInfo = lineInfos[lineIndex];
 
-            const auto offset = lineOffsets[lineIndex];
-            const auto lineLen = lineLenghts[lineIndex];
+            const auto vertexOffset = lineInfo.vertexOffset;
+            const auto glyphCount = lineInfo.glyphCount;
 
             float adjustY = padY - lineHeight;
 
@@ -274,8 +270,8 @@ namespace
                 break;
             }
 
-            for (size_t chIndex = 0; chIndex < lineLen * 4; chIndex++) {
-                auto& vertex = mesh->m_vertices[offset + chIndex];
+            for (size_t glyphIndex = 0; glyphIndex < glyphCount * 4; glyphIndex++) {
+                auto& vertex = mesh->m_vertices[vertexOffset + glyphIndex];
                 vertex.pos.y += adjustY;
             }
         }
