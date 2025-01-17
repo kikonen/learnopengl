@@ -464,6 +464,7 @@
     <ClCompile Include="src\shader\Program.cpp" />
     <ClCompile Include="src\util\Random.cpp" />
     <ClCompile Include="src\util\thread.cpp" />
+    <ClCompile Include="src\util\utf8_util.cpp" />
     <ClCompile Include="src\util\util_impl.cpp" />
     <ClCompile Include="vendor\generator\src\AnyMesh.cpp" />
     <ClCompile Include="vendor\generator\src\AnyPath.cpp" />
@@ -927,6 +928,7 @@
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\util\Random.h" />
     <ClInclude Include="src\util\thread.h" />
+    <ClInclude Include="src\util\utf8_util.h" />
     <ClInclude Include="src\util\util.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />

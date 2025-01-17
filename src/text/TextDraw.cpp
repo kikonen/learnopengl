@@ -4,6 +4,8 @@
 
 #include <freetype-gl/texture-font.h>
 
+#include "util/utf8_util.h"
+
 #include "model/Node.h"
 #include "model/Snapshot.h"
 
@@ -72,7 +74,7 @@ namespace
 
             const glm::vec3 normal{ 0.f, 0.f, 1.f };
             const glm::vec3 tangent{ 1.f, 0.f, 0.f };
-            const char* prev = { nullptr };
+            const char* prev = nullptr;
 
             auto* font = fontAtlas->getFont()->m_font;
 
@@ -99,14 +101,19 @@ namespace
 
             size_t textIndex = 0;
             // https://stackoverflow.com/questions/9438209/for-every-character-in-string
-            for (const char& ch : text) {
+            const size_t textLen = text.length();
+            const char* textIter = text.data();
+            for (size_t i = 0; i < textLen; i += util::utf8_surrogate_len(textIter + i))
+            {
+                const char* codePoint = textIter + i;
+
                 if (textIndex >= maxCount) break;
 
                 auto& lineInfo = lineInfos[lineCount - 1];
 
                 float line_top = pen.y + line_ascender;
 
-                if (ch == '\n') {
+                if (*codePoint == '\n') {
                     pen.x = penOrigin.x;
                     pen.y -= line_height;
                     //pen.y += line_descender;
@@ -119,7 +126,7 @@ namespace
                     continue;
                 }
 
-                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, &ch);
+                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, codePoint);
 
                 if (!glyph) {
                     glyph = texture_font_get_glyph(font, MISSING_CH);
@@ -193,7 +200,7 @@ namespace
                 lineLenghts[lineCount - 1]++;
 
                 pen.x += glyph->advance_x;
-                prev = &ch;
+                prev = codePoint;
 
                 textIndex++;
             }

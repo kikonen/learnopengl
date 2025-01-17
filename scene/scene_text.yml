@@ -58,11 +58,11 @@ nodes:
         updater_id: font_atlas_1
       program: font_atlas_demo
       shadow_program: font_atlas_demo
-    #pos: [4.0, 2.0, 0.2]
-    pos: [1.5, 0.5, -4]
+    pos: [4.0, 2.0, 0.2]
+    #pos: [1.5, 0.5, -4]
     flags:
       xeffect: true
-    layer: 3
+    #layer: 3
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
@@ -104,7 +104,7 @@ nodes:
         path: fonts/LuckiestGuy.ttf
         xpath: fonts/BLADRMF_.TTF
         size: 32
-      text: "HelloÖAÄworld\nSecond\nThird\nand last"
+      text: "Hellö wörld\nSecond\nThird\nand last"
       pivot: [0, 0]
       align_horizontal: center
       align_vertical: center

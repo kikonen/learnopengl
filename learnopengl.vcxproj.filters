@@ -1017,6 +1017,9 @@
     <ClCompile Include="src\material\FontAtlasMaterialUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\utf8_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2307,6 +2310,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\LayerInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\utf8_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
