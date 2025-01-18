@@ -38,7 +38,7 @@ namespace text {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
                 // vertex attr
-                glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(mesh::TextureEntry, texCoord));
+                glVertexArrayAttribFormat(vao, m_attr, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(mesh::TextureEntry, u_texCoord));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 

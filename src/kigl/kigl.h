@@ -59,7 +59,9 @@ namespace kigl {
         unsigned int b : 10;
         unsigned int a : 2;
 
-        RGB10_A2() {}
+        RGB10_A2()
+            : r{ 0 }, g{ 0 }, b{ 0 }, a{ 0 }
+        {}
 
         RGB10_A2(const glm::vec4& p)
             : RGB10_A2(p.r, p.g, p.b, p.a)
@@ -90,7 +92,12 @@ namespace kigl {
         int z : 10;
         unsigned int not_used : 2;
 
-        VEC10() {}
+        VEC10()
+            : x{ 0 },
+            y{ 0 },
+            z{ 0 },
+            not_used{ 0 }
+        {}
 
         VEC10(const glm::vec3& p)
             : VEC10(p.x, p.y, p.z)
@@ -123,7 +130,9 @@ namespace kigl {
         unsigned short u;
         unsigned short v;
 
-        UV16() {}
+        UV16()
+            : u{ 0 }, v{ 0 }
+        {}
 
         UV16(const glm::vec2& t)
             : UV16(t.x, t.y)

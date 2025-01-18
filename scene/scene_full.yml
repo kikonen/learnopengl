@@ -25,6 +25,13 @@ script:
 nodes:
   - prefab:
       path: prefab/util/prefab_grid.yml
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+    layer: 3
   - id: zero_origo
     type: origo
     pos: [0.0, 0.0, 0.0]
@@ -66,11 +73,6 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: fps_counter
-    parent_id: player
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    pos: [1.75, -1.35, -6]
   - name: Player cube map 1
     type: origo
     parent_id: player

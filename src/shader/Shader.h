@@ -86,9 +86,9 @@ const std::string DEF_CS_GROUP_Y{ "CS_GROUP_Y" };
 const std::string DEF_CS_GROUP_Z{ "CS_GROUP_Z" };
 
 constexpr int ATTR_POS = 0;
-constexpr int ATTR_NORMAL = 1;
-constexpr int ATTR_TANGENT = 2;
-constexpr int ATTR_TEX = 3;
+constexpr int ATTR_TEX = 1;
+constexpr int ATTR_NORMAL = 2;
+constexpr int ATTR_TANGENT = 3;
 constexpr int ATTR_FONT_ATLAS_TEX = 4;
 constexpr int ATTR_BONE_INDEX = 5;
 constexpr int ATTR_BONE_WEIGHT = 6;

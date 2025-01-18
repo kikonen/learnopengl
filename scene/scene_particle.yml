@@ -12,6 +12,13 @@ script:
 nodes:
   - xprefab:
       path: prefab/util/prefab_grid.yml
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+    layer: 3
   - id: player_fps
     type: origo
     pos: [0, 4, 0.0]
@@ -56,11 +63,6 @@ nodes:
     script: |
       cmd:audio_play(
         { sync=true, sid=util:sid("idle_1") })
-  - id: fps_counter
-    parent_id: player_fps
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    pos: [1.75, -1.35, -6]
   - id: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:

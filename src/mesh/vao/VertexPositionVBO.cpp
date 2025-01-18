@@ -45,7 +45,7 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
                 // vertex attr
-                glVertexArrayAttribFormat(vao, m_attr, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, x));
+                glVertexArrayAttribFormat(vao, m_attr, 3, GL_FLOAT, GL_FALSE, offsetof(PositionEntry, u_x));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 
@@ -62,7 +62,7 @@ namespace mesh {
 
         for (auto&& vertex : m_entries)
         {
-            aabb.minmax({ vertex.x, vertex.y, vertex.z });
+            aabb.minmax({ vertex.u_x, vertex.u_y, vertex.u_z });
         }
 
         aabb.updateVolume();

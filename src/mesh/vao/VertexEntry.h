@@ -9,19 +9,28 @@
 namespace mesh {
 #pragma pack(push, 1)
     struct VertexEntry {
-        VertexEntry() {}
+        VertexEntry()
+            : u_x{ 0 }, u_y{ 0 }, u_z{ 0 },
+            u_texCoord{ 0, 0 },
+            u_normal{ 0, 0, 0 },
+            u_tangent{ 0, 0, 0 }
+        {}
 
         VertexEntry(const mesh::Vertex& v)
-            : u_pos{ v.pos },
+            : u_x{ v.pos.x },
+            u_y{ v.pos.y },
+            u_z{ v.pos.z },
             u_texCoord{ v.texCoord },
             u_normal{ v.normal },
             u_tangent{ v.tangent }
         {}
 
-        glm::vec3 u_pos;
+        float u_x;
+        float u_y;
+        float u_z;
 
-        //kigl::UV16 texCoord;
-        glm::vec2 u_texCoord;
+        kigl::UV16 u_texCoord;
+        //glm::vec2 u_texCoord;
 
         kigl::VEC10 u_normal;
         kigl::VEC10 u_tangent;

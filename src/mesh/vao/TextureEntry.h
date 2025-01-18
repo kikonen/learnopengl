@@ -8,16 +8,15 @@ namespace mesh {
 #pragma pack(push, 1)
     struct TextureEntry {
         TextureEntry()
-            : texCoord{ 0.f, 0.f }
+            : u_texCoord{ 0.f, 0.f }
         {}
 
         TextureEntry(
             const glm::vec2& a_texCoord)
-            : texCoord{ a_texCoord }
+            : u_texCoord{ a_texCoord }
         {}
 
-        //kigl::UV16 texCoord;
-        glm::vec2 texCoord;
+        kigl::UV16 u_texCoord;
     };
 #pragma pack(pop)
 }

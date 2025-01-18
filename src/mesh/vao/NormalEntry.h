@@ -8,19 +8,19 @@ namespace mesh {
 #pragma pack(push, 1)
     struct NormalEntry {
         NormalEntry()
-            : normal{ 0.f },
-            tangent{ 0.f }
+            : u_normal{ 0.f },
+            u_tangent{ 0.f }
         {}
 
         NormalEntry(
             const glm::vec3& a_normal,
             const glm::vec3& a_tangent)
-            : normal{ a_normal },
-            tangent{ a_tangent }
+            : u_normal{ a_normal },
+            u_tangent{ a_tangent }
         {}
 
-        kigl::VEC10 normal;
-        kigl::VEC10 tangent;
+        kigl::VEC10 u_normal;
+        kigl::VEC10 u_tangent;
     };
 #pragma pack(pop)
 }
