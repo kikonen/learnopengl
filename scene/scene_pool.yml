@@ -15,6 +15,13 @@ script:
 nodes:
   - prefab:
       path: prefab/util/prefab_grid.yml
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+    layer: 3
   - name: origo
     mesh:
       path: water_ball
