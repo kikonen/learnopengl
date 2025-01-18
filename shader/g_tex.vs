@@ -235,6 +235,8 @@ void main() {
   }
 #endif
 
+#ifdef USE_GL_POINTS
   // HACK KI for primitive GL_POINTS
   gl_PointSize = u_materials[materialIndex].layersDepth;
+#endif
 }

@@ -11,7 +11,9 @@ layout (triangle_strip, max_vertices = 3) out;
 in gl_PerVertex
 {
   vec4 gl_Position;
+#ifdef USE_GL_POINTS
   float gl_PointSize;
+#endif
   float gl_ClipDistance[CLIP_COUNT];
 } gl_in[3];
 
