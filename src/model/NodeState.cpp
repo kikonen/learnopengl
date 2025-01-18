@@ -68,6 +68,9 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 {
     ASSERT_WT();
 
+    const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
+    const float aspectScaleY = m_scale.y * aspect;
+
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
     {
         m_parentMatrixLevel = parent.m_matrixLevel;
@@ -82,16 +85,16 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         g_translateMatrix[3].z = m_position.z;
 
         g_scaleMatrix[0].x = m_scale.x;
-        g_scaleMatrix[1].y = m_scale.y;
+        g_scaleMatrix[1].y = aspectScaleY;
         g_scaleMatrix[2].z = m_scale.z;
 
         if (hasPivot) {
             g_pivotMatrix[3].x = -m_pivot.x * m_scale.x;
-            g_pivotMatrix[3].y = -m_pivot.y * m_scale.y;
+            g_pivotMatrix[3].y = -m_pivot.y * aspectScaleY;
             g_pivotMatrix[3].z = -m_pivot.z * m_scale.z;
 
             g_invPivotMatrix[3].x = m_pivot.x * m_scale.x;
-            g_invPivotMatrix[3].y = m_pivot.y * m_scale.y;
+            g_invPivotMatrix[3].y = m_pivot.y * aspectScaleY;
             g_invPivotMatrix[3].z = m_pivot.z * m_scale.z;
         }
     }
@@ -111,11 +114,13 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         //    g_translateMatrix *
         //    m_rotationMatrix *
         //    g_scaleMatrix;
+        glm::vec3 scale = m_scale;
+        scale.y = aspectScaleY;
 
         m_modelMatrix = parent.m_modelMatrix *
             glm::scale(
                 g_translateMatrix * m_rotationMatrix,
-                m_scale);
+                scale);
     }
 
 

@@ -56,6 +56,8 @@ private:
     glm::vec3 m_modelScale{ 1.f };
     glm::quat m_modelRotation{ 1.f, 0.f, 0.f, 0.f };
 
+    glm::uvec2 m_aspectRatio{ 1 };
+
 public:
     // NOTE KI static member fields are rather safe to access frmo anywhere
     uint32_t m_tileIndex{ 0 };
@@ -189,6 +191,16 @@ public:
 
         m_dirty = true;
         m_dirtyNormal = true;
+    }
+
+    inline void setAspectRatio(const glm::uvec2& aspectRatio) noexcept
+    {
+        if (m_aspectRatio != aspectRatio) {
+            m_aspectRatio = aspectRatio;
+
+            m_dirty = true;
+            m_dirtyNormal = true;
+        }
     }
 
     void setRotation(const glm::quat& quat) noexcept

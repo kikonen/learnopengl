@@ -56,6 +56,10 @@
 #include "renderer/EnvironmentProbeRenderer.h"
 
 namespace {
+    ki::node_id fpsNodeId = SID("fps_counter");
+
+    glm::uvec2 lastAspectRatio{ 1 };
+    bool aspectChanged{ false };
 }
 
 Scene::Scene(
@@ -448,6 +452,20 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
 
     m_nodeDraw->updateRT(ctx);
     m_windowBuffer->updateRT(ctx);
+
+    //if (false)
+    {
+        const auto& spec = m_uiRenderer->m_buffer->m_spec;
+        glm::uvec2 aspectRatio = { spec.width, spec.height };
+        if (aspectRatio != lastAspectRatio) {
+            lastAspectRatio = aspectRatio;
+            auto handle = pool::NodeHandle::toHandle(fpsNodeId);
+            if (auto* node = handle.toNode(); node) {
+                auto& state = node->modifyState();
+                state.setAspectRatio(aspectRatio);
+            }
+        }
+    }
 }
 
 void Scene::handleNodeAdded(Node* node)
