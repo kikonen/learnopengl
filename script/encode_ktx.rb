@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open3'
 
 require 'thor'
@@ -5,6 +7,8 @@ require 'fileutils'
 require 'json'
 
 class Converter < Thor
+  EXTENSIONS = ["png", "jpg", "jpeg", "tga"]
+
   attr_reader :assets_dir,
     :build_dir,
     :recursive,
@@ -19,6 +23,9 @@ class Converter < Thor
   desc "meta", "Generate texture meta info"
   method_option :src, default: 'resources/assets'
   method_option :assets_dir, default: 'resources/assets'
+  method_option :ext,
+    type: :array,
+    default: nil
   method_option :recursive,
     type: :boolean,
     default: false
@@ -30,7 +37,8 @@ class Converter < Thor
     default: true
   def meta
     src_dir = options[:src]
-    extensions = ["png", "jpg", "jpeg", "tga"]
+    extensions = options[:ext] || EXTENSIONS
+    extensions = extensions.map(&:downcase)
 
     @recursive = options[:recursive]
     @force = options[:force]
@@ -50,6 +58,9 @@ class Converter < Thor
   method_option :src, default: 'resources/assets'
   method_option :assets_dir, default: 'resources/assets'
   method_option :build_dir, default: 'resources/build'
+  method_option :ext,
+    type: :array,
+    default: nil
   method_option :recursive,
     type: :boolean,
     default: false
@@ -64,7 +75,8 @@ class Converter < Thor
     default: ['all']
   def ktx
     src_dir = options[:src]
-    extensions = ["png", "jpg"]
+    extensions = options[:ext] || EXTENSIONS
+    extensions = extensions.map(&:downcase)
 
     @assets_dir = options[:assets_dir]
     @build_dir = options[:build_dir]
@@ -100,6 +112,18 @@ class Converter < Thor
     files = Dir["#{src_dir}/*"]
 
     sub_dirs = []
+
+    # TODO KI ktx options
+    #
+    # --resize <width>x<height>
+    #              Resize images to @e width X @e height. This should not be used
+    #              with @b--mipmap as it would resize all the images to the same
+    #              size. Resampler options can be set via --filter and --fscale.
+    #
+    # --input_swizzle <swizzle>
+    #              Swizzle the input components according to swizzle which is an
+    #              alhpanumeric sequence matching the regular expression
+    #              ^[rgba01]{4}$.
 
     files.sort_by(&:downcase).each do |f|
       name = File.basename(f)
