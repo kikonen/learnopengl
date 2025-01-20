@@ -38,10 +38,6 @@ namespace loader {
             MaterialData& data,
             Loaders& loaders) const;
 
-        void resolveMaterialPaths(
-            const std::string& baseDir,
-            MaterialData& data) const;
-
         void resolveMaterialPbr(
             const std::string& baseDir,
             MaterialData& data) const;

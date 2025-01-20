@@ -83,10 +83,9 @@ public:
 
     std::string rootDir;
 
+    std::string assetsBuildDir;
     std::string assetsDir;
     std::string modelsDir;
-    std::string texturesDir;
-    std::string fontsDir;
 
     std::string shadersDir;
 

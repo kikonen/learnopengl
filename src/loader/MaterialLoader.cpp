@@ -57,10 +57,6 @@ namespace {
         std::regex(".*[\\.]tga"),
     };
 
-    const std::vector<std::regex> ktxMatchers{
-        std::regex(".*[\\.]ktx"),
-    };
-
     const std::vector<std::regex> colorMatchers{
         std::regex(".*[-_ ]color[-_ \\.].*"),
         std::regex(".*[-_ ]col[-_ \\.].*"),
@@ -129,25 +125,6 @@ namespace {
         std::regex(".*[-_ ]ops[-_ \\.].*"),
         std::regex(".*[-_ ]alpha[-_ \\.].*"),
     };
-
-
-    std::string resolvePath(
-        const std::string& assetsDir,
-        const std::string& baseDir,
-        const std::string assetPath)
-    {
-        if (assetPath.empty()) return assetPath;
-
-        const std::string& filePath = util::joinPathExt(
-            assetsDir,
-            baseDir,
-            assetPath, "");
-
-        if (util::fileExists(filePath)) {
-            return util::joinPath(baseDir, assetPath);
-        }
-        return assetPath;
-    }
 }
 
 namespace loader {
@@ -254,27 +231,31 @@ namespace loader {
             }
             else if (k == "map_kd") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::diffuse,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::emission,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::specular,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_bump" || k == "map_normal") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_normal,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_bump_strength") {
                 material.map_bump_strength = readFloat(v);
@@ -282,21 +263,24 @@ namespace loader {
             }
             else if (k == "map_dudv") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_dudv,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_noise,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_noise_2") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_noise_2,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_roughness") {
                 if (!material.hasRegisteredTex(TextureType::map_roughness)) {
@@ -307,9 +291,10 @@ namespace loader {
                     material.map_channelParts.push_back(part);
 
                     std::string line = readString(v);
-                    material.addTexPath(
+                    material.addTexture(
                         TextureType::map_roughness,
-                        resolveTexturePath(line, false));
+                        line,
+                        false);
                 }
             }
             else if (k == "map_metalness") {
@@ -321,9 +306,10 @@ namespace loader {
                     material.map_channelParts.push_back(part);
 
                     std::string line = readString(v);
-                    material.addTexPath(
+                    material.addTexture(
                         TextureType::map_metallness,
-                        resolveTexturePath(line, false));
+                        line,
+                        false);
                 }
             }
             else if (k == "map_occlusion") {
@@ -335,9 +321,10 @@ namespace loader {
                     material.map_channelParts.push_back(part);
 
                     std::string line = readString(v);
-                    material.addTexPath(
+                    material.addTexture(
                         TextureType::map_occlusion,
-                        resolveTexturePath(line, false));
+                        line,
+                        false);
                 }
             }
             else if (k == "map_displacement") {
@@ -349,22 +336,25 @@ namespace loader {
                     material.map_channelParts.push_back(part);
 
                     std::string line = readString(v);
-                    material.addTexPath(
+                    material.addTexture(
                         TextureType::map_displacement,
-                        resolveTexturePath(line, false));
+                        line,
+                        false);
                 }
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_opacity,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_custom_1") {
                 std::string line = readString(v);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_custom_1,
-                    resolveTexturePath(line, true));
+                    line,
+                    true);
             }
             else if (k == "map_channel") {
                 ChannelTextureValue loader;
@@ -549,19 +539,6 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::resolveMaterialPaths(
-        const std::string& baseDir,
-        MaterialData& data) const
-    {
-        const auto& assets = Assets::get();
-        const auto assetsDir = assets.assetsDir;
-        auto& material = data.material;
-
-        for (auto& it : material.modifyTexturePaths()) {
-            it.second = resolvePath(assetsDir, baseDir, it.second);
-        }
-    }
-
     void MaterialLoader::resolveMaterialPbr(
         const std::string& baseDir,
         MaterialData& data) const
@@ -588,7 +565,6 @@ namespace loader {
         if (!util::dirExists(basePath)) return;
 
         std::vector<std::filesystem::directory_entry> normalEntries;
-        std::vector<std::filesystem::directory_entry> ktxEntries;
 
         for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
             std::string fileName = dirEntry.path().filename().string();
@@ -604,10 +580,7 @@ namespace loader {
                 continue;
             }
 
-            if (util::matchAny(ktxMatchers, matchName)) {
-                ktxEntries.push_back(dirEntry);
-            }
-            else if (util::matchAny(imageMatchers, matchName)) {
+            if (util::matchAny(imageMatchers, matchName)) {
                 normalEntries.push_back(dirEntry);
             }
         }
@@ -616,14 +589,6 @@ namespace loader {
         for (const auto& dirEntry : normalEntries) {
             if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
                 failedEntries.push_back(dirEntry.path().filename().string());
-            }
-        }
-
-        if (assets.compressedTexturesEnabled) {
-            for (const auto& dirEntry : ktxEntries) {
-                if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
-                    failedEntries.push_back(dirEntry.path().filename().string());
-                }
             }
         }
 
@@ -654,23 +619,26 @@ namespace loader {
         bool found = false;
 
         if (!found && util::matchAny(colorMatchers, matchName)) {
-            material.addTexPath(
+            material.addTexture(
                 TextureType::diffuse,
-                assetPath);
+                assetPath,
+                true);
             found = true;
         }
 
         if (!found && util::matchAny(emissionMatchers, matchName)) {
-            material.addTexPath(
+            material.addTexture(
                 TextureType::emission,
-                assetPath);
+                assetPath,
+                true);
             found = true;
         }
 
         if (!found && util::matchAny(normalMatchers, matchName)) {
-            material.addTexPath(
+            material.addTexture(
                 TextureType::map_normal,
-                assetPath);
+                assetPath,
+                true);
             found = true;
         }
 
@@ -681,9 +649,10 @@ namespace loader {
                 { ChannelPart::Channel::red }
                 };
                 material.map_channelParts.push_back(part);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_metallness,
-                    assetPath);
+                    assetPath,
+                    false);
             }
             found = true;
         }
@@ -695,9 +664,10 @@ namespace loader {
                 { ChannelPart::Channel::green }
                 };
                 material.map_channelParts.push_back(part);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_roughness,
-                    assetPath);
+                    assetPath,
+                    false);
             }
             found = true;
         }
@@ -709,9 +679,10 @@ namespace loader {
                 { ChannelPart::Channel::alpha }
                 };
                 material.map_channelParts.push_back(part);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_occlusion,
-                    assetPath);
+                    assetPath,
+                    false);
             }
             found = true;
         }
@@ -723,17 +694,19 @@ namespace loader {
                     { ChannelPart::Channel::blue }
                 };
                 material.map_channelParts.push_back(part);
-                material.addTexPath(
+                material.addTexture(
                     TextureType::map_displacement,
-                    assetPath);
+                    assetPath,
+                    false);
             }
             found = true;
         }
 
         if (!found && util::matchAny(opacityMatchers, matchName)) {
-            material.addTexPath(
+            material.addTexture(
                 TextureType::map_opacity,
-                assetPath);
+                assetPath,
+                true);
             found = true;
         }
 
@@ -842,8 +815,8 @@ namespace loader {
 
         if (f.defaultPrograms) m.m_defaultPrograms = mod.m_defaultPrograms;
 
-        for (const auto& it : mod.getTexturePaths()) {
-            m.addTexPath(it.first, it.second);
+        for (const auto& [type, info] : mod.getTextures()) {
+            m.addTexture(type, info.path, info.compressed);
         }
 
         for (const auto& progIt : mod.m_programNames) {

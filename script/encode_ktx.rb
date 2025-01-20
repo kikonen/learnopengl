@@ -351,6 +351,7 @@ class Converter < Thor
       "toktx.exe",
       "--verbose",
       "--genmipmap",
+      #"--automipmap",
       "--encode",
       normal_mode ? "astc" : "astc",
       "--target_type",

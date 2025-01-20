@@ -90,6 +90,31 @@ namespace {
         mat.kd = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
         return mat;
     }
+
+    std::string selectTexturePath(
+        std::string_view path,
+        bool useCompressed)
+    {
+        const auto& assets = Assets::get();
+
+        std::filesystem::path filePath = util::joinPath(assets.assetsDir, path);
+
+        if (useCompressed && assets.compressedTexturesEnabled) {
+            std::filesystem::path ktxPath{ path };
+            ktxPath.replace_extension(".ktx");
+
+            const auto fullPath = util::joinPath(
+                assets.assetsBuildDir,
+                ktxPath.string());
+
+            if (util::fileExists(fullPath)) {
+                KI_INFO_OUT(fmt::format("FOUND: ktx_path={}", fullPath));
+                filePath = fullPath;
+            }
+        }
+
+        return filePath.string();
+    }
 }
 
 Material Material::createMaterial(BasicMaterial type)
@@ -230,18 +255,18 @@ void Material::loadTexture(
     const auto& it = m_texturePaths.find(type);
     if (it == m_texturePaths.end()) return;
 
-    const auto& textureName = it->second;
+    const auto& info = it->second;
 
     const auto& assets = Assets::get();
 
-    std::string texturePath = getTexturePath(textureName);
+    std::string texturePath = resolveTexturePath(info.path, info.compressed);
 
     KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
     const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
 
     auto future = ImageTexture::getTexture(
-        textureName,
+        info.path,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
         gammaCorrect,
         flipY,
@@ -328,8 +353,9 @@ void Material::loadChannelTexture(
     }
 }
 
-std::string Material::getTexturePath(
-    std::string_view textureName)
+std::string Material::resolveTexturePath(
+    std::string_view textureName,
+    bool compressed)
 {
     if (textureName.empty()) return {};
 
@@ -340,37 +366,43 @@ std::string Material::getTexturePath(
     if (!m_baseDir.empty())
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = util::joinPathExt(
-            assets.assetsDir,
-            m_modelDir,
-            m_baseDir,
-            textureName, "");
+        texturePath = selectTexturePath(
+            util::joinPathExt(
+                m_modelDir,
+                m_baseDir,
+                textureName,
+                ""),
+            compressed);
     }
 
     if (!util::fileExists(texturePath))
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = util::joinPathExt(
-            assets.assetsDir,
-            m_modelDir,
-            textureName, "");
+        texturePath = selectTexturePath(
+            util::joinPathExt(
+                m_modelDir,
+                textureName,
+                ""),
+            compressed);
     }
 
     if (!util::fileExists(texturePath) && !m_baseDir.empty())
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = util::joinPathExt(
-            assets.assetsDir,
-            m_baseDir,
-            textureName, "");
+        texturePath = selectTexturePath(
+            util::joinPathExt(
+                m_baseDir,
+                textureName,
+                ""),
+            compressed);
     }
 
     if (!util::fileExists(texturePath) && m_baseDir.empty())
     {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = util::joinPath(
-            assets.assetsDir,
-            textureName);
+        texturePath = selectTexturePath(
+            textureName,
+            compressed);
     }
 
     return texturePath;

@@ -116,7 +116,7 @@ namespace terrain {
     }
 
     ImageTexture* TerrainGenerator::loadTexture(bool flipY) {
-        const auto& texturePath = m_material.getTexturePath(m_heightMapFile);
+        const auto& texturePath = m_material.resolveTexturePath(m_heightMapFile, false);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 
         //auto image = std::make_unique<Image>(imagePath, false);

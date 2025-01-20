@@ -86,10 +86,9 @@ Assets::Assets()
 
     rootDir = std::filesystem::current_path().string();
 
+    assetsBuildDir = "resources/build";
     assetsDir = "resources/assets";
     modelsDir = "{{assets_dir}}";
-    texturesDir = "{{assets_dir}}/textures";
-    fontsDir = "{{assets_dir}}/fonts";
 
     shadersDir = "shader";
 

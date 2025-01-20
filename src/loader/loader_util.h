@@ -73,10 +73,6 @@ namespace loader {
 
     std::string readFile(std::string_view filename);
 
-    std::string resolveTexturePath(
-        std::string_view line,
-        bool useCompressed);
-
     const Material* findMaterial(
         std::string_view name,
         const std::vector<MaterialData>& materials);

@@ -72,9 +72,7 @@ void AssetsLoader::resolveDirs(
             data.sceneDir = util::replace(data.sceneDir, from, to);
             data.sceneFile = util::replace(data.sceneFile, from, to);
 
-            data.texturesDir = util::replace(data.texturesDir, from, to);
             data.modelsDir = util::replace(data.modelsDir, from, to);
-            data.fontsDir = util::replace(data.fontsDir, from, to);
             data.shadersDir = util::replace(data.shadersDir, from, to);
         }
     }
@@ -237,20 +235,16 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "assets_build_dir") {
+                data.assetsBuildDir = readString(v);
+                continue;
+            }
             if (k == "assets_dir") {
                 data.assetsDir = readString(v);
                 continue;
             }
             if (k == "models_dir") {
                 data.modelsDir = readString(v);
-                continue;
-            }
-            if (k == "textures_dir") {
-                data.texturesDir = readString(v);
-                continue;
-            }
-            if (k == "fonts_dir") {
-                data.fontsDir = readString(v);
                 continue;
             }
             if (k == "shaders_dir") {

@@ -529,29 +529,6 @@ namespace loader {
         return baseId;
     }
 
-    std::string resolveTexturePath(
-        std::string_view pathName,
-        bool useCompressed)
-    {
-        const auto& assets = Assets::get();
-
-        std::filesystem::path filePath{ pathName };
-
-        if (useCompressed && assets.compressedTexturesEnabled) {
-            std::filesystem::path ktxPath{ pathName };
-            ktxPath.replace_extension(".ktx");
-
-            const auto fullPath = util::joinPath(
-                assets.assetsDir,
-                ktxPath.string());
-
-            if (util::fileExists(fullPath)) {
-                filePath = ktxPath;
-            }
-        }
-
-        return filePath.string();
-    }
 
     const Material* findMaterial(
         std::string_view name,

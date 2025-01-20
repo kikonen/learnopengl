@@ -42,6 +42,7 @@ assets:
   use_assimp_loader: true
 
   assets_dir: resources/assets
+  assets_build_dir: resources/build
   shaders_dir: shader
 
   placeholder_texture_always: false

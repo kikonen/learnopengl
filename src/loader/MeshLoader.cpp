@@ -194,12 +194,10 @@ namespace loader {
         }
 
         for (auto& materialData : data.materials) {
-            loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);
             loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
         }
 
         for (auto& materialData : data.materialModifiers) {
-            loaders.m_materialLoader.resolveMaterialPaths(data.baseDir, materialData);
             loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
         }
     }

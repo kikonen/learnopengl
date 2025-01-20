@@ -181,7 +181,7 @@ namespace loader {
 
         if (enabled) {
             if (!path.empty()) {
-                material.addTexPath(part.m_type, path);
+                material.addTexture(part.m_type, path, false);
             }
         }
         else {

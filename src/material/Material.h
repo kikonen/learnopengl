@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <type_traits>
+#include <tuple>
 
 #include <glm/glm.hpp>
 
@@ -45,6 +46,11 @@ enum class MaterialProgramType : std::underlying_type_t<std::byte> {
     selection,
     object_id,
     normal,
+};
+
+struct TextureInfo {
+    std::string path;
+    bool compressed;
 };
 
 /*
@@ -120,14 +126,18 @@ public:
     //    const ki::material_id id,
     //    const std::vector<Material>& materials);
 
-    std::string getTexturePath(
-        std::string_view textureName);
+    std::string resolveTexturePath(
+        std::string_view textureName,
+        bool compressed);
 
-    void addTexPath(TextureType type, const std::string& path) noexcept
+    // @param compressed use compressed if possible
+    void addTexture(
+        TextureType type,
+        const std::string& path,
+        bool compressed) noexcept
     {
         if (path.empty()) return;
-        //m_texturePaths.insert({ type, path });
-        m_texturePaths[type] = path;
+        m_texturePaths[type] = { path, compressed };
     }
 
     bool hasRegisteredTex(TextureType type) const noexcept
@@ -148,20 +158,9 @@ public:
 
     GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept;
 
-    const std::map<TextureType, std::string>& getTexturePaths() const noexcept
+    const std::map<TextureType, TextureInfo>& getTextures() const noexcept
     {
         return m_texturePaths;
-    }
-
-    std::map<TextureType, std::string>& modifyTexturePaths() noexcept
-    {
-        return m_texturePaths;
-    }
-
-    const std::string& getTexPath(TextureType type) const noexcept
-    {
-        const auto& it = m_texturePaths.find(type);
-        return it != m_texturePaths.end() ? it->second : "";
     }
 
     ki::program_id getProgram(MaterialProgramType type) noexcept
@@ -307,7 +306,7 @@ public:
 
 private:
     std::map<TextureType, BoundTexture> m_boundTextures{};
-    std::map<TextureType, std::string> m_texturePaths{};
+    std::map<TextureType, TextureInfo> m_texturePaths{};
 
     ki::material_id m_id;
 
