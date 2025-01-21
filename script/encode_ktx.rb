@@ -46,15 +46,16 @@ class Converter < Thor
     extensions = options[:ext] || EXTENSIONS
     extensions = extensions.map(&:downcase)
 
+    @target_size = options[:target_size]
     @recursive = options[:recursive]
     @force = options[:force]
     @dry_run = options[:dry_run]
 
-    puts "SRC_DIR:  #{src_dir}"
-    puts "EXT:      #{extensions}"
+    puts "SRC_DIR:     #{src_dir}"
+    puts "EXT:         #{extensions}"
     puts "TARGET_SIZE: #{target_size}"
-    puts "FORCE:    #{force}"
-    puts "DRY_RUN:  #{dry_run}"
+    puts "FORCE:       #{force}"
+    puts "DRY_RUN:     #{dry_run}"
 
     generate_metadata(
       src_dir:,
@@ -96,13 +97,14 @@ class Converter < Thor
     @dry_run = options[:dry_run]
     @types = options[:type].map(&:to_sym)
 
-    puts "SRC_DIR:    #{src_dir}"
-    puts "ASSETS_DIR: #{assets_root_dir}"
-    puts "BUILD_DIR:  #{build_root_dir}"
-    puts "TYPE:       #{types}"
-    puts "EXT:        #{extensions}"
-    puts "FORCE:      #{force}"
-    puts "DRY_RUN:    #{dry_run}"
+    puts "SRC_DIR:     #{src_dir}"
+    puts "ASSETS_DIR:  #{assets_root_dir}"
+    puts "BUILD_DIR:   #{build_root_dir}"
+    puts "TYPE:        #{types}"
+    puts "TARGET_SIZE: #{target_size}"
+    puts "EXT:         #{extensions}"
+    puts "FORCE:       #{force}"
+    puts "DRY_RUN:     #{dry_run}"
 
     build_ktx(
       src_dir:,
@@ -114,15 +116,23 @@ class Converter < Thor
   ####################
   #
   ####################
+  def list_files(src_dir)
+    return [] unless File.directory?(src_dir)
+
+    old_dir = Dir.pwd
+    Dir.chdir(src_dir)
+    files = Dir["*"]
+    Dir.chdir(old_dir)
+
+    files
+  end
+
   def generate_metadata(
     src_dir:,
     extensions:)
 
     metadata = read_metadata(src_dir:)
     textures = []
-
-    files = Dir["#{src_dir}/*"]
-
     sub_dirs = []
 
     # TODO KI ktx options
@@ -137,6 +147,7 @@ class Converter < Thor
     #              alhpanumeric sequence matching the regular expression
     #              ^[rgba01]{4}$.
 
+    files = list_files(src_dir)
     files.sort_by(&:downcase).each do |f|
       name = File.basename(f)
       basename = File.basename(f, ".*")
@@ -282,7 +293,7 @@ class Converter < Thor
 
       next unless action == :encode
 
-      process_image(filepath)
+      #process_image(filepath)
 
       encode(
         filepath,
@@ -372,8 +383,11 @@ class Converter < Thor
 
     img_list = Magick::ImageList.new
 
+    # // channel: metalness, roughness, displacement, ambient-occlusion
+    # glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
+
     img_list << (channels[Magick::RedChannel]   || black)
-    img_list << (channels[Magick::GreenChannel] || black)
+    img_list << (channels[Magick::GreenChannel] || white)
     img_list << (channels[Magick::BlueChannel]  || black)
     img_list << (channels[Magick::AlphaChannel] || white)
 

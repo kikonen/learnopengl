@@ -17,6 +17,11 @@ git submodule update --init  --recursive
 
 Ruby+Devkit 3.4.1-2 (x64) (https://rubyinstaller.org)
 
+```bash
+$ cat ~/.irbrc
+IRB.conf[:USE_AUTOCOMPLETE] = false
+```
+
 ### Setup
 
 ```bash
