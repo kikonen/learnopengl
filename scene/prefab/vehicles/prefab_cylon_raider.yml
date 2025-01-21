@@ -10,7 +10,7 @@ prefab:
         map_ke: Material _1sdsss_Emissive.jpg
         map_channel:
           - path: Material _1sdsss_metalness.jpg
-            type: metallness_map
+            type: metalness_map
             channel: R
           - path: Material _1sdsss_Roughness.jpg
             type: roughness_map

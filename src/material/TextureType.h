@@ -13,7 +13,7 @@ enum class TextureType : std::underlying_type_t<std::byte> {
     map_dudv,
     map_noise,
     map_noise_2,
-    map_metallness,
+    map_metalness,
     map_roughness,
     map_occlusion,
     map_displacement,
@@ -23,5 +23,5 @@ enum class TextureType : std::underlying_type_t<std::byte> {
     map_channel_part_2,
     map_channel_part_3,
     map_channel_part_4,
-    map_metal_channel
+    map_metal,
 };

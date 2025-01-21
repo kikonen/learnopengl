@@ -298,16 +298,16 @@ namespace loader {
                 }
             }
             else if (k == "map_metalness") {
-                if (!material.hasRegisteredTex(TextureType::map_metallness)) {
+                if (!material.hasRegisteredTex(TextureType::map_metalness)) {
                     ChannelPart part{
-                        TextureType::map_metallness,
+                        TextureType::map_metalness,
                         { ChannelPart::Channel::red }
                     };
                     material.map_channelParts.push_back(part);
 
                     std::string line = readString(v);
                     material.addTexture(
-                        TextureType::map_metallness,
+                        TextureType::map_metalness,
                         line,
                         false);
                 }
@@ -353,6 +353,13 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     TextureType::map_custom_1,
+                    line,
+                    true);
+            }
+            else if (k == "map_metal") {
+                std::string line = readString(v);
+                material.addTexture(
+                    TextureType::map_metal,
                     line,
                     true);
             }
@@ -643,14 +650,14 @@ namespace loader {
         }
 
         if (!found && util::matchAny(metalnessMatchers, matchName)) {
-            if (!material.hasRegisteredTex(TextureType::map_metallness)) {
+            if (!material.hasRegisteredTex(TextureType::map_metalness)) {
                 ChannelPart part{
-                TextureType::map_metallness,
+                TextureType::map_metalness,
                 { ChannelPart::Channel::red }
                 };
                 material.map_channelParts.push_back(part);
                 material.addTexture(
-                    TextureType::map_metallness,
+                    TextureType::map_metalness,
                     assetPath,
                     false);
             }

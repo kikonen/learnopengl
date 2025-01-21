@@ -8,7 +8,7 @@ prefab:
       map_normal: DiamondPlate002_1K_NormalGL.png
       map_channel:
         - path: DiamondPlate002_1K_Metalness.png
-          type: metallness_map
+          type: metalness_map
           channel: R
         - path: DiamondPlate002_1K_Roughness.png
           type: roughness_map

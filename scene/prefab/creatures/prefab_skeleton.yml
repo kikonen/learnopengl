@@ -11,7 +11,7 @@ prefab:
         map_normal: skeleton_pbr/Skeleton_Body_Normal.png
         map_channel:
           - path: skeleton_pbr/Skeleton_Body_MetallicSmoothness.png
-            type: metallness_map
+            type: metalness_map
             channel: xxxR
         program: g_tex
         shadow_program: shadow

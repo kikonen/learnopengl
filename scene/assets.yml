@@ -15,7 +15,7 @@ assets:
 
   glsl_use_debug: true
 
-  compressed_textures_enabled: false
+  compressed_textures_enabled: true
   prepass_depth_enabled: false
 
   g_buffer_scale: 0.5

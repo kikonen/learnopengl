@@ -129,12 +129,14 @@ nodes:
     mesh:
       path: water_ball
       material:
-        name: bronze_ball
+        base: textures\Metal022_1K-PNG
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_pbr: textures\Metal022_1K-PNG
+        map_kd: Metal022_1K_Color.png
+        map_normal: Metal022_1K_NormalGL.png
+        map_metal: mrdao_2048.png
         xreflection: 0.05
         tiling: 3
-        parallax_depth: 0.0
+        parallax_depth: 0.01
     program: g_tex
     pos: [0.0, 0.0, 20.0]
     scale: 1.3

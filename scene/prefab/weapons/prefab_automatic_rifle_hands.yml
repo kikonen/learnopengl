@@ -10,7 +10,7 @@ prefab:
           map_bump: T_Hands_04_Normals_2048.png
           map_channel:
             - path: T_Hands_04_Metallic_2048.png
-              type: metallness_map
+              type: metalness_map
               channel: R
             - path: T_Hands_04_Ao_2048.png
               type: occlusion_map
@@ -38,7 +38,7 @@ prefab:
           map_bump: T_Automatic_Rifle_01_Normals_2048.png
           map_channel:
             - path: T_Automatic_Rifle_01_Metallic_2048.png
-              type: metallness_map
+              type: metalness_map
               channel: R
       default_programs: true
       base_scale: 0.01

@@ -97,7 +97,9 @@ namespace {
     {
         const auto& assets = Assets::get();
 
-        std::filesystem::path filePath = util::joinPath(assets.assetsDir, path);
+        std::filesystem::path filePath;
+
+        bool found = false;
 
         if (useCompressed && assets.compressedTexturesEnabled) {
             std::filesystem::path ktxPath{ path };
@@ -110,7 +112,23 @@ namespace {
             if (util::fileExists(fullPath)) {
                 KI_INFO_OUT(fmt::format("FOUND: ktx_path={}", fullPath));
                 filePath = fullPath;
+                found = true;
             }
+        }
+
+        if (!found) {
+            const auto fullPath = util::joinPath(
+                assets.assetsBuildDir,
+                path);
+
+            if (util::fileExists(fullPath)) {
+                filePath = fullPath;
+                found = true;
+            }
+        }
+
+        if (!found) {
+            filePath = util::joinPath(assets.assetsDir, path);
         }
 
         return filePath.string();
@@ -239,11 +257,14 @@ void Material::loadTextures()
         loadTexture(type, gammaCorrect, flipY, usePlaceholder);
     }
 
-    loadChannelTexture(
-        TextureType::map_metal_channel,
-        fmt::format("material_{}_metal", m_registeredIndex),
-        map_channelParts,
-        metal);
+    if (!hasRegisteredTex(TextureType::map_metal))
+    {
+        loadChannelTexture(
+            TextureType::map_metal,
+            fmt::format("material_{}_metal", m_registeredIndex),
+            map_channelParts,
+            metal);
+    }
 }
 
 void Material::loadTexture(
@@ -436,7 +457,7 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_metal_channel) ? WHITE_RGBA : metal,
+        hasBoundTex(TextureType::map_metal) ? WHITE_RGBA : metal,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
@@ -448,7 +469,7 @@ const MaterialSSBO Material::toSSBO() const
 
         getTexHandle(TextureType::map_opacity, whitePx),
         getTexHandle(TextureType::map_custom_1, 0),
-        getTexHandle(TextureType::map_metal_channel, whitePx),
+        getTexHandle(TextureType::map_metal, whitePx),
 
         pattern,
 

@@ -11,6 +11,29 @@ This is just scatchpad app for following OpenGL tutorial at learnopengl.com.
 git submodule init
 git submodule update --init  --recursive
 ```
+## Build assets
+
+### Install ruby
+
+Ruby+Devkit 3.4.1-2 (x64) (https://rubyinstaller.org)
+
+### Setup
+
+```bash
+bundle install
+```
+
+### prepare assets
+
+```bash
+ruby script/encode_ktx.rb meta --src resources/assets/textures/Metal022_1K-PNG --dry-run false --force true
+```
+
+### build assets
+
+```bash
+ruby script/encode_ktx.rb ktx --src resources/assets/textures/Metal022_1K-PNG --dry-run false --target-size 2048 --force true
+```
 
 ## vcpkg-registry
 

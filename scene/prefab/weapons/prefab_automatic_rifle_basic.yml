@@ -10,7 +10,7 @@ prefab:
           map_bump: T_Automatic_Rifle_01_Normals_2048.png
           map_channel:
             - path: T_Automatic_Rifle_01_Metallic_2048.png
-              type: metallness_map
+              type: metalness_map
               channel: R
           xalpha: true
           xblend: true
