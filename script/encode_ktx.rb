@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'open3'
-
+require 'debug'
 require 'digest'
 require 'pathname'
 require 'thor'
@@ -26,6 +26,9 @@ class Converter < Thor
     true
   end
 
+  ############################################################
+  #
+  ############################################################
   desc "meta", "Generate texture meta info"
   method_option :src, default: 'resources/assets'
   method_option :assets_root_dir, default: 'resources/assets'
@@ -59,6 +62,7 @@ class Converter < Thor
     puts "EXT:         #{extensions}"
     puts "TARGET_SIZE: #{target_size}"
     puts "FORCE:       #{force}"
+    puts "RECURSIVE:   #{recursive}"
     puts "DRY_RUN:     #{dry_run}"
 
     generate_metadata(
@@ -66,6 +70,9 @@ class Converter < Thor
       extensions:)
   end
 
+  ############################################################
+  #
+  ############################################################
   desc "build", "build KTX assets"
   method_option :src, default: 'resources/assets'
   method_option :assets_root_dir, default: 'resources/assets'
@@ -126,6 +133,7 @@ class Converter < Thor
     puts "ENCODE_KTX:  #{encode_ktx}"
     puts "EXT:         #{extensions}"
     puts "FORCE:       #{force}"
+    puts "RECURSIVE:   #{recursive}"
     puts "DRY_RUN:     #{dry_run}"
 
     build_dir(
@@ -135,20 +143,9 @@ class Converter < Thor
 
   private
 
-  ####################
+  ############################################################
   #
-  ####################
-  def list_files(src_dir)
-    return [] unless File.directory?(src_dir)
-
-    old_dir = Dir.pwd
-    Dir.chdir(src_dir)
-    files = Dir["*"]
-    Dir.chdir(old_dir)
-
-    files
-  end
-
+  ############################################################
   def generate_metadata(
     src_dir:,
     extensions:)
@@ -174,8 +171,9 @@ class Converter < Thor
       name = File.basename(f)
       basename = File.basename(f, ".*")
 
-      if File.directory?(f)
+      if File.directory?("#{src_dir}/#{name}")
         sub_dirs << name
+        next
       end
 
       next unless extensions.any? { |ext| f.end_with?(ext) }
@@ -271,9 +269,15 @@ class Converter < Thor
       end
     end
 
-    metadata[:dir] = src_dir
-    metadata[:textures] = textures
-    write_metadata(src_dir:, data: metadata)
+    need_process = textures.any? do |info|
+      [:combine, :encode].include?(info[:action])
+    end
+
+    if need_process
+      metadata[:dir] = src_dir
+      metadata[:textures] = textures
+      write_metadata(src_dir:, data: metadata)
+    end
 
     if recursive
       sub_dirs.each do |sub_dir|
@@ -284,9 +288,9 @@ class Converter < Thor
     end
   end
 
-  ####################
+  ############################################################
   #
-  ####################
+  ############################################################
   def build_dir(
     src_dir:,
     extensions:)
@@ -336,10 +340,10 @@ class Converter < Thor
     if recursive
       sub_dirs = []
 
-      files = Dir["#{src_dir}/*"]
+      files = list_files(src_dir)
       files.sort_by(&:downcase).each do |f|
-        if File.directory?(f)
-          sub_dirs << name
+        if File.directory?("#{src_dir}/#{f}")
+          sub_dirs << f
         end
       end
 
@@ -351,32 +355,9 @@ class Converter < Thor
     end
   end
 
-  ####################
-  #
-  ####################
-  def read_metadata(
-    src_dir:)
-    metadata_path = "#{src_dir}/_assets.meta"
-    return {} unless File.exist?(metadata_path)
-
-    puts "READ: #{metadata_path}"
-    JSON.parse(File.read(metadata_path), symbolize_names: true)
-  end
-
-  def write_metadata(
-    src_dir:,
-    data:)
-    metadata_path = "#{src_dir}/_assets.meta"
-    puts "WRITE: #{metadata_path}"
-
-    if dry_run
-      puts JSON.pretty_generate(data)
-      return
-    end
-
-    File.write(metadata_path, JSON.pretty_generate(data) + "\n")
-  end
-
+  ############################################################
+  # combine
+  ############################################################
   def create_combound_texture(
     src_dir,
     dst_dir,
@@ -396,6 +377,12 @@ class Converter < Thor
 
     channels = {}
 
+    black = Magick::Image
+      .new(target_size, target_size) { |options| options.background_color = 'black' }
+
+    white = Magick::Image
+      .new(target_size, target_size) { |options| options.background_color = 'white' }
+
     parts.each do |info|
       src_path = "#{src_dir}/#{info[:name]}"
       img = Magick::Image.read(src_path).first
@@ -405,14 +392,10 @@ class Converter < Thor
 
       next unless src_channel && dst_channel
 
-      channels[dst_channel] = img.channel(src_channel).resize(target_size, target_size)
+      channels[dst_channel] = img
+        .resize(target_size, target_size)
+        .channel(src_channel)
     end
-
-    black = Magick::Image
-      .new(target_size, target_size) { |options| options.background_color = 'black' }
-
-    white = Magick::Image
-      .new(target_size, target_size) { |options| options.background_color = 'white' }
 
     img_list = Magick::ImageList.new
 
@@ -423,6 +406,8 @@ class Converter < Thor
     img_list << (channels[Magick::GreenChannel] || white)
     img_list << (channels[Magick::BlueChannel]  || black)
     img_list << (channels[Magick::AlphaChannel] || white)
+
+    debugger
 
     img = img_list.combine
     img.format = 'PNG'
@@ -447,13 +432,9 @@ class Converter < Thor
     CHANNELS[ch&.upcase]
   end
 
-  def process_image(
-    src
-  )
-    # img = Magick::Image.read(src).first
-    # binding.irb
-  end
-
+  ############################################################
+  # KTX
+  ############################################################
   def encode(
     src_path,
     dst_dir:,
@@ -525,6 +506,47 @@ class Converter < Thor
       write_digest(dst_path, sha_digest)
       write_salt(dst_path)
     end
+  end
+
+  ############################################################
+  # UTILS
+  ############################################################
+
+  ####################
+  # metadata
+  ####################
+  def read_metadata(
+    src_dir:)
+    metadata_path = "#{src_dir}/_assets.meta"
+    return {} unless File.exist?(metadata_path)
+
+    puts "READ: #{metadata_path}"
+    JSON.parse(File.read(metadata_path), symbolize_names: true)
+  end
+
+  def write_metadata(
+    src_dir:,
+    data:)
+    metadata_path = "#{src_dir}/_assets.meta"
+    puts "WRITE: #{metadata_path}"
+
+    if dry_run
+      puts JSON.pretty_generate(data)
+      return
+    end
+
+    File.write(metadata_path, JSON.pretty_generate(data) + "\n")
+  end
+
+  def list_files(src_dir)
+    return [] unless File.directory?(src_dir)
+
+    old_dir = Dir.pwd
+    Dir.chdir(src_dir)
+    files = Dir["*"]
+    Dir.chdir(old_dir)
+
+    files
   end
 
   def target_salt

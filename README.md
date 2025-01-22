@@ -28,6 +28,35 @@ IRB.conf[:USE_AUTOCOMPLETE] = false
 bundle install
 ```
 
+#### .rdbgrc
+```
+#
+# https://github.com/ruby/debug
+#
+
+config set no_hint true
+config set show_frames 0
+config set use_short_path true
+config set no_reline 1
+```
+
+#### .irbrc
+```
+#
+# https://ruby-doc.org/3.4.1/stdlibs/irb/IRB.html#module-IRB-label-Configuration
+#
+# @see IRB.conf
+
+IRB.conf[:USE_AUTOCOMPLETE] = false
+#IRB.conf[:PROMPT_MODE] = :SIMPLE
+#IRB.conf[:USE_PAGER] = false
+#IRB.conf[:BACK_TRACE_LIMIT] = 0
+#IRB.conf[:CONTEXT_MODE] = 0
+#IRB.conf[:INSPECT_MODE] = false
+#IRB.conf[:COMMAND_ALIASES] = {}
+```
+
+
 ### prepare assets
 
 ```bash
