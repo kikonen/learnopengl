@@ -15,6 +15,8 @@ class Converter < Thor
   attr_reader :assets_root_dir,
     :build_root_dir,
     :target_size,
+    :combine,
+    :encode_ktx,
     :recursive,
     :force,
     :dry_run,
@@ -64,7 +66,7 @@ class Converter < Thor
       extensions:)
   end
 
-  desc "ktx", "build KTX assets"
+  desc "build", "build KTX assets"
   method_option :src, default: 'resources/assets'
   method_option :assets_root_dir, default: 'resources/assets'
   method_option :build_root_dir, default: 'resources/build'
@@ -74,6 +76,15 @@ class Converter < Thor
   method_option :ext,
     type: :array,
     default: nil
+  method_option :all,
+    type: :boolean,
+    default: false
+  method_option :combine,
+    type: :boolean,
+    default: false
+  method_option :ktx,
+    type: :boolean,
+    default: false
   method_option :recursive,
     type: :boolean,
     default: false
@@ -86,7 +97,7 @@ class Converter < Thor
   method_option :type,
     type: :array,
     default: ['all']
-  def ktx
+  def build
     src_dir = options[:src]
     extensions = options[:ext] || EXTENSIONS
     extensions = extensions.map(&:downcase)
@@ -98,17 +109,26 @@ class Converter < Thor
     @force = options[:force]
     @dry_run = options[:dry_run]
     @types = options[:type].map(&:to_sym)
+    @combine = options[:combine]
+    @encode_ktx = options[:ktx]
+
+    if options[:all]
+      @combine = true
+      @encode_ktx = true
+    end
 
     puts "SRC_DIR:     #{src_dir}"
     puts "ASSETS_DIR:  #{assets_root_dir}"
     puts "BUILD_DIR:   #{build_root_dir}"
     puts "TYPE:        #{types}"
     puts "TARGET_SIZE: #{target_size}"
+    puts "COMBINE:     #{combine}"
+    puts "ENCODE_KTX:  #{encode_ktx}"
     puts "EXT:         #{extensions}"
     puts "FORCE:       #{force}"
     puts "DRY_RUN:     #{dry_run}"
 
-    build_ktx(
+    build_dir(
       src_dir:,
       extensions:)
   end
@@ -267,7 +287,7 @@ class Converter < Thor
   ####################
   #
   ####################
-  def build_ktx(
+  def build_dir(
     src_dir:,
     extensions:)
 
@@ -295,18 +315,22 @@ class Converter < Thor
 
       next unless action == :encode
 
-      encode(
-        src_path,
-        dst_dir:,
-        type: info[:type],
-        target_type: info[:target_type] || 'RGB',
-        srgb: info[:srgb] || false,
-        normal_mode: info[:normal_mode] || false
-      )
+      if encode_ktx
+        encode(
+          src_path,
+          dst_dir:,
+          type: info[:type],
+          target_type: info[:target_type] || 'RGB',
+          srgb: info[:srgb] || false,
+          normal_mode: info[:normal_mode] || false
+        )
+      end
     end
 
-    combine_textures.each do |target_name, parts|
-      create_combound_texture(src_dir, dst_dir, target_name, parts)
+    if combine
+      combine_textures.each do |target_name, parts|
+        create_combound_texture(src_dir, dst_dir, target_name, parts)
+      end
     end
 
     if recursive
@@ -320,7 +344,7 @@ class Converter < Thor
       end
 
       sub_dirs.each do |sub_dir|
-        build_ktx(
+        build_dir(
           src_dir: [src_dir, sub_dir].join('/'),
           extensions:)
       end
@@ -469,8 +493,12 @@ class Converter < Thor
       "--assign_oetf",
       srgb ? "srgb" : "linear",
       "--lower_left_maps_to_s0t0",
-      normal_mode ? "--normal_mode" : nil,
     ].compact
+
+    if normal_mode
+      cmd << "--normal_mode"
+      "--uastc_rdo_l"
+    end
 
 
     src_pathname = Pathname.new(src_path)
