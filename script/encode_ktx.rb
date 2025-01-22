@@ -2,6 +2,8 @@
 
 require 'open3'
 
+require 'digest'
+require 'pathname'
 require 'thor'
 require 'fileutils'
 require 'json'
@@ -282,7 +284,7 @@ class Converter < Thor
       next unless name
       next unless extensions.any? { |ext| name.downcase.end_with?(ext) }
 
-      filepath = "#{src_dir}/#{name}"
+      src_path = "#{src_dir}/#{name}"
 
       action = info[:action]&.to_sym
 
@@ -293,10 +295,8 @@ class Converter < Thor
 
       next unless action == :encode
 
-      #process_image(filepath)
-
       encode(
-        filepath,
+        src_path,
         dst_dir:,
         type: info[:type],
         target_type: info[:target_type] || 'RGB',
@@ -359,13 +359,22 @@ class Converter < Thor
     target_name,
     parts
   )
-    dst_filepath = "#{dst_dir}/#{target_name}_#{target_size}.png"
+    dst_path = "#{dst_dir}/#{target_name}.png"
+
+    source_paths = parts.map do |info|
+      "#{src_dir}/#{info[:name]}"
+    end
+
+    sha_digest = sha_changed?(dst_path, source_paths, target_salt)
+    return unless sha_digest
+
+    puts "COMBINE: #{dst_path}"
 
     channels = {}
 
     parts.each do |info|
-      filepath = "#{src_dir}/#{info[:name]}"
-      img = Magick::Image.read(filepath).first
+      src_path = "#{src_dir}/#{info[:name]}"
+      img = Magick::Image.read(src_path).first
 
       src_channel = select_channel(info[:source_channel])
       dst_channel = select_channel(info[:target_channel])
@@ -396,7 +405,11 @@ class Converter < Thor
 
     #binding.irb
 
-    img.write(dst_filepath)
+    unless dry_run
+      img.write(dst_path)
+      write_digest(dst_path, sha_digest)
+      write_salt(dst_path)
+    end
   end
 
   CHANNELS = {
@@ -418,7 +431,7 @@ class Converter < Thor
   end
 
   def encode(
-    src,
+    src_path,
     dst_dir:,
     type:,
     target_type: "RGB",
@@ -427,26 +440,20 @@ class Converter < Thor
   )
     return unless types.include?(type) || types.include?(:all)
 
-    basename = File.basename(src, ".*")
-    dst = "#{dst_dir}/#{basename}.ktx"
-    dst_tmp = "#{dst}.tmp"
+    basename = File.basename(src_path, ".*")
+    dst_path = "#{dst_dir}/#{basename}.ktx"
+    dst_tmp_path = "#{dst_path}.tmp"
 
-    if File.exist?(dst) && !force
-      src_file = File.new(src)
-      dst_file = File.new(dst)
-      if src_file.mtime <= dst_file.mtime
-        puts "SKIP  [#{type.to_s.upcase}]: not_changed #{src}"
-        return
-      end
-    end
+    sha_digest = sha_changed?(dst_path, [src_path], target_salt)
+    return unless sha_digest
 
-    puts "ENCODE[#{type.to_s.upcase}]: #{src}"
+    puts "ENCODE[#{type.to_s.upcase}]: #{src_path}"
 
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
 
-      if File.exist?(dst_tmp)
-        FileUtils.rm(dst_tmp)
+      if File.exist?(dst_tmp_path)
+        FileUtils.rm(dst_tmp_path)
       end
     end
 
@@ -465,26 +472,84 @@ class Converter < Thor
       normal_mode ? "--normal_mode" : nil,
     ].compact
 
-    cmd << dst_tmp
-    cmd << src
+
+    src_pathname = Pathname.new(src_path)
+    dst_pathname = Pathname.new(dst_tmp_path)
+    #binding.irb
+
+    cmd << %Q["#{dst_pathname.cleanpath}"]
+    cmd << %Q["#{src_pathname.cleanpath}"]
 
     puts "CMD: #{cmd.join(" ")}"
 
     unless dry_run
-      puts system(*cmd)
+      %x{#{cmd.join(" ")}}
 
-      if File.exist?(dst_tmp)
-        FileUtils.cp(dst_tmp, dst)
-        FileUtils.rm_f(dst_tmp)
+      if File.exist?(dst_tmp_path)
+        FileUtils.cp(dst_tmp_path, dst_path)
+        FileUtils.rm_f(dst_tmp_path)
       end
-      unless File.exist?(dst)
-        puts "FAIL: #{src}"
+      unless File.exist?(dst_path)
+        puts "FAIL: #{src_path}"
         return
+      end
+
+      write_digest(dst_path, sha_digest)
+      write_salt(dst_path)
+    end
+  end
+
+  def target_salt
+    # NOTE KI need to salt with target size
+    "target_size=#{target_size}"
+  end
+
+  def write_salt(dst_path)
+    salt_path = "#{dst_path}.salt"
+    File.write(salt_path, target_salt)
+  end
+
+  def read_digest(dst_path)
+    digest_path = "#{dst_path}.digest"
+    return unless File.exist?(digest_path)
+    File.read(digest_path).chomp
+  end
+
+  def write_digest(dst_path, sha_digest)
+    digest_path = "#{dst_path}.digest"
+    File.write(digest_path, sha_digest)
+  end
+
+  #
+  # @return SHA if sha changed, nil otherwise
+  #
+  def sha_changed?(dst_path, source_paths, salt)
+    old_digest = read_digest(dst_path)
+    sha_digest = digest(source_paths, salt)
+
+    if old_digest == sha_digest && File.exist?(dst_path) && !force
+      puts "SKIP: SHA_NOT_ChANGED #{dst_path}"
+      return
+    end
+
+    sha_digest
+  end
+
+  # https://stackoverflow.com/questions/64130698/sha256-value-for-large-binaries-when-using-ruby
+  def digest(file_paths, salt)
+    sha = Digest::SHA2.new
+
+    sha << salt
+
+    file_paths.sort.each do |file_path|
+      File.open(file_path) do |f|
+        while chunk = f.read(256)
+          sha << chunk
+        end
       end
     end
 
-    #puts "OK: #{src}"
-    #puts system("ktxinfo.exe", dst)
+    sha.hexdigest
   end
 end
 Converter.start(ARGV)
