@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
 gem 'thor'
-gem 'rmagick'
+gem 'rmagick', '~> 6.1.0'

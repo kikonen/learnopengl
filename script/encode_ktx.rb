@@ -2,6 +2,7 @@
 
 require 'open3'
 require 'debug'
+require 'yaml'
 require 'digest'
 require 'pathname'
 require 'thor'
@@ -11,6 +12,10 @@ require 'rmagick'
 
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"]
+
+  MRDAO_MAP = 'MRDAO_BUILD'
+  COMBINE_VERSION = 1
+  KTX_VERSION = 1
 
   attr_reader :assets_root_dir,
     :build_root_dir,
@@ -124,6 +129,11 @@ class Converter < Thor
       @encode_ktx = true
     end
 
+    unless @combine || @encode_ktx
+      puts "--combine or --ktx required"
+      exit
+    end
+
     puts "SRC_DIR:     #{src_dir}"
     puts "ASSETS_DIR:  #{assets_root_dir}"
     puts "BUILD_DIR:   #{build_root_dir}"
@@ -219,7 +229,7 @@ class Converter < Thor
         info = {
           type: :metalness,
           action: :combine,
-          target_name: 'mrdao',
+          target_name: MRDAO_MAP,
           source_channel: 'R',
           target_channel: "R",
         }
@@ -227,7 +237,7 @@ class Converter < Thor
         info = {
           type: :displacement,
           action: :combine,
-          target_name: 'mrdao',
+          target_name: MRDAO_MAP,
           source_channel: 'R',
           target_channel: "B",
         }
@@ -235,7 +245,7 @@ class Converter < Thor
         info = {
           type: :roughness,
           action: :combine,
-          target_name: 'mrdao',
+          target_name: MRDAO_MAP,
           source_channel: 'R',
           target_channel: "G",
         }
@@ -243,7 +253,7 @@ class Converter < Thor
         info = {
           type: :occlusion,
           action: :combine,
-          target_name: 'mrdao',
+          target_name: MRDAO_MAP,
           source_channel: 'R',
           target_channel: "A",
         }
@@ -296,7 +306,7 @@ class Converter < Thor
     extensions:)
 
     plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
-    dst_dir = "#{build_root_dir}/#{plain_dir}"
+    dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
     puts "DIR: #{src_dir} => #{dst_dir}"
 
     metadata = read_metadata(src_dir:)
@@ -364,60 +374,115 @@ class Converter < Thor
     target_name,
     parts
   )
+    black = black_image
+    white = white_image
+
     dst_path = "#{dst_dir}/#{target_name}.png"
 
-    source_paths = parts.map do |info|
+    sorted_parts = parts.sort_by { |e| e[:name] }
+
+    source_paths = sorted_parts.map do |info|
       "#{src_dir}/#{info[:name]}"
     end
 
-    sha_digest = sha_changed?(dst_path, source_paths, target_salt)
+    salt = {
+      version: COMBINE_VERSION,
+      size: target_size,
+      parts: sorted_parts.map do |info|
+        {
+          name: info[:name],
+          source_channel: info[:source_channel],
+          target_channel: info[:target_channel],
+        }
+      end.sort_by { |e| e[:name] }
+    }
+
+    sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
     puts "COMBINE: #{dst_path}"
 
-    channels = {}
+    # channel: metalness, roughness, displacement, ambient-occlusion
+    # DEFAULTS = glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
+    target_channels = {
+      Magick::RedChannel => nil,
+      Magick::GreenChannel => nil,
+      Magick::BlueChannel => nil,
+      Magick::AlphaChannel => nil,
+    }
 
-    black = Magick::Image
-      .new(target_size, target_size) { |options| options.background_color = 'black' }
+    target_placeholders = {
+      Magick::RedChannel => white,
+      Magick::GreenChannel => white,
+      Magick::BlueChannel => black,
+      Magick::AlphaChannel => white,
+    }
 
-    white = Magick::Image
-      .new(target_size, target_size) { |options| options.background_color = 'white' }
+    debugger
 
     parts.each do |info|
-      src_path = "#{src_dir}/#{info[:name]}"
-      img = Magick::Image.read(src_path).first
-
       src_channel = select_channel(info[:source_channel])
       dst_channel = select_channel(info[:target_channel])
 
       next unless src_channel && dst_channel
 
-      channels[dst_channel] = img
-        .resize(target_size, target_size)
+      src_path = "#{src_dir}/#{info[:name]}"
+      img = Magick::Image.read(src_path)
+        .first
         .channel(src_channel)
+        .resize(target_size, target_size)
+
+      target_channels[dst_channel] = {
+        image: img,
+        channel: src_channel,
+      }
     end
 
     img_list = Magick::ImageList.new
 
-    # // channel: metalness, roughness, displacement, ambient-occlusion
-    # glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
-
-    img_list << (channels[Magick::RedChannel]   || black)
-    img_list << (channels[Magick::GreenChannel] || white)
-    img_list << (channels[Magick::BlueChannel]  || black)
-    img_list << (channels[Magick::AlphaChannel] || white)
-
     debugger
 
-    img = img_list.combine
-    img.format = 'PNG'
+    target_channels.each do |dst_channel, info|
+      src_img = target_placeholders[dst_channel]
+      src_op = Magick::CopyRedCompositeOp
 
-    #binding.irb
+      if info
+        src_img = info[:image]
+        src_op = select_channel_op(info[:channel])
+      end
+
+      puts "#{dst_channel} = #{src_op} - #{src_img.inspect}"
+
+      img = Magick::Image
+        .new(target_size, target_size) { |opt|
+          opt.background_color = 'black'
+          opt.depth = 8
+          opt.image_type = Magick::TrueColorType
+        }
+
+      img = img
+        .composite!(
+          src_img,
+          0,
+          0,
+          src_op)
+
+      img_list << img
+    end
+
+    #debugger
+
+    dst_img = img_list.combine
 
     unless dry_run
-      img.write(dst_path)
-      write_digest(dst_path, sha_digest)
-      write_salt(dst_path)
+      FileUtils.mkdir_p(dst_dir)
+
+      puts "WRITE: #{dst_path}"
+      dst_img.write(dst_path)
+
+      write_digest(dst_path, sha_digest, source_paths, salt)
+
+      puts "DONE:  #{dst_path}"
     end
   end
 
@@ -428,8 +493,57 @@ class Converter < Thor
     'A' => Magick::AlphaChannel,
   }
 
+  CHANNEL_OPS = {
+    Magick::RedChannel => Magick::CopyRedCompositeOp,
+    Magick::GreenChannel => Magick::CopyGreenCompositeOp,
+    Magick::BlueChannel => Magick::CopyBlueCompositeOp,
+    Magick::AlphaChannel => Magick::CopyAlphaCompositeOp,
+  }
+
   def select_channel(ch)
     CHANNELS[ch&.upcase]
+  end
+
+  def select_channel_op(channel)
+    CHANNEL_OPS[channel]
+  end
+
+  def black_image
+    @black_iamge ||=
+      if true
+        w = target_size
+        Magick::Image
+          .new(w, w) { |opt|
+            opt.background_color = 'black'
+            opt.depth = 8
+            opt.filename = "black"
+          }
+      else
+        Magick::Image
+          .read("#{assets_root_dir}/textures/placeholder/black.png")
+          .first
+          .resize(target_size, target_size)
+          .channel(Magick::RedChannel)
+      end
+  end
+
+  def white_image
+    @white_image ||=
+      if true
+        w = target_size
+        Magick::Image
+          .new(w, w) { |opt|
+            opt.background_color = 'white'
+            opt.depth = 8
+            opt.filename = "white"
+          }
+      else
+        Magick::Image
+          .read("#{assets_root_dir}/textures/placeholder/white.png")
+          .first
+          .resize(target_size, target_size)
+          .channel(Magick::RedChannel)
+      end
   end
 
   ############################################################
@@ -449,7 +563,15 @@ class Converter < Thor
     dst_path = "#{dst_dir}/#{basename}.ktx"
     dst_tmp_path = "#{dst_path}.tmp"
 
-    sha_digest = sha_changed?(dst_path, [src_path], target_salt)
+    salt = {
+      version: KTX_VERSION,
+      target_size:,
+      parts: [
+        name: File.basename(src_path)
+      ]
+    }
+
+    sha_digest = sha_changed?(dst_path, [src_path], salt)
     return unless sha_digest
 
     puts "ENCODE[#{type.to_s.upcase}]: #{src_path}"
@@ -492,19 +614,23 @@ class Converter < Thor
     puts "CMD: #{cmd.join(" ")}"
 
     unless dry_run
+      puts "WRITE: #{dst_path}"
+
       %x{#{cmd.join(" ")}}
 
       if File.exist?(dst_tmp_path)
         FileUtils.cp(dst_tmp_path, dst_path)
         FileUtils.rm_f(dst_tmp_path)
+
+        puts "DONE:  #{dst_path}"
       end
+
       unless File.exist?(dst_path)
-        puts "FAIL: #{src_path}"
+        puts "FAIL:  #{src_path}"
         return
       end
 
-      write_digest(dst_path, sha_digest)
-      write_salt(dst_path)
+      write_digest(dst_path, sha_digest, [src_path], salt)
     end
   end
 
@@ -549,25 +675,21 @@ class Converter < Thor
     files
   end
 
-  def target_salt
-    # NOTE KI need to salt with target size
-    "target_size=#{target_size}"
-  end
-
-  def write_salt(dst_path)
-    salt_path = "#{dst_path}.salt"
-    File.write(salt_path, target_salt)
-  end
-
   def read_digest(dst_path)
     digest_path = "#{dst_path}.digest"
     return unless File.exist?(digest_path)
-    File.read(digest_path).chomp
+    data = YAML.load(File.read(digest_path), symbolize_names: true)
+    data[:sha_digest]
   end
 
-  def write_digest(dst_path, sha_digest)
+  def write_digest(dst_path, sha_digest, source_paths, salt)
     digest_path = "#{dst_path}.digest"
-    File.write(digest_path, sha_digest)
+    data = {
+      sha_digest:,
+      salt:,
+      sources: source_paths.sort
+    }
+    File.write(digest_path, YAML.dump(data))
   end
 
   #
@@ -589,7 +711,7 @@ class Converter < Thor
   def digest(file_paths, salt)
     sha = Digest::SHA2.new
 
-    sha << salt
+    sha << salt.to_yaml
 
     file_paths.sort.each do |file_path|
       File.open(file_path) do |f|

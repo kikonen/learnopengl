@@ -12,7 +12,7 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
-  rmagick
+  rmagick (~> 6.1.0)
   thor
 
 BUNDLED WITH
