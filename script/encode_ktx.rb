@@ -9,11 +9,26 @@ require 'thor'
 require 'fileutils'
 require 'json'
 require 'rmagick'
+#require 'vips'
 
 class Converter < Thor
-  EXTENSIONS = ["png", "jpg", "jpeg", "tga"]
+  EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  MRDAO_MAP = 'MRDAO_BUILD'
+  MRAO_MAP = 'mrao_build'
+  DISPLACEMENT_MAP = 'displacement_build'
+
+  RED = 'R'
+  GREEN = 'G'
+  BLUE = 'B'
+  ALPHA = 'A'
+
+  MAGICK_CHANNELS = {
+    RED => Magick::RedChannel,
+    GREEN => Magick::GreenChannel,
+    BLUE => Magick::BlueChannel,
+    ALPHA => Magick::AlphaChannel,
+  }.freeze
+
   COMBINE_VERSION = 1
   KTX_VERSION = 1
 
@@ -190,6 +205,8 @@ class Converter < Thor
 
       info = nil
 
+      combined_textures = {}
+
       case basename.downcase
       when /preview/
         info = {
@@ -222,46 +239,50 @@ class Converter < Thor
         info = {
           type: :opacity,
           action: :encode,
-          target_type: "R",
+          target_type: RED,
           srgb: false,
         }
       when /_metalness_/, /_metalness\z/, /-metallic\z/
         info = {
           type: :metalness,
           action: :combine,
-          target_name: MRDAO_MAP,
-          source_channel: 'R',
-          target_channel: "R",
-        }
-      when /_disp_/, /_displacement_/, /[-_]displacement\z/, /_disp\z/
-        info = {
-          type: :displacement,
-          action: :combine,
-          target_name: MRDAO_MAP,
-          source_channel: 'R',
-          target_channel: "B",
+          mode: :mrao,
+          target_name: MRAO_MAP,
+          source_channel: RED,
+          target_channel: RED,
         }
       when /_rgh_/, /_roughness_/, /[-_]roughness\z/, /\Aroughness\z/
         info = {
           type: :roughness,
           action: :combine,
-          target_name: MRDAO_MAP,
-          source_channel: 'R',
-          target_channel: "G",
+          mode: :mrao,
+          target_name: MRAO_MAP,
+          source_channel: RED,
+          target_channel: GREEN,
         }
       when /_ao_/, /_occlusion_/, /_ambientocclusion\z/, /[-_]ao\z/, /\Aao\z/
         info = {
           type: :occlusion,
           action: :combine,
-          target_name: MRDAO_MAP,
-          source_channel: 'R',
-          target_channel: "A",
+          mode: :mrao,
+          target_name: MRAO_MAP,
+          source_channel: RED,
+          target_channel: BLUE,
+        }
+      when /_disp_/, /_displacement_/, /[-_]displacement\z/, /_disp\z/
+        info = {
+          type: :displacement,
+          action: :combine,
+          mode: :displacement,
+          target_name: DISPLACEMENT_MAP,
+          source_channel: RED,
+          target_channel: RED,
         }
       when /gloss/
         info = {
           type: :gloss,
           action: :skip,
-          target_type: 'R',
+          target_type: RED,
           srgb: false,
         }
       else
@@ -343,7 +364,8 @@ class Converter < Thor
 
     if combine
       combine_textures.each do |target_name, parts|
-        create_combound_texture(src_dir, dst_dir, target_name, parts)
+        target_mode = parts.first[:mode].to_sym
+        create_combound_texture(src_dir, dst_dir, target_name, target_mode, parts)
       end
     end
 
@@ -372,8 +394,42 @@ class Converter < Thor
     src_dir,
     dst_dir,
     target_name,
+    target_mode,
     parts
   )
+    case target_mode
+    when :mrao
+      create_mrao_texture(
+        src_dir,
+        dst_dir,
+        target_name,
+        parts
+      )
+    when :displacement
+      create_displacement_texture(
+        src_dir,
+        dst_dir,
+        target_name,
+        parts
+      )
+    else
+      raise "ERROR: too many parts: #{{src_dir:, target_name:, target_mode:, parts:}}"
+    end
+  end
+
+  ########################################
+  # MRAO
+  ########################################
+  def create_mrao_texture(
+    src_dir,
+    dst_dir,
+    target_name,
+    parts
+  )
+    if parts.size > 3
+      raise "ERROR: too many parts: #{{src_dir:, target_name:, parts:}}"
+    end
+
     black = black_image
     white = white_image
 
@@ -400,25 +456,23 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "COMBINE: #{dst_path}"
+    puts "MRAO: #{dst_path}"
 
-    # channel: metalness, roughness, displacement, ambient-occlusion
-    # DEFAULTS = glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
+    # channel: [ metalness, roughness, ambient-occlusion ]
+    # DEFAULTS = glm::vec3 mrao{ 0.f, 1.f, 1.f };
     target_channels = {
       Magick::RedChannel => nil,
       Magick::GreenChannel => nil,
       Magick::BlueChannel => nil,
-      Magick::AlphaChannel => nil,
     }
 
     target_placeholders = {
-      Magick::RedChannel => white,
+      Magick::RedChannel => black,
       Magick::GreenChannel => white,
-      Magick::BlueChannel => black,
-      Magick::AlphaChannel => white,
+      Magick::BlueChannel => white,
     }
 
-    debugger
+    #debugger
 
     parts.each do |info|
       src_channel = select_channel(info[:source_channel])
@@ -426,53 +480,40 @@ class Converter < Thor
 
       next unless src_channel && dst_channel
 
+      # https://imagemagick.org/script/command-line-options.php#separate
       src_path = "#{src_dir}/#{info[:name]}"
-      img = Magick::Image.read(src_path)
+      src_img = Magick::Image.read(src_path)
         .first
-        .channel(src_channel)
+        .separate(src_channel)[0]
+        .set_channel_depth(Magick::AllChannels, 8)
         .resize(target_size, target_size)
 
       target_channels[dst_channel] = {
-        image: img,
+        image: src_img,
         channel: src_channel,
       }
     end
 
     img_list = Magick::ImageList.new
 
-    debugger
+    #debugger
 
     target_channels.each do |dst_channel, info|
       src_img = target_placeholders[dst_channel]
-      src_op = Magick::CopyRedCompositeOp
 
       if info
         src_img = info[:image]
-        src_op = select_channel_op(info[:channel])
       end
 
-      puts "#{dst_channel} = #{src_op} - #{src_img.inspect}"
+      puts "#{dst_channel} = #{src_img.inspect}"
 
-      img = Magick::Image
-        .new(target_size, target_size) { |opt|
-          opt.background_color = 'black'
-          opt.depth = 8
-          opt.image_type = Magick::TrueColorType
-        }
-
-      img = img
-        .composite!(
-          src_img,
-          0,
-          0,
-          src_op)
-
-      img_list << img
+      img_list << src_img
     end
 
     #debugger
 
-    dst_img = img_list.combine
+    # https://imagemagick.org/script/command-line-options.php#combine
+    dst_img = img_list.combine(Magick::RGBColorspace)
 
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
@@ -486,26 +527,78 @@ class Converter < Thor
     end
   end
 
-  CHANNELS = {
-    'R' => Magick::RedChannel,
-    'G' => Magick::GreenChannel,
-    'B' => Magick::BlueChannel,
-    'A' => Magick::AlphaChannel,
-  }
+  ########################################
+  # DISPLACEMENT
+  ########################################
+  def create_displacement_texture(
+    src_dir,
+    dst_dir,
+    target_name,
+    parts
+  )
+    if parts.size > 1
+      raise "ERROR: too many parts: #{{src_dir:, target_name:, parts:}}"
+    end
 
-  CHANNEL_OPS = {
-    Magick::RedChannel => Magick::CopyRedCompositeOp,
-    Magick::GreenChannel => Magick::CopyGreenCompositeOp,
-    Magick::BlueChannel => Magick::CopyBlueCompositeOp,
-    Magick::AlphaChannel => Magick::CopyAlphaCompositeOp,
-  }
+    dst_path = "#{dst_dir}/#{target_name}.png"
 
-  def select_channel(ch)
-    CHANNELS[ch&.upcase]
+    part = parts.first
+    src_path = "#{src_dir}/#{part[:name]}"
+
+    salt = {
+      version: COMBINE_VERSION,
+      size: target_size,
+      parts: [
+        {
+          name: part[:name],
+          source_channel: part[:source_channel],
+          target_channel: part[:target_channel],
+        }
+      ]
+    }
+
+    sha_digest = sha_changed?(dst_path, [src_path], salt)
+    return unless sha_digest
+
+    puts "DISPLACEMENT: #{dst_path}"
+
+    #debugger
+
+    src_channel = select_channel(part[:source_channel]) || select_channel(RED)
+    dst_channel = select_channel(part[:target_channel]) || select_channel(RED)
+
+    # https://imagemagick.org/script/command-line-options.php#separate
+    src_path = "#{src_dir}/#{part[:name]}"
+    src_img = Magick::Image.read(src_path)
+      .first
+      .separate(src_channel)[0]
+      .set_channel_depth(Magick::AllChannels, 8)
+      .resize(target_size, target_size)
+
+    puts "#{dst_channel} = #{src_img.inspect}"
+
+    img_list = Magick::ImageList.new
+    img_list << src_img
+
+    #debugger
+
+    # https://imagemagick.org/script/command-line-options.php#combine
+    dst_img = img_list.combine(Magick::RGBColorspace)
+
+    unless dry_run
+      FileUtils.mkdir_p(dst_dir)
+
+      puts "WRITE: #{dst_path}"
+      dst_img.write(dst_path)
+
+      write_digest(dst_path, sha_digest, [src_path], salt)
+
+      puts "DONE:  #{dst_path}"
+    end
   end
 
-  def select_channel_op(channel)
-    CHANNEL_OPS[channel]
+  def select_channel(ch)
+    MAGICK_CHANNELS[ch&.upcase]
   end
 
   def black_image
@@ -516,14 +609,17 @@ class Converter < Thor
           .new(w, w) { |opt|
             opt.background_color = 'black'
             opt.depth = 8
+            opt.image_type = Magick::TrueColorAlphaType
+            opt.colorspace = Magick::RGBColorspace
             opt.filename = "black"
           }
       else
         Magick::Image
           .read("#{assets_root_dir}/textures/placeholder/black.png")
           .first
+          .separate(Magick::RedChannel)[0]
+          .set_channel_depth(Magick::AllChannels, 8)
           .resize(target_size, target_size)
-          .channel(Magick::RedChannel)
       end
   end
 
@@ -535,14 +631,17 @@ class Converter < Thor
           .new(w, w) { |opt|
             opt.background_color = 'white'
             opt.depth = 8
+            opt.image_type = Magick::TrueColorAlphaType
+            opt.colorspace = Magick::RGBColorspace
             opt.filename = "white"
           }
       else
         Magick::Image
           .read("#{assets_root_dir}/textures/placeholder/white.png")
           .first
+          .separate(Magick::RedChannel)[0]
+          .set_channel_depth(Magick::AllChannels, 8)
           .resize(target_size, target_size)
-          .channel(Magick::RedChannel)
       end
   end
 

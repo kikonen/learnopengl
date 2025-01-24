@@ -6,16 +6,7 @@ prefab:
       base_dir: textures/DiamondPlate002_1K-PNG
       map_kd: DiamondPlate002_1K_Color.png
       map_normal: DiamondPlate002_1K_NormalGL.png
-      map_channel:
-        - path: DiamondPlate002_1K_Metalness.png
-          type: metalness_map
-          channel: R
-        - path: DiamondPlate002_1K_Roughness.png
-          type: roughness_map
-          channel: G
-        - path: DiamondPlate002_1K_Displacement.png
-          type: displacement_map
-          channel: B
+      map_metal: mrao_build.png
       tiling: 60
       parallax_depth: 0.008
       program: g_tex
