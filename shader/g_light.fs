@@ -42,7 +42,7 @@ void main() {
   vec4 texColor = material.diffuse;
 
   o_fragColor = texColor.rgb;
-  o_fragMetal = material.metal;
+  o_fragMRAO = material.mrao;
   o_fragEmission = texColor.rgb;
 
   //o_fragPosition = fs_in.worldPos;

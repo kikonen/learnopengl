@@ -36,7 +36,7 @@ namespace loader {
         bool layersDepth : 1 { false };
         bool parallaxDepth : 1 { false };
 
-        bool metal : 1 { false };
+        bool mrao : 1 { false };
 
         bool alpha : 1 {false};
         bool blend : 1 {false};

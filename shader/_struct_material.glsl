@@ -3,8 +3,8 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // G buffer: metalness, roughness, displacement, ambient-occlusion
-  vec4 metal;
+  // MRAO: [metalness, roughness, ambient-occlusion]
+  vec3 mrao;
 
   uvec2 diffuseTex;
   uvec2 emissionTex;
@@ -16,7 +16,8 @@ struct Material {
   uvec2 opacityMapTex;
   uvec2 custom1Tex;
 
-  uvec2 metalTex;
+  uvec2 mraoMapTex;
+  uvec2 displacementMapTex;
 
   int pattern;
 

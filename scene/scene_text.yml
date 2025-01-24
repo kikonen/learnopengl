@@ -52,7 +52,7 @@ nodes:
       material:
         kd: [1, 1, 1, 1]
         #map_custom_1: fonts/blade_runner.png
-        #metal: [1.0, 0.0, 0, 1]
+        #mrao: [1.0, 0.0, 0, 1]
         #alpha: true
         render_back: true
         updater_id: font_atlas_1
@@ -166,7 +166,7 @@ nodes:
         name: wood_floor
         kd: [0.8, 0.8, 0.0, 1.0]
         map_pbr: textures\Planks 09 [8K]
-        xmetal: [1.0, 0.0, 0, 1]
+        xmrao: [1.0, 0.0, 0, 1]
         xmap_pbr: textures\planks_metal
         tiling: 5
         render_back: true
@@ -182,7 +182,7 @@ nodes:
         name: wood_floor
         kd: [0.8, 0.8, 0.0, 1.0]
         map_pbr: textures\Planks 09 [8K]
-        xmetal: [1.0, 0.0, 0, 1]
+        xmrao: [1.0, 0.0, 0, 1]
         xmap_pbr: textures\planks_metal
         tiling: 20
     program: g_tex

@@ -5,8 +5,8 @@ vec2 calculateParallaxMapping(
   const vec3 viewTangentDir,
   float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
-  float height = texture(sampler, texCoord).b;
+  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
+  float height = texture(sampler, texCoord).r;
   vec2 p = viewTangentDir.xy / viewTangentDir.z * (height * parallaxDepth);
   return texCoord - p;
 }
@@ -17,7 +17,7 @@ vec2 calculateDeepParallaxMapping(
   const vec3 viewTangentDir,
   float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
 
   // number of depth layers
   const float minLayers = 8.0;
@@ -34,14 +34,14 @@ vec2 calculateDeepParallaxMapping(
 
   // get initial values
   vec2  currentTexCoord     = texCoord;
-  float currentDepthMapValue = texture(sampler, currentTexCoord).b;
+  float currentDepthMapValue = texture(sampler, currentTexCoord).r;
 
   while(currentLayerDepth < currentDepthMapValue)
   {
     // shift texture coordinates along direction of P
     currentTexCoord -= deltaTexCoord;
     // get depthmap value at current texture coordinates
-    currentDepthMapValue = texture(sampler, currentTexCoord).b;
+    currentDepthMapValue = texture(sampler, currentTexCoord).r;
     // get depth of next layer
     currentLayerDepth += layerDepth;
   }
@@ -55,7 +55,7 @@ vec2 calculateParallaxOcclusionMapping(
   const vec3 viewTangentDir,
   float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
 
   // number of depth layers
   const float minLayers = 8.0;
@@ -73,14 +73,14 @@ vec2 calculateParallaxOcclusionMapping(
   // get initial values
   vec2  currentTexCoord     = texCoord;
 
-  float currentDepthMapValue = texture(sampler, currentTexCoord).b;
+  float currentDepthMapValue = texture(sampler, currentTexCoord).r;
 
   while(currentLayerDepth < currentDepthMapValue)
   {
     // shift texture coordinates along direction of P
     currentTexCoord -= deltaTexCoord;
     // get depthmap value at current texture coordinates
-    currentDepthMapValue = texture(sampler, currentTexCoord).b;
+    currentDepthMapValue = texture(sampler, currentTexCoord).r;
     // get depth of next layer
     currentLayerDepth += layerDepth;
   }
@@ -90,7 +90,7 @@ vec2 calculateParallaxOcclusionMapping(
 
 // get depth after and before collision for linear interpolation
   float afterDepth  = currentDepthMapValue - currentLayerDepth;
-  float beforeDepth = texture(sampler, prevTexCoord).b - currentLayerDepth + layerDepth;
+  float beforeDepth = texture(sampler, prevTexCoord).r - currentLayerDepth + layerDepth;
 
 // interpolation of texture coordinates
   float weight = afterDepth / (afterDepth - beforeDepth);
@@ -106,7 +106,7 @@ vec2 parallaxMapMarch (
   float parallaxDepth,
   vec2 texCoord)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].metalTex);
+  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
 
   vec2 pomUV = texCoord, optimalUV = texCoord;
 
@@ -122,7 +122,7 @@ vec2 parallaxMapMarch (
   for (uint i = 0; i <= 40; i++)
   {
     pomUV += tanSpaceMarchDir;
-    queryHeight = texture(sampler, pomUV).b;
+    queryHeight = texture(sampler, pomUV).r;
     calcHeight = float(i) * marchLen * ratio;
 
     if (queryHeight >= calcHeight)

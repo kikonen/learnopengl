@@ -353,31 +353,31 @@ namespace render {
         return spec;
     }
 
-    // G buffer: metalness, roughness, displacement, ambient-occlusion
-    FrameBufferAttachment FrameBufferAttachment::getGBufferMetal(GLenum attachment)
+    // MRAO: [metalness, roughness, ambient-occlusion]
+    FrameBufferAttachment FrameBufferAttachment::getGBufferMRAO(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_RGBA8;
+        spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "metal_RGBA8";
+        spec.name = "mrao_RGB8";
 
         return spec;
     }
 
-    // G buffer: metalness, roughness, displacement, ambient-occlusion
-    FrameBufferAttachment FrameBufferAttachment::getGBufferMetal16(GLenum attachment)
+    // MRAO: [metalness, roughness, ambient-occlusion]
+    FrameBufferAttachment FrameBufferAttachment::getGBufferMRAO16(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         // NOTE KI metal values normalized to range [0, 1]
-        spec.internalFormat = GL_RGBA16;
+        spec.internalFormat = GL_RGB16;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "metal_RGBA16";
+        spec.name = "mrao_RGB16";
 
         return spec;
     }

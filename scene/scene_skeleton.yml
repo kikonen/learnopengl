@@ -39,7 +39,7 @@ nodes:
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
     pos: [0.0, 0.0, 0.0]
@@ -80,14 +80,12 @@ nodes:
         lod:
           level: [0, 1, 2]
         material:
+          base: textures
           kd: [0, 0.8, 0]
-          map_kd: textures\T_Helmet_BaseColor.jpg
-          map_bump: textures\T_Helmet_Normal.jpg
-          map_channel:
-            - path: textures\T_Helmet_MetallicSmoothness_1024.png
-              channel: R
-            - path: textures\T_Helmet_Occlusion.png
-              channel: A
+          map_kd: T_Helmet_BaseColor.jpg
+          map_bump: T_Helmet_Normal.jpg
+          map_mrao: mrao_build.png
+          map_displacement: displacement_build.png
         scale: 0.001
     program: g_tex
     shadow_program: shadow

@@ -17,8 +17,8 @@ vec3 calculatePointLightPbr(
   const vec3 V = viewDir;
 
   const vec3 albedo = material.diffuse.rgb;
-  const float metallic = material.metal.r;
-  const float roughness = material.metal.g;
+  const float metallic = material.mrao.r;
+  const float roughness = material.mrao.g;
 
   // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
   // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)

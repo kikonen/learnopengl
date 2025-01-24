@@ -47,7 +47,7 @@ nodes:
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
     flags:
       no_frustum: true

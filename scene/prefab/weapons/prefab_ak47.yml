@@ -5,13 +5,11 @@ prefab:
       path: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SK_KA47.FBX
       materials:
         - alias: "*"
-          base_dir: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
+          base: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
           map_kd: T_KA47_ALB_2048.png
           map_bump: T_KA47_NRM_2048.png
-          xmap_channel:
-            - path: T_KA47_M_MSK_2048.png
-              type: occlusion_map
-              channel: A
+          map_mrao: mrao_build.png
+          map_displacement: displacement_build.png
           alpha: true
           xblend: true
           render_back: true

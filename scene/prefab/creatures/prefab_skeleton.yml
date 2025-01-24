@@ -7,12 +7,10 @@ prefab:
         use_bones: true
         use_animation: true
       material:
-        map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
-        map_normal: skeleton_pbr/Skeleton_Body_Normal.png
-        map_channel:
-          - path: skeleton_pbr/Skeleton_Body_MetallicSmoothness.png
-            type: metalness_map
-            channel: xxxR
+        base: skeleton_pbr
+        map_kd: Skeleton_Body_AlbedoTransparency.png
+        map_normal: Skeleton_Body_Normal.png
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01375

@@ -78,7 +78,7 @@ nodes:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
         xreflection: 0.05
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
     program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
@@ -133,7 +133,7 @@ nodes:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         map_kd: Metal022_1K_Color.png
         map_normal: Metal022_1K_NormalGL.png
-        map_metal: mrao_build.png
+        map_mrao: mrao_build.png
         xreflection: 0.05
         tiling: 3
         parallax_depth: 0.01

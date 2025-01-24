@@ -3,19 +3,11 @@ prefab:
   mesh:
     path: plane
     material:
-      base_dir: textures\PavingStones115C_1K-PNG
+      base: textures/PavingStones115C_1K-PNG
       map_kd: PavingStones115C_1K_Color.png
       map_normal: PavingStones115C_1K_NormalGL.png
-      map_channel:
-        - path: PavingStones115C_1K_Roughness.png
-          type: roughness_map
-          channel: G
-        - path: PavingStones115C_1K_Displacement.png
-          type: displacement_map
-          channel: B
-        - path: PavingStones115C_1K_AmbientOcclusion.png
-          type: occlusion_map
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       tiling: 60
       parallax_depth: 0.025
       program: g_tex

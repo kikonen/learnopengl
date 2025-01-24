@@ -46,7 +46,7 @@ nodes:
         lod:
           level: 0
         material_modifier:
-          metal: [0.5, 0.0, 0, 1]
+          mrao: [0.5, 0.0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [1, 1, 0]
           tiling: 4
@@ -54,7 +54,7 @@ nodes:
         lod:
           level: 1
         material_modifier:
-          metal: [0.5, 0.0, 0, 1]
+          mrao: [0.5, 0.0, 1]
           #map_pbr: textures\Rock002_1K-PNG
           kd: [0, 1, 1]
           tiling: 4
@@ -62,7 +62,7 @@ nodes:
         lod:
           level: 2
         material_modifier:
-          metal: [0.5, 0.0, 0, 1]
+          mrao: [0.5, 0.0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 0, 1]
           tiling: 4
@@ -70,7 +70,7 @@ nodes:
         lod:
           level: 3
         material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
+          #mrao: [0.5, 0.0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [0, 1, 0]
           tiling: 4
@@ -80,7 +80,7 @@ nodes:
         flags:
           billboard: true
         material_modifier:
-          #metal: [0.5, 0.0, 0, 1]
+          #mrao: [0.5, 0.0, 1]
           #map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
           kd: [1, 0, 0]
           tiling: 4

@@ -20,8 +20,8 @@
   material.emission = u_materials[i].emission.rgb *
     emission.rgb * emission.a;
 
-  material.metal = u_materials[i].metal *
-    texture(sampler2D(u_materials[i].metalTex), texCoord);
+  material.mrao = u_materials[i].mrao *
+    texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgb;
 
   material.reflection = u_materials[i].reflection;
   material.refraction = u_materials[i].refraction;

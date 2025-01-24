@@ -46,7 +46,7 @@ nodes:
         radius: 0.1
       material:
         kd: [0.0, 0.2, 0.8, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
     flags:
       no_frustum: true
@@ -114,7 +114,7 @@ nodes:
         radius: 0.15
       material:
         kd: [0.3, 0.3, 0.5, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
     flags:
       no_frustum: true
@@ -129,7 +129,7 @@ nodes:
       base_rotation: [90, 0, 0]
       material:
         kd: [0.4, 0.4, 0.6]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
     pos: [0, 2, 0]
 material_updaters:

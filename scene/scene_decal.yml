@@ -124,7 +124,11 @@ nodes:
         type: box
         size: [5, 3, 0.2]
       material:
-        map_pbr: textures\Bricks007_1K-PNG
+        base: textures\Bricks007_1K-PNG
+        map_kd: Bricks007_1K_Color.png
+        map_normal: Bricks007_1K_NormalGL.png
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         parallax_depth: 0.02
         tiling_x: 1.25
         tiling_y: 0.75
@@ -153,7 +157,11 @@ nodes:
         type: sphere
         radius: 1
       material:
-        map_pbr: textures\Metal007_1K-PNG
+        base: textures/Metal007_1K-PNG
+        map_kd: Metal007_1K_Color.png
+        mp_normal: Metal007_1K_NormalGL.png
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         program: g_tex
     pos: [0, 2.5, 0]
     physics:
@@ -171,7 +179,11 @@ nodes:
       path: texture_cube.obj
       base_scale: [5, 3, 0.2]
       material:
-        map_pbr: textures\Bricks007_1K-PNG
+        base: textures/Bricks007_1K-PNG
+        map_kd: Bricks007_1K_Color.png
+        map_normal: Bricks007_1K_NormalGL.png
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         parallax_depth: 0.02
         tiling_x: 5
         tiling_y: 3
@@ -206,7 +218,6 @@ nodes:
         radius: 1
       material:
         map_kd: [1, 2, 1, 1]
-        xmap_pbr: textures\Metal007_1K-PNG
         program: g_tex
     physics:
       body:
@@ -315,16 +326,8 @@ decals:
       map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
       map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
       map_opacity: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
-      map_channel:
-        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Gloss.jpg
-          type: map_metalness
-          channel: R
-        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Roughness.jpg
-          type: map_roughness
-          channel: G
-        - path: High_Velocity_Blood_Spatter_sgepbixp_2K_Cavity.jpg
-          type: map_displacement
-          channel: B
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       xparallax_depth: 0.05
       parallax_depth: 0.008
       texture_spec:
@@ -339,19 +342,8 @@ decals:
       map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
       map_normal: Rubble_tbcs3qo_2K_Normal.jpg
       map_opacity: Rubble_tbcs3qo_2K_Opacity.jpg
-      map_channel:
-        - path: Rubble_tbcs3qo_2K_Gloss.jpg
-          type: map_metalness
-          channel: R
-        - path: Rubble_tbcs3qo_2K_Roughness.jpg
-          type: map_roughness
-          channel: G
-        - path: Rubble_tbcs3qo_2K_Cavity.jpg
-          type: map_displacement
-          channel: B
-        - path: Rubble_tbcs3qo_2K_AO.jpg
-          type: map_occlusion
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       xparallax_depth: 0.05
       parallax_depth: 0.008
       texture_spec:
@@ -366,19 +358,8 @@ decals:
       map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
       map_normal: Ivy_thdjv1h_2K_Normal.jpg
       map_opacity: Ivy_thdjv1h_2K_Opacity.jpg
-      map_channel:
-        - path: Ivy_thdjv1h_2K_Gloss.jpg
-          type: map_metalness
-          channel: R
-        - path: Ivy_thdjv1h_2K_Roughness.jpg
-          type: map_roughness
-          channel: G
-        - path: Ivy_thdjv1h_2K_Bump.jpg
-          type: map_displacement
-          channel: B
-        - path: Ivy_thdjv1h_2K_AO.jpg
-          type: map_occlusion
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       parallax_depth: 0.1
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
@@ -393,19 +374,8 @@ decals:
       map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
       map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
       map_opacity: Concrete_Damage_tdildcjb_2K_Opacity.jpg
-      map_channel:
-        - path: Concrete_Damage_tdildcjb_2K_Gloss.jpg
-          type: map_metalness
-          channel: R
-        - path: Concrete_Damage_tdildcjb_2K_Roughness.jpg
-          type: map_roughness
-          channel: G
-        - path: Concrete_Damage_tdildcjb_2K_Displacement.jpg
-          type: map_displacement
-          channel: B
-        - path: Concrete_Damage_tdildcjb_2K_AO.jpg
-          type: map_occlusion
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
@@ -420,19 +390,8 @@ decals:
       map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
       map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
       map_opacity: Hole_in_Concrete_sfvodqg_2K_Opacity.jpg
-      map_channel:
-        - path: Hole_in_Concrete_sfvodqg_2K_Gloss.jpg
-          type: map_metalness
-          channel: R
-        - path: Hole_in_Concrete_sfvodqg_2K_Roughness.jpg
-          type: map_roughness
-          channel: G
-        - path: Hole_in_Concrete_sfvodqg_2K_Displacement.jpg
-          type: map_displacement
-          channel: B
-        - path: Hole_in_Concrete_sfvodqg_2K_AO.jpg
-          type: map_occlusion
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE

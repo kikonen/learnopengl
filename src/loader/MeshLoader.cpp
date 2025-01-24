@@ -192,14 +192,6 @@ namespace loader {
                 data.enabled = true;
             }
         }
-
-        for (auto& materialData : data.materials) {
-            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
-        }
-
-        for (auto& materialData : data.materialModifiers) {
-            loaders.m_materialLoader.resolveMaterialPbr(data.baseDir, materialData);
-        }
     }
 
     void MeshLoader::loadLods(

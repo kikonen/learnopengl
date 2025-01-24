@@ -11,7 +11,7 @@ prefab:
       material:
         name: elf_pbr
         map_pbr: elf_female_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
         xrender_back: true
         xline_mode : true

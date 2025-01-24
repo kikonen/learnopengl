@@ -24,12 +24,10 @@ prefab:
         use_bones: true
         use_animation: true
       material:
-        map_kd: skeleton_pbr/Skeleton_Body_AlbedoTransparency.png
-        map_normal: skeleton_pbr/Skeleton_Body_Normal.png
-        map_channel:
-          - path: skeleton_pbr/Skeleton_Body_MetallicSmoothness.png
-            type: metalness_map
-            channel: xxxR
+        base: skeleton_pbr
+        map_kd: Skeleton_Body_AlbedoTransparency.png
+        map_normal: Skeleton_Body_Normal.png
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01375
@@ -43,16 +41,11 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
+        base: textures
         kd: [0.8, 0.8, 0]
-        map_kd: textures\T_Helmet_BaseColor.jpg
-        map_bump: textures\T_Helmet_Normal.jpg
-        map_channel:
-          - path: textures\T_Helmet_MetallicSmoothness_1024.png
-            type: metalness_map
-            channel: R
-          - path: textures\T_Helmet_Occlusion.png
-            type: occlusion_map
-            channel: A
+        map_kd: T_Helmet_BaseColor.jpg
+        map_bump: T_Helmet_Normal.jpg
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -63,15 +56,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        map_kd: textures\T_ChestArmor_BaseColor.jpg
-        map_bump: textures\T_ChestArmor_Normal.jpg
-        map_channel:
-          - path: textures\T_ChestArmor_MetallicSmoothness_1024.png
-            type: metalness_map
-            channel: R
-          - path: textures\T_2HandedSword_Occlusion.png
-            type: occlusion_map
-            channel: A
+        base: textures
+        map_kd: T_ChestArmor_BaseColor.jpg
+        map_bump: T_ChestArmor_Normal.jpg
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -82,15 +70,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        map_kd: textures\T_2HandedSword_BaseColor.jpg
-        map_bump: textures\T_2HandedSword_Normal.jpg
-        map_channel:
-          - path: textures\T_2HandedSword_MetallicSmoothness_1024.png
-            type: metalness_map
-            channel: R
-          - path: textures\T_ChestArmor_Occlusion.jpg
-            type: occlusion_map
-            channel: A
+        base: textures
+        map_kd: T_2HandedSword_BaseColor.jpg
+        map_bump: T_2HandedSword_Normal.jpg
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -101,15 +84,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        map_kd: textures\T_Shield_BaseColor.jpg
-        map_bump: textures\T_Shield_Normal.jpg
-        map_channel:
-          - path: textures\T_Shield_MetallicSmoothness_2048.png
-            type: metalness_map
-            channel: R
-          - path: textures\T_Shield_Occlusion.png
-            type: occlusion_map
-            channel: A
+        base: textures
+        map_kd: T_Shield_BaseColor.jpg
+        map_bump: T_Shield_Normal.jpg
+        map_mrao: mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:

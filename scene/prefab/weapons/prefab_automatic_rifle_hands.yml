@@ -5,16 +5,11 @@ prefab:
       path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Mesh/Hands/SK_Hands_04.FBX
       materials:
         - alias: "*"
-          base_dir: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Hands_04
+          base: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Hands_04
           map_kd: T_Hands_04_Albedo_01_2048.png
           map_bump: T_Hands_04_Normals_2048.png
-          map_channel:
-            - path: T_Hands_04_Metallic_2048.png
-              type: metalness_map
-              channel: R
-            - path: T_Hands_04_Ao_2048.png
-              type: occlusion_map
-              channel: A
+          map_mrao: mrao_build.png
+          map_displacement: displacement_build.png
       sockets:
         - name: rifle
           joint: hand_l
@@ -33,13 +28,11 @@ prefab:
       path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Mesh/Automatic_Rifle_01/SK_Automatic_Rifle_01_Basic.FBX
       materials:
         - alias: "*"
-          base_dir: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Automatic_Rifle_01
+          base: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Automatic_Rifle_01
           map_kd: T_Automatic_Rifle_01_Albedo_01_2048.png
           map_bump: T_Automatic_Rifle_01_Normals_2048.png
-          map_channel:
-            - path: T_Automatic_Rifle_01_Metallic_2048.png
-              type: metalness_map
-              channel: R
+          map_mrao: mrao_build.png
+          map_displacement: displacement_build.png
       default_programs: true
       base_scale: 0.01
       flags:

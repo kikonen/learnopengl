@@ -266,7 +266,7 @@ nodes:
       path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
-        metal: [1.0, 0.0, 0, 1]
+        mrao: [1.0, 0.0, 1]
         map_pbr: textures\Planks 09 [8K]
         tiling_x: 30
         tiling_y: 4
@@ -520,7 +520,7 @@ nodes:
       path: pool_brick
       material_modifier:
         xmap_pbr: textures\Tiles004_1K-PNG
-        metal: [1.0, 0.0, 0, 1]
+        mrao: [1.0, 0.0, 1]
         map_pbr: textures\Planks 09 [8K]
         tiling_x: 30
         tiling_y: 4

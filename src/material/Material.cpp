@@ -19,7 +19,6 @@
 #include "shader/Shader.h"
 
 #include "ImageTexture.h"
-#include "ChannelTexture.h"
 #include "ColorTexture.h"
 #include "MaterialSSBO.h"
 #include "MaterialRegistry.h"
@@ -256,15 +255,6 @@ void Material::loadTextures()
 
         loadTexture(type, gammaCorrect, flipY, usePlaceholder);
     }
-
-    if (!hasRegisteredTex(TextureType::map_metal))
-    {
-        loadChannelTexture(
-            TextureType::map_metal,
-            fmt::format("material_{}_metal", m_registeredIndex),
-            map_channelParts,
-            metal);
-    }
 }
 
 void Material::loadTexture(
@@ -316,61 +306,6 @@ void Material::loadTexture(
 
     if (texture && texture->isValid()) {
         m_boundTextures.insert({ type, BoundTexture{ texture } });
-    }
-}
-
-void Material::loadChannelTexture(
-    TextureType channelType,
-    std::string_view name,
-    const std::vector<ChannelPart>& parts,
-    const glm::vec4& defaults)
-{
-    const auto& assets = Assets::get();
-
-    std::vector<ImageTexture*> sourceTextures;
-
-    int validCount = 0;
-    for (const auto& part : parts) {
-        const auto& it = m_boundTextures.find(part.m_type);
-
-        auto* bound = it != m_boundTextures.end() ? &it->second : nullptr;
-        if (bound) {
-            sourceTextures.push_back((ImageTexture*)bound->m_texture);
-            bound->m_channelPart = true;
-            validCount++;
-        }
-        else {
-            sourceTextures.push_back(nullptr);
-        }
-    }
-
-    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}, validCount={}", m_id, m_name, name, validCount));
-
-    if (validCount == 0) return;
-
-    auto future = ChannelTexture::getTexture(
-        name,
-        parts,
-        sourceTextures,
-        defaults,
-        4,
-        false,
-        textureSpec);
-
-    future.wait();
-
-    ChannelTexture* texture{ nullptr };
-
-    if (future.valid()) {
-        texture = future.get();
-    }
-
-    if (texture && texture->isValid()) {
-        m_boundTextures.insert({ channelType, {} });
-        const auto& it = m_boundTextures.find(channelType);
-        auto& bound = it->second;
-        bound.m_texture = texture;
-        bound.m_channelTexture = true;
     }
 }
 
@@ -438,7 +373,6 @@ void Material::prepare()
 
     for (auto& it : m_boundTextures) {
         auto& tex = it.second;
-        if (tex.m_channelPart) continue;
         tex.m_texture->prepare();
     }
 }
@@ -457,7 +391,7 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_metal) ? WHITE_RGBA : metal,
+        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : mrao,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
@@ -469,7 +403,8 @@ const MaterialSSBO Material::toSSBO() const
 
         getTexHandle(TextureType::map_opacity, whitePx),
         getTexHandle(TextureType::map_custom_1, 0),
-        getTexHandle(TextureType::map_metal, whitePx),
+        getTexHandle(TextureType::map_mrao, whitePx),
+        getTexHandle(TextureType::map_displacement, blackPx),
 
         pattern,
 

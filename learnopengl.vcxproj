@@ -206,7 +206,6 @@
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
-    <ClCompile Include="src\material\ChannelTexture.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\CustomMaterial.cpp" />
     <ClCompile Include="src\material\FontAtlasMaterialUpdater.cpp" />
@@ -246,7 +245,6 @@
     <ClCompile Include="src\ki\FpsCounter.cpp" />
     <ClCompile Include="src\ki\sid.cpp" />
     <ClCompile Include="src\loader\BaseId.cpp" />
-    <ClCompile Include="src\loader\value\ChannelTextureValue.cpp" />
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
@@ -543,8 +541,6 @@
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
-    <ClInclude Include="src\material\ChannelPart.h" />
-    <ClInclude Include="src\material\ChannelTextureDefinition.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
@@ -580,7 +576,6 @@
     <ClInclude Include="src\ki\sid_format.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\CameraType.h" />
-    <ClInclude Include="src\loader\value\ChannelTextureValue.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />
@@ -642,7 +637,6 @@
     <ClInclude Include="src\animation\VertexBone.h" />
     <ClInclude Include="src\asset\AABB.h" />
     <ClInclude Include="src\shader\BufferInfoUBO.h" />
-    <ClInclude Include="src\material\ChannelTexture.h" />
     <ClInclude Include="src\shader\ClipPlaneUBO.h" />
     <ClInclude Include="src\material\ColorTexture.h" />
     <ClInclude Include="src\material\CustomMaterial.h" />

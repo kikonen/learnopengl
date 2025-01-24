@@ -25,7 +25,7 @@ nodes:
     mesh:
       path: rock2/rock
       material_modifier:
-        metal: [0.5, 0.0, 0, 1]
+        mrao: [0.5, 0.0, 1]
         map_pbr: textures\Rock002_1K-PNG
         tiling: 4
     program: g_tex

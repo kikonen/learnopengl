@@ -345,9 +345,6 @@
     <ClCompile Include="src\render\EffectBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\material\ChannelTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\TextureCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -739,9 +736,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\RigJointTreeGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\value\ChannelTextureValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\AnimationPlay.cpp">
@@ -1439,9 +1433,6 @@
     <ClInclude Include="src\render\EffectBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\material\ChannelTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2109,15 +2100,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\RigJointTreeGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\material\ChannelPart.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\value\ChannelTextureValue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\material\ChannelTextureDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\TextureType.h">

@@ -64,7 +64,7 @@ nodes:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       xanimations:
         - name: walk
@@ -87,7 +87,7 @@ nodes:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       xanimations:
         - name: walk
@@ -110,7 +110,7 @@ nodes:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       xanimations:
         - name: walk
@@ -239,7 +239,7 @@ nodes:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk
@@ -279,7 +279,7 @@ nodes:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk
@@ -319,7 +319,7 @@ nodes:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk

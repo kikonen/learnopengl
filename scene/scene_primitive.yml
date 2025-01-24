@@ -49,7 +49,7 @@ nodes:
     mesh:
       material:
         kd: [0.0, 0.0, 1.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
+        xmrao: [1.0, 0.0, 1]
       vertex:
         type: lines
         vertices:
@@ -69,7 +69,7 @@ nodes:
     mesh:
       material:
         kd: [0.0, 1.0, 0.0, 1.0]
-        xmetal: [1.0, 0.0, 0, 1]
+        xmrao: [1.0, 0.0, 1]
         layers_depth: 10
       vertex:
         type: points
@@ -90,7 +90,7 @@ nodes:
     mesh:
       material:
         xkd: [0.0, 0.2, 0.0, 1.0]
-        xxmetal: [1.0, 0.0, 0, 1]
+        xxmrao: [1.0, 0.0, 1]
         map_pbr: textures\Metal007_1K-PNG
         program: g_tex
         render_back: true
@@ -106,7 +106,7 @@ nodes:
     mesh:
       material:
         xkd: [0.0, 0.2, 0.0, 1.0]
-        xxmetal: [1.0, 0.0, 0, 1]
+        xxmrao: [1.0, 0.0, 1]
         map_pbr: textures\Metal007_1K-PNG
         program: g_tex
         render_back: true

@@ -3,19 +3,11 @@ prefab:
   mesh:
     path: plane
     material:
-      base: textures\Planks 09 [8K]
+      base: textures/Planks 09 [8K]
       map_kd: Planks09_col_2048.png
       map_normal: Planks09_nrm_2048.png
-      map_channel:
-        - path: Planks09_rgh_2048.png
-          type: roughness_map
-          channel: G
-        - path: Planks09_disp_2048.png
-          type: displacement_map
-          channel: B
-        - path: Planks09_AO_2048.png
-          type: occlusion_map
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       tiling: 60
       parallax_depth: 0.01
       program: g_tex

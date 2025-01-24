@@ -5,56 +5,46 @@ prefab:
       lod:
         level: 0
       material:
-        metal: [0.5, 0.0, 0, 1]
+        base: textures
+        mrao: [0.5, 0.0, 1]
         #kd: [1, 1, 0]
-        map_kd: textures/Rock002_1K-PNG/Rock002_1K_Color.png
-        map_normal: textures/Rock002_1K-PNG/Rock002_1K_NormalGL.png
-        map_channel:
-        - path: textures/Rock002_1K-PNG/Rock002_1K_Roughness.png
-          type: roughness_map
-          channel: G
-        - path: textures/Rock002_1K-PNG/Rock002_1K_Displacement.png
-          type: displacement_map
-          channel: B
-        - path: textures/Rock002_1K-PNG/Rock002_1K_AmbientOcclusion.png
-          type: occlusion_map
-          channel: A
+        map_kd: Rock002_1K-PNG/Rock002_1K_Color.png
+        map_normal: Rock002_1K-PNG/Rock002_1K_NormalGL.png
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         tiling: 4
         parallax_depth: 0.015
     - path: rock2/rock_lod_1
       lod:
         level: 1
       material:
-        metal: [0.5, 0.0, 0, 1]
+        base: textures
+        mrao: [0.5, 0.0, 1]
         #kd: [0, 1, 1]
-        map_kd: textures/Rock002_1K-PNG/Rock002_1K_Color.png
-        map_normal: textures/Rock002_1K-PNG/Rock002_1K_NormalGL.png
-        map_channel:
-        - path: textures/Rock002_1K-PNG/Rock002_1K_Roughness.png
-          type: roughness_map
-          channel: G
-        - path: textures/Rock002_1K-PNG/Rock002_1K_AmbientOcclusion.png
-          type: occlusion_map
-          channel: A
+        map_kd: Rock002_1K-PNG/Rock002_1K_Color.png
+        map_normal: Rock002_1K-PNG/Rock002_1K_NormalGL.png
+        map_mrao: mrao_build.png
         tiling: 4
       scale: 1.5
     - path: rock2/rock_lod_2
       lod:
         level: 2
       material:
-        #metal: [0.5, 0.0, 0, 1]
+        base: textures
+        #mrao: [0.5, 0.0, 1]
         #kd: [0, 0, 1]
-        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
-        map_normal: textures/Rock002_1K-PNG/Rock002_1K_NormalGL.png
+        map_kd: Rock002_1K-PNG\Rock002_1K_Color.png
+        map_normal: Rock002_1K-PNG/Rock002_1K_NormalGL.png
         tiling: 4
       scale: 1
     - path: rock2/rock_lod_3
       lod:
         level: 3
       material:
-        #metal: [0.5, 0.0, 0, 1]
+        base: textures
+        #mrao: [0.5, 0.0, 1]
         #kd: [0, 1, 0]
-        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+        map_kd: Rock002_1K-PNG\Rock002_1K_Color.png
         tiling: 4
       scale: 1.5
     - path: rock2/rock_lod_4
@@ -63,9 +53,10 @@ prefab:
       flags:
         xbillboard: true
       material:
-        #metal: [0.5, 0.0, 0, 1]
+        base: textures
+        #mrao: [0.5, 0.0, 1]
         #kd: [1, 0, 0]
-        map_kd: textures\Rock002_1K-PNG\Rock002_1K_Color.png
+        map_kd: Rock002_1K-PNG\Rock002_1K_Color.png
         tiling: 4
         render_back: true
       scale: 1.8

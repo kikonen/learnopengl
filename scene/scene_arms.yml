@@ -13,7 +13,7 @@ nodes:
       material:
         name: default_ball
         kd: [0.5, 0.5, 0.0, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
     pos: [0, 1, 15]
@@ -83,7 +83,7 @@ nodes:
       material:
         name: default_ball
         kd: [0.0, 0.5, 0.0, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.03
     pos: [0.0, 0.0, -0.1]
@@ -105,7 +105,7 @@ nodes:
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
     pos: [0.0, 0.0, 0.0]
@@ -181,7 +181,7 @@ nodes:
         radius: 1
       material:
         kd: [0.5, 0.5, 0.0, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       base_scale: 0.1
     pos: [0, 20, 0]

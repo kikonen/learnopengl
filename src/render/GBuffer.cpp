@@ -51,7 +51,7 @@ namespace render {
                         FrameBufferAttachment::getGBufferEmissionHdr(ATT_EMISSION_ENUM),
                         //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                         FrameBufferAttachment::getGBufferNormal(ATT_NORMAL_ENUM),
-                        FrameBufferAttachment::getGBufferMetal(ATT_METAL_ENUM),
+                        FrameBufferAttachment::getGBufferMRAO(ATT_MRAO_ENUM),
                         FrameBufferAttachment::getGBufferViewZ(ATT_VIEW_Z_ENUM),
                         // depth needed
                         FrameBufferAttachment::getDepthStencilTexture(),
@@ -86,7 +86,7 @@ namespace render {
         m_buffer->bindTexture(ctx, ATT_EMISSION_INDEX, UNIT_G_EMISSION);
         //m_buffer->bindTexture(ctx, ATT_POSITION_INDEX, UNIT_G_POSITION);
         m_buffer->bindTexture(ctx, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
-        m_buffer->bindTexture(ctx, ATT_METAL_INDEX, UNIT_G_METAL);
+        m_buffer->bindTexture(ctx, ATT_MRAO_INDEX, UNIT_G_MRAO);
         m_buffer->bindTexture(ctx, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
         //m_buffer->bindTexture(ctx, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 
@@ -99,7 +99,7 @@ namespace render {
         //m_buffer->unbindTexture(ctx, UNIT_G_SPECULAR);
         m_buffer->unbindTexture(ctx, UNIT_G_EMISSION);
         //m_buffer->unbindTexture(ctx, UNIT_G_POSITION);
-        m_buffer->unbindTexture(ctx, UNIT_G_METAL);
+        m_buffer->unbindTexture(ctx, UNIT_G_MRAO);
         m_buffer->unbindTexture(ctx, UNIT_G_NORMAL);
         m_buffer->unbindTexture(ctx, UNIT_G_VIEW_Z);
         m_buffer->unbindTexture(ctx, UNIT_G_DEPTH);

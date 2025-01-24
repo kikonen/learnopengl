@@ -86,7 +86,7 @@ void main() {
   clamp_color(color);
 
   o_fragColor = color.rgb;
-  o_fragMetal = material.metal;
+  o_fragMRAO = material.mrao;
   o_fragEmission = material.emission;
 
   // o_fragColor = vec3(1, 0, 0);

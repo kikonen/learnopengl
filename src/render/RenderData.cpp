@@ -9,7 +9,6 @@
 #include "shader/LightUBO.h"
 
 #include "material/ImageTexture.h"
-#include "material/ChannelTexture.h"
 
 #include "kigl/GLSyncQueue_impl.h"
 

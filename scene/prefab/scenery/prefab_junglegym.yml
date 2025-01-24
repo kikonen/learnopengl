@@ -4,13 +4,11 @@ prefab:
     - id: prefab_junglegym
       path: fbx/props/SM_JungleGym_01a/SM_JungleGym_01a.FBX
       material:
-        map_kd: material/MI_JungleGym_01a_BaseColor.png
-        map_normal: material/MI_JungleGym_01a_Normal.png
-        map_channel:
-          - path: material/MI_JungleGym_01a_MetallicRoughness.png
-            channel: xRG
-          - path: material/MI_JungleGym_01a_Occlusion.png
-            channel: A
+        base: material
+        map_kd: MI_JungleGym_01a_BaseColor.png
+        map_normal: MI_JungleGym_01a_Normal.png
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         program: g_tex
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]

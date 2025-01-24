@@ -19,7 +19,6 @@
 #include "Loaders.h"
 #include "loader_util.h"
 
-#include "value/ChannelTextureValue.h"
 
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
@@ -32,99 +31,6 @@ namespace {
         std::regex(".*[\\.]hdr"),
     };
 
-    const std::vector<std::regex> ignoreMatchers{
-        std::regex(".*nope.*"),
-        std::regex(".*[\\.]blend"),
-        std::regex(".*[\\.]exr"),
-        std::regex(".*[\\.]txt"),
-        std::regex(".*[\\.]usda"),
-        std::regex(".*preview.*"),
-        std::regex(".*normaldx.*"),
-        std::regex(".*bc_neutral.*"),
-
-        std::regex(".*_micron[\\.].*"),
-        std::regex(".*_micronmask[\\.].*"),
-        std::regex(".*_resourcemap_position[\\.].*"),
-        std::regex(".*_resourcemap_wsnormal[\\.].*"),
-        std::regex(".*_sssmap[\\.].*"),
-        std::regex(".*_transmap[\\.].*"),
-    };
-
-    const std::vector<std::regex> imageMatchers{
-        std::regex(".*[\\.]hdr"),
-        std::regex(".*[\\.]png"),
-        std::regex(".*[\\.]jpg"),
-        std::regex(".*[\\.]tga"),
-    };
-
-    const std::vector<std::regex> colorMatchers{
-        std::regex(".*[-_ ]color[-_ \\.].*"),
-        std::regex(".*[-_ ]col[-_ \\.].*"),
-        std::regex(".*[-_ ]basecolor[-_ \\.].*"),
-        std::regex(".*[-_ ]diff[-_ \\.].*"),
-        std::regex(".*[-_ ]alb[-_ \\.].*"),
-        std::regex(".*[-_ ]albedo[-_ \\.].*"),
-        std::regex(".*[-_ ]albedoopacity[-_ \\.].*"),
-        std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
-        std::regex(".*[-_ ]basecoloralpha[-_ \\.].*"),
-        std::regex(".*[-_ ]a[\\.].*"),
-        std::regex(".*[-_ ]c[\\.].*"),
-        std::regex(".*[-_ ]bc[\\.].*"),
-        std::regex(".*[-_ ]a_m[\\.].*"),
-        std::regex(".*[-_ ]b[\\.].*"),
-    };
-
-    const std::vector<std::regex> emissionMatchers{
-        std::regex(".*[-_ ]emission[-_ \\.].*"),
-        std::regex(".*[-_ ]emi[-_ \\.].*"),
-        std::regex(".*[-_ ]emissive[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> normalMatchers{
-        std::regex(".*[-_ ]normal[-_ \\.].*"),
-        std::regex(".*[-_ ]normals[-_ \\.].*"),
-        std::regex(".*[-_ ]normalgl[-_ \\.].*"),
-        std::regex(".*[-_ ]nrm[-_ \\.].*"),
-        std::regex(".*[-_ ]nor[-_ \\.].*"),
-        std::regex(".*[-_ ]nor[-_ \\.].*"),
-        std::regex(".*[-_ ]nml[-_ \\.].*"),
-        std::regex(".*[-_ ]n[\\.].*"),
-    };
-
-    const std::vector<std::regex> metalnessMatchers{
-        std::regex(".*[-_ ]metalness[-_ \\.].*"),
-        std::regex(".*[-_ ]met[-_ \\.].*"),
-        std::regex(".*[-_ ]metallic[-_ \\.].*"),
-        // TODO KI logic various random combined texture formats
-        std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
-        //std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
-        //std::regex(".*[-_ ]aorm[\\.].*"),
-        //std::regex(".*[-_ ]rom[\\.].*"),
-    };
-
-    const std::vector<std::regex> roughnessMatchers{
-        std::regex(".*[-_ ]roughness[-_ \\.].*"),
-        std::regex(".*[-_ ]rough[-_ \\.].*"),
-        std::regex(".*[-_ ]rgh[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> occlusionMatchers{
-        std::regex(".*[-_ ]ambientocclusion[-_ \\.].*"),
-        std::regex(".*[-_ ]occlusion[-_ \\.].*"),
-        std::regex(".*[-_ ]ao[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> displacementMatchers{
-        std::regex(".*[-_ ]displacement[-_ \\.].*"),
-        std::regex(".*[-_ ]disp[-_ \\.].*"),
-        std::regex(".*[-_ ]depth[-_ \\.].*"),
-    };
-
-    const std::vector<std::regex> opacityMatchers{
-        std::regex(".*[-_ ]opacity[-_ \\.].*"),
-        std::regex(".*[-_ ]ops[-_ \\.].*"),
-        std::regex(".*[-_ ]alpha[-_ \\.].*"),
-    };
 }
 
 namespace loader {
@@ -226,9 +132,6 @@ namespace loader {
             //    material.d = readFloat(v);
             //    fields.illum = true;
             //}
-            else if (k == "map_pbr") {
-                data.materialPbr = readString(v);
-            }
             else if (k == "map_kd") {
                 std::string line = readString(v);
                 material.addTexture(
@@ -282,65 +185,12 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_roughness") {
-                if (!material.hasRegisteredTex(TextureType::map_roughness)) {
-                    ChannelPart part{
-                        TextureType::map_roughness,
-                        { ChannelPart::Channel::green }
-                    };
-                    material.map_channelParts.push_back(part);
-
-                    std::string line = readString(v);
-                    material.addTexture(
-                        TextureType::map_roughness,
-                        line,
-                        false);
-                }
-            }
-            else if (k == "map_metalness") {
-                if (!material.hasRegisteredTex(TextureType::map_metalness)) {
-                    ChannelPart part{
-                        TextureType::map_metalness,
-                        { ChannelPart::Channel::red }
-                    };
-                    material.map_channelParts.push_back(part);
-
-                    std::string line = readString(v);
-                    material.addTexture(
-                        TextureType::map_metalness,
-                        line,
-                        false);
-                }
-            }
-            else if (k == "map_occlusion") {
-                if (!material.hasRegisteredTex(TextureType::map_occlusion)) {
-                    ChannelPart part{
-                        TextureType::map_occlusion,
-                        { ChannelPart::Channel::alpha }
-                    };
-                    material.map_channelParts.push_back(part);
-
-                    std::string line = readString(v);
-                    material.addTexture(
-                        TextureType::map_occlusion,
-                        line,
-                        false);
-                }
-            }
             else if (k == "map_displacement") {
-                if (!material.hasRegisteredTex(TextureType::map_displacement)) {
-                    ChannelPart part{
-                        TextureType::map_displacement,
-                        { ChannelPart::Channel::blue }
-                    };
-                    material.map_channelParts.push_back(part);
-
-                    std::string line = readString(v);
-                    material.addTexture(
-                        TextureType::map_displacement,
-                        line,
-                        false);
-                }
+                std::string line = readString(v);
+                material.addTexture(
+                    TextureType::map_displacement,
+                    line,
+                    true);
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
@@ -356,20 +206,16 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_metal") {
+            else if (k == "map_mrao") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_metal,
+                    TextureType::map_mrao,
                     line,
                     true);
             }
-            else if (k == "map_channel") {
-                ChannelTextureValue loader;
-                loader.loadParts(v, material);
-            }
-            else if (k == "metal") {
-                material.metal = readVec4(v);
-                fields.metal = true;
+            else if (k == "mrao") {
+                material.mrao = readVec3(v);
+                fields.mrao = true;
             }
             else if (k == "pattern") {
                 material.pattern = readInt(v);
@@ -546,180 +392,6 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::resolveMaterialPbr(
-        const std::string& baseDir,
-        MaterialData& data) const
-    {
-        if (data.materialPbr.empty()) return;
-        loadMaterialPbr("", data.materialPbr, data);
-        loadMaterialPbr(baseDir, data.materialPbr, data);
-    }
-
-    void MaterialLoader::loadMaterialPbr(
-        const std::string& baseDir,
-        const std::string& pbrName,
-        MaterialData& data) const
-    {
-        if (data.materialPbr.empty()) return;
-
-        const auto& assets = Assets::get();
-
-        const std::string basePath = util::joinPathExt(
-            assets.assetsDir,
-            baseDir,
-            pbrName, "");
-
-        if (!util::dirExists(basePath)) return;
-
-        std::vector<std::filesystem::directory_entry> normalEntries;
-
-        for (const auto& dirEntry : std::filesystem::directory_iterator(basePath)) {
-            std::string fileName = dirEntry.path().filename().string();
-            std::string matchName{ util::toLower(fileName) };
-
-            if (util::matchAny(texturesMatchers, matchName)) {
-                loadMaterialPbr(baseDir, pbrName + "\\" + fileName, data);
-                return;
-            }
-
-            if (util::matchAny(ignoreMatchers, matchName)) {
-                KI_INFO_OUT(fmt::format("IGNORE_PBR_FILE: {} - {}", basePath, fileName));
-                continue;
-            }
-
-            if (util::matchAny(imageMatchers, matchName)) {
-                normalEntries.push_back(dirEntry);
-            }
-        }
-
-        std::vector<std::string> failedEntries;
-        for (const auto& dirEntry : normalEntries) {
-            if (!handlePbrEntry(baseDir, pbrName, dirEntry, data)) {
-                failedEntries.push_back(dirEntry.path().filename().string());
-            }
-        }
-
-        if (!failedEntries.empty()) {
-            throw std::runtime_error{ fmt::format("UNKNOWN_PBR_FILE: {}", util::join(failedEntries, "\nUNKNOWN_PBR_FILE: ")) };
-        }
-    }
-
-    bool MaterialLoader::handlePbrEntry(
-        const std::string& baseDir,
-        const std::string& pbrName,
-        const std::filesystem::directory_entry& dirEntry,
-        MaterialData& data) const
-    {
-        const auto& assets = Assets::get();
-
-        Material& material = data.material;
-        MaterialField& fields = data.fields;
-
-        const std::string fileName = dirEntry.path().filename().string();
-        const std::string assetPath = util::joinPathExt(
-            baseDir,
-            pbrName,
-            fileName, "");
-
-        std::string matchName{ util::toLower(fileName) };
-
-        bool found = false;
-
-        if (!found && util::matchAny(colorMatchers, matchName)) {
-            material.addTexture(
-                TextureType::diffuse,
-                assetPath,
-                true);
-            found = true;
-        }
-
-        if (!found && util::matchAny(emissionMatchers, matchName)) {
-            material.addTexture(
-                TextureType::emission,
-                assetPath,
-                true);
-            found = true;
-        }
-
-        if (!found && util::matchAny(normalMatchers, matchName)) {
-            material.addTexture(
-                TextureType::map_normal,
-                assetPath,
-                true);
-            found = true;
-        }
-
-        if (!found && util::matchAny(metalnessMatchers, matchName)) {
-            if (!material.hasRegisteredTex(TextureType::map_metalness)) {
-                ChannelPart part{
-                TextureType::map_metalness,
-                { ChannelPart::Channel::red }
-                };
-                material.map_channelParts.push_back(part);
-                material.addTexture(
-                    TextureType::map_metalness,
-                    assetPath,
-                    false);
-            }
-            found = true;
-        }
-
-        if (!found && util::matchAny(roughnessMatchers, matchName)) {
-            if (!material.hasRegisteredTex(TextureType::map_roughness)) {
-                ChannelPart part{
-                TextureType::map_roughness,
-                { ChannelPart::Channel::green }
-                };
-                material.map_channelParts.push_back(part);
-                material.addTexture(
-                    TextureType::map_roughness,
-                    assetPath,
-                    false);
-            }
-            found = true;
-        }
-
-        if (!found && util::matchAny(occlusionMatchers, matchName)) {
-            if (!material.hasRegisteredTex(TextureType::map_occlusion)) {
-                ChannelPart part{
-                TextureType::map_occlusion,
-                { ChannelPart::Channel::alpha }
-                };
-                material.map_channelParts.push_back(part);
-                material.addTexture(
-                    TextureType::map_occlusion,
-                    assetPath,
-                    false);
-            }
-            found = true;
-        }
-
-        if (!found && util::matchAny(displacementMatchers, matchName)) {
-            if (!material.hasRegisteredTex(TextureType::map_displacement)) {
-                ChannelPart part{
-                    TextureType::map_displacement,
-                    { ChannelPart::Channel::blue }
-                };
-                material.map_channelParts.push_back(part);
-                material.addTexture(
-                    TextureType::map_displacement,
-                    assetPath,
-                    false);
-            }
-            found = true;
-        }
-
-        if (!found && util::matchAny(opacityMatchers, matchName)) {
-            material.addTexture(
-                TextureType::map_opacity,
-                assetPath,
-                true);
-            found = true;
-        }
-
-        return found;
-    }
-
     void MaterialLoader::loadTextureSpec(
         const loader::DocNode& node,
         TextureSpec& textureSpec) const
@@ -808,7 +480,7 @@ namespace loader {
         if (f.layersDepth) m.layersDepth = mod.layersDepth;
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
-        if (f.metal) m.metal = mod.metal;
+        if (f.mrao) m.mrao = mod.mrao;
 
         if (f.alpha) m.alpha = mod.alpha;
         if (f.blend) m.blend = mod.blend;

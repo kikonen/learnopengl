@@ -122,7 +122,7 @@ nodes:
         name: woodwall
         map_kd: textures/wood_1024.png
         xreflection: 0.4
-        metal: [1, 0, 0, 1]
+        mrao: [1, 0, 1]
         render_back: true
     program: g_tex
     pos: [20.0, 2.5, 0.0]

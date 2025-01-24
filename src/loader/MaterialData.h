@@ -16,8 +16,6 @@ namespace loader {
         std::string aliasName;
         std::string materialName;
 
-        std::string materialPbr;
-
         std::string updaterId;
 
         MaterialField fields;

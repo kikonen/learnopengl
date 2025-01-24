@@ -27,8 +27,8 @@ struct MaterialSSBO {
     glm::vec4 u_diffuse; // 16
     glm::vec4 u_emission; // 16
 
-    // G buffer: metalness, roughness, displacement, ambient-occlusion
-    glm::vec4 u_metal; // 16
+    // MRAO: [metalness, roughness, ambient-occlusion]
+    glm::vec3 u_mrao; // 16
 
     // NOTE KI "tex index", not "unit index"
     GLuint64 u_diffuseTex;
@@ -42,7 +42,10 @@ struct MaterialSSBO {
     GLuint64 u_opacityMap;
 
     GLuint64 u_custom1Map;
-    GLuint64 u_metalMap;
+
+    // MRAO: [metalness, roughness, ambient-occlusion]
+    GLuint64 u_mraoMap;
+    GLuint64 displacementMapTex;
 
     int u_pattern;
 

@@ -79,10 +79,8 @@ nodes:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: toy_box_diffuse.png
         map_bump: toy_box_normal.png
-        map_channel:
-          - path: toy_box_disp.png
-            type: displacement_map
-            channel: b
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         parallax_depth: 0.04
         render_back: true
     program: g_tex
@@ -96,10 +94,10 @@ nodes:
     mesh:
       path: quad
       material:
-        name: brickwall2
+        base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/bricks2.jpg
-        map_bump: textures/bricks2_normal.jpg
+        map_kd: bricks2.jpg
+        map_bump: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
         map_bump: ''
@@ -112,14 +110,14 @@ nodes:
     mesh:
       path: quad
       material:
-        name: brickwall2
+        base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/bricks2.jpg
-        map_bump: textures/bricks2_normal.jpg
+        map_kd: bricks2.jpg
+        map_bump: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
         map_bump: ''
-        map_displacement: bricks2_disp.jpg
+        map_displacement: displacement_build.png
         xalpha: true
         render_back: true
     program: g_tex
@@ -155,13 +153,8 @@ nodes:
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
         render_back: true
-        map_channel:
-          - path: Bricks007_1K_Roughness.png
-            type: roughness_map
-            channel: G
-          - path: Bricks007_1K_AmbientOcclusion.png
-            type: occlusion_map
-            channel: A
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
     program: g_tex
     pos: [30, 2.5, 0.0]
     scale: 2.5
@@ -174,16 +167,8 @@ nodes:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
-        map_channel:
-          - path: Bricks007_1K_Roughness.png
-            type: roughness_map
-            channel: G
-          - path: Bricks007_1K_Displacement.png
-            type: displacement_map
-            channel: B
-          - path: Bricks007_1K_AmbientOcclusion.png
-            type: occlusion_map
-            channel: A
+        map_mrao: mrao_build.png
+        map_displacement: displacement_build.png
         parallax_depth: 0.015
         xalpha: true
         render_back: true

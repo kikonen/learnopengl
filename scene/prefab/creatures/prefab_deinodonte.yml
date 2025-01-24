@@ -11,7 +11,7 @@ prefab:
       material:
         name: deinodonte_pbr
         map_pbr: deinodonte_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
         xtiling: 60
         xrender_back: true
         xline_mode: true

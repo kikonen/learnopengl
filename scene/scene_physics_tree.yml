@@ -20,7 +20,7 @@ nodes:
       path: water_ball
       material:
         kd: [0.0, 0.2, 0.8, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       base_scale: 0.1
     pos: [0.0, 0.0, 0.0]
@@ -29,7 +29,7 @@ nodes:
       path: water_ball
       material:
         kd: [0.8, 0.2, 0.0, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       base_scale: 0.025
     pos: [0.0, 0.0, 0.0]
@@ -38,7 +38,7 @@ nodes:
       path: water_ball
       material:
         kd: [0.0, 0.8, 0.0, 1.0]
-        metal: [0.2, 0.1, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
         program: g_tex
       base_scale: 0.015
     pos: [0.0, 0.0, 0.0]

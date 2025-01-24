@@ -86,7 +86,7 @@ nodes:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmetal: [0.3, 0.4, 0, 1]
+        xmrao: [0.3, 0.4, 1]
     program: g_tex
     shadow_program: shadow
     pos: [15, 6.5, -20.0]

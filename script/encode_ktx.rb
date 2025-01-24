@@ -11,6 +11,110 @@ require 'json'
 require 'rmagick'
 #require 'vips'
 
+#
+# TODO KI PBR matchers oboleted from framework
+# => apply here
+#
+# TODO KI handle premade MRA mapps
+# - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_DesertDandelion_01a_RMA_2048.png
+# - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_Flower_01_RSA.PNG
+#
+#
+# const std::vector<std::regex> ignoreMatchers{
+#     std::regex(".*nope.*"),
+#     std::regex(".*[\\.]blend"),
+#     std::regex(".*[\\.]exr"),
+#     std::regex(".*[\\.]txt"),
+#     std::regex(".*[\\.]usda"),
+#     std::regex(".*preview.*"),
+#     std::regex(".*normaldx.*"),
+#     std::regex(".*bc_neutral.*"),
+#
+#     std::regex(".*_micron[\\.].*"),
+#     std::regex(".*_micronmask[\\.].*"),
+#     std::regex(".*_resourcemap_position[\\.].*"),
+#     std::regex(".*_resourcemap_wsnormal[\\.].*"),
+#     std::regex(".*_sssmap[\\.].*"),
+#     std::regex(".*_transmap[\\.].*"),
+# };
+#
+# const std::vector<std::regex> imageMatchers{
+#     std::regex(".*[\\.]hdr"),
+#     std::regex(".*[\\.]png"),
+#     std::regex(".*[\\.]jpg"),
+#     std::regex(".*[\\.]tga"),
+# };
+#
+# const std::vector<std::regex> colorMatchers{
+#     std::regex(".*[-_ ]color[-_ \\.].*"),
+#     std::regex(".*[-_ ]col[-_ \\.].*"),
+#     std::regex(".*[-_ ]basecolor[-_ \\.].*"),
+#     std::regex(".*[-_ ]diff[-_ \\.].*"),
+#     std::regex(".*[-_ ]alb[-_ \\.].*"),
+#     std::regex(".*[-_ ]albedo[-_ \\.].*"),
+#     std::regex(".*[-_ ]albedoopacity[-_ \\.].*"),
+#     std::regex(".*[-_ ]albedotransparency[-_ \\.].*"),
+#     std::regex(".*[-_ ]basecoloralpha[-_ \\.].*"),
+#     std::regex(".*[-_ ]a[\\.].*"),
+#     std::regex(".*[-_ ]c[\\.].*"),
+#     std::regex(".*[-_ ]bc[\\.].*"),
+#     std::regex(".*[-_ ]a_m[\\.].*"),
+#     std::regex(".*[-_ ]b[\\.].*"),
+# };
+#
+# const std::vector<std::regex> emissionMatchers{
+#     std::regex(".*[-_ ]emission[-_ \\.].*"),
+#     std::regex(".*[-_ ]emi[-_ \\.].*"),
+#     std::regex(".*[-_ ]emissive[-_ \\.].*"),
+# };
+#
+# const std::vector<std::regex> normalMatchers{
+#     std::regex(".*[-_ ]normal[-_ \\.].*"),
+#     std::regex(".*[-_ ]normals[-_ \\.].*"),
+#     std::regex(".*[-_ ]normalgl[-_ \\.].*"),
+#     std::regex(".*[-_ ]nrm[-_ \\.].*"),
+#     std::regex(".*[-_ ]nor[-_ \\.].*"),
+#     std::regex(".*[-_ ]nor[-_ \\.].*"),
+#     std::regex(".*[-_ ]nml[-_ \\.].*"),
+#     std::regex(".*[-_ ]n[\\.].*"),
+# };
+#
+# const std::vector<std::regex> metalnessMatchers{
+#     std::regex(".*[-_ ]metalness[-_ \\.].*"),
+#     std::regex(".*[-_ ]met[-_ \\.].*"),
+#     std::regex(".*[-_ ]metallic[-_ \\.].*"),
+#     // TODO KI logic various random combined texture formats
+#     std::regex(".*[-_ ]metallicsmoothness[-_ \\.].*"),
+#     //std::regex(".*[-_ ]occlusionroughnessmetallic[-_ \\.].*"),
+#     //std::regex(".*[-_ ]aorm[\\.].*"),
+#     //std::regex(".*[-_ ]rom[\\.].*"),
+# };
+#
+# const std::vector<std::regex> roughnessMatchers{
+#     std::regex(".*[-_ ]roughness[-_ \\.].*"),
+#     std::regex(".*[-_ ]rough[-_ \\.].*"),
+#     std::regex(".*[-_ ]rgh[-_ \\.].*"),
+# };
+#
+# const std::vector<std::regex> occlusionMatchers{
+#     std::regex(".*[-_ ]ambientocclusion[-_ \\.].*"),
+#     std::regex(".*[-_ ]occlusion[-_ \\.].*"),
+#     std::regex(".*[-_ ]ao[-_ \\.].*"),
+# };
+#
+# const std::vector<std::regex> displacementMatchers{
+#     std::regex(".*[-_ ]displacement[-_ \\.].*"),
+#     std::regex(".*[-_ ]disp[-_ \\.].*"),
+#     std::regex(".*[-_ ]depth[-_ \\.].*"),
+# };
+#
+# const std::vector<std::regex> opacityMatchers{
+#     std::regex(".*[-_ ]opacity[-_ \\.].*"),
+#     std::regex(".*[-_ ]ops[-_ \\.].*"),
+#     std::regex(".*[-_ ]alpha[-_ \\.].*"),
+# };
+#
+
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
@@ -168,6 +272,66 @@ class Converter < Thor
 
   private
 
+  REG_EX = {
+    color: [
+      /_col_/,
+      /_color_/,
+      /_color\z/,
+      /[-_]basecolor\z/,
+      /diffuse/,
+      /albedo/,
+    ],
+    opacity: [
+      /_opacity_/,
+      /_opacity\z/,
+    ],
+    normal: [
+      /_nrm_/,
+      /_normalgl_/,
+      /_normalgl\z/,
+      /[-_]normal\z/,
+      /_nrm\z/,
+      /\Anormal\z/,
+      /_bump\z/,
+    ],
+    metal: [
+      /_metalness_/,
+      /_metalness\z/,
+      /-metallic\z/,
+    ],
+    roughness: [
+      /_rgh_/,
+      /_roughness_/,
+      /[-_]roughness\z/,
+      /\Aroughness\z/,
+      /_rough_/,
+    ],
+    ambient_occlusion: [
+      /_ao_/,
+      /_occlusion_/,
+      /_ambientocclusion\z/,
+      /[-_]ao\z/,
+      /\Aao\z/,
+    ],
+    displacement: [
+      /_disp_/,
+      /_displacement_/,
+      /[-_]displacement\z/,
+      /_disp\z/,
+    ],
+    specular: [
+      /_specular_/,
+      /[-_]specular\z/,
+      /\Aspecular\z/,
+    ],
+    gloss: [
+      /gloss/,
+    ],
+    preview: [
+      /preview/,
+    ],
+  }
+
   ############################################################
   #
   ############################################################
@@ -205,22 +369,20 @@ class Converter < Thor
 
       info = nil
 
-      combined_textures = {}
-
       case basename.downcase
-      when /preview/
+      when *REG_EX[:preview]
         info = {
           type: :preview,
           action: :skip,
         }
-      when /_col_/, /_color_/, /_color\z/, /[-_]basecolor\z/, /diffuse/, /albedo/
+      when *REG_EX[:color]
         info = {
           type: :color,
           action: :encode,
           target_type: "RGBA",
           srgb: true
         }
-      when /_nrm_/, /_normalgl_/, /_normalgl\z/, /[-_]normal\z/, /_nrm\z/, /\Anormal\z/, /_bump\z/
+      when *REG_EX[:normal]
         info = {
           type: :normal,
           action: :encode,
@@ -228,21 +390,21 @@ class Converter < Thor
           srgb: false,
           normal_map: true
         }
-      when /_specular_/, /[-_]specular\z/, /\Aspecular\z/
+      when *REG_EX[:specular]
         info = {
           type: :specular,
           action: :skip,
           target_type: "RGB",
           srgb: true,
         }
-      when /_opacity_/, /_opacity\z/
+      when *REG_EX[:opacity]
         info = {
           type: :opacity,
           action: :encode,
           target_type: RED,
           srgb: false,
         }
-      when /_metalness_/, /_metalness\z/, /-metallic\z/
+      when *REG_EX[:metal]
         info = {
           type: :metalness,
           action: :combine,
@@ -251,7 +413,7 @@ class Converter < Thor
           source_channel: RED,
           target_channel: RED,
         }
-      when /_rgh_/, /_roughness_/, /[-_]roughness\z/, /\Aroughness\z/
+      when *REG_EX[:roughness]
         info = {
           type: :roughness,
           action: :combine,
@@ -260,7 +422,7 @@ class Converter < Thor
           source_channel: RED,
           target_channel: GREEN,
         }
-      when /_ao_/, /_occlusion_/, /_ambientocclusion\z/, /[-_]ao\z/, /\Aao\z/
+      when *REG_EX[:ambient_occlusion]
         info = {
           type: :occlusion,
           action: :combine,
@@ -269,7 +431,7 @@ class Converter < Thor
           source_channel: RED,
           target_channel: BLUE,
         }
-      when /_disp_/, /_displacement_/, /[-_]displacement\z/, /_disp\z/
+      when *REG_EX[:displacement]
         info = {
           type: :displacement,
           action: :combine,
@@ -278,7 +440,7 @@ class Converter < Thor
           source_channel: RED,
           target_channel: RED,
         }
-      when /gloss/
+      when *REG_EX[:gloss]
         info = {
           type: :gloss,
           action: :skip,

@@ -141,7 +141,7 @@ void main() {
   // }
 
   o_fragColor = color.rgb;
-  o_fragMetal = material.metal;
+  o_fragMRAO = material.mrao;
   o_fragEmission = material.emission;
 
 #ifdef USE_BONES
@@ -162,8 +162,8 @@ void main() {
 #endif
 
 #ifdef USE_PARALLAX
-  if (material.metal.b > 0) {
-    // o_fragColor = vec3(material.metal.b, 0, 0);
+  if (material.mrao.b > 0) {
+    // o_fragColor = vec3(material.mrao.b, 0, 0);
   }
 #endif
 

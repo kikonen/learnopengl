@@ -6,19 +6,8 @@ prefab:
       base: textures/grass_and_rubble_pjwdj0_2k
       map_kd: Grass_And_Rubble_pjwdJ0_2K_BaseColor.jpg
       map_normal: Grass_And_Rubble_pjwdJ0_2K_Normal.jpg
-      map_channel:
-        - path: Grass_And_Rubble_pjwdJ0_2K_Gloss.jpg
-          type: metalness_map
-          channel: R
-        - path: Grass_And_Rubble_pjwdJ0_2K_Roughness.jpg
-          type: roughness_map
-          channel: G
-        - path: Grass_And_Rubble_pjwdJ0_2K_Displacement.jpg
-          type: displacement_map
-          channel: B
-        - path: Grass_And_Rubble_pjwdJ0_2K_AO.jpg
-          type: occlusion_map
-          channel: A
+      map_mrao: mrao_build.png
+      map_displacement: displacement_build.png
       tiling: 60
       parallax_depth: 0.03
       program: g_tex

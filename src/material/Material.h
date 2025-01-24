@@ -15,7 +15,6 @@
 #include "Texture.h"
 
 #include "TextureType.h"
-#include "ChannelPart.h"
 
 //#include "MaterialSSBO.h"
 
@@ -77,8 +76,6 @@ struct Material final
 public:
     struct BoundTexture {
         Texture* m_texture{ nullptr };
-        bool m_channelPart : 1 { false };
-        bool m_channelTexture : 1 { false };
     };
 
 public:
@@ -176,12 +173,6 @@ private:
         bool flipY,
         bool usePlaceholder);
 
-    void loadChannelTexture(
-        TextureType channelType,
-        std::string_view name,
-        const std::vector<ChannelPart>& parts,
-        const glm::vec4& defaults);
-
 public:
     mutable ki::material_index m_registeredIndex{ -1 };
 
@@ -201,36 +192,12 @@ public:
     //// ranges between 0 and 1000
     //float ns = 0.0f;
 
-    //// The ambient color of the material is declared using Ka.
-    //// HACK KI a bit ambient even if forgotten
-    //// => otherwise total blackness shall happen in few cases
-    //glm::vec3 ka { 0.01f, 0.01f, 0.01f };
-
     // Similarly, the diffuse color is declared using Kd.
     glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
-    //std::string map_kd;
-
-    // The specular color is declared using Ks, and weighted using the specular exponent Ns.
-    //glm::vec3 ks { 0.f };
-    //std::string map_ks;
-
-    // Ke/map_Ke     # emissive
     glm::vec4 ke { 0.f };
-    //std::string map_ke;
 
-    // some implementations use 'map_bump' instead of 'bump' below
-    // bump map(which by default uses luminance channel of the image)
-    // bump lemur_bump.tga
-    //std::string map_bump;
-
-    // channel: metalness, roughness, displacement, ambient-occlusion
-    glm::vec4 metal{ 0.f, 1.f, 0.f, 1.f };
-
-    //std::string map_roughness;
-    //std::string map_metalness;
-    //std::string map_occlusion;
-    //std::string map_displacement;
-    //std::string map_opacity;
+    // MRAO: [metalness, roughness, ambient-occlusion]
+    glm::vec3 mrao{ 0.f, 1.f, 1.f };
 
     //// A material can also have an optical density for its surface. This is also known as index of refraction.
     //float ni = 0.0f;
@@ -259,11 +226,6 @@ public:
     // 10. Casts shadows onto invisible surfaces
     //int illum = 0;
 
-    //std::string map_dudv;
-    //std::string map_noise;
-
-    //static const ki::material_id DEFAULT_ID = 0;
-
     std::string m_name;
 
     uint8_t spriteCount = 1;
@@ -284,8 +246,6 @@ public:
     std::string m_geometryType;
     std::string m_baseDir;
     std::string m_modelDir;
-
-    std::vector<ChannelPart> map_channelParts;
 
     bool m_defaultPrograms{ false };
     std::map<MaterialProgramType, std::string> m_programNames{};
