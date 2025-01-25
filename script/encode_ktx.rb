@@ -163,6 +163,7 @@ class Converter < Thor
         /_metalness_/,
         /_metalness\z/,
         /-metallic\z/,
+        /_metallicsmoothness/,
       ],
       roughness: [
         /_roughness_/,
@@ -446,6 +447,7 @@ class Converter < Thor
           }
         when :metal
           info = {
+            group: 'default',
             type: :metalness,
             action: :combine,
             mode: :mrao,
@@ -455,6 +457,7 @@ class Converter < Thor
           }
         when :roughness
           info = {
+            group: 'default',
             type: :roughness,
             action: :combine,
             mode: :mrao,
@@ -464,6 +467,7 @@ class Converter < Thor
           }
         when :occlusion
           info = {
+            group: 'default',
             type: :occlusion,
             action: :combine,
             mode: :mrao,
@@ -473,6 +477,7 @@ class Converter < Thor
           }
         when :displacement
           info = {
+            group: 'default',
             type: :displacement,
             action: :combine,
             mode: :displacement,
@@ -502,6 +507,7 @@ class Converter < Thor
           base = {
             name:,
             target_name: name,
+            group: nil,
             type: :unknown,
             action: :skip,
             mode: 'copy',
@@ -531,6 +537,20 @@ class Converter < Thor
       [:combine, :encode].include?(info[:action])
     end
 
+    groups = group_by_prefix(textures)
+
+    groups.each do |group, textures|
+      textures.each do |info|
+        info[:group] = group
+      end
+    end
+
+    textures.each do |info|
+      next unless info[:group]
+      next if info[:manual]
+      info[:target_name] = "#{info[:group]}_#{info[:target_name]}"
+    end
+
     if need_process
       metadata[:dir] = src_dir
       metadata[:textures] = textures.sort_by { |e| e[:name] }
@@ -556,6 +576,24 @@ class Converter < Thor
     end
 
     :unknown
+  end
+
+  def group_by_prefix(textures)
+    groups = {}
+
+    textures.each do |info|
+      next unless info[:action] == :combine
+
+      parts = info[:name].split('_')
+      parts.size.times do |idx|
+        group = parts[0, idx + 1].join('_')
+        next if group == info[:name]
+
+        (groups[group] ||= []) << info
+      end
+    end
+
+    groups.select { |k, v| v.size > 1 && v.size < 4 }.to_h
   end
 
   ############################################################
