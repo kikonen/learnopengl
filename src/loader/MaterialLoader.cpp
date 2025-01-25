@@ -74,6 +74,9 @@ namespace loader {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data, loaders);
             data.materialName = data.material.m_name;
+            if (data.materialName.empty()) {
+                data.materialName = data.aliasName;
+            }
         }
     }
 

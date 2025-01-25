@@ -6,9 +6,10 @@ prefab:
       lods:
         - level: 0
       materials:
-        - name: grass_bush_01_pbr
+        - base: grass_01_pbr
           alias: M_atlas_grass_01
-          map_pbr: grass_01_pbr
+          map_kd: T_atlas_grass_01_A_M.png
+          map_normal: T_atlas_grass_01_N.png
           alpha: true
           blend: true
           render_back: true
@@ -19,9 +20,10 @@ prefab:
       lods:
         - level: 1
       materials:
-        - name: grass_bush_01_pbr
+        - base: grass_01_pbr
           alias: M_atlas_grass_01
-          map_pbr: grass_01_pbr
+          map_kd: T_atlas_grass_01_A_M.png
+          map_normal: T_atlas_grass_01_N.png
           alpha: true
           render_back: true
       scale: 0.01
@@ -31,9 +33,9 @@ prefab:
       lods:
         - level: 2
       materials:
-        - name: grass_bush_01_pbr
+        - base: grass_01_pbr
           alias: M_atlas_grass_01
-          map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+          map_kd: T_atlas_grass_01_A_M.png
           render_back: true
       scale: 0.01
       default_programs: true
@@ -42,9 +44,9 @@ prefab:
       lods:
         - level: 3
       materials:
-        - name: grass_bush_01_pbr
+        - base: grass_01_pbr
           alias: M_atlas_grass_01
-          map_kd: grass_01_pbr/T_atlas_grass_01_A_M.png
+          map_kd: T_atlas_grass_01_A_M.png
       base_scale: 0.01
       default_programs: true
   lod_levels:

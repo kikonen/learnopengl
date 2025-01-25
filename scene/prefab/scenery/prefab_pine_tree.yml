@@ -5,12 +5,14 @@ prefab:
       lods:
         - level: 0
       materials:
-        - name: pine_trunk_pbr
+        - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_pbr: pine_trunk_pbr
-        - name: pine_leaf_pbr
+          map_kd: T_TreePineBark_01a_A.PNG
+          map_normal: T_TreePineBark_01a_N.PNG
+        - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_pbr: pine_leaf_pbr
+          map_kd: T_PineBranch_01a_A.PNG
+          map_normal: T_PineBranch_01a_N.PNG
           alpha: true
           blend: true
           render_back: true
@@ -21,12 +23,14 @@ prefab:
       lods:
         - level: 1
       materials:
-        - name: pine_trunk_pbr
+        - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_pbr: pine_trunk_pbr
-        - name: pine_leaf_pbr
+          map_kd: T_TreePineBark_01a_A.PNG
+          map_normal: T_TreePineBark_01a_N.PNG
+        - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_pbr: pine_leaf_pbr
+          map_kd: T_PineBranch_01a_A.PNG
+          map_normal: T_PineBranch_01a_N.PNG
           alpha: true
           render_back: true
       default_programs: true
@@ -36,12 +40,12 @@ prefab:
       lods:
         - level: 2
       materials:
-        - name: pine_trunk_pbr
+        - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-        - name: pine_leaf_pbr
+          map_kd: T_TreePineBark_01a_A.PNG
+        - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A.PNG
           alpha: true
           render_back: true
       default_programs: true
@@ -51,12 +55,12 @@ prefab:
       lods:
         - level: 3
       materials:
-        - name: pine_trunk_pbr
+        - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-        - name: pine_leaf_pbr
+          map_kd: T_TreePineBark_01a_A.PNG
+        - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A.PNG
           alpha: true
       default_programs: true
       base_scale: 0.01
@@ -65,12 +69,12 @@ prefab:
       lods:
         - level: 4
       materials:
-        - name: pine_trunk_pbr
+        - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: pine_trunk_pbr/T_TreePineBark_01a_A.PNG
-        - name: pine_leaf_pbr
+          map_kd: T_TreePineBark_01a_A.PNG
+        - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: pine_leaf_pbr/T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A.PNG
       default_programs: true
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]

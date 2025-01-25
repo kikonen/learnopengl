@@ -125,6 +125,8 @@ class Converter < Thor
   GREEN = 'G'
   BLUE = 'B'
   ALPHA = 'A'
+  RGB = 'RGB'
+  RGBA = 'RGBA'
 
   MAGICK_CHANNELS = {
     RED => Magick::RedChannel,
@@ -135,6 +137,92 @@ class Converter < Thor
 
   COMBINE_VERSION = 1
   KTX_VERSION = 1
+
+  REG_EX = [
+    # Level 1: most accurate
+    {
+      color: [
+        /_color_/,
+        /_color\z/,
+        /[-_]basecolor\z/,
+        /diffuse/,
+        /albedo/,
+      ],
+      opacity: [
+        /_opacity_/,
+        /_opacity\z/,
+      ],
+      normal: [
+        /_normalgl_/,
+        /_normalgl\z/,
+        /[-_]normal\z/,
+        /\Anormal\z/,
+        /_bump\z/,
+      ],
+      metal: [
+        /_metalness_/,
+        /_metalness\z/,
+        /-metallic\z/,
+      ],
+      roughness: [
+        /_roughness_/,
+        /[-_]roughness\z/,
+        /\Aroughness\z/,
+      ],
+      occlusion: [
+        /_occlusion_/,
+        /_ambientocclusion\z/,
+      ],
+      displacement: [
+        /_displacement_/,
+        /[-_]displacement\z/,
+      ],
+      specular: [
+        /_specular_/,
+        /[-_]specular\z/,
+        /\Aspecular\z/,
+      ],
+      gloss: [
+        /gloss/,
+      ],
+      preview: [
+        /preview/,
+      ],
+    },
+    # Level 2; less accurate
+    {
+      color: [
+        /_col_/,
+      ],
+      opacity: [
+      ],
+      normal: [
+        /_nrm_/,
+        /_nrm\z/,
+      ],
+      metal: [
+      ],
+      roughness: [
+        /_rgh_/,
+        /_rough_/,
+      ],
+      occlusion: [
+        /_ao_/,
+        /[-_]ao\z/,
+        /\Aao\z/,
+      ],
+      displacement: [
+        /_disp_/,
+        /_disp\z/,
+      ],
+      specular: [
+      ],
+      gloss: [
+      ],
+      preview: [
+      ],
+    },
+  ]
 
   attr_reader :assets_root_dir,
     :build_root_dir,
@@ -272,66 +360,6 @@ class Converter < Thor
 
   private
 
-  REG_EX = {
-    color: [
-      /_col_/,
-      /_color_/,
-      /_color\z/,
-      /[-_]basecolor\z/,
-      /diffuse/,
-      /albedo/,
-    ],
-    opacity: [
-      /_opacity_/,
-      /_opacity\z/,
-    ],
-    normal: [
-      /_nrm_/,
-      /_normalgl_/,
-      /_normalgl\z/,
-      /[-_]normal\z/,
-      /_nrm\z/,
-      /\Anormal\z/,
-      /_bump\z/,
-    ],
-    metal: [
-      /_metalness_/,
-      /_metalness\z/,
-      /-metallic\z/,
-    ],
-    roughness: [
-      /_rgh_/,
-      /_roughness_/,
-      /[-_]roughness\z/,
-      /\Aroughness\z/,
-      /_rough_/,
-    ],
-    ambient_occlusion: [
-      /_ao_/,
-      /_occlusion_/,
-      /_ambientocclusion\z/,
-      /[-_]ao\z/,
-      /\Aao\z/,
-    ],
-    displacement: [
-      /_disp_/,
-      /_displacement_/,
-      /[-_]displacement\z/,
-      /_disp\z/,
-    ],
-    specular: [
-      /_specular_/,
-      /[-_]specular\z/,
-      /\Aspecular\z/,
-    ],
-    gloss: [
-      /gloss/,
-    ],
-    preview: [
-      /preview/,
-    ],
-  }
-
   ############################################################
   #
   ############################################################
@@ -340,8 +368,15 @@ class Converter < Thor
     extensions:)
 
     metadata = read_metadata(src_dir:)
+
+    manual_textures = {}
     textures = []
     sub_dirs = []
+
+    metadata[:textures]&.each do |info|
+      next unless info[:manual]
+      manual_textures[info[:name]] = info
+    end
 
     # TODO KI ktx options
     #
@@ -360,106 +395,136 @@ class Converter < Thor
       name = File.basename(f)
       basename = File.basename(f, ".*")
 
-      if File.directory?("#{src_dir}/#{name}")
+      old_info = manual_textures[name]
+
+      src_path = "#{src_dir}/#{name}"
+      if File.directory?(src_path)
         sub_dirs << name
         next
       end
 
-      next unless extensions.any? { |ext| f.end_with?(ext) }
-
+      img = nil
       info = nil
 
-      case basename.downcase
-      when *REG_EX[:preview]
-        info = {
-          type: :preview,
-          action: :skip,
-        }
-      when *REG_EX[:color]
-        info = {
-          type: :color,
-          action: :encode,
-          target_type: "RGBA",
-          srgb: true
-        }
-      when *REG_EX[:normal]
-        info = {
-          type: :normal,
-          action: :encode,
-          target_type: "RGB",
-          srgb: false,
-          normal_map: true
-        }
-      when *REG_EX[:specular]
-        info = {
-          type: :specular,
-          action: :skip,
-          target_type: "RGB",
-          srgb: true,
-        }
-      when *REG_EX[:opacity]
-        info = {
-          type: :opacity,
-          action: :encode,
-          target_type: RED,
-          srgb: false,
-        }
-      when *REG_EX[:metal]
-        info = {
-          type: :metalness,
-          action: :combine,
-          mode: :mrao,
-          target_name: MRAO_MAP,
-          source_channel: RED,
-          target_channel: RED,
-        }
-      when *REG_EX[:roughness]
-        info = {
-          type: :roughness,
-          action: :combine,
-          mode: :mrao,
-          target_name: MRAO_MAP,
-          source_channel: RED,
-          target_channel: GREEN,
-        }
-      when *REG_EX[:ambient_occlusion]
-        info = {
-          type: :occlusion,
-          action: :combine,
-          mode: :mrao,
-          target_name: MRAO_MAP,
-          source_channel: RED,
-          target_channel: BLUE,
-        }
-      when *REG_EX[:displacement]
-        info = {
-          type: :displacement,
-          action: :combine,
-          mode: :displacement,
-          target_name: DISPLACEMENT_MAP,
-          source_channel: RED,
-          target_channel: RED,
-        }
-      when *REG_EX[:gloss]
-        info = {
-          type: :gloss,
-          action: :skip,
-          target_type: RED,
-          srgb: false,
-        }
-      else
-        info = {
-          type: :unknown,
-          action: :encode,
-          target_type: 'RGBA',
-          srgb: true,
-        }
+      file_ext = File.extname(f).downcase[1, 5]
+      if extensions.include?(file_ext)
+        img = Magick::Image.ping(src_path).first
+        #debugger
+
+        type = detect_type(basename)
+
+        case type
+        when :preview
+          info = {
+            type: :preview,
+            action: :skip,
+          }
+        when :color
+          info = {
+            type: :color,
+            action: :encode,
+          }
+        when :normal
+          info = {
+            type: :normal,
+            action: :encode,
+            mode: :normal,
+            # NOTE KI only 3 channels in normal
+            target_channel: RGB,
+          }
+        when :specular
+          info = {
+            type: :specular,
+            action: :skip,
+          }
+        when :opacity
+          info = {
+            type: :opacity,
+            action: :copy,
+            source_channel: RED,
+            target_channel: RED,
+          }
+        when :metal
+          info = {
+            type: :metalness,
+            action: :combine,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED,
+            target_channel: RED,
+          }
+        when :roughness
+          info = {
+            type: :roughness,
+            action: :combine,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED,
+            target_channel: GREEN,
+          }
+        when :occlusion
+          info = {
+            type: :occlusion,
+            action: :combine,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED,
+            target_channel: BLUE,
+          }
+        when :displacement
+          info = {
+            type: :displacement,
+            action: :combine,
+            mode: :displacement,
+            target_name: DISPLACEMENT_MAP,
+            source_channel: RED,
+            target_channel: RED,
+          }
+        when :gloss
+          info = {
+            type: :gloss,
+            action: :skip,
+          }
+        else
+          info = {
+            type: :unknown,
+            action: :encode,
+          }
+        end
+
+        if info
+          if img.colorspace == Magick::GRAYColorspace
+            channels = RED
+          else
+            channels = img.alpha? ? RGBA : RGB
+          end
+
+          base = {
+            name:,
+            target_name: name,
+            type: :unknown,
+            action: :skip,
+            mode: 'copy',
+            detected_channels: channels,
+            source_channel: channels,
+            target_channel: channels,
+            source_depth: img.quantum_depth,
+            target_depth: img.quantum_depth,
+            srgb: img.colorspace == Magick::SRGBColorspace,
+            manual: false,
+          }
+          info = base.merge(info)
+        end
       end
 
       if info
-        info = { name: }.merge!(info)
-        textures << info if info
+        info = info.merge(old_info) if old_info
+      else
+        # NOTE KI keep old dead manual entries
+        info = old_info
       end
+
+      textures << info if info
     end
 
     need_process = textures.any? do |info|
@@ -468,7 +533,7 @@ class Converter < Thor
 
     if need_process
       metadata[:dir] = src_dir
-      metadata[:textures] = textures
+      metadata[:textures] = textures.sort_by { |e| e[:name] }
       write_metadata(src_dir:, data: metadata)
     end
 
@@ -479,6 +544,18 @@ class Converter < Thor
           extensions:)
       end
     end
+  end
+
+  def detect_type(filename)
+    filename = filename.downcase
+
+    REG_EX.each_with_index do |level, idx|
+      level.each do |type, expressions|
+        return type if expressions.any? { |e| e.match?(filename) }
+      end
+    end
+
+    :unknown
   end
 
   ############################################################
@@ -517,9 +594,9 @@ class Converter < Thor
           src_path,
           dst_dir:,
           type: info[:type],
-          target_type: info[:target_type] || 'RGB',
+          target_type: info[:target_type] || RGB,
           srgb: info[:srgb] || false,
-          normal_mode: info[:normal_mode] || false
+          normal_mode: info[:mode]-to_sym == :normal
         )
       end
     end
@@ -575,7 +652,7 @@ class Converter < Thor
         parts
       )
     else
-      raise "ERROR: too many parts: #{{src_dir:, target_name:, target_mode:, parts:}}"
+      raise "ERROR: unknown mode: #{{src_dir:, target_name:, target_mode:, parts:}}"
     end
   end
 
@@ -814,7 +891,7 @@ class Converter < Thor
     src_path,
     dst_dir:,
     type:,
-    target_type: "RGB",
+    target_type: RGB,
     srgb: true,
     normal_mode: false
   )

@@ -608,7 +608,7 @@ namespace loader {
                 {
                     KI_INFO_OUT(fmt::format(
                         "MAT_ASSIGN: model={}, material={}, name={}, alias={}",
-                        type->str(), material.m_name, name, alias));
+                        type->getName(), material.m_name, name, alias));
 
                     material.assign(materialData.material);
                 }
@@ -644,7 +644,7 @@ namespace loader {
                 {
                     KI_INFO_OUT(fmt::format(
                         "MAT_MODIFY: model={}, material={}, name={}, alias={}",
-                        type->str(), material.m_name, name, alias));
+                        type->getName(), material.m_name, name, alias));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
                 }
