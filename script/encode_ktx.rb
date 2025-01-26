@@ -396,7 +396,7 @@ class Converter < Thor
         /[-_ ]rgh\z/,
         ###
         /\Arough\z/,
-        /\Arough[-_ ]/,
+        #/\Arough[-_ ]/,
         /[-_ ]rough[-_ ]/,
         /[-_ ]rough\z/,
         ###
@@ -687,9 +687,9 @@ class Converter < Thor
     files = list_files(src_dir)
     files.sort_by(&:downcase).each do |f|
       name = File.basename(f)
-      basename = File.basename(f, ".*")
+      plain_name = File.basename(f, ".*")
 
-      old_info = manual_textures[name]
+      old_tex_info = manual_textures[name]
 
       src_path = "#{src_dir}/#{name}"
       if File.directory?(src_path)
@@ -698,7 +698,7 @@ class Converter < Thor
       end
 
       img = nil
-      info = nil
+      tex_info = nil
 
       file_ext = File.extname(f).downcase[1, 5]
       if extensions.include?(file_ext)
@@ -709,17 +709,17 @@ class Converter < Thor
 
         case type
         when :color
-          info = {
+          tex_info = {
             type: :color,
             action: :encode,
           }
         when :emission
-          info = {
+          tex_info = {
             type: :emission,
             action: :encode,
           }
         when :normal
-          info = {
+          tex_info = {
             type: :normal,
             action: :encode,
             mode: :normal,
@@ -727,19 +727,19 @@ class Converter < Thor
             target_channel: RGB,
           }
         when :specular
-          info = {
+          tex_info = {
             type: :specular,
             action: :skip,
           }
         when :opacity
-          info = {
+          tex_info = {
             type: :opacity,
             action: :encode,
             source_channel: RED,
             target_channel: RED,
           }
         when :metal
-          info = {
+          tex_info = {
             group: 'default',
             type: :metalness,
             action: :combine,
@@ -749,7 +749,7 @@ class Converter < Thor
             target_channel: RED,
           }
         when :roughness
-          info = {
+          tex_info = {
             group: 'default',
             type: :roughness,
             action: :combine,
@@ -759,7 +759,7 @@ class Converter < Thor
             target_channel: GREEN,
           }
         when :occlusion
-          info = {
+          tex_info = {
             group: 'default',
             type: :occlusion,
             action: :combine,
@@ -769,7 +769,7 @@ class Converter < Thor
             target_channel: BLUE,
           }
         when :metal_roughness
-          info = {
+          tex_info = {
             group: 'default',
             type: :metal_roughness,
             action: :skip,
@@ -779,7 +779,7 @@ class Converter < Thor
             target_channel: RED_GREEN,
           }
         when :metal_roughness_occlusion
-          info = {
+          tex_info = {
             group: 'default',
             type: :metal_roughness_occlusion,
             action: :skip,
@@ -789,7 +789,7 @@ class Converter < Thor
             target_channel: RED_GREEN_BLUE,
           }
         when :roughness_metal_occlusion
-          info = {
+          tex_info = {
             group: 'default',
             type: :roughness_metal_occlusion,
             action: :skip,
@@ -799,7 +799,7 @@ class Converter < Thor
             target_channel: GREEN_RED_BLUE,
           }
         when :roughness_occlusion_metal
-          info = {
+          tex_info = {
             group: 'default',
             type: :roughness_occlusion_metal,
             action: :skip,
@@ -809,7 +809,7 @@ class Converter < Thor
             target_channel: GREEN_BLUE_RED,
           }
         when :occlusion_roughness_metal
-          info = {
+          tex_info = {
             group: 'default',
             type: :occlusion_roughness_metal,
             action: :skip,
@@ -819,7 +819,7 @@ class Converter < Thor
             target_channel: BLUE_GREEN_RED,
           }
         when :displacement
-          info = {
+          tex_info = {
             group: 'default',
             type: :displacement,
             action: :combine,
@@ -829,7 +829,7 @@ class Converter < Thor
             target_channel: RED,
           }
         when :cavity
-          info = {
+          tex_info = {
             group: 'default',
             type: :cavity,
             action: :skip,
@@ -839,28 +839,28 @@ class Converter < Thor
             target_channel: RED,
           }
         when :gloss
-          info = {
+          tex_info = {
             type: :gloss,
             action: :skip,
           }
         when :noise
-          info = {
+          tex_info = {
             type: :noise,
             action: :copy,
           }
         when :preview
-          info = {
+          tex_info = {
             type: :preview,
             action: :skip,
           }
         else
-          info = {
+          tex_info = {
             type: :unknown,
             action: :copy,
           }
         end
 
-        if info
+        if tex_info
           if img.colorspace == Magick::GRAYColorspace
             channels = RED
           else
@@ -869,7 +869,7 @@ class Converter < Thor
 
           base = {
             name:,
-            target_name: plainname,
+            target_name: plain_name,
             group: nil,
             type: :unknown,
             action: :skip,
@@ -882,42 +882,64 @@ class Converter < Thor
             srgb: img.colorspace == Magick::SRGBColorspace,
             manual: false,
           }
-          info = base.merge(info)
+          tex_info = base.merge(tex_info)
         end
       end
 
-      if info
-        info = info.merge(old_info) if old_info
+      if tex_info
+        tex_info = tex_info.merge(old_tex_info) if old_tex_info
       else
         # NOTE KI keep old dead manual entries
-        info = old_info
+        tex_info = old_tex_info
       end
 
-      if info
-        if info[:type] == :unknown
-          puts "**WARN** unknown type: #{src_dir}  #{info[:name]} **"
+      if tex_info
+        if tex_info[:type] == :unknown
+          puts "**WARN** unknown type: #{src_dir}  #{tex_info[:name]} **"
         end
 
-        textures << info
+        textures << tex_info
       end
     end
 
-    need_process = textures.any? do |info|
-      [:combine, :encode].include?(info[:action])
+    need_process = textures.any? do |tex_info|
+      [:combine, :encode].include?(tex_info[:action])
     end
 
-    groups = group_by_prefix(textures)
+    begin
+      grouped_textures = group_by_prefix(textures)
 
-    groups.each do |group, textures|
-      textures.each do |info|
-        info[:group] = group
+      texture_to_groups = {}
+
+      grouped_textures.each do |group, group_textures|
+        group_textures.each do |tex_info|
+          texture_to_groups[tex_info[:name]] ||= []
+          texture_to_groups[tex_info[:name]] << group
+        end
+      end
+
+      textures.each do |tex_info|
+        groups = texture_to_groups[tex_info[:name]]
+        next unless groups
+
+        # NOTE KI ignore group with single entry if better ones exist
+        # => at extreme there is no groups
+        group_sizes = groups.map { |e| [e, grouped_textures[e].size] }.to_h
+        if groups.size > 1
+          groups.delete_if { |e| group_sizes[e] == 1 }
+        end
+
+        groups = groups.sort_by { |e| e.length }
+        tex_info[:group] = groups.last unless groups.empty?
       end
     end
 
-    textures.each do |info|
-      next unless info[:group]
-      next if info[:manual]
-      info[:target_name] = "#{info[:group]}_#{info[:target_name]}"
+    textures.each do |tex_info|
+      next unless tex_info[:group]
+      next if tex_info[:manual]
+      next if tex_info[:action] != :combine
+
+      tex_info[:target_name] = "#{tex_info[:group]}_#{tex_info[:target_name]}"
     end
 
     if need_process
@@ -950,19 +972,24 @@ class Converter < Thor
   def group_by_prefix(textures)
     groups = {}
 
-    textures.each do |info|
-      next unless info[:action] == :combine
+    textures.each do |tex_info|
+      #next unless tex_info[:action] == :combine
 
-      parts = info[:name].split('_')
+      parts = tex_info[:name].split('_')
       parts.size.times do |idx|
         group = parts[0, idx + 1].join('_')
-        next if group == info[:name]
+        next if group == tex_info[:name]
 
-        (groups[group] ||= []) << info
+        type = detect_type(group)
+        next if type != :unknown
+
+        (groups[group] ||= []) << tex_info
       end
     end
 
-    groups.select { |k, v| v.size < 4 }.to_h
+    #debugger
+
+    groups
   end
 
   ############################################################
@@ -980,17 +1007,17 @@ class Converter < Thor
 
     combine_textures = {}
 
-    metadata.textures&.each do |info|
-      name = info.name.downcase
+    metadata.textures&.each do |tex_info|
+      name = tex_info.name.downcase
       next unless name
       next unless extensions.any? { |ext| name.downcase.end_with?(ext) }
 
       src_path = "#{src_dir}/#{name}"
 
-      action = info.action_sym
+      action = tex_info.action_sym
 
       if action == :combine
-        (combine_textures[info.target_name] ||= []) << info
+        (combine_textures[tex_info.target_name] ||= []) << tex_info
         next
       end
 
@@ -1000,10 +1027,10 @@ class Converter < Thor
         encode(
           src_path,
           dst_dir:,
-          type: info.type,
-          target_type: info.target_type || RGB,
-          srgb: info.srgb || false,
-          normal_mode: info.mode-to_sym == :normal
+          type: tex_info.type,
+          target_type: tex_info.target_type || RGB,
+          srgb: tex_info.srgb || false,
+          normal_mode: tex_info.mode-to_sym == :normal
         )
       end
     end
@@ -1095,9 +1122,9 @@ class Converter < Thor
     end
 
     channel_counts = {}
-    parts.each do |info|
-      channel_counts[info.target_channel] ||= 0
-      channel_counts[info.target_channel] += 1
+    parts.each do |tex_info|
+      channel_counts[tex_info.target_channel] ||= 0
+      channel_counts[tex_info.target_channel] += 1
     end
 
     if channel_counts.any? { |k, v| v > 1 }
@@ -1123,18 +1150,18 @@ class Converter < Thor
 
     sorted_parts = parts.sort_by { |e| e.name }
 
-    source_paths = sorted_parts.map do |info|
-      "#{src_dir}/#{info.name}"
+    source_paths = sorted_parts.map do |tex_info|
+      "#{src_dir}/#{tex_info.name}"
     end
 
     salt = {
       version: COMBINE_VERSION,
       size: target_size,
-      parts: sorted_parts.map do |info|
+      parts: sorted_parts.map do |tex_info|
         {
-          name: info.name,
-          source_channel: info.source_channel,
-          target_channel: info.target_channel,
+          name: tex_info.name,
+          source_channel: tex_info.source_channel,
+          target_channel: tex_info.target_channel,
         }
       end.sort_by { |e| e[:name] }
     }
@@ -1160,13 +1187,13 @@ class Converter < Thor
 
     #debugger
 
-    parts.each do |info|
-      src_channel = select_channel(info.source_channel)
-      dst_channel = select_channel(info.target_channel)
+    parts.each do |tex_info|
+      src_channel = select_channel(tex_info.source_channel)
+      dst_channel = select_channel(tex_info.target_channel)
 
       next unless src_channel && dst_channel
 
-      src_path = "#{src_dir}/#{info.name}"
+      src_path = "#{src_dir}/#{tex_info.name}"
 
       puts "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
@@ -1515,7 +1542,7 @@ class Converter < Thor
 
     file_paths.sort.each do |file_path|
       File.open(file_path) do |f|
-        while chunk = f.read(256)
+        while chunk = f.read(8192)
           sha << chunk
         end
       end
