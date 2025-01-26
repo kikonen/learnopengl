@@ -9,7 +9,7 @@ require 'thor'
 require 'fileutils'
 require 'json'
 require 'rmagick'
-#require 'vips'
+require 'hashie'
 
 #
 # TODO KI PBR matchers oboleted from framework
@@ -115,11 +115,38 @@ require 'rmagick'
 # };
 #
 
+# NOTE KI using Hashie
+class TextureInfo < Hash
+  include Hashie::Extensions::MergeInitializer
+  include Hashie::Extensions::MethodAccess
+
+  def action_sym
+    self.action&.to_sym
+  end
+
+  def src_path(src_dir)
+    "#{src_dir}/#{self.name}"
+  end
+end
+
+class Metadata < Hash
+  include Hashie::Extensions::Coercion
+  include Hashie::Extensions::MergeInitializer
+  include Hashie::Extensions::MethodAccess
+
+  coerce_key :textures, Array[TextureInfo]
+
+  def self.new_empty
+    self.new(textures: [])
+  end
+end
+
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
   MRAO_MAP = 'mrao_build'
   DISPLACEMENT_MAP = 'displacement_build'
+  CAVITY_MAP = 'cavity_build'
 
   RED = 'R'
   GREEN = 'G'
@@ -127,6 +154,12 @@ class Converter < Thor
   ALPHA = 'A'
   RGB = 'RGB'
   RGBA = 'RGBA'
+
+  RED_GREEN = 'RG'
+  RED_GREEN_BLUE = 'RGB'
+  GREEN_RED_BLUE = 'GBB'
+  GREEN_BLUE_RED = 'GBR'
+  BLUE_GREEN_RED = 'BGR'
 
   MAGICK_CHANNELS = {
     RED => Magick::RedChannel,
@@ -138,53 +171,167 @@ class Converter < Thor
   COMBINE_VERSION = 1
   KTX_VERSION = 1
 
+  # NOTE KI match against *basename" without *extension*
+  # => this \z instead of \.
   REG_EX = [
     # Level 1: most accurate
     {
       color: [
-        /_color_/,
-        /_color\z/,
-        /[-_]basecolor\z/,
-        /diffuse/,
-        /albedo/,
+        /\Acolor\z/,
+        /\Acolor[-_ ]/,
+        /[-_ ]color[-_ ]/,
+        /[-_ ]color\z/,
+        ###
+        /\Abasecolor\z/,
+        /\Abasecolor[-_ ]/,
+        /[-_ ]basecolor[-_ ]/,
+        /[-_ ]basecolor/,
+        /[-_ ]basecolor\z/,
+        ###
+        /\Adiffuse\z/,
+        /\Adiffuse[-_ ]/,
+        /[-_ ]diffuse[-_ ]/,
+        /[-_ ]diffuse\z/,
+        ###
+        /\Aalbedo\z/,
+        /\Aalbedo[-_ ]/,
+        /[-_ ]albedo/,
+        /[-_ ]albedo\z/,
+        ###
+      ],
+      emission: [
+        /\Aemission\z/,
+        /\Aemission[-_ ]/,
+        /[-_ ]emission[-_ ]/,
+        /[-_ ]emission\z/,
+        ###
+        /\Aemissive\z/,
+        /\Aemissive[-_ ]/,
+        /[-_ ]emissive[-_ ]/,
+        /[-_ ]emissive\z/,
+        ###
+        /\Aglow\z/,
+        /\Aglow[-_ ]/,
+        /[-_ ]glow[-_ ]/,
+        /[-_ ]glow\z/,
+        ###
       ],
       opacity: [
-        /_opacity_/,
-        /_opacity\z/,
+        /\Aopacity\z/,
+        /\Aopacity[-_ ]/,
+        /[-_ ]opacity[-_ ]/,
+        /[-_ ]opacity\z/,
+        ###
+        /\Aalpha\z/,
+        /\Aalpha[-_ ]/,
+        /[-_ ]alpha[-_ ]/,
+        /[-_ ]alpha\z/,
+        ###
       ],
       normal: [
-        /_normalgl_/,
-        /_normalgl\z/,
-        /[-_]normal\z/,
+        /[-_ ]normalgl[-_ ]/,
+        /[-_ ]normalgl\z/,
+        ###
         /\Anormal\z/,
-        /_bump\z/,
+        /\Anormal[-_ ]/,
+        /[-_ ]normal[-_ ]/,
+        /[-_ ]normal\z/,
+        ###
+        /\Anormals\z/,
+        /\Anormals[-_ ]/,
+        /[-_ ]normals[-_ ]/,
+        /[-_ ]normals\z/,
+        ###
+        /\Abump\z/,
+        /\Abump[-_ ]/,
+        /[-_ ]bump[-_ ]/,
+        /[-_ ]bump\z/,
       ],
       metal: [
-        /_metalness_/,
-        /_metalness\z/,
-        /-metallic\z/,
-        /_metallicsmoothness/,
+        /\Ametalness\z/,
+        /\Ametalness[-_ ]/,
+        /[-_ ]metalness[-_ ]/,
+        /[-_ ]metalness\z/,
+        ###
+        /\Ametallic\z/,
+        /\Ametallic[-_ ]/,
+        /[-_ ]metallic[-_ ]/,
+        /[-_ ]metallic\z/,
+        ###
+        /[-_ ]metallicsmoothness/,
+        ###
+        /\Ametalness\z/,
+        /\Ametalness[-_ ]/,
+        /[-_ ]metalness[-_ ]/,
+        /[-_ ]metalness\z/,
       ],
       roughness: [
-        /_roughness_/,
-        /[-_]roughness\z/,
         /\Aroughness\z/,
+        /\Aroughness[-_ ]/,
+        /[-_ ]roughness[-_ ]/,
+        /[-_ ]roughness\z/,
       ],
       occlusion: [
-        /_occlusion_/,
-        /_ambientocclusion\z/,
+        /\Aambientocclusion\z/,
+        /\Aambientocclusion[-_ ]/,
+        /[-_ ]ambientocclusion[-_ ]/,
+        /[-_ ]ambientocclusion\z/,
+        ###
+        /\Aocclusion\z/,
+        /\Aocclusion[-_ ]/,
+        /[-_ ]occlusion[-_ ]/,
+        /[-_ ]occlusion\z/,
+      ],
+      metal_roughness: [
+        /metallicroughness/,
+      ],
+      metal_roughness_occlusion: [
+        /metallicroughnessocclusion/,
+      ],
+      roughness_metal_occlusion: [
+        /roughnessmetallicocclusion/,
+      ],
+      roughness_occlusion_metal: [
+        /roughnessocclusionmetal/,
+      ],
+      occlusion_roughness_metal: [
+        /occlusionroughnessmetal/,
       ],
       displacement: [
-        /_displacement_/,
-        /[-_]displacement\z/,
+        /\Adisplacement\z/,
+        /\Adisplacement[-_ ]/,
+        /[-_ ]displacement[-_ ]/,
+        /[-_ ]displacement\z/,
+        ###
+        /\Adepth\z/,
+        /\Adepth[-_ ]/,
+        /[-_ ]depth[-_ ]/,
+        /[-_ ]depth\z/,
+        ###
+      ],
+      cavity: [
+        /\Acavity\z/,
+        /\Acavity[-_ ]/,
+        /[-_ ]cavity[-_ ]/,
+        /[-_ ]cavity\z/,
       ],
       specular: [
-        /_specular_/,
-        /[-_]specular\z/,
         /\Aspecular\z/,
+        /\Aspecular[-_ ]/,
+        /[-_ ]specular[-_ ]/,
+        /[-_ ]specular\z/,
       ],
       gloss: [
-        /gloss/,
+        /\Agloss\z/,
+        /\Agloss[-_ ]/,
+        /[-_ ]gloss[-_ ]/,
+        /[-_ ]gloss\z/,
+      ],
+      noise: [
+        /\Anoise\z/,
+        /\Anoise[-_ ]/,
+        /[-_ ]noise[-_ ]/,
+        /[-_ ]noise\z/,
       ],
       preview: [
         /preview/,
@@ -193,28 +340,166 @@ class Converter < Thor
     # Level 2; less accurate
     {
       color: [
-        /_col_/,
+        /\Acol\z/,
+        /\Acol[-_ ]/,
+        /[-_ ]col[-_ ]/,
+        /[-_ ]col\z/,
+        ###
+        /\Aalb\z/,
+        /\Aalb[-_ ]/,
+        /[-_ ]alb[-_ ]/,
+        /[-_ ]alb\z/,
+        ###
+        /\Adiff\z/,
+        /\Adiff[-_ ]/,
+        /[-_ ]diff[-_ ]/,
+        /[-_ ]diff\z/,
+        ###
+      ],
+      emission: [
+        /\Aemi\z/,
+        /\Aemi[-_ ]/,
+        /[-_ ]emi[-_ ]/,
+        /[-_ ]emi\z/,
+        ###
       ],
       opacity: [
       ],
       normal: [
-        /_nrm_/,
-        /_nrm\z/,
+        /\Anrm\z/,
+        /\Anrm[-_ ]/,
+        /[-_ ]nrm[-_ ]/,
+        /[-_ ]nrm\z/,
+        ###
+        /\Anml\z/,
+        /\Anml[-_ ]/,
+        /[-_ ]nml[-_ ]/,
+        /[-_ ]nml\z/,
+        ###
+        /\Anor\z/,
+        /\Anor[-_ ]/,
+        /[-_ ]nor[-_ ]/,
+        /[-_ ]nor\z/,
+        ###
+      ],
+      metal: [
+        /\Amet\z/,
+        /\Amet[-_ ]/,
+        /[-_ ]met[-_ ]/,
+        /[-_ ]met\z/,
+        ###
+      ],
+      roughness: [
+        /\Argh\z/,
+        /\Argh[-_ ]/,
+        /[-_ ]rgh[-_ ]/,
+        /[-_ ]rgh\z/,
+        ###
+        /\Arough\z/,
+        /\Arough[-_ ]/,
+        /[-_ ]rough[-_ ]/,
+        /[-_ ]rough\z/,
+        ###
+      ],
+      occlusion: [
+      ],
+      metal_roughness_occlusion: [
+        /\Amra\z/,
+        /\Amra[-_ ]/,
+        /[-_ ]mra[-_ ]/,
+        /[-_ ]mra\z/,
+      ],
+      roughness_metal_occlusion: [
+        /\Arma\z/,
+        /\Arma[-_ ]/,
+        /[-_ ]rma[-_ ]/,
+        /[-_ ]rma\z/,
+      ],
+      roughness_occlusion_metal: [
+        /\Arom\z/,
+        /\Arom[-_ ]/,
+        /[-_ ]rom[-_ ]/,
+        /[-_ ]rom\z/,
+      ],
+      occlusion_roughness_metal: [
+        /\Aorm\z/,
+        /\Aorm[-_ ]/,
+        /[-_ ]orm[-_ ]/,
+        /[-_ ]orm\z/,
+      ],
+      displacement: [
+        /\Adisp\z/,
+        /\Adisp[-_ ]/,
+        /[-_ ]disp[-_ ]/,
+        /[-_ ]disp\z/,
+      ],
+      specular: [
+        /\Aspec\z/,
+        /\Aspec[-_ ]/,
+        /[-_ ]spec[-_ ]/,
+        /[-_ ]spec\z/,
+      ],
+      gloss: [
+      ],
+      preview: [
+      ],
+    },
+    # Level 3; even less accurate (TLA, OLA)
+    {
+      color: [
+        /\Abc\z/,
+        /\Abc[-_ ]/,
+        /[-_ ]bc[-_ ]/,
+        /[-_ ]bc\z/,
+        ###
+        /\Ac\z/,
+        /[-_ ]c\z/,
+        ###
+        /\Aa\z/,
+        /[-_ ]a[-_ ]\z/,
+        /[-_ ]a\z/,
+        ###
+        /\Aa_m\z/,
+        /[-_ ]a_m[-_ ]\z/,
+        /[-_ ]a_m\z/,
+        ###
+        /\Ab\z/,
+        /[-_ ]b\z/,
+        ###
+        /\Ad\z/,
+        /[-_ ]d\z/,
+        ###
+        /[-_ ]tx\z/,
+        ###
+      ],
+      opacity: [
+      ],
+      normal: [
+        /[-_ ]tn\z/,
+        ###
+        /[-_ ]n\z/,
+        ###
       ],
       metal: [
       ],
       roughness: [
-        /_rgh_/,
-        /_rough_/,
+        /\Ar\z/,
+        /[-_ ]r\z/,
+        ###
       ],
       occlusion: [
-        /_ao_/,
-        /[-_]ao\z/,
         /\Aao\z/,
+        /\Aao[-_ ]/,
+        /[-_ ]ao[-_ ]/,
+        /[-_]ao\z/,
+      ],
+      metal_roughness_occlusion: [
+      ],
+      roughness_metal_occlusion: [
+      ],
+      roughness_occlusion_metal: [
       ],
       displacement: [
-        /_disp_/,
-        /_disp\z/,
       ],
       specular: [
       ],
@@ -266,10 +551,14 @@ class Converter < Thor
     extensions = options[:ext] || EXTENSIONS
     extensions = extensions.map(&:downcase)
 
+    @assets_root_dir = options[:assets_root_dir]
     @target_size = options[:target_size]
     @recursive = options[:recursive]
     @force = options[:force]
     @dry_run = options[:dry_run]
+
+    @assets_root_dir = clean_dir_path(@assets_root_dir)
+    src_dir = clean_dir_path(src_dir)
 
     puts "SRC_DIR:     #{src_dir}"
     puts "EXT:         #{extensions}"
@@ -342,6 +631,10 @@ class Converter < Thor
       exit
     end
 
+    @assets_root_dir = clean_dir_path(@assets_root_dir)
+    @build_root_dir = clean_dir_path(@build_root_dir)
+    src_dir = clean_dir_path(src_dir)
+
     puts "SRC_DIR:     #{src_dir}"
     puts "ASSETS_DIR:  #{assets_root_dir}"
     puts "BUILD_DIR:   #{build_root_dir}"
@@ -394,7 +687,6 @@ class Converter < Thor
     files = list_files(src_dir)
     files.sort_by(&:downcase).each do |f|
       name = File.basename(f)
-      basename = File.basename(f, ".*")
 
       old_info = manual_textures[name]
 
@@ -412,17 +704,17 @@ class Converter < Thor
         img = Magick::Image.ping(src_path).first
         #debugger
 
-        type = detect_type(basename)
+        type = detect_type(name)
 
         case type
-        when :preview
-          info = {
-            type: :preview,
-            action: :skip,
-          }
         when :color
           info = {
             type: :color,
+            action: :encode,
+          }
+        when :emission
+          info = {
+            type: :emission,
             action: :encode,
           }
         when :normal
@@ -441,7 +733,7 @@ class Converter < Thor
         when :opacity
           info = {
             type: :opacity,
-            action: :copy,
+            action: :encode,
             source_channel: RED,
             target_channel: RED,
           }
@@ -475,6 +767,56 @@ class Converter < Thor
             source_channel: RED,
             target_channel: BLUE,
           }
+        when :metal_roughness
+          info = {
+            group: 'default',
+            type: :metal_roughness,
+            action: :skip,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED_GREEN,
+            target_channel: RED_GREEN,
+          }
+        when :metal_roughness_occlusion
+          info = {
+            group: 'default',
+            type: :metal_roughness_occlusion,
+            action: :skip,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED_GREEN_BLUE,
+            target_channel: RED_GREEN_BLUE,
+          }
+        when :roughness_metal_occlusion
+          info = {
+            group: 'default',
+            type: :roughness_metal_occlusion,
+            action: :skip,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED_GREEN_BLUE,
+            target_channel: GREEN_RED_BLUE,
+          }
+        when :roughness_occlusion_metal
+          info = {
+            group: 'default',
+            type: :roughness_occlusion_metal,
+            action: :skip,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED_GREEN_BLUE,
+            target_channel: GREEN_BLUE_RED,
+          }
+        when :occlusion_roughness_metal
+          info = {
+            group: 'default',
+            type: :occlusion_roughness_metal,
+            action: :skip,
+            mode: :mrao,
+            target_name: MRAO_MAP,
+            source_channel: RED_GREEN_BLUE,
+            target_channel: BLUE_GREEN_RED,
+          }
         when :displacement
           info = {
             group: 'default',
@@ -485,15 +827,35 @@ class Converter < Thor
             source_channel: RED,
             target_channel: RED,
           }
+        when :cavity
+          info = {
+            group: 'default',
+            type: :cavity,
+            action: :skip,
+            mode: :cavity,
+            target_name: CAVITY_MAP,
+            source_channel: RED,
+            target_channel: RED,
+          }
         when :gloss
           info = {
             type: :gloss,
             action: :skip,
           }
+        when :noise
+          info = {
+            type: :noise,
+            action: :copy,
+          }
+        when :preview
+          info = {
+            type: :preview,
+            action: :skip,
+          }
         else
           info = {
             type: :unknown,
-            action: :encode,
+            action: :copy,
           }
         end
 
@@ -530,7 +892,13 @@ class Converter < Thor
         info = old_info
       end
 
-      textures << info if info
+      if info
+        if info[:type] == :unknown
+          puts "**WARN** unknown type: #{src_dir}  #{info[:name]} **"
+        end
+
+        textures << info
+      end
     end
 
     need_process = textures.any? do |info|
@@ -566,12 +934,12 @@ class Converter < Thor
     end
   end
 
-  def detect_type(filename)
-    filename = filename.downcase
+  def detect_type(f)
+    basename = File.basename(f, ".*").downcase
 
     REG_EX.each_with_index do |level, idx|
       level.each do |type, expressions|
-        return type if expressions.any? { |e| e.match?(filename) }
+        return type if expressions.any? { |e| e.match?(basename) }
       end
     end
 
@@ -593,7 +961,7 @@ class Converter < Thor
       end
     end
 
-    groups.select { |k, v| v.size > 1 && v.size < 4 }.to_h
+    groups.select { |k, v| v.size < 4 }.to_h
   end
 
   ############################################################
@@ -611,17 +979,17 @@ class Converter < Thor
 
     combine_textures = {}
 
-    metadata[:textures]&.each do |info|
-      name = info[:name].downcase
+    metadata.textures&.each do |info|
+      name = info.name.downcase
       next unless name
       next unless extensions.any? { |ext| name.downcase.end_with?(ext) }
 
       src_path = "#{src_dir}/#{name}"
 
-      action = info[:action]&.to_sym
+      action = info.action_sym
 
       if action == :combine
-        (combine_textures[info[:target_name]] ||= []) << info
+        (combine_textures[info.target_name] ||= []) << info
         next
       end
 
@@ -631,17 +999,17 @@ class Converter < Thor
         encode(
           src_path,
           dst_dir:,
-          type: info[:type],
-          target_type: info[:target_type] || RGB,
-          srgb: info[:srgb] || false,
-          normal_mode: info[:mode]-to_sym == :normal
+          type: info.type,
+          target_type: info.target_type || RGB,
+          srgb: info.srgb || false,
+          normal_mode: info.mode-to_sym == :normal
         )
       end
     end
 
     if combine
       combine_textures.each do |target_name, parts|
-        target_mode = parts.first[:mode].to_sym
+        target_mode = parts.first.mode.to_sym
         create_combound_texture(src_dir, dst_dir, target_name, target_mode, parts)
       end
     end
@@ -674,11 +1042,14 @@ class Converter < Thor
     target_mode,
     parts
   )
+    group = parts.first.group
+
     case target_mode
     when :mrao
       create_mrao_texture(
         src_dir,
         dst_dir,
+        parts.first.group,
         target_name,
         parts
       )
@@ -686,12 +1057,21 @@ class Converter < Thor
       create_displacement_texture(
         src_dir,
         dst_dir,
+        parts.first.group,
         target_name,
         parts
       )
     else
-      raise "ERROR: unknown mode: #{{src_dir:, target_name:, target_mode:, parts:}}"
+      raise "ERROR: unknown mode: #{{
+        src_dir:,
+        group:,
+        target_name:,
+        target_mode:,
+        parts: parts.map(&:name),
+      }}"
     end
+
+    GC.start
   end
 
   ########################################
@@ -700,11 +1080,39 @@ class Converter < Thor
   def create_mrao_texture(
     src_dir,
     dst_dir,
+    group,
     target_name,
     parts
   )
     if parts.size > 3
-      raise "ERROR: too many parts: #{{src_dir:, target_name:, parts:}}"
+      raise "ERROR: too many parts: #{{
+        src_dir:,
+        group:,
+        target_name:,
+        parts: parts.map(&:name),
+      }}"
+    end
+
+    channel_counts = {}
+    parts.each do |info|
+      channel_counts[info.target_channel] ||= 0
+      channel_counts[info.target_channel] += 1
+    end
+
+    if channel_counts.any? { |k, v| v > 1 }
+      duplicates = channel_counts
+        .select { |k, v| v > 1 }
+        .map(&:first)
+        .map do |e|
+          parts.select { |p| p.target_channel == e }.map(&:name)
+        end
+
+      raise "ERROR: duplicate channel mapping: #{{
+        src_dir:,
+        group:,
+        target_name:,
+        parts: parts.map(&:name),
+        duplicates:}}"
     end
 
     black = black_image
@@ -712,10 +1120,10 @@ class Converter < Thor
 
     dst_path = "#{dst_dir}/#{target_name}.png"
 
-    sorted_parts = parts.sort_by { |e| e[:name] }
+    sorted_parts = parts.sort_by { |e| e.name }
 
     source_paths = sorted_parts.map do |info|
-      "#{src_dir}/#{info[:name]}"
+      "#{src_dir}/#{info.name}"
     end
 
     salt = {
@@ -723,9 +1131,9 @@ class Converter < Thor
       size: target_size,
       parts: sorted_parts.map do |info|
         {
-          name: info[:name],
-          source_channel: info[:source_channel],
-          target_channel: info[:target_channel],
+          name: info.name,
+          source_channel: info.source_channel,
+          target_channel: info.target_channel,
         }
       end.sort_by { |e| e[:name] }
     }
@@ -733,7 +1141,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "MRAO: #{dst_path}"
+    puts "MRAO: [#{group}] #{dst_path}"
 
     # channel: [ metalness, roughness, ambient-occlusion ]
     # DEFAULTS = glm::vec3 mrao{ 0.f, 1.f, 1.f };
@@ -752,13 +1160,16 @@ class Converter < Thor
     #debugger
 
     parts.each do |info|
-      src_channel = select_channel(info[:source_channel])
-      dst_channel = select_channel(info[:target_channel])
+      src_channel = select_channel(info.source_channel)
+      dst_channel = select_channel(info.target_channel)
 
       next unless src_channel && dst_channel
 
+      src_path = "#{src_dir}/#{info.name}"
+
+      puts "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
+
       # https://imagemagick.org/script/command-line-options.php#separate
-      src_path = "#{src_dir}/#{info[:name]}"
       src_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)[0]
@@ -775,18 +1186,22 @@ class Converter < Thor
 
     #debugger
 
-    target_channels.each do |dst_channel, info|
+    target_channels.each do |dst_channel, image_info|
       src_img = target_placeholders[dst_channel]
 
-      if info
-        src_img = info[:image]
+      if image_info
+        src_img = image_info[:image]
       end
 
-      puts "#{dst_channel} = #{src_img.inspect}"
+      puts "MAP:  [#{group}] #{dst_channel} = #{src_img.inspect}"
 
       img_list << src_img
     end
 
+    # NOTE KI workaround segmentation fault, which happens
+    # if running without pause
+    GC.start
+    sleep 0.25
     #debugger
 
     # https://imagemagick.org/script/command-line-options.php#combine
@@ -795,12 +1210,12 @@ class Converter < Thor
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
 
-      puts "WRITE: #{dst_path}"
+      puts "WRITE: [#{group}] #{dst_path}"
       dst_img.write(dst_path)
 
       write_digest(dst_path, sha_digest, source_paths, salt)
 
-      puts "DONE:  #{dst_path}"
+      puts "DONE: [#{group}] #{dst_path}"
     end
   end
 
@@ -810,26 +1225,32 @@ class Converter < Thor
   def create_displacement_texture(
     src_dir,
     dst_dir,
+    group,
     target_name,
     parts
   )
     if parts.size > 1
-      raise "ERROR: too many parts: #{{src_dir:, target_name:, parts:}}"
+      raise "ERROR: too many parts: #{{
+        src_dir:,
+        group:,
+        target_name:,
+        parts: parts.map(&:name),
+      }}"
     end
 
     dst_path = "#{dst_dir}/#{target_name}.png"
 
     part = parts.first
-    src_path = "#{src_dir}/#{part[:name]}"
+    src_path = "#{src_dir}/#{part.name}"
 
     salt = {
       version: COMBINE_VERSION,
       size: target_size,
       parts: [
         {
-          name: part[:name],
-          source_channel: part[:source_channel],
-          target_channel: part[:target_channel],
+          name: part.name,
+          source_channel: part.source_channel,
+          target_channel: part.target_channel,
         }
       ]
     }
@@ -837,15 +1258,15 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, [src_path], salt)
     return unless sha_digest
 
-    puts "DISPLACEMENT: #{dst_path}"
+    puts "DISPLACEMENT: [#{group}] #{dst_path}"
 
     #debugger
 
-    src_channel = select_channel(part[:source_channel]) || select_channel(RED)
-    dst_channel = select_channel(part[:target_channel]) || select_channel(RED)
+    src_channel = select_channel(part.source_channel) || select_channel(RED)
+    dst_channel = select_channel(part.target_channel) || select_channel(RED)
 
     # https://imagemagick.org/script/command-line-options.php#separate
-    src_path = "#{src_dir}/#{part[:name]}"
+    src_path = part.src_path(src_dir)
     src_img = Magick::Image.read(src_path)
       .first
       .separate(src_channel)[0]
@@ -1020,10 +1441,12 @@ class Converter < Thor
   def read_metadata(
     src_dir:)
     metadata_path = "#{src_dir}/_assets.meta"
-    return {} unless File.exist?(metadata_path)
+    return Metadata.new_empty unless File.exist?(metadata_path)
 
     puts "READ: #{metadata_path}"
-    JSON.parse(File.read(metadata_path), symbolize_names: true)
+
+    data = JSON.parse(File.read(metadata_path), symbolize_names: true)
+    Metadata.new(**data)
   end
 
   def write_metadata(
@@ -1098,6 +1521,11 @@ class Converter < Thor
     end
 
     sha.hexdigest
+  end
+
+  def clean_dir_path(path)
+    return path unless path.end_with?('/')
+    path.gsub(/[\/]*\z/, "")
   end
 end
 Converter.start(ARGV)

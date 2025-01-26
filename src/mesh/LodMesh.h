@@ -49,6 +49,8 @@ namespace mesh {
         void registerMaterial();
         void prepareRT(const PrepareContext& ctx);
 
+        std::string getMeshName();
+
         template<typename T>
         inline T* getMesh() const noexcept
         {

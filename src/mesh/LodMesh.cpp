@@ -221,6 +221,12 @@ namespace mesh {
         }
     }
 
+    std::string LodMesh::getMeshName()
+    {
+        auto* mesh = getMesh<mesh::Mesh>();
+        return mesh ? mesh->m_name : "NA";
+    }
+
     void LodMesh::setMesh(
         std::unique_ptr<Mesh> mesh,
         bool umique) noexcept

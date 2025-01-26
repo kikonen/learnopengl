@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    hashie (5.0.0)
     observer (0.1.2)
     pkg-config (1.5.9)
     rmagick (6.1.0)
@@ -12,6 +13,7 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
+  hashie
   rmagick (~> 6.1.0)
   thor
 

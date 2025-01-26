@@ -607,8 +607,12 @@ namespace loader {
                 if (name == material.m_name || alias == material.m_name || alias == "*")
                 {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_ASSIGN: model={}, material={}, name={}, alias={}",
-                        type->getName(), material.m_name, name, alias));
+                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
+                        type->getName(),
+                        lodMesh.getMeshName(),
+                        material.m_name,
+                        name,
+                        alias));
 
                     material.assign(materialData.material);
                 }
@@ -643,8 +647,12 @@ namespace loader {
                 if (name == material.m_name || alias == material.m_name || alias == "*")
                 {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_MODIFY: model={}, material={}, name={}, alias={}",
-                        type->getName(), material.m_name, name, alias));
+                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                        type->getName(),
+                        lodMesh.getMeshName(),
+                        material.m_name,
+                        name,
+                        alias));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
                 }

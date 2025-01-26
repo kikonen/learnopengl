@@ -27,7 +27,8 @@ prefab:
         base: skeleton_pbr
         map_kd: Skeleton_Body_AlbedoTransparency.png
         map_normal: Skeleton_Body_Normal.png
-        map_mrao: mrao_build.png
+        map_mrao: Skeleton_Body_mrao_build.png
+        #aalpha: true
         program: g_tex
         shadow_program: shadow
       base_scale: 0.01375
@@ -41,11 +42,11 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        base: textures
+        base: Textures
         kd: [0.8, 0.8, 0]
         map_kd: T_Helmet_BaseColor.jpg
         map_bump: T_Helmet_Normal.jpg
-        map_mrao: mrao_build.png
+        map_mrao: T_Helmet_mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -56,10 +57,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        base: textures
+        base: Textures
         map_kd: T_ChestArmor_BaseColor.jpg
         map_bump: T_ChestArmor_Normal.jpg
-        map_mrao: mrao_build.png
+        map_mrao: T_ChestArmor_mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -70,10 +71,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        base: textures
+        base: Textures
         map_kd: T_2HandedSword_BaseColor.jpg
         map_bump: T_2HandedSword_Normal.jpg
-        map_mrao: mrao_build.png
+        map_mrao: T_2HandedSword_mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
@@ -84,10 +85,10 @@ prefab:
       lod:
         level: [0, 1, 2]
       material:
-        base: textures
+        base: Textures
         map_kd: T_Shield_BaseColor.jpg
         map_bump: T_Shield_Normal.jpg
-        map_mrao: mrao_build.png
+        map_mrao: T_Shield_mrao_build.png
         program: g_tex
         shadow_program: shadow
       flags:
