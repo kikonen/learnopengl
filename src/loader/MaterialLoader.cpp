@@ -23,6 +23,8 @@
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
 
+    const std::string ANY = "*";
+
     const std::vector<std::regex> texturesMatchers{
         std::regex("textures"),
     };
@@ -57,7 +59,7 @@ namespace loader {
         Loaders& loaders) const
     {
         data.enabled = true;
-        data.aliasName = "*";
+        data.aliasName = ANY;
 
         loadMaterial(node, data, loaders);
 
@@ -74,7 +76,9 @@ namespace loader {
             MaterialData& data = materials.emplace_back();
             loadMaterial(entry, data, loaders);
             data.materialName = data.material.m_name;
-            if (data.materialName.empty()) {
+
+            if (data.materialName.empty() && data.aliasName != ANY)
+            {
                 data.materialName = data.aliasName;
             }
         }
