@@ -51,7 +51,8 @@ namespace mesh {
                     glEnableVertexArrayAttrib(vao, ATTR_TEX);
 
                     // NOTE KI tex coords are in [0.0, 1.0] range, thus normalized 16bit value should be enough for them
-                    glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_texCoord));
+                    //glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_texCoord));
+                    glVertexArrayAttribFormat(vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_texCoord));
 
                     glVertexArrayAttribBinding(vao, ATTR_TEX, m_binding);
                 }

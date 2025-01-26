@@ -16,7 +16,10 @@ namespace mesh {
             : u_texCoord{ a_texCoord }
         {}
 
-        kigl::UV16 u_texCoord;
+        // NOTE KI kigl::UV16 accuracy was not enough in all cases
+        // backpack, pinetree, ...
+        //kigl::UV16 u_texCoord;
+        glm::vec2 u_texCoord;
     };
 #pragma pack(pop)
 }
