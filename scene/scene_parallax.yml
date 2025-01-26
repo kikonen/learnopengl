@@ -79,8 +79,8 @@ nodes:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: toy_box_diffuse.png
         map_bump: toy_box_normal.png
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
         parallax_depth: 0.04
         render_back: true
     program: g_tex
@@ -153,8 +153,8 @@ nodes:
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
         render_back: true
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
     program: g_tex
     pos: [30, 2.5, 0.0]
     scale: 2.5
@@ -167,8 +167,8 @@ nodes:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
         parallax_depth: 0.015
         xalpha: true
         render_back: true

@@ -8,8 +8,8 @@ prefab:
         map_kd: Material _1sdsss_BaseColor.jpg
         map_normal: Material _1sdsss_Normal.jpg
         map_ke: Material _1sdsss_Emissive.jpg
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
       default_programs: true
       base_rotation: [0, -90, 0]
       base_scale: 0.0001

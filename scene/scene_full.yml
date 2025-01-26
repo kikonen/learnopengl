@@ -585,9 +585,8 @@ nodes:
       cmd:animation_play(
         { after=wid, name = "fire:Take 001" });
   - name: Backback
-    mesh:
-      path: backpack/backpack
-    program: g_tex
+    prefab:
+      path: prefab/props/prefab_backpack.yml
     pos: [10.0, 10.0, 5.0]
     scale: 1.5
     enabled: false

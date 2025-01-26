@@ -6,8 +6,8 @@ prefab:
       base: textures/rough_concrete_wall_vh2ifg1_2k
       map_kd: Rough_Concrete_Wall_vh2ifg1_2K_BaseColor.jpg
       map_normal: Rough_Concrete_Wall_vh2ifg1_2K_Normal.jpg
-      map_mrao: mrao_build.png
-      map_displacement: displacement_build.png
+      map_mrao: default_mrao_build.png
+      map_displacement: default_displacement_build.png
       tiling: 20
       parallax_depth: 0.01
       program: g_tex

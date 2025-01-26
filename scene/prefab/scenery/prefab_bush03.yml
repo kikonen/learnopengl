@@ -30,8 +30,8 @@ prefab:
         - name: 'Material #27'
           map_kd: T_Bush03_d.tga
           map_bump: T_Bush03_n.tga
-          map_mrao: mrao_build.png
-          map_displacement: displacement_build.png
+          map_mrao: default_mrao_build.png
+          map_displacement: default_displacement_build.png
           alpha: true
           xblend: true
           render_back: true

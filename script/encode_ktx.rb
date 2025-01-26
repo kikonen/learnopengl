@@ -687,6 +687,7 @@ class Converter < Thor
     files = list_files(src_dir)
     files.sort_by(&:downcase).each do |f|
       name = File.basename(f)
+      basename = File.basename(f, ".*")
 
       old_info = manual_textures[name]
 
@@ -868,7 +869,7 @@ class Converter < Thor
 
           base = {
             name:,
-            target_name: name,
+            target_name: plainname,
             group: nil,
             type: :unknown,
             action: :skip,

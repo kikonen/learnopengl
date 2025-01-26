@@ -1,0 +1,12 @@
+---
+prefab:
+  meshes:
+    - id: prefab_backpack
+      path: backpack/backpack.obj
+      materials:
+        - alias: "*"
+          map_kd: diffuse.jpg
+          map_normal: normal.png
+          map_mrao: default_mrao_build.png
+      default_programs: true
+      base_scale: 0.25

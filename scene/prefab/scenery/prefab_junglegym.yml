@@ -7,8 +7,8 @@ prefab:
         base: material
         map_kd: MI_JungleGym_01a_BaseColor.png
         map_normal: MI_JungleGym_01a_Normal.png
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
         program: g_tex
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]

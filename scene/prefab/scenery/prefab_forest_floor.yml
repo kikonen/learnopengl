@@ -6,8 +6,8 @@ prefab:
       base: textures
       map_kd: Ground037_2K-PNG/Ground037_2K-PNG_Color.png
       map_normal: Ground037_2K-PNG/Ground037_2K-PNG_NormalGL.png
-      map_mrao: mrao_build.png
-      map_displacement: displacement_build.png
+      map_mrao: default_mrao_build.png
+      map_displacement: default_displacement_build.png
       tiling: 60
       parallax_depth: 0.1
       program: g_tex

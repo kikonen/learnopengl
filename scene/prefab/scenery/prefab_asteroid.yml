@@ -10,8 +10,8 @@ prefab:
         #kd: [1, 1, 0]
         map_kd: Rock002_1K-PNG/Rock002_1K_Color.png
         map_normal: Rock002_1K-PNG/Rock002_1K_NormalGL.png
-        map_mrao: mrao_build.png
-        map_displacement: displacement_build.png
+        map_mrao: default_mrao_build.png
+        map_displacement: default_displacement_build.png
         tiling: 4
         parallax_depth: 0.015
     - path: rock2/rock_lod_1
@@ -23,7 +23,7 @@ prefab:
         #kd: [0, 1, 1]
         map_kd: Rock002_1K-PNG/Rock002_1K_Color.png
         map_normal: Rock002_1K-PNG/Rock002_1K_NormalGL.png
-        map_mrao: mrao_build.png
+        map_mrao: default_mrao_build.png
         tiling: 4
       scale: 1.5
     - path: rock2/rock_lod_2

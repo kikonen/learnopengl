@@ -8,8 +8,8 @@ prefab:
           base: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_DesertDandelion_01a_ALB_2048.png
           map_bump: TX_DesertDandelion_01a_NRM_2048.png
-          map_mrao: mrao_build.png
-          map_displacement: displacement_build.png
+          map_mrao: default_mrao_build.png
+          map_displacement: default_displacement_build.png
           alpha: true
           xblend: true
           render_back: true
@@ -17,8 +17,8 @@ prefab:
           base_dir: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_DesertDandelion_01a_ALB_2048.png
           map_bump: TX_DesertDandelion_01a_NRM_2048.png
-          map_mrao: mrao_build.png
-          map_displacement: displacement_build.png
+          map_mrao: default_mrao_build.png
+          map_displacement: default_displacement_build.png
           alpha: true
           xblend: true
           render_back: true
