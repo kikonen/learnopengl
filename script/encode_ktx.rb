@@ -1143,12 +1143,19 @@ class Converter < Thor
         duplicates:}}"
     end
 
-    black = black_image
-    white = white_image
+    if parts.map(&:target_depth).uniq.size > 1
+      raise "ERROR: target_depth mismatch: #{{
+        src_dir:,
+        group:,
+        target_name:,
+        parts: parts.map(&:name),
+        depths: parts.map(&:target_depth).uniq.size}}"
+    end
 
     dst_path = "#{dst_dir}/#{target_name}.png"
 
     sorted_parts = parts.sort_by { |e| e.name }
+    target_depth = sorted_parts.first.target_depth
 
     source_paths = sorted_parts.map do |tex_info|
       "#{src_dir}/#{tex_info.name}"
@@ -1157,6 +1164,7 @@ class Converter < Thor
     salt = {
       version: COMBINE_VERSION,
       size: target_size,
+      depth: target_depth,
       parts: sorted_parts.map do |tex_info|
         {
           name: tex_info.name,
@@ -1169,7 +1177,10 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "MRAO: [#{group}] #{dst_path}"
+    puts "MRAO: [#{group}] [depth=#{target_depth}] #{dst_path}"
+
+    black = black_image(target_depth)
+    white = white_image(target_depth)
 
     # channel: [ metalness, roughness, ambient-occlusion ]
     # DEFAULTS = glm::vec3 mrao{ 0.f, 1.f, 1.f };
@@ -1201,7 +1212,7 @@ class Converter < Thor
       src_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)[0]
-        .set_channel_depth(Magick::AllChannels, 8)
+        .set_channel_depth(Magick::AllChannels, target_depth)
         .resize(target_size, target_size)
 
       target_channels[dst_channel] = {
@@ -1270,6 +1281,7 @@ class Converter < Thor
 
     part = parts.first
     src_path = "#{src_dir}/#{part.name}"
+    target_depth = part.target_depth
 
     salt = {
       version: COMBINE_VERSION,
@@ -1286,7 +1298,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, [src_path], salt)
     return unless sha_digest
 
-    puts "DISPLACEMENT: [#{group}] #{dst_path}"
+    puts "DISPLACEMENT: [#{group}] [depth=#{target_depth}] ]#{dst_path}"
 
     #debugger
 
@@ -1298,7 +1310,7 @@ class Converter < Thor
     src_img = Magick::Image.read(src_path)
       .first
       .separate(src_channel)[0]
-      .set_channel_depth(Magick::AllChannels, 8)
+      .set_channel_depth(Magick::AllChannels, target_depth)
       .resize(target_size, target_size)
 
     puts "#{dst_channel} = #{src_img.inspect}"
@@ -1327,14 +1339,15 @@ class Converter < Thor
     MAGICK_CHANNELS[ch&.upcase]
   end
 
-  def black_image
-    @black_iamge ||=
+  def black_image(target_depth)
+    @black_iamge ||= {}
+    @black_iamge[target_depth] ||=
       if true
         w = target_size
         Magick::Image
           .new(w, w) { |opt|
             opt.background_color = 'black'
-            opt.depth = 8
+            opt.depth = target_depth
             opt.image_type = Magick::TrueColorAlphaType
             opt.colorspace = Magick::RGBColorspace
             opt.filename = "black"
@@ -1344,19 +1357,20 @@ class Converter < Thor
           .read("#{assets_root_dir}/textures/placeholder/black.png")
           .first
           .separate(Magick::RedChannel)[0]
-          .set_channel_depth(Magick::AllChannels, 8)
+          .set_channel_depth(Magick::AllChannels, target_depth)
           .resize(target_size, target_size)
       end
   end
 
-  def white_image
-    @white_image ||=
+  def white_image(target_depth)
+    @white_image ||= {}
+    @white_image[target_depth] ||=
       if true
         w = target_size
         Magick::Image
           .new(w, w) { |opt|
             opt.background_color = 'white'
-            opt.depth = 8
+            opt.depth = target_depth
             opt.image_type = Magick::TrueColorAlphaType
             opt.colorspace = Magick::RGBColorspace
             opt.filename = "white"
@@ -1366,7 +1380,7 @@ class Converter < Thor
           .read("#{assets_root_dir}/textures/placeholder/white.png")
           .first
           .separate(Magick::RedChannel)[0]
-          .set_channel_depth(Magick::AllChannels, 8)
+          .set_channel_depth(Magick::AllChannels, target_depth)
           .resize(target_size, target_size)
       end
   end
@@ -1509,12 +1523,24 @@ class Converter < Thor
     data[:sha_digest]
   end
 
-  def write_digest(dst_path, sha_digest, source_paths, salt)
+  def write_digest(
+    dst_path,
+    sha_digest,
+    source_paths,
+    salt
+  )
     digest_path = "#{dst_path}.digest"
     data = {
       sha_digest:,
       salt:,
-      sources: source_paths.sort
+      sources: source_paths.sort.map do |src_path|
+        img = Magick::Image.ping(src_path).first
+        {
+          path: src_path,
+          size: "#{img.columns}x#{img.rows}",
+          depth: img.quantum_depth,
+        }
+      end
     }
     File.write(digest_path, YAML.dump(data))
   end

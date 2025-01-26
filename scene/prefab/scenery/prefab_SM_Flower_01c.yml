@@ -8,8 +8,8 @@ prefab:
           base: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_bump: TX_Flower_01_NRM.PNG
-          map_mrao: default_mrao_build.png
-          map_displacement: default_displacement_build.png
+          map_mrao: TX_Flower_01_mrao_build.png
+          map_displacement: TX_Flower_01_displacement_build.png
           alpha: true
           xblend: true
           render_back: true
@@ -17,8 +17,8 @@ prefab:
           base_dir: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_bump: TX_Flower_01_NRM.PNG
-          map_mrao: default_mrao_build.png
-          map_displacement: default_displacement_build.png
+          map_mrao: TX_Flower_01_mrao_build.png
+          map_displacement: TX_Flower_01_displacement_build.png
           alpha: true
           xblend: true
           render_back: true
