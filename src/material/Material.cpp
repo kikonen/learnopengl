@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <regex>
 
 #include "fmt/format.h"
 
@@ -29,6 +30,8 @@ namespace {
 
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
+
+    const std::regex CONTAINS_BUILD = std::regex("_build");
 
     //float calculateAmbient(glm::vec3 ambient) {
     //    return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -116,9 +119,21 @@ namespace {
         }
 
         if (!found) {
+            std::filesystem::path buildPath{ path };
+            const auto& stem = buildPath.stem().string();
+
+            if (std::regex_match(stem, CONTAINS_BUILD)) {
+                buildPath.replace_filename(fmt::format("{}.{}", stem, "png"));
+            }
+            else {
+                buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
+            }
+
+            KI_INFO_OUT(fmt::format("TEX_BUILD={}", buildPath.string()));
+
             const auto fullPath = util::joinPath(
                 assets.assetsBuildDir,
-                path);
+                buildPath.string());
 
             if (util::fileExists(fullPath)) {
                 filePath = fullPath;
