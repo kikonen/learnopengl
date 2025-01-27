@@ -116,9 +116,23 @@ require 'hashie'
 #
 
 # NOTE KI using Hashie
-class TextureInfo < Hash
+class TextureInfo < Hashie::Dash
   include Hashie::Extensions::MergeInitializer
   include Hashie::Extensions::MethodAccess
+
+  property :name
+  property :target_name
+  property :group
+  property :type
+  property :action
+  property :mode
+  property :detected_channels
+  property :source_channel
+  property :target_channel
+  property :source_depth
+  property :target_depth
+  property :srgb
+  property :manual
 
   def action_sym
     self.action&.to_sym
@@ -129,12 +143,15 @@ class TextureInfo < Hash
   end
 end
 
-class Metadata < Hash
+class Metadata < Hashie::Dash
   include Hashie::Extensions::Coercion
   include Hashie::Extensions::MergeInitializer
   include Hashie::Extensions::MethodAccess
 
   coerce_key :textures, Array[TextureInfo]
+
+  property :dir
+  property :textures
 
   def self.new_empty
     self.new(textures: [])
@@ -244,10 +261,13 @@ class Converter < Thor
         /[-_ ]normals[-_ ]/,
         /[-_ ]normals\z/,
         ###
+      ],
+      bump: [
         /\Abump\z/,
         /\Abump[-_ ]/,
         /[-_ ]bump[-_ ]/,
         /[-_ ]bump\z/,
+        ###
       ],
       metal: [
         /\Ametalness\z/,
@@ -733,7 +753,17 @@ class Converter < Thor
             action: :encode,
             mode: :normal,
             # NOTE KI only 3 channels in normal
+            # => DROP alpha as redundant
             target_channel: RGB,
+          }
+        when :bump
+          tex_info = {
+            type: :bump,
+            action: :encode,
+            mode: :bump,
+            # NOTE KI only 1 channel in bump
+            # i.e. not same as normal
+            target_channel: RED,
           }
         when :specular
           tex_info = {
@@ -1017,11 +1047,16 @@ class Converter < Thor
     combine_textures = {}
 
     metadata.textures&.each do |tex_info|
+      handled = false
       name = tex_info.name.downcase
       next unless name
-      next unless extensions.any? { |ext| name.downcase.end_with?(ext) }
 
-      action = tex_info.action_sym
+      action = tex_info.action.to_sym
+      type = tex_info.type.to_sym
+
+      unless extensions.any? { |ext| name.downcase.end_with?(ext) }
+        puts "IGNORE: wrong ext - #{type} #{src_dir} #{tex_info.name}"
+      end
 
       if action == :combine
         (combine_textures[tex_info.target_name] ||= []) << tex_info
@@ -1035,6 +1070,7 @@ class Converter < Thor
             dst_dir:,
             tex_info:
           )
+          handled = true
         end
 
         if encode_ktx
@@ -1047,7 +1083,12 @@ class Converter < Thor
             srgb: tex_info.srgb || false,
             normal_mode: tex_info.mode-to_sym == :normal
           )
+          handled = true
         end
+      end
+
+      unless handled
+        puts "IGNORE: #{type} #{src_dir} #{tex_info.name}"
       end
     end
 
@@ -1331,7 +1372,7 @@ class Converter < Thor
       .first
       .separate(src_channel)[0]
       .set_channel_depth(Magick::AllChannels, target_depth)
-      .resize(target_size, target_size)
+    src_img = scale_image(src_img, target_size)
 
     puts "#{dst_channel} = #{src_img.inspect}"
 
@@ -1406,8 +1447,6 @@ class Converter < Thor
       target_channels.delete(ch) unless dst_channels.include?(ch)
     end
 
-    return if target_channels.size < 4
-
     target_placeholders = {
       Magick::RedChannel => black,
       Magick::GreenChannel => black,
@@ -1439,11 +1478,12 @@ class Converter < Thor
     alpha_img = nil
 
     target_channels.each do |dst_channel, image_info|
-      src_channel = image_info[:channel]
       channel_img = target_placeholders[dst_channel]
+      src_channel = nil
 
       if image_info
         channel_img = image_info[:image]
+        src_channel = image_info[:channel]
       end
 
       puts "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
