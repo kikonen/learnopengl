@@ -144,9 +144,11 @@ end
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  MRAO_MAP = 'mrao_build'
-  DISPLACEMENT_MAP = 'displacement_build'
-  CAVITY_MAP = 'cavity_build'
+  MRAO_MAP = 'mrao'
+  DISPLACEMENT_MAP = 'displacement'
+  CAVITY_MAP = 'cavity'
+
+  BUILD_SUFFIX = '_build'
 
   RED = 'R'
   GREEN = 'G'
@@ -514,6 +516,7 @@ class Converter < Thor
     :build_root_dir,
     :target_size,
     :combine,
+    :encode,
     :encode_ktx,
     :recursive,
     :force,
@@ -591,6 +594,9 @@ class Converter < Thor
   method_option :combine,
     type: :boolean,
     default: false
+  method_option :encode,
+    type: :boolean,
+    default: false
   method_option :ktx,
     type: :boolean,
     default: false
@@ -619,15 +625,17 @@ class Converter < Thor
     @dry_run = options[:dry_run]
     @types = options[:type].map(&:to_sym)
     @combine = options[:combine]
+    @encode = options[:encode]
     @encode_ktx = options[:ktx]
 
     if options[:all]
       @combine = true
+      @encode = true
       @encode_ktx = true
     end
 
-    unless @combine || @encode_ktx
-      puts "--combine or --ktx required"
+    unless @combine || @encode || @encode_ktx
+      puts "--combine or --encoce or --ktx required"
       exit
     end
 
@@ -641,6 +649,7 @@ class Converter < Thor
     puts "TYPE:        #{types}"
     puts "TARGET_SIZE: #{target_size}"
     puts "COMBINE:     #{combine}"
+    puts "ENCODE:      #{encode}"
     puts "ENCODE_KTX:  #{encode_ktx}"
     puts "EXT:         #{extensions}"
     puts "FORCE:       #{force}"
@@ -944,7 +953,7 @@ class Converter < Thor
 
     if need_process
       metadata[:dir] = src_dir
-      metadata[:textures] = textures.sort_by { |e| e[:name] }
+      metadata[:textures] = textures.sort_by { |e| e[:name].downcase }
       write_metadata(src_dir:, data: metadata)
     end
 
@@ -1012,8 +1021,6 @@ class Converter < Thor
       next unless name
       next unless extensions.any? { |ext| name.downcase.end_with?(ext) }
 
-      src_path = "#{src_dir}/#{name}"
-
       action = tex_info.action_sym
 
       if action == :combine
@@ -1021,17 +1028,26 @@ class Converter < Thor
         next
       end
 
-      next unless action == :encode
+      if action == :encode
+        if encode
+          encode_image(
+            src_dir:,
+            dst_dir:,
+            tex_info:
+          )
+        end
 
-      if encode_ktx
-        encode(
-          src_path,
-          dst_dir:,
-          type: tex_info.type,
-          target_type: tex_info.target_type || RGB,
-          srgb: tex_info.srgb || false,
-          normal_mode: tex_info.mode-to_sym == :normal
-        )
+        if encode_ktx
+          src_path = "#{src_dir}/#{name}"
+          encode_ktx_image(
+            src_path,
+            dst_dir:,
+            type: tex_info.type,
+            target_type: tex_info.target_type || RGB,
+            srgb: tex_info.srgb || false,
+            normal_mode: tex_info.mode-to_sym == :normal
+          )
+        end
       end
     end
 
@@ -1152,7 +1168,7 @@ class Converter < Thor
         depths: parts.map(&:target_depth).uniq.size}}"
     end
 
-    dst_path = "#{dst_dir}/#{target_name}.png"
+    dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
 
     sorted_parts = parts.sort_by { |e| e.name }
     target_depth = sorted_parts.first.target_depth
@@ -1177,7 +1193,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "MRAO: [#{group}] [depth=#{target_depth}] #{dst_path}"
+    puts "MRAO: [#{group}] [#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
     black = black_image(target_depth)
     white = white_image(target_depth)
@@ -1209,11 +1225,15 @@ class Converter < Thor
       puts "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
       # https://imagemagick.org/script/command-line-options.php#separate
+      # NOTE KI *NOT* supporting non power-of-2 images
+      # => should be resonable restriction
       src_img = Magick::Image.read(src_path)
         .first
+
+      src_img = src_img
         .separate(src_channel)[0]
         .set_channel_depth(Magick::AllChannels, target_depth)
-        .resize(target_size, target_size)
+      src_img = scale_image(src_img, target_size)
 
       target_channels[dst_channel] = {
         image: src_img,
@@ -1227,12 +1247,14 @@ class Converter < Thor
 
     target_channels.each do |dst_channel, image_info|
       src_img = target_placeholders[dst_channel]
+      src_channel = nil
 
       if image_info
         src_img = image_info[:image]
+        src_channel = image_info[:channel]
       end
 
-      puts "MAP:  [#{group}] #{dst_channel} = #{src_img.inspect}"
+      puts "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{src_img.inspect}"
 
       img_list << src_img
     end
@@ -1277,7 +1299,7 @@ class Converter < Thor
       }}"
     end
 
-    dst_path = "#{dst_dir}/#{target_name}.png"
+    dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
 
     part = parts.first
     src_path = "#{src_dir}/#{part.name}"
@@ -1298,9 +1320,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, [src_path], salt)
     return unless sha_digest
 
-    puts "DISPLACEMENT: [#{group}] [depth=#{target_depth}] ]#{dst_path}"
-
-    #debugger
+    puts "DISPLACEMENT: [#{group}] [#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
     src_channel = select_channel(part.source_channel) || select_channel(RED)
     dst_channel = select_channel(part.target_channel) || select_channel(RED)
@@ -1335,60 +1355,142 @@ class Converter < Thor
     end
   end
 
-  def select_channel(ch)
-    MAGICK_CHANNELS[ch&.upcase]
-  end
+  ############################################################
+  # encode
+  ############################################################
 
-  def black_image(target_depth)
-    @black_iamge ||= {}
-    @black_iamge[target_depth] ||=
-      if true
-        w = target_size
-        Magick::Image
-          .new(w, w) { |opt|
-            opt.background_color = 'black'
-            opt.depth = target_depth
-            opt.image_type = Magick::TrueColorAlphaType
-            opt.colorspace = Magick::RGBColorspace
-            opt.filename = "black"
-          }
-      else
-        Magick::Image
-          .read("#{assets_root_dir}/textures/placeholder/black.png")
-          .first
-          .separate(Magick::RedChannel)[0]
-          .set_channel_depth(Magick::AllChannels, target_depth)
-          .resize(target_size, target_size)
-      end
-  end
+  def encode_image(
+    src_dir:,
+    dst_dir:,
+    tex_info:
+  )
+    group = tex_info.group
+    target_depth = tex_info.target_depth
+    target_name = tex_info.target_name
 
-  def white_image(target_depth)
-    @white_image ||= {}
-    @white_image[target_depth] ||=
-      if true
-        w = target_size
-        Magick::Image
-          .new(w, w) { |opt|
-            opt.background_color = 'white'
-            opt.depth = target_depth
-            opt.image_type = Magick::TrueColorAlphaType
-            opt.colorspace = Magick::RGBColorspace
-            opt.filename = "white"
-          }
-      else
-        Magick::Image
-          .read("#{assets_root_dir}/textures/placeholder/white.png")
-          .first
-          .separate(Magick::RedChannel)[0]
-          .set_channel_depth(Magick::AllChannels, target_depth)
-          .resize(target_size, target_size)
+    src_path = tex_info.src_path(src_dir)
+    dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
+
+    salt = {
+      version: COMBINE_VERSION,
+      size: target_size,
+      depth: target_depth,
+      parts: [
+        {
+          name: tex_info.name,
+          source_channel: tex_info.source_channel,
+          target_channel: tex_info.target_channel,
+        }
+      ]
+    }
+
+    sha_digest = sha_changed?(dst_path, [src_path], salt)
+    return unless sha_digest
+
+    puts "ENCODE: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
+
+    black = black_image(target_depth)
+    white = white_image(target_depth)
+
+    src_channels = select_channels(tex_info.source_channel)
+    dst_channels = select_channels(tex_info.target_channel)
+
+    target_channels = {
+      Magick::RedChannel => nil,
+      Magick::GreenChannel => nil,
+      Magick::BlueChannel => nil,
+      Magick::AlphaChannel => nil,
+    }
+
+    target_channels.keys.each do |ch|
+      target_channels.delete(ch) unless dst_channels.include?(ch)
+    end
+
+    return if target_channels.size < 4
+
+    target_placeholders = {
+      Magick::RedChannel => black,
+      Magick::GreenChannel => black,
+      Magick::BlueChannel => black,
+      Magick::AlphaChannel => white,
+    }
+
+    src_img = Magick::Image.read(src_path)
+      .first
+      .set_channel_depth(Magick::AllChannels, target_depth)
+
+    src_img = src_img
+      .set_channel_depth(Magick::AllChannels, target_depth)
+    src_img = scale_image(src_img, target_size)
+
+    src_channels.each_with_index do |src_channel, idx|
+      dst_channel = dst_channels[idx]
+
+      img = src_img
+        .separate(src_channel)[0]
+
+      target_channels[dst_channel] = {
+        image: img,
+        channel: src_channel,
+      }
+    end
+
+    img_list = Magick::ImageList.new
+    alpha_img = nil
+
+    target_channels.each do |dst_channel, image_info|
+      src_channel = image_info[:channel]
+      channel_img = target_placeholders[dst_channel]
+
+      if image_info
+        channel_img = image_info[:image]
       end
+
+      puts "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
+
+      if dst_channel == Magick::AlphaChannel
+        alpha_img = channel_img
+        next
+      end
+
+      img_list << channel_img
+    end
+
+    # NOTE KI workaround segmentation fault, which happens
+    # if running without pause
+    GC.start
+    sleep 0.25
+
+    #debugger
+
+    # https://imagemagick.org/script/command-line-options.php#combine
+    dst_img = img_list.combine(Magick::RGBColorspace)
+
+    if alpha_img
+      dst_img.alpha(Magick::SetAlphaChannel)
+      dst_img
+        .composite_channel!(
+          src_img, 0, 0,
+          Magick::CopyAlphaCompositeOp,
+          Magick::AlphaChannel)
+    end
+
+    unless dry_run
+      FileUtils.mkdir_p(dst_dir)
+
+      puts "WRITE: [#{group}] #{dst_path}"
+      dst_img.write(dst_path)
+
+      write_digest(dst_path, sha_digest, [src_path], salt)
+
+      puts "DONE: [#{group}] #{dst_path}"
+    end
   end
 
   ############################################################
   # KTX
   ############################################################
-  def encode(
+  def encode_ktx_image(
     src_path,
     dst_dir:,
     type:,
@@ -1480,6 +1582,96 @@ class Converter < Thor
   ####################
   # metadata
   ####################
+  def select_channel(ch)
+    MAGICK_CHANNELS[ch&.upcase]
+  end
+
+  def select_channels(channels)
+    channels.chars.map do |ch|
+      MAGICK_CHANNELS[ch&.upcase]
+    end
+  end
+
+  def black_image(target_depth)
+    @black_iamge ||= {}
+    @black_iamge[target_depth] ||=
+      if true
+        w = target_size
+        Magick::Image
+          .new(w, w) { |opt|
+            opt.background_color = 'black'
+            opt.depth = target_depth
+            opt.image_type = Magick::TrueColorAlphaType
+            opt.colorspace = Magick::RGBColorspace
+            opt.filename = "black"
+          }
+      else
+        Magick::Image
+          .read("#{assets_root_dir}/textures/placeholder/black.png")
+          .first
+          .separate(Magick::RedChannel)[0]
+          .set_channel_depth(Magick::AllChannels, target_depth)
+          .resize(target_size, target_size)
+      end
+  end
+
+  def white_image(target_depth)
+    @white_image ||= {}
+    @white_image[target_depth] ||=
+      if true
+        w = target_size
+        Magick::Image
+          .new(w, w) { |opt|
+            opt.background_color = 'white'
+            opt.depth = target_depth
+            opt.image_type = Magick::TrueColorAlphaType
+            opt.colorspace = Magick::RGBColorspace
+            opt.filename = "white"
+          }
+      else
+        Magick::Image
+          .read("#{assets_root_dir}/textures/placeholder/white.png")
+          .first
+          .separate(Magick::RedChannel)[0]
+          .set_channel_depth(Magick::AllChannels, target_depth)
+          .resize(target_size, target_size)
+      end
+  end
+
+  def scale_image(img, target_size)
+    need_scale, target_w, target_h = resolve_size(img, target_size)
+    return img unless need_scale
+
+    img.resize(target_w, target_h)
+  end
+
+  #
+  # Resolve scaled size
+  #
+  # NOTE KI iamge sizes may differ in width/height
+  # => only scale down, not up
+  #
+  # @return [bool, w, h]
+  #
+  def resolve_size(img, target_size)
+    # NOTE KI iamge sizes may differ in width/height
+    # => only scale down, not up
+    target_w = img.columns
+    target_h = img.rows
+
+    need_scale = false
+    max_size = [target_w, target_h].max
+    if max_size > target_size
+      need_scale = true
+      scale = target_size.to_f / max_size.to_f
+
+      target_w = (target_w * scale).ceil
+      target_h = (target_h * scale).ceil
+    end
+
+    [need_scale, target_w, target_h]
+  end
+
   def read_metadata(
     src_dir:)
     metadata_path = "#{src_dir}/_assets.meta"

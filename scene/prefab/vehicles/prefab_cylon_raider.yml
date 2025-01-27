@@ -5,9 +5,9 @@ prefab:
       path: fbx/vehicles/battlestar_galactica_cylon_raider/battlestar_galactica_ship.FBX
       material:
         base_dir: textures
-        map_kd: Material _1sdsss_BaseColor.jpg
-        map_normal: Material _1sdsss_Normal.jpg
-        map_ke: Material _1sdsss_Emissive.jpg
+        map_kd: Material _1sdsss_BaseColor_build.png
+        map_normal: Material _1sdsss_Normal_build.png
+        map_ke: Material _1sdsss_Emissive_build.png
         map_mrao: Material _1sdsss_mrao_build.png
         map_displacement: Material _1sdsss_displacement_build.png
       default_programs: true
