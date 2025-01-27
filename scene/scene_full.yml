@@ -389,7 +389,7 @@ nodes:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
@@ -408,7 +408,7 @@ nodes:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
@@ -444,7 +444,7 @@ nodes:
         xreflection: 0.1
         render_back: true
       material_modifier:
-        map_bump: textures/wood_1024_normal.png
+        map_normal: textures/wood_1024_normal.png
         parallax_depth: 0.02
       flags:
         pre_depth: true
@@ -945,7 +945,7 @@ nodes:
       material:
         name: pool_surface
         kd: [0.55, 0.55, 0.95, 1.0]
-        map_bump: textures/water_surface_512_normal.png
+        map_normal: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
@@ -1055,7 +1055,7 @@ nodes:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
         map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_bump: textures/terrain_2/terrain_2_TN.png
+        map_normal: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
@@ -1107,7 +1107,7 @@ nodes:
       material:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
-        map_bump: textures/water_surface_512_normal.png
+        map_normal: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
@@ -1170,7 +1170,7 @@ nodes:
     mesh:
       path: planet/planet.obj
       material_modifier:
-        map_bump: mars_normal.png
+        map_normal: mars_normal.png
       flags:
         pre_depth: true
     program: g_tex
@@ -1277,7 +1277,7 @@ nodes:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
@@ -1292,7 +1292,7 @@ nodes:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
@@ -1310,7 +1310,7 @@ nodes:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02

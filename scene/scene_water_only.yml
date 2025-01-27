@@ -30,7 +30,7 @@ nodes:
       material:
         name: water_surface
         kd: [0.55, 0.55, 0.95, 1.0]
-        map_bump: textures/water_surface_512_normal.png
+        map_normal: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true

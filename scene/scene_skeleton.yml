@@ -83,7 +83,7 @@ nodes:
           base: textures
           kd: [0, 0.8, 0]
           map_kd: T_Helmet_BaseColor.jpg
-          map_bump: T_Helmet_Normal.jpg
+          map_normal: T_Helmet_Normal.jpg
           map_mrao: default_mrao_build.png
           map_displacement: default_displacement_build.png
         scale: 0.001

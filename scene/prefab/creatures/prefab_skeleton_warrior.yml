@@ -45,7 +45,7 @@ prefab:
         base: Textures
         kd: [0.8, 0.8, 0]
         map_kd: T_Helmet_BaseColor.jpg
-        map_bump: T_Helmet_Normal.jpg
+        map_normal: T_Helmet_Normal.jpg
         map_mrao: T_Helmet_mrao_build.png
         program: g_tex
         shadow_program: shadow
@@ -59,7 +59,7 @@ prefab:
       material:
         base: Textures
         map_kd: T_ChestArmor_BaseColor.jpg
-        map_bump: T_ChestArmor_Normal.jpg
+        map_normal: T_ChestArmor_Normal.jpg
         map_mrao: T_ChestArmor_mrao_build.png
         program: g_tex
         shadow_program: shadow
@@ -73,7 +73,7 @@ prefab:
       material:
         base: Textures
         map_kd: T_2HandedSword_BaseColor.jpg
-        map_bump: T_2HandedSword_Normal.jpg
+        map_normal: T_2HandedSword_Normal.jpg
         map_mrao: T_2HandedSword_mrao_build.png
         program: g_tex
         shadow_program: shadow
@@ -87,7 +87,7 @@ prefab:
       material:
         base: Textures
         map_kd: T_Shield_BaseColor.jpg
-        map_bump: T_Shield_Normal.jpg
+        map_normal: T_Shield_Normal.jpg
         map_mrao: T_Shield_mrao_build.png
         program: g_tex
         shadow_program: shadow

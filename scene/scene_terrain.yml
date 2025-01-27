@@ -48,7 +48,7 @@ nodes:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
         map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_bump: textures/terrain_2/terrain_2_TN.png
+        map_normal: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
@@ -87,7 +87,7 @@ nodes:
       material:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
-        map_bump: textures/water_surface_512_normal.png
+        map_normal: textures/water_surface_512_normal.png
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true

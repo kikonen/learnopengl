@@ -61,7 +61,7 @@ nodes:
     mesh:
       path: planet/planet.obj
       material_modifier:
-        map_bump: mars_normal.png
+        map_normal: mars_normal.png
     program: g_tex
     pos: [0, 3.5, 30]
     scale: 1
@@ -78,7 +78,7 @@ nodes:
         base: textures/toybox
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: toy_box_diffuse.png
-        map_bump: toy_box_normal.png
+        map_normal: toy_box_normal.png
         map_mrao: default_mrao_build.png
         map_displacement: default_displacement_build.png
         parallax_depth: 0.04
@@ -97,10 +97,10 @@ nodes:
         base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: bricks2.jpg
-        map_bump: bricks2_normal.jpg
+        map_normal: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
-        map_bump: ''
+        map_normal: ''
         render_back: true
     program: g_tex
     pos: [20.0, 2.5, 0.0]
@@ -113,10 +113,10 @@ nodes:
         base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: bricks2.jpg
-        map_bump: bricks2_normal.jpg
+        map_normal: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
-        map_bump: ''
+        map_normal: ''
         map_displacement: displacement_build.png
         xalpha: true
         render_back: true

@@ -7,7 +7,7 @@ prefab:
         - alias: "*"
           base: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
           map_kd: T_KA47_ALB_2048.png
-          map_bump: T_KA47_NRM_2048.png
+          map_normal: T_KA47_NRM_2048.png
           map_mrao: default_mrao_build.png
           map_displacement: default_displacement_build.png
           alpha: true

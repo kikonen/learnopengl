@@ -8,16 +8,16 @@ prefab:
         - name: palm_trunk
           alias: Tree_0Mat
           map_kd: textures/palm02.png
-          map_bump: textures/palm02_normal.png
+          map_normal: textures/palm02_normal.png
         - name: palm_leaf
           alias: Tree_1Mat
           map_kd: textures/coconut palm leaf.png
-          map_bump: textures/coconut palm leaf_Normal.png
+          map_normal: textures/coconut palm leaf_Normal.png
           render_back: true
         - name: palm_trunk
           alias: Tree_2Mat
           map_kd: textures/palm02.png
-          map_bump: textures/palm02_normal.png
+          map_normal: textures/palm02_normal.png
       base_scale: 0.05
       default_programs: true
     - path: fbx/scenery/trees/Palm_01.fbx

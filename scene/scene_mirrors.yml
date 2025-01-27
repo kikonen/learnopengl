@@ -101,7 +101,7 @@ nodes:
       material:
         name: brickwall
         map_kd: textures/brickwall_1024.png
-        map_bump: textures/brickwall_1024_normal.png
+        map_normal: textures/brickwall_1024_normal.png
         reflection: 0.2
         render_back: true
     program: g_tex

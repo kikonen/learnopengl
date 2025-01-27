@@ -529,7 +529,7 @@ nodes:
         name: terrain_grass_2
         map_kd: textures/terrain_2/terrain_2_TX.jpg
         map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_bump: textures/terrain_2/terrain_2_TN.png
+        map_normal: textures/terrain_2/terrain_2_TN.png
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
