@@ -6,8 +6,8 @@ prefab:
       base: textures/Planks 09 [8K]
       map_kd: Planks09_col_2048.png
       map_normal: Planks09_nrm_2048.png
-      map_mrao: Planks09_rgh_mrao_build.png
-      map_displacement: Planks09_disp_displacement_build.png
+      map_mrao: Planks09_mrao
+      map_displacement: Planks09_displacement
       tiling: 60
       parallax_depth: 0.01
       program: g_tex

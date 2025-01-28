@@ -1541,12 +1541,12 @@ class Converter < Thor
     # https://imagemagick.org/script/command-line-options.php#combine
     dst_img = img_list.combine(Magick::RGBColorspace)
 
-    if target_channels.size > 1
-      dst_img.image_type = Magick::TrueColorType
-    end
+    # if target_channels.size > 1
+    #   dst_img.image_type = Magick::TrueColorType
+    # end
 
     if alpha_img
-      dst_img.image_type = Magick::TrueColorAlphaType
+      # dst_img.image_type = Magick::TrueColorAlphaType
       dst_img.alpha(Magick::SetAlphaChannel)
       dst_img
         .composite_channel!(
@@ -1555,20 +1555,22 @@ class Converter < Thor
           Magick::AlphaChannel)
     end
 
-    dst_img.colorspace = Magick::SRGBColorspace
+    # dst_img.colorspace = Magick::SRGBColorspace
 
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
 
-      puts dst_img.image_type
-      puts dst_img.colorspace
-      puts dst_img.gray?
-      puts "WRITE: [#{group}] #{dst_path}"
+      # puts dst_img.image_type
+      # puts dst_img.colorspace
+      # puts dst_img.gray?
 
-      dst_img.write(dst_path) do |info|
-        p info.image_type
-        #info.image_type = Magick::TrueColorType
-      end
+      puts "WRITE: [#{group}] #{dst_path}"
+      dst_img.write(dst_path)
+
+      # dst_img.write(dst_path) do |info|
+      #   p info.image_type
+      #   #info.image_type = Magick::TrueColorType
+      # end
 
       write_digest(dst_path, sha_digest, [src_path], salt)
 

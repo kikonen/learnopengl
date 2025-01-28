@@ -19,11 +19,13 @@ prefab:
           level: 3
       material:
         name: lion_pbr
-        map_pbr: lion_skin_pbr
+        base: lion_skin_pbr
+        map_kd: T_Lion_BaseColor.tga
+        map_normal: T_Lion_Normal.jpg
         xmrao: [0.3, 0.4, 1]
-        xtiling: 60
         xrender_back: true
         xline_mode: true
+        default_programs: true
       animations:
         - name: walk
           path: anim/Lion@Walk.FBX
@@ -33,8 +35,6 @@ prefab:
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
           path: anim/Lion@Roar.FBX
-      program: g_tex
-      shadow_program: shadow
       base_scale: 0.0125
   lod_levels:
     - level: 0

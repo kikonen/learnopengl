@@ -9,14 +9,16 @@ prefab:
         use_animation: true
       material:
         name: wolf_pbr
-        map_pbr: wolf_pbr
+        base: wolf_pbr
+        map_kd: T_Wolf_BaseColorAlpha.PNG
+        map_normal: T_Wolf_Nml.PNG
+        map_mrao: T_Wolf_mrao
         xrender_back: true
         xline_mode: true
+        default_programs: true
       animations:
         - name: walk
           path: anim/ANIM_Wolf_Walk_RM.FBX
-      program: g_tex
-      shadow_program: shadow
       base_scale: 0.0125
       #base_rotation: [-90, 0, 0]
   physics:

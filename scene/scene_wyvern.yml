@@ -21,27 +21,8 @@ nodes:
       - type: pawn
       - type: camera_zoom
   - id: wyvern_{t}
-    mesh:
-      path: fbx/creatures/wyvern/SK_Wyvern.FBX
-      flags:
-        xuse_bones: true
-        xuse_bones_debug: true
-        use_animation: true
-        #z_up: true
-      materials:
-        - name: wyvern_pbr
-          alias: M_Wyvern
-          map_pbr: wyvern_pbr
-          xalpha: true
-          xrender_back: true
-          xline_mode: true
-      animations:
-        - name: fire
-          path: anim/Wyvern@FlyStationarySpreadFire.FBX
-        - name: fly
-          path: anim/Wyvern@FlyStationary.FBX
-    program: g_tex
-    shadow_program: shadow
+    prefab:
+      path: prefab/creatures/prefab_wyvern.yml
     pos: [0.0, 0, 0]
     scale: 2
     base_scale: 0.01

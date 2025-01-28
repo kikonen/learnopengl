@@ -133,8 +133,12 @@ public:
         const std::string& path,
         bool compressed) noexcept
     {
-        if (path.empty()) return;
-        m_texturePaths[type] = { path, compressed };
+        if (path.empty()) {
+            m_texturePaths.erase(type);
+        }
+        else {
+            m_texturePaths[type] = { path, compressed };
+        }
     }
 
     bool hasRegisteredTex(TextureType type) const noexcept

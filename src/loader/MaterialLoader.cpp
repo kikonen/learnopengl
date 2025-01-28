@@ -161,7 +161,9 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_bump" || k == "map_normal") {
+            else if (k == "map_normal" || k == "map_no") {
+                // NOTE KI bump is NOT saame thing
+                // k == "map_bump" ||
                 std::string line = readString(v);
                 material.addTexture(
                     TextureType::map_normal,
@@ -193,7 +195,7 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_displacement") {
+            else if (k == "map_displacement" || k == "map_di") {
                 std::string line = readString(v);
                 material.addTexture(
                     TextureType::map_displacement,
