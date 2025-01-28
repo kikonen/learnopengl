@@ -124,11 +124,11 @@ nodes:
         type: box
         size: [5, 3, 0.2]
       material:
-        base: textures\Bricks007_1K-PNG
+        base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
-        map_mrao: default_mrao_build.png
-        map_displacement: default_displacement_build.png
+        map_mrao: Bricks007_1K_mrao_build.png
+        map_displacement: Bricks007_1K_displacement_build.png
         parallax_depth: 0.02
         tiling_x: 1.25
         tiling_y: 0.75
@@ -160,8 +160,8 @@ nodes:
         base: textures/Metal007_1K-PNG
         map_kd: Metal007_1K_Color.png
         mp_normal: Metal007_1K_NormalGL.png
-        map_mrao: default_mrao_build.png
-        map_displacement: default_displacement_build.png
+        map_mrao: Metal007_1K_mrao_build.png
+        map_displacement: Metal007_1K_displacement_build.png
         program: g_tex
     pos: [0, 2.5, 0]
     physics:
@@ -182,8 +182,8 @@ nodes:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
-        map_mrao: default_mrao_build.png
-        map_displacement: default_displacement_build.png
+        map_mrao: Bricks007_1K_mrao_build.png
+        map_displacement: Bricks007_1K_displacement_build.png
         parallax_depth: 0.02
         tiling_x: 5
         tiling_y: 3
@@ -326,8 +326,8 @@ decals:
       map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
       map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
       map_opacity: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
-      map_mrao: default_mrao_build.png
-      map_displacement: default_displacement_build.png
+      map_mrao: High_Velocity_Blood_Spatter_sgepbixp_2K_mrao_build.png
+      map_displacement: High_Velocity_Blood_Spatter_sgepbixp_2K_displacement_build.png
       xparallax_depth: 0.05
       parallax_depth: 0.008
       texture_spec:
@@ -342,8 +342,8 @@ decals:
       map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
       map_normal: Rubble_tbcs3qo_2K_Normal.jpg
       map_opacity: Rubble_tbcs3qo_2K_Opacity.jpg
-      map_mrao: default_mrao_build.png
-      map_displacement: default_displacement_build.png
+      map_mrao: Rubble_tbcs3qo_2K_mrao_build.png
+      map_displacement: Rubble_tbcs3qo_2K_displacement_build.png
       xparallax_depth: 0.05
       parallax_depth: 0.008
       texture_spec:
@@ -358,8 +358,8 @@ decals:
       map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
       map_normal: Ivy_thdjv1h_2K_Normal.jpg
       map_opacity: Ivy_thdjv1h_2K_Opacity.jpg
-      map_mrao: default_mrao_build.png
-      map_displacement: default_displacement_build.png
+      map_mrao: Ivy_thdjv1h_2K_mrao_build.png
+      map_displacement: Ivy_thdjv1h_2K_displacement_build.png
       parallax_depth: 0.1
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
@@ -374,8 +374,8 @@ decals:
       map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
       map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
       map_opacity: Concrete_Damage_tdildcjb_2K_Opacity.jpg
-      map_mrao: default_mrao_build.png
-      map_displacement: default_displacement_build.png
+      map_mrao: Concrete_Damage_tdildcjb_2K_mrao_build.png
+      map_displacement: Concrete_Damage_tdildcjb_2K_displacement_build.png
       parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
@@ -390,8 +390,8 @@ decals:
       map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
       map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
       map_opacity: Hole_in_Concrete_sfvodqg_2K_Opacity.jpg
-      map_mrao: default_mrao_build.png
-      map_displacement: default_displacement_build.png
+      map_mrao: Hole_in_Concrete_sfvodqg_2K_mrao_build.png
+      map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement_build.png
       parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE

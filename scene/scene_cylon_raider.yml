@@ -45,7 +45,7 @@ nodes:
   - id: planet_origo
     type: origo
     pos: [0, 25, -25]
-    script: |
+    xscript: |
       cmd:rotate(
         { time=60 * 100 },
         { 0, 1, 0 },
@@ -53,7 +53,7 @@ nodes:
   - id: cylon_origo
     parent: planet_origo
     type: origo
-    script: |
+    xscript: |
       cmd:rotate(
         { time=60 * 100 },
         { 0, 1, 0 },
@@ -79,7 +79,7 @@ nodes:
       y_step: 2
       z_count: 2
       z_step: 6
-    script: |
+    xscript: |
       local fly_sid = util:sid("fly")
       cid = cmd:audio_play(
         { sid=fly_sid })

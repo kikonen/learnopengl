@@ -229,7 +229,7 @@ void ImageTexture::prepareNormal()
 
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-        KI_INFO_OUT(fmt::format("TEX: path={}, compressed={}", m_image->m_path, compFlag));
+        KI_INFO_OUT(fmt::format("TEX_UPLOAD: path={}, compressed={}", m_image->m_path, compFlag));
 
         m_handle = glGetTextureHandleARB(m_textureID);
         glMakeTextureHandleResidentARB(m_handle);
@@ -275,7 +275,7 @@ void ImageTexture::prepareKtx()
 
     GLint compFlag;
     glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO_OUT(fmt::format("TEX: path={}, compressed={}", m_image->m_path, compFlag));
+    KI_INFO_OUT(fmt::format("TEX_UPLOAD: path={}, compressed={}", m_image->m_path, compFlag));
 
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);

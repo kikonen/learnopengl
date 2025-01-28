@@ -44,6 +44,8 @@ nodes:
     position: [0, 0, 0]
   - id: object_{c}_{t}
     prefab:
+      path: prefab/characters/prefab_scavenger.yml
+    xprefab:
       path: prefab/props/prefab_backpack.yml
     xmesh:
       path: texture_cube_4/texture_cube_4.obj

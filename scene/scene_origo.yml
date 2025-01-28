@@ -117,7 +117,7 @@ nodes:
       path: quad
       material:
         name: brickwall
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         reflection: 0.2
         render_back: true

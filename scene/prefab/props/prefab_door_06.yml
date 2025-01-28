@@ -1,0 +1,13 @@
+---
+prefab:
+  mesh:
+    path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
+    material:
+      base: door_glass_2_pbr
+      map_kd: TX_Door_Exterior_Set_06a_ALB.PNG
+      map_normal: TX_Door_Exterior_Set_06a_NRM.PNG
+      blend: true
+      default_programs: true
+    base_scale: 0.01
+  pivot:
+    alignment: t

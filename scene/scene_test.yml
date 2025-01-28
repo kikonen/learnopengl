@@ -40,18 +40,9 @@ nodes:
     scale: 100
     position: [0, 0, 0]
   - id: object_{t}
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-        blend: true
-        render_back: true
-      #base_rotation: [-90.0, 0.0, 0.0]
-    program: g_tex
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [0.0, 0.0, -8.0]
-    pivot:
-      alignment: t
     scale: 2
     base_scale: 0.01
   - id: skeleton_1_{t}

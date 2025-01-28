@@ -8,8 +8,8 @@ prefab:
           base: fbx/weapons/fab/FPS_Weapon_Bundle/Weapons/Textures/KA47
           map_kd: T_KA47_ALB_2048.png
           map_normal: T_KA47_NRM_2048.png
-          map_mrao: default_mrao_build.png
-          map_displacement: default_displacement_build.png
+          map_mrao: T_KA47_mrao_build.png
+          map_displacement: T_KA47_displacement_build.png
           alpha: true
           xblend: true
           render_back: true

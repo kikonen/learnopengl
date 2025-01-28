@@ -105,6 +105,7 @@ namespace loader {
                 data.aliasName = readString(v);
             }
             else if (k == "base" || k == "base_dir") {
+                fields.baseDir = true;
                 material.m_baseDir = readString(v);
             }
             //else if (k == "ns") {

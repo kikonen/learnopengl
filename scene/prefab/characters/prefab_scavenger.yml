@@ -10,21 +10,28 @@ prefab:
       materials:
         - name: scavenger_body_pbr
           alias: "Material #13"
-          map_pbr: scavenger_body_pbr
+          base: scavenger_body_pbr
+          map_kd: Scavenger_AlbedoTransparency.png
+          map_normal: Scavenger_Normal.png
+          map_mrao: Scavenger_mrao_build.png
           alpha: true
-          render_back: true
+          #render_back: true
           xline_mode: true
         - name: scavenger_hair_pbr
           alias: "Material #11"
-          map_pbr: scavenger_hair_pbr
+          base: scavenger_hair_pbr
+          map_kd: Scavenger_hair_color.tga
           alpha: true
           render_back: true
           xline_mode: true
         - name: scavenger_backback_pbr
           alias: 01 - Default
-          map_pbr: scavenger_body_pbr
+          base: scavenger_body_pbr
+          map_kd: Scavenger_AlbedoTransparency.png
+          map_normal: Scavenger_Normal.png
+          map_mrao: Scavenger_mrao_build.png
           alpha: true
-          render_back: true
+          #render_back: true
           xline_mode: true
       xanimations:
         - name: walk

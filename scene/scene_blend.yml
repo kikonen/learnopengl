@@ -34,28 +34,12 @@ nodes:
     program: tex
     pos: [0.0, -1.5, -14.0]
   - id: window_1
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        map_pbr: door_glass_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [0.0, -1.0, -8.0]
   - id: window_2
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
-      material:
-        map_pbr: door_glass_2_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_06.yml
     pos: [0.5, -1.0, -10.0]
   - id: blend_cube_{c}_{t}
     mesh:

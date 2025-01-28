@@ -265,9 +265,12 @@ nodes:
     mesh:
       path: pool_brick
       material_modifier:
-        xmap_pbr: textures\Tiles004_1K-PNG
+        base: textures/Planks 09 [8K]
+        map_kd: Planks09_col_2048.png
+        map_normal: Planks09_nrm_2048.png
+        map_mrao: Planks09_mrao_build.png
+        map_displacement: Planks09_displacement_build.png
         mrao: [1.0, 0.0, 1]
-        map_pbr: textures\Planks 09 [8K]
         tiling_x: 30
         tiling_y: 4
       flags:
@@ -448,7 +451,11 @@ nodes:
         type: sphere
         radius: 1
       material:
-        map_pbr: textures\Metal007_1K-PNG
+        base: textures/Metal007_1K-PNG
+        map_kd: Metal007_1K_Color.png
+        map_normal: Metal007_1K_NormalGL.png
+        map_mrao: Metal007_1K_mrao_build.png
+        map_displacement: Metal007_1K_displacement_build.png
         program: g_tex
       scale: 5
     pos: [160, 42.5, 20]
@@ -519,9 +526,12 @@ nodes:
     mesh:
       path: pool_brick
       material_modifier:
-        xmap_pbr: textures\Tiles004_1K-PNG
+        base: textures/Planks 09 [8K]
+        map_kd: Planks09_col_2048.png
+        map_normal: Planks09_nrm_2048.png
+        map_mrao: Planks09_mrao_build.png
+        map_displacement: Planks09_displacement_build.png
         mrao: [1.0, 0.0, 1]
-        map_pbr: textures\Planks 09 [8K]
         tiling_x: 30
         tiling_y: 4
         program: g_tex

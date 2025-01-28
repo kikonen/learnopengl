@@ -31,17 +31,8 @@ nodes:
       z_count: 20
       z_step: -10
   - id: stained_windows_{c}_{t}
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      base_rotation: [0.0, 90.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [10, 5, -10]
     scale: 2
     repeat:

@@ -31,7 +31,7 @@ namespace {
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
 
-    const std::regex CONTAINS_BUILD = std::regex("_build");
+    const std::regex CONTAINS_BUILD = std::regex(".*_build.*");
 
     //float calculateAmbient(glm::vec3 ambient) {
     //    return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -127,6 +127,11 @@ namespace {
             }
             else {
                 buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
+            }
+
+            const auto re = std::regex(".*scenery_build.png");
+            if (std::regex_match(buildPath.string(), re)) {
+                int x = 0;
             }
 
             KI_INFO_OUT(fmt::format("TEX_BUILD={}", buildPath.string()));

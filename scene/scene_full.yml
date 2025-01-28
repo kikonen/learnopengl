@@ -304,74 +304,29 @@ nodes:
       y_step: 0
       z_step: 3
   - id: window_1
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [5.0, 10.0, -5.0]
     scale: 2
   - id: door_1
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_NN_05h.FBX
-      material:
-        name: door_1_pbr
-        map_pbr: door_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_05.yml
     pos: [-5.0, 10.0, -5.0]
     scale: 2
   - id: window_1_1
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Exterior_Set_06f.FBX
-      material:
-        name: door_glass_2_pbr
-        map_pbr: door_glass_2_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_06.yml
     pos: [5.0, 8.0, 0.0]
     rotation: [0, -45.0, 0.0]
     scale: 4
   - id: window_2
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [7.0, 14.0, -8.0]
     scale: 2
   - id: stained_windows_{t}
-    mesh:
-      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
-      material:
-        name: door_glass_1_pbr
-        map_pbr: door_glass_1_pbr
-        alpha: true
-        blend: true
-        program: g_tex
-        shadow_program: shadow
-      base_scale: 0.01
-      #base_rotation: [-90.0, 0.0, 0.0]
+    prefab:
+      path: prefab/props/prefab_door_01.yml
     pos: [-10.0, 20.0, 10.0]
     scale: 2
     repeat:
@@ -388,7 +343,7 @@ nodes:
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
@@ -407,7 +362,7 @@ nodes:
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
@@ -1276,7 +1231,7 @@ nodes:
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
@@ -1291,7 +1246,7 @@ nodes:
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
@@ -1309,7 +1264,7 @@ nodes:
       material:
         name: brickwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024.png
+        map_kd: textures/brickwall_1024_color.png
         map_normal: textures/brickwall_1024_normal.png
         map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
