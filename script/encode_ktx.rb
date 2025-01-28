@@ -131,6 +131,7 @@ class TextureInfo < Hashie::Dash
   property :target_channel
   property :source_depth
   property :target_depth
+  property :source_size
   property :srgb
   property :manual
 
@@ -535,9 +536,9 @@ class Converter < Thor
   attr_reader :assets_root_dir,
     :build_root_dir,
     :target_size,
-    :combine,
-    :encode,
-    :encode_ktx,
+    :use_combine,
+    :use_encode,
+    :use_encode_ktx,
     :recursive,
     :force,
     :dry_run,
@@ -644,18 +645,18 @@ class Converter < Thor
     @force = options[:force]
     @dry_run = options[:dry_run]
     @types = options[:type].map(&:to_sym)
-    @combine = options[:combine]
-    @encode = options[:encode]
-    @encode_ktx = options[:ktx]
+    @use_combine = options[:combine]
+    @use_encode = options[:encode]
+    @use_encode_ktx = options[:ktx]
 
     if options[:all]
-      @combine = true
-      @encode = true
-      @encode_ktx = true
+      @use_combine = true
+      @use_encode = true
+      @use_encode_ktx = true
     end
 
-    unless @combine || @encode || @encode_ktx
-      puts "--combine or --encoce or --ktx required"
+    unless @use_combine || @use_encode || @use_encode_ktx
+      puts "--combine or --encode or --ktx required"
       exit
     end
 
@@ -668,17 +669,44 @@ class Converter < Thor
     puts "BUILD_DIR:   #{build_root_dir}"
     puts "TYPE:        #{types}"
     puts "TARGET_SIZE: #{target_size}"
-    puts "COMBINE:     #{combine}"
-    puts "ENCODE:      #{encode}"
-    puts "ENCODE_KTX:  #{encode_ktx}"
+    puts "COMBINE:     #{use_combine}"
+    puts "ENCODE:      #{use_encode}"
+    puts "ENCODE_KTX:  #{use_encode_ktx}"
     puts "EXT:         #{extensions}"
     puts "FORCE:       #{force}"
     puts "RECURSIVE:   #{recursive}"
     puts "DRY_RUN:     #{dry_run}"
 
-    build_dir(
-      src_dir:,
-      extensions:)
+    if use_combine
+      puts "[COMBINE]"
+      build_dir(
+        src_dir:,
+        extensions:,
+        combine_pass: true,
+        encode_pass: false,
+        encode_ktx_pass: false
+      )
+    end
+
+    if use_encode
+      puts "[ENCODE]"
+      build_dir(
+        src_dir:,
+        extensions:,
+        combine_pass: false,
+        encode_pass: true,
+        encode_ktx_pass: false)
+    end
+
+    if use_encode_ktx
+      puts "[ENCODE_KTX]"
+      build_dir(
+        src_dir:,
+        extensions:,
+        combine_pass: false,
+        encode_pass: false,
+        encode_ktx_pass: true)
+    end
   end
 
   private
@@ -732,7 +760,6 @@ class Converter < Thor
       file_ext = File.extname(f).downcase[1, 5]
       if extensions.include?(file_ext)
         img = Magick::Image.ping(src_path).first
-        #debugger
 
         type = detect_type(name)
 
@@ -918,6 +945,7 @@ class Converter < Thor
             target_channel: channels,
             source_depth: img.quantum_depth,
             target_depth: img.quantum_depth,
+            source_size: "#{img.columns}x#{img.rows}",
             srgb: img.colorspace == Magick::SRGBColorspace,
             manual: false,
           }
@@ -941,9 +969,7 @@ class Converter < Thor
       end
     end
 
-    need_process = textures.any? do |tex_info|
-      [:combine, :encode].include?(tex_info[:action])
-    end
+    need_process = !textures.empty?
 
     begin
       grouped_textures = group_by_prefix(textures)
@@ -984,6 +1010,7 @@ class Converter < Thor
     if need_process
       metadata[:dir] = src_dir
       metadata[:textures] = textures.sort_by { |e| e[:name].downcase }
+
       write_metadata(src_dir:, data: metadata)
     end
 
@@ -1026,8 +1053,6 @@ class Converter < Thor
       end
     end
 
-    #debugger
-
     groups
   end
 
@@ -1036,7 +1061,10 @@ class Converter < Thor
   ############################################################
   def build_dir(
     src_dir:,
-    extensions:)
+    extensions:,
+    combine_pass:,
+    encode_pass:,
+    encode_ktx_pass:)
 
     plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
     dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
@@ -1045,9 +1073,9 @@ class Converter < Thor
     metadata = read_metadata(src_dir:)
 
     combine_textures = {}
+    encode_textures = []
 
     metadata.textures&.each do |tex_info|
-      handled = false
       name = tex_info.name.downcase
       next unless name
 
@@ -1064,38 +1092,42 @@ class Converter < Thor
       end
 
       if action == :encode
-        if encode
-          encode_image(
-            src_dir:,
-            dst_dir:,
-            tex_info:
-          )
-          handled = true
-        end
-
-        if encode_ktx
-          src_path = "#{src_dir}/#{name}"
-          encode_ktx_image(
-            src_path,
-            dst_dir:,
-            type: tex_info.type,
-            target_type: tex_info.target_type || RGB,
-            srgb: tex_info.srgb || false,
-            normal_mode: tex_info.mode-to_sym == :normal
-          )
-          handled = true
-        end
+        encode_textures << tex_info
+        next
       end
 
-      unless handled
-        puts "IGNORE: #{type} #{src_dir} #{tex_info.name}"
-      end
+      puts "IGNORE: #{type} #{src_dir} #{tex_info.name}"
     end
 
-    if combine
+    if combine_pass
       combine_textures.each do |target_name, parts|
         target_mode = parts.first.mode.to_sym
         create_combound_texture(src_dir, dst_dir, target_name, target_mode, parts)
+      end
+    end
+
+    if encode_pass
+      encode_textures.each do |tex_info|
+        encode_image(
+          src_dir:,
+          dst_dir:,
+          tex_info:
+        )
+      end
+    end
+
+    if encode_ktx_pass
+      encode_textures.each do |tex_info|
+        src_path = "#{src_dir}/#{name}"
+
+        encode_ktx_image(
+          src_path,
+          dst_dir:,
+          type: tex_info.type,
+          target_type: tex_info.target_type || RGB,
+          srgb: tex_info.srgb || false,
+          normal_mode: tex_info.mode-to_sym == :normal
+        )
       end
     end
 
@@ -1112,7 +1144,10 @@ class Converter < Thor
       sub_dirs.each do |sub_dir|
         build_dir(
           src_dir: [src_dir, sub_dir].join('/'),
-          extensions:)
+          extensions:,
+          combine_pass:,
+          encode_pass:,
+          encode_ktx_pass:)
       end
     end
   end
@@ -1506,7 +1541,12 @@ class Converter < Thor
     # https://imagemagick.org/script/command-line-options.php#combine
     dst_img = img_list.combine(Magick::RGBColorspace)
 
+    if target_channels.size > 1
+      dst_img.image_type = Magick::TrueColorType
+    end
+
     if alpha_img
+      dst_img.image_type = Magick::TrueColorAlphaType
       dst_img.alpha(Magick::SetAlphaChannel)
       dst_img
         .composite_channel!(
@@ -1515,11 +1555,20 @@ class Converter < Thor
           Magick::AlphaChannel)
     end
 
+    dst_img.colorspace = Magick::SRGBColorspace
+
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
 
+      puts dst_img.image_type
+      puts dst_img.colorspace
+      puts dst_img.gray?
       puts "WRITE: [#{group}] #{dst_path}"
-      dst_img.write(dst_path)
+
+      dst_img.write(dst_path) do |info|
+        p info.image_type
+        #info.image_type = Magick::TrueColorType
+      end
 
       write_digest(dst_path, sha_digest, [src_path], salt)
 

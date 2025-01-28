@@ -100,7 +100,7 @@ nodes:
         map_kd: Terrestrial-EQUIRECTANGULAR-1-4096x2048.png
       material:
         base_dir: textures/planets/earth
-        map_kd: 2k_earth_daymap.jpg
+        map_kd: 2k_earth_daymap_color.jpg
         map_normal: 2k_earth_daymap_normal.png
       default_programs: true
       base_scale: 10
@@ -117,7 +117,7 @@ nodes:
       material:
         kd: [1, 1, 1, 0.3]
         base_dir: textures/planets/earth
-        map_kd: 2k_earth_clouds.jpg
+        map_kd: 2k_earth_clouds_color.jpg
         alpha: true
         blend: true
       default_programs: true
