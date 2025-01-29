@@ -133,8 +133,8 @@ nodes:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         map_kd: Metal022_1K_Color.png
         map_normal: Metal022_1K_NormalGL.png
-        map_mrao: Metal022_1K_mrao_build.png
-        map_displacement: Metal022_1K_displacement_build.png
+        map_mrao: Metal022_1K_mrao
+        map_displacement: Metal022_1K_displacement
         xreflection: 0.05
         tiling: 3
         parallax_depth: 0.01

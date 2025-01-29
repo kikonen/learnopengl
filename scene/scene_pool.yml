@@ -268,8 +268,8 @@ nodes:
         base: textures/Planks 09 [8K]
         map_kd: Planks09_col_2048.png
         map_normal: Planks09_nrm_2048.png
-        map_mrao: Planks09_mrao_build.png
-        map_displacement: Planks09_displacement_build.png
+        map_mrao: Planks09_mrao
+        map_displacement: Planks09_displacement
         mrao: [1.0, 0.0, 1]
         tiling_x: 30
         tiling_y: 4
@@ -454,8 +454,8 @@ nodes:
         base: textures/Metal007_1K-PNG
         map_kd: Metal007_1K_Color.png
         map_normal: Metal007_1K_NormalGL.png
-        map_mrao: Metal007_1K_mrao_build.png
-        map_displacement: Metal007_1K_displacement_build.png
+        map_mrao: Metal007_1K_mrao
+        map_displacement: Metal007_1K_displacement
         program: g_tex
       scale: 5
     pos: [160, 42.5, 20]
@@ -529,8 +529,8 @@ nodes:
         base: textures/Planks 09 [8K]
         map_kd: Planks09_col_2048.png
         map_normal: Planks09_nrm_2048.png
-        map_mrao: Planks09_mrao_build.png
-        map_displacement: Planks09_displacement_build.png
+        map_mrao: Planks09_mrao
+        map_displacement: Planks09_displacement
         mrao: [1.0, 0.0, 1]
         tiling_x: 30
         tiling_y: 4

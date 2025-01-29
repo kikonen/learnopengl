@@ -6,8 +6,8 @@ prefab:
       base: textures/Cobblestone wall 01 [2K]
       map_kd: Cobblestone_wall_01_2K_Base_Color.png
       map_normal: Cobblestone_wall_01_2K_Normal.png
-      map_mrao: Cobblestone_wall_01_2K_mrao_build.png
-      map_displacement: Cobblestone_wall_01_2K_displacement_build.png
+      map_mrao: Cobblestone_wall_01_2K_mrao
+      map_displacement: Cobblestone_wall_01_2K_displacement
       tiling: 100
       parallax_depth: 0.08
       program: g_tex

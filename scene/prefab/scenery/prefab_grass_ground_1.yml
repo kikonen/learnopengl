@@ -6,8 +6,8 @@ prefab:
       base: textures/grass_and_rubble_pjwdj0_2k
       map_kd: Grass_And_Rubble_pjwdJ0_2K_BaseColor.jpg
       map_normal: Grass_And_Rubble_pjwdJ0_2K_Normal.jpg
-      map_mrao: Grass_And_Rubble_pjwdJ0_2K_mrao_build.png
-      map_displacement: Grass_And_Rubble_pjwdJ0_2K_displacement_build.png
+      map_mrao: Grass_And_Rubble_pjwdJ0_2K_mrao
+      map_displacement: Grass_And_Rubble_pjwdJ0_2K_displacement
       tiling: 60
       parallax_depth: 0.03
       program: g_tex

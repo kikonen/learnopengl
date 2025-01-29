@@ -6,8 +6,8 @@ prefab:
       base: textures/rocky_forest_floor_vl0lecrlw_2k
       map_kd: Rocky_Forest_Floor_vl0lecrlw_2K_BaseColor.jpg
       map_normal: Rocky_Forest_Floor_vl0lecrlw_2K_Normal.jpg
-      map_mrao: Rocky_Forest_Floor_vl0lecrlw_2K_mrao_build.png
-      map_displacement: Rocky_Forest_Floor_vl0lecrlw_2K_displacement_build.png
+      map_mrao: Rocky_Forest_Floor_vl0lecrlw_2K_mrao
+      map_displacement: Rocky_Forest_Floor_vl0lecrlw_2K_displacement
       tiling: 80
       parallax_depth: 0.03
       program: g_tex

@@ -8,8 +8,8 @@ prefab:
           base: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Hands_04
           map_kd: T_Hands_04_Albedo_01_2048.png
           map_normal: T_Hands_04_Normals_2048.png
-          map_mrao: T_Hands_04_mrao_build.png
-          map_displacement: T_Hands_04_displacement_build.png
+          map_mrao: T_Hands_04_mrao
+          map_displacement: T_Hands_04_displacement
       sockets:
         - name: rifle
           joint: hand_l
@@ -31,8 +31,8 @@ prefab:
           base: fbx/weapons/fab/FPS_Automatic_Rifle_01/Textures/Automatic_Rifle_01
           map_kd: T_Automatic_Rifle_01_Albedo_01_2048.png
           map_normal: T_Automatic_Rifle_01_Normals_2048.png
-          map_mrao: T_Automatic_Rifle_01_mrao_build.png
-          map_displacement: T_Automatic_Rifle_01_displacement_build.png
+          map_mrao: T_Automatic_Rifle_01_mrao
+          map_displacement: T_Automatic_Rifle_01_displacement
       default_programs: true
       base_scale: 0.01
       flags:
