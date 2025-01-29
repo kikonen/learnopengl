@@ -15,6 +15,8 @@
 
 #include "shader/ProgramRegistry.h"
 
+#include "loader/converter/YamlConverter.h"
+
 #include "loader/document.h"
 #include "Loaders.h"
 #include "loader_util.h"
@@ -91,6 +93,8 @@ namespace loader {
     {
         Material& material = data.material;
         auto& fields = data.fields;
+
+        loadMaterialPrefab(node.findNode("prefab"), data, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
@@ -398,6 +402,42 @@ namespace loader {
                 KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", assets.parallaxDepth));
                 material.parallaxDepth = assets.parallaxDepth;
                 fields.parallaxDepth = true;
+            }
+        }
+    }
+
+    void MaterialLoader::loadMaterialPrefab(
+        const loader::DocNode& node,
+        MaterialData& data,
+        Loaders& loaders) const
+    {
+        if (node.isNull()) return;
+
+        std::string path = readString(node);
+        if (path.empty()) return;
+
+        const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
+
+        KI_INFO_OUT(fmt::format("material_prefab={}", fullPath));
+
+        if (!util::fileExists(fullPath))
+        {
+            throw fmt::format("INVALID: material_prefab missing - path={}", fullPath);
+        }
+
+        loader::YamlConverter converter;
+        auto doc = converter.load(fullPath);
+
+        for (const auto& pair : doc.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "material") {
+                std::vector<NodeData> clones;
+                loadMaterial(
+                    v,
+                    data,
+                    loaders);
             }
         }
     }

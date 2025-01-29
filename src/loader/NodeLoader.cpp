@@ -356,18 +356,23 @@ namespace loader {
 
             if (k == "path") {
                 path = readString(v);
+                break;
             }
+        }
+
+        if (path.empty()) {
+            path = readString(node);
         }
 
         if (path.empty()) return;
 
         const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
 
-        KI_INFO_OUT(fmt::format("prefab={}", fullPath));
+        KI_INFO_OUT(fmt::format("node_prefab={}", fullPath));
 
         if (!util::fileExists(fullPath))
         {
-            throw fmt::format("INVALID: prefab missing - path={}", fullPath);
+            throw fmt::format("INVALID: node_prefab missing - path={}", fullPath);
         }
 
         loader::YamlConverter converter;

@@ -38,6 +38,11 @@ namespace loader {
             MaterialData& data,
             Loaders& loaders) const;
 
+        void loadMaterialPrefab(
+            const loader::DocNode& node,
+            MaterialData& data,
+            Loaders& loaders) const;
+
         void loadTextureSpec(
             const loader::DocNode& node,
             TextureSpec& textureSpec) const;
