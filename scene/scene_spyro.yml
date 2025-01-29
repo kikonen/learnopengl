@@ -24,7 +24,7 @@ nodes:
     mesh:
       path: spyro2
       material_modifier:
-        map_pbr: textures/Lava 05 [8K]
+        prefab: materials/Lava05
         tiling: 6
     program: g_tex
     pos: [0.0, 0.0, -30.0]

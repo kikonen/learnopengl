@@ -1,0 +1,10 @@
+---
+material:
+  name: Lava05
+  base: textures/Lava 05 [8K]
+  map_kd: Lava05_col_2048.png
+  map_normal: Lava05_nrm_2048.png
+  map_emission: Lava05_emi_2048.png
+  map_mrao: Lava05_mrao
+  map_displacement: Lava05_displacement
+  default_programs: true

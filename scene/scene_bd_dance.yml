@@ -65,7 +65,7 @@ nodes:
         billboard: true
       material:
         name: another_text
-        map_pbr: textures\Leather037_1K
+        prefab: materials/Leather037_1K
         map_displacement: ""
         tiling: 1
         alpha: true

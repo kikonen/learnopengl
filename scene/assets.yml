@@ -144,7 +144,7 @@ assets:
   physics_soft_cfm: 0.9
 
   parallax_enabled: true
-  parallax_depth: 0.01
+  parallax_depth: 0.005
   parallax_method: 1
   parallax_debug_enabled: false
   parallax_debug_depth: 0.01
