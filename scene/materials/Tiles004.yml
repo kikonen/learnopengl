@@ -1,0 +1,9 @@
+---
+material:
+  name: Tiles004
+  base: textures/Tiles004_1K-PNG
+  map_kd: Tiles004_1K_Color.png
+  map_normal: Tiles004_1K_NormalGL.png
+  map_mrao: Tiles004_1K_mrao
+  map_displacement: Tiles004_1K_displacement
+  default_programs: true

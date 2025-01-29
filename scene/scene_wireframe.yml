@@ -78,8 +78,8 @@ nodes:
         size: [1]
         radius: 1
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -99,8 +99,8 @@ nodes:
         size: [1]
         radius: 1
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex

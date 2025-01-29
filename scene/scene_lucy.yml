@@ -44,10 +44,10 @@ nodes:
       path: quad
       material:
         name: pool_floor
+        prefab: materials/Tiles074.yml
         kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
-        xmap_kd: textures/tiles_1024.png
-        map_pbr: textures\Tiles074_1K-PNG
+        #map_kd: textures/Marble White_VH_512.PNG
+        #map_kd: textures/tiles_1024.png
         tiling: 16
     program: g_tex
     pos: [0.0, 0.1, 0]
@@ -76,7 +76,7 @@ nodes:
     mesh:
       path: pool_brick
       material_modifier:
-        map_pbr: textures\Tiles004_1K-PNG
+        prefab: materials/Tiles004.yml
         tiling_x: 90
         tiling_y: 6
     program: g_tex
@@ -89,17 +89,17 @@ nodes:
         scale: [100, 6, 0.3]
       - pos: [0.0, -1, 100]
         scale: [100, 6, 0.3]
-  - name: Lucy statue
+  - id: lucy_statue
     mesh:
       path: lucy
       xmaterial:
         name: gold_ball
         kd: [0.7516, 0.6065, 0.2265, 1.0]
         reflection: 0.05
-      material_modifier:
+      material:
         xreflection: 0.05
-        map_pbr: textures\Metal007_1K-PNG
-        xmap_pbr: textures\Graffiti
+        #prefab: materials/Metal007.yml
+        prefab: materials/Graffiti.yml
         tiling: 9
         parallax_depth: 0.0
         xrender_back: true

@@ -1,0 +1,9 @@
+---
+material:
+  name: Metal022
+  base: textures/Metal022_1K-PNG
+  map_kd: Metal022_1K_Color.png
+  map_normal: Metal022_1K_NormalGL.png
+  map_mrao: Metal022_1K_mrao
+  map_displacement: Metal022_1K_displacement
+  default_programs: true

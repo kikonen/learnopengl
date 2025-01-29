@@ -89,9 +89,9 @@ nodes:
   - id: primitive-1
     mesh:
       material:
+        prefab: materials/Metal007.yml
         xkd: [0.0, 0.2, 0.0, 1.0]
         xxmrao: [1.0, 0.0, 1]
-        map_pbr: textures\Metal007_1K-PNG
         program: g_tex
         render_back: true
       vertex:
@@ -105,9 +105,9 @@ nodes:
   - id: primitive-2
     mesh:
       material:
+        prefab: materials/Metal007.yml
         xkd: [0.0, 0.2, 0.0, 1.0]
         xxmrao: [1.0, 0.0, 1]
-        map_pbr: textures\Metal007_1K-PNG
         program: g_tex
         render_back: true
       vertex:

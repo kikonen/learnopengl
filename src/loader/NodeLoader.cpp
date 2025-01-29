@@ -366,6 +366,13 @@ namespace loader {
 
         if (path.empty()) return;
 
+        {
+            std::filesystem::path filePath{ path };
+            if (filePath.extension().empty()) {
+                path += ".yml";
+            }
+        }
+
         const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
 
         KI_INFO_OUT(fmt::format("node_prefab={}", fullPath));

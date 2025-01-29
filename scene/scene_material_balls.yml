@@ -87,9 +87,9 @@ nodes:
     mesh:
       path: water_ball
       material:
+        #prefab: materials/Planks09.yml
+        prefab: materials/Metal007.yml
         kd: [0.7516, 0.6065, 0.2265, 1.0]
-        xmap_pbr: textures\Planks 09 [8K]
-        map_pbr: textures\Metal007_1K-PNG
         xreflection: 0.05
         parallax_depth: 0.0
     program: g_tex
@@ -101,8 +101,8 @@ nodes:
       path: water_ball
       material:
         name: silver_ball
+        prefab: materials/Fence007A.yml
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-        map_pbr: textures\Fence007A_4K-JPG
         xreflection: 0.05
         parallax_depth: 0.0
         alpha: true
@@ -116,9 +116,9 @@ nodes:
     mesh:
       path: water_ball
       material:
-        name: bronze_ball
+        name: plastic_ball
+        prefab: materials/Plastic01.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_pbr: textures\Plastic 01 [4K]
         xreflection: 0.05
         parallax_depth: 0.0
     program: g_tex
@@ -147,8 +147,8 @@ nodes:
       path: water_ball
       material:
         name: bronze_ball
+        prefab: materials/Metal008.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_pbr: textures\Metal008_1K-PNG
         xreflection: 0.05
         tiling: 3
         parallax_depth: 0.0
@@ -165,8 +165,8 @@ nodes:
       path: quad
       material:
         name: fence
+        prefab: materials/Fence007A.yml
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_pbr: textures\Fence007A_4K-JPG
         parallax_depth: 0.0
         tiling: 1
         alpha: true

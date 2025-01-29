@@ -138,8 +138,8 @@ material_updaters:
   size: 1024
   frame_skip: 1
   material:
+    prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    map_pbr: textures\Metal008_1K-PNG
     xtiling: 3
     alpha: true
     program: shader_toy
@@ -151,8 +151,8 @@ material_updaters:
   size: 512
   frame_skip: 1
   material:
+    prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    map_pbr: textures\Metal008_1K-PNG
     xtiling: 3
     alpha: true
     program: shader_toy
@@ -164,8 +164,8 @@ material_updaters:
   size: 512
   frame_skip: 1
   material:
+    prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    map_pbr: textures\Metal008_1K-PNG
     map_noise: textures\noise\noise_1.png
     map_noise_2: textures\noise\noise_2.png
     xtiling: 3

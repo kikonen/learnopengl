@@ -31,8 +31,8 @@ nodes:
         radius: 1
         length: 1
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 1, 0.4, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         tiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -48,8 +48,8 @@ nodes:
         radius: 1
         length: 2
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         tiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -185,9 +185,9 @@ nodes:
     mesh:
       path: water_ball
       material:
+        #prefab: materials/Planks09.yml
+        prefab: materials/Metal007.yml
         kd: [0.7516, 0.6065, 0.2265, 1.0]
-        xmap_pbr: textures\Planks 09 [8K]
-        map_pbr: textures\Metal007_1K-PNG
         xreflection: 0.05
         xparallax_depth: 0.0
     program: g_tex
@@ -210,8 +210,8 @@ nodes:
         radius: 1
         length: 1
       material:
+        prefab: materials/Fence007A.yml
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-        map_pbr: textures\Fence007A_4K-JPG
         xreflection: 0.05
         xparallax_depth: 0.0
         alpha: true
@@ -236,8 +236,8 @@ nodes:
         radius: 1
         length: 1
       material:
+        prefab: materials/Plastic01.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_pbr: textures\Plastic 01 [4K]
         xreflection: 0.05
         xparallax_depth: 0.01
     program: g_tex
@@ -256,8 +256,8 @@ nodes:
     mesh:
       path: water_ball
       material:
+        prefab: materials/Metal022.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_pbr: textures\Metal022_1K-PNG
         xreflection: 0.05
         tiling: 3
         xparallax_depth: 0.0
@@ -279,9 +279,9 @@ nodes:
         radius: 1
         length: 1
       material:
+        prefab: materials/Metal008.yml
         #kd: [0.7140, 0.4284, 0.1814, 1.0]
         #kd: [1, 1, 1, 0.68]
-        map_pbr: textures\Metal008_1K-PNG
         xreflection: 0.05
         tiling: 3
         xparallax_depth: 0.0
@@ -334,8 +334,8 @@ nodes:
       vertex:
         type: quad
       material:
+        prefab: materials/Fence007A.yml
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_pbr: textures\Fence007A_4K-JPG
         xparallax_depth: 0.0
         tiling: 10
         alpha: true
@@ -357,8 +357,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0, 0.8, 0]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     program: g_tex
@@ -376,8 +376,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0.8, 0.8, 0]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     program: g_tex
@@ -395,8 +395,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0.8, 0, 0]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     program: g_tex
@@ -415,8 +415,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0.8, 0, 0.8]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     scale: 100
@@ -433,8 +433,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0, 0, 0.8]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     program: g_tex
@@ -452,8 +452,8 @@ nodes:
     mesh:
       path: plane
       material:
+        prefab: materials/Fence007A.yml
         kd: [0, 0.8, 0.8]
-        map_pbr: textures\Fence007A_4K-JPG
         tiling: 10
         alpha: true
     program: g_tex

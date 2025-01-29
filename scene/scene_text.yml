@@ -14,7 +14,7 @@ nodes:
         radius: 0.05
       material:
         kd: [1, 1, 0, 1]
-        #map_pbr: textures\Plastic 01 [4K]
+        #prefab: materials/Plastic01.yml
         program: g_tex
     pos: [0, 0, -2]
     layer: 3
@@ -56,6 +56,7 @@ nodes:
         #alpha: true
         render_back: true
         updater_id: font_atlas_1
+      default_programs: false
       program: font_atlas_demo
       shadow_program: font_atlas_demo
     pos: [4.0, 2.0, 0.2]
@@ -74,7 +75,7 @@ nodes:
         type: sphere
         radius: 0.05
       material:
-        map_pbr: textures\Plastic 01 [4K]
+        prefab: materials/Plastic01.yml
         tiling: 1
         program: g_tex
     pos: [0.0, 4.0, -3.0]
@@ -82,13 +83,15 @@ nodes:
     type: text
     mesh:
       material:
-        #map_pbr: textures\Plastic 01 [4K]
-        #map_pbr: textures\Fence007A_4K-JPG
-        map_pbr: textures\Metal007_1K-PNG
+        #prefab: materials/Plastic01.yml
+        #prefab: materials/Fence007A.yml
+        prefab: materials/Metal007.yml
+        map_displacement: ""
         tiling: 2
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render
@@ -126,11 +129,13 @@ nodes:
         billboard: true
       material:
         name: another_text
-        map_pbr: textures\Leather037_1K
+        prefab: materials/Leather037
+        map_displacement: ""
         tiling: 1
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render
@@ -164,10 +169,10 @@ nodes:
       path: quad
       material:
         name: wood_floor
+        prefab: materials/Planks09.yml
+        #prefab: materials/Planks09_metal.yml
         kd: [0.8, 0.8, 0.0, 1.0]
-        map_pbr: textures\Planks 09 [8K]
         xmrao: [1.0, 0.0, 0, 1]
-        xmap_pbr: textures\planks_metal
         tiling: 5
         render_back: true
     program: g_tex
@@ -180,10 +185,9 @@ nodes:
       path: plane
       material:
         name: wood_floor
+        prefab: materials/Planks09.yml
         kd: [0.8, 0.8, 0.0, 1.0]
-        map_pbr: textures\Planks 09 [8K]
-        xmrao: [1.0, 0.0, 0, 1]
-        xmap_pbr: textures\planks_metal
+        xmrao: [1.0, 0.0, 1]
         tiling: 20
     program: g_tex
     flags:
@@ -207,8 +211,8 @@ nodes:
       path: cow
       flags:
         billboard: true
-      material_modifier:
-        map_pbr: textures/Plastic 01 [4K]
+      material:
+        prefab: materials/Plastic01.yml
     program: g_tex
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8

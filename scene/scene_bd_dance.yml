@@ -33,13 +33,15 @@ nodes:
       material:
         name: hello
         kd: [0, 1, 0]
-        map_pbr: textures\Plastic 01 [4K]
-        xmap_pbr: textures\Fence007A_4K-JPG
-        map_pbr: textures\Metal007_1K-PNG
+        #prefab: materials/Plastic01.yml
+        #prefab: materials/Fence007A.yml
+        prefab: materials/Metal007.yml
+        map_displacement: ""
         tiling: 1
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render
@@ -64,10 +66,12 @@ nodes:
       material:
         name: another_text
         map_pbr: textures\Leather037_1K
+        map_displacement: ""
         tiling: 1
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render
@@ -121,8 +125,8 @@ nodes:
       path: cow
       flags:
         billboard: true
-      material_modifier:
-        map_pbr: textures/Plastic 01 [4K]
+      material:
+        prefab: materials/Plastic01.yml
     program: g_tex
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8

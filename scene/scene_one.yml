@@ -24,7 +24,7 @@ nodes:
     mesh:
       path: texture_mountains
       material_modifier:
-        map_pbr: textures/Fence007A_4K-JPG
+        prefab: materials/Fence007A.yml
         tiling: 6
         alpha: true
         render_back: true

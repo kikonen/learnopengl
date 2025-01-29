@@ -46,16 +46,16 @@ nodes:
         lod:
           level: 0
         material_modifier:
+          #prefab: materials/Rock002.yml
           mrao: [0.5, 0.0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
           kd: [1, 1, 0]
           tiling: 4
       - path: rock2/rock_lod_1
         lod:
           level: 1
         material_modifier:
+          #prefab: materials/Rock002.yml
           mrao: [0.5, 0.0, 1]
-          #map_pbr: textures\Rock002_1K-PNG
           kd: [0, 1, 1]
           tiling: 4
       - path: rock2/rock_lod_2
@@ -102,7 +102,7 @@ nodes:
       path: plane
       material:
         name: wood_floor
-        map_pbr: textures\Planks 09 [8K]
+        prefab: materials/Planks09.yml
         parallax_depth: 0.0
         tiling: 10
     program: g_tex

@@ -28,8 +28,8 @@ nodes:
         size: [1]
         radius: 1
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -65,8 +65,8 @@ nodes:
         type: box
         size: [1]
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -103,8 +103,8 @@ nodes:
         size: [1]
         radius: 1
       material:
+        prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        map_pbr: textures\Metal008_1K-PNG
         xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
@@ -175,8 +175,8 @@ material_updaters:
   size: 1024
   frame_skip: 1
   material:
+    prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    map_pbr: textures\Metal008_1K-PNG
     xtiling: 3
     alpha: true
     program: shader_toy
@@ -188,8 +188,8 @@ material_updaters:
   size: 512
   frame_skip: 1
   material:
+    prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    map_pbr: textures\Metal008_1K-PNG
     xtiling: 3
     alpha: true
     program: shader_toy

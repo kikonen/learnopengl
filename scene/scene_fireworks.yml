@@ -175,11 +175,13 @@ nodes:
     type: text
     mesh:
       material:
-        map_pbr: textures\Metal007_1K-PNG
+        prefab: materials/Metal007.yml
+        map_displacement: ""
         tiling: 1
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render

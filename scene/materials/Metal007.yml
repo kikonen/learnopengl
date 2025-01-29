@@ -1,0 +1,9 @@
+---
+material:
+  name: Metal007
+  base: textures/Metal007_1K-PNG
+  map_kd: Metal007_1K_Color.png
+  map_normal: Metal007_1K_NormalGL.png
+  map_mrao: Metal007_1K_mrao
+  map_displacement: Metal007_1K_displacement
+  default_programs: true

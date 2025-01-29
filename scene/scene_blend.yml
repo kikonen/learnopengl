@@ -79,9 +79,11 @@ nodes:
     mesh:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
+        map_displacement: ""
         alpha: true
         blend: true
         render_back: true
+        default_programs: false
         program: g_font_render
         oit_program: oit_font_render
         shadow_program: shadow_font_render

@@ -58,8 +58,8 @@ nodes:
         map_kd: textures/Dirt_vh_1024.png
         tiling: 1
       material_modifier:
-        map_pbr: textures/Plastic 01 [4K]
-        xmap_pbr: textures\Metal007_1K-PNG
+        prefab: materials/Plastic01.yml
+        #prefab: materials/Metal007.yml
         xxline_mode: true
     program: g_tex
     priority: 1

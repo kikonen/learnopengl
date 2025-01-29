@@ -24,8 +24,8 @@ nodes:
     mesh:
       path: texture_cube
       material_modifier:
+        prefab: materials/Bricks007.yml
         tiling: 3
-        map_pbr: textures\Bricks007_1K-PNG
     program: g_tex
     pos: [0.0, 2.0, 0.0]
     repeat:

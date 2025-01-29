@@ -1,0 +1,9 @@
+---
+material:
+  name: Leather037
+  base: textures/Leather037_1K
+  map_kd: Leather037_1K_Color.png
+  map_normal: Leather037_1K_NormalGL.png
+  map_mrao: Leather037_1K_mrao
+  map_displacement: Leather037_1K_displacement
+  default_programs: true

@@ -67,8 +67,8 @@ nodes:
   - name: CowJump
     mesh:
       path: cow
-      material_modifier:
-        map_pbr: textures/Plastic 01 [4K]
+      material:
+        prefab: materials/Plastic01.yml
     program: g_tex
     pos: [0, 4, -10]
     rot: [-45, 180, 0]

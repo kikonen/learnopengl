@@ -25,8 +25,8 @@ nodes:
     mesh:
       path: rock2/rock
       material_modifier:
+        #prefab: materials/Rock002.yml
         mrao: [0.5, 0.0, 1]
-        map_pbr: textures\Rock002_1K-PNG
         tiling: 4
     program: g_tex
     pos: [0.0, 0.0, 0.0]
