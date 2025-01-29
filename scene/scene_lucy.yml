@@ -98,10 +98,10 @@ nodes:
         reflection: 0.05
       material:
         xreflection: 0.05
-        #prefab: materials/Metal007.yml
-        prefab: materials/Graffiti.yml
+        prefab: materials/Metal007.yml
+        #prefab: materials/Graffiti.yml
         tiling: 9
-        parallax_depth: 0.0
+        parallax_depth: 0.005
         xrender_back: true
     xmesh: water_ball
     program: g_tex

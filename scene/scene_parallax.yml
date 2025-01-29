@@ -96,7 +96,7 @@ nodes:
       material:
         base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: bricks2.jpg
+        map_kd: bricks2_color.jpg
         map_normal: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
@@ -112,7 +112,7 @@ nodes:
       material:
         base: textures/bricks2
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: bricks2.jpg
+        map_kd: bricks2_color.jpg
         map_normal: bricks2_normal.jpg
         xreflection: 0.2
         parallax_depth: 0.07
