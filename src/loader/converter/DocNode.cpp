@@ -11,7 +11,7 @@
 #include "DocNodeData.h"
 
 namespace {
-    const loader::DocNode NULL_NODE;
+    const loader::DocNode NULL_NODE{ loader::DocNodeType::null };
     const std::vector<loader::DocNode> NULL_NODES;
 
     std::string renderNode(

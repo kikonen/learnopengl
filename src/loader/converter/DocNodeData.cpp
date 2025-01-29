@@ -5,7 +5,7 @@
 #include "DocNode.h"
 
 namespace {
-    const loader::DocNode NULL_NODE;
+    const loader::DocNode NULL_NODE{ loader::DocNodeType::null };
 }
 
 namespace loader {
