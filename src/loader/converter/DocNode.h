@@ -27,6 +27,8 @@ namespace loader {
         DocNode(const std::string& name);
         ~DocNode();
 
+        DocNode& operator=(const DocNode& o);
+
         std::string str() const noexcept;
 
         const loader::DocNode getNode() const noexcept {
@@ -74,7 +76,7 @@ namespace loader {
         void createIfNeeded();
 
     private:
-        const std::string m_name;
+        std::string m_name;
         DocNodeType m_type{ DocNodeType::undefined };
         std::shared_ptr<DocNodeData> m_data;
     };

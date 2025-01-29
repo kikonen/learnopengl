@@ -35,6 +35,14 @@ namespace loader {
         : m_name{ name }
     {}
 
+    DocNode& DocNode::operator=(const DocNode& o)
+    {
+        m_name = o.m_name;
+        m_type = o.m_type;
+        m_data = o.m_data;
+        return *this;
+    }
+
     std::string DocNode::str() const noexcept {
         if (m_data) {
             return fmt::format("<name={}, value={}>", m_name, m_data->m_value);
@@ -56,6 +64,17 @@ namespace loader {
         const loader::DocNode& node)
     {
         createIfNeeded();
+
+        // NOTE KI for map latest entry in scanned document
+        // MUST override old value
+        for (int i = 0; i < m_data->m_nodes.size(); i++) {
+            loader::DocNode& old = m_data->m_nodes[i];
+            if (old.m_name == node.m_name) {
+                old = node;
+                return;
+            }
+        }
+
         m_data->m_nodes.push_back(node);
     }
 
