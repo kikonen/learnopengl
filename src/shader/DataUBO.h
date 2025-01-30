@@ -40,6 +40,7 @@ struct DataUBO {
     int u_environmentMapExist; // bool as 4 bytes
 
     int u_shadowVisual; // bool as 4 bytes
+    int u_forceLineMode; // bool as 4 bytes
 
     float u_fogStart;
     float u_fogEnd;

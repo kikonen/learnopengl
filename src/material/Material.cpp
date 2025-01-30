@@ -384,6 +384,21 @@ std::string Material::resolveTexturePath(
     return texturePath;
 }
 
+// @param compressed use compressed if possible
+void Material::addTexture(
+    TextureType type,
+    const std::string& path,
+    bool compressed) noexcept
+{
+    if (path.empty()) {
+        m_texturePaths.erase(type);
+        KI_INFO_OUT(fmt::format("TEX_CLEAR: type={}, path={}", util::as_integer(type), path));
+    }
+    else {
+        m_texturePaths[type] = { path, compressed };
+    }
+}
+
 void Material::prepare()
 {
     ASSERT_RT();
@@ -411,7 +426,7 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : mrao,
+        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : glm::vec4{ mrao, 0.f},
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),

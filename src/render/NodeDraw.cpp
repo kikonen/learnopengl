@@ -374,6 +374,8 @@ namespace render {
 
         // pass 6 - skybox (*before* blend)
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
+        state.polygonFrontAndBack(GL_FILL);
+
         drawSkybox(ctx);
     }
 

@@ -4,7 +4,7 @@ struct Material {
   vec4 emission;
 
   // MRAO: [metalness, roughness, ambient-occlusion]
-  vec3 mrao;
+  vec4 mrao;
 
   uvec2 diffuseTex;
   uvec2 emissionTex;

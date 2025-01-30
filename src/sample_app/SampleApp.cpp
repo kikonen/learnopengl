@@ -106,11 +106,15 @@ int SampleApp::onInit()
         dbg.m_frustumEnabled = assets.frustumEnabled;
         dbg.m_forceLineMode = assets.forceLineMode;
         dbg.m_showNormals = assets.showNormals;
+        dbg.m_shadowVisual = assets.shadowVisual;
+
+        dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
 
         dbg.m_showVolume = assets.showVolume;
         dbg.m_showSelectionVolume = assets.showSelectionVolume;
         dbg.m_showEnvironmentProbe = assets.showEnvironmentProbe;
 
+        dbg.m_physicsUpdateEnabled = assets.physicsUpdateEnabled;
         dbg.m_physicsShowObjects = assets.physicsShowObjects;
 
         dbg.m_physics_dContactMu2 = assets.physics_dContactMu2;
@@ -154,6 +158,11 @@ int SampleApp::onInit()
         dbg.m_effectOitEnabled = assets.effectOitEnabled;
         dbg.m_effectEmissionEnabled = assets.effectEmissionEnabled;
         dbg.m_effectFogEnabled = assets.effectFogEnabled;
+
+        dbg.m_fogColor = assets.fogColor;
+        dbg.m_fogStart = assets.fogStart;
+        dbg.m_fogEnd = assets.fogEnd;
+        dbg.m_fogDensity = assets.fogDensity;
 
         dbg.m_hdrGamma = assets.hdrGamma;
         dbg.m_hdrExposure = assets.hdrExposure;

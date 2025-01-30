@@ -34,6 +34,7 @@ nodes:
     prefab:
       path: prefab/props/prefab_door_01.yml
     pos: [10, 5, -10]
+    rotation: [0, 90, 0]
     scale: 2
     repeat:
       z_count: 10

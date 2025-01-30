@@ -194,7 +194,7 @@ RenderContext::RenderContext(
         //0,
         mainCamera->getViewRight(),
         //0,
-        assets.fogColor,
+        dbg->m_fogColor,
         // NOTE KI keep original screen resolution across the board
         // => current buffer resolution is separately in bufferInfo UBO
         //m_parent ? m_parent->m_resolution : m_resolution,
@@ -202,16 +202,17 @@ RenderContext::RenderContext(
         m_camera->getNearPlane(),
         m_camera->getFarPlane(),
 
-        assets.cubeMapEnabled,
+        dbg->m_cubeMapEnabled,
         assets.skyboxEnabled,
 
         assets.environmentMapEnabled,
 
-        assets.shadowVisual,
+        dbg->m_shadowVisual,
+        dbg->m_forceLineMode,
 
-        assets.fogStart,
-        assets.fogEnd,
-        assets.fogDensity,
+        dbg->m_fogStart,
+        dbg->m_fogEnd,
+        dbg->m_fogDensity,
 
         dbg->m_hdrGamma,
         dbg->m_hdrExposure,

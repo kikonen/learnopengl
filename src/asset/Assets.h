@@ -183,6 +183,8 @@ public:
     bool animationOnceOnly;
     int animationMaxCount;
 
+    bool physicsEnabled;
+    bool physicsUpdateEnabled;
     float physicsInitialDelay;
     bool physicsShowObjects;
 

@@ -76,6 +76,8 @@ void main() {
   #include var_tex_coord.glsl
   #include var_tex_material.glsl
 
+  // NOTE KI alpha/blend does not co-op with line mode
+  if (!u_forceLineMode) {
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
   if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD) {
@@ -86,6 +88,7 @@ void main() {
     discard;
 #endif
 #endif
+  }
 
   #include var_tex_material_normal.glsl
 
@@ -128,10 +131,13 @@ void main() {
 
   float mixVal = smoothstep(lineWidth - 1, lineWidth + 1, d);
   color.rgb = mix(lineColor.rgb, saveColor.rgb, mixVal);
+
+  if (!u_forceLineMode) {
 #ifdef USE_ALPHA
   if (Debug.u_wireframeOnly && mixVal > 0.9) discard;
   // color.rgb = saveColor.rgb;
 #endif
+  }
 #endif
 
   // if (!gl_FrontFacing) {

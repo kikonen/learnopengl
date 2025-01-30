@@ -342,10 +342,8 @@ nodes:
       path: quad
       material:
         name: brickwall
+        prefab: materials/brickwall_1024
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
-        map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
@@ -361,10 +359,8 @@ nodes:
       path: quad
       material:
         name: brickwall
+        prefab: materials/brickwall_1024
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
-        map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
@@ -1210,10 +1206,8 @@ nodes:
       path: quad
       material:
         name: brickwall
+        prefab: materials/brickwall_1024
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
-        map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
@@ -1225,10 +1219,8 @@ nodes:
       path: quad
       material:
         name: brickwall
+        prefab: materials/brickwall_1024
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
-        map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
@@ -1243,10 +1235,8 @@ nodes:
       path: quad
       material:
         name: brickwall
+        prefab: materials/brickwall_1024
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
-        map_displacement: textures/brickwall_1024_height.jpg
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true

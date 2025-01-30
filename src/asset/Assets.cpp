@@ -189,6 +189,8 @@ Assets::Assets()
     animationOnceOnly = false;
     animationMaxCount = 1000;
 
+    physicsEnabled = true;
+    physicsUpdateEnabled = true;
     physicsInitialDelay = 3.f;
     physicsShowObjects = false;
 

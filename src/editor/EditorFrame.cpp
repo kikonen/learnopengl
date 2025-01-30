@@ -544,7 +544,6 @@ namespace editor {
                 ImGui::Spacing();
                 ImGui::Separator();
 
-                ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
                 ImGui::Checkbox("Show normals", &dbg.m_showNormals);
                 ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
             }
@@ -850,6 +849,7 @@ namespace editor {
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
+        ImGui::Checkbox("Physics update enabled", &dbg.m_physicsUpdateEnabled);
         ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects);
 
         //ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects)
@@ -887,8 +887,27 @@ namespace editor {
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
             ImGui::Checkbox("Emission enabled", &dbg.m_effectEmissionEnabled);
-            ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
             ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Fog");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
+            ImGui::ColorEdit3("Fog color", glm::value_ptr(dbg.m_fogColor));
+            ImGui::InputFloat("Fog start", &dbg.m_fogStart, 0.01f, 0.1f);
+            ImGui::InputFloat("Fog end", &dbg.m_fogEnd, 0.01f, 0.1f);
+            ImGui::InputFloat("Fog density", &dbg.m_fogDensity, 0.01f, 0.1f);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Cube map");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Cube map enabled", &dbg.m_cubeMapEnabled);
         }
 
         {
@@ -1016,6 +1035,9 @@ namespace editor {
 
             ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
             ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
+
+            ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);
+            ImGui::Checkbox("Shadow visual", &dbg.m_shadowVisual);
         }
     }
 }

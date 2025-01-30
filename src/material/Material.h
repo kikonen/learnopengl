@@ -131,15 +131,7 @@ public:
     void addTexture(
         TextureType type,
         const std::string& path,
-        bool compressed) noexcept
-    {
-        if (path.empty()) {
-            m_texturePaths.erase(type);
-        }
-        else {
-            m_texturePaths[type] = { path, compressed };
-        }
-    }
+        bool compressed) noexcept;
 
     bool hasRegisteredTex(TextureType type) const noexcept
     {

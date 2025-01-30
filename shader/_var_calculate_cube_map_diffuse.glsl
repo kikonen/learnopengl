@@ -1,7 +1,7 @@
 #ifdef USE_CUBE_MAP
 {
   float diffuseRatio = 1.0 - material.reflection - material.refraction;
-  if (u_cubeMapExist && diffuseRatio < 1.0) {
+  if (u_cubeMapEnabled && diffuseRatio < 1.0) {
     vec3 diffuse = material.diffuse.rgb * diffuseRatio;
 
     if (material.reflection > 0) {

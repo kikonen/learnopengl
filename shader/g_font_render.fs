@@ -75,6 +75,8 @@ void main()
   vec4 color;
   shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
 
+  // NOTE KI alpha/blend does not co-op with line mode
+  if (!u_forceLineMode) {
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
   if (color.a < OIT_MAX_BLEND_THRESHOLD)
@@ -84,6 +86,7 @@ void main()
     discard;
 #endif
 #endif
+  }
 
   o_fragColor = color.rgb;
   o_fragMRAO = material.mrao;

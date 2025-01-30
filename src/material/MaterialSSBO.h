@@ -28,7 +28,7 @@ struct MaterialSSBO {
     glm::vec4 u_emission; // 16
 
     // MRAO: [metalness, roughness, ambient-occlusion]
-    glm::vec3 u_mrao; // 16
+    glm::vec4 u_mrao; // 16
 
     // NOTE KI "tex index", not "unit index"
     GLuint64 u_diffuseTex;

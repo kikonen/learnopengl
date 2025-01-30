@@ -262,6 +262,8 @@ namespace physics
         m_elapsedTotal += ctx.m_clock.elapsedSecs;
         if (m_elapsedTotal < m_initialDelay) return;
 
+        auto& dbg = render::DebugContext::modify();
+
         std::lock_guard lock{ m_lock };
 
         auto& nodeRegistry = NodeRegistry::get();
@@ -281,17 +283,20 @@ namespace physics
             m_invokeCount++;
             m_stepCount += steps;
 
-            for (int i = 0; i < steps; i++) {
-                if (!*m_alive) return;
+            if (dbg.m_physicsUpdateEnabled)
+            {
+                for (int i = 0; i < steps; i++) {
+                    if (!*m_alive) return;
 
-                dSpaceCollide(m_spaceId, this, &collisionCallback);
-                dWorldQuickStep(m_worldId, STEP_SIZE);
-                dJointGroupEmpty(m_contactgroupId);
-            }
+                    dSpaceCollide(m_spaceId, this, &collisionCallback);
+                    dWorldQuickStep(m_worldId, STEP_SIZE);
+                    dJointGroupEmpty(m_contactgroupId);
+                }
 
-            for (int i = 0; i < m_objects.size(); i++) {
-                auto& obj = m_objects[i];
-                obj.updateFromPhysics(m_entityIndeces[i], nodeRegistry);
+                for (int i = 0; i < m_objects.size(); i++) {
+                    auto& obj = m_objects[i];
+                    obj.updateFromPhysics(m_entityIndeces[i], nodeRegistry);
+                }
             }
 
             generateObjectMeshes();

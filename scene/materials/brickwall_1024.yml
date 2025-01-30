@@ -1,0 +1,9 @@
+---
+material:
+  name: brickwall_1024
+  base: textures/brickwall_1024
+  map_kd: brickwall_1024_color.png
+  map_normal: brickwall_1024_normal.png
+  map_mrao: brickwall_1024_mrao
+  map_displacement: brickwall_1024_displacement
+  default_programs: true

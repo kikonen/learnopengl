@@ -35,6 +35,9 @@ namespace render {
         bool m_nodeDebugEnabled{ false };
         bool m_forceLineMode{ false };
         bool m_showNormals{ false };
+        bool m_shadowVisual{ false };
+
+        bool m_cubeMapEnabled{ true };
 
         glm::vec3 m_selectionAxis{ 0.f };
 
@@ -76,6 +79,11 @@ namespace render {
         bool m_effectEmissionEnabled{ true };
         bool m_effectFogEnabled{ true };
 
+        glm::vec4 m_fogColor;
+        float m_fogStart;
+        float m_fogEnd;
+        float m_fogDensity;
+
         float m_hdrGamma{ 2.2f };
         float m_hdrExposure{ 1.f };
 
@@ -94,6 +102,7 @@ namespace render {
         bool m_showSelectionVolume{ false };
         bool m_showEnvironmentProbe{ false };
 
+        bool m_physicsUpdateEnabled{ true };
         bool m_physicsShowObjects{ false };
 
         bool m_physics_dContactMu2{ false };

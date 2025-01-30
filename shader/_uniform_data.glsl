@@ -14,12 +14,16 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_nearPlane;
   float u_farPlane;
 
-  bool u_cubeMapExist;
+  bool u_cubeMapEnabled;
+
+  // TODO KI NOT USED
   bool u_skyboxExist;
 
+  // TODO KI NOT USED
   bool u_environmentMapExist;
 
   bool u_shadowVisual;
+  bool u_forceLineMode;
 
   float u_fogStart;
   float u_fogEnd;

@@ -101,6 +101,8 @@ void ViewportRenderer::render(
     ctx.m_forceLineMode = false;
     ctx.bindDefaults();
 
+    state.polygonFrontAndBack(GL_FILL);
+
     {
         m_buffer->bind(ctx);
         m_buffer->clear(
