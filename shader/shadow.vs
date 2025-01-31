@@ -5,6 +5,8 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
+#include struct_material.glsl
+
 #include tech_skinned_mesh_data.glsl
 
 #include struct_entity.glsl
@@ -13,6 +15,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
@@ -72,5 +75,9 @@ void main()
 
   vs_out.materialIndex = materialIndex;
   vs_out.texCoord = a_texCoord;
+
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX + 10;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY + 10;
+
 #endif
 }
