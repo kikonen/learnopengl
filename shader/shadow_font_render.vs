@@ -1,21 +1,29 @@
 #version 460 core
 
+layout (location = ATTR_POS) in vec3 a_pos;
+layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
+layout (location = ATTR_TEX) in vec2 a_texCoord;
+
+#include struct_material.glsl
+
 #include struct_entity.glsl
 #include struct_instance.glsl
 
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
-layout (location = ATTR_POS) in vec3 a_pos;
-layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
-
 out VS_OUT {
+  vec2 texCoord;
+
   vec2 atlasCoord;
   flat uvec2 atlasHandle;
+
+  flat uint materialIndex;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -37,6 +45,8 @@ void main()
 
   #include var_entity_model_matrix.glsl
 
+  const uint materialIndex = instance.u_materialIndex;
+
   vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
 
@@ -53,6 +63,11 @@ void main()
   } else {
     worldPos = modelMatrix * pos;
   }
+
+  vs_out.materialIndex = materialIndex;
+
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;
