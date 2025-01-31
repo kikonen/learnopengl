@@ -188,6 +188,10 @@ class Converter < Thor
     ALPHA => Magick::AlphaChannel,
   }.freeze
 
+  # MRAO: [metalness, roughness, ambient-occlusion, opacity]
+  MODE_MRAO = :mrao
+  MODE_DISPLACEMENT = :displacement
+
   COMBINE_VERSION = 1
   KTX_VERSION = 1
 
@@ -799,17 +803,20 @@ class Converter < Thor
           }
         when :opacity
           tex_info = {
+            group: 'default',
             type: :opacity,
-            action: :encode,
+            action: :combine,
+            mode: MODE_MRAO,
+            target_name: MRAO_MAP,
             source_channel: RED,
-            target_channel: RED,
+            target_channel: ALPHA,
           }
         when :metal
           tex_info = {
             group: 'default',
             type: :metalness,
             action: :combine,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
             target_channel: RED,
@@ -819,7 +826,7 @@ class Converter < Thor
             group: 'default',
             type: :roughness,
             action: :combine,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
             target_channel: GREEN,
@@ -829,7 +836,7 @@ class Converter < Thor
             group: 'default',
             type: :occlusion,
             action: :combine,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
             target_channel: BLUE,
@@ -839,7 +846,7 @@ class Converter < Thor
             group: 'default',
             type: :metal_roughness,
             action: :skip,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN,
             target_channel: RED_GREEN,
@@ -849,7 +856,7 @@ class Converter < Thor
             group: 'default',
             type: :metal_roughness_occlusion,
             action: :skip,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: RED_GREEN_BLUE,
@@ -859,7 +866,7 @@ class Converter < Thor
             group: 'default',
             type: :roughness_metal_occlusion,
             action: :skip,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: GREEN_RED_BLUE,
@@ -869,7 +876,7 @@ class Converter < Thor
             group: 'default',
             type: :roughness_occlusion_metal,
             action: :skip,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: GREEN_BLUE_RED,
@@ -879,7 +886,7 @@ class Converter < Thor
             group: 'default',
             type: :occlusion_roughness_metal,
             action: :skip,
-            mode: :mrao,
+            mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: BLUE_GREEN_RED,
@@ -889,7 +896,7 @@ class Converter < Thor
             group: 'default',
             type: :displacement,
             action: :combine,
-            mode: :displacement,
+            mode: MODE_DISPLACEMENT,
             target_name: DISPLACEMENT_MAP,
             source_channel: RED,
             target_channel: RED,
@@ -1165,7 +1172,7 @@ class Converter < Thor
     group = parts.first.group
 
     case target_mode
-    when :mrao
+    when MODE_MRAO
       create_mrao_texture(
         src_dir,
         dst_dir,
@@ -1173,7 +1180,7 @@ class Converter < Thor
         target_name,
         parts
       )
-    when :displacement
+    when MODE_DISPLACEMENT
       create_displacement_texture(
         src_dir,
         dst_dir,
@@ -1280,12 +1287,14 @@ class Converter < Thor
       Magick::RedChannel => nil,
       Magick::GreenChannel => nil,
       Magick::BlueChannel => nil,
+      Magick::AlphaChannel => nil,
     }
 
     target_placeholders = {
       Magick::RedChannel => black,
       Magick::GreenChannel => white,
       Magick::BlueChannel => white,
+      Magick::AlphaChannel => white,
     }
 
     #debugger
@@ -1303,36 +1312,42 @@ class Converter < Thor
       # https://imagemagick.org/script/command-line-options.php#separate
       # NOTE KI *NOT* supporting non power-of-2 images
       # => should be resonable restriction
-      src_img = Magick::Image.read(src_path)
+      channel_img = Magick::Image.read(src_path)
         .first
 
-      src_img = src_img
+      channel_img = channel_img
         .separate(src_channel)[0]
         .set_channel_depth(Magick::AllChannels, target_depth)
-      src_img = scale_image(src_img, target_size)
+      channel_img = scale_image(channel_img, target_size)
 
       target_channels[dst_channel] = {
-        image: src_img,
+        image: channel_img,
         channel: src_channel,
       }
     end
 
     img_list = Magick::ImageList.new
+    alpha_img = nil
 
     #debugger
 
     target_channels.each do |dst_channel, image_info|
-      src_img = target_placeholders[dst_channel]
+      channel_img = target_placeholders[dst_channel]
       src_channel = nil
 
       if image_info
-        src_img = image_info[:image]
+        channel_img = image_info[:image]
         src_channel = image_info[:channel]
       end
 
-      puts "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{src_img.inspect}"
+      puts "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
 
-      img_list << src_img
+      if dst_channel == Magick::AlphaChannel
+        alpha_img = channel_img
+        next
+      end
+
+      img_list << channel_img
     end
 
     # NOTE KI workaround segmentation fault, which happens
@@ -1343,6 +1358,16 @@ class Converter < Thor
 
     # https://imagemagick.org/script/command-line-options.php#combine
     dst_img = img_list.combine(Magick::RGBColorspace)
+
+    if alpha_img
+      dst_img.alpha(Magick::SetAlphaChannel)
+      dst_img
+        .composite_channel!(
+          alpha_img,
+          0, 0,
+          Magick::CopyAlphaCompositeOp,
+          Magick::AlphaChannel)
+    end
 
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
@@ -1550,7 +1575,8 @@ class Converter < Thor
       dst_img.alpha(Magick::SetAlphaChannel)
       dst_img
         .composite_channel!(
-          src_img, 0, 0,
+          src_img,
+          0, 0,
           Magick::CopyAlphaCompositeOp,
           Magick::AlphaChannel)
     end

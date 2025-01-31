@@ -120,6 +120,24 @@ ImageTexture::~ImageTexture()
 {
 }
 
+std::string ImageTexture::str() const noexcept
+{
+    return fmt::format(
+        "<IMG: {} {}bit {}ch {}x{} {} ({}), [{}, {}], [{}, {}]>",
+        m_name,
+        m_is16Bbit ? "16" : "8",
+        m_channels,
+        m_width,
+        m_height,
+        kigl::formatEnum(m_internalFormat),
+        kigl::formatEnum(m_format),
+        kigl::formatEnum(m_spec.wrapS),
+        kigl::formatEnum(m_spec.wrapT),
+        kigl::formatEnum(m_spec.minFilter),
+        kigl::formatEnum(m_spec.magFilter)
+        );
+}
+
 void ImageTexture::prepare()
 {
     if (m_prepared) return;
@@ -189,7 +207,9 @@ void ImageTexture::prepareNormal()
         }
     }
     else {
-        KI_WARN(fmt::format("IMAGE: unsupported channels {}", m_image->m_channels));
+        KI_WARN(fmt::format(
+            "IMAGE: unsupported channels {}, image={}",
+            m_image->m_channels, str()));
         m_valid = false;
         m_image.reset();
         return;
@@ -229,7 +249,11 @@ void ImageTexture::prepareNormal()
 
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-        KI_INFO_OUT(fmt::format("TEX_UPLOAD: path={}, compressed={}", m_image->m_path, compFlag));
+        KI_INFO_OUT(fmt::format(
+            "TEX_UPLOAD: {}, compressed={}\n{}",
+            m_path,
+            compFlag,
+            str()));
 
         m_handle = glGetTextureHandleARB(m_textureID);
         glMakeTextureHandleResidentARB(m_handle);
@@ -275,7 +299,11 @@ void ImageTexture::prepareKtx()
 
     GLint compFlag;
     glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO_OUT(fmt::format("TEX_UPLOAD: path={}, compressed={}", m_image->m_path, compFlag));
+    KI_INFO_OUT(fmt::format(
+        "TEX_UPLOAD: path={}, compressed={}\n{}",
+        m_image->m_path,
+        compFlag,
+        str()));
 
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);
@@ -292,6 +320,12 @@ void ImageTexture::load() {
         m_image.reset();
         return;
     }
+
+    m_is16Bbit = m_image->m_is16Bbit;
+    m_width = m_image->m_width;
+    m_height = m_image->m_height;
+    m_channels = m_image->m_channels;
+    m_is16Bbit = m_image->m_is16Bbit;
 
     m_valid = true;
 }

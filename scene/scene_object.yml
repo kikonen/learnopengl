@@ -42,7 +42,7 @@ nodes:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - id: object_{c}_{t}
+  - xid: object_{c}_{t}
     xprefab:
       #path: prefab/characters/prefab_scavenger.yml
       #path: prefab/props/prefab_backpack.yml
@@ -72,3 +72,26 @@ nodes:
     xclones:
       - pos: [0.0, 1.0, 0.0]
       - pos: [0.5, 2.0, 0.0]
+  - id: fence
+    mesh:
+      vertex:
+        type: quad
+      material:
+        prefab: materials/Fence007A.yml
+        kd: [1.800000, 1.800000, 1.800000, 1.0]
+        xparallax_depth: 0.0
+        tiling: 2
+        xalpha: true
+        xblend: true
+        render_back: true
+        program: g_tex
+    #rotation: [0, -90, 0]
+    pos: [0, 1, 0]
+    scale: 2
+    physics:
+      body:
+        type: box
+        kinematic: true
+      geom:
+        type: box
+        size: [0.5, 0.5, 0.0001]

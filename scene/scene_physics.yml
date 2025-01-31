@@ -329,7 +329,7 @@ nodes:
       geom:
         type: box
         size: [1]
-  - name: Fence
+  - id: fence
     mesh:
       vertex:
         type: quad

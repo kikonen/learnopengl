@@ -3,21 +3,23 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // MRAO: [metalness, roughness, ambient-occlusion]
+  // MRAO: [metalness, roughness, ambient-occlusion, opacity]
   vec4 mrao;
 
   uvec2 diffuseTex;
   uvec2 emissionTex;
   uvec2 normalMapTex;
 
+  // uvec2 opacityMapTex;
+  // MRAO: [metalness, roughness, ambient-occlusion, opacity]
+  uvec2 mraoMapTex;
+  uvec2 displacementMapTex;
+
   uvec2 dudvMapTex;
   uvec2 noiseMapTex;
   uvec2 noise2MapTex;
-  uvec2 opacityMapTex;
-  uvec2 custom1Tex;
 
-  uvec2 mraoMapTex;
-  uvec2 displacementMapTex;
+  uvec2 custom1Tex;
 
   int pattern;
 
@@ -35,4 +37,7 @@ struct Material {
   int layers;
   float layersDepth;
   float parallaxDepth;
+
+  int pad1;
+  int pad2;
 };

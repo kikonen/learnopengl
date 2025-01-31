@@ -27,6 +27,8 @@ public:
 
     virtual ~ImageTexture();
 
+    virtual std::string str() const noexcept override;
+
     void prepare() override;
 
     void prepareNormal();
@@ -44,7 +46,12 @@ public:
 
     bool m_hdri{ false };
 
+    int m_width{ 0 };
+    int m_height{ 0 };
+    int m_channels{ 0 };
+    bool m_is16Bbit{ false };
+
 private:
-    bool m_valid = false;
+    bool m_valid{ false };
 };
 

@@ -89,7 +89,7 @@ void main()
   {
     material.diffuse = textureLod(g_albedo, texCoord, 0);
     material.diffuse.a = 1.0;
-    material.mrao = textureLod(g_mrao, texCoord, 0).rgb;
+    material.mra = textureLod(g_mra, texCoord, 0).rgb;
   }
 
   vec4 color;

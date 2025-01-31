@@ -66,7 +66,7 @@ void main() {
   clamp_color(color);
 
   o_fragColor = color.rgb;
-  o_fragMRAO = material.mrao;
+  o_fragMRA = material.mra;
   o_fragEmission = material.emission;
 
   //o_fragPosition = fs_in.worldPos;

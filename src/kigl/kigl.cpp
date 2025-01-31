@@ -217,4 +217,77 @@ namespace kigl {
         }
         return result;
     }
+
+    std::string formatEnum(GLenum value)
+    {
+        switch (value) {
+        // TextureSpec
+        case GL_REPEAT:
+            return "REPEAT";
+        case GL_CLAMP_TO_EDGE:
+            return "CLAMP_TO_EDGE";
+        case GL_CLAMP_TO_BORDER:
+            return "CLAMP_TO_BORDER";
+        case GL_MIRRORED_REPEAT:
+            return "MIRRORED_REPEAT";
+
+        // min/mag Filter
+        case GL_LINEAR:
+            return "LINEAR";
+        case GL_NEAREST:
+            return "NEAREST";
+        case GL_LINEAR_MIPMAP_NEAREST:
+            return "LINEAR_MIPMAP_NEAREST";
+        case GL_LINEAR_MIPMAP_LINEAR:
+            return "LINEAR_MIPMAP_LINEAR";
+        case GL_NEAREST_MIPMAP_NEAREST:
+            return "NEAREST_MIPMAP_NEAREST";
+        case GL_NEAREST_MIPMAP_LINEAR:
+            return "NEAREST_MIPMAP_LINEAR";
+
+        // COLOR
+        case GL_R8:
+            return "R8";
+        case GL_R16:
+            return "GL_R16";
+        case GL_RG8:
+            return "RG8";
+        case GL_RG16:
+            return "RG16";
+        case GL_RGB8:
+            return "RGB8";
+        case GL_RGB16:
+            return "RGB16";
+        case GL_RGBA8:
+            return "RGBA8";
+        case GL_RGBA16:
+            return "RGBA16";
+        case GL_SRGB8:
+            return "SRGB8";
+        case GL_SRGB8_ALPHA8:
+            return "SRGBA8";
+        case GL_RGB16F:
+            return "RGB16F";
+        case GL_RGBA16F:
+            return "RGBA16F";
+        case GL_TEXTURE_SWIZZLE_RGBA:
+            return "SWIZZLE_RGBA";
+        case GL_RED:
+            return "RED";
+        case GL_GREEN:
+            return "GREEN";
+        case GL_BLUE:
+            return "BLUE";
+        case GL_ALPHA:
+            return "ALPHA";
+        case GL_RG:
+            return "RG";
+        case GL_RGB:
+            return "RGB";
+        case GL_RGBA:
+            return "RGBA";
+        }
+
+        return fmt::format("0x{:x}", value);
+    }
 }

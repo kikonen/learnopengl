@@ -6,10 +6,14 @@
 {
   const uint i = materialIndex;
 
-  material.diffuse = u_materials[i].diffuse *
-    texture(sampler2D(u_materials[i].diffuseTex), texCoord);
+  vec4 mrao = u_materials[i].mrao.rgba *
+    texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgba;
 
-  material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
+  material.diffuse = u_materials[i].diffuse *
+    texture(sampler2D(u_materials[i].diffuseTex), texCoord) *
+    mrao.a;
+
+  // material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
 
   // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
   // thus (0, 0, 0) == (r, g, b, 0)
@@ -20,8 +24,7 @@
   material.emission = u_materials[i].emission.rgb *
     emission.rgb * emission.a;
 
-  material.mrao = u_materials[i].mrao.rgb *
-    texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgb;
+  material.mra = mrao.rgb;
 
   material.reflection = u_materials[i].reflection;
   material.refraction = u_materials[i].refraction;

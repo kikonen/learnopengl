@@ -176,4 +176,6 @@ namespace kigl {
     {
         glObjectLabel(target, id, (GLsizei)name.length(), name.data());
     }
+
+    std::string formatEnum(GLenum value);
 }

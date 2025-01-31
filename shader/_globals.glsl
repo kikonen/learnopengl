@@ -97,7 +97,7 @@
 //#define UNIT_G_SPECULAR 51
 #define UNIT_G_EMISSION 52
 //#define UNIT_G_POSITION 53
-#define UNIT_G_MRAO 53
+#define UNIT_G_MRA 53
 #define UNIT_G_NORMAL 54
 #define UNIT_G_DEPTH 55
 #define UNIT_G_VIEW_Z 51
@@ -152,8 +152,11 @@
 #define OIT_MAX_BLEND_THRESHOLD 0.995
 #define OIT_MIN_BLEND_THRESHOLD 0.001
 
-#define ALPHA_THRESHOLD 0.01
-#define GBUFFER_ALPHA_THRESHOLD 0.01
+// TODO KI alpha threshold was adjusted really low (0.01) due to decals seemingly
+// => conflicts with other cases (like Fence007 opacity_map)
+// => earlier was 0.05 (ccaeb4feea8c49fe48ede73e87987753846ff8a5)
+#define ALPHA_THRESHOLD 0.2
+#define GBUFFER_ALPHA_THRESHOLD 0.2
 
 //#define SET_FLOAT_PRECISION
 #define SET_FLOAT_PRECISION precision mediump float;
@@ -169,7 +172,7 @@
  layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
- layout (location = 3) out vec3 o_fragMRAO;\
+ layout (location = 3) out vec3 o_fragMRA;\
  layout (location = 4) out float o_fragViewZ;
 // layout (location = 1) out vec4 o_fragSpecular;\
 // layout (location = 3) out vec3 o_fragPosition;\
@@ -179,7 +182,7 @@
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
  layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
- layout(binding = UNIT_G_MRAO) uniform sampler2D g_mrao;
+ layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;
 // layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
 // layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;\

@@ -192,8 +192,8 @@ public:
     glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
     glm::vec4 ke { 0.f };
 
-    // MRAO: [metalness, roughness, ambient-occlusion]
-    glm::vec3 mrao{ 0.f, 1.f, 1.f };
+    // MRAO: [metalness, roughness, ambient-occlusion, opacity]
+    glm::vec4 mrao{ 0.f, 1.f, 1.f, 1.f };
 
     //// A material can also have an optical density for its surface. This is also known as index of refraction.
     //float ni = 0.0f;

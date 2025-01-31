@@ -61,7 +61,7 @@ void main() {
   texColor *= vec4(1.0, 1.0, 1.0, t);
 
   o_fragColor = texColor.rgb;
-  o_fragMRAO = material.mrao;
+  o_fragMRA = material.mra;
   o_fragEmission = material.emission;
 
   //o_fragPosition = fs_in.worldPos;

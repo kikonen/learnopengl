@@ -426,20 +426,22 @@ const MaterialSSBO Material::toSSBO() const
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : glm::vec4{ mrao, 0.f},
+        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : mrao,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
 
         getTexHandle(TextureType::map_normal, 0),
+
+        //getTexHandle(TextureType::map_opacity, whitePx),
+        getTexHandle(TextureType::map_mrao, whitePx),
+        getTexHandle(TextureType::map_displacement, blackPx),
+
         getTexHandle(TextureType::map_dudv, 0),
         getTexHandle(TextureType::map_noise, 0),
         getTexHandle(TextureType::map_noise_2, 0),
 
-        getTexHandle(TextureType::map_opacity, whitePx),
         getTexHandle(TextureType::map_custom_1, 0),
-        getTexHandle(TextureType::map_mrao, whitePx),
-        getTexHandle(TextureType::map_displacement, blackPx),
 
         pattern,
 

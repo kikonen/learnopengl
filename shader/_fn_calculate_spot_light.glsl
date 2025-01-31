@@ -65,8 +65,8 @@ vec3 calculateSpotLightPbr(
   const vec3 V = viewDir;
 
   const vec3 albedo = material.diffuse.rgb;
-  const float metallic = material.mrao.r;
-  const float roughness = 1.0 - material.mrao.g;
+  const float metallic = material.mra.r;
+  const float roughness = 1.0 - material.mra.g;
 
   // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
   // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)

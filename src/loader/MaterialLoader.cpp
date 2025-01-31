@@ -210,13 +210,13 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_opacity") {
-                std::string line = readString(v);
-                material.addTexture(
-                    TextureType::map_opacity,
-                    line,
-                    true);
-            }
+            //else if (k == "map_opacity") {
+            //    std::string line = readString(v);
+            //    material.addTexture(
+            //        TextureType::map_opacity,
+            //        line,
+            //        true);
+            //}
             else if (k == "map_custom_1") {
                 std::string line = readString(v);
                 material.addTexture(
@@ -232,7 +232,8 @@ namespace loader {
                     true);
             }
             else if (k == "mrao") {
-                material.mrao = readVec3(v);
+                // NOTE KI specifying opacity othe than 1 does not make sense
+                material.mrao = glm::vec4(readVec3(v), 1.f);
                 fields.mrao = true;
             }
             else if (k == "pattern") {

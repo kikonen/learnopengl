@@ -2,8 +2,8 @@ struct ResolvedMaterial {
   vec4 diffuse;
   vec3 emission;
 
-  // MRAO: [metalness, roughness, ambient-occlusion]
-  vec3 mrao;
+  // MRA: [metalness, roughness, ambient-occlusion]
+  vec3 mra;
 
   float reflection;
   float refraction;

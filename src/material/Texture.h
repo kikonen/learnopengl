@@ -19,6 +19,8 @@ public:
 
     virtual ~Texture();
 
+    virtual std::string str() const noexcept;
+
     virtual void prepare() = 0;
 
 public:
