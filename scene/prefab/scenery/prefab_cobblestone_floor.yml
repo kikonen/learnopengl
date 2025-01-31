@@ -3,14 +3,8 @@ prefab:
   mesh:
     path: plane
     material:
-      base: textures/PavingStones115C_1K-PNG
-      map_kd: PavingStones115C_1K_Color.png
-      map_normal: PavingStones115C_1K_NormalGL.png
-      map_mrao: PavingStones115C_1K_mrao
-      map_displacement: PavingStones115C_1K_displacement
+      prefab: materials/PavingStones115C
       tiling: 60
-      parallax_depth: 0.025
-      program: g_tex
     flags:
       pre_depth: true
   flags:

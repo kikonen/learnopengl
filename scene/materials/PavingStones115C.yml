@@ -1,0 +1,10 @@
+---
+material:
+  name: PavingStones115C
+  base: textures/PavingStones115C_1K-PNG
+  map_kd: PavingStones115C_1K_Color.png
+  map_normal: PavingStones115C_1K_NormalGL.png
+  map_mrao: PavingStones115C_1K_mrao
+  map_displacement: PavingStones115C_1K_displacement
+  parallax_depth: 0.04
+  default_programs: true
