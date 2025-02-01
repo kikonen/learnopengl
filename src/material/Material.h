@@ -165,6 +165,7 @@ public:
 private:
     void loadTexture(
         TextureType type,
+        bool grayScale,
         bool gammaCorrect,
         bool flipY,
         bool usePlaceholder);

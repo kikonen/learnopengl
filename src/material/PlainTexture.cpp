@@ -7,11 +7,12 @@
 
 PlainTexture::PlainTexture(
     std::string_view name,
+    bool grayScale,
     bool gammaCorrect,
     const TextureSpec& spec,
     int width,
     int height)
-    : Texture(name, gammaCorrect, spec)
+    : Texture(name, grayScale, gammaCorrect, spec)
 {
     m_width = width;
     m_height = height;

@@ -261,24 +261,28 @@ void Material::loadTextures()
 
     for (const auto& it : m_texturePaths) {
         const auto type = it.first;
+        bool grayScale = false;
         bool gammaCorrect = false;
         bool flipY = true;
         bool usePlaceholder = false;
 
         if (type == TextureType::diffuse) {
+            grayScale = true;
             gammaCorrect = true;
             usePlaceholder = true;
         }
         else if (type == TextureType::emission) {
+            grayScale = true;
             gammaCorrect = true;
         }
 
-        loadTexture(type, gammaCorrect, flipY, usePlaceholder);
+        loadTexture(type, grayScale, gammaCorrect, flipY, usePlaceholder);
     }
 }
 
 void Material::loadTexture(
     TextureType type,
+    bool grayScale,
     bool gammaCorrect,
     bool flipY,
     bool usePlaceholder)
@@ -299,6 +303,7 @@ void Material::loadTexture(
     auto future = ImageTexture::getTexture(
         info.path,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        grayScale,
         gammaCorrect,
         flipY,
         textureSpec);
@@ -314,6 +319,7 @@ void Material::loadTexture(
         future = ImageTexture::getTexture(
             "tex-placeholder",
             placeholderPath,
+            true,
             gammaCorrect,
             flipY,
             textureSpec);

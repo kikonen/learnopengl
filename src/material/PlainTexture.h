@@ -7,6 +7,7 @@ class PlainTexture final : public Texture
 public:
     PlainTexture(
         std::string_view name,
+        bool grayScale,
         bool gammaCorrect,
         const TextureSpec& spec,
         int width,

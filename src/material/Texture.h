@@ -14,6 +14,7 @@ class Texture
 public:
     Texture(
         std::string_view name,
+        bool grayScale,
         bool gammaCorrect,
         const TextureSpec& spec);
 
@@ -25,6 +26,7 @@ public:
 
 public:
     const std::string m_name;
+    const bool m_grayScale : 1;
     const bool m_gammaCorrect : 1;
     const TextureSpec m_spec;
 

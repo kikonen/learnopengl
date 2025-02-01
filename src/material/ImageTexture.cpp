@@ -82,13 +82,17 @@ return f;
 std::shared_future<ImageTexture*> ImageTexture::getTexture(
     std::string_view name,
     std::string_view path,
+    bool grayScale,
     bool gammaCorrect,
     bool flipY,
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
         "{}_{}_{}-{}_{}-{}_{}_{}",
-        path, gammaCorrect, flipY,
+        path,
+        grayScale,
+        gammaCorrect,
+        flipY,
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -99,7 +103,8 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
             return e->second;
     }
 
-    auto future = startLoad(new ImageTexture(name, path, gammaCorrect, flipY, spec));
+    auto future = startLoad(
+        new ImageTexture(name, path, grayScale, gammaCorrect, flipY, spec));
     textures[cacheKey] = future;
     return future;
 }
@@ -107,10 +112,11 @@ std::shared_future<ImageTexture*> ImageTexture::getTexture(
 ImageTexture::ImageTexture(
     std::string_view name,
     std::string_view path,
+    bool grayScale,
     bool gammaCorrect,
     bool flipY,
     const TextureSpec& spec)
-    : Texture{ name, gammaCorrect, spec },
+    : Texture{ name, grayScale, gammaCorrect, spec },
     m_flipY{ flipY },
     m_path{ path }
 {
@@ -123,12 +129,13 @@ ImageTexture::~ImageTexture()
 std::string ImageTexture::str() const noexcept
 {
     return fmt::format(
-        "<IMG: {} {}bit {}ch {}x{} {} ({}), [{}, {}], [{}, {}]>",
+        "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}, {}], [{}, {}]>",
         m_name,
         m_is16Bbit ? "16" : "8",
         m_channels,
         m_width,
         m_height,
+        m_grayScale ? "GRAY " : "",
         kigl::formatEnum(m_internalFormat),
         kigl::formatEnum(m_format),
         kigl::formatEnum(m_spec.wrapS),
@@ -163,12 +170,12 @@ void ImageTexture::prepareNormal()
     if (m_image->m_channels == 1) {
         if (m_image->m_is16Bbit) {
             m_format = GL_RED;
-            m_internalFormat = GL_R16;
+            m_internalFormat = m_grayScale ? GL_RGB16 : GL_R16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RED;
-            m_internalFormat = GL_R8;
+            m_internalFormat = m_grayScale ? GL_RGB8 : GL_R8;
         }
         //m_specialTexture = true;
     }

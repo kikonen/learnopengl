@@ -133,6 +133,7 @@ namespace terrain {
                 texturePath,
                 texturePath,
                 false,
+                false,
                 true,
                 spec);
 
