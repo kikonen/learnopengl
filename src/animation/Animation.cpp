@@ -26,7 +26,18 @@ namespace animation {
 
     void Animation::bindJoint(uint16_t channelIndex, uint16_t jointIndex)
     {
-        mjointToChannel.insert({ jointIndex, channelIndex });
+        {
+            int oldSize = m_jointToChannel.size();
+            int newSize = std::max(static_cast<int>(m_jointToChannel.size()), jointIndex + 1);
+            if (newSize > oldSize) {
+                m_jointToChannel.resize(newSize);
+                for (int i = oldSize; i < newSize; i++) {
+                    m_jointToChannel[i] = -1;
+                }
+            }
+        }
+
+        m_jointToChannel[jointIndex] = channelIndex;
         m_channels[channelIndex].m_jointIndex = jointIndex;
     }
 

@@ -466,11 +466,11 @@ namespace editor {
                     for (auto& anim : clipContainer.m_animations) {
                         const auto* name = anim->m_name.c_str();
 
-                        const bool isSelected = m_state.m_selectedAnimationIndex == anim->m_index;
+                        const bool isSelected = m_state.m_selectedAnimationIndex == anim->getIndex();
 
-                        ImGui::PushID((void*)anim->m_index);
+                        ImGui::PushID((void*)anim->getIndex());
                         if (ImGui::Selectable(name, isSelected)) {
-                            m_state.m_selectedAnimationIndex = anim->m_index;
+                            m_state.m_selectedAnimationIndex = anim->getIndex();
                         }
                         ImGui::PopID();
 

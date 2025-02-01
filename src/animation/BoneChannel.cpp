@@ -87,23 +87,28 @@ namespace animation {
     }
 
     // @return interpolated transform matrix
-    animation::LocalTransform BoneChannel::interpolate(
+    void BoneChannel::interpolate(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame,
-        bool single) const noexcept
+        bool single,
+        animation::LocalTransform& transform) const noexcept
     {
-        animation::LocalTransform local;
-
         if (single) {
             firstFrame = 0;
         }
 
-        local.m_translate = interpolatePosition(animationTimeTicks, firstFrame, single ? m_positionKeyTimes.size() - 1 : lastFrame);
-        local.m_scale = interpolateScale(animationTimeTicks, firstFrame, single ? m_scaleKeyTimes.size() - 1 : lastFrame);
-        local.m_rotation = interpolateRotation(animationTimeTicks, firstFrame, single ? m_rotationKeyTimes.size() - 1 : lastFrame);
+        transform.m_translate = interpolatePosition(
+            animationTimeTicks, firstFrame,
+            single ? static_cast<uint16_t>(m_positionKeyTimes.size() - 1) : lastFrame);
 
-        return local;
+        transform.m_scale = interpolateScale(
+            animationTimeTicks, firstFrame,
+            single ? static_cast<uint16_t>(m_scaleKeyTimes.size() - 1) : lastFrame);
+
+        transform.m_rotation = interpolateRotation(
+            animationTimeTicks, firstFrame,
+            single ? static_cast<uint16_t>(m_rotationKeyTimes.size() - 1) : lastFrame);
     }
 
     glm::vec3 BoneChannel::interpolatePosition(
@@ -115,8 +120,8 @@ namespace animation {
             return m_positionKeyValues[0];
         }
 
-        uint16_t currIndex = findPosition(animationTimeTicks, firstFrame, lastFrame);
-        uint16_t nextIndex = currIndex  + 1;
+        const uint16_t currIndex = findPosition(animationTimeTicks, firstFrame, lastFrame);
+        const uint16_t nextIndex = currIndex  + 1;
 
         assert(nextIndex < m_positionKeyValues.size());
 
@@ -138,8 +143,8 @@ namespace animation {
             return m_rotationKeyValues[0];
         }
 
-        uint16_t currIndex = findRotation(animationTimeTicks, firstFrame, lastFrame);
-        uint16_t nextIndex = currIndex + 1;
+        const uint16_t currIndex = findRotation(animationTimeTicks, firstFrame, lastFrame);
+        const uint16_t nextIndex = currIndex + 1;
 
         assert(nextIndex < m_rotationKeyValues.size());
 
@@ -161,8 +166,8 @@ namespace animation {
             return m_scaleKeyValues[0];
         }
 
-        uint16_t currIndex = findScale(animationTimeTicks, firstFrame, lastFrame);
-        uint16_t nextIndex = currIndex + 1;
+        const uint16_t currIndex = findScale(animationTimeTicks, firstFrame, lastFrame);
+        const uint16_t nextIndex = currIndex + 1;
 
         assert(nextIndex < m_scaleKeyValues.size());
 
@@ -197,8 +202,8 @@ namespace animation {
 
         const auto& start = aValue;
         const auto& end = bValue;
+        const auto delta = end - start;
 
-        auto delta = end - start;
         return start + factor * delta;
     }
 

@@ -50,11 +50,12 @@ namespace animation {
         void addeScaleKey(const aiVectorKey& key);
 
         // @param firstFrame..lastFrame range used for clip
-        LocalTransform interpolate(
+        void interpolate(
             float animationTimeTicks,
             uint16_t firstFrame,
             uint16_t lastFrame,
-            bool single) const noexcept;
+            bool single,
+            animation::LocalTransform& local) const noexcept;
 
     private:
         glm::vec3 interpolatePosition(

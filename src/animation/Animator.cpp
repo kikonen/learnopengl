@@ -60,8 +60,9 @@ namespace {
            firstFrame = 0;
        }
 
-       const auto &local = channel->interpolate(animationTimeTicks, firstFrame, lastFrame, single);
-       return combine(local);
+       animation::LocalTransform transform;
+       channel->interpolate(animationTimeTicks, firstFrame, lastFrame, single, transform);
+       return combine(transform);
    }
 
    glm::mat4 combineBlended(
@@ -122,10 +123,13 @@ namespace {
            firstFrameB = 0;
        }
 
-       return combineBlended(
-           channelA->interpolate(animationTimeTicksA, firstFrameA, lastFrameA, singleA),
-           channelB->interpolate(animationTimeTicksB, firstFrameB, lastFrameB, singleB),
-           blendFactor);
+       animation::LocalTransform transformA;
+       animation::LocalTransform transformB;
+
+       channelA->interpolate(animationTimeTicksA, firstFrameA, lastFrameA, singleA, transformA);
+       channelB->interpolate(animationTimeTicksB, firstFrameB, lastFrameB, singleB, transformB);
+
+       return combineBlended(transformA, transformB, blendFactor);
    }
 }
 

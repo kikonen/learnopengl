@@ -116,7 +116,7 @@ namespace animation {
         for (auto animIndex : animationIndeces) {
             const auto& animation = *clipContainer.m_animations[animIndex];
 
-            if (animation.m_clipCount > 1) {
+            if (animation.getClipCount() > 1) {
                 // NOTE KI assume all channels are consistent
                 const animation::BoneChannel* prev{ nullptr };
                 for (const auto& channel : animation.m_channels) {
