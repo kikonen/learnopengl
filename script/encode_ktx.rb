@@ -1276,10 +1276,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "MRAO: [#{group}] [#{target_size}] [depth=#{target_depth}] #{dst_path}"
-
-    black = black_image(target_depth)
-    white = white_image(target_depth)
+    puts "MRAO: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
     # channel: [ metalness, roughness, ambient-occlusion ]
     # DEFAULTS = glm::vec3 mrao{ 0.f, 1.f, 1.f };
@@ -1290,14 +1287,8 @@ class Converter < Thor
       Magick::AlphaChannel => nil,
     }
 
-    target_placeholders = {
-      Magick::RedChannel => black,
-      Magick::GreenChannel => white,
-      Magick::BlueChannel => white,
-      Magick::AlphaChannel => white,
-    }
-
-    #debugger
+    target_w = target_size
+    target_h = target_size
 
     parts.each do |tex_info|
       src_channel = select_channel(tex_info.source_channel)
@@ -1320,6 +1311,9 @@ class Converter < Thor
         .set_channel_depth(Magick::AllChannels, target_depth)
       channel_img = scale_image(channel_img, target_size)
 
+      target_w = channel_img.columns
+      target_h = channel_img.rows
+
       target_channels[dst_channel] = {
         image: channel_img,
         channel: src_channel,
@@ -1329,7 +1323,15 @@ class Converter < Thor
     img_list = Magick::ImageList.new
     alpha_img = nil
 
-    #debugger
+    black = black_image(target_w, target_h, target_depth)
+    white = white_image(target_w, target_h, target_depth)
+
+    target_placeholders = {
+      Magick::RedChannel => black,
+      Magick::GreenChannel => white,
+      Magick::BlueChannel => white,
+      Magick::AlphaChannel => white,
+    }
 
     target_channels.each do |dst_channel, image_info|
       channel_img = target_placeholders[dst_channel]
@@ -1432,7 +1434,7 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, [src_path], salt)
     return unless sha_digest
 
-    puts "DISPLACEMENT: [#{group}] [#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
+    puts "DISPLACEMENT: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
     src_channel = select_channel(part.source_channel) || select_channel(RED)
     dst_channel = select_channel(part.target_channel) || select_channel(RED)
@@ -1501,9 +1503,6 @@ class Converter < Thor
 
     puts "ENCODE: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
 
-    black = black_image(target_depth)
-    white = white_image(target_depth)
-
     src_channels = select_channels(tex_info.source_channel)
     dst_channels = select_channels(tex_info.target_channel)
 
@@ -1518,13 +1517,6 @@ class Converter < Thor
       target_channels.delete(ch) unless dst_channels.include?(ch)
     end
 
-    target_placeholders = {
-      Magick::RedChannel => black,
-      Magick::GreenChannel => black,
-      Magick::BlueChannel => black,
-      Magick::AlphaChannel => white,
-    }
-
     src_img = Magick::Image.read(src_path)
       .first
       .set_channel_depth(Magick::AllChannels, target_depth)
@@ -1532,6 +1524,19 @@ class Converter < Thor
     src_img = src_img
       .set_channel_depth(Magick::AllChannels, target_depth)
     src_img = scale_image(src_img, target_size)
+
+    target_w = src_img.columns
+    target_h = src_img.rows
+
+    black = black_image(target_w, target_h, target_depth)
+    white = white_image(target_w, target_h, target_depth)
+
+    target_placeholders = {
+      Magick::RedChannel => black,
+      Magick::GreenChannel => black,
+      Magick::BlueChannel => black,
+      Magick::AlphaChannel => white,
+    }
 
     src_channels.each_with_index do |src_channel, idx|
       dst_channel = dst_channels[idx]
@@ -1731,13 +1736,12 @@ class Converter < Thor
     end
   end
 
-  def black_image(target_depth)
+  def black_image(target_w, target_h, target_depth)
     @black_iamge ||= {}
-    @black_iamge[target_depth] ||=
+    @black_iamge[[target_w, target_h, target_depth]] ||=
       if true
-        w = target_size
         Magick::Image
-          .new(w, w) { |opt|
+          .new(target_w, target_h) { |opt|
             opt.background_color = 'black'
             opt.depth = target_depth
             opt.image_type = Magick::TrueColorAlphaType
@@ -1750,17 +1754,16 @@ class Converter < Thor
           .first
           .separate(Magick::RedChannel)[0]
           .set_channel_depth(Magick::AllChannels, target_depth)
-          .resize(target_size, target_size)
+          .resize(target_w, target_h)
       end
   end
 
-  def white_image(target_depth)
+  def white_image(target_w, target_h, target_depth)
     @white_image ||= {}
-    @white_image[target_depth] ||=
+    @white_image[[target_w, target_h, target_depth]] ||=
       if true
-        w = target_size
         Magick::Image
-          .new(w, w) { |opt|
+          .new(target_w, target_h) { |opt|
             opt.background_color = 'white'
             opt.depth = target_depth
             opt.image_type = Magick::TrueColorAlphaType
@@ -1773,7 +1776,7 @@ class Converter < Thor
           .first
           .separate(Magick::RedChannel)[0]
           .set_channel_depth(Magick::AllChannels, target_depth)
-          .resize(target_size, target_size)
+          .resize(target_w, target_h)
       end
   end
 
