@@ -130,7 +130,7 @@ namespace mesh {
         if (m_lodLevels.empty()) return 0;
         //if (m_lodLevels.size() == 1) return m_lodLevels[0].m_levelMask;
 
-        for (auto i = m_lodLevels.size() - 1; i >= 0; i--)
+        for (int32_t i = static_cast<int32_t>(m_lodLevels.size()) - 1; i >= 0; i--)
         {
             const auto& lod = m_lodLevels[i];
             if (lod.m_distance2 <= dist2)
