@@ -1564,7 +1564,8 @@ class Converter < Thor
     #debugger
 
     # https://imagemagick.org/script/command-line-options.php#combine
-    dst_img = img_list.combine(Magick::RGBColorspace)
+    # Magick::RGBColorspace
+    dst_img = img_list.combine(src_img.colorspace)
     # dst_img.colorspace = src_img.colorspace
 
     # if target_channels.size > 1
