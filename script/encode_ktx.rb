@@ -1565,6 +1565,7 @@ class Converter < Thor
 
     # https://imagemagick.org/script/command-line-options.php#combine
     dst_img = img_list.combine(Magick::RGBColorspace)
+    # dst_img.colorspace = src_img.colorspace
 
     # if target_channels.size > 1
     #   dst_img.image_type = Magick::TrueColorType
@@ -1580,8 +1581,6 @@ class Converter < Thor
           Magick::CopyAlphaCompositeOp,
           Magick::AlphaChannel)
     end
-
-    # dst_img.colorspace = Magick::SRGBColorspace
 
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
@@ -1777,10 +1776,10 @@ class Converter < Thor
     target_h = img.rows
 
     need_scale = false
-    max_size = [target_w, target_h].max
-    if max_size > target_size
+    min_size = [target_w, target_h].min
+    if min_size > target_size
       need_scale = true
-      scale = target_size.to_f / max_size.to_f
+      scale = target_size.to_f / min_size.to_f
 
       target_w = (target_w * scale).ceil
       target_h = (target_h * scale).ceil
