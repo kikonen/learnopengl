@@ -1372,8 +1372,19 @@ class Converter < Thor
     unless dry_run
       FileUtils.mkdir_p(dst_dir)
 
-      puts "WRITE: [#{group}] #{dst_path}"
-      dst_img.write(dst_path)
+      # https://unix.stackexchange.com/questions/689906/imagemagick-not-converting-grayscale-to-rgb
+      file_format = "";
+
+      if img_list.size == 3
+        if (alpha_img)
+          file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+        else
+          file_format = dst_img.quantum_depth == 16 ? "PNG48:" : "PNG24:"
+        end
+      end
+
+      puts "WRITE: [#{group}] #{file_format + dst_path}"
+      dst_img.write(file_format + dst_path)
 
       write_digest(dst_path, sha_digest, source_paths, salt)
 
@@ -1590,8 +1601,19 @@ class Converter < Thor
       # puts dst_img.colorspace
       # puts dst_img.gray?
 
-      puts "WRITE: [#{group}] #{dst_path}"
-      dst_img.write(dst_path)
+      # https://unix.stackexchange.com/questions/689906/imagemagick-not-converting-grayscale-to-rgb
+      file_format = "";
+
+      if img_list.size == 3
+        if (alpha_img)
+          file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+        else
+          file_format = dst_img.quantum_depth == 16 ? "PNG48:" : "PNG24:"
+        end
+      end
+
+      puts "WRITE: [#{group}] #{file_format + dst_path}"
+      dst_img.write(file_format + dst_path)
 
       # dst_img.write(dst_path) do |info|
       #   p info.image_type
