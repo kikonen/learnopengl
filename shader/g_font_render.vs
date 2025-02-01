@@ -137,7 +137,7 @@ void main() {
     vs_out.tbn = mat3(tangent, bitangent, normal);
 
 #ifdef USE_PARALLAX
-    const mat3 invTBN = transpose(tbn);
+    const mat3 invTBN = transpose(vs_out.tbn);
     vs_out.viewTangentPos  = invTBN * u_cameraPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif

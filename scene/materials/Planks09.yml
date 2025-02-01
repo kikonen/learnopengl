@@ -6,4 +6,5 @@ material:
   map_normal: Planks09_nrm_2048.png
   map_mrao: Planks09_mrao
   map_displacement: Planks09_displacement
+  parallax_depth: 0.02
   default_programs: true

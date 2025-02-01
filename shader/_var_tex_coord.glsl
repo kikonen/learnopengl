@@ -34,10 +34,12 @@
     texCoord = fs_in.texCoord;
   }
 
-#ifdef USE_ALPHA
-  if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
-    discard;
-#endif
+// NOTE KI with texture tiling in material, texCoords *CAN*
+// always be beyond [0, 1] range; thus this check is invalid
+// #ifdef USE_ALPHA
+//   if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
+//     discard;
+// #endif
 
 #else
   const vec2 texCoord = fs_in.texCoord;

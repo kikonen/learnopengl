@@ -233,7 +233,11 @@ namespace loader {
             }
             else if (k == "mrao") {
                 // NOTE KI specifying opacity othe than 1 does not make sense
-                material.mrao = glm::vec4(readVec3(v), 1.f);
+                auto vec = readFloatVector(v, 4);
+                while (vec.size() < 4) {
+                    vec.push_back(1.f);
+                }
+                material.mrao = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
                 fields.mrao = true;
             }
             else if (k == "pattern") {
@@ -428,7 +432,15 @@ namespace loader {
             }
         }
 
-        const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
+        std::string fullPath = path;
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx.m_assetsDir, path);
+        }
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx.m_dirName, path);
+        }
 
         KI_INFO_OUT(fmt::format("material_prefab={}", fullPath));
 

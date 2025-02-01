@@ -3,14 +3,8 @@ prefab:
   mesh:
     path: plane
     material:
-      base: textures/Planks 09 [8K]
-      map_kd: Planks09_col_2048.png
-      map_normal: Planks09_nrm_2048.png
-      map_mrao: Planks09_mrao
-      map_displacement: Planks09_displacement
+      prefab: materials/Planks09
       tiling: 60
-      parallax_depth: 0.01
-      program: g_tex
     flags:
       pre_depth: true
   flags:

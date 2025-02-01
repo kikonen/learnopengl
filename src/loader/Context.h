@@ -21,6 +21,7 @@ namespace loader {
         }
 
     public:
+        const std::string m_assetsDir;
         const std::string m_fullPath;
         const std::string m_dirName;
         const std::string m_fileName;

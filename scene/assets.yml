@@ -112,6 +112,8 @@ assets:
   animation_once_only: false
   animation_max_count: 1000
 
+  physics_enabled: true
+  physics_update_enabled: true
   physics_initial_delay: 3
   physics_show_objects: true
 

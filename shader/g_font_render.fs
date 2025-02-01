@@ -5,6 +5,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_debug.glsl
 #include ssbo_materials.glsl
 
 #ifndef USE_ALPHA

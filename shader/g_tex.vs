@@ -118,7 +118,9 @@ void main() {
 
   vec4 worldPos;
   vec3 normal;
+#ifdef USE_TBN
   vec3 tangent;
+#endif
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach

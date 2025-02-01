@@ -84,10 +84,11 @@ nodes:
     mesh:
       material:
         #prefab: materials/Plastic01.yml
-        #prefab: materials/Fence007A.yml
-        prefab: materials/Metal007.yml
-        map_displacement: ""
-        tiling: 2
+        prefab: materials/Fence007A.yml
+        #prefab: materials/Metal007.yml
+        #prefab: materials/PavingStones115C.yml
+        #map_displacement: ""
+        tiling: 3
         alpha: true
         blend: true
         render_back: true
