@@ -52,7 +52,7 @@ nodes:
       path: quad
       material:
         name: pool_floor
-        map_kd: textures/tiles_1024.png
+        map_kd: textures/tiles_1024_color.png
         tiling: 8
     program: g_tex
     pos: [-30, -4, -30]

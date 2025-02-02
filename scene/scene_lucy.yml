@@ -47,7 +47,7 @@ nodes:
         prefab: materials/Tiles074.yml
         kd: [0.8, 0.8, 0.8, 1.0]
         #map_kd: textures/Marble White_VH_512.PNG
-        #map_kd: textures/tiles_1024.png
+        #map_kd: textures/tiles_1024_color.png
         tiling: 16
     program: g_tex
     pos: [0.0, 0.1, 0]

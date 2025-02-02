@@ -913,7 +913,7 @@ nodes:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
         xxmap_kd: textures/Marble White_VH_512.PNG
-        map_kd: textures/tiles_1024.png
+        map_kd: textures/tiles_1024_color.png
         tiling: 8
       scale: 30
       flags:
@@ -983,10 +983,7 @@ nodes:
       type: terrain
       mode: grid
       material:
-        name: terrain_grass_2
-        map_kd: textures/terrain_2/terrain_2_TX.jpg
-        map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_normal: textures/terrain_2/terrain_2_TN.png
+        prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
@@ -1009,7 +1006,7 @@ nodes:
       path: glass_ball
       material:
         name: sea_floor
-        map_kd: textures/tiles_1024.png
+        map_kd: textures/tiles_1024_color.png
         tiling: 2
       material_modifier:
         ke: [0, 0.2, 0]
@@ -1071,7 +1068,7 @@ nodes:
       path: plane
       material:
         name: sea_floor
-        map_kd: textures/tiles_1024.png
+        map_kd: textures/tiles_1024_color.png
         tiling: 2
         render_back: true
       flags:

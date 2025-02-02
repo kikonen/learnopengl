@@ -45,10 +45,7 @@ nodes:
       type: terrain
       mode: grid
       material:
-        name: terrain_grass_2
-        map_kd: textures/terrain_2/terrain_2_TX.jpg
-        map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_normal: textures/terrain_2/terrain_2_TN.png
+        prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
@@ -113,7 +110,7 @@ nodes:
       path: plane
       material:
         name: sea_floor
-        map_kd: textures/tiles_1024.png
+        map_kd: textures/tiles_1024_color.png
         tiling: 8
         render_back: true
     priority: -225

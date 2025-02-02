@@ -166,9 +166,8 @@ nodes:
     mesh:
       path: plane
       material:
-        map_kd: textures/tiles_1024.png
+        prefab: materials/Tiles074
         tiling: 8
-        program: g_tex
         render_back: true
       scale: 30
       flags:
@@ -364,10 +363,7 @@ nodes:
       type: terrain
       mode: grid
       material:
-        name: terrain_grass_2
-        map_kd: textures/terrain_2/terrain_2_TX.jpg
-        map_ks: textures/terrain_2/terrain_2_SpecLM.png
-        map_normal: textures/terrain_2/terrain_2_TN.png
+        prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
@@ -473,9 +469,8 @@ nodes:
     mesh:
       path: plane
       material:
-        map_kd: textures/tiles_1024.png
+        prefab: materials/Tiles074
         tiling: 8
-        program: g_tex
         render_back: true
       scale: 60
       flags:

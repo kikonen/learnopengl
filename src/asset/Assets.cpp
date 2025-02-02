@@ -93,7 +93,7 @@ Assets::Assets()
     shadersDir = "shader";
 
     placeholderTextureAlways = false;
-    placeholderTexture = "textures/tiles_1024.png";
+    placeholderTexture = "textures/tiles_1024_color.png";
 
     useImGui = false;
     imGuiDemo = false;

@@ -1,0 +1,7 @@
+---
+material:
+  name: Terrain2
+  base: textures/terrain_2
+  map_kd: terrain_2_TX.jpg
+  map_normal: terrain_2_TN.png
+  #map_ks: terrain_2_SpecLM.png
