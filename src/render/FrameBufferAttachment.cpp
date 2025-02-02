@@ -354,7 +354,7 @@ namespace render {
     }
 
     // MRAO: [metalness, roughness, ambient-occlusion]
-    FrameBufferAttachment FrameBufferAttachment::getGBufferMRAO(GLenum attachment)
+    FrameBufferAttachment FrameBufferAttachment::getGBufferMRA(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
@@ -362,13 +362,13 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "mrao_RGB8";
+        spec.name = "mra_RGB8";
 
         return spec;
     }
 
     // MRAO: [metalness, roughness, ambient-occlusion]
-    FrameBufferAttachment FrameBufferAttachment::getGBufferMRAO16(GLenum attachment)
+    FrameBufferAttachment FrameBufferAttachment::getGBufferMRA16(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
@@ -377,7 +377,7 @@ namespace render {
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "mrao_RGB16";
+        spec.name = "mra_RGB16";
 
         return spec;
     }

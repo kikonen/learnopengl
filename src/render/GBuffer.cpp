@@ -51,7 +51,7 @@ namespace render {
                         FrameBufferAttachment::getGBufferEmissionHdr(ATT_EMISSION_ENUM),
                         //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                         FrameBufferAttachment::getGBufferNormal(ATT_NORMAL_ENUM),
-                        FrameBufferAttachment::getGBufferMRAO(ATT_MRAO_ENUM),
+                        FrameBufferAttachment::getGBufferMRA(ATT_MRAO_ENUM),
                         FrameBufferAttachment::getGBufferViewZ(ATT_VIEW_Z_ENUM),
                         // depth needed
                         FrameBufferAttachment::getDepthStencilTexture(),

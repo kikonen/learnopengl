@@ -113,11 +113,11 @@ namespace render {
         static FrameBufferAttachment getGBufferSpecular(GLenum attachment);
         static FrameBufferAttachment getGBufferSpecularHdr(GLenum attachment);
 
-        // MRAO: [metalness, roughness, ambient-occlusion]
-        static FrameBufferAttachment getGBufferMRAO(GLenum attachment);
+        // MRA: [metalness, roughness, ambient-occlusion]
+        static FrameBufferAttachment getGBufferMRA(GLenum attachment);
 
-        // MRAO: [metalness, roughness, ambient-occlusion]
-        static FrameBufferAttachment getGBufferMRAO16(GLenum attachment);
+        // MRA: [metalness, roughness, ambient-occlusion]
+        static FrameBufferAttachment getGBufferMRA16(GLenum attachment);
 
         // G buffer: emission
         static FrameBufferAttachment getGBufferEmission(GLenum attachment);

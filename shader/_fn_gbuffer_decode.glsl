@@ -5,7 +5,7 @@
 // => for some reason DOES NOT WORK in intel GPU
 vec3 decodeGNormal(in vec2 texCoord, in vec3 view) {
   //return texture(g_normal, texCoord).xyz * 2.0 - 1.0;
-  return texture(g_normal, texCoord).xyz;
+  return textureLod(g_normal, texCoord, 0).xyz;
 }
 
 // https://aras-p.info/texts/CompactNormalStorage.html
@@ -13,7 +13,7 @@ vec3 decodeGNormal(in vec2 texCoord, in vec3 view) {
 vec3 decodeGNormal2(in vec2 texCoord, in vec3 view)
 {
   // TODO KI does NOT work propearly, corrupted possibly due to sign of Z-dir
-  vec2 enc = texture(g_normal, texCoord).xy;
+  vec2 enc = textureLod(g_normal, texCoord, 0).xy;
   vec2 fenc = enc * 4 - 2;
 
   float f = dot(fenc, fenc);
