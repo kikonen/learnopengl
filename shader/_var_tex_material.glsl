@@ -10,8 +10,8 @@
     texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgba;
 
   material.diffuse = u_materials[i].diffuse *
-    texture(sampler2D(u_materials[i].diffuseTex), texCoord) *
-    mrao.a;
+    texture(sampler2D(u_materials[i].diffuseTex), texCoord);
+  material.diffuse.a *= mrao.a;
 
   // material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
 
