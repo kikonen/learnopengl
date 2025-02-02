@@ -213,9 +213,13 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
   * vec3 alignment *is* broken in opengl std140
 - https://www.reddit.com/r/GraphicsProgramming/comments/zxrww8/should_i_have_tangents_in_my_gbuffer_in_a/
   * tangent space lighting typically happens in forward renderers
-- https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
-- http://c0de517e.blogspot.com/2015/01/notes-on-g-buffer-normal-encodings.html
-  * example of g-buffer encoding
+- normal encoding
+  + https://gamedev.stackexchange.com/questions/162248/correctly-transforming-normals-for-g-buffer-in-deferred-rendering
+  + http://c0de517e.blogspot.com/2015/01/notes-on-g-buffer-normal-encodings.html
+    * example of g-buffer encoding
+  +  https://github.khronos.org/KTX-Software/ktxtools/ktx_encode.html
+  + https://gamedev.stackexchange.com/questions/203188/problems-with-normal-recovery-from-storage-as-two-floats-and-normal-from-depth-b
+  + https://aras-p.info/texts/CompactNormalStorage.html
 
 ## Skeletal animation
 - https://github.com/assimp/assimp

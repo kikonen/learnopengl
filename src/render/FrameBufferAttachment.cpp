@@ -454,11 +454,11 @@ namespace render {
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
-        spec.internalFormat = GL_R32F;
+        spec.internalFormat = GL_R16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "view_z_R32F";
+        spec.name = "view_z_R16F";
 
         return spec;
     }

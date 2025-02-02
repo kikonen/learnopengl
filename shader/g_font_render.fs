@@ -92,5 +92,5 @@ void main()
   o_fragColor = color.rgb;
   o_fragMRA = material.mra;
   o_fragEmission = material.emission;
-  o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
+  #include encode_gbuffer_normal.glsl
 }

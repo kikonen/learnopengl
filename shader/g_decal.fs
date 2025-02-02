@@ -92,5 +92,5 @@ void main() {
   // o_fragColor = vec3(1, 0, 0);
 
   //o_fragPosition = fs_in.worldPos;
-  o_fragNormal = encodeGNormal(normal, fs_in.viewPos);
+  #include encode_gbuffer_normal.glsl
 }
