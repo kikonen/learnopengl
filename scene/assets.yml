@@ -184,7 +184,7 @@ assets:
   water_render_frame_start: 0
   water_render_frame_step: 1
   water_map_near_plane: 0.1
-  water_map_far_plane: 500
+  water_map_far_plane: 800
 
   cube_map_enabled: true
   cube_map_seamless: true
