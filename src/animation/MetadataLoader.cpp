@@ -113,10 +113,10 @@ namespace animation
                 // NOTE KI try to avoid errors due to weird cases like this
                 //firstFrame: 1969.9999
                 //lastFrame : 2020.0001
-                clip.m_firstFrame = round(readFloat(v));
+                clip.m_firstFrame = static_cast<uint16_t>(round(readFloat(v)));
             }
             else if (k == "lastFrame") {
-                clip.m_lastFrame = round(readFloat(v));
+                clip.m_lastFrame = static_cast<uint16_t>(round(readFloat(v)));
             }
             else if (k == "loop") {
                 clip.m_loop = readInt(v) == 1;

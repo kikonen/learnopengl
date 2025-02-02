@@ -78,8 +78,8 @@ void Input::updateMouseState()
 
     if (mouseHasPosition && isMouseCaptured()) {
         // NOTE KI Match world axis directions
-        mouseRelativeX = xpos - mouseX;
-        mouseRelativeY = mouseY - ypos;
+        mouseRelativeX = static_cast<float>(xpos) - mouseX;
+        mouseRelativeY = mouseY - static_cast<float>(ypos);
 
         mousePreviousX = mouseX;
         mousePreviousY = mouseY;
@@ -90,8 +90,8 @@ void Input::updateMouseState()
         mouseRelativeY = 0.f;
     }
 
-    mouseX = xpos;
-    mouseY = ypos;
+    mouseX = static_cast<float>(xpos);
+    mouseY = static_cast<float>(ypos);
     mouseHasPosition = true;
 }
 
