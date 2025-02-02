@@ -209,18 +209,28 @@ assets:
   layers:
     - name: main
       order: 50
+      enabled: true
       effect_enabled: false
       effect: none
       blend_enabled: false
       blend_factor: 1.0
+    - name: rear
+      order: 75
+      enabled: false
+      effect_enabled: false
+      effect: none
+      blend_enabled: false
+      blend_factor: 0.95
     - name: player
       order: 100
+      enabled: true
       effect_enabled: false
       effect: none
       blend_enabled: true
       blend_factor: 0.95
     - name: ui
       order: 150
+      enabled: true
       effect_enabled: false
       effect: none
       blend_enabled: true
