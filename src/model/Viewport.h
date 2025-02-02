@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "asset/ViewportEffect.h"
+#include "asset/LayerInfo.h"
 
 #include "kigl/GLBuffer.h"
 
@@ -53,7 +54,6 @@ public:
     }
 
     void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
-    void setDestinationFrameBuffer(render::FrameBuffer* frameBuffer);
 
     void setTextureId(GLuint textureId);
 
@@ -62,7 +62,20 @@ public:
     void updateRT(const UpdateViewContext& ctx);
 
     void bind(const RenderContext& ctx);
-    void draw(const RenderContext& ctx);
+
+    void draw(
+        const RenderContext& ctx,
+        render::FrameBuffer* destinationBuffer);
+
+    bool isEnabled() const
+    {
+        return m_enabled;
+    }
+
+    void setEnabled(bool enabled)
+    {
+        m_enabled = enabled;
+    }
 
     bool isEffectEnabled() const
     {
@@ -116,9 +129,30 @@ public:
         }
     }
 
+    void applyLayer(const LayerInfo& layer)
+    {
+        setIndex(layer.m_index);
+        setOrder(layer.m_order);
+        setEnabled(layer.m_enabled);
+        setEffectEnabled(layer.m_effectEnabled);
+        setEffect(layer.m_effect);
+        setBlend(layer.m_blendEnabled);
+        setBlendFactor(layer.m_blendFactor);
+    }
+
     const glm::vec2& getSize() const
     {
         return m_size;
+    }
+
+    int getIndex() const
+    {
+        return m_index;
+    }
+
+    void setIndex(int index)
+    {
+        m_index = index;
     }
 
     int getOrder() const
@@ -169,9 +203,12 @@ private:
 
     glm::mat4 m_projected;
 
+    int m_index{ -1 };
     int m_order{ 100 };
     bool m_blend{ true };
     float m_blendFactor{ 1.f };
+
+    bool m_enabled{ true };
 
     bool m_dirty{ true };
 

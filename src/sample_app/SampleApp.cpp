@@ -311,6 +311,9 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         size.y,
         &m_dbg);
     {
+        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+            ctx.m_layer = layer->m_index;
+        }
         ctx.m_forceLineMode = assets.forceLineMode;
         ctx.m_useLight = assets.useLight;
 

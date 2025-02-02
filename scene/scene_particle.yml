@@ -18,7 +18,7 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
     scale: 0.0025
-    layer: 3
+    layer: ui
   - id: player_fps
     type: origo
     pos: [0, 4, 0.0]
@@ -72,7 +72,7 @@ nodes:
     pos: [-0.14, -1.59, -0.2]
     pivot:
       alignment: m
-    layer: 1
+    layer: player
     script: scripts/fps_player
   - name: origo
     mesh:

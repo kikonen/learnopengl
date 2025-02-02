@@ -842,9 +842,15 @@ void AssetsLoader::loadLayers(
     std::vector<LayerInfo>& layers)
 {
     // Layer 0; NULL/ANY layer
-    layers.emplace_back();
+    {
+        auto& nullLayer = layers.emplace_back();
+        nullLayer.m_order = 10000;
+        nullLayer.m_enabled = false;
+        nullLayer.m_effectEnabled = false;
+        nullLayer.m_blendEnabled = false;
+    }
 
-    int index = LayerInfo::LAYER_MAIN;
+    int index = 1;
     for (const auto& entry : node) {
         LayerInfo& data = layers.emplace_back();
         data.m_index = index++;
@@ -861,10 +867,13 @@ void AssetsLoader::loadLayer(
         const YAML::Node& v = pair.second;
 
         if (k == "name") {
-            data.m_name = readString(v);
+            data.m_name = util::toLower(readString(v));
         }
         else if (k == "order") {
             data.m_order = readInt(v);
+        }
+        else if (k == "enabled") {
+            data.m_enabled = readBool(v);
         }
         else if (k == "effect_enabled") {
             data.m_effectEnabled = readBool(v);

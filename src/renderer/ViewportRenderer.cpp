@@ -104,8 +104,10 @@ void ViewportRenderer::render(
     state.polygonFrontAndBack(GL_FILL);
 
     {
-        m_buffer->bind(ctx);
-        m_buffer->clear(
+        auto* buffer = m_buffer.get();
+
+        buffer->bind(ctx);
+        buffer->clear(
             ctx,
             GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
             { 0.f, 0.f, 0.f, 1.f });
@@ -116,10 +118,11 @@ void ViewportRenderer::render(
         state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         for (auto& viewport : viewports) {
-            viewport->setDestinationFrameBuffer(m_buffer.get());
+            if (!viewport->isEnabled()) continue;
+
             viewport->bind(ctx);
             state.setEnabled(GL_BLEND, viewport->isBlend());
-            viewport->draw(ctx);
+            viewport->draw(ctx, buffer);
         }
 
         state.setEnabled(GL_BLEND, false);

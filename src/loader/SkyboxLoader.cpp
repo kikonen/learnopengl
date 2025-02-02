@@ -127,6 +127,10 @@ namespace loader {
 
         type->addMeshSet(*meshSet);
 
+        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+            type->m_layer = layer->m_index;
+        }
+
         auto* lodMesh = type->modifyLodMesh(0);
         {
             lodMesh->m_priority = data.priority;

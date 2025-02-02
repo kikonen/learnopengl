@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/LayerInfo.h"
+
 #include "shader/Shader.h"
 
 #include "model/NodeType.h"
@@ -47,7 +49,7 @@ namespace loader {
 
         std::string prefabName;
 
-        uint8_t layer{ 0 };
+        uint8_t layer{ LAYER_NONE_INDEX };
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;

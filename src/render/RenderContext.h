@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/LayerInfo.h"
+
 #include "shader/MatricesUBO.h"
 #include "shader/DataUBO.h"
 #include "shader/ClipPlaneUBO.h"
@@ -167,7 +169,7 @@ public:
 
     mutable ClipPlanesUBO m_clipPlanes;
 
-    uint8_t m_layer{ 0 };
+    uint8_t m_layer{ LAYER_NONE_INDEX };
 
     mutable bool m_useLight : 1{ true };
     mutable bool m_shadow : 1 { false };

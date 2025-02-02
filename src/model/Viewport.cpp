@@ -78,11 +78,6 @@ void Viewport::setSourceFrameBuffer(render::FrameBuffer* frameBuffer)
     m_sourceBuffer = frameBuffer;
 }
 
-void Viewport::setDestinationFrameBuffer(render::FrameBuffer * frameBuffer)
-{
-    m_destinationBuffer = frameBuffer;
-}
-
 void Viewport::setTextureId(GLuint textureId)
 {
     m_textureId = textureId;
@@ -184,12 +179,14 @@ void Viewport::bind(const RenderContext& ctx)
     invokeBindAfter();
 }
 
-void Viewport::draw(const RenderContext& ctx)
+void Viewport::draw(
+    const RenderContext& ctx,
+    render::FrameBuffer* destinationBuffer)
 {
     if (m_useDirectBlit) {
-        if (!m_sourceBuffer || !m_destinationBuffer) return;
+        if (!m_sourceBuffer || !destinationBuffer) return;
 
-        m_sourceBuffer->blit(m_destinationBuffer, GL_COLOR_BUFFER_BIT, m_position, m_size, GL_LINEAR);
+        m_sourceBuffer->blit(destinationBuffer, GL_COLOR_BUFFER_BIT, m_position, m_size, GL_LINEAR);
     }
     else
     {

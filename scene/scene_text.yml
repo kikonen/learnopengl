@@ -17,7 +17,7 @@ nodes:
         #prefab: materials/Plastic01.yml
         program: g_tex
     pos: [0, 0, -2]
-    layer: 3
+    layer: ui
   - id: player
     mesh:
       path: water_ball
@@ -44,7 +44,7 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
     scale: 0.0025
-    layer: 3
+    layer: ui
   - id: font_atlas
     mesh:
       path: quad
@@ -63,7 +63,7 @@ nodes:
     #pos: [1.5, 0.5, -4]
     flags:
       xeffect: true
-    #layer: 3
+    #layer: ui
     xscript: |
       cmd:rotate(
         { time=60 * 100 },

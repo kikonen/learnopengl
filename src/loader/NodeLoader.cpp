@@ -11,6 +11,8 @@
 #include "util/file.h"
 #include "util/glm_format.h"
 
+#include "asset/Assets.h"
+
 #include "shader/Shader.h"
 
 #include "mesh/LodMesh.h"
@@ -26,6 +28,15 @@
 #include "loader_util.h"
 
 #include "PivotLoader.h"
+
+namespace {
+    int readLayer(const loader::DocNode& node)
+    {
+        const auto& name = util::toLower(readString(node));
+        const auto* layer = LayerInfo::findLayer(name);
+        return layer ? layer->m_index : LAYER_NONE_INDEX;
+    }
+}
 
 namespace loader {
     NodeLoader::NodeLoader(
@@ -71,6 +82,10 @@ namespace loader {
         bool hasClones = false;
 
         data.enabled = true;
+
+        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+            data.layer = layer->m_index;
+        }
 
         if (recurse) {
             loadPrefab(node.findNode("prefab"), data, loaders);
@@ -135,7 +150,7 @@ namespace loader {
                 data.active = readBool(v);
             }
             else if (k == "layer") {
-                data.layer = readInt(v);
+                data.layer = readLayer(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);

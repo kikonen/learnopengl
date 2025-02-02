@@ -969,11 +969,15 @@ namespace editor {
         {
             const auto idx = layer.m_index;
 
-            if (idx == LayerInfo::LAYER_NONE) continue;
+            if (idx == LAYER_NONE_INDEX) continue;
 
             ImGui::Spacing();
             ImGui::SeparatorText(fmt::format("Layer {}", layer.m_name).c_str());
             ImGui::Spacing();
+
+            ImGui::Checkbox(
+                fmt::format("L{}: enabled", idx).c_str(),
+                &layer.m_enabled);
 
             ImGui::InputInt(
                 fmt::format("L{}: Order", idx).c_str(),

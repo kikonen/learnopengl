@@ -223,12 +223,9 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
             });
 
-        const auto& layer = dbg.m_layers[LayerInfo::LAYER_UI];
-        vp->setOrder(layer.m_order);
-        vp->setEffectEnabled(layer.m_effectEnabled);
-        vp->setEffect(layer.m_effect);
-        vp->setBlend(layer.m_blendEnabled);
-        vp->setBlendFactor(layer.m_blendFactor);
+        if (const auto* layer = LayerInfo::findLayer(LAYER_UI); layer) {
+            vp->applyLayer(*layer);
+        }
 
         vp->prepareRT();
 
@@ -257,12 +254,9 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
             });
 
-        const auto& layer = dbg.m_layers[LayerInfo::LAYER_PLAYER];
-        vp->setOrder(layer.m_order);
-        vp->setEffectEnabled(layer.m_effectEnabled);
-        vp->setEffect(layer.m_effect);
-        vp->setBlend(layer.m_blendEnabled);
-        vp->setBlendFactor(layer.m_blendFactor);
+        if (const auto* layer = LayerInfo::findLayer(LAYER_PLAYER); layer) {
+            vp->applyLayer(*layer);
+        }
 
         vp->prepareRT();
 
@@ -292,12 +286,9 @@ void Scene::prepareRT()
         });
 
 
-        const auto& layer = dbg.m_layers[LayerInfo::LAYER_MAIN];
-        vp->setOrder(layer.m_order);
-        vp->setEffectEnabled(layer.m_effectEnabled);
-        vp->setEffect(layer.m_effect);
-        vp->setBlend(layer.m_blendEnabled);
-        vp->setBlendFactor(layer.m_blendFactor);
+        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+            vp->applyLayer(*layer);
+        }
 
         vp->prepareRT();
 
@@ -321,7 +312,9 @@ void Scene::prepareRT()
             vp.setSourceFrameBuffer(buffer);
         });
 
-        vp->setOrder(60);
+        if (const auto* layer = LayerInfo::findLayer(LAYER_REAR); layer) {
+            vp->applyLayer(*layer);
+        }
 
         vp->prepareRT();
 
@@ -397,36 +390,30 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     {
         if (auto* vp = m_uiViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[LayerInfo::LAYER_UI];
-            vp->setOrder(layer.m_order);
-            vp->setEffectEnabled(layer.m_effectEnabled);
-            vp->setEffect(layer.m_effect);
-            vp->setBlend(layer.m_blendEnabled);
-            vp->setBlendFactor(layer.m_blendFactor);
+            if (const auto* layer = LayerInfo::findLayer(LAYER_UI); layer) {
+                vp->applyLayer(*layer);
+            }
         }
 
         if (auto* vp = m_playerViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[LayerInfo::LAYER_PLAYER];
-            vp->setOrder(layer.m_order);
-            vp->setEffectEnabled(layer.m_effectEnabled);
-            vp->setEffect(layer.m_effect);
-            vp->setBlend(layer.m_blendEnabled);
-            vp->setBlendFactor(layer.m_blendFactor);
+            if (const auto* layer = LayerInfo::findLayer(LAYER_PLAYER); layer) {
+                vp->applyLayer(*layer);
+            }
         }
 
         if (auto* vp = m_mainViewport.get(); vp)
         {
-            const auto& layer = dbg.m_layers[LayerInfo::LAYER_MAIN];
-            vp->setOrder(layer.m_order);
-            vp->setEffectEnabled(layer.m_effectEnabled);
-            vp->setEffect(layer.m_effect);
-            vp->setBlend(layer.m_blendEnabled);
-            vp->setBlendFactor(layer.m_blendFactor);
+            if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+                vp->applyLayer(*layer);
+            }
         }
 
         if (auto* vp = m_rearViewport.get(); vp)
         {
+            if (const auto* layer = LayerInfo::findLayer(LAYER_REAR); layer) {
+                vp->applyLayer(*layer);
+            }
         }
     }
 
@@ -552,6 +539,9 @@ void Scene::draw(const RenderContext& ctx)
 
 void Scene::drawUi(const RenderContext& parentCtx)
 {
+    const auto* layer = LayerInfo::findLayer(LAYER_UI);
+    if (!layer || !layer->m_enabled) return;
+
     render::Camera camera{};
 
     auto aspectRatio = (float)m_uiRenderer->m_buffer->m_spec.width /
@@ -580,7 +570,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
         m_uiRenderer->m_buffer->m_spec.height,
         parentCtx.m_dbg);
 
-    localCtx.m_layer = LayerInfo::LAYER_UI;
+    localCtx.m_layer = layer->m_index;
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
@@ -601,6 +591,9 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
 void Scene::drawPlayer(const RenderContext& parentCtx)
 {
+    const auto* layer = LayerInfo::findLayer(LAYER_PLAYER);
+    if (!layer || !layer->m_enabled) return;
+
     RenderContext localCtx(
         "player",
         &parentCtx,
@@ -608,7 +601,7 @@ void Scene::drawPlayer(const RenderContext& parentCtx)
         m_playerRenderer->m_buffer->m_spec.width,
         m_playerRenderer->m_buffer->m_spec.height);
 
-    localCtx.m_layer = LayerInfo::LAYER_PLAYER;
+    localCtx.m_layer = layer->m_index;
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
@@ -623,6 +616,9 @@ void Scene::drawPlayer(const RenderContext& parentCtx)
 
 void Scene::drawMain(const RenderContext& parentCtx)
 {
+    const auto* layer = LayerInfo::findLayer(LAYER_MAIN);
+    if (!layer || !layer->m_enabled) return;
+
     RenderContext localCtx(
         "MAIN",
         &parentCtx,
@@ -630,7 +626,7 @@ void Scene::drawMain(const RenderContext& parentCtx)
         m_mainRenderer->m_buffer->m_spec.width,
         m_mainRenderer->m_buffer->m_spec.height);
 
-    localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
+    localCtx.m_layer = layer->m_index;
     localCtx.copyShadowFrom(parentCtx);
 
     localCtx.m_allowDrawDebug = true;
@@ -640,6 +636,9 @@ void Scene::drawMain(const RenderContext& parentCtx)
 // "back mirror" viewport
 void Scene::drawRear(const RenderContext& parentCtx)
 {
+    const auto* layer = LayerInfo::findLayer(LAYER_REAR);
+    if (!layer || !layer->m_enabled) return;
+
     const auto& assets = parentCtx.m_assets;
 
     if (!assets.showRearView) return;
