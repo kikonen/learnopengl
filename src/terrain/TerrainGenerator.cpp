@@ -346,6 +346,10 @@ namespace terrain {
         type->setName(containerType->getName());
         type->m_nodeType = NodeType::terrain;
 
+        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+            type->m_layer = layer->m_index;
+        }
+
         auto& flags = type->m_flags;
         flags = containerType->m_flags;
         flags.invisible = false;
