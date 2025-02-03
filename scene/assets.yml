@@ -46,7 +46,7 @@ assets:
   shaders_dir: shader
 
   placeholder_texture_always: false
-  placeholder_texture: textures/tiles_1024.png
+  placeholder_texture: textures/tiles_1024_color.png
 
   use_imgui: true
   #imgui_demo: false
