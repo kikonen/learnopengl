@@ -1247,25 +1247,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
-      material_modifiers:
-        - alias: palm_trunk
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: palm_leaf
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -17
     flags:
       static_bounds: true
@@ -1282,6 +1266,10 @@ nodes:
   - xid: maple_tree_forest_{t}
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -17
     flags:
       static_bounds: true
@@ -1298,6 +1286,10 @@ nodes:
   - id: grass_{t}_{c}
     prefab:
       path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -1317,6 +1309,10 @@ nodes:
   - id: bush01_{t}
     prefab:
       path: prefab/scenery/prefab_bush01.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -1336,6 +1332,10 @@ nodes:
   - id: bush02_{t}
     prefab:
       path: prefab/scenery/prefab_bush02.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -1355,6 +1355,10 @@ nodes:
   - id: bush03_{t}
     prefab:
       path: prefab/scenery/prefab_bush03.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true

@@ -119,6 +119,7 @@ require 'hashie'
 class TextureInfo < Hashie::Dash
   include Hashie::Extensions::MergeInitializer
   include Hashie::Extensions::MethodAccess
+  include Hashie::Extensions::Dash::PropertyTranslation
 
   property :name
   property :target_name
@@ -1822,6 +1823,12 @@ class Converter < Thor
     puts "READ: #{metadata_path}"
 
     data = JSON.parse(File.read(metadata_path), symbolize_names: true)
+
+    data[:textures]&.each do |tex_info|
+      tex_info.delete :target_type
+      tex_info.delete :normal_map
+    end
+
     Metadata.new(**data)
   end
 

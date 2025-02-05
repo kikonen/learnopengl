@@ -298,25 +298,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
-      material_modifiers:
-        - alias: maple_trunk
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: maple_leaf
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:
@@ -385,6 +369,10 @@ nodes:
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -404,6 +392,10 @@ nodes:
   - id: grass_floating_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       dynamic_bounds: true
@@ -424,6 +416,10 @@ nodes:
   - id: grass_floating_2_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     priority: -20
     flags:
       static_bounds: true
@@ -555,25 +551,9 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
-      material_modifiers:
-        - alias: palm_trunk
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: palm_leaf
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
     flags:
       static_bounds: true
     generator:
