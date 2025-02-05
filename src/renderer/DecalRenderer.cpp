@@ -34,7 +34,7 @@ void DecalRenderer::prepareRT(
     if (m_prepared) return;
     m_prepared = true;
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
     m_enabled = assets.decalEnabled;
 
     Renderer::prepareRT(ctx);

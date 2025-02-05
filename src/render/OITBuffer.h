@@ -19,10 +19,11 @@ namespace render {
         OITBuffer() {}
         ~OITBuffer() {}
 
-        void prepare(
-            GBuffer* gBuffer);
+        void prepare();
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateRT(
+            const UpdateViewContext& ctx,
+            GBuffer* gBuffer);
 
         void bind(const RenderContext& ctx);
 
@@ -36,8 +37,6 @@ namespace render {
         std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
 
     private:
-        GBuffer* m_gBuffer{ nullptr };
-
         int m_width{ -1 };
         int m_height{ -1 };
     };

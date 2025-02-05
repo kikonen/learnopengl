@@ -59,7 +59,7 @@ namespace render {
             GLbitfield mask,
             const glm::vec2& pos,
             const glm::vec2& size,
-            GLenum filter);
+            GLenum filter) const noexcept;
 
         // TODO KI does NOT support blit for depth only color
         void blit(
@@ -69,16 +69,16 @@ namespace render {
             GLenum targetColorAttachment,
             const glm::vec2& pos,
             const glm::vec2& size,
-            GLenum filter);
+            GLenum filter) const noexcept;
 
         void copy(
             FrameBuffer* target,
             int sourceAttachmentIndex,
-            int targetAttachmentIndex);
+            int targetAttachmentIndex) const noexcept;
 
         void copy(
             FrameBufferAttachment* dstAtt,
-            int sourceAttachmentIndex);
+            int sourceAttachmentIndex) const noexcept;
 
         void clear(
             const RenderContext& ctx,

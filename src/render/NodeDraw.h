@@ -1,40 +1,44 @@
 #pragma once
 
 #include <functional>
-#include <map>
 
-#include "pool/NodeHandle.h"
-#include "pool/TypeHandle.h"
-
-#include "GBuffer.h"
-#include "OITBuffer.h"
-#include "BlurBuffer.h"
-#include "EffectBuffer.h"
-#include "TextureQuad.h"
-#include "ScreenTri.h"
-
-#include "backend/DrawOptions.h"
 #include "query/TimeElapsedQuery.h"
 
 #include "render/size.h"
-#include "render/NodeCollection.h"
 
 struct UpdateViewContext;
 struct PrepareContext;
 class RenderContext;
 
 class Program;
-class Node;
 
-class ParticleRenderer;
-class DecalRenderer;
+namespace editor {
+    class EditorFrame;
+}
 
 namespace mesh {
-    class MeshType;
     struct LodMesh;
 }
 
 namespace render {
+
+    struct DrawContext;
+    struct PassContext;
+
+    class FrameBuffer;
+
+    class PassDeferred;
+    class PassForward;
+    class PassDecal;
+    class PassParticle;
+    class PassEffect;
+    class PassFog;
+    class PassOit;
+    class PassBloom;
+    class PassSkybox;
+    class PassDebug;
+    class PassCopy;
+
     class NodeDraw final {
         friend class editor::EditorFrame;
 
@@ -49,171 +53,33 @@ namespace render {
 
         void drawNodes(
             const RenderContext& ctx,
-            FrameBuffer* dstBuffer,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
-            GLbitfield copyMask);
+            const DrawContext& drawContext,
+            FrameBuffer* dstBuffer);
 
         void drawProgram(
             const RenderContext& ctx,
-            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits);
+            const DrawContext& drawContext,
+            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector);
 
     private:
-        void passDeferred(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
-            FrameBuffer* targetBuffer);
-
-        void passDeferredPreDepth(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits);
-
-        void passDeferredDraw(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits);
-
-        void passDeferredCombine(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passForward(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
-            FrameBuffer* targetBuffer);
-
-        void passOit(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
-            FrameBuffer* targetBuffer);
-
-        void passSkybox(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passEffect(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            FrameBuffer* targetBuffer);
-
-        void passDecal(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passParticle(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passScreenspace(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits,
-            FrameBuffer* srcBuffer,
-            FrameBuffer* finalBuffer);
-
-        void passEmission(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passFogBlend(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passOitBlend(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
-        void passBloom(
-            const RenderContext& ctx,
-            FrameBuffer* srcBuffer,
-            FrameBuffer* finalBuffer);
-
-        void passCopy(
-            const RenderContext& ctx,
-            FrameBuffer* srcBuffer,
-            FrameBuffer* dstBuffer,
-            GLbitfield copyMask);
-
-        void passDebug(
-            const RenderContext& ctx,
-            FrameBuffer* targetBuffer);
-
         void passCleanup(
             const RenderContext& ctx);
 
     private:
-        bool drawNodesImpl(
-            const RenderContext& ctx,
-            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector,
-            uint8_t kindBits);
-
-        void drawBlendedImpl(
-            const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
-            const std::function<bool(const Node*)>& nodeSelector);
-
-        void drawSkybox(
-            const RenderContext& ctx);
-
-    public:
-        render::NodeCollection m_collection;
-
-    private:
-        GBuffer m_gBuffer;
-        OITBuffer m_oitBuffer;
-        EffectBuffer m_effectBuffer;
-        BlurBuffer m_blurBuffer;
-
-        TextureQuad& m_textureQuad;
-        ScreenTri& m_screenTri;
-
-        Program* m_deferredProgram{ nullptr };
-        Program* m_oitProgram{ nullptr };
-        Program* m_oitBlendProgram{ nullptr };
-        Program* m_bloomInitProgram{ nullptr };
-        Program* m_bloomBlurProgram{ nullptr };
-        Program* m_bloomFinalProgram{ nullptr };
-        //Program* m_emissionProgram{ nullptr };
-        Program* m_fogProgram{ nullptr };
-        Program* m_blurVerticalProgram{ nullptr };
-        Program* m_blurHorizontalProgram{ nullptr };
-        Program* m_blurFinalProgramCS{ nullptr };
-        // Program* m_hdrGammaProgram{ nullptr };
-
         query::TimeElapsedQuery m_timeElapsedQuery;
 
-        std::unique_ptr<ParticleRenderer> m_particleRenderer;
-        std::unique_ptr<DecalRenderer> m_decalRenderer;
+        std::unique_ptr<render::PassDeferred> m_passDeferred;
+        std::unique_ptr<render::PassForward> m_passForward;
+        std::unique_ptr<render::PassDecal> m_passDecal;
+        std::unique_ptr<render::PassParticle> m_passParticle;
+        std::unique_ptr<render::PassEffect> m_passEffect;
+        std::unique_ptr<render::PassFog> m_passFog;
+        std::unique_ptr<render::PassOit> m_passOit;
+        std::unique_ptr<render::PassBloom> m_passBloom;
+        std::unique_ptr<render::PassSkybox> m_passSkybox;
+        std::unique_ptr<render::PassDebug> m_passDebug;
+        std::unique_ptr<render::PassCopy> m_passCopy;
 
-        int m_effectBloomIterations{ 0 };
-
-        bool m_drawDebug{ false };
         bool m_glUseInvalidate{ false };
-
-        bool m_particleEnabled{ true };
-        bool m_decalEnabled{ true };
-
-        bool m_prepassDepthEnabled{ false };
-        bool m_effectOitEnabled{ true };
-        bool m_effectEmissionEnabled{ true };
-        bool m_effectFogEnabled{ true };
-        bool m_effectBloomEnabled{ true };
     };
 }

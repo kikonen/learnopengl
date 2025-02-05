@@ -27,6 +27,7 @@
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "kigl/GLStencilMode.h"
 
@@ -109,14 +110,18 @@ void LayerRenderer::render(
 
         fillHighlightMask(ctx, targetBuffer);
         {
-            ctx.m_nodeDraw->drawNodes(
-                ctx,
-                targetBuffer,
+            render::DrawContext drawContext{
                 [](const mesh::MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
-                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
+            };
+
+            ctx.m_nodeDraw->drawNodes(
+                ctx,
+                drawContext,
+                targetBuffer);
         }
         renderHighlight(ctx, targetBuffer);
     }
@@ -145,16 +150,21 @@ void LayerRenderer::fillHighlightMask(
     {
         auto* program = m_selectionProgram;
 
+        render::DrawContext drawContext{
+            [](const mesh::MeshType* type) { return true; },
+            [&ctx](const Node* node) { return node->isHighlighted(); },
+            render::KIND_ALL,
+            0
+        };
+
         ctx.m_nodeDraw->drawProgram(
             ctx,
+            drawContext,
             [this, &program](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
-            },
-            [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(); },
-            render::KIND_ALL);
+            });
     }
     ctx.m_batch->flush(ctx);
 }
@@ -194,17 +204,21 @@ void LayerRenderer::renderHighlight(
     for (const auto shift : SHIFTS) {
         auto* program = m_selectionProgram;
 
+        render::DrawContext drawContext{
+            [](const mesh::MeshType* type) { return true; },
+            [&ctx](const Node* node) { return node->isHighlighted(); },
+            render::KIND_ALL
+        };
+
         // draw all selected nodes with stencil
         ctx.m_nodeDraw->drawProgram(
             ctx,
+            drawContext,
             [this, &program, shift](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
-            },
-            [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(); },
-            render::KIND_ALL);
+            });
         ctx.m_batch->flush(ctx);
     }
 

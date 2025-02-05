@@ -146,38 +146,38 @@ RenderContext::RenderContext(
         m_nearPlane,
         m_farPlane);
 
-    m_matrices.u_view = m_camera->getView();
-    m_matrices.u_invView = glm::inverse(m_matrices.u_view);
+    m_matricesUBO.u_view = m_camera->getView();
+    m_matricesUBO.u_invView = glm::inverse(m_matricesUBO.u_view);
 
-    m_matrices.u_projection = m_camera->getProjection();
-    m_matrices.u_invProjection = glm::inverse(m_matrices.u_projection);
+    m_matricesUBO.u_projection = m_camera->getProjection();
+    m_matricesUBO.u_invProjection = glm::inverse(m_matricesUBO.u_projection);
 
-    m_matrices.u_projected = m_camera->getProjected();
+    m_matricesUBO.u_projected = m_camera->getProjected();
 
-    m_matrices.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
+    m_matricesUBO.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
 
-    m_matrices.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
+    m_matricesUBO.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
 
     {
         // https://www.rioki.org/2013/03/07/glsl-skybox.html
         // NOTE KI remove translation from the view matrix for skybox
-        glm::mat4 m = m_matrices.u_view;
+        glm::mat4 m = m_matricesUBO.u_view;
         m[3][0] = 0.f;
         m[3][1] = 0.f;
         m[3][2] = 0.f;
 
-        m_matrices.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matrices.u_projection);
+        m_matricesUBO.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matricesUBO.u_projection);
 
         const auto& planes = m_camera->getFrustumPlanes();
         std::copy(
             std::begin(planes),
             std::end(planes),
-            std::begin(m_matrices.u_frustumPlanes));
+            std::begin(m_matricesUBO.u_frustumPlanes));
     }
 
     auto* mainCamera = getMainCamera();
 
-    m_data = {
+    m_dataUBO = {
         m_camera->getWorldPosition(),
         //0,
         m_camera->getViewFront(),
@@ -233,7 +233,7 @@ RenderContext::RenderContext(
             parallaxDepth = m_dbg->m_parallaxDebugDepth;
         }
 
-        m_debug = {
+        m_debugUBO = {
             m_dbg->m_entityId,
             m_dbg->m_animationBoneIndex,
             m_dbg->m_animationDebugBoneWeight,
@@ -245,7 +245,7 @@ RenderContext::RenderContext(
         };
     }
     else {
-        m_debug = {
+        m_debugUBO = {
             0,
             0,
             false,
@@ -288,20 +288,20 @@ void RenderContext::updateUBOs() const
 void RenderContext::updateMatricesUBO() const
 {
     validateRender("update_matrices_ubo");
-    m_renderData->updateMatrices(m_matrices);
+    m_renderData->updateMatrices(m_matricesUBO);
 }
 
 void RenderContext::updateDataUBO() const
 {
     validateRender("update_data_ubo");
-    m_renderData->updateData(m_data);
-    m_renderData->updateDebug(m_debug);
+    m_renderData->updateData(m_dataUBO);
+    m_renderData->updateDebug(m_debugUBO);
 }
 
 void RenderContext::updateDebugUBO() const
 {
     validateRender("update_debug_ubo");
-    m_renderData->updateDebug(m_debug);
+    m_renderData->updateDebug(m_debugUBO);
 }
 
 void RenderContext::updateClipPlanesUBO() const
@@ -331,9 +331,9 @@ void RenderContext::validateRender(std::string_view label) const
 void RenderContext::copyShadowFrom(const RenderContext& b)
 {
     std::copy(
-        std::begin(b.m_matrices.u_shadow),
-        std::end(b.m_matrices.u_shadow),
-        std::begin(m_matrices.u_shadow));
+        std::begin(b.m_matricesUBO.u_shadow),
+        std::end(b.m_matricesUBO.u_shadow),
+        std::begin(m_matricesUBO.u_shadow));
 
     //std::copy(
     //    std::begin(b.m_matrices.u_shadowProjected),
@@ -345,7 +345,7 @@ UpdateContext RenderContext::toUpdateContext() const
 {
     return {
         m_clock,
-        m_registry,
+        m_registry
     };
 }
 

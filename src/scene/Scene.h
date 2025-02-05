@@ -20,6 +20,7 @@ namespace render {
     class Batch;
     class RenderData;
     class WindowBuffer;
+    class NodeCollection;
 }
 
 class Light;
@@ -98,6 +99,11 @@ public:
 
     ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
 
+    render::NodeCollection* getCollection()
+    {
+        return m_collection.get();
+    }
+
 public:
     std::shared_ptr<Viewport> m_uiViewport{ nullptr };
     std::shared_ptr<Viewport> m_playerViewport{ nullptr };
@@ -116,6 +122,8 @@ protected:
 
 private:
     bool m_loaded{ false };
+
+    std::unique_ptr<render::NodeCollection> m_collection;
 
     std::shared_ptr<std::atomic<bool>> m_alive;
 

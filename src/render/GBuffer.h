@@ -50,7 +50,7 @@ namespace render {
 
     public:
         std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
-        std::unique_ptr<FrameBufferAttachment> m_depthTexture;
+        std::shared_ptr<FrameBufferAttachment> m_depthTexture;
 
     private:
 

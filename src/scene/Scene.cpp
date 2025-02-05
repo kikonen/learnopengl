@@ -40,6 +40,7 @@
 #include "render/RenderContext.h"
 #include "render/WindowBuffer.h"
 #include "render/RenderData.h"
+#include "render/NodeCollection.h"
 
 #include "renderer/LayerRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -65,8 +66,9 @@ namespace {
 Scene::Scene(
     std::shared_ptr<Registry> registry,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive(alive),
-    m_registry(registry)
+    : m_alive{ alive },
+    m_registry{ registry },
+    m_collection{ std::make_unique<render::NodeCollection>()}
 {
     const auto& assets = Assets::get();
 
@@ -460,7 +462,7 @@ void Scene::handleNodeAdded(Node* node)
     if (!node) return;
 
     NodeRegistry::get().handleNodeAdded(node);
-    m_nodeDraw->m_collection.handleNodeAdded(node);
+    m_collection->handleNodeAdded(node);
 }
 
 void Scene::bind(const RenderContext& ctx)
@@ -474,7 +476,7 @@ void Scene::bind(const RenderContext& ctx)
 
     m_renderData->bind();
 
-    ctx.m_data.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
+    ctx.m_dataUBO.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
 
     ctx.bindDefaults();
     ctx.updateUBOs();
@@ -559,7 +561,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
         nullptr,
         parentCtx.m_clock,
         m_registry.get(),
-        &m_nodeDraw.get()->m_collection,
+        m_collection.get(),
         m_renderData.get(),
         m_nodeDraw.get(),
         m_batch.get(),

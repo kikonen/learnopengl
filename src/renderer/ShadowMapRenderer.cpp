@@ -107,14 +107,15 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     const auto size = m_planes.size() - 1;
 
-    ctx.m_data.u_shadowCount = static_cast<int>(size);
+    auto& ubo = ctx.m_dataUBO;
+    ubo.u_shadowCount = static_cast<int>(size);
 
     // NOTE KI plane defines range for cascade, u_shadowCascade_n tracks
     // *END* of cascade range (thus plane[0] is ignored here)
-    ctx.m_data.u_shadowCascade_0 = size >= 1 ? m_planes[1] : 0;
-    ctx.m_data.u_shadowCascade_1 = size >= 2 ? m_planes[2] : 0;
-    ctx.m_data.u_shadowCascade_2 = size >= 3 ? m_planes[3] : 0;
-    ctx.m_data.u_shadowCascade_3 = size >= 4 ? m_planes[4] : 0;
+    ubo.u_shadowCascade_0 = size >= 1 ? m_planes[1] : 0;
+    ubo.u_shadowCascade_1 = size >= 2 ? m_planes[2] : 0;
+    ubo.u_shadowCascade_2 = size >= 3 ? m_planes[3] : 0;
+    ubo.u_shadowCascade_3 = size >= 4 ? m_planes[4] : 0;
 }
 
 void ShadowMapRenderer::bindTexture(const RenderContext& ctx)

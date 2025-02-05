@@ -15,6 +15,7 @@
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -50,17 +51,21 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         // BUG KI normals are showing only if selection/volume is shown some node
         ctx.m_state.setStencil({});
 
-        ctx.m_nodeDraw->drawProgram(
-            ctx,
-            [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
-                return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
-            },
+        render::DrawContext drawContext{
             [](const mesh::MeshType* type) {
                 return !type->m_flags.noNormals;
             },
             [](const Node* node) { return true; },
-            render::KIND_ALL);
+            render::KIND_ALL
+        };
+
+        ctx.m_nodeDraw->drawProgram(
+            ctx,
+            drawContext,
+            [this](const mesh::LodMesh& lodMesh) {
+                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
+                return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
+            });
     }
 
     ctx.m_batch->flush(ctx);

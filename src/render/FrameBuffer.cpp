@@ -243,7 +243,7 @@ namespace render {
         GLbitfield mask,
         const glm::vec2& pos,
         const glm::vec2& size,
-        GLenum filter)
+        GLenum filter) const noexcept
     {
         // NOTE KI GL_COLOR_ATTACHMENT0 values irrelevant if just GL_DEPTH_BUFFER_BIT
         blit(target, mask, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0, pos, size, filter);
@@ -257,7 +257,7 @@ namespace render {
         GLenum targetColorAttachment,
         const glm::vec2& pos,
         const glm::vec2& size,
-        GLenum filter)
+        GLenum filter) const noexcept
     {
         const float srcW = static_cast<float>(m_spec.width);
         const float srcH = static_cast<float>(m_spec.height);
@@ -308,7 +308,7 @@ namespace render {
     void FrameBuffer::copy(
         FrameBuffer* target,
         int sourceAttachmentIndex,
-        int targetAttachmentIndex)
+        int targetAttachmentIndex) const noexcept
     {
         auto& dstAtt = target->m_spec.attachments[targetAttachmentIndex];
         copy(&dstAtt, sourceAttachmentIndex);
@@ -316,7 +316,7 @@ namespace render {
 
     void FrameBuffer::copy(
         FrameBufferAttachment* dstAtt,
-        int sourceAttachmentIndex)
+        int sourceAttachmentIndex) const noexcept
     {
         auto& srcAtt = m_spec.attachments[sourceAttachmentIndex];
 

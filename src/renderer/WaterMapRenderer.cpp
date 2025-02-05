@@ -29,6 +29,7 @@
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "WaterNoiseGenerator.h"
 
@@ -413,9 +414,7 @@ void WaterMapRenderer::drawNodes(
     {
         Node* sourceNode = m_sourceNode.toNode();
 
-        ctx.m_nodeDraw->drawNodes(
-            ctx,
-            targetBuffer,
+        render::DrawContext drawContext{
             [reflect](const mesh::MeshType* type) {
                 return !type->m_flags.water &&
                     (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
@@ -426,7 +425,13 @@ void WaterMapRenderer::drawNodes(
                     node->m_ignoredBy != current->getId();
             },
             render::KIND_ALL,
-            GL_COLOR_BUFFER_BIT);
+            GL_COLOR_BUFFER_BIT
+        };
+
+        ctx.m_nodeDraw->drawNodes(
+            ctx,
+            drawContext,
+            targetBuffer);
     }
 }
 

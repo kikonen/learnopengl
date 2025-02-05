@@ -22,6 +22,7 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -340,9 +341,7 @@ void MirrorMapRenderer::drawNodes(
     {
         Node* sourceNode = m_sourceNode.toNode();
 
-        ctx.m_nodeDraw->drawNodes(
-            ctx,
-            targetBuffer,
+        render::DrawContext drawContext{
             [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
             [current, sourceNode](const Node* node) {
                 return node != current &&
@@ -350,7 +349,13 @@ void MirrorMapRenderer::drawNodes(
                     node->m_ignoredBy != current->getId();
             },
             render::KIND_ALL,
-            GL_COLOR_BUFFER_BIT);
+            GL_COLOR_BUFFER_BIT
+        };
+
+        ctx.m_nodeDraw->drawNodes(
+            ctx,
+            drawContext,
+            targetBuffer);
     }
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);
 }

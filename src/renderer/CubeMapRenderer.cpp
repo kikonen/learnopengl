@@ -27,6 +27,7 @@
 #include "render/NodeCollection.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
+#include "render/DrawContext.h"
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
 
@@ -319,9 +320,7 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->bindFace();
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
-    ctx.m_nodeDraw->drawNodes(
-        ctx,
-        targetBuffer,
+    render::DrawContext drawContext{
         [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
@@ -330,7 +329,13 @@ void CubeMapRenderer::drawNodes(
                 node->m_ignoredBy != current->getId();
         },
         render::KIND_ALL,
-        GL_COLOR_BUFFER_BIT);
+        GL_COLOR_BUFFER_BIT
+    };
+
+    ctx.m_nodeDraw->drawNodes(
+        ctx,
+        drawContext,
+        targetBuffer);
 
     targetBuffer->unbind(ctx);
 }

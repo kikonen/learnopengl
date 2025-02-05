@@ -768,80 +768,80 @@ namespace editor {
         }
 
         {
-            const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_buffer;
-            int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
-                if (att.drawBufferIndex < 0) continue;
+            //const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_buffer;
+            //int bufferIndex = 0;
+            //for (const auto& att : fb->m_spec.attachments) {
+            //    if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
-                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
-                    ImGui::TreePop();
-                }
+            //    const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
+            //    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+            //        bufferTex(*fb, att.index, true);
+            //        ImGui::TreePop();
+            //    }
 
-                bufferIndex++;
-            }
+            //    bufferIndex++;
+            //}
         }
         {
-            const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_primary;
-            int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
-                if (att.drawBufferIndex < 0) continue;
+            //const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_primary;
+            //int bufferIndex = 0;
+            //for (const auto& att : fb->m_spec.attachments) {
+            //    if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("Effect primary: {} - {}", bufferIndex, att.name);
-                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
-                    ImGui::TreePop();
-                }
+            //    const auto& name = fmt::format("Effect primary: {} - {}", bufferIndex, att.name);
+            //    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+            //        bufferTex(*fb, att.index, true);
+            //        ImGui::TreePop();
+            //    }
 
-                bufferIndex++;
-            }
+            //    bufferIndex++;
+            //}
         }
         {
-            const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_secondary;
-            int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
-                if (att.drawBufferIndex < 0) continue;
+            //const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_secondary;
+            //int bufferIndex = 0;
+            //for (const auto& att : fb->m_spec.attachments) {
+            //    if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("Effect secondary: {} - {}", bufferIndex, att.name);
-                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
-                    ImGui::TreePop();
-                }
+            //    const auto& name = fmt::format("Effect secondary: {} - {}", bufferIndex, att.name);
+            //    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+            //        bufferTex(*fb, att.index, true);
+            //        ImGui::TreePop();
+            //    }
 
-                bufferIndex++;
-            }
+            //    bufferIndex++;
+            //}
         }
         {
-            int bufferIndex = 0;
-            for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
-                for (const auto& att : fb->m_spec.attachments) {
-                    if (att.drawBufferIndex < 0) continue;
+            //int bufferIndex = 0;
+            //for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
+            //    for (const auto& att : fb->m_spec.attachments) {
+            //        if (att.drawBufferIndex < 0) continue;
 
-                    const auto& name = fmt::format("Effect buffers: {} - {}", bufferIndex, att.name);
-                    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                        bufferTex(*fb, att.index, true);
-                        ImGui::TreePop();
-                    }
+            //        const auto& name = fmt::format("Effect buffers: {} - {}", bufferIndex, att.name);
+            //        if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+            //            bufferTex(*fb, att.index, true);
+            //            ImGui::TreePop();
+            //        }
 
-                    bufferIndex++;
-                }
-            }
+            //        bufferIndex++;
+            //    }
+            //}
         }
         {
-            const auto& fb = scene.m_nodeDraw->m_gBuffer.m_buffer;
-            int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
-                if (att.drawBufferIndex < 0) continue;
+            //const auto& fb = scene.m_nodeDraw->m_gBuffer.m_buffer;
+            //int bufferIndex = 0;
+            //for (const auto& att : fb->m_spec.attachments) {
+            //    if (att.drawBufferIndex < 0) continue;
 
-                const auto& name = fmt::format("GBuffer: {} - {}", bufferIndex, att.name);
-                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
-                    ImGui::TreePop();
-                }
+            //    const auto& name = fmt::format("GBuffer: {} - {}", bufferIndex, att.name);
+            //    if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+            //        bufferTex(*fb, att.index, true);
+            //        ImGui::TreePop();
+            //    }
 
-                bufferIndex++;
-            }
+            //    bufferIndex++;
+            //}
         }
     }
 

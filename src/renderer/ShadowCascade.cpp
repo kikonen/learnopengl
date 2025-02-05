@@ -25,6 +25,7 @@
 #include "render/RenderContext.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -205,7 +206,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         const auto scaleBiasMatrix = translateMatrix * scaleMatrix;
 
-        ctx.m_matrices.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
+        ctx.m_matricesUBO.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
 
         //KI_INFO_OUT(fmt::format(
@@ -255,16 +256,20 @@ void ShadowCascade::drawNodes(
     };
 
     {
+        render::DrawContext drawContext{
+            typeFilter,
+            nodeFilter,
+            render::KIND_ALL
+        };
+
         ctx.m_nodeDraw->drawProgram(
             ctx,
+            drawContext,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
                 return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgramId : m_solidShadowProgramId;
-            },
-            typeFilter,
-            nodeFilter,
-            render::KIND_ALL);
+            });
     }
 
     ctx.m_batch->flush(ctx);

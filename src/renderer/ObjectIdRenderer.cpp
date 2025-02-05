@@ -20,6 +20,7 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
+#include "render/DrawContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -178,15 +179,19 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
     m_idBuffer->clearAll();
 
     {
+        render::DrawContext drawContext{
+            [](const mesh::MeshType* type) { return !type->m_flags.noSelect; },
+            [](const Node* node) { return true; },
+            render::KIND_ALL
+        };
+
         ctx.m_nodeDraw->drawProgram(
             ctx,
+            drawContext,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
                 return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
-            },
-            [](const mesh::MeshType* type) { return !type->m_flags.noSelect; },
-            [](const Node* node) { return true; },
-            render::KIND_ALL);
+            });
     }
 
     ctx.m_batch->flush(ctx);

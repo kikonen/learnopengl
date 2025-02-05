@@ -10,7 +10,5 @@ namespace render {
         ~ScreenTri() = default;
 
         void draw();
-
-        void drawInstanced(int instanceCount);
     };
 }

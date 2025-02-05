@@ -290,7 +290,8 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             clock,
             m_currentScene->m_registry.get(),
             size.x,
-            size.y);
+            size.y,
+            &m_dbg);
 
         scene->updateViewRT(ctx);
     }
@@ -300,7 +301,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         nullptr,
         clock,
         m_currentScene->m_registry.get(),
-        &m_currentScene->m_nodeDraw.get()->m_collection,
+        m_currentScene->getCollection(),
         m_currentScene->m_renderData.get(),
         m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),

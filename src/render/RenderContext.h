@@ -163,9 +163,9 @@ public:
 
     render::Camera* const m_camera;
 
-    mutable MatricesUBO m_matrices;
-    mutable DataUBO m_data;
-    mutable DebugUBO m_debug;
+    mutable MatricesUBO m_matricesUBO;
+    mutable DataUBO m_dataUBO;
+    mutable DebugUBO m_debugUBO;
 
     mutable ClipPlanesUBO m_clipPlanes;
 
