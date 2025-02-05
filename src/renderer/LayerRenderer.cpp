@@ -60,22 +60,28 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
     const auto& assets = ctx.m_assets;
     auto& dbg = render::DebugContext::get();
 
+    int w;
+    int h;
+    {
+        const auto& res = ctx.m_resolution;
+        const auto bufferScale = dbg.getGBufferScale();
+
+        // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
+        w = (int)(bufferScale * res.x);
+        h = (int)(bufferScale * res.y);
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
+
+        bool changed = w != m_width || h != m_height;
+        if (!changed) return;
+
+        m_width = w;
+        m_height = h;
+
+        KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
+    }
+
     m_nodeDraw->updateRT(ctx);
-
-    const auto& res = ctx.m_resolution;
-    const auto bufferScale = dbg.getGBufferScale();
-
-    // NOTE KI keep same scale as in gbuffer to allow glCopyImageSubData
-    int w = (int)(bufferScale * res.x);
-    int h = (int)(bufferScale * res.y);
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = w != m_width || h != m_height;
-    if (!changed) return;
-
-    //if (m_mainBuffer) return;
-    KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
 
     {
         auto buffer = new render::FrameBuffer(
@@ -93,9 +99,6 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
         m_buffer.reset(buffer);
         m_buffer->prepare();
     }
-
-    m_width = w;
-    m_height = h;
 }
 
 void LayerRenderer::render(

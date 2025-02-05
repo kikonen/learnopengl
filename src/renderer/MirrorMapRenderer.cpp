@@ -125,33 +125,33 @@ void MirrorMapRenderer::prepareRT(
     }
 }
 
-void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
+void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
     if (!isEnabled()) return;
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = parentCtx.m_assets;
 
-    m_nodeDraw->updateRT(ctx);
+    int w;
+    int h;
+    {
+        const auto& res = parentCtx.m_resolution;
 
-    m_waterMapRenderer->updateRT(ctx);
-    if (m_mirrorMapRenderer) {
-        m_mirrorMapRenderer->updateRT(ctx);
+        w = (int)(assets.mirrorReflectionBufferScale * res.x);
+        h = (int)(assets.mirrorReflectionBufferScale * res.y);
+
+        if (m_squareAspectRatio) {
+            h = w;
+        }
+
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
+
+        bool changed = w != m_reflectionWidth || h != m_reflectionheight;
+        if (!changed) return;
+
+        m_reflectionWidth = w;
+        m_reflectionheight = h;
     }
-
-    const auto& res = ctx.m_resolution;
-
-    int w = (int)(assets.mirrorReflectionBufferScale * res.x);
-    int h = (int)(assets.mirrorReflectionBufferScale * res.y);
-
-    if (m_squareAspectRatio) {
-        h = w;
-    }
-
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = w != m_reflectionWidth || h != m_reflectionheight;
-    if (!changed) return;
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -180,8 +180,20 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
         buf->prepare();
     }
 
-    m_reflectionWidth = w;
-    m_reflectionheight = h;
+    {
+        UpdateViewContext localCtx{
+            parentCtx.m_clock,
+            parentCtx.m_registry,
+            w,
+            h,
+            parentCtx.m_dbg };
+        m_nodeDraw->updateRT(localCtx);
+
+        m_waterMapRenderer->updateRT(localCtx);
+        if (m_mirrorMapRenderer) {
+            m_mirrorMapRenderer->updateRT(localCtx);
+        }
+    }
 }
 
 void MirrorMapRenderer::bindTexture(const RenderContext& ctx)

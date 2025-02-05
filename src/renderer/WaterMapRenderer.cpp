@@ -143,18 +143,25 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
     const auto& res = ctx.m_resolution;
 
-    int w = (int)(assets.waterReflectionBufferScale * res.x);
-    int h = (int)(assets.waterReflectionBufferScale * res.y);
+    int w;
+    int h;
+    {
+        w = (int)(assets.waterReflectionBufferScale * res.x);
+        h = (int)(assets.waterReflectionBufferScale * res.y);
 
-    if (m_squareAspectRatio) {
-        h = w;
+        if (m_squareAspectRatio) {
+            h = w;
+        }
+
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
+
+        bool changed = w != m_reflectionWidth || h != m_reflectionheight;
+        if (!changed) return;
+
+        m_reflectionWidth = w;
+        m_reflectionheight = h;
     }
-
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = w != m_reflectionWidth || h != m_reflectionheight;
-    if (!changed) return;
 
     m_reflectionBuffers.clear();
 
@@ -182,9 +189,6 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
     for (auto& buf : m_reflectionBuffers) {
         buf->prepare();
     }
-
-    m_reflectionWidth = w;
-    m_reflectionheight = h;
 }
 
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
