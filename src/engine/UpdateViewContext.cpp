@@ -7,7 +7,7 @@ UpdateViewContext::UpdateViewContext(
     Registry* registry,
     int width,
     int height,
-    render::DebugContext* dbg)
+    const render::DebugContext* dbg)
     : m_assets{ Assets::get() },
     m_clock(clock),
     m_registry(registry),

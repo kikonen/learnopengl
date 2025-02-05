@@ -16,7 +16,7 @@ namespace event {
 }
 
 namespace render {
-    class NodeDraw;
+    //class NodeDraw;
     class Batch;
     class RenderData;
     class WindowBuffer;
@@ -116,7 +116,7 @@ public:
     std::shared_ptr<Registry> m_registry;
 
     std::unique_ptr<render::Batch> m_batch;
-    std::unique_ptr<render::NodeDraw> m_nodeDraw;
+    //std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
 protected:
 

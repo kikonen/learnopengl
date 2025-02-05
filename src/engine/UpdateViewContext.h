@@ -21,7 +21,7 @@ public:
         Registry* registry,
         int width,
         int height,
-        render::DebugContext* dbg);
+        const render::DebugContext* dbg);
 
 public:
     const Assets& m_assets;

@@ -108,7 +108,7 @@ Scene::Scene(
     }
 
     m_batch = std::make_unique<render::Batch>();
-    m_nodeDraw = std::make_unique<render::NodeDraw>();
+    //m_nodeDraw = std::make_unique<render::NodeDraw>();
     m_renderData = std::make_unique<render::RenderData>();
 }
 
@@ -157,7 +157,7 @@ void Scene::prepareRT()
     PrepareContext ctx{ m_registry.get() };
 
     m_batch->prepareRT(ctx);
-    m_nodeDraw->prepareRT(ctx);
+    //m_nodeDraw->prepareRT(ctx);
 
     m_uiRenderer->prepareRT(ctx);
     m_playerRenderer->prepareRT(ctx);
@@ -439,7 +439,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     m_mirrorMapRenderer->updateRT(ctx);
     m_waterMapRenderer->updateRT(ctx);
 
-    m_nodeDraw->updateRT(ctx);
+    //m_nodeDraw->updateRT(ctx);
     m_windowBuffer->updateRT(ctx);
 
     //if (false)
@@ -563,7 +563,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
         m_registry.get(),
         m_collection.get(),
         m_renderData.get(),
-        m_nodeDraw.get(),
+        //m_nodeDraw.get(),
         m_batch.get(),
         &camera,
         0.1f,

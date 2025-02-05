@@ -10,6 +10,7 @@
 
 namespace render {
     class FrameBuffer;
+    class NodeDraw;
 }
 
 class Node;
@@ -27,7 +28,7 @@ public:
         m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 
-    virtual ~WaterMapRenderer();
+    virtual ~WaterMapRenderer() override;
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;
@@ -79,6 +80,8 @@ private:
     int m_bufferCount{ 1 };
     std::vector<std::unique_ptr<render::FrameBuffer>> m_reflectionBuffers;
     std::vector<std::unique_ptr<render::FrameBuffer>> m_refractionBuffers;
+
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
     unsigned int m_noiseTextureID{ 0 };
 

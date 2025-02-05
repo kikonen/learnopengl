@@ -27,10 +27,12 @@
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
+#include "render/CollectionRender.h"
 #include "render/DrawContext.h"
 
 #include "kigl/GLStencilMode.h"
 
+LayerRenderer::~LayerRenderer() = default;
 
 void LayerRenderer::prepareRT(
     const PrepareContext& ctx)
@@ -41,6 +43,9 @@ void LayerRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     const auto& assets = ctx.m_assets;
+
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
+    m_nodeDraw->prepareRT(ctx);
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
@@ -54,6 +59,8 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
     auto& dbg = render::DebugContext::get();
+
+    m_nodeDraw->updateRT(ctx);
 
     const auto& res = ctx.m_resolution;
     const auto bufferScale = dbg.getGBufferScale();
@@ -118,7 +125,7 @@ void LayerRenderer::render(
                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
             };
 
-            ctx.m_nodeDraw->drawNodes(
+            m_nodeDraw->drawNodes(
                 ctx,
                 drawContext,
                 targetBuffer);
@@ -157,14 +164,17 @@ void LayerRenderer::fillHighlightMask(
             0
         };
 
-        ctx.m_nodeDraw->drawProgram(
+        render::CollectionRender collectionRender;
+        collectionRender.drawProgram(
             ctx,
-            drawContext,
             [this, &program](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
-            });
+            },
+            drawContext.typeSelector,
+            drawContext.nodeSelector,
+            drawContext.kindBits);
     }
     ctx.m_batch->flush(ctx);
 }
@@ -211,14 +221,17 @@ void LayerRenderer::renderHighlight(
         };
 
         // draw all selected nodes with stencil
-        ctx.m_nodeDraw->drawProgram(
+        render::CollectionRender collectionRender;
+        collectionRender.drawProgram(
             ctx,
-            drawContext,
             [this, &program, shift](const mesh::LodMesh& lodMesh) {
                 auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
                 p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
-            });
+            },
+            drawContext.typeSelector,
+            drawContext.nodeSelector,
+            drawContext.kindBits);
         ctx.m_batch->flush(ctx);
     }
 

@@ -18,7 +18,7 @@
 #include "registry/Registry.h"
 
 #include "render/Camera.h"
-#include "render/NodeDraw.h"
+//#include "render/NodeDraw.h"
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
@@ -35,7 +35,7 @@ RenderContext::RenderContext(
         parent->m_registry,
         parent->m_collection,
         parent->m_renderData,
-        parent->m_nodeDraw,
+        //parent->m_nodeDraw,
         parent->m_batch,
         parent->m_camera,
         parent->m_nearPlane,
@@ -58,7 +58,7 @@ RenderContext::RenderContext(
         parent->m_registry,
         parent->m_collection,
         parent->m_renderData,
-        parent->m_nodeDraw,
+        //parent->m_nodeDraw,
         parent->m_batch,
         camera,
         parent->m_nearPlane,
@@ -83,7 +83,7 @@ RenderContext::RenderContext(
         parent->m_registry,
         parent->m_collection,
         parent->m_renderData,
-        parent->m_nodeDraw,
+        //parent->m_nodeDraw,
         parent->m_batch,
         camera,
         nearPlane,
@@ -100,7 +100,7 @@ RenderContext::RenderContext(
     Registry* registry,
     render::NodeCollection* collection,
     render::RenderData* renderData,
-    render::NodeDraw* nodeDraw,
+    //render::NodeDraw* nodeDraw,
     render::Batch* batch,
     render::Camera* camera,
     float nearPlane,
@@ -115,7 +115,7 @@ RenderContext::RenderContext(
     m_clock{ clock },
     m_collection{ collection },
     m_renderData{ renderData },
-    m_nodeDraw{ nodeDraw },
+    //m_nodeDraw{ nodeDraw },
     m_batch{ batch },
     m_registry{ registry },
     m_camera{ camera },

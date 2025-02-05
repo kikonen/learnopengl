@@ -24,7 +24,7 @@
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
-#include "render/NodeDraw.h"
+#include "render/CollectionRender.h"
 #include "render/DrawContext.h"
 
 #include "registry/Registry.h"
@@ -262,14 +262,17 @@ void ShadowCascade::drawNodes(
             render::KIND_ALL
         };
 
-        ctx.m_nodeDraw->drawProgram(
+        render::CollectionRender collectionRender;
+        collectionRender.drawProgram(
             ctx,
-            drawContext,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
                 return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgramId : m_solidShadowProgramId;
-            });
+            },
+            drawContext.typeSelector,
+            drawContext.nodeSelector,
+            drawContext.kindBits);
     }
 
     ctx.m_batch->flush(ctx);

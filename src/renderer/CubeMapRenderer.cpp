@@ -19,6 +19,7 @@
 #include "script/api/MoveNode.h"
 
 #include "engine/PrepareContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -102,6 +103,9 @@ void CubeMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
+    m_nodeDraw->prepareRT(ctx);
+
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
 
@@ -151,12 +155,24 @@ void CubeMapRenderer::prepareRT(
     }
 }
 
-void CubeMapRenderer::updateRT(const UpdateViewContext& ctx)
+void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
     if (!isEnabled()) return;
 
-    m_waterMapRenderer->updateRT(ctx);
-    m_mirrorMapRenderer->updateRT(ctx);
+    const auto& assets = parentCtx.m_assets;
+    int size = assets.cubeMapSize;
+
+    UpdateViewContext localCtx{
+        parentCtx.m_clock,
+        parentCtx.m_registry,
+        size,
+        size,
+        parentCtx.m_dbg};
+
+    m_nodeDraw->updateRT(localCtx);
+
+    m_waterMapRenderer->updateRT(localCtx);
+    m_mirrorMapRenderer->updateRT(localCtx);
 }
 
 void CubeMapRenderer::bindTexture(const RenderContext& ctx)
@@ -332,7 +348,7 @@ void CubeMapRenderer::drawNodes(
         GL_COLOR_BUFFER_BIT
     };
 
-    ctx.m_nodeDraw->drawNodes(
+    m_nodeDraw->drawNodes(
         ctx,
         drawContext,
         targetBuffer);

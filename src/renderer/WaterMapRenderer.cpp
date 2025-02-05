@@ -60,6 +60,9 @@ void WaterMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
+    m_nodeDraw->prepareRT(ctx);
+
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
         m_tagMaterial.registerMaterial();
@@ -127,6 +130,8 @@ void WaterMapRenderer::prepareRT(
 void WaterMapRenderer::updateRT(const UpdateViewContext& ctx)
 {
     if (!isEnabled()) return;
+
+    m_nodeDraw->updateRT(ctx);
 
     updateReflectionView(ctx);
     updateRefractionView(ctx);
@@ -428,7 +433,7 @@ void WaterMapRenderer::drawNodes(
             GL_COLOR_BUFFER_BIT
         };
 
-        ctx.m_nodeDraw->drawNodes(
+        m_nodeDraw->drawNodes(
             ctx,
             drawContext,
             targetBuffer);

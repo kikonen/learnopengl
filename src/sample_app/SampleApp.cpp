@@ -303,7 +303,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         m_currentScene->m_registry.get(),
         m_currentScene->getCollection(),
         m_currentScene->m_renderData.get(),
-        m_currentScene->m_nodeDraw.get(),
+        //m_currentScene->m_nodeDraw.get(),
         m_currentScene->m_batch.get(),
         &cameraNode->m_camera->getCamera(),
         assets.nearPlane,

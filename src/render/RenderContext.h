@@ -17,7 +17,7 @@
 #include "ki/RenderClock.h"
 
 namespace render {
-    class NodeDraw;
+    //class NodeDraw;
     class Batch;
     class RenderData;
     struct DebugContext;
@@ -72,7 +72,7 @@ public:
         Registry* registry,
         render::NodeCollection* collection,
         render::RenderData* renderData,
-        render::NodeDraw* nodeDraw,
+        //render::NodeDraw* nodeDraw,
         render::Batch* batch,
         render::Camera* camera,
         float nearPlane,
@@ -145,7 +145,7 @@ public:
 
     render::NodeCollection* const m_collection;
     render::RenderData* const m_renderData;
-    render::NodeDraw* const m_nodeDraw;
+    //render::NodeDraw* const m_nodeDraw;
     render::Batch* const m_batch;
 
     GLenum m_depthFunc;

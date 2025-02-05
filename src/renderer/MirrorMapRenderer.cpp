@@ -51,6 +51,8 @@ namespace {
     constexpr int ATT_ALBEDO_INDEX = 0;
 }
 
+MirrorMapRenderer::~MirrorMapRenderer() = default;
+
 void MirrorMapRenderer::prepareRT(
     const PrepareContext& ctx)
 {
@@ -58,6 +60,9 @@ void MirrorMapRenderer::prepareRT(
     m_prepared = true;
 
     Renderer::prepareRT(ctx);
+
+    m_nodeDraw = std::make_unique<render::NodeDraw>();
+    m_nodeDraw->prepareRT(ctx);
 
     const auto& assets = ctx.m_assets;
 
@@ -125,6 +130,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& ctx)
     if (!isEnabled()) return;
 
     const auto& assets = ctx.m_assets;
+
+    m_nodeDraw->updateRT(ctx);
 
     m_waterMapRenderer->updateRT(ctx);
     if (m_mirrorMapRenderer) {
@@ -352,7 +359,7 @@ void MirrorMapRenderer::drawNodes(
             GL_COLOR_BUFFER_BIT
         };
 
-        ctx.m_nodeDraw->drawNodes(
+        m_nodeDraw->drawNodes(
             ctx,
             drawContext,
             targetBuffer);

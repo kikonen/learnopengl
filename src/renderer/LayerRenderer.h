@@ -7,6 +7,7 @@
 
 namespace render {
     class FrameBuffer;
+    class NodeDraw;
 }
 
 class LayerRenderer final : public Renderer
@@ -20,6 +21,8 @@ public:
         std::string_view name,
         bool useFrameStep)
         : Renderer(name, useFrameStep) {}
+
+    virtual ~LayerRenderer() override;
 
     void prepareRT(
         const PrepareContext& ctx) override;
@@ -41,6 +44,8 @@ private:
 
 public:
     std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
 private:
     Program* m_selectionProgram{ nullptr };

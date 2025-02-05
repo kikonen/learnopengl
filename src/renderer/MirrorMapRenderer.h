@@ -8,6 +8,7 @@
 
 namespace render {
     class FrameBuffer;
+    class NodeDraw;
 }
 
 class Node;
@@ -32,7 +33,7 @@ public:
         m_doubleBuffer(doubleBuffer),
         m_squareAspectRatio(squareAspectRatio) {}
 
-    ~MirrorMapRenderer() = default;
+    virtual ~MirrorMapRenderer() override;
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;
@@ -77,6 +78,8 @@ private:
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
+
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
     Material m_tagMaterial;
 };

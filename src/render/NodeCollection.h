@@ -13,8 +13,6 @@ namespace editor {
 }
 
 namespace render {
-    class NodeDraw;
-
     // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     struct MeshTypeKey {
         // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map

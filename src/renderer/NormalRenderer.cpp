@@ -14,7 +14,7 @@
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
-#include "render/NodeDraw.h"
+#include "render/CollectionRender.h"
 #include "render/DrawContext.h"
 
 #include "registry/Registry.h"
@@ -59,13 +59,16 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
             render::KIND_ALL
         };
 
-        ctx.m_nodeDraw->drawProgram(
+        render::CollectionRender collectionRender;
+        collectionRender.drawProgram(
             ctx,
-            drawContext,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
-            });
+            },
+            drawContext.typeSelector,
+            drawContext.nodeSelector,
+            drawContext.kindBits);
     }
 
     ctx.m_batch->flush(ctx);

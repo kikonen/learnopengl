@@ -11,6 +11,7 @@
 namespace render {
     class CubeMapBuffer;
     class FrameBuffer;
+    class NodeDraw;
 }
 
 class Node;
@@ -29,7 +30,8 @@ class CubeMapRenderer final : public Renderer
 public:
     CubeMapRenderer(bool useFrameStep)
         : Renderer("main", useFrameStep) {}
-    ~CubeMapRenderer();
+
+    virtual ~CubeMapRenderer() override;
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;
@@ -74,4 +76,6 @@ private:
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
+
+    std::unique_ptr<render::NodeDraw> m_nodeDraw;
 };
