@@ -29,9 +29,9 @@ namespace render
         m_decalRenderer->prepareRT(ctx);
     }
 
-    void PassDecal::updateRT(const UpdateViewContext& ctx)
+    void PassDecal::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassDecal::initRender(const RenderContext& ctx)

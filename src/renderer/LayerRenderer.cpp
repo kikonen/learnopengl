@@ -44,8 +44,18 @@ void LayerRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_nodeDraw->prepareRT(ctx);
+    {
+        m_nodeDraw = std::make_unique<render::NodeDraw>();
+
+        auto& pipeline = m_nodeDraw->m_pipeline;
+        //pipeline.m_particle = false;
+        //pipeline.m_decal = false;
+        //pipeline.m_fog = false;
+        //pipeline.m_emission = false;
+        //pipeline.m_bloom = false;
+
+        m_nodeDraw->prepareRT(ctx);
+    }
 
     m_renderFrameStart = assets.nodeRenderFrameStart;
     m_renderFrameStep = assets.nodeRenderFrameStep;
@@ -79,9 +89,10 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
         m_height = h;
 
         KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
+
+        m_nodeDraw->updateRT(ctx, bufferScale);
     }
 
-    m_nodeDraw->updateRT(ctx);
 
     {
         auto buffer = new render::FrameBuffer(

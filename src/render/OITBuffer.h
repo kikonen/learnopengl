@@ -23,7 +23,8 @@ namespace render {
 
         void updateRT(
             const UpdateViewContext& ctx,
-            GBuffer* gBuffer);
+            GBuffer* gBuffer,
+            float bufferScale);
 
         void bind(const RenderContext& ctx);
 

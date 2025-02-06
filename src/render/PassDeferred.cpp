@@ -49,11 +49,11 @@ namespace render
         }
     }
 
-    void PassDeferred::updateRT(const UpdateViewContext& ctx)
+    void PassDeferred::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
 
-        m_gBuffer.updateRT(ctx);
+        m_gBuffer.updateRT(ctx, bufferScale);
 
         // NOTE KI this is start of all whole chain (i.e. after GBuffer pass)
         {

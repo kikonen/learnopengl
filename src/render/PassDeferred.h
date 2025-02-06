@@ -18,7 +18,7 @@ namespace render {
 
         void prepare(const PrepareContext& ctx);
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx, float bufferScale);
 
         void cleanup(const RenderContext& ctx);
 

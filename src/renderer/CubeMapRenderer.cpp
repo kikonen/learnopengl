@@ -103,8 +103,18 @@ void CubeMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_nodeDraw->prepareRT(ctx);
+    {
+        m_nodeDraw = std::make_unique<render::NodeDraw>();
+
+        auto& pipeline = m_nodeDraw->m_pipeline;
+        pipeline.m_particle = false;
+        pipeline.m_decal = false;
+        pipeline.m_fog = false;
+        pipeline.m_emission = false;
+        pipeline.m_bloom = false;
+
+        m_nodeDraw->prepareRT(ctx);
+    }
 
     m_renderFrameStart = assets.cubeMapRenderFrameStart;
     m_renderFrameStep = assets.cubeMapRenderFrameStep;
@@ -169,8 +179,10 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
         size,
         parentCtx.m_dbg};
 
-    m_nodeDraw->updateRT(localCtx);
+    float bufferScale = 0.5f;
+    m_nodeDraw->updateRT(localCtx, bufferScale);
 
+    // NOTE KI nested renderers scale down from current
     m_waterMapRenderer->updateRT(localCtx);
     m_mirrorMapRenderer->updateRT(localCtx);
 }

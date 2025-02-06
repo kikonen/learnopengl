@@ -25,9 +25,9 @@ namespace render
     {
     }
 
-    void PassCopy::updateRT(const UpdateViewContext& ctx)
+    void PassCopy::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassCopy::initRender(const RenderContext& ctx)

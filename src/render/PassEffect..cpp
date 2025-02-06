@@ -30,9 +30,9 @@ namespace render
     {
     }
 
-    void PassEffect::updateRT(const UpdateViewContext& ctx)
+    void PassEffect::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassEffect::initRender(const RenderContext& ctx)

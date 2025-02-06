@@ -46,12 +46,11 @@ namespace render
         return src;
     }
 
-    bool Pass::updateSize(const UpdateViewContext& ctx)
+    bool Pass::updateSize(const UpdateViewContext& ctx, float bufferScale)
     {
         const auto& dbg = *ctx.m_dbg;
 
         const auto& res = ctx.m_resolution;
-        const auto bufferScale = dbg.getGBufferScale();
 
         int w = (int)(bufferScale * res.x);
         int h = (int)(bufferScale * res.y);

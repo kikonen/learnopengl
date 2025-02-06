@@ -31,9 +31,9 @@ namespace render
     {
     }
 
-    void PassSkybox::updateRT(const UpdateViewContext& ctx)
+    void PassSkybox::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassSkybox::initRender(const RenderContext& ctx)

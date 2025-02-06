@@ -19,13 +19,12 @@ namespace render {
     {
     }
 
-    void GBuffer::updateRT(const UpdateViewContext& ctx)
+    void GBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
         const auto& assets = ctx.m_assets;
         auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
-        const auto bufferScale = dbg.getGBufferScale();
 
         int w = (int)(bufferScale * res.x);
         int h = (int)(bufferScale * res.y);

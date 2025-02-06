@@ -31,7 +31,7 @@ namespace render
 
         void prepare();
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx, float bufferScale);
 
         void bind(
             const RenderContext& ctx,

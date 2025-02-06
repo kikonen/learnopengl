@@ -43,7 +43,7 @@ namespace render {
             const PassContext& src);
 
     protected:
-        bool updateSize(const UpdateViewContext& ctx);
+        bool updateSize(const UpdateViewContext& ctx, float bufferScale);
 
         void startScreenPass(
             const RenderContext& ctx,

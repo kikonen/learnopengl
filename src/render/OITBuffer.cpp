@@ -18,13 +18,13 @@ namespace render {
 
     void OITBuffer::updateRT(
         const UpdateViewContext& ctx,
-        GBuffer* gBuffer)
+        GBuffer* gBuffer,
+        float bufferScale)
     {
         const auto& assets = ctx.m_assets;
         auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
-        const auto bufferScale = dbg.getGBufferScale();
 
         int w = (int)(bufferScale * res.x);
         int h = (int)(bufferScale * res.y);

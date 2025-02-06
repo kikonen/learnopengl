@@ -68,8 +68,11 @@ private:
 
     std::vector<render::Camera> m_cameras;
 
+    int m_width{ -1 };
+    int m_height{ -1 };
+
     int m_reflectionWidth{ -1 };
-    int m_reflectionheight{ -1 };
+    int m_reflectionHeight{ -1 };
 
     int m_refractionWidth{ -1 };
     int m_refractionHeight{ -1 };

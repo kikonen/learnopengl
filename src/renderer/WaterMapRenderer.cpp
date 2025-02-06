@@ -60,8 +60,18 @@ void WaterMapRenderer::prepareRT(
 
     const auto& assets = ctx.m_assets;
 
-    m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_nodeDraw->prepareRT(ctx);
+    {
+        m_nodeDraw = std::make_unique<render::NodeDraw>();
+
+        auto& pipeline = m_nodeDraw->m_pipeline;
+        pipeline.m_particle = false;
+        pipeline.m_decal = false;
+        pipeline.m_fog = false;
+        pipeline.m_emission = false;
+        pipeline.m_bloom = false;
+
+        m_nodeDraw->prepareRT(ctx);
+    }
 
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
@@ -127,25 +137,61 @@ void WaterMapRenderer::prepareRT(
     }
 }
 
-void WaterMapRenderer::updateRT(const UpdateViewContext& ctx)
+void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
     if (!isEnabled()) return;
 
-    m_nodeDraw->updateRT(ctx);
+    const auto& assets = parentCtx.m_assets;
 
-    updateReflectionView(ctx);
-    updateRefractionView(ctx);
+    int w;
+    int h;
+    {
+        const auto& res = parentCtx.m_resolution;
+        const float bufferScale = std::max(
+            assets.waterRefractionBufferScale,
+            assets.waterReflectionBufferScale);
+
+        w = (int)(bufferScale * res.x);
+        h = (int)(bufferScale * res.y);
+
+        if (m_squareAspectRatio) {
+            h = w;
+        }
+
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
+
+        bool changed = w != m_width || h != m_height;
+        if (!changed) return;
+
+        m_width = w;
+        m_height = h;
+    }
+
+    {
+        UpdateViewContext localCtx{
+            parentCtx.m_clock,
+            parentCtx.m_registry,
+            w,
+            h,
+            parentCtx.m_dbg };
+
+        m_nodeDraw->updateRT(localCtx, 1.f);
+    }
+
+    updateReflectionView(parentCtx);
+    updateRefractionView(parentCtx);
 }
 
 void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
 
-    const auto& res = ctx.m_resolution;
-
     int w;
     int h;
     {
+        const auto& res = ctx.m_resolution;
+
         w = (int)(assets.waterReflectionBufferScale * res.x);
         h = (int)(assets.waterReflectionBufferScale * res.y);
 
@@ -156,11 +202,11 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 
-        bool changed = w != m_reflectionWidth || h != m_reflectionheight;
+        bool changed = w != m_reflectionWidth || h != m_reflectionHeight;
         if (!changed) return;
 
         m_reflectionWidth = w;
-        m_reflectionheight = h;
+        m_reflectionHeight = h;
     }
 
     m_reflectionBuffers.clear();
@@ -194,20 +240,28 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    const auto& res = ctx.m_resolution;
 
-    int w = (int)(assets.waterRefractionBufferScale * res.x);
-    int h = (int)(assets.waterRefractionBufferScale * res.y);
+    int w;
+    int h;
+    {
+        const auto& res = ctx.m_resolution;
 
-    if (m_squareAspectRatio) {
-        h = w;
+        w = (int)(assets.waterRefractionBufferScale * res.x);
+        h = (int)(assets.waterRefractionBufferScale * res.y);
+
+        if (m_squareAspectRatio) {
+            h = w;
+        }
+
+        if (w < 1) w = 1;
+        if (h < 1) h = 1;
+
+        bool changed = w != m_refractionWidth || h != m_refractionHeight;
+        if (!changed) return;
+
+        m_refractionWidth = w;
+        m_refractionHeight = h;
     }
-
-    if (w < 1) w = 1;
-    if (h < 1) h = 1;
-
-    bool changed = w != m_refractionWidth || h != m_refractionHeight;
-    if (!changed) return;
 
     m_refractionBuffers.clear();
 
@@ -235,9 +289,6 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
     for (auto& buf : m_refractionBuffers) {
         buf->prepare();
     }
-
-    m_refractionWidth = w;
-    m_refractionHeight = h;
 }
 
 void WaterMapRenderer::bindTexture(const RenderContext& ctx)

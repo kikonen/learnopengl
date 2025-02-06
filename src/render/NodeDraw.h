@@ -5,6 +5,7 @@
 #include "query/TimeElapsedQuery.h"
 
 #include "render/size.h"
+#include "Pipeline.h"
 
 struct UpdateViewContext;
 struct PrepareContext;
@@ -49,7 +50,7 @@ namespace render {
         void prepareRT(
             const PrepareContext& ctx);
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx, float bufferScale);
 
         void drawNodes(
             const RenderContext& ctx,
@@ -64,6 +65,9 @@ namespace render {
     private:
         void passCleanup(
             const RenderContext& ctx);
+
+    public:
+        Pipeline m_pipeline;
 
     private:
         query::TimeElapsedQuery m_timeElapsedQuery;

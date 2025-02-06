@@ -16,7 +16,8 @@ namespace render {
 
         void updateRT(
             const UpdateViewContext& ctx,
-            PassDeferred* passDeferrred);
+            PassDeferred* passDeferrred,
+            float bufferScale);
 
         void cleanup(const RenderContext& ctx);
 

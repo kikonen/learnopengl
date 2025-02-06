@@ -29,9 +29,9 @@ namespace render
         m_particleRenderer->prepareRT(ctx);
     }
 
-    void PassParticle::updateRT(const UpdateViewContext& ctx)
+    void PassParticle::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassParticle::initRender(const RenderContext& ctx)

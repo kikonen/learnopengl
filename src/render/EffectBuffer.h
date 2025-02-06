@@ -29,7 +29,7 @@ namespace render {
         void prepare(
             GBuffer* gBuffer);
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateRT(const UpdateViewContext& ctx, float bufferScale);
 
         void clearAll();
         void invalidateAll();

@@ -22,23 +22,26 @@ namespace render {
     {
     }
 
-    void BlurBuffer::updateRT(const UpdateViewContext& ctx)
+    void BlurBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
         const auto& assets = ctx.m_assets;
         auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
-        const auto bufferScale = dbg.getGBufferScale();
 
-        int w = (int)(bufferScale * res.x);
-        int h = (int)(bufferScale * res.y);
-        if (w < 1) w = 1;
-        if (h < 1) h = 1;
+        int w;
+        int h;
+        {
+            w = (int)(bufferScale * res.x);
+            h = (int)(bufferScale * res.y);
+            if (w < 1) w = 1;
+            if (h < 1) h = 1;
 
-        bool changed = w != m_width || h != m_height;
-        if (!changed) return;
+            bool changed = w != m_width || h != m_height;
+            if (!changed) return;
 
-        KI_INFO(fmt::format("BLUR_BUFFER: update - w={}, h={}", w, h));
+            KI_INFO(fmt::format("BLUR_BUFFER: update - w={}, h={}", w, h));
+        }
 
         int currW = w;
         int currH = h;

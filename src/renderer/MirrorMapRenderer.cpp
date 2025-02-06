@@ -61,8 +61,18 @@ void MirrorMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_nodeDraw->prepareRT(ctx);
+    {
+        m_nodeDraw = std::make_unique<render::NodeDraw>();
+
+        auto& pipeline = m_nodeDraw->m_pipeline;
+        pipeline.m_particle = false;
+        pipeline.m_decal = false;
+        pipeline.m_fog = false;
+        pipeline.m_emission = false;
+        pipeline.m_bloom = false;
+
+        m_nodeDraw->prepareRT(ctx);
+    }
 
     const auto& assets = ctx.m_assets;
 
@@ -187,8 +197,9 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
             w,
             h,
             parentCtx.m_dbg };
-        m_nodeDraw->updateRT(localCtx);
+        m_nodeDraw->updateRT(localCtx, 1.f);
 
+        // NOTE KI nested renderers scale down from current
         m_waterMapRenderer->updateRT(localCtx);
         if (m_mirrorMapRenderer) {
             m_mirrorMapRenderer->updateRT(localCtx);

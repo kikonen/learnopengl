@@ -585,6 +585,7 @@
     <ClInclude Include="src\render\PassParticle.h" />
     <ClInclude Include="src\render\PassDeferred.h" />
     <ClInclude Include="src\render\PassSkybox.h" />
+    <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />

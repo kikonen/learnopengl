@@ -17,13 +17,12 @@ namespace render {
         m_gBuffer = gBuffer;
     }
 
-    void EffectBuffer::updateRT(const UpdateViewContext& ctx)
+    void EffectBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
         const auto& assets = Assets::get();
         auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
-        const auto bufferScale = dbg.getGBufferScale();
 
         int w = (int)(bufferScale * res.x);
         int h = (int)(bufferScale * res.y);

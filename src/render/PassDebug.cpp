@@ -29,9 +29,9 @@ namespace render
     {
     }
 
-    void PassDebug::updateRT(const UpdateViewContext& ctx)
+    void PassDebug::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (!updateSize(ctx)) return;
+        if (!updateSize(ctx, bufferScale)) return;
     }
 
     void PassDebug::initRender(const RenderContext& ctx)
