@@ -24,6 +24,16 @@ public:
 
     bool isModified(int fileId);
 
+    size_t getSize() const noexcept
+    {
+        return m_files.size();
+    }
+
+    size_t getModifiedCount() const noexcept
+    {
+        return m_modified.size();
+    }
+
 private:
     std::mutex m_lock{};
 

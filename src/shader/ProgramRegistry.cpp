@@ -90,6 +90,11 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
             }
         }
 
+        KI_INFO_OUT(fmt::format(
+            "check_dirty: elapsed={}s, empty={}, files={}, modified={}",
+            m_elapsedSecs, dirty.empty(), fileCache.getSize(), fileCache.getModifiedCount()));
+
+
         fileCache.clearModified();
         m_elapsedSecs = 0.f;
     }

@@ -65,7 +65,8 @@ void FileEntryCache::checkModified()
     std::lock_guard lock(m_lock);
 
     for (const auto& fileEntry : m_files) {
-        if (fileEntry && fileEntry->exists() && fileEntry->modified()) {
+        //fileEntry->exists()
+        if (fileEntry && fileEntry->modified()) {
             fileEntry->mark();
             m_modified.push_back(fileEntry->m_id);
         }
