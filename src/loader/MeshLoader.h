@@ -28,11 +28,13 @@ namespace loader {
 
         void loadLods(
             const loader::DocNode& node,
-            std::vector<LodData>& lods) const;
+            std::vector<LodData>& lods,
+            Loaders& loaders) const;
 
         void loadLod(
             const loader::DocNode& node,
-            LodData& data) const;
+            LodData& data,
+            Loaders& loaders) const;
 
         void loadSockets(
             const loader::DocNode& node,

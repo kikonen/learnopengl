@@ -77,8 +77,6 @@ nodes:
     meshes:
       - name: helmet
         path: fbx\creatures\skeleton_knight\Helmet.fbx
-        lod:
-          level: [0, 1, 2]
         material:
           base: textures
           kd: [0, 0.8, 0]

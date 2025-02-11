@@ -3,7 +3,8 @@ prefab:
   meshes:
     - path: rock2/rock
       lod:
-        level: 0
+        min: 0
+        max: 20
       material:
         base: textures/Rock002_1K-PNG
         mrao: [0.5, 0.0, 1]
@@ -16,7 +17,8 @@ prefab:
         parallax_depth: 0.015
     - path: rock2/rock_lod_1
       lod:
-        level: 1
+        min: 20
+        max: 40
       material:
         base: textures/Rock002_1K-PNG
         mrao: [0.5, 0.0, 1]
@@ -28,7 +30,8 @@ prefab:
       scale: 1.5
     - path: rock2/rock_lod_2
       lod:
-        level: 2
+        min: 40
+        max: 80
       material:
         base: textures/Rock002_1K-PNG
         #mrao: [0.5, 0.0, 1]
@@ -39,7 +42,8 @@ prefab:
       scale: 1
     - path: rock2/rock_lod_3
       lod:
-        level: 3
+        min: 80
+        max: 200
       material:
         base: textures/Rock002_1K-PNG
         #mrao: [0.5, 0.0, 1]
@@ -49,7 +53,8 @@ prefab:
       scale: 1.5
     - path: rock2/rock_lod_4
       lod:
-        level: 4
+        min: 200
+        max: 400
       flags:
         xbillboard: true
       material:
@@ -60,17 +65,6 @@ prefab:
         tiling: 4
         render_back: true
       scale: 1.8
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 20
-    - level: 2
-      distance: 40
-    - level: 3
-      distance: 80
-    - level: 4
-      distance: 200
   program: g_tex
   flags:
     no_shadow: true

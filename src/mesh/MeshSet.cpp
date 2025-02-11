@@ -76,4 +76,51 @@ namespace mesh {
     {
         return m_meshes;
     }
+
+    std::string MeshSet::getSummary()
+    {
+        std::string sb;
+        sb.reserve(10000);
+
+        auto appendLine = [](auto& sb, auto level, const auto& line) {
+            for (int i = 0; i < level; i++) {
+                sb += "    ";
+            }
+            sb += line;
+            sb += "\n";
+        };
+
+        {
+            const auto& line = fmt::format(
+                "MESH_SET: {}",
+                m_name);
+            appendLine(sb, 0, line);
+        }
+
+        int index = 0;
+
+        for (const auto& mesh : m_meshes) {
+            {
+                const auto& line = fmt::format(
+                    "[{}] {}",
+                    index,
+                    mesh->str());
+
+                appendLine(sb, 0, line);
+            }
+            {
+                const auto* material = mesh->getMaterial();
+
+                const auto& line = fmt::format(
+                    "    {}",
+                    material ? material->str() : "NULL");
+
+                appendLine(sb, 0, line);
+            }
+
+            index++;
+        }
+
+        return sb;
+    }
 }

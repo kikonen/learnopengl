@@ -7,16 +7,19 @@ prefab:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-        #z_up: true
       lods:
         - name: SK_Lion_LOD0
-          level: 0
+          min: 0
+          max: 20
         - name: SK_Lion_LOD1
-          level: 1
+          min: 20
+          max: 30
         - name: SK_Lion_LOD2
-          level: 2
+          min: 30
+          max: 40
         - name: SK_Lion_LOD3
-          level: 3
+          min: 40
+          max: 200
       material:
         name: lion_pbr
         base: lion_skin_pbr
@@ -36,15 +39,6 @@ prefab:
         - name: roar
           path: anim/Lion@Roar.FBX
       base_scale: 0.0125
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 20
-    - level: 2
-      distance: 30
-    - level: 3
-      distance: 40
   audio:
     source:
       path: audio/Lion Growl Fx_19237D66_normal_mono.wav

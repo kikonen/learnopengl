@@ -116,7 +116,7 @@ nodes:
     scale: 0.01
     flags:
       xeffect: true
-    xscript_file: scripts/seq_hello_text
+    script_file: scripts/seq_hello_text
     xscript: |
       printf("text rotate: %d", id)
       cmd:rotate(

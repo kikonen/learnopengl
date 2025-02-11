@@ -268,7 +268,7 @@ void ShadowCascade::drawNodes(
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
-                return lodMesh.m_drawOptions.m_alpha ? m_alphaShadowProgramId : m_solidShadowProgramId;
+                return lodMesh.m_drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
             drawContext.typeSelector,
             drawContext.nodeSelector,

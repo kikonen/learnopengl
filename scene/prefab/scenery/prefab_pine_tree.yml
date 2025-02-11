@@ -2,8 +2,9 @@
 prefab:
   meshes:
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      lods:
-        - level: 0
+      lod:
+        min: 0
+        max: 200
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -20,8 +21,9 @@ prefab:
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      lods:
-        - level: 1
+      lod:
+        min: 200
+        max: 300
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -37,8 +39,9 @@ prefab:
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      lods:
-        - level: 2
+      lod:
+        min: 300
+        max: 500
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -52,8 +55,9 @@ prefab:
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      lods:
-        - level: 3
+      lod:
+        min: 500
+        max: 800
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -66,8 +70,9 @@ prefab:
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
-      lods:
-        - level: 4
+      lod:
+        min: 800
+        max: 1000
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
@@ -78,14 +83,3 @@ prefab:
       default_programs: true
       base_scale: 0.01
       #base_rotation: [-90, 0, 0]
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 200
-    - level: 2
-      distance: 300
-    - level: 3
-      distance: 500
-    - level: 4
-      distance: 500

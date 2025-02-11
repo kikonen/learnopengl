@@ -7,6 +7,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/Assets.h"
+
 #include "util/util.h"
 #include "util/glm_format.h"
 
@@ -159,10 +161,10 @@ namespace loader {
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
                 lod.name = "*";
-                loadLod(v, lod);
+                loadLod(v, lod, loaders);
             }
             else if (k == "lods") {
-                loadLods(v, data.lods);
+                loadLods(v, data.lods, loaders);
             }
             else if (k == "sockets") {
                 loadSockets(v, data.sockets);
@@ -196,20 +198,24 @@ namespace loader {
 
     void MeshLoader::loadLods(
         const loader::DocNode& node,
-        std::vector<LodData>& lods) const
+        std::vector<LodData>& lods,
+        Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
-            data.levels = { {0} };
-            data.name = '*';
-            loadLod(entry, data);
+            loadLod(entry, data, loaders);
         }
     }
 
     void MeshLoader::loadLod(
         const loader::DocNode& node,
-        LodData& data) const
+        LodData& data,
+        Loaders& loaders) const
     {
+        const auto& assets = Assets::get();
+        data.minDistance = assets.nearPlane;
+        data.maxDistance = assets.farPlane;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -219,11 +225,11 @@ namespace loader {
             if (k == "name") {
                 data.name = readString(v);
             }
-            else if (k == "level") {
-                data.levels = readIntVector(v, 1);
+            else if (k == "min" || k == "min_distance") {
+                data.minDistance = readFloat(v);
             }
-            else if (k == "distance") {
-                data.distance = readFloat(v);
+            else if (k == "max" || k == "max_distance") {
+                data.maxDistance = readFloat(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);
@@ -234,6 +240,16 @@ namespace loader {
                     const auto& flagValue = readBool(flagNode.getNode());
                     data.meshFlags.set(util::toLower(flagName), flagValue);
                 }
+            }
+            else if (k == "material_modifier") {
+                if (data.materialModifiers.empty()) {
+                    data.materialModifiers.emplace_back();
+                }
+                auto& materialData = data.materialModifiers[0];
+                loaders.m_materialLoader.loadMaterialModifier(v, materialData, loaders);
+            }
+            else if (k == "material_modifiers") {
+                loaders.m_materialLoader.loadMaterialModifiers(v, data.materialModifiers, loaders);
             }
             else {
                 reportUnknown("lod_entry", k, v);

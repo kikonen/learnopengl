@@ -120,7 +120,10 @@ namespace mesh
 
         std::vector<const aiNode*> assimpNodes;
         collectJoints(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
-        dumpMetaData(meshSet, rig->m_joints, assimpNodes);
+
+        if (false) {
+            dumpMetaData(meshSet, rig->m_joints, assimpNodes);
+        }
 
         processMeshes(
             ctx,
@@ -342,8 +345,10 @@ namespace mesh
                 for (size_t meshIndex = from; meshIndex < count; ++meshIndex)
                 {
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
+                    const auto* meshName = node->mName.C_Str();
+                    //meshName = mesh->mName.C_Str();
 
-                    auto modelMesh = std::make_unique<mesh::ModelMesh>(mesh->mName.C_Str());
+                    auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
                     //if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;

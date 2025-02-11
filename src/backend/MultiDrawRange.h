@@ -9,7 +9,7 @@ namespace kigl {
 }
 
 namespace backend {
-    struct DrawRange
+    struct MultiDrawRange
     {
         DrawOptions m_drawOptions;
         ki::vao_id m_vaoId{ 0 };

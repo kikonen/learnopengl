@@ -226,7 +226,6 @@ nodes:
         xuse_bones: true
         xuse_bones_debug: true
         xuse_animation: true
-        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -266,7 +265,6 @@ nodes:
         use_bones: true
         xuse_bones_debug: true
         xuse_animation: true
-        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
@@ -306,7 +304,6 @@ nodes:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-        #z_up: true
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr

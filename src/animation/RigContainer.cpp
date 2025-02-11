@@ -276,11 +276,14 @@ namespace animation {
 
     void RigContainer::dump() const
     {
-        dumpHierarchy(0);
-        dumpAnimations(0);
+        KI_INFO_OUT(fmt::format(
+            "\n=======================\n[RIG SUMMARY: {}]\n{}\n{}\n=======================",
+            m_name,
+            getHierarchySummary(0),
+            getAnimationSummary(0)));
     }
 
-    void RigContainer::dumpHierarchy(int16_t level) const
+    std::string RigContainer::getHierarchySummary(int16_t level) const
     {
         std::string sb;
         sb.reserve(10000);
@@ -328,10 +331,10 @@ namespace animation {
             }
         }
 
-        KI_INFO_OUT(fmt::format("TREE: rig={}\n{}", m_name, sb));
+        return sb;
     }
 
-    void RigContainer::dumpAnimations(int16_t level) const
+    std::string RigContainer::getAnimationSummary(int16_t level) const
     {
         std::string sb;
 
@@ -369,7 +372,7 @@ namespace animation {
             appendLine(sb, 0, line);
         }
 
-        KI_INFO_OUT(fmt::format("ANIM: rig={}\n{}", m_name, sb));
+        return sb;
     }
 
     //void RigContainer::calculateInvTransforms() noexcept

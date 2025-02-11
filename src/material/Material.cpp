@@ -227,6 +227,16 @@ Material::~Material() = default;
 Material& Material::operator=(const Material& o) = default;
 Material& Material::operator=(Material&& o) = default;
 
+std::string Material::str() const noexcept
+{
+    return fmt::format(
+        "<MATERIAL: name={}, programs={}, definitions={}>",
+        m_name,
+        m_programNames.size(),
+        m_programDefinitions.size());
+}
+
+
 void Material::assign(const Material& o)
 {
     auto oldId = m_id;

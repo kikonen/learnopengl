@@ -12,7 +12,6 @@
 
 #include "pool/TypeHandle.h"
 
-#include "LodLevel.h"
 #include "LodMesh.h"
 #include "TypeFlags.h"
 
@@ -115,8 +114,6 @@ namespace mesh {
 
         void bind(const RenderContext& ctx);
 
-        uint8_t getLodLevelMask(float dist2) const;
-
         ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 
         const AABB& getAABB() const noexcept
@@ -132,8 +129,6 @@ namespace mesh {
     public:
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
-
-        std::vector<LodLevel> m_lodLevels;
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 

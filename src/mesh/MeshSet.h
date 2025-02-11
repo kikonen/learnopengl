@@ -43,6 +43,8 @@ namespace mesh {
 
         AABB calculateAABB(const glm::mat4& transform) const noexcept;
 
+        std::string getSummary();
+
     public:
         const std::string m_rootDir;
         const std::string m_dir;

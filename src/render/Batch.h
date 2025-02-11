@@ -6,6 +6,7 @@
 #include "backend/gl/PerformanceCounters.h"
 
 #include "BatchCommand.h"
+#include "BatchRegistry.h"
 
 #include "mesh/InstanceSSBO.h"
 
@@ -117,10 +118,12 @@ namespace render {
         bool m_frustumGPU = false;
         uint32_t m_frustumParallelLimit = 999;
 
-        size_t m_pendingCount{ 0 };
-        std::map<BatchKey, BatchCommand> m_batches;
+        BatchRegistry m_batchRegistry;
 
-        std::vector<mesh::InstanceSSBO> m_entityIndeces;
+        std::vector<MultiDrawEntry> m_pending;
+        size_t m_pendingCount{ 0 };
+
+            std::vector<mesh::InstanceSSBO> m_instances;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

@@ -97,7 +97,7 @@ void MeshRenderer::drawObjects(
     {
         const auto* mesh = meshInstance.m_mesh.get();
 
-        backend::DrawRange drawRange{
+        backend::MultiDrawRange drawRange{
             meshInstance.m_drawOptions,
             static_cast<ki::vao_id>(*mesh->getVAO()),
             meshInstance.m_programId > 0 ? meshInstance.m_programId : m_programId,

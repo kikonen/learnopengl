@@ -23,23 +23,6 @@
 #include "InstanceFlags.h"
 
 namespace {
-    //const std::vector<std::regex> lodMatchers{
-    //    std::regex(".*lod[0-9]+"),
-    //};
-
-    //int16_t resolveLodLevel(const std::string& name)
-    //{
-    //    const auto& str = util::toLower(name);
-    //    if (!util::matchAny(lodMatchers, str)) return -1;
-
-    //    std::string output = std::regex_replace(
-    //        str,
-    //        std::regex(".*lod([0-9]+)"),
-    //        std::string("$1")
-    //    );
-
-    //    return stoi(output);
-    //}
 }
 
 namespace mesh {
@@ -53,7 +36,6 @@ namespace mesh {
 
     LodMesh::LodMesh(LodMesh&& o) noexcept
     {
-        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
@@ -71,6 +53,9 @@ namespace mesh {
 
         m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;
+
+        m_minDistance2 = o.m_minDistance2;
+        m_maxDistance2 = o.m_maxDistance2;
 
         m_baseVertex = o.m_baseVertex;
         m_baseIndex = o.m_baseIndex;
@@ -96,7 +81,6 @@ namespace mesh {
 
     LodMesh& LodMesh::operator=(LodMesh&& o) noexcept
     {
-        m_levelMask = o.m_levelMask;
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
@@ -110,6 +94,9 @@ namespace mesh {
 
         m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;
+
+        m_minDistance2 = o.m_minDistance2;
+        m_maxDistance2 = o.m_maxDistance2;
 
         m_baseVertex = o.m_baseVertex;
         m_baseIndex = o.m_baseIndex;
@@ -137,8 +124,9 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: level={}, vao={}, mesh={}, material={}, socket={}>",
-            m_levelMask,
+            "<LOD_MESH: min={}, max={}, vao={}, mesh={}, material={}, socket={}>",
+            sqrt(m_minDistance2),
+            sqrt(m_maxDistance2),
             m_vaoId,
             m_mesh ? m_mesh->str() : "N/A",
             m_materialIndex,
@@ -184,8 +172,16 @@ namespace mesh {
 
         auto& material = *m_material;
 
-        m_drawOptions.m_alpha = material.alpha;
-        m_drawOptions.m_blend = material.blend;
+        if (material.alpha) {
+            m_drawOptions.m_kindBits |= render::KIND_ALPHA;
+        }
+        if (material.blend) {
+            m_drawOptions.m_kindBits |= render::KIND_ALPHA;
+            m_drawOptions.m_kindBits |= render::KIND_BLEND;
+        }
+        if (m_drawOptions.m_kindBits == 0) {
+            m_drawOptions.m_kindBits = render::KIND_SOLID;
+        }
 
         m_drawOptions.m_gbuffer = material.gbuffer;
 
@@ -193,17 +189,6 @@ namespace mesh {
         m_drawOptions.m_lineMode = material.lineMode;
         m_drawOptions.m_reverseFrontFace = material.reverseFrontFace;
         m_drawOptions.m_noDepth = material.noDepth;
-
-        if (m_drawOptions.m_alpha) {
-            m_drawOptions.m_kindBits |= render::KIND_ALPHA;
-        }
-        if (m_drawOptions.m_blend) {
-            m_drawOptions.m_kindBits |= render::KIND_BLEND;
-        }
-        if (m_drawOptions.m_kindBits == 0) {
-            m_drawOptions.m_kindBits = render::KIND_SOLID;
-            m_drawOptions.m_solid = true;
-        }
 
         m_drawOptions.m_clip = m_flags.clip;
 
@@ -214,11 +199,6 @@ namespace mesh {
         m_selectionProgramId = material.getProgram(MaterialProgramType::selection);
         m_idProgramId = material.getProgram(MaterialProgramType::object_id);
         m_normalProgramId = material.getProgram(MaterialProgramType::normal);
-
-        if (m_flags.zUp) {
-            const auto rotateYUp = util::degreesToQuat(glm::vec3{ 90.f, 0.f, 0.f });
-            m_animationRigTransform = glm::toMat4(rotateYUp);
-        }
     }
 
     std::string LodMesh::getMeshName()
@@ -247,6 +227,14 @@ namespace mesh {
         }
 
         setMaterial(mesh->getMaterial());
+
+        const auto& assets = Assets::get();
+
+        m_minDistance2 = assets.nearPlane;
+        m_minDistance2 *= m_minDistance2;
+
+        m_maxDistance2 = assets.farPlane;
+        m_maxDistance2 *= m_maxDistance2;
     }
 
     void LodMesh::registerMaterial()
@@ -261,16 +249,16 @@ namespace mesh {
             throw "missing material";
         }
 
-        if (assets.useLodDebug) {
-            if (m_levelMask >= 1 << 0)
-                material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
-            if (m_levelMask >= 1 << 1)
-                material->kd = glm::vec4{ 0.f, 0.5f, 0.5f, 1.f };
-            if (m_levelMask >= 1 << 2)
-                material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
-            if (m_levelMask >= 1 << 3)
-                material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
-        }
+        //if (assets.useLodDebug) {
+        //    if (m_levelMask >= 1 << 0)
+        //        material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
+        //    if (m_levelMask >= 1 << 1)
+        //        material->kd = glm::vec4{ 0.f, 0.5f, 0.5f, 1.f };
+        //    if (m_levelMask >= 1 << 2)
+        //        material->kd = glm::vec4{ 0.f, 0.f, 0.5f, 1.f };
+        //    if (m_levelMask >= 1 << 3)
+        //        material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
+        //}
 
         m_materialIndex = material->registerMaterial();
 

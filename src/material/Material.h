@@ -88,6 +88,8 @@ public:
     Material& operator=(const Material& o);
     Material& operator=(Material&& o);
 
+    std::string str() const noexcept;
+
     // assign data from other material, but keep local ID
     // NOTE KI *MUST* keep original materialId
     // => it's referred by verteces

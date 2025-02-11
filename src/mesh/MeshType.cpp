@@ -27,9 +27,7 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType()
-        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()},
-        // LOD0 == bit 0
-        m_lodLevels{ { 1, 0.f } }
+        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
@@ -41,7 +39,6 @@ namespace mesh {
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
-        m_lodLevels{ std::move(o.m_lodLevels) },
         m_customMaterial{ std::move(o.m_customMaterial) }
     {
     }
@@ -92,9 +89,9 @@ namespace mesh {
             lodMesh.registerMaterial();
 
             const auto& opt = lodMesh.m_drawOptions;
-            m_flags.anySolid |= opt.m_solid;
-            m_flags.anyAlpha |= opt.m_alpha;
-            m_flags.anyBlend |= opt.m_blend;
+            m_flags.anySolid |= opt.isSolid();
+            m_flags.anyAlpha |= opt.isAlpha();
+            m_flags.anyBlend |= opt.isBlend();
             m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
         }
     }
@@ -123,20 +120,6 @@ namespace mesh {
     void MeshType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
     {
         m_customMaterial = std::move(customMaterial);
-    }
-
-    uint8_t MeshType::getLodLevelMask(float dist2) const
-    {
-        if (m_lodLevels.empty()) return 0;
-        //if (m_lodLevels.size() == 1) return m_lodLevels[0].m_levelMask;
-
-        for (int32_t i = static_cast<int32_t>(m_lodLevels.size()) - 1; i >= 0; i--)
-        {
-            const auto& lod = m_lodLevels[i];
-            if (lod.m_distance2 <= dist2)
-                return lod.m_levelMask;
-        }
-        return 0;
     }
 
     ki::size_t_entity_flags MeshType::resolveEntityFlags() const noexcept {

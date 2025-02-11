@@ -40,6 +40,16 @@ namespace mesh {
             return m_rig;
         }
 
+        virtual size_t getDefinedVertexCount() const noexcept override
+        {
+            return m_vertices.size();
+        }
+
+        virtual size_t getDefinedIndexCount() const noexcept override
+        {
+            return m_indeces.size();
+        }
+
     public:
         std::vector<animation::VertexBone> m_vertexBones;
 

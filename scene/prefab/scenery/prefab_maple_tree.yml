@@ -2,8 +2,9 @@
 prefab:
   meshes:
     - path: fbx/scenery/trees/Maple_02.fbx
-      lods:
-        - level: 0
+      lod:
+        min: 0
+        max: 100
       materials:
         - name: maple_trunk
           base: textures
@@ -20,8 +21,9 @@ prefab:
       base_scale: 0.02
       default_programs: true
     - path: fbx/scenery/trees/Maple_02.fbx
-      lods:
-        - level: 1
+      lod:
+        min: 100
+        max: 200
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -35,8 +37,9 @@ prefab:
       base_scale: 0.02
       default_programs: true
     - path: fbx/scenery/trees/Maple_02.fbx
-      lods:
-        - level: 2
+      lod:
+        min: 200
+        max: 600
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -50,9 +53,11 @@ prefab:
       default_programs: true
     - path: fbx/scenery/trees/Maple_02.fbx
       lods:
-        - level: 3
+        - name: "*"
+          min: 600
+          max: 1000
         - name: Tree_1
-          level: []
+          max: -1
       materials:
         - name: maple_trunk
           alias: Tree_0Mat
@@ -64,12 +69,3 @@ prefab:
           map_kd: leaf maple.png
       base_scale: 0.02
       default_programs: true
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 100
-    - level: 2
-      distance: 200
-    - level: 3
-      distance: 600

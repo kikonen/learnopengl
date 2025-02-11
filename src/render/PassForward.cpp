@@ -67,7 +67,7 @@ namespace render
         collectionRender.drawNodesImpl(
             ctx,
             [](const mesh::LodMesh& lodMesh) {
-                return !lodMesh.m_drawOptions.m_blend && !lodMesh.m_drawOptions.m_gbuffer
+                return !lodMesh.m_drawOptions.isBlend() && !lodMesh.m_drawOptions.m_gbuffer
                     ? lodMesh.m_programId
                     : (ki::program_id)0;
             },

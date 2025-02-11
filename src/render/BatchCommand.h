@@ -11,80 +11,27 @@
 
 class RenderContext;
 
-namespace mesh {
-    struct LodMesh;
-}
-
 namespace render {
-    struct DrawElement {
-        //glm::mat4 m_transform;
-        glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
-        glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
-        glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
-
-        uint32_t m_baseVertex;
-        uint32_t m_baseIndex;
-        uint32_t m_indexCount;
-        uint32_t m_flags;
-
-        float m_distance2;
-        uint32_t m_entityIndex;
-        uint32_t m_materialIndex;
-        int32_t m_socketIndex;
-
-        backend::DrawOptions m_drawOptions;
-        ki::vao_id m_vaoId;
-        ki::program_id m_programId;
-        int8_t m_priority;
-    };
-
-    // NOTE KI identifies multi-draw batch
-    // => max amount of meshes what can be drawn in same draw call
-    // => i.e. vao, program & al.
-    // @see DrawBuffer::bindDrawRange
-    struct BatchKey {
-        backend::DrawOptions m_drawOptions;
-        const ki::vao_id m_vaoId;
-        const ki::program_id m_programId;
-        const int8_t m_priority;
-
-        BatchKey(
-            int8_t priority,
-            const ki::program_id programId,
-            const ki::vao_id vaoId,
-            const backend::DrawOptions& drawOptions,
-            bool forceSolid,
-            bool forceLineMode) noexcept;
-
-        bool operator<(const BatchKey& o) const noexcept;
-    };
-
-    struct LodKey {
-        const uint32_t m_baseVertex;
-        const uint32_t m_baseIndex;
-        const uint32_t m_indexCount;
-        const uint32_t m_flags;
-
-        LodKey(const mesh::LodMesh& lod, uint32_t flags);
-
-        bool operator<(const LodKey& o) const noexcept;
-    };
-
-    struct LodEntry {
+    struct InstanceEntry {
         //glm::mat4 m_transform;
         glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
         float m_distance2;
+        // NOTE KI variant in dyanmic text mesh case
+        // => Store separately
+        //uint32_t m_indexCount;
         uint32_t m_entityIndex;
         uint32_t m_materialIndex;
         int32_t m_socketIndex;
 
-        LodEntry() {}
-        LodEntry(
+        InstanceEntry() {}
+
+        InstanceEntry(
             const glm::mat4& transform,
             float distance2,
+            //uint32_t m_indexCount,
             uint32_t entityIndex,
             uint32_t materialIndex,
             int32_t socketIndex)
@@ -125,14 +72,121 @@ namespace render {
         }
     };
 
-    struct BatchCommand {
-        std::map<LodKey, std::vector<LodEntry>> m_lodInstances;
-        std::map<LodKey, uint32_t> m_baseIndeces;
+    struct CommandKey {
+        uint32_t m_baseVertex;
+        uint32_t m_baseIndex;
+        // NOTE KI variant in dyanmic text mesh case
+        // => Store separately
+        uint32_t m_indexCount;
 
-        uint32_t getBaseIndex(const LodKey& lodKey) const noexcept
+        CommandKey(
+            uint32_t baseVertex,
+            uint32_t baseIndex,
+            uint32_t indexCount)
+            : m_baseVertex{ baseVertex },
+            m_baseIndex{ baseIndex },
+            m_indexCount{ indexCount }
         {
-            const auto& it = m_baseIndeces.find(lodKey);
-            return it != m_baseIndeces.end() ? it->second : 0;
+        }
+
+        bool operator<(const CommandKey& o) const noexcept;
+
+        bool operator==(const CommandKey& o) const
+        {
+            return m_baseVertex == o.m_baseVertex &&
+                m_baseIndex == o.m_baseIndex &&
+                m_indexCount == o.m_indexCount;
+        }
+    };
+
+    // NOTE KI identifies multi-draw batch
+    // => max amount of meshes what can be drawn in same draw call
+    // => i.e. vao, program & al.
+    // @see DrawBuffer::bindDrawRange
+    struct MultiDrawKey {
+        ki::vao_id m_vaoId;
+        ki::program_id m_programId;
+        backend::DrawOptions m_drawOptions;
+
+        MultiDrawKey(
+            const ki::program_id programId,
+            const ki::vao_id vaoId,
+            const backend::DrawOptions& drawOptions) noexcept;
+
+        bool operator<(const MultiDrawKey& o) const noexcept;
+
+        bool operator==(const MultiDrawKey& o) const
+        {
+            return m_vaoId == o.m_vaoId &&
+                m_programId == o.m_programId &&
+                m_drawOptions.isSameMultiDraw(o.m_drawOptions);
+        }
+    };
+
+    struct CommandEntry {
+        //CommandKey m_command;
+        int16_t m_index{ 0 };
+        uint32_t m_baseIndex{ 0 };
+        uint32_t m_instanceCount{ 0 };
+        uint32_t m_reservedSize{ 0 };
+        InstanceEntry* m_instances{ nullptr };
+
+        void clear()
+        {
+            m_baseIndex = 0;
+            m_instanceCount = 0;
+        }
+
+        void reserve(size_t size) {
+            const uint32_t newSize = std::max(m_reservedSize, static_cast<uint32_t>(size));
+            if (newSize <= m_reservedSize) return;
+
+            InstanceEntry* old = m_instances;
+
+            m_instances = new InstanceEntry[size];
+            m_reservedSize = newSize;
+
+            if (old) {
+                if (m_instanceCount > 0) {
+                    memcpy(m_instances, old, sizeof(InstanceEntry) * m_instanceCount);
+                }
+                delete old;
+            }
+        }
+
+        inline bool empty() const noexcept
+        {
+            return m_instanceCount == 0;
+        }
+
+        inline void addInstance(InstanceEntry instance)
+        {
+            if (m_instanceCount + 1 > m_reservedSize) {
+                reserve(std::max(
+                    static_cast<uint32_t>(m_reservedSize * 1.25f),
+                    m_instanceCount + 1));
+            }
+            m_instances[m_instanceCount++] = instance;
+        }
+    };
+
+    struct MultiDrawEntry {
+        //MultiDrawKey m_multiDraw;
+        int16_t m_index{ 0 };
+        bool m_dirty{ false };
+
+        std::vector<CommandEntry> m_commands;
+
+        void clear() {
+            m_dirty = false;
+            for (auto& command : m_commands) {
+                command.clear();
+            }
+        }
+
+        inline bool empty() const noexcept
+        {
+            return !m_dirty;
         }
     };
 }

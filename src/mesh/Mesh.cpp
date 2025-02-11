@@ -27,13 +27,14 @@ namespace mesh {
     std::string Mesh::str() const noexcept
     {
         return fmt::format(
-            "<MESH: id={}, name={}, baseVertex={}, baseIndex={}, vertexCount={}, indexCount={}>",
+            "<MESH: id={}, name={}, alias={}, baseVertex={}, baseIndex={}, vertexCount={}, indexCount={}>",
             m_id,
             m_name,
+            m_alias,
             getBaseVertex(),
-            getVertexCount(),
             getBaseIndex(),
-            getIndexCount());
+            getDefinedVertexCount(),
+            getDefinedIndexCount());
     }
 
     const kigl::GLVertexArray* Mesh::prepareVAO()

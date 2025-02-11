@@ -4,12 +4,12 @@
 
 #include "asset/ViewportEffect.h"
 
-constexpr int LAYER_NONE_INDEX{ 0 };
+inline constexpr uint8_t LAYER_NONE_INDEX{ 0 };
 
-const std::string LAYER_MAIN{ "main" };
-const std::string LAYER_REAR{ "rear" };
-const std::string LAYER_PLAYER{ "player" };
-const std::string LAYER_UI{ "ui" };
+inline const std::string LAYER_MAIN{ "main" };
+inline const std::string LAYER_REAR{ "rear" };
+inline const std::string LAYER_PLAYER{ "player" };
+inline const std::string LAYER_UI{ "ui" };
 
 struct LayerInfo
 {

@@ -76,8 +76,8 @@ namespace animation {
         void validate() const;
 
         void dump() const;
-        void dumpHierarchy(int16_t level) const;
-        void dumpAnimations(int16_t level) const;
+        std::string getHierarchySummary(int16_t level) const;
+        std::string getAnimationSummary(int16_t level) const;
 
         //void calculateInvTransforms() noexcept;
 

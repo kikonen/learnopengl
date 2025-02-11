@@ -5,27 +5,38 @@ prefab:
       path: fbx/scenery/bushes/Bush03/Bush03.fbx
       lods:
         - name: Bush03_B_LOD0
-          level: 0
+          min: 0
+          max: 15
         - name: Bush03_F_LOD0
-          level: 0
+          min: 0
+          max: 15
         - name: Bush03_L_LOD0
-          level: 0
+          min: 0
+          max: 15
         - name: Bush03_B_LOD1
-          level: 1
+          min: 15
+          max: 20
         - name: Bush03_F_LOD1
-          level: 1
+          min: 15
+          max: 20
         - name: Bush03_L_LOD1
-          level: 1
+          min: 15
+          max: 20
         - name: Bush03_B_LOD2
-          level: 2
+          min: 20
+          max: 30
         - name: Bush03_F_LOD2
-          level: 2
+          min: 20
+          max: 30
         - name: Bush03_L_LOD2
-          level: 2
+          min: 20
+          max: 30
         - name: Bush03_B_LOD3
-          level: 3
+          min: 30
+          max: 200
         - name: Bush03_L_LOD3
-          level: 3
+          min: 30
+          max: 200
       materials:
         - name: 'Material #27'
           map_kd: T_Bush03_d.tga
@@ -37,12 +48,3 @@ prefab:
           render_back: true
       xscale: 0.01
       default_programs: true
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 15
-    - level: 2
-      distance: 20
-    - level: 3
-      distance: 30

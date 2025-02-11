@@ -77,7 +77,6 @@ void EnvironmentProbeRenderer::render(
         {
             drawOptions.m_mode = m_mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;
-            drawOptions.m_solid = true;
             drawOptions.m_lineMode = true;
             drawOptions.m_renderBack = false;
         }

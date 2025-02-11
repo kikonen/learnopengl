@@ -7,7 +7,6 @@ prefab:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-        #z_up: true
       material:
         name: elf_pbr
         base: elf_female_pbr

@@ -108,6 +108,16 @@ namespace mesh {
             return m_name == "joint_tree" || m_name == "joint_points";
         }
 
+        virtual size_t getDefinedVertexCount() const noexcept
+        {
+            return m_vertexCount;
+        }
+
+        virtual size_t getDefinedIndexCount() const noexcept
+        {
+            return m_vertexCount;
+        }
+
     public:
         const ki::mesh_id m_id;
 

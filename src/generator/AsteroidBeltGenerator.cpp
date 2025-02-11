@@ -48,21 +48,22 @@ void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     const Node& container)
 {
-    //if (done) return;
     const auto containerLevel = container.getState().getMatrixLevel();
-    const bool rotate = m_updateIndex% m_updateStep == 0 || containerLevel != m_containerMatrixLevel;
+    const auto parentChanged = containerLevel != m_containerMatrixLevel;
+    const bool needUpdate = (m_updateIndex % m_updateStep) == 0;
 
-    if (!done) {
-        updateAsteroids(ctx, container, rotate);
+    if (needUpdate) {
+        updateAsteroids(ctx, container, needUpdate);
     }
 
-    //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
-    const auto& parentMatrix = container.getState().getModelMatrix();
-    for (auto& transform : m_transforms) {
-        transform.updateTransform(parentMatrix, m_volume);
+    if (parentChanged || needUpdate) {
+        //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
+        const auto& parentMatrix = container.getState().getModelMatrix();
+        for (auto& transform : m_transforms) {
+            transform.updateTransform(parentMatrix, m_volume);
+        }
     }
 
-    //done = true;
     m_updateIndex++;
     m_containerMatrixLevel = containerLevel;
 }

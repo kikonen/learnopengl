@@ -24,6 +24,16 @@ namespace mesh {
 
         virtual AABB calculateAABB(const glm::mat4& transform) const override;
 
+        virtual size_t getDefinedVertexCount() const noexcept override
+        {
+            return m_vertices.size();
+        }
+
+        virtual size_t getDefinedIndexCount() const noexcept override
+        {
+            return m_indeces.size();
+        }
+
     public:
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;

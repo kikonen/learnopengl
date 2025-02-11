@@ -3,8 +3,9 @@ prefab:
   meshes:
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-      lods:
-        - level: 0
+      lod:
+          min: 0
+          max: 50
       materials:
         - base: grass_01_pbr
           alias: M_atlas_grass_01
@@ -17,8 +18,9 @@ prefab:
       default_programs: true
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-      lods:
-        - level: 1
+      lod:
+          min: 50
+          max: 80
       materials:
         - base: grass_01_pbr
           alias: M_atlas_grass_01
@@ -30,8 +32,9 @@ prefab:
       default_programs: true
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-      lods:
-        - level: 2
+      lod:
+          min: 80
+          max: 120
       materials:
         - base: grass_01_pbr
           alias: M_atlas_grass_01
@@ -41,20 +44,12 @@ prefab:
       default_programs: true
     - id: prefab_grass
       path: fbx/scenery/foliage/SM_grass_bush_01.fbx
-      lods:
-        - level: 3
+      lod:
+          min: 120
+          max: 200
       materials:
         - base: grass_01_pbr
           alias: M_atlas_grass_01
           map_kd: T_atlas_grass_01_A_M.png
       base_scale: 0.01
       default_programs: true
-  lod_levels:
-    - level: 0
-      distance: 0
-    - level: 1
-      distance: 50
-    - level: 2
-      distance: 80
-    - level: 3
-      distance: 200

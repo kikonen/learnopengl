@@ -16,7 +16,7 @@
 
 #include "mesh/InstanceSSBO.h"
 
-#include "DrawRange.h"
+#include "MultiDrawRange.h"
 #include "DrawOptions.h"
 
 class Program;
@@ -51,11 +51,11 @@ namespace backend {
             std::span<mesh::InstanceSSBO> indeces);
 
         void send(
-            const backend::DrawRange& sendRange,
+            const backend::MultiDrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
         void sendDirect(
-            const backend::DrawRange& sendRange,
+            const backend::MultiDrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
         void flush();
@@ -66,11 +66,11 @@ namespace backend {
     private:
         void flushIfNeeded();
 
-        void flushIfNotSame(
-            const backend::DrawRange& sendRange);
+        void flushIfNotSameMultiDraw(
+            const backend::MultiDrawRange& sendRange);
 
-        void bindDrawRange(
-            const backend::DrawRange& drawRange) const;
+        void bindMultiDrawRange(
+            const backend::MultiDrawRange& drawRange) const;
 
     private:
         const bool m_useMapped;
@@ -93,7 +93,7 @@ namespace backend {
 
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
-        std::vector<backend::DrawRange> m_drawRanges;
+        std::vector<backend::MultiDrawRange> m_drawRanges;
 
         kigl::GLBuffer m_indexBuffer{ "instance_index" };
 

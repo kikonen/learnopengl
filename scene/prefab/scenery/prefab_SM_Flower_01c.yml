@@ -3,6 +3,38 @@ prefab:
   meshes:
     - id: prefab_SM_Flower_01c
       path: fbx/scenery/foliage/VOL10_YardPlants/Meshes/LP/SM_Flower_01c.FBX
+      lods:
+        - name: SM_Flower_01c_LOD0
+          min: 0
+          max: 20
+        - name: UCX_SM_Flower_01c_LOD0
+          min: 0
+          max: -20
+        - name: SM_Flower_01c_LOD1
+          min: 20
+          max: 50
+          material_modifier:
+            blend: false
+            render_back: false
+            map_displacement: ''
+        - name: SM_Flower_01c_LOD2
+          min: 50
+          max: 100
+          material_modifier:
+            blend: false
+            render_back: false
+            map_normal: ''
+            map_mrao: ''
+            map_displacement: ''
+        - name: SM_Flower_01c_LOD3
+          min: 100
+          max: 150
+          material_modifier:
+            blend: false
+            render_back: false
+            map_normal: ''
+            map_mrao: ''
+            map_displacement: ''
       materials:
         - name: MI_Flower_01a
           base: fbx/scenery/foliage/VOL10_YardPlants/Textures

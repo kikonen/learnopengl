@@ -220,6 +220,7 @@
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />
+    <ClCompile Include="src\render\BatchRegistry.cpp" />
     <ClCompile Include="src\render\BlurBuffer.cpp" />
     <ClCompile Include="src\render\CollectionRender.cpp" />
     <ClCompile Include="src\render\NodeCollection.cpp" />
@@ -559,6 +560,7 @@
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
+    <ClInclude Include="src\render\BatchRegistry.h" />
     <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\mesh\NonVaoMesh.h" />
     <ClInclude Include="src\mesh\VaoMesh.h" />
@@ -607,7 +609,6 @@
     <ClInclude Include="src\loader\AttachmentData.h" />
     <ClInclude Include="src\loader\CameraType.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
-    <ClInclude Include="src\loader\LodLevelData.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />
     <ClInclude Include="src\loader\MeshDataType.h" />
@@ -636,7 +637,6 @@
     <ClInclude Include="src\loader\MaterialReference.h" />
     <ClInclude Include="src\loader\PrefabData.h" />
     <ClInclude Include="src\loader\PrefabLoader.h" />
-    <ClInclude Include="src\mesh\LodLevel.h" />
     <ClInclude Include="src\mesh\MeshFlags.h" />
     <ClInclude Include="src\mesh\MeshSet.h" />
     <ClInclude Include="src\animation\RigSocket.h" />
@@ -825,7 +825,7 @@
     <ClInclude Include="src\backend\gl\DrawArraysIndirectCommand.h" />
     <ClInclude Include="src\backend\gl\DrawIndirectCommand.h" />
     <ClInclude Include="src\backend\gl\DrawIndirectParameters.h" />
-    <ClInclude Include="src\backend\DrawRange.h" />
+    <ClInclude Include="src\backend\MultiDrawRange.h" />
     <ClInclude Include="src\backend\gl\PerformanceCounters.h" />
     <ClInclude Include="src\script\api\Sync.h" />
     <ClInclude Include="src\event\Event.h" />

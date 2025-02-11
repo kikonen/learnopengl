@@ -206,8 +206,8 @@ namespace backend {
         }
     }
 
-    void DrawBuffer::flushIfNotSame(
-        const backend::DrawRange& sendRange)
+    void DrawBuffer::flushIfNotSameMultiDraw(
+        const backend::MultiDrawRange& sendRange)
     {
         const auto& cmdRange = m_commands->current();
         auto& curr = m_drawRanges[cmdRange.m_index];
@@ -217,11 +217,12 @@ namespace backend {
             const auto& cd = curr.m_drawOptions;
             const auto& sd = sendRange.m_drawOptions;
 
+            // NOTE KI KIND_SOLID & KIND_ALPHA can be in same multidraw
             sameDraw = curr.m_vaoId == sendRange.m_vaoId &&
                 curr.m_programId == sendRange.m_programId &&
                 cd.m_renderBack == sd.m_renderBack &&
                 cd.m_lineMode == sd.m_lineMode &&
-                cd.m_blend == sd.m_blend &&
+                cd.isBlend() == sd.isBlend() &&
                 cd.m_mode == sd.m_mode &&
                 cd.m_type == sd.m_type;
         }
@@ -232,10 +233,10 @@ namespace backend {
     }
 
     void DrawBuffer::send(
-        const backend::DrawRange& sendRange,
+        const backend::MultiDrawRange& sendRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
-        flushIfNotSame(sendRange);
+        flushIfNotSameMultiDraw(sendRange);
 
         const auto& cmdRange = m_commands->current();
         auto& curr = m_drawRanges[cmdRange.m_index];
@@ -251,11 +252,11 @@ namespace backend {
     }
 
     void DrawBuffer::sendDirect(
-        const backend::DrawRange& drawRange,
+        const backend::MultiDrawRange& drawRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
         const auto& drawOptions = drawRange.m_drawOptions;
-        bindDrawRange(drawRange);
+        bindMultiDrawRange(drawRange);
 
         // https://www.khronos.org/opengl/wiki/Vertex_Rendering
         if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
@@ -323,7 +324,7 @@ namespace backend {
             const auto& drawOptions = drawRange.m_drawOptions;
             const GLsizei drawCount = (GLsizei)cmdRange.m_usedCount;
 
-            bindDrawRange(drawRange);
+            bindMultiDrawRange(drawRange);
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
                 glMultiDrawElementsIndirect(
@@ -369,8 +370,8 @@ namespace backend {
         return counters;
     }
 
-    void DrawBuffer::bindDrawRange(
-        const backend::DrawRange& drawRange) const
+    void DrawBuffer::bindMultiDrawRange(
+        const backend::MultiDrawRange& drawRange) const
     {
         auto& state = kigl::GLState::get();
         const auto& drawOptions = drawRange.m_drawOptions;
@@ -407,7 +408,7 @@ namespace backend {
             glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
         }
 
-        const bool blend = !lineMode && drawOptions.m_blend;
+        const bool blend = !lineMode && drawOptions.isBlend();
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             // NOTE KI no blend mode with OIT blend

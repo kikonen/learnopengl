@@ -561,34 +561,15 @@ namespace loader {
                     *m_loaders));
         }
 
-        resolveLodLevels(type, nodeData);
-
         return typeHandle;
-    }
-
-    void SceneLoader::resolveLodLevels(
-        mesh::MeshType* type,
-        const NodeData& nodeData)
-    {
-        for (const auto& data : nodeData.lodLevels) {
-            mesh::LodLevel level{
-                data.getLevelMask(),
-                data.getDistance2() };
-            type->m_lodLevels.push_back(level);
-        }
-
-        std::sort(
-            type->m_lodLevels.begin(),
-            type->m_lodLevels.end(),
-            [](auto& a, auto& b) { return a.m_distance2 < b.m_distance2; }
-        );
     }
 
     void SceneLoader::resolveMaterials(
         mesh::MeshType* type,
         mesh::LodMesh& lodMesh,
         const NodeData& nodeData,
-        const MeshData& meshData)
+        const MeshData& meshData,
+        const LodData* lodData)
     {
         auto* lodMaterial = lodMesh.modifyMaterial();
         if (!lodMaterial) return;
@@ -639,7 +620,7 @@ namespace loader {
                 }
             }
 
-            // MODIFY
+            // MODIFY - BASE
             for (auto& materialData : meshData.materialModifiers) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
@@ -655,6 +636,27 @@ namespace loader {
                         alias));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
+                }
+            }
+
+            // MODIFY - LOD
+            if (lodData) {
+                for (auto& materialData : lodData->materialModifiers) {
+                    const auto& alias = materialData.aliasName;
+                    const auto& name = materialData.materialName;
+
+                    if (name == material.m_name || alias == material.m_name || alias == "*")
+                    {
+                        KI_INFO_OUT(fmt::format(
+                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                            type->getName(),
+                            lodMesh.getMeshName(),
+                            material.m_name,
+                            name,
+                            alias));
+
+                        l.m_materialLoader.modifyMaterial(material, materialData);
+                    }
                 }
             }
         }
@@ -776,6 +778,13 @@ namespace loader {
                         *meshSet);
                 }
 
+                {
+                    KI_INFO_OUT(fmt::format(
+                        "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
+                        meshSet->m_name,
+                        meshSet->getSummary()));
+                }
+
                 meshCount += type->addMeshSet(*meshSet);
             }
             break;
@@ -830,7 +839,7 @@ namespace loader {
             assignMeshFlags(lodData->meshFlags, lodMesh);
         }
 
-        resolveMaterials(type, lodMesh, nodeData, meshData);
+        resolveMaterials(type, lodMesh, nodeData, meshData, lodData);
         lodMesh.setupDrawOptions();
     }
 
@@ -850,12 +859,13 @@ namespace loader {
             // NOTE KI if lods defined then default to 0 mask
             if (!meshData.lods.empty()) {
                 KI_WARN_OUT(fmt::format("SCENE: MISSING_LOD : mesh={}", mesh->m_name));
-                lodMesh.m_levelMask = 0;
+                //lodMesh.m_levelMask = 0;
             }
             return nullptr;
         }
 
-        lodMesh.m_levelMask = lod->getLevelMask();
+        lodMesh.m_minDistance2 = lod->minDistance * lod->minDistance;
+        lodMesh.m_maxDistance2 = lod->maxDistance * lod->maxDistance;
         lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
 
         return lod;
@@ -1129,8 +1139,6 @@ namespace loader {
     {
         auto& flags = lodMesh.m_flags;
 
-        flags.hidden = container.getFlag("hidden", flags.hidden);
-
         flags.billboard = container.getFlag("billboard", flags.billboard);
         flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
@@ -1139,8 +1147,6 @@ namespace loader {
         flags.noVolume = container.getFlag("no_volume", flags.noVolume);
 
         {
-            flags.zUp = container.getFlag("z_up", flags.zUp);
-
             flags.useBones = container.getFlag("use_bones", flags.useBones);
 
             // NOTE KI bones are *required* if using animation

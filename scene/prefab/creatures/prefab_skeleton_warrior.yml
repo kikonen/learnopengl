@@ -33,14 +33,8 @@ prefab:
         shadow_program: shadow
       base_scale: 0.01375
       scale: 2
-      xlods:
-        - level: []
-        - name: joint_tree
-          level: [0, 1, 2]
     - name: helmet
       path: fbx\creatures\skeleton_knight\Helmet.fbx
-      lod:
-        level: [0, 1, 2]
       material:
         base: Textures
         kd: [0.8, 0.8, 0]
@@ -54,8 +48,6 @@ prefab:
       base_scale: 0.00121
     - name: armor
       path: fbx\creatures\skeleton_knight\Armor.fbx
-      lod:
-        level: [0, 1, 2]
       material:
         base: Textures
         map_kd: T_ChestArmor_BaseColor.jpg
@@ -68,8 +60,6 @@ prefab:
       base_scale: 0.000121
     - name: 2HandedSword
       path: fbx\creatures\skeleton_knight\2HandedSword.fbx
-      lod:
-        level: [0, 1, 2]
       material:
         base: Textures
         map_kd: T_2HandedSword_BaseColor.jpg
@@ -82,8 +72,6 @@ prefab:
       base_scale: 0.000075
     - name: shield
       path: fbx\creatures\skeleton_knight\Shield.fbx
-      lod:
-        level: [0, 1, 2]
       material:
         base: Textures
         map_kd: T_Shield_BaseColor.jpg

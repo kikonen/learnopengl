@@ -31,7 +31,7 @@
 #include "TextData.h"
 #include "MeshData.h"
 #include "AttachmentData.h"
-#include "LodLevelData.h"
+
 
 namespace loader {
     struct NodeData {
@@ -54,7 +54,6 @@ namespace loader {
 
         std::vector<MeshData> meshes;
         std::vector<AttachmentData> attachments;
-        std::vector<LodLevelData> lodLevels;
 
         std::unordered_map<MaterialProgramType, std::string> programs;
 
