@@ -91,6 +91,7 @@ Program::~Program()
     KI_INFO(fmt::format("PROGRAM: delete - {}", m_key));
     if (m_programId >= 0) {
         glDeleteProgram(m_programId);
+        kigl::GLState::get().invalidateProgram();
     }
 }
 

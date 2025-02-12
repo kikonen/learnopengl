@@ -53,7 +53,7 @@ namespace render {
             program->bind();
             render(program, m_texture, m_size);
 
-            state.clear();
+            state.invalidateAll();
         }
     }
 

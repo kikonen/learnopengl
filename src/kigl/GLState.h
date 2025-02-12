@@ -25,7 +25,7 @@ namespace kigl {
 
         GLState& operator=(const GLState&) = delete;
 
-        void clear();
+        void invalidateAll();
 
         void track(GLenum key) noexcept;
 
@@ -41,7 +41,10 @@ namespace kigl {
         void polygonOffset(const glm::vec2& offset) noexcept;
 
         void useProgram(GLuint programId) noexcept;
+        void invalidateProgram() noexcept;
+
         void bindVAO(GLuint vaoId) noexcept;
+        void invalidateVAO() noexcept;
 
         void bindTexture(
             const GLuint unitIndex,
@@ -52,14 +55,17 @@ namespace kigl {
             const GLuint unitIndex,
             bool force) noexcept;
 
+        void invalidateTexture(
+            const GLuint unitIndex) noexcept;
+
         int getFrameBuffer();
 
         // @return true if bind was done
         bool bindFrameBuffer(GLuint fbo, bool force) noexcept;
-        void clearFrameBuffer();
+        void invalidateFrameBuffer();
 
         bool setViewport(const glm::vec4& viewport);
-        void clearViewport();
+        void invalidateViewport();
 
         GLBlendMode setBlendMode(
             const GLBlendMode& mode);
@@ -83,7 +89,7 @@ namespace kigl {
         void setDepthFunc(const GLenum func);
         void setDepthMask(const GLenum mask);
 
-        void clearColor(const glm::vec4& clearColor);
+        void setClearColor(const glm::vec4& clearColor);
 
         bool setBufferResolution(glm::vec2 bufferResolution);
 

@@ -12,10 +12,10 @@ namespace kigl {
 
     GLState::GLState()
     {
-        clear();
+        invalidateAll();
     }
 
-    void GLState::clear() {
+    void GLState::invalidateAll() {
         for (auto& it : m_enabled) {
             it.second = -1;
         }
@@ -120,12 +120,22 @@ namespace kigl {
         }
     }
 
+    void GLState::invalidateProgram() noexcept
+    {
+        m_programId = -1;
+    }
+
     void GLState::bindVAO(GLuint vaoId) noexcept
     {
         if (m_vaoId != vaoId) {
             glBindVertexArray(vaoId);
             m_vaoId = vaoId;
         }
+    }
+
+    void GLState::invalidateVAO() noexcept
+    {
+        m_vaoId = -1;
     }
 
     void GLState::bindTexture(
@@ -158,6 +168,12 @@ namespace kigl {
         bindTexture(unitIndex, 0, force);
     }
 
+    void GLState::invalidateTexture(
+        const GLuint unitIndex) noexcept
+    {
+        m_textureUnits[unitIndex] = -1;
+    }
+
     int GLState::getFrameBuffer()
     {
         // https://stackoverflow.com/questions/27459859/how-to-check-which-frame-buffer-object-is-currently-bound-in-opengl
@@ -184,7 +200,7 @@ namespace kigl {
         return false;
     }
 
-    void GLState::clearFrameBuffer() {
+    void GLState::invalidateFrameBuffer() {
         m_fbo = -1;
     }
 
@@ -199,7 +215,7 @@ namespace kigl {
         return false;
     }
 
-    void GLState::clearViewport()
+    void GLState::invalidateViewport()
     {
         m_viewport = { 0.f, 0.f, 0.f, 0.f };
     }
@@ -315,7 +331,7 @@ namespace kigl {
         }
     }
 
-    void GLState::clearColor(const glm::vec4& clearColor)
+    void GLState::setClearColor(const glm::vec4& clearColor)
     {
         if (m_clearColor != clearColor) {
             m_clearColor = clearColor;

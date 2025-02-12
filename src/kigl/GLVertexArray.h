@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kigl/GLState.h"
+
 #include "kigl/kigl.h"
 
 namespace kigl {
@@ -10,6 +12,7 @@ namespace kigl {
         ~GLVertexArray() {
             if (m_created) {
                 glDeleteVertexArrays(1, &m_id);
+                kigl::GLState::get().invalidateVAO();
             }
         }
 

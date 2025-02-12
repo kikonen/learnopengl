@@ -479,7 +479,7 @@ void Window::onWindowResize(int width, int height)
     m_size = { width, height };
     m_sizeValid = false;
 
-    state.clear();
+    state.invalidateAll();
 }
 
 void Window::onMouseMove(float xpos, float ypos)

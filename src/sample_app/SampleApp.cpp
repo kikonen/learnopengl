@@ -336,11 +336,11 @@ int SampleApp::onRender(const ki::RenderClock& clock)
 
         // make clear color by default black
         // => ensure "sane" start state for each loop
-        state.clearColor(BLACK_COLOR);
+        state.setClearColor(BLACK_COLOR);
 
         if (assets.useImGui) {
             m_editor->bind(ctx);
-            state.clear();
+            state.invalidateAll();
         }
 
         scene->bind(ctx);

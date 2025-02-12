@@ -33,6 +33,7 @@ namespace render {
         if (!m_prepared) return;
 
         glDeleteFramebuffers(1, &m_fbo);
+        kigl::GLState::get().invalidateFrameBuffer();
         m_spec.attachments.clear();
     }
 
