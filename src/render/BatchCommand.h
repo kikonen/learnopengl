@@ -19,9 +19,6 @@ namespace render {
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
         float m_distance2;
-        // NOTE KI variant in dyanmic text mesh case
-        // => Store separately
-        //uint32_t m_indexCount;
         uint32_t m_entityIndex;
         uint32_t m_materialIndex;
         int32_t m_socketIndex;
@@ -31,7 +28,6 @@ namespace render {
         InstanceEntry(
             const glm::mat4& transform,
             float distance2,
-            //uint32_t m_indexCount,
             uint32_t entityIndex,
             uint32_t materialIndex,
             int32_t socketIndex)
@@ -75,17 +71,12 @@ namespace render {
     struct CommandKey {
         uint32_t m_baseVertex;
         uint32_t m_baseIndex;
-        // NOTE KI variant in dyanmic text mesh case
-        // => Store separately
-        uint32_t m_indexCount;
 
         CommandKey(
             uint32_t baseVertex,
-            uint32_t baseIndex,
-            uint32_t indexCount)
+            uint32_t baseIndex)
             : m_baseVertex{ baseVertex },
-            m_baseIndex{ baseIndex },
-            m_indexCount{ indexCount }
+            m_baseIndex{ baseIndex }
         {
         }
 
@@ -94,8 +85,7 @@ namespace render {
         bool operator==(const CommandKey& o) const
         {
             return m_baseVertex == o.m_baseVertex &&
-                m_baseIndex == o.m_baseIndex &&
-                m_indexCount == o.m_indexCount;
+                m_baseIndex == o.m_baseIndex;
         }
     };
 
@@ -124,12 +114,19 @@ namespace render {
     };
 
     struct CommandEntry {
-        //CommandKey m_command;
-        int16_t m_index{ 0 };
-        uint32_t m_baseIndex{ 0 };
-        uint32_t m_instanceCount{ 0 };
-        uint32_t m_reservedSize{ 0 };
         InstanceEntry* m_instances{ nullptr };
+        uint32_t m_reservedSize{ 0 };
+
+        // NOTE KI base index into InstanceSSBO
+        uint32_t m_baseIndex{ 0 };
+
+        uint32_t m_instanceCount{ 0 };
+
+        // NOTE KI variant in dyanmic text mesh case
+        // => Store separately from commandKey
+        uint32_t m_indexCount{ 0 };
+
+        int16_t m_index{ 0 };
 
         void clear()
         {
@@ -171,7 +168,6 @@ namespace render {
     };
 
     struct MultiDrawEntry {
-        //MultiDrawKey m_multiDraw;
         int16_t m_index{ 0 };
         bool m_dirty{ false };
 

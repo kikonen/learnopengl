@@ -40,8 +40,8 @@ namespace render {
         // => relevant if using this as map key
         // NOTE KI material is now per instance (not Entity)
         // => Thus new need to check material here m_lod->m_materialIndex
-        return std::tie(m_baseVertex,  m_indexCount) <
-            std::tie(o.m_baseVertex, o.m_indexCount);
-        //return m_baseVertex < o.m_baseVertex;
+        //return std::tie(m_baseVertex,  m_indexCount) <
+        //    std::tie(o.m_baseVertex, o.m_indexCount);
+        return m_baseVertex < o.m_baseVertex;
     }
 }

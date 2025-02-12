@@ -50,6 +50,7 @@ namespace {
     constexpr int32_t SKIP{ -1 };
     // NOTE KI store accepted *INDECES*
     std::vector<int32_t> s_accept;
+    std::vector<float> s_distances2;
 
     inline bool inFrustum(
         const Frustum& frustum,
@@ -78,16 +79,7 @@ namespace render {
     {
         if (entityIndex < 0) return;
 
-        if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT) {
-            const auto& frustum = ctx.m_camera->getFrustum();
-
-            if (m_frustumCPU && !inFrustum(frustum, snapshot.getVolume())) {
-                m_skipCount++;
-                return;
-            }
-        }
-
-        m_drawCount++;
+        bool frustumChecked = !((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT);
 
         auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
 
@@ -102,6 +94,16 @@ namespace render {
             auto programId = programSelector(lodMesh);
             if (!programId) continue;
 
+            if (!frustumChecked) {
+                const auto& frustum = ctx.m_camera->getFrustum();
+                if (m_frustumCPU && !inFrustum(frustum, snapshot.getVolume())) {
+                    m_skipCount++;
+                    return;
+                }
+                frustumChecked = true;
+                m_drawCount++;
+            }
+
             CommandEntry* commandEntry{ nullptr };
             {
                 MultiDrawKey drawKey{
@@ -113,7 +115,6 @@ namespace render {
                 CommandKey commandKey{
                     lodMesh.m_baseVertex,
                     lodMesh.m_baseIndex,
-                    lodMesh.m_indexCount
                 };
 
                 const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
@@ -134,6 +135,7 @@ namespace render {
 
                 commandEntry = &drawEntry.m_commands[commandIndex];
                 commandEntry->m_index = commandIndex;
+                commandEntry->m_indexCount = lodMesh.m_indexCount;
 
                 drawEntry.m_dirty = true;
             }
@@ -188,34 +190,61 @@ namespace render {
         {
             if (s_accept.size() < count) {
                 s_accept.resize(count);
+                s_distances2.resize(count);
             }
             for (uint32_t i = 0; i < count; i++) {
                 s_accept[i] = i; // store index
+
+                const auto& transform = transforms[i];
+                s_distances2[i] = glm::distance2(transform.getWorldPosition(), cameraPos);
             }
         }
 
+        const auto isValidLodMesh = [&kindBits, &programSelector] (
+            const int instanceIndex,
+            const float dist2,
+            const auto& lodMesh) -> ki::program_id
+            {
+                if (lodMesh.m_minDistance2 > dist2) return 0;
+                if (lodMesh.m_maxDistance2 <= dist2) return 0;
+
+                const auto& drawOptions = lodMesh.m_drawOptions;
+                if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;
+                if (!drawOptions.isKind(kindBits)) return 0;
+
+                return programSelector(lodMesh);
+            };
+
         if (useFrustum) {
             const auto& frustum = ctx.m_camera->getFrustum();
+
+            const auto& checkFrustum = [this, &type, &frustum, &transforms, &isValidLodMesh]
+                (int32_t& idx)
+                {
+                    bool validMesh = false;
+                    for (const auto& lodMesh : *type->m_lodMeshes) {
+                        validMesh = isValidLodMesh(idx, s_distances2[idx], lodMesh) != 0;
+                        if (validMesh) break;
+                    }
+
+                    if (!validMesh || !inFrustum(frustum, transforms[idx].getVolume())) {
+                        idx = SKIP;
+                    }
+                };
 
             if (count > m_frustumParallelLimit) {
                 std::for_each(
                     std::execution::par_unseq,
                     s_accept.begin(),
                     s_accept.begin() + count,
-                    [this, &frustum, &transforms](int32_t& idx) {
-                        if (!inFrustum(frustum, transforms[idx].getVolume()))
-                            idx = SKIP;
-                    });
+                    checkFrustum);
             }
             else {
                 std::for_each(
                     std::execution::unseq,
                     s_accept.begin(),
                     s_accept.begin() + count,
-                    [this, &frustum, &transforms](int32_t& idx) {
-                        if (!inFrustum(frustum, transforms[idx].getVolume()))
-                            idx = SKIP;
-                    });
+                    checkFrustum);
             }
         }
 
@@ -226,19 +255,10 @@ namespace render {
                     continue;
                 }
 
-                const auto& transform = transforms[i];
-
-                auto dist2 = glm::distance2(transform.getWorldPosition(), cameraPos);
+                const auto dist2 = s_distances2[i];
 
                 for (const auto& lodMesh : *type->m_lodMeshes) {
-                    if (lodMesh.m_minDistance2 > dist2) continue;
-                    if (lodMesh.m_maxDistance2 <= dist2) continue;
-
-                    const auto& drawOptions = lodMesh.m_drawOptions;
-                    if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
-                    if (!drawOptions.isKind(kindBits)) continue;
-
-                    auto programId = programSelector(lodMesh);
+                    const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
 
                     CommandEntry* commandEntry{ nullptr };
@@ -246,13 +266,12 @@ namespace render {
                         MultiDrawKey drawKey{
                             programId,
                             lodMesh.m_vaoId,
-                            drawOptions
+                            lodMesh.m_drawOptions
                         };
 
                         CommandKey commandKey{
                             lodMesh.m_baseVertex,
                             lodMesh.m_baseIndex,
-                            lodMesh.m_indexCount
                         };
 
                         const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
@@ -273,13 +292,14 @@ namespace render {
 
                         commandEntry = &drawEntry.m_commands[commandIndex];
                         commandEntry->m_index = commandIndex;
+                        commandEntry->m_indexCount = lodMesh.m_indexCount;
 
                         drawEntry.m_dirty = true;
                     }
 
                     commandEntry->reserve(count);
                     commandEntry->addInstance({
-                        transform.getTransform() * lodMesh.m_transform,
+                        transforms[i].getTransform() * lodMesh.m_transform,
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),
@@ -497,7 +517,7 @@ namespace render {
 
                     cmd.u_baseVertex = commandKey.m_baseVertex;
                     cmd.u_firstIndex = commandKey.m_baseIndex;
-                    cmd.u_count = commandKey.m_indexCount;
+                    cmd.u_count = command.m_indexCount;
 
                     //if (cmd.u_instanceCount > 1) {
                     //    KI_INFO_OUT(fmt::format("BATCH: element_instances={}", cmd.u_instanceCount));
@@ -512,7 +532,7 @@ namespace render {
                     cmd.u_instanceCount = command.m_instanceCount;
                     cmd.u_baseInstance = command.m_baseIndex;
 
-                    cmd.u_vertexCount = commandKey.m_indexCount;
+                    cmd.u_vertexCount = command.m_indexCount;
                     cmd.u_firstVertex = commandKey.m_baseIndex;
 
                     //if (cmd.u_instanceCount > 1) {

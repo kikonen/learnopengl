@@ -41,7 +41,6 @@ struct std::hash<render::CommandKey>
         // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
         return ((std::hash<int>()(k.m_baseVertex)
             ^ (std::hash<int>()(k.m_baseIndex) << 1)
-            ^ (std::hash<int>()(k.m_indexCount) << 1)
             ) >> 1);
     }
 };
