@@ -52,7 +52,8 @@ namespace render {
             glViewport(0, 0, size, size);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
 
-            const glm::vec4 clearColor{ 0.f };
+            // HACK KI env cubemap fails to render from HDRI often (reason unknown)
+            const glm::vec4 clearColor{ 0.8f, 0.8f, 0.9f, 0.f };
             const float clearDepth{ 1.f };
 
             for (unsigned int face = 0; face < 6; ++face)
