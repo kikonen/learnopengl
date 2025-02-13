@@ -288,7 +288,7 @@ namespace loader {
                 material.layersDepth = readFloat(v);
                 fields.layersDepth = true;
             }
-            else if (k == "parallax_depth") {
+            else if (k == "parallax_depth" || k == "parallax") {
                 material.parallaxDepth = readFloat(v);
                 fields.parallaxDepth = true;
             }
