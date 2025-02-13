@@ -613,14 +613,7 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
   - id: cow_{t}_{c}
-    mesh:
-      path: cow
-      material:
-        name: cow
-        prefab: materials/Plastic01.yml
-        kd: [0.160, 0.578, 0.168, 1.0]
-        xreflection: 0.4
-    program: g_tex
+    prefab: prefab/creatures/prefab_cow.yml
     rotation: [0, 180, 0]
     scale: 0.8
     selected: false

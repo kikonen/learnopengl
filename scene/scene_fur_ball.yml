@@ -49,20 +49,7 @@ nodes:
         program: g_fur
         layers: 10
   - id: base_{c}_{t}
-    mesh:
-      path: cow
-      xxpath: cube
-      material:
-        name: fur_base
-        kd: [0.5075, 0.5075, 0.5075, 1.0]
-        map_kd: textures/Dirt_vh_1024.png
-        tiling: 1
-      material_modifier:
-        prefab: materials/Plastic01.yml
-        #prefab: materials/Metal007.yml
-        xxline_mode: true
-    program: g_tex
-    priority: 1
+    prefab: prefab/creatures/prefab_cow.yml
     pos: [0, 0, 0]
     scale: 1.0
     audio:
