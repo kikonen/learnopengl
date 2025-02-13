@@ -83,7 +83,8 @@ namespace kigl {
         }
     };
 
-    // NOTE KI assumes [0, 1] range
+    // NOTE KI assumes [0, 1] range for unsigned and [-1, 1] for signed
+    // => decided by caller side
     inline int SCALE_VEC10 = (1 << 9) - 1;
     struct VEC10
     {

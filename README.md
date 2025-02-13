@@ -220,6 +220,7 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
   +  https://github.khronos.org/KTX-Software/ktxtools/ktx_encode.html
   + https://gamedev.stackexchange.com/questions/203188/problems-with-normal-recovery-from-storage-as-two-floats-and-normal-from-depth-b
   + https://aras-p.info/texts/CompactNormalStorage.html
+  * https://gamedev.stackexchange.com/questions/46304/how-does-gl-int-2-10-10-10-rev-work-for-color-data
 
 ## Skeletal animation
 - https://github.com/assimp/assimp
