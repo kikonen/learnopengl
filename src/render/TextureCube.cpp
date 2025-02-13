@@ -86,13 +86,13 @@ namespace render {
         glEnableVertexArrayAttrib(m_vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(m_vao, ATTR_TEX);
 
-        //glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_pos));
+        //glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(VertexEntry, u_pos));
         glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_pos));
 
-        //glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_normal));
+        //glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(VertexEntry, u_normal));
         glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_normal));
 
-        //glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_texCoord));
+        //glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_FALSE, offsetof(VertexEntry, u_texCoord));
         glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_texCoord));
 
         glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);

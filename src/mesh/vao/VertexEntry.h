@@ -25,20 +25,20 @@ namespace mesh {
             u_tangent{ v.tangent }
         {}
 
-        float u_x;
-        float u_y;
-        float u_z;
-
-        //kigl::VEC10 u_normal;
-        kigl::VEC3_16 u_normal;
-
-        //kigl::VEC10 u_tangent;
-        kigl::VEC3_16 u_tangent;
-
         // NOTE KI kigl::UV16 accuracy was not enough in all cases
         // backpack, pinetree, ...
         //kigl::UV16 u_texCoord;
         glm::vec2 u_texCoord;
+
+        float u_x;
+        float u_y;
+        float u_z;
+
+        kigl::VEC10 u_normal;
+        //kigl::VEC3_16 u_normal;
+
+        kigl::VEC10 u_tangent;
+        //kigl::VEC3_16 u_tangent;
     };
 #pragma pack(pop)
 }
