@@ -1,12 +1,12 @@
 // Utility functions for gbuffer
 
-// NOTE KI GL_RGB16F
+// NOTE KI GL_RGB16 => thus encode into [0, 1] range
 // => *MUST* match FrameBufferAttachment::getGBufferNormal
 // => for some reason DOES NOT WORK in intel GPU
 vec3 decodeGNormal(in vec2 texCoord)
 {
-  //return texture(g_normal, texCoord).xyz * 2.0 - 1.0;
-  return textureLod(g_normal, texCoord, 0).xyz;
+  return texture(g_normal, texCoord).xyz * 2.0 - 1.0;
+  // return textureLod(g_normal, texCoord, 0).xyz;
 }
 
 // https://aras-p.info/texts/CompactNormalStorage.html

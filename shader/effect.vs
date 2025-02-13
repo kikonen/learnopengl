@@ -53,5 +53,5 @@ void main() {
   vs_out.worldPos = worldPos.xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
 }

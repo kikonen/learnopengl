@@ -110,10 +110,13 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
+        // TODO KI just generate primitive mesh
         auto future = ModelRegistry::get().getMeshSet(
             "",
             assets.modelsDir,
-            SKYBOX_MESH_NAME);
+            SKYBOX_MESH_NAME,
+            false,
+            false);
         auto* meshSet = future.get();
 
         if (!meshSet) {

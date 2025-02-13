@@ -83,8 +83,8 @@ namespace kigl {
         }
     };
 
+    // NOTE KI assumes [0, 1] range
     inline int SCALE_VEC10 = (1 << 9) - 1;
-
     struct VEC10
     {
         int x : 10;
@@ -123,12 +123,52 @@ namespace kigl {
         {}
     };
 
-    inline int SCALE_UV16 = (1 << 16) - 1;
+    // NOTE KI Normalized from [-1, 1] to [0, 1] range
+    inline float SCALE_VEC3_16 = (1 << 16) - 1;
+    struct VEC3_16
+    {
+        uint16_t x;
+        uint16_t y;
+        uint16_t z;
 
+        VEC3_16()
+            : x{ 0 },
+              y{ 0 },
+              z{ 0 }
+        {
+        }
+
+        VEC3_16(const glm::vec3& p)
+            : VEC3_16(p.x, p.y, p.z)
+        {
+        }
+
+        VEC3_16& operator=(const glm::vec3& p) {
+            x = (uint16_t)((p.x * 0.5f + 0.5f) * SCALE_VEC3_16);
+            y = (uint16_t)((p.y * 0.5f + 0.5f) * SCALE_VEC3_16);
+            z = (uint16_t)((p.z * 0.5f + 0.5f) * SCALE_VEC3_16);
+            return *this;
+        }
+
+        VEC3_16(float v)
+            : VEC3_16(v, v, v)
+        {
+        }
+
+        VEC3_16(float a_x, float a_y, float a_z)
+            : x{ (uint16_t)((a_x * 0.5f + 0.5f) * SCALE_VEC3_16) },
+              y{ (uint16_t)((a_y * 0.5f + 0.5f) * SCALE_VEC3_16) },
+              z{ (uint16_t)((a_z * 0.5f + 0.5f) * SCALE_VEC3_16) }
+        {
+        }
+    };
+
+    // NOTE KI UV coords are in [0, 1] range
+    inline float SCALE_UV16 = (1 << 16) - 1;
     struct UV16
     {
-        unsigned short u;
-        unsigned short v;
+        uint16_t u;
+        uint16_t v;
 
         UV16()
             : u{ 0 }, v{ 0 }
@@ -139,8 +179,8 @@ namespace kigl {
         {}
 
         UV16& operator=(const glm::vec2& t) {
-            u = (unsigned short)(t.x * SCALE_UV16);
-            v = (unsigned short)(t.y * SCALE_UV16);
+            u = (uint16_t)(t.x * SCALE_UV16);
+            v = (uint16_t)(t.y * SCALE_UV16);
             return *this;
         }
 
@@ -149,8 +189,8 @@ namespace kigl {
         {}
 
         UV16(float a_u, float a_v)
-            : u{ (unsigned short)(a_u * SCALE_UV16) },
-            v{ (unsigned short)(a_v * SCALE_UV16) }
+            : u{ (uint16_t)(a_u * SCALE_UV16) },
+            v{ (uint16_t)(a_v * SCALE_UV16) }
         {}
     };
 

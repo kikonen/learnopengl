@@ -1,3 +1,6 @@
+#define DECODE_A_NORMAL(n) (n * 2.0 - 1.0)
+#define DECODE_A_TANGENT(t) (t * 2.0 - 1.0)
+
 // @see https://en.wikipedia.org/wiki/Rotation_matrix
 mat4 translateMatrix(const in vec3 offset)
 {

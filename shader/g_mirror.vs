@@ -51,7 +51,7 @@ void main() {
   const uint materialIndex = instance.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
-  const vec3 normal = normalize(normalMatrix * a_normal);
+  const vec3 normal = normalize(normalMatrix * DECODE_A_NORMAL(a_normal));
 
   vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;

@@ -92,6 +92,8 @@ nodes:
   - id: lucy_statue
     mesh:
       path: lucy
+      force_normals: true
+      #smooth_normals: true
       xmaterial:
         name: gold_ball
         kd: [0.7516, 0.6065, 0.2265, 1.0]
@@ -101,7 +103,7 @@ nodes:
         prefab: materials/Metal007.yml
         #prefab: materials/Graffiti.yml
         tiling: 9
-        parallax_depth: 0.005
+        parallax_depth: 0.0
         xrender_back: true
     xmesh: water_ball
     program: g_tex

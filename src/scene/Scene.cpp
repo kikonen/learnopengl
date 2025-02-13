@@ -366,7 +366,8 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     m_renderData->update();
 
-    m_normalRenderer->setEnabled(dbg.m_nodeDebugEnabled && dbg.m_showNormals);
+    //m_normalRenderer->setEnabled(dbg.m_nodeDebugEnabled && dbg.m_showNormals);
+    m_normalRenderer->setEnabled(dbg.m_showNormals);
 
     m_batch->updateRT(ctx);
 }

@@ -79,7 +79,7 @@ void main() {
   vs_out.worldPos = worldPos.xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
 
   // NOTE volume radius is from center of cube to corner
   // => halo radius is cube width / 2

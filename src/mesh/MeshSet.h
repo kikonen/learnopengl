@@ -22,7 +22,10 @@ namespace mesh {
     public:
         MeshSet(
             std::string_view path,
-            std::string_view rootDir);
+            std::string_view rootDir,
+            bool smoothNormals,
+            bool forceNormals);
+
         ~MeshSet();
 
         std::string str() const noexcept;
@@ -50,6 +53,9 @@ namespace mesh {
         const std::string m_dir;
         const std::string m_path;
         const std::string m_name;
+
+        const bool m_smoothNormals{ false };
+        const bool m_forceNormals{ false };
 
         std::string m_filePath;
 

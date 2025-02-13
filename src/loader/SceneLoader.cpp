@@ -761,7 +761,9 @@ namespace loader {
             auto future = ModelRegistry::get().getMeshSet(
                 meshData.id,
                 assets.modelsDir,
-                meshData.path);
+                meshData.path,
+                meshData.smoothNormals,
+                meshData.forceNormals);
 
             auto meshSet = future.get();
 

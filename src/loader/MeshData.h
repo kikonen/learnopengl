@@ -26,6 +26,11 @@ namespace loader {
         std::string name;
         std::string path;
 
+        // NOTE KI default to smooth normals (usually better)
+        bool smoothNormals{ true };
+        // NOTE KI don't force
+        bool forceNormals{ false };
+
         // NOTE KI used *ONLY* if explicitly set to valid value
         // => otherwise value from NodeData is inherited
         bool hasScale{ false };

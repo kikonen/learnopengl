@@ -79,7 +79,7 @@ void main() {
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
-  vec3 normal = a_normal;
+  vec3 normal = DECODE_A_NORMAL(a_normal);
 #ifdef USE_TBN
   vec3 tangent;
 #endif

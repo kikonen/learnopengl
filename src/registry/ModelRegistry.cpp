@@ -42,7 +42,9 @@ void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
 std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
     std::string_view id,
     std::string_view rootDir,
-    std::string_view meshPath)
+    std::string_view meshPath,
+    bool smoothNormals,
+    bool forceNormals)
 {
     if (!*m_alive) return {};
 
@@ -50,10 +52,12 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
     std::string key = fmt::format(
-        "{}_{}_{}",
+        "{}_{}_{}_{}_{}",
         id,
         rootDir,
-        meshPath);
+        meshPath,
+        smoothNormals,
+        forceNormals);
 
     {
         auto e = m_meshes.find(key);
@@ -63,7 +67,9 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
 
     auto meshSet = new mesh::MeshSet(
         rootDir,
-        meshPath);
+        meshPath,
+        smoothNormals,
+        forceNormals);
 
     auto future = startLoad(meshSet);
     m_meshes[key] = future;

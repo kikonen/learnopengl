@@ -81,11 +81,8 @@ namespace mesh
 
         Assimp::Importer importer;
 
-        const aiScene* scene = importer.ReadFile(
-            meshSet.m_filePath,
-            //aiProcess_GenNormals |
-            aiProcess_GenSmoothNormals |
-            //aiProcess_ForceGenNormals |
+        uint32_t flags =
+            aiProcess_GenNormals |
             //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
             aiProcess_Triangulate |
@@ -96,7 +93,18 @@ namespace mesh
             aiProcess_GenUVCoords |
             aiProcess_SortByPType |
             //aiProcess_ValidateDataStructure |
-            0);
+            0;
+
+        if (meshSet.m_smoothNormals) {
+            flags |= aiProcess_GenSmoothNormals;
+        }
+        if (meshSet.m_forceNormals) {
+            flags |= aiProcess_ForceGenNormals;
+        }
+
+        const aiScene* scene = importer.ReadFile(
+            meshSet.m_filePath,
+            flags);
 
         // If the import failed, report it
         if (!scene) {

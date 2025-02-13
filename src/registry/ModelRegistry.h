@@ -30,7 +30,9 @@ public:
     std::shared_future<mesh::MeshSet*> getMeshSet(
         std::string_view id,
         std::string_view rootDir,
-        std::string_view meshPath);
+        std::string_view meshPath,
+        bool smoothNormals,
+        bool forceNormals);
 
 private:
     std::shared_future<mesh::MeshSet*> startLoad(mesh::MeshSet* mesh);

@@ -1,5 +1,7 @@
 #include "TextureCube.h"
 
+#include <glm/glm.hpp>
+
 #include "kigl/GLState.h"
 
 #include "shader/Shader.h"
@@ -7,14 +9,19 @@
 namespace {
 #pragma pack(push, 1)
     struct VertexEntry {
-        kigl::VEC10 pos;
-        kigl::VEC10 normal;
-        kigl::UV16 texCoord;
+        //kigl::VEC10 pos;
+        glm::vec3 u_pos;
+
+        //kigl::VEC10 normal;
+        glm::vec3 u_normal;
+
+        //kigl::UV16 u_texCoord;
+        glm::vec2 u_texCoord;
 
         VertexEntry(glm::vec3 p, glm::vec3 n, glm::vec2 t)
-            : pos{ p },
-            normal{ n },
-            texCoord{ t }
+            : u_pos{ p },
+            u_normal{ n },
+            u_texCoord{ t }
         {}
     };
 #pragma pack(pop)
@@ -79,9 +86,14 @@ namespace render {
         glEnableVertexArrayAttrib(m_vao, ATTR_NORMAL);
         glEnableVertexArrayAttrib(m_vao, ATTR_TEX);
 
-        glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, pos));
-        glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, normal));
-        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, texCoord));
+        //glVertexArrayAttribFormat(m_vao, ATTR_POS, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_pos));
+        glVertexArrayAttribFormat(m_vao, ATTR_POS, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_pos));
+
+        //glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_normal));
+        glVertexArrayAttribFormat(m_vao, ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_normal));
+
+        //glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_texCoord));
+        glVertexArrayAttribFormat(m_vao, ATTR_TEX, 2, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_texCoord));
 
         glVertexArrayAttribBinding(m_vao, ATTR_POS, VBO_VERTEX_BINDING);
         glVertexArrayAttribBinding(m_vao, ATTR_NORMAL, VBO_VERTEX_BINDING);

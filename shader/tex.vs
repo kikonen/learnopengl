@@ -97,9 +97,9 @@ void main() {
   } else {
     worldPos = modelMatrix * pos;
 
-    normal = normalize(normalMatrix * a_normal);
+    normal = normalize(normalMatrix * DECODE_A_NORMAL(a_normal));
 #ifdef USE_TBN
-    tangent = normalize(normalMatrix * a_tangent);
+    tangent = normalize(normalMatrix * DECODE_A_TANGENT(a_tangent));
 #endif
   }
 

@@ -59,13 +59,17 @@ namespace mesh {
                 {
                     glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
 
-                    glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_normal));
+                    //glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_normal));
+                    //glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_normal));
+                    glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_normal));
                     glVertexArrayAttribBinding(vao, ATTR_NORMAL, m_binding);
                 }
                 {
                     glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
 
-                    glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_tangent));
+                    //glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_tangent));
+                    //glVertexArrayAttribFormat(vao, ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_tangent));
+                    glVertexArrayAttribFormat(vao, ATTR_TANGENT, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_tangent));
                     glVertexArrayAttribBinding(vao, ATTR_TANGENT, m_binding);
                 }
             }

@@ -19,8 +19,11 @@ namespace mesh {
             u_tangent{ a_tangent }
         {}
 
-        kigl::VEC10 u_normal;
-        kigl::VEC10 u_tangent;
+        //kigl::VEC10 u_normal;
+        kigl::VEC3_16 u_normal;
+
+        //kigl::VEC10 u_tangent;
+        kigl::VEC3_16 u_tangent;
     };
 #pragma pack(pop)
 }

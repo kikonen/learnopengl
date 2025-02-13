@@ -67,8 +67,8 @@ void main() {
     normal = -u_mainCameraFront;
     tangent = u_mainCameraRight;
   } else {
-    normal = a_normal;
-    tangent = a_tangent;
+    normal = DECODE_A_NORMAL(a_normal);
+    tangent = DECODE_A_TANGENT(a_tangent);
 
     #include tech_skinned_mesh_skin.glsl
     #include apply_mod.glsl

@@ -54,5 +54,8 @@ namespace mesh {
         std::vector<animation::VertexBone> m_vertexBones;
 
         std::shared_ptr<animation::RigContainer> m_rig;
+
+        bool m_smoothNormals{ false };
+        bool m_forceNormals{ false };
     };
 }

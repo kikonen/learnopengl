@@ -94,6 +94,12 @@ namespace loader {
             else if (k == "base_dir") {
                 data.baseDir = readString(v);
             }
+            else if (k == "smooth_normals") {
+                data.smoothNormals = readBool(v);
+            }
+            else if (k == "force_normals") {
+                data.forceNormals= readBool(v);
+            }
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
             }

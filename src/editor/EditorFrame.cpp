@@ -539,14 +539,14 @@ namespace editor {
                     ImGui::Checkbox("WireframeOnly", &dbg.m_wireframeOnly);
                 }
             }
+        }
 
-            {
-                ImGui::Spacing();
-                ImGui::Separator();
+        {
+            ImGui::Spacing();
+            ImGui::Separator();
 
-                ImGui::Checkbox("Show normals", &dbg.m_showNormals);
-                ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
-            }
+            ImGui::Checkbox("Show normals", &dbg.m_showNormals);
+            ImGui::DragFloat3("Selection Axis", glm::value_ptr(dbg.m_selectionAxis), -1.f, 1.f);
         }
     }
 

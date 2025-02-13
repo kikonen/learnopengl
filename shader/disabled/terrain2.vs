@@ -90,7 +90,7 @@ void main() {
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * a_normal;
+  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
 
 //  calculateClipping(worldPos);
 
@@ -110,7 +110,7 @@ void main() {
 
     vs_out.tangent = T;
   } else {
-    vs_out.tangent = a_tangent;
+    vs_out.tangent = DECODE_A_TANGENT(a_tangent);
   }
 #endif
 }

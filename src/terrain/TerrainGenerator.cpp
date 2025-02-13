@@ -252,10 +252,13 @@ namespace terrain {
 
         auto typeHandle = createType(registry, container.m_typeHandle);
         {
+            // TODO KI just generate primitive mesh
             auto future = ModelRegistry::get().getMeshSet(
                 "",
                 m_modelsDir,
-                TERRAIN_QUAD_MESH_NAME);
+                TERRAIN_QUAD_MESH_NAME,
+                false,
+                false);
             auto* meshSet = future.get();
             //meshSet->setAABB(aabb);
 

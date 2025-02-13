@@ -139,9 +139,9 @@ void main() {
     tangent = u_mainCameraRight;
 #endif
   } else {
-    normal = a_normal;
+    normal = DECODE_A_NORMAL(a_normal);
 #ifdef USE_TBN
-    tangent = a_tangent;
+    tangent = DECODE_A_TANGENT(a_tangent);
 #endif
 
     #include tech_skinned_mesh_skin.glsl
