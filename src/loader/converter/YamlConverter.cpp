@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <fmt/format.h>
+
 #include "ki/yaml.h"
 
 #include "DocNode.h"
@@ -12,10 +14,17 @@ namespace loader {
 
     loader::DocNode YamlConverter::load(const std::string& filePath)
     {
-        std::ifstream fin(filePath);
-        YAML::Node yamlRoot = YAML::Load(fin);
+        try {
+            std::ifstream fin(filePath);
+            YAML::Node yamlRoot = YAML::Load(fin);
 
-        return convertNode("<root>", yamlRoot);
+            return convertNode("<root>", yamlRoot);
+        }
+        catch (const std::runtime_error& ex) {
+            throw std::runtime_error{ fmt::format(
+                "PARSE_FAIL: {} - {}",
+                filePath, ex.what()) };
+        }
     }
 
     loader::DocNode YamlConverter::convertNode(
