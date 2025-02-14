@@ -56,7 +56,7 @@ namespace render {
         m_passDebug{ std::make_unique<render::PassDebug>() },
         m_passCopy{ std::make_unique<render::PassCopy>() }
     {
-        m_pipeline.m_forward = false;
+        //m_pipeline.m_forward = false;
     }
 
     NodeDraw::~NodeDraw()

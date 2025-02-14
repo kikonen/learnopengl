@@ -58,6 +58,8 @@ namespace render
 
         m_enabled = !(ctx.m_forceSolid) &&
             dbg.m_effectOitEnabled;
+
+        m_flushedCount = 0;
     }
 
     PassContext PassOit::render(
@@ -78,6 +80,7 @@ namespace render
         const PassContext& src)
     {
         if (!m_enabled) return src;
+        if (m_flushedCount == 0) return src;
 
         startScreenPass(
             ctx,
@@ -105,7 +108,6 @@ namespace render
         auto& state = ctx.m_state;
 
         {
-            // TODO KI fill stencil does not make sense if depth update is disabled?!?
             state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));
 
             // NOTE KI *use depth* but do NOT modify depth with blend
@@ -140,7 +142,7 @@ namespace render
             drawContext.nodeSelector,
             drawContext.kindBits & render::KIND_BLEND);
 
-        ctx.m_batch->flush(ctx);
+        m_flushedCount = ctx.m_batch->flush(ctx);
 
         {
             // NOTE KI *MUST* reset blend mode (especially for attachment 1)

@@ -71,10 +71,10 @@ namespace render
 
         auto& state = ctx.m_state;
 
-        // USE depth, but don't update
+        // NOTE KI cannot update stencil without depth update
+        // => thus *UPDATE* depth
+        // => stencil mask is used in fog pass
         state.setDepthFunc(GL_LEQUAL);
-        state.setDepthMask(GL_FALSE);
-
         state.frontFace(GL_CCW);
 
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));

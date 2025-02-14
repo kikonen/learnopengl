@@ -44,5 +44,7 @@ namespace render {
         Program* m_oitBlendProgram{ nullptr };
 
         OITBuffer m_oitBuffer;
+
+        size_t m_flushedCount{ 0 };
     };
 }

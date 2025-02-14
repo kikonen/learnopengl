@@ -76,6 +76,16 @@ namespace render
             // NOTE KI no blended
             drawContext.kindBits & ~render::KIND_BLEND);
 
-        ctx.m_batch->flush(ctx);
+        auto flushedCount = ctx.m_batch->flush(ctx);
+        if (flushedCount > 0) {
+            // NOTE KI depth again if changes; FOG is broken without this
+            //m_gBuffer.m_buffer->copy(
+            //    m_gBuffer.m_depthTexture.get(),
+            //    GBuffer::ATT_DEPTH_INDEX);
+
+        }
+        // NOTE KI need to reset possibly changed drawing modes
+        // ex. selection volume changes to GL_LINE
+        ctx.bindDefaults();
     }
 }

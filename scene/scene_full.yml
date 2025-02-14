@@ -841,6 +841,8 @@ nodes:
   - id: blend_cubes_{t}_{c}
     mesh:
       path: rubik_cube.fbx
+      lod:
+        max: 200
       material_modifier:
         alpha: true
         blend: true

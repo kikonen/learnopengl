@@ -199,9 +199,9 @@ namespace render
 
         {
             m_gBuffer.bindTexture(ctx);
-            m_gBuffer.m_buffer->copy(
-                m_gBuffer.m_depthTexture.get(),
-                GBuffer::ATT_DEPTH_INDEX);
+            //m_gBuffer.m_buffer->copy(
+            //    m_gBuffer.m_depthTexture.get(),
+            //    GBuffer::ATT_DEPTH_INDEX);
         }
 
         startScreenPass(
