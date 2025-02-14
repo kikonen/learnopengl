@@ -277,9 +277,15 @@ namespace loader {
                 auto& scriptData = data.scripts.emplace_back();
                 loaders.m_scriptLoader.loadScript(v, scriptData, false);
             }
+            else if (k == "scripts") {
+                loaders.m_scriptLoader.loadScripts(v, data.scripts, false);
+            }
             else if (k == "script_file") {
                 auto& scriptData = data.scripts.emplace_back();
                 loaders.m_scriptLoader.loadScript(v, scriptData, true);
+            }
+            else if (k == "script_files") {
+                loaders.m_scriptLoader.loadScripts(v, data.scripts, true);
             }
             else if (k == "meshes") {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);

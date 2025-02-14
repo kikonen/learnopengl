@@ -71,6 +71,7 @@ nodes:
         sprites_x: 8
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
   - id: planet
     parent: planet_origo
     mesh:
@@ -80,7 +81,36 @@ nodes:
         map_kd: 2k_earth_daymap_color.jpg
         map_normal: 2k_earth_daymap_normal.png
       default_programs: true
-      base_scale: 20
+      base_scale: 12
+    particle:
+      seed: 1
+      gravity: [0, -0.81, 0]
+      lifetime: 30
+      lifetime_variation: 10
+      area_type: point
+      area_radius: 10
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 3
+      speed_variation: 2
+      size: 0.1
+      size_variation: 0.1
+      rate: 10000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        kd: [1, 1, 1, 1]
+        map_kd: particles/7_firespin_spritesheet.png
+        sprites: 61
+        sprites_x: 8
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
     script: |
       cmd:rotate(
         { time=60 * 100 },
@@ -97,7 +127,7 @@ nodes:
         alpha: true
         blend: true
       default_programs: true
-      base_scale: 21
+      base_scale: 13
     flags:
       no_shadow: true
     script: |

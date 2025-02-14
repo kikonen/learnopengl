@@ -218,6 +218,11 @@ end)", nodeFnName, "{}", script.m_source);
 
             return nodeFnName;
         }
+        catch (const sol::error& ex) {
+            KI_CRITICAL(fmt::format(
+                "SCRIPT: {}\n{}",
+                ex.what(), util::appendLineNumbers(scriptlet)));
+        }
         catch (const std::exception& ex) {
             KI_CRITICAL(fmt::format(
                 "SCRIPT: {}\n{}",

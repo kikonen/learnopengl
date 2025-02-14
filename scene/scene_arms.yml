@@ -173,6 +173,7 @@ nodes:
         sprites_x: 4
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
   - id: weeping_angel_particle_origin
     parent_id: weeping_angel
     mesh:
@@ -218,6 +219,7 @@ nodes:
         sprites_x: 4
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
   - id: world_x_minus
     type: origo
     pos: [-1200, 0, 0]

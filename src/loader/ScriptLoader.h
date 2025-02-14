@@ -28,7 +28,8 @@ namespace loader {
 
         void loadScripts(
             const loader::DocNode& node,
-            std::vector<ScriptData>& scripts) const;
+            std::vector<ScriptData>& scripts,
+            bool forceFile) const;
 
         void loadScript(
             const loader::DocNode& node,

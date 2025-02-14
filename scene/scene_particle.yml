@@ -121,6 +121,7 @@ nodes:
         category: [prop]
         collision: [world, player, npc, ray]
         size: [1]
+    script_file: scripts/seq_particle_generator
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
@@ -260,6 +261,7 @@ nodes:
         category: [prop]
         collision: [world, player, npc, ray]
         size: [1]
+    script_file: scripts/seq_particle_generator
   - id: skeleton_army_{c}_{t}
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml

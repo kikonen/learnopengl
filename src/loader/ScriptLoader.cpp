@@ -38,7 +38,10 @@ namespace loader {
                 data.enabled = false;
             }
             else if (k == "scripts") {
-                loadScripts(v, data.scripts);
+                loadScripts(v, data.scripts, false);
+            }
+            else if (k == "script_files") {
+                loadScripts(v, data.scripts, true);
             }
             else {
                 reportUnknown("script_engine_entry", k, v);
@@ -48,11 +51,12 @@ namespace loader {
 
     void ScriptLoader::loadScripts(
         const loader::DocNode& node,
-        std::vector<ScriptData>& scripts) const
+        std::vector<ScriptData>& scripts,
+        bool forceFile) const
     {
         for (const auto& entry : node.getNodes()) {
             ScriptData& data = scripts.emplace_back();
-            loadScript(entry, data, false);
+            loadScript(entry, data, forceFile);
         }
     }
 

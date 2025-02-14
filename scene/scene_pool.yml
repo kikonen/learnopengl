@@ -260,6 +260,7 @@ nodes:
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
   - id: pool_side_{t}_{c}
     mesh:
       path: pool_brick
@@ -380,13 +381,14 @@ nodes:
     generator:
       type: grid
       mode: random
-      offset: [-100.0, 0.0, 140.0]
+      offset: [-600.0, 0.0, 500.0]
       scale: 3
       bounds: [terrain]
       seed: [4242, 1212, 3333]
+      count: 2000
       repeat:
-        x_count: 30
-        z_count: 20
+        x_count: 100
+        z_count: 100
         x_step: 12
         z_step: -12
   - id: grass_floating_{t}

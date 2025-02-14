@@ -612,6 +612,7 @@ nodes:
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
+    script_file: scripts/seq_particle_generator
   - id: cow_{t}_{c}
     prefab: prefab/creatures/prefab_cow.yml
     rotation: [0, 180, 0]
@@ -828,7 +829,9 @@ nodes:
         sprites_x: 9
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-    script_file: scripts/anim_four_cubes
+    script_files:
+      - scripts/anim_four_cubes
+      - scripts/seq_particle_generator
     clones:
       - pos: [-5.0, 20.0, -5.0]
         id: cube-1
