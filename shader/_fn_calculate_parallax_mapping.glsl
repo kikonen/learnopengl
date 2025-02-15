@@ -59,7 +59,7 @@ vec2 calculateParallaxOcclusionMapping(
 
   // number of depth layers
   const float minLayers = 8.0;
-  const float maxLayers = 32.0;
+  const float maxLayers = 64.0;
   const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), viewTangentDir), 0.0));
 
   // calculate the size of each layer

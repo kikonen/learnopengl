@@ -25,7 +25,8 @@ nodes:
       path: texture_cube
       material_modifier:
         prefab: materials/Bricks007.yml
-        tiling: 3
+        tiling: 4
+        parallax: 0.02
     program: g_tex
     pos: [0.0, 2.0, 0.0]
     repeat:
