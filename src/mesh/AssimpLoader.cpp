@@ -354,9 +354,10 @@ namespace mesh
                 {
                     auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
                     const auto* meshName = node->mName.C_Str();
-                    //meshName = mesh->mName.C_Str();
+                    const auto* aliasName = mesh->mName.C_Str();
 
                     auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
+                    modelMesh->m_alias = aliasName;
                     //if (modelMesh->m_name == std::string{ "SK_Armor" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_Helmet" }) continue;
                     //if (modelMesh->m_name == std::string{ "SM_2HandedSword" }) continue;

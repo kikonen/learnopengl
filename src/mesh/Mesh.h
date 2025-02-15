@@ -118,6 +118,11 @@ namespace mesh {
             return m_vertexCount;
         }
 
+        bool match(const std::string& name) {
+            return name == m_name ||
+                name == m_alias;
+        }
+
     public:
         const ki::mesh_id m_id;
 

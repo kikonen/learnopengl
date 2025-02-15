@@ -12,8 +12,7 @@ namespace mesh{
             lodMeshes.begin(),
             lodMeshes.end(),
             [&meshName](const auto& lodMesh) {
-                return meshName == lodMesh.m_mesh->m_name ||
-                    meshName == lodMesh.m_mesh->m_alias;
+                return lodMesh.m_mesh->match(meshName);
             });
         if (it == lodMeshes.end()) return nullptr;
         return &(*it);

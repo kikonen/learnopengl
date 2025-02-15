@@ -34,7 +34,7 @@ prefab:
       base_scale: 0.01375
       scale: 2
     - name: helmet
-      path: fbx\creatures\skeleton_knight\Helmet.fbx
+      path: fbx/creatures/skeleton_knight/Helmet.fbx
       material:
         base: Textures
         kd: [0.8, 0.8, 0]
@@ -47,7 +47,7 @@ prefab:
         use_sockets: true
       base_scale: 0.00121
     - name: armor
-      path: fbx\creatures\skeleton_knight\Armor.fbx
+      path: fbx/creatures/skeleton_knight/Armor.fbx
       material:
         base: Textures
         map_kd: T_ChestArmor_BaseColor.jpg
@@ -59,7 +59,7 @@ prefab:
         use_sockets: true
       base_scale: 0.000121
     - name: 2HandedSword
-      path: fbx\creatures\skeleton_knight\2HandedSword.fbx
+      path: fbx/creatures/skeleton_knight/2HandedSword.fbx
       material:
         base: Textures
         map_kd: T_2HandedSword_BaseColor.jpg
@@ -71,7 +71,7 @@ prefab:
         use_sockets: true
       base_scale: 0.000075
     - name: shield
-      path: fbx\creatures\skeleton_knight\Shield.fbx
+      path: fbx/creatures/skeleton_knight/Shield.fbx
       material:
         base: Textures
         map_kd: T_Shield_BaseColor.jpg
@@ -85,11 +85,11 @@ prefab:
   attachments:
     - name: Helmet
       socket: head
-    - name: Armor
+    - name: SK_Armor
       socket: neck
-    - name: 2HandedSword
+    - name: SM_2HandedSword
       socket: r_hand
-    - name: SM_Shield
+    - name: Shield
       socket: l_arm
   physics:
     body:

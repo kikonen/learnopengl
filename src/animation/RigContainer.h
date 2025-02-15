@@ -78,6 +78,7 @@ namespace animation {
         void dump() const;
         std::string getHierarchySummary(int16_t level) const;
         std::string getAnimationSummary(int16_t level) const;
+        std::string getSocketSummary(int16_t level) const;
 
         //void calculateInvTransforms() noexcept;
 

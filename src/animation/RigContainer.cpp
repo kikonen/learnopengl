@@ -277,10 +277,11 @@ namespace animation {
     void RigContainer::dump() const
     {
         KI_INFO_OUT(fmt::format(
-            "\n=======================\n[RIG SUMMARY: {}]\n{}\n{}\n=======================",
+            "\n=======================\n[RIG SUMMARY: {}]\nHIERARCHY:\n{}\nANIMATIONS:\n{}\nSOCKETS:\n{}\n=======================",
             m_name,
             getHierarchySummary(0),
-            getAnimationSummary(0)));
+            getAnimationSummary(0),
+            getSocketSummary(0)));
     }
 
     std::string RigContainer::getHierarchySummary(int16_t level) const
@@ -369,6 +370,36 @@ namespace animation {
                 clip.m_loop,
                 clip.m_animationIndex,
                 clip.m_animationName);
+            appendLine(sb, 0, line);
+        }
+
+        return sb;
+    }
+
+    std::string RigContainer::getSocketSummary(int16_t level) const
+    {
+        std::string sb;
+
+        auto appendLine = [](auto& sb, auto level, const auto& line) {
+            for (int i = 0; i < level; i++) {
+                sb += "    ";
+            }
+            sb += line;
+            sb += "\n";
+            };
+
+        for (const auto& socket : m_sockets) {
+            const auto& line = fmt::format(
+                "S: {}.{}, joint={}, offset={}, rot={}, scale={}, meshScale={}, jointIndex={}",
+                socket.m_index,
+                socket.m_name,
+                socket.m_jointName,
+                socket.m_offset,
+                socket.m_rotation,
+                socket.m_scale,
+                socket.m_meshScale,
+                socket.m_jointIndex
+                );
             appendLine(sb, 0, line);
         }
 
