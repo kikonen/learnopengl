@@ -43,15 +43,17 @@ nodes:
     pos: [0.5, -1.0, -10.0]
   - id: blend_cube_{c}_{t}
     mesh:
-      path: rubik_cube.fbx
-      material_modifier:
-        alpha: true
-        blend: true
-        render_back: true
-    program: g_tex
-    scale: 1
-    base_scale: 0.01
+      path: rubik_cube_emission.obj
+      material_modifiers:
+        - alpha: true
+          blend: true
+          render_back: true
+        - alias: cyan
+          map_ke: textures/emission/stay_alive_emission.png
+      base_scale: 1
+      program: g_tex
     pos: [-4, 0, -6]
+    rotation: [0, 0, 180]
     repeat:
       x_count: 2
       z_count: 2

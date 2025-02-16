@@ -72,6 +72,8 @@
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
+
+    const std::string ANY_MATERIAL{ "*" };
 }
 
 namespace loader {
@@ -580,12 +582,31 @@ namespace loader {
         {
             auto& l = *m_loaders;
 
-            // ASSIGN
+            // ASSIGN - ANY
             for (auto& materialData : meshData.materials) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
 
-                if (name == material.m_name || alias == material.m_name || alias == "*")
+                if (alias == ANY_MATERIAL)
+                {
+                    KI_INFO_OUT(fmt::format(
+                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
+                        type->getName(),
+                        lodMesh.getMeshName(),
+                        material.m_name,
+                        name,
+                        alias));
+
+                    material.assign(materialData.material);
+                }
+            }
+
+            // ASSIGN - specific
+            for (auto& materialData : meshData.materials) {
+                const auto& alias = materialData.aliasName;
+                const auto& name = materialData.materialName;
+
+                if (name == material.m_name || alias == material.m_name)
                 {
                     KI_INFO_OUT(fmt::format(
                         "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
@@ -620,12 +641,31 @@ namespace loader {
                 }
             }
 
-            // MODIFY - BASE
+            // MODIFY - BASE - ANY
             for (auto& materialData : meshData.materialModifiers) {
                 const auto& alias = materialData.aliasName;
                 const auto& name = materialData.materialName;
 
-                if (name == material.m_name || alias == material.m_name || alias == "*")
+                if (alias == ANY_MATERIAL)
+                {
+                    KI_INFO_OUT(fmt::format(
+                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                        type->getName(),
+                        lodMesh.getMeshName(),
+                        material.m_name,
+                        name,
+                        alias));
+
+                    l.m_materialLoader.modifyMaterial(material, materialData);
+                }
+            }
+
+            // MODIFY - specific material
+            for (auto& materialData : meshData.materialModifiers) {
+                const auto& alias = materialData.aliasName;
+                const auto& name = materialData.materialName;
+
+                if (name == material.m_name || alias == material.m_name)
                 {
                     KI_INFO_OUT(fmt::format(
                         "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
@@ -641,11 +681,32 @@ namespace loader {
 
             // MODIFY - LOD
             if (lodData) {
+                // MODIFY LOD - ANY
                 for (auto& materialData : lodData->materialModifiers) {
                     const auto& alias = materialData.aliasName;
                     const auto& name = materialData.materialName;
 
-                    if (name == material.m_name || alias == material.m_name || alias == "*")
+                    if (alias == "*")
+                    {
+                        KI_INFO_OUT(fmt::format(
+                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                            type->getName(),
+                            lodMesh.getMeshName(),
+                            material.m_name,
+                            name,
+                            alias));
+
+                        l.m_materialLoader.modifyMaterial(material, materialData);
+                    }
+                }
+
+
+                // MODIFY LOD - specific material
+                for (auto& materialData : lodData->materialModifiers) {
+                    const auto& alias = materialData.aliasName;
+                    const auto& name = materialData.materialName;
+
+                    if (name == material.m_name || alias == material.m_name)
                     {
                         KI_INFO_OUT(fmt::format(
                             "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",

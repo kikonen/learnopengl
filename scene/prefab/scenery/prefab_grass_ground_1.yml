@@ -9,7 +9,7 @@ prefab:
       map_mrao: Grass_And_Rubble_pjwdJ0_2K_mrao
       map_displacement: Grass_And_Rubble_pjwdJ0_2K_displacement
       tiling: 60
-      parallax_depth: 0.03
+      parallax: 0.07
       program: g_tex
     flags:
       pre_depth: true
