@@ -1,5 +1,7 @@
 #include "ScriptLoader.h"
 
+#include <filesystem>
+
 #include "asset/Assets.h"
 
 #include "util/util.h"
@@ -12,6 +14,10 @@
 
 #include "loader/document.h"
 #include "loader_util.h"
+
+namespace {
+    const std::string LUA_EXT{ ".lua" };
+}
 
 namespace loader {
     ScriptLoader::ScriptLoader(
@@ -68,12 +74,14 @@ namespace loader {
         data.enabled = true;
 
         if (node.isScalar()) {
-            std::string filename = readString(node) + ".lua";
-            if (forceFile || fileExists(filename)) {
-                data.script = readFile(filename);
+            const auto& str = readString(node);
+            const auto& scriptPath = resolveScriptPath(str);
+
+            if (forceFile || fileExists(scriptPath)) {
+                data.script = readFile(scriptPath);
             }
             else {
-                data.script = readString(node);
+                data.script = str;
             }
             return;
         }
@@ -90,7 +98,7 @@ namespace loader {
                 data.enabled = false;
             }
             else if (k == "path") {
-                data.path = readString(v);
+                data.path = resolveScriptPath(readString(v));
             }
             else if (k == "script") {
                 data.script = readString(v);
@@ -140,8 +148,7 @@ namespace loader {
         std::vector<std::string> scripts;
 
         if (!data.path.empty()) {
-            std::string filename = data.path + ".lua";
-            scripts.push_back(readFile(filename));
+            scripts.push_back(readFile(data.path));
         }
         if (!data.script.empty()) {
             scripts.push_back(data.script);
@@ -185,5 +192,20 @@ namespace loader {
             };
             m_dispatcher->send(evt);
         }
+    }
+
+    std::string ScriptLoader::resolveScriptPath(const std::string& str) const
+    {
+        std::filesystem::path scriptPath{ str };
+
+        if (scriptPath.extension() == LUA_EXT) {
+            return str;
+        }
+
+        if (!fileExists(scriptPath.string()))
+        {
+            scriptPath += LUA_EXT;
+        }
+        return scriptPath.string();
     }
 }

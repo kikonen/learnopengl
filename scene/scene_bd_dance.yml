@@ -50,6 +50,7 @@ nodes:
     text:
       font:
         path: fonts/LuckiestGuy.ttf
+        size: 64
       text: . . .
       align_horizontal: center
       align_vertical: center
@@ -65,7 +66,7 @@ nodes:
         billboard: true
       material:
         name: another_text
-        prefab: materials/Leather037_1K
+        prefab: materials/Leather037
         map_displacement: ""
         tiling: 1
         alpha: true
@@ -80,6 +81,7 @@ nodes:
     text:
       font:
         path: fonts/Lobster-Regular.ttf
+        size: 32
       text: from KI
       align_horizontal: center
       align_vertical: center

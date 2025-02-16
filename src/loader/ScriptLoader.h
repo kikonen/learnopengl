@@ -53,5 +53,7 @@ namespace loader {
 
         void runGlobalScripts(
             const std::vector<script::script_id>& scriptIds) const;
+
+        std::string resolveScriptPath(const std::string& str) const;
     };
 }

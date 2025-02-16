@@ -191,7 +191,7 @@ nodes:
         type: plane
         rot: [0, 0, 0]
     scale: 200
-    script: scripts/seq_shaky_ground
+    script: scripts/seq_shaky_ground.lua
   - id: palm_tree_forest_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml

@@ -71,8 +71,6 @@ namespace loader {
 
     BaseId readId(const loader::DocNode& node);
 
-    std::string readFile(std::string_view filename);
-
     const Material* findMaterial(
         std::string_view name,
         const std::vector<MaterialData>& materials);
