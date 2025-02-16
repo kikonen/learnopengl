@@ -88,7 +88,7 @@ namespace render {
         float m_hdrExposure{ 1.f };
 
         bool m_effectBloomEnabled{ false };
-        int m_effectBloomIterations{ 1 };
+        float m_effectBloomThreshold{ 3.0 };
 
         bool m_particleEnabled{ true };
         bool m_decalEnabled{ true };

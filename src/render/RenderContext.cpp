@@ -214,6 +214,8 @@ RenderContext::RenderContext(
         dbg->m_fogEnd,
         dbg->m_fogDensity,
 
+        dbg->m_effectBloomThreshold,
+
         dbg->m_hdrGamma,
         dbg->m_hdrExposure,
 

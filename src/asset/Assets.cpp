@@ -273,7 +273,7 @@ Assets::Assets()
     hdrExposure = 1.0f;
 
     effectBloomEnabled = true;
-    effectBloomIterations = 5;
+    effectBloomThreshold = 3.0;
 
     effectOitEnabled = true;
     effectEmissionEnabled = true;

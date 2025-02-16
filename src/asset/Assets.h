@@ -271,7 +271,7 @@ public:
     float hdrExposure;
 
     bool effectBloomEnabled;
-    int effectBloomIterations;
+    float effectBloomThreshold;
 
     bool effectOitEnabled;
     bool effectEmissionEnabled;

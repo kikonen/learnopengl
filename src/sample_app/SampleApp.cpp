@@ -168,7 +168,7 @@ int SampleApp::onInit()
         dbg.m_hdrExposure = assets.hdrExposure;
 
         dbg.m_effectBloomEnabled = assets.effectBloomEnabled;
-        dbg.m_effectBloomIterations = assets.effectBloomIterations;
+        dbg.m_effectBloomThreshold = assets.effectBloomThreshold;
 
         dbg.m_particleEnabled = assets.particleEnabled;
         dbg.m_decalEnabled = assets.decalEnabled;

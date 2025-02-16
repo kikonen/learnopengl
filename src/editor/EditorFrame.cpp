@@ -946,7 +946,7 @@ namespace editor {
             ImGui::Spacing();
 
             ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
-            ImGui::InputInt("Bloom iterations", &dbg.m_effectBloomIterations, 1, 10);
+            ImGui::InputFloat("Bloom threshold", &dbg.m_effectBloomThreshold, 0.01, 0.1 );
         }
 
         {

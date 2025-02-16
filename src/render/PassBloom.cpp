@@ -28,7 +28,7 @@ namespace render
 
     void PassBloom::prepare(const PrepareContext& ctx)
     {
-        //m_bloomInitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_INIT_PASS));
+        m_bloomInitProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_INIT_PASS));
         //m_bloomBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_BLUR_PASS));
         //m_bloomFinalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLOOM_FINAL_PASS));
         m_blurVerticalProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_BLUR_VERTICAL));
@@ -97,15 +97,17 @@ namespace render
             {
                 if (prev) {
                     prev->bindTexture(ctx, BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
+                    m_blurHorizontalProgram->bind();
                 }
                 else {
                     // NOTE KI for first step, use *original* as source
+                    // => And do init pass of collecting bright values
                     src.buffer->bindTexture(ctx, src.attachmentIndex, UNIT_SOURCE);
+                    m_bloomInitProgram->bind();
                 }
 
                 buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_A_INDEX);
 
-                m_blurHorizontalProgram->bind();
                 m_screenTri.draw();
             }
 

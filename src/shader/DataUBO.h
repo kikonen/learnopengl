@@ -46,6 +46,8 @@ struct DataUBO {
     float u_fogEnd;
     float u_fogDensity;
 
+    float u_effectBloomThresHold;
+
     float u_hdrGamma;
     float u_hdrExposure;
 
@@ -60,7 +62,7 @@ struct DataUBO {
     float u_shadowCascade_2;
     float u_shadowCascade_3;
 
-    int pad1;
-    int pad2;
+    //int pad1;
+    //int pad2;
 };
 #pragma pack(pop)

@@ -183,8 +183,8 @@
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
  layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
- layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;
-// layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
+ layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;\
+ layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;		\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
 // layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;\
 

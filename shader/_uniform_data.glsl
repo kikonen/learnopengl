@@ -29,6 +29,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_fogEnd;
   float u_fogDensity;
 
+  float u_bloomThreshold;
+
   float u_hdrGamma;
   float u_hdrExposure;
 
@@ -41,6 +43,6 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_shadowCascade_2;
   float u_shadowCascade_3;
 
-  int pad1;
-  int pad2;
+  // int pad1;
+  // int pad2;
 };

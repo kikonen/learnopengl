@@ -809,8 +809,8 @@ void AssetsLoader::loadAssets(
                 data.effectBloomEnabled = readBool(v);
                 continue;
             }
-            if (k == "effect_bloom_iterations") {
-                data.effectBloomIterations = readInt(v);
+            if (k == "effect_bloom_threshold") {
+                data.effectBloomThreshold = readFloat(v);
                 continue;
             }
             if (k == "effect_oit_enabled") {
