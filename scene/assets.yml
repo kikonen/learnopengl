@@ -240,7 +240,7 @@ assets:
   hdr_exposure: 1.0
 
   effect_bloom_enabled: true
-  effect_bloom_iterations: 2
+  effect_bloom_threshold: 5.0
 
   effect_oit_enabled: true
   effect_emission_enabled: true
