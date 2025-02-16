@@ -135,14 +135,16 @@ namespace render {
             if (m_pipeline.m_forward)
                 passContext = m_passForward->render(ctx, drawContext, passContext);
 
+            // NOTE KI OIT before skybox, since skybox uses maask against OIT
+            if (m_pipeline.m_oit)
+                passContext = m_passOit->render(ctx, drawContext, passContext);
+
             if (m_pipeline.m_skybox)
                 passContext = m_passSkybox->render(ctx, drawContext, passContext);
             if (m_pipeline.m_decal)
                 passContext = m_passDecal->render(ctx, drawContext, passContext);
             if (m_pipeline.m_particle)
                 passContext = m_passParticle->render(ctx, drawContext, passContext);
-            if (m_pipeline.m_oit)
-                passContext = m_passOit->render(ctx, drawContext, passContext);
             if (m_pipeline.m_effect)
                 passContext = m_passEffect->render(ctx, drawContext, passContext);
         }
