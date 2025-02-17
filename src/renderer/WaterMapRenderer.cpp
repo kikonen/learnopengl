@@ -316,7 +316,7 @@ bool WaterMapRenderer::render(
     if (!needRender(parentCtx)) return false;
 
     auto closest = findClosest(parentCtx);
-    setClosest(closest, m_tagMaterial.m_registeredIndex);
+    setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
     auto& state = parentCtx.m_state;

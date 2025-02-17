@@ -73,10 +73,10 @@ Scene::Scene(
     const auto& assets = Assets::get();
 
     {
-        m_uiRenderer = std::make_unique<LayerRenderer>("ui", true);
-        m_playerRenderer = std::make_unique<LayerRenderer>("player", true);
-        m_mainRenderer = std::make_unique<LayerRenderer>("main", true);
-        m_rearRenderer = std::make_unique<LayerRenderer>("rear", true);
+        m_uiRenderer = std::make_unique<LayerRenderer>("ui", true, false);
+        m_playerRenderer = std::make_unique<LayerRenderer>("player", true, false);
+        m_mainRenderer = std::make_unique<LayerRenderer>("main", true, true);
+        m_rearRenderer = std::make_unique<LayerRenderer>("rear", true, false);
 
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 

@@ -38,6 +38,7 @@
 #include "mesh/MeshType.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/SelectionRegistry.h"
 #include "registry/ControllerRegistry.h"
 
 #include "engine/AssetsLoader.h"
@@ -716,6 +717,7 @@ void SampleApp::selectNode(
 {
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
 
     auto& dbg = render::DebugContext::modify();
 
@@ -726,8 +728,8 @@ void SampleApp::selectNode(
 
     if (selectMode) {
         // deselect
-        if (node && node->isSelected()) {
-            nodeRegistry.selectNode(pool::NodeHandle::NULL_HANDLE, false);
+        if (node && selectionRegistry.isSelected(node->toHandle())) {
+            selectionRegistry.deselectNode(node->toHandle());
 
             //{
             //    event::Event evt { event::Type::audio_source_pause };
@@ -739,7 +741,12 @@ void SampleApp::selectNode(
         }
 
         // select
-        nodeRegistry.selectNode(node ? node->toHandle() : pool::NodeHandle::NULL_HANDLE, inputState.shift);
+        if (node) {
+            selectionRegistry.selectNode(node->toHandle(), inputState.shift);
+        }
+        else {
+            selectionRegistry.clearSelection();
+        }
 
         KI_INFO(fmt::format("selected: {}", nodeId));
 

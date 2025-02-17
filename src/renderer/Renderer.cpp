@@ -10,6 +10,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SelectionRegistry.h"
 
 
 Renderer::~Renderer()
@@ -26,20 +27,32 @@ void Renderer::prepareRT(
     m_renderFrameStep = assets.renderFrameStep;
 }
 
-bool Renderer::setClosest(Node* closest, int tagIndex)
+bool Renderer::setClosest(
+    const RenderContext& ctx,
+    Node* closest,
+    int tagIndex)
 {
     const bool changed = m_lastClosest != closest;
-    if (tagIndex != -1) {
+    if (changed) {
         if (m_lastClosest) {
-            m_lastClosest->setTagMaterialIndex(-1);
+            ctx.m_registry->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
         }
         if (closest) {
-            closest->setTagMaterialIndex(tagIndex);
+            ctx.m_registry->m_selectionRegistry->tagNode(closest->toHandle(), tagIndex);
         }
-        NodeRegistry::get().clearTaggedCount();
+        m_lastClosest = closest;
     }
-    m_lastClosest = closest;
     return changed;
+}
+
+void Renderer::clearClosest(
+    const RenderContext& ctx,
+    int tagIndex)
+{
+    if (m_lastClosest) {
+        ctx.m_registry->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
+        m_lastClosest = nullptr;
+    }
 }
 
 bool Renderer::needRender(const RenderContext& ctx)

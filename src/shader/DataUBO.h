@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "kigl/kigl.h"
+
 // NOTE KI align 16 for UBO struct
 #pragma pack(push, 1)
 struct DataUBO {
@@ -30,6 +32,9 @@ struct DataUBO {
     //int pad_u_mainCameraRight;
 
     glm::vec4 u_fogColor;
+
+    GLuint u_selectionMaterialIndex;
+    GLuint u_tagMaterialIndex;
 
     float u_nearPlane;
     float u_farPlane;
@@ -62,7 +67,7 @@ struct DataUBO {
     float u_shadowCascade_2;
     float u_shadowCascade_3;
 
-    //int pad1;
-    //int pad2;
+    int pad1;
+    int pad2;
 };
 #pragma pack(pop)

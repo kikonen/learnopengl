@@ -54,8 +54,6 @@ struct EntitySSBO {
 
     GLuint64 u_fontHandle{ 0 };
 
-    GLuint u_highlightIndex{ 0 }; // 1 * 4 = 4
-
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
@@ -64,7 +62,7 @@ struct EntitySSBO {
     GLuint u_boneBaseIndex{ 0 };
     GLuint u_socketBaseIndex{ 0 };
 
-    //int pad2_1;
+    int pad2_1;
     //int pad2_2;
     //int pad2_3;
 

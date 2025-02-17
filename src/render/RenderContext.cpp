@@ -16,6 +16,7 @@
 
 
 #include "registry/Registry.h"
+#include "registry/SelectionRegistry.h"
 
 #include "render/Camera.h"
 //#include "render/NodeDraw.h"
@@ -177,6 +178,8 @@ RenderContext::RenderContext(
 
     auto* mainCamera = getMainCamera();
 
+    auto& selectionRegistry = *m_registry->m_selectionRegistry;
+
     m_dataUBO = {
         m_camera->getWorldPosition(),
         //0,
@@ -194,10 +197,14 @@ RenderContext::RenderContext(
         //0,
         mainCamera->getViewRight(),
         //0,
+
         dbg->m_fogColor,
         // NOTE KI keep original screen resolution across the board
         // => current buffer resolution is separately in bufferInfo UBO
         //m_parent ? m_parent->m_resolution : m_resolution,
+
+        selectionRegistry.getSelectionMaterialIndex(),
+        selectionRegistry.getTagMaterialIndex(),
 
         m_camera->getNearPlane(),
         m_camera->getFarPlane(),

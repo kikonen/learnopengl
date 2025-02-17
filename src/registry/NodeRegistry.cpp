@@ -131,9 +131,6 @@ void NodeRegistry::prepare(
     const auto& assets = Assets::get();
 
     m_registry = registry;
-    m_selectionMaterial = std::make_unique<Material>();
-    *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
-    m_selectionMaterial->registerMaterial();
 
     m_rootId = assets.rootId;
 
@@ -342,6 +339,8 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     int minDirty = INT32_MAX;
     int maxDirty = INT32_MIN;
 
+
+
     for (int i = 0; i < m_snapshotsRT.size(); i++) {
         auto* node = m_cachedNodesRT[i];
         const auto& snapshot = m_snapshotsRT[i];
@@ -352,7 +351,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 
         if (node) {
             entity.u_objectID = node->getId();
-            entity.u_highlightIndex = node->getHighlightIndex();
 
             auto* textGenerator = node->getGenerator<TextGenerator>();
             if (textGenerator) {
@@ -426,14 +424,6 @@ void NodeRegistry::attachListeners()
                 for (auto& src : *sources) {
                     audio::AudioEngine::get().prepareSource(src);
                 }
-            }
-        });
-
-    dispatcher->addListener(
-        event::Type::node_select,
-        [this](const event::Event& e) {
-            if (auto* node = pool::NodeHandle::toNode(e.body.node.target)) {
-                node->setSelectionMaterialIndex(getSelectionMaterial().m_registeredIndex);
             }
         });
 
@@ -566,30 +556,6 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
 }
 
-void NodeRegistry::selectNode(pool::NodeHandle handle, bool append) const noexcept
-{
-    if (!append) {
-        for (auto* node : m_cachedNodesRT) {
-            if (!node) continue;
-            node->setSelectionMaterialIndex(-1);
-        }
-    }
-
-    clearSelectedCount();
-
-    auto* node = handle.toNode();
-    if (!node) return;
-
-    if (append && node->isSelected()) {
-        KI_INFO(fmt::format("DESELECT: id={}", handle.str()));
-        node->setSelectionMaterialIndex(-1);
-    }
-    else {
-        KI_INFO(fmt::format("SELECT: id={}", handle.str()));
-        node->setSelectionMaterialIndex(m_selectionMaterial->m_registeredIndex);
-    }
-}
-
 void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     const ki::node_id parentId,
@@ -621,36 +587,6 @@ void NodeRegistry::attachNode(
     if (type->m_flags.skybox) {
         return bindSkybox(node->toHandle());
     }
-}
-
-int NodeRegistry::countTagged() const noexcept
-{
-    ASSERT_RT();
-
-    int count = m_taggedCount;
-    if (count < 0) {
-        count = 0;
-        for (auto* node : m_cachedNodesRT) {
-            if (node && node->isTagged()) count++;
-        }
-        m_taggedCount = count;
-    }
-    return count;
-}
-
-int NodeRegistry::countSelected() const noexcept
-{
-    ASSERT_RT();
-
-    int count = m_selectedCount;
-    if (count < 0) {
-        count = 0;
-        for (auto* node : m_cachedNodesRT) {
-            if (node && node->isSelected()) count++;
-        }
-        m_selectedCount = count;
-    }
-    return count;
 }
 
 void NodeRegistry::changeParent(
@@ -692,8 +628,6 @@ void NodeRegistry::bindNode(
             m_rootIndex = node->m_entityIndex;
         }
     }
-
-    clearSelectedCount();
 
     // NOTE KI ensure related snapshots are visible in RT
     // => otherwise IOOBE will trigger
@@ -737,16 +671,6 @@ bool NodeRegistry::bindParent(
     KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parentId, nodeId));
 
     return true;
-}
-
-const Material& NodeRegistry::getSelectionMaterial() const noexcept
-{
-    return *m_selectionMaterial;
-}
-
-void NodeRegistry::setSelectionMaterial(const Material& material)
-{
-    *m_selectionMaterial = material;
 }
 
 //void NodeRegistry::withLock(const std::function<void(NodeRegistry&)>& fn)

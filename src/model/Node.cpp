@@ -170,33 +170,6 @@ void Node::bindBatch(
     }
 }
 
-void Node::setTagMaterialIndex(int index)
-{
-    if (m_tagMaterialIndex != index) {
-        m_tagMaterialIndex = index;
-        getState().m_dirtySnapshot = true;
-    }
-}
-
-void Node::setSelectionMaterialIndex(int index)
-{
-    if (m_selectionMaterialIndex != index) {
-        m_selectionMaterialIndex = index;
-        getState().m_dirtySnapshot = true;
-    }
-}
-
-int Node::getHighlightIndex() const noexcept
-{
-    const auto& assets = Assets::get();
-
-    if (assets.showHighlight) {
-        if (assets.showTagged && m_tagMaterialIndex > -1) return m_tagMaterialIndex;
-        if (assets.showSelection && m_selectionMaterialIndex > -1) return m_selectionMaterialIndex;
-    }
-    return -1;
-}
-
 audio::Source* Node::getAudioSource(audio::source_id id) const
 {
     audio::Source* source{ nullptr };

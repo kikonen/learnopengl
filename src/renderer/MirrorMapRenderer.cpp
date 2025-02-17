@@ -222,7 +222,7 @@ bool MirrorMapRenderer::render(
     if (!needRender(parentCtx)) return false;
 
     Node* closest = findClosest(parentCtx);
-    setClosest(closest, m_tagMaterial.m_registeredIndex);
+    setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7

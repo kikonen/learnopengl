@@ -210,7 +210,7 @@ bool CubeMapRenderer::render(
     if (!needRender(parentCtx)) return false;
 
     Node* centerNode = findClosest(parentCtx);
-    if (m_lastClosest && setClosest(centerNode, -1)) {
+    if (m_lastClosest && setClosest(parentCtx, centerNode, -1)) {
         m_curr->m_updateFace = -1;
         m_prev->m_updateFace = -1;
         m_curr->m_rendered = false;

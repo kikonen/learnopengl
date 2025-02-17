@@ -12,6 +12,7 @@ namespace event
 struct UpdateContext;
 
 class NodeRegistry;
+class SelectionRegistry;
 
 //
 // Container for all registries to simplify passing them around
@@ -48,4 +49,5 @@ public:
     event::Dispatcher* const m_dispatcherView;
 
     NodeRegistry* const m_nodeRegistry;
+    SelectionRegistry* const m_selectionRegistry;
 };

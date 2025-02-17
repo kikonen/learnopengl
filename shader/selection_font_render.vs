@@ -62,7 +62,7 @@ void main()
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;
-  vs_out.highlightIndex = entity.u_highlightIndex;
+  vs_out.highlightIndex = u_selectionMaterialIndex;
 
   gl_Position = u_projectedMatrix * worldPos;
   renderOutline(u_stencilMode);

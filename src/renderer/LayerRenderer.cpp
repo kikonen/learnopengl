@@ -17,6 +17,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SelectionRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
@@ -95,20 +96,43 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 
 
     {
-        auto buffer = new render::FrameBuffer(
-            m_name + "_node",
-            {
-                w, h,
+        render::FrameBuffer* buffer{ nullptr };
+
+        if (m_useHighlight) {
+            buffer = new render::FrameBuffer(
+                m_name + "_node",
                 {
+                    w, h,
+                    {
                     // NOTE KI alpha NEEDED for layers
                     render::FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     // NOTE KI depth/stencil needed only for highlight/selecction
                     render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
-            });
+                });
+        }
+        else {
+            buffer = new render::FrameBuffer(
+                m_name + "_node",
+                {
+                    w, h,
+                    {
+                    // NOTE KI alpha NEEDED for layers
+                    render::FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
+                }
+                });
+        }
 
         m_buffer.reset(buffer);
         m_buffer->prepare();
+
+        // NOTE KI ensure buffer is cleared initially
+        {
+            auto& state = kigl::GLState::get();
+            state.setStencil({});
+
+            m_buffer->clearAll();
+        }
     }
 }
 
@@ -116,20 +140,33 @@ void LayerRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    if (!isEnabled()) return;
+    auto& state = ctx.m_state;
+
+    if (!isEnabled())
+    {
+        state.setStencil({});
+        targetBuffer->clearAll();
+        return;
+    }
 
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
 
     ctx.validateRender("node_map");
 
-    m_taggedCount = assets.showTagged ? nodeRegistry.countTagged() : 0;
-    m_selectedCount = assets.showSelection ? nodeRegistry.countSelected() : 0;
+    if (m_useHighlight) {
+        m_taggedCount = assets.showTagged ? selectionRegistry.getTaggedCount() : 0;
+        m_selectedCount = assets.showSelection ? selectionRegistry.getSelectedCount() : 0;
+    }
 
     {
         targetBuffer->clearAll();
 
-        fillHighlightMask(ctx, targetBuffer);
+        if (m_useHighlight) {
+            fillHighlightMask(ctx, targetBuffer);
+        }
+
         {
             render::DrawContext drawContext{
                 [](const mesh::MeshType* type) { return true; },
@@ -144,7 +181,10 @@ void LayerRenderer::render(
                 drawContext,
                 targetBuffer);
         }
-        renderHighlight(ctx, targetBuffer);
+
+        if (m_useHighlight) {
+            renderHighlight(ctx, targetBuffer);
+        }
     }
 }
 
@@ -161,6 +201,8 @@ void LayerRenderer::fillHighlightMask(
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
+    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+
     auto& state = ctx.m_state;
 
     targetBuffer->bind(ctx);
@@ -173,7 +215,9 @@ void LayerRenderer::fillHighlightMask(
 
         render::DrawContext drawContext{
             [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(); },
+            [&selectionRegistry](const Node* node) {
+                return selectionRegistry.isHighlighted(node->toHandle());
+            },
             render::KIND_ALL,
             0
         };
@@ -208,6 +252,8 @@ void LayerRenderer::renderHighlight(
 
     auto& state = ctx.m_state;
 
+    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+
     targetBuffer->bind(ctx);
 
     state.setEnabled(GL_DEPTH_TEST, false);
@@ -230,7 +276,9 @@ void LayerRenderer::renderHighlight(
 
         render::DrawContext drawContext{
             [](const mesh::MeshType* type) { return true; },
-            [&ctx](const Node* node) { return node->isHighlighted(); },
+            [&selectionRegistry](const Node* node) {
+                return selectionRegistry.isHighlighted(node->toHandle());
+            },
             render::KIND_ALL
         };
 

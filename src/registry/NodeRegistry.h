@@ -84,18 +84,6 @@ public:
         return m_rootWT.toNode();
     }
 
-    void selectNode(pool::NodeHandle handle, bool append) const noexcept;
-
-    int countTagged() const noexcept;
-    int countSelected() const noexcept;
-
-    void clearTaggedCount() const noexcept {
-        m_taggedCount = -1;
-    }
-    void clearSelectedCount() const noexcept {
-        m_selectedCount = -1;
-    }
-
     void changeParent(
         const ki::node_id id,
         const ki::node_id parentId) noexcept;
@@ -130,9 +118,6 @@ public:
     const std::vector<pool::NodeHandle>& getSpotLightNodes() const noexcept {
         return m_spotLightNodes;
     }
-
-    const Material& getSelectionMaterial() const noexcept;
-    void setSelectionMaterial(const Material& material);
 
     //ki::level_id getLevel() const noexcept {
     //    std::lock_guard lock(m_lock);
@@ -274,9 +259,4 @@ private:
 
     pool::NodeHandle m_activeNode{};
     pool::NodeHandle m_activeCameraNode{};
-
-    std::unique_ptr<Material> m_selectionMaterial;
-
-    mutable int m_taggedCount{ -1 };
-    mutable int m_selectedCount{ -1 };
 };

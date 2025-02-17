@@ -19,8 +19,11 @@ public:
 public:
     LayerRenderer(
         std::string_view name,
-        bool useFrameStep)
-        : Renderer(name, useFrameStep) {}
+        bool useFrameStep,
+        bool useHighlight)
+        : Renderer(name, useFrameStep),
+        m_useHighlight{ useHighlight }
+    {}
 
     virtual ~LayerRenderer() override;
 
@@ -50,9 +53,11 @@ public:
 private:
     Program* m_selectionProgram{ nullptr };
 
+    const bool m_useHighlight;
+
     int m_width{ -1 };
     int m_height{ -1 };
 
-    int m_taggedCount{ 0 };
-    int m_selectedCount{ 0 };
+    size_t m_taggedCount{ 0 };
+    size_t m_selectedCount{ 0 };
 };

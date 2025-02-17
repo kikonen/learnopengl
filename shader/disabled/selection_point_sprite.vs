@@ -33,7 +33,6 @@ void main() {
   gl_Position = worldPos;
 
   vs_out.materialIndex = materialIndex;
-  vs_out.highlightIndex = entity.u_highlightIndex;
 
   vs_out.scale = entity.u_worldScale.xyz;
 }

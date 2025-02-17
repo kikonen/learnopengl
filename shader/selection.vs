@@ -87,5 +87,6 @@ void main() {
   vs_out.texCoord = a_texCoord;
 #endif
 
-  vs_out.highlightIndex = entity.u_highlightIndex;
+  vs_out.highlightIndex = u_selectionMaterialIndex;
+  // vs_out.highlightIndex = 8;
 }

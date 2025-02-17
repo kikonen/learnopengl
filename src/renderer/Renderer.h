@@ -46,7 +46,14 @@ public:
 
 protected:
     // @return true if changed node
-    bool setClosest(Node* closest, int tagIndex);
+    bool setClosest(
+        const RenderContext& ctx,
+        Node* closest,
+        int tagIndex);
+
+    void clearClosest(
+        const RenderContext& ctx,
+        int tagIndex);
 
 protected:
     bool m_prepared = false;

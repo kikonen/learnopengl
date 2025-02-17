@@ -145,15 +145,6 @@ public:
 
     bool isEntity() const noexcept;
 
-    inline int getTagMaterialIndex() const noexcept { return m_tagMaterialIndex; }
-    inline int getSelectionMaterialIndex() const noexcept { return m_selectionMaterialIndex; }
-
-    void setTagMaterialIndex(int index);
-    void setSelectionMaterialIndex(int index);
-
-    // @return -1 if no highlight color
-    int getHighlightIndex() const noexcept;
-
     //inline int getCloneIndex() const noexcept {
     //    return m_cloneIndex;
     //}
@@ -161,14 +152,6 @@ public:
     //inline void setCloneIndex(int cloneIndex) {
     //    m_cloneIndex = cloneIndex;
     //}
-
-    inline bool isHighlighted() const noexcept
-    {
-        return getHighlightIndex() != -1;
-    }
-
-    inline bool isSelected() const noexcept { return m_selectionMaterialIndex > -1; }
-    inline bool isTagged() const noexcept { return m_tagMaterialIndex > -1; }
 
     template<typename T>
     T* getGenerator()
@@ -207,10 +190,6 @@ private:
     pool::NodeHandle m_handle;
 
     //int m_cloneIndex{ 0 };
-
-    // special materials are in range 0..255
-    int8_t m_tagMaterialIndex{ -1 };
-    int8_t m_selectionMaterialIndex{ -1 };
 
 public:
     NodeFlags m_flags;

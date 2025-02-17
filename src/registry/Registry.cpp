@@ -36,6 +36,7 @@
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SelectionRegistry.h"
 #include "registry/VaoRegistry.h"
 
 
@@ -48,7 +49,8 @@ Registry::Registry(
     // pointers
     m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
-    m_nodeRegistry{ &NodeRegistry::get() }
+    m_nodeRegistry{ &NodeRegistry::get() },
+    m_selectionRegistry{ &SelectionRegistry::get() }
 {
 }
 
@@ -64,6 +66,7 @@ void Registry::prepareShared()
     m_prepared = true;
 
     m_dispatcherWorker->prepare();
+    m_dispatcherWorker->prepare();
     m_dispatcherView->prepare();
 
     MaterialRegistry::get().prepare();
@@ -73,6 +76,7 @@ void Registry::prepareShared()
     ViewportRegistry::get().prepare();
 
     NodeRegistry::get().prepare(this);
+    SelectionRegistry::get().prepare(this);
 
     physics::PhysicsEngine::get().prepare(m_alive);
 
@@ -121,6 +125,7 @@ void Registry::updateRT(const UpdateContext& ctx)
 
     MaterialRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
+    //SelectionRegistry::get().updateRT(ctx);
     EntityRegistry::get().updateRT(ctx);
     particle::ParticleSystem::get().updateRT(ctx);
     decal::DecalSystem::get().updateRT(ctx);

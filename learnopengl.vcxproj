@@ -218,6 +218,7 @@
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
     <ClCompile Include="src\particle\ParticleDefinition.cpp" />
     <ClCompile Include="src\physics\PhysicsMaterial.cpp" />
+    <ClCompile Include="src\registry\SelectionRegistry.cpp" />
     <ClCompile Include="src\renderer\EnvironmentProbeRenderer.cpp" />
     <ClCompile Include="src\renderer\MeshRenderer.cpp" />
     <ClCompile Include="src\render\BatchRegistry.cpp" />
@@ -560,6 +561,7 @@
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
+    <ClInclude Include="src\registry\SelectionRegistry.h" />
     <ClInclude Include="src\render\BatchRegistry.h" />
     <ClInclude Include="src\mesh\MeshTransform.h" />
     <ClInclude Include="src\mesh\NonVaoMesh.h" />

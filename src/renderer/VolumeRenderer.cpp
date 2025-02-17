@@ -14,12 +14,16 @@
 #include "mesh/MeshInstance.h"
 
 #include "render/DebugContext.h"
+#include "render/RenderContext.h"
 
 #include "shader/Shader.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
+#include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/SelectionRegistry.h"
+
 
 VolumeRenderer::VolumeRenderer() = default;
 VolumeRenderer::~VolumeRenderer() = default;
@@ -53,13 +57,14 @@ void VolumeRenderer::render(
     const auto& dbg = render::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;
 
-    auto& nodeRegistry = NodeRegistry::get();
+    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
 
     std::vector<mesh::MeshInstance> meshes;
 
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
-        if (!dbg.m_showVolume && !node->isSelected()) continue;
+        if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
         const auto* snapshot = nodeRegistry.getSnapshotRT(node->m_entityIndex);
 
