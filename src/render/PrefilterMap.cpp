@@ -98,8 +98,7 @@ namespace render {
         const glm::vec4 clearColor{ 0.f };
         const float clearDepth{ 1.f };
 
-        TextureCube cube;
-        cube.prepare();
+        const TextureCube& cube = TextureCube::get();
 
         kigl::GLFrameBufferHandle captureFBO;
         kigl::GLRenderBufferHandle rbo;

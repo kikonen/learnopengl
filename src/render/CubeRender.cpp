@@ -33,8 +33,7 @@ namespace render {
 
 
         {
-            TextureCube cube;
-            cube.prepare();
+            const TextureCube& cube = TextureCube::get();
 
             const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
             const glm::mat4 captureViews[] =

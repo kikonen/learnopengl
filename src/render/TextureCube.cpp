@@ -25,12 +25,24 @@ namespace {
         {}
     };
 #pragma pack(pop)
+
+    render::TextureCube g_cube;
+    bool g_prepared{ false };
 }
 
 namespace render {
+    const TextureCube& TextureCube::get()
+    {
+        if (!g_prepared) {
+            g_prepared = true;
+            g_cube.prepare();
+        }
+        return g_cube;
+    }
+
     void TextureCube::prepare()
     {
-        const VertexEntry vertices[] = {
+        VertexEntry vertices[] = {
             // back
             VertexEntry{ {-1.0f, -1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f}, {0.0f, 0.0f} },
             VertexEntry{ { 1.0f,  1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f}, {1.0f, 1.0f} },
@@ -75,6 +87,10 @@ namespace render {
             VertexEntry{ {-1.0f,  1.0f,  1.0f}, { 0.0f,  1.0f,  0.0f}, {0.0f, 0.0f} },
         };
 
+        for (auto& vertex : vertices) {
+            vertex.u_pos *= m_scale;
+        }
+
         m_vao.create("texture_cube");
 
         m_vbo.create();
@@ -104,9 +120,14 @@ namespace render {
         glVertexArrayBindingDivisor(m_vao, VBO_VERTEX_BINDING, 0);
     }
 
-    void TextureCube::draw()
+    void TextureCube::draw() const
     {
         kigl::GLState::get().bindVAO(m_vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    void TextureCube::drawInstanced(int instanceCount)
+    {
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 36, instanceCount);
     }
 }
