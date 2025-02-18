@@ -82,7 +82,6 @@ namespace mesh
         Assimp::Importer importer;
 
         uint32_t flags =
-            aiProcess_GenNormals |
             //aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace |
             aiProcess_Triangulate |
@@ -98,6 +97,10 @@ namespace mesh
         if (meshSet.m_smoothNormals) {
             flags |= aiProcess_GenSmoothNormals;
         }
+        else {
+            flags |= aiProcess_GenNormals;
+        }
+
         if (meshSet.m_forceNormals) {
             flags |= aiProcess_ForceGenNormals;
         }
