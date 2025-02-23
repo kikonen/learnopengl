@@ -53,7 +53,7 @@ struct DataUBO {
 
     float u_effectBloomThresHold;
 
-    float u_hdrGamma;
+    float u_gammaCorrect;
     float u_hdrExposure;
 
     float u_time;

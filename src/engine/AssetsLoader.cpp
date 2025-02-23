@@ -797,14 +797,30 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "hdr_gamma") {
-                data.hdrGamma = readFloat(v);
+            if (k == "gamma_correct_enabled") {
+                data.gammaCorrectEnabled = readBool(v);
+                continue;
+            }
+            if (k == "hardware_gamma_correct_enabled") {
+                data.hardwareCorrectGammaEnabled = readBool(v);
+                continue;
+            }
+            if (k == "gamma_correct") {
+                data.gammaCorrect = readFloat(v);
+                continue;
+            }
+        }
+        {
+            if (k == "hdr_tone_mapping_enabled") {
+                data.hdrToneMappingEnabled = readBool(v);
                 continue;
             }
             if (k == "hdr_exposure") {
                 data.hdrExposure = readFloat(v);
                 continue;
             }
+        }
+        {
             if (k == "effect_bloom_enabled") {
                 data.effectBloomEnabled = readBool(v);
                 continue;
@@ -813,6 +829,8 @@ void AssetsLoader::loadAssets(
                 data.effectBloomThreshold = readFloat(v);
                 continue;
             }
+        }
+        {
             if (k == "effect_oit_enabled") {
                 data.effectOitEnabled = readBool(v);
                 continue;

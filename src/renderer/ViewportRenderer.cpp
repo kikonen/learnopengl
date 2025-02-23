@@ -38,8 +38,8 @@ void ViewportRenderer::prepareRT(
 
     m_blitterId = ProgramRegistry::get().getProgram(SHADER_WINDOW_BLIT);
 
-    setGammaCorrect(true);
-    setHardwareGamma(true);
+    setGammaCorrectEnabled(true);
+    setHardwareGammaEnabled(true);
 }
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
@@ -154,10 +154,10 @@ void ViewportRenderer::render(
 
         auto* uniforms = program->m_uniforms.get();
 
-        uniforms->u_toneHdri.set(true);
-        uniforms->u_gammaCorrect.set(m_hardwareGamma ? false : m_gammaCorrect);
+        uniforms->u_hdrToneEnabled.set(m_hdrToneMappingEnabled);
+        uniforms->u_gammaCorrectEnabled.set(m_hardwareGammaEnabled ? false : m_gammaCorrectEnabled);
 
-        if (m_gammaCorrect && m_hardwareGamma) {
+        if (m_gammaCorrectEnabled && m_hardwareGammaEnabled) {
             glEnable(GL_FRAMEBUFFER_SRGB);
             render::ScreenTri::get().draw();
             glDisable(GL_FRAMEBUFFER_SRGB);

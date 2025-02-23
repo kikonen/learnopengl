@@ -223,7 +223,7 @@ RenderContext::RenderContext(
 
         dbg->m_effectBloomThreshold,
 
-        dbg->m_hdrGamma,
+        dbg->m_gammaCorrect,
         dbg->m_hdrExposure,
 
         static_cast<float>(m_clock.ts),

@@ -529,9 +529,10 @@ namespace editor {
                     ImGui::EndCombo();
                 }
 
+                if (dbg.m_geometryType == "wireframe_mod")
                 {
                     ImGui::Spacing();
-                    ImGui::Separator();
+                    ImGui::SeparatorText("wireframe_mod");
 
                     //ImGui::Checkbox("WireframeMode", &dbg.m_wireframeMode);
                     ImGui::DragFloat("WireframeWidth", &dbg.m_wireframeLineWidth, 0.f, 1.f);
@@ -863,20 +864,21 @@ namespace editor {
     {
         {
             ImGui::Spacing();
-            ImGui::SeparatorText("Gamma / HDR");
+            ImGui::SeparatorText("Gamma correction");
             ImGui::Spacing();
 
-            {
-                ImGui::Checkbox("Gamma correct", &dbg.m_gammaCorrect);
-                ImGui::Checkbox("Hardware gamma", &dbg.m_hardwareGamma);
-            }
+            ImGui::Checkbox("Gamma correct enabled", &dbg.m_gammaCorrectEnabled);
+            ImGui::Checkbox("HW gamma correct enabled", &dbg.m_hardwareCorrectGammaEnabled);
+            ImGui::InputFloat("SW Gamma", &dbg.m_gammaCorrect, 0.01f, 0.1f);
+        }
 
-            {
-                ImGui::Spacing();
-                ImGui::Separator();
-                ImGui::InputFloat("HDR gamma", &dbg.m_hdrGamma, 0.01f, 0.1f);
-                ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
-            }
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("HDR");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("HDR tone mapping enabled", &dbg.m_hdrToneMappingEnabled);
+            ImGui::InputFloat("HDR exposure", &dbg.m_hdrExposure, 0.01f, 0.1f);
         }
 
         {

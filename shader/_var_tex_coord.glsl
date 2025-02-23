@@ -42,5 +42,5 @@
 // #endif
 
 #else
-  const vec2 texCoord = fs_in.texCoord;
+  vec2 texCoord = fs_in.texCoord;
 #endif

@@ -5,8 +5,8 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_shadowNearPlane{ "u_shadowNearPlane", UNIFORM_SHADOW_NEAR_PLANE },
     u_shadowFarPlane{ "u_shadowFarPlane", UNIFORM_SHADOW_FAR_PLANE },
     u_drawParametersIndex{ "u_drawParametersIndex", UNIFORM_DRAW_PARAMETERS_INDEX },
-    u_toneHdri{ "u_toneHdri", UNIFORM_TONE_HDRI },
-    u_gammaCorrect{ "u_gammaCorrect", UNIFORM_GAMMA_CORRECT },
+    u_hdrToneEnabled{ "u_hdrToneEnabled", UNIFORM_HDR_TONE_ENABLED },
+    u_gammaCorrectEnabled{ "u_gammaCorrectEnabled", UNIFORM_GAMMA_CORRECT_ENABLED },
     u_viewportTransform{ "u_viewportTransform", UNIFORM_VIEWPORT_TRANSFORM },
     u_modelMatrix{ "u_modelMatrix", UNIFORM_MODEL_MATRIX },
     u_materialIndex{ "u_materialIndex", UNIFORM_MATERIAL_INDEX },
@@ -20,8 +20,8 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_shadowNearPlane.init(&program);
     u_shadowFarPlane.init(&program);
     u_drawParametersIndex.init(&program);
-    u_toneHdri.init(&program);
-    u_gammaCorrect.init(&program);
+    u_hdrToneEnabled.init(&program);
+    u_gammaCorrectEnabled.init(&program);
     u_viewportTransform.init(&program);
     u_modelMatrix.init(&program);
     u_materialIndex.init(&program);

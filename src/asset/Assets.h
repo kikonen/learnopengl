@@ -267,7 +267,11 @@ public:
 
     std::vector<LayerInfo> layers;
 
-    float hdrGamma;
+    bool gammaCorrectEnabled;
+    bool hardwareCorrectGammaEnabled;
+    float gammaCorrect;
+
+    bool hdrToneMappingEnabled;
     float hdrExposure;
 
     bool effectBloomEnabled;

@@ -34,7 +34,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   float u_bloomThreshold;
 
-  float u_hdrGamma;
+  float u_gammaCorrect;
   float u_hdrExposure;
 
   float u_time;

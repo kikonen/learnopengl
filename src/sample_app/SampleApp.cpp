@@ -165,7 +165,11 @@ int SampleApp::onInit()
         dbg.m_fogEnd = assets.fogEnd;
         dbg.m_fogDensity = assets.fogDensity;
 
-        dbg.m_hdrGamma = assets.hdrGamma;
+        dbg.m_gammaCorrectEnabled = assets.gammaCorrectEnabled;
+        dbg.m_hardwareCorrectGammaEnabled = assets.hardwareCorrectGammaEnabled;
+        dbg.m_gammaCorrect = assets.gammaCorrect;
+
+        dbg.m_hdrToneMappingEnabled = assets.hdrToneMappingEnabled;
         dbg.m_hdrExposure = assets.hdrExposure;
 
         dbg.m_effectBloomEnabled = assets.effectBloomEnabled;
@@ -316,12 +320,9 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
             ctx.m_layer = layer->m_index;
         }
-        ctx.m_forceLineMode = assets.forceLineMode;
+        //ctx.m_forceLineMode = assets.forceLineMode;
+        ctx.m_forceLineMode = m_dbg.m_forceLineMode;
         ctx.m_useLight = assets.useLight;
-
-        if (m_dbg.m_nodeDebugEnabled) {
-            ctx.m_forceLineMode |= m_dbg.m_forceLineMode;
-        }
 
         // https://paroj.github.io/gltut/apas04.html
         if (assets.rasterizerDiscard) {

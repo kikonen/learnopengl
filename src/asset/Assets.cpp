@@ -269,7 +269,11 @@ Assets::Assets()
     prefilterMapSize = 128;
     brdfLutSize = 512;
 
-    hdrGamma = 2.2f;
+    gammaCorrectEnabled = true;
+    hardwareCorrectGammaEnabled = true;
+    gammaCorrect = 2.2f;
+
+    hdrToneMappingEnabled = true;
     hdrExposure = 1.0f;
 
     effectBloomEnabled = true;

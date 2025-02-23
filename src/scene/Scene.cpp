@@ -383,11 +383,9 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     const auto& dbg = render::DebugContext::get();
 
     {
-        auto gamma = dbg.m_gammaCorrect;
-        auto hw = dbg.m_hardwareGamma;
-
-        m_viewportRenderer->setGammaCorrect(gamma);
-        m_viewportRenderer->setHardwareGamma(hw);
+        m_viewportRenderer->setGammaCorrectEnabled(dbg.m_gammaCorrectEnabled);
+        m_viewportRenderer->setHardwareGammaEnabled(dbg.m_hardwareCorrectGammaEnabled);
+        m_viewportRenderer->setHdrToneMappingEnabled(dbg.m_hdrToneMappingEnabled);
     }
 
     {

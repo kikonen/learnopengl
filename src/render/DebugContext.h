@@ -71,8 +71,12 @@ namespace render {
 
         bool m_drawDebug{ false };
 
-        bool m_gammaCorrect{ true };
-        bool m_hardwareGamma{ true };
+        bool m_gammaCorrectEnabled{ true };
+        bool m_hardwareCorrectGammaEnabled{ true };
+        float m_gammaCorrect{ 2.2f };
+
+        bool m_hdrToneMappingEnabled{ true };
+        float m_hdrExposure{ 1.0f };
 
         bool m_prepassDepthEnabled{ false };
         bool m_effectOitEnabled{ true };
@@ -83,9 +87,6 @@ namespace render {
         float m_fogStart;
         float m_fogEnd;
         float m_fogDensity;
-
-        float m_hdrGamma{ 2.2f };
-        float m_hdrExposure{ 1.f };
 
         bool m_effectBloomEnabled{ false };
         float m_effectBloomThreshold{ 3.0 };

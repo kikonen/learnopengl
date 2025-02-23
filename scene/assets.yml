@@ -236,7 +236,11 @@ assets:
       blend_enabled: true
       blend_factor: 0.95
 
-  hdr_gamma: 2.2
+  gamma_correct_enabled: true
+  hardware_gamma_correct_enabled: true
+  gamma_correct: 2.2
+
+  hdr_tone_mapping_enabled: true
   hdr_exposure: 1.0
 
   effect_bloom_enabled: true

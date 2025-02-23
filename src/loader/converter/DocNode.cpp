@@ -70,6 +70,7 @@ namespace loader {
         for (int i = 0; i < m_data->m_nodes.size(); i++) {
             loader::DocNode& old = m_data->m_nodes[i];
             if (old.m_name == node.m_name) {
+                KI_WARN_OUT(fmt::format("DUPLICATE_NODE: name={}", node.m_name));
                 old = node;
                 return;
             }

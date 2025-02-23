@@ -17,16 +17,17 @@ constexpr int UNIFORM_SHADOW_MAP_INDEX = 8;
 
 constexpr int UNIFORM_EFFECT_BLOOM_HORIZONTAL = 9;
 
-constexpr int UNIFORM_TONE_HDRI = 10;
-constexpr int UNIFORM_GAMMA_CORRECT = 11;
-constexpr int UNIFORM_VIEWPORT_TRANSFORM = 12;
+constexpr int UNIFORM_HDR_TONE_ENABLED = 10;
+constexpr int UNIFORM_HDR_EXPOSURE_ENABLED = 11;
+constexpr int UNIFORM_GAMMA_CORRECT_ENABLED = 12;
 
-constexpr int UNIFORM_MODEL_MATRIX = 13;
-constexpr int UNIFORM_MATERIAL_INDEX = 14;
+constexpr int UNIFORM_VIEWPORT_TRANSFORM = 15;
+constexpr int UNIFORM_MODEL_MATRIX = 16;
+constexpr int UNIFORM_MATERIAL_INDEX = 17;
 
-constexpr int UNIFORM_BLEND_FACTOR = 15;
+constexpr int UNIFORM_BLEND_FACTOR = 20;
 
-constexpr int UNIFORM_VIEWPORT = 16;
+constexpr int UNIFORM_VIEWPORT = 21;
 
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;

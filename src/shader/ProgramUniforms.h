@@ -26,8 +26,9 @@ struct ProgramUniforms {
 
     uniform::Bool u_effectBloomHorizontal;
 
-    uniform::Bool u_toneHdri;
-    uniform::Bool u_gammaCorrect;
+    uniform::Bool u_hdrToneEnabled;
+    uniform::Bool u_gammaCorrectEnabled;
+
     uniform::Mat4 u_viewportTransform;
 
     uniform::Mat4 u_modelMatrix;

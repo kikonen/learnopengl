@@ -25,23 +25,33 @@ public:
         const RenderContext& ctx,
         render::FrameBuffer* destinationBuffer);
 
-    void setGammaCorrect(bool gammaCorrect) {
-        m_gammaCorrect = gammaCorrect;
+    void setGammaCorrectEnabled(bool enabled) {
+        m_gammaCorrectEnabled = enabled;
     }
 
-    bool getGammaCorrect() const
+    bool getGammaCorrectEnabled() const noexcept
     {
-        return m_gammaCorrect;
+        return m_gammaCorrectEnabled;
     }
 
-    void setHardwareGamma(bool hardwareGamma)
+    void setHardwareGammaEnabled(bool enabled)
     {
-        m_hardwareGamma = hardwareGamma;
+        m_hardwareGammaEnabled = enabled;
     }
 
-    bool getHardwareGamma() const
+    bool getHardwareGammaEnabled() const noexcept
     {
-        return m_hardwareGamma;
+        return m_hardwareGammaEnabled;
+    }
+
+    void setHdrToneMappingEnabled(bool enabled)
+    {
+        m_hdrToneMappingEnabled = enabled;
+    }
+
+    bool getHdrToneMappingEnabled() const noexcept
+    {
+        return m_hdrToneMappingEnabled;
     }
 
 private:
@@ -51,6 +61,7 @@ private:
 
     ki::program_id m_blitterId;
 
-    bool m_gammaCorrect{ false };
-    bool m_hardwareGamma{ false };
+    bool m_gammaCorrectEnabled{ false };
+    bool m_hardwareGammaEnabled{ false };
+    bool m_hdrToneMappingEnabled{ false };
 };
