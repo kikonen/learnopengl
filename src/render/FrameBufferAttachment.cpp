@@ -184,18 +184,16 @@ namespace render {
     }
 
     void FrameBufferAttachment::bindTexture(
-        const RenderContext& ctx,
+        kigl::GLState& state,
         int unitIndex)
     {
-        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, textureID, false);
     }
 
     void FrameBufferAttachment::unbindTexture(
-        const RenderContext& ctx,
+        kigl::GLState& state,
         int unitIndex)
     {
-        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, 0, true);
     }
 

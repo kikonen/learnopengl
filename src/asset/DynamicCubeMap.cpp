@@ -21,9 +21,11 @@ DynamicCubeMap::~DynamicCubeMap()
 {
 }
 
-void DynamicCubeMap::bindTexture(const RenderContext& ctx, int unitIndex)
+void DynamicCubeMap::bindTexture(
+    kigl::GLState& state,
+    int unitIndex)
 {
-    m_cubeMap.bindTexture(ctx, unitIndex);
+    m_cubeMap.bindTexture(state, unitIndex);
 }
 
 void DynamicCubeMap::bind(const RenderContext& ctx)

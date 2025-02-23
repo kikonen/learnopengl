@@ -81,11 +81,11 @@ namespace render {
             int fbo) const;
 
         void bindTexture(
-            const RenderContext& ctx,
+            kigl::GLState& state,
             int unitIndex);
 
         void unbindTexture(
-            const RenderContext& ctx,
+            kigl::GLState& state,
             int unitIndex);
 
         bool valid() { return textureID > 0 || rbo > 0; }

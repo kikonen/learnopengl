@@ -125,6 +125,7 @@ namespace render {
 
         // drawing
         {
+            passContext = m_passDeferred->start(ctx, drawContext);
             if (m_pipeline.m_preDepth)
                 passContext = m_passDeferred->preDepth(ctx, drawContext, passContext);
             if (m_pipeline.m_deferred)

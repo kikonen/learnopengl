@@ -178,26 +178,26 @@ void SkyboxMaterial::prepareBrdfLut(
     m_brdfLutTexture.prepareRT(ctx);
 }
 
-void SkyboxMaterial::bindTextures(const RenderContext& ctx)
+void SkyboxMaterial::bindTextures(kigl::GLState& state)
 {
     if (m_skyboxMap.valid()) {
-        m_skyboxMap.bindTexture(ctx, UNIT_SKYBOX);
+        m_skyboxMap.bindTexture(state, UNIT_SKYBOX);
     } else {
         if (m_cubeMap.valid()) {
-            m_cubeMap.bindTexture(ctx, UNIT_SKYBOX);
+            m_cubeMap.bindTexture(state, UNIT_SKYBOX);
         }
     }
 
     if (m_environmentMap.valid()) {
-        m_environmentMap.bindTexture(ctx, UNIT_ENVIRONMENT_MAP);
+        m_environmentMap.bindTexture(state, UNIT_ENVIRONMENT_MAP);
     }
     if (m_irradianceMap.valid()) {
-        m_irradianceMap.bindTexture(ctx, UNIT_IRRADIANCE_MAP);
+        m_irradianceMap.bindTexture(state, UNIT_IRRADIANCE_MAP);
     }
     if (m_prefilterMap.valid()) {
-        m_prefilterMap.bindTexture(ctx, UNIT_PREFILTER_MAP);
+        m_prefilterMap.bindTexture(state, UNIT_PREFILTER_MAP);
     }
     if (m_brdfLutTexture.valid()) {
-        m_brdfLutTexture.bindTexture(ctx, UNIT_BDRF_LUT);
+        m_brdfLutTexture.bindTexture(state, UNIT_BDRF_LUT);
     }
 }

@@ -26,6 +26,11 @@ namespace render {
             const RenderContext& ctx);
 
         // @return next {src-buffer, src-attachment}
+        PassContext start(
+            const RenderContext& ctx,
+            const DrawContext& drawContext);
+
+        // @return next {src-buffer, src-attachment}
         PassContext preDepth(
             const RenderContext& ctx,
             const DrawContext& drawContext,

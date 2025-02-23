@@ -57,7 +57,7 @@ namespace render {
             m_buffer.reset(buffer);
             m_buffer->prepare();
 
-            //unbindTexture(ctx);
+            unbindTexture(ctx.m_state);
         }
 
         m_width = w;
@@ -69,16 +69,16 @@ namespace render {
         m_buffer->bind(ctx);
     }
 
-    void OITBuffer::bindTexture(const RenderContext& ctx)
+    void OITBuffer::bindTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(ctx, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
-        m_buffer->bindTexture(ctx, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
+        m_buffer->bindTexture(state, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
+        m_buffer->bindTexture(state, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
     }
 
-    void OITBuffer::unbindTexture(const RenderContext& ctx)
+    void OITBuffer::unbindTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(ctx, UNIT_OIT_ACCUMULATOR);
-        m_buffer->unbindTexture(ctx, UNIT_OIT_REVEAL);
+        m_buffer->unbindTexture(state, UNIT_OIT_ACCUMULATOR);
+        m_buffer->unbindTexture(state, UNIT_OIT_REVEAL);
     }
 
     void OITBuffer::clearAll()

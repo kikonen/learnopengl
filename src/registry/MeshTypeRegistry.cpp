@@ -46,6 +46,6 @@ void MeshTypeRegistry::updateMaterials(const RenderContext& ctx)
 void MeshTypeRegistry::bindMaterials(const RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
-        typeHandle.toType()->m_customMaterial->bindTextures(ctx);
+        typeHandle.toType()->m_customMaterial->bindTextures(ctx.m_state);
     }
 }

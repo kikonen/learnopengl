@@ -3,6 +3,10 @@
 #include <vector>
 #include <memory>
 
+namespace kigl {
+    class GLState;
+}
+
 struct UpdateViewContext;
 class RenderContext;
 
@@ -34,7 +38,7 @@ namespace render {
         void clearAll();
         void invalidateAll();
 
-        void unbindTexture(const RenderContext& ctx);
+        void unbindTexture(kigl::GLState& state);
 
     public:
         std::unique_ptr<FrameBuffer> m_primary{ nullptr };

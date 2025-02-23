@@ -187,10 +187,10 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
     m_mirrorMapRenderer->updateRT(localCtx);
 }
 
-void CubeMapRenderer::bindTexture(const RenderContext& ctx)
+void CubeMapRenderer::bindTexture(kigl::GLState& state)
 {
     //if (!rendered) return;
-    m_prev->bindTexture(ctx, UNIT_CUBE_MAP);
+    m_prev->bindTexture(state, UNIT_CUBE_MAP);
 }
 
 bool CubeMapRenderer::render(
@@ -258,7 +258,7 @@ bool CubeMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        bindTexture(localCtx);
+        bindTexture(localCtx.m_state);
 
         localCtx.copyShadowFrom(parentCtx);
 
@@ -337,11 +337,11 @@ void CubeMapRenderer::drawNodes(
     }
 
     if (m_waterMapRenderer->isEnabled() && renderedWater) {
-        m_waterMapRenderer->bindTexture(ctx);
+        m_waterMapRenderer->bindTexture(ctx.m_state);
     }
 
     if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
-        m_mirrorMapRenderer->bindTexture(ctx);
+        m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
     // TODO KI to match special logic in CubeMapBuffer

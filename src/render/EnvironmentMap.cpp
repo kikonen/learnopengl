@@ -59,9 +59,10 @@ namespace render {
         }
     }
 
-    void EnvironmentMap::bindTexture(const RenderContext& ctx, int unitIndex)
+    void EnvironmentMap::bindTexture(
+        kigl::GLState& state,
+        int unitIndex)
     {
-        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 }

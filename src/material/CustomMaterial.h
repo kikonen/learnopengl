@@ -2,6 +2,10 @@
 
 #include <string>
 
+namespace kigl {
+    class GLState;
+}
+
 struct PrepareContext;
 class RenderContext;
 
@@ -32,8 +36,8 @@ public:
         // ...
     }
 
-    virtual void bindTextures(const RenderContext& ctx) {}
-    virtual void unbindTextures(const RenderContext& ctx) {}
+    virtual void bindTextures(kigl::GLState& state) {}
+    virtual void unbindTextures(kigl::GLState& state) {}
 
 public:
     const std::string m_materialName;

@@ -37,11 +37,11 @@ namespace render {
 
         void bind(const RenderContext& ctx);
 
-        void bindTexture(const RenderContext& ctx);
-        void unbindTexture(const RenderContext& ctx);
+        void bindTexture(kigl::GLState& state);
+        void unbindTexture(kigl::GLState& state);
 
-        void bindDepthTexture(const RenderContext& ctx);
-        void unbindDepthTexture(const RenderContext& ctx);
+        void bindDepthTexture(kigl::GLState& state);
+        void unbindDepthTexture(kigl::GLState& state);
 
         void clearAll();
         void invalidateAll();
@@ -50,7 +50,7 @@ namespace render {
 
     public:
         std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
-        //std::shared_ptr<FrameBufferAttachment> m_depthTexture;
+        std::shared_ptr<FrameBufferAttachment> m_depthTexture;
 
     private:
 

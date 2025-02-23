@@ -49,6 +49,8 @@
 
 
 namespace kigl {
+    class GLState;
+
     inline int SCALE_RGB10 = (1 << 9) - 1;
     inline int SCALE_RGB10_A2 = (1 << 9) - 1;
 

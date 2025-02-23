@@ -207,11 +207,11 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
     }
 }
 
-void MirrorMapRenderer::bindTexture(const RenderContext& ctx)
+void MirrorMapRenderer::bindTexture(kigl::GLState& state)
 {
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
 
-    reflectionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
+    reflectionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
 }
 
 bool MirrorMapRenderer::render(
@@ -310,7 +310,7 @@ bool MirrorMapRenderer::render(
         localCtx.updateMatricesUBO();
         localCtx.updateDataUBO();
 
-        bindTexture(localCtx);
+        bindTexture(localCtx.m_state);
         drawNodes(localCtx, reflectionBuffer.get(), closest);
 
         //ctx.updateClipPlanesUBO();
@@ -355,11 +355,11 @@ void MirrorMapRenderer::drawNodes(
     }
 
     if (m_waterMapRenderer->isEnabled() && renderedWater) {
-        m_waterMapRenderer->bindTexture(ctx);
+        m_waterMapRenderer->bindTexture(ctx.m_state);
     }
 
     if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
-        m_mirrorMapRenderer->bindTexture(ctx);
+        m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
     const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };

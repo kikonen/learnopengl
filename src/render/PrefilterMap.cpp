@@ -73,9 +73,10 @@ namespace render {
         }
     }
 
-    void PrefilterMap::bindTexture(const RenderContext& ctx, int unitIndex)
+    void PrefilterMap::bindTexture(
+        kigl::GLState& state,
+        int unitIndex)
     {
-        auto& state = kigl::GLState::get();
         state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 

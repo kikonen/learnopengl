@@ -85,23 +85,23 @@ namespace render {
     }
 
     void BlurBuffer::bindTexture(
-        const RenderContext& ctx,
+        kigl::GLState& state,
         int bufferIndex,
         int attachmentIndex,
         int unitIndex)
     {
         auto& buffer = m_buffers[bufferIndex];
 
-        buffer->bindTexture(ctx, attachmentIndex, unitIndex);
+        buffer->bindTexture(state, attachmentIndex, unitIndex);
     }
 
     void BlurBuffer::unbindTexture(
-        const RenderContext& ctx,
+        kigl::GLState& state,
         int bufferIndex,
         int unitIndex)
     {
         auto& buffer = m_buffers[bufferIndex];
 
-        buffer->unbindTexture(ctx, unitIndex);
+        buffer->unbindTexture(state, unitIndex);
     }
 }

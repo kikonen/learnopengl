@@ -93,6 +93,13 @@ namespace render
         m_preDepthEnabled = dbg.m_prepassDepthEnabled;
     }
 
+    PassContext PassDeferred::start(
+        const RenderContext& ctx,
+        const DrawContext& drawContext)
+    {
+        return { m_gBuffer.m_buffer.get(), GBuffer::ATT_ALBEDO_INDEX};
+    }
+
     PassContext PassDeferred::preDepth(
         const RenderContext& ctx,
         const DrawContext& drawContext,
@@ -188,6 +195,12 @@ namespace render
             drawContext.kindBits);
 
         ctx.m_batch->flush(ctx);
+
+        m_gBuffer.m_buffer->copy(
+            m_gBuffer.m_depthTexture.get(),
+            GBuffer::ATT_DEPTH_INDEX);
+
+        m_gBuffer.bindTexture(ctx.m_state);
     }
 
     PassContext PassDeferred::combine(
@@ -198,7 +211,7 @@ namespace render
         const auto& dbg = *ctx.m_dbg;
 
         {
-            m_gBuffer.bindTexture(ctx);
+            m_gBuffer.bindTexture(ctx.m_state);
             //m_gBuffer.m_buffer->copy(
             //    m_gBuffer.m_depthTexture.get(),
             //    GBuffer::ATT_DEPTH_INDEX);

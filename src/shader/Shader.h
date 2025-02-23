@@ -143,6 +143,7 @@ inline constexpr int UNIT_G_MRAO = 53;
 inline constexpr int UNIT_G_NORMAL = 54;
 inline constexpr int UNIT_G_DEPTH = 55;
 inline constexpr int UNIT_G_VIEW_Z = 51;
+inline constexpr int UNIT_G_DEPTH_COPY = 61;
 
 inline constexpr int UNIT_OIT_ACCUMULATOR = 56;
 inline constexpr int UNIT_OIT_REVEAL = 57;

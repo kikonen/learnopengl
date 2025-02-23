@@ -11,7 +11,6 @@
 
 #include "FrameBufferAttachment.h"
 
-
 class RenderContext;
 
 namespace render {
@@ -43,13 +42,18 @@ namespace render {
         void unbind(const RenderContext& ctx);
 
         // NOTE KI bind if needed
-        void bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex);
+        void bindTexture(
+            kigl::GLState& state,
+            int attachmentIndex,
+            int unitIndex);
 
         // NOTE KI *force* unbind
-        void unbindTexture(const RenderContext& ctx, int unitIndex);
+        void unbindTexture(
+            kigl::GLState& state,
+            int unitIndex);
 
         void bindImageTexture(
-            const RenderContext& ctx,
+            kigl::GLState& state,
             int attachmentIndex,
             int binding);
 

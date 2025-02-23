@@ -38,13 +38,13 @@ namespace render
             int bufferIndex);
 
         void bindTexture(
-            const RenderContext& ctx,
+            kigl::GLState& state,
             int bufferIndex,
             int attachmentIndex,
             int unitIndex);
 
         void unbindTexture(
-            const RenderContext& ctx,
+            kigl::GLState& state,
             int bufferIndex,
             int unitIndex);
 

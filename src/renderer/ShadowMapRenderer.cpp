@@ -118,11 +118,11 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     ubo.u_shadowCascade_3 = size >= 4 ? m_planes[4] : 0;
 }
 
-void ShadowMapRenderer::bindTexture(const RenderContext& ctx)
+void ShadowMapRenderer::bindTexture(kigl::GLState& state)
 {
     if (!m_rendered) return;
     for (auto& cascade : m_cascades) {
-        cascade->bindTexture(ctx);
+        cascade->bindTexture(state);
     }
 }
 

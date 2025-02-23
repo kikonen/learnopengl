@@ -131,16 +131,16 @@ namespace render {
         }
     }
 
-    void EffectBuffer::unbindTexture(const RenderContext& ctx)
+    void EffectBuffer::unbindTexture(kigl::GLState& state)
     {
-        m_primary->unbindTexture(ctx, UNIT_EFFECT_ALBEDO);
-        m_primary->unbindTexture(ctx, UNIT_EFFECT_BRIGHT);
+        m_primary->unbindTexture(state, UNIT_EFFECT_ALBEDO);
+        m_primary->unbindTexture(state, UNIT_EFFECT_BRIGHT);
 
-        m_secondary->unbindTexture(ctx, UNIT_EFFECT_ALBEDO);
-        m_secondary->unbindTexture(ctx, UNIT_EFFECT_BRIGHT);
+        m_secondary->unbindTexture(state, UNIT_EFFECT_ALBEDO);
+        m_secondary->unbindTexture(state, UNIT_EFFECT_BRIGHT);
 
         for (auto& buf : m_buffers) {
-            buf->unbindTexture(ctx, UNIT_EFFECT_WORK);
+            buf->unbindTexture(state, UNIT_EFFECT_WORK);
         }
     }
 }

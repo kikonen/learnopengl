@@ -7,6 +7,10 @@
 class Assets;
 class Registry;
 
+namespace kigl {
+    class GLState;
+}
+
 namespace render {
     struct DebugContext;
 }
@@ -29,6 +33,8 @@ public:
     const render::DebugContext* const m_dbg;
 
     const ki::RenderClock& m_clock;
+
+    kigl::GLState& m_state;
 
     const glm::uvec2 m_resolution;
 

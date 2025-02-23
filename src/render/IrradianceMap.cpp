@@ -66,9 +66,10 @@ namespace render {
         }
     }
 
-    void IrradianceMap::bindTexture(const RenderContext& ctx, int unitIndex)
+    void IrradianceMap::bindTexture(
+        kigl::GLState& state,
+        int unitIndex)
     {
-        auto& state = kigl::GLState::get();
         state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 }

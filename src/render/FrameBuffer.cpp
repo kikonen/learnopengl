@@ -32,6 +32,8 @@ namespace render {
     {
         if (!m_prepared) return;
 
+        KI_INFO(fmt::format("DELETE: {}", str()));
+
         glDeleteFramebuffers(1, &m_fbo);
         kigl::GLState::get().invalidateFrameBuffer();
         m_spec.attachments.clear();
@@ -208,24 +210,26 @@ namespace render {
         //glViewport(0, 0, res.x, res.y);
     }
 
-    void FrameBuffer::bindTexture(const RenderContext& ctx, int attachmentIndex, int unitIndex)
+    void FrameBuffer::bindTexture(
+        kigl::GLState& state,
+        int attachmentIndex,
+        int unitIndex)
     {
-        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, m_spec.attachments[attachmentIndex].textureID, false);
     }
 
-    void FrameBuffer::unbindTexture(const RenderContext& ctx, int unitIndex)
+    void FrameBuffer::unbindTexture(
+        kigl::GLState & state,
+        int unitIndex)
     {
-        auto& state = ctx.m_state;
         state.bindTexture(unitIndex, 0, true);
     }
 
     void FrameBuffer::bindImageTexture(
-        const RenderContext& ctx,
+        kigl::GLState& state,
         int attachmentIndex,
         int binding)
     {
-        auto& state = ctx.m_state;
         const auto& att = m_spec.attachments[attachmentIndex];
 
         glBindImageTexture(

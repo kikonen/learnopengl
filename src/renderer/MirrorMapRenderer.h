@@ -6,6 +6,10 @@
 
 #include "render/Camera.h"
 
+namespace kigl {
+    class GLState;
+}
+
 namespace render {
     class FrameBuffer;
     class NodeDraw;
@@ -40,7 +44,7 @@ public:
 
     void updateRT(const UpdateViewContext& ctx);
 
-    void bindTexture(const RenderContext& ctx);
+    void bindTexture(kigl::GLState& state);
 
     bool render(
         const RenderContext& ctx);

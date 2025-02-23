@@ -5,6 +5,10 @@
 
 #include "Renderer.h"
 
+namespace kigl {
+    class GLState;
+}
+
 namespace render {
     class FrameBuffer;
 }
@@ -24,7 +28,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
-    void bindTexture(const RenderContext& ctx);
+    void bindTexture(kigl::GLState& state);
 
     void bind(const RenderContext& ctx);
 

@@ -32,7 +32,9 @@ namespace render {
             const PrepareContext& ctx,
             int size);
 
-        void bindTexture(const RenderContext& ctx, int unitIndex);
+        void bindTexture(
+            kigl::GLState& state,
+            int unitIndex);
 
         operator int() const { return m_cubeTexture; }
 

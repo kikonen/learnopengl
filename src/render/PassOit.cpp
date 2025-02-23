@@ -90,7 +90,7 @@ namespace render
             { GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_oitBlendProgram->bind();
-        m_oitBuffer.bindTexture(ctx);
+        m_oitBuffer.bindTexture(ctx.m_state);
 
         src.buffer->bind(ctx);
 

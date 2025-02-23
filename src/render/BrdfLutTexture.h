@@ -4,6 +4,7 @@
 
 #include "kigl/GLTextureHandle.h"
 
+
 struct PrepareContext;
 class RenderContext;
 
@@ -22,7 +23,9 @@ namespace render {
         void prepareRT(
             const PrepareContext& ctx);
 
-        void bindTexture(const RenderContext& ctx, int unitIndex);
+        void bindTexture(
+            kigl::GLState& state,
+            int unitIndex);
 
         operator int() const { return m_texture; }
 

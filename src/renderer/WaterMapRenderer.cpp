@@ -291,17 +291,15 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
     }
 }
 
-void WaterMapRenderer::bindTexture(const RenderContext& ctx)
+void WaterMapRenderer::bindTexture(kigl::GLState& state)
 {
     //if (!m_rendered) return;
-
-    auto& state = ctx.m_state;
 
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
 
-    reflectionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFLECTION);
-    refractionBuffer->bindTexture(ctx, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);
+    reflectionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_WATER_REFLECTION);
+    refractionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);
 
     if (m_noiseTextureID > 0) {
         state.bindTexture(UNIT_WATER_NOISE, m_noiseTextureID, false);

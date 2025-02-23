@@ -29,7 +29,9 @@ public:
         const bool clear,
         const glm::vec4& clearColor);
 
-    void bindTexture(const RenderContext& ctx, int unitIndex);
+    void bindTexture(
+        kigl::GLState& state,
+        int unitIndex);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);

@@ -13,6 +13,10 @@
 #include "render/PrefilterMap.h"
 #include "render/BrdfLutTexture.h"
 
+namespace kigl {
+    class GLState;
+}
+
 class SkyboxMaterial : public CustomMaterial
 {
 public:
@@ -28,7 +32,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
-    virtual void bindTextures(const RenderContext& ctx) override;
+    virtual void bindTextures(kigl::GLState& state) override;
 
 private:
     void prepareFaces(

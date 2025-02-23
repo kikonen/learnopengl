@@ -25,10 +25,6 @@ namespace render {
     class NodeCollection;
 }
 
-namespace kigl {
-    class GLState;
-}
-
 class Assets;
 class Registry;
 

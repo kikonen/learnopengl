@@ -2,6 +2,10 @@
 
 #include <memory>
 
+namespace kigl {
+    class GLState;
+}
+
 struct UpdateViewContext;
 class RenderContext;
 
@@ -28,8 +32,8 @@ namespace render {
 
         void bind(const RenderContext& ctx);
 
-        void bindTexture(const RenderContext& ctx);
-        void unbindTexture(const RenderContext& ctx);
+        void bindTexture(kigl::GLState& state);
+        void unbindTexture(kigl::GLState& state);
 
         void clearAll();
         void invalidateAll();

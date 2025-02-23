@@ -512,7 +512,7 @@ void Scene::draw(const RenderContext& ctx)
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
-        m_shadowMapRenderer->bindTexture(ctx);
+        m_shadowMapRenderer->bindTexture(ctx.m_state);
     }
 
     state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
@@ -690,13 +690,13 @@ void Scene::drawScene(
     const auto& assets = ctx.m_assets;
 
     if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->bindTexture(ctx);
+        m_cubeMapRenderer->bindTexture(ctx.m_state);
     }
     if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->bindTexture(ctx);
+        m_waterMapRenderer->bindTexture(ctx.m_state);
     }
     if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->bindTexture(ctx);
+        m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
     {
