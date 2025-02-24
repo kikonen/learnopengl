@@ -130,6 +130,8 @@ namespace render {
                 passContext = m_passDeferred->preDepth(ctx, drawContext, passContext);
             if (m_pipeline.m_deferred)
                 passContext = m_passDeferred->render(ctx, drawContext, passContext);
+            if (m_pipeline.m_decal)
+                passContext = m_passDecal->render(ctx, drawContext, passContext);
             if (m_pipeline.m_deferred)
                 passContext = m_passDeferred->combine(ctx, drawContext, passContext);
 
@@ -139,11 +141,11 @@ namespace render {
             // NOTE KI OIT before skybox, since skybox uses maask against OIT
             if (m_pipeline.m_oit)
                 passContext = m_passOit->render(ctx, drawContext, passContext);
+            //if (m_pipeline.m_decal)
+            //    passContext = m_passDecal->render(ctx, drawContext, passContext);
 
             if (m_pipeline.m_skybox)
                 passContext = m_passSkybox->render(ctx, drawContext, passContext);
-            if (m_pipeline.m_decal)
-                passContext = m_passDecal->render(ctx, drawContext, passContext);
             if (m_pipeline.m_particle)
                 passContext = m_passParticle->render(ctx, drawContext, passContext);
             if (m_pipeline.m_effect)

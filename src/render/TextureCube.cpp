@@ -128,6 +128,6 @@ namespace render {
 
     void TextureCube::drawInstanced(int instanceCount)
     {
-        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 36, instanceCount);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
     }
 }

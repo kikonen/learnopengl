@@ -108,7 +108,9 @@ float calculateHaloBrightness(
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
-  #include var_tex_coord.glsl
+  vec2 texCoord = fs_in.texCoord;
+  #include apply_parallax.glsl
+
   #include var_tex_material.glsl
 
   const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
@@ -165,4 +167,8 @@ void main() {
 #else
   o_fragColor = vec4(color.rgb, 1);
 #endif
+
+  if (u_forceLineMode) {
+    o_fragColor = vec4(1, 0, 0, 1);
+  }
 }

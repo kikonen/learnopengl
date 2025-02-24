@@ -73,7 +73,9 @@ ResolvedMaterial material;
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
-  #include var_tex_coord.glsl
+  vec2 texCoord = fs_in.texCoord;
+  #include apply_parallax.glsl
+
   #include var_tex_material.glsl
 
   // NOTE KI alpha/blend does not co-op with line mode
@@ -147,6 +149,9 @@ void main() {
   // }
 
   o_fragColor = color.rgb;
+  if (u_forceLineMode) {
+    o_fragColor = vec3(0, 0, 1);
+  }
   o_fragMRA = material.mra;
   o_fragEmission = material.emission;
 

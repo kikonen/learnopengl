@@ -52,7 +52,9 @@ void main()
 {
   // const uint materialIndex = fs_in.materialIndex;
 
-  // #include var_tex_coord.glsl
+  // vec2 texCoord = fs_in.texCoord;
+  // #include apply_parallax.glsl
+
   // #include var_tex_material.glsl
 
   // o_fragColor = vec4(material.diffuse.rgb, 0.7);

@@ -14,7 +14,8 @@
 #include "engine/UpdateContext.h"
 
 namespace {
-    inline glm::vec3 QUAD_NORMAL{ 0, 0, 1.f };
+    inline glm::vec3 QUAD_NORMAL{ 0.f, 0.f, 1.f };
+    inline glm::vec3 QUAD_TANGENT{ 1.f, 0.f, 0.f };
     inline glm::vec3 UP{ 0, 1.f, 0 };
     inline glm::mat4 ID_MAT{ 1.f };
 }

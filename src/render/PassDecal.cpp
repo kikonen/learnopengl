@@ -39,8 +39,11 @@ namespace render
         const auto& dbg = *ctx.m_dbg;
 
         m_enabled = ctx.m_useDecals &&
-            !(ctx.m_forceSolid) &&
             dbg.m_decalEnabled;
+
+        m_enabledBlend = m_enabled &&
+            !ctx.m_forceSolid &&
+            !ctx.m_forceLineMode;
     }
 
     PassContext PassDecal::render(
@@ -49,6 +52,22 @@ namespace render
         const PassContext& src)
     {
         if (!m_enabled) return src;
+
+        auto& state = ctx.m_state;
+        state.setStencil({});
+
+        src.buffer->bind(ctx);
+        m_decalRenderer->renderSolid(ctx);
+
+        return src;
+    }
+
+    PassContext PassDecal::renderOit(
+        const RenderContext& ctx,
+        const DrawContext& drawContext,
+        const PassContext& src)
+    {
+        if (!m_enabledBlend) return src;
 
         auto& state = ctx.m_state;
         state.setStencil({});

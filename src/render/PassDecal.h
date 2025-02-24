@@ -27,6 +27,11 @@ namespace render {
             const DrawContext& drawContext,
             const PassContext& src);
 
+        PassContext renderOit(
+            const RenderContext& ctx,
+            const DrawContext& drawContext,
+            const PassContext& src);
+
     protected:
         Program* m_program{ nullptr };
 

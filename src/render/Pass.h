@@ -60,6 +60,7 @@ namespace render {
 
     protected:
         bool m_enabled{ true };
+        bool m_enabledBlend{ true };
 
         int m_width{ -1 };
         int m_height{ -1 };

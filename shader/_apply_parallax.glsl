@@ -3,7 +3,9 @@
   if (Debug.u_parallaxDepth >= 0) {
     parallaxDepth = Debug.u_parallaxDepth;
   }
-  vec2 texCoord;
+  if (u_forceLineMode) {
+    parallaxDepth = 0;
+  }
 
 #ifdef USE_DECAL
 // parallaxDepth = 0.1;
@@ -16,7 +18,7 @@
     {
       texCoord = calculateParallaxOcclusionMapping(
 	materialIndex,
-	fs_in.texCoord,
+	texCoord,
 	viewTangentDir,
 	parallaxDepth);
     }
@@ -28,10 +30,8 @@
 	materialIndex,
 	viewTangentDir,
 	parallaxDepth,
-	fs_in.texCoord);
+	texCoord);
     }
-  } else {
-    texCoord = fs_in.texCoord;
   }
 
 // NOTE KI with texture tiling in material, texCoords *CAN*
@@ -40,7 +40,4 @@
 //   if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
 //     discard;
 // #endif
-
-#else
-  vec2 texCoord = fs_in.texCoord;
 #endif

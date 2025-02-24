@@ -1,0 +1,171 @@
+---
+name: Origo
+viewports:
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 3]
+    rotation: [0, 180, 0]
+    active: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-25, 25, 20]
+    scale: 2.5
+    program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: brick_wall_{c}_{t}
+    mesh:
+      vertex:
+        type: box
+        size: [0.5]
+      material:
+        base: textures/Bricks007_1K-PNG
+        map_kd: Bricks007_1K_Color.png
+        map_normal: Bricks007_1K_NormalGL.png
+        map_mrao: Bricks007_1K_mrao
+        map_displacement: Bricks007_1K_displacement
+        parallax_depth: 0.02
+        tiling_x: 1.25
+        tiling_y: 0.75
+        program: g_tex
+      flags:
+        pre_depth: true
+    pos: [0]
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.1
+      geom:
+        type: box
+        size: [0.5]
+    xclone_mesh: false
+    clones:
+      - pos: [0, 0, 0]
+      - pos: [-1, 0, -1]
+decals:
+  - name: bullet_1
+    lifetime: 120
+    lifetime_variation: [-60, 60]
+    scale: 0.025
+    scale_variation: [-0.01, 0.01]
+    rotation_variation: [0, 360]
+    material:
+      base: decals
+      map_kd: BulletHole_Plaster.png
+      map_normal: BulletHole_Plaster_normal.png
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: firespin_1
+    lifetime: 99999
+    scale: 0.4
+    scale_variation: [-0.2, 0.2]
+    sprite_speed: 0
+    sprite_speed_variation: [-10, 10]
+    material:
+      base: particles
+      map_kd: 7_firespin_spritesheet.png
+      sprites: 61
+      sprites_x: 8
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: blood_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/high_velocity_blood_spatter_sgepbixp_2k
+      map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
+      map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
+      map_opacity: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
+      map_mrao: High_Velocity_Blood_Spatter_sgepbixp_2K_mrao
+      map_displacement: High_Velocity_Blood_Spatter_sgepbixp_2K_displacement
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+  - name: rubble_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/rubble_tbcs3qo_2k
+      map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
+      map_normal: Rubble_tbcs3qo_2K_Normal.jpg
+      map_opacity: Rubble_tbcs3qo_2K_Opacity.jpg
+      map_mrao: Rubble_tbcs3qo_2K_mrao
+      map_displacement: Rubble_tbcs3qo_2K_displacement
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+  - name: ivy_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/ivy_thdjv1h_2k
+      map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
+      map_normal: Ivy_thdjv1h_2K_Normal.jpg
+      map_opacity: Ivy_thdjv1h_2K_Opacity.jpg
+      map_mrao: Ivy_thdjv1h_2K_mrao
+      map_displacement: Ivy_thdjv1h_2K_displacement
+      parallax_depth: 0.1
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: concrete_damage_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/concrete_damage_tdildcjb_2k
+      map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
+      map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
+      map_opacity: Concrete_Damage_tdildcjb_2K_Opacity.jpg
+      map_mrao: Concrete_Damage_tdildcjb_2K_mrao
+      map_displacement: Concrete_Damage_tdildcjb_2K_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: concrete_hole_1
+    lifetime: 99999
+    scale: 0.25
+    scale_variation: [-0.1, 0.1]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/hole_in_concrete_sfvodqg_2k
+      map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
+      map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
+      map_opacity: Hole_in_Concrete_sfvodqg_2K_Opacity.jpg
+      map_mrao: Hole_in_Concrete_sfvodqg_2K_mrao
+      map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE

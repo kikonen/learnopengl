@@ -2,7 +2,7 @@
 
 #define USE_BONES_NORMAL 1
 
-#include texture_quad.glsl
+#include unit_cube.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -19,6 +19,8 @@
 #include uniform_debug.glsl
 
 out VS_OUT {
+  mat4 worlToLocalMatrix;
+
 #ifdef USE_CUBE_MAP
   vec3 worldPos;
 #endif
@@ -26,7 +28,7 @@ out VS_OUT {
   flat vec2 spriteSize;
 
   vec3 viewPos;
-  vec3 normal;
+  flat vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -48,6 +50,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+const vec3 QUAD_NORMAL = vec3(0, 0, 1);
+const vec3 QUAD_TANGENT = vec3(1, 0, 0);
 const vec3 UP = vec3(0, 1, 0);
 
 Decal decal;
@@ -55,6 +59,7 @@ Decal decal;
 #include fn_calculate_clipping.glsl
 
 void main() {
+  const uint vertexIndex = VERTEX_INDECES[gl_VertexID];
   const uint decalIndex = gl_BaseInstance + gl_InstanceID;
   decal = u_decals[decalIndex];
 
@@ -65,25 +70,27 @@ void main() {
       decal.u_transformRow1,
       decal.u_transformRow2,
       VEC_W));
-  // const mat4 modelMatrix = mat4(decal.u_transform);
   const mat3 normalMatrix = mat3(modelMatrix);
 
   const uint materialIndex = decal.u_materialIndex;
 
-  vec4 pos = vec4(VERTEX_POS[gl_VertexID], 1.0);
+  vec4 pos = vec4(VERTEX_POS[vertexIndex], 1.0);
 
   vec4 worldPos = modelMatrix * pos;
-  vec3 normal = normalize(normalMatrix * VERTEX_NORMAL);
+  vec3 normal = normalize(normalMatrix * QUAD_NORMAL);
 #ifdef USE_TBN
-  vec3 tangent = normalize(normalMatrix * VERTEX_TANGENT);
+  vec3 tangent = normalize(normalMatrix * QUAD_TANGENT);
 #endif
 
   gl_Position = u_projectedMatrix * worldPos;
 
+  // TODO KI transpose == inverse here
+  vs_out.worlToLocalMatrix = inverse(modelMatrix);
+
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = VERTEX_TEX_COORD[gl_VertexID].x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = VERTEX_TEX_COORD[gl_VertexID].y * u_materials[materialIndex].tilingY;
+  vs_out.texCoord.x = VERTEX_TEX_COORDS[vertexIndex].x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = VERTEX_TEX_COORDS[vertexIndex].y * u_materials[materialIndex].tilingY;
 
   {
     const uint spriteIndex = decal.u_spriteIndex;

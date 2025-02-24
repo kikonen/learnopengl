@@ -5,9 +5,9 @@
 class DecalRenderer final : public Renderer
 {
 public:
-    DecalRenderer(bool useFrameStep)
-        : Renderer("main", useFrameStep)
-    {}
+    DecalRenderer(bool useFrameStep);
+
+    ~DecalRenderer();
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;

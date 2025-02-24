@@ -14,7 +14,6 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 
-#include "render/TextureQuad.h"
 #include "render/RenderContext.h"
 
 #include "backend/gl/DrawElementsIndirectCommand.h"
@@ -27,6 +26,14 @@
 
 namespace {
 }
+
+DecalRenderer::DecalRenderer(bool useFrameStep)
+    : Renderer("main", useFrameStep)
+{
+}
+
+DecalRenderer::~DecalRenderer() = default;
+
 
 void DecalRenderer::prepareRT(
     const PrepareContext& ctx)
@@ -67,17 +74,44 @@ void DecalRenderer::renderSolid(
 {
     if (!isEnabled()) return;
 
-    auto& state = ctx.m_state;
-
     const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
     if (instanceCount == 0) return;
 
+    auto& state = ctx.m_state;
     const bool lineMode = ctx.m_forceLineMode;
+
+    {
+        // NOTE KI decals don't update depth
+        // => For linemode draw visualization of cube
+        state.setDepthMask(lineMode ? GL_TRUE : GL_FALSE);
+
+        // NOET KI no decals over skybox
+        // => draw *before* skybox, thus pointless
+        if (lineMode) {
+            state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
+        }
+        else {
+            state.setStencil({});
+        }
+    }
+
     state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
+    state.frontFace(GL_CCW);
+    state.setEnabled(GL_BLEND, false);
+    //state.setEnabled(GL_CULL_FACE, false);
 
-    Program::get(m_alphaDecalProgramId)->bind();
+    if (lineMode) {
+        Program::get(m_solidDecalProgramId)->bind();
+    }
+    else {
+        Program::get(m_alphaDecalProgramId)->bind();
+    }
 
-    render::TextureQuad::get().drawInstanced(instanceCount);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
+
+    if (!lineMode) {
+        state.setDepthMask(GL_TRUE);
+    }
 }
 
 void DecalRenderer::renderBlend(
@@ -85,21 +119,21 @@ void DecalRenderer::renderBlend(
 {
     if (!isEnabled()) return;
 
-    const bool lineMode = ctx.m_forceLineMode;
-
-    auto& state = ctx.m_state;
-
     const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
     if (instanceCount == 0) return;
 
+    auto& state = ctx.m_state;
+    const bool lineMode = ctx.m_forceLineMode;
+
     if (!lineMode) {
         // NOTE KI decals don't update depth
-        state.setDepthMask(GL_FALSE);
+        state.setDepthMask(lineMode ? GL_TRUE : GL_FALSE);
         state.setEnabled(GL_BLEND, true);
 
         // https://stackoverflow.com/questions/31850635/opengl-additive-blending-get-issue-when-no-background
         //state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_DST_ALPHA, GL_ZERO, GL_DST_ALPHA });
-        state.setBlendMode({});
+        //state.setBlendMode({});
+        state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
     }
 
     state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
@@ -112,7 +146,7 @@ void DecalRenderer::renderBlend(
         Program::get(m_blendDecalProgramId)->bind();
     }
 
-    render::TextureQuad::get().drawInstanced(instanceCount);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
 
     if (!lineMode) {
         state.setDepthMask(GL_TRUE);

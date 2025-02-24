@@ -685,12 +685,12 @@ void SampleApp::shoot(
 
             for (auto& hit : hits) {
                 auto* node = hit.handle.toNode();
-                //KI_INFO_OUT(fmt::format(
-                //    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
-                //    node ? node->getName() : "N/A",
-                //    hit.pos,
-                //    hit.normal,
-                //    hit.depth));
+                KI_INFO_OUT(fmt::format(
+                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
+                    node ? node->getName() : "N/A",
+                    hit.pos,
+                    hit.normal,
+                    hit.depth));
 
                 auto sid = dbg.m_decalId;
                 auto df = decal::DecalRegistry::get().getDecal(sid);
@@ -700,11 +700,11 @@ void SampleApp::shoot(
 
                 decal::DecalSystem::get().addDecal(decal);
 
-                //KI_INFO_OUT(fmt::format(
-                //    "DECAL: node={}, pos={}, normal={}",
-                //    node ? node->getName() : "N/A",
-                //    decal.m_position,
-                //    decal.m_normal));
+                KI_INFO_OUT(fmt::format(
+                    "DECAL: node={}, pos={}, normal={}",
+                    node ? node->getName() : "N/A",
+                    decal.m_position,
+                    decal.m_normal));
             }
         }
     }

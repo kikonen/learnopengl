@@ -71,10 +71,17 @@ void main()
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;
+  float depth;
   {
-    float depth = textureLod(g_depth, texCoord, 0).x * 2.0 - 1.0;
+    // NOTE KI pixCoord == texCoord in fullscreen quad
+    const vec2 pixCoord = texCoord;
+    depth = textureLod(g_depth, pixCoord, 0).x;
 
-    vec4 clip = vec4(texCoord.x * 2.0 - 1.0, texCoord.y * 2.0 - 1.0, depth, 1.0);
+    const vec4 clip = vec4(
+      pixCoord.x * 2.0 - 1.0,
+      pixCoord.y * 2.0 - 1.0,
+      depth * 2.0 - 1.0,
+      1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
     viewPos  = viewW.xyz / viewW.w;
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
@@ -98,6 +105,10 @@ void main()
     color = calculateLightPbr(
       normal, viewDir, worldPos,
       shadowIndex);
+
+    if (u_forceLineMode) {
+      color = material.diffuse;
+    }
 
     if (u_shadowVisual) {
       color += CASCADE_COLORS[shadowIndex];

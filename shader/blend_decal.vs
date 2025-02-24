@@ -1,6 +1,6 @@
 #version 460 core
 
-#include texture_quad.glsl
+#include texture_cube.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -47,6 +47,8 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
+const vec3 QUAD_NORMAL = vec3(0, 0, 1);
+const vec3 QUAD_TANGENT = vec3(1, 0, 0);
 const vec3 UP = vec3(0, 1, 0);
 
 Decal decal;
@@ -55,6 +57,7 @@ Decal decal;
 #include fn_calculate_shadow_index.glsl
 
 void main() {
+  const uint vertexIndex = VERTEX_INDECES[gl_VertexID];
   const uint decalIndex = gl_BaseInstance + gl_InstanceID;
   decal = u_decals[decalIndex];
 
@@ -70,12 +73,12 @@ void main() {
 
   const uint materialIndex = decal.u_materialIndex;
 
-  vec4 pos = vec4(VERTEX_POS[gl_VertexID], 1.0);
+  vec4 pos = vec4(VERTEX_POS[vertexIndex], 1.0);
 
   vec4 worldPos = modelMatrix * pos;
-  vec3 normal = normalize(normalMatrix * VERTEX_NORMAL);
+  vec3 normal = normalize(normalMatrix * QUAD_NORMAL);
 #ifdef USE_TBN
-  vec3 tangent = normalize(normalMatrix * VERTEX_TANGENT);
+  vec3 tangent = normalize(normalMatrix * QUAD_TANGENT);
 #endif
 
   const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
@@ -85,8 +88,8 @@ void main() {
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = VERTEX_TEX_COORD[gl_VertexID].x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = VERTEX_TEX_COORD[gl_VertexID].y * u_materials[materialIndex].tilingY;
+  vs_out.texCoord.x = VERTEX_TEX_COORDS[vertexIndex].x * u_materials[materialIndex].tilingX;
+  vs_out.texCoord.y = VERTEX_TEX_COORDS[vertexIndex].y * u_materials[materialIndex].tilingY;
 
   {
     const uint spriteIndex = decal.u_spriteIndex;

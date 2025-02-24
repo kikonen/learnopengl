@@ -3,8 +3,8 @@
 // NOTE KI GL_RGB16 => thus encode into [0, 1] range
 // => *MUST* match FrameBufferAttachment::getGBufferNormal
 vec3 encodeGNormal(in vec3 normal) {
-  return normalize(normal) * 0.5 + 0.5;
-  // return normalize(normal);
+  // return normalize(normal) * 0.5 + 0.5;
+  return normalize(normal);
 }
 
 // https://aras-p.info/texts/CompactNormalStorage.html

@@ -9,4 +9,7 @@ struct Decal {
 
   uint u_materialIndex;
   uint u_spriteIndex;
+
+  int pas1;
+  int pad2;
 };

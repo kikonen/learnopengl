@@ -26,7 +26,9 @@ Material material;
 void main() {
   material = u_materials[fs_in.materialIndex];
 
-  #include var_tex_coord.glsl
+  vec2 texCoord = fs_in.texCoord;
+  #include apply_parallax.glsl
+
   #include var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
