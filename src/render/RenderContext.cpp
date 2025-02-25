@@ -246,6 +246,7 @@ RenderContext::RenderContext(
             m_dbg->m_entityId,
             m_dbg->m_animationBoneIndex,
             m_dbg->m_animationDebugBoneWeight,
+            m_dbg->m_normalMapEnabled,
             parallaxDepth,
             m_dbg->m_parallaxMethod,
             m_dbg->m_wireframeOnly,

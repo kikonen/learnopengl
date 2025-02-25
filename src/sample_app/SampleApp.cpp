@@ -146,6 +146,8 @@ int SampleApp::onInit()
         dbg.m_physics_soft_erp = assets.physics_soft_erp;
         dbg.m_physics_soft_cfm = assets.physics_soft_cfm;
 
+        dbg.m_normalMapEnabled = assets.normalMapEnabled;
+
         dbg.m_parallaxEnabled = assets.parallaxEnabled;
         dbg.m_parallaxMethod = assets.parallaxMethod;
         dbg.m_parallaxDebugEnabled = assets.parallaxDebugEnabled;

@@ -4,6 +4,8 @@ layout(std140, binding = UBO_DEBUG) uniform DebugUBO {
 
   bool u_boneWeight;
 
+  bool u_normalMapEnabled;
+
   float u_parallaxDepth;
   int u_parallaxMethod;
 

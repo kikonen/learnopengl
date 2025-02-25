@@ -12,6 +12,8 @@ struct DebugUBO {
 
     int u_boneWeight; // bool as 4 bytes
 
+    int u_normalMapEnabled; // bool as 4 bytes
+
     float u_parallaxDepth;
     int u_parallaxMethod;
 

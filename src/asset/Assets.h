@@ -216,6 +216,8 @@ public:
     float physics_soft_erp;
     float physics_soft_cfm;
 
+    bool normalMapEnabled;
+
     bool parallaxEnabled;
     int parallaxMethod;
     float parallaxDepth;

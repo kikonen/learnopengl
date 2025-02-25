@@ -953,6 +953,13 @@ namespace editor {
 
         {
             ImGui::Spacing();
+            ImGui::SeparatorText("Normal");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Normal map enabled", &dbg.m_normalMapEnabled);
+        }
+        {
+            ImGui::Spacing();
             ImGui::SeparatorText("Parallax");
             ImGui::Spacing();
 

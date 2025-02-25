@@ -647,6 +647,12 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "normal_map_enabled") {
+                data.normalMapEnabled = readBool(v);
+                continue;
+            }
+        }
+        {
             if (k == "parallax_enabled") {
                 data.parallaxEnabled = readBool(v);
                 continue;
