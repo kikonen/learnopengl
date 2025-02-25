@@ -155,7 +155,7 @@ int SampleApp::onInit()
         dbg.m_parallaxDebugEnabled = assets.parallaxDebugEnabled;
         dbg.m_parallaxDebugDepth = assets.parallaxDebugDepth;
 
-        dbg.m_decalId = SID("blood_1");
+        dbg.m_decalId = SID("graffiti_tag_1");
 
         dbg.m_drawDebug = assets.drawDebug;
 

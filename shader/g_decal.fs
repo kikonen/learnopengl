@@ -54,7 +54,7 @@ SET_FLOAT_PRECISION;
 // cos(90) = 0
 // cos(60) = 0.5
 const float ANGLE_THREHOLD = 0.51;
-const float DIM_THRESHOLD = 0.55;
+const float DIM_THRESHOLD = 1;
 
 ResolvedMaterial material;
 

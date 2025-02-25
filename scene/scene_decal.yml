@@ -339,7 +339,6 @@ decals:
       base: decals/high_velocity_blood_spatter_sgepbixp_2k
       map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
       map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
-      map_opacity: High_Velocity_Blood_Spatter_sgepbixp_2K_Opacity.jpg
       map_mrao: High_Velocity_Blood_Spatter_sgepbixp_2K_mrao
       map_displacement: High_Velocity_Blood_Spatter_sgepbixp_2K_displacement
       xparallax_depth: 0.05
@@ -355,7 +354,6 @@ decals:
       base: decals/rubble_tbcs3qo_2k
       map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
       map_normal: Rubble_tbcs3qo_2K_Normal.jpg
-      map_opacity: Rubble_tbcs3qo_2K_Opacity.jpg
       map_mrao: Rubble_tbcs3qo_2K_mrao
       map_displacement: Rubble_tbcs3qo_2K_displacement
       xparallax_depth: 0.05
@@ -371,7 +369,6 @@ decals:
       base: decals/ivy_thdjv1h_2k
       map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
       map_normal: Ivy_thdjv1h_2K_Normal.jpg
-      map_opacity: Ivy_thdjv1h_2K_Opacity.jpg
       map_mrao: Ivy_thdjv1h_2K_mrao
       map_displacement: Ivy_thdjv1h_2K_displacement
       parallax_depth: 0.1
@@ -387,7 +384,6 @@ decals:
       base: decals/concrete_damage_tdildcjb_2k
       map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
       map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
-      map_opacity: Concrete_Damage_tdildcjb_2K_Opacity.jpg
       map_mrao: Concrete_Damage_tdildcjb_2K_mrao
       map_displacement: Concrete_Damage_tdildcjb_2K_displacement
       parallax_depth: 0.05
@@ -403,9 +399,35 @@ decals:
       base:  decals/hole_in_concrete_sfvodqg_2k
       map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
       map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
-      map_opacity: Hole_in_Concrete_sfvodqg_2K_Opacity.jpg
       map_mrao: Hole_in_Concrete_sfvodqg_2K_mrao
       map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: graffiti_tag_1
+    lifetime: 99999
+    scale: 2
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Graffiti Tag_uk2ief1l
+      map_kd: Albedo_2K__uk2ief1l.jpg
+      map_mrao: default_mrao
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: torn_poster_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Torn Poster_tcgqltp
+      map_kd: Albedo_2K__tcgqltp.jpg
+      map_normal: Normal_2K__tcgqltp.jpg
+      map_mrao: default_mrao
+      map_displacement: default_displacement
       parallax_depth: 0.05
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
