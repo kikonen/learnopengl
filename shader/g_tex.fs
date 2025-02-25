@@ -128,7 +128,7 @@ void main() {
     fs_in.edgeDistance.z);
 
   float lineWidth = Debug.u_wireframeLineWidth;
-  vec3 lineColor = Debug.u_wireframeLineColor;
+  vec3 lineColor = Debug.u_wireframeLineColor.rgb;
   // lineWidth = 0.5;
 
   float mixVal = smoothstep(lineWidth - 1, lineWidth + 1, d);

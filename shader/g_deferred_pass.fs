@@ -7,6 +7,7 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
+#include uniform_debug.glsl
 #include uniform_buffer_info.glsl
 #include uniform_lights.glsl
 
@@ -102,9 +103,14 @@ void main()
 
   vec4 color;
   {
-    color = calculateLightPbr(
-      normal, viewDir, worldPos,
-      shadowIndex);
+    if (Debug.u_lightEnabled) {
+      color = calculateLightPbr(
+	normal, viewDir, worldPos,
+	shadowIndex);
+    } else {
+      color = material.diffuse;
+      color.rgb += material.emission;
+    }
 
     if (u_forceLineMode) {
       color = material.diffuse;
@@ -133,5 +139,9 @@ void main()
   }
 
   o_fragColor = color;
+
   // o_fragColor = vec4(normal, 1.0);
+  // o_fragColor = vec4(abs(normal), 1.0);
+  // o_fragColor.a = 1.0;
+  // o_fragColor.rgb = vec3(-normal.x);
 }

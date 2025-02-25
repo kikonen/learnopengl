@@ -953,9 +953,10 @@ namespace editor {
 
         {
             ImGui::Spacing();
-            ImGui::SeparatorText("Normal");
+            ImGui::SeparatorText("Lighting");
             ImGui::Spacing();
 
+            ImGui::Checkbox("Light enabled", &dbg.m_lightEnabled);
             ImGui::Checkbox("Normal map enabled", &dbg.m_normalMapEnabled);
         }
         {

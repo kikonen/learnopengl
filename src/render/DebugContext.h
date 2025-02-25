@@ -37,6 +37,8 @@ namespace render {
         bool m_showNormals{ false };
         bool m_shadowVisual{ false };
 
+        bool m_lightEnabled{ true };
+
         bool m_cubeMapEnabled{ true };
 
         glm::vec3 m_selectionAxis{ 0.f };

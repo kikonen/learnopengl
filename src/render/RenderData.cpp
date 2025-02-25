@@ -175,17 +175,11 @@ namespace render {
         m_clipPlanes->next();
     }
 
-    void RenderData::updateLights(Registry* registry, bool useLight)
+    void RenderData::updateLights(Registry* registry)
     {
         LightsUBO& lightsUbo = *m_lightsUbo;
 
-        if (!useLight) {
-            lightsUbo.u_dirCount = 0;
-            lightsUbo.u_pointCount = 0;
-            lightsUbo.u_spotCount = 0;
-        }
-
-        if (useLight) {
+        {
             auto& handle = registry->m_nodeRegistry->getDirLightNode();
             auto* node = handle.toNode();
 
@@ -198,7 +192,7 @@ namespace render {
             }
         }
 
-        if (useLight) {
+        {
             int count = 0;
             auto& handles = registry->m_nodeRegistry->getPointLightNodes();
             for (auto& handle : handles) {
@@ -219,7 +213,7 @@ namespace render {
             }
         }
 
-        if (useLight) {
+        {
             int count = 0;
             const auto& handles = registry->m_nodeRegistry->getSpotLightNodes();
             for (auto& handle : handles) {

@@ -32,7 +32,7 @@ namespace render {
         void updateDebug(const DebugUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
         void updateClipPlanes(const ClipPlanesUBO& data);
-        void updateLights(Registry* registry, bool useLight);
+        void updateLights(Registry* registry);
 
     public:
 

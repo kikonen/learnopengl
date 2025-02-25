@@ -54,7 +54,6 @@ assets:
   imgui_font_path: fonts/Vera.ttf
 
   use_script: true
-  use_light: true
 
   #force_line_mode: false
 
@@ -144,6 +143,9 @@ assets:
   physics_motionN: 0
   physics_soft_erp: 0.9
   physics_soft_cfm: 0.9
+
+  light_enabled: true
+  normal_map_enabled: true
 
   parallax_enabled: true
   parallax_depth: 0.0

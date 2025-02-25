@@ -98,7 +98,7 @@ public:
     std::string imGuiFontPath;
 
     bool useScript;
-    bool useLight;
+    bool lightEnabled;
 
     bool forceLineMode;
 

@@ -130,7 +130,6 @@ RenderContext::RenderContext(
     auto& assets = m_assets;
 
     if (m_parent) {
-        m_useLight = m_parent->m_useLight;
         m_shadow = m_parent->m_shadow;
 
         m_forceSolid = m_parent->m_forceSolid;
@@ -243,22 +242,32 @@ RenderContext::RenderContext(
         }
 
         m_debugUBO = {
+            m_dbg->m_wireframeLineColor,
+            m_dbg->m_wireframeOnly,
+            m_dbg->m_wireframeLineWidth,
+
             m_dbg->m_entityId,
             m_dbg->m_animationBoneIndex,
             m_dbg->m_animationDebugBoneWeight,
+
+            m_dbg->m_lightEnabled,
             m_dbg->m_normalMapEnabled,
             parallaxDepth,
             m_dbg->m_parallaxMethod,
-            m_dbg->m_wireframeOnly,
-            m_dbg->m_wireframeLineWidth,
-            m_dbg->m_wireframeLineColor,
         };
     }
     else {
         m_debugUBO = {
-            0,
+            {0.f, 0.f, 0.f},
+            false,
+            0.f,
+            0, // entity
             0,
             false,
+            true, // light
+            true,
+            0.f,
+            0,
         };
     }
 
@@ -323,7 +332,7 @@ void RenderContext::updateClipPlanesUBO() const
 void RenderContext::updateLightsUBO() const
 {
     validateRender("update_lights_ubo");
-    m_renderData->updateLights(m_registry, m_useLight);
+    m_renderData->updateLights(m_registry);
 }
 
 void RenderContext::validateRender(std::string_view label) const

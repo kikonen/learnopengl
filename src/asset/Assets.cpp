@@ -101,7 +101,8 @@ Assets::Assets()
     imGuiFontPath = "fonts/Vera.ttf";
 
     useScript = true;
-    useLight = true;
+
+    lightEnabled = true;
 
     forceLineMode = false;
 

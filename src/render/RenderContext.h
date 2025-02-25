@@ -167,7 +167,6 @@ public:
 
     uint8_t m_layer{ LAYER_NONE_INDEX };
 
-    mutable bool m_useLight : 1{ true };
     mutable bool m_shadow : 1 { false };
     mutable bool m_useParticles : 1{ true };
     mutable bool m_useDecals : 1{ true };

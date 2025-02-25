@@ -109,6 +109,8 @@ int SampleApp::onInit()
         dbg.m_showNormals = assets.showNormals;
         dbg.m_shadowVisual = assets.shadowVisual;
 
+        dbg.m_lightEnabled = assets.lightEnabled;
+
         dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
 
         dbg.m_showVolume = assets.showVolume;
@@ -324,7 +326,6 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         }
         //ctx.m_forceLineMode = assets.forceLineMode;
         ctx.m_forceLineMode = m_dbg.m_forceLineMode;
-        ctx.m_useLight = assets.useLight;
 
         // https://paroj.github.io/gltut/apas04.html
         if (assets.rasterizerDiscard) {

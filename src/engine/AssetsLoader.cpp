@@ -281,8 +281,8 @@ void AssetsLoader::loadAssets(
                 data.useScript = readBool(v);
                 continue;
             }
-            if (k == "use_light") {
-                data.useLight = readBool(v);
+            if (k == "light_enabled") {
+                data.lightEnabled = readBool(v);
                 continue;
             }
             if (k == "force_line_mode") {

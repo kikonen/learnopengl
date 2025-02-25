@@ -16,6 +16,7 @@
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -93,8 +94,10 @@ void ShadowMapRenderer::prepareRT(
 
 void ShadowMapRenderer::bind(const RenderContext& ctx)
 {
+    const auto& dbg = *ctx.m_dbg;
+
     // NOTE KI no shadows if no light
-    if (!ctx.m_useLight) return;
+    if (!dbg.m_lightEnabled) return;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
@@ -133,9 +136,10 @@ bool ShadowMapRenderer::render(
 
     if (!needRender(ctx)) return false;
 
+    const auto& dbg = *ctx.m_dbg;
 
     // NOTE KI no shadows if no light
-    if (!ctx.m_useLight) return false;
+    if (!dbg.m_lightEnabled) return false;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
