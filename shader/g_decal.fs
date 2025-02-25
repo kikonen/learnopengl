@@ -52,6 +52,9 @@ LAYOUT_G_BUFFER_OUT;
 
 SET_FLOAT_PRECISION;
 
+// NOTE KI approx cos(90), NOT exact 0.0, due to small rounding errors in math
+const float ANGLE_THREHOLD = 0.001;
+
 ResolvedMaterial material;
 
 #ifdef USE_PARALLAX
@@ -104,7 +107,7 @@ void main() {
     }
 
     vec3 normal = normalize(fs_in.normal);
-    if (dot(normal, oldNormal) <= 0)
+    if (dot(normal, oldNormal) <= ANGLE_THREHOLD)
     {
       discard;
       return;
