@@ -208,16 +208,12 @@ nodes:
     pos: [0, 2, -7]
     scale: 1
   - name: Cow
+    prefab: prefab/creatures/prefab_cow.yml
     mesh:
-      path: cow
       flags:
         billboard: true
-      material:
-        prefab: materials/Plastic01.yml
-    program: g_tex
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
-    xflags:
 material_updaters:
 - id: font_atlas_1
   type: font_atlas

@@ -28,8 +28,7 @@ out VS_OUT {
   flat vec2 spriteSize;
 
   vec3 viewPos;
-  flat vec3 normal;
-  vec2 texCoord;
+  flat vec3 decalNormal;
 
   flat uint materialIndex;
 
@@ -89,9 +88,6 @@ void main() {
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = VERTEX_TEX_COORDS[vertexIndex].x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = VERTEX_TEX_COORDS[vertexIndex].y * u_materials[materialIndex].tilingY;
-
   {
     const uint spriteIndex = decal.u_spriteIndex;
 
@@ -109,9 +105,6 @@ void main() {
 
     vs_out.spriteSize.x = tx;
     vs_out.spriteSize.y = ty;
-
-    vs_out.texCoord.x = vs_out.spriteCoord.x + vs_out.texCoord.x * vs_out.spriteSize.x;
-    vs_out.texCoord.y = vs_out.spriteCoord.y + vs_out.texCoord.y * vs_out.spriteSize.y;
   }
 
 #ifdef USE_CUBE_MAP
@@ -121,7 +114,7 @@ void main() {
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normal;
+  vs_out.decalNormal = normal;
 
   calculateClipping(worldPos);
 

@@ -83,7 +83,9 @@ void main() {
     discard;
 #endif
 
-  #include var_tex_material_normal.glsl
+  vec3 normal = surfaceNormal;
+
+  #include apply_normal_map.glsl
 
 #ifdef USE_CUBE_MAP
   #include var_calculate_cube_map_diffuse.glsl

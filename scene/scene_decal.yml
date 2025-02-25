@@ -306,7 +306,7 @@ decals:
   - name: bullet_1
     lifetime: 120
     lifetime_variation: [-60, 60]
-    scale: 0.025
+    scale: 0.05
     scale_variation: [-0.01, 0.01]
     rotation_variation: [0, 360]
     material:

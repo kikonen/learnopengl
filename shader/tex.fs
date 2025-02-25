@@ -83,7 +83,9 @@ void main() {
     discard;
 #endif
 
-  #include var_tex_material_normal.glsl
+  // NOTE KI interpolation from vs to fs denormalizes normal
+  vec3 normal = normalize(fs_in.normal);
+  #include apply_normal_map.glsl
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;

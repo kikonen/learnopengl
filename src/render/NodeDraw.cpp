@@ -109,6 +109,13 @@ namespace render {
         PassContext passContext;
 
         {
+            auto& state = ctx.m_state;
+            const auto& dbg = *ctx.m_dbg;
+
+            state.setStencil({});
+        }
+
+        {
             if (m_pipeline.m_deferred) m_passDeferred->initRender(ctx);
             if (m_pipeline.m_oit) m_passOit->initRender(ctx);
             if (m_pipeline.m_forward) m_passForward->initRender(ctx);

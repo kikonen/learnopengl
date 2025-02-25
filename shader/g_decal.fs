@@ -26,8 +26,7 @@ in VS_OUT {
   flat vec2 spriteSize;
 
   vec3 viewPos;
-  flat vec3 normal;
-  vec2 texCoord;
+  flat vec3 decalNormal;
 
   flat uint materialIndex;
 
@@ -54,7 +53,7 @@ SET_FLOAT_PRECISION;
 // NOTE KI approx cos(90), NOT exact 0.0, due to small rounding errors in math
 // cos(90) = 0
 // cos(60) = 0.5
-const float ANGLE_THREHOLD = 0.01;
+const float ANGLE_THREHOLD = 0.51;
 const float DIM_THRESHOLD = 0.55;
 
 ResolvedMaterial material;
@@ -68,14 +67,10 @@ ResolvedMaterial material;
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
-  // vec2 texCoord = fs_in.texCoord;
-  // #include apply_parallax.glsl
-
-  vec2 texCoord = fs_in.texCoord;
-
+  vec2 texCoord;
   vec3 worldPos;
   vec3 viewPos;
-  vec3 worldNormal;
+  vec3 surfaceNormal;
   float depth;
 
   if (!u_forceLineMode)
@@ -98,7 +93,7 @@ void main() {
       // cannot work as expected
       vec3 ddxWp = dFdx(worldPos);
       vec3 ddyWp = dFdy(worldPos);
-      worldNormal = normalize(cross(ddxWp, ddyWp));
+      surfaceNormal = normalize(cross(ddxWp, ddyWp));
     }
 
     vec4 objectPos = fs_in.worlToLocalMatrix * vec4(worldPos, 1.0);
@@ -112,8 +107,7 @@ void main() {
       return;
     }
 
-    vec3 normal = normalize(fs_in.normal);
-    if (dot(normal, worldNormal) <= ANGLE_THREHOLD)
+    if (dot(fs_in.decalNormal, surfaceNormal) <= ANGLE_THREHOLD)
     {
       discard;
       return;
@@ -121,6 +115,12 @@ void main() {
 
     #include apply_parallax.glsl
   }
+
+  texCoord.x *= u_materials[materialIndex].tilingX;
+  texCoord.y *= u_materials[materialIndex].tilingY;
+
+  texCoord.x = fs_in.spriteCoord.x + texCoord.x * fs_in.spriteSize.x;
+  texCoord.y = fs_in.spriteCoord.y + texCoord.y * fs_in.spriteSize.y;
 
   #include var_tex_material.glsl
 
@@ -136,7 +136,9 @@ void main() {
 #endif
 #endif
 
-  #include var_tex_material_normal.glsl
+  vec3 normal = surfaceNormal;
+
+  #include apply_normal_map.glsl
 
   if (!gl_FrontFacing) {
     normal = -normal;
