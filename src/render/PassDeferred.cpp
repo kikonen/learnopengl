@@ -196,10 +196,7 @@ namespace render
 
         ctx.m_batch->flush(ctx);
 
-        m_gBuffer.m_buffer->copy(
-            m_gBuffer.m_depthTexture.get(),
-            GBuffer::ATT_DEPTH_INDEX);
-
+        m_gBuffer.updateDepthCopy();
         m_gBuffer.bindTexture(ctx.m_state);
     }
 
@@ -209,13 +206,6 @@ namespace render
         const PassContext& src)
     {
         const auto& dbg = *ctx.m_dbg;
-
-        {
-            m_gBuffer.bindTexture(ctx.m_state);
-            //m_gBuffer.m_buffer->copy(
-            //    m_gBuffer.m_depthTexture.get(),
-            //    GBuffer::ATT_DEPTH_INDEX);
-        }
 
         startScreenPass(
             ctx,
@@ -229,7 +219,6 @@ namespace render
         m_screenTri.draw();
 
         stopScreenPass(ctx);
-
 
         return { m_buffer.get(), ATT_ALBEDO_INDEX };
     }

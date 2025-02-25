@@ -41,7 +41,6 @@ in VS_OUT {
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
-layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
 LAYOUT_G_BUFFER_OUT;
@@ -53,7 +52,10 @@ LAYOUT_G_BUFFER_OUT;
 SET_FLOAT_PRECISION;
 
 // NOTE KI approx cos(90), NOT exact 0.0, due to small rounding errors in math
-const float ANGLE_THREHOLD = 0.001;
+// cos(90) = 0
+// cos(60) = 0.5
+const float ANGLE_THREHOLD = 0.01;
+const float DIM_THRESHOLD = 0.55;
 
 ResolvedMaterial material;
 
@@ -61,7 +63,6 @@ ResolvedMaterial material;
 #include fn_calculate_parallax_mapping.glsl
 #endif
 #include fn_gbuffer_encode.glsl
-#include fn_gbuffer_decode.glsl
 
 
 void main() {
@@ -74,7 +75,7 @@ void main() {
 
   vec3 worldPos;
   vec3 viewPos;
-  vec3 oldNormal;
+  vec3 worldNormal;
   float depth;
 
   if (!u_forceLineMode)
@@ -92,22 +93,27 @@ void main() {
       viewPos  = viewW.xyz / viewW.w;
       worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
 
-      oldNormal = decodeGNormal(pixCoord);
+      // NOTE KI *MUST* calculate from depth, since g_normal
+      // may point into *ANY* direction, thus checking against it
+      // cannot work as expected
+      vec3 ddxWp = dFdx(worldPos);
+      vec3 ddyWp = dFdy(worldPos);
+      worldNormal = normalize(cross(ddxWp, ddyWp));
     }
 
     vec4 objectPos = fs_in.worlToLocalMatrix * vec4(worldPos, 1.0);
     texCoord = objectPos.xy + 0.5;
 
-    if (abs(objectPos.x) >= 0.5 ||
-	abs(objectPos.y) >= 0.5 ||
-	abs(objectPos.z) >= 0.5)
+    if (abs(objectPos.x) >= DIM_THRESHOLD ||
+	abs(objectPos.y) >= DIM_THRESHOLD ||
+	abs(objectPos.z) >= DIM_THRESHOLD)
     {
       discard;
       return;
     }
 
     vec3 normal = normalize(fs_in.normal);
-    if (dot(normal, oldNormal) <= ANGLE_THREHOLD)
+    if (dot(normal, worldNormal) <= ANGLE_THREHOLD)
     {
       discard;
       return;
@@ -160,7 +166,7 @@ void main() {
     // o_fragColor.rgb = vec3(texCoord.y);
 
     // o_fragColor = vec3(normal.y);
-    // if (abs(oldNormal.x) > 0.9) {
+    // if (abs(worldNormal.x) > 0.9) {
     //   o_fragColor = vec3(1);
     // }
 

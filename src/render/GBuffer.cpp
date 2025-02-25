@@ -63,10 +63,14 @@ namespace render {
             unbindTexture(ctx.m_state);
         }
 
+        if (m_depthCopyEnabled)
         {
             m_depthTexture = std::make_unique< FrameBufferAttachment>();
             *m_depthTexture = FrameBufferAttachment::getDepthStencilTexture();
             m_depthTexture->create("gbuffer_ref_tex", w, h);
+        }
+        else {
+            m_depthTexture.reset();
         }
 
         m_width = w;
@@ -89,7 +93,9 @@ namespace render {
         m_buffer->bindTexture(state, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
         m_buffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 
-        m_depthTexture->bindTexture(state, UNIT_G_DEPTH_COPY);
+        if (m_depthCopyEnabled && m_depthTexture) {
+            m_depthTexture->bindTexture(state, UNIT_G_DEPTH_COPY);
+        }
     }
 
     void GBuffer::unbindTexture(kigl::GLState& state)
@@ -103,7 +109,9 @@ namespace render {
         m_buffer->unbindTexture(state, UNIT_G_VIEW_Z);
         m_buffer->unbindTexture(state, UNIT_G_DEPTH);
 
-        //m_depthTexture->unbindTexture(state, UNIT_G_DEPTH);
+        if (m_depthCopyEnabled && m_depthTexture) {
+            //m_depthTexture->unbindTexture(state, UNIT_G_DEPTH);
+        }
     }
 
     void GBuffer::bindDepthTexture(kigl::GLState& state)
@@ -126,6 +134,15 @@ namespace render {
     void GBuffer::invalidateAll()
     {
         m_buffer->invalidateAll();
+    }
+
+    void GBuffer::updateDepthCopy()
+    {
+        if (m_depthCopyEnabled && m_depthTexture) {
+            m_buffer->copy(
+                m_depthTexture.get(),
+                GBuffer::ATT_DEPTH_INDEX);
+        }
     }
 
     FrameBufferAttachment* GBuffer::getAttachment(int attachmentIndex)

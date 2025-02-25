@@ -46,15 +46,19 @@ namespace render {
         void clearAll();
         void invalidateAll();
 
+        void updateDepthCopy();
+
         FrameBufferAttachment* getAttachment(int attachmentIndex);
 
     public:
         std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
-        std::shared_ptr<FrameBufferAttachment> m_depthTexture;
+
+        bool m_depthCopyEnabled{ false };
 
     private:
-
         int m_width{ -1 };
         int m_height{ -1 };
+
+        std::shared_ptr<FrameBufferAttachment> m_depthTexture;
     };
 }
