@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+#include "kigl/kigl.h"
+
 #include "FileEntry.h"
 
 class Program;
@@ -40,24 +42,30 @@ public:
 
     void clear();
 
-    void load(const Program& program);
+    void load(
+        GLenum shaderType,
+        const Program& program);
 
     std::string loadSource(
+        GLenum shaderType,
         const std::string& path,
         bool optional,
         const Program& program);
 
     std::vector<std::string> loadSourceLines(
+        GLenum shaderType,
         const std::string& path,
         bool optional,
         const Program& program);
 
     std::vector<std::string> processInclude(
+        GLenum shaderType,
         std::string_view includePath,
         int lineNumber,
         const Program& program);
 
     void appendDefines(
+        GLenum shaderType,
         std::vector<std::string>& lines,
         const Program& program);
 };

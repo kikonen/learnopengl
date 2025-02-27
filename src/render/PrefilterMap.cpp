@@ -21,6 +21,8 @@
 
 
 namespace {
+    inline const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
+
     constexpr unsigned int MAX_MIP_LEVELS = 5;
 }
 

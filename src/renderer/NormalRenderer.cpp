@@ -20,6 +20,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+namespace {
+}
 
 void NormalRenderer::prepareRT(
     const PrepareContext& ctx)

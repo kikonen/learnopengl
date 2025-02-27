@@ -25,6 +25,8 @@
 #include "registry/ModelRegistry.h"
 
 namespace {
+    inline const std::string SHADER_SOLID_DECAL{ "g_decal" };
+    inline const std::string SHADER_BLEND_DECAL{ "blend_decal" };
 }
 
 DecalRenderer::DecalRenderer(bool useFrameStep)
@@ -46,15 +48,17 @@ void DecalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    m_blendDecalProgramId = ProgramRegistry::get().getProgram(
-        SHADER_BLEND_DECAL,
-        { { DEF_USE_DECAL, "1" },
-          { DEF_USE_ALPHA, "1" },
-          { DEF_USE_BLEND, "1" },
-          { DEF_USE_NORMAL_TEX, "1" },
-          { DEF_USE_TBN, "1" },
-          { DEF_USE_PARALLAX, "1" },
-        });
+    if (false) {
+        m_blendDecalProgramId = ProgramRegistry::get().getProgram(
+            SHADER_BLEND_DECAL,
+            { { DEF_USE_DECAL, "1" },
+              { DEF_USE_ALPHA, "1" },
+              { DEF_USE_BLEND, "1" },
+              { DEF_USE_NORMAL_TEX, "1" },
+              { DEF_USE_TBN, "1" },
+              { DEF_USE_PARALLAX, "1" },
+            });
+    }
 
     m_alphaDecalProgramId = ProgramRegistry::get().getProgram(
         SHADER_SOLID_DECAL,

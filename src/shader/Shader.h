@@ -2,49 +2,20 @@
 
 #include <string>
 
-inline const std::string SHADER_WINDOW_BLIT{ "window_blit" };
-
 inline const std::string SHADER_TEXTURE{ "tex" };
 inline const std::string SHADER_G_TEX{ "g_tex" };
 
 inline const std::string SHADER_SELECTION{ "selection" };
-
-//inline const std::string SHADER_TERRAIN{ "terrain" };
-//inline const std::string SHADER_WATER{ "water" };
-inline const std::string SHADER_PARTICLE{ "particle" };
-inline const std::string SHADER_SOLID_DECAL{ "g_decal" };
-inline const std::string SHADER_BLEND_DECAL{ "blend_decal" };
 inline const std::string SHADER_NORMAL{ "normal" };
 inline const std::string SHADER_OBJECT_ID{ "object_id" };
-//inline const std::string SHADER_LIGHT{ "light" };
+
 inline const std::string SHADER_SHADOW{ "shadow" };
-inline const std::string SHADER_DEBUG_DEPTH{ "debug_depth" };
-inline const std::string SHADER_EFFECT{ "effect" };
 inline const std::string SHADER_VIEWPORT{ "viewport" };
 inline const std::string SHADER_VOLUME{ "volume" };
-inline const std::string SHADER_SKYBOX{ "skybox" };
-inline const std::string SHADER_FONT_RENDER{ "font_render" };
-
-inline const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
-inline const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
-inline const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
-inline const std::string SHADER_BRDF_LUT{ "brdf_lut" };
 
 inline const std::string SHADER_PRE_DEPTH_PASS{ "g_pre_depth" };
-//inline const std::string SHADER_GEOMETRY_PASS{ "g_geometry_pass" };
-inline const std::string SHADER_BLOOM_INIT_PASS{ "screen_bloom_init_pass" };
-inline const std::string SHADER_BLOOM_BLUR_PASS{ "screen_bloom_blur_pass" };
-inline const std::string SHADER_BLOOM_FINAL_PASS{ "screen_bloom_final_pass" };
-inline const std::string SHADER_BLEND_OIT_PASS{ "screen_oit_blend_pass" };
-inline const std::string SHADER_HDR_GAMMA_PASS{ "g_hdr_gamma_pass" };
 
 inline const std::string SHADER_OIT_PASS{ "oit_pass" };
-
-inline const std::string SHADER_BLUR_VERTICAL{ "screen_blur_vertical_pass" };
-inline const std::string SHADER_BLUR_HORIZONTAL{ "screen_blur_horizontal_pass" };
-inline const std::string CS_BLUR_FINAL{ "screen_blur_final_pass" };
-
-inline const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
 inline const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 inline const std::string DEF_USE_BLEND{ "USE_BLEND" };

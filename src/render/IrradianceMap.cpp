@@ -8,7 +8,6 @@
 
 #include "asset/Assets.h"
 
-#include "shader/Shader.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
@@ -19,6 +18,9 @@
 
 #include "CubeRender.h"
 
+namespace {
+    inline const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
+}
 
 namespace render {
     void IrradianceMap::prepareRT(

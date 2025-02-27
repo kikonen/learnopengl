@@ -115,7 +115,7 @@ void Program::load()
     if (m_loaded) return;
 
     for (auto& [type, source] : m_sources) {
-        source.load(*this);
+        source.load(type, *this);
     }
 
     m_loaded = true;

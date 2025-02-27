@@ -21,6 +21,9 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
+namespace {
+    inline const std::string SHADER_WINDOW_BLIT{ "window_blit" };
+}
 
 ViewportRenderer::ViewportRenderer(bool useFrameStep) :
     Renderer("main", useFrameStep) {

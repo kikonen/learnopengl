@@ -22,6 +22,7 @@
 #include "registry/Registry.h"
 
 namespace {
+    inline const std::string SHADER_BRDF_LUT{ "brdf_lut" };
 }
 
 namespace render {

@@ -23,6 +23,9 @@
 
 #include "renderer/ShadowCascade.h"
 
+namespace {
+    inline const std::string SHADER_DEBUG_DEPTH{ "debug_depth" };
+}
 
 ShadowMapRenderer::~ShadowMapRenderer()
 {

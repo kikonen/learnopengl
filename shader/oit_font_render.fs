@@ -46,9 +46,7 @@ void main()
   vec4 color;
   shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
 
-  if (color.a < OIT_MIN_BLEND_THRESHOLD || color.a >= OIT_MAX_BLEND_THRESHOLD) {
-    discard;
-  }
+  OIT_DISCARD(color.a);
 
   float alpha = color.a;
   float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);

@@ -15,6 +15,13 @@
 #include "render/Batch.h"
 
 namespace {
+    inline const std::string SHADER_BLOOM_INIT_PASS{ "screen_bloom_init_pass" };
+    inline const std::string SHADER_BLOOM_BLUR_PASS{ "screen_bloom_blur_pass" };
+    inline const std::string SHADER_BLOOM_FINAL_PASS{ "screen_bloom_final_pass" };
+
+    inline const std::string SHADER_BLUR_VERTICAL{ "screen_blur_vertical_pass" };
+    inline const std::string SHADER_BLUR_HORIZONTAL{ "screen_blur_horizontal_pass" };
+    inline const std::string CS_BLUR_FINAL{ "screen_blur_final_pass" };
 }
 
 namespace render

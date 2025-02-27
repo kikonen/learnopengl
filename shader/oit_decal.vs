@@ -1,6 +1,8 @@
 #version 460 core
 
-#include texture_cube.glsl
+#define USE_BONES_NORMAL 1
+
+#include unit_cube.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl
@@ -17,18 +19,18 @@
 #include uniform_debug.glsl
 
 out VS_OUT {
+  mat4 worlToLocalMatrix;
+
+#ifdef USE_CUBE_MAP
   vec3 worldPos;
+#endif
   flat vec2 spriteCoord;
   flat vec2 spriteSize;
 
   vec3 viewPos;
-  vec3 normal;
-  vec2 texCoord;
+  flat vec3 decalNormal;
 
   flat uint materialIndex;
-
-  flat uint shadowIndex;
-  vec4 shadowPos;
 
 #ifdef USE_TBN
   mat3 tbn;
@@ -54,7 +56,6 @@ const vec3 UP = vec3(0, 1, 0);
 Decal decal;
 
 #include fn_calculate_clipping.glsl
-#include fn_calculate_shadow_index.glsl
 
 void main() {
   const uint vertexIndex = VERTEX_INDECES[gl_VertexID];
@@ -68,7 +69,6 @@ void main() {
       decal.u_transformRow1,
       decal.u_transformRow2,
       VEC_W));
-  // const mat4 modelMatrix = mat4(decal.u_transform);
   const mat3 normalMatrix = mat3(modelMatrix);
 
   const uint materialIndex = decal.u_materialIndex;
@@ -81,15 +81,12 @@ void main() {
   vec3 tangent = normalize(normalMatrix * QUAD_TANGENT);
 #endif
 
-  const vec3 viewPos = (u_viewMatrix * worldPos).xyz;
-  const uint shadowIndex = calculateShadowIndex(viewPos);
-
   gl_Position = u_projectedMatrix * worldPos;
 
-  vs_out.materialIndex = materialIndex;
+  // TODO KI transpose == inverse here
+  vs_out.worlToLocalMatrix = inverse(modelMatrix);
 
-  vs_out.texCoord.x = VERTEX_TEX_COORDS[vertexIndex].x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = VERTEX_TEX_COORDS[vertexIndex].y * u_materials[materialIndex].tilingY;
+  vs_out.materialIndex = materialIndex;
 
   {
     const uint spriteIndex = decal.u_spriteIndex;
@@ -108,23 +105,25 @@ void main() {
 
     vs_out.spriteSize.x = tx;
     vs_out.spriteSize.y = ty;
-
-    vs_out.texCoord.x = vs_out.spriteCoord.x + vs_out.texCoord.x * vs_out.spriteSize.x;
-    vs_out.texCoord.y = vs_out.spriteCoord.y + vs_out.texCoord.y * vs_out.spriteSize.y;
   }
 
+#ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;
-  vs_out.viewPos = viewPos;
+#endif
+
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   // NOTE KI pointless to normalize vs side
-  vs_out.normal = normal;
+  vs_out.decalNormal = normal;
 
   calculateClipping(worldPos);
 
-  vs_out.shadowIndex = shadowIndex;
-  vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
+  for (int i = 0; i < CLIP_COUNT; i++) {
+    gl_ClipDistance[i] = -1.0;
+  }
 
 #ifdef USE_TBN
+
   if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
@@ -141,5 +140,10 @@ void main() {
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif
   }
+#endif
+
+#ifdef USE_GL_POINTS
+  // HACK KI for primitive GL_POINTS
+  gl_PointSize = u_materials[materialIndex].layersDepth;
 #endif
 }

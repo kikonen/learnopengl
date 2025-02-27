@@ -25,6 +25,7 @@
 #include "registry/ModelRegistry.h"
 
 namespace {
+    inline const std::string SHADER_PARTICLE{ "particle" };
 }
 
 void ParticleRenderer::prepareRT(

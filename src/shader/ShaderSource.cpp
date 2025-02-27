@@ -20,6 +20,24 @@
 namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
     const std::string INC_GLOBAL_UTILS{ "global_utils.glsl" };
+
+    std::string getTypeName(GLenum shaderType) {
+        switch (shaderType) {
+        case GL_COMPUTE_SHADER:
+            return "COMPUTE_SHADER";
+        case GL_VERTEX_SHADER:
+            return "VERTEX_SHADER";
+        case GL_FRAGMENT_SHADER:
+            return "FRAGMENT_SHADER";
+        case GL_GEOMETRY_SHADER:
+            return "GEOMETRY_SHADER";
+        case GL_TESS_CONTROL_SHADER:
+            return "TESS_CONTROL_SHADER";
+        case GL_TESS_EVALUATION_SHADER:
+            return "TESS_EVALUATION_SHADER";
+        }
+        return "UNKNOWN";
+    }
 }
 
 ShaderSource::ShaderSource()
@@ -70,18 +88,21 @@ void ShaderSource::clear() {
     m_source.clear();
 }
 
-void ShaderSource::load(const Program& program)
+void ShaderSource::load(
+    GLenum shaderType,
+    const Program& program)
 {
     m_files.clear();
-    m_source = loadSource(m_path, !m_required, program);
+    m_source = loadSource(shaderType, m_path, !m_required, program);
 }
 
 std::string ShaderSource::loadSource(
+    GLenum shaderType,
     const std::string& path,
     bool optional,
     const Program& program)
 {
-    std::vector<std::string> lines = loadSourceLines(path, optional, program);
+    std::vector<std::string> lines = loadSourceLines(shaderType, path, optional, program);
 
     std::stringstream sb;
 
@@ -96,6 +117,7 @@ std::string ShaderSource::loadSource(
 }
 
 std::vector<std::string> ShaderSource::loadSourceLines(
+    GLenum shaderType,
     const std::string& path,
     bool optional,
     const Program& program)
@@ -141,22 +163,22 @@ std::vector<std::string> ShaderSource::loadSourceLines(
             if (k == "#version") {
                 lines.push_back(line);
                 lines.push_back("#extension GL_ARB_bindless_texture : require");
-                appendDefines(lines, program);
+                appendDefines(shaderType, lines, program);
 
                 // Globals
-                for (auto& l : processInclude(INC_GLOBALS, lineNumber, program)) {
+                for (auto& l : processInclude(shaderType, INC_GLOBALS, lineNumber, program)) {
                     lines.push_back(l);
                 }
 
                 // Global utility functions
-                for (auto& l : processInclude(INC_GLOBAL_UTILS, lineNumber, program)) {
+                for (auto& l : processInclude(shaderType, INC_GLOBAL_UTILS, lineNumber, program)) {
                     lines.push_back(l);
                 }
 
                 //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else if (k == "#include") {
-                for (auto& l : processInclude(v1, lineNumber, program)) {
+                for (auto& l : processInclude(shaderType, v1, lineNumber, program)) {
                     lines.push_back(l);
                 }
                 //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
@@ -189,6 +211,7 @@ std::vector<std::string> ShaderSource::loadSourceLines(
 }
 
 std::vector<std::string> ShaderSource::processInclude(
+    GLenum shaderType,
     std::string_view includePath,
     int lineNumber,
     const Program& program)
@@ -207,7 +230,7 @@ std::vector<std::string> ShaderSource::processInclude(
         "_",
         simplifiedPath);
 
-    std::vector<std::string> lines = loadSourceLines(path, false, program);
+    std::vector<std::string> lines = loadSourceLines(shaderType, path, false, program);
 
     std::vector<std::string> result;
 
@@ -232,10 +255,14 @@ std::vector<std::string> ShaderSource::processInclude(
 }
 
 void ShaderSource::appendDefines(
+    GLenum shaderType,
     std::vector<std::string>& lines,
     const Program& program)
 {
     const auto& dbg = render::DebugContext::get();
+
+    lines.push_back(fmt::format("#define __{}__ 1", getTypeName(shaderType)));
+
     for (const auto& [key, value] : program.getDefines()) {
         lines.push_back(fmt::format("#define {} {}", key, value));
     }

@@ -26,6 +26,8 @@
 #include "DrawOptions.h"
 
 namespace {
+    inline const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
+
     constexpr size_t INDEX_BLOCK_SIZE = 1000;
     constexpr size_t INDEX_BLOCK_COUNT = 500;
 

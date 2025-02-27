@@ -2,3 +2,4 @@
 const float PI = 3.14159265359;
 
 #include "fn_util.glsl"
+#include "fn_fragment_util.glsl"

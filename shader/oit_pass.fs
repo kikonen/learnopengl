@@ -42,8 +42,7 @@ void main()
 
   const float alpha = color.a;
 
-  if (alpha < OIT_MIN_BLEND_THRESHOLD || alpha >= OIT_MAX_BLEND_THRESHOLD)
-    discard;
+  OIT_DISCARD(alpha);
 
   float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 

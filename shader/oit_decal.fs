@@ -42,7 +42,7 @@ in VS_OUT {
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
-LAYOUT_G_BUFFER_OUT;
+LAYOUT_OIT_OUT;
 
 ////////////////////////////////////////////////////////////
 //
@@ -73,7 +73,6 @@ void main() {
   vec3 surfaceNormal;
   float depth;
 
-  if (!u_forceLineMode)
   {
     {
       vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
@@ -104,11 +103,13 @@ void main() {
 	abs(objectPos.z) >= DIM_THRESHOLD)
     {
       discard;
+      return;
     }
 
     if (dot(fs_in.decalNormal, surfaceNormal) <= ANGLE_THREHOLD)
     {
       discard;
+      return;
     }
 
     #include apply_parallax.glsl
@@ -122,17 +123,7 @@ void main() {
 
   #include var_tex_material.glsl
 
-#ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD) {
-    discard;
-  }
-#else
-  if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD) {
-    discard;
-  }
-#endif
-#endif
+  OIT_DISCARD(material.diffuse.alpha);
 
   vec3 normal = surfaceNormal;
 
@@ -153,13 +144,6 @@ void main() {
   clamp_color(color);
 
   o_fragColor = color.rgb;
-
-  if (u_forceLineMode) {
-    o_fragColor = vec3(0, 1, 0);
-  }
-
-  o_fragMRA = material.mra;
-  o_fragEmission = material.emission;
 
   #include encode_gbuffer_normal.glsl
 }

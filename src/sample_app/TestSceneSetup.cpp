@@ -27,6 +27,7 @@
 #include "engine/AsyncLoader.h"
 
 namespace {
+    inline const std::string SHADER_EFFECT{ "effect" };
 }
 
 TestSceneSetup::TestSceneSetup(

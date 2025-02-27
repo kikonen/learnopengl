@@ -16,6 +16,7 @@
 #include "render/PassDeferred.h"
 
 namespace {
+    inline const std::string SHADER_BLEND_OIT_PASS{ "screen_oit_blend_pass" };
 }
 
 namespace render

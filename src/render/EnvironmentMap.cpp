@@ -18,6 +18,10 @@
 
 #include "CubeRender.h"
 
+namespace {
+    inline const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
+}
+
 namespace render {
     void EnvironmentMap::prepareRT(
         const PrepareContext& ctx,
