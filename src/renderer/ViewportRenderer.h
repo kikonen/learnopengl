@@ -55,6 +55,14 @@ public:
     }
 
 private:
+    void drawViewports(
+        const RenderContext& ctx);
+
+    void blitWindow(
+        const RenderContext& ctx,
+        render::FrameBuffer* destinationBuffer);
+
+private:
     std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
     int m_width{ -1 };
     int m_height{ -1 };

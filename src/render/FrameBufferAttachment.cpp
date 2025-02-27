@@ -20,10 +20,10 @@ namespace render {
         if (shared) return;
         if (externalDelete) return;
 
-        if (textureID) {
+        if (createdTexture) {
             glDeleteTextures(1, &textureID);
         }
-        if (rbo) {
+        if (createdRbo) {
             glDeleteRenderbuffers(1, &rbo);
         }
     }
@@ -47,6 +47,7 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::texture) {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
+                createdTexture = true;
 
                 KI_INFO(fmt::format("CREATE_TEX: name={}, TEX={}", attName, att.textureID));
 
@@ -63,6 +64,7 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::rbo) {
                 glCreateRenderbuffers(1, &att.rbo);
                 kigl::setLabel(GL_RENDERBUFFER, att.rbo, attName);
+                createdRbo = true;
 
                 KI_INFO(fmt::format("CREATE_RBO: name={}, RBO={}", attName, att.rbo));
 
@@ -71,6 +73,7 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::depth_texture) {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
+                createdTexture = true;
 
                 KI_INFO(fmt::format("CREATE_DEPTH: name={}, DEPTH={}", attName, att.textureID));
 
@@ -87,6 +90,7 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
+                createdTexture = true;
 
                 KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: name={}, DEPTH={}", attName, att.textureID));
 
@@ -103,6 +107,7 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::shadow) {
                 glCreateTextures(GL_TEXTURE_2D, 1, &att.textureID);
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
+                createdTexture = true;
 
                 KI_INFO(fmt::format("CREATE_SHADOW: name={}, DEPTH={}", attName, att.textureID));
 

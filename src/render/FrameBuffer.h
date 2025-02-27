@@ -129,6 +129,7 @@ namespace render {
 
         int m_activeDrawBuffers{ -1 };
         std::vector<GLenum> m_drawBuffers;
+        std::vector<GLenum> m_attached;
 
         BufferInfoUBO m_bufferInfo;
     };

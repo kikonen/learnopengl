@@ -35,11 +35,14 @@ namespace render {
 
         int index = -1;
 
+        bool createdTexture = false;
+        bool createdRbo = false;
+
         GLenum attachment = GL_COLOR_ATTACHMENT0;
         bool useDrawBuffer = false;
 
-        int internalFormat = GL_RGBA8;
-        //int format = GL_RGBA;
+        GLuint internalFormat = GL_RGBA8;
+        //GLuint format = GL_RGBA;
 
         GLint minFilter = GL_LINEAR_MIPMAP_NEAREST;
         GLint magFilter = GL_LINEAR;

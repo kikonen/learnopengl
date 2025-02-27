@@ -91,87 +91,93 @@ void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 }
 
 void ViewportRenderer::render(
-    const RenderContext& ctx,
+    const RenderContext& parentCtx,
     render::FrameBuffer* destinationBuffer)
 {
+    RenderContext ctx(parentCtx);
+    ctx.m_forceLineMode = false;
+    ctx.bindDefaults();
+
+    drawViewports(ctx);
+    blitWindow(ctx, destinationBuffer);
+
+    parentCtx.bindDefaults();
+}
+
+void ViewportRenderer::drawViewports(
+    const RenderContext& ctx)
+{
+    auto& state = ctx.m_state;
+
     auto& viewports = ViewportRegistry::get().getViewports();
 
     if (viewports.empty()) return;
 
-    auto& state = ctx.m_state;
-
-    bool forceLineMode = ctx.m_forceLineMode;
-    ctx.m_forceLineMode = false;
-    ctx.bindDefaults();
-
     state.polygonFrontAndBack(GL_FILL);
+    state.setDepthFunc(GL_LEQUAL);
 
-    {
-        auto* buffer = m_buffer.get();
+    state.setStencil({});
+    state.invalidateBlendMode();
+    state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-        buffer->bind(ctx);
-        buffer->clear(
-            ctx,
-            GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
-            { 0.f, 0.f, 0.f, 1.f });
+    auto* buffer = m_buffer.get();
 
-        state.setDepthFunc(GL_LEQUAL);
+    buffer->bind(ctx);
+    buffer->clear(
+        ctx,
+        GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+        { 0.f, 0.f, 0.f, 1.f });
 
-        state.invalidateBlendMode();
-        state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
-
-        for (auto& viewport : viewports) {
-            if (!viewport->isEnabled()) continue;
-
-            viewport->bind(ctx);
-            state.setEnabled(GL_BLEND, viewport->isBlend());
-            viewport->draw(ctx, buffer);
-        }
-
-        state.setEnabled(GL_BLEND, false);
-        state.setDepthFunc(ctx.m_depthFunc);
+    for (auto& viewport : viewports) {
+        viewport->draw(ctx, buffer);
     }
 
+    state.setEnabled(GL_BLEND, false);
+    state.setDepthFunc(ctx.m_depthFunc);
+}
+
+void ViewportRenderer::blitWindow(
+    const RenderContext& ctx,
+    render::FrameBuffer* destinationBuffer)
+{
+    auto& state = ctx.m_state;
+
+    state.polygonFrontAndBack(GL_FILL);
+    state.setEnabled(GL_DEPTH_TEST, false);
+    state.bindTexture(UNIT_VIEWPORT, m_buffer->m_spec.attachments[0].textureID, true);
+
+    // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
+    // => Stencil is not supposed to exist here
+    // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
+    // => *BUT* if glDraw is used instead then clear *IS* needed for depth
+    //
+    // NOTE KI *CLEAR* buffer
+    // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
+    //
+    destinationBuffer->bind(ctx);
+    destinationBuffer->clear(
+        ctx,
+        GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+        { 0.f, 0.f, 0.f, 1.f });
+
+    auto* program = Program::get(m_blitterId);
     {
-        auto* program = Program::get(m_blitterId);
-        state.bindTexture(UNIT_VIEWPORT, m_buffer->m_spec.attachments[0].textureID, true);
-
-        state.setEnabled(GL_DEPTH_TEST, false);
-
-        destinationBuffer->bind(ctx);
-
-        // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
-        // => Stencil is not supposed to exist here
-        // => no need to clear this; ViewPort will do glBlitNamedFramebuffer
-        // => *BUT* if glDraw is used instead then clear *IS* needed for depth
-        //
-        // NOTE KI *CLEAR* buffer
-        // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
-        //
-        destinationBuffer->clear(
-            ctx,
-            GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
-            { 0.f, 0.f, 0.f, 1.f });
-
         program->bind();
 
         auto* uniforms = program->m_uniforms.get();
 
         uniforms->u_hdrToneEnabled.set(m_hdrToneMappingEnabled);
         uniforms->u_gammaCorrectEnabled.set(m_hardwareGammaEnabled ? false : m_gammaCorrectEnabled);
-
-        if (m_gammaCorrectEnabled && m_hardwareGammaEnabled) {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-            render::ScreenTri::get().draw();
-            glDisable(GL_FRAMEBUFFER_SRGB);
-        }
-        else {
-            render::ScreenTri::get().draw();
-        }
-
-        state.setEnabled(GL_DEPTH_TEST, true);
     }
 
-    ctx.m_forceLineMode = forceLineMode;
-    ctx.bindDefaults();
+    if (m_gammaCorrectEnabled && m_hardwareGammaEnabled) {
+        glEnable(GL_FRAMEBUFFER_SRGB);
+        render::ScreenTri::get().draw();
+        glDisable(GL_FRAMEBUFFER_SRGB);
+    }
+    else {
+        render::ScreenTri::get().draw();
+    }
+
+    state.setEnabled(GL_DEPTH_TEST, true);
 }

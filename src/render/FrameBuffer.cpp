@@ -34,9 +34,36 @@ namespace render {
 
         KI_INFO(fmt::format("DELETE: {}", str()));
 
+        if (false) {
+            if (m_attached.size() > 0) {
+                glInvalidateNamedFramebufferData(m_fbo, m_attached.size(), m_attached.data());
+
+                for (auto& att : m_spec.attachments) {
+                    const auto type = att.type == FrameBufferAttachmentType::shared
+                        ? att.shared->type
+                        : att.type;
+
+                    if (att.type == FrameBufferAttachmentType::texture) {
+                        glNamedFramebufferTexture(m_fbo, att.attachment, 0, 0);
+                    }
+                    else if (att.type == FrameBufferAttachmentType::rbo) {
+                        glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, 0);
+                    }
+                    else if (att.type == FrameBufferAttachmentType::depth_texture) {
+                        glNamedFramebufferTexture(m_fbo, att.attachment, 0, 0);
+                    }
+                    else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
+                        glNamedFramebufferTexture(m_fbo, att.attachment, 0, 0);
+                    }
+                }
+            }
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        }
+
         glDeleteFramebuffers(1, &m_fbo);
-        kigl::GLState::get().invalidateFrameBuffer();
         m_spec.attachments.clear();
+
+        kigl::GLState::get().invalidateFrameBuffer();
     }
 
     std::string FrameBuffer::str() const noexcept
@@ -71,6 +98,7 @@ namespace render {
 
         for (auto& att : m_spec.attachments) {
             att.create(m_name, m_spec.width, m_spec.height);
+            m_attached.push_back(att.attachment);
         }
 
         for (auto& att : m_spec.attachments) {
@@ -154,6 +182,8 @@ namespace render {
                 throw std::runtime_error{ msg };
             }
         }
+
+        clearAll();
     }
 
     void FrameBuffer::resetDrawBuffers(int activeCount)

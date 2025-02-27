@@ -161,20 +161,23 @@ void Viewport::bind(const RenderContext& ctx)
 
     auto& state = kigl::GLState::get();
 
+    state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
+    state.setEnabled(GL_BLEND, isBlend());
+
     m_program->bind();
 
-    state.bindTexture(UNIT_VIEWPORT, m_textureId, true);
+    {
+        auto* uniforms = m_program->m_uniforms.get();
 
-    auto* uniforms = m_program->m_uniforms.get();
+        uniforms->u_effect.set(m_effectEnabled ? util::as_integer(m_effect) : 0);
 
-    float blendFactor = std::max(std::min(m_blendFactor, 1.f), 0.f);
-    uniforms->u_blendFactor.set(m_blend ? blendFactor : 1.0f);
+        float blendFactor = std::max(std::min(m_blendFactor, 1.f), 0.f);
+        uniforms->u_blendFactor.set(m_blend ? blendFactor : 1.0f);
 
-    glm::mat4 transformed = m_projected * m_transformMatrix;
+        const glm::mat4& transformed = m_projected * m_transformMatrix;
 
-    uniforms->u_viewportTransform.set(transformed);
-
-    uniforms->u_effect.set(m_effectEnabled ? util::as_integer(m_effect) : 0);
+        uniforms->u_viewportTransform.set(transformed);
+    }
 
     invokeBindAfter();
 }
@@ -183,6 +186,8 @@ void Viewport::draw(
     const RenderContext& ctx,
     render::FrameBuffer* destinationBuffer)
 {
+    if (!isEnabled()) return;
+
     if (m_useDirectBlit) {
         if (!m_sourceBuffer || !destinationBuffer) return;
 
@@ -190,6 +195,7 @@ void Viewport::draw(
     }
     else
     {
+        bind(ctx);
         if (m_textureId == 0) return;
 
         render::TextureQuad::get().draw();

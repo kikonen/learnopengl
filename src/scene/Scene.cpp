@@ -583,11 +583,13 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     localCtx.updateMatricesUBO();
     localCtx.updateDataUBO();
+    localCtx.bindDefaults();
 
     drawScene(localCtx, m_uiRenderer.get());
 
     parentCtx.updateMatricesUBO();
     parentCtx.updateDataUBO();
+    parentCtx.bindDefaults();
 }
 
 void Scene::drawPlayer(const RenderContext& parentCtx)

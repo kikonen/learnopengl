@@ -99,6 +99,8 @@ namespace render
 
         stopScreenPass(ctx);
 
+        m_oitBuffer.clearAll();
+
         return src;
     }
 

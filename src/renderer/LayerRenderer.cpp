@@ -161,6 +161,7 @@ void LayerRenderer::render(
     }
 
     {
+        state.setStencil({});
         targetBuffer->clearAll();
 
         if (m_useHighlight) {
