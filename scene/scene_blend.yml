@@ -60,6 +60,32 @@ nodes:
       x_step: 8
       z_step: -8
     script_file: scripts/anim_rotate_object
+  - id: bezier_{c}_{t}
+    mesh:
+      material:
+        prefab: materials/Metal007.yml
+        kd: [1, 1, 1, 0.8]
+        xxmrao: [1.0, 0.0, 1]
+        program: g_tex
+        alpha: true
+        blend: true
+        render_back: true
+      vertex:
+        type: bezier
+        bezier_d0:
+          - [0, 0, 0]
+          - [1, 1, 1]
+        bezier_d1:
+          - [2, 0, 0]
+          - [1, -1, 1]
+        xinner_radius: 0.25
+        xradius: 0.25
+        xslices: 16
+        xsegments: 4
+        xrings: 4
+    scale: 1
+    pos: [2, 1.5, -10]
+    script_file: scripts/anim_rotate_object
   - id: plasma_ball
     mesh:
       path: ball_volume
@@ -115,3 +141,8 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 40000
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    position: [0, -4, 0]
+    scale: 100
