@@ -8,8 +8,6 @@
 #include "Decal.h"
 #include "DecalSSBO.h"
 
-#include "kigl/GLBuffer.h"
-
 struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
@@ -18,16 +16,27 @@ class Registry;
 class Program;
 
 namespace decal {
+    class DecalBuffer;
+
     class DecalSystem final
     {
+        friend DecalBuffer;
+
     public:
         static DecalSystem& get() noexcept;
 
         DecalSystem();
+        ~DecalSystem();
 
-        void prepare();
+        void clearWT();
+        void shutdownWT();
+        void prepareWT();
 
         void updateWT(const UpdateContext& ctx);
+
+        void clearRT();
+        void shutdownRT();
+        void prepareRT();
 
         void updateRT(const UpdateContext& ctx);
 
@@ -49,16 +58,16 @@ namespace decal {
 
     private:
         void snapshotDecals();
-        void updateDecalBuffer();
 
     private:
         bool m_enabled{ false };
+
+        std::unique_ptr<DecalBuffer> m_decalBuffer;
 
         std::mutex m_lock{};
         std::mutex m_snapshotLock{};
 
         std::atomic_bool m_updateReady{ false };
-        size_t m_frameSkipCount{ 0 };
 
         size_t m_maxCount{ 0 };
         std::vector<Decal> m_decals;
@@ -66,13 +75,5 @@ namespace decal {
         std::vector<DecalSSBO> m_snapshot;
         size_t m_snapshotCount{ 0 };
         size_t m_activeCount{ 0 };
-
-        kigl::GLBuffer m_ssbo{ "decal_ssbo" };
-        size_t m_lastDecalSize{ 0 };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useDebugFence{ false };
     };
 }

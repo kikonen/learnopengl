@@ -20,11 +20,18 @@ MeshTypeRegistry& MeshTypeRegistry::get() noexcept
 
 MeshTypeRegistry::MeshTypeRegistry()
 {
+    clear();
 }
 
 MeshTypeRegistry::~MeshTypeRegistry()
 {
+    clear();
+}
+
+void MeshTypeRegistry::clear()
+{
     pool::TypeHandle::clear();
+    m_customMaterialTypes.clear();
 }
 
 void MeshTypeRegistry::registerCustomMaterial(

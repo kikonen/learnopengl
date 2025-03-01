@@ -16,6 +16,8 @@ public:
     SelectionRegistry();
     ~SelectionRegistry();
 
+    void clear();
+
     void prepare(Registry* registry);
 
     void attachListeners();

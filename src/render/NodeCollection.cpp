@@ -24,9 +24,19 @@ namespace render {
 
     NodeCollection::~NodeCollection()
     {
+        clear();
+    }
+
+    void NodeCollection::clear()
+    {
         m_solidNodes.clear();
+        m_alphaNodes.clear();
         m_blendedNodes.clear();
         m_invisibleNodes.clear();
+
+        m_waterNodes.clear();
+        m_mirrorNodes.clear();
+        m_cubeMapNodes.clear();
     }
 
     void NodeCollection::handleNodeAdded(Node* node)

@@ -11,12 +11,13 @@ namespace pool {
     public:
         Pool(uint32_t blockSize);
 
+        void destroy() noexcept;
+        void clear(bool destroy) noexcept;
+
         Entry<T>* getEntry(uint32_t index) noexcept;
 
         void release(uint32_t index) noexcept;
         uint32_t allocate() noexcept;
-
-        void clear() noexcept;
 
     private:
         const uint32_t m_blockSize;

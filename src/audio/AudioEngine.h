@@ -31,6 +31,9 @@ namespace audio
 
         ~AudioEngine();
 
+        void clear();
+
+        void shutdown();
         void prepare();
 
         inline bool isEnabled(bool enabled) const {

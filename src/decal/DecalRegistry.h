@@ -15,6 +15,8 @@ namespace decal
         DecalRegistry();
         ~DecalRegistry();
 
+        void clear();
+
         void addDecal(decal::DecalDefinition& df);
 
         // @return decal with null id if not valid

@@ -24,6 +24,8 @@ namespace particle {
 
         ParticleSystem();
 
+        void clear();
+
         void prepare();
 
         void updateWT(const UpdateContext& ctx);

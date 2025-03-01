@@ -25,6 +25,8 @@ public:
 
     ~ModelRegistry();
 
+    void clear();
+
     void prepare(std::shared_ptr<std::atomic<bool>> alive);
 
     std::shared_future<mesh::MeshSet*> getMeshSet(

@@ -49,6 +49,8 @@ public:
 
     ~NodeRegistry();
 
+    void clear();
+
     void prepare(
         Registry* registry);
 

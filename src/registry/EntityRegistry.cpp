@@ -35,8 +35,24 @@ EntityRegistry::EntityRegistry()
 {
 }
 
+EntityRegistry::~EntityRegistry() = default;
+
+void EntityRegistry::clear()
+{
+    ASSERT_RT();
+}
+
+void EntityRegistry::shutdown()
+{
+    ASSERT_RT();
+
+    clear();
+}
+
 void EntityRegistry::prepare()
 {
+    ASSERT_RT();
+
     const auto& assets = Assets::get();
 
     m_useMapped = assets.glUseMapped;

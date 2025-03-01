@@ -22,6 +22,8 @@ public:
 
     bool isRunning() const;
 
+    virtual void shutdown();
+
     virtual void prepare();
 
     bool isPrepared() const noexcept {

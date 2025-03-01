@@ -35,6 +35,12 @@ SelectionRegistry& SelectionRegistry::get() noexcept
 SelectionRegistry::SelectionRegistry() = default;
 SelectionRegistry::~SelectionRegistry() = default;
 
+void SelectionRegistry::clear()
+{
+    m_selected.clear();
+    m_tagged.clear();
+}
+
 void SelectionRegistry::prepare(Registry* registry)
 {
     const auto& assets = Assets::get();

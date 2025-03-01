@@ -34,6 +34,10 @@ namespace script
 
         ~ScriptEngine();
 
+        void clear();
+
+        void shutdown();
+
         void prepare(
             const PrepareContext& ctx,
             CommandEngine* commandEngine);
@@ -70,6 +74,9 @@ namespace script
             pool::NodeHandle handle,
             script::script_id scriptId);
 
+        // @return true if unregister was done
+        bool unregisterFunction(std::string fnName);
+
         void registerTypes();
 
     private:
@@ -79,10 +86,10 @@ namespace script
         sol::table m_luaNodes;
 
         std::unique_ptr<UtilAPI> m_utilApi;
-        std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_commandApis;
+        std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 
         std::unordered_map<pool::NodeHandle, std::unordered_map<script::script_id, std::string>> m_nodeFunctions;
-        std::unordered_map<pool::NodeHandle, std::vector<script::script_id>> m_nodeScripts;
+        //std::unordered_map<pool::NodeHandle, std::vector<script::script_id>> m_nodeScripts;
 
         std::unordered_map<script::script_id, Script> m_scripts;
 

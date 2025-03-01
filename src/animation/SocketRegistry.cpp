@@ -1,48 +1,56 @@
 #include "SocketRegistry.h"
 
+#include "util/thread.h"
+
 #include "asset/Assets.h"
 
-#include "shader/SSBO.h"
-
 namespace {
-    constexpr size_t BLOCK_SIZE = 1000;
-    constexpr size_t MAX_BLOCK_COUNT = 5100;
-
-    static animation::SocketRegistry s_registry;
 }
 
 namespace animation
 {
-    animation::SocketRegistry& SocketRegistry::get() noexcept
-    {
-        return s_registry;
-    }
-
     SocketRegistry::SocketRegistry()
     {
-        // NOTE KI null entry
-        reserveInstance(1);
     }
 
     SocketRegistry::~SocketRegistry() = default;
 
+    void SocketRegistry::clear()
+    {
+        ASSERT_WT();
+
+        m_updateReady = false;
+
+        m_transforms.clear();
+        m_dirtyTransform.clear();
+
+        m_snapshot.clear();
+        m_dirtySnapshot.clear();
+
+        // NOTE KI null entry
+        reserveInstance(1);
+    }
+
+    void SocketRegistry::shutdown()
+    {
+        ASSERT_WT();
+
+        clear();
+    }
+
     void SocketRegistry::prepare()
     {
+        ASSERT_WT();
+
         const auto& assets = Assets::get();
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
-
-        m_frameSkipCount = 1;
-
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(glm::mat4), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
+        clear();
     }
 
     uint32_t SocketRegistry::reserveInstance(size_t count)
     {
+        ASSERT_WT();
+
         if (count == 0) return 0;
 
         size_t index;
@@ -75,6 +83,8 @@ namespace animation
 
     void SocketRegistry::markDirty(size_t start, size_t count) noexcept
     {
+        ASSERT_WT();
+
         if (count == 0) return;
 
         std::lock_guard lock(m_lockDirty);
@@ -98,19 +108,6 @@ namespace animation
     void SocketRegistry::updateWT()
     {
         makeSnapshot();
-    }
-
-    void SocketRegistry::updateRT()
-    {
-        if (!m_updateReady) return;
-
-        m_frameSkipCount++;
-        if (m_frameSkipCount < 2) {
-            return;
-        }
-        m_frameSkipCount = 0;
-
-        updateBuffer();
     }
 
     void SocketRegistry::makeSnapshot()
@@ -138,51 +135,5 @@ namespace animation
 
         m_dirtyTransform.clear();
         m_updateReady = true;
-    }
-
-    void SocketRegistry::updateBuffer()
-    {
-        std::lock_guard lock(m_lock);
-
-        if (m_dirtySnapshot.empty()) return;
-
-        for (const auto& range : m_dirtySnapshot) {
-            if (updateSpan(range.first, range.second)) break;
-        }
-
-        m_dirtySnapshot.clear();
-        m_updateReady = false;
-    }
-
-    bool SocketRegistry::updateSpan(
-        size_t updateIndex,
-        size_t updateCount)
-    {
-        constexpr size_t sz = sizeof(glm::mat4);
-        const size_t totalCount = m_snapshot.size();
-
-        if (totalCount == 0) return true;
-
-        if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
-                m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
-            }
-
-            updateIndex = 0;
-            updateCount = totalCount;
-        }
-
-        //if (m_useInvalidate) {
-        //    m_ssbo.invalidateRange(updateIndex * sz, updateCount * sz);
-        //}
-
-        m_ssbo.update(
-            updateIndex * sz,
-            updateCount * sz,
-            &m_snapshot[updateIndex]);
-
-        return updateCount == totalCount;
     }
 }

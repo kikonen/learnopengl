@@ -2,43 +2,47 @@
 
 #include "asset/Assets.h"
 
-#include "shader/SSBO.h"
+#include "util/thread.h"
 
 namespace {
-    constexpr size_t BLOCK_SIZE = 1000;
-    constexpr size_t MAX_BLOCK_COUNT = 5100;
-
-    static animation::BoneRegistry s_registry;
 }
 
 namespace animation
 {
-    animation::BoneRegistry& BoneRegistry::get() noexcept
-    {
-        return s_registry;
-    }
-
     BoneRegistry::BoneRegistry()
     {
-        // NOTE KI null entry
-        reserveInstance(1);
     }
 
     BoneRegistry::~BoneRegistry() = default;
 
+    void BoneRegistry::clear()
+    {
+        ASSERT_WT();
+
+        m_updateReady = false;
+
+        m_transforms.clear();
+        m_dirtyTransform.clear();
+
+        m_snapshot.clear();
+        m_dirtySnapshot.clear();
+
+        // NOTE KI null entry
+        reserveInstance(1);
+    }
+
+    void BoneRegistry::shutdown()
+    {
+        ASSERT_WT();
+
+        clear();
+    }
+
     void BoneRegistry::prepare()
     {
-        const auto& assets = Assets::get();
+        ASSERT_WT();
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
-
-        m_frameSkipCount = 1;
-
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(glm::mat4), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
+        clear();
     }
 
     uint32_t BoneRegistry::reserveInstance(size_t count)
@@ -100,19 +104,6 @@ namespace animation
         makeSnapshot();
     }
 
-    void BoneRegistry::updateRT()
-    {
-        if (!m_updateReady) return;
-
-        m_frameSkipCount++;
-        if (m_frameSkipCount < 2) {
-            return;
-        }
-        m_frameSkipCount = 0;
-
-        updateBuffer();
-    }
-
     void BoneRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);
@@ -138,51 +129,5 @@ namespace animation
 
         m_dirtyTransform.clear();
         m_updateReady = true;
-    }
-
-    void BoneRegistry::updateBuffer()
-    {
-        std::lock_guard lock(m_lock);
-
-        if (m_dirtySnapshot.empty()) return;
-
-        for (const auto& range : m_dirtySnapshot) {
-            if (updateSpan(range.first, range.second)) break;
-        }
-
-        m_dirtySnapshot.clear();
-        m_updateReady = false;
-    }
-
-    bool BoneRegistry::updateSpan(
-        size_t updateIndex,
-        size_t updateCount)
-    {
-        constexpr size_t sz = sizeof(glm::mat4);
-        const size_t totalCount = m_snapshot.size();
-
-        if (totalCount == 0) return true;
-
-        if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
-                m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
-            }
-
-            updateIndex = 0;
-            updateCount = totalCount;
-        }
-
-        //if (m_useInvalidate) {
-        //    m_ssbo.invalidateRange(updateIndex * sz, updateCount * sz);
-        //}
-
-        m_ssbo.update(
-            updateIndex * sz,
-            updateCount * sz,
-            &m_snapshot[updateIndex]);
-
-        return updateCount == totalCount;
     }
 }

@@ -42,6 +42,8 @@ namespace render {
         NodeCollection();
         ~NodeCollection();
 
+        void clear();
+
         void handleNodeAdded(Node* node);
 
     private:

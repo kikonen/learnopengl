@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include "util/thread.h"
 #include "util/Log.h"
 
 #include "asset/Assets.h"
@@ -34,8 +35,27 @@ VaoRegistry::VaoRegistry()
 VaoRegistry::~VaoRegistry() {
 }
 
+void VaoRegistry::clear()
+{
+    ASSERT_RT();
+
+    m_texturedVao->clear();
+    m_skinnedVao->clear();
+    m_sharedPrimitiveVao->clear();
+    m_dynamicPrimitiveVao->clear();
+}
+
+void VaoRegistry::shutdown()
+{
+    ASSERT_RT();
+
+    clear();
+}
+
 void VaoRegistry::prepare()
 {
+    ASSERT_RT();
+
     // NOTE KI ensure id == 0 is not used for actual VAOs
     m_nullVao->create("NULL");
     assert(*m_nullVao < 255);

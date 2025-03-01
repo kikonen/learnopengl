@@ -27,6 +27,8 @@ public:
 
     ~MaterialRegistry();
 
+    void clear();
+
     // Updates m_registeredIndex of Material
     ki::material_index registerMaterial(Material& material);
 

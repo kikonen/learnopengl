@@ -12,11 +12,19 @@ namespace decal {
 
     DecalRegistry::DecalRegistry()
     {
-        m_definitions.emplace_back();
-        m_nameToIndex.insert({ 0, 0 });
+        clear();
     }
 
     DecalRegistry::~DecalRegistry() = default;
+
+    void DecalRegistry::clear()
+    {
+        m_definitions.clear();
+        m_nameToIndex.clear();
+
+        m_definitions.emplace_back();
+        m_nameToIndex.insert({ 0, 0 });
+    }
 
     void DecalRegistry::addDecal(decal::DecalDefinition& df)
     {

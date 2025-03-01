@@ -93,6 +93,6 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
-        s_pool.clear();
+        s_pool.clear(false);
     }
 }

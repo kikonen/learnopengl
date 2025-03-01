@@ -35,7 +35,22 @@ namespace particle {
 
     ParticleSystem::ParticleSystem()
     {
+        clear();
+    }
+
+    void ParticleSystem::clear()
+    {
+        m_updateReady = false;
+
+        m_particles.clear();
         m_particles.reserve(1 * BLOCK_SIZE);
+
+        m_pending.clear();
+        m_snapshot.clear();
+
+        m_snapshotCount = 0;
+        m_activeCount = 0;
+        m_lastParticleSize = 0;
     }
 
     uint32_t ParticleSystem::getFreespace() const noexcept

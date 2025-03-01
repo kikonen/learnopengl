@@ -20,6 +20,12 @@ public:
     SnapshotRegistry();
     ~SnapshotRegistry();
 
+    void clear()
+    {
+        m_dirty = false;
+        m_snapshots.clear();
+    }
+
     inline T& modifySnapshot(uint32_t index) noexcept {
         auto& snapshots = m_snapshots->m_entries;
         return snapshots[index];

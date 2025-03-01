@@ -13,13 +13,14 @@ class ControllerRegistry {
 public:
     static ControllerRegistry& get() noexcept;
 
-    ControllerRegistry()
-    {
-    }
-    ControllerRegistry& operator=(const ControllerRegistry&) = delete;
-
+    ControllerRegistry();
     ~ControllerRegistry();
 
+    ControllerRegistry& operator=(const ControllerRegistry&) = delete;
+
+    void clear();
+
+    void shutdown();
     void prepare(Registry* registry);
 
     void updateWT(const UpdateContext& ctx);

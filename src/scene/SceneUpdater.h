@@ -11,6 +11,7 @@ public:
         std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
 
+    virtual void shutdown() override;
     virtual void prepare() override;
 
     virtual uint32_t getActiveCount() const noexcept override;

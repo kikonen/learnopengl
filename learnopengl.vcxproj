@@ -186,6 +186,7 @@
   <ItemGroup>
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\animation_util.cpp" />
+    <ClCompile Include="src\animation\BoneBuffer.cpp" />
     <ClCompile Include="src\animation\ClipContainer.cpp" />
     <ClCompile Include="src\animation\AnimationLoader.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
@@ -198,8 +199,10 @@
     <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\BoneTransform.cpp" />
     <ClCompile Include="src\animation\BoneContainer.cpp" />
+    <ClCompile Include="src\animation\SocketBuffer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
     <ClCompile Include="src\asset\LayerInfo.cpp" />
+    <ClCompile Include="src\decal\DecalBuffer.cpp" />
     <ClCompile Include="src\decal\DecalDefinition.cpp" />
     <ClCompile Include="src\decal\DecalRegisry.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
@@ -535,6 +538,7 @@
     <ClCompile Include="src\renderer\WaterNoiseGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\BoneBuffer.h" />
     <ClInclude Include="src\animation\LocalTransform.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
@@ -545,7 +549,9 @@
     <ClInclude Include="src\animation\Clip.h" />
     <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\animation\MetadataLoader.h" />
+    <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\decal\DecalBuffer.h" />
     <ClInclude Include="src\decal\DecalDefinition.h" />
     <ClInclude Include="src\decal\DecalRegistry.h" />
     <ClInclude Include="src\decal\DecalType.h" />

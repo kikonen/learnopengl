@@ -29,9 +29,15 @@ ModelRegistry& ModelRegistry::get() noexcept
 
 ModelRegistry::ModelRegistry()
 {
+    clear();
 }
 
 ModelRegistry::~ModelRegistry() {
+}
+
+void ModelRegistry::clear()
+{
+    m_meshes.clear();
 }
 
 void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)

@@ -28,6 +28,9 @@ namespace script
 
         ~CommandEngine();
 
+        void clear();
+
+        void shutdown();
         void prepare(Registry* registry);
 
         void update(const UpdateContext& ctx);

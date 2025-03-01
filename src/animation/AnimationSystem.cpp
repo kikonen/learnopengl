@@ -6,6 +6,7 @@
 
 #include <fmt/format.h>
 
+#include "util/thread.h"
 #include "util/glm_format.h"
 
 #include "asset/Assets.h"
@@ -31,6 +32,9 @@
 #include "animation/BoneRegistry.h"
 #include "animation/SocketRegistry.h"
 
+#include "animation/BoneBuffer.h"
+#include "animation/SocketBuffer.h"
+
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
@@ -52,32 +56,82 @@ namespace animation
     }
 
     AnimationSystem::AnimationSystem()
+        : m_boneRegistry{ std::make_unique<BoneRegistry>() },
+        m_socketRegistry{ std::make_unique<SocketRegistry>() },
+        m_boneBuffer{ std::make_unique<BoneBuffer>(m_boneRegistry.get()) },
+        m_socketBuffer{ std::make_unique<SocketBuffer>(m_socketRegistry.get()) }
     {
     }
 
     AnimationSystem::~AnimationSystem() = default;
 
-    void AnimationSystem::prepare()
+    void AnimationSystem::clearWT()
     {
+        ASSERT_WT();
+
+        m_states.clear();
+        m_nodeToState.clear();
+
+        m_pendingNodes.clear();
+
+        m_boneRegistry->clear();
+        m_socketRegistry->clear();
+    }
+
+    void AnimationSystem::shutdownWT()
+    {
+        ASSERT_WT();
+
+        clearWT();
+    }
+
+    void AnimationSystem::prepareWT()
+    {
+        ASSERT_WT();
+
         const auto& assets = Assets::get();
 
         m_enabled = assets.animationEnabled;
         m_onceOnly = assets.animationOnceOnly;
         m_maxCount = assets.animationMaxCount;
 
-        auto& boneRegistry = BoneRegistry::get();
-        auto& socketRegistry = SocketRegistry::get();
+        m_boneRegistry->prepare();
+        m_socketRegistry->prepare();
 
-        boneRegistry.prepare();
-        socketRegistry.prepare();
+        clearWT();
+    }
+
+    void AnimationSystem::clearRT()
+    {
+        ASSERT_RT();
+
+        m_boneBuffer->clear();
+        m_socketBuffer->clear();
+    }
+
+    void AnimationSystem::shutdownRT()
+    {
+        ASSERT_RT();
+
+        clearRT();
+    }
+
+    void AnimationSystem::prepareRT()
+    {
+        ASSERT_RT();
+
+        m_boneBuffer->prepare();
+        m_socketBuffer->prepare();
+
+        clearRT();
     }
 
     std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(const animation::RigContainer& rig)
     {
         std::lock_guard lock(m_pendingLock);
 
-        auto& boneRegistry = BoneRegistry::get();
-        auto& socketRegistry = SocketRegistry::get();
+        auto& boneRegistry = *m_boneRegistry;
+        auto& socketRegistry = *m_socketRegistry;
 
         uint32_t boneBaseIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
         uint32_t socketBaseIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
@@ -189,8 +243,8 @@ namespace animation
     {
         prepareNodes();
 
-        auto& boneRegistry = BoneRegistry::get();
-        auto& socketRegistry = SocketRegistry::get();
+        auto& boneRegistry = *m_boneRegistry;
+        auto& socketRegistry = *m_socketRegistry;
 
         static std::vector<ActiveNode> s_activeNodes;
 
@@ -245,8 +299,9 @@ namespace animation
         mesh::MeshType* type)
     {
         auto& dbg = render::DebugContext::modify();
-        auto& boneRegistry = BoneRegistry::get();
-        auto& socketRegistry = SocketRegistry::get();
+
+        auto& boneRegistry = *m_boneRegistry;
+        auto& socketRegistry = *m_socketRegistry;
 
         if (dbg.m_animationPaused) return;
 
@@ -392,11 +447,13 @@ namespace animation
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
     {
-        auto& boneRegistry = BoneRegistry::get();
-        auto& socketRegistry = SocketRegistry::get();
+        ASSERT_RT();
 
-        boneRegistry.updateRT();
-        socketRegistry.updateRT();
+        auto& boneBuffer = *m_boneBuffer;
+        auto& socketBuffer = *m_socketBuffer;
+
+        boneBuffer.updateRT();
+        socketBuffer.updateRT();
     }
 
     void AnimationSystem::waitForPrepared()

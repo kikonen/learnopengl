@@ -21,6 +21,12 @@ class RenderContext;
 class Node;
 
 namespace animation {
+    class BoneRegistry;
+    class SocketRegistry;
+
+    class BoneBuffer;
+    class SocketBuffer;
+
     struct RigContainer;
 
     class AnimationSystem {
@@ -32,7 +38,13 @@ namespace animation {
 
         ~AnimationSystem();
 
-        void prepare();
+        void clearWT();
+        void shutdownWT();
+        void prepareWT();
+
+        void clearRT();
+        void shutdownRT();
+        void prepareRT();
 
         // Register joint instance specific rig
         // @return instance index into bone transform buffer
@@ -88,5 +100,11 @@ namespace animation {
         std::condition_variable m_pendingWait;
 
         std::vector<pool::NodeHandle> m_pendingNodes;
+
+        std::unique_ptr<BoneRegistry> m_boneRegistry;
+        std::unique_ptr<SocketRegistry> m_socketRegistry;
+
+        std::unique_ptr<BoneBuffer> m_boneBuffer;
+        std::unique_ptr<SocketBuffer> m_socketBuffer;
     };
 }

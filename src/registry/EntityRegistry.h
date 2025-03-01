@@ -25,9 +25,14 @@ public:
     static EntityRegistry& get() noexcept;
 
     EntityRegistry();
+    ~EntityRegistry();
     EntityRegistry& operator=(const EntityRegistry&) = delete;
 
+    void clear();
+
+    void shutdown();
     void prepare();
+
     void updateRT(const UpdateContext& ctx);
     void postRT(const UpdateContext& ctx);
 

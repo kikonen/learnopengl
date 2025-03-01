@@ -8,6 +8,8 @@
 
 #include "asset/Assets.h"
 
+#include "util/thread.h"
+
 #include "util/util.h"
 #include "util/file.h"
 
@@ -38,12 +40,51 @@ namespace script
     {
     }
 
-    ScriptEngine::~ScriptEngine() = default;
+    ScriptEngine::~ScriptEngine()
+    {
+    }
+
+    void ScriptEngine::clear()
+    {
+        ASSERT_WT();
+
+        // TODO KI clear scriptlets from Lua
+        if (m_commandEngine) {
+            for (auto& [nodeId, functions] : m_nodeFunctions) {
+                for (auto& [scriptId, fnName] : functions) {
+                    unregisterFunction(fnName);
+                }
+            }
+
+            for (auto& apiName : m_nodeCommandApis) {
+
+            }
+
+            for (auto& node : m_luaNodes) {
+
+            }
+        }
+
+        m_nodeCommandApis.clear();
+        m_nodeFunctions.clear();
+        //m_nodeScripts.clear();
+
+        m_scripts.clear();
+    }
+
+    void ScriptEngine::shutdown()
+    {
+        ASSERT_WT();
+
+        clear();
+    }
 
     void ScriptEngine::prepare(
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
+        ASSERT_WT();
+
         const auto& assets = ctx.m_assets;
 
         m_commandEngine = commandEngine;
@@ -166,7 +207,7 @@ namespace script
         }
         it->second.insert({ scriptId, fnName });
 
-        m_commandApis.insert({ handle, std::make_unique<NodeCommandAPI>(this, m_commandEngine, handle) });
+        m_nodeCommandApis.insert({ handle, std::make_unique<NodeCommandAPI>(this, m_commandEngine, handle) });
 
         //if (!m_luaNodes[nodeId]) {
         //    m_luaNodes[nodeId] = m_lua.create_table_with();
@@ -214,6 +255,22 @@ end)", nodeFnName, "{}", script.m_source);
 
             KI_INFO_OUT(util::appendLineNumbers(scriptlet));
 
+            {
+                m_lua.script(scriptlet);
+
+                sol::function fn = m_lua[nodeFnName];
+                if (m_lua[nodeFnName].is<sol::function>()) {
+                    int x1 = 0;
+                }
+
+                std::string undef = fmt::format("{} = nil", nodeFnName);
+                m_lua.script(undef);
+
+                if (m_lua[nodeFnName].is<sol::function>()) {
+                    int x1 = 0;
+                }
+            }
+
             m_lua.script(scriptlet);
 
             return nodeFnName;
@@ -245,6 +302,16 @@ end)", nodeFnName, "{}", script.m_source);
         }
 
         return {};
+    }
+
+    bool ScriptEngine::unregisterFunction(std::string fnName)
+    {
+        if (!m_lua[fnName].is<sol::function>()) return false;
+
+        std::string undef = fmt::format("{} = nil", fnName);
+        m_lua.script(undef);
+        KI_INFO_OUT(fmt::format("SCRIPT: unregister: function={}", fnName));
+        return true;
     }
 
     void ScriptEngine::runGlobalScript(
@@ -282,7 +349,7 @@ end)", nodeFnName, "{}", script.m_source);
                 sol::function fn = m_lua[fnName];
 
                 auto* utilApi = m_utilApi.get();
-                auto* cmdApi = m_commandApis.find(handle)->second.get();
+                auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
                 fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());
             }
         }
@@ -322,7 +389,7 @@ end)", nodeFnName, "{}", script.m_source);
         try {
             sol::optional<sol::function> fnPtr = luaNode[name];
             if (fnPtr != sol::nullopt) {
-                auto* api = m_commandApis.find(handle)->second.get();
+                auto* api = m_nodeCommandApis.find(handle)->second.get();
                 auto& fn = fnPtr.value();
                 fn(std::ref(node), std::ref(api), handle.toId());
             }

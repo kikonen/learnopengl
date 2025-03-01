@@ -33,7 +33,7 @@ namespace script {
             m_id{ o.m_id }
         {}
 
-        ~CommandHandle() = default;
+        ~CommandHandle();
 
         CommandHandle& operator=(const CommandHandle& o)
         {

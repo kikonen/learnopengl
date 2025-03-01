@@ -47,6 +47,10 @@ bool Updater::isRunning() const
     return m_running;
 }
 
+void Updater::shutdown()
+{
+}
+
 void Updater::prepare()
 {
     std::lock_guard lock(m_prepareLock);
@@ -132,5 +136,6 @@ void Updater::run()
         }
     }
 
+    shutdown();
     KI_INFO(fmt::format("{}: stopped - worker={}", m_prefix, util::isWorkerThread()));
 }

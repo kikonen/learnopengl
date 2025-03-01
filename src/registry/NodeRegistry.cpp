@@ -72,29 +72,7 @@ NodeRegistry& NodeRegistry::get() noexcept
 
 NodeRegistry::NodeRegistry()
 {
-    // NOTE KI keep NULL and IDENTITY as separate since
-    // logic *can* (and thus *will*) accidentally modify null state
-    // => that does not matter as long as NULL is not tried to be used
-    //    as identity matrix
-    // => in GPU side NULL state *may* (thus *will*) appear as entity
-    // => should somehow make NULL state immutable
-    {
-        // NOTE KI declare index == 0 as NULL object
-        auto& state = m_states.emplace_back();
-        state.updateRootMatrix();
-
-        m_handles.emplace_back();
-        m_parentIndeces.push_back(0);
-    }
-
-    {
-        // NOTE KI declare index == 1 as IDENTITY object
-        auto& state = m_states.emplace_back();
-        state.updateRootMatrix();
-
-        m_handles.emplace_back();
-        m_parentIndeces.push_back(0);
-    }
+    clear();
 }
 
 NodeRegistry::~NodeRegistry()
@@ -123,6 +101,64 @@ NodeRegistry::~NodeRegistry()
     m_skybox.reset();
 
     pool::NodeHandle::clear();
+}
+
+void NodeRegistry::clear()
+{
+    m_skybox.reset();
+
+    m_rootWT.reset();
+    m_rootRT.reset();
+
+    m_rootIndex = 0;
+
+    m_handles.clear();
+    m_parentIndeces.clear();
+    m_states.clear();
+    m_snapshotsWT.clear();
+    m_snapshotsPending.clear();
+    m_snapshotsRT.clear();
+    m_entities.clear();
+    m_dirtyEntities.clear();
+
+    m_cachedNodesWT.clear();
+    m_cachedNodesRT.clear();
+
+    m_nodeLevel = 0;
+    m_cachedNodeLevel = 0;
+
+    m_cameraNodes.clear();
+
+    m_dirLightNodes.clear();
+    m_pointLightNodes.clear();
+    m_spotLightNodes.clear();
+
+    m_activeNode.reset();
+    m_activeCameraNode.reset();
+
+    // NOTE KI keep NULL and IDENTITY as separate since
+    // logic *can* (and thus *will*) accidentally modify null state
+    // => that does not matter as long as NULL is not tried to be used
+    //    as identity matrix
+    // => in GPU side NULL state *may* (thus *will*) appear as entity
+    // => should somehow make NULL state immutable
+    {
+        // NOTE KI declare index == 0 as NULL object
+        auto& state = m_states.emplace_back();
+        state.updateRootMatrix();
+
+        m_handles.emplace_back();
+        m_parentIndeces.push_back(0);
+    }
+
+    {
+        // NOTE KI declare index == 1 as IDENTITY object
+        auto& state = m_states.emplace_back();
+        state.updateRootMatrix();
+
+        m_handles.emplace_back();
+        m_parentIndeces.push_back(0);
+    }
 }
 
 void NodeRegistry::prepare(

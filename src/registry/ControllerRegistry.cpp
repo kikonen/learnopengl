@@ -1,5 +1,7 @@
 #include "ControllerRegistry.h"
 
+#include "util/thread.h"
+
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
@@ -22,18 +24,32 @@ ControllerRegistry& ControllerRegistry::get() noexcept
     return s_registry;
 }
 
+ControllerRegistry::ControllerRegistry()
+{
+}
+
 ControllerRegistry::~ControllerRegistry()
 {
-    for (const auto& it : m_controllers) {
-        for (auto* controller : it.second) {
-            delete controller;
-        }
-    }
+}
+
+void ControllerRegistry::clear()
+{
+    ASSERT_WT();
+
     m_controllers.clear();
+}
+
+void ControllerRegistry::shutdown()
+{
+    ASSERT_WT();
+
+    clear();
 }
 
 void ControllerRegistry::prepare(Registry* registry)
 {
+    ASSERT_WT();
+
     m_registry = registry;
 
     registry->m_dispatcherWorker->addListener(

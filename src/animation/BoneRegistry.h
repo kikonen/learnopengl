@@ -9,18 +9,21 @@
 
 namespace animation {
     class AnimationSystem;
+    class BoneBuffer;
 
     class BoneRegistry {
+        friend BoneBuffer;
         friend AnimationSystem;
 
     public:
-        static animation::BoneRegistry& get() noexcept;
-
         BoneRegistry();
         BoneRegistry& operator=(const BoneRegistry&) = delete;
 
         ~BoneRegistry();
 
+        void clear();
+
+        void shutdown();
         void prepare();
 
         uint32_t getActiveCount() const noexcept;
@@ -38,15 +41,9 @@ namespace animation {
         void markDirty(size_t start, size_t count) noexcept;
 
         void updateWT();
-        void updateRT();
 
     private:
         void makeSnapshot();
-        void updateBuffer();
-
-        bool updateSpan(
-            size_t updateIndex,
-            size_t updateCount);
 
     protected:
         std::mutex m_lock{};
@@ -55,19 +52,11 @@ namespace animation {
         std::mutex m_lockDirty{};
 
         std::atomic_bool m_updateReady{ false };
-        size_t m_frameSkipCount{ 0 };
 
         std::vector<glm::mat4> m_transforms;
         std::vector<std::pair<uint32_t, size_t>> m_dirtyTransform;
 
         std::vector<glm::mat4> m_snapshot;
         std::vector<std::pair<uint32_t, size_t>> m_dirtySnapshot;
-
-        kigl::GLBuffer m_ssbo{ "bone_palette_ssbo" };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useDebugFence{ false };
     };
 }

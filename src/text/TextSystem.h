@@ -20,6 +20,9 @@ namespace text {
         TextSystem();
         ~TextSystem();
 
+        void clear();
+
+        void shutdown();
         void prepare();
 
         void updateRT(const UpdateContext& ctx);

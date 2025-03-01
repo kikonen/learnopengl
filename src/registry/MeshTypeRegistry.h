@@ -20,6 +20,8 @@ public:
 
     ~MeshTypeRegistry();
 
+    void clear();
+
     void registerCustomMaterial(
         pool::TypeHandle typeHandle);
 

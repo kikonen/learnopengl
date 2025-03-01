@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 
+#include "util/thread.h"
 #include "util/Log.h"
 #include "util/util.h"
 
@@ -34,8 +35,25 @@ namespace audio
 
     AudioEngine::~AudioEngine()
     {
+    }
+
+    void AudioEngine::clear()
+    {
+        ASSERT_WT();
+
+        // TODO KI unregister sources and listeners
+
+        m_activeListenerId = 0;
+
         // NOTE KI MUST close buffers before closing context
         m_soundRegistry->clear();
+    }
+
+    void AudioEngine::shutdown()
+    {
+        ASSERT_WT();
+
+        clear();
 
         if (m_context) {
             alcDestroyContext(m_context);
@@ -48,6 +66,8 @@ namespace audio
 
     void AudioEngine::prepare()
     {
+        ASSERT_WT();
+
         // NOTE KI use default device
         m_device = alcOpenDevice(nullptr);
         if (!m_device)

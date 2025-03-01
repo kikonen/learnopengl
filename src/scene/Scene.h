@@ -63,6 +63,7 @@ public:
         std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
 
+    void clear();
     void destroy();
 
     void prepareRT();
@@ -147,6 +148,4 @@ private:
     std::unique_ptr<EnvironmentProbeRenderer> m_environmentProbeRenderer{ nullptr };
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
-
-    unsigned int m_pbo = 0;
 };

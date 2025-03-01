@@ -27,8 +27,23 @@ MaterialRegistry& MaterialRegistry::get() noexcept
 
 MaterialRegistry::MaterialRegistry()
 {
+    clear();
+}
+
+MaterialRegistry::~MaterialRegistry() = default;
+
+void MaterialRegistry::clear()
+{
+    m_materials.clear();
+    m_dirtyMaterials.clear();
+    m_materialEntries.clear();
+    m_updaters.clear();
+
     m_materials.reserve(BLOCK_SIZE);
     m_materialEntries.reserve(BLOCK_SIZE);
+
+    m_dirtyFlag = false;
+    m_lastSize = 0;
 
     {
         // NOTE KI *reserve* index 0
@@ -38,8 +53,6 @@ MaterialRegistry::MaterialRegistry()
         registerMaterial(zero);
     }
 }
-
-MaterialRegistry::~MaterialRegistry() = default;
 
 ki::material_index MaterialRegistry::registerMaterial(Material& material)
 {

@@ -39,6 +39,14 @@ SceneUpdater::SceneUpdater(
     : Updater("WT", 5, registry, alive)
 {}
 
+void SceneUpdater::shutdown()
+{
+    if (!m_prepared) return;
+    Updater::shutdown();
+
+    m_registry->shutdownWT();
+}
+
 void SceneUpdater::prepare()
 {
     if (m_prepared) return;

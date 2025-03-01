@@ -191,8 +191,29 @@ namespace physics
 
     PhysicsEngine::~PhysicsEngine()
     {
+    }
+
+    void PhysicsEngine::clear(bool shutdown)
+    {
+        //ASSERT_WT();
+
+        // TODO KI unregister objects & geometries
+
         m_objects.clear();
         m_heightMaps.clear();
+
+        if (!shutdown) {
+            // NOTE KI register NULL object
+            registerObject({}, 0, false, {});
+            m_heightMaps.emplace_back();
+        }
+    }
+
+    void PhysicsEngine::shutdown()
+    {
+        ASSERT_WT();
+
+        clear(true);
 
         if (m_spaceId) {
             dSpaceDestroy(m_spaceId);
@@ -210,6 +231,8 @@ namespace physics
 
     void PhysicsEngine::prepare(std::shared_ptr<std::atomic<bool>> alive)
     {
+        //ASSERT_WT();
+
         m_prepared = true;
         m_alive = alive;
 
@@ -242,6 +265,8 @@ namespace physics
         }
 
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
+
+        //clear(false);
     }
 
     void PhysicsEngine::updatePrepare(const UpdateContext& ctx)
@@ -255,6 +280,8 @@ namespace physics
 
     void PhysicsEngine::updateObjects(const UpdateContext& ctx)
     {
+        ASSERT_WT();
+
         if (!m_enabled) return;
 
         initTemplates();

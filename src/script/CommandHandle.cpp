@@ -23,6 +23,10 @@ namespace {
 namespace script {
     CommandHandle CommandHandle::NULL_HANDLE{ 0, 0 };
 
+    CommandHandle::~CommandHandle()
+    {
+    }
+
     void CommandHandle::release() noexcept
     {
         if (!m_handleIndex) return;
@@ -103,7 +107,7 @@ namespace script {
     {
         std::lock_guard lock(m_lock);
 
-        s_pool.clear();
+        s_pool.clear(false);
     }
 
     script::command_id CommandHandle::nextId()

@@ -9,11 +9,13 @@ class ViewportRegistry
 public:
     static ViewportRegistry& get() noexcept;
 
-    ViewportRegistry()
-    {
-    }
+    ViewportRegistry();
+    ~ViewportRegistry();
+
     ViewportRegistry& operator=(const ViewportRegistry&) = delete;
 
+    void clear();
+    void shutdown();
     void prepare();
 
     void addViewport(std::shared_ptr<Viewport> viewport) noexcept;

@@ -119,6 +119,11 @@ Scene::~Scene()
     KI_INFO("SCENE: deleted");
 }
 
+void Scene::clear()
+{
+    m_collection->clear();
+}
+
 void Scene::destroy()
 {
     KI_INFO("SCENE: destroy");

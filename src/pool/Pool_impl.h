@@ -18,15 +18,50 @@ namespace pool {
         m_pool = reinterpret_cast<Entry<T>*>(malloc(m_blockSize * m_entrySize));
         memset(m_pool, 0, m_blockSize);
 
-        m_nextFree = 0;
-        for (uint32_t i = 0; i < blockSize; i++) {
-            auto& entry = m_pool[i];
-            entry.m_nextFree = i + 1;
-        }
-        m_pool[blockSize - 1].m_nextFree = -2;
+        clear(false);
+    }
 
-        // NOTE KI NULL object
-        allocate();
+    template<typename T>
+    void Pool<T>::destroy() noexcept
+    {
+        clear(true);
+    }
+
+    template<typename T>
+    void Pool<T>::clear(bool destroy) noexcept
+    {
+        {
+            std::lock_guard lock(m_lock);
+
+            if (!m_pool) return;
+
+            {
+                // NOTE KI release all used entries for clean shutdown
+                for (uint32_t i = 0; i < m_blockSize; i++) {
+                    auto& entry = m_pool[i];
+                    if (entry.m_nextFree == IN_USE) {
+                        entry.~Entry<T>();
+                    }
+                }
+            }
+
+            m_nextFree = 0;
+            for (uint32_t i = 0; i < m_blockSize; i++) {
+                auto& entry = m_pool[i];
+                entry.m_nextFree = i + 1;
+            }
+            m_pool[m_blockSize - 1].m_nextFree = -2;
+
+            if (destroy) {
+                free((void*)m_pool);
+                m_pool = nullptr;
+            }
+        }
+
+        if (!destroy) {
+            // NOTE KI NULL object
+            allocate();
+        }
     }
 
     template<typename T>
@@ -71,22 +106,5 @@ namespace pool {
         m_nextFree = nextFree;
 
         return index;
-    }
-
-    template<typename T>
-    void Pool<T>::clear() noexcept
-    {
-        std::lock_guard lock(m_lock);
-
-        // NOTE KI release all used entries for clean shutdown
-        for (uint32_t i = 0; i < m_blockSize; i++) {
-            auto& entry = m_pool[i];
-            if (entry.m_nextFree == IN_USE) {
-                entry.~Entry<T>();
-            }
-        }
-        free((void*)m_pool);
-
-        m_pool = nullptr;
     }
 }

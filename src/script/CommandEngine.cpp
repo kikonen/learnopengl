@@ -1,6 +1,8 @@
 #include "CommandEngine.h"
 #include "CommandEngine_impl.h"
 
+#include "util/thread.h"
+
 #include "model/Node.h"
 
 #include "pool/NodeHandle.h"
@@ -48,15 +50,56 @@ namespace script
     CommandEngine::CommandEngine()
         : m_cleanupStep(5)
     {
-        m_pending.reserve(COMMANDS_SIZE);
-        m_blocked.reserve(COMMANDS_SIZE);
-        m_active.reserve(COMMANDS_SIZE);
     }
 
     CommandEngine::~CommandEngine() = default;
 
+    void CommandEngine::clear()
+    {
+        ASSERT_WT();
+
+        {
+            std::lock_guard lock{ m_pendingLock };
+
+            for (auto& handle : m_pending) {
+                handle.release();
+            }
+
+            m_pending.clear();
+            m_pending.reserve(COMMANDS_SIZE);
+        }
+
+        for (auto& handle : m_blocked) {
+            handle.release();
+        }
+
+        for (auto& handle : m_active) {
+            handle.release();
+        }
+
+        m_blockedDeadCount = 0;
+        m_activeDeadCount = 0;
+
+        int m_cleanupIndex = 0;
+        int m_cleanupStep = 0;
+
+        m_blocked.reserve(COMMANDS_SIZE);
+        m_active.reserve(COMMANDS_SIZE);
+    }
+
+    void CommandEngine::shutdown()
+    {
+        ASSERT_WT();
+
+        clear();
+    }
+
     void CommandEngine::prepare(Registry* registry)
     {
+        ASSERT_WT();
+
+        clear();
+
         registry->m_dispatcherWorker->addListener(
             event::Type::command_wait,
             [this](const event::Event& e) {
