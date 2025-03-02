@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d", node:get_name(), id, node:get_clone_index())
+--printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
 local function animation_rotate(coid)
   local wid = 0

@@ -20,7 +20,7 @@ local function animateText(coid)
   while true do
     wid = cmd:wait({ after=cid, time=5 })
 
-    printf("text text: %s", TEXTS[idx + 1])
+    printf("text text: %s\n", TEXTS[idx + 1])
 
     cid = cmd:set_text({ after=wid, time=5 }, { text=TEXTS[idx + 1] })
     idx = (idx + 1) % #TEXTS

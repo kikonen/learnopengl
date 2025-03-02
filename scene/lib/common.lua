@@ -1,4 +1,4 @@
-require "module_1"
+print("LUA: MODULE common")
 
 print("LUA: COMMON: init")
 
