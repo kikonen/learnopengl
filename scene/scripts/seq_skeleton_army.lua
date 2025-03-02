@@ -104,21 +104,31 @@ local function attack(wid)
   return cid;
 end
 
-local function animation(coid)
+local function animation()
+  local listener_id = nil
   local wid = 0
   local cid = 0
+  local orig_pos = nil
 
-  local orig_pos = node:get_pos()
+  local function animation_listener()
+    orig_pos = orig_pos or node:get_pos()
 
-  while true do
     wid = cmd:wait({ after=cid, time=1 + rnd(5) })
 
     cid = attack(wid)
 
     wid = cmd:wait({ after=cid, time=10 + rnd(5) })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animation)
+animation()

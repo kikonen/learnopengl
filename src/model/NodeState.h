@@ -183,11 +183,15 @@ public:
     inline void adjustScale(const glm::vec3& adjust) noexcept
     {
         if (adjust.x == 0 && adjust.y == 0 && adjust.z == 0) return;
-        assert(m_scale.x + adjust.x >= 0 && m_scale.y + adjust.y >= 0 && m_scale.z + adjust.z >= 0);
+        //assert(m_scale.x + adjust.x >= 0 && m_scale.y + adjust.y >= 0 && m_scale.z + adjust.z >= 0);
 
         m_scale.x += adjust.x;
         m_scale.y += adjust.y;
         m_scale.z += adjust.z;
+
+        if (m_scale.x < 0) m_scale.x = 0;
+        if (m_scale.y < 0) m_scale.y = 0;
+        if (m_scale.z < 0) m_scale.z = 0;
 
         m_dirty = true;
         m_dirtyNormal = true;

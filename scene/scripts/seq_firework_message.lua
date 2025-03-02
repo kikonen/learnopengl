@@ -14,26 +14,15 @@ local TEXTS = {
   ""
 }
 
-local function animateText(coid)
+local function animation()
+  local listener_id
   local wid = 0
   local cid = 0
   local idx = 0
 
   printf("text_start: %s\n", node:get_name())
 
-  cmd:set_visible(
-    { after=wid },
-    false)
-
-  wid = cmd:wait({ after=cid, time=15 })
-
-  cid = cmd:set_visible(
-    { after=wid },
-    true)
-
-  cid = cmd:resume({ after=cid }, coid)
-
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=5 })
 
     printf("text_text: %s\n", TEXTS[idx + 1])
@@ -50,10 +39,28 @@ local function animateText(coid)
       wid = cmd:wait({ after=cid, time=2.5 })
     end
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
 
     idx = (idx + 1) % #TEXTS
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cid = cmd:set_visible(
+    { after=wid },
+    false)
+
+  wid = cmd:wait({ after=cid, time=15 })
+
+  cid = cmd:set_visible(
+    { after=wid },
+    true)
+
+  cid = cmd:emit(
+    { after=cid },
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animateText)
+--animation()

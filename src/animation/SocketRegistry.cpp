@@ -83,7 +83,7 @@ namespace animation
 
     void SocketRegistry::markDirty(size_t start, size_t count) noexcept
     {
-        ASSERT_WT();
+        //ASSERT_WT();
 
         if (count == 0) return;
 

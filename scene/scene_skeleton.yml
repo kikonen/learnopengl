@@ -67,10 +67,10 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-    xscript: scripts/seq_skeleton
+    script: scripts/seq_skeleton
     physics:
       update: true
-    script: |
+    xscript: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
   - id: helmet_{t}

@@ -192,6 +192,7 @@ nodes:
       align_vertical: center
       font:
         path: fonts/Lobster-Regular.ttf
+        size: 128
       text: ""
       align_horizontal: center
       align_vertical: center

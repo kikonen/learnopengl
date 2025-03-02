@@ -1,8 +1,10 @@
-local function animationX(coid)
+local function animation_x()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
@@ -12,15 +14,25 @@ local function animationX(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animationY(coid)
+local function animation_y()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
@@ -30,15 +42,25 @@ local function animationY(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animationZ(coid)
+local function animation_z()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
@@ -48,10 +70,18 @@ local function animationZ(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animationX)
-cmd:start({}, animationY)
-cmd:start({}, animationZ)
+animation_x()
+animation_y()
+animation_z()

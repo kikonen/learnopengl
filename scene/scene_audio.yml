@@ -23,7 +23,7 @@ nodes:
     controllers:
       - type: pawn
     camera:
-      type: follow
+      type: fps
       distance: [4, 2, 10]
       default: true
     audio:
@@ -39,6 +39,7 @@ nodes:
     scale: 1
     audio:
       source:
+        name: select
         path: audio/Stream Medium 01_8CC7FF9E_normal_mono.wav
         reference_distance: 6
         xautoplay: true
@@ -51,6 +52,7 @@ nodes:
     base_rot: [-90, 0, 0]
     audio:
       source:
+        name: select
         path: audio/Squeaking Toy Duck 2_DD868BE_normal_mono.wav
         reference_distance: 3
     clones:
@@ -59,10 +61,12 @@ nodes:
       - pos: [-5.0, 2.0, 5.0]
         audio:
           source:
+            name: select
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
       - pos: [5.0, 2.0, 5.0]
         audio:
           source:
+            name: select
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
   - name: CowJump
     mesh:
@@ -75,10 +79,15 @@ nodes:
     base_rot: [0, -90, 0]
     scale: 1.0
     audio:
-      source:
-        path: audio/Cow_CE882860_normal_mono.wav
-        reference_distance: 3
-        gain: 1.0
+      sources:
+        - name: moo
+          path: audio/Cow_CE882860_normal_mono.wav
+          reference_distance: 3
+          gain: 1.0
+        - name: select
+          path: audio/Cow_CE882860_normal_mono.wav
+          reference_distance: 3
+          gain: 0.5
     script_file: scripts/cow_audio
   - id: wooden_floor
     prefab:

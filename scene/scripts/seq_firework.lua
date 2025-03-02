@@ -6,19 +6,16 @@ local shoot_sid = util:sid("shoot")
 local explode_sid = util:sid("explode")
 -- local text_node_sid = util:sid("rocket_message")
 
-local function animation(coid)
-  local orig_pos = node:get_pos()
-
+local function animation()
+  local listener_id
   local cid = 0
   local cid2 = 0
   local explode_cid = 0
   local wid = 0
   local wid2 = 0
+  local orig_pos = node:get_pos()
 
-  cid = cmd:wait(
-    { after=cid, time=8 + rnd(5) })
-
-  while true do
+  local function animation_listener()
     cid = cmd:move(
       { after=cid, time=0 },
       orig_pos)
@@ -79,8 +76,19 @@ local function animation(coid)
     -- wid = cmd:wait(
     --   { after=cid, time=0.3 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cid = cmd:wait(
+    { after=cid, time=8 + rnd(5) })
+
+  cid = cmd:emit(
+    { after=cid },
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animation)
+-- animation()

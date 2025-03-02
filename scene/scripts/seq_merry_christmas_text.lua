@@ -10,14 +10,15 @@ local TEXTS = {
   "from the land of snow",
 }
 
-local function animateText(coid)
+local function animation()
+  local listener_id
   local wid = 0
   local cid = 0
   local idx = 0
 
-  wid = cmd:wait({ after=cid, time=5 })
+  cid = cmd:wait({ after=cid, time=5 })
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=5 })
 
     printf("text text: %s\n", TEXTS[idx + 1])
@@ -27,8 +28,16 @@ local function animateText(coid)
 
     wid = cmd:wait({ after=cid, time=5 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animateText)
+animation()

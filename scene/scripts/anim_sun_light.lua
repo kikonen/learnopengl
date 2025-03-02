@@ -1,23 +1,31 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local function animation(coid)
+local function animation()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  local orig_pos = node:get_pos()
-
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:rotate(
-      { time=60 * 20, relative=true },
+      { after=wid, time=60 * 20, relative=true },
       { 0.0, 1.0, 0.0 },
       360.0)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animation)
+animation()

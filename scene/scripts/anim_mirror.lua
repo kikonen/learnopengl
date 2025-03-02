@@ -1,12 +1,12 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local function animation(coid)
+local function animation()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  local orig_pos = node:get_pos()
-
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=1 })
 
     -- slow for frontside of mirror
@@ -23,8 +23,16 @@ local function animation(coid)
 
     wid = cmd:wait({ after=cid, time=1 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animation)
+animation()

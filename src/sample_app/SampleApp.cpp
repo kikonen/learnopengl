@@ -735,11 +735,12 @@ void SampleApp::selectNode(
         if (node && selectionRegistry.isSelected(node->toHandle())) {
             selectionRegistry.deselectNode(node->toHandle());
 
-            //{
-            //    event::Event evt { event::Type::audio_source_pause };
-            //    evt.body.audioSource.id = node->m_audioSourceIds[0];
-            //    ctx.m_registry->m_dispatcherWorker->send(evt);
-            //}
+            {
+                event::Event evt { event::Type::audio_source_pause };
+                evt.body.audioSource.id = SID("select");
+                evt.body.audioSource.target = node->getId();
+                ctx.m_registry->m_dispatcherWorker->send(evt);
+            }
 
             return;
         }
@@ -767,11 +768,12 @@ void SampleApp::selectNode(
                 ctx.m_registry->m_dispatcherWorker->send(evt);
             }
 
-            //{
-            //    event::Event evt { event::Type::audio_source_play };
-            //    evt.body.audioSource.id = node->m_audioSourceIds[0];
-            //    ctx.m_registry->m_dispatcherWorker->send(evt);
-            //}
+            {
+                event::Event evt { event::Type::audio_source_play };
+                evt.body.audioSource.id = SID("select");
+                evt.body.audioSource.target = node->getId();
+                ctx.m_registry->m_dispatcherWorker->send(evt);
+            }
 
             m_editor->getState().m_selectedNode = node->toHandle();
         }

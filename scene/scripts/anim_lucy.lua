@@ -1,6 +1,8 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local function animation_rotate(coid)
+local function animation_rotate()
+  local listener_id = nil
+  local orig_pos = nil
   local wid = 0
   local cid = 0
   local dir = 1
@@ -11,7 +13,7 @@ local function animation_rotate(coid)
   -- prepause
   cid = cmd:wait({ after=cid, time=1 })
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0.5 })
 
     cid = cmd:audio_play(
@@ -28,17 +30,28 @@ local function animation_rotate(coid)
     cid = cmd:audio_play(
       { after=cid, sid=AUDIO_WIND, sync=true })
 
-    cid = cmd:resume({ after=cid }, coid)
+    cid = cmd:emit(
+      { after=cid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
+
     dir = -dir
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_scale(coid)
+local function animation_scale()
+  local listener_id = nil
+  local orig_pos = nil
   local wid = 0
   local cid = 0
   local dir = 1
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=1 })
 
     local scale = { 1, 1, 1 }
@@ -50,10 +63,19 @@ local function animation_scale(coid)
       { after=wid, time=20, relative=false },
       scale)
 
-    cid = cmd:resume({ after=cid }, coid)
+    cid = cmd:emit(
+      { after=cid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
+
     dir = -dir
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animation_rotate)
-cmd:start({}, animation_scale)
+animation_scale()
+animation_rotate()

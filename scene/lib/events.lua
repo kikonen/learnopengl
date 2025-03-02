@@ -7,6 +7,10 @@ local EventQueue = {
   by_type = {}
 }
 
+local Event = {
+  SCRIPT_RESUME = "script:resume"
+}
+
 local function next_id()
   id_base = id_base + 1
   return id_base
@@ -83,3 +87,4 @@ function EventQueue:emit_raw(ev_type, data, listener_id)
 end
 
 _G["events"] = EventQueue
+_G["Event"] = Event

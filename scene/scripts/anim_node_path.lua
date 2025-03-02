@@ -2,7 +2,9 @@
 
 local rnd = math.random
 
-local function animationTranslate(coid)
+local function animation_translate()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
@@ -10,7 +12,7 @@ local function animationTranslate(coid)
 
   --print(string.format("center: %d, %d, %d", center[1], center[2], center[3]))
 
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     local posX = 10 - rnd(20)
@@ -30,17 +32,25 @@ local function animationTranslate(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animationRotate(coid)
+local function animation_rotate()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  local orig_pos = node:get_pos()
-
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     local rotX = 180 - rnd(360)
@@ -68,17 +78,25 @@ local function animationRotate(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animationScale(coid)
+local function animation_scale()
+  local listener_id = nil
+  local orig_pos = node:get_pos()
   local wid = 0
   local cid = 0
 
-  local orig_pos = node:get_pos()
-
-  while true do
+  local function animation_listener()
     wid = cmd:wait({ after=cid, time=0 })
 
     local scale = rnd(30) / 10.0
@@ -95,10 +113,18 @@ local function animationScale(coid)
 
     wid = cmd:wait({ after=cid, time=0 })
 
-    cid = cmd:resume({ after=wid }, coid)
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+
+  cmd:emit(
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-cmd:start({}, animationTranslate)
-cmd:start({}, animationRotate)
-cmd:start({}, animationScale)
+animation_translate()
+animation_rotate()
+animation_scale()

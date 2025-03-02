@@ -1,7 +1,6 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
 local rnd = math.random
-local listener_id
 
 local function randomIdle()
   local name
@@ -55,29 +54,32 @@ local function attack(wid)
 end
 
 local function animation()
+  local listener_id
   local wid = 0
   local cid = 0
 
-  printf("ANIM: name=%s\n", node:get_name())
+  local function animation_listener()
+    printf("ANIM: name=%s\n", node:get_name())
 
-  cid = idle(wid)
-  wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+    cid = idle(wid)
+    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
-  cid = attack(wid)
-  wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+    cid = attack(wid)
+    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+
+    cid = cmd:emit(
+      { after=wid },
+      { type=Event.SCRIPT_RESUME, listener=listener_id})
+
+    printf("DONE: name=%s\n", node:get_name())
+  end
+
+  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
-    { after=wid },
-    { type="script:resume", listener=listener_id})
-
-  printf("DONE: name=%s\n", node:get_name())
+    {},
+    { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
-
-local function resume_listener(e)
-  printf("RESUME: %s\n", format_table(e))
-  animation()
-end
-listener_id = events:listen(resume_listener, {"script:resume"})
 
 local function event_test()
   local listener_id
@@ -101,7 +103,4 @@ local function event_test()
 end
 
 event_test()
-
-cmd:emit(
-  {},
-  { type="script:resume", listener=listener_id})
+animation()
