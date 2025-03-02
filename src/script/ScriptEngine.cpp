@@ -98,6 +98,7 @@ namespace script
             sol::lib::os,
             sol::lib::io,
             sol::lib::coroutine,
+            sol::lib::table,
             sol::lib::string);
 
         // https://github.com/ThePhD/sol2/issues/90
@@ -248,28 +249,22 @@ namespace script
             // - node, cmd, id
             scriptlet = fmt::format(R"(
 function {}(node, util, cmd, id)
-nodes[id] = nodes[id] or {}
-local luaNode = nodes[id]
-{}
+  nodes[id] = nodes[id] or {}
+  local luaNode = nodes[id]
+
+  local function wrapped()
+  {}
+  end
+
+  local ok, err = pcall(wrapped)
+  if not ok then
+    print("LUA: SCRIPT_ERROR: " .. string.format("%s", err))
+    return nil, err
+  end
+  return nil
 end)", nodeFnName, "{}", script.m_source);
 
             KI_INFO_OUT(util::appendLineNumbers(scriptlet));
-
-            {
-                m_lua.script(scriptlet);
-
-                sol::function fn = m_lua[nodeFnName];
-                if (m_lua[nodeFnName].is<sol::function>()) {
-                    int x1 = 0;
-                }
-
-                std::string undef = fmt::format("{} = nil", nodeFnName);
-                m_lua.script(undef);
-
-                if (m_lua[nodeFnName].is<sol::function>()) {
-                    int x1 = 0;
-                }
-            }
 
             m_lua.script(scriptlet);
 
@@ -308,7 +303,9 @@ end)", nodeFnName, "{}", script.m_source);
     {
         if (!m_lua[fnName].is<sol::function>()) return false;
 
-        std::string undef = fmt::format("{} = nil", fnName);
+        std::string undef = fmt::format(R"(
+{} = nil)", fnName);
+
         m_lua.script(undef);
         KI_INFO_OUT(fmt::format("SCRIPT: unregister: function={}", fnName));
         return true;
@@ -347,6 +344,8 @@ end)", nodeFnName, "{}", script.m_source);
             {
                 auto& fnName = fnIt->second;
                 sol::function fn = m_lua[fnName];
+
+                KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
 
                 auto* utilApi = m_utilApi.get();
                 auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
