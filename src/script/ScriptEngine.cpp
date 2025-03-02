@@ -251,17 +251,7 @@ namespace script
 function {}(node, util, cmd, id)
   nodes[id] = nodes[id] or {}
   local luaNode = nodes[id]
-
-  local function wrapped()
-  {}
-  end
-
-  local ok, err = pcall(wrapped)
-  if not ok then
-    print("LUA: SCRIPT_ERROR: " .. string.format("%s", err))
-    return nil, err
-  end
-  return nil
+{}
 end)", nodeFnName, "{}", script.m_source);
 
             KI_INFO_OUT(util::appendLineNumbers(scriptlet));
@@ -272,27 +262,27 @@ end)", nodeFnName, "{}", script.m_source);
         }
         catch (const sol::error& ex) {
             KI_CRITICAL(fmt::format(
-                "SCRIPT: {}\n{}",
+                "SCRIPT::SYNTAX: {}\n{}",
                 ex.what(), util::appendLineNumbers(scriptlet)));
         }
         catch (const std::exception& ex) {
             KI_CRITICAL(fmt::format(
-                "SCRIPT: {}\n{}",
+                "SCRIPT::SYNTAX: {}\n{}",
                 ex.what(), util::appendLineNumbers(scriptlet)));
         }
         catch (const std::string& ex) {
             KI_CRITICAL(fmt::format(
-                "SCRIPT: {}\n{}",
+                "SCRIPT::SYNTAX: {}\n{}",
                 ex, util::appendLineNumbers(scriptlet)));
         }
         catch (const char* ex) {
             KI_CRITICAL(fmt::format(
-                "SCRIPT: {}\n{}",
+                "SCRIPT::SYNTAX: {}\n{}",
                 ex, util::appendLineNumbers(scriptlet)));
         }
         catch (...) {
             KI_CRITICAL(fmt::format(
-                "SCRIPT: UNKNOWN_ERROR\n{}",
+                "SCRIPT::SYNTAX: UNKNOWN_ERROR\n{}",
                 util::appendLineNumbers(scriptlet)));
         }
 
@@ -307,7 +297,7 @@ end)", nodeFnName, "{}", script.m_source);
 {} = nil)", fnName);
 
         m_lua.script(undef);
-        KI_INFO_OUT(fmt::format("SCRIPT: unregister: function={}", fnName));
+        KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", fnName));
         return true;
     }
 
@@ -343,23 +333,29 @@ end)", nodeFnName, "{}", script.m_source);
                 fnIt != it->second.end())
             {
                 auto& fnName = fnIt->second;
-                sol::function fn = m_lua[fnName];
+                sol::protected_function fn(m_lua[fnName]);
 
                 KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
 
                 auto* utilApi = m_utilApi.get();
                 auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
-                fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());
+
+                const auto& result = fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());
+                if (!result.valid()) {
+                    sol::error err = result;
+                    std::string what = err.what();
+                    KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
+                }
             }
         }
         catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex.what()));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
         }
         catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
         }
         catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
         }
         catch (...) {
             KI_CRITICAL("SCRIPT: UNKNOWN_ERROR");
@@ -376,9 +372,9 @@ end)", nodeFnName, "{}", script.m_source);
         return fnPtr != sol::nullopt;
     }
 
-    void ScriptEngine::invokeFunction(
+    void ScriptEngine::invokeNodeFunction(
         Node* node,
-        std::string_view name)
+        std::string_view fnName)
     {
         const auto handle = node->toHandle();
 
@@ -386,24 +382,32 @@ end)", nodeFnName, "{}", script.m_source);
         sol::table luaNode = m_luaNodes[handle.toId()];
 
         try {
-            sol::optional<sol::function> fnPtr = luaNode[name];
+            sol::optional<sol::function> fnPtr = luaNode[fnName];
             if (fnPtr != sol::nullopt) {
+                KI_INFO_OUT(fmt::format("SCRIPT::INVOKE: function={}", fnName));
+
                 auto* api = m_nodeCommandApis.find(handle)->second.get();
                 auto& fn = fnPtr.value();
-                fn(std::ref(node), std::ref(api), handle.toId());
+
+                const auto& result = fn(std::ref(node), std::ref(api), handle.toId());
+                if (!result.valid()) {
+                    sol::error err = result;
+                    std::string what = err.what();
+                    KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
+                }
             }
         }
         catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex.what()));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
         }
         catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
         }
         catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT: {}", ex));
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
         }
         catch (...) {
-            KI_CRITICAL("SCRIPT: UNKNOWN_ERROR");
+            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
         }
     }
 }

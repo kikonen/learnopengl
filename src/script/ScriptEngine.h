@@ -62,9 +62,9 @@ namespace script
             pool::NodeHandle handle,
             std::string_view name);
 
-        void invokeFunction(
+        void invokeNodeFunction(
             Node* node,
-            std::string_view name);
+            std::string_view fnName);
 
         sol::state& getLua() { return m_lua; }
 
