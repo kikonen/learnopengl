@@ -48,12 +48,27 @@ end
 
 function EventQueue:emit(e)
   printf("EVENT::EMIT: event=%s\n", format_table(e))
+  local found = false
+
   queue = self.by_type[e.type]
   if queue then
-    for listener_id, _ in pairs(queue) do
-      printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", e.type, listener_id)
-      self.listeners[listener_id](e)
+    if e.listener then
+      if queue[e.listener] then
+        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", e.type, e.listener)
+        self.listeners[e.listener](e)
+        found = true
+      end
+    else
+      for listener_id, _ in pairs(queue) do
+        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", e.type, listener_id)
+        self.listeners[listener_id](e)
+        found = true
+      end
     end
+  end
+
+  if not found then
+    printf("EVENT::NOTIFY_NOT_FOUND: type=%s, listener=%s\n", e.type, e.listener)
   end
 end
 

@@ -85,8 +85,10 @@ local function event_test()
 
   printf("SEND_EVENT: name=%s\n", node:get_name())
   events:emit({type = "test", data = "foo-0"})
-  events:emit({type = "test-1", data = "foo-1"})
+  events:emit({type = "test-1", data = "foo-1", listener=listener_id})
   events:emit({type = "test-2", data = "foo-2"})
+  events:emit({type = "test-1", data = "foo-1.222", listener=222})
+  events:emit({type = "test-3", data = "foo-3"})
 
   events:unlisten(listener_id)
 end
