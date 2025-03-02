@@ -1,10 +1,11 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
 local rnd = math.random
+local listener_id
 
 local function randomIdle()
-  local name;
-  local r = rnd(10);
+  local name
+  local r = rnd(10)
 
   if r > 6 then
     name = "master:Idle"
@@ -14,12 +15,12 @@ local function randomIdle()
     name = "master:Hit"
   end
 
-  return name;
+  return name
 end
 
 local function randomAttack()
-  local name;
-  local r = rnd(10);
+  local name
+  local r = rnd(10)
 
   if r > 8 then
     name = "master:SwingHeavy"
@@ -29,48 +30,54 @@ local function randomAttack()
     name = "master:SwingQuick"
   end
 
-  return name;
+  return name
 end
 
 local function idle(wid)
   --print(string.format("idle: %d", id))
 
-  local cid;
+  local cid
   cid = cmd:animation_play(
     { after=wid, name = randomIdle() } )
 
-  return cid;
+  return cid
 end
 
 local function attack(wid)
   --print(string.format("attack: %d", id))
 
-  local cid;
+  local cid
 
   cid = cmd:animation_play(
     { after=wid, name = randomAttack() } )
 
-  return cid;
+  return cid
 end
 
-local function animation(coid)
+local function animation()
   local wid = 0
   local cid = 0
 
-  printf("RUN: name=%s\n", node:get_name())
-  while true do
-    --print(string.format("loop: %d", id))
+  printf("ANIM: name=%s\n", node:get_name())
 
-    cid = idle(wid)
-    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+  cid = idle(wid)
+  wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
-    cid = attack(wid)
-    wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+  cid = attack(wid)
+  wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
-    cid = cmd:resume({ after=cid }, coid)
-  end
-  printf("STOP: name=%s\n", node:get_name())
+  cmd:emit(
+    { after=wid },
+    { type="script:resume", listener=listener_id})
+
+  printf("DONE: name=%s\n", node:get_name())
 end
+
+local function resume_listener(e)
+  printf("RESUME: %s\n", format_table(e))
+  animation()
+end
+listener_id = events:listen(resume_listener, {"script:resume"})
 
 local function event_test()
   local listener_id
@@ -94,4 +101,7 @@ local function event_test()
 end
 
 event_test()
-cmd:start({}, animation)
+
+cmd:emit(
+  {},
+  { type="script:resume", listener=listener_id})

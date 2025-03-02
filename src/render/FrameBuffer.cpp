@@ -36,7 +36,7 @@ namespace render {
 
         if (false) {
             if (m_attached.size() > 0) {
-                glInvalidateNamedFramebufferData(m_fbo, m_attached.size(), m_attached.data());
+                glInvalidateNamedFramebufferData(m_fbo, static_cast<int>(m_attached.size()), m_attached.data());
 
                 for (auto& att : m_spec.attachments) {
                     const auto type = att.type == FrameBufferAttachmentType::shared

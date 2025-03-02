@@ -25,6 +25,7 @@
 #include "api/ScaleNode.h"
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
+#include "api/EmitEvent.h"
 
 #include "api/SetTextNode.h"
 #include "api/SetVisibleNode.h"
@@ -37,6 +38,8 @@
 #include "api/ParticleStop.h"
 
 #include "api/AnimationPlay.h"
+
+#include "api/EmitEvent.h"
 
 namespace {
     struct CommandOptions {
@@ -57,6 +60,18 @@ namespace {
             return fmt::format(
                 "<OPT: after={}, duration={}, speed={}, relative={}, repeat={}, sync={}, name={}>",
                 afterId, duration, speed, relative, repeat, sync, name);
+        }
+    };
+
+    struct CommandEvent {
+        int listenerId = 0;
+        std::string type;
+        std::string data;
+
+        std::string str() const noexcept {
+            return fmt::format(
+                "<EVT: listenerId={}, type={}, data={}>",
+                listenerId, type, data);
         }
     };
 
@@ -102,6 +117,23 @@ namespace {
             }
             });
         return opt;
+    }
+
+    CommandEvent readEvent(const sol::table& lua_opt) noexcept {
+        CommandEvent ev;
+        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == "listener") {
+                ev.listenerId = value.as<int>();
+            }
+            else if (k == "type") {
+                ev.type = value.as<std::string>();
+            }
+            else if (k == "data") {
+                ev.data = value.as<std::string>();
+            }
+            });
+        return ev;
     }
 
     pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) {
@@ -421,6 +453,23 @@ namespace script
             ResumeNode{
                 m_handle,
                 coroutine
+            });
+    }
+
+    int NodeCommandAPI::lua_emit(
+        const sol::table& lua_opt,
+        const sol::table& event) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+        const auto ev = readEvent(event);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            EmitEvent{
+                m_handle,
+                ev.listenerId,
+                ev.type,
+                ev.data
             });
     }
 }

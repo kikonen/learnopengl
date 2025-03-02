@@ -165,6 +165,7 @@ namespace script
             ut["resume"] = sol::yielding(&NodeCommandAPI::lua_resume_wrapper);
 
             ut["start"] = &NodeCommandAPI::lua_start;
+            ut["emit"] = &NodeCommandAPI::lua_emit;
         }
 
         // Node
@@ -395,6 +396,38 @@ end)", nodeFnName, "{}", script.m_source);
                     std::string what = err.what();
                     KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
                 }
+            }
+        }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+        }
+        catch (...) {
+            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
+        }
+    }
+
+    void ScriptEngine::emitEvent(
+        int listenerId,
+        const std::string& type,
+        const std::string& data)
+    {
+        try {
+            sol::table events = m_lua["events"];
+            sol::protected_function fn(events["emit_raw"]);
+
+            KI_INFO_OUT(fmt::format("SCRIPT::EMIT: listener={}, type={}, data={}", listenerId, type, data));
+
+            const auto& result = fn(sol::reference(events), type, data, listenerId);
+            if (!result.valid()) {
+                sol::error err = result;
+                std::string what = err.what();
+                KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
             }
         }
         catch (const std::exception& ex) {

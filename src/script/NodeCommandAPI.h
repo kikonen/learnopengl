@@ -93,6 +93,10 @@ namespace script
             const sol::table& lua_opt,
             int coroutineID) noexcept;
 
+        int lua_emit(
+            const sol::table& lua_opt,
+            const sol::table& event) noexcept;
+
     private:
         CommandEngine* const m_commandEngine;
         ScriptEngine* const m_scriptEngine;

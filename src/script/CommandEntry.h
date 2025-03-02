@@ -31,6 +31,8 @@
 
 #include "api/AnimationPlay.h"
 
+#include "api/EmitEvent.h"
+
 struct UpdateContext;
 namespace script
 {
@@ -54,6 +56,7 @@ namespace script
         sizeof(script::StartNode),
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
+        sizeof(script::EmitEvent),
         });
 
     class CommandHandle;

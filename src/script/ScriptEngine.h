@@ -66,6 +66,11 @@ namespace script
             Node* node,
             std::string_view fnName);
 
+        void emitEvent(
+            int listenerId,
+            const std::string& type,
+            const std::string& data);
+
         sol::state& getLua() { return m_lua; }
 
     private:

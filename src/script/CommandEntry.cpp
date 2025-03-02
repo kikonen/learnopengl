@@ -68,6 +68,9 @@ namespace script {
             else if (auto* src = dynamic_cast<SetVisibleNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
+            else if (auto* src = dynamic_cast<EmitEvent*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
             else {
                 const auto msg = fmt::format(
                     "COMMAND_ERROR: INVALID_COMMAND CMD={}",

@@ -46,29 +46,39 @@ function EventQueue:unlisten(listener_id)
   end
 end
 
-function EventQueue:emit(e)
-  printf("EVENT::EMIT: event=%s\n", format_table(e))
+function EventQueue:emit(event)
+  self:emit_raw(event.type, event.data, event.listener_id)
+end
+
+function EventQueue:emit_raw(ev_type, data, listener_id)
+  printf("EVENT::EMIT: listener=%s, event=%s, data=%s\n", listener_id, ev_type, data)
   local found = false
 
-  queue = self.by_type[e.type]
+  local event = {
+    type = ev_type,
+    listener = listener_id,
+    data = data
+  }
+
+  queue = self.by_type[ev_type]
   if queue then
-    if e.listener then
-      if queue[e.listener] then
-        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", e.type, e.listener)
-        self.listeners[e.listener](e)
+    if listener_id then
+      if queue[listener_id] then
+        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, listener_id)
+        self.listeners[listener_id](event)
         found = true
       end
     else
-      for listener_id, _ in pairs(queue) do
-        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", e.type, listener_id)
-        self.listeners[listener_id](e)
+      for lid, _ in pairs(queue) do
+        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, lid)
+        self.listeners[lid](event)
         found = true
       end
     end
   end
 
   if not found then
-    printf("EVENT::NOTIFY_NOT_FOUND: type=%s, listener=%s\n", e.type, e.listener)
+    printf("EVENT::NOTIFY_NOT_FOUND: type=%s, listener=%s\n", ev_type, listener_id)
   end
 end
 
