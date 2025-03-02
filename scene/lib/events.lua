@@ -23,7 +23,7 @@ end
 
 function EventQueue:listen(listener, event_types)
   local listener_id = next_id()
-  printf("EVENT::LISTEN: type=%s, listener_id=%d, listener=%s\n", ev_type, listener_id, listener)
+  -- printf("EVENT::LISTEN: type=%s, listener_id=%d, listener=%s\n", ev_type, listener_id, listener)
 
   self.listeners[listener_id] = listener
 
@@ -38,13 +38,13 @@ function EventQueue:listen(listener, event_types)
 end
 
 function EventQueue:unlisten(listener_id)
-  printf("EVENT::UNLISTEN: listener=%d\n", listener_id)
+  -- printf("EVENT::UNLISTEN: listener=%d\n", listener_id)
 
   table.remove(self.listeners, listener_id)
 
   for ev_type, listener_ids in pairs(self.by_type) do
     if listener_ids[listener_id] then
-      printf("EVENT::UNLISTEN_TYPE: type=%s, listener=%d\n", ev_type, listener_id)
+      -- printf("EVENT::UNLISTEN_TYPE: type=%s, listener=%d\n", ev_type, listener_id)
       table.remove(listener_ids, listener_id)
     end
   end
@@ -55,7 +55,7 @@ function EventQueue:emit(event)
 end
 
 function EventQueue:emit_raw(ev_type, data, listener_id)
-  printf("EVENT::EMIT: listener=%s, event=%s, data=%s\n", listener_id, ev_type, data)
+  -- printf("EVENT::EMIT: listener=%s, event=%s, data=%s\n", listener_id, ev_type, data)
   local found = false
 
   local event = {
@@ -68,13 +68,13 @@ function EventQueue:emit_raw(ev_type, data, listener_id)
   if queue then
     if listener_id then
       if queue[listener_id] then
-        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, listener_id)
+        -- printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, listener_id)
         self.listeners[listener_id](event)
         found = true
       end
     else
       for lid, _ in pairs(queue) do
-        printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, lid)
+        -- printf("EVENT::NOTIFY_LISTENER: type=%s, listener=%d\n", ev_type, lid)
         self.listeners[lid](event)
         found = true
       end

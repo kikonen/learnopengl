@@ -235,59 +235,28 @@ namespace script
     {
         std::string scriptlet;
 
-        try {
-            std::lock_guard lock(m_lock);
+        std::lock_guard lock(m_lock);
 
-            const auto it = m_scripts.find(scriptId);
-            if (it == m_scripts.end()) return "";
+        const auto it = m_scripts.find(scriptId);
+        if (it == m_scripts.end()) return "";
 
-            const auto& script = it->second;
+        const auto& script = it->second;
 
-            // NOTE KI unique wrapperFn for node
-            const std::string nodeFnName = fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
+        // NOTE KI unique wrapperFn for node
+        const std::string nodeFnName = fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
 
-            // NOTE KI pass context as closure to Node
-            // - node, cmd, id
-            scriptlet = fmt::format(R"(
+        // NOTE KI pass context as closure to Node
+        // - node, cmd, id
+        scriptlet = fmt::format(R"(
 function {}(node, util, cmd, id)
-  nodes[id] = nodes[id] or {}
-  local luaNode = nodes[id]
+nodes[id] = nodes[id] or {}
+local luaNode = nodes[id]
 {}
 end)", nodeFnName, "{}", script.m_source);
 
-            KI_INFO_OUT(util::appendLineNumbers(scriptlet));
+        auto success = invokeLuaScript(scriptlet);
 
-            m_lua.script(scriptlet);
-
-            return nodeFnName;
-        }
-        catch (const sol::error& ex) {
-            KI_CRITICAL(fmt::format(
-                "SCRIPT::SYNTAX: {}\n{}",
-                ex.what(), util::appendLineNumbers(scriptlet)));
-        }
-        catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format(
-                "SCRIPT::SYNTAX: {}\n{}",
-                ex.what(), util::appendLineNumbers(scriptlet)));
-        }
-        catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format(
-                "SCRIPT::SYNTAX: {}\n{}",
-                ex, util::appendLineNumbers(scriptlet)));
-        }
-        catch (const char* ex) {
-            KI_CRITICAL(fmt::format(
-                "SCRIPT::SYNTAX: {}\n{}",
-                ex, util::appendLineNumbers(scriptlet)));
-        }
-        catch (...) {
-            KI_CRITICAL(fmt::format(
-                "SCRIPT::SYNTAX: UNKNOWN_ERROR\n{}",
-                util::appendLineNumbers(scriptlet)));
-        }
-
-        return {};
+        return success ? nodeFnName : "";
     }
 
     bool ScriptEngine::unregisterFunction(std::string fnName)
@@ -329,37 +298,19 @@ end)", nodeFnName, "{}", script.m_source);
 
         if (it == m_nodeFunctions.end()) return;
 
-        try {
-            if (const auto& fnIt = it->second.find(scriptId);
-                fnIt != it->second.end())
-            {
-                auto& fnName = fnIt->second;
+        if (const auto& fnIt = it->second.find(scriptId);
+            fnIt != it->second.end())
+        {
+            auto& fnName = fnIt->second;
+            KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
+
+            auto* utilApi = m_utilApi.get();
+            auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
+
+            invokeLuaFunction([this, node, handle, &fnName, &utilApi, &cmdApi]() {
                 sol::protected_function fn(m_lua[fnName]);
-
-                KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
-
-                auto* utilApi = m_utilApi.get();
-                auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
-
-                const auto& result = fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());
-                if (!result.valid()) {
-                    sol::error err = result;
-                    std::string what = err.what();
-                    KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
-                }
-            }
-        }
-        catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
-        }
-        catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (...) {
-            KI_CRITICAL("SCRIPT: UNKNOWN_ERROR");
+                return fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());;
+            });
         }
     }
 
@@ -378,38 +329,17 @@ end)", nodeFnName, "{}", script.m_source);
         std::string_view fnName)
     {
         const auto handle = node->toHandle();
-
         //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->getId(), name));
         sol::table luaNode = m_luaNodes[handle.toId()];
 
-        try {
-            sol::optional<sol::function> fnPtr = luaNode[fnName];
-            if (fnPtr != sol::nullopt) {
-                KI_INFO_OUT(fmt::format("SCRIPT::INVOKE: function={}", fnName));
+        sol::optional<sol::function> fnPtr = luaNode[fnName];
+        if (fnPtr == sol::nullopt) return;
 
-                auto* api = m_nodeCommandApis.find(handle)->second.get();
-                auto& fn = fnPtr.value();
-
-                const auto& result = fn(std::ref(node), std::ref(api), handle.toId());
-                if (!result.valid()) {
-                    sol::error err = result;
-                    std::string what = err.what();
-                    KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
-                }
-            }
-        }
-        catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
-        }
-        catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (...) {
-            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
-        }
+        invokeLuaFunction([this, node, handle, &fnPtr]() {
+            auto* api = m_nodeCommandApis.find(handle)->second.get();
+            auto& fn = fnPtr.value();
+            return fn(std::ref(node), std::ref(api), handle.toId());
+            });
     }
 
     void ScriptEngine::emitEvent(
@@ -417,18 +347,24 @@ end)", nodeFnName, "{}", script.m_source);
         const std::string& type,
         const std::string& data)
     {
-        try {
+        invokeLuaFunction([this, &type, &data, &listenerId]() {
             sol::table events = m_lua["events"];
             sol::protected_function fn(events["emit_raw"]);
+            return fn(sol::reference(events), type, data, listenerId);
+            });
+    }
 
-            KI_INFO_OUT(fmt::format("SCRIPT::EMIT: listener={}, type={}, data={}", listenerId, type, data));
-
-            const auto& result = fn(sol::reference(events), type, data, listenerId);
+    const sol::protected_function_result& ScriptEngine::invokeLuaFunction(
+        const std::function<const sol::protected_function_result&()>& fn)
+    {
+        try {
+            const auto& result = fn();
             if (!result.valid()) {
                 sol::error err = result;
                 std::string what = err.what();
                 KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", what));
             }
+            return result;
         }
         catch (const std::exception& ex) {
             KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
@@ -442,5 +378,30 @@ end)", nodeFnName, "{}", script.m_source);
         catch (...) {
             KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
         }
+        return {};
+    }
+
+    // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
+    bool ScriptEngine::invokeLuaScript(
+        const std::string& script)
+    {
+        try {
+            KI_INFO_OUT(util::appendLineNumbers(script));
+            m_lua.script(script);
+            return true;
+        }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+        }
+        catch (...) {
+            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
+        }
+        return false;
     }
 }

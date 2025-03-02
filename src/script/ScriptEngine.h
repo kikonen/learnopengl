@@ -74,6 +74,12 @@ namespace script
         sol::state& getLua() { return m_lua; }
 
     private:
+        const sol::protected_function_result& invokeLuaFunction(
+            const std::function<const sol::protected_function_result&()>& fn);
+
+        bool invokeLuaScript(
+            const std::string& script);
+
         // @return fnName
         std::string createNodeFunction(
             pool::NodeHandle handle,
