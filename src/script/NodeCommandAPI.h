@@ -81,6 +81,7 @@ namespace script
 
         int lua_invoke(
             const sol::table& lua_opt,
+            const sol::function& fn,
             const sol::table& fn_args) noexcept;
 
         int lua_emit(

@@ -64,7 +64,7 @@ namespace script
 
         void invokeNodeFunction(
             Node* node,
-            std::string_view fnName,
+            const sol::function& fn,
             const sol::table& args);
 
         void emitEvent(

@@ -302,6 +302,7 @@ namespace script
 
     int NodeCommandAPI::lua_invoke(
         const sol::table& lua_opt,
+        const sol::function& fn,
         const sol::table& fn_args) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -310,7 +311,7 @@ namespace script
             opt.afterId,
             InvokeLuaFunction{
                 m_handle,
-                opt.name,
+                fn,
                 fn_args
             });
     }

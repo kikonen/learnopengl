@@ -342,7 +342,7 @@ end)", nodeFnName, script.m_source);
 
     void ScriptEngine::invokeNodeFunction(
         Node* node,
-        std::string_view fnName,
+        const sol::function& fn,
         const sol::table& args)
     {
         //const auto handle = node->toHandle();
@@ -355,9 +355,8 @@ end)", nodeFnName, script.m_source);
         //    return;
         //}
 
-        invokeLuaFunction([this, node, &fnName, &args]() {
+        invokeLuaFunction([this, node, &fn, &args]() {
             sol::table luaNode = m_luaNodes[node->getId()];
-            sol::function fn = luaNode[fnName];
             return fn(luaNode, args);
             });
     }

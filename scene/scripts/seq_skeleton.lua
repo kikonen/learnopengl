@@ -13,7 +13,13 @@ printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_
 local rnd = math.random
 
 function lua_node:ditto(args)
-  print("LUA: DITTO_CALLED")
+  print("LUA: DITTO_SHARED_CALLED")
+  printf("LUA: self=%s\n", format_table(self));
+  printf("LUA: args=%s\n", format_table(args));
+end
+
+local function ditto(args)
+  print("LUA: DITTO_LOCAL_CALLED")
   printf("LUA: self=%s\n", format_table(self));
   printf("LUA: args=%s\n", format_table(args));
 end
@@ -78,7 +84,13 @@ local function animation()
     cid = idle(wid)
 
     cid = cmd:invoke(
-      { after=cid, name="ditto" },
+      { after=cid },
+      lua_node.ditto,
+      { bar="first" })
+
+    cid = cmd:invoke(
+      { after=cid },
+      ditto,
       { bar="first" })
 
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
@@ -87,7 +99,8 @@ local function animation()
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     wid = cmd:invoke(
-      { after=wid, name="ditto" },
+      { after=wid },
+      lua_node.ditto,
       { ditto="check me" })
 
     cid = cmd:emit(

@@ -10,10 +10,10 @@ namespace script
 {
     InvokeLuaFunction::InvokeLuaFunction(
         pool::NodeHandle handle,
-        std::string_view functionName,
+        const sol::function& fn,
         sol::table args) noexcept
         : NodeCommand(handle, 0, false),
-        m_functionName(functionName),
+        m_fn{ fn },
         m_args{ args }
     {
     }
@@ -25,7 +25,7 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            script::ScriptEngine::get().invokeNodeFunction(getNode(), m_functionName, m_args);
+            script::ScriptEngine::get().invokeNodeFunction(getNode(), m_fn, m_args);
         }
     }
 }
