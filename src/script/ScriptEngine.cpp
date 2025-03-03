@@ -342,22 +342,13 @@ end)", nodeFnName, script.m_source);
 
     void ScriptEngine::invokeNodeFunction(
         Node* node,
+        bool self,
         const sol::function& fn,
         const sol::table& args)
     {
-        //const auto handle = node->toHandle();
-        //KI_INFO_OUT(fmt::format("CALL LUA: name={}, id={}, fn={}", node->m_type->m_name, node->getId(), name));
-        //sol::table luaNode = m_luaNodes[handle.toId()];
-
-        //sol::optional<sol::function> fnPtr = luaNode[fnName];
-        //if (fnPtr == sol::nullopt) {
-        //    KI_WARN_OUT(fmt::format("SCRIPT::MISSING_FN: fn={}", fnName));
-        //    return;
-        //}
-
-        invokeLuaFunction([this, node, &fn, &args]() {
+        invokeLuaFunction([this, node, self, &fn, &args]() {
             sol::table luaNode = m_luaNodes[node->getId()];
-            return fn(luaNode, args);
+            return self ? fn(luaNode, args) : fn(args);
             });
     }
 

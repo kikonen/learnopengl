@@ -64,6 +64,7 @@ namespace script
 
         void invokeNodeFunction(
             Node* node,
+            bool self,
             const sol::function& fn,
             const sol::table& args);
 

@@ -11,6 +11,7 @@ namespace script
     public:
         InvokeLuaFunction(
             pool::NodeHandle handle,
+            bool self,
             const sol::function& fn,
             sol::table args) noexcept;
 
@@ -23,6 +24,7 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
+        const bool m_self;
         sol::function m_fn;
         sol::table m_args;
     };

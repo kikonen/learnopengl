@@ -311,6 +311,7 @@ namespace script
             opt.afterId,
             InvokeLuaFunction{
                 m_handle,
+                opt.self,
                 fn,
                 fn_args
             });

@@ -24,6 +24,7 @@ namespace script
         bool relative = false;
         bool repeat = false;
         bool sync = false;
+        bool self = false;
 
         std::string name;
 
