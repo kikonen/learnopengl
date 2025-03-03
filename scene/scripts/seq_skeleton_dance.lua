@@ -2,7 +2,7 @@
 
 local ANIM_IDLE = util.sid("master:Idle")
 local ANIM_IDLE_2 = util.sid("master:Idle2")
-local ANIM_IDLE_HIT = util.sid("master:Hit")
+local ANIM_HIT = util.sid("master:Hit")
 
 local ANIM_WALK_1 = util.sid("master:Walk01")
 local ANIM_WALK_2 = util.sid("master:Walk02")

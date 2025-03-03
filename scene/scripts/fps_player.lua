@@ -17,7 +17,7 @@ local function animation()
 
   local function animation_listener()
     cid = cmd:animation_play(
-      { after=wid, clip=ANIM_IDLE } )
+      { after=wid, sid=ANIM_IDLE } )
 
     wid = cmd:wait({ after=cid, time=5 })
 

@@ -2,7 +2,7 @@
 
 local ANIM_IDLE = util.sid("master:Idle")
 local ANIM_IDLE_2 = util.sid("master:Idle2")
-local ANIM_IDLE_HIT = util.sid("master:Hit")
+local ANIM_HIT = util.sid("master:Hit")
 
 local ANIM_WALK_1 = util.sid("master:Walk01")
 local ANIM_WALK_2 = util.sid("master:Walk02")
@@ -59,7 +59,7 @@ local function randomAttack()
   return sid;
 end
 
-local function attack(wid)
+local function attack(src_wid)
   --print(string.format("START: %d", id))
 
   local pos = node:get_pos()
@@ -67,12 +67,13 @@ local function attack(wid)
   local y = pos[2]
   local z = pos[3]
   local cid = 0
+  local wid = 0
 
   cid = cmd:animation_play(
-    { after=wid, sid=randomMove() } )
+    { after=src_wid, sid=randomMove() } )
 
   cid = cmd:move(
-    { after=wid, time=10 + rnd(5), relative=true },
+    { after=src_wid, time=10 + rnd(5), relative=true },
     { 25 - rnd(100), 0, 25 - rnd(100) })
 
   wid = cmd:wait({ after=0, time=7 + rnd(5) })
@@ -117,30 +118,25 @@ local function attack(wid)
 end
 
 local function animation()
-  local listener_id = nil
   local wid = 0
   local cid = 0
-  local orig_pos = nil
+  local orig_pos = node:get_pos()
 
   local function animation_listener()
-    orig_pos = orig_pos or node:get_pos()
-
     wid = cmd:wait({ after=cid, time=1 + rnd(5) })
 
     cid = attack(wid)
 
     wid = cmd:wait({ after=cid, time=10 + rnd(5) })
 
-    cmd:emit(
+    cid = cmd:invoke(
       { after=wid },
-      { type=Event.SCRIPT_RESUME, listener=listener_id})
+      animation_listener)
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
-
-  cmd:emit(
-    {},
-    { type=Event.SCRIPT_RESUME, listener=listener_id})
+  cid = cmd:invoke(
+    { after=wid },
+    animation_listener)
 end
 
 animation()

@@ -3,27 +3,24 @@ printf("PARTICLE_GENERATOR: name=%s, id=%d, clone=%d\n", node:get_name(), id, no
 local rnd = math.random
 
 local function animation()
-  local listener_id = nil
   local wid = 0
   local cid = 0
 
   local function animation_listener()
     cid = cmd:particle_emit(
-      { after=wid, count=(30 + rnd(50)) * 100 })
+      { after=cid, count=(30 + rnd(50)) * 100 })
 
     wid = cmd:wait(
       { after=cid, time=3 })
 
-    wid = cmd:emit(
+    cid = cmd:invoke(
       { after=wid },
-      { type=Event.SCRIPT_RESUME, listener=listener_id})
+      animation_listener)
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
-
-  cmd:emit(
-    {},
-    { type=Event.SCRIPT_RESUME, listener=listener_id})
+  cid = cmd:invoke(
+    { after=wid },
+    animation_listener)
 end
 
 animation()
