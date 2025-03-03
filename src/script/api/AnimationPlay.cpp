@@ -49,7 +49,7 @@ namespace script
         }
 
         if (m_clipIndex < 0) {
-            KI_WARN_OUT(fmt::format("CMD::ANIM_PLAY: MISSING_CLIP={}", SID_NAME(m_clipId)));
+            KI_WARN_OUT(fmt::format("CMD::ANIM_PLAY: MISSING_CLIP: sid={}, name={}", m_clipId, SID_NAME(m_clipId)));
         }
 
         m_finished = m_clipIndex < 0;

@@ -12,6 +12,12 @@ printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_
 
 local rnd = math.random
 
+function lua_node:ditto(args)
+  print("LUA: DITTO_CALLED")
+  printf("LUA: self=%s\n", format_table(self));
+  printf("LUA: args=%s\n", format_table(args));
+end
+
 local function randomIdle()
   local sid
   local r = rnd(10)
@@ -70,10 +76,19 @@ local function animation()
 
   local function animation_listener()
     cid = idle(wid)
+
+    cid = cmd:invoke(
+      { after=cid, name="ditto" },
+      { bar="first" })
+
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     cid = attack(wid)
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
+
+    wid = cmd:invoke(
+      { after=wid, name="ditto" },
+      { ditto="check me" })
 
     cid = cmd:emit(
       { after=wid },

@@ -9,8 +9,6 @@
 
 #include "model/Node.h"
 
-#include "ScriptEngine.h"
-
 #include "script/CommandEngine.h"
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
@@ -49,11 +47,9 @@ namespace {
 namespace script
 {
     NodeCommandAPI::NodeCommandAPI(
-        ScriptEngine* scriptEngine,
-        CommandEngine* commandEngine,
+        CommandEngine* const commandEngine,
         pool::NodeHandle handle)
-        :m_scriptEngine{ scriptEngine },
-        m_commandEngine{ commandEngine },
+        :m_commandEngine{ commandEngine },
         m_handle{ handle }
     {}
 
@@ -304,47 +300,18 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_start(
+    int NodeCommandAPI::lua_invoke(
         const sol::table& lua_opt,
-        sol::function fn) noexcept
+        const sol::table& fn_args) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
-        {
-            m_coroutines.emplace_back(new Coroutine(m_scriptEngine->getLua(), fn, m_coroutines.size()));
-        }
-        auto& coroutine = m_coroutines[m_coroutines.size() - 1];
-
-        //KI_INFO_OUT(fmt::format("start: node={}, opt={}, coroutine={}", m_nodeId, opt.str(), coroutine->m_id));
-
         return m_commandEngine->addCommand(
             opt.afterId,
-            StartNode{
+            InvokeLuaFunction{
                 m_handle,
-                coroutine
-            });
-    }
-
-    int NodeCommandAPI::lua_resume_wrapper(
-        const sol::table& lua_opt,
-        int coroutineID) noexcept
-    {
-        const auto opt = readOptions(lua_opt);
-
-        if (coroutineID < 0 && coroutineID >= m_coroutines.size()) {
-            KI_WARN_OUT(fmt::format("resume: Invalid coroutine - node={}, coroutineID={}, opt={}", m_handle.str(), coroutineID, opt.str()));
-            return 0;
-        }
-
-        //KI_INFO_OUT(fmt::format("resume: node={}, coroutineID={}, opt={}", m_nodeId, coroutineID, opt.str()));
-
-        auto& coroutine = m_coroutines[coroutineID];
-
-        return m_commandEngine->addCommand(
-            opt.afterId,
-            ResumeNode{
-                m_handle,
-                coroutine
+                opt.name,
+                fn_args
             });
     }
 

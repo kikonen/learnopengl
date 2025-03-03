@@ -7,16 +7,11 @@
 
 #include "ki/size.h"
 
-#include "Coroutine.h"
-
 #include "pool/NodeHandle.h"
-
-class Node;
 
 namespace script
 {
     class CommandEngine;
-    class ScriptEngine;
 
     // Wrapper for CommandEngine calls from script
     // => wrap reference to node so that no need to explicitly pass "id" from Lua
@@ -24,8 +19,7 @@ namespace script
     {
     public:
         NodeCommandAPI(
-            ScriptEngine* scriptEngine,
-            CommandEngine* commandEngine,
+            CommandEngine* const commandEngine,
             pool::NodeHandle handle);
         ~NodeCommandAPI();
 
@@ -85,13 +79,9 @@ namespace script
         int lua_particle_stop(
             const sol::table& lua_opt) noexcept;
 
-        int lua_start(
+        int lua_invoke(
             const sol::table& lua_opt,
-            sol::function fn) noexcept;
-
-        int lua_resume_wrapper(
-            const sol::table& lua_opt,
-            int coroutineID) noexcept;
+            const sol::table& fn_args) noexcept;
 
         int lua_emit(
             const sol::table& lua_opt,
@@ -99,9 +89,6 @@ namespace script
 
     private:
         CommandEngine* const m_commandEngine;
-        ScriptEngine* const m_scriptEngine;
         const pool::NodeHandle m_handle;
-
-        std::vector<Coroutine*> m_coroutines;
     };
 }

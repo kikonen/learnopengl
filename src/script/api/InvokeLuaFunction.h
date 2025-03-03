@@ -11,7 +11,8 @@ namespace script
     public:
         InvokeLuaFunction(
             pool::NodeHandle handle,
-            std::string_view functionName) noexcept;
+            std::string_view functionName,
+            sol::table args) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -23,5 +24,6 @@ namespace script
 
     private:
         std::string m_functionName;
+        sol::table m_args;
     };
 }
