@@ -354,11 +354,11 @@ end)", nodeFnName, "{}", script.m_source);
             });
     }
 
-    const sol::protected_function_result& ScriptEngine::invokeLuaFunction(
-        const std::function<const sol::protected_function_result&()>& fn)
+    sol::protected_function_result ScriptEngine::invokeLuaFunction(
+        const std::function<sol::protected_function_result()>& fn)
     {
         try {
-            const auto& result = fn();
+            sol::protected_function_result result = fn();
             if (!result.valid()) {
                 sol::error err = result;
                 std::string what = err.what();
