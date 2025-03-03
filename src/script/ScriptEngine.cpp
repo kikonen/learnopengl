@@ -387,7 +387,7 @@ end)", nodeFnName, "{}", script.m_source);
     {
         try {
             KI_INFO_OUT(util::appendLineNumbers(script));
-            m_lua.script(script);
+            m_lua.safe_script(script);
             return true;
         }
         catch (const std::exception& ex) {
