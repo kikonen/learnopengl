@@ -1,5 +1,9 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
+local ANIM_IDLE = util:sid("idle:Unreal Take")
+local ANIM_RUN = util:sid("run:Unreal Take")
+local ANIM_FIRE = util:sid("fire:Unreal Take")
+
 local function attack(wid)
   --print(string.format("START: %d", id))
   return cid;
@@ -13,17 +17,17 @@ local function animation()
 
   local function animation_listener()
     cid = cmd:animation_play(
-      { after=wid, name = "idle:Unreal Take" } )
+      { after=wid, clip=ANIM_IDLE } )
 
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:animation_play(
-      { after=wid, name = "run:Unreal Take" } )
+      { after=wid, sid=ANIM_RUN } )
 
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:animation_play(
-      { after=wid, speed=0.5, name = "fire:Unreal Take" } )
+      { after=wid, speed=0.5, sid=ANIM_FIRE } )
 
     wid = cmd:wait({ after=cid, time=3 })
 

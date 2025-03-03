@@ -1,50 +1,62 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
+local ANIM_IDLE = util:sid("master:Idle")
+local ANIM_IDLE_2 = util:sid("master:Idle2")
+local ANIM_IDLE_HIT = util:sid("master:Hit")
+
+local ANIM_WALK_1 = util:sid("master:Walk01")
+local ANIM_WALK_2 = util:sid("master:Walk02")
+local ANIM_RUN = util:sid("master:Run")
+
+local ANIM_SWING_HEAVY = util:sid("master:SwingHeavy")
+local ANIM_SWING_NORMAL = util:sid("master:SwingNormal")
+local ANIM_SWING_QUICK = util:sid("master:SwingQuick")
+
 local rnd = math.random
 
 local function randomIdle()
-  local name;
+  local sid;
   local r = rnd(100);
 
   if r > 60 then
-    name = "master:Idle"
+    sid = ANIM_IDLE
   elseif r > 30 then
-    name = "master:Idle2"
+    sid = ANIM_IDLE_2
   else
-    name = "master:Hit2"
+    sid = ANIM_HIT
   end
 
-  return name;
+  return sid;
 end
 
 local function randomMove()
-  local name;
+  local sid;
   local r = rnd(100);
 
   if r > 60 then
-    name = "master:Walk01"
+    sid = ANIM_WALK_1
   elseif r > 30 then
-    name = "master:Walk02"
+    sid = ANIM_WALK_2
   else
-    name = "master:Run"
+    sid = ANIM_RUN
   end
 
-  return name;
+  return sid;
 end
 
 local function randomAttack()
-  local name;
+  local sid;
   local r = rnd(100);
 
   if r > 80 then
-    name = "master:SwingHeavy"
+    sid = ANIM_SWING_HEAVY
   elseif r > 50 then
-    name = "master:SwingNormal"
+    sid = ANIM_SWING_NORMAL
   else
-    name = "master:SwingQuick"
+    sid = ANIM_SWING_QUICK
   end
 
-  return name;
+  return sid;
 end
 
 local function attack(wid)
@@ -53,7 +65,7 @@ local function attack(wid)
   local cid = 0
 
   cid = cmd:animation_play(
-    { after=wid, name = randomMove() } )
+    { after=wid, sid=randomMove() } )
 
   wid = cmd:wait({ after=0, time=3 + rnd(5) })
   cmd:cancel({ after=wid, time=0 }, cid)
@@ -61,16 +73,16 @@ local function attack(wid)
   cmd:cancel({ after=0, time=0 }, cid)
 
   cid = cmd:animation_play(
-    { after=cid, name = randomMove() } )
+    { after=cid, sid=randomMove() } )
 
   cid = cmd:animation_play(
-    { after=cid, name = randomAttack() } )
+    { after=cid, sid=randomAttack() } )
 
   cid = cmd:animation_play(
-    { after=cid, name = randomIdle() } )
+    { after=cid, sid=randomIdle() } )
 
   cid = cmd:animation_play(
-    { after=cid, name = randomIdle() } )
+    { after=cid, sid=randomIdle() } )
 
   return cid;
 end

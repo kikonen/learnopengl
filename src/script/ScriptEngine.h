@@ -68,7 +68,7 @@ namespace script
 
         void emitEvent(
             int listenerId,
-            const std::string& type,
+            int type,
             const std::string& data);
 
         sol::state& getLua() { return m_lua; }

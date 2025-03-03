@@ -108,12 +108,12 @@ namespace animation {
         return it->get();
     }
 
-    const animation::Clip* ClipContainer::findClip(const std::string& name) const
+    const animation::Clip* ClipContainer::findClip(ki::sid_t id) const
     {
         const auto& it = std::find_if(
             m_clips.begin(),
             m_clips.end(),
-            [&name](const auto& clip) { return clip.m_name == name;  });
+            [&id](const auto& clip) { return clip.m_id == id;  });
         if (it == m_clips.end()) return nullptr;
         return &(*it);
     }

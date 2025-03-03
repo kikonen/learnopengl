@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "ki/size.h"
+
 namespace animation
 {
 /*
@@ -74,6 +76,7 @@ namespace animation
 */
     struct Clip {
         std::string m_name;
+        ki::sid_t m_id{ 0 };
         int32_t m_index{ -1 };
 
         std::string m_animationName;

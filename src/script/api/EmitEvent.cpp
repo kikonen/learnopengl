@@ -11,7 +11,7 @@ namespace script
     EmitEvent::EmitEvent(
         pool::NodeHandle handle,
         int listenerId,
-        const std::string& type,
+        int type,
         const std::string& data) noexcept
         : NodeCommand(handle, 0, false),
         m_listenerId{ listenerId },

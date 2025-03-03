@@ -12,7 +12,7 @@ namespace script
         EmitEvent(
             pool::NodeHandle handle,
             int listenerId,
-            const std::string& type,
+            int type,
             const std::string& data) noexcept;
 
         virtual std::string getName() const noexcept override
@@ -25,7 +25,7 @@ namespace script
 
     private:
         int m_listenerId;
-        const std::string m_type;
+        int m_type;
         const std::string m_data;
     };
 }

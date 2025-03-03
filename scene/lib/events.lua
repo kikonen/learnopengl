@@ -8,7 +8,7 @@ local EventQueue = {
 }
 
 local Event = {
-  SCRIPT_RESUME = "script:resume"
+  SCRIPT_RESUME = 10
 }
 
 local function next_id()

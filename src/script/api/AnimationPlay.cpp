@@ -22,11 +22,11 @@ namespace script
 {
     AnimationPlay::AnimationPlay(
         pool::NodeHandle handle,
-        std::string clipName,
+        ki::sid_t clipId,
         float speed,
         bool repeat) noexcept
         : NodeCommand(handle, 0, false),
-        m_clipName{ clipName },
+        m_clipId{ clipId },
         m_speed{ speed },
         m_repeat{ repeat }
     {
@@ -41,7 +41,7 @@ namespace script
             auto rig = lodMesh.getMesh<mesh::Mesh>()->getRigContainer().get();
             if (!rig) continue;
 
-            auto* clip = rig->m_clipContainer.findClip(m_clipName);
+            auto* clip = rig->m_clipContainer.findClip(m_clipId);
             if (clip) {
                 m_clipIndex = clip->m_index;
                 break;
@@ -49,7 +49,7 @@ namespace script
         }
 
         if (m_clipIndex < 0) {
-            KI_WARN_OUT(fmt::format("CMD_ANIM_PLAY: MISSING_CLIP={}", m_clipName));
+            KI_WARN_OUT(fmt::format("CMD::ANIM_PLAY: MISSING_CLIP={}", SID_NAME(m_clipId)));
         }
 
         m_finished = m_clipIndex < 0;

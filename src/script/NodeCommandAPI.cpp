@@ -65,7 +65,7 @@ namespace {
 
     struct CommandEvent {
         int listenerId = 0;
-        std::string type;
+        int type;
         std::string data;
 
         std::string str() const noexcept {
@@ -127,7 +127,7 @@ namespace {
                 ev.listenerId = value.as<int>();
             }
             else if (k == "type") {
-                ev.type = value.as<std::string>();
+                ev.type = value.as<int>();
             }
             else if (k == "data") {
                 ev.data = value.as<std::string>();
@@ -380,7 +380,7 @@ namespace script
             opt.afterId,
             AnimationPlay{
                 getHandle(opt.nodeId, m_handle),
-                opt.name,
+                opt.sid,
                 opt.speed,
                 opt.repeat
             });

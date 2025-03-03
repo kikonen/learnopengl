@@ -1,35 +1,43 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
+local ANIM_IDLE = util:sid("master:Idle")
+local ANIM_IDLE_2 = util:sid("master:Idle2")
+local ANIM_IDLE_HIT = util:sid("master:Hit")
+
+local ANIM_SWING_HEAVY = util:sid("master:SwingHeavy")
+local ANIM_SWING_NORMAL = util:sid("master:SwingNormal")
+local ANIM_SWING_QUICK = util:sid("master:SwingQuick")
+
 local rnd = math.random
 
 local function randomIdle()
-  local name
+  local sid
   local r = rnd(10)
 
   if r > 6 then
-    name = "master:Idle"
+    sid = ANIM_IDLE
   elseif r > 2 then
-    name = "master:Idle2"
+    sid = ANIM_IDLE_2
   else
-    name = "master:Hit"
+    sid = ANIM_HIT
   end
 
-  return name
+  return sid
 end
 
 local function randomAttack()
-  local name
+  local sid
   local r = rnd(10)
 
   if r > 8 then
-    name = "master:SwingHeavy"
+    sid = ANIM_SWING_HEAVY
   elseif r > 5 then
-    name = "master:SwingNormal"
+    sid = ANIM_SWING_NORMAL
   else
-    name = "master:SwingQuick"
+    sid = ANIM_SWING_QUICK
   end
 
-  return name
+  return sid
 end
 
 local function idle(wid)
@@ -37,7 +45,7 @@ local function idle(wid)
 
   local cid
   cid = cmd:animation_play(
-    { after=wid, name = randomIdle() } )
+    { after=wid, sid=randomIdle() } )
 
   return cid
 end
@@ -48,7 +56,7 @@ local function attack(wid)
   local cid
 
   cid = cmd:animation_play(
-    { after=wid, name = randomAttack() } )
+    { after=wid, sid=randomAttack() } )
 
   return cid
 end
@@ -59,8 +67,6 @@ local function animation()
   local cid = 0
 
   local function animation_listener()
-    printf("ANIM: name=%s\n", node:get_name())
-
     cid = idle(wid)
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
@@ -70,8 +76,6 @@ local function animation()
     cid = cmd:emit(
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
-
-    printf("DONE: name=%s\n", node:get_name())
   end
 
   listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})

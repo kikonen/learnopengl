@@ -11,7 +11,7 @@ namespace script
     public:
         AnimationPlay(
             pool::NodeHandle handle,
-            std::string clipName,
+            ki::sid_t clipId,
             float speed,
             bool repeat) noexcept;
 
@@ -26,7 +26,7 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const std::string m_clipName;
+        const ki::sid_t m_clipId;
         const float m_speed;
         const bool m_repeat;
         int16_t m_clipIndex{ -1 };

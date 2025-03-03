@@ -344,13 +344,13 @@ end)", nodeFnName, "{}", script.m_source);
 
     void ScriptEngine::emitEvent(
         int listenerId,
-        const std::string& type,
+        int type,
         const std::string& data)
     {
         invokeLuaFunction([this, &type, &data, &listenerId]() {
             sol::table events = m_lua["events"];
             sol::protected_function fn(events["emit_raw"]);
-            return fn(sol::reference(events), type, data, listenerId);
+            return fn(events, type, data, listenerId);
             });
     }
 
