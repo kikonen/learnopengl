@@ -1077,6 +1077,9 @@
     <ClCompile Include="src\script\api\EmitEvent.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\lua_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2415,6 +2418,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\decal\DecalBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\lua_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

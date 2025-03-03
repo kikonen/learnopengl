@@ -2,9 +2,9 @@ printf("EMIT\n")
 
 local rnd = math.random
 
-local shoot_sid = util:sid("shoot")
-local explode_sid = util:sid("explode")
--- local text_node_sid = util:sid("rocket_message")
+local shoot_sid = util.sid("shoot")
+local explode_sid = util.sid("explode")
+-- local text_node_sid = util.sid("rocket_message")
 
 local function animation()
   local listener_id

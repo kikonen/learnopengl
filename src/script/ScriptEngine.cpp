@@ -89,7 +89,7 @@ namespace script
 
         m_commandEngine = commandEngine;
 
-        m_utilApi = std::make_unique<UtilAPI>();
+        //m_utilApi = std::make_unique<UtilAPI>();
 
         m_lua.open_libraries(
             sol::lib::base,
@@ -128,11 +128,14 @@ namespace script
 
     void ScriptEngine::registerTypes()
     {
-        // util
+        // util - static utils
         {
-            m_lua.new_usertype<UtilAPI>("UtilAPI");
-            const auto& ut = m_lua["UtilAPI"];
-            ut["sid"] = &UtilAPI::lua_sid;
+            {
+                m_lua["util"] = m_lua.create_table_with(
+                    "sid", &UtilAPI::lua_sid,
+                    "sid_name", &UtilAPI::lua_sid_name
+                );
+            }
         }
 
         // NodeCommandAPI
@@ -248,7 +251,7 @@ namespace script
         // NOTE KI pass context as closure to Node
         // - node, cmd, id
         scriptlet = fmt::format(R"(
-function {}(node, util, cmd, id)
+function {}(node, cmd, id)
 nodes[id] = nodes[id] or {}
 local luaNode = nodes[id]
 {}
@@ -283,7 +286,7 @@ end)", nodeFnName, "{}", script.m_source);
         {
             auto& fnName = fnIt->second;
             sol::function fn = m_lua[fnName];
-            fn(nullptr, nullptr, nullptr, 0);
+            fn(nullptr, nullptr, 0);
         }
     }
 
@@ -304,12 +307,11 @@ end)", nodeFnName, "{}", script.m_source);
             auto& fnName = fnIt->second;
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
 
-            auto* utilApi = m_utilApi.get();
             auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
 
-            invokeLuaFunction([this, node, handle, &fnName, &utilApi, &cmdApi]() {
+            invokeLuaFunction([this, node, handle, &fnName, &cmdApi]() {
                 sol::protected_function fn(m_lua[fnName]);
-                return fn(std::ref(node), std::ref(utilApi), std::ref(cmdApi), handle.toId());;
+                return fn(std::ref(node), std::ref(cmdApi), handle.toId());;
             });
         }
     }

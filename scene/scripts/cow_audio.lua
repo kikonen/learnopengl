@@ -1,6 +1,6 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local moo_sid = util:sid("moo")
+local moo_sid = util.sid("moo")
 
 local function animation()
   local listener_id

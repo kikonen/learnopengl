@@ -7,8 +7,8 @@ local function animation_rotate()
   local cid = 0
   local dir = 1
 
-  local AUDIO_WIND = util:sid("wind")
-  local AUDIO_ROTATE = util:sid("rotate")
+  local AUDIO_WIND = util.sid("wind")
+  local AUDIO_ROTATE = util.sid("rotate")
 
   -- prepause
   cid = cmd:wait({ after=cid, time=1 })

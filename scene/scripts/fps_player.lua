@@ -1,8 +1,8 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local ANIM_IDLE = util:sid("idle:Unreal Take")
-local ANIM_RUN = util:sid("run:Unreal Take")
-local ANIM_FIRE = util:sid("fire:Unreal Take")
+local ANIM_IDLE = util.sid("idle:Unreal Take")
+local ANIM_RUN = util.sid("run:Unreal Take")
+local ANIM_FIRE = util.sid("fire:Unreal Take")
 
 local function attack(wid)
   --print(string.format("START: %d", id))

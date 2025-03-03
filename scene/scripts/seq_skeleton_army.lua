@@ -1,16 +1,16 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
 
-local ANIM_IDLE = util:sid("master:Idle")
-local ANIM_IDLE_2 = util:sid("master:Idle2")
-local ANIM_IDLE_HIT = util:sid("master:Hit")
+local ANIM_IDLE = util.sid("master:Idle")
+local ANIM_IDLE_2 = util.sid("master:Idle2")
+local ANIM_IDLE_HIT = util.sid("master:Hit")
 
-local ANIM_WALK_1 = util:sid("master:Walk01")
-local ANIM_WALK_2 = util:sid("master:Walk02")
-local ANIM_RUN = util:sid("master:Run")
+local ANIM_WALK_1 = util.sid("master:Walk01")
+local ANIM_WALK_2 = util.sid("master:Walk02")
+local ANIM_RUN = util.sid("master:Run")
 
-local ANIM_SWING_HEAVY = util:sid("master:SwingHeavy")
-local ANIM_SWING_NORMAL = util:sid("master:SwingNormal")
-local ANIM_SWING_QUICK = util:sid("master:SwingQuick")
+local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
+local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
+local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
 
 local rnd = math.random
 
