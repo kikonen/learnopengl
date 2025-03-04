@@ -222,7 +222,11 @@ namespace script
     int NodeCommandAPI::lua_audio_play(
         const sol::table& lua_opt) noexcept
     {
-        const auto opt = readOptions(lua_opt);
+        auto opt = readOptions(lua_opt);
+
+        if (opt.sid == 0) {
+            opt.sid = SID(opt.name);
+        }
 
         return m_commandEngine->addCommand(
             opt.afterId,
@@ -236,7 +240,11 @@ namespace script
     int NodeCommandAPI::lua_audio_pause(
         const sol::table& lua_opt) noexcept
     {
-        const auto opt = readOptions(lua_opt);
+        auto opt = readOptions(lua_opt);
+
+        if (opt.sid == 0) {
+            opt.sid = SID(opt.name);
+        }
 
         return m_commandEngine->addCommand(
             opt.afterId,
@@ -249,7 +257,11 @@ namespace script
     int NodeCommandAPI::lua_audio_stop(
         const sol::table& lua_opt) noexcept
     {
-        const auto opt = readOptions(lua_opt);
+        auto opt = readOptions(lua_opt);
+
+        if (opt.sid == 0) {
+            opt.sid = SID(opt.name);
+        }
 
         return m_commandEngine->addCommand(
             opt.afterId,
@@ -262,7 +274,11 @@ namespace script
     int NodeCommandAPI::lua_animation_play(
         const sol::table& lua_opt) noexcept
     {
-        const auto opt = readOptions(lua_opt);
+        auto opt = readOptions(lua_opt);
+
+        if (opt.sid == 0) {
+            opt.sid = SID(opt.name);
+        }
 
         return m_commandEngine->addCommand(
             opt.afterId,
