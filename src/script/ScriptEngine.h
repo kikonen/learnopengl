@@ -74,9 +74,11 @@ namespace script
             int type,
             const std::string& data);
 
-        sol::state& getLua() { return m_lua; }
+        sol::state* getLua() { return m_state.get(); }
 
     private:
+        inline sol::state& getState() { return *m_state; }
+
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);
 
@@ -96,8 +98,7 @@ namespace script
     private:
         CommandEngine* m_commandEngine{ nullptr };
 
-        sol::state m_lua;
-        sol::table m_luaNodes;
+        std::unique_ptr<sol::state> m_state;
 
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 

@@ -24,6 +24,11 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "types/LuaUtil.h"
+#include "types/LuaVec3.h"
+#include "types/LuaNode.h"
+#include "types/LuaCommand.h"
+
 
 namespace {
     static script::ScriptEngine s_engine;
@@ -60,7 +65,8 @@ namespace script
 
             }
 
-            for (auto& node : m_luaNodes) {
+            sol::table nodes = getState()["nodes"];
+            for (auto& node : nodes) {
 
             }
         }
@@ -91,7 +97,11 @@ namespace script
 
         //m_utilApi = std::make_unique<UtilAPI>();
 
-        m_lua.open_libraries(
+        m_state = std::make_unique<sol::state>();
+
+        auto& lua = *m_state;
+
+        lua.open_libraries(
             sol::lib::base,
             sol::lib::package,
             sol::lib::math,
@@ -104,7 +114,7 @@ namespace script
         // https://github.com/ThePhD/sol2/issues/90
         {
             const std::vector<std::string> paths{
-                m_lua["package"]["path"],
+                lua["package"]["path"],
                 util::joinPath({ assets.rootDir, assets.sceneDir, "scripts", "?.lua" }),
                 util::joinPath({ assets.rootDir, assets.sceneDir, "lib", "?.lua" }),
             };
@@ -117,70 +127,35 @@ namespace script
                 ";");
 
             KI_INFO_OUT(fmt::format("LUA: package.path={}", packagePath));
-            m_lua["package"]["path"] = packagePath;
+            lua["package"]["path"] = packagePath;
         }
 
         registerTypes();
 
-        m_lua["nodes"] = m_lua.create_table_with();
-        m_luaNodes = m_lua["nodes"];
+        lua["nodes"] = lua.create_table_with();
     }
 
     void ScriptEngine::registerTypes()
     {
         // util - static utils
+        auto& lua = getState();
+
         {
-            {
-                m_lua["util"] = m_lua.create_table_with(
-                    "sid", &UtilAPI::lua_sid,
-                    "sid_name", &UtilAPI::lua_sid_name
-                );
-            }
+            LuaUtil t;
+            t.bind(lua);
         }
 
-        // NodeCommandAPI
         {
-            m_lua.new_usertype<NodeCommandAPI>("NodeCommandAPI");
-
-            const auto& ut = m_lua["NodeCommandAPI"];
-
-            ut["cancel"] = &NodeCommandAPI::lua_cancel;
-            ut["wait"] = &NodeCommandAPI::lua_wait;
-            ut["sync"] = &NodeCommandAPI::lua_sync;
-
-            ut["move"] = &NodeCommandAPI::lua_move;
-            ut["move_spline"] = &NodeCommandAPI::lua_move_spline;
-            ut["rotate"] = &NodeCommandAPI::lua_rotate;
-            ut["scale"] = &NodeCommandAPI::lua_scale;
-
-            ut["set_text"] = &NodeCommandAPI::lua_set_text;
-            ut["set_visible"] = &NodeCommandAPI::lua_set_visible;
-
-            ut["audio_play"] = &NodeCommandAPI::lua_audio_play;
-            ut["audio_pause"] = &NodeCommandAPI::lua_audio_pause;
-            ut["audio_stop"] = &NodeCommandAPI::lua_audio_stop;
-
-            ut["particle_emit"] = &NodeCommandAPI::lua_particle_emit;
-            ut["particle_stop"] = &NodeCommandAPI::lua_particle_stop;
-
-            ut["animation_play"] = &NodeCommandAPI::lua_animation_play;
-
-            ut["invoke"] = &NodeCommandAPI::lua_invoke;
-            ut["emit"] = &NodeCommandAPI::lua_emit;
+            LuaCommand t;
+            t.bind(lua);
         }
-
-        // Node
         {
-            m_lua.new_usertype<Node>("Node");
-
-            const auto& ut = m_lua["Node"];
-
-            ut["get_id"] = &Node::lua_getId;
-            ut["get_name"] = &Node::lua_getName;
-
-            ut["get_clone_index"] = &Node::lua_getCloneIndex;
-
-            ut["get_pos"] = &Node::lua_getPos;
+            LuaNode t;
+            t.bind(lua);
+        }
+        {
+            LuaVec3 t;
+            t.bind(lua);
         }
     }
 
@@ -275,12 +250,14 @@ end)", nodeFnName, script.m_source);
 
     bool ScriptEngine::unregisterFunction(std::string fnName)
     {
-        if (!m_lua[fnName].is<sol::function>()) return false;
+        auto& lua = getState();
+
+        if (!lua[fnName].is<sol::function>()) return false;
 
         std::string undef = fmt::format(R"(
 {} = nil)", fnName);
 
-        m_lua.script(undef);
+        lua.script(undef);
         KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", fnName));
         return true;
     }
@@ -298,7 +275,7 @@ end)", nodeFnName, script.m_source);
             const auto& fnName = fnIt->second;
 
             invokeLuaFunction([this, &fnName]() {
-                sol::protected_function fn(m_lua[fnName]);
+                sol::protected_function fn(getState()[fnName]);
                 return fn();
                 });
         }
@@ -324,7 +301,7 @@ end)", nodeFnName, script.m_source);
             auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
 
             invokeLuaFunction([this, node, handle, &fnName, &cmdApi]() {
-                sol::protected_function fn(m_lua[fnName]);
+                sol::protected_function fn((getState())[fnName]);
                 return fn(std::ref(node), std::ref(cmdApi), handle.toId());;
             });
         }
@@ -334,7 +311,7 @@ end)", nodeFnName, script.m_source);
         pool::NodeHandle handle,
         std::string_view name)
     {
-        sol::table luaNode = m_luaNodes[handle.toId()];
+        sol::table luaNode = getState()["nodes"][handle.toId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
         return fnPtr != sol::nullopt;
@@ -347,7 +324,7 @@ end)", nodeFnName, script.m_source);
         const sol::table& args)
     {
         invokeLuaFunction([this, node, self, &fn, &args]() {
-            sol::table luaNode = m_luaNodes[node->getId()];
+            sol::table luaNode = getState()["nodes"][node->getId()];
             return self ? fn(luaNode, args) : fn(args);
             });
     }
@@ -358,7 +335,7 @@ end)", nodeFnName, script.m_source);
         const std::string& data)
     {
         invokeLuaFunction([this, &type, &data, &listenerId]() {
-            sol::table events = m_lua["events"];
+            sol::table events = getState()["events"];
             sol::protected_function fn(events["emit_raw"]);
             return fn(events, type, data, listenerId);
             });
@@ -397,7 +374,7 @@ end)", nodeFnName, script.m_source);
     {
         try {
             KI_INFO_OUT(util::appendLineNumbers(script));
-            m_lua.safe_script(script);
+            getState().safe_script(script);
             return true;
         }
         catch (const std::exception& ex) {

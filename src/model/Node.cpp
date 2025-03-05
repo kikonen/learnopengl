@@ -185,24 +185,23 @@ audio::Source* Node::getAudioSource(audio::source_id id) const
     return nullptr;
 }
 
-ki::node_id Node::lua_getId() const noexcept
+ki::node_id Node::lua_get_id() const noexcept
 {
     return m_handle.m_id;
 }
 
-const std::string& Node::lua_getName() const noexcept
+const std::string& Node::lua_get_name() const noexcept
 {
     return m_typeHandle.toType()->getName();
 }
 
-int Node::lua_getCloneIndex() const noexcept
+int Node::lua_get_clone_index() const noexcept
 {
     //return m_cloneIndex;
     return 0;
 }
 
-const std::array<float, 3> Node::lua_getPos() const noexcept
+const glm::vec3& Node::lua_get_pos() const noexcept
 {
-    const auto& pos = getState().getPosition();
-    return { pos.x, pos.y, pos.z };
+    return getState().getPosition();
 }

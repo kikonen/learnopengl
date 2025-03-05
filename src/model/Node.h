@@ -160,12 +160,12 @@ public:
     }
 
 public:
-    ki::node_id lua_getId() const noexcept;
-    const std::string& lua_getName() const noexcept;
+    ki::node_id lua_get_id() const noexcept;
+    const std::string& lua_get_name() const noexcept;
 
-    int lua_getCloneIndex() const noexcept;
+    int lua_get_clone_index() const noexcept;
 
-    const std::array<float, 3> lua_getPos() const noexcept;
+    const glm::vec3& lua_get_pos() const noexcept;
 
 public:
     pool::TypeHandle m_typeHandle{};

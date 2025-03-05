@@ -247,6 +247,10 @@
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\script\lua_util.cpp" />
+    <ClCompile Include="src\script\types\LuaCommand.cpp" />
+    <ClCompile Include="src\script\types\LuaNode.cpp" />
+    <ClCompile Include="src\script\types\LuaUtil.cpp" />
+    <ClCompile Include="src\script\types\LuaVec3.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
     <ClCompile Include="src\shader\ShaderSource.cpp" />
@@ -604,6 +608,10 @@
     <ClInclude Include="src\script\api\ParticleStop.h" />
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\script\lua_util.h" />
+    <ClInclude Include="src\script\types\LuaCommand.h" />
+    <ClInclude Include="src\script\types\LuaNode.h" />
+    <ClInclude Include="src\script\types\LuaUtil.h" />
+    <ClInclude Include="src\script\types\LuaVec3.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />
