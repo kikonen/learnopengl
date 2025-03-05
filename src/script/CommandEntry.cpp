@@ -23,7 +23,7 @@ namespace script {
             else if (auto* src = dynamic_cast<Wait*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
-            else if (auto* src = dynamic_cast<InvokeLuaFunction*>(other_cmd)) {
+            else if (auto* src = dynamic_cast<CallLuaFunction*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<AudioPause*>(other_cmd)) {

@@ -55,7 +55,7 @@ namespace script {
             else if (k == "sync") {
                 opt.sync = value.as<bool>();
             }
-            else if (k == "self") {
+            else if (k == "object") {
                 opt.self = value.as<bool>();
             }
             else if (k == "name") {

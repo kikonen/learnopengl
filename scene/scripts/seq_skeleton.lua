@@ -83,12 +83,12 @@ local function animation()
   local function animation_listener()
     cid = idle(wid)
 
-    cid = cmd:invoke(
-      { after=cid, self=true },
+    cid = cmd:call(
+      { after=cid, object=true },
       lua_node.ditto,
       { bar="start_of_seq_self" })
 
-    cid = cmd:invoke(
+    cid = cmd:call(
       { after=cid },
       ditto,
       { bar="start_of_seq_local" })
@@ -98,8 +98,8 @@ local function animation()
     cid = attack(wid)
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
-    wid = cmd:invoke(
-      { after=wid, self=true },
+    wid = cmd:call(
+      { after=wid, object=true },
       lua_node.ditto,
       { ditto="end_of_seq_self" })
 
@@ -107,7 +107,7 @@ local function animation()
     --   { after=wid },
     --   { type=Event.SCRIPT_RESUME, listener=listener_id})
 
-    wid = cmd:invoke(
+    wid = cmd:call(
       { after=wid },
       animation_listener)
   end
@@ -118,9 +118,9 @@ local function animation()
   --   {},
   --   { type=Event.SCRIPT_RESUME, listener=listener_id})
 
-    wid = cmd:invoke(
-      { after=wid },
-      animation_listener)
+  wid = cmd:call(
+    { after=wid },
+    animation_listener)
 end
 
 local function event_test()

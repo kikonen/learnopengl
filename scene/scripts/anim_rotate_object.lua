@@ -14,7 +14,7 @@ local function animation()
       { 0, 1, 0 },
       dir * 45)
 
-    cid = cmd:invoke(
+    cid = cmd:call(
       { after=cid },
       animation_listener)
 
@@ -23,7 +23,7 @@ local function animation()
 
   wid = cmd:wait({ after=cid, time=1 })
 
-  cid = cmd:invoke(
+  cid = cmd:call(
     { after=wid },
     animation_listener)
 end

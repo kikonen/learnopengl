@@ -378,7 +378,7 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\api\InvokeLuaFunction.cpp">
+    <ClCompile Include="src\script\api\CallLuaFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\Coroutine.cpp">
@@ -1547,7 +1547,7 @@
     <ClInclude Include="src\ki\ki.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\api\InvokeLuaFunction.h">
+    <ClInclude Include="src\script\api\CallLuaFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\Coroutine.h">

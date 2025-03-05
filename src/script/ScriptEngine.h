@@ -4,15 +4,16 @@
 #include <memory>
 #include <map>
 #include <mutex>
+#include <functional>
 
 #include <sol/sol.hpp>
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "size.h"
 #include "Script.h"
-
-#include "pool/NodeHandle.h"
 
 struct PrepareContext;
 

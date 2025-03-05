@@ -13,12 +13,12 @@ local function animation()
     wid = cmd:wait(
       { after=cid, time=3 })
 
-    cid = cmd:invoke(
+    cid = cmd:call(
       { after=wid },
       animation_listener)
   end
 
-  cid = cmd:invoke(
+  cid = cmd:call(
     { after=wid },
     animation_listener)
 end

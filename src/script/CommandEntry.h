@@ -7,7 +7,7 @@
 #include "api/Command.h"
 
 #include "api/Cancel.h"
-#include "api/InvokeLuaFunction.h"
+#include "api/CallLuaFunction.h"
 #include "api/Sync.h"
 #include "api/Wait.h"
 
@@ -40,7 +40,7 @@ namespace script
         sizeof(script::Cancel),
         sizeof(script::Sync),
         sizeof(script::Wait),
-        sizeof(script::InvokeLuaFunction),
+        sizeof(script::CallLuaFunction),
         // Node
         sizeof(script::AudioPause),
         sizeof(script::AudioPlay),

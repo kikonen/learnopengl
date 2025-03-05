@@ -316,20 +316,20 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_invoke(
+    int NodeCommandAPI::lua_call(
         const sol::table& lua_opt,
         const sol::function& fn,
-        const sol::table& fn_args) noexcept
+        const sol::optional<sol::table>& fn_args) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            InvokeLuaFunction{
+            CallLuaFunction{
                 m_handle,
                 opt.self,
                 fn,
-                fn_args
+                fn_args.has_value() ? fn_args.value() : sol::table{}
             });
     }
 

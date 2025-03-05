@@ -6,10 +6,10 @@
 
 namespace script
 {
-    class InvokeLuaFunction final : public NodeCommand
+    class CallLuaFunction final : public NodeCommand
     {
     public:
-        InvokeLuaFunction(
+        CallLuaFunction(
             pool::NodeHandle handle,
             bool self,
             const sol::function& fn,
@@ -17,7 +17,7 @@ namespace script
 
         virtual std::string getName() const noexcept override
         {
-            return "invoke_lua_function";
+            return "call_lua_function";
         }
 
         virtual void execute(

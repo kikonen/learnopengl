@@ -341,7 +341,7 @@
     <ClCompile Include="src\script\api\AudioPause.cpp" />
     <ClCompile Include="src\script\api\AudioPlay.cpp" />
     <ClCompile Include="src\script\api\AudioStop.cpp" />
-    <ClCompile Include="src\script\api\InvokeLuaFunction.cpp" />
+    <ClCompile Include="src\script\api\CallLuaFunction.cpp" />
     <ClCompile Include="src\script\Coroutine.cpp" />
     <ClCompile Include="src\controller\PawnController.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
@@ -777,7 +777,7 @@
     <ClInclude Include="src\script\api\AudioPause.h" />
     <ClInclude Include="src\script\api\AudioPlay.h" />
     <ClInclude Include="src\script\api\AudioStop.h" />
-    <ClInclude Include="src\script\api\InvokeLuaFunction.h" />
+    <ClInclude Include="src\script\api\CallLuaFunction.h" />
     <ClInclude Include="src\script\Coroutine.h" />
     <ClInclude Include="src\controller\PawnController.h" />
     <ClInclude Include="src\kigl\GLFence.h" />

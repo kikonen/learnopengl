@@ -79,10 +79,10 @@ namespace script
         int lua_particle_stop(
             const sol::table& lua_opt) noexcept;
 
-        int lua_invoke(
+        int lua_call(
             const sol::table& lua_opt,
             const sol::function& fn,
-            const sol::table& fn_args) noexcept;
+            const sol::optional<sol::table>& fn_args) noexcept;
 
         int lua_emit(
             const sol::table& lua_opt,
