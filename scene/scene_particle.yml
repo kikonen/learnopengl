@@ -62,7 +62,7 @@ nodes:
       - type: camera_zoom
     script: |
       cmd:audio_play(
-        { sync=true, sid=util:sid("idle_1") })
+        { sync=true, sid=util.sid("idle_1") })
   - id: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:

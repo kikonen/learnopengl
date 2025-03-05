@@ -113,7 +113,7 @@ nodes:
       path: prefab/creatures/prefab_skeleton.yml
     pos: [5, 24, 28]
     script: |
-      local sid = util:sid("master:Idle2")
+      local sid = util.sid("master:Idle2")
       printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
       cmd:animation_play(
         { name = "master:Idle2" })

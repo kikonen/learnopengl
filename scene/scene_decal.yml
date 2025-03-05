@@ -62,7 +62,7 @@ nodes:
       - type: camera_zoom
     script: |
       printf("here-script\n")
-      local sid = util:sid("idle_1")
+      local sid = util.sid("idle_1")
       printf("SID: %s\n", sid)
       cmd:audio_play(
         { sync=true, sid=sid })

@@ -1167,7 +1167,7 @@ nodes:
       z_count: 2
       z_step: 6
     script: |
-      local fly_sid = util:sid("fly")
+      local fly_sid = util.sid("fly")
       cid = cmd:audio_play(
         { sid=fly_sid })
   - name: Rock origo
