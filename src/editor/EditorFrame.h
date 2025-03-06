@@ -1,18 +1,20 @@
 #pragma once
 
+#include <memory>
+
 #include "gui/Frame.h"
 
 #include "EditorState.h"
 
-namespace render {
-    struct DebugContext;
-}
 
 namespace editor {
+    class ConsoleFrame;
+
     class EditorFrame : public Frame
     {
     public:
         EditorFrame(Window& window);
+        virtual ~EditorFrame();
 
         void prepare(const PrepareContext& ctx) override;
         void draw(const RenderContext& ctx) override;
@@ -23,9 +25,6 @@ namespace editor {
         }
 
     private:
-        void trackImGuiState(
-            render::DebugContext& dbg);
-
         void renderMenuBar(
             const RenderContext& ctx,
             render::DebugContext& dbg);
@@ -88,5 +87,7 @@ namespace editor {
 
     private:
         EditorState m_state;
+
+        std::unique_ptr<ConsoleFrame> m_console;
     };
 }

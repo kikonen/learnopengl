@@ -6,20 +6,28 @@
 
 #include "gui/Window.h"
 
-struct PrepareContext;
 class RenderContext;
+struct PrepareContext;
+
+namespace render {
+    struct DebugContext;
+}
 
 class Frame
 {
 public:
     Frame(Window& window);
-    ~Frame();
+    virtual ~Frame();
 
     virtual void prepare(const PrepareContext& ctx);
     virtual void bind(const RenderContext& ctx);
     virtual void draw(const RenderContext& ctx) = 0;
 
     virtual void render(const RenderContext& ctx);
+
+protected:
+    void trackImGuiState(
+        render::DebugContext& dbg);
 
 protected:
     bool m_prepared = false;

@@ -8,6 +8,8 @@ local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
 local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
 local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
 
+local EXPLODE_SID = util.sid("explode")
+
 printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
 local rnd = math.random
@@ -75,13 +77,38 @@ local function attack(wid)
   return cid
 end
 
+function lua_node:explode()
+  explode_cid = cmd:audio_play(
+    { sync=true, sid=EXPLODE_SID })
+end
+
+function lua_node:emit_particles()
+  cmd:particle_emit(
+    { count=(10 + rnd(50)) * 1000 })
+end
+
 local function animation()
   -- local listener_id
   local wid = 0
   local cid = 0
+  local pos = node:get_pos()
+
+  printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
+  pos.x = 22
+  printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
+
+  local vec2 = Vec3.new(1, 2, 3)
+  printf("[%d, %d, %d] = %d\n", vec2.x, vec2.y, vec2.z, vec2:len())
+
+  local n = glm.normalize(vec2)
+  printf("[%d, %d, %d] = %d\n", n.x, n.y, n.z, n:len())
 
   local function animation_listener()
     cid = idle(wid)
+
+    -- cid2 = cmd:move(
+    --   { after=cid, time=10, relative=false },
+    --   Vec3.new(pos.x - 2, pos.y, pos.z))
 
     cid = cmd:call(
       { after=cid, object=true },

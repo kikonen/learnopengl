@@ -18,7 +18,8 @@ namespace mesh {
 
 namespace editor {
     struct EditorState {
-        bool m_imguiDemo{ false };
+        bool m_showImguiDemo{ false };
+        bool m_showConsole{ false };
 
         pool::NodeHandle m_selectedNode;
 

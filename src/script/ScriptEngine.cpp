@@ -25,6 +25,7 @@
 #include "mesh/MeshType.h"
 
 #include "types/LuaUtil.h"
+#include "types/LuaGlm.h"
 #include "types/LuaVec3.h"
 #include "types/LuaNode.h"
 #include "types/LuaCommand.h"
@@ -52,6 +53,8 @@ namespace script
     void ScriptEngine::clear()
     {
         ASSERT_WT();
+
+        std::lock_guard lock(m_lock);
 
         // TODO KI clear scriptlets from Lua
         if (m_commandEngine) {
@@ -154,6 +157,10 @@ namespace script
             t.bind(lua);
         }
         {
+            LuaGlm t;
+            t.bind(lua);
+        }
+        {
             LuaVec3 t;
             t.bind(lua);
         }
@@ -173,6 +180,8 @@ namespace script
         pool::NodeHandle handle,
         script::script_id scriptId)
     {
+        std::lock_guard lock(m_lock);
+
         const auto& fnName = createNodeFunction(handle, scriptId);
 
         if (fnName.empty()) return;
@@ -195,6 +204,8 @@ namespace script
     std::vector<script::script_id> ScriptEngine::getNodeScripts(
         pool::NodeHandle handle)
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_nodeFunctions.find(handle);
         if (it == m_nodeFunctions.end()) return {};
 
@@ -210,8 +221,6 @@ namespace script
         script::script_id scriptId)
     {
         std::string scriptlet;
-
-        std::lock_guard lock(m_lock);
 
         const auto it = m_scripts.find(scriptId);
         if (it == m_scripts.end()) return "";
@@ -243,9 +252,9 @@ function {}()
 end)", nodeFnName, script.m_source);
         }
 
-        auto success = invokeLuaScript(scriptlet);
+        auto result = invokeLuaScript(scriptlet);
 
-        return success ? nodeFnName : "";
+        return result.valid() ? nodeFnName : "";
     }
 
     bool ScriptEngine::unregisterFunction(std::string fnName)
@@ -265,6 +274,8 @@ end)", nodeFnName, script.m_source);
     void ScriptEngine::runGlobalScript(
         script::script_id scriptId)
     {
+        std::lock_guard lock(m_lock);
+
         const auto& it = m_nodeFunctions.find(pool::NodeHandle::NULL_HANDLE);
 
         if (it == m_nodeFunctions.end()) return;
@@ -287,6 +298,8 @@ end)", nodeFnName, script.m_source);
     {
         if (!node) return;
 
+        std::lock_guard lock(m_lock);
+
         const auto& handle = node->toHandle();
         const auto& it = m_nodeFunctions.find(handle);
 
@@ -307,10 +320,19 @@ end)", nodeFnName, script.m_source);
         }
     }
 
+    sol::protected_function_result ScriptEngine::execScript(
+        const std::string& script)
+    {
+        std::lock_guard lock(m_lock);
+        return invokeLuaScript(script);
+    }
+
     bool ScriptEngine::hasFunction(
         pool::NodeHandle handle,
         std::string_view name)
     {
+        std::lock_guard lock(m_lock);
+
         sol::table luaNode = getState()["nodes"][handle.toId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
@@ -323,6 +345,8 @@ end)", nodeFnName, script.m_source);
         const sol::function& fn,
         const sol::table& args)
     {
+        std::lock_guard lock(m_lock);
+
         invokeLuaFunction([this, node, self, &fn, &args]() {
             sol::table luaNode = getState()["nodes"][node->getId()];
             return self ? fn(luaNode, args) : fn(args);
@@ -334,6 +358,8 @@ end)", nodeFnName, script.m_source);
         int type,
         const std::string& data)
     {
+        std::lock_guard lock(m_lock);
+
         invokeLuaFunction([this, &type, &data, &listenerId]() {
             sol::table events = getState()["events"];
             sol::protected_function fn(events["emit_raw"]);
@@ -369,13 +395,12 @@ end)", nodeFnName, script.m_source);
     }
 
     // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
-    bool ScriptEngine::invokeLuaScript(
+    sol::protected_function_result ScriptEngine::invokeLuaScript(
         const std::string& script)
     {
         try {
             KI_INFO_OUT(util::appendLineNumbers(script));
-            getState().safe_script(script);
-            return true;
+            return getState().safe_script(script);
         }
         catch (const std::exception& ex) {
             KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
@@ -389,6 +414,6 @@ end)", nodeFnName, script.m_source);
         catch (...) {
             KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
         }
-        return false;
+        return {};
     }
 }

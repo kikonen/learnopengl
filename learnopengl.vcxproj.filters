@@ -1092,6 +1092,12 @@
     <ClCompile Include="src\script\types\LuaUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\types\LuaGlm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\console\ConsoleFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2445,6 +2451,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\types\LuaUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\types\LuaGlm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\console\ConsoleFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\console\ConsoleState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

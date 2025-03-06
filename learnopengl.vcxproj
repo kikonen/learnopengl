@@ -246,8 +246,10 @@
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
+    <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
     <ClCompile Include="src\script\lua_util.cpp" />
     <ClCompile Include="src\script\types\LuaCommand.cpp" />
+    <ClCompile Include="src\script\types\LuaGlm.cpp" />
     <ClCompile Include="src\script\types\LuaNode.cpp" />
     <ClCompile Include="src\script\types\LuaUtil.cpp" />
     <ClCompile Include="src\script\types\LuaVec3.cpp" />
@@ -562,6 +564,7 @@
     <ClInclude Include="src\decal\DecalDefinition.h" />
     <ClInclude Include="src\decal\DecalRegistry.h" />
     <ClInclude Include="src\decal\DecalType.h" />
+    <ClInclude Include="src\editor\console\ConsoleState.h" />
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\loader\DecalData.h" />
@@ -607,7 +610,9 @@
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
+    <ClInclude Include="src\editor\console\ConsoleFrame.h" />
     <ClInclude Include="src\script\lua_util.h" />
+    <ClInclude Include="src\script\types\LuaGlm.h" />
     <ClInclude Include="src\script\types\LuaCommand.h" />
     <ClInclude Include="src\script\types\LuaNode.h" />
     <ClInclude Include="src\script\types\LuaUtil.h" />

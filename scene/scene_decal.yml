@@ -284,6 +284,43 @@ nodes:
       static_bounds: true
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
+    audio:
+      sources:
+        - name: explode
+          path: audio/explosions/explode_rocket.wav
+          reference_distance: 10
+          gain: 0.8
+    particle:
+      seed: 1
+      gravity: [0, -4.81, 0]
+      lifetime: 0.5
+      lifetime_variation: 0.49
+      area_type: sphere
+      area_radius: 0.2
+      area_size: [1, 1, 0]
+      area_variation: 0.2
+      area_offset: [0, 0, 1]
+      dir: [0, 1, 0]
+      dir_variation: 360
+      speed: 5
+      speed_variation: 5
+      size: 0.2
+      size_variation: 0.2
+      rate: 50000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1.8, 0.3, 0.4, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
     physics:
       update: true
       geom:

@@ -74,7 +74,10 @@ namespace script
             int type,
             const std::string& data);
 
-        sol::state* getLua() { return m_state.get(); }
+        //sol::state* getLua() { return m_state.get(); }
+
+        sol::protected_function_result execScript(
+            const std::string& script);
 
     private:
         inline sol::state& getState() { return *m_state; }
@@ -82,7 +85,7 @@ namespace script
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);
 
-        bool invokeLuaScript(
+        sol::protected_function_result invokeLuaScript(
             const std::string& script);
 
         // @return fnName

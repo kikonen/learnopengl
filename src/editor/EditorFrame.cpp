@@ -8,7 +8,6 @@
 
 #include "util/glm_format.h"
 #include "util/util.h"
-
 #include "asset/Assets.h"
 #include "asset/DynamicCubeMap.h"
 
@@ -50,6 +49,9 @@
 #include "render/FrameBuffer.h"
 #include "scene/Scene.h"
 
+#include "console/ConsoleFrame.h"
+
+
 class PawnController;
 
 namespace {
@@ -70,20 +72,36 @@ namespace {
 
 namespace editor {
     EditorFrame::EditorFrame(Window& window)
-        : Frame(window)
+        : Frame(window),
+        m_console{ std::make_unique<ConsoleFrame>(window) }
     {
     }
+
+    EditorFrame::~EditorFrame() = default;
 
     void EditorFrame::prepare(const PrepareContext& ctx)
     {
         const auto& assets = ctx.m_assets;
 
         Frame::prepare(ctx);
+
+        m_console->prepare(ctx);
     }
 
     void EditorFrame::draw(const RenderContext& ctx)
     {
+        const auto& assets = ctx.m_assets;
         auto& dbg = m_window.getEngine().m_dbg;
+
+        ctx.m_state.bindFrameBuffer(0, false);
+
+        if (assets.imGuiDemo|| getState().m_showImguiDemo) {
+            ImGui::ShowDemoWindow();
+        }
+
+        if (getState().m_showConsole) {
+            m_console->draw(ctx);
+        }
 
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= 0
@@ -160,21 +178,6 @@ namespace editor {
         ImGui::End();
     }
 
-
-    void EditorFrame::trackImGuiState(
-        render::DebugContext& dbg)
-    {
-        m_window.m_input->imGuiHasKeyboard =
-            ImGui::IsAnyItemActive() ||
-            ImGui::IsAnyItemFocused() ||
-            ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
-
-        m_window.m_input->imGuiHasMouse =
-            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-            ImGui::IsAnyItemHovered() ||
-            ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
-    }
-
     void EditorFrame::renderMenuBar(
         const RenderContext& ctx,
         render::DebugContext& dbg)
@@ -183,7 +186,8 @@ namespace editor {
         {
             if (ImGui::BeginMenu("File"))
             {
-                ImGui::Checkbox("ImGui Demo", &m_state.m_imguiDemo);
+                ImGui::Checkbox("ImGui Demo", &m_state.m_showImguiDemo);
+                ImGui::Checkbox("Console", &m_state.m_showConsole);
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit"))

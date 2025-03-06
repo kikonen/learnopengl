@@ -31,3 +31,17 @@ void Frame::render(const RenderContext& ctx)
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+void Frame::trackImGuiState(
+    render::DebugContext& dbg)
+{
+    m_window.m_input->imGuiHasKeyboard =
+        ImGui::IsAnyItemActive() ||
+        ImGui::IsAnyItemFocused() ||
+        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+
+    m_window.m_input->imGuiHasMouse =
+        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+        ImGui::IsAnyItemHovered() ||
+        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+}

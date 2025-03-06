@@ -11,5 +11,8 @@ namespace event {
 
     Event::~Event()
     {
+        //switch (type) {
+        //    case
+        //}
     }
 }
