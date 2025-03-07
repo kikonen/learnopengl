@@ -1,12 +1,10 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <sol/sol.hpp>
+#include "script/lua_binding.h"
 
 namespace script
 {
-    struct LuaVec3 {
+    struct LuaNode {
         void bind(sol::state& state);
     };
 }

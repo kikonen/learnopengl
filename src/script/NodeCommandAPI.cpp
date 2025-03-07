@@ -104,10 +104,9 @@ namespace script
 
     int NodeCommandAPI::lua_move(
         const sol::table& lua_opt,
-        const sol::table& lua_pos) noexcept
+        const glm::vec3& pos) noexcept
     {
         const auto opt = readOptions(lua_opt);
-        const auto pos = readVec3(lua_pos);
 
         //KI_INFO_OUT(fmt::format("move: node={}, pos={}, opt={}", m_nodeId, pos, opt.str()));
 
@@ -123,12 +122,10 @@ namespace script
 
     int NodeCommandAPI::lua_move_spline(
         const sol::table& lua_opt,
-        const sol::table& lua_p,
-        const sol::table& lua_pos) noexcept
+        const glm::vec3& p,
+        const glm::vec3& pos) noexcept
     {
         const auto opt = readOptions(lua_opt);
-        const auto p = readVec3(lua_p);
-        const auto pos = readVec3(lua_pos);
 
         //KI_INFO_OUT(fmt::format("move_spline: node={}, p={}, pos={}, opt={}", m_nodeId, p, pos, opt.str()));
 
@@ -145,11 +142,10 @@ namespace script
 
     int NodeCommandAPI::lua_rotate(
         const sol::table& lua_opt,
-        const sol::table& lua_axis,
+        const glm::vec3& axis,
         const float lua_degrees) noexcept
     {
         const auto opt = readOptions(lua_opt);
-        const auto axis = readVec3(lua_axis);
 
         //KI_INFO_OUT(fmt::format("rotate: node={}, rot = {}, opt={}", m_nodeId, rot, opt.str()));
 
@@ -166,10 +162,9 @@ namespace script
 
     int NodeCommandAPI::lua_scale(
         const sol::table& lua_opt,
-        const sol::table& lua_scale) noexcept
+        const glm::vec3& scale) noexcept
     {
         const auto opt = readOptions(lua_opt);
-        const auto scale = readVec3(lua_scale);
 
         //KI_INFO_OUT(fmt::format("scale: node={}, scale={}, opt={}", m_nodeId, scale, opt.str()));
 

@@ -94,21 +94,20 @@ local function animation()
   local pos = node:get_pos()
 
   printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
-  pos.x = 22
   printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
 
-  local vec2 = Vec3.new(1, 2, 3)
-  printf("[%d, %d, %d] = %d\n", vec2.x, vec2.y, vec2.z, vec2:len())
+  -- local vec2 = Vec3.new(1, 2, 3)
+  -- printf("[%d, %d, %d] = %d\n", vec2.x, vec2.y, vec2.z, vec2:len())
 
-  local n = glm.normalize(vec2)
-  printf("[%d, %d, %d] = %d\n", n.x, n.y, n.z, n:len())
+  -- local n = glm.normalize(vec2)
+  -- printf("[%d, %d, %d] = %d\n", n.x, n.y, n.z, n:len())
 
   local function animation_listener()
     cid = idle(wid)
 
-    -- cid2 = cmd:move(
-    --   { after=cid, time=10, relative=false },
-    --   Vec3.new(pos.x - 2, pos.y, pos.z))
+    cid2 = cmd:move(
+      { after=cid, time=10, relative=false },
+      { pos.x - 2, pos.y, pos.z })
 
     cid = cmd:call(
       { after=cid, object=true },

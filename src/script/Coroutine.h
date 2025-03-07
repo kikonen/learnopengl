@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <sol/sol.hpp>
+
+#include "script/lua_binding.h"
 
 namespace script
 {

@@ -76,7 +76,7 @@ namespace {
 
     std::vector<script::command_id> g_rayMarkers;
 
-    constexpr float HIT_RATE = 0.25f;
+    constexpr float HIT_RATE = 0.01f;
     float g_hitElapsed = 0.f;
 }
 

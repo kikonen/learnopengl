@@ -3,11 +3,11 @@
 #include <map>
 #include <vector>
 
-#include <sol/sol.hpp>
-
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"
+
+#include "script/lua_binding.h"
 
 namespace script
 {
@@ -37,21 +37,21 @@ namespace script
 
         int lua_move(
             const sol::table& lua_opt,
-            const sol::table& pos) noexcept;
+            const glm::vec3& pos) noexcept;
 
         int lua_move_spline(
             const sol::table& lua_opt,
-            const sol::table& p,
-            const sol::table& pos) noexcept;
+            const glm::vec3& p,
+            const glm::vec3& pos) noexcept;
 
         int lua_rotate(
             const sol::table& lua_opt,
-            const sol::table& lua_dir,
+            const glm::vec3& axis,
             const float lua_degrees) noexcept;
 
         int lua_scale(
             const sol::table& lua_opt,
-            const sol::table& scale) noexcept;
+            const glm::vec3& scale) noexcept;
 
         int lua_set_text(
             const sol::table& lua_opt,

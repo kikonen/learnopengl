@@ -1,8 +1,8 @@
 #pragma once
 
-#include <sol/sol.hpp>
-
 #include "ki/size.h"
+
+#include "script/lua_binding.h"
 
 namespace script
 {

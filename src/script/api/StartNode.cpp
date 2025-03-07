@@ -1,10 +1,8 @@
 #include "StartNode.h"
 
-#include <sol/sol.hpp>
-
-#include <sol/sol.hpp>
 #include "engine/UpdateContext.h"
 
+#include "script/lua_binding.h"
 #include "script/Coroutine.h"
 
 namespace script

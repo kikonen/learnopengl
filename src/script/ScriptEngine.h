@@ -6,7 +6,7 @@
 #include <mutex>
 #include <functional>
 
-#include <sol/sol.hpp>
+#include "script/lua_binding.h"
 
 #include "ki/size.h"
 

@@ -3,13 +3,13 @@
 #include <string>
 
 #include <glm/glm.hpp>
-#include <sol/sol.hpp>
 
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"
 
 #include "script/size.h"
+#include "script/lua_binding.h"
 
 namespace script
 {

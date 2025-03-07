@@ -1080,19 +1080,19 @@
     <ClCompile Include="src\script\lua_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\types\LuaVec3.cpp">
+    <ClCompile Include="src\script\user_type\LuaVec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\types\LuaNode.cpp">
+    <ClCompile Include="src\script\user_type\LuaNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\types\LuaCommand.cpp">
+    <ClCompile Include="src\script\user_type\LuaCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\types\LuaUtil.cpp">
+    <ClCompile Include="src\script\user_type\LuaUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\types\LuaGlm.cpp">
+    <ClCompile Include="src\script\user_type\LuaGlm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp">
@@ -2444,19 +2444,19 @@
     <ClInclude Include="src\script\lua_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\types\LuaVec3.h">
+    <ClInclude Include="src\script\user_type\LuaVec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\types\LuaNode.h">
+    <ClInclude Include="src\script\user_type\LuaNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\types\LuaCommand.h">
+    <ClInclude Include="src\script\user_type\LuaCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\types\LuaUtil.h">
+    <ClInclude Include="src\script\user_type\LuaUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\types\LuaGlm.h">
+    <ClInclude Include="src\script\user_type\LuaGlm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\console\ConsoleFrame.h">
@@ -2466,6 +2466,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\decal\DecalCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\lua_binding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\binding\vec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,11 +24,11 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
-#include "types/LuaUtil.h"
-#include "types/LuaGlm.h"
-#include "types/LuaVec3.h"
-#include "types/LuaNode.h"
-#include "types/LuaCommand.h"
+#include "user_type/LuaUtil.h"
+#include "user_type/LuaGlm.h"
+//#include "user_type/LuaVec3.h"
+#include "user_type/LuaNode.h"
+#include "user_type/LuaCommand.h"
 
 
 namespace {
@@ -160,10 +160,10 @@ namespace script
             LuaGlm t;
             t.bind(lua);
         }
-        {
-            LuaVec3 t;
-            t.bind(lua);
-        }
+        //{
+        //    LuaVec3 t;
+        //    t.bind(lua);
+        //}
     }
 
     script::script_id ScriptEngine::registerScript(std::string_view source)

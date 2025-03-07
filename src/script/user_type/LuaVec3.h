@@ -2,11 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include <sol/sol.hpp>
+#include "script/lua_binding.h"
 
 namespace script
 {
-    struct LuaCommand {
+    struct LuaVec3 {
         void bind(sol::state& state);
     };
 }

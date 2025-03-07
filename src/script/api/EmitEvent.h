@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sol/sol.hpp>
+#include "script/lua_binding.h"
 
 #include "NodeCommand.h"
 
