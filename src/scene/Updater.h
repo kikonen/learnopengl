@@ -34,9 +34,9 @@ public:
     void start();
     void run();
 
-    virtual uint32_t getActiveCount() const noexcept = 0;
     virtual void update(const UpdateContext& ctx) = 0;
 
+    virtual std::string getStats() = 0;
 
 protected:
     bool m_loaded{ false };

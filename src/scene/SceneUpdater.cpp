@@ -1,5 +1,7 @@
 #include "SceneUpdater.h"
 
+#include <fmt/format.h>
+
 #include "ki/Timer.h"
 
 #include "asset/Assets.h"
@@ -115,11 +117,6 @@ void SceneUpdater::prepare()
     m_prepared = true;
 }
 
-uint32_t SceneUpdater::getActiveCount() const noexcept
-{
-    return m_registry->m_nodeRegistry->getNodeCount();
-}
-
 void SceneUpdater::update(const UpdateContext& ctx)
 {
     KI_TIMER("[loop]  ");
@@ -190,4 +187,13 @@ void SceneUpdater::handleNodeAdded(Node* node)
     if (!node) return;
 
     animation::AnimationSystem::get().handleNodeAdded(node);
+}
+
+std::string SceneUpdater::getStats()
+{
+    const auto nodeCount = m_registry->m_nodeRegistry->getNodeCount();
+    const auto decalCount = decal::DecalSystem::get().getActiveDecalCount();
+    const auto physicsCount = physics::PhysicsEngine::get().getObjectCount();
+
+    return fmt::format("nodes={}, decals={}, physics={}", nodeCount, decalCount, physicsCount);
 }

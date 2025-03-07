@@ -1,5 +1,7 @@
 #include "AnimationUpdater.h"
 
+#include <fmt/format.h>
+
 #include "util/Log.h"
 
 #include "animation/Animator.h"
@@ -20,12 +22,13 @@ AnimationUpdater::AnimationUpdater(
     : Updater("AS", 22, registry, alive)
 {}
 
-uint32_t AnimationUpdater::getActiveCount() const noexcept
-{
-    return animation::AnimationSystem::get().getActiveCount();
-}
-
 void AnimationUpdater::update(const UpdateContext& ctx)
 {
     animation::AnimationSystem::get().updateWT(ctx);
+}
+
+std::string AnimationUpdater::getStats()
+{
+    const auto animCount = animation::AnimationSystem::get().getActiveCount();
+    return fmt::format("animations={}", animCount);
 }

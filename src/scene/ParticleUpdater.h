@@ -9,6 +9,7 @@ public:
         std::shared_ptr<Registry> registry,
         std::shared_ptr<std::atomic<bool>> alive);
 
-    virtual uint32_t getActiveCount() const noexcept override;
     virtual void update(const UpdateContext& ctx) override;
+
+    virtual std::string getStats() override;
 };

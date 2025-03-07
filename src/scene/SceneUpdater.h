@@ -14,8 +14,9 @@ public:
     virtual void shutdown() override;
     virtual void prepare() override;
 
-    virtual uint32_t getActiveCount() const noexcept override;
     void update(const UpdateContext& ctx);
+
+    virtual std::string getStats() override;
 
 private:
     void handleNodeAdded(Node* node);

@@ -126,9 +126,9 @@ void Updater::run()
 
         if (fpsCounter.isUpdate())
         {
-            KI_INFO(fmt::format("{} - active={}",
+            KI_INFO(fmt::format("{} - {}",
                 fpsCounter.formatSummary(m_prefix),
-                getActiveCount()));
+                getStats()));
         }
 
         if (delay > 0) {
