@@ -29,6 +29,8 @@ namespace decal
         glm::vec2 m_lifetimeVariation{ 0.f };
         glm::vec2 m_spriteSpeedVariation{ 0.f };
 
+        bool m_static : 1 { true };
+
         operator bool() const noexcept {
             return m_sid;
         }

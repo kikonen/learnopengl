@@ -65,6 +65,9 @@ namespace loader {
             else if (k == "sprite_speed_variation") {
                 data.spriteSpeedVariation = readVec2(v);
             }
+            else if (k == "static") {
+                data.isStatic = readBool(v);
+            }
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
@@ -105,6 +108,8 @@ namespace loader {
         df.m_scaleVariation = data.scaleVariation;
         df.m_lifetimeVariation = data.lifetimeVariation;
         df.m_spriteSpeedVariation = data.spriteSpeedVariation;
+
+        df.m_static = data.isStatic;
 
         decal::DecalRegistry::get().addDecal(df);
     }

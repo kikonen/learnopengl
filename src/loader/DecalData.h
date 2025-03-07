@@ -19,6 +19,8 @@ namespace loader {
 
         uint8_t spriteBaseIndex{ 0 };
 
+        bool isStatic{ true };
+
         MaterialData materialData;
     };
 }

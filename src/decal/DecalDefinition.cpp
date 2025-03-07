@@ -41,6 +41,7 @@ namespace decal {
             decal.m_rotation = m_rotation;
             decal.m_spriteBaseIndex = m_spriteBaseIndex;
             decal.m_spriteCount = m_spriteCount;
+            decal.m_static = m_static;
 
             decal.m_lifetime = variant(m_lifetime, m_lifetimeVariation);
             decal.m_rotation = glm::radians(variant(m_rotation, m_rotationVariation));
