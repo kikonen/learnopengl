@@ -42,6 +42,8 @@ namespace decal {
         uint8_t m_spriteBaseIndex{ 0 };
         uint8_t m_spriteCount{ 1 };
 
+        bool m_static : 1 { true };
+
         bool update(const UpdateContext& ctx) noexcept;
 
         void updateSSBO(DecalSSBO& ssbo) const noexcept;

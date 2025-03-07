@@ -2,6 +2,10 @@
 
 #include "Renderer.h"
 
+namespace decal {
+    class DecalCollection;
+}
+
 class DecalRenderer final : public Renderer
 {
 public:
@@ -17,6 +21,15 @@ public:
 
     void renderBlend(
         const RenderContext& ctx);
+
+private:
+    void renderSolidCollection(
+        const RenderContext& ctx,
+        const decal::DecalCollection& collection);
+
+    void renderBlendCollection(
+        const RenderContext& ctx,
+        const decal::DecalCollection& collection);
 
 private:
     ki::program_id m_alphaDecalProgramId{ 0 };

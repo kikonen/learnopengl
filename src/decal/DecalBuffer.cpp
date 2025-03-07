@@ -18,7 +18,7 @@
 #include "registry/Registry.h"
 
 #include "Decal.h"
-#include "DecalSystem.h"
+#include "DecalCollection.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
@@ -26,8 +26,8 @@ namespace {
 }
 
 namespace decal {
-    DecalBuffer::DecalBuffer(DecalSystem* decalSystem)
-        : m_decalSystem{ decalSystem }
+    DecalBuffer::DecalBuffer(DecalCollection* collection)
+        : m_collection{ collection }
     {
     }
 
@@ -67,9 +67,14 @@ namespace decal {
         clear();
     }
 
+    void DecalBuffer::bind()
+    {
+        m_ssbo.bindSSBO(SSBO_DECALS);
+    }
+
     void DecalBuffer::update(const UpdateContext& ctx)
     {
-        if (!m_decalSystem->m_updateReady) return;
+        if (!m_collection->m_updateReady) return;
         if (!ctx.m_dbg.m_decalEnabled) return;
 
         //m_frameSkipCount++;
@@ -78,21 +83,21 @@ namespace decal {
         //}
         //m_frameSkipCount = 0;
 
-        updateBuffer(m_decalSystem->m_snapshot);
+        updateBuffer(m_collection->m_snapshot);
     }
 
     void DecalBuffer::updateBuffer(
         const std::vector<DecalSSBO>& snapshot)
     {
-        std::lock_guard lock(m_decalSystem->m_snapshotLock);
+        std::lock_guard lock(m_collection->m_snapshotLock);
 
-        if (m_decalSystem->m_snapshotCount == 0) {
-            m_decalSystem->m_activeCount = 0;
+        if (m_collection->m_snapshotCount == 0) {
+            m_collection->m_activeCount = 0;
             return;
         }
 
         constexpr size_t sz = sizeof(DecalSSBO);
-        const size_t totalCount = m_decalSystem->m_snapshotCount;
+        const size_t totalCount = m_collection->m_snapshotCount;
 
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
@@ -115,8 +120,8 @@ namespace decal {
             totalCount * sz,
             snapshot.data());
 
-        m_decalSystem->m_activeCount = totalCount;
+        m_collection->m_activeCount = totalCount;
 
-        m_decalSystem->m_updateReady = false;
+        m_collection->m_updateReady = false;
     }
 }

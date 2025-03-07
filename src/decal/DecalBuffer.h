@@ -12,22 +12,21 @@
 
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
-
-class Registry;
 
 namespace decal {
-    class DecalSystem;
+    class DecalCollection;
 
     class DecalBuffer final
     {
     public:
-        DecalBuffer(DecalSystem* decalSystem);
+        DecalBuffer(DecalCollection* collection);
         ~DecalBuffer();
 
         void clear();
         void shutdown();
         void prepare();
+
+        void bind();
 
         void update(const UpdateContext& ctx);
 
@@ -36,7 +35,7 @@ namespace decal {
             const std::vector<DecalSSBO>& snapshot);
 
     private:
-        DecalSystem* const m_decalSystem;
+        DecalCollection* const m_collection;
 
         kigl::GLBuffer m_ssbo{ "decal_ssbo" };
         size_t m_lastDecalSize{ 0 };

@@ -1098,6 +1098,9 @@
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\decal\DecalCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2460,6 +2463,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\console\ConsoleState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\decal\DecalCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

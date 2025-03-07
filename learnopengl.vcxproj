@@ -203,6 +203,7 @@
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
     <ClCompile Include="src\asset\LayerInfo.cpp" />
     <ClCompile Include="src\decal\DecalBuffer.cpp" />
+    <ClCompile Include="src\decal\DecalCollection.cpp" />
     <ClCompile Include="src\decal\DecalDefinition.cpp" />
     <ClCompile Include="src\decal\DecalRegisry.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
@@ -561,6 +562,7 @@
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\decal\DecalBuffer.h" />
+    <ClInclude Include="src\decal\DecalCollection.h" />
     <ClInclude Include="src\decal\DecalDefinition.h" />
     <ClInclude Include="src\decal\DecalRegistry.h" />
     <ClInclude Include="src\decal\DecalType.h" />

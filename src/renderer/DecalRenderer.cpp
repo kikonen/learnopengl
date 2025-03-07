@@ -18,7 +18,8 @@
 
 #include "backend/gl/DrawElementsIndirectCommand.h"
 
-#include "Decal/DecalSystem.h"
+#include "decal/DecalSystem.h"
+#include "decal/DecalCollection.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -78,8 +79,33 @@ void DecalRenderer::renderSolid(
 {
     if (!isEnabled()) return;
 
-    const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
+    auto& collections = decal::DecalSystem::get().getCollections();
+    for (auto& coll : collections) {
+        renderSolidCollection(ctx, coll);
+    }
+}
+
+void DecalRenderer::renderBlend(
+    const RenderContext& ctx)
+{
+    if (!isEnabled()) return;
+
+    auto& collections = decal::DecalSystem::get().getCollections();
+    for (auto& coll : collections) {
+        renderBlendCollection(ctx, coll);
+    }
+}
+
+void DecalRenderer::renderSolidCollection(
+    const RenderContext& ctx,
+    const decal::DecalCollection& collection)
+{
+    if (!isEnabled()) return;
+
+    const auto instanceCount = collection.getActiveDecalCount();
     if (instanceCount == 0) return;
+
+    collection.bind();
 
     auto& state = ctx.m_state;
     const bool lineMode = ctx.m_forceLineMode;
@@ -118,13 +144,16 @@ void DecalRenderer::renderSolid(
     }
 }
 
-void DecalRenderer::renderBlend(
-    const RenderContext& ctx)
+void DecalRenderer::renderBlendCollection(
+    const RenderContext& ctx,
+    const decal::DecalCollection& collection)
 {
     if (!isEnabled()) return;
 
-    const auto instanceCount = decal::DecalSystem::get().getActiveDecalCount();
+    const auto instanceCount = collection.getActiveDecalCount();
     if (instanceCount == 0) return;
+
+    collection.bind();
 
     auto& state = ctx.m_state;
     const bool lineMode = ctx.m_forceLineMode;

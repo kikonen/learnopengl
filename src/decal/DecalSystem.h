@@ -1,27 +1,16 @@
 #pragma once
 
 #include <vector>
-#include <mutex>
-#include <atomic>
-#include <memory>
-
-#include "Decal.h"
-#include "DecalSSBO.h"
 
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
-
-class Registry;
-class Program;
 
 namespace decal {
-    class DecalBuffer;
+    struct Decal;
+    class DecalCollection;
 
     class DecalSystem final
     {
-        friend DecalBuffer;
-
     public:
         static DecalSystem& get() noexcept;
 
@@ -48,32 +37,16 @@ namespace decal {
 
         void addDecal(const Decal& decal);
 
-        uint32_t getActiveDecalCount() const noexcept {
-            return static_cast<uint32_t>(m_activeCount);
+        const std::vector<DecalCollection>& getCollections() const
+        {
+            return m_collections;
         }
 
-        bool isFull() const noexcept {
-            return !m_enabled || m_decals.size() >= m_maxCount;
-        }
-
-    private:
-        void snapshotDecals();
+        int getActiveDecalCount() const noexcept;
 
     private:
         bool m_enabled{ false };
 
-        std::unique_ptr<DecalBuffer> m_decalBuffer;
-
-        std::mutex m_lock{};
-        std::mutex m_snapshotLock{};
-
-        std::atomic_bool m_updateReady{ false };
-
-        size_t m_maxCount{ 0 };
-        std::vector<Decal> m_decals;
-
-        std::vector<DecalSSBO> m_snapshot;
-        size_t m_snapshotCount{ 0 };
-        size_t m_activeCount{ 0 };
+        std::vector<DecalCollection> m_collections;
     };
 }
