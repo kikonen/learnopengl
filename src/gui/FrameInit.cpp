@@ -12,7 +12,9 @@
 #include "engine/Engine.h"
 
 FrameInit::FrameInit(Window& window)
-    : window(window)
+    : m_window(window),
+    m_fontSize{ 18 },
+    m_fontPath{ "fonts/Vera.ttf" }
 {
     const auto& assets = Assets::get();
 

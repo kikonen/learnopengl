@@ -2,7 +2,7 @@
 
 #define USE_BONES_NORMAL 1
 
-#include unit_cube.glsl
+#include unit_cube_strip.glsl
 
 #include struct_material.glsl
 #include struct_resolved_material.glsl

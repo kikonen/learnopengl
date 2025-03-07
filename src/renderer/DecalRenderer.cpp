@@ -111,7 +111,7 @@ void DecalRenderer::renderSolid(
         Program::get(m_alphaDecalProgramId)->bind();
     }
 
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, instanceCount);
 
     if (!lineMode) {
         state.setDepthMask(GL_TRUE);
@@ -150,7 +150,7 @@ void DecalRenderer::renderBlend(
         Program::get(m_blendDecalProgramId)->bind();
     }
 
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, instanceCount);
 
     if (!lineMode) {
         state.setDepthMask(GL_TRUE);

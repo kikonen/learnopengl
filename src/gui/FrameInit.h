@@ -13,7 +13,7 @@ public:
     void prepare(const PrepareContext& ctx);
 
 private:
-    Window& window;
+    Window& m_window;
 
     float m_fontSize;
     std::string m_fontPath;
