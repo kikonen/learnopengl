@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\luajit_wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SupportJustMyCode>false</SupportJustMyCode>
@@ -163,7 +163,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\luajit_wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -1002,9 +1002,9 @@
     <ClInclude Include="src\ki\Timer.h" />
     <ClInclude Include="src\gui\Window.h" />
     <ClInclude Include="src\renderer\WaterNoiseGenerator.h" />
-    <ClInclude Include="vendor\wrapper\include\lauxlib.h" />
-    <ClInclude Include="vendor\wrapper\include\lua.h" />
-    <ClInclude Include="vendor\wrapper\include\lualib.h" />
+    <ClInclude Include="vendor\luajit_wrapper\include\lauxlib.h" />
+    <ClInclude Include="vendor\luajit_wrapper\include\lua.h" />
+    <ClInclude Include="vendor\luajit_wrapper\include\lualib.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />
