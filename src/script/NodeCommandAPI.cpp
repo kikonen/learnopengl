@@ -311,7 +311,7 @@ namespace script
             });
     }
 
-    int NodeCommandAPI::lua_call(
+    int NodeCommandAPI::lua_invoke(
         const sol::table& lua_opt,
         const sol::function& fn,
         const sol::optional<sol::table>& fn_args) noexcept

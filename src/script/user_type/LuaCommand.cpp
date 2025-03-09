@@ -28,7 +28,7 @@ namespace script
 
             "animation_play", &NodeCommandAPI::lua_animation_play,
 
-            "call", &NodeCommandAPI::lua_call,
+            "call", &NodeCommandAPI::lua_invoke,
             "emit", &NodeCommandAPI::lua_emit
         );
     }
