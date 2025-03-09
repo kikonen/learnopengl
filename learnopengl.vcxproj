@@ -250,10 +250,8 @@
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
     <ClCompile Include="src\script\lua_util.cpp" />
     <ClCompile Include="src\script\user_type\LuaCommand.cpp" />
-    <ClCompile Include="src\script\user_type\LuaGlm.cpp" />
     <ClCompile Include="src\script\user_type\LuaNode.cpp" />
     <ClCompile Include="src\script\user_type\LuaUtil.cpp" />
-    <ClCompile Include="src\script\user_type\LuaVec3.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
     <ClCompile Include="src\shader\ShaderSource.cpp" />
@@ -615,12 +613,10 @@
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />
     <ClInclude Include="src\script\lua_binding.h" />
     <ClInclude Include="src\script\lua_util.h" />
-    <ClInclude Include="src\script\binding\vec3.h" />
-    <ClInclude Include="src\script\user_type\LuaGlm.h" />
+    <ClInclude Include="src\script\binding\bind_vec3.h" />
     <ClInclude Include="src\script\user_type\LuaCommand.h" />
     <ClInclude Include="src\script\user_type\LuaNode.h" />
     <ClInclude Include="src\script\user_type\LuaUtil.h" />
-    <ClInclude Include="src\script\user_type\LuaVec3.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />

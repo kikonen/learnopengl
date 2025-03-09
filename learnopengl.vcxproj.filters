@@ -1080,9 +1080,6 @@
     <ClCompile Include="src\script\lua_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\user_type\LuaVec3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\script\user_type\LuaNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1090,9 +1087,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\user_type\LuaUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\script\user_type\LuaGlm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp">
@@ -1943,15 +1937,6 @@
     <ClInclude Include="src\loader\TerrainData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lua.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lauxlib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lualib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\material\ColorTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2444,9 +2429,6 @@
     <ClInclude Include="src\script\lua_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\user_type\LuaVec3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\script\user_type\LuaNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2454,9 +2436,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\user_type\LuaUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\script\user_type\LuaGlm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\console\ConsoleFrame.h">
@@ -2471,7 +2450,16 @@
     <ClInclude Include="src\script\lua_binding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\binding\vec3.h">
+    <ClInclude Include="src\script\binding\bind_vec3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\luajit_wrapper\include\lauxlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\luajit_wrapper\include\lua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\luajit_wrapper\include\lualib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

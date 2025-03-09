@@ -4,32 +4,33 @@
 
 namespace script
 {
+    // https://thephd.dev/sol3-feature-complete
     void LuaCommand::bind(sol::state& state)
     {
-        state.new_usertype<NodeCommandAPI>("NodeCommandApi",
-            "cancel", &NodeCommandAPI::lua_cancel,
-            "wait", &NodeCommandAPI::lua_wait,
-            "sync", &NodeCommandAPI::lua_sync,
+        sol::usertype<NodeCommandAPI> t = state.new_usertype<NodeCommandAPI>("NodeCommandAPI");
 
-            "move", &NodeCommandAPI::lua_move,
-            "move_spline", &NodeCommandAPI::lua_move_spline,
-            "rotate", & NodeCommandAPI::lua_rotate,
-            "scale", &NodeCommandAPI::lua_scale,
+        t["cancel"] = &NodeCommandAPI::lua_cancel;
+        t["wait"] = &NodeCommandAPI::lua_wait;
+        t["sync"] = &NodeCommandAPI::lua_sync;
 
-            "set_text", &NodeCommandAPI::lua_set_text,
-            "set_visible", &NodeCommandAPI::lua_set_visible,
+        t["move"] = &NodeCommandAPI::lua_move;
+        t["move_spline"] = &NodeCommandAPI::lua_move_spline;
+        t["rotate"] = & NodeCommandAPI::lua_rotate;
+        t["scale"] = &NodeCommandAPI::lua_scale;
 
-            "audio_play", &NodeCommandAPI::lua_audio_play,
-            "audio_pause", &NodeCommandAPI::lua_audio_pause,
-            "audio_stop", &NodeCommandAPI::lua_audio_stop,
+        t["set_text"] = & NodeCommandAPI::lua_set_text;
+        t["set_visible"] = & NodeCommandAPI::lua_set_visible;
 
-            "particle_emit", &NodeCommandAPI::lua_particle_emit,
-            "particle_stop", &NodeCommandAPI::lua_particle_stop,
+        t["audio_play"] = & NodeCommandAPI::lua_audio_play;
+        t["audio_pause"] = & NodeCommandAPI::lua_audio_pause;
+        t["audio_stop"] = & NodeCommandAPI::lua_audio_stop;
 
-            "animation_play", &NodeCommandAPI::lua_animation_play,
+        t["particle_emit"] = & NodeCommandAPI::lua_particle_emit;
+        t["particle_stop"] = & NodeCommandAPI::lua_particle_stop;
 
-            "call", &NodeCommandAPI::lua_invoke,
-            "emit", &NodeCommandAPI::lua_emit
-        );
+        t["animation_play"] = & NodeCommandAPI::lua_animation_play;
+
+        t["call"] = & NodeCommandAPI::lua_invoke;
+        t["emit"] = & NodeCommandAPI::lua_emit;
     }
 }

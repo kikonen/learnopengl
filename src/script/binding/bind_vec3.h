@@ -9,6 +9,9 @@
 #include <sol/forward.hpp>
 
 // https://blog.rubenwardy.com/2020/07/22/sol3-vector-extension/
+//
+// NOtE KI this does not seem to work if not in "sol" namespace
+//
 namespace sol {
     //struct lua_type_of<glm::vec3>
     //    : std::integral_constant<sol::type, sol::type::table> {
@@ -22,7 +25,7 @@ namespace sol {
         sol::stack::record& tracking)
     {
         int absoluteIndex = lua_absindex(L, index);
-        if (!stack::check<sol::table>(L, absoluteIndex, handler)) {
+        if (!sol::stack::check<sol::table>(L, absoluteIndex, handler)) {
             tracking.use(1);
             return false;
         }

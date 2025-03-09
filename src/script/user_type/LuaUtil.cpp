@@ -4,6 +4,7 @@
 
 namespace script
 {
+    // https://thephd.dev/sol3-feature-complete
     void LuaUtil::bind(sol::state& state)
     {
         state["util"] = state.create_table_with(

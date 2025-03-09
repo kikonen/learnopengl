@@ -25,8 +25,6 @@
 #include "mesh/MeshType.h"
 
 #include "user_type/LuaUtil.h"
-#include "user_type/LuaGlm.h"
-//#include "user_type/LuaVec3.h"
 #include "user_type/LuaNode.h"
 #include "user_type/LuaCommand.h"
 
@@ -156,14 +154,6 @@ namespace script
             LuaNode t;
             t.bind(lua);
         }
-        {
-            LuaGlm t;
-            t.bind(lua);
-        }
-        //{
-        //    LuaVec3 t;
-        //    t.bind(lua);
-        //}
     }
 
     script::script_id ScriptEngine::registerScript(std::string_view source)

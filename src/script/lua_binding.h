@@ -2,4 +2,4 @@
 
 #include <sol/sol.hpp>
 
-#include "binding/vec3.h"
+#include "binding/bind_vec3.h"
