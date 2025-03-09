@@ -105,9 +105,10 @@ local function animation()
   local function animation_listener()
     cid = idle(wid)
 
+    local pos2 = math3d.vector(pos.x - 3, pos.y, pos.z)
     cid2 = cmd:move(
       { after=cid, time=10, relative=false },
-      { pos.x - 2, pos.y, pos.z })
+      pos2)
 
     cid = cmd:call(
       { after=cid, object=true },
@@ -144,6 +145,7 @@ local function animation()
   --   {},
   --   { type=Event.SCRIPT_RESUME, listener=listener_id})
 
+  print("cmd:call-1")
   wid = cmd:call(
     { after=wid },
     animation_listener)

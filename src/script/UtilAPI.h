@@ -13,9 +13,9 @@ namespace script
 
     public:
         static double lua_sid(
-            std::string id) noexcept;
+            const std::string& id) noexcept;
 
         static const std::string& lua_sid_name(
-            ki::sid_t id);
+            double id);
     };
 }

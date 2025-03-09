@@ -1002,9 +1002,9 @@
     <ClInclude Include="src\ki\Timer.h" />
     <ClInclude Include="src\gui\Window.h" />
     <ClInclude Include="src\renderer\WaterNoiseGenerator.h" />
-    <ClInclude Include="vendor\wrapper\include\lauxlib.h" />
-    <ClInclude Include="vendor\wrapper\include\lua.h" />
-    <ClInclude Include="vendor\wrapper\include\lualib.h" />
+    <ClInclude Include="vendor\wrapper\include_luajit\lauxlib.h" />
+    <ClInclude Include="vendor\wrapper\include_luajit\lua.h" />
+    <ClInclude Include="vendor\wrapper\include_luajit\lualib.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc" />

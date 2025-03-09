@@ -1943,13 +1943,13 @@
     <ClInclude Include="src\loader\TerrainData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lua.h">
+    <ClInclude Include="vendor\wrapper\include_luajit\lua.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lauxlib.h">
+    <ClInclude Include="vendor\wrapper\include_luajit\lauxlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\wrapper\include\lualib.h">
+    <ClInclude Include="vendor\wrapper\include_luajit\lualib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\ColorTexture.h">

@@ -20,14 +20,14 @@ namespace script
     //UtilAPI::~UtilAPI() = default;
 
     double UtilAPI::lua_sid(
-        std::string id) noexcept
+        const std::string& id) noexcept
     {
         ki::StringID sid{ id };
         return static_cast<double>(sid);
     }
 
     const std::string& UtilAPI::lua_sid_name(
-        ki::sid_t id)
+        double id)
     {
         return SID_NAME(id);
     }

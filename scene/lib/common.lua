@@ -16,6 +16,13 @@ prequire "debug"
 prequire "events"
 prequire "module_1"
 
+_G.math3d = prequire "math3d"
+print(math3d)
+-- print(format_table(math3d))
+local vec = math3d.vector(1,1,1)
+printf("math3d.length=%f\n", math3d.length(vec))
+print("math3d OK")
+
 local function test()
   print("LUA: testing...")
   local delay = 1.0

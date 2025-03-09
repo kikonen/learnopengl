@@ -26,13 +26,17 @@ namespace script {
                 opt.afterId = value.as<script::command_id>();
             }
             else if (k == "sid") {
-                opt.sid = value.as<unsigned int>();
+                // TODO KI 64bit SID *WONT* work with lua 5.4 as number
+                const auto v = value.as<double>();
+                opt.sid= static_cast<ki::sid_t>(v);
             }
             else if (k == "node") {
-                opt.nodeId = value.as<unsigned int>();
+                const auto v = value.as<double>();
+                opt.nodeId = static_cast<ki::node_id>(v);
             }
             else if (k == "index") {
-                opt.index = value.as<int>();
+                const auto v = value.as<double>();
+                opt.index = static_cast<int>(v);
             }
             else if (k == "time") {
                 opt.duration = value.as<float>();

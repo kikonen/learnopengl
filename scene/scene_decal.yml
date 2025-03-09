@@ -15,7 +15,7 @@ nodes:
     audio:
       listener:
         default: true
-      sources:
+      xsources:
         - name: idle_1
           path: audio/Wheeze 1_B2356390_normal.wav
           reference_distance: 0.1
@@ -61,11 +61,14 @@ nodes:
       - type: pawn
       - type: camera_zoom
     script: |
-      printf("here-script\n")
+      printf("here-script-1\n")
       local sid = util.sid("idle_1")
-      printf("SID: %s\n", sid)
+      printf("here-script-2\n")
+      printf("SID: %d\n", sid)
+      printf("here-script-3\n")
       cmd:audio_play(
         { sync=true, sid=sid })
+      printf("here-script-4\n")
   - id: dir_light_{c}_{t}
     mesh:
       path: light
@@ -329,6 +332,7 @@ nodes:
       cmd:animation_play(
         { name = "master:Idle" });
     script_file: scripts/seq_skeleton.lua
+    xscript_file: scripts/seq_skeleton_army.lua
   - id: light
     parent: lamp_origo
     type: origo
