@@ -317,6 +317,23 @@ end)", nodeFnName, script.m_source);
         return invokeLuaScript(script);
     }
 
+    sol::protected_function_result ScriptEngine::execRepl(
+        const std::string& script)
+    {
+        std::lock_guard lock(m_lock);
+
+        auto result = invokeLuaScript(script);
+        if (!result.valid()) {
+            auto res2 = invokeLuaScript("return " + script);
+            // NOTE KI retain error from original;
+            // seeing error with "return" is confusing
+            if (res2.valid()) {
+                return res2;
+            }
+        }
+        return result;
+    }
+
     bool ScriptEngine::hasFunction(
         pool::NodeHandle handle,
         std::string_view name)
@@ -360,6 +377,7 @@ end)", nodeFnName, script.m_source);
     sol::protected_function_result ScriptEngine::invokeLuaFunction(
         const std::function<sol::protected_function_result()>& fn)
     {
+        std::string error;
         try {
             sol::protected_function_result result = fn();
             if (!result.valid()) {
@@ -370,40 +388,33 @@ end)", nodeFnName, script.m_source);
             return result;
         }
         catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
-        }
-        catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+            error = ex.what();
         }
         catch (...) {
-            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
+            error = "UNKNOWN_ERROR";
         }
-        return {};
+        KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", error));
+
+        return { getState(), 0, 0, 0, sol::call_status::runtime };
     }
 
     // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
     sol::protected_function_result ScriptEngine::invokeLuaScript(
         const std::string& script)
     {
+        std::string error;
         try {
             KI_INFO_OUT(util::appendLineNumbers(script));
             return getState().safe_script(script);
         }
         catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex.what()));
-        }
-        catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
-        }
-        catch (const char* ex) {
-            KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", ex));
+            error = ex.what();
         }
         catch (...) {
-            KI_CRITICAL("SCRIPT::RUNTIME: UNKNOWN_ERROR");
+            error = "UNKNOWN_ERROR";
         }
-        return {};
+        KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", error));
+
+        return { getState(), 0, 0, 0, sol::call_status::runtime };
     }
 }

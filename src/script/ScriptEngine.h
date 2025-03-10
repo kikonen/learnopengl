@@ -79,6 +79,9 @@ namespace script
         sol::protected_function_result execScript(
             const std::string& script);
 
+        sol::protected_function_result execRepl(
+            const std::string& script);
+
     private:
         inline sol::state& getState() { return *m_state; }
 

@@ -43,7 +43,7 @@ namespace editor
         void renderHistory();
         void renderInput();
 
-        ScriptResult exec(const std::string& script);
+        void execCommand(const std::string& script);
 
     private:
         script::ScriptEngine* m_scriptEngine{ nullptr };
