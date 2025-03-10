@@ -34,9 +34,32 @@ namespace {
                 return err.what();
             }
 
-            //std::string value = result;
-            //return value;
-            return "WTF";
+            switch (result.get_type()) {
+            case sol::type::none:
+                return "";
+            case sol::type::lua_nil:
+                return "<nil>";
+            case sol::type::string:
+                return result.get<std::string>();
+            case sol::type::number:
+                return std::to_string(result.get<double>());
+            case sol::type::thread:
+                return "thread";
+            case sol::type::boolean:
+                return result.get<bool>() ? "true" : "false";
+            case sol::type::function:
+                return "function";
+            case sol::type::userdata:
+                return "userdata";
+            case sol::type::lightuserdata:
+                return "lightuserdata";
+            case sol::type::table:
+                return "table";
+            case sol::type::poly:
+                return "poly";
+            }
+
+            return fmt::format("type: {}", util::as_integer(result.get_type()));
         }
         catch (const std::exception& ex) {
             error = ex.what();
@@ -147,9 +170,15 @@ namespace editor
             for (const HistoryItem& item : m_state.m_items)
             {
                 {
+                    ImVec4 color = ImVec4(0.4f, 0.8f, 0.4f, 1.0f);
                     const char* cmd = item.m_command.c_str();
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, color);
                     ImGui::TextUnformatted(cmd);
+                    ImGui::PopStyleColor();
                 }
+
+                if (!item.m_result.empty())
                 {
                     const char* line = item.m_result.c_str();
 
@@ -158,19 +187,29 @@ namespace editor
 
                     // Normally you would store more information in your item than just a string.
                     // (e.g. make Items[] an array of structure, store color/type etc.)
-                    ImVec4 color;
+                    ImVec4 color = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
                     bool has_color = false;
 
-                    if (strstr(line, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-                    else if (strncmp(line, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
+                    if (strstr(line, "error")) {
+                        color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
+                        has_color = true;
+                    }
+                    else if (strncmp(line, "# ", 2) == 0) {
+                        color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f);
+                        has_color = true;
+                    }
+                    else if (strstr(line, "<nil>")) {
+                        color = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
+                        has_color = true;
+                    }
 
                     if (has_color) {
                         ImGui::PushStyleColor(ImGuiCol_Text, color);
                     }
-
                     ImGui::TextUnformatted(line);
-                    if (has_color)
+                    if (has_color) {
                         ImGui::PopStyleColor();
+                    }
                 }
             }
 
