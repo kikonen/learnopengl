@@ -103,10 +103,10 @@ namespace editor {
             m_console->draw(ctx);
         }
 
-        ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= 0
-            //| ImGuiConfigFlags_NavEnableKeyboard
-            | 0;
+        //ImGuiIO& io = ImGui::GetIO();
+        //io.ConfigFlags |= 0
+        //    //| ImGuiConfigFlags_NavEnableKeyboard
+        //    | 0;
 
         // NOTE KI don't waste CPU if Edit window is collapsed
         bool* openPtr = nullptr;

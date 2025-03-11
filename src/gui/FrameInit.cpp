@@ -21,7 +21,14 @@ FrameInit::FrameInit(Window& window)
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= 0
+            | ImGuiConfigFlags_DockingEnable
+            | ImGuiConfigFlags_NavEnableKeyboard
+            | 0;
+        io.ConfigDebugHighlightIdConflicts = true;
+    }
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window.m_glfwWindow, true);
     ImGui_ImplOpenGL3_Init(assets.glsl_version_str.c_str());

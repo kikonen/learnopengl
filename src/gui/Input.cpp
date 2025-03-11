@@ -136,6 +136,8 @@ void Input::updateMouseState()
 
 bool Input::isKeyDown(Key key) const noexcept
 {
+    if (!allowKeyboard()) return false;
+
     const auto& it = m_keyMappings.find(key);
     if (it == m_keyMappings.end()) return false;
 
@@ -150,6 +152,8 @@ bool Input::isKeyDown(Key key) const noexcept
 }
 
 bool Input::isModifierDown(Modifier modifier) const noexcept {
+    if (!allowKeyboard()) return false;
+
     const auto& it = m_modifierMappings.find(modifier);
     if (it == m_modifierMappings.end()) return false;
 
@@ -165,6 +169,8 @@ bool Input::isModifierDown(Modifier modifier) const noexcept {
 
 bool Input::isModifierPressed(Modifier modifier) const noexcept
 {
+    if (!allowKeyboard()) return false;
+
     if (modifier == Modifier::NONE) return true;
     const auto& it = m_modifierPressed.find(modifier);
     return it != m_modifierPressed.end() ? it->second : false;

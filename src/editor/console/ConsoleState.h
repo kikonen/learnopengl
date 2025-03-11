@@ -12,7 +12,7 @@ namespace editor
 
     struct ConsoleState
     {
-        char m_inputBuffer[2048];
+        char m_inputBuffer[8192];
 
         std::vector<HistoryItem> m_items;
         // -1: new line, 0..History.Size-1 browsing history.
