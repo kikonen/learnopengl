@@ -42,6 +42,8 @@ namespace editor
             return m_inputBuffer;
         }
 
+        void trimInput();
+
         std::string getInput()
         {
             return m_inputBuffer;

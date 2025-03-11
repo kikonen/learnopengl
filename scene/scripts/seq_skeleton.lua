@@ -16,14 +16,14 @@ local rnd = math.random
 
 function lua_node:ditto(args)
   print("LUA: DITTO_SHARED_CALLED")
-  printf("LUA: self=%s\n", format_table(self));
-  printf("LUA: args=%s\n", format_table(args));
+  printf("LUA: self=%s\n", table_format(self));
+  printf("LUA: args=%s\n", table_format(args));
 end
 
 local function ditto(args)
   print("LUA: DITTO_LOCAL_CALLED")
-  printf("LUA: self=%s\n", format_table(self));
-  printf("LUA: args=%s\n", format_table(args));
+  printf("LUA: self=%s\n", table_format(self));
+  printf("LUA: args=%s\n", table_format(args));
 end
 
 local function randomIdle()
@@ -93,8 +93,8 @@ local function animation()
   local cid = 0
   local pos = node:get_pos()
 
-  printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
-  printf("pos=%s\n", format_table({ x=pos.x, y=pos.y, z=pos.z }))
+  printf("pos=%s\n", table_format({ x=pos.x, y=pos.y, z=pos.z }))
+  printf("pos=%s\n", table_format({ x=pos.x, y=pos.y, z=pos.z }))
 
   -- local vec2 = Vec3.new(1, 2, 3)
   -- printf("[%d, %d, %d] = %d\n", vec2.x, vec2.y, vec2.z, vec2:len())
@@ -153,7 +153,7 @@ local function event_test()
   local listener_id
 
   local function test_listener(e)
-    printf("RECEIVED_EVENT: event=%s\n", format_table(e))
+    printf("RECEIVED_EVENT: event=%s\n", table_format(e))
   end
 
   printf("LISTEN_EVENTS: name=%s\n", node:get_name())

@@ -252,6 +252,7 @@ namespace editor
             input_text_flags,
             &textEditCallbackStub, (void*)this))
         {
+            m_state.trimInput();
             std::string cmd = m_state.getInput();
             if (!cmd.empty()) {
                 execCommand(cmd);

@@ -12,6 +12,7 @@ local function prequire(m)
 end
 
 prequire "util"
+prequire "table_util"
 prequire "debug"
 prequire "events"
 prequire "module_1"
