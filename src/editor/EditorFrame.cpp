@@ -625,7 +625,7 @@ namespace editor {
             viewport.invokeBindBefore();
             const auto& fb = viewport.getSourceFrameBuffer();
             auto& att = fb->m_spec.attachments[0];
-            ImTextureID texId = (void*)att.textureID;
+            ImTextureID texId = att.textureID;
             ImGui::Image(
                 texId,
                 ImVec2{ w, h },
@@ -648,7 +648,7 @@ namespace editor {
             // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
 
             const auto& att = fb.m_spec.attachments[attachmentIndex];
-            ImTextureID texId = (void*)att.textureID;
+            ImTextureID texId = att.textureID;
             ImGui::Image(
                 texId,
                 ImVec2{ w, h },
@@ -740,7 +740,7 @@ namespace editor {
                 //fb.bind(ctx);
                 //fb.bindFace();
 
-                ImTextureID texId = (void*)fb.getTextureID();
+                ImTextureID texId = fb.getTextureID();
                 ImGui::Image(
                     texId,
                     ImVec2{ w, h },

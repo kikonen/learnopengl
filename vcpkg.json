@@ -5,7 +5,7 @@
     {
       "name": "audiofile",
       "platform": "windows & x64",
-      "version>=": "1.1.1"
+      "version>=": "1.1.2"
     },
     {
       "name": "assimp",
@@ -15,7 +15,7 @@
     {
       "name": "entt",
       "platform": "windows & x64",
-      "version>=": "3.13.2"
+      "version>=": "3.14.0"
     },
     {
       "name": "crc32c",
@@ -30,17 +30,17 @@
     {
       "name": "fmt",
       "platform": "windows & x64",
-      "version>=": "10.2.1#2"
+      "version>=": "11.0.2#1"
     },
     {
       "name": "freetype",
       "platform": "windows & x64",
-      "version>=": "2.13.2#1"
+      "version>=": "2.13.3"
     },
     {
       "name": "freetype-gl",
       "platform": "windows & x64",
-      "version>=": "2022-01-17#3"
+      "version>=": "1.0"
     },
     {
       "name": "glfw3",
@@ -55,7 +55,7 @@
     {
       "name": "imgui",
       "platform": "windows & x64",
-      "version>=": "1.90.7",
+      "version>=": "1.91.8",
       "default-features": false,
       "features": [
         "docking-experimental",
@@ -67,22 +67,22 @@
     {
       "name": "ktx",
       "platform": "windows & x64",
-      "version>=": "4.3.1#1"
+      "version>=": "4.3.2#1"
     },
     {
       "name": "luajit",
       "platform": "windows & x64",
-      "version>=": "2023-01-04#5"
+      "version>=": "2023-01-04#6"
     },
     {
       "name": "ode",
       "platform": "windows & x64",
-      "version>=": "0.16.4#1"
+      "version>=": "0.16.6"
     },
     {
       "name": "openal-soft",
       "platform": "windows & x64",
-      "version>=": "1.23.1"
+      "version>=": "1.24.2"
     },
     {
       "name": "sol2",
@@ -92,7 +92,7 @@
     {
       "name": "spdlog",
       "platform": "windows & x64",
-      "version>=": "1.14.1"
+      "version>=": "1.15.1"
     },
     {
       "name": "stduuid",
@@ -106,7 +106,7 @@
     {
       "name": "yaml-cpp",
       "platform": "windows & x64",
-      "version>=": "0.8.0#1"
+      "version>=": "0.8.0#2"
     }
   ],
   "overrides": [

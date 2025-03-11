@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 
 namespace {
     const std::vector<std::regex> BOOL_MATCHERS{

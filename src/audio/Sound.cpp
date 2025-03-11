@@ -1,7 +1,7 @@
 #include "Sound.h"
 
 #include <fmt/format.h>
-#include <AudioFile.h>
+#include <AudioFile/AudioFile.h>
 
 #include "util/log.h"
 #include "util/util.h"
