@@ -13,23 +13,62 @@ namespace {
 Input::Input(Window* window)
     : window(window)
 {
-    m_keyMappings[Key::EXIT] = new int[] { GLFW_KEY_ESCAPE, 0 };
-    m_keyMappings[Key::FULL_SCREEN_TOGGLE] = new int[] { GLFW_KEY_F10, GLFW_KEY_F11, 0 };
-    m_keyMappings[Key::FORWARD] = new int[] { GLFW_KEY_W, GLFW_KEY_UP, 0 };
-    m_keyMappings[Key::BACKWARD] = new int[] { GLFW_KEY_S, GLFW_KEY_DOWN, 0 };
-    m_keyMappings[Key::LEFT] = new int[] { GLFW_KEY_A, GLFW_KEY_LEFT, 0 };
-    m_keyMappings[Key::RIGHT] = new int[] { GLFW_KEY_D, GLFW_KEY_RIGHT, 0 };
-    m_keyMappings[Key::ROTATE_LEFT] = new int[] { GLFW_KEY_Q, 0 };
-    m_keyMappings[Key::ROTATE_RIGHT] = new int[] { GLFW_KEY_E, 0 };
-    m_keyMappings[Key::UP] = new int[] { GLFW_KEY_PAGE_UP, 0 };
-    m_keyMappings[Key::DOWN] = new int[] { GLFW_KEY_PAGE_DOWN, 0 };
+    m_keyMappings[Key::EXIT] = new int[] {
+        GLFW_KEY_ESCAPE,
+        0 };
+    m_keyMappings[Key::FULL_SCREEN_TOGGLE] = new int[] {
+        GLFW_KEY_F10,
+        GLFW_KEY_F11,
+        0 };
+    m_keyMappings[Key::FORWARD] = new int[] {
+        GLFW_KEY_W,
+        GLFW_KEY_UP,
+        0 };
+    m_keyMappings[Key::BACKWARD] = new int[] {
+        GLFW_KEY_S,
+        GLFW_KEY_DOWN,
+        0 };
+    m_keyMappings[Key::LEFT] = new int[] {
+        GLFW_KEY_A,
+        GLFW_KEY_LEFT,
+        0 };
+    m_keyMappings[Key::RIGHT] = new int[] {
+        GLFW_KEY_D,
+        GLFW_KEY_RIGHT,
+        0 };
+    m_keyMappings[Key::ROTATE_LEFT] = new int[] {
+        GLFW_KEY_Q,
+        0 };
+    m_keyMappings[Key::ROTATE_RIGHT] = new int[] {
+        GLFW_KEY_E,
+        0 };
+    m_keyMappings[Key::UP] = new int[] {
+        GLFW_KEY_PAGE_UP,
+        0 };
+    m_keyMappings[Key::DOWN] = new int[] {
+        GLFW_KEY_PAGE_DOWN,
+        0 };
 
-    m_keyMappings[Key::ZOOM_IN] = new int[] { GLFW_KEY_HOME, 0 };
-    m_keyMappings[Key::ZOOM_OUT] = new int[] { GLFW_KEY_END, 0 };
+    m_keyMappings[Key::ZOOM_IN] = new int[] {
+        GLFW_KEY_HOME,
+        0 };
+    m_keyMappings[Key::ZOOM_OUT] = new int[] {
+        GLFW_KEY_END,
+        0 };
 
-    m_modifierMappings[Modifier::SHIFT] = new int[] { GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT, GLFW_KEY_CAPS_LOCK, 0 };
-    m_modifierMappings[Modifier::CONTROL] = new int[] { GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL, 0 };
-    m_modifierMappings[Modifier::ALT] = new int[] { GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT, 0 };
+    m_modifierMappings[Modifier::SHIFT] = new int[] {
+        GLFW_KEY_LEFT_SHIFT,
+        GLFW_KEY_RIGHT_SHIFT,
+        GLFW_KEY_CAPS_LOCK,
+        0};
+    m_modifierMappings[Modifier::CONTROL] = new int[] {
+        GLFW_KEY_LEFT_CONTROL,
+        GLFW_KEY_RIGHT_CONTROL,
+        0 };
+    m_modifierMappings[Modifier::ALT] = new int[] {
+        GLFW_KEY_LEFT_ALT,
+        GLFW_KEY_RIGHT_ALT,
+        0 };
 
     for (auto& mod : modifierKeys) {
         m_modifierDown[mod] = false;

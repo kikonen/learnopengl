@@ -75,7 +75,9 @@ namespace editor
 {
     ConsoleFrame::ConsoleFrame(Window& window)
         : Frame{ window }
-    { }
+    {
+        m_state.clear();
+    }
 
     ConsoleFrame::~ConsoleFrame() = default;
 
@@ -118,6 +120,8 @@ namespace editor
         renderMenuBar();
         renderHistory();
         renderInput();
+
+        trackImGuiState(dbg);
 
         ImGui::End();
     }
