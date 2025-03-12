@@ -1,10 +1,22 @@
+bool inShadowRange(float v)
+{
+  return v >= 0.0 && v <= 1.0;
+}
+
 // NOTE KI
 // https://computergraphics.stackexchange.com/questions/4354/exponential-shadow-maps-sampling-with-pcf-for-sampler2dshadow-instead-of-sampler
 float calcShadow(
   in sampler2DShadow shadowMap,
   in vec4 shadowPos)
 {
-  if (shadowPos.z > 1.0) return 0.0;
+  // "shadow band" issue
+  // https://www.youtube.com/watch?v=dwMcE8_Mt8U&t=320s
+  if (!(inShadowRange(shadowPos.x) ||
+	inShadowRange(shadowPos.y) ||
+	inShadowRange(shadowPos.z)))
+  {
+    return 1.0;
+  }
 
   // NOTE KI using glPolygonOffset
   // With GL_LINEAR & sampler2dshadow & textureProj

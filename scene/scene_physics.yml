@@ -58,9 +58,9 @@ nodes:
       base_rot: [90, 0, 0]
     pos: [1, 22, 40]
     rotation: [0, 180, 0]
-    #active: true
+    active: true
     camera:
-      #default: true
+      default: true
       type: fps
     controllers:
       - type: pawn
@@ -81,7 +81,7 @@ nodes:
         type: capsule
         category: [player]
         size: [0.25, 0.5, 0]
-  - id: player_2
+  - xid: player_2
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     rotation: [0, 180, 0]
