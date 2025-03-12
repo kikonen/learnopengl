@@ -1,10 +1,11 @@
 #include "LuaGlm.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
-
-#include <glm/glm.hpp>
 
 namespace
 {
@@ -258,11 +259,33 @@ namespace
             "mat3",
             sol::call_constructor,
             sol::constructors<
-            glm::mat3(float)>(),
+            glm::mat3(float),
+            glm::mat3(const glm::mat4&)>(),
             sol::meta_function::multiplication, multiply,
             sol::meta_function::division, division,
             sol::meta_function::addition, addition,
             sol::meta_function::subtraction, subtraction
+        );
+
+        t.set_function(
+            "inverse",
+            [](const glm::mat3& v) {
+                return glm::inverse(v);
+            }
+        );
+
+        t.set_function(
+            "transpose",
+            [](const glm::mat3& v) {
+                return glm::transpose(v);
+            }
+        );
+
+        t.set_function(
+            "inverse_transpose",
+            [](const glm::mat3& v) {
+                return glm::inverseTranspose(v);
+            }
         );
 
         t.set_function(
@@ -313,11 +336,40 @@ namespace
             "mat4",
             sol::call_constructor,
             sol::constructors<
-            glm::mat4(float)>(),
+            glm::mat4(float),
+            glm::mat4(const glm::mat3&)>(),
             sol::meta_function::multiplication, multiply,
             sol::meta_function::division, division,
             sol::meta_function::addition, addition,
             sol::meta_function::subtraction, subtraction
+        );
+
+        t.set_function(
+            "col",
+            [](const glm::mat4& v, int column) {
+                return fmt::format("{}", v);
+            }
+        );
+
+        t.set_function(
+            "inverse",
+            [](const glm::mat4& v) {
+                return glm::inverse(v);
+            }
+        );
+
+        t.set_function(
+            "transpose",
+            [](const glm::mat4& v) {
+                return glm::transpose(v);
+            }
+        );
+
+        t.set_function(
+            "inverse_transpose",
+            [](const glm::mat4& v) {
+                return glm::inverseTranspose(v);
+            }
         );
 
         t.set_function(

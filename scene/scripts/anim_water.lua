@@ -11,14 +11,14 @@ local function animation()
 
     cid = cmd:move_spline(
       { after=wid, time=10, relative=true },
-      { 0, 1.5, 0 },
-      { 0, -2.5, 0 })
+      vec3(0, 1.5, 0),
+      vec3(0, -2.5, 0))
 
     wid = cmd:wait({ after=cid, time=1 })
 
     cid = cmd:move_spline(
       { after=wid, time=10, relative=false },
-      { 0, -1.5, 0 },
+      vec3(0, -1.5, 0),
       orig_pos)
 
     wid = cmd:wait({ after=cid, time=1 })

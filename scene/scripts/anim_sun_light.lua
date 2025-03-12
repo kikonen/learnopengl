@@ -11,7 +11,7 @@ local function animation()
 
     cid = cmd:rotate(
       { after=wid, time=60 * 20, relative=true },
-      { 0.0, 1.0, 0.0 },
+      vec3(0.0, 1.0, 0.0),
       360.0)
 
     wid = cmd:wait({ after=cid, time=0 })

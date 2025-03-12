@@ -54,7 +54,7 @@ nodes:
     script: |
       cmd:rotate(
         { time=10 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: particle_cube
     parent: particle_cube_origo
@@ -98,6 +98,6 @@ nodes:
     script: |
       cmd:rotate(
         { time=50 * 100 },
-        { 0, 0, 1 },
+        vec3(0, 0, 1),
         360 * 100)
     script_file: scripts/seq_particle_generator

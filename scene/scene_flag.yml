@@ -57,7 +57,7 @@ nodes:
     script: |
       cmd:rotate(
         { time=60 * 10, relative=true },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         1 * 360 * 10)
   - id: flag
     parent: flag_origo

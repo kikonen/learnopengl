@@ -21,7 +21,7 @@ local function animation_rotate()
 
     cid = cmd:rotate(
       { after=wid, time=40, relative=true },
-      { 0, 1, 0 },
+      vec3(0, 1, 0),
       dir * 720 * 2)
 
     cid = cmd:audio_pause(
@@ -54,9 +54,9 @@ local function animation_scale()
   local function animation_listener()
     wid = cmd:wait({ after=cid, time=1 })
 
-    local scale = { 1, 1, 1 }
+    local scale = vec3(1, 1, 1)
     if dir < 0 then
-      scale = { 4, 4, 4 }
+      scale = vec3(4, 4, 4)
     end
 
     cid = cmd:scale(

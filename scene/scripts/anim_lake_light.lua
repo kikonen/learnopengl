@@ -14,7 +14,7 @@ local function animation()
 
     cid = cmd:move(
       { after=wid, time=30, relative=true },
-      { dir * scale, 0.0, 0.0 })
+      vec3(dir * scale, 0.0, 0.0))
 
     wid = cmd:wait({ after=cid, time=1 })
 

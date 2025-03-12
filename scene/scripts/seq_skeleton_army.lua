@@ -63,9 +63,9 @@ local function attack(src_wid)
   --print(string.format("START: %d", id))
 
   local pos = node:get_pos()
-  local x = pos[1]
-  local y = pos[2]
-  local z = pos[3]
+  local x = pos.x
+  local y = pos.y
+  local z = pos.z
   local cid = 0
   local wid = 0
 
@@ -74,14 +74,14 @@ local function attack(src_wid)
 
   cid = cmd:move(
     { after=src_wid, time=10 + rnd(5), relative=true },
-    { 25 - rnd(100), 0, 25 - rnd(100) })
+    vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
   wid = cmd:wait({ after=0, time=7 + rnd(5) })
   cmd:cancel({ after=wid, time=0 }, cid)
 
   cid = cmd:move(
     { after=cid, time=10 + rnd(5), relative=true },
-    { 25 - rnd(100), 0, 25 - rnd(100) })
+    vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
   cmd:cancel({ after=0, time=0 }, cid)
 
@@ -90,14 +90,14 @@ local function attack(src_wid)
 
   cid = cmd:move(
     { after=cid, time=5 + rnd(5), relative=true },
-    { 25 - rnd(50), 0, 25 - rnd(50) })
+    vec3(25 - rnd(50), 0, 25 - rnd(50)))
 
   cid = cmd:animation_play(
     { after=cid, sid=randomIdle() } )
 
   cid = cmd:move(
     { after=cid, time=5 + rnd(5), relative=true },
-    { 10 - rnd(20), 0, 10 - rnd(20) })
+    vec3(10 - rnd(20), 0, 10 - rnd(20)))
 
   cid = cmd:animation_play(
     { after=cid, sid=randomMove() } )
@@ -105,14 +105,14 @@ local function attack(src_wid)
   cid = cmd:move_spline(
     { after=cid, time=3 + rnd(5), relative=true },
     { 20, 0, 5 },
-    { 5 - rnd(10), 0, 5 - rnd(10) })
+    vec3(5 - rnd(10), 0, 5 - rnd(10)))
 
   cid = cmd:animation_play(
     { after=cid, sid=randomAttack() } )
 
   cid = cmd:move(
     { after=cid, time=2 + rnd(5), relative=false },
-    { x, y, z })
+    vec3(x, y, z))
 
   return cid;
 end

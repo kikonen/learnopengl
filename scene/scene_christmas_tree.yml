@@ -52,7 +52,7 @@ nodes:
     script: |
       cmd:rotate(
         { time=40 * 100 },
-        { 1, 1, 0 },
+        vec3(1, 1, 0),
         360 * 100)
   - id: particle_cube_origo_2
     parent: particle_cube_origo_3
@@ -61,7 +61,7 @@ nodes:
     xscript: |
       cmd:rotate(
         { time=20 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         -360 * 100)
   - id: particle_cube_origo
     parent: particle_cube_origo_2
@@ -70,7 +70,7 @@ nodes:
     script: |
       cmd:rotate(
         { time=10 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: particle_tree
     parent: particle_cube_origo
@@ -95,11 +95,11 @@ nodes:
     script: |
       cmd:rotate(
         { time=50 * 100 },
-        { 0, 0, 1 },
+        vec3(0, 0, 1),
         360 * 100)
       cmd:rotate(
         { time=30 * 100 },
-        { 1, 1, 0 },
+        vec3(1, 1, 0),
         360 * 100)
   - id: particle_tree_particle_generator_1
     parent: particle_tree

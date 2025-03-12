@@ -46,5 +46,5 @@ namespace script
 
     pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle);
 
-    glm::vec3 readVec3(const sol::table& v) noexcept;
+    //glm::vec3 readVec3(const sol::table& v) noexcept;
 }

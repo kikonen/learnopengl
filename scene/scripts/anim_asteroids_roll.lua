@@ -9,7 +9,7 @@ local function animation_x()
 
     cid = cmd:rotate(
       { after=wid, time=120, relative=true },
-      { 1.0, 0.0, 0.0 },
+      vec3(1.0, 0.0, 0.0),
       180.0)
 
     wid = cmd:wait({ after=cid, time=0 })
@@ -37,7 +37,7 @@ local function animation_y()
 
     cid = cmd:rotate(
       { after=wid, time=100, relative=true },
-      { 0.0, 1.0, 0.0 },
+      vec3(0.0, 1.0, 0.0),
       180.0)
 
     wid = cmd:wait({ after=cid, time=0 })
@@ -65,7 +65,7 @@ local function animation_z()
 
     cid = cmd:rotate(
       { after=wid, time=140, relative=true },
-      { 0.0, 0.0, 1.0 },
+      vec3(0.0, 0.0, 1.0),
       180.0)
 
     wid = cmd:wait({ after=cid, time=0 })

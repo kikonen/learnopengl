@@ -39,7 +39,7 @@ local function animation()
 
     cid = cmd:move(
       { after=wid, time=2 + rnd(100)/100.0, relative=true },
-      {0, 10 + rnd(10), 0})
+      vec3(0, 10 + rnd(10), 0))
 
     wid = cmd:wait(
       { after=cid, time = 0.2 })
@@ -70,7 +70,7 @@ local function animation()
 
     -- cid = cmd:rotate(
     --   { after=wid, node=text_node_sid, time=1 },
-    --   { 0, 1, 0 },
+    --   vec3(0, 1, 0),
     --   360)
 
     -- wid = cmd:wait(

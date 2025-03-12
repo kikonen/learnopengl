@@ -19,15 +19,15 @@ local function animation_translate()
     local posY = 3 - rnd(6)
     local posZ = 5 - rnd(10)
 
-    --print(string.format("move: %d, %d, %d", posX, posY, posZ))
+    --print(string.format("move: %f, %f, %f", posX, posY, posZ))
 
-    local pos = { center[1] + posX, center[2] + posY, center[3] + posZ }
+    local pos = vec3(center.x + posX, center.y + posY, center.z + posZ)
 
-    --print(string.format("pos: %d, %d, %d", pos[1], pos[2], pos[3]))
+    --printf("pos: %s\n", pos)
 
     cid = cmd:move_spline(
       { after=wid, time=5, relative=false },
-      { rnd(20) - 10 , rnd(10) - 5, rnd(10) - 5},
+      vec3(rnd(20) - 10 , rnd(10) - 5, rnd(10) - 5),
       pos)
 
     wid = cmd:wait({ after=cid, time=0 })
@@ -59,17 +59,17 @@ local function animation_rotate()
 
     cid1 = cmd:rotate(
       { after=wid, time=5, relative=true },
-      { 1, 0, 0},
+      vec3(1, 0, 0),
       rotX)
 
     cid2 = cmd:rotate(
       { after=wid, time=5, relative=true },
-      { 0, 1, 0},
+      vec3(0, 1, 0),
       rotY)
 
     cid3 = cmd:rotate(
       { after=wid, time=5, relative=true },
-      { 0, 0, 1 },
+      vec3(0, 0, 1),
       rotZ)
 
     cid = cmd:sync(
@@ -109,7 +109,7 @@ local function animation_scale()
 
     cid = cmd:scale(
       { after=wid, time=5, relative=false },
-      { scale, scale, scale })
+      vec3(scale, scale, scale))
 
     wid = cmd:wait({ after=cid, time=0 })
 

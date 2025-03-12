@@ -149,7 +149,7 @@ nodes:
       local wid = cmd:wait({ time=5 })
       cmd:rotate(
         { after=wid, time=10 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: ball
     mesh:
@@ -204,7 +204,7 @@ nodes:
       local wid = cmd:wait({ time=5 })
       cmd:rotate(
         { after=wid, time=10 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: ball_2_origo
     type: origo

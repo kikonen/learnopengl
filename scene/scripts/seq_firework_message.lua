@@ -34,7 +34,7 @@ local function animation()
     if idx == 0 then
       cid = cmd:rotate(
         { after=wid, time=2.5 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360)
       wid = cmd:wait({ after=cid, time=2.5 })
     end

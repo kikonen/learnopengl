@@ -20,7 +20,7 @@ local function animation_move()
 
     cid = cmd:move(
       { after=wid, time=speed, relative=true },
-      {dir * 10, 0, 0.0 })
+      vec3(dir * 10, 0, 0.0))
 
     cmd:emit(
       { after=cid },
@@ -54,7 +54,7 @@ local function animation_rotate()
 
     cid = cmd:rotate(
       { after=wid, time=speed, relative=true },
-      {0.0, 1.0, 0.0 },
+      vec3(0.0, 1.0, 0.0),
       dir * 360)
 
     cmd:emit(

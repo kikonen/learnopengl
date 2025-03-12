@@ -48,7 +48,7 @@ nodes:
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 40)
   - id: cylon_origo
     parent: planet_origo
@@ -56,7 +56,7 @@ nodes:
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 50)
   - id: cylon_ship_{t}
     parent: cylon_origo
@@ -85,7 +85,7 @@ nodes:
         { sid=fly_sid })
       cmd:rotate(
         { time=60 * 100 },
-        { 1, 0, 0 },
+        vec3(1, 0, 0),
         360 * 30)
   - id: planet
     parent: planet_origo
@@ -127,5 +127,5 @@ nodes:
     script: |
       cmd:rotate(
         { time=40 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 50)

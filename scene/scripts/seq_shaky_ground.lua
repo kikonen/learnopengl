@@ -16,7 +16,7 @@ local function animation()
 
     cid = cmd:rotate(
       { after=wid, time=time, relative=true },
-      { 0, 0, 1 },
+      vec3(0, 0, 1),
       dir * angle )
 
     cid = cmd:emit(

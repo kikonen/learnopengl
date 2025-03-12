@@ -98,8 +98,8 @@ namespace script {
         return nodeId > 0 ? pool::NodeHandle::toHandle(nodeId) : handle;
     }
 
-    glm::vec3 readVec3(const sol::table& v) noexcept
-    {
-        return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
-    }
+    //glm::vec3 readVec3(const sol::table& v) noexcept
+    //{
+    //    return glm::vec3{ v.get<float>(1), v.get<float>(2), v.get<float>(3) };
+    //}
 }

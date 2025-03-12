@@ -67,7 +67,7 @@ nodes:
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: hello_world_origo
     mesh:
@@ -121,7 +121,7 @@ nodes:
       printf("text rotate: %d", id)
       cmd:rotate(
         { time=60 * 100 },
-        { 0, 1, 0 },
+        vec3(0, 1, 0),
         360 * 100)
   - id: another_text
     type: text
