@@ -167,6 +167,8 @@ public:
 
     const glm::vec3& lua_get_pos() const noexcept;
 
+    const glm::mat4& lua_get_model_matrix() const noexcept;
+
 public:
     pool::TypeHandle m_typeHandle{};
 

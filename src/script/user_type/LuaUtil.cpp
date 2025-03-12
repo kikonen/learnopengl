@@ -5,11 +5,10 @@
 namespace script
 {
     // https://thephd.dev/sol3-feature-complete
-    void LuaUtil::bind(sol::state& state)
+    void LuaUtil::bind(sol::state& lua)
     {
-        state["util"] = state.create_table_with(
-            "sid", &UtilAPI::lua_sid,
-            "sid_name", &UtilAPI::lua_sid_name
-        );
+        auto t = lua.create_named_table("util");
+        t["sid"] = &UtilAPI::lua_sid;
+        t["sid_name"] = &UtilAPI::lua_sid_name;
     }
 }

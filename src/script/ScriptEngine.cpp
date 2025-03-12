@@ -27,6 +27,7 @@
 #include "user_type/LuaUtil.h"
 #include "user_type/LuaNode.h"
 #include "user_type/LuaCommand.h"
+#include "user_type/LuaGlm.h"
 
 
 namespace {
@@ -141,19 +142,10 @@ namespace script
         // util - static utils
         auto& lua = getState();
 
-        {
-            LuaUtil t;
-            t.bind(lua);
-        }
-
-        {
-            LuaCommand t;
-            t.bind(lua);
-        }
-        {
-            LuaNode t;
-            t.bind(lua);
-        }
+        LuaUtil::bind(lua);
+        LuaGlm::bind(lua);
+        LuaCommand::bind(lua);
+        LuaNode::bind(lua);
     }
 
     script::script_id ScriptEngine::registerScript(std::string_view source)

@@ -59,17 +59,17 @@ namespace sol {
         return { x, y, z };
     };
 
-    inline int sol_lua_push(sol::types<glm::vec3>, lua_State* L, const glm::vec3& pos) {
-        lua_createtable(L, 0, 3);
+    //inline int sol_lua_push(sol::types<glm::vec3>, lua_State* L, const glm::vec3& pos) {
+    //    lua_createtable(L, 0, 3);
 
-        lua_getglobal(L, "Vector");
-        lua_setmetatable(L, -2);
+    //    lua_getglobal(L, "Vector");
+    //    lua_setmetatable(L, -2);
 
-        sol::stack_table vec(L);
-        vec["x"] = pos.x;
-        vec["y"] = pos.y;
-        vec["z"] = pos.z;
+    //    sol::stack_table vec(L);
+    //    vec["x"] = pos.x;
+    //    vec["y"] = pos.y;
+    //    vec["z"] = pos.z;
 
-        return 1;
-    };
+    //    return 1;
+    //};
 }

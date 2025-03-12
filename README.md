@@ -125,6 +125,10 @@ https://github.com/ilmola/generator
 - https://computergraphics.stackexchange.com/questions/5810/shader-storage-buffer-indexing-by-4-bytes-instead-of-3
 - https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 
+## VBO buffer (interleaved or separate streams)
+- https://www.reddit.com/r/vulkan/comments/rtpdvu/interleaved_vs_separate_vertex_buffers/
+- https://www.reddit.com/r/opengl/comments/155jq8v/whats_better_multiple_vertex_buffers_or_a_single/
+
 ## Billboard
 
 - https://ogldev.org/www/tutorial27/tutorial27.html
@@ -192,6 +196,7 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
 - https://sol2.readthedocs.io/en/latest/tutorial/functions.html
 - https://github.com/ThePhD/sol2/issues/90
 - https://blog.rubenwardy.com/2020/07/22/sol3-vector-extension/
+- https://www.youtube.com/watch?v=1d8SbBIGvUY&list=PLtI3Y3gOLHgpqnRPhqRW4ahSaXePoILNn&index=1
 
 ## Skybox
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml

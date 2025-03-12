@@ -7,6 +7,6 @@
 namespace script
 {
     struct LuaCommand {
-        void bind(sol::state& state);
+        static void bind(sol::state& lua);
     };
 }

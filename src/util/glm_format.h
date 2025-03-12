@@ -316,18 +316,16 @@ template <> struct fmt::formatter<glm::mat3> {
         return presentation == 'f'
             ? fmt::format_to(
                 ctx.out(),
-                "[({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f})]",
+                "[({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f}), ({:.1f}, {:.1f}, {:.1f})]",
                 SF(m[0].x), SF(m[0].y), SF(m[0].z),
                 SF(m[1].x), SF(m[1].y), SF(m[1].z),
-                SF(m[2].x), SF(m[2].y), SF(m[2].z),
-                SF(m[3].x), SF(m[3].y), SF(m[3].z))
+                SF(m[2].x), SF(m[2].y), SF(m[2].z))
             : fmt::format_to(
                 ctx.out(),
-                "[({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e})]",
+                "[({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e}), ({:.1e}, {:.1e}, {:.1e})]",
                 SF(m[0].x), SF(m[0].y), SF(m[0].z),
                 SF(m[1].x), SF(m[1].y), SF(m[1].z),
-                SF(m[2].x), SF(m[2].y), SF(m[2].z),
-                SF(m[3].x), SF(m[3].y), SF(m[3].z));
+                SF(m[2].x), SF(m[2].y), SF(m[2].z));
     }
 };
 

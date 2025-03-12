@@ -205,3 +205,9 @@ const glm::vec3& Node::lua_get_pos() const noexcept
 {
     return getState().getPosition();
 }
+
+const glm::mat4& Node::lua_get_model_matrix() const noexcept
+{
+    return getState().getModelMatrix();
+}
+

@@ -5,6 +5,6 @@
 namespace script
 {
     struct LuaNode {
-        void bind(sol::state& state);
+        static void bind(sol::state& lua);
     };
 }

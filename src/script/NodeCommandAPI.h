@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"

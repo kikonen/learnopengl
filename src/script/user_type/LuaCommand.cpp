@@ -5,9 +5,9 @@
 namespace script
 {
     // https://thephd.dev/sol3-feature-complete
-    void LuaCommand::bind(sol::state& state)
+    void LuaCommand::bind(sol::state& lua)
     {
-        sol::usertype<NodeCommandAPI> t = state.new_usertype<NodeCommandAPI>("NodeCommandAPI");
+        sol::usertype<NodeCommandAPI> t = lua.new_usertype<NodeCommandAPI>("NodeCommand");
 
         t["cancel"] = &NodeCommandAPI::lua_cancel;
         t["wait"] = &NodeCommandAPI::lua_wait;

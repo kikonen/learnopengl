@@ -1,4 +1,7 @@
 --printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
+nodes[id].node = node
+nodes[id].cmd = cmd
+n = nodes[id]
 
 local ANIM_IDLE = util.sid("master:Idle")
 local ANIM_IDLE_2 = util.sid("master:Idle2")
@@ -89,25 +92,52 @@ end
 
 local function animation()
   -- local listener_id
+  local idx = 0
   local wid = 0
   local cid = 0
   local pos = node:get_pos()
 
-  printf("pos=%s\n", table_format({ x=pos.x, y=pos.y, z=pos.z }))
-  printf("pos=%s\n", table_format({ x=pos.x, y=pos.y, z=pos.z }))
+  printf("node=%s\n", node:str())
+  printf("pos=%s = %f\n", pos, pos:length())
 
-  -- local vec2 = Vec3.new(1, 2, 3)
-  -- printf("[%d, %d, %d] = %d\n", vec2.x, vec2.y, vec2.z, vec2:len())
+  local v2 = vec3(1.0, 2.0, 3.0)
+  printf("v2=%s = %f\n", v2, v2:length())
 
-  -- local n = glm.normalize(vec2)
-  -- printf("[%d, %d, %d] = %d\n", n.x, n.y, n.z, n:len())
+  local n2 = v2:normalize()
+  printf("n2=%s = %f\n", n2, n2:length())
+
+  local m3 = mat3(1)
+  local v3 = m3 * v2
+  printf("m3=%s, v3=%s = %f\n", m3, v3, v3:length())
+
+  local m4 = mat4(2)
+  local v4 = m4 * vec4(v2, 1)
+  printf("m4=%s, v4=%s = %f\n", m4, v4, v4:length())
+
+  local v5 = vec3(v4)
+  printf("v5=%s = %f\n", v5, v5:length())
+
+  local m6 = node:get_model_matrix()
+  local v6 = m6 * vec4(1, 0, 0, 1)
+  printf("m6=%s, v6=%s = %f\n", m6, v6, v6:length())
+
+  local v7_1 = vec3(1, 0, 0)
+  local v7_2 = vec3(0, 1, 0)
+  local v7_3 = glm.cross(v7_1, v7_2)
+  printf("v7_1=%s, v7_2=%s, v7_3=%s\n", v7_1, v7_2, v7_3)
 
   local function animation_listener()
     cid = idle(wid)
 
-    cid2 = cmd:move(
-      { after=cid, time=10, relative=false },
-      { pos.x - 2, pos.y, pos.z })
+    if idx == 0 then
+      cid2 = cmd:move(
+        { after=wid, time=5, relative=true },
+        vec3(-2, 0, 0))
+
+      cid2 = cmd:move(
+        { after=wid, time=5, relative=true },
+        vec3(0, 0, 2))
+    end
 
     cid = cmd:call(
       { after=cid, object=true },
@@ -136,6 +166,8 @@ local function animation()
     wid = cmd:call(
       { after=wid },
       animation_listener)
+
+    idx = idx + 1
   end
 
   -- listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})

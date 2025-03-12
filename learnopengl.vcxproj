@@ -252,6 +252,7 @@
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
+    <ClCompile Include="src\script\user_type\LuaGlm.cpp" />
     <ClCompile Include="src\script\lua_util.cpp" />
     <ClCompile Include="src\script\user_type\LuaCommand.cpp" />
     <ClCompile Include="src\script\user_type\LuaNode.cpp" />
@@ -615,6 +616,7 @@
     <ClInclude Include="src\script\api\ParticleStop.h" />
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />
+    <ClInclude Include="src\script\user_type\LuaGlm.h" />
     <ClInclude Include="src\script\lua_binding.h" />
     <ClInclude Include="src\script\lua_util.h" />
     <ClInclude Include="src\script\binding\bind_vec3.h" />
