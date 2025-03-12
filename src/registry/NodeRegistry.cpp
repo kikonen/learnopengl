@@ -485,45 +485,6 @@ void NodeRegistry::attachListeners()
     //        audio::AudioEngine::get().setActiveListener(data.target);
     //    });
 
-    dispatcher->addListener(
-        event::Type::audio_source_play,
-        [this](const event::Event& e) {
-            auto& data = e.body.audioSource;
-            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
-            if (!node) return;
-
-            auto* source = node->getAudioSource(data.id);
-            if (source) {
-                source->play();
-            }
-        });
-
-    dispatcher->addListener(
-        event::Type::audio_source_stop,
-        [this](const event::Event& e) {
-            auto& data = e.body.audioSource;
-            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
-            if (!node) return;
-
-            auto* source = node->getAudioSource(data.id);
-            if (source) {
-                source->stop();
-            }
-        });
-
-    dispatcher->addListener(
-        event::Type::audio_source_pause,
-        [this](const event::Event& e) {
-            auto& data = e.body.audioSource;
-            const auto* node = pool::NodeHandle::toHandle(data.target).toNode();
-            if (!node) return;
-
-            auto* source = node->getAudioSource(data.id);
-            if (source) {
-                source->pause();
-            }
-        });
-
     if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,

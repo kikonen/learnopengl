@@ -24,15 +24,16 @@
 #include "backend/gl/PerformanceCounters.h"
 
 #include "script/CommandEngine.h"
+#include "script/api/AudioPlay.h"
+#include "script/api/AudioPause.h"
+#include "script/api/AudioStop.h"
 #include "script/api/SetTextNode.h"
 #include "script/api/Cancel.h"
 #include "script/api/Wait.h"
 #include "script/api/MoveNode.h"
+#include "script/api/SelectNode.h"
 
 #include "event/Dispatcher.h"
-
-#include "audio/Source.h"
-#include "audio/AudioEngine.h"
 
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
@@ -221,24 +222,6 @@ int SampleApp::onSetup()
         m_editorInit->prepare(ctx);
         m_editor->prepare(ctx);
     }
-
-    //if (false) {
-    //    auto& engine = audio::AudioEngine::get();
-    //    audio::sound_id soundId = engine.registerSound("audio/Stream Medium 01_8CC7FF9E_normal_mono.wav");
-
-    //    audio::source_id sourceId = engine.registerSource(soundId);
-    //    auto* source = engine.getSource(sourceId);
-    //    if (source) {
-    //        // TODO KI spatial left/right requires *MONO* sound
-    //        source->m_pos = { 0.1f, 0.0f, 0.0f };
-    //        source->update();
-    //    }
-
-    //    audio::listener_id listenerId = engine.registerListener();
-    //    engine.setActiveListener(listenerId);
-
-    //    engine.playSource(sourceId);
-    //}
 
     return 0;
 }
@@ -716,6 +699,7 @@ void SampleApp::selectNode(
     const auto& assets = ctx.m_assets;
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
     auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+    auto& commandEngine = script::CommandEngine::get();
 
     auto& dbg = render::DebugContext::modify();
 
@@ -726,52 +710,54 @@ void SampleApp::selectNode(
 
     if (selectMode) {
         // deselect
-        if (node && selectionRegistry.isSelected(node->toHandle())) {
-            selectionRegistry.deselectNode(node->toHandle());
-
-            {
-                event::Event evt { event::Type::audio_source_pause };
-                evt.body.audioSource.id = SID("select");
-                evt.body.audioSource.target = node->getId();
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
-
-            return;
-        }
-
-        // select
         if (node) {
-            selectionRegistry.selectNode(node->toHandle(), inputState.shift);
+            const auto& handle = node->toHandle();
+
+            if (selectionRegistry.isSelected(handle)) {
+                commandEngine.addCommand(
+                    0,
+                    script::SelectNode{
+                        handle,
+                        false,
+                        false
+                    });
+
+                commandEngine.addCommand(
+                    0,
+                    script::AudioPause{
+                        handle,
+                        SID("select")
+                    });
+
+                m_editor->getState().m_selectedNode = 0;
+                return;
+            }
+            else {
+                commandEngine.addCommand(
+                    0,
+                    script::SelectNode{
+                        handle,
+                        true,
+                        inputState.shift
+                    });
+
+                commandEngine.addCommand(
+                    0,
+                    script::AudioPlay{
+                        handle,
+                        SID("select"),
+                        false
+                    });
+
+                m_editor->getState().m_selectedNode = handle;
+            }
         }
         else {
             selectionRegistry.clearSelection();
-        }
-
-        KI_INFO(fmt::format("selected: {}", nodeId));
-
-        if (node) {
-            if (m_dbg.m_selectionAxis != glm::vec3{0.f}) {
-                event::Event evt { event::Type::command_rotate };
-                evt.body.command = {
-                    .target = node->getId(),
-                    .duration = 5,
-                    .relative = true,
-                    .data = m_dbg.m_selectionAxis,
-                    .data2 = { 360.f, 0, 0 },
-                };
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
-
-            {
-                event::Event evt { event::Type::audio_source_play };
-                evt.body.audioSource.id = SID("select");
-                evt.body.audioSource.target = node->getId();
-                ctx.m_registry->m_dispatcherWorker->send(evt);
-            }
-
-            m_editor->getState().m_selectedNode = node->toHandle();
+            m_editor->getState().m_selectedNode = 0;
         }
     }
+
     //else if (playerMode) {
     //    if (node && inputState.ctrl) {
     //        auto exists = ControllerRegistry::get().hasController(node);

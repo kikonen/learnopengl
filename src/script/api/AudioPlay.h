@@ -11,6 +11,7 @@ namespace script
     class AudioPlay final : public NodeCommand
     {
     public:
+        // @param sync wait until audio stopped before finishing this command
         AudioPlay(
             pool::NodeHandle handle,
             audio::source_id id,

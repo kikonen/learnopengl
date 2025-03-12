@@ -250,6 +250,7 @@
     <ClCompile Include="src\script\api\EmitEvent.h" />
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
+    <ClCompile Include="src\script\api\SelectNode.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
     <ClCompile Include="src\script\user_type\LuaGlm.cpp" />
@@ -614,6 +615,7 @@
     <ClInclude Include="src\render\ScreenTri.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
+    <ClInclude Include="src\script\api\SelectNode.h" />
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />
     <ClInclude Include="src\script\user_type\LuaGlm.h" />

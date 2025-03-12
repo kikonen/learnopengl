@@ -34,6 +34,7 @@ namespace event {
             AudioListenerAction audioListener;
             CommandAction command;
             ScriptAction script;
+            SelectAction select;
         } body;
     };
 

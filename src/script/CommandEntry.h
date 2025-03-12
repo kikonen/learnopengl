@@ -18,6 +18,7 @@
 #include "api/RotateNode.h"
 #include "api/ScaleNode.h"
 #include "api/StartNode.h"
+#include "api/SelectNode.h"
 
 #include "api/SetTextNode.h"
 #include "api/SetVisibleNode.h"
@@ -54,6 +55,7 @@ namespace script
         sizeof(script::ScaleNode),
         sizeof(script::ResumeNode),
         sizeof(script::StartNode),
+        sizeof(script::SelectNode),
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
         sizeof(script::EmitEvent),

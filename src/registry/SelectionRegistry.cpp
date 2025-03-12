@@ -6,6 +6,7 @@
 
 #include "util/debug.h"
 #include "util/thread.h"
+#include "util/log.h"
 #include "ki/limits.h"
 #include "kigl/kigl.h"
 
@@ -17,6 +18,11 @@
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
+
+#include "script/CommandEngine.h"
+#include "script/api/RotateNode.h"
+
+#include "render/DebugContext.h"
 
 #include "material/Material.h"
 
@@ -71,20 +77,46 @@ void SelectionRegistry::attachListeners()
     dispatcherView->addListener(
         event::Type::node_select,
         [this](const event::Event& e) {
-            if (auto handle = pool::NodeHandle::toHandle(e.body.node.target)) {
-                m_selected.push_back(handle);
+            const auto& data = e.body.select;
+            if (auto handle = pool::NodeHandle::toHandle(data.target)) {
+                if (data.select) {
+                    selectNode(handle, data.append);
+                }
+                else {
+                    deselectNode(handle);
+                }
             }
         });
 }
 
 void SelectionRegistry::selectNode(pool::NodeHandle handle, bool append)
 {
+    const auto& dbg = render::DebugContext::get();
+
     if (!append) {
         m_selected.clear();
     }
 
     if (!handle) return;
+    if (isSelected(handle)) return;
+
     m_selected.push_back(handle);
+
+    KI_INFO(fmt::format("selected: {}", handle.str()));
+
+    // NOTE KI fancy test/debug
+    if (dbg.m_selectionAxis != glm::vec3{ 0.f }) {
+        auto& commandEngine = script::CommandEngine::get();
+        commandEngine.addCommand(
+            0,
+            script::RotateNode{
+                handle,
+                5,
+                true,
+                dbg.m_selectionAxis,
+                360.f
+            });
+    }
 }
 
 void SelectionRegistry::deselectNode(pool::NodeHandle handle)

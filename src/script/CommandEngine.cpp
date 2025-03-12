@@ -99,49 +99,6 @@ namespace script
         ASSERT_WT();
 
         clear();
-
-        registry->m_dispatcherWorker->addListener(
-            event::Type::command_wait,
-            [this](const event::Event& e) {
-                auto& cmd = e.body.command;
-                KI_OUT(fmt::format("CMD:wait {}\n", cmd.target));
-                addCommand<Wait>(
-                    cmd.after,
-                    Wait{
-                        cmd.duration,
-                    });
-            });
-
-        registry->m_dispatcherWorker->addListener(
-            event::Type::command_move,
-            [this](const event::Event& e) {
-                auto& cmd = e.body.command;
-                KI_OUT(fmt::format("CMD:move {}\n", cmd.target));
-                addCommand(
-                    cmd.after,
-                    MoveNode{
-                        pool::NodeHandle::toHandle(cmd.target),
-                        cmd.duration,
-                        cmd.relative,
-                        cmd.data
-                    });
-            });
-
-        registry->m_dispatcherWorker->addListener(
-            event::Type::command_rotate,
-            [this](const event::Event& e) {
-                auto& cmd = e.body.command;
-                KI_OUT(fmt::format("CMD:rotate {}\n", cmd.target));
-                addCommand(
-                    cmd.after,
-                    RotateNode {
-                        pool::NodeHandle::toHandle(cmd.target),
-                        cmd.duration,
-                        cmd.relative,
-                        cmd.data,
-                        cmd.data2.x
-                    });
-            });
     }
 
     void CommandEngine::cancelCommand(script::command_id commandId)

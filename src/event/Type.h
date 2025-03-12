@@ -21,16 +21,6 @@ namespace event
 
         audio_listener_activate,
 
-        audio_source_play,
-        audio_source_stop,
-        audio_source_pause,
-
-        particle_emit,
-
-        command_wait,
-        command_move,
-        command_rotate,
-
         scene_loaded,
 
         script_bind,

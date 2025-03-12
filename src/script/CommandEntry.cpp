@@ -62,6 +62,9 @@ namespace script {
             else if (auto* src = dynamic_cast<StartNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
+            else if (auto* src = dynamic_cast<SelectNode*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
             else if (auto* src = dynamic_cast<SetTextNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }

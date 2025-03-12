@@ -92,4 +92,10 @@ namespace event {
         ki::node_id target{ 0 };
         script::script_id id{ 0 };
     };
+
+    struct SelectAction {
+        ki::node_id target{ 0 };
+        bool select{ false };
+        bool append{ false };
+    };
 }

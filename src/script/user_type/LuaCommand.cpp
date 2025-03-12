@@ -20,6 +20,7 @@ namespace script
 
         t["set_text"] = & NodeCommandAPI::lua_set_text;
         t["set_visible"] = & NodeCommandAPI::lua_set_visible;
+        t["select"] = &NodeCommandAPI::lua_select;
 
         t["audio_play"] = & NodeCommandAPI::lua_audio_play;
         t["audio_pause"] = & NodeCommandAPI::lua_audio_pause;

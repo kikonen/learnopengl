@@ -23,6 +23,7 @@
 #include "api/ScaleNode.h"
 #include "api/ResumeNode.h"
 #include "api/StartNode.h"
+#include "api/SelectNode.h"
 #include "api/EmitEvent.h"
 
 #include "api/SetTextNode.h"
@@ -211,6 +212,22 @@ namespace script
             SetVisibleNode{
                 getHandle(opt.nodeId, m_handle),
                 visible
+            });
+    }
+
+    int NodeCommandAPI::lua_select(
+        const sol::table& lua_opt,
+        bool select,
+        bool append) noexcept
+    {
+        auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            SelectNode{
+                getHandle(opt.nodeId, m_handle),
+                select,
+                append
             });
     }
 
