@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include "glm/gtc/quaternion.hpp"
 
 #include <fmt/format.h>
 
@@ -191,6 +192,7 @@ namespace
             "x", &glm::vec4::x,
             "y", &glm::vec4::y,
             "z", &glm::vec4::z,
+            "w", &glm::vec4::w,
             sol::meta_function::multiplication, multiply,
             sol::meta_function::division, division,
             sol::meta_function::addition, addition,
@@ -389,7 +391,7 @@ namespace
 
     ///////////////////////////////////
     // API
-    void bindApi(sol::state& lua) {
+    void bindGlm(sol::state& lua) {
         auto t = lua.create_named_table("glm");
 
         //t.set_function(
@@ -440,6 +442,17 @@ namespace
                     return glm::distance(v1, v2);
                 }
             ));
+
+        t.set_function(
+            "distance2",
+            sol::overload(
+                [](const glm::vec2& v1, const glm::vec2& v2) {
+                    return glm::distance2(v1, v2);
+                },
+                [](const glm::vec3& v1, const glm::vec3& v2) {
+                    return glm::distance2(v1, v2);
+                }
+            ));
     }
 }
 
@@ -454,6 +467,6 @@ namespace script
         bindMat3(lua);
         bindMat4(lua);
 
-        bindApi(lua);
+        bindGlm(lua);
     }
 }
