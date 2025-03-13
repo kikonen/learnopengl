@@ -15,6 +15,8 @@ namespace text {
 
     class TextSystem {
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static text::TextSystem& get() noexcept;
 
         TextSystem();

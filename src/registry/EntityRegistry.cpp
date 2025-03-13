@@ -23,12 +23,26 @@ namespace {
     constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
 
     constexpr size_t MAX_SKIP = 20;
+
+    static EntityRegistry* s_registry{ nullptr };
+}
+
+void EntityRegistry::init() noexcept
+{
+    s_registry = new EntityRegistry();
+}
+
+void EntityRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 EntityRegistry& EntityRegistry::get() noexcept
 {
-    static EntityRegistry s_registry;
-    return s_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 EntityRegistry::EntityRegistry()

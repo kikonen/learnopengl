@@ -15,13 +15,29 @@
 
 class Node;
 
-namespace {
-    static ControllerRegistry s_registry;
+namespace
+{
+    thread_local std::exception_ptr lastException = nullptr;
+
+    static ControllerRegistry* s_registry{ nullptr };
+}
+
+void ControllerRegistry::init() noexcept
+{
+    s_registry = new ControllerRegistry();
+}
+
+void ControllerRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 ControllerRegistry& ControllerRegistry::get() noexcept
 {
-    return s_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 ControllerRegistry::ControllerRegistry()

@@ -20,6 +20,8 @@ class MaterialUpdater;
 
 class MaterialRegistry {
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static MaterialRegistry& get() noexcept;
 
     MaterialRegistry();

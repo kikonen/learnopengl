@@ -1,15 +1,30 @@
 #include "DecalRegistry.h"
 
 namespace {
-    decal::DecalRegistry g_instance;
+    static decal::DecalRegistry* s_registry{ nullptr };
 }
 
 namespace decal {
-    DecalRegistry& DecalRegistry::get()
+    void DecalRegistry::init() noexcept
     {
-        return g_instance;
+        s_registry = new DecalRegistry();
     }
 
+    void DecalRegistry::release() noexcept
+    {
+        auto* s = s_registry;
+        s_registry = nullptr;
+        delete s;
+    }
+
+    DecalRegistry& DecalRegistry::get() noexcept
+    {
+        assert(s_registry);
+        return *s_registry;
+    }
+}
+
+namespace decal {
     DecalRegistry::DecalRegistry()
     {
         clear();

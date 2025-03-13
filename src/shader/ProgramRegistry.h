@@ -14,6 +14,8 @@ struct UpdateContext;
 class ProgramRegistry final
 {
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static ProgramRegistry& get() noexcept;
 
     ProgramRegistry();

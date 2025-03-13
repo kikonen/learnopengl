@@ -12,6 +12,8 @@ namespace decal {
     class DecalSystem final
     {
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static DecalSystem& get() noexcept;
 
         DecalSystem();

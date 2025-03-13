@@ -39,22 +39,38 @@ namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 
-    static animation::AnimationSystem s_registry;
-
     struct ActiveNode {
         animation::AnimationState& m_state;
         Node* m_node;
         mesh::MeshType* m_type;
     };
+
+    static animation::AnimationSystem* s_engine{ nullptr };
 }
 
 namespace animation
 {
-    animation::AnimationSystem& AnimationSystem::get() noexcept
+    void AnimationSystem::init() noexcept
     {
-        return s_registry;
+        s_engine = new AnimationSystem();
     }
 
+    void AnimationSystem::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    AnimationSystem& AnimationSystem::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
+    }
+}
+
+namespace animation
+{
     AnimationSystem::AnimationSystem()
         : m_boneRegistry{ std::make_unique<BoneRegistry>() },
         m_socketRegistry{ std::make_unique<SocketRegistry>() },

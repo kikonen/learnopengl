@@ -33,6 +33,8 @@ namespace physics {
         friend class MeshGenerator;
 
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static PhysicsEngine& get() noexcept;
 
         PhysicsEngine();

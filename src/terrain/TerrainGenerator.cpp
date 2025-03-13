@@ -207,7 +207,7 @@ namespace terrain {
         // Setup initial static values for entity
         KI_INFO_OUT(fmt::format("TERRAIN: tilesV={}, tilesU={}", m_worldTilesV, m_worldTilesU));
         {
-            auto& ttr = TerrrainTileRegistry::get();
+            auto& ttr = TerrainTileRegistry::get();
 
             for (int v = 0; v < m_worldTilesV; v++) {
                 for (int u = 0; u < m_worldTilesU; u++) {

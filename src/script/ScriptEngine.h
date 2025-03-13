@@ -28,6 +28,8 @@ namespace script
     class ScriptEngine final
     {
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static ScriptEngine& get() noexcept;
 
         ScriptEngine();
@@ -74,8 +76,6 @@ namespace script
             int type,
             const std::string& data);
 
-        //sol::state* getLua() { return m_state.get(); }
-
         sol::protected_function_result execScript(
             const std::string& script);
 
@@ -83,7 +83,7 @@ namespace script
             const std::string& script);
 
     private:
-        inline sol::state& getState() { return *m_state; }
+        inline sol::state& getLua() noexcept{ return m_lua; }
 
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);
@@ -104,7 +104,7 @@ namespace script
     private:
         CommandEngine* m_commandEngine{ nullptr };
 
-        std::unique_ptr<sol::state> m_state;
+        sol::state m_lua;
 
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 

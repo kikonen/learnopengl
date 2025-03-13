@@ -29,18 +29,34 @@
 #include "user_type/LuaCommand.h"
 #include "user_type/LuaGlm.h"
 
-
-namespace {
-    static script::ScriptEngine s_engine;
+namespace
+{
+    static script::ScriptEngine* s_engine{ nullptr };
 }
 
 namespace script
 {
-    ScriptEngine& ScriptEngine::get() noexcept
+    void ScriptEngine::init() noexcept
     {
-        return s_engine;
+        s_engine = new ScriptEngine();
     }
 
+    void ScriptEngine::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    ScriptEngine& ScriptEngine::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
+    }
+}
+
+namespace script
+{
     ScriptEngine::ScriptEngine()
     {
     }
@@ -67,7 +83,7 @@ namespace script
 
             }
 
-            sol::table nodes = getState()["nodes"];
+            sol::table nodes = getLua()["nodes"];
             for (auto& node : nodes) {
 
             }
@@ -99,9 +115,7 @@ namespace script
 
         //m_utilApi = std::make_unique<UtilAPI>();
 
-        m_state = std::make_unique<sol::state>();
-
-        auto& lua = *m_state;
+        auto& lua = getLua();
 
         lua.open_libraries(
             sol::lib::base,
@@ -140,7 +154,7 @@ namespace script
     void ScriptEngine::registerTypes()
     {
         // util - static utils
-        auto& lua = getState();
+        auto& lua = getLua();
 
         LuaUtil::bind(lua);
         LuaGlm::bind(lua);
@@ -241,7 +255,7 @@ end)", nodeFnName, script.m_source);
 
     bool ScriptEngine::unregisterFunction(std::string fnName)
     {
-        auto& lua = getState();
+        auto& lua = getLua();
 
         if (!lua[fnName].is<sol::function>()) return false;
 
@@ -268,7 +282,7 @@ end)", nodeFnName, script.m_source);
             const auto& fnName = fnIt->second;
 
             invokeLuaFunction([this, &fnName]() {
-                sol::protected_function fn(getState()[fnName]);
+                sol::protected_function fn(getLua()[fnName]);
                 return fn();
                 });
         }
@@ -296,7 +310,7 @@ end)", nodeFnName, script.m_source);
             auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
 
             invokeLuaFunction([this, node, handle, &fnName, &cmdApi]() {
-                sol::protected_function fn((getState())[fnName]);
+                sol::protected_function fn((getLua())[fnName]);
                 return fn(std::ref(node), std::ref(cmdApi), handle.toId());;
             });
         }
@@ -332,7 +346,7 @@ end)", nodeFnName, script.m_source);
     {
         std::lock_guard lock(m_lock);
 
-        sol::table luaNode = getState()["nodes"][handle.toId()];
+        sol::table luaNode = getLua()["nodes"][handle.toId()];
 
         sol::optional<sol::function> fnPtr = luaNode[name];
         return fnPtr != sol::nullopt;
@@ -347,7 +361,7 @@ end)", nodeFnName, script.m_source);
         std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, node, self, &fn, &args]() {
-            sol::table luaNode = getState()["nodes"][node->getId()];
+            sol::table luaNode = getLua()["nodes"][node->getId()];
             return self ? fn(luaNode, args) : fn(args);
             });
     }
@@ -360,7 +374,7 @@ end)", nodeFnName, script.m_source);
         std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, &type, &data, &listenerId]() {
-            sol::table events = getState()["events"];
+            sol::table events = getLua()["events"];
             sol::protected_function fn(events["emit_raw"]);
             return fn(events, type, data, listenerId);
             });
@@ -387,7 +401,7 @@ end)", nodeFnName, script.m_source);
         }
         KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", error));
 
-        return { getState(), 0, 0, 0, sol::call_status::runtime };
+        return { getLua(), 0, 0, 0, sol::call_status::runtime };
     }
 
     // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
@@ -397,7 +411,7 @@ end)", nodeFnName, script.m_source);
         std::string error;
         try {
             KI_INFO_OUT(util::appendLineNumbers(script));
-            return getState().safe_script(script);
+            return getLua().safe_script(script);
         }
         catch (const std::exception& ex) {
             error = ex.what();
@@ -407,6 +421,6 @@ end)", nodeFnName, script.m_source);
         }
         KI_CRITICAL(fmt::format("SCRIPT::RUNTIME: {}", error));
 
-        return { getState(), 0, 0, 0, sol::call_status::runtime };
+        return { getLua(), 0, 0, 0, sol::call_status::runtime };
     }
 }

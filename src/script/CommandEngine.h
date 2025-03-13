@@ -21,6 +21,8 @@ namespace script
         friend class Sync;
 
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static CommandEngine& get() noexcept;
 
         CommandEngine();

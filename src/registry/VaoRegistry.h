@@ -16,6 +16,8 @@ namespace mesh {
 
 class VaoRegistry {
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static VaoRegistry& get() noexcept;
 
     VaoRegistry();

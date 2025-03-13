@@ -9,13 +9,29 @@
 
 #include "material/CustomMaterial.h"
 
-namespace {
-    static MeshTypeRegistry g_registry;
+namespace
+{
+    thread_local std::exception_ptr lastException = nullptr;
+
+    static MeshTypeRegistry* s_registry{ nullptr };
+}
+
+void MeshTypeRegistry::init() noexcept
+{
+    s_registry = new MeshTypeRegistry();
+}
+
+void MeshTypeRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 MeshTypeRegistry& MeshTypeRegistry::get() noexcept
 {
-    return g_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 MeshTypeRegistry::MeshTypeRegistry()

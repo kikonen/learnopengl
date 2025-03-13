@@ -4,13 +4,27 @@
 
 #include <algorithm>
 
-namespace {
-    static ViewportRegistry s_registry;
+namespace
+{
+    static ViewportRegistry* s_registry{ nullptr };
+}
+
+void ViewportRegistry::init() noexcept
+{
+    s_registry = new ViewportRegistry();
+}
+
+void ViewportRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 ViewportRegistry& ViewportRegistry::get() noexcept
 {
-    return s_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 ViewportRegistry::ViewportRegistry() = default;

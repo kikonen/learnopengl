@@ -39,8 +39,6 @@ namespace {
     constexpr int MAX_CONTACTS = 4;
     constexpr int CONTACT_GROUP_ID = 0;
 
-    static physics::PhysicsEngine g_engine;
-
     size_t debugCounter{ 0 };
 
     dSurfaceParameters g_surfaceTemplate;
@@ -104,6 +102,29 @@ namespace {
         {
             contacts[i].surface = g_surfaceTemplate;
         }
+    }
+
+    static physics::PhysicsEngine* s_engine{ nullptr };
+}
+
+namespace physics
+{
+    void PhysicsEngine::init() noexcept
+    {
+        s_engine = new PhysicsEngine();
+    }
+
+    void PhysicsEngine::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    PhysicsEngine& PhysicsEngine::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
     }
 }
 
@@ -177,11 +198,6 @@ namespace physics
             }
         }
     };
-
-    PhysicsEngine& PhysicsEngine::get() noexcept
-    {
-        return g_engine;
-    }
 
     PhysicsEngine::PhysicsEngine()
     {

@@ -14,13 +14,29 @@
 
 #include "render/RenderContext.h"
 
-namespace {
-    static VaoRegistry g_registry;
+namespace
+{
+    thread_local std::exception_ptr lastException = nullptr;
+
+    static VaoRegistry* s_registry{ nullptr };
+}
+
+void VaoRegistry::init() noexcept
+{
+    s_registry = new VaoRegistry();
+}
+
+void VaoRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 VaoRegistry& VaoRegistry::get() noexcept
 {
-    return g_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 VaoRegistry::VaoRegistry()

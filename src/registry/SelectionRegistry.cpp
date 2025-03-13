@@ -29,13 +29,29 @@
 #include "registry/Registry.h"
 
 
-namespace {
-    static SelectionRegistry g_registry;
+namespace
+{
+    thread_local std::exception_ptr lastException = nullptr;
+
+    static SelectionRegistry* s_registry{ nullptr };
+}
+
+void SelectionRegistry::init() noexcept
+{
+    s_registry = new SelectionRegistry();
+}
+
+void SelectionRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 SelectionRegistry& SelectionRegistry::get() noexcept
 {
-    return g_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 SelectionRegistry::SelectionRegistry() = default;

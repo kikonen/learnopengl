@@ -6,17 +6,34 @@
 
 #include "text/vao/TextVAO.h"
 
-namespace {
-    static text::TextSystem s_instance;
+namespace
+{
+    static text::TextSystem* s_engine{ nullptr };
 }
 
 namespace text
 {
-    text::TextSystem& TextSystem::get() noexcept
+    void TextSystem::init() noexcept
     {
-        return s_instance;
+        s_engine = new TextSystem();
     }
 
+    void TextSystem::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    TextSystem& TextSystem::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
+    }
+}
+
+namespace text
+{
     TextSystem::TextSystem()
         : m_textVao{ std::make_unique<text::TextVAO>("text") }
     {}

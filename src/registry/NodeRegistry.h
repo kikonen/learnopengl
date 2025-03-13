@@ -42,6 +42,8 @@ class NodeRegistry final
     friend class Node;
 
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static NodeRegistry& get() noexcept;
 
     NodeRegistry();

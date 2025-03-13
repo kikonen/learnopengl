@@ -13,6 +13,8 @@ class RenderContext;
 //
 class MeshTypeRegistry {
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static MeshTypeRegistry& get() noexcept;
 
     MeshTypeRegistry();

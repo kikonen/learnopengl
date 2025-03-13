@@ -27,6 +27,8 @@
 
 #include "gui/Window.h"
 
+#include "SystemInit.h"
+
 
 Engine::Engine()
     : m_alive(std::make_shared<std::atomic<bool>>(true)),
@@ -40,9 +42,11 @@ Engine::~Engine() {
 
 int Engine::init() {
 
+    SystemInit::init();
     onInit();
 
     m_registry = std::make_shared<Registry>(m_alive);
+
     m_asyncLoader = std::make_shared<AsyncLoader>(m_alive);
 
     m_window = std::make_unique<Window>(*this);
@@ -256,5 +260,7 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
 
 void Engine::onDestroy()
 {
+    SystemInit::release();
+
     *m_alive = false;
 }

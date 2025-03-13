@@ -15,18 +15,35 @@
 #include "Source.h"
 #include "Listener.h"
 
-namespace {
+namespace
+{
+    static audio::AudioEngine* s_engine{ nullptr };
+}
+
+namespace audio
+{
+    void AudioEngine::init() noexcept
+    {
+        s_engine = new AudioEngine();
+    }
+
+    void AudioEngine::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    AudioEngine& AudioEngine::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
+    }
 }
 
 namespace audio
 {
     struct Sound;
-
-    AudioEngine& AudioEngine::get() noexcept
-    {
-        static AudioEngine s_engine;
-        return s_engine;
-    }
 
     AudioEngine::AudioEngine()
         : m_soundRegistry(std::make_unique<SoundRegistry>())

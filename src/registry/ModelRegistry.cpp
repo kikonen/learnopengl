@@ -16,15 +16,29 @@
 
 #include "render/RenderContext.h"
 
-namespace {
-    static ModelRegistry s_registry;
-
+namespace
+{
     thread_local std::exception_ptr lastException = nullptr;
+
+    static ModelRegistry* s_registry{ nullptr };
+}
+
+void ModelRegistry::init() noexcept
+{
+    s_registry = new ModelRegistry();
+}
+
+void ModelRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 ModelRegistry& ModelRegistry::get() noexcept
 {
-    return s_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 ModelRegistry::ModelRegistry()

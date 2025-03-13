@@ -62,12 +62,25 @@ namespace {
 
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 
-    static NodeRegistry g_registry;
+    static NodeRegistry* s_registry{ nullptr };
+}
+
+void NodeRegistry::init() noexcept
+{
+    s_registry = new NodeRegistry();
+}
+
+void NodeRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 NodeRegistry& NodeRegistry::get() noexcept
 {
-    return g_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 NodeRegistry::NodeRegistry()

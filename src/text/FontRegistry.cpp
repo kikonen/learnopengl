@@ -4,17 +4,33 @@
 
 #include "kigl/GLState.h"
 
-namespace {
-    static text::FontRegistry s_registry;
+namespace
+{
+    static text::FontRegistry* s_engine{ nullptr };
 }
 
-namespace text {
+namespace text
+{
+    void FontRegistry::init() noexcept
+    {
+        s_engine = new FontRegistry();
+    }
+
+    void FontRegistry::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
 
     FontRegistry& FontRegistry::get() noexcept
     {
-        return s_registry;
+        assert(s_engine);
+        return *s_engine;
     }
+}
 
+namespace text {
     FontRegistry::FontRegistry()
     {
         // NOTE KI reserve 0 for null font

@@ -11,6 +11,8 @@ class NodeController;
 
 class ControllerRegistry {
 public:
+    static void init() noexcept;
+    static void release() noexcept;
     static ControllerRegistry& get() noexcept;
 
     ControllerRegistry();

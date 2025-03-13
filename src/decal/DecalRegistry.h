@@ -10,7 +10,9 @@ namespace decal
 {
     class DecalRegistry {
     public:
-        static DecalRegistry& get();
+        static void init() noexcept;
+        static void release() noexcept;
+        static DecalRegistry& get() noexcept;
 
         DecalRegistry();
         ~DecalRegistry();

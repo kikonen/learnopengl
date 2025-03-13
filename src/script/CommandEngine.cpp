@@ -37,16 +37,32 @@
 namespace {
     constexpr size_t COMMANDS_SIZE = 10000;
 
-    static script::CommandEngine s_engine;
+    static script::CommandEngine* s_engine{ nullptr };
 }
 
 namespace script
 {
-    CommandEngine& CommandEngine::get() noexcept
+    void CommandEngine::init() noexcept
     {
-        return s_engine;
+        s_engine = new CommandEngine();
     }
 
+    void CommandEngine::release() noexcept
+    {
+        auto* s = s_engine;
+        s_engine = nullptr;
+        delete s;
+    }
+
+    CommandEngine& CommandEngine::get() noexcept
+    {
+        assert(s_engine);
+        return *s_engine;
+    }
+}
+
+namespace script
+{
     CommandEngine::CommandEngine()
         : m_cleanupStep(5)
     {

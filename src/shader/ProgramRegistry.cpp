@@ -12,12 +12,26 @@
 
 namespace {
     constexpr float DIRTY_CHECK_FREQUENCY{ 4.f };
-    static ProgramRegistry g_registry;
+
+    static ProgramRegistry* s_registry{ nullptr };
+}
+
+void ProgramRegistry::init() noexcept
+{
+    s_registry = new ProgramRegistry();
+}
+
+void ProgramRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 ProgramRegistry& ProgramRegistry::get() noexcept
 {
-    return g_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 ProgramRegistry::ProgramRegistry()

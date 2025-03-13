@@ -10,25 +10,40 @@ namespace {
     constexpr size_t BLOCK_SIZE = 16;
     constexpr size_t MAX_BLOCK_COUNT = 100;
 
-    static terrain::TerrrainTileRegistry s_instance;
+    static terrain::TerrainTileRegistry* s_registry{ nullptr };
 }
 
 namespace terrain {
-    TerrrainTileRegistry& TerrrainTileRegistry::get()
+    void TerrainTileRegistry::init() noexcept
     {
-        return s_instance;
+        s_registry = new TerrainTileRegistry();
     }
 
-    TerrrainTileRegistry::TerrrainTileRegistry()
+    void TerrainTileRegistry::release() noexcept
+    {
+        auto* s = s_registry;
+        s_registry = nullptr;
+        delete s;
+    }
+
+    TerrainTileRegistry& TerrainTileRegistry::get() noexcept
+    {
+        assert(s_registry);
+        return *s_registry;
+    }
+}
+
+namespace terrain {
+    TerrainTileRegistry::TerrainTileRegistry()
     {
         // NOTE KI null entry
         TerrainTileInfo info;
         addTile(info);
     }
 
-    TerrrainTileRegistry::~TerrrainTileRegistry() = default;
+    TerrainTileRegistry::~TerrainTileRegistry() = default;
 
-    void TerrrainTileRegistry::prepare()
+    void TerrainTileRegistry::prepare()
     {
         const auto& assets = Assets::get();
 
@@ -46,14 +61,14 @@ namespace terrain {
         m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);
     }
 
-    void TerrrainTileRegistry::updateWT(const UpdateContext& ctx)
+    void TerrainTileRegistry::updateWT(const UpdateContext& ctx)
     {
         std::lock_guard lock(m_lock);
 
         snapshotTiles();
     }
 
-    void TerrrainTileRegistry::updateRT(const UpdateContext& ctx)
+    void TerrainTileRegistry::updateRT(const UpdateContext& ctx)
     {
         if (!m_updateReady) return;
 
@@ -74,7 +89,7 @@ namespace terrain {
         updateTileBuffer();
     }
 
-    uint32_t TerrrainTileRegistry::addTile(TerrainTileInfo& tile)
+    uint32_t TerrainTileRegistry::addTile(TerrainTileInfo& tile)
     {
         std::lock_guard lock(m_lock);
 
@@ -86,7 +101,7 @@ namespace terrain {
         return tile.m_registeredIndex;
     }
 
-    void TerrrainTileRegistry::snapshotTiles()
+    void TerrainTileRegistry::snapshotTiles()
     {
         if (!m_dirty) return;
 
@@ -114,7 +129,7 @@ namespace terrain {
         m_dirty = false;
     }
 
-    void TerrrainTileRegistry::updateTileBuffer()
+    void TerrainTileRegistry::updateTileBuffer()
     {
         std::lock_guard lock(m_snapshotLock);
 

@@ -96,7 +96,7 @@ void Registry::prepareShared()
 
     particle::ParticleSystem::get().prepare();
 
-    terrain::TerrrainTileRegistry::get().prepare();
+    terrain::TerrainTileRegistry::get().prepare();
 
     clearShared();
 }
@@ -200,7 +200,7 @@ void Registry::updateWT(const UpdateContext& ctx)
 {
     ASSERT_WT();
     //ControllerRegistry::get().updateWT(ctx);
-    terrain::TerrrainTileRegistry::get().updateWT(ctx);
+    terrain::TerrainTileRegistry::get().updateWT(ctx);
 }
 
 void Registry::updateRT(const UpdateContext& ctx)
@@ -217,7 +217,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     particle::ParticleSystem::get().updateRT(ctx);
     decal::DecalSystem::get().updateRT(ctx);
     animation::AnimationSystem::get().updateRT(ctx);
-    terrain::TerrrainTileRegistry::get().updateRT(ctx);
+    terrain::TerrainTileRegistry::get().updateRT(ctx);
 
     text::FontRegistry::get().updateRT(ctx);
     text::TextSystem::get().updateRT(ctx);

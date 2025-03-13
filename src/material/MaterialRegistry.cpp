@@ -17,12 +17,26 @@ namespace {
     constexpr size_t BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_COUNT = BLOCK_SIZE * BLOCK_COUNT;
+
+    static MaterialRegistry* s_registry{ nullptr };
+}
+
+void MaterialRegistry::init() noexcept
+{
+    s_registry = new MaterialRegistry();
+}
+
+void MaterialRegistry::release() noexcept
+{
+    auto* s = s_registry;
+    s_registry = nullptr;
+    delete s;
 }
 
 MaterialRegistry& MaterialRegistry::get() noexcept
 {
-    static MaterialRegistry s_registry;
-    return s_registry;
+    assert(s_registry);
+    return *s_registry;
 }
 
 MaterialRegistry::MaterialRegistry()

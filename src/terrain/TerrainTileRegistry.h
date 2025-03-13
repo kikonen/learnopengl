@@ -12,12 +12,14 @@ struct UpdateContext;
 
 
 namespace terrain {
-    class TerrrainTileRegistry {
+    class TerrainTileRegistry {
     public:
-        static TerrrainTileRegistry& get();
+        static void init() noexcept;
+        static void release() noexcept;
+        static TerrainTileRegistry& get() noexcept;
 
-        TerrrainTileRegistry();
-        ~TerrrainTileRegistry();
+        TerrainTileRegistry();
+        ~TerrainTileRegistry();
 
         void prepare();
 

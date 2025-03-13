@@ -31,6 +31,8 @@ namespace animation {
 
     class AnimationSystem {
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static animation::AnimationSystem& get() noexcept;
 
         AnimationSystem();

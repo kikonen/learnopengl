@@ -10,6 +10,8 @@ struct UpdateContext;
 namespace text {
     class FontRegistry {
     public:
+        static void init() noexcept;
+        static void release() noexcept;
         static FontRegistry& get() noexcept;
 
         FontRegistry();
