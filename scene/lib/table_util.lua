@@ -28,40 +28,41 @@ end
 
 function table_format(t, indent, levels)
   if t == nil then
-    return nil
+    return "<nil>"
   end
 
-  local sb = ""
+  if type(t) ~= "table" then
+    return t
+  end
+
+  if table_size(t) == 0 then
+    return ""
+  end
+
+  local sb = {}
 
   indent = indent or ""
   levels = levels or 5
 
-  if type(t) == "table" then
-    if table_size(t) > 0 then
-      local first = true
-      for k, v in pairs(t) do
-        if not first then
-          sb = sb .. "\n"
-        end
+  for k, v in pairs(t) do
+    if type(v) == "table" and levels > 1 then
+      v = table_format(v, indent .. "  ", levels - 1)
 
-        sb = sb .. string.format("%s%s: ", indent, k)
-
-        if type(v) == "table" and levels > 1 then
-          v = table_format(v, indent .. "  ", levels - 1)
-          if #v > 0 then
-            sb = sb .. "\n"
-          else
-            v = "{}"
-          end
-        end
-        sb = sb .. string.format("%s", v)
-
-        first = false
+      if #v == 0 then
+        v = "{}"
+      else
+        v = "{\n  " .. indent .. v .. "}"
+      end
+    else
+      if type(v) == "string" then
+        v = "\"" .. v .. "\""
+      else
+        v = string.format("%s", v)
       end
     end
-  else
-    sb = sb .. string.format("%s%s", indent, t)
+
+    sb[#sb + 1] = k .. " = " .. v
   end
 
-  return sb
+  return table.concat(sb, "\n" .. indent)
 end
