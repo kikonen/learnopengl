@@ -42,6 +42,10 @@ namespace script
             script::command_id afterId,
             T&& cmd) noexcept;
 
+        size_t getPendingCount() const noexcept;
+        size_t getBlockedCount() const noexcept;
+        size_t getActiveCount() const noexcept;
+
     protected:
         bool isAlive(script::command_id commandId) const noexcept;
 

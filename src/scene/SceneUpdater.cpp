@@ -23,6 +23,7 @@
 
 #include "physics/PhysicsEngine.h"
 
+#include "script/CommandEngine.h"
 #include "script/ScriptEngine.h"
 
 #include "registry/Registry.h"
@@ -191,9 +192,17 @@ void SceneUpdater::handleNodeAdded(Node* node)
 
 std::string SceneUpdater::getStats()
 {
+    auto& commandEngine = script::CommandEngine::get();
+    const auto pendingCommandCount = commandEngine.getPendingCount();
+    const auto blockedCommandCount = commandEngine.getBlockedCount();
+    const auto activeCommandCount = commandEngine.getActiveCount();
+
     const auto nodeCount = m_registry->m_nodeRegistry->getNodeCount();
     const auto decalCount = decal::DecalSystem::get().getActiveDecalCount();
     const auto physicsCount = physics::PhysicsEngine::get().getObjectCount();
 
-    return fmt::format("nodes={}, decals={}, physics={}", nodeCount, decalCount, physicsCount);
+    return fmt::format(
+        "nodes={}, decals={}, physics={}, cmd_pending={}, cmd_blocked={}, cmd_active={}",
+        nodeCount, decalCount, physicsCount,
+        pendingCommandCount, blockedCommandCount, activeCommandCount);
 }

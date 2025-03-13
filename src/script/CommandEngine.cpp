@@ -111,6 +111,21 @@ namespace script
             });
     }
 
+    size_t CommandEngine::getPendingCount() const noexcept
+    {
+        return m_pending.size();
+    }
+
+    size_t CommandEngine::getBlockedCount() const noexcept
+    {
+        return m_blocked.size();
+    }
+
+    size_t CommandEngine::getActiveCount() const noexcept
+    {
+        return m_active.size();
+    }
+
     void CommandEngine::update(const UpdateContext& ctx)
     {
         //updateOldest();
