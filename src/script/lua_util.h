@@ -39,12 +39,12 @@ namespace script
         std::string str() const noexcept;
     };
 
-    CommandOptions readOptions(const sol::table& lua_opt);
-    CommandEvent readEvent(const sol::table& lua_opt);
+    CommandOptions readOptions(const sol::table& lua_opt) noexcept;
+    CommandEvent readEvent(const sol::table& lua_opt) noexcept;
 
-    std::vector<script::command_id> readCommandIds(const sol::table& v);
+    std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept;
 
-    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle);
+    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) noexcept;
 
     //glm::vec3 readVec3(const sol::table& v) noexcept;
 }

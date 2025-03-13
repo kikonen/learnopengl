@@ -197,6 +197,7 @@ toktx.exe --verbose --genmipmap --encode astc Planks09_col_2048.ktx Planks09_col
 - https://github.com/ThePhD/sol2/issues/90
 - https://blog.rubenwardy.com/2020/07/22/sol3-vector-extension/
 - https://www.youtube.com/watch?v=1d8SbBIGvUY&list=PLtI3Y3gOLHgpqnRPhqRW4ahSaXePoILNn&index=1
+- https://sol2.readthedocs.io/en/latest/safety.html
 
 ## Skybox
 - https://www.flipcode.com/archives/Skybox_With_A_Single_Quad.shtml

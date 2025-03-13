@@ -17,29 +17,25 @@ namespace script {
             listenerId, type, data);
     }
 
-    CommandOptions readOptions(const sol::table& lua_opt)
+    CommandOptions readOptions(const sol::table& lua_opt) noexcept
     {
-        if (lua_opt.get_type() != sol::type::table) {
-            throw std::runtime_error{ "options is not table" };
-        }
-
         CommandOptions opt;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
             if (k == "after") {
                 opt.afterId = value.as<script::command_id>();
             }
+            else if (k == "time") {
+                opt.duration = value.as<float>();
+            }
+            else if (k == "relative") {
+                opt.relative = value.as<bool>();
+            }
             else if (k == "sid") {
                 opt.sid = value.as<unsigned int>();
             }
-            else if (k == "node") {
-                opt.nodeId = value.as<unsigned int>();
-            }
             else if (k == "index") {
                 opt.index = value.as<int>();
-            }
-            else if (k == "time") {
-                opt.duration = value.as<float>();
             }
             else if (k == "duration") {
                 opt.duration = value.as<float>();
@@ -49,9 +45,6 @@ namespace script {
             }
             else if (k == "count") {
                 opt.count = value.as<float>();
-            }
-            else if (k == "relative") {
-                opt.relative = value.as<bool>();
             }
             else if (k == "loop") {
                 opt.repeat = value.as<bool>();
@@ -65,16 +58,15 @@ namespace script {
             else if (k == "name") {
                 opt.name = value.as<std::string>();
             }
+            else if (k == "node") {
+                opt.nodeId = value.as<unsigned int>();
+            }
             });
         return opt;
     }
 
-    CommandEvent readEvent(const sol::table& lua_opt)
+    CommandEvent readEvent(const sol::table& lua_opt) noexcept
     {
-        if (lua_opt.get_type() != sol::type::table) {
-            throw std::runtime_error{ "event is not table" };
-        }
-
         CommandEvent ev;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
@@ -91,12 +83,8 @@ namespace script {
         return ev;
     }
 
-    std::vector<script::command_id> readCommandIds(const sol::table& v)
+    std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept
     {
-        if (v.get_type() != sol::type::table) {
-            throw std::runtime_error{ "command_ids is not table" };
-        }
-
         std::vector<script::command_id> ids;
         v.for_each([&](sol::object const& key, sol::object const& value) {
             int id = value.as<script::command_id>();
@@ -105,7 +93,7 @@ namespace script {
         return ids;
     }
 
-    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle)
+    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) noexcept
     {
         return nodeId > 0 ? pool::NodeHandle::toHandle(nodeId) : handle;
     }
