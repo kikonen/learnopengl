@@ -24,8 +24,8 @@ FrameInit::FrameInit(Window& window)
     {
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= 0
-            | ImGuiConfigFlags_DockingEnable
-            | ImGuiConfigFlags_NavEnableKeyboard
+            //| ImGuiConfigFlags_DockingEnable
+            //| ImGuiConfigFlags_NavEnableKeyboard
             | 0;
         io.ConfigDebugHighlightIdConflicts = true;
     }
