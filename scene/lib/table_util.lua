@@ -4,7 +4,7 @@ function kpairs(t)
   return next, t, nil
 end
 
-local function table_keys(t)
+function table_keys(t)
   local keys = {}
   for key,_ in pairs(t) do
     table.insert(keys, key)

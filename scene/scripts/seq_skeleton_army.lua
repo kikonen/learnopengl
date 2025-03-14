@@ -104,7 +104,7 @@ local function attack(src_wid)
 
   cid = cmd:move_spline(
     { after=cid, time=3 + rnd(5), relative=true },
-    { 20, 0, 5 },
+    vec3(20, 0, 5),
     vec3(5 - rnd(10), 0, 5 - rnd(10)))
 
   cid = cmd:animation_play(
