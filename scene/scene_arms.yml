@@ -119,7 +119,7 @@ nodes:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - id: player_fps_arms_{t}
+  - xid: player_fps_arms_{t}
     parent: player_fps
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
@@ -129,6 +129,21 @@ nodes:
     layer: player
     script:
       path: scripts/fps_player
+  - id: player_fps_arms_v2_{c}_{t}
+    parent: player_fps
+    prefab:
+      path: prefab/characters/prefab_fps_arms_v2.yml
+    xmesh:
+      material_modifier:
+        map_kd: T_Hands_04_Albedo_06_2048.png
+    pos: [0.15, -2.8, -0.8]
+    rotation: [-20, 0, 0]
+    pivot:
+      alignment: m
+    layer: player
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )
   - id: SM_JungleGym_01a_{c}_{t}
     prefab:
       path: prefab/scenery/prefab_junglegym.yml

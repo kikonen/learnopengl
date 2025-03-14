@@ -63,7 +63,7 @@ nodes:
     script: |
       cmd:audio_play(
         { sync=true, sid=util.sid("idle_1") })
-  - id: player_fps_arms_{c}_{t}
+  - xid: player_fps_arms_{c}_{t}
     parent: player_fps
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
@@ -74,6 +74,21 @@ nodes:
       alignment: m
     layer: player
     script: scripts/fps_player
+  - id: player_fps_arms_v2_{c}_{t}
+    parent: player_fps
+    prefab:
+      path: prefab/characters/prefab_fps_arms_v2.yml
+    xmesh:
+      material_modifier:
+        map_kd: T_Hands_04_Albedo_06_2048.png
+    pos: [0.15, -2.9, -0.7]
+    rotation: [-20, 0, 0]
+    pivot:
+      alignment: m
+    layer: player
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )
   - name: origo
     mesh:
       path: water_ball
