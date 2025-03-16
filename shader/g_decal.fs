@@ -91,6 +91,7 @@ void main() {
       // NOTE KI *MUST* calculate from depth, since g_normal
       // may point into *ANY* direction, thus checking against it
       // cannot work as expected
+      // https://irrlicht.sourceforge.io/forum/viewtopic.php?t=52284
       vec3 ddxWp = dFdx(worldPos);
       vec3 ddyWp = dFdy(worldPos);
       surfaceNormal = normalize(cross(ddxWp, ddyWp));
