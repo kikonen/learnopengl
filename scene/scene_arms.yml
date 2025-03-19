@@ -63,6 +63,7 @@ nodes:
           loop: true
     camera:
       type: fps
+      pitch: -16
       xdistance: [4, 1.5, 20]
       xdefault: true
     controllers:
@@ -136,8 +137,10 @@ nodes:
     xmesh:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
-    pos: [0.15, -2.8, -0.8]
-    rotation: [-20, 0, 0]
+        xrender_back: true
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
     pivot:
       alignment: m
     layer: player

@@ -2,6 +2,7 @@
 
 #include "asset/Assets.h"
 
+#include "util/glm_util.h"
 #include "util/util.h"
 
 #include "component/FpsCamera.h"
@@ -72,6 +73,9 @@ namespace loader
             else if (k == "offset") {
                 data.offset = readVec3(v);
             }
+            else if (k == "pitch") {
+                data.pitch = readFloat(v);
+            }
             else if (k == "pitch_speed") {
                 data.pitchSpeed = readFloat(v);
             }
@@ -127,6 +131,8 @@ namespace loader
         switch (data.type) {
         case CameraType::fps: {
             auto c = std::make_unique<FpsCamera>();
+            c->setPitch(glm::radians(data.pitch));
+            c->setPitchSpeed(glm::radians(data.pitchSpeed));
             component = std::move(c);
             break;
         }

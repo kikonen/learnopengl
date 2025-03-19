@@ -13,12 +13,24 @@ public:
 
     virtual void snapToIdeal(const Snapshot& snapshot) override;
 
+    // @param pitch radians
+    void setPitch(float pitch)
+    {
+        m_pitch = pitch;
+        m_pitch = std::min(std::max(m_pitch, -m_maxPitch), m_maxPitch);
+    }
+
+    float getPitch() const
+    {
+        return m_pitch;
+    }
+
     void setPitchSpeed(float speed)
     {
         m_pitchSpeed = speed;
     }
 
-    float getPitchSpeed(float speed)
+    float getPitchSpeed() const
     {
         return m_pitchSpeed;
     }
@@ -31,6 +43,6 @@ private:
     // Rotation/sec speed of pitch
     float m_pitchSpeed{ 0.f };
 
-    // Current pitch
+    // Current pitch (radians)
     float m_pitch{ 0.f };
 };

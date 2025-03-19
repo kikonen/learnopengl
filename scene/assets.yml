@@ -229,7 +229,7 @@ assets:
       effect_enabled: false
       effect: none
       blend_enabled: true
-      blend_factor: 0.95
+      blend_factor: 0.99
     - name: ui
       order: 150
       enabled: true

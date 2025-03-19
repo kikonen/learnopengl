@@ -24,6 +24,7 @@ namespace loader {
 
         glm::vec3 offset{ 40.f, 0.f, 0.f };
 
+        float pitch{ 0.f };
         float pitchSpeed{ 0.f };
         float yawSpeed{ 0.f };
 

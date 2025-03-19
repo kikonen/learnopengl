@@ -364,6 +364,13 @@ namespace editor {
                     rot, deg, quat));
             }
         }
+
+        {
+            glm::vec3 scale = state.getScale();
+            if (ImGui::InputFloat3("Node scale", glm::value_ptr(scale))) {
+                state.setScale(scale);
+            }
+        }
     }
 
     void EditorFrame::renderTypeProperties(

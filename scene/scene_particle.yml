@@ -55,7 +55,7 @@ nodes:
           pitch: 1.5
           loop: true
     camera:
-      rotation: [-17, 0, 0]
+      pitch: -16
       default: true
     controllers:
       - type: pawn
@@ -78,11 +78,13 @@ nodes:
     parent: player_fps
     prefab:
       path: prefab/characters/prefab_fps_arms_v2.yml
-    xmesh:
+    mesh:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
-    pos: [0.15, -2.9, -0.7]
-    rotation: [-20, 0, 0]
+        xrender_back: true
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
     pivot:
       alignment: m
     layer: player
@@ -562,3 +564,179 @@ nodes:
         collide: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
+
+decals:
+  - name: bullet_1
+    lifetime: 120
+    lifetime_variation: [-60, 60]
+    scale: 0.05
+    scale_variation: [-0.01, 0.01]
+    rotation_variation: [0, 360]
+    material:
+      base: decals
+      map_kd: BulletHole_Plaster.png
+      map_normal: BulletHole_Plaster_normal.png
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: firespin_1
+    lifetime: 99999
+    scale: 0.4
+    scale_variation: [-0.2, 0.2]
+    sprite_speed: 0
+    sprite_speed_variation: [-10, 10]
+    static: false
+    material:
+      base: particles
+      map_kd: 7_firespin_spritesheet.png
+      sprites: 61
+      sprites_x: 8
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: blood_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/high_velocity_blood_spatter_sgepbixp_2k
+      map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
+      map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
+      map_mrao: High_Velocity_Blood_Spatter_sgepbixp_2K_mrao
+      map_displacement: High_Velocity_Blood_Spatter_sgepbixp_2K_displacement
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+  - name: rubble_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/rubble_tbcs3qo_2k
+      map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
+      map_normal: Rubble_tbcs3qo_2K_Normal.jpg
+      map_mrao: Rubble_tbcs3qo_2K_mrao
+      map_displacement: Rubble_tbcs3qo_2K_displacement
+      xparallax_depth: 0.05
+      parallax_depth: 0.008
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+  - name: ivy_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/ivy_thdjv1h_2k
+      map_kd: Ivy_thdjv1h_2K_BaseColor.jpg
+      map_normal: Ivy_thdjv1h_2K_Normal.jpg
+      map_mrao: Ivy_thdjv1h_2K_mrao
+      map_displacement: Ivy_thdjv1h_2K_displacement
+      parallax_depth: 0.1
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: concrete_damage_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.5, 0.5]
+    rotation_variation: [-90, 90]
+    material:
+      base: decals/concrete_damage_tdildcjb_2k
+      map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
+      map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
+      map_mrao: Concrete_Damage_tdildcjb_2K_mrao
+      map_displacement: Concrete_Damage_tdildcjb_2K_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: concrete_hole_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/hole_in_concrete_sfvodqg_2k
+      map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
+      map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
+      map_mrao: Hole_in_Concrete_sfvodqg_2K_mrao
+      map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: graffiti_tag_1
+    lifetime: 99999
+    scale: 2
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Graffiti Tag_uk2ief1l
+      map_kd: Albedo_2K__uk2ief1l.jpg
+      map_mrao: default_mrao
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: poster_1
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Torn Poster_tcgqltp
+      map_kd: Albedo_2K__tcgqltp.jpg
+      map_normal: Normal_2K__tcgqltp.jpg
+      map_mrao: default_mrao
+      map_displacement: default_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: poster_2
+    lifetime: 99999
+    scale: 1
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Poster_udnhcalka
+      map_kd: Albedo_2K__udnhcalka.jpg
+      map_normal: Normal_2K__udnhcalka.jpg
+      map_mrao: default_mrao
+      map_displacement: default_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: manhole_cover_1
+    lifetime: 99999
+    scale: 1.1
+    scale_variation: [-0, 0]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Round Manhole Cover_uh4jedeg
+      map_kd: Albedo_2K__uh4jedeg.jpg
+      map_normal: Normal_2K__uh4jedeg.jpg
+      map_mrao: default_mrao
+      map_displacement: default_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - name: pedastrian_crossing_1
+    lifetime: 99999
+    scale: 3
+    scale_variation: [-0.2, 0.2]
+    rotation_variation: [-90, 90]
+    material:
+      base:  decals/Painted Pedestrian Crossing Lines_veggehh
+      map_kd: Albedo_2K__veggehh.jpg
+      map_normal: Normal_2K__veggehh.jpg
+      map_mrao: default_mrao
+      map_displacement: default_displacement
+      parallax_depth: 0.05
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
