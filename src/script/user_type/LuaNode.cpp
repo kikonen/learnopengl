@@ -13,6 +13,7 @@ namespace script
         t["get_name"] = &Node::lua_get_name;
         t["get_clone_index"] = &Node::lua_get_clone_index;
         t["get_pos"] = &Node::lua_get_pos;
+        t["get_front"] = &Node::lua_get_front;
         t["get_model_matrix"] = &Node::lua_get_model_matrix;
 
         t.set_function(

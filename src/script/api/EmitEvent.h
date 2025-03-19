@@ -1,7 +1,5 @@
 #pragma once
 
-#include "script/lua_binding.h"
-
 #include "NodeCommand.h"
 
 namespace script

@@ -86,6 +86,8 @@ namespace editor {
         Frame::prepare(ctx);
 
         m_console->prepare(ctx);
+
+        //m_state.m_showConsole = true;
     }
 
     void EditorFrame::draw(const RenderContext& ctx)

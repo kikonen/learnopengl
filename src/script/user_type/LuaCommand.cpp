@@ -31,6 +31,8 @@ namespace script
 
         t["animation_play"] = & NodeCommandAPI::lua_animation_play;
 
+        t["ray_cast"] = &NodeCommandAPI::lua_ray_cast;
+
         t["call"] = & NodeCommandAPI::lua_invoke;
         t["emit"] = & NodeCommandAPI::lua_emit;
     }

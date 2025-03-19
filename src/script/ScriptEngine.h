@@ -82,9 +82,9 @@ namespace script
         sol::protected_function_result execRepl(
             const std::string& script);
 
-    private:
         inline sol::state& getLua() noexcept{ return m_lua; }
 
+    private:
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);
 

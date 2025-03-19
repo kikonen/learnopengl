@@ -6,10 +6,10 @@
 
 namespace script
 {
-    class CallLuaFunction final : public NodeCommand
+    class InvokeFunction final : public NodeCommand
     {
     public:
-        CallLuaFunction(
+        InvokeFunction(
             pool::NodeHandle handle,
             bool self,
             const sol::function& fn,

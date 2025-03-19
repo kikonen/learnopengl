@@ -23,7 +23,7 @@ namespace script {
             else if (auto* src = dynamic_cast<Wait*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
-            else if (auto* src = dynamic_cast<CallLuaFunction*>(other_cmd)) {
+            else if (auto* src = dynamic_cast<InvokeFunction*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<AudioPause*>(other_cmd)) {
@@ -69,6 +69,9 @@ namespace script {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<SetVisibleNode*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
+            else if (auto* src = dynamic_cast<RayCast*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<EmitEvent*>(other_cmd)) {

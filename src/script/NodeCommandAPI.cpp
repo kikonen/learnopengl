@@ -328,6 +328,23 @@ namespace script
             });
     }
 
+    int NodeCommandAPI::lua_ray_cast(
+        const sol::table& lua_opt,
+        const glm::vec3& dir,
+        const sol::function& callback) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            RayCast{
+                m_handle,
+                dir,
+                opt.self,
+                callback
+            });
+    }
+
     int NodeCommandAPI::lua_invoke(
         const sol::table& lua_opt,
         const sol::function& fn,
@@ -337,7 +354,7 @@ namespace script
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            CallLuaFunction{
+            InvokeFunction{
                 m_handle,
                 opt.self,
                 fn,

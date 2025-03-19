@@ -2,7 +2,11 @@
 
 #include <functional>
 
+#include "glm/gtc/quaternion.hpp"
+
 #include "script/UtilAPI.h"
+
+#include "util/glm_util.h"
 
 namespace script
 {
@@ -40,5 +44,72 @@ namespace script
                     return std::clamp(v, min, max);
                 }
             ));
+
+        t.set_function(
+            "degrees_to_quat",
+            sol::overload(
+                [](const glm::vec3& rot) {
+                    return util::degreesToQuat(rot);
+                }
+            ));
+
+        t.set_function(
+            "radians_to_quat",
+            sol::overload(
+                [](const glm::vec3& rot) {
+                    return util::radiansToQuat(rot);
+                }
+            ));
+
+        t.set_function(
+            "quat_to_degrees",
+            sol::overload(
+                [](const glm::quat& rot) {
+                    return util::quatToDegrees(rot);
+                }
+            ));
+
+        t.set_function(
+            "quat_to_radians",
+            sol::overload(
+                [](const glm::quat& rot) {
+                    return util::quatToRadians(rot);
+                }
+            ));
+
+        t.set_function(
+            "radians_to_degrees",
+            sol::overload(
+                [](const glm::vec3& rot) {
+                    return util::radiansToDegrees(rot);
+                }
+            ));
+
+        t.set_function(
+            "degrees_to_radians",
+            sol::overload(
+                [](const glm::vec3& rot) {
+                    return util::degreesToRadians(rot);
+                }
+            ));
+
+        t.set_function(
+            "axis_degrees_to_quat",
+            sol::overload(
+                [](const glm::vec3& axis, float degrees) {
+                    return util::axisDegreesToQuat(axis, degrees);
+                }
+            ));
+
+        t.set_function(
+            "axis_radians_to_quat",
+            sol::overload(
+                [](const glm::vec3& axis, float radians) {
+                    return util::axisRadiansToQuat(axis, radians);
+                }
+            ));
+
+        //glm::quat normalToRotation(const glm::vec3 & normal, const glm::vec3 & up);
+
     }
 }

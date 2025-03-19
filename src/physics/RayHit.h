@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "ode/ode.h"
+
 #include "pool/NodeHandle.h"
 
 namespace physics {

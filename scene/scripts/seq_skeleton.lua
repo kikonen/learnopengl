@@ -90,6 +90,42 @@ function lua_node:emit_particles()
     { count=(10 + rnd(50)) * 1000 })
 end
 
+local function ray_caster()
+  local cid = 0
+  local degrees = 0
+
+  local function ray_cast_hit(args)
+    print("RAY_HIT")
+    table_print(args)
+  end
+
+  local function ray_cast()
+    cid = cmd:wait({ after=cid, time=1 })
+
+    degrees = degrees + 1
+
+    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
+    printf("front=%s, rot=%s\n", node:get_front(), rot)
+    local dir = rot * node:get_front()
+    printf("dir=%s\n", dir)
+
+    cid = cmd:ray_cast(
+      { after=cid },
+      dir,
+      ray_cast_hit)
+
+    cid = cmd:wait({ after=cid, time=2 })
+
+    cid = cmd:call(
+      { after=cid },
+      ray_cast)
+  end
+
+  cid = cmd:call(
+    { after=cid },
+    ray_cast)
+end
+
 local function animation()
   -- local listener_id
   local idx = 0
@@ -204,3 +240,4 @@ end
 
 event_test()
 animation()
+ray_caster()

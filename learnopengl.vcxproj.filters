@@ -108,9 +108,6 @@
     <ClCompile Include="src\render\RenderContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\Raycast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shader\Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -378,7 +375,7 @@
     <ClCompile Include="src\kigl\GLStencilMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\api\CallLuaFunction.cpp">
+    <ClCompile Include="src\script\api\InvokeFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\Coroutine.cpp">
@@ -1110,6 +1107,18 @@
     <ClCompile Include="src\engine\SystemInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\user_type\LuaPhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\api\RayCast.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\api\RayCast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\user_type\LuaRayHit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1206,9 +1215,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\RenderContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\particle\ParticleGenerator.h">
@@ -1577,7 +1583,7 @@
     <ClInclude Include="src\ki\ki.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\api\CallLuaFunction.h">
+    <ClInclude Include="src\script\api\InvokeFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\Coroutine.h">
@@ -2484,6 +2490,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\SystemInit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\user_type\LuaPhysics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\user_type\LuaRayHit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

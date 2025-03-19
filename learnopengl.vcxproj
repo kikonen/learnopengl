@@ -251,6 +251,8 @@
     <ClCompile Include="src\script\api\EmitEvent.h" />
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
+    <ClCompile Include="src\script\api\RayCast.cpp" />
+    <ClCompile Include="src\script\api\RayCast.h" />
     <ClCompile Include="src\script\api\SelectNode.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
@@ -258,6 +260,8 @@
     <ClCompile Include="src\script\lua_util.cpp" />
     <ClCompile Include="src\script\user_type\LuaCommand.cpp" />
     <ClCompile Include="src\script\user_type\LuaNode.cpp" />
+    <ClCompile Include="src\script\user_type\LuaPhysics.cpp" />
+    <ClCompile Include="src\script\user_type\LuaRayHit.cpp" />
     <ClCompile Include="src\script\user_type\LuaUtil.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
@@ -353,7 +357,7 @@
     <ClCompile Include="src\script\api\AudioPause.cpp" />
     <ClCompile Include="src\script\api\AudioPlay.cpp" />
     <ClCompile Include="src\script\api\AudioStop.cpp" />
-    <ClCompile Include="src\script\api\CallLuaFunction.cpp" />
+    <ClCompile Include="src\script\api\InvokeFunction.cpp" />
     <ClCompile Include="src\script\Coroutine.cpp" />
     <ClCompile Include="src\controller\PawnController.cpp" />
     <ClCompile Include="src\kigl\GLStencilMode.cpp" />
@@ -455,7 +459,6 @@
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\material\ImageTexture.cpp" />
     <ClCompile Include="src\material\PlainTexture.cpp" />
-    <ClCompile Include="src\scene\Raycast.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraZoomController.cpp" />
     <ClCompile Include="src\render\CubeMap.cpp" />
@@ -626,6 +629,8 @@
     <ClInclude Include="src\script\binding\bind_vec3.h" />
     <ClInclude Include="src\script\user_type\LuaCommand.h" />
     <ClInclude Include="src\script\user_type\LuaNode.h" />
+    <ClInclude Include="src\script\user_type\LuaPhysics.h" />
+    <ClInclude Include="src\script\user_type\LuaRayHit.h" />
     <ClInclude Include="src\script\user_type\LuaUtil.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
@@ -800,7 +805,7 @@
     <ClInclude Include="src\script\api\AudioPause.h" />
     <ClInclude Include="src\script\api\AudioPlay.h" />
     <ClInclude Include="src\script\api\AudioStop.h" />
-    <ClInclude Include="src\script\api\CallLuaFunction.h" />
+    <ClInclude Include="src\script\api\InvokeFunction.h" />
     <ClInclude Include="src\script\Coroutine.h" />
     <ClInclude Include="src\controller\PawnController.h" />
     <ClInclude Include="src\kigl\GLFence.h" />
@@ -951,7 +956,6 @@
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\material\ImageTexture.h" />
     <ClInclude Include="src\material\PlainTexture.h" />
-    <ClInclude Include="src\scene\Raycast.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraZoomController.h" />
     <ClInclude Include="src\render\CubeMap.h" />

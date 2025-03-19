@@ -86,6 +86,11 @@ namespace script
         int lua_particle_stop(
             const sol::table& lua_opt) noexcept;
 
+        int lua_ray_cast(
+            const sol::table& lua_opt,
+            const glm::vec3& dir,
+            const sol::function& callback) noexcept;
+
         int lua_invoke(
             const sol::table& lua_opt,
             const sol::function& fn,

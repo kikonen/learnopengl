@@ -1,4 +1,4 @@
-#include "CallLuaFunction.h"
+#include "InvokeFunction.h"
 
 #include "engine/UpdateContext.h"
 
@@ -8,7 +8,7 @@
 
 namespace script
 {
-    CallLuaFunction::CallLuaFunction(
+    InvokeFunction::InvokeFunction(
         pool::NodeHandle handle,
         bool self,
         const sol::function& fn,
@@ -20,7 +20,7 @@ namespace script
     {
     }
 
-    void CallLuaFunction::execute(
+    void InvokeFunction::execute(
         const UpdateContext& ctx) noexcept
     {
         m_elapsedTime += ctx.m_clock.elapsedSecs;

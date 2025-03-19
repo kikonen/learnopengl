@@ -28,6 +28,8 @@
 #include "user_type/LuaNode.h"
 #include "user_type/LuaCommand.h"
 #include "user_type/LuaGlm.h"
+#include "user_type/LuaRayHit.h"
+#include "user_type/LuaPhysics.h"
 
 namespace
 {
@@ -158,6 +160,8 @@ namespace script
 
         LuaUtil::bind(lua);
         LuaGlm::bind(lua);
+        LuaPhysics::bind(lua);
+        LuaRayHit::bind(lua);
         LuaCommand::bind(lua);
         LuaNode::bind(lua);
     }

@@ -7,7 +7,8 @@
 #include "api/Command.h"
 
 #include "api/Cancel.h"
-#include "api/CallLuaFunction.h"
+#include "api/RayCast.h"
+#include "api/InvokeFunction.h"
 #include "api/Sync.h"
 #include "api/Wait.h"
 
@@ -41,7 +42,7 @@ namespace script
         sizeof(script::Cancel),
         sizeof(script::Sync),
         sizeof(script::Wait),
-        sizeof(script::CallLuaFunction),
+        sizeof(script::InvokeFunction),
         // Node
         sizeof(script::AudioPause),
         sizeof(script::AudioPlay),
@@ -58,6 +59,7 @@ namespace script
         sizeof(script::SelectNode),
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
+        sizeof(script::RayCast),
         sizeof(script::EmitEvent),
         });
 

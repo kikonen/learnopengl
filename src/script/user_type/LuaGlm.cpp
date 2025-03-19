@@ -88,7 +88,9 @@ namespace
         auto multiply = sol::overload(
             [](const glm::vec3& v1, const glm::vec3& v2) { return v1 * v2; },
             [](const glm::vec3& v1, float value) { return v1 * value; },
-            [](float value, const glm::vec3& v1) { return v1 * value; }
+            [](float value, const glm::vec3& v1) { return v1 * value; },
+            // NOTE KI quat rotation
+            [](const glm::quat& q1, const glm::vec3& v2) { return q1 * v2; }
         );
 
         auto division = sol::overload(
@@ -390,6 +392,73 @@ namespace
     }
 
     ///////////////////////////////////
+    // quat
+    void bindQuat(sol::state& lua)
+    {
+        auto multiply = sol::overload(
+            [](const glm::quat& q1, const glm::quat& q2) { return q1 * q2; },
+            [](const glm::quat& q1, float value) { return q1 * value; },
+            [](float value, const glm::quat& q1) { return q1 * value; }
+        );
+
+        auto division = sol::overload(
+            [](const glm::quat& q1, float value) { return q1 / value; },
+            [](float value, const glm::quat& q1) { return q1 / value; }
+        );
+
+        auto addition = sol::overload(
+            [](const glm::quat& q1, const glm::quat& q2) { return q1 + q2; }
+        );
+
+        auto subtraction = sol::overload(
+            [](const glm::quat& q1, const glm::quat& q2) { return q1 - q2; }
+        );
+
+        auto t = lua.new_usertype<glm::quat>(
+            "quat",
+            sol::call_constructor,
+            sol::constructors<
+            glm::quat(float, float, float, float)>(),
+            "x", &glm::quat::x,
+            "y", &glm::quat::y,
+            "z", &glm::quat::z,
+            "w", &glm::quat::w,
+            sol::meta_function::multiplication, multiply,
+            sol::meta_function::division, division,
+            sol::meta_function::addition, addition,
+            sol::meta_function::subtraction, subtraction
+        );
+
+        t.set_function(
+            "normalize",
+            [](const glm::quat& q) {
+                return glm::normalize(q);
+            }
+        );
+
+        t.set_function(
+            "length",
+            [](const glm::quat& q) {
+                return glm::length(q);
+            }
+        );
+
+        t.set_function(
+            "str",
+            [](const glm::quat& q) {
+                return fmt::format("{}", q);
+            }
+        );
+
+        t.set_function(
+            "__tostring",
+            [](const glm::quat& q) {
+                return fmt::format("{}", q);
+            }
+        );
+    }
+
+    ///////////////////////////////////
     // API
     void bindGlm(sol::state& lua) {
         auto t = lua.create_named_table("glm");
@@ -466,6 +535,8 @@ namespace script
 
         bindMat3(lua);
         bindMat4(lua);
+
+        bindQuat(lua);
 
         bindGlm(lua);
     }
