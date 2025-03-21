@@ -59,6 +59,7 @@ public:
     void updateWT(const UpdateContext& ctx);
 
     void updateModelMatrices();
+    void updateModelMatrices(const Node* node);
     void postUpdateWT();
 
     void prepareUpdateRT(const UpdateContext& ctx);

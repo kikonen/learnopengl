@@ -58,7 +58,9 @@ namespace script
         // NOTE KI trying to keep things relative to current context
         // i.e. allow multiple concurrent rotations
         {
-            auto& state = getNode()->modifyState();
+            auto* node = getNode();
+            auto& state = node->modifyState();
+
             const auto& currRot = state.getRotation();
             const auto relativeAxis = m_relative ? glm::mat3(currRot) * m_axis : m_axis;
 
@@ -68,6 +70,7 @@ namespace script
             const auto rot = util::axisRadiansToQuat(relativeAxis, radians - m_previousRadians);
 
             state.setRotation(rot * currRot);
+            node->updateModelMatrix();
 
             m_previousRadians = radians;
         }

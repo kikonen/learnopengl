@@ -47,8 +47,12 @@ namespace script
             if (!hits.empty()) {
                 auto& se = script::ScriptEngine::get();
                 const auto& hit = hits[0];
+                auto* node = hit.handle.toNode();
+
                 sol::table args = se.getLua().create_table();
                 args["hit"] = hit;
+                args["hit_name"] = node->getName();
+
                 se.invokeNodeFunction(
                     getNode(),
                     m_self,

@@ -48,7 +48,11 @@ namespace script
         }
 
         auto adjust = scale - m_previous;
-        getNode()->modifyState().adjustScale(adjust);
+
+        auto* node = getNode();
+        node->modifyState().adjustPosition(adjust);
+        node->updateModelMatrix();
+
         m_previous = scale;
     }
 }

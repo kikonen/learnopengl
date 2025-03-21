@@ -1,8 +1,10 @@
 #include "LuaGlm.h"
 
 #include <glm/glm.hpp>
+
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
-#include "glm/gtc/quaternion.hpp"
 
 #include <fmt/format.h>
 
@@ -90,7 +92,8 @@ namespace
             [](const glm::vec3& v1, float value) { return v1 * value; },
             [](float value, const glm::vec3& v1) { return v1 * value; },
             // NOTE KI quat rotation
-            [](const glm::quat& q1, const glm::vec3& v2) { return q1 * v2; }
+            [](const glm::quat& q, const glm::vec3& v) { return q * v; },
+            [](const glm::vec3& v, const glm::quat& q) { return q * v; }
         );
 
         auto division = sol::overload(
@@ -314,6 +317,9 @@ namespace
         auto multiply = sol::overload(
             [](const glm::mat4& m1, const glm::mat4& m2) { return m1 * m2; },
             [](const glm::mat4& m1, const glm::vec4& v2) { return m1 * v2; },
+            [](const glm::mat4& m1, const glm::vec3& v2) {
+                return glm::vec3{ m1 * glm::vec4(v2, 1.f) };
+            },
             [](const glm::mat4& m1, float value) { return m1 * value; },
             [](float value, const glm::mat4& m1) { return m1 * value; }
         );
@@ -442,6 +448,14 @@ namespace
                 return glm::length(q);
             }
         );
+
+        t.set_function(
+            "to_mat4",
+            sol::overload(
+                [](const glm::quat& q) {
+                    return glm::toMat4(q);
+                }
+            ));
 
         t.set_function(
             "str",

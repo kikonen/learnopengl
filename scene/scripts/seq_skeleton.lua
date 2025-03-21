@@ -97,6 +97,9 @@ local function ray_caster()
   local function ray_cast_hit(args)
     print("RAY_HIT")
     table_print(args)
+
+    cmd:particle_emit(
+      { count=(10 + rnd(50)) * 1000 })
   end
 
   local function ray_cast()
@@ -106,7 +109,7 @@ local function ray_caster()
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
     printf("front=%s, rot=%s\n", node:get_front(), rot)
-    local dir = rot * node:get_front()
+    local dir = rot:to_mat4() * node:get_front()
     printf("dir=%s\n", dir)
 
     cid = cmd:ray_cast(

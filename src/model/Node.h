@@ -129,6 +129,11 @@ public:
         return NodeRegistry::get().getState(m_entityIndex);
     }
 
+    inline void updateModelMatrix() const
+    {
+        return NodeRegistry::get().updateModelMatrices(this);
+    }
+
     //inline const Snapshot* getSnapshotWT() const noexcept
     //{
     //    return NodeRegistry::get().getSnapshotWT(m_entityIndex);

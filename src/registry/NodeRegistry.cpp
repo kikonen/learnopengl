@@ -284,6 +284,12 @@ void NodeRegistry::updateModelMatrices()
     }
 }
 
+void NodeRegistry::updateModelMatrices(const Node* node)
+{
+    auto index = node->m_entityIndex;
+    m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
+}
+
 void NodeRegistry::snapshotWT()
 {
     //std::lock_guard lock(m_snapshotLock);

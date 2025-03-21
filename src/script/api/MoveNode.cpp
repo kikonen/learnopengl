@@ -48,7 +48,11 @@ namespace script
         }
 
         auto adjust = position - m_previous;
-        getNode()->modifyState().adjustPosition(adjust);
+
+        auto* node = getNode();
+        node->modifyState().adjustPosition(adjust);
+        node->updateModelMatrix();
+
         m_previous = position;
     }
 }

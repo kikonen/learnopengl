@@ -48,6 +48,7 @@ namespace {
 
     struct HitData {
         bool onlyClosest{ false };
+        dGeomID sourceGeomId{ nullptr };
         dGeomID rayGeomId{ nullptr };
         std::vector<physics::GeomHit> hits{};
     };
@@ -134,6 +135,10 @@ namespace physics
         dContactGeom contact;
         if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
             HitData& hitData = *static_cast<HitData*>(data);
+
+            if (o1 == hitData.sourceGeomId || o2 == hitData.sourceGeomId) {
+                return;
+            }
 
             GeomHit* hit{ nullptr };
 
@@ -377,6 +382,8 @@ namespace physics
                 }
 
                 obj.updateToPhysics(entityIndex, m_matrixLevels[id], nodeRegistry);
+
+                m_handleToId.insert({ m_nodeHandles[id], id });
             }
             else {
                 obj.create(0, m_worldId, m_spaceId, nodeRegistry);
@@ -553,7 +560,19 @@ namespace physics
 
         const auto rayGeomId = ray->m_geom.physicId;
 
+        const physics::Object* sourceObject{ nullptr };
+
+        {
+            const auto& it = m_handleToId.find(fromNode);
+            if (it != m_handleToId.end()) {
+                sourceObject = &m_objects[it->second];
+            }
+        }
+
         HitData hitData;
+        if (sourceObject) {
+            hitData.sourceGeomId = sourceObject->m_geom.physicId;
+        }
         hitData.rayGeomId = rayGeomId;
         hitData.onlyClosest = onlyClosest;
 
@@ -602,11 +621,23 @@ namespace physics
 
         const auto rayGeomId = ray->m_geom.physicId;
 
+        const physics::Object* sourceObject{ nullptr };
+
+        {
+            const auto& it = m_handleToId.find(fromNode);
+            if (it != m_handleToId.end()) {
+                sourceObject = &m_objects[it->second];
+            }
+        }
+
         dGeomRaySetLength(rayGeomId, distance);
         dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         HitData hitData;
+        if (sourceObject) {
+            hitData.sourceGeomId = sourceObject->m_geom.physicId;
+        }
         hitData.rayGeomId = rayGeomId;
         hitData.onlyClosest = true;
         std::vector<std::pair<bool, physics::RayHit>> result;

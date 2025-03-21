@@ -11,19 +11,16 @@
 
 #include "ki/size.h"
 
+#include "pool/NodeHandle.h"
+
 #include "Object.h"
 #include "HeightMap.h"
 
 struct UpdateContext;
 
-namespace pool {
-    struct NodeHandle;
-}
-
 namespace mesh {
     class MeshType;
 }
-
 
 namespace physics {
     struct RayHit;
@@ -151,6 +148,8 @@ namespace physics {
         std::unordered_map<dHeightfieldDataID, physics::height_map_id> m_heightMapIds;
 
         std::unordered_map<dBodyID, physics::object_id> m_bodyToObject;
+
+        std::unordered_map<pool::NodeHandle, physics::object_id> m_handleToId;
 
         std::unique_ptr<physics::MeshGenerator> m_meshGenerator;
     };
