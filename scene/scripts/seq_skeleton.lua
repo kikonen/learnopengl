@@ -100,12 +100,13 @@ local function ray_caster()
 
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 1000 })
+
+    cmd:rotate({ time=1, relative=true }, vec3(0, 1, 0), degrees)
+    degrees = 0;
   end
 
   local function ray_cast()
-    cid = cmd:wait({ after=cid, time=1 })
-
-    degrees = degrees + 1
+    cid = cmd:wait({ after=cid, time=0.25 })
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
     printf("front=%s, rot=%s\n", node:get_front(), rot)
@@ -117,11 +118,13 @@ local function ray_caster()
       dir,
       ray_cast_hit)
 
-    cid = cmd:wait({ after=cid, time=2 })
+    cid = cmd:wait({ after=cid, time=0.25 })
 
     cid = cmd:call(
       { after=cid },
       ray_cast)
+
+    degrees = degrees + 1.5
   end
 
   cid = cmd:call(
