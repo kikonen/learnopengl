@@ -4,19 +4,19 @@
 
 #include "mesh/Vertex.h"
 
-#include "NormalEntry.h"
+#include "TangentEntry.h"
 
 #include "VBO.h"
 
 namespace mesh {
-    class VertexNormalVBO : public VBO<Vertex, NormalEntry> {
+    class VertexTangentVBO : public VBO<Vertex, TangentEntry> {
     public:
-        VertexNormalVBO(
+        VertexTangentVBO(
             std::string_view name,
             int attr,
             int binding);
 
-        virtual NormalEntry convertVertex(
+        virtual TangentEntry convertVertex(
             const Vertex& vertex) override;
 
         virtual void prepareVAO(kigl::GLVertexArray& vao) override;

@@ -6,6 +6,7 @@
 
 #include "VertexPositionVBO.h"
 #include "VertexNormalVBO.h"
+#include "VertexTangentVBO.h"
 #include "VertexTextureVBO.h"
 #include "VertexVBO.h"
 #include "VertexIndexEBO.h"
@@ -57,6 +58,7 @@ namespace mesh {
 
         VertexPositionVBO m_positionVbo;
         VertexNormalVBO m_normalVbo;
+        VertexTangentVBO m_tangentVbo;
         VertexTextureVBO m_textureVbo;
         VertexVBO m_vertexVbo;
         VertexIndexEBO m_indexEbo;

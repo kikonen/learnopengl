@@ -23,7 +23,8 @@ namespace mesh {
     TexturedVAO::TexturedVAO(std::string_view name)
         : m_name(name),
         m_positionVbo{ m_name + "_position_vbo", ATTR_POS, VBO_POSITION_BINDING },
-        m_normalVbo{ m_name + "_normal_vbo", ATTR_NORMAL, ATTR_TANGENT, VBO_NORMAL_BINDING },
+        m_normalVbo{ m_name + "_normal_vbo", ATTR_NORMAL, VBO_NORMAL_BINDING },
+        m_tangentVbo{ m_name + "_tangent_vbo", ATTR_TANGENT, VBO_TANGENT_BINDING },
         m_textureVbo{ m_name + "_texture_vbo", ATTR_TEX, VBO_TEXTURE_BINDING },
         m_vertexVbo{ m_name + "_vertex_vbo", VBO_VERTEX_BINDING },
         m_indexEbo{ m_name + "_ebo" }
@@ -73,6 +74,7 @@ namespace mesh {
         if (m_useSeparate) {
             m_positionVbo.prepareVAO(vao);
             m_normalVbo.prepareVAO(vao);
+            m_tangentVbo.prepareVAO(vao);
             m_textureVbo.prepareVAO(vao);
         }
         else {
@@ -88,6 +90,7 @@ namespace mesh {
         if (m_useSeparate) {
             m_positionVbo.clear();
             m_normalVbo.clear();
+            m_tangentVbo.clear();
             m_textureVbo.clear();
         }
         else {
@@ -106,6 +109,7 @@ namespace mesh {
             baseIndex = m_positionVbo.reserveVertices(count);
 
             m_normalVbo.reserveVertices(count);
+            m_tangentVbo.reserveVertices(count);
             m_textureVbo.reserveVertices(count);
         }
         else {
@@ -131,6 +135,7 @@ namespace mesh {
         if (m_useSeparate) {
             m_positionVbo.updateVertices(baseVbo, vertices);
             m_normalVbo.updateVertices(baseVbo, vertices);
+            m_tangentVbo.updateVertices(baseVbo, vertices);
             m_textureVbo.updateVertices(baseVbo, vertices);
         }
         else {
@@ -154,6 +159,7 @@ namespace mesh {
         if (m_useSeparate) {
             m_positionVbo.updateVAO(*m_vao);
             m_normalVbo.updateVAO(*m_vao);
+            m_tangentVbo.updateVAO(*m_vao);
             m_textureVbo.updateVAO(*m_vao);
         }
         else {

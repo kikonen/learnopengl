@@ -1,24 +1,25 @@
-#include "VertexNormalVBO.h"
+#include "VertexTangentVBO.h"
 
 #include "VBO_impl.h"
 
 namespace mesh {
-    VertexNormalVBO::VertexNormalVBO(
+    VertexTangentVBO::VertexTangentVBO(
         std::string_view name,
         int attr,
         int binding)
         : VBO{ name, attr, binding }
-    {}
-
-    NormalEntry VertexNormalVBO::convertVertex(
-        const Vertex& vertex)
     {
-        return { vertex.normal };
     }
 
-    void VertexNormalVBO::prepareVAO(kigl::GLVertexArray& vao)
+    TangentEntry VertexTangentVBO::convertVertex(
+        const Vertex& vertex)
     {
-        constexpr size_t sz = sizeof(NormalEntry);
+        return { vertex.tangent };
+    }
+
+    void VertexTangentVBO::prepareVAO(kigl::GLVertexArray& vao)
+    {
+        constexpr size_t sz = sizeof(TangentEntry);
         {
             m_entries.reserve(VERTEX_BLOCK_SIZE);
             m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sz, GL_DYNAMIC_STORAGE_BIT);
@@ -29,7 +30,7 @@ namespace mesh {
             // https://solidpixel.github.io/2022/07/21/vertexpacking.html
             // https://www.intel.com/content/www/us/en/developer/articles/guide/developer-and-optimization-guide-for-intel-processor-graphics-gen11-api.html
 
-            glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sizeof(NormalEntry));
+            glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sizeof(TangentEntry));
             {
                 glEnableVertexArrayAttrib(vao, m_attr);
 
@@ -37,9 +38,9 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
 
-                // normal attr
+                // Tangent attr
                 //glVertexArrayAttribFormat(vao, m_attr, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(NormalEntry, u_normal));
-                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(NormalEntry, u_normal));
+                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(TangentEntry, u_tangent));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 
