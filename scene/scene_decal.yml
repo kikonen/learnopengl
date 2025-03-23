@@ -10,7 +10,8 @@ nodes:
   - id: player
     type: origo
     pos: [0, 1, 15]
-    rotation: [0, 180, 0]
+    front: [0, 0, -1]
+    xrotation: [0, 180, 0]
     active: true
     audio:
       listener:
@@ -57,6 +58,8 @@ nodes:
           loop: true
     camera:
       default: true
+      type: fps
+      xpitch: -16
     controllers:
       - type: pawn
       - type: camera_zoom
@@ -79,6 +82,23 @@ nodes:
       printf("SID: %s\n", sid)
       cmd:audio_play(
         { sync=true, sid=sid })
+  - xid: player_fps_arms_v2_{c}_{t}
+    parent: player
+    prefab:
+      path: prefab/characters/prefab_fps_arms_v2.yml
+    xmesh:
+      material_modifier:
+        map_kd: T_Hands_04_Albedo_06_2048.png
+        xrender_back: true
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
+    pivot:
+      alignment: m
+    layer: player
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )
   - id: dir_light_{c}_{t}
     mesh:
       path: light
