@@ -15,7 +15,10 @@ namespace render
         bool m_emission : 1 { true };
         bool m_bloom : 1 { true };
         bool m_skybox : 1 { true };
-        bool m_debug : 1 { true };
+        bool m_debug : 1 { false };
+        bool m_debugPhysics : 1 { false };
+        bool m_debugVolume : 1 { false };
+        bool m_debugEnvironmentProbe : 1 { false };
         bool m_copy : 1 { true };
     };
 }

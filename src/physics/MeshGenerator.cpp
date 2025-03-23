@@ -40,12 +40,12 @@ namespace {
         std::lock_guard lock{ g_materialLock };
 
         if (g_materials.empty()) {
-            const auto& matRed = Material::createMaterial(BasicMaterial::red);
-            const auto& matWhite = Material::createMaterial(BasicMaterial::white);
-            const auto& matBlue = Material::createMaterial(BasicMaterial::blue);
-            const auto& matGreen = Material::createMaterial(BasicMaterial::green);
-            const auto& matYellow = Material::createMaterial(BasicMaterial::yellow);
-            const auto& matGold = Material::createMaterial(BasicMaterial::gold);
+            const auto matRed = Material::createMaterial(BasicMaterial::red);
+            const auto matWhite = Material::createMaterial(BasicMaterial::white);
+            const auto matBlue = Material::createMaterial(BasicMaterial::blue);
+            const auto matGreen = Material::createMaterial(BasicMaterial::green);
+            const auto matYellow = Material::createMaterial(BasicMaterial::yellow);
+            const auto matGold = Material::createMaterial(BasicMaterial::gold);
 
             g_materials.insert({
                 { physics::GeomType::none, matWhite },

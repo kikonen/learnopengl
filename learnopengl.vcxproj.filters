@@ -1119,6 +1119,18 @@
     <ClCompile Include="src\script\user_type\LuaRayHit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\PassDebugPhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\PassDebugVolume.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\PassDebugVolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\PassDebugEnvironmentProbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2496,6 +2508,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\user_type\LuaRayHit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\PassDebugPhysics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\PassDebugEnvironmentProbe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

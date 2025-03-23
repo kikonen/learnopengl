@@ -38,6 +38,9 @@ namespace render {
     class PassBloom;
     class PassSkybox;
     class PassDebug;
+    class PassDebugPhysics;
+    class PassDebugVolume;
+    class PassDebugEnvironmentProbe;
     class PassCopy;
 
     class NodeDraw final {
@@ -82,6 +85,9 @@ namespace render {
         std::unique_ptr<render::PassBloom> m_passBloom;
         std::unique_ptr<render::PassSkybox> m_passSkybox;
         std::unique_ptr<render::PassDebug> m_passDebug;
+        std::unique_ptr<render::PassDebugPhysics> m_passDebugPhysics;
+        std::unique_ptr<render::PassDebugVolume> m_passDebugVolume;
+        std::unique_ptr<render::PassDebugEnvironmentProbe> m_passDebugEnvironmentProbe;
         std::unique_ptr<render::PassCopy> m_passCopy;
 
         bool m_glUseInvalidate{ false };

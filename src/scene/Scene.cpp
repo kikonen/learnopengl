@@ -52,9 +52,6 @@
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/NormalRenderer.h"
-#include "renderer/PhysicsRenderer.h"
-#include "renderer/VolumeRenderer.h"
-#include "renderer/EnvironmentProbeRenderer.h"
 
 namespace {
     ki::node_id fpsNodeId = SID("fps_counter");
@@ -87,9 +84,6 @@ Scene::Scene(
 
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
         m_normalRenderer = std::make_unique<NormalRenderer>(false);
-        m_physicsRenderer = std::make_unique<PhysicsRenderer>();
-        m_volumeRenderer = std::make_unique<VolumeRenderer>();
-        m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>();
 
         m_uiRenderer->setEnabled(true);
         m_playerRenderer->setEnabled(true);
@@ -200,9 +194,6 @@ void Scene::prepareRT()
     //if (assets.showNormals)
     {
         m_normalRenderer->prepareRT(ctx);
-        m_physicsRenderer->prepareRT(ctx);
-        m_volumeRenderer->prepareRT(ctx);
-        m_environmentProbeRenderer->prepareRT(ctx);
     }
 
     {
@@ -716,10 +707,6 @@ void Scene::drawScene(
             if (m_normalRenderer->isEnabled()) {
                 m_normalRenderer->render(ctx, fb);
             }
-
-            m_physicsRenderer->render(ctx, fb);
-            m_volumeRenderer->render(ctx, fb);
-            m_environmentProbeRenderer->render(ctx, fb);
         }
     }
 }

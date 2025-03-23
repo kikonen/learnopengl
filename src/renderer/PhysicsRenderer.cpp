@@ -13,7 +13,8 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 {
     MeshRenderer::prepareRT(ctx);
 
-    m_programId = ProgramRegistry::get().getProgram("g_tex");
+    //m_programId = ProgramRegistry::get().getProgram("tex");
+    m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
 void PhysicsRenderer::render(

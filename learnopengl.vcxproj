@@ -238,6 +238,10 @@
     <ClCompile Include="src\render\PassBloom.cpp" />
     <ClCompile Include="src\render\PassCopy.cpp" />
     <ClCompile Include="src\render\PassDebug.cpp" />
+    <ClCompile Include="src\render\PassDebugEnvironmentProbe.cpp" />
+    <ClCompile Include="src\render\PassDebugPhysics.cpp" />
+    <ClCompile Include="src\render\PassDebugVolume.cpp" />
+    <ClCompile Include="src\render\PassDebugVolume.h" />
     <ClCompile Include="src\render\PassDecal.cpp" />
     <ClCompile Include="src\render\PassEffect..cpp" />
     <ClCompile Include="src\render\PassFog.cpp" />
@@ -608,6 +612,8 @@
     <ClInclude Include="src\render\PassContext.h" />
     <ClInclude Include="src\render\PassCopy.h" />
     <ClInclude Include="src\render\PassDebug.h" />
+    <ClInclude Include="src\render\PassDebugEnvironmentProbe.h" />
+    <ClInclude Include="src\render\PassDebugPhysics.h" />
     <ClInclude Include="src\render\PassDecal.h" />
     <ClInclude Include="src\render\PassEffect.h" />
     <ClInclude Include="src\render\PassFog.h" />
