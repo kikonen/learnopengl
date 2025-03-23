@@ -4,6 +4,9 @@
 
 #include "kigl/GLVertexArray.h"
 
+#include "VertexPositionVBO.h"
+#include "VertexNormalVBO.h"
+#include "VertexTextureVBO.h"
 #include "VertexVBO.h"
 #include "VertexIndexEBO.h"
 
@@ -50,6 +53,11 @@ namespace mesh {
     public:
         const std::string m_name;
 
+        bool m_useSeparate{ true };
+
+        VertexPositionVBO m_positionVbo;
+        VertexNormalVBO m_normalVbo;
+        VertexTextureVBO m_textureVbo;
         VertexVBO m_vertexVbo;
         VertexIndexEBO m_indexEbo;
 

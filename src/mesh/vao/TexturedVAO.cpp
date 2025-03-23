@@ -22,9 +22,14 @@ namespace {
 namespace mesh {
     TexturedVAO::TexturedVAO(std::string_view name)
         : m_name(name),
+        m_positionVbo{ m_name + "_position_vbo", ATTR_POS, VBO_POSITION_BINDING },
+        m_normalVbo{ m_name + "_normal_vbo", ATTR_NORMAL, ATTR_TANGENT, VBO_NORMAL_BINDING },
+        m_textureVbo{ m_name + "_texture_vbo", ATTR_TEX, VBO_TEXTURE_BINDING },
         m_vertexVbo{ m_name + "_vertex_vbo", VBO_VERTEX_BINDING },
         m_indexEbo{ m_name + "_ebo" }
-    {}
+    {
+        m_useSeparate = true;
+    }
 
     TexturedVAO::~TexturedVAO() = default;
 
@@ -65,7 +70,14 @@ namespace mesh {
 
         auto& vao = *m_vao;
 
-        m_vertexVbo.prepareVAO(vao);
+        if (m_useSeparate) {
+            m_positionVbo.prepareVAO(vao);
+            m_normalVbo.prepareVAO(vao);
+            m_textureVbo.prepareVAO(vao);
+        }
+        else {
+            m_vertexVbo.prepareVAO(vao);
+        }
         m_indexEbo.prepareVAO(vao);
     }
 
@@ -73,7 +85,14 @@ namespace mesh {
     {
         ASSERT_RT();
 
-        m_vertexVbo.clear();
+        if (m_useSeparate) {
+            m_positionVbo.clear();
+            m_normalVbo.clear();
+            m_textureVbo.clear();
+        }
+        else {
+            m_vertexVbo.clear();
+        }
         m_indexEbo.clear();
     }
 
@@ -81,7 +100,17 @@ namespace mesh {
     {
         ASSERT_RT();
 
-        auto baseIndex = m_vertexVbo.reserveVertices(count);
+        uint32_t baseIndex= 0;
+
+        if (m_useSeparate) {
+            baseIndex = m_positionVbo.reserveVertices(count);
+
+            m_normalVbo.reserveVertices(count);
+            m_textureVbo.reserveVertices(count);
+        }
+        else {
+            baseIndex = m_vertexVbo.reserveVertices(count);
+        }
 
         return baseIndex;
     }
@@ -99,7 +128,14 @@ namespace mesh {
     {
         ASSERT_RT();
 
-        m_vertexVbo.updateVertices(baseVbo, vertices);
+        if (m_useSeparate) {
+            m_positionVbo.updateVertices(baseVbo, vertices);
+            m_normalVbo.updateVertices(baseVbo, vertices);
+            m_textureVbo.updateVertices(baseVbo, vertices);
+        }
+        else {
+            m_vertexVbo.updateVertices(baseVbo, vertices);
+        }
     }
 
     void TexturedVAO::updateIndeces(
@@ -115,7 +151,14 @@ namespace mesh {
     {
         ASSERT_RT();
 
-        m_vertexVbo.updateVAO(*m_vao);
+        if (m_useSeparate) {
+            m_positionVbo.updateVAO(*m_vao);
+            m_normalVbo.updateVAO(*m_vao);
+            m_textureVbo.updateVAO(*m_vao);
+        }
+        else {
+            m_vertexVbo.updateVAO(*m_vao);
+        }
 
         m_indexEbo.updateVAO(*m_vao);
     }

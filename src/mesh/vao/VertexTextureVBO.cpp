@@ -39,7 +39,8 @@ namespace mesh {
 
                 // texture attr
                 // NOTE KI tex coords are in [0.0, 1.0] range, thus normalized 16bit value should be enough for them
-                glVertexArrayAttribFormat(vao, m_attr, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TextureEntry, u_texCoord));
+                //glVertexArrayAttribFormat(vao, m_attr, 2, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(TextureEntry, u_texCoord));
+                glVertexArrayAttribFormat(vao, m_attr, 2, GL_FLOAT, GL_FALSE, offsetof(TextureEntry, u_texCoord));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 
