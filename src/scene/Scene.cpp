@@ -51,7 +51,6 @@
 #include "renderer/ShadowMapRenderer.h"
 
 #include "renderer/ObjectIdRenderer.h"
-#include "renderer/NormalRenderer.h"
 
 namespace {
     ki::node_id fpsNodeId = SID("fps_counter");
@@ -83,7 +82,6 @@ Scene::Scene(
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
-        m_normalRenderer = std::make_unique<NormalRenderer>(false);
 
         m_uiRenderer->setEnabled(true);
         m_playerRenderer->setEnabled(true);
@@ -98,7 +96,6 @@ Scene::Scene(
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
-        m_normalRenderer->setEnabled(false);
     }
 
     m_batch = std::make_unique<render::Batch>();
@@ -189,11 +186,6 @@ void Scene::prepareRT()
 
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->prepareRT(ctx);
-    }
-
-    //if (assets.showNormals)
-    {
-        m_normalRenderer->prepareRT(ctx);
     }
 
     {
@@ -361,9 +353,6 @@ void Scene::updateRT(const UpdateContext& ctx)
     m_registry->updateRT(ctx);
 
     m_renderData->update();
-
-    //m_normalRenderer->setEnabled(dbg.m_nodeDebugEnabled && dbg.m_showNormals);
-    m_normalRenderer->setEnabled(dbg.m_showNormals);
 
     m_batch->updateRT(ctx);
 }
@@ -701,12 +690,6 @@ void Scene::drawScene(
         auto* fb = layerRenderer->m_buffer.get();
         if (layerRenderer->isEnabled()) {
             layerRenderer->render(ctx, fb);
-        }
-
-        if (ctx.m_allowDrawDebug) {
-            if (m_normalRenderer->isEnabled()) {
-                m_normalRenderer->render(ctx, fb);
-            }
         }
     }
 }

@@ -35,6 +35,7 @@
 #include "render/PassDebugPhysics.h"
 #include "render/PassDebugVolume.h"
 #include "render/PassDebugEnvironmentProbe.h"
+#include "render/PassDebugNormal.h"
 #include "render/PassCopy.h"
 
 #include "size.h"
@@ -60,6 +61,7 @@ namespace render {
         m_passDebugPhysics{ std::make_unique<render::PassDebugPhysics>() },
         m_passDebugVolume{ std::make_unique<render::PassDebugVolume>() },
         m_passDebugEnvironmentProbe{ std::make_unique<render::PassDebugEnvironmentProbe>() },
+        m_passDebugNormal{ std::make_unique<render::PassDebugNormal>() },
         m_passCopy{ std::make_unique<render::PassCopy>() }
     {
         //m_pipeline.m_forward = false;
@@ -88,6 +90,7 @@ namespace render {
         if (m_pipeline.m_debugPhysics) m_passDebugPhysics->prepare(ctx);
         if (m_pipeline.m_debugVolume) m_passDebugVolume->prepare(ctx);
         if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->prepare(ctx);
+        if (m_pipeline.m_debugNormal) m_passDebugNormal->prepare(ctx);
         if (m_pipeline.m_copy) m_passCopy->prepare(ctx);
 
         m_timeElapsedQuery.create();
@@ -110,6 +113,7 @@ namespace render {
         if (m_pipeline.m_debugPhysics) m_passDebugPhysics->updateRT(ctx, bufferScale);
         if (m_pipeline.m_debugVolume) m_passDebugVolume->updateRT(ctx, bufferScale);
         if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateRT(ctx, bufferScale);
+        if (m_pipeline.m_debugNormal) m_passDebugNormal->updateRT(ctx, bufferScale);
         if (m_pipeline.m_copy) m_passCopy->updateRT(ctx, bufferScale);
     }
 
@@ -142,6 +146,7 @@ namespace render {
             if (m_pipeline.m_debugPhysics) m_passDebugPhysics->initRender(ctx);
             if (m_pipeline.m_debugVolume) m_passDebugVolume->initRender(ctx);
             if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->initRender(ctx);
+            if (m_pipeline.m_debugNormal) m_passDebugNormal->initRender(ctx);
             if (m_pipeline.m_copy) m_passCopy->initRender(ctx);
         }
 
@@ -179,6 +184,8 @@ namespace render {
                 passContext = m_passDebugVolume->render(ctx, drawContext, passContext);
             if (m_pipeline.m_debugEnvironmentProbe)
                 passContext = m_passDebugEnvironmentProbe->render(ctx, drawContext, passContext);
+            if (m_pipeline.m_debugNormal)
+                passContext = m_passDebugNormal->render(ctx, drawContext, passContext);
         }
 
         // screeenspace

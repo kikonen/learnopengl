@@ -58,6 +58,7 @@ void LayerRenderer::prepareRT(
         pipeline.m_debugPhysics = true;
         pipeline.m_debugVolume = true;
         pipeline.m_debugEnvironmentProbe = true;
+        pipeline.m_debugNormal = true;
 
         m_nodeDraw->prepareRT(ctx);
     }

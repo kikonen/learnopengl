@@ -1131,6 +1131,9 @@
     <ClCompile Include="src\render\PassDebugEnvironmentProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\PassDebugNormal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2514,6 +2517,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\PassDebugEnvironmentProbe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\PassDebugNormal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

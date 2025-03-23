@@ -41,6 +41,7 @@ namespace render {
     class PassDebugPhysics;
     class PassDebugVolume;
     class PassDebugEnvironmentProbe;
+    class PassDebugNormal;
     class PassCopy;
 
     class NodeDraw final {
@@ -88,6 +89,7 @@ namespace render {
         std::unique_ptr<render::PassDebugPhysics> m_passDebugPhysics;
         std::unique_ptr<render::PassDebugVolume> m_passDebugVolume;
         std::unique_ptr<render::PassDebugEnvironmentProbe> m_passDebugEnvironmentProbe;
+        std::unique_ptr<render::PassDebugNormal> m_passDebugNormal;
         std::unique_ptr<render::PassCopy> m_passCopy;
 
         bool m_glUseInvalidate{ false };
