@@ -23,7 +23,8 @@ namespace event
 
         scene_loaded,
 
-        script_bind,
+        script_type_bind,
+        script_node_bind,
         script_run,
 
         app_shutdown,

@@ -9,6 +9,7 @@
 #include "model/Node.h"
 
 #include "script/ScriptEngine.h"
+#include "script/ScriptFile.h"
 #include "event/Dispatcher.h"
 #include "registry/Registry.h"
 
@@ -53,6 +54,12 @@ namespace loader {
                 reportUnknown("script_engine_entry", k, v);
             }
         }
+
+        for (auto& script : data.scripts) {
+            if (script.type == script::ScriptType::class_file) {
+                script.type = script::ScriptType::module_file;
+            }
+        }
     }
 
     void ScriptLoader::loadScripts(
@@ -78,7 +85,7 @@ namespace loader {
             const auto& scriptPath = resolveScriptPath(str);
 
             if (forceFile || fileExists(scriptPath)) {
-                data.script = readFile(scriptPath);
+                data.path = scriptPath;
             }
             else {
                 data.script = str;
@@ -117,19 +124,18 @@ namespace loader {
         const ScriptEngineData& data)
     {
         if (!data.enabled) return;
-        const auto& registeredIds = createScripts(pool::NodeHandle::NULL_HANDLE, data.scripts);
-        bindNodeScripts(pool::NodeHandle::NULL_HANDLE, registeredIds);
+        const auto& registeredIds = createScripts(data.scripts);
+        bindTypeScripts(pool::TypeHandle::NULL_HANDLE, registeredIds);
         runGlobalScripts(registeredIds);
     }
 
     std::vector<script::script_id> ScriptLoader::createScripts(
-        pool::NodeHandle handle,
         const std::vector<ScriptData>& scripts) const
     {
         std::vector<script::script_id> registeredIds;
 
         for (auto& data : scripts) {
-            for (auto scriptId : createScript(handle, data)) {
+            for (auto scriptId : createScript(data)) {
                 registeredIds.push_back(scriptId);
             }
         }
@@ -138,33 +144,40 @@ namespace loader {
     }
 
     std::vector<script::script_id> ScriptLoader::createScript(
-        pool::NodeHandle handle,
         const ScriptData& data) const
     {
         if (!data.enabled) return {};
 
         std::vector<script::script_id> registeredIds;
-
-        std::vector<std::string> scripts;
+        std::vector<script::ScriptFile> scriptFiles;
 
         if (!data.path.empty()) {
-            scripts.push_back(readFile(data.path));
+            auto& scriptFile = scriptFiles.emplace_back(
+                false,
+                data.type,
+                data.path,
+                readFile(data.path));
         }
         if (!data.script.empty()) {
-            scripts.push_back(data.script);
+            auto& scriptFile = scriptFiles.emplace_back(
+                true,
+                data.type,
+                data.path,
+                data.script);
         }
 
-        for (const auto& script : scripts) {
-            if (script.empty()) continue;
-            auto scriptId = script::ScriptEngine::get().registerScript(script);
+        for (const auto& scriptFile : scriptFiles) {
+            if (scriptFile.m_source.empty()) continue;
+
+            auto scriptId = script::ScriptEngine::get().registerScript(scriptFile);
             registeredIds.push_back(scriptId);
         }
 
         return registeredIds;
     }
 
-    void ScriptLoader::bindNodeScripts(
-        pool::NodeHandle handle,
+    void ScriptLoader::bindTypeScripts(
+        pool::TypeHandle handle,
         const std::vector<script::script_id>& scriptIds) const
     {
         const auto& assets = Assets::get();
@@ -172,7 +185,7 @@ namespace loader {
 
         for (auto scriptId : scriptIds)
         {
-            event::Event evt { event::Type::script_bind };
+            event::Event evt { event::Type::script_type_bind };
             auto& body = evt.body.script = {
                 .target = handle.toId(),
                 .id = scriptId,

@@ -462,7 +462,7 @@
     <ClCompile Include="src\loader\ScriptLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\Script.cpp">
+    <ClCompile Include="src\script\ScriptFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shader\ProgramUniforms.cpp">
@@ -1745,7 +1745,7 @@
     <ClInclude Include="src\script\size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\Script.h">
+    <ClInclude Include="src\script\ScriptFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\limits.h">
@@ -2535,6 +2535,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\NodeAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\ScriptType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

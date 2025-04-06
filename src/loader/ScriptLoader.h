@@ -3,6 +3,7 @@
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "script/size.h"
 
@@ -40,15 +41,13 @@ namespace loader {
             const ScriptEngineData& data);
 
         std::vector<script::script_id> createScripts(
-            pool::NodeHandle handle,
             const std::vector<ScriptData>& scripts) const;
 
         std::vector<script::script_id> createScript(
-            pool::NodeHandle handle,
             const ScriptData& data) const;
 
-        void bindNodeScripts(
-            pool::NodeHandle handle,
+        void bindTypeScripts(
+            pool::TypeHandle handle,
             const std::vector<script::script_id>& scriptIds) const;
 
         void runGlobalScripts(

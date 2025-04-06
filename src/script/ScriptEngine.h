@@ -11,9 +11,9 @@
 #include "ki/size.h"
 
 #include "pool/NodeHandle.h"
+#include "pool/TypeHandle.h"
 
 #include "size.h"
-#include "Script.h"
 
 struct PrepareContext;
 
@@ -24,6 +24,8 @@ namespace script
     class CommandEngine;
     class NodeAPI;
     class NodeCommandAPI;
+
+    struct ScriptFile;
 
     class ScriptEngine final
     {
@@ -45,14 +47,27 @@ namespace script
             const PrepareContext& ctx,
             CommandEngine* commandEngine);
 
-        script::script_id registerScript(std::string_view source);
+        script::script_id registerScript(
+            script::ScriptFile scriptFile);
 
-        void bindNodeScript(
-            pool::NodeHandle handle,
+        void bindTypeScript(
+            pool::TypeHandle handle,
             script::script_id scriptId);
 
-        std::vector<script::script_id> getNodeScripts(
-            pool::NodeHandle handle);
+        std::string getTypeFunction(
+            pool::TypeHandle handle,
+            script::script_id scriptId);
+
+        void bindNodeScript(
+            Node* node,
+            script::script_id scriptId);
+
+        std::string getTypeFunctionName(
+            pool::TypeHandle handle,
+            script::script_id scriptId) const;
+
+        std::vector<script::script_id> getTypeScripts(
+            pool::TypeHandle handle);
 
         void runGlobalScript(
             script::script_id scriptId);
@@ -92,8 +107,8 @@ namespace script
             const std::string& script);
 
         // @return fnName
-        std::string createNodeFunction(
-            pool::NodeHandle handle,
+        std::string createTypeFunction(
+            pool::TypeHandle handle,
             script::script_id scriptId);
 
         // @return true if unregister was done
@@ -109,9 +124,9 @@ namespace script
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeAPI>> m_nodeApis;
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 
-        std::unordered_map<pool::NodeHandle, std::unordered_map<script::script_id, std::string>> m_nodeFunctions;
+        std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, std::string>> m_typeFunctions;
 
-        std::unordered_map<script::script_id, Script> m_scripts;
+        std::unordered_map<script::script_id, script::ScriptFile> m_scripts;
 
         std::mutex m_lock{};
     };

@@ -510,9 +510,24 @@ void NodeRegistry::attachListeners()
             [this](const event::Event& e) {
                 auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                const auto& scripts = script::ScriptEngine::get().getNodeScripts(handle);
 
-                for (const auto& scriptId : scripts) {
+                auto* node = handle.toNode();
+                if (!node) return;
+
+                auto* type = node->getType();
+
+                for (const auto& scriptId : type->getScripts()) {
+                    {
+                        event::Event evt{ event::Type::script_node_bind };
+                        auto& body = evt.body.script = {
+                            .target = handle.toId(),
+                            .id = scriptId,
+                        };
+                        m_registry->m_dispatcherWorker->send(evt);
+                    }
+                }
+
+                for (const auto& scriptId : type->getScripts()) {
                     {
                         event::Event evt { event::Type::script_run };
                         auto& body = evt.body.script = {

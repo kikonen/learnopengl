@@ -12,6 +12,8 @@
 
 #include "pool/TypeHandle.h"
 
+#include "script/size.h"
+
 #include "LodMesh.h"
 #include "TypeFlags.h"
 
@@ -23,6 +25,10 @@ namespace render {
     struct MeshTypeKey;
     //struct MeshTypeComparator;
     class Batch;
+}
+
+namespace script {
+    struct Script;
 }
 
 struct PrepareContext;
@@ -123,12 +129,22 @@ namespace mesh {
 
         void prepareVolume() noexcept;
 
+        void addScript(script::script_id id) {
+            m_scripts.push_back(id);
+        }
+
+        const std::vector<script::script_id>& getScripts() const noexcept
+        {
+            return m_scripts;
+        }
+
     private:
         AABB calculateAABB() const noexcept;
 
     public:
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
+
 
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
@@ -144,5 +160,8 @@ namespace mesh {
 
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};
+
+    private:
+        std::vector<script::script_id> m_scripts;
     };
 }
