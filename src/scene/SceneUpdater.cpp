@@ -93,24 +93,41 @@ void SceneUpdater::prepare()
     if (assets.useScript)
     {
         dispatcher->addListener(
-            event::Type::script_bind,
+            event::Type::script_type_bind,
             [this](const event::Event& e) {
                 auto& data = e.body.script;
+
+                auto handle = pool::TypeHandle::toHandle(data.target);
+
+                auto& scriptEngine = script::ScriptEngine::get();
+                scriptEngine.bindTypeScript(handle, data.id);
+            });
+
+        dispatcher->addListener(
+            event::Type::script_node_bind,
+            [this](const event::Event& e) {
+                auto& data = e.body.script;
+
                 auto handle = pool::NodeHandle::toHandle(data.target);
-                script::ScriptEngine::get().bindNodeScript(handle, data.id);
+                auto* node = handle.toNode();
+
+                auto& scriptEngine = script::ScriptEngine::get();
+                scriptEngine.bindNodeScript(node, data.id);
             });
 
         dispatcher->addListener(
             event::Type::script_run,
             [this](const event::Event& e) {
                 auto& data = e.body.script;
+
+                auto& scriptEngine = script::ScriptEngine::get();
                 if (data.target) {
                     if (auto* node = pool::NodeHandle::toNode(data.target)) {
-                        script::ScriptEngine::get().runNodeScript(node, data.id);
+                        scriptEngine.runNodeScript(node, data.id);
                     }
                 }
                 else {
-                    script::ScriptEngine::get().runGlobalScript(data.id);
+                    scriptEngine.runGlobalScript(data.id);
                 }
             });
     }

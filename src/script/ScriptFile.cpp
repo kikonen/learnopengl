@@ -1,4 +1,4 @@
-#include "Script.h"
+#include "ScriptFile.h"
 
 #include "size.h"
 
@@ -10,8 +10,8 @@ namespace {
 
 namespace script
 {
-    Script::Script(std::string_view source)
-        : m_id(ID_GENERATOR.nextId()),
-        m_source(source)
-    {}
+    script::script_id ScriptFile::nextId()
+    {
+        return ID_GENERATOR.nextId();
+    }
 }

@@ -65,6 +65,8 @@ namespace pool {
         bool isNull() const noexcept { return m_handleIndex == 0; }
         operator int() const { return m_handleIndex; }
 
+        int toIndex() const noexcept { return m_handleIndex; }
+
         inline std::string str() const noexcept
         {
             return "[" + std::to_string(m_id) + "." + std::to_string(m_handleIndex) + "]";

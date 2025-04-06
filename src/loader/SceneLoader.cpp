@@ -264,15 +264,6 @@ namespace loader {
 
         for (auto* resolved : sorted) {
             if (!*m_ctx.m_alive) return;
-            if (resolved->scriptIds.empty()) continue;
-
-            m_loaders->m_scriptLoader.bindNodeScripts(
-                resolved->handle,
-                resolved->scriptIds);
-        }
-
-        for (auto* resolved : sorted) {
-            if (!*m_ctx.m_alive) return;
             attachResolvedNode(*resolved);
         }
     }
@@ -508,16 +499,11 @@ namespace loader {
             parentId = id;
         }
 
-        const auto scriptIds = m_loaders->m_scriptLoader.createScripts(
-            handle,
-            nodeData.scripts);
-
         ResolvedNode resolved{
             parentId,
             handle,
             nodeData,
             state,
-            scriptIds
         };
 
         addResolvedNode(resolved);
@@ -561,6 +547,19 @@ namespace loader {
                 m_loaders->m_customMaterialLoader.createCustomMaterial(
                     nodeData.customMaterial,
                     *m_loaders));
+        }
+
+        {
+            const auto& scriptIds = m_loaders->m_scriptLoader.createScripts(
+                nodeData.scripts);
+
+            for (auto& scriptId : scriptIds) {
+                type->addScript(scriptId);
+            }
+
+            m_loaders->m_scriptLoader.bindTypeScripts(
+                type->toHandle(),
+                scriptIds);
         }
 
         return typeHandle;

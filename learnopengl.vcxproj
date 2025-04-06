@@ -428,7 +428,7 @@
     <ClCompile Include="src\script\api\NodeCommand.cpp" />
     <ClCompile Include="src\script\api\RotateNode.cpp" />
     <ClCompile Include="src\script\api\ScaleNode.cpp" />
-    <ClCompile Include="src\script\Script.cpp" />
+    <ClCompile Include="src\script\ScriptFile.cpp" />
     <ClCompile Include="src\script\ScriptEngine.cpp" />
     <ClCompile Include="src\script\CommandEngine.cpp" />
     <ClCompile Include="src\script\api\MoveNode.cpp" />
@@ -636,6 +636,7 @@
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />
     <ClInclude Include="src\script\NodeAPI.h" />
+    <ClInclude Include="src\script\ScriptType.h" />
     <ClInclude Include="src\script\user_type\LuaGlm.h" />
     <ClInclude Include="src\script\lua_binding.h" />
     <ClInclude Include="src\script\lua_util.h" />
@@ -927,7 +928,7 @@
     <ClInclude Include="src\script\api\NodeCommand.h" />
     <ClInclude Include="src\script\api\RotateNode.h" />
     <ClInclude Include="src\script\api\ScaleNode.h" />
-    <ClInclude Include="src\script\Script.h" />
+    <ClInclude Include="src\script\ScriptFile.h" />
     <ClInclude Include="src\script\ScriptEngine.h" />
     <ClInclude Include="src\script\api\MoveNode.h" />
     <ClInclude Include="src\script\api\StartNode.h" />
