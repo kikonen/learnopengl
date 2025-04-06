@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
+--printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
 local ANIM_IDLE = util.sid("idle:Unreal Take")
 local ANIM_RUN = util.sid("run:Unreal Take")
