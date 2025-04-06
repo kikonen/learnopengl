@@ -16,6 +16,7 @@
 #include "engine/PrepareContext.h"
 
 #include "script/CommandEngine.h"
+#include "script/NodeAPI.h"
 #include "script/NodeCommandAPI.h"
 #include "script/UtilAPI.h"
 
@@ -81,8 +82,10 @@ namespace script
                 }
             }
 
-            for (auto& apiName : m_nodeCommandApis) {
+            for (auto& apiName : m_nodeApis) {
+            }
 
+            for (auto& apiName : m_nodeCommandApis) {
             }
 
             sol::table nodes = getLua()["nodes"];
@@ -91,6 +94,7 @@ namespace script
             }
         }
 
+        m_nodeApis.clear();
         m_nodeCommandApis.clear();
         m_nodeFunctions.clear();
         //m_nodeScripts.clear();
@@ -194,7 +198,10 @@ namespace script
         }
         it->second.insert({ scriptId, fnName });
 
-        m_nodeCommandApis.insert({ handle, std::make_unique<NodeCommandAPI>(m_commandEngine, handle) });
+        if (!handle.isNull()) {
+            m_nodeApis.insert({ handle, std::make_unique<NodeAPI>(handle) });
+            m_nodeCommandApis.insert({ handle, std::make_unique<NodeCommandAPI>(m_commandEngine, handle) });
+        }
 
         //if (!m_luaNodes[nodeId]) {
         //    m_luaNodes[nodeId] = m_lua.create_table_with();
@@ -311,11 +318,12 @@ end)", nodeFnName, script.m_source);
             auto& fnName = fnIt->second;
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
 
+            auto* nodeApi = m_nodeApis.find(handle)->second.get();
             auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
 
-            invokeLuaFunction([this, node, handle, &fnName, &cmdApi]() {
+            invokeLuaFunction([this, nodeApi, handle, &fnName, &cmdApi]() {
                 sol::protected_function fn((getLua())[fnName]);
-                return fn(std::ref(node), std::ref(cmdApi), handle.toId());;
+                return fn(std::ref(nodeApi), std::ref(cmdApi), handle.toId());;
             });
         }
     }

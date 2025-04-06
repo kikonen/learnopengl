@@ -165,18 +165,6 @@ public:
     }
 
 public:
-    ki::node_id lua_get_id() const noexcept;
-    const std::string& lua_get_name() const noexcept;
-
-    int lua_get_clone_index() const noexcept;
-
-    const glm::vec3& lua_get_pos() const noexcept;
-
-    const glm::vec3& lua_get_front() const noexcept;
-
-    const glm::mat4& lua_get_model_matrix() const noexcept;
-
-public:
     pool::TypeHandle m_typeHandle{};
 
     std::unique_ptr<CameraComponent> m_camera{ nullptr };

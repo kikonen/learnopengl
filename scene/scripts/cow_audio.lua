@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
+--printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
 local moo_sid = util.sid("moo")
 
@@ -12,8 +12,6 @@ local function animation()
 
   local function animation_listener()
     local delay = math.random() * 6
-
-    -- printf("moo: delay=%f, id=%i\n", delay, id)
 
     wid = cmd:wait({ after=cid, time=delay })
 

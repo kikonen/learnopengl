@@ -1137,6 +1137,9 @@
     <ClCompile Include="src\mesh\vao\VertexTangentVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\NodeAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2529,6 +2532,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\VertexTangentVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\NodeAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

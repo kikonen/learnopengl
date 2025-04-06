@@ -22,8 +22,8 @@ class Node;
 namespace script
 {
     class CommandEngine;
+    class NodeAPI;
     class NodeCommandAPI;
-    //class UtilAPI;
 
     class ScriptEngine final
     {
@@ -106,6 +106,7 @@ namespace script
 
         sol::state m_lua;
 
+        std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeAPI>> m_nodeApis;
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 
         std::unordered_map<pool::NodeHandle, std::unordered_map<script::script_id, std::string>> m_nodeFunctions;

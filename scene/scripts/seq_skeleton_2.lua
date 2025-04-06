@@ -1,4 +1,4 @@
---printf("START: name=%s, id=%d, clone=%d\n", node:get_name(), id, node:get_clone_index())
+--printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 nodes[id].node = node
 nodes[id].cmd = cmd
 n = nodes[id]
@@ -102,9 +102,9 @@ local function ray_caster()
     cid = cmd:wait({ after=cid, time=0.25 })
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
-    printf("front=%s, rot=%s\n", node:get_front(), rot)
+    -- printf("front=%s, rot=%s\n", node:get_front(), rot)
     local dir = rot:to_mat4() * node:get_front()
-    printf("dir=%s\n", dir)
+    -- printf("dir=%s\n", dir)
 
     cid = cmd:ray_cast(
       { after=cid },
