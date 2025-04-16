@@ -1,6 +1,7 @@
 #include "ScriptLoader.h"
 
 #include <filesystem>
+#include <regex>
 
 #include "asset/Assets.h"
 
@@ -93,6 +94,8 @@ namespace loader {
             return;
         }
 
+        bool hasType = false;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -104,6 +107,22 @@ namespace loader {
                 // NOTE compat with old "disable" logic
                 data.enabled = false;
             }
+            else if (k == "type") {
+                hasType = true;
+                std::string type = readString(v);
+                if (type == "plain") {
+                    data.type = script::ScriptType::plain;
+                }
+                else if (type == "module") {
+                    data.type = script::ScriptType::module_file;
+                }
+                else if (type == "class") {
+                    data.type = script::ScriptType::class_file;
+                }
+                else {
+                    reportUnknown("node_type", k, v);
+                }
+            }
             else if (k == "path") {
                 data.path = resolveScriptPath(readString(v));
             }
@@ -112,6 +131,17 @@ namespace loader {
             }
             else {
                 reportUnknown("script_entry", k, v);
+            }
+        }
+
+        if (!data.path.empty() && !hasType) {
+            data.type = script::ScriptType::plain;
+
+            if (std::regex_match(data.path, std::regex(".*class.*"))) {
+                data.type = script::ScriptType::class_file;
+            }
+            else if (std::regex_match(data.path, std::regex(".*module.*"))) {
+                data.type = script::ScriptType::module_file;
             }
         }
 

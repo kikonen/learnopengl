@@ -636,6 +636,8 @@
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />
     <ClInclude Include="src\script\NodeAPI.h" />
+    <ClInclude Include="src\script\ScriptEntry.h" />
+    <ClInclude Include="src\script\ScriptEntryType.h" />
     <ClInclude Include="src\script\ScriptType.h" />
     <ClInclude Include="src\script\user_type\LuaGlm.h" />
     <ClInclude Include="src\script\lua_binding.h" />

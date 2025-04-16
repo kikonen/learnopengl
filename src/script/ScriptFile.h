@@ -13,7 +13,7 @@ namespace script
         static script::script_id nextId();
 
         bool m_embedded{ false };
-        ScriptType m_type{ ScriptType::none };
+        ScriptType m_type{ ScriptType::plain };
         std::string m_filePath;
         std::string m_source;
 

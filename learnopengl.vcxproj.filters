@@ -2540,6 +2540,12 @@
     <ClInclude Include="src\script\ScriptType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\script\ScriptEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\ScriptEntryType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

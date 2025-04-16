@@ -26,6 +26,7 @@ namespace script
     class NodeCommandAPI;
 
     struct ScriptFile;
+    struct ScriptEntry;
 
     class ScriptEngine final
     {
@@ -54,19 +55,19 @@ namespace script
             pool::TypeHandle handle,
             script::script_id scriptId);
 
-        std::string getTypeFunction(
-            pool::TypeHandle handle,
-            script::script_id scriptId);
-
         void bindNodeScript(
             Node* node,
             script::script_id scriptId);
 
-        std::string getTypeFunctionName(
+        std::string getScriptSignature(
             pool::TypeHandle handle,
             script::script_id scriptId) const;
 
-        std::vector<script::script_id> getTypeScripts(
+        bool hasScriptEntry(
+            pool::TypeHandle handle,
+            script::script_id scriptId);
+
+        std::vector<script::script_id> getScriptEntryIds(
             pool::TypeHandle handle);
 
         void runGlobalScript(
@@ -106,13 +107,12 @@ namespace script
         sol::protected_function_result invokeLuaScript(
             const std::string& script);
 
-        // @return fnName
-        std::string createTypeFunction(
+        script::ScriptEntry createScriptEntry(
             pool::TypeHandle handle,
             script::script_id scriptId);
 
         // @return true if unregister was done
-        bool unregisterFunction(std::string fnName);
+        bool unregisterScriptEntry(const script::ScriptEntry& scriptEntry);
 
         void registerTypes();
 
@@ -124,7 +124,7 @@ namespace script
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeAPI>> m_nodeApis;
         std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
 
-        std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, std::string>> m_typeFunctions;
+        std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, ScriptEntry>> m_scriptEntries;
 
         std::unordered_map<script::script_id, script::ScriptFile> m_scripts;
 
