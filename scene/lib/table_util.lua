@@ -22,11 +22,7 @@ function table_pack(...)
   return { n = select("#", ...), ... }
 end
 
-function table_print(t, levels)
-  printf("%s\n", table_format(t, "", levels or 5))
-end
-
-function table_format(t, indent, levels)
+function table_format(t, indent, levels, collected)
   if t == nil then
     return "<nil>"
   end
@@ -35,23 +31,29 @@ function table_format(t, indent, levels)
     return t
   end
 
-  if table_size(t) == 0 then
-    return ""
-  end
+  -- if table_size(t) == 0 then
+  --   return "EMPTY"
+  -- end
 
   local sb = {}
 
+  collected = collected or {}
   indent = indent or ""
-  levels = levels or 5
+  levels = levels or 4
+
+  collected[t] = true
 
   for k, v in pairs(t) do
     if type(v) == "table" and levels > 1 then
-      v = table_format(v, indent .. "  ", levels - 1)
-
-      if #v == 0 then
-        v = "{}"
+      if collected[v] then
+        v = "<LOOP>"
       else
-        v = "{\n  " .. indent .. v .. "}"
+        v = table_format(v, indent .. "  ", levels - 1, collected)
+        if #v == 0 then
+          v = "{}"
+        else
+          v = "{\n  " .. indent .. v .. "}"
+        end
       end
     else
       if type(v) == "string" then
@@ -64,5 +66,18 @@ function table_format(t, indent, levels)
     sb[#sb + 1] = k .. " = " .. v
   end
 
+  local meta = getmetatable(t)
+  if meta then
+    local k = "[meta]"
+    local v = table_format(meta, indent .. "  ", levels - 1, collected)
+    v = "{\n  " .. indent .. v .. "}"
+
+    sb[#sb + 1] = k .. " = " .. v
+  end
+
   return table.concat(sb, "\n" .. indent)
+end
+
+function table_print(t, levels)
+  printf("%s\n", table_format(t, "", levels or 5))
 end

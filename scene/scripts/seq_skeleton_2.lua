@@ -1,7 +1,7 @@
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-nodes[id].node = node
-nodes[id].cmd = cmd
-n = nodes[id]
+-- nodes[id].node = node
+-- nodes[id].cmd = cmd
+-- n = nodes[id]
 
 local ANIM_IDLE = util.sid("master:Idle")
 local ANIM_IDLE_2 = util.sid("master:Idle2")
@@ -106,10 +106,10 @@ local function ray_caster()
     local dir = rot:to_mat4() * node:get_front()
     -- printf("dir=%s\n", dir)
 
-    cid = cmd:ray_cast(
-      { after=cid },
-      dir,
-      ray_cast_hit)
+    -- cid = cmd:ray_cast(
+    --   { after=cid },
+    --   dir,
+    --   ray_cast_hit)
 
     cid = cmd:wait({ after=cid, time=0.25 })
 
@@ -123,6 +123,18 @@ local function ray_caster()
   cid = cmd:call(
     { after=cid },
     ray_cast)
+
+  local function cast_update(dt)
+    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
+    local dir = rot:to_mat4() * node:get_front()
+
+    cmd:ray_cast(
+      { after=0 },
+      dir,
+      ray_cast_hit)
+  end
+
+  Updater:add_updater(cast_update)
 end
 
 local function animation()
@@ -159,5 +171,14 @@ local function animation()
     animation_listener)
 end
 
-animation()
-ray_caster()
+local function start()
+  animation()
+  ray_caster()
+end
+
+local function update(dt)
+  printf("skeleton_update: dt=%f\n", dt or 0)
+end
+
+Updater:add_updater(update)
+start()

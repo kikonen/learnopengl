@@ -1,7 +1,7 @@
 print("LUA: MODULE common")
 
 -- https://stackoverflow.com/questions/17877224/how-to-prevent-a-lua-script-from-failing-when-a-require-fails-to-find-the-scri
-local function prequire(m)
+function prequire(m)
   print("LUA::REQUIRE: " .. m)
   local ok, err = pcall(require, m)
   if not ok then
@@ -16,6 +16,9 @@ prequire "table_util"
 prequire "debug"
 prequire "events"
 prequire "module_1"
+
+Updater = prequire "updater"
+Node = prequire "node"
 
 local function test()
   print("LUA: testing...")

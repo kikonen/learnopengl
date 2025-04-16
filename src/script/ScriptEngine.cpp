@@ -20,6 +20,7 @@
 #include "script/NodeCommandAPI.h"
 #include "script/UtilAPI.h"
 #include "script/ScriptFile.h"
+#include "script/ScriptEntry.h"
 
 #include "model/Node.h"
 
@@ -77,9 +78,9 @@ namespace script
 
         // TODO KI clear scriptlets from Lua
         if (m_commandEngine) {
-            for (auto& [nodeId, functions] : m_typeFunctions) {
-                for (auto& [scriptId, fnName] : functions) {
-                    unregisterFunction(fnName);
+            for (auto& [nodeId, entries] : m_scriptEntries) {
+                for (auto& [scriptId, fnName] : entries) {
+                    unregisterScriptEntry(fnName);
                 }
             }
 
@@ -97,7 +98,7 @@ namespace script
 
         m_nodeApis.clear();
         m_nodeCommandApis.clear();
-        m_typeFunctions.clear();
+        m_scriptEntries.clear();
         //m_nodeScripts.clear();
 
         m_scripts.clear();
@@ -190,35 +191,23 @@ namespace script
         std::lock_guard lock(m_lock);
 
         {
-            const auto& fnName = getTypeFunctionName(handle, scriptId);
-            if (fnName.empty()) return;
+            const auto& signature = getScriptSignature(handle, scriptId);
+            if (signature.empty()) return;
         }
 
-        auto it = m_typeFunctions.find(handle);
-        if (it == m_typeFunctions.end()) {
-            std::unordered_map<script::script_id, std::string> fnMap;
-            m_typeFunctions.insert({ handle, fnMap });
-            it = m_typeFunctions.find(handle);
+        auto it = m_scriptEntries.find(handle);
+        if (it == m_scriptEntries.end()) {
+            std::unordered_map<script::script_id, script::ScriptEntry> scriptMap;
+            m_scriptEntries.insert({ handle, scriptMap });
+            it = m_scriptEntries.find(handle);
         }
 
         {
-            const auto& fnName = createTypeFunction(handle, scriptId);
-            if (!fnName.empty()) {
-                it->second.insert({ scriptId, fnName });
+            const auto& scriptEntry = createScriptEntry(handle, scriptId);
+            if (scriptEntry.m_valid) {
+                it->second.insert({ scriptId, scriptEntry });
             }
         }
-    }
-
-    std::string ScriptEngine::getTypeFunction(
-        pool::TypeHandle handle,
-        script::script_id scriptId)
-    {
-        const auto& typeIt = m_typeFunctions.find(handle);
-        if (typeIt == m_typeFunctions.end()) return "";
-
-        const auto& fnMap = typeIt->second;
-        const auto fnIt = fnMap.find(scriptId);
-        return fnIt != fnMap.end() ? fnIt->second : "";
     }
 
     void ScriptEngine::bindNodeScript(
@@ -230,8 +219,7 @@ namespace script
         const auto& handle = node->toHandle();
         if (handle.isNull()) return;
 
-        std::string fnName = getTypeFunction(node->m_typeHandle, scriptId);
-        if (fnName.empty()) return;
+        if (!hasScriptEntry(node->m_typeHandle, scriptId)) return;
 
         {
             m_nodeApis.insert({ handle, std::make_unique<NodeAPI>(handle) });
@@ -239,13 +227,26 @@ namespace script
         }
     }
 
-    std::vector<script::script_id> ScriptEngine::getTypeScripts(
+    bool ScriptEngine::hasScriptEntry(
+        pool::TypeHandle handle,
+        script::script_id scriptId)
+    {
+        const auto& typeIt = m_scriptEntries.find(handle);
+        if (typeIt == m_scriptEntries.end()) return false;
+
+        const auto& scriptMap = typeIt->second;
+        const auto& scriptIt = scriptMap.find(scriptId);
+        if (scriptIt == scriptMap.end()) return false;
+        return scriptIt->second.m_valid;
+    }
+
+    std::vector<script::script_id> ScriptEngine::getScriptEntryIds(
         pool::TypeHandle handle)
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_typeFunctions.find(handle);
-        if (it == m_typeFunctions.end()) return {};
+        const auto& it = m_scriptEntries.find(handle);
+        if (it == m_scriptEntries.end()) return {};
 
         std::vector<script::script_id> scripts;
         for (const auto& fnIt : it->second) {
@@ -254,20 +255,32 @@ namespace script
         return scripts;
     }
 
-    std::string ScriptEngine::createTypeFunction(
+    script::ScriptEntry ScriptEngine::createScriptEntry(
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
-        std::string scriptlet;
 
         // NOTE KI unique wrapperFn for node
-        const std::string& fnName = getTypeFunctionName(handle, scriptId);
+        const std::string& fnName = getScriptSignature(handle, scriptId);
         if (fnName.empty()) return {};
 
         const auto it = m_scripts.find(scriptId);
-        if (it == m_scripts.end()) return "";
+        if (it == m_scripts.end()) return { false };
 
-        const auto& script = it->second;
+        const auto& scriptFile = it->second;
+
+        std::string scriptlet;
+
+        switch (scriptFile.m_type) {
+        case ScriptType::module_file:
+        case ScriptType::class_file:
+        case ScriptType::plain:
+            scriptlet = fmt::format(R"(
+function {}(self)
+{}
+end)", fnName, scriptFile.m_source);
+            break;
+        }
 
         if (handle) {
             // NOTE KI pass context as closure to Node
@@ -277,7 +290,7 @@ function {}(node, cmd, id)
 nodes[id] = nodes[id] or {}
 local lua_node = nodes[id]
 {}
-end)", fnName, "{}", script.m_source);
+end)", fnName, "{}", scriptFile.m_source);
         }
         else {
             // NOTE KI global scriplet
@@ -285,15 +298,20 @@ end)", fnName, "{}", script.m_source);
             scriptlet = fmt::format(R"(
 function {}()
 {}
-end)", fnName, script.m_source);
+end)", fnName, scriptFile.m_source);
         }
 
         auto result = invokeLuaScript(scriptlet);
 
-        return result.valid() ? fnName : "";
+        script::ScriptEntry scriptEntry;
+        scriptEntry.m_signature = fnName;
+
+        if (!result.valid()) return { false };
+
+        return { true, ScriptEntryType::function, fnName };
     }
 
-    std::string ScriptEngine::getTypeFunctionName(
+    std::string ScriptEngine::getScriptSignature(
         pool::TypeHandle handle,
         script::script_id scriptId) const
     {
@@ -308,9 +326,11 @@ end)", fnName, script.m_source);
         return fmt::format("fn_global_{}", scriptId);
     }
 
-    bool ScriptEngine::unregisterFunction(std::string fnName)
+    bool ScriptEngine::unregisterScriptEntry(const script::ScriptEntry& scriptEntry)
     {
         auto& lua = getLua();
+
+        const auto& fnName = scriptEntry.m_signature;
 
         if (!lua[fnName].is<sol::function>()) return false;
 
@@ -318,7 +338,7 @@ end)", fnName, script.m_source);
 {} = nil)", fnName);
 
         lua.script(undef);
-        KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", fnName));
+        KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", scriptEntry.m_signature));
         return true;
     }
 
@@ -327,14 +347,15 @@ end)", fnName, script.m_source);
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_typeFunctions.find(pool::TypeHandle::NULL_HANDLE);
+        const auto& it = m_scriptEntries.find(pool::TypeHandle::NULL_HANDLE);
 
-        if (it == m_typeFunctions.end()) return;
+        if (it == m_scriptEntries.end()) return;
 
         if (const auto& fnIt = it->second.find(scriptId);
             fnIt != it->second.end())
         {
-            const auto& fnName = fnIt->second;
+            const auto& scriptEntry = fnIt->second;
+            const auto& fnName = scriptEntry.m_signature;
 
             invokeLuaFunction([this, &fnName]() {
                 sol::protected_function fn(getLua()[fnName]);
@@ -352,15 +373,17 @@ end)", fnName, script.m_source);
         std::lock_guard lock(m_lock);
 
         const auto& handle = node->toHandle();
-        const auto& it = m_typeFunctions.find(node->m_typeHandle);
+        const auto& it = m_scriptEntries.find(node->m_typeHandle);
 
-        if (it == m_typeFunctions.end()) return;
+        if (it == m_scriptEntries.end()) return;
 
         if (const auto& fnIt = it->second.find(scriptId);
             fnIt != it->second.end())
         {
-            auto& fnName = fnIt->second;
-            KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={}", fnName));
+            const auto& scriptEntry = fnIt->second;
+            const auto& fnName = scriptEntry.m_signature;
+
+            KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
             auto* nodeApi = m_nodeApis.find(handle)->second.get();
             auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
