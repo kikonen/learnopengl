@@ -11,7 +11,12 @@ namespace {
 
 namespace util
 {
-    float ratiansBetween(glm::vec3 a, glm::vec3 b)
+    float degreesBetween(glm::vec3 a, glm::vec3 b)
+    {
+        return glm::degrees(radiansBetween(a, b));
+    }
+
+    float radiansBetween(glm::vec3 a, glm::vec3 b)
     {
         return acos(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
     }

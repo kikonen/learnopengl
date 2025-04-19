@@ -168,6 +168,11 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 nodeRegistry.snapshotWT();
             }
             {
+                KI_TIMER("script");
+                auto& scriptEngine = script::ScriptEngine::get();
+                scriptEngine.update(ctx);
+            }
+            {
                 KI_TIMER("node2   ");
                 ControllerRegistry::get().updateWT(ctx);
                 nodeRegistry.updateModelMatrices();

@@ -16,6 +16,7 @@
 #include "size.h"
 
 struct PrepareContext;
+struct UpdateContext;
 
 class Node;
 
@@ -47,6 +48,8 @@ namespace script
         void prepare(
             const PrepareContext& ctx,
             CommandEngine* commandEngine);
+
+        void update(const UpdateContext& ctx);
 
         script::script_id registerScript(
             script::ScriptFile scriptFile);

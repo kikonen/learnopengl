@@ -88,7 +88,7 @@ namespace script
 
         int lua_ray_cast(
             const sol::table& lua_opt,
-            const glm::vec3& dir,
+            const sol::table& lua_dirs,
             const sol::function& callback) noexcept;
 
         int lua_invoke(
