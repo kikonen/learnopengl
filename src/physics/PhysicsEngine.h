@@ -97,7 +97,15 @@ namespace physics {
             pool::NodeHandle fromNode,
             bool onlyClosest) const;
 
-        std::vector<std::pair<bool, physics::RayHit>> rayCast(
+        std::vector<physics::RayHit> rayCastClosestToMultiple(
+            const glm::vec3& origin,
+            const std::vector<glm::vec3>& dirs,
+            float distance,
+            uint32_t categoryMask,
+            uint32_t collisionMask,
+            pool::NodeHandle fromNode) const;
+
+        std::vector<physics::RayHit> rayCastClosestFromMultiple(
             std::span<glm::vec3> origin,
             const glm::vec3& dir,
             float distance,

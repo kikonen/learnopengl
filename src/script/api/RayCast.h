@@ -15,7 +15,9 @@ namespace script
     public:
         RayCast(
             pool::NodeHandle handle,
-            const glm::vec3& dir,
+            const std::vector<glm::vec3>& dirs,
+            const uint32_t categoryMask,
+            const uint32_t collisionMask,
             const bool self,
             const sol::function callback) noexcept;
 
@@ -28,7 +30,9 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const glm::vec3 m_dir;
+        const std::vector<glm::vec3> m_dirs;
+        const uint32_t m_categoryMask;
+        const uint32_t m_collisionMask;
         const bool m_self;
         const sol::function m_callback;
     };

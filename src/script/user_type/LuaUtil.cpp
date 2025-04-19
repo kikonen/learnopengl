@@ -46,6 +46,22 @@ namespace script
             ));
 
         t.set_function(
+            "degrees_between",
+            sol::overload(
+                [](const glm::vec3& v1, const glm::vec3& v2) {
+                    return util::degreesBetween(v1, v2);
+                }
+            ));
+
+        t.set_function(
+            "radians_between",
+            sol::overload(
+                [](const glm::vec3& v1, const glm::vec3& v2) {
+                    return util::radiansBetween(v1, v2);
+                }
+            ));
+
+        t.set_function(
             "degrees_to_quat",
             sol::overload(
                 [](const glm::vec3& rot) {

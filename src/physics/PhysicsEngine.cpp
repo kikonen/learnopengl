@@ -504,7 +504,7 @@ namespace physics
             origins.push_back(pos - dir * glm::vec3{ 0.f, 200.f, 0.f });
         }
 
-        const auto& castResult = rayCast(
+        const auto& castResult = rayCastClosestFromMultiple(
             origins,
             dir,
             500.f,
@@ -514,8 +514,8 @@ namespace physics
 
         std::vector<std::pair<bool, float>> result;
 
-        for (const auto& [success, hit]: castResult) {
-            if (success) {
+        for (const auto& hit : castResult) {
+            if (hit.isHit) {
                 result.push_back({ true, hit.pos.y });
             }
             else {
@@ -604,15 +604,18 @@ namespace physics
         return hits;
     }
 
-    std::vector<std::pair<bool, physics::RayHit>> PhysicsEngine::rayCast(
-        std::span<glm::vec3> origins,
-        const glm::vec3& dir,
+    std::vector<physics::RayHit> PhysicsEngine::rayCastClosestToMultiple(
+        const glm::vec3& origin,
+        const std::vector<glm::vec3>& dirs,
         float distance,
         uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode) const
     {
         if (!m_enabled) return {};
+
+        std::vector<physics::RayHit> result;
+        result.reserve(dirs.size());
 
         std::lock_guard lock{ m_lock };
 
@@ -640,7 +643,81 @@ namespace physics
         }
         hitData.rayGeomId = rayGeomId;
         hitData.onlyClosest = true;
-        std::vector<std::pair<bool, physics::RayHit>> result;
+
+        for (const auto& dir : dirs) {
+            //KI_INFO_OUT(fmt::format(
+            //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
+            //    origin, dir, distance, categoryMask, collisionMask));
+
+            dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
+            dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
+
+            if (hitData.hits.empty()) {
+                result.emplace_back();
+            }
+            else {
+                const auto& geomHit = hitData.hits[0];
+                dBodyID bodyId = dGeomGetBody(geomHit.geomId);
+                const auto& it = m_bodyToObject.find(bodyId);
+                if (it != m_bodyToObject.end()) {
+                    result.emplace_back(
+                        geomHit.pos,
+                        geomHit.normal,
+                        m_nodeHandles[it->second],
+                        geomHit.depth,
+                        true);
+
+                }
+            }
+            hitData.hits.clear();
+        }
+
+        // NOTE KI set mask to "none" to prevent collisions after casting
+        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
+        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
+
+        return result;
+    }
+
+    std::vector<physics::RayHit> PhysicsEngine::rayCastClosestFromMultiple(
+        std::span<glm::vec3> origins,
+        const glm::vec3& dir,
+        float distance,
+        uint32_t categoryMask,
+        uint32_t collisionMask,
+        pool::NodeHandle fromNode) const
+    {
+        if (!m_enabled) return {};
+
+        std::vector<physics::RayHit> result;
+        result.reserve(origins.size());
+
+        std::lock_guard lock{ m_lock };
+
+        const auto* ray = getObject(m_rayId);
+        if (!ray || !ray->m_geom.physicId) return {};
+
+        const auto rayGeomId = ray->m_geom.physicId;
+
+        const physics::Object* sourceObject{ nullptr };
+
+        {
+            const auto& it = m_handleToId.find(fromNode);
+            if (it != m_handleToId.end()) {
+                sourceObject = &m_objects[it->second];
+            }
+        }
+
+        dGeomRaySetLength(rayGeomId, distance);
+        dGeomSetCategoryBits(rayGeomId, categoryMask);
+        dGeomSetCollideBits(rayGeomId, collisionMask);
+
+        HitData hitData;
+        if (sourceObject) {
+            hitData.sourceGeomId = sourceObject->m_geom.physicId;
+        }
+        hitData.rayGeomId = rayGeomId;
+        hitData.onlyClosest = true;
 
         for (const auto& origin : origins) {
             //KI_INFO_OUT(fmt::format(
@@ -659,13 +736,11 @@ namespace physics
                 const auto& it = m_bodyToObject.find(bodyId);
                 if (it != m_bodyToObject.end()) {
                     result.emplace_back(
-                        true,
-                        physics::RayHit {
-                            geomHit.pos,
-                            geomHit.normal,
-                            m_nodeHandles[it->second],
-                            geomHit.depth
-                        });
+                        geomHit.pos,
+                        geomHit.normal,
+                        m_nodeHandles[it->second],
+                        geomHit.depth,
+                        true);
 
                 }
             }

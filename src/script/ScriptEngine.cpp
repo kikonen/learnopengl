@@ -14,6 +14,7 @@
 #include "util/file.h"
 
 #include "engine/PrepareContext.h"
+#include "engine/UpdateContext.h"
 
 #include "script/CommandEngine.h"
 #include "script/NodeAPI.h"
@@ -157,6 +158,15 @@ namespace script
         registerTypes();
 
         lua["nodes"] = lua.create_table_with();
+    }
+
+    void ScriptEngine::update(const UpdateContext& ctx)
+    {
+        invokeLuaFunction([this, &ctx]() {
+            auto updater = getLua()["Updater"];
+            sol::protected_function fn(updater["update"]);
+            return fn(updater, ctx.m_clock.elapsedSecs);
+            });
     }
 
     void ScriptEngine::registerTypes()

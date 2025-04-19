@@ -9,6 +9,8 @@
 
 #include "model/Node.h"
 
+#include "physics/physics_util.h"
+
 #include "script/CommandEngine.h"
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
@@ -330,16 +332,28 @@ namespace script
 
     int NodeCommandAPI::lua_ray_cast(
         const sol::table& lua_opt,
-        const glm::vec3& dir,
+        const sol::table& lua_dirs,
         const sol::function& callback) noexcept
     {
         const auto opt = readOptions(lua_opt);
+
+        std::vector<glm::vec3> dirs;
+
+        lua_dirs.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& dir = value.as<glm::vec3>();
+            dirs.push_back(dir);
+            });
+
+        uint32_t categoryMask = physics::mask(physics::Category::ray_test);
+        uint32_t collisionMask = physics::mask(physics::Category::player);
 
         return m_commandEngine->addCommand(
             opt.afterId,
             RayCast{
                 m_handle,
-                dir,
+                dirs,
+                categoryMask,
+                collisionMask,
                 opt.self,
                 callback
             });

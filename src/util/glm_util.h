@@ -4,7 +4,8 @@
 
 namespace util
 {
-    float ratiansBetween(glm::vec3 a, glm::vec3 b);
+    float degreesBetween(glm::vec3 a, glm::vec3 b);
+    float radiansBetween(glm::vec3 a, glm::vec3 b);
 
     glm::quat degreesToQuat(const glm::vec3& rot);
     glm::quat radiansToQuat(const glm::vec3& rot);

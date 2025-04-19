@@ -16,11 +16,15 @@ namespace script
 {
     RayCast::RayCast(
         pool::NodeHandle handle,
-        const glm::vec3& dir,
+        const std::vector<glm::vec3>& dirs,
+        const uint32_t categoryMask,
+        const uint32_t collisionMask,
         const bool self,
         const sol::function callback) noexcept
         : NodeCommand(handle, 0, false),
-        m_dir{ dir },
+        m_dirs{ dirs },
+        m_categoryMask{ categoryMask },
+        m_collisionMask{ collisionMask },
         m_self{ self },
         m_callback{ callback }
     {
@@ -35,29 +39,29 @@ namespace script
         if (m_finished) {
             const auto& state = getNode()->getState();
 
-            const auto& hits = physics::PhysicsEngine::get().rayCast(
+            const auto& hits = physics::PhysicsEngine::get().rayCastClosestToMultiple(
                 state.getWorldPosition(),
-                m_dir,
+                m_dirs,
                 400.f,
-                physics::mask(physics::Category::ray_npc_fire),
-                physics::mask(physics::Category::player),
-                m_handle,
-                true);
+                m_categoryMask,
+                m_collisionMask,
+                m_handle);
 
             if (!hits.empty()) {
                 auto& se = script::ScriptEngine::get();
-                const auto& hit = hits[0];
-                auto* node = hit.handle.toNode();
-
                 sol::table args = se.getLua().create_table();
-                args["hit"] = hit;
-                args["hit_name"] = node->getName();
 
-                se.invokeNodeFunction(
-                    getNode(),
-                    m_self,
-                    m_callback,
-                    args);
+                for (const auto& hit : hits) {
+                    auto* node = hit.handle.toNode();
+
+                    args["data"] = hit;
+
+                    se.invokeNodeFunction(
+                        getNode(),
+                        m_self,
+                        m_callback,
+                        args);
+                }
             }
         }
     }

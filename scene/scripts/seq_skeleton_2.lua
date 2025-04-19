@@ -80,28 +80,53 @@ end
 
 local function ray_caster()
   local cid = 0
-  local degrees = 0
+  local rayDegrees = 0
+  local elapsed = 0
 
   local function ray_cast_hit(args)
+    local cid = 0
+
+    if not args.data.is_hit then
+      -- print("NO_HIT")
+      return
+    end
+
+    if elapsed < 1 then
+      return
+    end
+
+    elapsed = 0
+
     print("RAY_HIT")
     table_print(args)
+
+    printf("front: %s\n", node:get_front())
+
+    local rotDegrees = util.degrees_between(
+      node:get_front(),
+      args.data.pos)
+
+    -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rotDegrees)
+
+    printf("rotate: %f\n", rotDegrees)
 
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 1000 })
 
     cid = cmd:rotate(
       { time=1, relative=true },
-      vec3(0, 1, 0), degrees)
+      vec3(0, 1, 0),
+      rotDegrees)
 
     cid = attack(cid)
 
-    degrees = 0;
+    rayDegrees = 0;
   end
 
   local function ray_cast()
-    cid = cmd:wait({ after=cid, time=0.25 })
+    -- cid = cmd:wait({ after=cid, time=0.25 })
 
-    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
+    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rayDegrees)
     -- printf("front=%s, rot=%s\n", node:get_front(), rot)
     local dir = rot:to_mat4() * node:get_front()
     -- printf("dir=%s\n", dir)
@@ -117,20 +142,29 @@ local function ray_caster()
       { after=cid },
       ray_cast)
 
-    degrees = degrees + 1.5
+    rayDegrees = rayDegrees + 1.5
   end
 
-  cid = cmd:call(
-    { after=cid },
-    ray_cast)
+  -- cid = cmd:call(
+  --   { after=cid },
+  --   ray_cast)
 
   local function cast_update(dt)
-    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
+    elapsed = elapsed + dt
+
+    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rayDegrees)
     local dir = rot:to_mat4() * node:get_front()
 
-    cmd:ray_cast(
-      { after=0 },
-      dir,
+    rayDegrees = rayDegrees + dt * 1.5
+
+    cid = cmd:cancel(
+      {},
+      cid,
+      ray_cast_hit)
+
+    cid = cmd:ray_cast(
+      { after=cid },
+      { dir },
       ray_cast_hit)
   end
 
@@ -177,7 +211,7 @@ local function start()
 end
 
 local function update(dt)
-  printf("skeleton_update: dt=%f\n", dt or 0)
+  -- printf("skeleton_update: dt=%f\n", dt or 0)
 end
 
 Updater:add_updater(update)
