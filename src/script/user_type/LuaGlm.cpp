@@ -536,6 +536,22 @@ namespace
                     return glm::distance2(v1, v2);
                 }
             ));
+
+        t.set_function(
+            "radians",
+            sol::overload(
+                [](float degrees) {
+                    return glm::radians(degrees);
+                }
+            ));
+
+        t.set_function(
+            "degrees",
+            sol::overload(
+                [](float radians) {
+                    return glm::degrees(radians);
+                }
+            ));
     }
 }
 

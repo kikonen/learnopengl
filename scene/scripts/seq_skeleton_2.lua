@@ -102,6 +102,16 @@ local function ray_caster()
 
     printf("front: %s\n", node:get_front())
 
+    local n1 = node:get_front()
+    local n2 = args.data.pos - node:get_pos()
+    n1.y = 0
+    n2.y = 0
+    n1 = n1:normalize()
+    n2 = n2:normalize()
+
+    local cosine = glm.dot(n1, n2)
+    local angle = glm.degrees(math.acos(cosine))
+
     local rotDegrees = util.degrees_between(
       node:get_front(),
       args.data.pos)
@@ -109,6 +119,7 @@ local function ray_caster()
     -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rotDegrees)
 
     printf("rotate: %f\n", rotDegrees)
+    printf("angle: %f\n", angle)
 
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 1000 })
@@ -116,7 +127,7 @@ local function ray_caster()
     cid = cmd:rotate(
       { time=1, relative=true },
       vec3(0, 1, 0),
-      rotDegrees)
+      angle)
 
     cid = attack(cid)
 
