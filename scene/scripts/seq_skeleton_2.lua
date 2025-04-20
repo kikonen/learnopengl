@@ -1,7 +1,4 @@
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
--- nodes[id].node = node
--- nodes[id].cmd = cmd
--- n = nodes[id]
 
 local ANIM_IDLE = util.sid("master:Idle")
 local ANIM_IDLE_2 = util.sid("master:Idle2")
@@ -79,13 +76,15 @@ function lua_node:emit_particles()
 end
 
 local function ray_caster()
-  local cid = 0
-  local rayDegrees = 0
+  local rotate_cid = 0
+  local move_cid = 0
+  local attack_cid = 0
+
+  local cast_cid = 0
+  local ray_degrees = 0
   local elapsed = 0
 
-  local function ray_cast_hit(args)
-    local cid = 0
-
+  local function ray_cast_callback(args)
     if not args.data.is_hit then
       -- print("NO_HIT")
       return
@@ -112,71 +111,60 @@ local function ray_caster()
     local cosine = glm.dot(n1, n2)
     local angle = glm.degrees(math.acos(cosine))
 
-    local rotDegrees = util.degrees_between(
-      node:get_front(),
-      args.data.pos)
+    printf("n1: %s\n", n1)
+    printf("n2: %s\n", n2)
+    printf("cosine: %f\n", cosine)
 
-    -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rotDegrees)
+    if cosine < 0 then
+      angle = angle - 180
+    end
 
-    printf("rotate: %f\n", rotDegrees)
+    local rot_degrees = util.degrees_between(
+      n1,
+      n2)
+    -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rot_degrees)
+
+    printf("rotate: %f\n", rot_degrees)
     printf("angle: %f\n", angle)
+    printf("ray_degrees: %f\n", ray_degrees)
 
     cmd:particle_emit(
-      { count=(10 + rnd(50)) * 1000 })
+      { count=(10 + rnd(50)) * 100 })
 
-    cid = cmd:rotate(
-      { time=1, relative=true },
+    local cancel_cid = cmd:cancel(
+      {},
+      { rotate_cid, move_sid, attack_sid })
+
+    rotate_cid = cmd:rotate(
+      { after=cancel_cid, time=1, relative=true },
       vec3(0, 1, 0),
-      angle)
+      rot_degrees)
 
-    cid = attack(cid)
+    move_cid = cmd:move(
+      { after=cancel_cid, time=5, relative=false },
+      args.data.pos)
 
-    rayDegrees = 0;
+    attack_cid = attack(cancel_cid)
+
+    ray_degrees = 0
   end
-
-  local function ray_cast()
-    -- cid = cmd:wait({ after=cid, time=0.25 })
-
-    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rayDegrees)
-    -- printf("front=%s, rot=%s\n", node:get_front(), rot)
-    local dir = rot:to_mat4() * node:get_front()
-    -- printf("dir=%s\n", dir)
-
-    -- cid = cmd:ray_cast(
-    --   { after=cid },
-    --   dir,
-    --   ray_cast_hit)
-
-    cid = cmd:wait({ after=cid, time=0.25 })
-
-    cid = cmd:call(
-      { after=cid },
-      ray_cast)
-
-    rayDegrees = rayDegrees + 1.5
-  end
-
-  -- cid = cmd:call(
-  --   { after=cid },
-  --   ray_cast)
 
   local function cast_update(dt)
     elapsed = elapsed + dt
 
-    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rayDegrees)
+    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
     local dir = rot:to_mat4() * node:get_front()
 
-    rayDegrees = rayDegrees + dt * 1.5
+    ray_degrees = ray_degrees + dt * 3.5
 
-    cid = cmd:cancel(
+    cast_cid = cmd:cancel(
       {},
-      cid,
-      ray_cast_hit)
+      { cast_cid })
 
-    cid = cmd:ray_cast(
-      { after=cid },
+    cast_cid = cmd:ray_cast(
+      { after=cast_cid },
       { dir },
-      ray_cast_hit)
+      ray_cast_callback)
   end
 
   Updater:add_updater(cast_update)

@@ -1,5 +1,7 @@
 #include "glm_util.h"
 
+#include <numbers>
+
 #include <glm/gtx/quaternion.hpp>
 
 namespace {
@@ -18,7 +20,10 @@ namespace util
 
     float radiansBetween(glm::vec3 a, glm::vec3 b)
     {
-        return acos(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
+        auto cosine = glm::dot(glm::normalize(a), glm::normalize(b));
+        if (cosine == -1.f) return std::numbers::pi_v<float>;
+        return acos(cosine);
+        //return acos(cosine / (glm::length(a) * glm::length(b)));
     }
 
     glm::quat degreesToQuat(const glm::vec3& rot)

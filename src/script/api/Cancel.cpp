@@ -10,9 +10,9 @@ namespace script
 {
     Cancel::Cancel(
         float duration,
-        script::command_id commandId) noexcept
+        std::vector<script::command_id> commandIds) noexcept
         : Command(duration),
-        m_commandId(commandId)
+        m_commandIds(commandIds)
     {
     }
 
@@ -23,7 +23,9 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            script::CommandEngine::get().cancel(m_commandId);
+            for (auto commandId : m_commandIds) {
+                script::CommandEngine::get().cancel(commandId);
+            }
         }
     }
 }

@@ -60,17 +60,24 @@ namespace script
 
     int NodeCommandAPI::lua_cancel(
         const sol::table& lua_opt,
-        int commandId) noexcept
+        const sol::table& lua_commandIds) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
         //KI_INFO_OUT(fmt::format("wait: command={}, opt={}", commandId, opt.str()));
 
+        std::vector<script::command_id> commandIds;
+
+        lua_commandIds.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& commandId = key.as<int>();
+            commandIds.push_back(static_cast<script::command_id>(commandId));
+            });
+
         return m_commandEngine->addCommand(
             opt.afterId,
             Cancel{
                 opt.duration,
-                static_cast<script::command_id>(commandId)
+                commandIds
             });
     }
 
