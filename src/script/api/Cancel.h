@@ -10,7 +10,7 @@ namespace script
     public:
         Cancel(
             float duration,
-            script::command_id commandId) noexcept;
+            std::vector<script::command_id> commandIds) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -21,6 +21,6 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        script::command_id m_commandId;
+        std::vector<script::command_id> m_commandIds;
     };
 }

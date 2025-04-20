@@ -123,7 +123,7 @@ namespace script
             0,
             script::Cancel{
                 0,
-                commandId
+                { commandId }
             });
     }
 

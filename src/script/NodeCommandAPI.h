@@ -28,7 +28,7 @@ namespace script
     public:
         int lua_cancel(
             const sol::table& lua_opt,
-            int commandId) noexcept;
+            const sol::table& lua_commandIds) noexcept;
 
         int lua_wait(
             const sol::table& lua_opt) noexcept;

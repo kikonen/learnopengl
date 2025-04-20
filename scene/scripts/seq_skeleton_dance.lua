@@ -68,9 +68,9 @@ local function attack(wid)
     { after=wid, sid=randomMove() } )
 
   wid = cmd:wait({ after=0, time=3 + rnd(5) })
-  cmd:cancel({ after=wid, time=0 }, cid)
+  cmd:cancel({ after=wid, time=0 }, { cid })
 
-  cmd:cancel({ after=0, time=0 }, cid)
+  cmd:cancel({ after=0, time=0 }, { cid })
 
   cid = cmd:animation_play(
     { after=cid, sid=randomMove() } )
