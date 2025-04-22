@@ -296,7 +296,7 @@ namespace physics
 
         if (!m_enabled) return;
 
-        std::lock_guard lock{ m_lock };
+        //std::lock_guard lock{ m_lock };
 
         preparePending(ctx);
     }
@@ -314,7 +314,7 @@ namespace physics
 
         auto& dbg = render::DebugContext::modify();
 
-        std::lock_guard lock{ m_lock };
+        //std::lock_guard lock{ m_lock };
 
         auto& nodeRegistry = NodeRegistry::get();
 
@@ -573,7 +573,7 @@ namespace physics
 
         if (!m_enabled) return {};
 
-        std::lock_guard lock{ m_lock };
+        //std::lock_guard lock{ m_lock };
 
         const auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
@@ -643,7 +643,7 @@ namespace physics
         std::vector<physics::RayHit> result;
         result.reserve(dirs.size());
 
-        std::lock_guard lock{ m_lock };
+        //std::lock_guard lock{ m_lock };
 
         const auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
@@ -720,7 +720,7 @@ namespace physics
         std::vector<physics::RayHit> result;
         result.reserve(origins.size());
 
-        std::lock_guard lock{ m_lock };
+        //std::lock_guard lock{ m_lock };
 
         const auto* ray = getObject(m_rayId);
         if (!ray || !ray->m_geom.physicId) return {};
