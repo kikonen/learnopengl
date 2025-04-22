@@ -21,7 +21,6 @@ namespace {
 
 namespace decal {
     Decal DecalDefinition::createForHit(
-        const RenderContext& ctx,
         pool::NodeHandle parent,
         const glm::vec3& hitPos,
         const glm::vec3& hitNormal)

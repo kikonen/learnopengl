@@ -32,6 +32,7 @@
 #include "script/api/Wait.h"
 #include "script/api/MoveNode.h"
 #include "script/api/SelectNode.h"
+#include "script/api/RayCast.h"
 
 #include "event/Dispatcher.h"
 
@@ -648,22 +649,53 @@ void SampleApp::shoot(
         const auto endPos = ctx.unproject(screenPos, .8f);
         const auto dir = glm::normalize(endPos - startPos);
 
-        const auto& hits = physics::PhysicsEngine::get().rayCast(
-            startPos,
-            dir,
-            400.f,
-            physics::mask(physics::Category::ray_player_fire),
-            physics::mask(physics::Category::npc, physics::Category::prop),
-            //physics::mask(physics::Category::all),
-            player->toHandle(),
-            true);
+        //const auto& hits = physics::PhysicsEngine::get().rayCast(
+        //    startPos,
+        //    dir,
+        //    400.f,
+        //    physics::mask(physics::Category::ray_player_fire),
+        //    physics::mask(physics::Category::npc, physics::Category::prop),
+        //    //physics::mask(physics::Category::all),
+        //    player->toHandle(),
+        //    true);
+
+        auto callback = [this](const std::vector<physics::RayHit>& hits) {
+            shootCallback(hits);
+        };
+
+        auto& commandEngine = script::CommandEngine::get();
+        commandEngine.addCommand(
+            0,
+            script::RayCast{
+                player->toHandle(),
+                std::vector<glm::vec3>{ dir },
+                400.f,
+                physics::mask(physics::Category::ray_player_fire),
+                physics::mask(physics::Category::npc, physics::Category::prop),
+                callback
+            });
+
 
         g_hitElapsed += ctx.m_clock.elapsedSecs;
+    }
+}
+
+void SampleApp::shootCallback(
+    const std::vector<physics::RayHit>& hits
+)
+{
+    auto* player = m_currentScene->getActiveNode();
+    if (!player) return;
+
+    {
+        const auto& dbg = render::DebugContext::get();
 
         if (!hits.empty() && g_hitElapsed >= HIT_RATE) {
             g_hitElapsed -= HIT_RATE;
 
             for (auto& hit : hits) {
+                if (!hit.isHit) continue;
+
                 auto* node = hit.handle.toNode();
                 KI_INFO_OUT(fmt::format(
                     "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
@@ -676,7 +708,7 @@ void SampleApp::shoot(
                 auto df = decal::DecalRegistry::get().getDecal(sid);
                 KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
 
-                auto decal = df.createForHit(ctx, hit.handle, hit.pos, glm::normalize(hit.normal));
+                auto decal = df.createForHit(hit.handle, hit.pos, glm::normalize(hit.normal));
 
                 decal::DecalSystem::get().addDecal(decal);
 
