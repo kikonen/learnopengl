@@ -86,8 +86,6 @@ namespace physics {
             return static_cast<uint32_t>(m_objects.size());
         }
 
-        void generateObjectMeshes();
-
         std::vector<physics::RayHit> rayCast(
             const glm::vec3& origin,
             const glm::vec3& dir,
@@ -115,6 +113,8 @@ namespace physics {
 
     private:
         void preparePending(const UpdateContext& ctx);
+
+        void generateObjectMeshes();
 
     public:
         dWorldID m_worldId{ nullptr };

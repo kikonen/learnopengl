@@ -14,6 +14,7 @@
 #include "script/CommandEngine.h"
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
+#include "script/ScriptEngine.h"
 
 #include "api/Cancel.h"
 #include "api/Wait.h"
@@ -340,7 +341,7 @@ namespace script
     int NodeCommandAPI::lua_ray_cast(
         const sol::table& lua_opt,
         const sol::table& lua_dirs,
-        const sol::function& callback) noexcept
+        const sol::function& lua_callback) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
@@ -354,16 +355,36 @@ namespace script
         uint32_t categoryMask = physics::mask(physics::Category::ray_test);
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
+        auto callback = [this, opt, lua_callback](const std::vector<physics::RayHit>& hits) {
+            auto& se = script::ScriptEngine::get();
+            sol::table args = se.getLua().create_table();
+
+            for (const auto& hit : hits) {
+                auto* node = hit.handle.toNode();
+                if (!node) continue;
+
+                args["data"] = hit;
+
+                //Node* node = nullptr;
+                //node = getNode();
+
+                se.invokeNodeFunction(
+                    node,
+                    opt.self,
+                    lua_callback,
+                    args);
+            }
+        };
+
         return m_commandEngine->addCommand(
             opt.afterId,
             RayCast{
                 m_handle,
                 dirs,
+                400.f,
                 categoryMask,
                 collisionMask,
-                opt.self,
-                callback
-            });
+                callback});
     }
 
     int NodeCommandAPI::lua_invoke(

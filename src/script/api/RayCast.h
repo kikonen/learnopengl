@@ -1,8 +1,10 @@
 #pragma once
 
+#include <functional>
+
 #include <glm/glm.hpp>
 
-#include "script/lua_binding.h"
+#include "physics/RayHit.h"
 
 #include "NodeCommand.h"
 
@@ -16,10 +18,10 @@ namespace script
         RayCast(
             pool::NodeHandle handle,
             const std::vector<glm::vec3>& dirs,
+            float length,
             const uint32_t categoryMask,
             const uint32_t collisionMask,
-            const bool self,
-            const sol::function callback) noexcept;
+            const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -33,7 +35,8 @@ namespace script
         const std::vector<glm::vec3> m_dirs;
         const uint32_t m_categoryMask;
         const uint32_t m_collisionMask;
-        const bool m_self;
-        const sol::function m_callback;
+        const float m_length;
+
+        const std::function<void(const std::vector<physics::RayHit>&)> m_callback;
     };
 }

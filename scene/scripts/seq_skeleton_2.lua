@@ -75,13 +75,15 @@ function lua_node:emit_particles()
     { count=(10 + rnd(50)) * 1000 })
 end
 
+local INITIAL_RAY_DEGREES = 50 - rnd(100)
+
 local function ray_caster()
   local rotate_cid = 0
   local move_cid = 0
   local attack_cid = 0
 
   local cast_cid = 0
-  local ray_degrees = 0
+  local ray_degrees = INITIAL_RAY_DEGREES
   local elapsed = 0
 
   local function ray_cast_callback(args)
@@ -146,7 +148,7 @@ local function ray_caster()
 
     attack_cid = attack(cancel_cid)
 
-    ray_degrees = 0
+    ray_degrees = INITIAL_RAY_DEGREES
   end
 
   local function cast_update(dt)

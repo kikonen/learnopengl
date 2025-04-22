@@ -20,6 +20,10 @@ namespace editor {
     class EditorFrame;
 }
 
+namespace physics {
+    struct RayHit;
+}
+
 class RenderContext;
 
 class SampleApp final : public Engine {
@@ -55,6 +59,10 @@ private:
         Scene* scene,
         const InputState& inputState,
         const InputState& lastInputState);
+
+    void shootCallback(
+        const std::vector<physics::RayHit>& hits
+    );
 
     void selectNode(
         const RenderContext& ctx,

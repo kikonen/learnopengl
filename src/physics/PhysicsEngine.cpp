@@ -292,6 +292,8 @@ namespace physics
 
     void PhysicsEngine::updatePrepare(const UpdateContext& ctx)
     {
+        ASSERT_WT();
+
         if (!m_enabled) return;
 
         std::lock_guard lock{ m_lock };
@@ -359,6 +361,8 @@ namespace physics
 
     void PhysicsEngine::preparePending(const UpdateContext& ctx)
     {
+        ASSERT_WT();
+
         if (m_pending.empty()) return;
 
         auto& nodeRegistry = NodeRegistry::get();
@@ -410,6 +414,10 @@ namespace physics
         bool update,
         physics::Object src)
     {
+        if (entityIndex > 0) {
+            ASSERT_WT();
+        }
+
         auto id = static_cast<physics::object_id>(m_objects.size());
 
         m_nodeHandles.push_back(nodeHandle);
@@ -426,12 +434,16 @@ namespace physics
 
     const Object* PhysicsEngine::getObject(physics::object_id id) const
     {
+        ASSERT_WT();
+
         if (id < 1 || id > m_objects.size()) return nullptr;
         return &m_objects[id];
     }
 
     physics::height_map_id PhysicsEngine::registerHeightMap()
     {
+        ASSERT_WT();
+
         auto& map = m_heightMaps.emplace_back<HeightMap>({});
         map.m_id = static_cast<physics::height_map_id>(m_heightMaps.size() - 1);
 
@@ -440,12 +452,16 @@ namespace physics
 
     const HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id) const
     {
+        ASSERT_WT();
+
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
         return &m_heightMaps[id];
     }
 
     const HeightMap* PhysicsEngine::getHeightMap(dHeightfieldDataID heighgtDataId) const
     {
+        ASSERT_WT();
+
         const auto& it = m_heightMapIds.find(heighgtDataId);
         if (it == m_heightMapIds.end()) return nullptr;
 
@@ -454,6 +470,8 @@ namespace physics
 
     HeightMap* PhysicsEngine::modifyHeightMap(physics::height_map_id id)
     {
+        ASSERT_WT();
+
         if (id < 1 || id > m_heightMaps.size()) return nullptr;
         return &m_heightMaps[id];
     }
@@ -476,6 +494,8 @@ namespace physics
         const glm::vec3 dir,
         uint32_t collisionMask) const
     {
+        ASSERT_WT();
+
         if (!isEnabled()) return { false, 0.f };
 
         const auto& hits = rayCast(
@@ -497,6 +517,8 @@ namespace physics
         const glm::vec3 dir,
         uint32_t collisionMask) const
     {
+        ASSERT_WT();
+
         if (!isEnabled()) return {};
 
         std::vector<glm::vec3> origins;
@@ -547,6 +569,8 @@ namespace physics
         pool::NodeHandle fromNode,
         bool onlyClosest) const
     {
+        ASSERT_WT();
+
         if (!m_enabled) return {};
 
         std::lock_guard lock{ m_lock };
@@ -612,6 +636,8 @@ namespace physics
         uint32_t collisionMask,
         pool::NodeHandle fromNode) const
     {
+        ASSERT_WT();
+
         if (!m_enabled) return {};
 
         std::vector<physics::RayHit> result;
@@ -687,6 +713,8 @@ namespace physics
         uint32_t collisionMask,
         pool::NodeHandle fromNode) const
     {
+        ASSERT_WT();
+
         if (!m_enabled) return {};
 
         std::vector<physics::RayHit> result;

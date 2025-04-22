@@ -36,7 +36,6 @@ namespace decal
         }
 
         Decal createForHit(
-            const RenderContext& ctx,
             pool::NodeHandle parent,
             const glm::vec3& hitPos,
             const glm::vec3& hitNormal);

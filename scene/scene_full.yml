@@ -73,6 +73,19 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: capsule
+        density: 0.01
+        rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: capsule
+        category: [player]
+        size: [0.25, 3, 0]
   - name: Player cube map 1
     type: origo
     parent_id: player

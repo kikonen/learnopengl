@@ -17,15 +17,15 @@ namespace script
     RayCast::RayCast(
         pool::NodeHandle handle,
         const std::vector<glm::vec3>& dirs,
+        float length,
         const uint32_t categoryMask,
         const uint32_t collisionMask,
-        const bool self,
-        const sol::function callback) noexcept
+        const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
         m_dirs{ dirs },
+        m_length{ length },
         m_categoryMask{ categoryMask },
         m_collisionMask{ collisionMask },
-        m_self{ self },
         m_callback{ callback }
     {
     }
@@ -42,26 +42,13 @@ namespace script
             const auto& hits = physics::PhysicsEngine::get().rayCastClosestToMultiple(
                 state.getWorldPosition(),
                 m_dirs,
-                400.f,
+                m_length,
                 m_categoryMask,
                 m_collisionMask,
                 m_handle);
 
             if (!hits.empty()) {
-                auto& se = script::ScriptEngine::get();
-                sol::table args = se.getLua().create_table();
-
-                for (const auto& hit : hits) {
-                    auto* node = hit.handle.toNode();
-
-                    args["data"] = hit;
-
-                    se.invokeNodeFunction(
-                        getNode(),
-                        m_self,
-                        m_callback,
-                        args);
-                }
+                m_callback(hits);
             }
         }
     }
