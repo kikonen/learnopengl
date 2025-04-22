@@ -671,7 +671,7 @@ void SampleApp::shoot(
                 std::vector<glm::vec3>{ dir },
                 400.f,
                 physics::mask(physics::Category::ray_player_fire),
-                physics::mask(physics::Category::npc, physics::Category::prop),
+                physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
                 callback
             });
 
