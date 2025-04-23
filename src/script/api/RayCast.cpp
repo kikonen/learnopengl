@@ -18,13 +18,11 @@ namespace script
         pool::NodeHandle handle,
         const std::vector<glm::vec3>& dirs,
         float length,
-        const uint32_t categoryMask,
         const uint32_t collisionMask,
         const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
         m_dirs{ dirs },
         m_length{ length },
-        m_categoryMask{ categoryMask },
         m_collisionMask{ collisionMask },
         m_callback{ callback }
     {
@@ -43,7 +41,6 @@ namespace script
                 state.getWorldPosition(),
                 m_dirs,
                 m_length,
-                m_categoryMask,
                 m_collisionMask,
                 m_handle);
 

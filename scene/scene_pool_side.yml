@@ -45,5 +45,5 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [npc, ray]
+        collision: [npc]
         size: [1, 1, 1]

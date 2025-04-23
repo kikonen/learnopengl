@@ -38,7 +38,7 @@ nodes:
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - name: origo
     mesh:
       vertex:

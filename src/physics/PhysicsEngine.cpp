@@ -280,7 +280,7 @@ namespace physics
             physics::Object obj{};
             obj.m_geom.type = GeomType::ray;
             obj.m_body.kinematic = true;
-            obj.m_geom.categoryMask = 0;
+            obj.m_geom.categoryMask = physics::mask(physics::Category::ray);
             obj.m_geom.collisionMask = 0;
             m_rayId = registerObject({}, 0, false, std::move(obj));
         }
@@ -502,7 +502,6 @@ namespace physics
             pos + glm::vec3{ 0.f, 500.f, 0.f },
             dir,
             1000.f,
-            physics::mask(physics::Category::ray_test),
             collisionMask,
             pool::NodeHandle::NULL_HANDLE,
             true);
@@ -530,7 +529,6 @@ namespace physics
             origins,
             dir,
             500.f,
-            physics::mask(physics::Category::ray_test),
             collisionMask,
             pool::NodeHandle::NULL_HANDLE);
 
@@ -564,7 +562,6 @@ namespace physics
         const glm::vec3& origin,
         const glm::vec3& dir,
         float distance,
-        uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode,
         bool onlyClosest) const
@@ -602,7 +599,6 @@ namespace physics
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
         dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
@@ -632,7 +628,6 @@ namespace physics
         const glm::vec3& origin,
         const std::vector<glm::vec3>& dirs,
         float distance,
-        uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode) const
     {
@@ -660,7 +655,6 @@ namespace physics
         }
 
         dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         HitData hitData;
@@ -709,7 +703,6 @@ namespace physics
         std::span<glm::vec3> origins,
         const glm::vec3& dir,
         float distance,
-        uint32_t categoryMask,
         uint32_t collisionMask,
         pool::NodeHandle fromNode) const
     {
@@ -737,7 +730,6 @@ namespace physics
         }
 
         dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCategoryBits(rayGeomId, categoryMask);
         dGeomSetCollideBits(rayGeomId, collisionMask);
 
         HitData hitData;

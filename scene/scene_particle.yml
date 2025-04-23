@@ -149,7 +149,7 @@ nodes:
       geom:
         type: sphere
         category: [prop]
-        collision: [world, player, npc, ray]
+        collision: [world, player, npc]
         size: [1]
     script_file: scripts/seq_particle_generator
   - id: four_cubes_{t}_{c}
@@ -289,7 +289,7 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [world, player, npc, ray]
+        collision: [world, player, npc]
         size: [1]
     script_file: scripts/seq_particle_generator
   - id: skeleton_army_{c}_{t}
@@ -348,7 +348,7 @@ nodes:
       geom:
         type: cylinder
         category: [scenery]
-        collision: [world, player, ray]
+        collision: [world, player]
         rotation: [90, 0, 0]
         size: [0.75, 20, 0]
   - id: grass_{t}

@@ -13,4 +13,4 @@ prefab:
     geom:
       type: plane
       category: [terrain]
-      collision: [npc, player, prop, ray]
+      collision: [npc, player, prop]
