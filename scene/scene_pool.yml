@@ -85,7 +85,7 @@ nodes:
       geom:
         type: box
         category: [prop, can_float]
-        collision: [world, ray]
+        collision: [world]
         size: [2.5]
   - id: cube_map_mirror_ball
     parent_id: mirror_ball
@@ -109,7 +109,7 @@ nodes:
       geom:
         type: sphere
         category: [prop, can_float]
-        collision: [world, ray]
+        collision: [world]
         size: [5]
   - id: mirror_ball_halo
     parent: mirror_ball
@@ -293,7 +293,7 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [npc, ray]
+        collision: [npc]
         size: [1, 1, 1]
   - id: maple_tree_forest_{c}_{t}
     prefab:
@@ -461,7 +461,7 @@ nodes:
       geom:
         type: sphere
         category: [prop]
-        collision: [world, ray]
+        collision: [world]
         size: [5]
   - id: pool_floor_single_{c}_{t}
     mesh:
@@ -547,7 +547,7 @@ nodes:
       geom:
         type: box
         category: [prop]
-        collision: [npc, ray]
+        collision: [npc]
         size: [1, 1, 1]
   - id: palm_tree_forest_{c}_{t}
     prefab:

@@ -524,7 +524,6 @@ void SampleApp::raycastPlayer(
             snapshot->getWorldPosition(),
             snapshot->getViewFront(),
             100.f,
-            physics::mask(physics::Category::ray_player_fire),
             physics::mask(physics::Category::npc),
             player->toHandle(),
             true);
@@ -623,7 +622,6 @@ void SampleApp::raycastPlayer(
             startPos,
             dir,
             400.f,
-            physics::mask(physics::Category::ray_player_fire),
             physics::mask(physics::Category::npc, physics::Category::prop),
             //physics::mask(physics::Category::all),
             player->toHandle(),
@@ -670,7 +668,6 @@ void SampleApp::shoot(
                 player->toHandle(),
                 std::vector<glm::vec3>{ dir },
                 400.f,
-                physics::mask(physics::Category::ray_player_fire),
                 physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
                 callback
             });

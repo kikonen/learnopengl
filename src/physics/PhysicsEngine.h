@@ -90,7 +90,6 @@ namespace physics {
             const glm::vec3& origin,
             const glm::vec3& dir,
             float distance,
-            uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode,
             bool onlyClosest) const;
@@ -99,7 +98,6 @@ namespace physics {
             const glm::vec3& origin,
             const std::vector<glm::vec3>& dirs,
             float distance,
-            uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode) const;
 
@@ -107,7 +105,6 @@ namespace physics {
             std::span<glm::vec3> origin,
             const glm::vec3& dir,
             float distance,
-            uint32_t categoryMask,
             uint32_t collisionMask,
             pool::NodeHandle fromNode) const;
 

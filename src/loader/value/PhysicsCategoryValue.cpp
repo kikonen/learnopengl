@@ -36,10 +36,6 @@ namespace {
                 // characteristic
                 { "can_float", physics::Category::can_float },
                 { "can_terrain", physics::Category::can_terrain },
-                // ray
-                { "ray_player_fire", physics::Category::ray_player_fire },
-                { "ray_npc_fire", physics::Category::ray_npc_fire },
-                { "ray_hit", physics::Category::ray_hit },
                 });
         }
         return g_categoryMapping;
@@ -57,11 +53,7 @@ namespace {
                     physics::Category::prop) },
                 { "character", physics::mask(
                     physics::Category::player,
-                    physics::Category::npc) },
-                { "ray", physics::mask(
-                    physics::Category::ray_player_fire,
-                    physics::Category::ray_npc_fire,
-                    physics::Category::ray_hit) },
+                    physics::Category::npc) }
                 });
         }
         return g_maskMapping;

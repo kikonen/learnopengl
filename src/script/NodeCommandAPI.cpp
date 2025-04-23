@@ -352,7 +352,6 @@ namespace script
             dirs.push_back(dir);
             });
 
-        uint32_t categoryMask = physics::mask(physics::Category::ray_test);
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
         auto callback = [this, opt, lua_callback](const std::vector<physics::RayHit>& hits) {
@@ -382,7 +381,6 @@ namespace script
                 m_handle,
                 dirs,
                 400.f,
-                categoryMask,
                 collisionMask,
                 callback});
     }

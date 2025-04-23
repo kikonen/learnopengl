@@ -108,7 +108,7 @@ nodes:
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - id: cube_map_mirror_ball
     type: origo
     pos: [0, 2, -7]

@@ -119,28 +119,28 @@ nodes:
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - xid: concrete_floor
     prefab:
       path: prefab/scenery/prefab_rough_concrete_wall.yml
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - xid: rock_forest_floor_1
     prefab:
       path: prefab/scenery/prefab_rock_forest_floor_1.yml
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - xid: prefab_cobblestone_wall_1
     prefab:
       path: prefab/scenery/prefab_cobblestone_wall_1.yml
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - id: prefab_diamond_plate_2
     prefab:
       path: prefab/scenery/prefab_diamond_plate_2.yml
@@ -150,7 +150,7 @@ nodes:
     scale: 100
     physics:
       geom:
-        collision: [world, ray]
+        collision: [world]
   - id: brick_wall
     mesh:
       vertex:
@@ -207,7 +207,7 @@ nodes:
       geom:
         type: sphere
         category: [prop, can_float]
-        collision: [world, ray]
+        collision: [world]
         size: [1]
   - id: brick_wall_2
     mesh:
@@ -361,7 +361,7 @@ nodes:
     physics:
       update: true
       geom:
-        collision: [world, player, ray, ray_player_fire]
+        collision: [world, player]
     xscript: |
       cmd:animation_play(
         { name = "master:Idle" });

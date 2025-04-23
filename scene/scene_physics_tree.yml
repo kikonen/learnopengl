@@ -213,7 +213,7 @@ nodes:
       geom:
         type: cylinder
         category: [scenery]
-        collision: [world, player, ray]
+        collision: [world, player]
         rotation: [90, 0, 0]
         size: [0.75, 21, 0]
   - xid: skeleton_{c}
@@ -251,7 +251,7 @@ nodes:
       geom:
         type: cylinder
         category: [scenery]
-        collision: [world, player, ray]
+        collision: [world, player]
         rotation: [90, 0, 0]
         size: [0.75, 17, 0]
   - id: palm_tree_forest_3_{c}_{t}

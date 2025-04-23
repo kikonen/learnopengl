@@ -19,7 +19,6 @@ namespace script
             pool::NodeHandle handle,
             const std::vector<glm::vec3>& dirs,
             float length,
-            const uint32_t categoryMask,
             const uint32_t collisionMask,
             const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept;
 
@@ -33,7 +32,6 @@ namespace script
 
     private:
         const std::vector<glm::vec3> m_dirs;
-        const uint32_t m_categoryMask;
         const uint32_t m_collisionMask;
         const float m_length;
 
