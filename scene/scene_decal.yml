@@ -80,7 +80,7 @@ nodes:
       printf("here-script\n")
       local sid = util.sid("idle_1")
       printf("SID: %s\n", sid)
-      cmd:audio_play(
+      self.cmd:audio_play(
         { sync=true, sid=sid })
   - xid: player_fps_arms_v2_{c}_{t}
     parent: player
@@ -97,7 +97,7 @@ nodes:
       alignment: m
     layer: player
     script: |
-      cmd:animation_play(
+      self.cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
   - id: dir_light_{c}_{t}
     mesh:
@@ -182,7 +182,7 @@ nodes:
         size: [5, 3, 0.2]
     xscript: |
       local wid = cmd:wait({ time=5 })
-      cmd:rotate(
+      self.cmd:rotate(
         { after=wid, time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -239,7 +239,7 @@ nodes:
         size: [5, 3, 0.2]
     xscript: |
       local wid = cmd:wait({ time=5 })
-      cmd:rotate(
+      self.cmd:rotate(
         { after=wid, time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -363,7 +363,7 @@ nodes:
       geom:
         collision: [world, player]
     xscript: |
-      cmd:animation_play(
+      self.cmd:animation_play(
         { name = "master:Idle" });
     script_file: scripts/seq_skeleton_2.lua
   - id: light

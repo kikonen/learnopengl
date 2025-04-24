@@ -37,6 +37,9 @@
 
 namespace
 {
+    const static std::string TABLE_CLASSES = "classes";
+    const static std::string TABLE_STATES = "states";
+
     static script::ScriptEngine* s_engine{ nullptr };
 }
 
@@ -91,8 +94,8 @@ namespace script
             for (auto& apiName : m_nodeCommandApis) {
             }
 
-            sol::table nodes = getLua()["nodes"];
-            for (auto& node : nodes) {
+            sol::table states = getLua()[TABLE_STATES];
+            for (auto& state : states) {
 
             }
         }
@@ -157,7 +160,8 @@ namespace script
 
         registerTypes();
 
-        lua["nodes"] = lua.create_table_with();
+        lua[TABLE_CLASSES] = lua.create_table_with();
+        lua[TABLE_STATES] = lua.create_table_with();
     }
 
     void ScriptEngine::update(const UpdateContext& ctx)
@@ -235,6 +239,31 @@ namespace script
             m_nodeApis.insert({ handle, std::make_unique<NodeAPI>(handle) });
             m_nodeCommandApis.insert({ handle, std::make_unique<NodeCommandAPI>(m_commandEngine, handle) });
         }
+
+        createNodeState(node);
+    }
+
+    void ScriptEngine::createNodeState(
+        Node* node)
+    {
+        const auto id = node->getId();
+        const auto typeId = node->getType()->getId();
+        std::string scriptlet = fmt::format(R"(
+  local State = classes[{}]
+  states[{}] = State:new()
+  State = nil
+  )", typeId, id);
+        auto result = invokeLuaScript(scriptlet);
+        if (!result.valid()) return;
+
+        const auto handle = node->toHandle();
+        auto* nodeApi = m_nodeApis.find(handle)->second.get();
+        auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
+
+        sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
+        nodeState["id"] = node->getId();
+        nodeState["node"] = std::ref(nodeApi);
+        nodeState["cmd"] = std::ref(cmdApi);
     }
 
     bool ScriptEngine::hasScriptEntry(
@@ -269,6 +298,7 @@ namespace script
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
+        const auto typeId = handle.toId();
 
         // NOTE KI unique wrapperFn for node
         const std::string& fnName = getScriptSignature(handle, scriptId);
@@ -281,26 +311,32 @@ namespace script
 
         std::string scriptlet;
 
-        switch (scriptFile.m_type) {
-        case ScriptType::module_file:
-        case ScriptType::class_file:
-        case ScriptType::plain:
-            scriptlet = fmt::format(R"(
-function {}(self)
-{}
-end)", fnName, scriptFile.m_source);
-            break;
-        }
+//        switch (scriptFile.m_type) {
+//        case ScriptType::module_file:
+//        case ScriptType::class_file:
+//        case ScriptType::plain:
+//            scriptlet = fmt::format(R"(
+//function {}(self)
+//{}
+//end)", fnName, scriptFile.m_source);
+//            break;
+//        }
 
         if (handle) {
+            std::string classScriptlet = fmt::format(R"(
+classes[{}] = classes[{}] or Node:new({{ type_id={} }})
+)", typeId, typeId, typeId);
+
             // NOTE KI pass context as closure to Node
             // - node, cmd, id
             scriptlet = fmt::format(R"(
-function {}(node, cmd, id)
-nodes[id] = nodes[id] or {}
-local lua_node = nodes[id]
 {}
-end)", fnName, "{}", scriptFile.m_source);
+classes[{}].{} = function(self)
+local State = getmetatable(self)
+local cmd = self.cmd
+local node = self.node
+{}
+end)", classScriptlet, typeId, fnName, scriptFile.m_source);
         }
         else {
             // NOTE KI global scriplet
@@ -312,10 +348,6 @@ end)", fnName, scriptFile.m_source);
         }
 
         auto result = invokeLuaScript(scriptlet);
-
-        script::ScriptEntry scriptEntry;
-        scriptEntry.m_signature = fnName;
-
         if (!result.valid()) return { false };
 
         return { true, ScriptEntryType::function, fnName };
@@ -395,12 +427,10 @@ end)", fnName, scriptFile.m_source);
 
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
-            auto* nodeApi = m_nodeApis.find(handle)->second.get();
-            auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
-
-            invokeLuaFunction([this, nodeApi, handle, &fnName, &cmdApi]() {
-                sol::protected_function fn((getLua())[fnName]);
-                return fn(std::ref(nodeApi), std::ref(cmdApi), handle.toId());;
+            invokeLuaFunction([this, handle, &fnName]() {
+                sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
+                sol::protected_function fn(nodeState[fnName]);
+                return fn(nodeState);
             });
         }
     }
@@ -435,9 +465,9 @@ end)", fnName, scriptFile.m_source);
     {
         std::lock_guard lock(m_lock);
 
-        sol::table luaNode = getLua()["nodes"][handle.toId()];
+        sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
 
-        sol::optional<sol::function> fnPtr = luaNode[name];
+        sol::optional<sol::function> fnPtr = nodeState[name];
         return fnPtr != sol::nullopt;
     }
 
@@ -450,8 +480,8 @@ end)", fnName, scriptFile.m_source);
         std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, node, self, &fn, &args]() {
-            sol::table luaNode = getLua()["nodes"][node->getId()];
-            return self ? fn(luaNode, args) : fn(args);
+            sol::table nodeState = getLua()[TABLE_STATES][node->getId()];
+            return self ? fn(nodeState, args) : fn(args);
             });
     }
 

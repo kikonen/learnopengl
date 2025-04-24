@@ -58,6 +58,9 @@ namespace script
             pool::TypeHandle handle,
             script::script_id scriptId);
 
+        void createNodeState(
+            Node* node);
+
         void bindNodeScript(
             Node* node,
             script::script_id scriptId);

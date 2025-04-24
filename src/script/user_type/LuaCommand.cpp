@@ -35,5 +35,12 @@ namespace script
 
         t["call"] = & NodeCommandAPI::lua_invoke;
         t["emit"] = & NodeCommandAPI::lua_emit;
+
+        t.set_function(
+            "__tostring",
+            [](const script::NodeCommandAPI& v) {
+                return v.str();
+            }
+        );
     }
 }

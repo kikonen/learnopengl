@@ -25,6 +25,8 @@ namespace script
             pool::NodeHandle handle);
         ~NodeCommandAPI();
 
+        std::string str() const noexcept;
+
     public:
         int lua_cancel(
             const sol::table& lua_opt,

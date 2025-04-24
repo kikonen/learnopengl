@@ -30,7 +30,7 @@ nodes:
     audio:
       listener:
         default: true
-      sources:
+      xsources:
         - name: idle_1
           path: audio/Wheeze 1_B2356390_normal.wav
           reference_distance: 0.1
@@ -308,7 +308,7 @@ nodes:
       static_bounds: true
     physics:
       update: true
-    script: scripts/seq_skeleton_army
+    script: scripts/seq_skeleton_2
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
