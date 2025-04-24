@@ -1434,7 +1434,7 @@ nodes:
       geom:
         category: [npc, can_terrain]
         collision: [prop, npc]
-    script_file: scripts/seq_skeleton_army
+    script_file: scripts/seq_skeleton_2
   - xid: giant_wooden_box_{t}_{c}
     mesh:
       path: quad

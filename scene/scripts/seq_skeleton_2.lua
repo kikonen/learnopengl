@@ -1,78 +1,88 @@
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-local ANIM_IDLE = util.sid("master:Idle")
-local ANIM_IDLE_2 = util.sid("master:Idle2")
-local ANIM_HIT = util.sid("master:Hit")
-
-local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
-local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
-local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
-
-local EXPLODE_SID = util.sid("explode")
-
-printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+print("-------------")
+table_print(self)
+print("-------------")
 
 local rnd = math.random
 
-local function randomIdle()
-  local sid
-  local r = rnd(10)
+if not State.explode then
+  print("Register STATE")
 
-  if r > 6 then
-    sid = ANIM_IDLE
-  elseif r > 2 then
-    sid = ANIM_IDLE_2
-  else
-    sid = ANIM_HIT
+  local ANIM_IDLE = util.sid("master:Idle")
+  local ANIM_IDLE_2 = util.sid("master:Idle2")
+  local ANIM_HIT = util.sid("master:Hit")
+
+  local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
+  local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
+  local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
+
+  local EXPLODE_SID = util.sid("explode")
+
+  printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+
+  function State:explode()
+    explode_cid = self.cmd:audio_play(
+      { sync=true, sid=EXPLODE_SID })
   end
 
-  return sid
-end
-
-local function randomAttack()
-  local sid
-  local r = rnd(10)
-
-  if r > 8 then
-    sid = ANIM_SWING_HEAVY
-  elseif r > 5 then
-    sid = ANIM_SWING_NORMAL
-  else
-    sid = ANIM_SWING_QUICK
+  function State:emit_particles()
+    self.cmd:particle_emit(
+      { count=(10 + rnd(50)) * 1000 })
   end
 
-  return sid
-end
+  function State:random_idle()
+    local sid
+    local r = rnd(10)
 
-local function idle(wid)
-  --print(string.format("idle: %d", id))
+    if r > 6 then
+      sid = ANIM_IDLE
+    elseif r > 2 then
+      sid = ANIM_IDLE_2
+    else
+      sid = ANIM_HIT
+    end
 
-  local cid
-  cid = cmd:animation_play(
-    { after=wid, sid=randomIdle() } )
+    return sid
+  end
 
-  return cid
-end
+  function State:random_attack()
+    local sid
+    local r = rnd(10)
 
-local function attack(wid)
-  --print(string.format("attack: %d", id))
+    if r > 8 then
+      sid = ANIM_SWING_HEAVY
+    elseif r > 5 then
+      sid = ANIM_SWING_NORMAL
+    else
+      sid = ANIM_SWING_QUICK
+    end
 
-  local cid
+    return sid
+  end
 
-  cid = cmd:animation_play(
-    { after=wid, sid=randomAttack() } )
+  function State:idle(wid)
+    --print(string.format("idle: %d", id))
 
-  return cid
-end
+    local cid
+    cid = self.cmd:animation_play(
+      { after=wid, sid=self:random_idle() } )
 
-function lua_node:explode()
-  explode_cid = cmd:audio_play(
-    { sync=true, sid=EXPLODE_SID })
-end
+    return cid
+  end
 
-function lua_node:emit_particles()
-  cmd:particle_emit(
-    { count=(10 + rnd(50)) * 1000 })
+  function State:attack(wid)
+    --print(string.format("attack: %d", id))
+
+    local cid
+
+    cid = self.cmd:animation_play(
+      { after=wid, sid=self:random_attack() } )
+
+    return cid
+  end
+else
+  print("Register STATE: ALREADY_DONE")
 end
 
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
@@ -146,7 +156,7 @@ local function ray_caster()
       { after=cancel_cid, time=5, relative=false },
       args.data.pos)
 
-    attack_cid = attack(cancel_cid)
+    attack_cid = self:attack(cancel_cid)
 
     ray_degrees = INITIAL_RAY_DEGREES
   end
@@ -180,7 +190,7 @@ local function animation()
   local pos = node:get_pos()
 
   local function animation_listener()
-    cid = idle(wid)
+    cid = self:idle(wid)
 
     if idx == 0 then
       cid2 = cmd:move(

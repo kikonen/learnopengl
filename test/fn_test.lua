@@ -124,3 +124,14 @@ actor_1_2(n)
 table_print(registry)
 
 registry:update(1.22)
+
+
+classes = {}
+classes[1] = {
+  a = "me"
+}
+classes[1].hello = function(self)
+  print("hello " .. self.a)
+end
+
+classes[1]:hello()

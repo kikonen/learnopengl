@@ -59,6 +59,11 @@ namespace script
 
     NodeCommandAPI::~NodeCommandAPI() = default;
 
+    std::string NodeCommandAPI::str() const noexcept
+    {
+        return fmt::format("<CMD_API: {}>", m_handle.str());
+    }
+
     int NodeCommandAPI::lua_cancel(
         const sol::table& lua_opt,
         const sol::table& lua_commandIds) noexcept
