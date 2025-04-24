@@ -248,11 +248,9 @@ namespace script
     {
         const auto id = node->getId();
         const auto typeId = node->getType()->getId();
-        std::string scriptlet = fmt::format(R"(
-  local State = classes[{}]
-  states[{}] = State:new()
-  State = nil
-  )", typeId, id);
+        std::string scriptlet = fmt::format(
+            "states[{}] = classes[{}]:new()",
+            id, typeId);
         auto result = invokeLuaScript(scriptlet);
         if (!result.valid()) return;
 
@@ -323,14 +321,14 @@ namespace script
 //        }
 
         if (handle) {
-            std::string classScriptlet = fmt::format(R"(
-classes[{}] = classes[{}] or Node:new({{ type_id={} }})
-)", typeId, typeId, typeId);
+            std::string classScriptlet = fmt::format(
+            "classes[{}] = classes[{}] or Node:new({{ type_id={} }})",
+            typeId, typeId, typeId);
 
             // NOTE KI pass context as closure to Node
             // - node, cmd, id
-            scriptlet = fmt::format(R"(
-{}
+            scriptlet = fmt::format(
+R"({}
 classes[{}].{} = function(self)
 local State = getmetatable(self)
 local cmd = self.cmd
@@ -341,8 +339,8 @@ end)", classScriptlet, typeId, fnName, scriptFile.m_source);
         else {
             // NOTE KI global scriplet
 
-            scriptlet = fmt::format(R"(
-function {}()
+            scriptlet = fmt::format(
+R"(function {}()
 {}
 end)", fnName, scriptFile.m_source);
         }
@@ -376,8 +374,9 @@ end)", fnName, scriptFile.m_source);
 
         if (!lua[fnName].is<sol::function>()) return false;
 
-        std::string undef = fmt::format(R"(
-{} = nil)", fnName);
+        std::string undef = fmt::format(
+            "{} = nil",
+            fnName);
 
         lua.script(undef);
         KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", scriptEntry.m_signature));
