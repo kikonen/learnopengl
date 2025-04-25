@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 local TEXTS = {
   "This the story\n" ..
     "And it will continue\n" ..

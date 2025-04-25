@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 local function animation_x()
   local listener_id = nil
   local orig_pos = node:get_pos()

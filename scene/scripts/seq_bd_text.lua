@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 local TEXTS = {
   "Birthday\n" ..
     "it is\n",
