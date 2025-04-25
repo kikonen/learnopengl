@@ -362,6 +362,11 @@ nodes:
       update: true
       geom:
         collision: [world, player]
+    repeat:
+      x_count: 1
+      z_count: 2
+      x_step: 3
+      z_step: 3
     xscript: |
       self.cmd:animation_play(
         { name = "master:Idle" });
