@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
 local ANIM_IDLE = util.sid("master:Idle")
@@ -14,7 +17,7 @@ printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_
 
 local rnd = math.random
 
-function state:ditto(args)
+function State:ditto(args)
   print("LUA: DITTO_SHARED_CALLED")
   printf("LUA: self=%s\n", table_format(self));
   printf("LUA: args=%s\n", table_format(args));
@@ -77,13 +80,13 @@ local function attack(wid)
   return cid
 end
 
-function state:explode()
-  explode_cid = cmd:audio_play(
+function State:explode()
+  explode_cid = self.cmd:audio_play(
     { sync=true, sid=EXPLODE_SID })
 end
 
-function state:emit_particles()
-  cmd:particle_emit(
+function State:emit_particles()
+  self.cmd:particle_emit(
     { count=(10 + rnd(50)) * 1000 })
 end
 
@@ -180,7 +183,7 @@ local function animation()
 
     cid = cmd:call(
       { after=cid, object=true },
-      state.ditto,
+      self.ditto,
       { bar="start_of_seq_self" })
 
     cid = cmd:call(
@@ -195,7 +198,7 @@ local function animation()
 
     wid = cmd:call(
       { after=wid, object=true },
-      state.ditto,
+      self.ditto,
       { ditto="end_of_seq_self" })
 
     -- wid = cmd:emit(

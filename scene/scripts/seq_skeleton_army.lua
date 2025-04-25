@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
 local ANIM_IDLE = util.sid("master:Idle")

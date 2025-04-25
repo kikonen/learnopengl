@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 local TEXTS = {
   "Happy new year\n" ..
   "\n" ..

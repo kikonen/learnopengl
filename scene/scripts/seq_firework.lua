@@ -1,3 +1,6 @@
+local node = self.node
+local cmd = self.cmd
+
 printf("EMIT\n")
 
 local rnd = math.random
