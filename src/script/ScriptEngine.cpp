@@ -249,8 +249,9 @@ namespace script
         const auto id = node->getId();
         const auto typeId = node->getType()->getId();
         std::string scriptlet = fmt::format(
-            "states[{}] = classes[{}]:new()",
-            id, typeId);
+R"(-- {}
+states[{}] = classes[{}]:new())",
+            node->getName(), id, typeId);
         auto result = invokeLuaScript(scriptlet);
         if (!result.valid()) return;
 
@@ -297,6 +298,7 @@ namespace script
         script::script_id scriptId)
     {
         const auto typeId = handle.toId();
+        auto* type = handle.toType();
 
         // NOTE KI unique wrapperFn for node
         const std::string& fnName = getScriptSignature(handle, scriptId);
@@ -325,16 +327,23 @@ namespace script
             "classes[{}] = classes[{}] or Node:new({{ type_id={} }})",
             typeId, typeId, typeId);
 
+            std::string inlineScriptlet;
+            if (scriptFile.m_embedded) {
+                inlineScriptlet =
+R"(local cmd = self.cmd
+local node = self.node)";
+            }
+
             // NOTE KI pass context as closure to Node
             // - node, cmd, id
             scriptlet = fmt::format(
-R"({}
-classes[{}].{} = function(self)
-local State = getmetatable(self)
-local cmd = self.cmd
-local node = self.node
+R"(-- {} - {}
 {}
-end)", classScriptlet, typeId, fnName, scriptFile.m_source);
+classes[{}].{} = function(self)
+local State = self:class()
+{}
+{}
+end)", fnName, type->getName(), classScriptlet, typeId, fnName, inlineScriptlet, scriptFile.m_source);
         }
         else {
             // NOTE KI global scriplet

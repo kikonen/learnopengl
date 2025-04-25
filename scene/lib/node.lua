@@ -7,6 +7,10 @@ function Node:new(o)
   return o
 end
 
+function Node:class()
+  return getmetatable(self)
+end
+
 -- function Node:ditto()
 --   print("DITTO")
 -- end

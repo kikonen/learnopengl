@@ -7,6 +7,7 @@ print("-------------")
 local rnd = math.random
 
 if not State.explode then
+(function()
   print("Register STATE")
 
   local ANIM_IDLE = util.sid("master:Idle")
@@ -81,6 +82,7 @@ if not State.explode then
 
     return cid
   end
+end)()
 else
   print("Register STATE: ALREADY_DONE")
 end
@@ -88,6 +90,9 @@ end
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
 local function ray_caster()
+  local node = self.node
+  local cmd = self.cmd
+
   local rotate_cid = 0
   local move_cid = 0
   local attack_cid = 0
@@ -183,6 +188,9 @@ local function ray_caster()
 end
 
 local function animation()
+  local node = self.node
+  local cmd = self.cmd
+
   local idx = 0
   local wid = 0
   local cid = 0
