@@ -132,11 +132,15 @@ namespace script
         lua.open_libraries(
             sol::lib::base,
             sol::lib::package,
+            sol::lib::jit,
+            sol::lib::ffi,
             sol::lib::math,
             sol::lib::os,
             sol::lib::io,
+            sol::lib::bit32,
             sol::lib::coroutine,
             sol::lib::table,
+            sol::lib::utf8,
             sol::lib::string);
 
         // https://github.com/ThePhD/sol2/issues/90

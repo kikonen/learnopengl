@@ -20,6 +20,8 @@ prequire "module_1"
 Updater = prequire "updater"
 Node = prequire "node"
 
+BT = prequire('behaviour_tree/behaviour_tree')
+
 local function test()
   print("LUA: testing...")
   local delay = 1.0
