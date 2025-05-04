@@ -18,6 +18,7 @@ namespace
 
 void MeshTypeRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new MeshTypeRegistry();
 }
 

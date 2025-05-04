@@ -16,6 +16,7 @@ namespace {
 namespace terrain {
     void TerrainTileRegistry::init() noexcept
     {
+        assert(!s_registry);
         s_registry = new TerrainTileRegistry();
     }
 

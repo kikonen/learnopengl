@@ -67,6 +67,7 @@ namespace {
 
 void NodeRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new NodeRegistry();
 }
 

@@ -45,27 +45,28 @@ namespace {
         mesh::MeshType* m_type;
     };
 
-    static animation::AnimationSystem* s_engine{ nullptr };
+    static animation::AnimationSystem* s_system{ nullptr };
 }
 
 namespace animation
 {
     void AnimationSystem::init() noexcept
     {
-        s_engine = new AnimationSystem();
+        assert(!s_system);
+        s_system = new AnimationSystem();
     }
 
     void AnimationSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
     AnimationSystem& AnimationSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 

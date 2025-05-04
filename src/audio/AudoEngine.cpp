@@ -24,6 +24,7 @@ namespace audio
 {
     void AudioEngine::init() noexcept
     {
+        assert(!s_engine);
         s_engine = new AudioEngine();
     }
 

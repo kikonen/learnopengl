@@ -25,6 +25,7 @@ namespace
 
 void ModelRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new ModelRegistry();
 }
 

@@ -24,27 +24,28 @@ namespace {
     constexpr int IDX_STATIC = 0;
     constexpr int IDX_DYNAMIC = 1;
 
-    static decal::DecalSystem* s_engine{ nullptr };
+    static decal::DecalSystem* s_system{ nullptr };
 }
 
 namespace decal
 {
     void DecalSystem::init() noexcept
     {
-        s_engine = new DecalSystem();
+        assert(!s_system);
+        s_system = new DecalSystem();
     }
 
     void DecalSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
     DecalSystem& DecalSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 

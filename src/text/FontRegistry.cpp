@@ -6,27 +6,28 @@
 
 namespace
 {
-    static text::FontRegistry* s_engine{ nullptr };
+    static text::FontRegistry* s_registry{ nullptr };
 }
 
 namespace text
 {
     void FontRegistry::init() noexcept
     {
-        s_engine = new FontRegistry();
+        assert(!s_registry);
+        s_registry = new FontRegistry();
     }
 
     void FontRegistry::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_registry;
+        s_registry = nullptr;
         delete s;
     }
 
     FontRegistry& FontRegistry::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_registry);
+        return *s_registry;
     }
 }
 

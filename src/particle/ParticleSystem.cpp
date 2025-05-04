@@ -24,27 +24,28 @@ namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
 
-    static particle::ParticleSystem* s_engine{ nullptr };
+    static particle::ParticleSystem* s_system{ nullptr };
 }
 
 namespace particle
 {
     void ParticleSystem::init() noexcept
     {
-        s_engine = new ParticleSystem();
+        assert(!s_system);
+        s_system = new ParticleSystem();
     }
 
     void ParticleSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
     ParticleSystem& ParticleSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 
