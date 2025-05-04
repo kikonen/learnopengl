@@ -8,27 +8,28 @@
 
 namespace
 {
-    static text::TextSystem* s_engine{ nullptr };
+    static text::TextSystem* s_system{ nullptr };
 }
 
 namespace text
 {
     void TextSystem::init() noexcept
     {
-        s_engine = new TextSystem();
+        assert(!s_system);
+        s_system = new TextSystem();
     }
 
     void TextSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
     TextSystem& TextSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 

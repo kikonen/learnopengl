@@ -29,6 +29,7 @@ namespace {
 
 void EntityRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new EntityRegistry();
 }
 

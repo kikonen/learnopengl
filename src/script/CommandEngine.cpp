@@ -44,6 +44,7 @@ namespace script
 {
     void CommandEngine::init() noexcept
     {
+        assert(!s_engine);
         s_engine = new CommandEngine();
     }
 

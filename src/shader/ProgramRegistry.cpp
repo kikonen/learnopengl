@@ -18,6 +18,7 @@ namespace {
 
 void ProgramRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new ProgramRegistry();
 }
 

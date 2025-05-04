@@ -38,6 +38,7 @@ namespace
 
 void SelectionRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new SelectionRegistry();
 }
 

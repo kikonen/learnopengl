@@ -112,6 +112,7 @@ namespace physics
 {
     void PhysicsEngine::init() noexcept
     {
+        assert(!s_engine);
         s_engine = new PhysicsEngine();
     }
 

@@ -23,6 +23,7 @@ namespace
 
 void VaoRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new VaoRegistry();
 }
 

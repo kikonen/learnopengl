@@ -47,6 +47,7 @@ namespace script
 {
     void ScriptEngine::init() noexcept
     {
+        assert(!s_engine);
         s_engine = new ScriptEngine();
     }
 

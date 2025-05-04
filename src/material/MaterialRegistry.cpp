@@ -23,6 +23,7 @@ namespace {
 
 void MaterialRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new MaterialRegistry();
 }
 

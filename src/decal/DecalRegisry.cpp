@@ -7,6 +7,7 @@ namespace {
 namespace decal {
     void DecalRegistry::init() noexcept
     {
+        assert(!s_registry);
         s_registry = new DecalRegistry();
     }
 

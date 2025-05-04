@@ -11,6 +11,7 @@ namespace
 
 void ViewportRegistry::init() noexcept
 {
+    assert(!s_registry);
     s_registry = new ViewportRegistry();
 }
 
