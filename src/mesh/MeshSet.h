@@ -36,7 +36,7 @@ namespace mesh {
         // Take ownership of mesh
         mesh::Mesh* addMesh(std::unique_ptr<mesh::Mesh>&& mesh) noexcept;
 
-        std::vector<std::unique_ptr<mesh::Mesh>>& getMeshes() noexcept;
+        const std::vector<std::unique_ptr<mesh::Mesh>>& getMeshes() const noexcept;
 
         template<typename T>
         inline const T* getMesh(size_t index) const noexcept
@@ -46,7 +46,7 @@ namespace mesh {
 
         AABB calculateAABB(const glm::mat4& transform) const noexcept;
 
-        std::string getSummary();
+        std::string getSummary() const;
 
     public:
         const std::string m_rootDir;

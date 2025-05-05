@@ -10,6 +10,7 @@
 
 #include <entt/entt.hpp>
 
+#include "util/Util.h"
 #include "util/Log.h"
 #include "util/glm_format.h"
 
@@ -45,7 +46,7 @@ int runEngine() {
     }
 
     // HACK KI wait for a bit for pending worker threads to die
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    util::sleep(500);
 
     return 0;
 }
@@ -90,6 +91,8 @@ int main()
         std::cout << "PRESS [ENTER] TO CLOSE";
         std::cin.get();
     }
+
+    //util::sleep(60 * 1000);
 
     Log::shutdown();
 

@@ -29,8 +29,8 @@ namespace nav
         float m_polyPickExt[3];
         dtQueryFilter m_filter;
 
-        dtPolyRef m_startRef;
-        dtPolyRef m_endRef;
+        dtPolyRef m_startRef{ 0 };
+        dtPolyRef m_endRef{ 0 };
 
         dtPolyRef m_polys[MAX_POLYS];
         int m_polysCount{ 0 };

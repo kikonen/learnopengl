@@ -825,7 +825,7 @@ namespace loader {
                 meshData.smoothNormals,
                 meshData.forceNormals);
 
-            auto meshSet = future.get();
+            const auto& meshSet = future.get();
 
             if (meshSet) {
                 resolveSockets(

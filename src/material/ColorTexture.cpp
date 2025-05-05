@@ -71,6 +71,11 @@ ColorTexture::ColorTexture(
 ColorTexture::~ColorTexture()
 {}
 
+void ColorTexture::release()
+{
+    if (!m_prepared) return;
+}
+
 void ColorTexture::prepare()
 {
     if (m_prepared) return;

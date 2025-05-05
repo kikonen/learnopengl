@@ -19,6 +19,8 @@
 
 #include "shader/Shader.h"
 
+#include "material/ImageRegistry.h"
+
 #include "ImageTexture.h"
 #include "ColorTexture.h"
 #include "MaterialSSBO.h"
@@ -310,7 +312,7 @@ void Material::loadTexture(
 
     const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
 
-    auto future = ImageTexture::getTexture(
+    auto future = ImageRegistry::get().getTexture(
         info.path,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
         grayScale,
@@ -320,13 +322,13 @@ void Material::loadTexture(
 
     future.wait();
 
-    ImageTexture* texture = { nullptr };
+    std::shared_ptr<ImageTexture> texture;
     if (future.valid()) {
         texture = future.get();
     }
 
     if (usePlaceholder && !texture->isValid()) {
-        future = ImageTexture::getTexture(
+        future = ImageRegistry::get().getTexture(
             "tex-placeholder",
             placeholderPath,
             true,

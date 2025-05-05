@@ -11,14 +11,6 @@ class Image;
 class ImageTexture final : public Texture
 {
 public:
-    static std::shared_future<ImageTexture*> getTexture(
-        std::string_view name,
-        std::string_view path,
-        bool grayScale,
-        bool gammaCorrect,
-        bool flipY,
-        const TextureSpec& spec);
-
     ImageTexture(
         std::string_view name,
         std::string_view path,
@@ -31,6 +23,7 @@ public:
 
     virtual std::string str() const noexcept override;
 
+    void release() override;
     void prepare() override;
 
     void prepareNormal();

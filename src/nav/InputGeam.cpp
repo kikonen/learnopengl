@@ -1,5 +1,7 @@
 #include "InputGeom.h"
 
+#include "mesh/Mesh.h"
+
 namespace nav
 {
     InputGeom::InputGeom(const mesh::Mesh* mesh)

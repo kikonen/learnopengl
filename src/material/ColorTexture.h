@@ -21,7 +21,8 @@ public:
 
     ~ColorTexture();
 
-    void prepare();
+    void release() override;
+    void prepare() override;
 
 private:
     glm::vec4 m_color;

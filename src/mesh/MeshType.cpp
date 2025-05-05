@@ -58,7 +58,7 @@ namespace mesh {
     }
 
     uint16_t MeshType::addMeshSet(
-        mesh::MeshSet& meshSet)
+        const mesh::MeshSet& meshSet)
     {
         uint16_t count = 0;
 

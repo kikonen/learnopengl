@@ -117,7 +117,7 @@ namespace loader {
             SKYBOX_MESH_NAME,
             false,
             false);
-        auto* meshSet = future.get();
+        const auto& meshSet = future.get();
 
         if (!meshSet) {
             KI_ERROR("Failed to load skybox mesh");
@@ -176,7 +176,7 @@ namespace loader {
         node->setName("<skybox>");
         node->m_typeHandle = typeHandle;
 
-        //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        //util::sleep(1000);
 
         {
             NodeState state{};

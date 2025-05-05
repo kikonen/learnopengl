@@ -122,7 +122,7 @@ namespace
         int* outPointCount = 0)
     {
         // Find steer target.
-        static const int MAX_STEER_POINTS = 3;
+        constexpr int MAX_STEER_POINTS = 3;
         float steerPath[MAX_STEER_POINTS * 3];
         unsigned char steerPathFlags[MAX_STEER_POINTS];
         dtPolyRef steerPathPolys[MAX_STEER_POINTS];
@@ -182,8 +182,6 @@ namespace nav
 
         if (!navMesh || !navQuery) return {};
 
-        // TODO KI query to recast query
-
         const float* startPos = &query.m_startPos[0];
         const float* endPos = &query.m_endPos[0];
 
@@ -195,7 +193,6 @@ namespace nav
         navQuery->findPath(m_startRef, m_endRef, startPos, endPos, &m_filter, m_polys, &m_polysCount, maxPolys);
         if (!m_polysCount) return {};
 
-        // TODO KI convert to path
         {
             m_smoothPathCount = 0;
             const int maxSmooth = query.m_maxPath > 0 ? std::min(query.m_maxPath + 1, MAX_SMOOTH) : MAX_SMOOTH;
@@ -209,8 +206,8 @@ namespace nav
             navQuery->closestPointOnPoly(m_startRef, startPos, iterPos, 0);
             navQuery->closestPointOnPoly(polys[polyCount - 1], endPos, targetPos, 0);
 
-            static const float STEP_SIZE = 0.5f;
-            static const float SLOP = 0.01f;
+            constexpr float STEP_SIZE = 0.5f;
+            constexpr float SLOP = 0.01f;
 
             dtVcopy(&m_smoothPath[m_smoothPathCount * 3], iterPos);
             m_smoothPathCount++;

@@ -31,7 +31,7 @@ public:
 
     void prepare(std::shared_ptr<std::atomic<bool>> alive);
 
-    std::shared_future<mesh::MeshSet*> getMeshSet(
+    std::shared_future<std::shared_ptr<mesh::MeshSet>> getMeshSet(
         std::string_view id,
         std::string_view rootDir,
         std::string_view meshPath,
@@ -39,13 +39,14 @@ public:
         bool forceNormals);
 
 private:
-    std::shared_future<mesh::MeshSet*> startLoad(mesh::MeshSet* mesh);
+    std::shared_future<std::shared_ptr<mesh::MeshSet>> startLoad(
+        std::shared_ptr<mesh::MeshSet> meshSet);
 
 private:
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::mutex m_meshes_lock{};
-    std::unordered_map<const std::string, std::shared_future<mesh::MeshSet*>, util::constant_string_hash> m_meshes;
+    std::unordered_map<const std::string, std::shared_future<std::shared_ptr<mesh::MeshSet>>, util::constant_string_hash> m_meshes;
 
     std::unique_ptr<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;

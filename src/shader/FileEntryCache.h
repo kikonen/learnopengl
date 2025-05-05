@@ -8,10 +8,16 @@
 
 class FileEntryCache {
 public:
-    static FileEntryCache& get();
+    static void init() noexcept;
+    static void release() noexcept;
+    static FileEntryCache& get() noexcept;
 
     FileEntryCache();
+    FileEntryCache& operator=(const FileEntryCache&) = delete;
+
     ~FileEntryCache();
+
+    void clear();
 
     // @return file, null if not existing
     FileEntry* getEntry(const std::string& path);

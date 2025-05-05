@@ -1,22 +1,44 @@
 #include "FileEntryCache.h"
 
+#include <cassert>
 
 namespace {
-    FileEntryCache g_instance;
+    static FileEntryCache* s_instance{ nullptr };
 }
 
-FileEntryCache& FileEntryCache::get()
+void FileEntryCache::init() noexcept
 {
-    return g_instance;
+    assert(!s_instance);
+    s_instance= new FileEntryCache();
+}
+
+void FileEntryCache::release() noexcept
+{
+    auto* s = s_instance;
+    s_instance = nullptr;
+    delete s;
+}
+
+FileEntryCache& FileEntryCache::get() noexcept
+{
+    assert(s_instance);
+    return *s_instance;
 }
 
 FileEntryCache::FileEntryCache()
 {
-    m_files.emplace_back();
+    clear();
 }
 
 FileEntryCache::~FileEntryCache()
 {
+    clear();
+}
+
+void FileEntryCache::clear()
+{
+    m_files.clear();
+    m_files.emplace_back();
 }
 
 FileEntry* FileEntryCache::getEntry(const std::string& path)

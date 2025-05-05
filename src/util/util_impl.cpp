@@ -1,6 +1,9 @@
 #include "util/util.h"
 #include "util/file.h"
 
+#include <thread>
+#include <chrono>
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -386,5 +389,10 @@ namespace util {
         // https://stackoverflow.com/questions/686353/random-float-number-generation
         float r2 = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
         return r2;
+    }
+
+    void sleep(size_t millis)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(millis));
     }
 }

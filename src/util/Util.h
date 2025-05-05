@@ -72,4 +72,6 @@ namespace util
             return std::hash<std::string>{}(s);
         }
     };
+
+    void sleep(size_t millis);
 }

@@ -458,7 +458,7 @@ void SampleApp::onDestroy()
         for (auto& loader : m_loaders) {
             // NOTE KI wait for worker threads to shutdown
             while (loader->isRunning()) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                util::sleep(100);
             }
         }
         KI_INFO_OUT("APP: loaders stopped!");
@@ -475,7 +475,7 @@ void SampleApp::onDestroy()
 
         // NOTE KI wait for worker threads to shutdown
         while (m_sceneUpdater->isRunning()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            util::sleep(100);
         }
         KI_INFO_OUT("APP: WT stopped!");
     }
@@ -485,7 +485,7 @@ void SampleApp::onDestroy()
 
         // NOTE KI wait for worker threads to shutdown
         while (m_particleUpdater->isRunning()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            util::sleep(100);
         }
         KI_INFO_OUT("APP: PS stopped!");
     }
@@ -495,7 +495,7 @@ void SampleApp::onDestroy()
 
         // NOTE KI wait for worker threads to shutdown
         while (m_animationUpdater->isRunning()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            util::sleep(100);
         }
         KI_INFO_OUT("APP: AS stopped!");
     }
@@ -503,6 +503,8 @@ void SampleApp::onDestroy()
     if (m_currentScene) {
         m_currentScene->destroy();
     }
+
+    Engine::onDestroy();
 
     KI_INFO_OUT("APP: stopped all!");
 }

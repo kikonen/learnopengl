@@ -22,6 +22,7 @@ public:
 
     virtual std::string str() const noexcept;
 
+    virtual void release();
     virtual void prepare() = 0;
 
 public:

@@ -8,6 +8,7 @@
 #include "ki/Timer.h"
 #include "ki/FpsCounter.h"
 
+#include "util/Util.h"
 #include "util/thread.h"
 #include "util/Log.h"
 
@@ -65,6 +66,7 @@ void Updater::start()
                 m_running = true;
                 util::markWorkerThread();
                 run();
+                shutdown();
                 m_running = false;
             }
             catch (const std::exception& ex) {
@@ -132,10 +134,9 @@ void Updater::run()
         }
 
         if (delay > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            util::sleep(delay);
         }
     }
 
-    shutdown();
     KI_INFO(fmt::format("{}: stopped - worker={}", m_prefix, util::isWorkerThread()));
 }
