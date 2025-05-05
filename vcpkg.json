@@ -85,6 +85,11 @@
       "version>=": "1.24.2"
     },
     {
+      "name": "recastnavigation",
+      "platform": "windows & x64",
+      "version>=": "1.6.0#1"
+    },
+    {
       "name": "sol2",
       "platform": "windows & x64",
       "version>=": "3.3.1"
