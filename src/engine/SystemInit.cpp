@@ -4,6 +4,7 @@
 
 #include "physics/PhysicsEngine.h"
 
+#include "shader/FileEntryCache.h"
 #include "shader/ProgramRegistry.h"
 
 #include "script/CommandEngine.h"
@@ -22,6 +23,7 @@
 #include "text/TextSystem.h"
 
 #include "material/MaterialRegistry.h"
+#include "material/ImageRegistry.h"
 
 #include "nav/NavigationSystem.h"
 
@@ -36,6 +38,11 @@
 
 void SystemInit::init() noexcept
 {
+    FileEntryCache::init();
+
+    ImageRegistry::init();
+    MaterialRegistry::init();
+
     audio::AudioEngine::init();
     physics::PhysicsEngine::init();
 
@@ -57,13 +64,11 @@ void SystemInit::init() noexcept
 
     ProgramRegistry::init();
     ControllerRegistry::init();
-    MaterialRegistry::init();
     NodeRegistry::init();
     MeshTypeRegistry::init();
     ModelRegistry::init();
     EntityRegistry::init();
     ViewportRegistry::init();
-    ControllerRegistry::init();
     SelectionRegistry::init();
     VaoRegistry::init();
 }
@@ -91,7 +96,6 @@ void SystemInit::release() noexcept
 
     ProgramRegistry::release();
     ControllerRegistry::release();
-    MaterialRegistry::release();
     NodeRegistry::release();
     MeshTypeRegistry::release();
     ModelRegistry::release();
@@ -100,4 +104,7 @@ void SystemInit::release() noexcept
     ControllerRegistry::release();
     SelectionRegistry::release();
     VaoRegistry::release();
+    MaterialRegistry::release();
+    ImageRegistry::release();
+    FileEntryCache::release();
 }

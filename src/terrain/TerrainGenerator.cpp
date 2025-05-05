@@ -15,6 +15,7 @@
 #include "asset/Assets.h"
 #include "asset/AABB.h"
 
+#include "material/ImageRegistry.h"
 #include "material/ImageTexture.h"
 
 #include "model/Node.h"
@@ -90,7 +91,7 @@ namespace terrain {
         auto& registry = ctx.m_registry;
 
         bool flipY = false;
-        ImageTexture* texture = loadTexture(flipY);
+        auto texture = loadTexture(flipY);
         if (!texture) return 0;
         if (!texture->isValid()) return 0;
 
@@ -115,7 +116,7 @@ namespace terrain {
         return heightMapId;
     }
 
-    ImageTexture* TerrainGenerator::loadTexture(bool flipY) {
+    std::shared_ptr<ImageTexture> TerrainGenerator::loadTexture(bool flipY) {
         const auto& texturePath = m_material.resolveTexturePath(m_heightMapFile, false);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 
@@ -129,7 +130,7 @@ namespace terrain {
             spec.wrapT = GL_CLAMP_TO_EDGE;
             spec.mipMapLevels = 1;
 
-            auto future = ImageTexture::getTexture(
+            auto future = ImageRegistry::get().getTexture(
                 texturePath,
                 texturePath,
                 false,
@@ -139,7 +140,7 @@ namespace terrain {
 
             future.wait();
 
-            ImageTexture* texture = { nullptr };
+            std::shared_ptr<ImageTexture> texture;
             if (future.valid()) {
                 texture = future.get();
             }
@@ -259,7 +260,7 @@ namespace terrain {
                 TERRAIN_QUAD_MESH_NAME,
                 false,
                 false);
-            auto* meshSet = future.get();
+            const auto& meshSet = future.get();
             //meshSet->setAABB(aabb);
 
             {

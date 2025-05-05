@@ -1,5 +1,6 @@
 #include "AsyncLoader.h"
 
+#include "util/Util.h"
 #include "util/Log.h"
 
 #include "asset/Assets.h"
@@ -54,7 +55,7 @@ void AsyncLoader::addLoader(
                 const auto& assets = Assets::get();
 
                 if (assets.asyncLoaderDelay > 0)
-                    std::this_thread::sleep_for(std::chrono::milliseconds(assets.asyncLoaderDelay));
+                    util::sleep(assets.asyncLoaderDelay);
 
                 if (*sceneAlive && *m_alive) {
                     loader();

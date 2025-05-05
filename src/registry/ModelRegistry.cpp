@@ -48,6 +48,7 @@ ModelRegistry::ModelRegistry()
 }
 
 ModelRegistry::~ModelRegistry() {
+    clear();
 }
 
 void ModelRegistry::clear()
@@ -60,7 +61,7 @@ void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
     m_alive = alive;
 }
 
-std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
+std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::getMeshSet(
     std::string_view id,
     std::string_view rootDir,
     std::string_view meshPath,
@@ -86,7 +87,7 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
             return e->second;
     }
 
-    auto meshSet = new mesh::MeshSet(
+    auto meshSet = std::make_shared<mesh::MeshSet>(
         rootDir,
         meshPath,
         smoothNormals,
@@ -98,9 +99,10 @@ std::shared_future<mesh::MeshSet*> ModelRegistry::getMeshSet(
     return future;
 }
 
-std::shared_future<mesh::MeshSet*> ModelRegistry::startLoad(mesh::MeshSet* meshSet)
+std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::startLoad(
+    std::shared_ptr<mesh::MeshSet> meshSet)
 {
-    std::promise<mesh::MeshSet*> promise;
+    std::promise<std::shared_ptr<mesh::MeshSet>> promise;
     auto future = promise.get_future().share();
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic

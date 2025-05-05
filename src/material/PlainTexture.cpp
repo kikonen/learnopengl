@@ -25,6 +25,11 @@ PlainTexture::~PlainTexture()
 {
 }
 
+void PlainTexture::release()
+{
+    if (!m_prepared) return;
+}
+
 void PlainTexture::prepare()
 {
     if (m_prepared) return;

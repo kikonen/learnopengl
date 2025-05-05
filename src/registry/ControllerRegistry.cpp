@@ -53,6 +53,12 @@ void ControllerRegistry::clear()
 {
     ASSERT_WT();
 
+    for (auto& entry : m_controllers) {
+        for (auto* controller : entry.second) {
+            delete controller;
+        }
+    }
+
     m_controllers.clear();
 }
 

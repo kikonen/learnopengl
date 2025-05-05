@@ -21,92 +21,9 @@
 #include "kigl/kigl.h"
 
 namespace {
-    thread_local std::exception_ptr lastException = nullptr;
-
-    std::unordered_map<std::string, std::shared_future<ImageTexture*>> textures;
-
-    std::mutex textures_lock{};
-
-    std::shared_future<ImageTexture*> startLoad(ImageTexture* texture)
-    {
-        /*
-std::future<int> spawn_async_task(){
-std::promise<int> p;
-std::thread t([p=std::move(p)](){ p.set_value(find_the_answer());});
-t.detach();
-return f;
-}        */
-        std::promise<ImageTexture*> promise;
-        auto future = promise.get_future().share();
-
-        // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
-        // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
-        auto th = std::thread{
-            [texture, p = std::move(promise)]() mutable {
-                try {
-                   texture->load();
-                   p.set_value(texture);
-                }
-                catch (const std::exception& ex) {
-                    KI_CRITICAL(fmt::format("IMAGE_TEX_ERROR: {}", ex.what()));
-                    lastException = std::current_exception();
-                    p.set_exception(lastException);
-                }
-                catch (const std::string& ex) {
-                    KI_CRITICAL(fmt::format("IMAGE_TEX_ERROR: {}", ex));
-                    lastException = std::current_exception();
-                    p.set_exception(lastException);
-                }
-                catch (const char* ex) {
-                    KI_CRITICAL(fmt::format("IMAGE_TEX_ERROR: {}", ex));
-                    lastException = std::current_exception();
-                    p.set_exception(lastException);
-                }
-                catch (...) {
-                    KI_CRITICAL(fmt::format("IMAGE_TEX_ERROR: {}", "UNKNOWN_ERROR"));
-                    lastException = std::current_exception();
-                    p.set_exception(lastException);
-                }
-            }
-        };
-        th.detach();
-
-        return future;
-    }
-
     const std::vector<std::regex> hdrMatchers{
         std::regex(".*[\\.]hdr"),
     };
-}
-
-std::shared_future<ImageTexture*> ImageTexture::getTexture(
-    std::string_view name,
-    std::string_view path,
-    bool grayScale,
-    bool gammaCorrect,
-    bool flipY,
-    const TextureSpec& spec)
-{
-    const std::string cacheKey = fmt::format(
-        "{}_{}_{}-{}_{}-{}_{}_{}",
-        path,
-        grayScale,
-        gammaCorrect,
-        flipY,
-        spec.wrapS, spec.wrapT,
-        spec.minFilter, spec.magFilter, spec.mipMapLevels);
-
-    std::lock_guard lock(textures_lock);
-    {
-        const auto& e = textures.find(cacheKey);
-        if (e != textures.end())
-            return e->second;
-    }
-
-    auto future = startLoad(
-        new ImageTexture(name, path, grayScale, gammaCorrect, flipY, spec));
-    textures[cacheKey] = future;
-    return future;
 }
 
 ImageTexture::ImageTexture(
@@ -143,6 +60,12 @@ std::string ImageTexture::str() const noexcept
         kigl::formatEnum(m_spec.minFilter),
         kigl::formatEnum(m_spec.magFilter)
         );
+}
+
+void ImageTexture::release()
+{
+    if (!m_prepared) return;
+    Texture::release();
 }
 
 void ImageTexture::prepare()

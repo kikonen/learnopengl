@@ -47,7 +47,7 @@ namespace terrain {
             const PrepareContext& ctx,
             const Node& container);
 
-        ImageTexture* loadTexture(bool flipY);
+        std::shared_ptr<ImageTexture> loadTexture(bool flipY);
 
         void createTiles(
             const PrepareContext& ctx,
@@ -66,7 +66,7 @@ namespace terrain {
         float m_horizontalScale{ 1.f };
 
         std::string m_heightMapFile;
-        ImageTexture* m_heightMapTex{ nullptr };
+        std::shared_ptr<ImageTexture> m_heightMapTex;
 
         Material m_material;
 

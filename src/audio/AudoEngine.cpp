@@ -71,6 +71,10 @@ namespace audio
     {
         ASSERT_WT();
 
+        // [ALSOFT] (WW) Error generated on context 0x214e0406960, code 0xa004, "Deleting in-use buffer 1"
+        // [ALSOFT](WW) 2 Sources not deleted
+        // [ALSOFT](WW) 1 Buffer not deleted
+
         clear();
 
         if (m_context) {

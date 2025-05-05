@@ -81,7 +81,7 @@ namespace mesh {
 
         // @return count of meshes added
         uint16_t addMeshSet(
-            mesh::MeshSet& meshSet);
+            const mesh::MeshSet& meshSet);
 
         LodMesh* addLodMesh(LodMesh&& lodMesh);
 

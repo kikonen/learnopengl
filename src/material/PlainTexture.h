@@ -15,6 +15,7 @@ public:
 
     virtual ~PlainTexture();
 
+    void release() override;
     void prepare() override;
     void setData(void* data, int size);
 };

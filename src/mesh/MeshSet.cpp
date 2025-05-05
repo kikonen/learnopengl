@@ -35,7 +35,10 @@ namespace mesh {
         m_forceNormals{ forceNormals }
     {}
 
-    MeshSet::~MeshSet() = default;
+    MeshSet::~MeshSet()
+    {
+        m_meshes.clear();
+    }
 
     std::string MeshSet::str() const noexcept
     {
@@ -75,12 +78,12 @@ namespace mesh {
         return m_meshes[m_meshes.size() - 1].get();
     }
 
-    std::vector<std::unique_ptr<mesh::Mesh>>& MeshSet::getMeshes() noexcept
+    const std::vector<std::unique_ptr<mesh::Mesh>>& MeshSet::getMeshes() const noexcept
     {
         return m_meshes;
     }
 
-    std::string MeshSet::getSummary()
+    std::string MeshSet::getSummary() const
     {
         std::string sb;
         sb.reserve(10000);

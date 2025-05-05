@@ -12,7 +12,7 @@
 
 #include "ki/sid.h"
 
-#include "Texture.h"
+#include "ImageTexture.h"
 
 #include "TextureType.h"
 
@@ -75,7 +75,7 @@ struct Material final
 {
 public:
     struct BoundTexture {
-        Texture* m_texture{ nullptr };
+        std::shared_ptr<ImageTexture> m_texture;
     };
 
 public:

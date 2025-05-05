@@ -121,6 +121,8 @@ void Registry::shutdownWT()
 {
     ASSERT_WT();
 
+    physics::PhysicsEngine::get().shutdown();
+
     audio::AudioEngine::get().shutdown();
 
     ControllerRegistry::get().shutdown();

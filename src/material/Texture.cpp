@@ -25,12 +25,7 @@ Texture::Texture(
 
 Texture::~Texture()
 {
-    if (m_handle) {
-        glMakeImageHandleNonResidentARB(m_handle);
-    }
-    if (m_textureID) {
-        glDeleteTextures(1, &m_textureID);
-    }
+    release();
 }
 
 std::string Texture::str() const noexcept
@@ -41,4 +36,14 @@ std::string Texture::str() const noexcept
         m_gammaCorrect,
         kigl::formatEnum(m_spec.wrapS),
         kigl::formatEnum(m_spec.wrapT));
+}
+
+void Texture::release()
+{
+    if (m_handle) {
+        glMakeTextureHandleNonResidentARB(m_handle);
+    }
+    if (m_textureID) {
+        glDeleteTextures(1, &m_textureID);
+    }
 }
