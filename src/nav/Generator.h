@@ -1,0 +1,53 @@
+#pragma once
+
+#include <vector>
+#include <memory>
+
+#include <recastnavigation/Recast.h>
+
+#include "BuildSettings.h"
+
+namespace nav
+{
+    class RecastContainer;
+    class BuildContext;
+    class InputGeom;
+
+    class Generator
+    {
+    public:
+        Generator(std::shared_ptr<nav::RecastContainer> container);
+        ~Generator();
+
+        void cleanup();
+
+        void addInput(std::unique_ptr<nav::InputGeom> input);
+
+        // Build must be done after registering all meshes
+        bool build();
+
+    public:
+        BuildSettings m_settings;
+        std::unique_ptr<BuildContext> m_ctx;
+
+        bool m_filterLowHangingObstacles;
+        bool m_filterLedgeSpans;
+        bool m_filterWalkableLowHeightSpans;
+
+        bool m_keepInterResults;
+
+    private:
+        std::shared_ptr<nav::RecastContainer> m_container;
+
+        std::vector<std::unique_ptr<InputGeom>> m_inputs;
+
+        rcConfig m_cfg{};
+
+        unsigned char* m_triareas{ nullptr };
+        rcHeightfield* m_solid{ nullptr };
+        rcCompactHeightfield* m_chf{ nullptr };
+        rcContourSet* m_cset{ nullptr };
+        rcPolyMesh* m_pmesh{ nullptr };
+        rcPolyMeshDetail* m_dmesh{ nullptr };
+    };
+}

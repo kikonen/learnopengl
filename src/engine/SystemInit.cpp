@@ -23,6 +23,8 @@
 
 #include "material/MaterialRegistry.h"
 
+#include "nav/NavigationSystem.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -36,6 +38,8 @@ void SystemInit::init() noexcept
 {
     audio::AudioEngine::init();
     physics::PhysicsEngine::init();
+
+    nav::NavigationSystem::init();
 
     particle::ParticleSystem::init();
 
@@ -68,6 +72,8 @@ void SystemInit::release() noexcept
 {
     audio::AudioEngine::release();
     physics::PhysicsEngine::release();
+
+    nav::NavigationSystem::release();
 
     particle::ParticleSystem::release();
 
