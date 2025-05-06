@@ -25,7 +25,7 @@ nodes:
     pos: [-15, 25, 25]
     mesh:
       path: light
-    program: g_light
+      program: g_light
     flags:
       no_shadow: true
     light:

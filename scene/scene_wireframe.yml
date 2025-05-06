@@ -27,7 +27,7 @@ nodes:
     type: origo
     mesh:
       path: light
-    program: g_light
+      program: g_light
     pos: [-15, 25, 25]
     flags:
       no_shadow: true

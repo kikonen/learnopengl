@@ -25,7 +25,7 @@ nodes:
     pos: [-25, 25, 25]
     xmesh:
       path: light
-    program: g_light
+      program: g_light
     flags:
       no_shadow: true
     light:

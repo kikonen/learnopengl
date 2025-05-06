@@ -25,7 +25,7 @@ nodes:
     type: origo
     mesh:
       path: light
-    program: g_light
+      program: g_light
     pos: [-15, 25, 25]
     flags:
       no_shadow: true
@@ -85,8 +85,8 @@ nodes:
           map_mrao: T_Helmet_mrao
           map_displacement: T_Helmet_displacement
         scale: 0.001
-    program: g_tex
-    shadow_program: shadow
+        program: g_tex
+        shadow_program: shadow
     pos: [-0.2, 1.9, 0]
     scale: 1
   - id: object_{c}_{t}

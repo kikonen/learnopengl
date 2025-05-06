@@ -208,8 +208,11 @@ namespace loader {
             else if (k == "scale") {
                 data.scale = readScale3(v);
             }
-            else if (k == "mesh_scale" || k == "base_scale") {
-                data.meshScale = readScale3(v);
+            else if (k == "base_scale") {
+                throw "use base_scale in mesh";
+            }
+            else if (k == "mesh_scale") {
+                throw "use base_scale in mesh";
             }
             else if (k == "pivot") {
                 data.pivot = PivotLoader{}.load(v);
@@ -327,12 +330,6 @@ namespace loader {
         if (data.type == NodeType::text) {
             for (auto& meshData : data.meshes) {
                 meshData.enabled = true;
-            }
-        }
-
-        for (auto& meshData : data.meshes) {
-            if (!meshData.hasScale) {
-                meshData.scale = data.meshScale;
             }
         }
 

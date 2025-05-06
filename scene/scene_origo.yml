@@ -15,7 +15,7 @@ nodes:
       material:
         name: silver_ball
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-    program: g_tex
+      program: g_tex
     pos: [10, 0, 20]
     front: [0, 0, -1]
     scale: 0.5
@@ -33,9 +33,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [0, 25, 40]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -47,7 +47,7 @@ nodes:
       path: water_ball
       material_modifier:
         reflection: 0.05
-    program: g_tex
+      program: g_tex
     pos: [0, 1, 0]
     scale: 1.3
     enabled: false
@@ -58,7 +58,7 @@ nodes:
         name: woodwall
         map_kd: textures/wood_1024.png
         reflection: 0.4
-    program: g_tex
+      program: g_tex
     pos: [5.0, 5.0, -5.0]
     scale: 1
     enabled: false
@@ -67,7 +67,7 @@ nodes:
       path: texture_cube_3
       material_modifier:
         render_back: true
-    program: g_tex
+      program: g_tex
     xxgeometry_type: explode_mod
     scale: 1
     clones:
@@ -87,11 +87,11 @@ nodes:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
         xmrao: [0.3, 0.4, 1]
-    program: g_tex
-    shadow_program: shadow
+      base_scale: 0.05
+      program: g_tex
+      shadow_program: shadow
     pos: [15, 6.5, -20.0]
     scale: 3
-    base_scale: 0.05
     repeat:
       x_count: 5
       z_count: 50
@@ -109,7 +109,7 @@ nodes:
         reflection: 0.8
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
-    program: g_tex
+      program: g_tex
     pos: [5.0, 3.0, 0.0]
     scale: 1.3
   - name: Brick wall
@@ -121,7 +121,7 @@ nodes:
         map_normal: textures/brickwall_1024_normal.png
         reflection: 0.2
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [-5.0, 8.5, -14.0]
     repeat:
       x_count: 3
@@ -135,7 +135,7 @@ nodes:
         map_kd: textures/wood_1024.png
         reflection: 0.4
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [-3.0, 8.5, -14.0]
     repeat:
       x_count: 2
@@ -149,7 +149,7 @@ nodes:
         map_kd: textures/wood_1024.png
         reflection: 0.1
         render_back: true
-    program: g_tex
+      program: g_tex
     clone_position_offset: [0, 40, 0]
     flags:
       no_shadow: true
@@ -172,13 +172,13 @@ nodes:
     mesh:
       path: quad
       material:
-      - name:
+        name:
         map_kd: textures/Marble White_VH_512.PNG
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]
         render_back: true
-    program: g_mirror
+      program: g_mirror
     pos: [-40.0, 10.0, -10.0]
     xxrotation: [0.0, 90.0, 0.0]
     scale: 15.0

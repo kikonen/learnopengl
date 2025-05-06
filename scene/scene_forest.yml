@@ -1,7 +1,6 @@
 ---
 name: Forest
 skybox:
-  program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
@@ -25,9 +24,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-10, 25, 40]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:

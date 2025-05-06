@@ -29,9 +29,9 @@ nodes:
     parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
     mesh:
       path: light
+      program: g_light
     pos: [0, 0, 0]
     scale: 0.5
-    program: g_light
     flags:
       no_shadow: true
     light:

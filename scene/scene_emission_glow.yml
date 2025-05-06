@@ -2,7 +2,6 @@
 name: Origo
 viewports:
 skybox:
-  program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
@@ -26,10 +25,10 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.3, 1.0]
+      program: g_light
     xxpos: [0, 25, 25]
     pos: [-25, 25, 0]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -50,7 +49,7 @@ nodes:
         #map_ke: textures/emission/stay_alive_emission.png
         #map_ke: textures/emission/glow_map_001_512.png
         map_ke: textures/emission/beware_emission.png
-    program: g_tex
+      program: g_tex
     pos: [-4.0, 2.0, 0.0]
     xrotation: [0, 90, 0]
   - id: cube_2_{c}_{t}
@@ -67,7 +66,7 @@ nodes:
         #map_ke: textures/matrix_512.png
         map_ke: textures/emission/stay_alive_emission.png
         xblend: true
-    program: g_tex
+      program: g_tex
     pos: [0.0, 2.0, 0.0]
   - id: blend_cube_{c}_{t}
     mesh:

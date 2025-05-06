@@ -75,7 +75,7 @@ nodes:
         layers: 25
         layers_depth: 0.2
         xxalpha: true
-    program: g_fur
+      program: g_fur
     pos: [0, 0, 0]
     scale: 1.0
     repeat:
@@ -88,9 +88,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: light
     pos: [0, 25, 40]
     scale: 2.5
-    program: light
     flags:
       no_shadow: true
     light:
@@ -109,7 +109,7 @@ nodes:
       path: light
       material_modifier:
         kd: [0.1, 0.9, 0.1, 1.0]
-    program: light
+      program: light
     flags:
       no_shadow: true
     light:
@@ -151,9 +151,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.1, 0.1, 0.9, 1.0]
+      program: light
     pos: [10, 0, 0]
     scale: 0.5
-    program: light
     flags:
       no_shadow: true
     light:

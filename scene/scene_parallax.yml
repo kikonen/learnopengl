@@ -27,7 +27,7 @@ nodes:
         prefab: materials/Bricks007.yml
         tiling: 4
         parallax: 0.02
-    program: g_tex
+      program: g_tex
     pos: [0.0, 2.0, 0.0]
     repeat:
       z_count: 20
@@ -37,10 +37,10 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     xxpos: [0, 25, 25]
     pos: [-25, 25, 0]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -55,7 +55,7 @@ nodes:
   - name: Planet 1
     mesh:
       path: planet/planet.obj
-    program: g_tex
+      program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
@@ -63,7 +63,7 @@ nodes:
       path: planet/planet.obj
       material_modifier:
         map_normal: mars_normal.png
-    program: g_tex
+      program: g_tex
     pos: [0, 3.5, 30]
     scale: 1
   - name: Cube map - wood_wall
@@ -84,7 +84,7 @@ nodes:
         map_displacement: toy_box_displacement
         parallax_depth: 0.04
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [20.0, 2.5, -5.0]
     scale: 2.5
     rotation: [0, 270, 0]
@@ -103,7 +103,7 @@ nodes:
         parallax_depth: 0.07
         map_normal: ''
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
@@ -121,7 +121,7 @@ nodes:
         map_displacement: displacement
         xalpha: true
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [20.0, 2.5, 5.0]
     scale: 2.5
     rotation: [0, 270, 0]
@@ -138,7 +138,7 @@ nodes:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [30, 2.5, -6.0]
     scale: 2.5
     rotation: [0, 270, 0]
@@ -156,7 +156,7 @@ nodes:
         render_back: true
         map_mrao: Bricks007_1K_mrao
         map_displacement: Bricks007_1K_displacement
-    program: g_tex
+      program: g_tex
     pos: [30, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
@@ -173,7 +173,7 @@ nodes:
         parallax_depth: 0.015
         xalpha: true
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [30.0, 2.5, 5.5]
     scale: 2.5
     rotation: [0, 270, 0]

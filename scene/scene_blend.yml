@@ -1,6 +1,5 @@
 ---
 skybox:
-  program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
@@ -24,14 +23,14 @@ nodes:
       path: texture_cube
       material_modifier:
         tiling: 5
-    program: g_tex
+      program: g_tex
     pos: [0.0, 1.5, -14.0]
   - id: cube_forward
     mesh:
       path: texture_cube
       material_modifier:
         tiling: 5
-    program: tex
+      program: tex
     pos: [0.0, -1.5, -14.0]
   - id: window_1
     prefab:
@@ -132,9 +131,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [0, 25, 40]
     scale: 2.5
-    program: g_light
     flagss:
       no_shadow: true
     light:

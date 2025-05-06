@@ -27,7 +27,7 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
-    program: g_light
+      program: g_light
     flags:
       no_shadow: true
     light:

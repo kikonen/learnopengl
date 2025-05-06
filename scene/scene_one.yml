@@ -28,6 +28,6 @@ nodes:
         tiling: 6
         alpha: true
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.0

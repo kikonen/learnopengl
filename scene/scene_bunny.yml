@@ -34,7 +34,7 @@ nodes:
         refraction_ratio: [1.0, 1.52]
         mrao: [0, 0, 1]
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, -10.0]
     scale: 30.0
     flags:
@@ -44,9 +44,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [0, 25, 40]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:

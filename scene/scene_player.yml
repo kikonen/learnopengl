@@ -12,7 +12,7 @@ nodes:
       path: water_ball
       material_modifier:
         tiling: 5
-    program: g_tex
+      program: g_tex
     pos: [0, 2, 0.0]
     front: [0, 0, -1]
     rot: [0, 45, 0]
@@ -31,7 +31,7 @@ nodes:
   - id: four_cubes_{t}_{c}
     mesh:
       path: texture_cube_3
-    program: g_tex
+      program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
     clones:
@@ -47,7 +47,7 @@ nodes:
         prefab: materials/Planks09.yml
         parallax_depth: 0.0
         tiling: 10
-    program: g_tex
+      program: g_tex
     flags:
       no_shadow: true
     scale: 100
@@ -56,9 +56,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-25, 45, 0]
     scale: 1.5
-    program: g_light
     flags:
       no_shadow: true
     light:
