@@ -9,10 +9,11 @@ script:
 nodes:
   - id: player
     type: origo
+    xmesh:
+      program: g_tex
     pos: [0, 5, 5]
     front: [0, 0, -1]
     scale: 0.8
-    program: g_tex
     flags:
       allow_normals: false
     active: true
@@ -34,7 +35,7 @@ nodes:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
-    program: g_water
+      program: g_water
     pos: [-30, 0, -30]
     scale: 30
     flags:
@@ -54,7 +55,7 @@ nodes:
         name: pool_floor
         map_kd: textures/tiles_1024_color.png
         tiling: 8
-    program: g_tex
+      program: g_tex
     pos: [-30, -4, -30]
     rotation: [270.0, 0.0, 0.0]
     scale: 30

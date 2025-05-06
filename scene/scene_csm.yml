@@ -25,7 +25,7 @@ nodes:
       material_modifier:
         prefab: materials/Bricks007.yml
         tiling: 3
-    program: g_tex
+      program: g_tex
     pos: [0.0, 2.0, 0.0]
     repeat:
       z_count: 20
@@ -35,9 +35,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-25, 25, 0]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -92,13 +92,13 @@ nodes:
       path: glass_ball
       material_modifier:
         reflection: 0.8
-    program: g_tex
+      program: g_tex
     pos: [0, 5, 10]
     scale: 1
   - name: Planet 1
     mesh:
       path: planet/planet.obj
-    program: g_tex
+      program: g_tex
     pos: [0, 0, 20]
     scale: 1
   - name: Planet 2
@@ -106,7 +106,7 @@ nodes:
       path: planet/planet.obj
       material_modifier:
         map_normal: mars_normal.png
-    program: g_tex
+      program: g_tex
     pos: [0, 3.5, 30]
     scale: 1
   - id: cube_map_wood_wall
@@ -124,7 +124,7 @@ nodes:
         xreflection: 0.4
         mrao: [1, 0, 1]
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]

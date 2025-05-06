@@ -192,6 +192,8 @@ namespace mesh {
 
         m_drawOptions.m_clip = m_flags.clip;
 
+        if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
+
         m_programId = material.getProgram(MaterialProgramType::shader);
         m_oitProgramId = material.getProgram(MaterialProgramType::oit);
         m_shadowProgramId = material.getProgram(MaterialProgramType::shadow);
@@ -274,8 +276,6 @@ namespace mesh {
             m_mesh->prepareLodMesh(*this);
 
             updateTransform();
-
-            if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
         }
     }
 

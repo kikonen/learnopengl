@@ -23,7 +23,7 @@ nodes:
       path: water_ball
       material_modifier:
         tiling: 5
-    program: g_tex
+      program: g_tex
     pos: [2.5, 2, 3]
     front: [0, 0, -1]
     scale: 0.1
@@ -155,9 +155,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-15, 25, 40]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -176,7 +176,7 @@ nodes:
         xmrao: [1.0, 0.0, 0, 1]
         tiling: 5
         render_back: true
-    program: g_tex
+      program: g_tex
     flags:
       no_shadow: true
     pos: [-1, 2.5, -3.001]
@@ -190,7 +190,7 @@ nodes:
         kd: [0.8, 0.8, 0.0, 1.0]
         xmrao: [1.0, 0.0, 1]
         tiling: 20
-    program: g_tex
+      program: g_tex
     flags:
       no_shadow: true
     scale: 100
@@ -204,7 +204,7 @@ nodes:
       path: glass_ball
       material_modifier:
         reflection: 0.8
-    program: g_tex
+      program: g_tex
     pos: [0, 2, -7]
     scale: 1
   - name: Cow

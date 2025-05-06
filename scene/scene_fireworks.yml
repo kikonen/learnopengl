@@ -1,6 +1,5 @@
 ---
 skybox:
-  program: g_skybox
   xmaterial: skybox/polyhaven/dikhololo_night_4k.hdr
   material: skybox/polyhaven/kloppenheim_02_puresky_4k.hdr
 script:
@@ -25,7 +24,7 @@ nodes:
     type: origo
     mesh:
       path: light
-    program: g_light
+      program: g_light
     pos: [-15, 25, 25]
     flags:
       no_shadow: true

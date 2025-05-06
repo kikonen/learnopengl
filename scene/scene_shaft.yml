@@ -22,9 +22,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-25, 25, 20]
     scale: 2.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -99,4 +99,4 @@ nodes:
     mesh:
       path: texture_cube_3
       scale: 0.25
-    program: g_tex
+      program: g_tex

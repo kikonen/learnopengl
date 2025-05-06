@@ -25,9 +25,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_Tex
     pos: [-300, 200, -400]
     scale: 2.5
-    program: g_Tex
     flags:
       no_shadow: true
     light:
@@ -74,7 +74,7 @@ nodes:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
-    program: g_water
+      program: g_water
     pos: [-50, 14.5, -20]
     scale: 70
     flags:
@@ -90,7 +90,7 @@ nodes:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
-    program: g_water
+      program: g_water
     pos: [0, 14.0, 0]
     scale: 800
     flags:
@@ -105,7 +105,7 @@ nodes:
         map_kd: textures/tiles_1024_color.png
         tiling: 8
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [0, -20, 0]
     rotation: [270.0, 0.0, 0.0]
     scale: 800

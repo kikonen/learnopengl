@@ -25,7 +25,6 @@ nodes:
       path: prefab/creatures/prefab_wyvern.yml
     pos: [0.0, 0, 0]
     scale: 2
-    base_scale: 0.01
     xrepeat:
       x_count: 2
       z_count: 2

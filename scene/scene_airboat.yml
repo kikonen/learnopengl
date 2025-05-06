@@ -27,12 +27,12 @@ nodes:
       path: texture_cube
       material_modifier:
         tiling: 5
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, -20.0]
   - id: airboat_{t}_{c}
     mesh:
       path: airboat_fixed_colors
-    program: g_tex
+      program: g_tex
     clones:
       - pos: [0.0, 0.0, 0.0]
       - pos: [20.0, 00.0, 0.0]
@@ -51,7 +51,7 @@ nodes:
         map_kd: textures/wood_1024.png
         xreflection: 0.1
         render_back: true
-    program: g_tex
+      program: g_tex
     clone_position_offset: [0, 60, 80]
     flags:
       no_shadow: true

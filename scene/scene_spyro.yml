@@ -26,6 +26,6 @@ nodes:
       material_modifier:
         prefab: materials/Lava05
         tiling: 6
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, -30.0]
     scale: 0.06

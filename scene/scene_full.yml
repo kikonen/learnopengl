@@ -3,7 +3,6 @@ meta:
   name: Full
 viewports:
 skybox:
-  program: g_skybox
   #material: skybox/BluePinkNebular
   #swap_faces: true
   xmaterial: skybox/Skybox_3
@@ -42,14 +41,14 @@ nodes:
       material:
         name: default_ball
         kd: [0, 0.8, 0]
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
   - name: Moving water ball
     parent_id: zero_origo
     mesh:
       path: water_ball
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 0.3
     script_file: scripts/seq_zero
@@ -57,11 +56,12 @@ nodes:
     type: origo
     xmesh:
       path: player
+    mesh:
+      program: g_tex
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     front: [0, 0, -1]
     scale: 0.8
-    program: g_tex
     active: true
     flags:
       allow_normals: false
@@ -144,9 +144,9 @@ nodes:
     parent_id: zero_origo
     mesh:
       path: light
+      program: light
     pos: [0, 0, 0]
     scale: 0.5
-    program: light
     flags:
       no_shadow: true
     clone_mesh: false
@@ -258,9 +258,9 @@ nodes:
     parent_id: rock_light_origo
     mesh:
       path: light
+      program: g_tex
     pos: [-10, 0, 0]
     scale: 0.5
-    program: g_tex
     flags:
       no_shadow: true
     light:
@@ -277,14 +277,14 @@ nodes:
       material_modifier:
         tiling_x: 2
         tiling_y: 2
-    program: g_tex
+      program: g_tex
     pos: [0, 15, 0]
     script_file: scripts/anim_node_path
   - name: Active node around rock
     parent_id: rock_origo
     mesh:
       path: texture_cube
-    program: g_tex
+      program: g_tex
     pos: [0, -5, 0]
     script_file: scripts/anim_node_path
   - xname: Cube map 1
@@ -305,7 +305,7 @@ nodes:
         reflection: 0.7
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
-    program: g_tex
+      program: g_tex
     pos: [-1.5, 5.0, -1.5]
     rotation: [0.0, 0.0, 0.0]
     scale: 1.0
@@ -362,7 +362,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [-5.0, 13.5, 14.0]
     repeat:
       x_count: 3
@@ -379,7 +379,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [5.0, 13.5, 14.0]
     rotation: [0, 180, 0]
   - id: wood_wall_{t}
@@ -393,7 +393,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [-3.0, 13.5, 14.0]
     repeat:
       x_count: 2
@@ -412,7 +412,7 @@ nodes:
         parallax_depth: 0.02
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [-3.0, 15.5, 14.0]
     repeat:
       x_count: 2
@@ -488,7 +488,7 @@ nodes:
   - id: airboat_{t}_{c}
     mesh:
       path: airboat_fixed_colors
-    program: g_tex
+      program: g_tex
     physics:
       body:
         type: box
@@ -507,7 +507,7 @@ nodes:
   - xid: spyro
     mesh:
       path: spyro2
-    program: g_tex
+      program: g_tex
     pos: [0.0, 15.0, 30.0]
     material_modifier:
       prefab: materials/Lava05
@@ -540,7 +540,7 @@ nodes:
       material_modifier:
         reflection: 0.7
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [-15.0, 14.0, 5.0]
     scale: 20.0
     enabled: false
@@ -549,7 +549,7 @@ nodes:
       path: dragon
       material_modifier:
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [-15.0, 25.0, 0.0]
     scale: 30.0
     enabled: false
@@ -558,7 +558,7 @@ nodes:
       path: opengl_book/NasaShuttle/shuttle
       material_modifier:
         kd: [1, 1, 1, 1]
-    program: g_tex
+      program: g_tex
     pos: [20.0, 40.0, -50.0]
     scale: 20.0
   - id: cylon_ship
@@ -569,13 +569,13 @@ nodes:
   - name: Sword 2
     mesh:
       path: sword2
-    program: g_tex
+      program: g_tex
     pos: [0.0, 40.0, -50.0]
     scale: 1.0
   - name: Sword - Excalibur
     mesh:
       path: sword2
-    program: g_tex
+      program: g_tex
     rotation: [223, 28, 24]
     pos: [250.0, 10.0, -190.0]
     scale: 1.0
@@ -592,7 +592,7 @@ nodes:
         xrefraction: 0.05
         xrefraction_ratio: [1.0, 1.52]
         tiling: 6
-    program: g_tex
+      program: g_tex
     pos: [-5.0, 25.0, -5.0]
     scale: 1.0
     selected: false
@@ -646,7 +646,7 @@ nodes:
         layers: 25
         layers_depth: 0.2
         alpha: true
-    program: g_fur
+      program: g_fur
     pos: [5.0, 25.0, -5.0]
     rotation: [0, 180, 0]
     scale: 0.8
@@ -656,7 +656,7 @@ nodes:
       material:
         prefab: materials/Plastic01.yml
         xreflection: 0.1
-    program: g_tex
+      program: g_tex
     pos: [5.0, 25.0, -15.0]
     rotation: [0, 180, 0]
     scale: 0.8
@@ -664,7 +664,7 @@ nodes:
   - name: Ball
     mesh:
       path: texture_ball
-    program: g_tex
+      program: g_tex
     pos: [0.0, 13.0, 0.0]
     scale: 2.0
   - xname: Cube map 2 - common
@@ -684,7 +684,7 @@ nodes:
         reflection: 0.05
         refraction: 0.85
         refraction_ratio: [1.0, 1.52]
-    program: g_tex
+      program: g_tex
     pos: [5.0, 25.0, 0.0]
     scale: 1.3
   - xname: Cube map 2 - refract ball
@@ -697,7 +697,7 @@ nodes:
       path: glass_ball
       material_modifier:
         reflection: 0.8
-    program: g_tex
+      program: g_tex
     pos: [-10.0, 25.0, 0.0]
     scale: 1.3
   - name: Water ball
@@ -705,7 +705,7 @@ nodes:
       path: water_ball
       material_modifier:
         xreflection: 0.3
-    program: g_tex
+      program: g_tex
     pos: [5.0, 30.0, 0.0]
     scale: 1.3
   - name: Basic ball
@@ -715,7 +715,7 @@ nodes:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
         mrao: [0.6, 0.3, 1]
-    program: g_tex
+      program: g_tex
     pos: [5.0, 30.0, 5.0]
     scale: 1.3
   - name: Gold ball
@@ -725,7 +725,7 @@ nodes:
         name: gold_ball
         prefab: materials/Metal008.yml
         kd: [0.7516, 0.6065, 0.2265, 1.0]
-    program: g_tex
+      program: g_tex
     pos: [5.0, 30.0, 10.0]
     scale: 1.3
   - name: ball origo
@@ -739,7 +739,7 @@ nodes:
         name: silver_ball
         kd: [0.5075, 0.5075, 0.5075, 1.0]
         mrao: [1, 0.3, 1]
-    program: g_tex
+      program: g_tex
     pos: [5.0, 30.0, 15.0]
     scale: 1.3
     physics:
@@ -758,7 +758,7 @@ nodes:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         mrao: [1, 0.3, 1]
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
   - name: Copper ball
@@ -770,7 +770,7 @@ nodes:
         prefab: materials/Metal008.yml
         kd: [0.800000, 0.800000, 0.800000]
         mrao: [1, 0.3, 1]
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
   - id: plasma_ball
@@ -798,7 +798,7 @@ nodes:
         tiling_y: 2
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [5.0, 25.0, 5.0]
     scale: 1
   - id: four_cubes_{t}_{c}
@@ -806,7 +806,7 @@ nodes:
       path: texture_cube_3
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     scale: 1
     camera:
       fov: 80
@@ -876,7 +876,7 @@ nodes:
       path: texture_cube_4/texture_cube_4.obj
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [-5.0, 25.0, 5.0]
     rotation: [0, 180, 0]
     scale: 1
@@ -892,8 +892,8 @@ nodes:
         tiling: 2
         render_back: true
       scale: 30
+      program: g_water
     priority: -5
-    program: g_water
     pos: [0, 9.5, -10]
     flags:
       no_shadow: true
@@ -929,8 +929,8 @@ nodes:
       scale: 30
       flags:
         pre_depth: true
+      program: g_tex
     priority: -10
-    program: g_tex
     pos: [0.0, 3.7, -10.0]
     flags:
       no_shadow: true
@@ -959,7 +959,7 @@ nodes:
         tiling_y: 10
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     clones:
       - pos: [-30.0, 4, 20]
         scale: [0.3, 6, 60]
@@ -1021,7 +1021,7 @@ nodes:
         tiling: 2
       material_modifier:
         ke: [0, 0.2, 0]
-    program: g_tex
+      program: g_tex
     pos: [-1024, 150, -1024]
     scale: 5.0
     light:
@@ -1051,7 +1051,7 @@ nodes:
         tiling: 2
         render_back: true
       scale: 128
-    program: g_water
+      program: g_water
     pos: [-1072, 0.0, -772]
     flags:
       no_shadow: true
@@ -1084,7 +1084,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [-1072, -70.0, -772]
     scale: 128
     flags:
@@ -1112,7 +1112,7 @@ nodes:
         map_normal: mars_normal.png
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     pos: [0, 0, 0]
     scale: 10
     script_file: scripts/anim_planet
@@ -1229,7 +1229,7 @@ nodes:
         prefab: materials/Rock002.yml
         mrao: [0.5, 0.0, 1]
         tiling: 4
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0, 0.0]
     scale: 1.5
   - name: Asteroid belt
@@ -1250,7 +1250,7 @@ nodes:
         parallax_depth: 0.017
         xreflection: 0.02
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [15, 11.5, 20.0]
     enabled: false
   - name: Scale 2
@@ -1265,7 +1265,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     scale: 2
     pos: [10, 11.5, 20.0]
     enabled: false
@@ -1281,7 +1281,7 @@ nodes:
         render_back: true
       flags:
         pre_depth: true
-    program: g_tex
+      program: g_tex
     scale: 3
     pos: [5, 11.5, 20.0]
     enabled: false
@@ -1444,7 +1444,7 @@ nodes:
         map_kd: textures/wood_1024.png
         xreflection: 0.1
         render_back: true
-    program: g_tex
+      program: g_tex
     clone_position_offset: [0, 40, 0]
     flags:
       no_shadow: true

@@ -41,7 +41,7 @@ nodes:
     mesh:
       path: planet/planet.obj
       scale: 2
-    program: g_tex
+      program: g_tex
     pos: [0, 0, 0]
     particle:
       seed: 1
@@ -149,9 +149,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_tex
     pos: [0, 25, 40]
     scale: 2.5
-    program: g_tex
     flags:
       no_shadow: true
     light:

@@ -27,7 +27,7 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
-    program: g_light
+      program: g_light
     flags:
       no_shadow: true
     light:
@@ -44,7 +44,6 @@ nodes:
       path: prefab/props/prefab_door_01.yml
     pos: [0.0, 0.0, -8.0]
     scale: 2
-    base_scale: 0.01
   - id: skeleton_1_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
@@ -60,14 +59,14 @@ nodes:
       xanimations:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
-    program: g_tex
-    shadow_program: shadow
+      base_scale: 0.05
+      program: g_tex
+      shadow_program: shadow
     pos: [-2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
-    base_scale: 0.05
   - id: skeleton_2_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
@@ -83,14 +82,14 @@ nodes:
       xanimations:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
-    program: g_tex
-    shadow_program: shadow
+      base_scale: 0.05
+      program: g_tex
+      shadow_program: shadow
     pos: [0.0, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
-    base_scale: 0.05
   - id: skeleton_3_{t}
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
@@ -103,17 +102,17 @@ nodes:
         map_pbr: skeleton_pbr
         xmrao: [0.3, 0.4, 1]
         xtiling: 60
+        program: g_tex
+        shadow_program: shadow
       xanimations:
         - name: walk
           path: anim/Humanoid@WalkForwardUnarmed2.fbx
-    program: g_tex
-    shadow_program: shadow
+      base_scale: 0.05
     pos: [2.5, 2.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
       alignment: m
     scale: 1
-    base_scale: 0.05
   - id: scavenger_1_{t}
     mesh:
       path: fbx/characters/scavenger/Scavenger.fbx
@@ -137,8 +136,8 @@ nodes:
         - name: walk
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [10.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -172,8 +171,8 @@ nodes:
         - name: walk
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [15.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -207,8 +206,8 @@ nodes:
         - name: walk
           path: Scavenger.fbx
           xpath: anim/Humanoid@WalkForwardUnarmed.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [20.0, 3.0, 0.0]
     rotation: [0, 0, 0]
     pivot:
@@ -240,8 +239,8 @@ nodes:
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
           path: anim/Lion@Roar.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [0.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:
@@ -279,8 +278,8 @@ nodes:
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
           path: anim/Lion@Roar.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [5.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:
@@ -318,8 +317,8 @@ nodes:
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
           path: anim/Lion@Roar.FBX
-    program: g_tex
-    shadow_program: shadow
+      program: g_tex
+      shadow_program: shadow
     pos: [10.0, 0.0, -10.0]
     rotation: [0, 0, 0]
     pivot:

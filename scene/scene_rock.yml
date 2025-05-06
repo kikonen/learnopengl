@@ -28,5 +28,5 @@ nodes:
         #prefab: materials/Rock002.yml
         mrao: [0.5, 0.0, 1]
         tiling: 4
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]

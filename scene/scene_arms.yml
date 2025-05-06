@@ -92,7 +92,7 @@ nodes:
     type: origo
     mesh:
       path: light
-    program: g_light
+      program: g_light
     pos: [-15, 25, 25]
     flags:
       no_shadow: true
@@ -201,7 +201,7 @@ nodes:
       material:
         kd: [0.5, 0.5, 0.0, 1.0]
         mrao: [0.2, 0.1, 1.0]
-        program: g_tex
+        programs: g_tex
       base_scale: 0.1
     pos: [0, 20, 0]
     particle:

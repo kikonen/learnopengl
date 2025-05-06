@@ -2,7 +2,6 @@
 name: Material balls
 viewports:
 skybox:
-  program: g_skybox
   xmaterial: skybox
   material: skybox/polyhaven/borghese_gardens_4k.hdr
   xmaterial: skybox/polyhaven/circus_arena_4k.hdr
@@ -21,7 +20,7 @@ nodes:
       material:
         kd: [0.0, 0.2, 0.8, 1.0]
         mrao: [0.2, 0.1, 1.0]
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1
   - id: cap
@@ -37,10 +36,10 @@ nodes:
         xparallax_depth: 0.0
         program: g_tex
         blend: true
+      base_scale: 0.25
+      base_rot: [90, 0, 0]
     pos: [0, 25, 40]
     front: [0, 0, -1]
-    base_scale: 0.25
-    base_rot: [90, 0, 0]
   - id: player_fps
     mesh:
       vertex:
@@ -133,9 +132,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [-25, 45, 0]
     scale: 1.5
-    program: g_light
     flags:
       no_shadow: true
     light:
@@ -147,9 +146,9 @@ nodes:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
     pos: [10, 30, 25]
     scale: 0.5
-    program: g_light
     flags:
       no_shadow: true
       no_select: true
@@ -170,7 +169,7 @@ nodes:
         kd: [0.8, 0.8, 0.0, 1.0]
         xreflection: 0.05
         mrao: [0.2, 0.1, 1.0]
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
     physics:
@@ -190,7 +189,7 @@ nodes:
         kd: [0.7516, 0.6065, 0.2265, 1.0]
         xreflection: 0.05
         xparallax_depth: 0.0
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
     controller:
@@ -217,7 +216,7 @@ nodes:
         alpha: true
         xblend: true
         render_back: true
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 10.0]
     rotation: [90, 0, 0]
     scale: 1.3
@@ -240,7 +239,7 @@ nodes:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         xreflection: 0.05
         xparallax_depth: 0.01
-    program: g_tex
+      program: g_tex
     pos: [0.0, 0.0, 15.0]
     rotation: [45, 0, 0]
     scale: 1.3
@@ -261,7 +260,7 @@ nodes:
         xreflection: 0.05
         tiling: 3
         xparallax_depth: 0.0
-    program: g_tex
+      program: g_tex
     pos: [-10.0, 0.0, 20.0]
     scale: 1.3
     physics:
@@ -313,7 +312,7 @@ nodes:
     parent_id: cube_origo
     mesh:
       path: texture_cube_3
-    program: g_tex
+      program: g_tex
     scale: 1
     base_rot: [-90, 0, 0]
     clones:
@@ -361,7 +360,7 @@ nodes:
         kd: [0, 0.8, 0]
         tiling: 10
         alpha: true
-    program: g_tex
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
@@ -380,7 +379,7 @@ nodes:
         kd: [0.8, 0.8, 0]
         tiling: 10
         alpha: true
-    program: g_tex
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
@@ -399,7 +398,7 @@ nodes:
         kd: [0.8, 0, 0]
         tiling: 10
         alpha: true
-    program: g_tex
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
@@ -411,7 +410,6 @@ nodes:
         type: plane
   - id: world_y_plus
     xtype: origo
-    program: g_tex
     mesh:
       path: plane
       material:
@@ -419,6 +417,7 @@ nodes:
         kd: [0.8, 0, 0.8]
         tiling: 10
         alpha: true
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
@@ -437,7 +436,7 @@ nodes:
         kd: [0, 0, 0.8]
         tiling: 10
         alpha: true
-    program: g_tex
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
@@ -456,7 +455,7 @@ nodes:
         kd: [0, 0.8, 0.8]
         tiling: 10
         alpha: true
-    program: g_tex
+      program: g_tex
     scale: 100
     flags:
       no_shadow: true
