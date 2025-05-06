@@ -227,6 +227,7 @@
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
     <ClCompile Include="src\mesh\vao\VertexTangentVBO.cpp" />
     <ClCompile Include="src\nav\Generator.cpp" />
+    <ClCompile Include="src\nav\GeomCollection.cpp" />
     <ClCompile Include="src\nav\InputGeam.cpp" />
     <ClCompile Include="src\nav\NavigationSystem.cpp" />
     <ClCompile Include="src\nav\Path.cpp" />
@@ -606,6 +607,7 @@
     <ClInclude Include="src\nav\BuildContext.h" />
     <ClInclude Include="src\nav\BuildSettings.h" />
     <ClInclude Include="src\nav\Generator.h" />
+    <ClInclude Include="src\nav\GeomCollection.h" />
     <ClInclude Include="src\nav\InputGeom.h" />
     <ClInclude Include="src\nav\NavigationSystem.h" />
     <ClInclude Include="src\nav\PartitionType.h" />

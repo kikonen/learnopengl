@@ -5,6 +5,7 @@
 
 #include <recastnavigation/Recast.h>
 
+#include "GeomCollection.h"
 #include "BuildSettings.h"
 
 namespace nav
@@ -39,7 +40,7 @@ namespace nav
     private:
         std::shared_ptr<nav::RecastContainer> m_container;
 
-        std::vector<std::unique_ptr<InputGeom>> m_inputs;
+        nav::GeomCollection m_inputCollection;
 
         rcConfig m_cfg{};
 

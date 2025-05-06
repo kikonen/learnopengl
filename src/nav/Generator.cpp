@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <glm/ext.hpp>
+
 #include <recastnavigation/Recast.h>
 #include <recastnavigation/DetourNavMeshBuilder.h>
 
@@ -27,7 +29,10 @@ namespace nav
         memset(&m_cfg, 0, sizeof(m_cfg));
     }
 
-    Generator::~Generator() = default;
+    Generator::~Generator()
+    {
+        cleanup();
+    }
 
     void Generator::cleanup()
     {
@@ -54,37 +59,17 @@ namespace nav
 
     void Generator::addInput(std::unique_ptr<nav::InputGeom> input)
     {
-        m_inputs.push_back(std::move(input));
+        m_inputCollection.addInput(std::move(input));
     }
 
     // Build must be done after registering all meshes
     bool Generator::build()
     {
-        if (m_inputs.empty()) return false;
+        if (m_inputCollection.empty()) return false;
 
         auto* ctx = m_ctx.get();
 
-        class InputGeom* m_geom = m_inputs[0].get();
-
-        if (!m_geom || !m_geom->getMesh())
-        {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Input mesh is not specified.");
-            return false;
-        }
-
         cleanup();
-
-        const float* bmin = m_geom->getNavMeshBoundsMin();
-        const float* bmax = m_geom->getNavMeshBoundsMax();
-        //const float* verts = m_geom->getMesh()->getVerts();
-        //const int nverts = m_geom->getMesh()->getVertCount();
-        //const int* tris = m_geom->getMesh()->getTris();
-        //const int ntris = m_geom->getMesh()->getTriCount();
-
-        const float* verts = nullptr;
-        const int nverts = 0;
-        const int* tris = nullptr;
-        const int ntris = 0;
 
         //
         // Step 1. Initialize build config.
@@ -110,8 +95,9 @@ namespace nav
             // Set the area where the navigation will be build.
             // Here the bounds of the input mesh are used, but the
             // area could be specified by an user defined box, etc.
-            rcVcopy(m_cfg.bmin, bmin);
-            rcVcopy(m_cfg.bmax, bmax);
+            rcVcopy(m_cfg.bmin, glm::value_ptr(m_inputCollection.getNavMeshBoundsMin()));
+            rcVcopy(m_cfg.bmax, glm::value_ptr(m_inputCollection.getNavMeshBoundsMax()));
+
             rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
         }
 
@@ -123,7 +109,6 @@ namespace nav
 
         ctx->log(RC_LOG_PROGRESS, "Building navigation:");
         ctx->log(RC_LOG_PROGRESS, " - %d x %d cells", m_cfg.width, m_cfg.height);
-        ctx->log(RC_LOG_PROGRESS, " - %.1fK verts, %.1fK tris", nverts / 1000.0f, ntris / 1000.0f);
 
         //
         // Step 2. Rasterize input polygon soup.
@@ -145,27 +130,42 @@ namespace nav
         // Allocate array that can hold triangle area types.
         // If you have multiple meshes you need to process, allocate
         // and array which can hold the max number of triangles you need to process.
-        m_triareas = new unsigned char[ntris];
-        if (!m_triareas)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", ntris);
-            return false;
+            int maxTriCount = m_inputCollection.getMaxTriCount();
+            delete[] m_triareas;
+            m_triareas = new unsigned char[maxTriCount];
+            if (!m_triareas)
+            {
+                ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", maxTriCount);
+                return false;
+            }
         }
 
         // Find triangles which are walkable based on their slope and rasterize them.
         // If your input data is multiple meshes, you can transform them here, calculate
         // the are type for each of the meshes and rasterize them.
-        memset(m_triareas, 0, ntris * sizeof(unsigned char));
-        rcMarkWalkableTriangles(ctx, m_cfg.walkableSlopeAngle, verts, nverts, tris, ntris, m_triareas);
-        if (!rcRasterizeTriangles(ctx, verts, nverts, tris, m_triareas, ntris, *m_solid, m_cfg.walkableClimb))
+        for (auto& input : m_inputCollection.getInputs())
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
-            return false;
+            const float* verts = input->getVertices();
+            const int nverts = input->getVertexCount();
+            const int* tris = input->getTris();
+            const int ntris = input->getTriCount();
+
+            memset(m_triareas, 0, ntris * sizeof(unsigned char));
+
+            ctx->log(RC_LOG_PROGRESS, " - %.1fK verts, %.1fK tris", nverts / 1000.0f, ntris / 1000.0f);
+
+            rcMarkWalkableTriangles(ctx, m_cfg.walkableSlopeAngle, verts, nverts, tris, ntris, m_triareas);
+            if (!rcRasterizeTriangles(ctx, verts, nverts, tris, m_triareas, ntris, *m_solid, m_cfg.walkableClimb))
+            {
+                ctx->log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
+                return false;
+            }
         }
 
         {
             delete[] m_triareas;
-            m_triareas = 0;
+            m_triareas = nullptr;
         }
 
         //
@@ -345,13 +345,13 @@ namespace nav
             params.detailVertsCount = m_dmesh->nverts;
             params.detailTris = m_dmesh->tris;
             params.detailTriCount = m_dmesh->ntris;
-            params.offMeshConVerts = m_geom->getOffMeshConnectionVerts();
-            params.offMeshConRad = m_geom->getOffMeshConnectionRads();
-            params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
-            params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
-            params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
-            params.offMeshConUserID = m_geom->getOffMeshConnectionId();
-            params.offMeshConCount = m_geom->getOffMeshConnectionCount();
+            //params.offMeshConVerts = m_geom->getOffMeshConnectionVerts();
+            //params.offMeshConRad = m_geom->getOffMeshConnectionRads();
+            //params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
+            //params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
+            //params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
+            //params.offMeshConUserID = m_geom->getOffMeshConnectionId();
+            //params.offMeshConCount = m_geom->getOffMeshConnectionCount();
             params.walkableHeight = m_settings.m_agentHeight;
             params.walkableRadius = m_settings.m_agentRadius;
             params.walkableClimb = m_settings.m_agentMaxClimb;
